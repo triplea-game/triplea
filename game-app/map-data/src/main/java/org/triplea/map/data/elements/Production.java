@@ -75,8 +75,39 @@ public class Production {
     }
   }
 
-  @SuperBuilder
-  public static class RepairRule extends ProductionRule {}
+  @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class RepairRule {
+    @XmlAttribute @Attribute private String name;
+
+    @XmlElement(name = "cost")
+    @TagList
+    private List<ProductionRule.Cost> costs;
+
+    @XmlElement(name = "result")
+    @TagList
+    private List<ProductionRule.Result> results;
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Cost {
+      @XmlAttribute @Attribute private String resource;
+      @XmlAttribute @Attribute private String quantity;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Result {
+      @XmlAttribute @Attribute private String resourceOrUnit;
+      @XmlAttribute @Attribute private String quantity;
+    }
+  }
 
   @Getter
   @Builder

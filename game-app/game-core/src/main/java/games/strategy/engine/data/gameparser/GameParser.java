@@ -149,7 +149,7 @@ public final class GameParser {
             log.warn("Game engine not compatible with: " + xmlFile, e);
             return null;
           } catch (final Exception e) {
-            log.error("Could not parse:" + xmlFile + ", " + e.getMessage(), e);
+            log.error("Could not parse: " + xmlFile + ", " + e.getMessage(), e);
             return null;
           }
         });
@@ -261,7 +261,7 @@ public final class GameParser {
 
   private GamePlayer getPlayerId(final String name) throws GameParseException {
     return getPlayerIdOptional(name)
-        .orElseThrow(() -> new GameParseException("Could not find player name:" + name));
+        .orElseThrow(() -> new GameParseException("Could not find player name: " + name));
   }
 
   private Optional<GamePlayer> getPlayerIdOptional(final String name) {
@@ -270,34 +270,34 @@ public final class GameParser {
 
   private RelationshipType getRelationshipType(final String name) throws GameParseException {
     return Optional.ofNullable(data.getRelationshipTypeList().getRelationshipType(name))
-        .orElseThrow(() -> new GameParseException("Could not find relationship type:" + name));
+        .orElseThrow(() -> new GameParseException("Could not find relationship type: " + name));
   }
 
   private TerritoryEffect getTerritoryEffect(final String name) throws GameParseException {
     return Optional.ofNullable(data.getTerritoryEffectList().get(name))
-        .orElseThrow(() -> new GameParseException("Could not find territoryEffect:" + name));
+        .orElseThrow(() -> new GameParseException("Could not find territoryEffect: " + name));
   }
 
   /** If the productionRule cannot be found an exception will be thrown. */
   private ProductionRule getProductionRule(final String name) throws GameParseException {
     return Optional.ofNullable(data.getProductionRuleList().getProductionRule(name))
-        .orElseThrow(() -> new GameParseException("Could not find production rule:" + name));
+        .orElseThrow(() -> new GameParseException("Could not find production rule: " + name));
   }
 
   /** If the repairRule cannot be found an exception will be thrown. */
   private RepairRule getRepairRule(final String name) throws GameParseException {
     return Optional.ofNullable(data.getRepairRules().getRepairRule(name))
-        .orElseThrow(() -> new GameParseException("Could not find repair rule:" + name));
+        .orElseThrow(() -> new GameParseException("Could not find repair rule: " + name));
   }
 
   private Territory getTerritory(final String name) throws GameParseException {
     return Optional.ofNullable(data.getMap().getTerritory(name))
-        .orElseThrow(() -> new GameParseException("Could not find territory:" + name));
+        .orElseThrow(() -> new GameParseException("Could not find territory: " + name));
   }
 
   private UnitType getUnitType(final String name) throws GameParseException {
     return getUnitTypeOptional(name)
-        .orElseThrow(() -> new GameParseException("Could not find unitType:" + name));
+        .orElseThrow(() -> new GameParseException("Could not find unitType: " + name));
   }
 
   /** If mustfind is true and cannot find the unitType an exception will be thrown. */
@@ -309,18 +309,18 @@ public final class GameParser {
     final TechnologyFrontier frontier = data.getTechnologyFrontier();
     return Optional.ofNullable(frontier.getAdvanceByName(name))
         .or(() -> Optional.ofNullable(frontier.getAdvanceByProperty(name)))
-        .orElseThrow(() -> new GameParseException("Could not find technology:" + name));
+        .orElseThrow(() -> new GameParseException("Could not find technology: " + name));
   }
 
   /** If the Delegate cannot be found an exception will be thrown. */
   private IDelegate getDelegate(final String name) throws GameParseException {
     return Optional.ofNullable(data.getDelegate(name))
-        .orElseThrow(() -> new GameParseException("Could not find delegate:" + name));
+        .orElseThrow(() -> new GameParseException("Could not find delegate: " + name));
   }
 
   private Resource getResource(final String name) throws GameParseException {
     return getResourceOptional(name)
-        .orElseThrow(() -> new GameParseException("Could not find resource:" + name));
+        .orElseThrow(() -> new GameParseException("Could not find resource: " + name));
   }
 
   /** If mustfind is true and cannot find the Resource an exception will be thrown. */
@@ -331,13 +331,13 @@ public final class GameParser {
   /** If the productionFrontier cannot be found an exception will be thrown. */
   private ProductionFrontier getProductionFrontier(final String name) throws GameParseException {
     return Optional.ofNullable(data.getProductionFrontierList().getProductionFrontier(name))
-        .orElseThrow(() -> new GameParseException("Could not find production frontier:" + name));
+        .orElseThrow(() -> new GameParseException("Could not find production frontier: " + name));
   }
 
   /** If the repairFrontier cannot be found an exception will be thrown. */
   private RepairFrontier getRepairFrontier(final String name) throws GameParseException {
     return Optional.ofNullable(data.getRepairFrontierList().getRepairFrontier(name))
-        .orElseThrow(() -> new GameParseException("Could not find repair frontier:" + name));
+        .orElseThrow(() -> new GameParseException("Could not find repair frontier: " + name));
   }
 
   private void parseTerritories(
@@ -616,7 +616,7 @@ public final class GameParser {
 
   private void parseRepairRules(final List<Production.RepairRule> elements)
       throws GameParseException {
-    for (final Production.ProductionRule current : elements) {
+    for (final Production.RepairRule current : elements) {
       final RepairRule rule = new RepairRule(current.getName(), data);
       parseCosts(rule, current.getCosts());
       parseResults(rule, current.getResults());
@@ -765,7 +765,7 @@ public final class GameParser {
         ta = data.getTechnologyFrontier().getAdvanceByName(current.getName());
       }
       if (ta == null) {
-        throw new GameParseException("Technology not found :" + current.getName());
+        throw new GameParseException("Technology not found : " + current.getName());
       }
       frontier.addAdvance(ta);
     }
