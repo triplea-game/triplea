@@ -8,8 +8,8 @@ import org.triplea.java.collections.IntegerMap;
 public class ProductionRule extends DefaultNamed implements Rule {
   private static final long serialVersionUID = -6598296283127741307L;
 
-  private IntegerMap<Resource> costs = new IntegerMap<>();
-  private IntegerMap<NamedAttachable> results = new IntegerMap<>();
+  protected IntegerMap<Resource> costs = new IntegerMap<>();
+  protected IntegerMap<NamedAttachable> results = new IntegerMap<>();
 
   public ProductionRule(final String name, final GameData data) {
     super(name, data);
@@ -41,7 +41,7 @@ public class ProductionRule extends DefaultNamed implements Rule {
 
   @Override
   public String toString() {
-    return "ProductionRule:" + getName();
+    return "ProductionRule: " + getName();
   }
 
   /**

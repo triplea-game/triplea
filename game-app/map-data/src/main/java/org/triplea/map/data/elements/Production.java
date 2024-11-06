@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.triplea.generic.xml.reader.annotations.Attribute;
 import org.triplea.generic.xml.reader.annotations.TagList;
 
@@ -41,7 +42,7 @@ public class Production {
   private List<PlayerRepair> playerRepairs;
 
   @Getter
-  @Builder
+  @SuperBuilder
   @NoArgsConstructor
   @AllArgsConstructor
   public static class ProductionRule {
@@ -74,39 +75,8 @@ public class Production {
     }
   }
 
-  @Getter
-  @Builder
-  @NoArgsConstructor
-  @AllArgsConstructor
-  public static class RepairRule {
-    @XmlAttribute @Attribute private String name;
-
-    @XmlElement(name = "cost")
-    @TagList
-    private List<ProductionRule.Cost> costs;
-
-    @XmlElement(name = "result")
-    @TagList
-    private List<ProductionRule.Result> results;
-
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Cost {
-      @XmlAttribute @Attribute private String resource;
-      @XmlAttribute @Attribute private String quantity;
-    }
-
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Result {
-      @XmlAttribute @Attribute private String resourceOrUnit;
-      @XmlAttribute @Attribute private String quantity;
-    }
-  }
+  @SuperBuilder
+  public static class RepairRule extends ProductionRule {}
 
   @Getter
   @Builder

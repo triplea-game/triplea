@@ -478,70 +478,70 @@ public final class GameParser {
   }
 
   private void parseProperties(final PropertyList propertyList) {
-    final GameProperties properties = data.getProperties();
+    final GameProperties gameProperties = data.getProperties();
 
     for (final PropertyList.Property current : propertyList.getProperties()) {
-      if (current.getName() == null) {
-        continue;
-      }
-      final String propertyName = LegacyPropertyMapper.mapPropertyName(current.getName());
-
-      // Get the value from first the body text of a "value" child node
-      // or get the value from the 'value' attribute of the current node.
-      final String value =
-          Optional.ofNullable(current.getValueProperty())
-              .map(PropertyList.Property.Value::getData)
-              .orElseGet(current::getValue);
-
-      // Next, infer the type of property based on its value
-      // and set the property  in game data properties.
-      if (current.getEditable() == null || !current.getEditable()) {
-        final Object castedValue = PropertyValueTypeInference.castToInferredType(value);
-        properties.set(propertyName, castedValue);
-      } else {
-        final Class<?> dataType = PropertyValueTypeInference.inferType(value);
-
-        if (dataType == Boolean.class) {
-          properties.addEditableProperty(
-              new BooleanProperty(propertyName, null, Boolean.parseBoolean(value)));
-        } else if (dataType == Integer.class) {
-          final int min =
-              Optional.ofNullable(current.getMin())
-                  .or(
-                      () ->
-                          Optional.ofNullable(current.getNumberProperty())
-                              .map(PropertyList.Property.XmlNumberTag::getMin))
-                  .orElse(Integer.MIN_VALUE);
-
-          final int max =
-              Optional.ofNullable(current.getMax())
-                  .or(
-                      () ->
-                          Optional.ofNullable(current.getNumberProperty())
-                              .map(PropertyList.Property.XmlNumberTag::getMax))
-                  .orElse(Integer.MAX_VALUE);
-
-          properties.addEditableProperty(
-              new NumberProperty(
-                  propertyName, null, max, min, value == null ? 0 : Integer.parseInt(value)));
-        } else {
-          properties.addEditableProperty(new StringProperty(propertyName, null, value));
-        }
-      }
+      parseProperty(current, gameProperties);
     }
     data.getPlayerList()
         .forEach(
-            playerId ->
-                data.getProperties()
-                    .addPlayerProperty(
-                        new NumberProperty(
-                            Constants.getIncomePercentageFor(playerId), null, 999, 0, 100)));
-    data.getPlayerList()
-        .forEach(
-            playerId ->
-                data.getProperties()
-                    .addPlayerProperty(
-                        new NumberProperty(Constants.getPuIncomeBonus(playerId), null, 999, 0, 0)));
+            playerId -> {
+              gameProperties.addPlayerProperty(
+                  new NumberProperty(
+                      Constants.getIncomePercentageFor(playerId), null, 999, 0, 100));
+              gameProperties.addPlayerProperty(
+                  new NumberProperty(Constants.getPuIncomeBonus(playerId), null, 999, 0, 0));
+            });
+  }
+
+  private static void parseProperty(PropertyList.Property current, GameProperties gameProperties) {
+    if (current.getName() == null) {
+      return;
+    }
+    final String propertyName = LegacyPropertyMapper.mapPropertyName(current.getName());
+
+    // Get the value from first the body text of a "value" child node
+    // or get the value from the 'value' attribute of the current node.
+    final String value =
+        Optional.ofNullable(current.getValueProperty())
+            .map(PropertyList.Property.Value::getData)
+            .orElseGet(current::getValue);
+
+    // Next, infer the type of property based on its value
+    // and set the property  in game data gameProperties.
+    if (current.getEditable() == null || !current.getEditable()) {
+      final Object castedValue = PropertyValueTypeInference.castToInferredType(value);
+      gameProperties.set(propertyName, castedValue);
+    } else {
+      final Class<?> dataType = PropertyValueTypeInference.inferType(value);
+
+      if (dataType == Boolean.class) {
+        gameProperties.addEditableProperty(
+            new BooleanProperty(propertyName, null, Boolean.parseBoolean(value)));
+      } else if (dataType == Integer.class) {
+        final int min =
+            Optional.ofNullable(current.getMin())
+                .or(
+                    () ->
+                        Optional.ofNullable(current.getNumberProperty())
+                            .map(PropertyList.Property.XmlNumberTag::getMin))
+                .orElse(Integer.MIN_VALUE);
+
+        final int max =
+            Optional.ofNullable(current.getMax())
+                .or(
+                    () ->
+                        Optional.ofNullable(current.getNumberProperty())
+                            .map(PropertyList.Property.XmlNumberTag::getMax))
+                .orElse(Integer.MAX_VALUE);
+
+        gameProperties.addEditableProperty(
+            new NumberProperty(
+                propertyName, null, max, min, value == null ? 0 : Integer.parseInt(value)));
+      } else {
+        gameProperties.addEditableProperty(new StringProperty(propertyName, null, value));
+      }
+    }
   }
 
   private void parseOffset(final GamePlay.Offset offset) {
@@ -607,8 +607,7 @@ public final class GameParser {
   private void parseProductionRules(final List<Production.ProductionRule> elements)
       throws GameParseException {
     for (final Production.ProductionRule current : elements) {
-      final String name = current.getName();
-      final ProductionRule rule = new ProductionRule(name, data);
+      final ProductionRule rule = new ProductionRule(current.getName(), data);
       parseCosts(rule, current.getCosts());
       parseResults(rule, current.getResults());
       data.getProductionRuleList().addProductionRule(rule);
@@ -617,34 +616,21 @@ public final class GameParser {
 
   private void parseRepairRules(final List<Production.RepairRule> elements)
       throws GameParseException {
-    for (final Production.RepairRule current : elements) {
+    for (final Production.ProductionRule current : elements) {
       final RepairRule rule = new RepairRule(current.getName(), data);
-      parseRepairCosts(rule, current.getCosts());
-      parseRepairResults(rule, current.getResults());
+      parseCosts(rule, current.getCosts());
+      parseResults(rule, current.getResults());
       data.getRepairRules().addRepairRule(rule);
     }
   }
 
   private void parseCosts(
-      final ProductionRule rule, final List<Production.ProductionRule.Cost> elements)
+      final ProductionRule rule, final List<Production.ProductionRule.Cost> costs)
       throws GameParseException {
-    if (elements.isEmpty()) {
-      throw new GameParseException("no costs  for rule:" + rule.getName());
+    if (costs.isEmpty()) {
+      throw new GameParseException("No costs  for rule: " + rule.getName());
     }
-    for (final Production.ProductionRule.Cost current : elements) {
-      final Resource resource = getResource(current.getResource());
-      final int quantity = Optional.ofNullable(current.getQuantity()).orElse(0);
-      rule.addCost(resource, quantity);
-    }
-  }
-
-  private void parseRepairCosts(
-      final RepairRule rule, final List<Production.ProductionRule.Cost> elements)
-      throws GameParseException {
-    if (elements.isEmpty()) {
-      throw new GameParseException("no costs  for rule:" + rule.getName());
-    }
-    for (final Production.ProductionRule.Cost current : elements) {
+    for (final Production.ProductionRule.Cost current : costs) {
       final Resource resource = getResource(current.getResource());
       final int quantity = Optional.ofNullable(current.getQuantity()).orElse(0);
       rule.addCost(resource, quantity);
@@ -652,33 +638,12 @@ public final class GameParser {
   }
 
   private void parseResults(
-      final ProductionRule rule, final List<Production.ProductionRule.Result> elements)
+      final ProductionRule rule, final List<Production.ProductionRule.Result> results)
       throws GameParseException {
-    if (elements.isEmpty()) {
-      throw new GameParseException("no results  for rule:" + rule.getName());
+    if (results.isEmpty()) {
+      throw new GameParseException("No results  for rule: " + rule.getName());
     }
-    for (final Production.ProductionRule.Result current : elements) {
-      // must find either a resource or a unit with the given name
-      NamedAttachable result = getResourceOptional(current.getResourceOrUnit()).orElse(null);
-      if (result == null) {
-        result = getUnitTypeOptional(current.getResourceOrUnit()).orElse(null);
-      }
-      if (result == null) {
-        throw new GameParseException(
-            "Could not find resource or unit " + current.getResourceOrUnit());
-      }
-      final int quantity = Optional.ofNullable(current.getQuantity()).orElse(0);
-      rule.addResult(result, quantity);
-    }
-  }
-
-  private void parseRepairResults(
-      final RepairRule rule, final List<Production.ProductionRule.Result> elements)
-      throws GameParseException {
-    if (elements.isEmpty()) {
-      throw new GameParseException("no results  for rule:" + rule.getName());
-    }
-    for (final Production.ProductionRule.Result current : elements) {
+    for (final Production.ProductionRule.Result current : results) {
       // must find either a resource or a unit with the given name
       NamedAttachable result = getResourceOptional(current.getResourceOrUnit()).orElse(null);
       if (result == null) {
@@ -838,7 +803,7 @@ public final class GameParser {
     String name = variables.replaceForeachVariables(current.getName(), foreach);
     // Only replace if needed, as replaceAll() can be slow.
     if (name.contains("ttatchment")) {
-      name = name.replaceAll("ttatchment", "ttachment");
+      name = name.replace("ttatchment", "ttachment");
     }
     final IAttachment attachment =
         xmlGameElementMapper
