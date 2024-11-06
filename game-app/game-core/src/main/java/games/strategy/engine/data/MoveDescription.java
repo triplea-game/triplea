@@ -78,6 +78,6 @@ public class MoveDescription extends AbstractMoveDescription {
 
   @Override
   public String toString() {
-    return "Move message route:" + route + " units:" + getUnits();
+    return "Move message route: " + route + " units: " + getUnits();
   }
 }

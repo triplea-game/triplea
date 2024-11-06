@@ -1327,7 +1327,7 @@ public class MustFightBattle extends DependentBattle
               // this should always be the base of the stack
               // when we execute the loop, it will populate the stack with the battle steps
               if (!MustFightBattle.this.stack.isEmpty()) {
-                throw new IllegalStateException("Stack not empty:" + MustFightBattle.this.stack);
+                throw new IllegalStateException("Stack not empty: " + MustFightBattle.this.stack);
               }
               MustFightBattle.this.stack.push(loop);
             }

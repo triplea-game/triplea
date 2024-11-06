@@ -198,7 +198,7 @@ public class UndoableMove extends AbstractUndoableMove {
 
   @Override
   public String toString() {
-    return "UndoableMove index;" + index + " description:" + description;
+    return "UndoableMove index;" + index + " description: " + description;
   }
 
   @Override

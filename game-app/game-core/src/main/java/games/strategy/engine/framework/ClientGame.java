@@ -166,7 +166,7 @@ public class ClientGame extends AbstractGame {
           final Player gp = this.gamePlayers.get(player);
           if (gp == null) {
             throw new IllegalStateException(
-                "Game player not found. Player:" + player + " on:" + messengers.getLocalNode());
+                "Game player not found. Player: " + player + " on: " + messengers.getLocalNode());
           }
           gp.start(stepName);
         };

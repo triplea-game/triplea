@@ -16,7 +16,7 @@ public class GameRelayServer {
   private final int port;
 
   public static URI createLocalhostConnectionUri(final int port) {
-    return URI.create("ws://localhost:" + port);
+    return URI.create("ws://localhost: " + port);
   }
 
   /**

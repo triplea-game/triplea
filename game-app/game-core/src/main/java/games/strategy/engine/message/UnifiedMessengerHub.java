@@ -127,7 +127,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
     if (hubInvoke.needReturnValues) {
       if (remote.size() != 1) {
         throw new IllegalStateException(
-            "Too many nodes:" + remote + " for remote name " + hubInvoke.call);
+            "Too many nodes: " + remote + " for remote name " + hubInvoke.call);
       }
       final InvocationInProgress invocationInProgress =
           new InvocationInProgress(CollectionUtils.getAny(remote), hubInvoke, from);

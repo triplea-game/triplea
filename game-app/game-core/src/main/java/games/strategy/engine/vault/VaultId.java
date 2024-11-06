@@ -29,6 +29,6 @@ public class VaultId implements Serializable {
 
   @Override
   public String toString() {
-    return "VaultId generated on:" + generatedOn + " id:" + uniqueId;
+    return "VaultId generated on: " + generatedOn + " id: " + uniqueId;
   }
 }

@@ -43,6 +43,6 @@ public class PlaceableUnits implements Serializable {
 
   @Override
   public String toString() {
-    return "ProductionResponseMessage units:" + units;
+    return "ProductionResponseMessage units: " + units;
   }
 }

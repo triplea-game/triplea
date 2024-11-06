@@ -85,12 +85,12 @@ public class Route implements Serializable, Iterable<Territory> {
     if (r1.numberOfSteps() == 0) {
       if (!r1.getStart().equals(r2.getStart())) {
         throw new IllegalArgumentException(
-            "Cannot join, r1 doesnt end where r2 starts. r1:" + r1 + " r2:" + r2);
+            "Cannot join, r1 doesnt end where r2 starts. r1: " + r1 + " r2: " + r2);
       }
     } else {
       if (!r1.getEnd().equals(r2.getStart())) {
         throw new IllegalArgumentException(
-            "Cannot join, r1 doesnt end where r2 starts. r1:" + r1 + " r2:" + r2);
+            "Cannot join, r1 doesnt end where r2 starts. r1: " + r1 + " r2: " + r2);
       }
     }
     final Collection<Territory> c1 = new ArrayList<>(r1.steps);

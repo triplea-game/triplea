@@ -571,7 +571,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       }
       if (ta == null) {
         throw new GameParseException(
-            "Technology not found :" + Arrays.toString(s) + thisErrorMsg());
+            "Technology not found: " + Arrays.toString(s) + thisErrorMsg());
       }
       techs.add(ta);
     }

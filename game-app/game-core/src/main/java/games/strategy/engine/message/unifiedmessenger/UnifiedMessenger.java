@@ -105,7 +105,7 @@ public class UnifiedMessenger {
               + remoteCall.getRemoteName());
     }
     if (results.size() > 1) {
-      throw new IllegalStateException("Too many implementors, got back:" + results);
+      throw new IllegalStateException("Too many implementors, got back: " + results);
     }
     return results.get(0);
   }
@@ -208,7 +208,7 @@ public class UnifiedMessenger {
     synchronized (endPointMutex) {
       final EndPoint endPoint = localEndPoints.get(name);
       if (endPoint == null) {
-        throw new IllegalStateException("No end point for:" + name);
+        throw new IllegalStateException("No end point for: " + name);
       }
       final boolean noneLeft = endPoint.removeImplementor(implementor);
       if (noneLeft) {
@@ -350,11 +350,11 @@ public class UnifiedMessenger {
 
   private void assertIsServer(final INode from) {
     Preconditions.checkState(
-        from.equals(messenger.getServerNode()), "Not from server!  Instead from:" + from);
+        from.equals(messenger.getServerNode()), "Not from server!  Instead from: " + from);
   }
 
   @Override
   public String toString() {
-    return "Server:" + messenger.isServer() + " EndPoints:" + localEndPoints;
+    return "Server: " + messenger.isServer() + " EndPoints: " + localEndPoints;
   }
 }

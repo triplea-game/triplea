@@ -35,9 +35,9 @@ public class ObjectPropertyChangeMatcher extends ChangeMatcher<Change> {
 
   @Override
   public void describeTo(final Description description) {
-    description.appendText("property:" + property);
-    description.appendText(" newValue:" + newValue);
-    description.appendText(" oldValue:" + oldValue);
+    description.appendText("property: " + property);
+    description.appendText(" newValue: " + newValue);
+    description.appendText(" oldValue: " + oldValue);
   }
 
   public static ChangeMatcher<Change> propertyChange(

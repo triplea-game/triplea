@@ -255,7 +255,7 @@ public class GameData implements Serializable, GameState {
       case UnitHolder.TERRITORY:
         return map.getTerritory(name);
       default:
-        throw new IllegalStateException("Invalid type:" + type);
+        throw new IllegalStateException("Invalid type: " + type);
     }
   }
 

@@ -84,7 +84,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
       return new ArrayList<>();
     }
     if (maxUnits < 0) {
-      throw new IllegalArgumentException("value must be positive.  Instead its:" + maxUnits);
+      throw new IllegalArgumentException("value must be positive.  Instead its: " + maxUnits);
     }
     final Collection<Unit> units = new ArrayList<>();
     for (final Unit current : this.units) {

@@ -63,6 +63,6 @@ public class RemoveUnits extends Change {
 
   @Override
   public String toString() {
-    return "Remove unit change. Remove from:" + name + " units:" + units;
+    return "Remove unit change. Remove from: " + name + " units: " + units;
   }
 }

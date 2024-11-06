@@ -48,6 +48,6 @@ public class BombingUnitDamageChange extends Change {
 
   @Override
   public String toString() {
-    return "Bombing unit damage change. Hits:" + hits + " undoHits:" + undoHits;
+    return "Bombing unit damage change. Hits: " + hits + " undoHits: " + undoHits;
   }
 }

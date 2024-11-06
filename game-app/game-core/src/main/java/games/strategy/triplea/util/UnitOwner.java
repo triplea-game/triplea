@@ -39,6 +39,6 @@ public final class UnitOwner {
 
   @Override
   public String toString() {
-    return "Unit owner:" + owner.getName() + " type:" + type.getName();
+    return "Unit owner: " + owner.getName() + " type: " + type.getName();
   }
 }

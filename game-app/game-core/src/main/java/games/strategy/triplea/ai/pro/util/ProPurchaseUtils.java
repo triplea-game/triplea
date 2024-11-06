@@ -242,7 +242,7 @@ public final class ProPurchaseUtils {
 
     final Collection<Unit> factoryUnits = territory.getMatches(Matches.unitCanProduceUnits());
     if (factoryUnits.isEmpty()) {
-      throw new IllegalStateException("No factory in territory:" + territory);
+      throw new IllegalStateException("No factory in territory: " + territory);
     }
     for (final Unit factory2 : factoryUnits) {
       if (player.equals(factory2.getOriginalOwner())) {

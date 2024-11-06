@@ -106,7 +106,7 @@ public class RemoteMethodCall implements Externalizable {
 
   @Override
   public String toString() {
-    return "Remote method call, method name:" + methodName + " remote name:" + remoteName;
+    return "Remote method call, method name: " + methodName + " remote name: " + remoteName;
   }
 
   @Override

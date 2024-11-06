@@ -173,7 +173,7 @@ class LobbyGameTableModel extends AbstractTableModel {
       case UUID:
         return gameList.get(rowIndex).getGameId();
       default:
-        throw new IllegalStateException("Unknown column:" + column);
+        throw new IllegalStateException("Unknown column: " + column);
     }
   }
 

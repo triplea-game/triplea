@@ -35,7 +35,7 @@ public class GameObjectStreamData implements Externalizable {
     } else if (named instanceof ProductionFrontier) {
       type = GameType.PRODUCTIONFRONTIER;
     } else {
-      throw new IllegalArgumentException("Wrong type:" + named);
+      throw new IllegalArgumentException("Wrong type: " + named);
     }
   }
 

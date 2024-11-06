@@ -79,7 +79,7 @@ class Decoder {
               throw new IllegalStateException("we are writing messages, but no local node");
             }
             if (header.getFrom() == null) {
-              throw new IllegalArgumentException("Null from:" + header);
+              throw new IllegalArgumentException("Null from: " + header);
             }
             nioSocket.messageReceived(header, data.getChannel());
           }

@@ -679,7 +679,7 @@ public class MapData {
     final List<Polygon> polys = this.polys.get(name);
     if (polys == null) {
       throw new IllegalStateException(
-          "No polygons found for:" + name + " All territories:" + this.polys.keySet());
+          "No polygons found for: " + name + " All territories: " + this.polys.keySet());
     }
     final Iterator<Polygon> polyIter = polys.iterator();
     final Rectangle bounds = polyIter.next().getBounds();

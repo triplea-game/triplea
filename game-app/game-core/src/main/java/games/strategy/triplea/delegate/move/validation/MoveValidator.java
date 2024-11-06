@@ -201,11 +201,11 @@ public class MoveValidator {
     }
     // this should never happen
     if (new HashSet<>(units).size() != units.size()) {
-      result.setError("Not all units unique, units:" + units + " unique:" + new HashSet<>(units));
+      result.setError("Not all units unique, units: " + units + " unique: " + new HashSet<>(units));
       return result;
     }
     if (!data.getMap().isValidRoute(route)) {
-      result.setError("Invalid route:" + route);
+      result.setError("Invalid route: " + route);
       return result;
     }
     if (validateMovementRestrictedByTerritory(route, player, result).hasError()) {

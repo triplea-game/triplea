@@ -316,7 +316,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
     final UnitAttachment battleShipAttachment = battleShipUnit.getUnitAttachment();
     final boolean defaultEnabled = battleShipAttachment.getHitPoints() > 1;
     if (userEnabled != defaultEnabled) {
-      bridge.getHistoryWriter().startEvent("TwoHitBattleships:" + userEnabled);
+      bridge.getHistoryWriter().startEvent("TwoHitBattleships: " + userEnabled);
       bridge.addChange(
           ChangeFactory.attachmentPropertyChange(
               battleShipAttachment, userEnabled ? 2 : 1, "hitPoints"));

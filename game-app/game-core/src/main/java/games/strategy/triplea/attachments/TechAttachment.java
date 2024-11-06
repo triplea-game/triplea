@@ -48,7 +48,8 @@ public class TechAttachment extends DefaultAttachment {
   static TechAttachment get(final GamePlayer gamePlayer, final String nameOfAttachment) {
     if (!nameOfAttachment.equals(Constants.TECH_ATTACHMENT_NAME)) {
       throw new IllegalStateException(
-          "TechAttachment may not yet get attachments not named:" + Constants.TECH_ATTACHMENT_NAME);
+          "TechAttachment may not yet get attachments not named: "
+              + Constants.TECH_ATTACHMENT_NAME);
     }
     return gamePlayer.getTechAttachment();
   }

@@ -1014,7 +1014,7 @@ public class MovePanel extends AbstractMovePanel {
       final Territory start, final Territory end, final Collection<Unit> selectedUnits) {
     if (forced == null || forced.isEmpty()) {
       throw new IllegalStateException(
-          "No forced territories:" + forced + " end:" + end + " start:" + start);
+          "No forced territories: " + forced + " end: " + end + " start: " + start);
     }
     Territory last = getFirstSelectedTerritory();
 

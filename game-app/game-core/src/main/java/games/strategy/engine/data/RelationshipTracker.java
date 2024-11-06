@@ -265,7 +265,7 @@ public class RelationshipTracker extends GameDataComponent {
 
     @Override
     public String toString() {
-      return roundCreated + ":" + relationshipType;
+      return roundCreated + ": " + relationshipType;
     }
   }
 }

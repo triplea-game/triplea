@@ -498,7 +498,7 @@ public final class DecorationPlacer {
       }
       try {
         PointFileReaderWriter.writeOneToMany(fileName, currentPoints);
-        log.info("Data written to :" + fileName.normalize().toAbsolutePath());
+        log.info("Data written to: " + fileName.normalize().toAbsolutePath());
       } catch (final IOException e) {
         log.error("Failed to save points: " + fileName, e);
       }

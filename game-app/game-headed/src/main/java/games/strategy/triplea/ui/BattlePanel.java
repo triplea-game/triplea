@@ -193,7 +193,10 @@ public final class BattlePanel extends ActionPanel {
       // something is wrong, we shouldn't have to wait this long
       if (count > 200) {
         log.error(
-            "battle not displayed, looking for:" + battleId + " showing:" + currentBattleDisplayed);
+            "battle not displayed, looking for: "
+                + battleId
+                + " showing: "
+                + currentBattleDisplayed);
         return false;
       }
       displayed = currentBattleDisplayed;

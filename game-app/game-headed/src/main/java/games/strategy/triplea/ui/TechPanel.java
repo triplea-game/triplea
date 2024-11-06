@@ -370,7 +370,7 @@ class TechPanel extends ActionPanel {
     }
 
     private void setLabel(final int pus) {
-      left.setText("Left to spend:" + pus);
+      left.setText("Left to spend: " + pus);
     }
 
     int getValue() {
@@ -663,12 +663,12 @@ class TechPanel extends ActionPanel {
     }
 
     private void setLabel(final int cost) {
-      left.setText("Left to Spend:  " + (totalPus - cost));
-      totalCost.setText("Total Cost:  " + cost);
+      left.setText("Left to Spend: " + (totalPus - cost));
+      totalCost.setText("Total Cost: " + cost);
     }
 
     private void setTokens(final int tokens) {
-      right.setText("Current token count:  " + tokens);
+      right.setText("Current token count: " + tokens);
     }
 
     private ScrollableTextFieldListener setWidgetAction() {

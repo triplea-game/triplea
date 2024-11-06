@@ -35,7 +35,7 @@ public final class IndustrialTechnologyAdvance extends TechAdvance {
         bridge.getData().getProductionFrontierList().getProductionFrontier(industrialTechName);
     // it doesnt exist, dont crash
     if (advancedTech == null) {
-      log.warn("No tech named:" + industrialTechName + " not adding tech");
+      log.warn("No tech named: " + industrialTechName + " not adding tech");
       return;
     }
     final Change prodChange = ChangeFactory.changeProductionFrontier(gamePlayer, advancedTech);

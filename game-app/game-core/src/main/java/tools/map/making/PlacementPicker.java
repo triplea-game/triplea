@@ -342,7 +342,7 @@ public final class PlacementPicker {
           new MouseMotionAdapter() {
             @Override
             public void mouseMoved(final MouseEvent e) {
-              locationLabel.setText("x:" + e.getX() + " y:" + e.getY());
+              locationLabel.setText("x: " + e.getX() + " y: " + e.getY());
               currentSquare = new Point(e.getPoint());
               repaint();
             }
@@ -535,7 +535,7 @@ public final class PlacementPicker {
       }
       try {
         PointFileReaderWriter.writeOneToManyPlacements(fileName, placements);
-        log.info("Data written to :" + fileName.normalize().toAbsolutePath());
+        log.info("Data written to: " + fileName.normalize().toAbsolutePath());
       } catch (final IOException e) {
         log.error("Failed to write placements: " + fileName, e);
       }
@@ -587,7 +587,7 @@ public final class PlacementPicker {
         if (currentPlacements != null) {
           placements.put(currentCountry, Tuple.of(currentPlacements, currentOverflowToLeft));
           currentPlacements = new ArrayList<>();
-          log.info("done:" + currentCountry);
+          log.info("done: " + currentCountry);
         }
       } else {
         if (currentPlacements != null && !currentPlacements.isEmpty()) {

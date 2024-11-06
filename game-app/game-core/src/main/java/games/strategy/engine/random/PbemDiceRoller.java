@@ -217,7 +217,7 @@ public class PbemDiceRoller implements IRandomSource {
       waitForWindowToBecomeVisible();
 
       appendText(subjectMessage + "\n");
-      appendText("Contacting  " + diceServer.getDisplayName() + "\n");
+      appendText("Contacting " + diceServer.getDisplayName() + "\n");
       try {
         final String text = diceServer.postRequest(sides, count, subjectMessage, gameId);
         if (text.isEmpty()) {
@@ -226,7 +226,7 @@ public class PbemDiceRoller implements IRandomSource {
           notifyError();
         }
         if (!test) {
-          appendText("Contacted :" + text + "\n");
+          appendText("Contacted: " + text + "\n");
         }
         diceRoll = diceServer.getDice(text, count);
         appendText("Success!");

@@ -294,7 +294,7 @@ public class AirBattle extends AbstractBattle {
               // this should always be the base of the stack
               // when we execute the loop, it will populate the stack with the battle steps
               if (!AirBattle.this.stack.isEmpty()) {
-                throw new IllegalStateException("Stack not empty:" + AirBattle.this.stack);
+                throw new IllegalStateException("Stack not empty: " + AirBattle.this.stack);
               }
               AirBattle.this.stack.push(loop);
             }

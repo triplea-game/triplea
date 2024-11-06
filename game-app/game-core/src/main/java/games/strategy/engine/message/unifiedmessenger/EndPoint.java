@@ -92,7 +92,8 @@ class EndPoint {
    */
   boolean removeImplementor(final Object implementor) {
     if (!implementors.remove(implementor)) {
-      throw new IllegalStateException("Not removed, impl:" + implementor + " have " + implementors);
+      throw new IllegalStateException(
+          "Not removed, impl: " + implementor + " have " + implementors);
     }
     return implementors.isEmpty();
   }
@@ -138,7 +139,7 @@ class EndPoint {
     } catch (final InvocationTargetException e) {
       return new RemoteMethodCallResults(e.getTargetException());
     } catch (final IllegalAccessException | IllegalArgumentException e) {
-      log.error("error in call:" + call, e);
+      log.error("error in call: " + call, e);
       return new RemoteMethodCallResults(e);
     } finally {
       MessageContext.setSenderNodeForThread(null);
@@ -147,6 +148,11 @@ class EndPoint {
 
   @Override
   public String toString() {
-    return "Name:" + name + " singleThreaded:" + singleThreaded + " implementors:" + implementors;
+    return "Name: "
+        + name
+        + " singleThreaded: "
+        + singleThreaded
+        + " implementors: "
+        + implementors;
   }
 }

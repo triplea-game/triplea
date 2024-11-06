@@ -89,7 +89,7 @@ public class CryptoRandomSource implements IRandomSource {
   @Override
   public int[] getRandom(final int max, final int count, final String annotation) {
     if (count <= 0) {
-      throw new IllegalArgumentException("Invalid count:" + count);
+      throw new IllegalArgumentException("Invalid count: " + count);
     }
     final Vault vault = game.getVault();
     // generate numbers locally, and put them in the vault

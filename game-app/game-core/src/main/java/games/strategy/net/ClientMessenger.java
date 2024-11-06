@@ -166,7 +166,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   @Override
   public void messageReceived(final MessageHeader msg, final SocketChannel channel) {
     if (msg.getTo() != null && !msg.getTo().equals(node)) {
-      throw new IllegalStateException("msg not for me:" + msg);
+      throw new IllegalStateException("msg not for me: " + msg);
     }
     for (final IMessageListener listener : listeners) {
       listener.messageReceived(msg.getMessage(), msg.getFrom());
@@ -227,6 +227,6 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
 
   @Override
   public String toString() {
-    return "ClientMessenger LocalNode:" + node + " ServerNodes:" + serverNode;
+    return "ClientMessenger LocalNode: " + node + " ServerNodes: " + serverNode;
   }
 }

@@ -13,6 +13,6 @@ public class HasEndPointImplementor implements Serializable {
 
   @Override
   public String toString() {
-    return this.getClass().getName() + ":" + endPointName;
+    return this.getClass().getName() + ": " + endPointName;
   }
 }

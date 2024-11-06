@@ -279,7 +279,7 @@ public final class AutoPlacementFinder {
     }
     try {
       PointFileReaderWriter.writeOneToMany(fileName, placements);
-      textOptionPane.appendNewLine("Data written to :" + fileName.normalize().toAbsolutePath());
+      textOptionPane.appendNewLine("Data written to: " + fileName.normalize().toAbsolutePath());
     } catch (final IOException e) {
       log.error("Failed to write points file: " + fileName, e);
       textOptionPane.dispose();
@@ -357,7 +357,7 @@ public final class AutoPlacementFinder {
         step--;
       }
       // For Debugging
-      // textOptionPane.appendNewLine("x:" + x + " y:" + y);
+      // textOptionPane.appendNewLine("x: " + x + " y: " + y);
       if (placementPoints.size() > 50) {
         break;
       }

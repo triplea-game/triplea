@@ -50,7 +50,7 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
 
   public void removeAdvance(final TechAdvance t) {
     if (!techs.contains(t)) {
-      throw new IllegalStateException("Advance not present:" + t);
+      throw new IllegalStateException("Advance not present: " + t);
     }
     techs.remove(t);
     getData().getTechTracker().clearCache();

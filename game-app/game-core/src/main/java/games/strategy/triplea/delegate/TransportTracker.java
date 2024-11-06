@@ -35,7 +35,7 @@ import org.triplea.java.collections.CollectionUtils;
 public class TransportTracker {
   private static void assertTransport(final Unit u) {
     if (u.getUnitAttachment().getTransportCapacity() == -1) {
-      throw new IllegalStateException("Not a transport:" + u);
+      throw new IllegalStateException("Not a transport: " + u);
     }
   }
 
@@ -99,7 +99,7 @@ public class TransportTracker {
     assertTransport(transport);
     if (!transport.getTransporting().contains(unit)) {
       throw new IllegalStateException(
-          "Not being carried, unit:" + unit + " transport:" + transport);
+          "Not being carried, unit: " + unit + " transport: " + transport);
     }
     final List<Unit> newUnloaded = new ArrayList<>(transport.getUnloaded());
     newUnloaded.add(unit);
@@ -166,7 +166,8 @@ public class TransportTracker {
     change.add(ChangeFactory.unitPropertyChange(unit, transport, Unit.TRANSPORTED_BY));
     final Collection<Unit> newCarrying = new ArrayList<>(transport.getTransporting());
     if (newCarrying.contains(unit)) {
-      throw new IllegalStateException("Already carrying, transport:" + transport + " unt:" + unit);
+      throw new IllegalStateException(
+          "Already carrying, transport: " + transport + " unt: " + unit);
     }
     newCarrying.add(unit);
     change.add(ChangeFactory.unitPropertyChange(unit, Boolean.TRUE, Unit.LOADED_THIS_TURN));

@@ -252,7 +252,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
 
   public void setStepInfo(
       int roundNumber, String stepName, @Nullable GamePlayer player, boolean isRemotePlayer) {
-    roundLabel.setText("Round:" + roundNumber + " ");
+    roundLabel.setText("Round: " + roundNumber + " ");
     stepLabel.setText(stepName);
     if (player != null) {
       setCurrentPlayer(player, isRemotePlayer);

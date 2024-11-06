@@ -83,6 +83,6 @@ public class AddUnits extends Change {
 
   @Override
   public String toString() {
-    return "Add unit change.  Add to:" + name + " units:" + units;
+    return "Add unit change.  Add to: " + name + " units: " + units;
   }
 }

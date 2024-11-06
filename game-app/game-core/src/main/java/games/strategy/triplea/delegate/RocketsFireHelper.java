@@ -490,8 +490,8 @@ public class RocketsFireHelper implements Serializable {
       cost *= Properties.getPuMultiplier(data.getProperties());
       getRemote(bridge)
           .reportMessage(
-              "Rocket attack in " + attackedTerritory.getName() + " costs:" + cost,
-              "Rocket attack in " + attackedTerritory.getName() + " costs:" + cost);
+              "Rocket attack in " + attackedTerritory.getName() + " costs: " + cost,
+              "Rocket attack in " + attackedTerritory.getName() + " costs: " + cost);
       // Trying to remove more PUs than the victim has is A Bad Thing[tm]
       final int availForRemoval = attacked.getResources().getQuantity(pus);
       if (cost > availForRemoval) {

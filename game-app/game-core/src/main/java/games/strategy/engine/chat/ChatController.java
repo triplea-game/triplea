@@ -107,7 +107,7 @@ public class ChatController implements IChatController {
   @Override
   public Collection<ChatParticipant> joinChat() {
     final INode node = MessageContext.getSender();
-    log.info("Chatter:" + node + " is joining chat:" + chatName);
+    log.info("Chatter: " + node + " is joining chat: " + chatName);
     final Tag tag = Tag.NONE;
     synchronized (mutex) {
       final PlayerChatId id = PlayerChatId.newId();
@@ -156,6 +156,6 @@ public class ChatController implements IChatController {
       chatters.remove(node);
     }
     getChatBroadcaster().speakerRemoved(node.getPlayerName());
-    log.info("Chatter:" + node + " has left chat:" + chatName);
+    log.info("Chatter: " + node + " has left chat: " + chatName);
   }
 }
