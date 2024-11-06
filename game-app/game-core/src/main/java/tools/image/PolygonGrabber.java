@@ -182,7 +182,7 @@ public final class PolygonGrabber {
           new MouseMotionAdapter() {
             @Override
             public void mouseMoved(final MouseEvent e) {
-              location.setText("x:" + e.getX() + " y:" + e.getY());
+              location.setText("x: " + e.getX() + " y: " + e.getY());
             }
           });
       /*
@@ -247,7 +247,7 @@ public final class PolygonGrabber {
                 g.drawImage(bufferedImage, 0, 0, null);
                 for (final String territoryName : centers.keySet()) {
                   final Point center = centers.get(territoryName);
-                  log.info("Detecting Polygon for:" + territoryName);
+                  log.info("Detecting Polygon for: " + territoryName);
                   final @Nullable Polygon p = findPolygon(center.x, center.y);
                   // test if the poly contains the center point (this often fails when there is an
                   // island right above (because findPolygon will grab the island instead)
@@ -434,7 +434,7 @@ public final class PolygonGrabber {
       }
       try {
         PointFileReaderWriter.writeOneToManyPolygons(polyName, polygons);
-        log.info("Data written to :" + polyName.normalize().toAbsolutePath());
+        log.info("Data written to: " + polyName.normalize().toAbsolutePath());
       } catch (final IOException e) {
         log.error("Failed to save polygons: " + polyName, e);
       }
@@ -559,7 +559,7 @@ public final class PolygonGrabber {
      */
     private void move(final Point p, final int direction) {
       if (direction < 0 || direction > 7) {
-        throw new IllegalArgumentException("Not a direction :" + direction);
+        throw new IllegalArgumentException("Not a direction : " + direction);
       }
       if (direction == 1 || direction == 2 || direction == 3) {
         p.x++;

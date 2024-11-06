@@ -54,7 +54,7 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
   @Getter
   private String whoAmI =
       // @TODO why : separation, no_one also used in ServerSetupPanel; create constant
-      "null:" + "no_one";
+      "null: " + "no_one";
 
   private TechAttachment techAttachment;
 
@@ -124,7 +124,7 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
 
   @Override
   public String toString() {
-    return "PlayerId named:" + getName();
+    return "PlayerId named: " + getName();
   }
 
   @Override

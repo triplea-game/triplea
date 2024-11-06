@@ -56,6 +56,6 @@ class SocketWriteData {
 
   @Override
   public String toString() {
-    return "<id:" + number + " size:" + content.capacity() + ">";
+    return "<id: " + number + " size: " + content.capacity() + ">";
   }
 }

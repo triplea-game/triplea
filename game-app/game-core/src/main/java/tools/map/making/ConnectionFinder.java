@@ -235,7 +235,7 @@ public final class ConnectionFinder {
           }
           out.write(String.valueOf(connectionsString).getBytes(StandardCharsets.UTF_8));
         }
-        log.info("Data written to :" + fileName.normalize().toAbsolutePath());
+        log.info("Data written to: " + fileName.normalize().toAbsolutePath());
       }
     } catch (final Exception e) {
       log.error("Failed to write connections", e);

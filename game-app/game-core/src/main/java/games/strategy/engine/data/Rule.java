@@ -29,7 +29,7 @@ public interface Rule {
   default void addResult(final NamedAttachable obj, final int quantity) {
     if (!(obj instanceof UnitType) && !(obj instanceof Resource)) {
       throw new IllegalArgumentException(
-          "results must be units or resources, not:" + obj.getClass().getName());
+          "results must be units or resources, not: " + obj.getClass().getName());
     }
 
     getResults().put(obj, quantity);

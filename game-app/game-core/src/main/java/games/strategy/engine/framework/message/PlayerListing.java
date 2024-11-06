@@ -105,7 +105,7 @@ public class PlayerListing implements Serializable {
 
   @Override
   public String toString() {
-    return "PlayerListingMessage:" + playerToNodeListing;
+    return "PlayerListingMessage: " + playerToNodeListing;
   }
 
   public Map<String, PlayerTypes.Type> getLocalPlayerTypeMap(final PlayerTypes playerTypes) {

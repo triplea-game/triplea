@@ -107,7 +107,7 @@ public class UnitsDrawer extends AbstractDrawable {
     }
     final UnitType type = data.getUnitTypeList().getUnitType(unitType);
     if (type == null) {
-      throw new IllegalStateException("Type not found:" + unitType);
+      throw new IllegalStateException("Type not found: " + unitType);
     }
     final GamePlayer owner = data.getPlayerList().getPlayerId(playerName);
     final boolean damagedImage = damaged > 0 || bombingUnitDamage > 0;

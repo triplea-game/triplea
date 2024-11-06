@@ -48,7 +48,7 @@ public class ImageFactory {
    */
   protected Image getImageOrThrow(final String... keys) {
     return getImage(keys)
-        .orElseThrow(() -> new IllegalStateException("Image Not Found:" + keys[0]));
+        .orElseThrow(() -> new IllegalStateException("Image Not Found: " + keys[0]));
   }
 
   /**

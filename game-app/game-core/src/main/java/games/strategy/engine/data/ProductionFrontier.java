@@ -30,7 +30,7 @@ public class ProductionFrontier extends DefaultNamed implements Iterable<Product
 
   public void addRule(final ProductionRule rule) {
     if (rules.contains(rule)) {
-      throw new IllegalStateException("Rule already added:" + rule);
+      throw new IllegalStateException("Rule already added: " + rule);
     }
     rules.add(rule);
     cachedRules = null;
@@ -38,7 +38,7 @@ public class ProductionFrontier extends DefaultNamed implements Iterable<Product
 
   public void removeRule(final ProductionRule rule) {
     if (!rules.contains(rule)) {
-      throw new IllegalStateException("Rule not present:" + rule);
+      throw new IllegalStateException("Rule not present: " + rule);
     }
     rules.remove(rule);
     cachedRules = null;

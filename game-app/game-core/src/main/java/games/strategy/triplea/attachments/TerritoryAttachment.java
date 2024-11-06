@@ -113,7 +113,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     if (player.getOptional()) {
       return null;
     }
-    throw new IllegalStateException("Capital not found for:" + player);
+    throw new IllegalStateException("Capital not found for: " + player);
   }
 
   /** will return empty list if none controlled, never returns null. */
@@ -134,7 +134,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     if (player.getOptional()) {
       return capitals;
     }
-    throw new IllegalStateException("Capital not found for:" + player);
+    throw new IllegalStateException("Capital not found for: " + player);
   }
 
   /** will return empty list if none controlled, never returns null. */
@@ -162,7 +162,7 @@ public class TerritoryAttachment extends DefaultAttachment {
         (TerritoryAttachment) t.getAttachment(nameOfAttachment);
     if (territoryAttachment == null && !t.isWater()) {
       throw new IllegalStateException(
-          "No territory attachment for:" + t.getName() + " with name:" + nameOfAttachment);
+          "No territory attachment for: " + t.getName() + " with name: " + nameOfAttachment);
     }
     return territoryAttachment;
   }

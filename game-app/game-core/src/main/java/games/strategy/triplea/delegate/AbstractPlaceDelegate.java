@@ -1611,7 +1611,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   private GamePlayer getOriginalFactoryOwner(final Territory territory) {
     final Collection<Unit> factoryUnits = territory.getMatches(Matches.unitCanProduceUnits());
     if (factoryUnits.isEmpty()) {
-      throw new IllegalStateException("No factory in territory:" + territory);
+      throw new IllegalStateException("No factory in territory: " + territory);
     }
     for (final Unit factory : factoryUnits) {
       if (player.equals(factory.getOriginalOwner())) {

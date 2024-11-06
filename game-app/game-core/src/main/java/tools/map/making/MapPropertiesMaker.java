@@ -506,7 +506,7 @@ public final class MapPropertiesMaker {
             Writer out = new OutputStreamWriter(sink, StandardCharsets.UTF_8)) {
           out.write(stringToWrite);
         }
-        log.info("Data written to :" + fileName.normalize().toAbsolutePath());
+        log.info("Data written to: " + fileName.normalize().toAbsolutePath());
         log.info(stringToWrite);
       } catch (final Exception e) {
         log.error("Failed to save map properties", e);

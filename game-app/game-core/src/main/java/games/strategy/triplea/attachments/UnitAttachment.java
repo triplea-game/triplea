@@ -1949,7 +1949,7 @@ public class UnitAttachment extends DefaultAttachment {
     final Resource r = getData().getResourceList().getResource(resourceToProduce);
     if (r == null) {
       throw new GameParseException(
-          description + ": No resource called:" + resourceToProduce + thisErrorMsg());
+          description + ": No resource called: " + resourceToProduce + thisErrorMsg());
     }
     final int n = getInt(s[0]);
     if (!allowNegative && n < 0) {

@@ -23,6 +23,6 @@ public final class RemoteName {
 
   @Override
   public String toString() {
-    return name + ":" + clazz.getSimpleName();
+    return name + ": " + clazz.getSimpleName();
   }
 }

@@ -402,7 +402,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     }
     bridge
         .getHistoryWriter()
-        .startEvent("Rolls to resolve tech hits:" + MyFormatter.asDice(random));
+        .startEvent("Rolls to resolve tech hits: " + MyFormatter.asDice(random));
     return ImmutableList.copyOf(newAdvances);
   }
 

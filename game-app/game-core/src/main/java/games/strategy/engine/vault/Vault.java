@@ -60,7 +60,7 @@ public class Vault {
             return;
           }
           if (unverifiedValues.putIfAbsent(id, data) != null) {
-            throw new IllegalStateException("duplicate values for id:" + id);
+            throw new IllegalStateException("duplicate values for id: " + id);
           }
           synchronized (waitForLock) {
             waitForLock.notifyAll();
@@ -105,7 +105,7 @@ public class Vault {
           final byte[] data = new byte[decrypted.length - KNOWN_VAL.length];
           System.arraycopy(decrypted, KNOWN_VAL.length, data, 0, data.length);
           if (verifiedValues.putIfAbsent(id, data) != null) {
-            throw new IllegalStateException("duplicate values for id:" + id);
+            throw new IllegalStateException("duplicate values for id: " + id);
           }
           synchronized (waitForLock) {
             waitForLock.notifyAll();
@@ -126,7 +126,7 @@ public class Vault {
       secretKeyFactory = SecretKeyFactory.getInstance(ALGORITHM);
       keyGen = KeyGenerator.getInstance(ALGORITHM);
     } catch (final NoSuchAlgorithmException e) {
-      throw new IllegalStateException("Nothing known about algorithm:" + ALGORITHM, e);
+      throw new IllegalStateException("Nothing known about algorithm: " + ALGORITHM, e);
     }
   }
 
@@ -169,7 +169,7 @@ public class Vault {
     final VaultId id = new VaultId(channelMessenger.getLocalNode());
     final SecretKey key = keyGen.generateKey();
     if (secretKeys.putIfAbsent(id, key) != null) {
-      throw new IllegalStateException("duplicate id:" + id);
+      throw new IllegalStateException("duplicate id: " + id);
     }
     // we already know it, so might as well keep it
     verifiedValues.put(id, data);
@@ -238,7 +238,7 @@ public class Vault {
     } else if (unverifiedValues.containsKey(id)) {
       throw new NotUnlockedException();
     } else {
-      throw new IllegalStateException("Nothing known about id:" + id);
+      throw new IllegalStateException("Nothing known about id: " + id);
     }
   }
 

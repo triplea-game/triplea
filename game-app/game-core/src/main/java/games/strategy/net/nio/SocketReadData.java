@@ -57,7 +57,7 @@ class SocketReadData {
         targetSize = targetSize & 0x00ffffff;
         // limit messages to 10MB
         if (targetSize <= 0 || targetSize > MAX_MESSAGE_SIZE) {
-          throw new IOException("Invalid triplea packet size:" + targetSize);
+          throw new IOException("Invalid triplea packet size: " + targetSize);
         }
         contentBuffer = ByteBuffer.allocate(targetSize);
         sizeBuffer = null;

@@ -71,7 +71,7 @@ public class PlayerAttachment extends DefaultAttachment {
     final PlayerAttachment playerAttachment = p.getPlayerAttachment();
     if (playerAttachment == null) {
       throw new IllegalStateException(
-          "No player attachment for:" + p.getName() + " with name:" + nameOfAttachment);
+          "No player attachment for: " + p.getName() + " with name: " + nameOfAttachment);
     }
     return playerAttachment;
   }

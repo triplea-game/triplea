@@ -30,7 +30,7 @@ class Encoder {
       writer.enque(data, to);
     } catch (final IOException e) {
       // we aren't doing any I/O, just writing in memory so something is very wrong
-      log.error("Error writing object:" + header, e);
+      log.error("Error writing object: " + header, e);
     }
   }
 

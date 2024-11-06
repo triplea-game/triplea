@@ -84,7 +84,7 @@ public class ResourceCollection extends GameDataComponent {
     try (GameData.Unlocker ignored = getData().acquireReadLock()) {
       final Resource resource = getData().getResourceList().getResource(name);
       if (resource == null) {
-        throw new IllegalArgumentException("No resource named:" + name);
+        throw new IllegalArgumentException("No resource named: " + name);
       }
       return getQuantity(resource);
     }

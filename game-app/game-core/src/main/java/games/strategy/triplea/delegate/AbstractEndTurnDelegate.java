@@ -464,7 +464,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     for (final Territory current : territories) {
       final TerritoryAttachment attachment = TerritoryAttachment.get(current);
       if (attachment == null) {
-        throw new IllegalStateException("No attachment for owned territory:" + current.getName());
+        throw new IllegalStateException("No attachment for owned territory: " + current.getName());
       }
       // Match will Check if territory is originally owned convoy center, or if it is contested
       if (Matches.territoryCanCollectIncomeFrom(current.getOwner()).test(current)) {

@@ -79,7 +79,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
       final DiceType diceType,
       final String annotation) {
     if (count <= 0) {
-      throw new IllegalStateException("count must be > o, annotation:" + annotation);
+      throw new IllegalStateException("count must be > o, annotation: " + annotation);
     }
     final int[] numbers = new int[count];
     for (int i = 0; i < count; i++) {

@@ -195,7 +195,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     }
     final SocketChannel socketChannel = nodeToChannel.get(msg.getTo());
     if (socketChannel == null) {
-      throw new IllegalStateException("No channel for:" + msg.getTo());
+      throw new IllegalStateException("No channel for: " + msg.getTo());
     }
     nioSocket.send(socketChannel, msg);
   }

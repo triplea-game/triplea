@@ -19,6 +19,6 @@ public class VerifiedRandomNumbers {
 
   @Override
   public String toString() {
-    return "Rolled :" + MyFormatter.asDice(values) + " for " + annotation;
+    return "Rolled : " + MyFormatter.asDice(values) + " for " + annotation;
   }
 }

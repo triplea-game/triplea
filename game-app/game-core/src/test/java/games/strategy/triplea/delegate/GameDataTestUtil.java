@@ -142,7 +142,7 @@ public final class GameDataTestUtil {
    * @return A Territory matching the given name if present, otherwise throwing an Exception.
    */
   public static Territory territory(final String name, final GameState data) {
-    return checkNotNull(data.getMap().getTerritory(name), "No territory:" + name);
+    return checkNotNull(data.getMap().getTerritory(name), "No territory: " + name);
   }
 
   /** Returns an armor UnitType object for the specified GameData object. */
@@ -409,7 +409,7 @@ public final class GameDataTestUtil {
     final String error =
         moveDelegate.performMove(new MoveDescription(units, route, unitsToTransports));
     if (error != null) {
-      throw new IllegalStateException("Illegal move:" + error);
+      throw new IllegalStateException("Illegal move: " + error);
     }
   }
 
@@ -418,7 +418,7 @@ public final class GameDataTestUtil {
     final String error =
         moveDelegate(route.getStart().getData()).performMove(new MoveDescription(units, route));
     if (error != null) {
-      throw new IllegalStateException("Illegal move:" + error);
+      throw new IllegalStateException("Illegal move: " + error);
     }
   }
 
@@ -436,14 +436,14 @@ public final class GameDataTestUtil {
     for (final IExecutable e : steps) {
       if (type.isInstance(e)) {
         if (indexOfType != -1) {
-          throw new IllegalStateException("More than one instance:" + steps);
+          throw new IllegalStateException("More than one instance: " + steps);
         }
         indexOfType = index;
       }
       index++;
     }
     if (indexOfType == -1) {
-      throw new IllegalStateException("No instance:" + steps);
+      throw new IllegalStateException("No instance: " + steps);
     }
     return indexOfType;
   }

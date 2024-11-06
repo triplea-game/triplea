@@ -166,6 +166,6 @@ public class DiceRoll implements Externalizable {
 
   @Override
   public String toString() {
-    return "DiceRoll dice:" + rolls + " hits:" + hits + " expectedHits:" + expectedHits;
+    return "DiceRoll dice: " + rolls + " hits: " + hits + " expectedHits: " + expectedHits;
   }
 }

@@ -309,7 +309,7 @@ public class TileManager {
       final Set<IDrawable> drawing) {
     final Iterator<Point> placementPoints = mapData.getPlacementPoints(territory).iterator();
     if (!placementPoints.hasNext()) {
-      throw new IllegalStateException("No where to place units:" + territory.getName());
+      throw new IllegalStateException("No where to place units: " + territory.getName());
     }
 
     Point lastPlace = null;

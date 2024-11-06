@@ -27,7 +27,7 @@ public abstract class InvocationResults implements Externalizable {
 
   @Override
   public String toString() {
-    return "Invocation results for method id:" + methodCallId + " results:" + results;
+    return "Invocation results for method id: " + methodCallId + " results: " + results;
   }
 
   @Override

@@ -189,7 +189,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
     }
     disableEditModeMenu();
     if (badStep) {
-      throw new IllegalArgumentException("Unrecognized step name:" + name);
+      throw new IllegalArgumentException("Unrecognized step name: " + name);
     }
   }
 

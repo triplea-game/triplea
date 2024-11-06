@@ -80,7 +80,7 @@ class BattleStepsPanel extends JPanel {
       }
       // we cant find it, something is wrong
       if (!targetStep.equals(LAST_STEP) && listModel.lastIndexOf(targetStep) == -1) {
-        log.error("Step not found:" + targetStep + " in:" + listModel);
+        log.error("Step not found: " + targetStep + " in: " + listModel);
         clearTargetStep();
         return true;
       }
@@ -152,7 +152,7 @@ class BattleStepsPanel extends JPanel {
       if (listModel.indexOf(step) != -1) {
         targetStep = step;
       } else {
-        log.warn("Could not find step name:" + step);
+        log.warn("Could not find step name: " + step);
       }
     }
     goToTarget();

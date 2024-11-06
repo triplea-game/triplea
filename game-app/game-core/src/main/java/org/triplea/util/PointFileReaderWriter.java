@@ -222,7 +222,7 @@ public final class PointFileReaderWriter {
       final String line, final Map<String, List<Polygon>> mapping) {
     final String name = line.substring(0, line.indexOf('<')).trim();
     if (mapping.containsKey(name)) {
-      throw new IllegalArgumentException("name found twice:" + name);
+      throw new IllegalArgumentException("name found twice: " + name);
     }
     final List<Polygon> polygons = new ArrayList<>();
     final Matcher polyMatcher = polygonPattern.matcher(line);
@@ -248,7 +248,7 @@ public final class PointFileReaderWriter {
       final String line, final Map<String, List<Point>> mapping) {
     final String name = line.substring(0, line.indexOf("(")).trim();
     if (mapping.containsKey(name)) {
-      throw new IllegalArgumentException("name found twice:" + name);
+      throw new IllegalArgumentException("name found twice: " + name);
     }
     final Matcher matcher = pointPattern.matcher(line);
     final List<Point> points = new ArrayList<>();

@@ -156,7 +156,7 @@ public class HeadedLaunchAction implements LaunchAction {
                         return null;
                       }
                       final String name = options.getName();
-                      log.debug("Server playing as:" + name);
+                      log.debug("Server playing as: " + name);
                       ClientSetting.playerName.setValue(name);
                       ClientSetting.flush();
                       final int port = options.getPort();

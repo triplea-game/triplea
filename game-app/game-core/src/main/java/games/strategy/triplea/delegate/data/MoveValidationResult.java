@@ -146,6 +146,6 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
 
   @Override
   public String toString() {
-    return "Move Validation Results, error:" + error + " isValid():" + isMoveValid();
+    return "Move Validation Results, error: " + error + " isValid(): " + isMoveValid();
   }
 }
