@@ -2873,3 +2873,10 @@
     <br>This is an upgrade of the "Europe - Beta" module. Almost every bug has been fixed and the module now follows the rules much more closely.
     <br>
     <br><i>Made by VictoryFirst</i>
+- mapName: Stalingrad
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/stalingrad/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/stalingrad/blob/master/preview.png
+  description: |
+    <br>The Battle of Stalingrad
