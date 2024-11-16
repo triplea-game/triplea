@@ -67,7 +67,7 @@ public enum SettingsWindow {
   public void open(final Frame owner) {
     Preconditions.checkState(SwingUtilities.isEventDispatchThread());
     if (dialog == null) {
-      dialog = new JDialog(owner, "Settings");
+      dialog = new JDialog(owner, "Engine Preferences");
       dialog.setContentPane(newContentPane());
       dialog.setMinimumSize(new Dimension(400, 50));
       dialog.pack();
