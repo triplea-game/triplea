@@ -2,13 +2,18 @@ package games.strategy.engine.framework.map.download;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtractor;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collection;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.io.FileUtils;
 import org.triplea.java.ThreadRunner;
+import org.triplea.java.collections.CollectionUtils;
 import org.triplea.map.description.file.MapDescriptionYaml;
 
 /**
@@ -65,7 +70,7 @@ final class DownloadFile {
             DownloadConfiguration.contentReader()
                 .downloadToFile(download.getDownloadUrl(), targetTempFileToDownloadTo);
           } catch (final IOException e) {
-            log.error("Failed to download: " + download.getDownloadUrl(), e);
+            log.error("Failed to download: {}", download.getDownloadUrl(), e);
             return;
           } finally {
             watcher.stop();
@@ -81,6 +86,7 @@ final class DownloadFile {
           ZippedMapsExtractor.unzipMap(targetTempFileToDownloadTo)
               .ifPresent(
                   installedMap -> {
+                    if (moveUpSubfolderFilesHasErrors(installedMap)) return;
                     // create a map description YAML file for the map if it does not contain one
                     if (MapDescriptionYaml.fromMap(installedMap).isEmpty()) {
                       MapDescriptionYaml.generateForMap(installedMap);
@@ -92,20 +98,53 @@ final class DownloadFile {
   }
 
   /**
+   * If {@code installedMap} has only one unique subfolder, this subfolder level is remove, i.e.,
+   * all files are moved up and the subfolder is deleted.
+   *
+   * @param installedMap target of unzip action
+   * @return whether there has been an error on moving the subfolder files or deleting the empty
+   *     subfolder afterward
+   */
+  private static boolean moveUpSubfolderFilesHasErrors(Path installedMap) {
+    final Collection<Path> extractedFiles = FileUtils.listFiles(installedMap);
+    if (extractedFiles.size() == 1 && Files.isDirectory(CollectionUtils.getAny(extractedFiles))) {
+      // unzipped file contains a single folder that contains all the map files
+      final Path uniqueSubFolder = CollectionUtils.getAny(extractedFiles);
+      for (Path containedFile : FileUtils.listFiles(uniqueSubFolder)) {
+        final Path levelUpFilePath =
+            Paths.get(installedMap.toString() + File.separator + containedFile.getFileName());
+        try {
+          Files.move(containedFile, levelUpFilePath);
+        } catch (IOException e) {
+          log.error("Failed to move file: {} to {}", containedFile, levelUpFilePath, e);
+          return true;
+        }
+      }
+      try {
+        Files.delete(uniqueSubFolder);
+      } catch (IOException e) {
+        log.error("Failed to delete subfolder: {}", uniqueSubFolder, e);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
    * Strips invalid and dangerous file system characters from a map name. The map name is used to
    * create a folder, we would not want a map named something like "/bin/bash" or "c:\\"
    */
   @VisibleForTesting
   static String normalizeMapName(final String mapName) {
     return mapName
-        .replaceAll(" ", "_")
+        .replace(" ", "_")
         .replaceAll("[&;:.,/]", "")
-        .replaceAll("\\\\", "")
-        .replaceAll("\\|", "")
-        .replaceAll("\\]", "")
-        .replaceAll("\\[", "")
-        .replaceAll("\\*", "")
-        .replaceAll("\"", "");
+        .replace("\\", "")
+        .replace("|", "")
+        .replace("]", "")
+        .replace("[", "")
+        .replace("*", "")
+        .replace("\"", "");
   }
 
   @VisibleForTesting
