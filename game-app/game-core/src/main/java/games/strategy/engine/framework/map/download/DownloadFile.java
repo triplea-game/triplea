@@ -137,14 +137,14 @@ final class DownloadFile {
   @VisibleForTesting
   static String normalizeMapName(final String mapName) {
     return mapName
-        .replaceAll(" ", "_")
-        .replaceAll("[&;:.,/]", "")
-        .replaceAll("\\\\", "")
-        .replaceAll("\\|", "")
-        .replaceAll("\\]", "")
-        .replaceAll("\\[", "")
-        .replaceAll("\\*", "")
-        .replaceAll("\"", "");
+        .replace(" ", "_")
+        .replace("[&;:.,/]", "")
+        .replace("\\\\", "")
+        .replace("\\|", "")
+        .replace("\\]", "")
+        .replace("\\[", "")
+        .replace("\\*", "")
+        .replace("\"", "");
   }
 
   @VisibleForTesting
