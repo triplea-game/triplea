@@ -2887,3 +2887,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/aa_enhanced_revised/blob/master/preview.png
   description: |
     <br>Modified version of the Revised game
+- mapName: Operation Market Garden
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/operation_market_garden/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/operation_market_garden/blob/master/preview.png
+  description: |
+    <br>The infamous attempt by the Allies to capture a stretch of roadway that crossed the Rhine River, thus giving the Allies a speedy way into Nazi Germany.
