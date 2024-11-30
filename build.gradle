@@ -50,7 +50,7 @@ subprojects {
         awaitilityVersion = "4.2.2"
         caffeineVersion = "3.1.8"
         checkstyleVersion = "8.45"
-        commonsIoVersion = "2.17.0"
+        commonsIoVersion = "2.18.0"
         commonsMathVersion = "3.6.1"
         commonsTextVersion = "1.12.0"
         dropwizardWebsocketsVersion = "1.3.14"
