@@ -2901,3 +2901,10 @@
   img: https://raw.githubusercontent.com/v3_Navalland/blob/master/preview.png
   description: |
     <br>A modified version of WW2v3 (AA50)
+- mapName: World War I 1914 Balanced
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/world-war-i-1914-balanced-main/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/world-war-i-1914-balanced-main/blob/master/preview.png
+  description: |
+    <br>Based on the boardgame: Axis & Allies: World War I 1914 (2013) with improved balance
