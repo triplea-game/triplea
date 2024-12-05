@@ -2908,3 +2908,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/world-war-i-1914-balanced-main/blob/master/preview.png
   description: |
     <br>Based on the boardgame: Axis & Allies: World War I 1914 (2013) with improved balance
+- mapName: World War I 1914 Improved and Tournament Rules
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/world-war-i-1914-improved-main/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/world-war-i-1914-improved-main/blob/master/preview.png
+  description: |
+    <br>Based on the boardgame: Axis & Allies: World War I 1914 (2013) with improved rules implementation and tournament rules
