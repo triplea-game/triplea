@@ -2905,13 +2905,24 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/world-war-i-1914-balanced-main/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/world-war-i-1914-balanced-main/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/world-war-i-1914-balanced-main/master/preview.png
   description: |
-    <br>Based on the boardgame: Axis & Allies: World War I 1914 (2013) with improved balance
+    <br>Based on the boardgame: Axis & Allies: World War I 1914 (2013), but with the balancing recommendations from The_Good_Captain added in. Also includes the improvements from World War I 1914 Improved.
+    <br>
+    <br>This module is based on the World War I 1914 module by Colonel Carter.
+    <br>
+    <br><i>Made by VictoryFirst</i>
 - mapName: World War I 1914 Improved and Tournament Rules
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/world-war-i-1914-improved-main/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/world-war-i-1914-improved-main/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/world-war-i-1914-main/master/preview.png
   description: |
-    <br>Based on the boardgame: Axis & Allies: World War I 1914 (2013) with improved rules implementation and tournament rules
+    <br>Based on the boardgame: Axis & Allies: World War I 1914 (2013). Contains two modules:
+    <ul>
+    <li>World War I 1914 Improved - improved rules implementation of the OOB rules.</li>
+    <li>World War I 1914 Tournament Rules - for use with the WWI 1914 Tournament Rules developed by Larry Harris Jr.</li>
+    </ul>
+    <br>This module is based on the World War I 1914 module by Colonel Carter.
+    <br>
+    <br><i>Made by VictorFirst</i>
