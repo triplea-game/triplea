@@ -2594,10 +2594,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/TerraFirma1939/master/preview.png
   description: |
    <br>World War 2 on a huge map
-- mapName: wwi1939
+- mapName: WWI1939
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/wwi1939/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/wwi1939/master/preview.png
   description: |
    <br>An alternative timeline that WWI takes place in 1939.
