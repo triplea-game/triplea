@@ -2915,3 +2915,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/world-war-i-1914-improved-main/blob/master/preview.png
   description: |
     <br>Based on the boardgame: Axis & Allies: World War I 1914 (2013) with improved rules implementation and tournament rules
+- mapName: 1939A Revised
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/1939ARevised/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/1939ARevised/blob/master/preview.png
+  description: |
+    <br>The 1939A scenario from Iron Blitz, adapted to the Revised Map
