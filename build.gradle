@@ -66,7 +66,7 @@ subprojects {
         jaxbImplVersion = "4.0.5"
         jetbrainsAnnotationsVersion = "26.0.1"
         jlayerVersion = "1.0.1.4"
-        junitJupiterVersion = "5.11.3"
+        junitJupiterVersion = "5.11.4"
         junitPlatformLauncherVersion = "1.11.3"
         logbackClassicVersion = "1.5.12"
         mockitoVersion = "5.14.2"
