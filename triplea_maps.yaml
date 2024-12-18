@@ -2922,3 +2922,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/1939ARevised/blob/master/preview.png
   description: |
     <br>The 1939A scenario from Iron Blitz, adapted to the Revised Map
+- mapName: Newyawk
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/newyawk/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/newyawk/blob/master/preview.png
+  description: |
+    <br>Gang Warfare on the streets of New York City.
