@@ -2929,3 +2929,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/newyawk/blob/master/preview.png
   description: |
     <br>Gang Warfare on the streets of New York City.
+- mapName: Aggression 1914
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/aggression_1914/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/aggression_1914/blob/master/preview.png
+  description: |
+    <br>World War One on world map
