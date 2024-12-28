@@ -2943,3 +2943,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/Operation_Dandelion/blob/master/preview.png
   description: |
     <br>The book The Man in the High Castle by Philip K. Dick, supposes an alternate history where the AXis won in WW2. Set in 1962, The German government plans a surprise nuclear attack on Japan, before the Japanese complete the development of their own nuclear weapons.
+- mapName: WW2 NWO Neutrals Politics
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/WW2_NWO_Neutrals_Politics/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/WW2_NWO_Neutrals_Politics/blob/master/preview.png
+  description: |
+    <br>World War II in Europe on the New World Order map with political actions to gain alliances with minor powers.
