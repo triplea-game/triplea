@@ -2950,3 +2950,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/WW2_NWO_Neutrals_Politics/blob/master/preview.png
   description: |
     <br>World War II in Europe on the New World Order map with political actions to gain alliances with minor powers.
+- mapName: AAR-BuildCaps
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/AAR-BuildCaps/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/AAR-BuildCaps/blob/master/preview.png
+  description: |
+    <br>World War II Revised with caps on how many units of each type that can be built.
