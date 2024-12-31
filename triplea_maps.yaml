@@ -2957,3 +2957,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/AAR-BuildCaps/blob/master/preview.png
   description: |
     <br>World War II Revised with caps on how many units of each type that can be built.
+- mapName: MEWWW
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/mewww/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/mewww/blob/master/preview.png
+  description: |
+    <br>Hypothetical conflict centering on Middle East.
