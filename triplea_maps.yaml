@@ -2964,3 +2964,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/mewww/blob/master/preview.png
   description: |
     <br>Hypothetical conflict centering on Middle East.
+- mapName: Hellas Athens vs. Sparta (beta)
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/hellas/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/hellas/blob/master/preview.png
+  description: |
+    <br>The Peloponnesian War, fought primarily between the powerful city-states of Athens and Sparta from 431 to 404 BCE, was the greatest armed conflict the civilized world had ever seen. As leaders in the Persian War, which freed the Greeks from the Persian Empire to the east, both emerged as super powers of the day, and it was perhaps inevitable that they'd go to war for the rulership of all Hellas, as they called the Greek world.
