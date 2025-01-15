@@ -2964,3 +2964,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/mewww/blob/master/preview.png
   description: |
     <br>Hypothetical conflict centering on Middle East.
+- mapName: World War II Revised Deaths Hand Mod
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/World_War_II_Revised_Deaths_Hand_Mod/tree/master/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/World_War_II_Revised_Deaths_Hand_Mod/blob/master/preview.png
+  description: |
+    <br>A modified version of World World II Revised.
