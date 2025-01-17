@@ -2964,3 +2964,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/mewww/blob/master/preview.png
   description: |
     <br>Hypothetical conflict centering on Middle East.
+- mapName: Revised Middle Earth
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/revised_middle_earth/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/revised_middle_earth/blob/master/preview.png
+  description: |
+    <br>A fantasy scenario using the World War II Revised Map
