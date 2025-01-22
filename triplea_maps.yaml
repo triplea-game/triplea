@@ -2964,3 +2964,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/mewww/blob/master/preview.png
   description: |
     <br>Hypothetical conflict centering on Middle East.
+- mapName: NWO DoomsDay
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/nwodoomsday/tree/master/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/nwodoomsday/blob/master/preview.png
+  description: |
+    <br>A hypothetical Soviet invasion of Europe in 1945.
