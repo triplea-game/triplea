@@ -2964,3 +2964,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/mewww/blob/master/preview.png
   description: |
     <br>Hypothetical conflict centering on Middle East.
+- mapName: Big World 1942 - Factions
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/big_world_factions/tree/master/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/big_world_factions/blob/master/preview.png
+  description: |
+    <br>1942 on the Big World Map with extra nations.
