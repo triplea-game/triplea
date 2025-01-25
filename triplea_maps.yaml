@@ -2964,3 +2964,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/mewww/blob/master/preview.png
   description: |
     <br>Hypothetical conflict centering on Middle East.
+- mapName: Smalls 1939
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Smalls_1939/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Smalls_1939/blob/master/preview.png
+  description: |
+    <br>World War II starting in 1939 on the Big World map.
