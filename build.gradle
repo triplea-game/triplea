@@ -56,7 +56,7 @@ subprojects {
         dropwizardWebsocketsVersion = "1.3.14"
         equalsVerifierVersion = "3.18.1"
         feignVersion = "13.5"
-        gsonVersion = "2.11.0"
+        gsonVersion = "2.12.0"
         guavaVersion = "33.4.0-jre"
         hamcrestOptionalVersion = "2.0.0"
         hamcrestVersion = "2.0.0.0"
