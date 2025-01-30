@@ -2964,3 +2964,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/mewww/blob/master/preview.png
   description: |
     <br>Hypothetical conflict centering on Middle East.
+- mapName: Operation Unthinkable
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Operation_Unthinkable/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Operation_Unthinkable/blob/master/preview.png
+  description: |
+    <br>This scenario is inspired by Winston Churchill's proposed war against Russia.For details see https://en.wikipedia.org/wiki/Operation_Unthinkable.
