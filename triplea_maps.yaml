@@ -2964,3 +2964,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/mewww/blob/master/preview.png
   description: |
     <br>Hypothetical conflict centering on Middle East.
+- mapName: Eight Army Free for All
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/eight_army_free_for_all/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/eight_army_free_for_all/blob/master/preview.png
+  description: |
+    <br>Eight armies on a world map
