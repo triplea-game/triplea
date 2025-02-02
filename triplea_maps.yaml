@@ -2964,3 +2964,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/mewww/blob/master/preview.png
   description: |
     <br>Hypothetical conflict centering on Middle East.
+- mapName: Broken Earth
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Broken_Earth/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Broken_Earth/blob/master/preview.png
+  description: |
+    <br>Eight power free for all on the Anniversary edition map
