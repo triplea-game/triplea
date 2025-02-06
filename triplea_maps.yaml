@@ -2964,3 +2964,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/mewww/blob/master/preview.png
   description: |
     <br>Hypothetical conflict centering on Middle East.
+- mapName: Churchills 1939
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/churchills_1939/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/churchills_1939/blob/master/preview.png
+  description: |
+    <br>World War 2 on the Global map starting in 1939 with detailed rules for neutrals.
