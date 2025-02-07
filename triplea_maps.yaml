@@ -2964,3 +2964,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/mewww/blob/master/preview.png
   description: |
     <br>Hypothetical conflict centering on Middle East.
+- mapName: Death from Above
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Death_from_Above/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Death_from_Above/blob/master/preview.png
+  description: |
+    <br>The Classic game with more emphasis on air power.
