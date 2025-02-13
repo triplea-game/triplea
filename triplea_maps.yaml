@@ -2803,7 +2803,7 @@
 - mapName: UHD World War II Global
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/uhd_world_war_ii_global/archive/master.zip
-  version: 6
+  version: 7
   img: https://raw.githubusercontent.com/triplea-maps/uhd_world_war_ii_global/master/preview.png
   description: |
     <br>This is UHD World War II Global using the Black Elk Mega Map
