@@ -2964,3 +2964,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/mewww/blob/master/preview.png
   description: |
     <br>Hypothetical conflict centering on Middle East.
+- mapName: CCLXXbc
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/CCLXXbc/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/CCLXXbc/blob/master/preview.png
+  description: |
+    <br>Make yourself an empire around the Mediterranean Ocean (the known world).
