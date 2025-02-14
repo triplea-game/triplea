@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.triplea.generic.xml.reader.annotations.Attribute;
 import org.triplea.generic.xml.reader.annotations.TagList;
 
@@ -41,7 +42,7 @@ public class Production {
   private List<PlayerRepair> playerRepairs;
 
   @Getter
-  @Builder
+  @SuperBuilder
   @NoArgsConstructor
   @AllArgsConstructor
   public static class ProductionRule {
