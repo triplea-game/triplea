@@ -2964,3 +2964,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/mewww/blob/master/preview.png
   description: |
     <br>Hypothetical conflict centering on Middle East.
+- mapName: NSP_V4
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/NSP_v4/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/wwiinazithreat/blob/master/preview.png
+  description: |
+    <br>What if the Nazi-Soviet pact had held? Russia is Axis, Japan is Allied.
