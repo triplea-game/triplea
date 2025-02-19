@@ -2971,3 +2971,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/hellas/blob/master/preview.png
   description: |
     <br>The Peloponnesian War, fought primarily between the powerful city-states of Athens and Sparta from 431 to 404 BCE, was the greatest armed conflict the civilized world had ever seen. As leaders in the Persian War, which freed the Greeks from the Persian Empire to the east, both emerged as super powers of the day, and it was perhaps inevitable that they'd go to war for the rulership of all Hellas, as they called the Greek world.
+- mapName: Pacific 1942
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/pacific_1942/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/pacific_1942/blob/master/preview.png
+  description: |
+    <br>An adaption of the Axis & Allies: Pacific game to TripleA.
