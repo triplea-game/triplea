@@ -48,7 +48,7 @@ subprojects {
         apacheHttpComponentsVersion = "4.5.14"
         assertjCoreVersion = '3.27.2'
         awaitilityVersion = "4.2.2"
-        caffeineVersion = "3.1.8"
+        caffeineVersion = "3.2.0"
         checkstyleVersion = "8.45"
         commonsIoVersion = "2.18.0"
         commonsMathVersion = "3.6.1"
