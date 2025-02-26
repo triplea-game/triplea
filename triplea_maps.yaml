@@ -2978,3 +2978,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/pacific_1942/blob/master/preview.png
   description: |
     <br>An adaption of the Axis & Allies: Pacific game to TripleA.
+- mapName: World War II Halifax
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/World_War_II_Halifax/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/World_War_II_Halifax/blob/master/preview.png
+  description: |
+    <br>A modified version of the World War II Global game.
