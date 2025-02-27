@@ -2985,3 +2985,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/World_War_II_Halifax/blob/master/preview.png
   description: |
     <br>A modified version of the World War II Global game.
+- mapName: Election_USA
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Election_Usa/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Election_Usa/blob/master/preview.png
+  description: |
+    <br>A game inspired by US elections.
