@@ -2985,3 +2985,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/World_War_II_Halifax/blob/master/preview.png
   description: |
     <br>A modified version of the World War II Global game.
+- mapName: 2013 Conflict
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/2013Conflict/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/2013Conflict/blob/master/preview.png
+  description: |
+    <br>Hypothetical World War 3 in 2013.
