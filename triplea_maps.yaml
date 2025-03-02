@@ -2992,3 +2992,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/Election_Usa/blob/master/preview.png
   description: |
     <br>A game inspired by US elections.
+- mapName: Downfall-July1944
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Downfall-July1944/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Downfall-July1944/blob/master/preview.png
+  description: |
+    <br>Last year of World War 2 in Europe.
