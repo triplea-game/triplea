@@ -2999,3 +2999,24 @@
   img: https://raw.githubusercontent.com/triplea-maps/Downfall-July1944/blob/master/preview.png
   description: |
     <br>Last year of World War 2 in Europe.
+- mapName: Ageworld
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/ageworld/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/ageworld/blob/master/preview.png
+  description: |
+    <br>The World Through the Ages
+- mapName: War of the Roses
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/War_of_the_Roses_Revamp/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/War_of_the_Roses_Revamp/blob/master/preview.png
+  description: |
+    <br>The Wars of the Roses (1455-1487), were a series of civil wars fought over control of the English throne in the mid- to late fifteenth century.
+- mapName: Five If By Sea
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/five_if_by_sea/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/five_if_by_sea/blob/master/preview.png
+  description: |
+    <br>5 island nations try to takeover the world
