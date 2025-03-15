@@ -3020,3 +3020,24 @@
   img: https://raw.githubusercontent.com/triplea-maps/five_if_by_sea/blob/master/preview.png
   description: |
     <br>5 island nations try to takeover the world
+- mapName: Europe-Revised
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Europe-Revised/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Europe-Revised/blob/master/preview.png
+  description: |
+    <br>Modified version of Axis & Allies: Europe
+- mapName: Hearts of Iron-Fatherland
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/HeartsofIron_Fatherland/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/HeartsofIron_Fatherland/blob/master/preview.png
+  description: |
+    <br>A scenario loosely based on the best selling alternative history noval 'Fatherland' by Robert Harris, set in roughly 1946.
+- mapName: Nazi-Soviet Pact
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/NaziSovietPact/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/NaziSovietPact/blob/master/preview.png
+  description: |
+    <br>A hypothetical WW2 scenario where the Molotov-Ribbentrop pact develops until a full alliance.
