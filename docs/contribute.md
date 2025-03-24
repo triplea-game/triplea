@@ -184,7 +184,7 @@ https://github.com/triplea-game/triplea/tree/master/docs/map-making
 
 #### _How to become one_
 
-- Read and follow the [Developer Setup Guide](https://github.com/triplea-game/triplea/tree/master/development/README)
+- Read and follow the [Developer Setup Guide](https://github.com/triplea-game/triplea/blob/master/docs/development/README.md)
 
 ### :hammer: Developer with Merge Rights
 
