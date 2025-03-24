@@ -24,8 +24,12 @@ public final class PlayerEmailValidation {
     if (!emailAddress.matches(regex)) {
       return "Invalid email address";
     }
-    if (emailAddress.length() > LobbyConstants.EMAIL_MAX_LENGTH) {
-      return "Email address exceeds max length: " + LobbyConstants.EMAIL_MAX_LENGTH;
+    int count = 0;
+    for (int i = 0; i < emailAddress.length(); i++) {
+      count = emailAddress.charAt(i) == ' ' ? 0 : count + 1;
+      if (count > LobbyConstants.EMAIL_MAX_LENGTH) {
+        return "Email address exceeds max length: " + LobbyConstants.EMAIL_MAX_LENGTH;
+      }
     }
     return null;
   }
