@@ -20,16 +20,39 @@ public final class PlayerEmailValidation {
     @NonNls final String domain = subdomain + "(?:\\." + subdomain + ")*";
     @NonNls final String localPart = word + "(?:\\." + word + ")*";
     @NonNls final String email = localPart + "@" + domain;
-    @NonNls final String regex = "(\\s*" + email + "\\s*)*";
-    if (!emailAddress.matches(regex)) {
-      return "Invalid email address";
+    if (emailAddress.length() > LobbyConstants.EMAIL_GENERAL_LENGTH) {
+      return "Total length of all email address(es) exceeds general max length: "
+          + LobbyConstants.EMAIL_GENERAL_LENGTH;
     }
-    int count = 0;
-    for (int i = 0; i < emailAddress.length(); i++) {
-      count = emailAddress.charAt(i) == ' ' ? 0 : count + 1;
-      if (count > LobbyConstants.EMAIL_MAX_LENGTH) {
-        return "Email address exceeds max length: " + LobbyConstants.EMAIL_MAX_LENGTH;
+    String[] addresses = emailAddress.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+    String invalidAddresses = "";
+    String tooLongAddresses = "";
+    for (int i = 0; i < addresses.length; i++) {
+      if (!addresses[i].matches(email)) {
+        invalidAddresses =
+            invalidAddresses.isEmpty() ? addresses[i] : invalidAddresses + "; " + addresses[i];
       }
+      if (addresses[i].length() > LobbyConstants.EMAIL_MAX_LENGTH) {
+        tooLongAddresses =
+            tooLongAddresses.isEmpty() ? addresses[i] : tooLongAddresses + "; " + addresses[i];
+      }
+    }
+    if (!invalidAddresses.isEmpty() && !tooLongAddresses.isEmpty()) {
+      return "The following email addresses are invalid: "
+          + invalidAddresses
+          + "\nThe following email addresses exceed the max length "
+          + LobbyConstants.EMAIL_MAX_LENGTH
+          + ": "
+          + tooLongAddresses;
+    }
+    if (!invalidAddresses.isEmpty()) {
+      return "The following email addresses are invalid: " + invalidAddresses;
+    }
+    if (!tooLongAddresses.isEmpty()) {
+      return "The following email addresses exceed the max length "
+          + LobbyConstants.EMAIL_MAX_LENGTH
+          + ": "
+          + tooLongAddresses;
     }
     return null;
   }
