@@ -24,6 +24,8 @@ public final class PlayerEmailValidation {
       return "Total length of all email address(es) exceeds general max length: "
           + LobbyConstants.EMAIL_GENERAL_LENGTH;
     }
+    // Split at every space that was not quoted since addresses like "Email Name"123@some.com are
+    // valid.
     String[] addresses = emailAddress.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
     String invalidAddresses = "";
     String tooLongAddresses = "";
