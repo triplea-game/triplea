@@ -20,41 +20,46 @@ public final class PlayerEmailValidation {
     @NonNls final String domain = subdomain + "(?:\\." + subdomain + ")*";
     @NonNls final String localPart = word + "(?:\\." + word + ")*";
     @NonNls final String email = localPart + "@" + domain;
-    if (emailAddress.length() > LobbyConstants.EMAIL_GENERAL_LENGTH) {
+    if (emailAddress.length() > LobbyConstants.EMAIL_GENERAL_MAX_LENGTH) {
       return "Total length of all email address(es) exceeds general max length: "
-          + LobbyConstants.EMAIL_GENERAL_LENGTH;
+          + LobbyConstants.EMAIL_GENERAL_MAX_LENGTH;
     }
     // Split at every space that was not quoted since addresses like "Email Name"123@some.com are
     // valid.
     String[] addresses = emailAddress.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-    String invalidAddresses = "";
-    String tooLongAddresses = "";
+    StringBuilder invalidAddresses = new StringBuilder();
+    StringBuilder tooLongAddresses = new StringBuilder();
     for (int i = 0; i < addresses.length; i++) {
       if (!addresses[i].matches(email)) {
-        invalidAddresses =
-            invalidAddresses.isEmpty() ? addresses[i] : invalidAddresses + "; " + addresses[i];
+        if (invalidAddresses.isEmpty()) {
+          invalidAddresses.append(addresses[i]);
+        } else {
+          invalidAddresses.append("; " + addresses[i]);
+        }
       }
       if (addresses[i].length() > LobbyConstants.EMAIL_MAX_LENGTH) {
-        tooLongAddresses =
-            tooLongAddresses.isEmpty() ? addresses[i] : tooLongAddresses + "; " + addresses[i];
+        if (tooLongAddresses.isEmpty()) {
+          tooLongAddresses.append(addresses[i]);
+        } else {
+          tooLongAddresses.append("; " + addresses[i]);
+        }
       }
     }
-    if (!invalidAddresses.isEmpty() && !tooLongAddresses.isEmpty()) {
-      return "The following email addresses are invalid: "
-          + invalidAddresses
-          + "\nThe following email addresses exceed the max length "
-          + LobbyConstants.EMAIL_MAX_LENGTH
-          + ": "
-          + tooLongAddresses;
-    }
+    String errorMessage = "";
     if (!invalidAddresses.isEmpty()) {
-      return "The following email addresses are invalid: " + invalidAddresses;
+      errorMessage = "The following email addresses are invalid: " + invalidAddresses + ".";
     }
     if (!tooLongAddresses.isEmpty()) {
-      return "The following email addresses exceed the max length "
-          + LobbyConstants.EMAIL_MAX_LENGTH
-          + ": "
-          + tooLongAddresses;
+      errorMessage = errorMessage.isEmpty() ? "" : errorMessage + "\n";
+      errorMessage +=
+          "The following email addresses exceed the max length "
+              + LobbyConstants.EMAIL_MAX_LENGTH
+              + ": "
+              + tooLongAddresses
+              + ".";
+    }
+    if (!errorMessage.isEmpty()) {
+      return errorMessage;
     }
     return null;
   }
