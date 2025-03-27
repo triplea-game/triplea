@@ -20,10 +20,6 @@ public final class PlayerEmailValidation {
     @NonNls final String domain = subdomain + "(?:\\." + subdomain + ")*";
     @NonNls final String localPart = word + "(?:\\." + word + ")*";
     @NonNls final String email = localPart + "@" + domain;
-    if (emailAddress.length() > LobbyConstants.EMAIL_INPUT_FIELD_MAX_LENGTH) {
-      return "Total length of all email address(es) exceeds general max length: "
-          + LobbyConstants.EMAIL_INPUT_FIELD_MAX_LENGTH;
-    }
     // Split at every space that was not quoted since addresses like "Email Name"123@some.com are
     // valid.
     String[] addresses = emailAddress.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
@@ -45,22 +41,25 @@ public final class PlayerEmailValidation {
         }
       }
     }
-    String errorMessage = "";
+    String errorMessage = null;
+    if (emailAddress.length() > LobbyConstants.EMAIL_INPUT_FIELD_MAX_LENGTH) {
+      errorMessage =
+          "The input value for email exceeds the maximum length "
+              + LobbyConstants.EMAIL_INPUT_FIELD_MAX_LENGTH;
+    }
     if (!sbInvalidAddresses.isEmpty()) {
-      errorMessage = "The following email addresses are invalid: " + sbInvalidAddresses + ".";
+      errorMessage = errorMessage == null ? "" : errorMessage + "\n";
+      errorMessage += "The following email addresses are invalid: " + sbInvalidAddresses + ".";
     }
     if (!sbTooLongAddresses.isEmpty()) {
-      errorMessage = errorMessage.isEmpty() ? "" : errorMessage + "\n";
+      errorMessage = errorMessage == null ? "" : errorMessage + "\n";
       errorMessage +=
-          "The following email addresses exceed the max length "
+          "The following email addresses exceed the maximum length "
               + LobbyConstants.EMAIL_MAX_LENGTH
               + ": "
               + sbTooLongAddresses
               + ".";
     }
-    if (!errorMessage.isEmpty()) {
-      return errorMessage;
-    }
-    return null;
+    return errorMessage;
   }
 }
