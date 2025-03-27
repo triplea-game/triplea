@@ -27,35 +27,35 @@ public final class PlayerEmailValidation {
     // Split at every space that was not quoted since addresses like "Email Name"123@some.com are
     // valid.
     String[] addresses = emailAddress.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-    StringBuilder invalidAddresses = new StringBuilder();
-    StringBuilder tooLongAddresses = new StringBuilder();
+    StringBuilder sbInvalidAddresses = new StringBuilder();
+    StringBuilder sbTooLongAddresses = new StringBuilder();
     for (int i = 0; i < addresses.length; i++) {
       if (!addresses[i].matches(email)) {
-        if (invalidAddresses.isEmpty()) {
-          invalidAddresses.append(addresses[i]);
+        if (sbInvalidAddresses.isEmpty()) {
+          sbInvalidAddresses.append(addresses[i]);
         } else {
-          invalidAddresses.append("; " + addresses[i]);
+          sbInvalidAddresses.append("; " + addresses[i]);
         }
       }
       if (addresses[i].length() > LobbyConstants.EMAIL_MAX_LENGTH) {
-        if (tooLongAddresses.isEmpty()) {
-          tooLongAddresses.append(addresses[i]);
+        if (sbTooLongAddresses.isEmpty()) {
+          sbTooLongAddresses.append(addresses[i]);
         } else {
-          tooLongAddresses.append("; " + addresses[i]);
+          sbTooLongAddresses.append("; " + addresses[i]);
         }
       }
     }
     String errorMessage = "";
-    if (!invalidAddresses.isEmpty()) {
-      errorMessage = "The following email addresses are invalid: " + invalidAddresses + ".";
+    if (!sbInvalidAddresses.isEmpty()) {
+      errorMessage = "The following email addresses are invalid: " + sbInvalidAddresses + ".";
     }
-    if (!tooLongAddresses.isEmpty()) {
+    if (!sbTooLongAddresses.isEmpty()) {
       errorMessage = errorMessage.isEmpty() ? "" : errorMessage + "\n";
       errorMessage +=
           "The following email addresses exceed the max length "
               + LobbyConstants.EMAIL_MAX_LENGTH
               + ": "
-              + tooLongAddresses
+              + sbTooLongAddresses
               + ".";
     }
     if (!errorMessage.isEmpty()) {
