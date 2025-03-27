@@ -20,9 +20,9 @@ public final class PlayerEmailValidation {
     @NonNls final String domain = subdomain + "(?:\\." + subdomain + ")*";
     @NonNls final String localPart = word + "(?:\\." + word + ")*";
     @NonNls final String email = localPart + "@" + domain;
-    if (emailAddress.length() > LobbyConstants.EMAIL_GENERAL_MAX_LENGTH) {
+    if (emailAddress.length() > LobbyConstants.EMAIL_INPUT_FIELD_MAX_LENGTH) {
       return "Total length of all email address(es) exceeds general max length: "
-          + LobbyConstants.EMAIL_GENERAL_MAX_LENGTH;
+          + LobbyConstants.EMAIL_INPUT_FIELD_MAX_LENGTH;
     }
     // Split at every space that was not quoted since addresses like "Email Name"123@some.com are
     // valid.
