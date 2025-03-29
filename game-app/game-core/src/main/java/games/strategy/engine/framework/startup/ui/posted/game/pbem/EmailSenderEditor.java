@@ -3,6 +3,7 @@ package games.strategy.engine.framework.startup.ui.posted.game.pbem;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.startup.ui.posted.game.HelpTexts;
 import games.strategy.triplea.settings.ClientSetting;
+import java.awt.*;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -13,6 +14,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
+import org.triplea.domain.data.LobbyConstants;
 import org.triplea.java.ViewModelListener;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;
@@ -27,10 +29,11 @@ import org.triplea.swing.jpanel.JPanelBuilder;
 public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorViewModel> {
 
   private static final int FIELD_LENGTH = 20;
+  // 254 * 4 + 3 = 1019 Three max length emails with 3 spaces to separate.
+  public static final int TO_ADDRESS_MAX_LENGTH = 1019;
   private final EmailSenderEditorViewModel viewModel = new EmailSenderEditorViewModel(this);
 
   private boolean syncToModel;
-  private JPanel contents;
 
   private final JComboBox<String> emailProviderSelectionBox =
       JComboBoxBuilder.builder()
@@ -42,6 +45,12 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
                   viewModel.setSelectedProvider(provider);
                 }
               })
+          .build();
+
+  private final JPanel contents =
+      new JPanelBuilder()
+          .border(new TitledBorder("Automatically Send Emails"))
+          .gridBagLayout()
           .build();
 
   private final JButton helpButton =
@@ -110,6 +119,7 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
   private final JTextField toAddressField =
       JTextFieldBuilder.builder()
           .text(viewModel.getToAddress())
+          .maxLength(TO_ADDRESS_MAX_LENGTH)
           .textListener(
               toAddress -> {
                 if (syncToModel) {
@@ -122,6 +132,7 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
   private final JLabel userNameLabel = new JLabel("Email Username:");
   private final JTextField userNameField =
       JTextFieldBuilder.builder()
+          .maxLength(LobbyConstants.USERNAME_MAX_LENGTH)
           .text(viewModel.getEmailUsername())
           .textListener(
               fieldValue -> {
@@ -181,11 +192,6 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
   JPanel build() {
     toggleFieldVisibility();
 
-    contents =
-        new JPanelBuilder()
-            .border(new TitledBorder("Automatically Send Emails"))
-            .gridBagLayout()
-            .build();
     int row = 0;
 
     row++;
