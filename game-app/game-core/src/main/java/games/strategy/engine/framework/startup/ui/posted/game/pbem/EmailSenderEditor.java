@@ -3,7 +3,6 @@ package games.strategy.engine.framework.startup.ui.posted.game.pbem;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.startup.ui.posted.game.HelpTexts;
 import games.strategy.triplea.settings.ClientSetting;
-import java.awt.*;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;

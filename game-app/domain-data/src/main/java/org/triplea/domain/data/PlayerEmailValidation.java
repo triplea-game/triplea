@@ -51,7 +51,7 @@ public final class PlayerEmailValidation {
     }
     if (!emailAddress.matches(EMAIL_REGEX)) {
       return String.format("Email address is invalid: %s", emailAddress);
-      }
+    }
     return null;
   }
 }
