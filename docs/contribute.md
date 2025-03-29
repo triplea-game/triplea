@@ -70,7 +70,7 @@ role from below and find out what you can do to help.
 
 #### _How to become one_
 
-- [Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif) what you can share
+- [![PayPal donation icon](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate?token=WFUEUa_Q4Zsq1NOF97Vhe_qVPoqCoj7ZtSAegmMdX6uAt7sziJKO1swbSjYnfEr9lDdAp6dDZNOh4DA8)
 
 ### :golf: Map Maker
 
@@ -112,7 +112,7 @@ https://github.com/triplea-game/triplea/tree/master/docs/map-making
 - Read the [Map Maker Guides & Documentation](https://forums.triplea-game.org/topic/2600/map-maker-guides-documentation)
   and check the documentation on [map-making](map-making)
 - Get in contact with an existing map admin from
-  the [list of map admins](https://github.com/orgs/triplea-maps/teams/mapadmins/members)
+  the [list of map admins](https://github.com/orgs/triplea-maps/people)
 
 ### :book: Rule Expert
 
@@ -184,8 +184,7 @@ https://github.com/triplea-game/triplea/tree/master/docs/map-making
 
 #### _How to become one_
 
-- [Setup your system](https://github.com/triplea-game/triplea/tree/master/docs/development/how-to/ide-setup) and check
-  our [development processes](https://github.com/triplea-game/triplea/tree/master/docs/development/reference/dev-process)
+- Read and follow the [Developer Setup Guide](https://github.com/triplea-game/triplea/blob/master/docs/development/README.md)
 
 ### :hammer: Developer with Merge Rights
 
