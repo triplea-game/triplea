@@ -20,13 +20,46 @@ public final class PlayerEmailValidation {
     @NonNls final String domain = subdomain + "(?:\\." + subdomain + ")*";
     @NonNls final String localPart = word + "(?:\\." + word + ")*";
     @NonNls final String email = localPart + "@" + domain;
-    @NonNls final String regex = "(\\s*" + email + "\\s*)*";
-    if (!emailAddress.matches(regex)) {
-      return "Invalid email address";
+    // Split at every space that was not quoted since addresses like "Email Name"123@some.com are
+    // valid.
+    String[] addresses = emailAddress.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+    StringBuilder sbInvalidAddresses = new StringBuilder();
+    StringBuilder sbTooLongAddresses = new StringBuilder();
+    for (int i = 0; i < addresses.length; i++) {
+      if (!addresses[i].matches(email)) {
+        if (sbInvalidAddresses.isEmpty()) {
+          sbInvalidAddresses.append(addresses[i]);
+        } else {
+          sbInvalidAddresses.append("; " + addresses[i]);
+        }
+      }
+      if (addresses[i].length() > LobbyConstants.EMAIL_MAX_LENGTH) {
+        if (sbTooLongAddresses.isEmpty()) {
+          sbTooLongAddresses.append(addresses[i]);
+        } else {
+          sbTooLongAddresses.append("; " + addresses[i]);
+        }
+      }
     }
-    if (emailAddress.length() > LobbyConstants.EMAIL_MAX_LENGTH) {
-      return "Email address exceeds max length: " + LobbyConstants.EMAIL_MAX_LENGTH;
+    String errorMessage = null;
+    if (emailAddress.length() > LobbyConstants.EMAIL_INPUT_FIELD_MAX_LENGTH) {
+      errorMessage =
+          "The input value for email exceeds the maximum length "
+              + LobbyConstants.EMAIL_INPUT_FIELD_MAX_LENGTH;
     }
-    return null;
+    if (!sbInvalidAddresses.isEmpty()) {
+      errorMessage = errorMessage == null ? "" : errorMessage + "\n";
+      errorMessage += "The following email addresses are invalid: " + sbInvalidAddresses + ".";
+    }
+    if (!sbTooLongAddresses.isEmpty()) {
+      errorMessage = errorMessage == null ? "" : errorMessage + "\n";
+      errorMessage +=
+          "The following email addresses exceed the maximum length "
+              + LobbyConstants.EMAIL_MAX_LENGTH
+              + ": "
+              + sbTooLongAddresses
+              + ".";
+    }
+    return errorMessage;
   }
 }
