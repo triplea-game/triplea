@@ -13,7 +13,5 @@ public class LobbyConstants {
   // The maximum email address length is 254
   // https://www.directedignorance.com/blog/maximum-length-of-email-address.
   public static final int EMAIL_MAX_LENGTH = 254;
-  // 254 * 4 + 3 = 1019 Three max length emails with 3 spaces to separate.
-  public static final int EMAIL_INPUT_FIELD_MAX_LENGTH = 1019;
   public static final int PASSWORD_MIN_LENGTH = 3;
 }

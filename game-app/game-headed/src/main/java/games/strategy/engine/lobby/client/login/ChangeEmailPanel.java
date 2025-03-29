@@ -11,11 +11,13 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import org.triplea.domain.data.LobbyConstants;
 import org.triplea.domain.data.PlayerEmailValidation;
 import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.JTextFieldBuilder;
 import org.triplea.swing.jpanel.FlowLayoutBuilder;
 import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
 import org.triplea.swing.jpanel.GridBagConstraintsFill;
@@ -29,7 +31,11 @@ public final class ChangeEmailPanel {
 
   private JPanel createPanel(
       final JDialog dialog, final String userExistingEmail, final Consumer<String> submitAction) {
-    final JTextField emailField = new JTextField(userExistingEmail);
+    final JTextField emailField =
+        JTextFieldBuilder.builder()
+            .text(userExistingEmail)
+            .maxLength(LobbyConstants.EMAIL_MAX_LENGTH)
+            .build();
     final JButton okButton = new JButton("OK");
     okButton.setEnabled(false);
 

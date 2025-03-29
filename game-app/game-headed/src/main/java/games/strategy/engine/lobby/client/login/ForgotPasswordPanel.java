@@ -16,8 +16,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import org.triplea.domain.data.LobbyConstants;
 import org.triplea.domain.data.PlayerEmailValidation;
 import org.triplea.domain.data.UserName;
+import org.triplea.swing.JTextFieldBuilder;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.swing.key.binding.SwingKeyBinding;
 
@@ -34,10 +36,11 @@ final class ForgotPasswordPanel extends JPanel {
     OK
   }
 
-  private final String title = "Forgot Password";
+  private static final String TITLE = "Forgot Password";
   private @Nullable JDialog dialog;
   private final JTextField userNameField = new JTextField();
-  private final JTextField emailField = new JTextField();
+  private final JTextField emailField =
+      JTextFieldBuilder.builder().maxLength(LobbyConstants.EMAIL_MAX_LENGTH).build();
   private final JButton okButton = new JButton("OK");
   private final JButton cancelButton = new JButton("Cancel");
   private ReturnValue returnValue = ReturnValue.CANCEL;
@@ -59,7 +62,7 @@ final class ForgotPasswordPanel extends JPanel {
 
   private void layoutComponents() {
     setLayout(new BorderLayout());
-    final JLabel label = new JLabel(new ImageIcon(Util.getBanner(title)));
+    final JLabel label = new JLabel(new ImageIcon(Util.getBanner(TITLE)));
     add(label, BorderLayout.NORTH);
 
     final JPanel main = new JPanel();
@@ -156,7 +159,7 @@ final class ForgotPasswordPanel extends JPanel {
     if (!PlayerEmailValidation.isValid(emailField.getText())) {
       JOptionPane.showMessageDialog(
           this,
-          PlayerEmailValidation.validate(userNameField.getText()),
+          PlayerEmailValidation.validate(emailField.getText()),
           "Invalid email",
           JOptionPane.ERROR_MESSAGE);
       return;
@@ -174,7 +177,7 @@ final class ForgotPasswordPanel extends JPanel {
    *     ReturnValue#CANCEL}.
    */
   ReturnValue show(final Window parent) {
-    dialog = new JDialog(JOptionPane.getFrameForComponent(parent), title, true);
+    dialog = new JDialog(JOptionPane.getFrameForComponent(parent), TITLE, true);
     dialog.getContentPane().add(this);
     SwingKeyBinding.addKeyBinding(dialog, KeyCode.ESCAPE, this::close);
     dialog.pack();
