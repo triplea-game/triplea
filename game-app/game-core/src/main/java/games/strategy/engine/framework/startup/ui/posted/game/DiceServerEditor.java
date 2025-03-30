@@ -10,7 +10,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.net.URI;
-import java.util.Arrays;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -22,6 +21,7 @@ import org.triplea.awt.OpenFileUtility;
 import org.triplea.domain.data.PlayerEmailValidation;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.JTextFieldBuilder;
 import org.triplea.swing.SwingComponents;
 
 /** A class to configure a Dice Server for the game. */
@@ -29,6 +29,7 @@ public class DiceServerEditor extends JPanel {
   public static final URI PRODUCTION_URI = URI.create("https://dice.marti.triplea-game.org");
 
   private static final long serialVersionUID = -451810815037661114L;
+  public static final int ADDRESS_FIELD_MAX_LENGTH = 1019;
   private final JButton registerButton =
       new JButtonBuilder("Register")
           .actionListener(() -> OpenFileUtility.openUrl(UrlConstants.MARTI_REGISTRATION))
@@ -55,8 +56,10 @@ public class DiceServerEditor extends JPanel {
           .toolTip("Click this button to show help text")
           .build();
   private final JButton testDiceButton = new JButton("Test Server");
-  private final JTextField toAddress = new JTextField();
-  private final JTextField ccAddress = new JTextField();
+  private final JTextField toAddress =
+      JTextFieldBuilder.builder().maxLength(ADDRESS_FIELD_MAX_LENGTH).build();
+  private final JTextField ccAddress =
+      JTextFieldBuilder.builder().maxLength(ADDRESS_FIELD_MAX_LENGTH).build();
   private final JTextField gameId = new JTextField();
   private final JLabel toLabel = new JLabel("To:");
   private final JLabel ccLabel = new JLabel("Cc:");
@@ -257,9 +260,9 @@ public class DiceServerEditor extends JPanel {
 
   public boolean areFieldsValid() {
     final boolean toValid =
-        !toAddress.getText().isEmpty() && validateEmailAddresses(toAddress.getText());
+        !toAddress.getText().isEmpty() && PlayerEmailValidation.areValid(toAddress.getText());
     final boolean ccValid =
-        !ccAddress.getText().isEmpty() && validateEmailAddresses(ccAddress.getText());
+        !ccAddress.getText().isEmpty() && PlayerEmailValidation.areValid(ccAddress.getText());
 
     final boolean allValid = toValid && ccValid;
     testDiceButton.setEnabled(allValid);
@@ -274,10 +277,6 @@ public class DiceServerEditor extends JPanel {
           SwingComponents.highlightLabelIfNotValid(ccValid, ccLabel);
         });
     return allValid;
-  }
-
-  private boolean validateEmailAddresses(String addresses) {
-    return Arrays.stream(addresses.split("\\s+")).allMatch(PlayerEmailValidation::isValid);
   }
 
   public void applyToGameProperties(final GameProperties properties) {
