@@ -68,7 +68,7 @@ subprojects {
         jlayerVersion = "1.0.1.4"
         junitJupiterVersion = "5.12.1"
         junitPlatformLauncherVersion = "1.11.4"
-        logbackClassicVersion = "1.5.16"
+        logbackClassicVersion = "1.5.18"
         mockitoVersion = "5.16.1"
         openFeignVersion = "13.3"
         snakeYamlVersion = "2.9"
