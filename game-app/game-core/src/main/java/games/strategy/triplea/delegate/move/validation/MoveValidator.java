@@ -515,15 +515,17 @@ public class MoveValidator {
     }
 
     // check aircraft
-    if (units.stream().anyMatch(Matches.unitIsAir())
-        && route.hasSteps()
+    if (route.hasSteps()
+        && units.stream().anyMatch(Matches.unitIsAir())
         && (!Properties.getNeutralFlyoverAllowed(data.getProperties())
             || Properties.getNeutralsImpassable(data.getProperties()))
-        && route.getMiddleSteps().stream().anyMatch(Matches.territoryIsNeutralButNotWater())) {
+        && (route.getMiddleSteps().stream().anyMatch(Matches.territoryIsNeutralButNotWater())
+            || Matches.territoryIsNeutralButNotWater().test(route.getStart())
+                && units.stream().anyMatch(Matches.unitIsAir().and(Matches.unitHasMoved())))) {
       return result.setErrorReturnResult("Air units cannot fly over neutral territories");
     }
     // make sure no conquered territories on route
-    // unless we are all air or we are in non combat OR the route is water (was a bug in convoy
+    // unless we are all air, or we are in non combat OR the route is water (was a bug in convoy
     // zone movement)
     if (hasConqueredNonBlitzedNonWaterOnRoute(route, data)
         && !units.stream().allMatch(Matches.unitIsAir())) {
@@ -799,13 +801,12 @@ public class MoveValidator {
       }
     }
     // if we are water make sure no land
-    if (units.stream().anyMatch(Matches.unitIsSea())) {
-      if (route.hasLand()) {
-        for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitIsSea())) {
-          result.addDisallowedUnit("Sea units cannot go on land", unit);
-        }
+    if (units.stream().anyMatch(Matches.unitIsSea()) && route.hasLand()) {
+      for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitIsSea())) {
+        result.addDisallowedUnit("Sea units cannot go on land", unit);
       }
     }
+
     // test for stack limits per unit
     final PlayerAttachment pa = PlayerAttachment.get(player);
     final Set<Triple<Integer, String, Set<UnitType>>> playerMovementLimit =
@@ -1190,20 +1191,20 @@ public class MoveValidator {
                     ENEMY_SUBMARINE_PREVENTING_UNESCORTED_AMPHIBIOUS_ASSAULT_LANDING, unit);
               }
             }
-          } else if (!AbstractMoveDelegate.getBattleTracker(data).wasConquered(routeEnd)) {
-            // this is an unload to a friendly territory
-            if (isScramblingOrKamikazeAttacksEnabled
-                || !Matches.territoryIsEmptyOfCombatUnits(player).test(routeStart)) {
-              // Unloading a transport from a sea zone with a battle, to a friendly land territory,
-              // during combat move phase, is illegal and in addition to being illegal, it is also
-              // causing problems if
-              // the sea transports get killed (the land units are not dying)
-              // TODO: should we use the battle tracker for this instead?
-              for (final Unit unit : transport.getTransporting()) {
-                result.addDisallowedUnit(
-                    TRANSPORT_MAY_NOT_UNLOAD_TO_FRIENDLY_TERRITORIES_UNTIL_AFTER_COMBAT_IS_RESOLVED,
-                    unit);
-              }
+          } else if (!AbstractMoveDelegate.getBattleTracker(data).wasConquered(routeEnd)
+              &&
+              // this is an unload to a friendly territory
+              (isScramblingOrKamikazeAttacksEnabled
+                  || !Matches.territoryIsEmptyOfCombatUnits(player).test(routeStart))) {
+            // Unloading a transport from a sea zone with a battle, to a friendly land territory,
+            // during combat move phase, is illegal and in addition to being illegal, it is also
+            // causing problems if
+            // the sea transports get killed (the land units are not dying)
+            // TODO: should we use the battle tracker for this instead?
+            for (final Unit unit : transport.getTransporting()) {
+              result.addDisallowedUnit(
+                  TRANSPORT_MAY_NOT_UNLOAD_TO_FRIENDLY_TERRITORIES_UNTIL_AFTER_COMBAT_IS_RESOLVED,
+                  unit);
             }
           }
         }
@@ -1247,14 +1248,15 @@ public class MoveValidator {
     // go sea land sea
     if (!isEditMode
         && route.hasLand()
-        && !(route.getStart().isWater() || route.getEnd().isWater())) {
-      // needs to include all land and air to work, since it makes sure the land units can be
-      // carried by the air and that the air has enough capacity
-      if (nonParatroopersPresent(player, landAndAir)) {
-        return result.setErrorReturnResult(
-            "Invalid move, only start or end can be land when route has water.");
-      }
+        && !(route.getStart().isWater() || route.getEnd().isWater())
+        &&
+        // needs to include all land and air to work, since it makes sure the land units can be
+        // carried by the air and that the air has enough capacity
+        nonParatroopersPresent(player, landAndAir)) {
+      return result.setErrorReturnResult(
+          "Invalid move, only start or end can be land when route has water.");
     }
+
     // simply because I don't want to handle it yet checks are done at the start and end, don't want
     // to worry about just using a transport as a bridge yet
     // TODO handle this
@@ -1647,17 +1649,18 @@ public class MoveValidator {
     for (final Unit plane : selectFrom) {
       final UnitAttachment planeAttachment = plane.getUnitAttachment();
       final int cost = planeAttachment.getCarrierCost();
-      if (available >= cost) {
-        // this is to test if they started in the same sea zone or not, and its not a very good way
-        // of testing it.
-        if ((carrier.getAlreadyMoved().compareTo(plane.getAlreadyMoved()) == 0)
-            || (Matches.unitHasNotMoved().test(plane) && Matches.unitHasNotMoved().test(carrier))
-            || (Matches.unitIsOwnedBy(playerWhoIsDoingTheMovement).negate().test(plane)
-                && Matches.alliedUnit(playerWhoIsDoingTheMovement).test(plane))) {
-          available -= cost;
-          canCarry.add(plane);
-        }
+      if (available >= cost
+          &&
+          // this is to test if they started in the same sea zone or not, and its not a very good
+          // way of testing it.
+          ((carrier.getAlreadyMoved().compareTo(plane.getAlreadyMoved()) == 0)
+              || (Matches.unitHasNotMoved().test(plane) && Matches.unitHasNotMoved().test(carrier))
+              || (Matches.unitIsOwnedBy(playerWhoIsDoingTheMovement).negate().test(plane)
+                  && Matches.alliedUnit(playerWhoIsDoingTheMovement).test(plane)))) {
+        available -= cost;
+        canCarry.add(plane);
       }
+
       if (available == 0) {
         break;
       }
