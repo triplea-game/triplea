@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
+import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -144,7 +145,7 @@ public final class ScreenshotExporter {
         titleY = 15;
         titleSize = 15;
       }
-      mapGraphics.setFont(new Font("Arial", Font.BOLD, titleSize));
+      mapGraphics.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, titleSize));
       mapGraphics.setColor(titleColor);
       if (uiContext.getMapData().getBooleanProperty(MapData.PROPERTY_SCREENSHOT_TITLE_ENABLED)) {
         mapGraphics.drawString(gameData.getGameName() + " Round " + round, titleX, titleY);

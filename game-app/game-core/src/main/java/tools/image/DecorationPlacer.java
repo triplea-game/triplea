@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkState;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.ResourceLoader;
+import games.strategy.triplea.image.MapImage;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -301,7 +302,7 @@ public final class DecorationPlacer {
               repaint();
             }
           });
-      locationLabel.setFont(new Font("Arial", Font.BOLD, 16));
+      locationLabel.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, 16));
       /*
        * Add a mouse listener to monitor for right mouse button being clicked.
        */
@@ -676,26 +677,26 @@ public final class DecorationPlacer {
 
     private void fillCurrentImagePointsBasedOnTextFile(final boolean fillInAllTerritories) {
       staticImageForPlacing = null;
-      Path image =
+      Path imagePath =
           mapFolderLocation
               .resolve(imagePointType.getFolderName())
               .resolve(imagePointType.getImageName());
-      if (!Files.exists(image)) {
-        image =
+      if (!Files.exists(imagePath)) {
+        imagePath =
             ClientFileSystemHelper.getRootFolder()
                 .resolve(ResourceLoader.ASSETS_FOLDER)
                 .resolve(imagePointType.getFolderName())
                 .resolve(imagePointType.getImageName());
       }
-      if (!Files.exists(image)) {
-        image = null;
+      if (!Files.exists(imagePath)) {
+        imagePath = null;
       }
       while (staticImageForPlacing == null) {
         final FileOpen imageSelection =
             new FileOpen(
                 "Select Example Image To Use",
-                image == null ? mapFolderLocation : image.getParent(),
-                image,
+                imagePath == null ? mapFolderLocation : imagePath.getParent(),
+                imagePath,
                 ".gif",
                 ".png");
         if (imageSelection.getFile() == null || !Files.exists(imageSelection.getFile())) {
@@ -751,7 +752,7 @@ public final class DecorationPlacer {
         }
         final String imageName = path.getFileName().toString();
         final String possibleTerritoryName = imageName.substring(0, imageName.length() - 4);
-        final Image image = FileHelper.newImage(path);
+        final Image territoryImage = FileHelper.newImage(path);
         List<Point> points =
             (currentPoints != null
                 ? currentPoints.get(
@@ -766,8 +767,10 @@ public final class DecorationPlacer {
           } else {
             p =
                 new Point(
-                    p.x - (image.getWidth(null) / 2),
-                    p.y + addY + ((showFromTopLeft ? -1 : 1) * (image.getHeight(null) / 2)));
+                    p.x - (territoryImage.getWidth(null) / 2),
+                    p.y
+                        + addY
+                        + ((showFromTopLeft ? -1 : 1) * (territoryImage.getHeight(null) / 2)));
             points.add(p);
             allTerritories.remove(possibleTerritoryName);
             log.info("Found point for: " + possibleTerritoryName);
@@ -777,7 +780,7 @@ public final class DecorationPlacer {
         }
         currentImagePoints.put(
             (pointsAreExactlyTerritoryNames ? possibleTerritoryName : imageName),
-            Tuple.of(image, points));
+            Tuple.of(territoryImage, points));
       }
       if (!allTerritories.isEmpty() && imagePointType == ImagePointType.name_place) {
         JOptionPane.showMessageDialog(

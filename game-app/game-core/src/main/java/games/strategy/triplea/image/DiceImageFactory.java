@@ -120,7 +120,7 @@ public class DiceImageFactory {
           2 * DIE_WIDTH / 3 - (pipSize / 2), 3 * DIE_HEIGHT / 4 - (pipSize / 2), pipSize, pipSize);
     }
     if (dieSide > 6) {
-      graphics.setFont(new Font("Arial", Font.BOLD, 16));
+      graphics.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, 16));
       graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
       final String number = Integer.toString(dieSide);
       final int widthOffset =
@@ -140,7 +140,7 @@ public class DiceImageFactory {
     if (i > diceSides) {
       final Image canvas = Util.newImage(DIE_WIDTH, DIE_HEIGHT, true);
       final Graphics graphics = canvas.getGraphics();
-      graphics.setFont(new Font("Arial", Font.BOLD, 16));
+      graphics.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, 16));
       switch (type) {
         case HIT:
           graphics.setColor(Color.RED);

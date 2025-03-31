@@ -62,6 +62,7 @@ import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.export.ScreenshotExporter;
@@ -196,8 +197,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   @Getter private IEditDelegate editDelegate;
   private final JSplitPane gameCenterPanel;
   @Getter private final BottomBar bottomBar;
-  private GamePlayer lastStepPlayer;
-  private GamePlayer currentStepPlayer;
+  private GamePlayer lastPlayer;
   private final Map<GamePlayer, Boolean> requiredTurnSeries = new HashMap<>();
   private final ThreadPool messageAndDialogThreadPool = new ThreadPool(1);
   private final MapUnitTooltipManager tooltipManager;
@@ -222,6 +222,15 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                 }
                 rightHandSidePanel.setVisible(true);
               });
+        }
+
+        private void hideEditMode() {
+          if (tabsPanel.getSelectedComponent() == editPanel) {
+            tabsPanel.setSelectedIndex(0);
+          }
+          tabsPanel.remove(editPanel);
+          editModeButtonModel.setSelected(false);
+          getGlassPane().setVisible(false);
         }
       };
 
@@ -433,7 +442,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
           @Override
           protected void paintComponent(final Graphics g) {
-            g.setFont(new Font("Arial", Font.BOLD, 50));
+            g.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, 50));
             g.setColor(new Color(255, 255, 255, 175));
             final Dimension size = mapPanel.getSize();
             g.drawString(
@@ -1324,7 +1333,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                   options,
                   options[1]);
           final JLabel whereTo = new JLabel("Scramble To: " + scrambleTo.getName());
-          whereTo.setFont(new Font("Arial", Font.ITALIC, 12));
+          whereTo.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.ITALIC, 12));
           panel.add(whereTo, BorderLayout.NORTH);
           final JPanel panel2 = new JPanel();
           panel2.setBorder(BorderFactory.createEmptyBorder());
@@ -1337,7 +1346,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             panelChooser.setBorder(BorderFactory.createLineBorder(getBackground()));
             final JLabel whereFrom = new JLabel("From: " + from.getName());
             whereFrom.setHorizontalAlignment(SwingConstants.LEFT);
-            whereFrom.setFont(new Font("Arial", Font.BOLD, 12));
+            whereFrom.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, 12));
             panelChooser.add(whereFrom);
             panelChooser.add(new JLabel(" "));
             final Collection<Unit> possible = possibleScramblers.get(from).getSecond();
@@ -1478,14 +1487,14 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
           final JPanel panel = new JPanel();
           panel.setLayout(new BorderLayout());
           final JLabel messageLabel = new JLabel(message);
-          messageLabel.setFont(new Font("Arial", Font.ITALIC, 12));
+          messageLabel.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.ITALIC, 12));
           panel.add(messageLabel, BorderLayout.NORTH);
           final JPanel panelChooser = new JPanel();
           panelChooser.setLayout(new BoxLayout(panelChooser, BoxLayout.Y_AXIS));
           panelChooser.setBorder(BorderFactory.createLineBorder(getBackground()));
           final JLabel whereFrom = new JLabel("From: " + current.getName());
           whereFrom.setHorizontalAlignment(SwingConstants.LEFT);
-          whereFrom.setFont(new Font("Arial", Font.BOLD, 12));
+          whereFrom.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, 12));
           panelChooser.add(whereFrom);
           panelChooser.add(new JLabel(" "));
           final int maxAllowed =
@@ -1638,10 +1647,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     }
 
     final boolean isPlaying = localPlayers.playing(player);
-    if (player != null && !player.isNull()) {
-      lastStepPlayer = currentStepPlayer;
-      currentStepPlayer = player;
-    }
     SwingUtilities.invokeLater(
         () -> bottomBar.setStepInfo(round, stepDisplayName, player, !isPlaying));
     bottomBar.gameDataChanged();
@@ -1681,13 +1686,15 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                         .play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player);
                     requiredTurnSeries.put(player, false);
                   }
-                  // center on capital of player, if it is a new player
-                  if (!player.equals(lastStepPlayer)) {
-                    lastStepPlayer = player;
-                    try (GameData.Unlocker ignored = data.acquireReadLock()) {
-                      mapPanel.centerOn(
-                          TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(
-                              player, data.getMap()));
+                  // center on capital of player, if it is a new none-AI player
+                  if (!player.equals(lastPlayer)) {
+                    lastPlayer = player;
+                    if (!player.isAi()) {
+                      try (GameData.Unlocker ignored = data.acquireReadLock()) {
+                        mapPanel.centerOn(
+                            TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(
+                                player, data.getMap()));
+                      }
                     }
                   }
                 }));
@@ -1725,7 +1732,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       }
 
       @Override
-      public void keyTyped(final KeyEvent e) {}
+      public void keyTyped(final KeyEvent e) {
+        // not needed interface method
+      }
 
       @Override
       public void keyReleased(final KeyEvent e) {
@@ -1746,15 +1755,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     }
     editModeButtonModel.setSelected(true);
     getGlassPane().setVisible(true);
-  }
-
-  private void hideEditMode() {
-    if (tabsPanel.getSelectedComponent() == editPanel) {
-      tabsPanel.setSelectedIndex(0);
-    }
-    tabsPanel.remove(editPanel);
-    editModeButtonModel.setSelected(false);
-    getGlassPane().setVisible(false);
   }
 
   public void showActionPanelTab() {
