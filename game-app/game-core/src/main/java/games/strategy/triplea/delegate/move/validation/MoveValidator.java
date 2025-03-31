@@ -802,10 +802,10 @@ public class MoveValidator {
     }
     // if we are water make sure no land
     if (units.stream().anyMatch(Matches.unitIsSea()) && route.hasLand()) {
-        for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitIsSea())) {
-          result.addDisallowedUnit("Sea units cannot go on land", unit);
-        }
+      for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitIsSea())) {
+        result.addDisallowedUnit("Sea units cannot go on land", unit);
       }
+    }
 
     // test for stack limits per unit
     final PlayerAttachment pa = PlayerAttachment.get(player);
@@ -1196,18 +1196,17 @@ public class MoveValidator {
               // this is an unload to a friendly territory
               (isScramblingOrKamikazeAttacksEnabled
                   || !Matches.territoryIsEmptyOfCombatUnits(player).test(routeStart))) {
-              // Unloading a transport from a sea zone with a battle, to a friendly land territory,
-              // during combat move phase, is illegal and in addition to being illegal, it is also
-              // causing problems if
-              // the sea transports get killed (the land units are not dying)
-              // TODO: should we use the battle tracker for this instead?
-              for (final Unit unit : transport.getTransporting()) {
-                result.addDisallowedUnit(
-                    TRANSPORT_MAY_NOT_UNLOAD_TO_FRIENDLY_TERRITORIES_UNTIL_AFTER_COMBAT_IS_RESOLVED,
-                    unit);
-              }
+            // Unloading a transport from a sea zone with a battle, to a friendly land territory,
+            // during combat move phase, is illegal and in addition to being illegal, it is also
+            // causing problems if
+            // the sea transports get killed (the land units are not dying)
+            // TODO: should we use the battle tracker for this instead?
+            for (final Unit unit : transport.getTransporting()) {
+              result.addDisallowedUnit(
+                  TRANSPORT_MAY_NOT_UNLOAD_TO_FRIENDLY_TERRITORIES_UNTIL_AFTER_COMBAT_IS_RESOLVED,
+                  unit);
             }
-
+          }
         }
         // TODO This is very sensitive to the order of the transport collection. The users may need
         // to modify the order in which they perform their actions. check whether transport has
@@ -1254,9 +1253,9 @@ public class MoveValidator {
         // needs to include all land and air to work, since it makes sure the land units can be
         // carried by the air and that the air has enough capacity
         nonParatroopersPresent(player, landAndAir)) {
-        return result.setErrorReturnResult(
-            "Invalid move, only start or end can be land when route has water.");
-      }
+      return result.setErrorReturnResult(
+          "Invalid move, only start or end can be land when route has water.");
+    }
 
     // simply because I don't want to handle it yet checks are done at the start and end, don't want
     // to worry about just using a transport as a bridge yet
@@ -1658,9 +1657,9 @@ public class MoveValidator {
               || (Matches.unitHasNotMoved().test(plane) && Matches.unitHasNotMoved().test(carrier))
               || (Matches.unitIsOwnedBy(playerWhoIsDoingTheMovement).negate().test(plane)
                   && Matches.alliedUnit(playerWhoIsDoingTheMovement).test(plane)))) {
-          available -= cost;
-          canCarry.add(plane);
-        }
+        available -= cost;
+        canCarry.add(plane);
+      }
 
       if (available == 0) {
         break;
