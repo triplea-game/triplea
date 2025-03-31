@@ -3041,3 +3041,136 @@
   img: https://raw.githubusercontent.com/triplea-maps/NaziSovietPact/blob/master/preview.png
   description: |
     <br>A hypothetical WW2 scenario where the Molotov-Ribbentrop pact develops until a full alliance.
+- mapName: Franco-Prussian War
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Franco_Prussian_War/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Franco_Prussian_War/blob/master/preview.png
+  description: |
+    <br>Franco-Prussian War
+- mapName: XD_Tiberium
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/XD_TIBERIUM/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/XD_TIBERIUM/blob/master/preview.png
+  description: |
+    <br>This is the war for control over Tiberium, a crystal used to make fictional technologies.
+- mapName: World War II Revised Deaths Hand Mod
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/World_War_II_Revised_Deaths_Hand_Mod/tree/master/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/World_War_II_Revised_Deaths_Hand_Mod/blob/master/preview.png
+  description: |
+    <br>A modified version of World World II Revised.
+- mapName: Revised Middle Earth
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/revised_middle_earth/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/revised_middle_earth/blob/master/preview.png
+  description: |
+    <br>A fantasy scenario using the World War II Revised Map
+- mapName: WW3 Circa 1955
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/WW3Circa1955/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/WW3Circa1955/blob/master/preview.png
+  description: |
+    <br>A hypothetical Third World War in 1955, using the Classic map.
+- mapName: NWO DoomsDay
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/nwodoomsday/tree/master/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/nwodoomsday/blob/master/preview.png
+  description: |
+    <br>A hypothetical Soviet invasion of Europe in 1945.
+- mapName: Big World 1942 - Factions
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/big_world_factions/tree/master/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/big_world_factions/blob/master/preview.png
+  description: |
+    <br>1942 on the Big World Map with extra nations.
+- mapName: Smalls 1939
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Smalls_1939/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Smalls_1939/blob/master/preview.png
+  description: |
+    <br>World War II starting in 1939 on the Big World map.
+- mapName: Axis Ascension
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/axis_ascension/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Smalls_1939/blob/master/preview.png
+  description: |
+    <br>World War II starting in 1942 on a large map
+- mapName: Operation Unthinkable
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Operation_Unthinkable/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Operation_Unthinkable/blob/master/preview.png
+  description: |
+    <br>This scenario is inspired by Winston Churchill's proposed war against Russia.For details see https://en.wikipedia.org/wiki/Operation_Unthinkable.
+- mapName: Eight Army Free for All
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/eight_army_free_for_all/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/eight_army_free_for_all/blob/master/preview.png
+  description: |
+    <br>Eight armies on a world map
+- mapName: Broken Earth
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Broken_Earth/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Broken_Earth/blob/master/preview.png
+  description: |
+    <br>Eight power free for all on the Anniversary edition map
+- mapName: Viking
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Viking/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Viking/blob/master/preview.png
+  description: |
+    <br>The Viking invasions of England. A work in progress.
+- mapName: Churchills 1939
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/churchills_1939/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/churchills_1939/blob/master/preview.png
+  description: |
+    <br>World War 2 on the Global map starting in 1939 with detailed rules for neutrals.
+- mapName: Death from Above
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Death_from_Above/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Death_from_Above/blob/master/preview.png
+  description: |
+    <br>The Classic game with more emphasis on air power.
+- mapName: WWII Nazi Threat
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/wwiinazithreat/tree/master/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/wwiinazithreat/blob/master/preview.png
+  description: |
+    <br>War in Europe startiing in 1939
+- mapName: NSP_V4
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/NSP_v4/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/wwiinazithreat/blob/master/preview.png
+  description: |
+    <br>What if the Nazi-Soviet pact had held? Russia is Axis, Japan is Allied.
+- mapName: CCLXXbc
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/CCLXXbc/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/CCLXXbc/blob/master/preview.png
+  description: |
+    <br>Make yourself an empire around the Mediterranean Ocean (the known world).
+- mapName: 2013 Conflict
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/2013Conflict/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/2013Conflict/blob/master/preview.png
+  description: |
+    <br>Hypothetical World War 3 in 2013.
