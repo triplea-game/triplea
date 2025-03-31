@@ -63,7 +63,7 @@ class EmailSenderEditorViewModel {
     return smtpServer != null
         && !smtpServer.isBlank()
         && !toAddress.isBlank()
-        && PlayerEmailValidation.isValid(toAddress)
+        && PlayerEmailValidation.areValid(toAddress)
         && StringUtils.isPositiveInt(smtpPort)
         && ClientSetting.emailUsername.isSet()
         && ClientSetting.emailUsername.getValueOrThrow().length > 0
@@ -184,7 +184,7 @@ class EmailSenderEditorViewModel {
 
   boolean isToAddressValid() {
     return isEmailProviderDisabled()
-        || (!toAddress.isBlank() && PlayerEmailValidation.isValid(toAddress));
+        || (!toAddress.isBlank() && PlayerEmailValidation.areValid(toAddress));
   }
 
   void setUseTls(final boolean useTls) {

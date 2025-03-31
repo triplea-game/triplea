@@ -7,25 +7,50 @@ import org.jetbrains.annotations.NonNls;
 @UtilityClass
 public final class PlayerEmailValidation {
 
+  @NonNls private static final String QUOTED_STRING_REGEX = "\"(?:[^\"\\\\]|\\\\\\p{ASCII})*\"";
+  @NonNls private static final String ATOM_REGEX = "[^()<>@,;:\\\\\".\\[\\] \\x28\\p{Cntrl}]+";
+
+  @NonNls
+  private static final String WORD_REGEX = "(?:" + ATOM_REGEX + "|" + QUOTED_STRING_REGEX + ")";
+
+  @NonNls
+  private static final String SUBDOMAIN_REGEX =
+      "(?:" + ATOM_REGEX + "|\\[(?:[^\\[\\]\\\\]|\\\\\\p{ASCII})*\\])";
+
+  @NonNls
+  private static final String DOMAIN_REGEX = SUBDOMAIN_REGEX + "(?:\\." + SUBDOMAIN_REGEX + ")*";
+
+  @NonNls private static final String LOCAL_PART_REGEX = WORD_REGEX + "(?:\\." + WORD_REGEX + ")*";
+  @NonNls private static final String EMAIL_REGEX = LOCAL_PART_REGEX + "@" + DOMAIN_REGEX;
+
   public static boolean isValid(final String emailAddress) {
     return validate(emailAddress) == null;
   }
 
+  public static boolean areValid(final String emailAddresses) {
+    // Split at every space that was not quoted since addresses like "Email Name"123@some.com are
+    // valid.
+    String[] addresses = emailAddresses.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+    for (String address : addresses) {
+      if (!isValid(address)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   /** Allow multiple fully qualified email addresses separated by spaces, or a blank string. */
   public static String validate(final String emailAddress) {
-    final String quotedString = "\"(?:[^\"\\\\]|\\\\\\p{ASCII})*\"";
-    @NonNls final String atom = "[^()<>@,;:\\\\\".\\[\\] \\x28\\p{Cntrl}]+";
-    @NonNls final String word = "(?:" + atom + "|" + quotedString + ")";
-    @NonNls final String subdomain = "(?:" + atom + "|\\[(?:[^\\[\\]\\\\]|\\\\\\p{ASCII})*\\])";
-    @NonNls final String domain = subdomain + "(?:\\." + subdomain + ")*";
-    @NonNls final String localPart = word + "(?:\\." + word + ")*";
-    @NonNls final String email = localPart + "@" + domain;
-    @NonNls final String regex = "(\\s*" + email + "\\s*)*";
-    if (!emailAddress.matches(regex)) {
-      return "Invalid email address";
+    if (emailAddress == null) {
+      return null;
     }
     if (emailAddress.length() > LobbyConstants.EMAIL_MAX_LENGTH) {
-      return "Email address exceeds max length: " + LobbyConstants.EMAIL_MAX_LENGTH;
+      return String.format(
+          "Email address has length %d exceeds the maximum length : %d",
+          emailAddress.length(), LobbyConstants.EMAIL_MAX_LENGTH);
+    }
+    if (!emailAddress.matches(EMAIL_REGEX)) {
+      return String.format("Email address is invalid: %s", emailAddress);
     }
     return null;
   }

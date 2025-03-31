@@ -2978,3 +2978,66 @@
   img: https://raw.githubusercontent.com/triplea-maps/pacific_1942/blob/master/preview.png
   description: |
     <br>An adaption of the Axis & Allies: Pacific game to TripleA.
+- mapName: World War II Halifax
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/World_War_II_Halifax/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/World_War_II_Halifax/blob/master/preview.png
+  description: |
+    <br>A modified version of the World War II Global game.
+- mapName: Election_USA
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Election_Usa/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Election_Usa/blob/master/preview.png
+  description: |
+    <br>A game inspired by US elections.
+- mapName: Downfall-July1944
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Downfall-July1944/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Downfall-July1944/blob/master/preview.png
+  description: |
+    <br>Last year of World War 2 in Europe.
+- mapName: Ageworld
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/ageworld/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/ageworld/blob/master/preview.png
+  description: |
+    <br>The World Through the Ages
+- mapName: War of the Roses
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/War_of_the_Roses_Revamp/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/War_of_the_Roses_Revamp/blob/master/preview.png
+  description: |
+    <br>The Wars of the Roses (1455-1487), were a series of civil wars fought over control of the English throne in the mid- to late fifteenth century.
+- mapName: Five If By Sea
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/five_if_by_sea/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/five_if_by_sea/blob/master/preview.png
+  description: |
+    <br>5 island nations try to takeover the world
+- mapName: Europe-Revised
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Europe-Revised/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Europe-Revised/blob/master/preview.png
+  description: |
+    <br>Modified version of Axis & Allies: Europe
+- mapName: Hearts of Iron-Fatherland
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/HeartsofIron_Fatherland/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/HeartsofIron_Fatherland/blob/master/preview.png
+  description: |
+    <br>A scenario loosely based on the best selling alternative history noval 'Fatherland' by Robert Harris, set in roughly 1946.
+- mapName: Nazi-Soviet Pact
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/NaziSovietPact/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/NaziSovietPact/blob/master/preview.png
+  description: |
+    <br>A hypothetical WW2 scenario where the Molotov-Ribbentrop pact develops until a full alliance.
