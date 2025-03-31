@@ -3185,3 +3185,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/2013Conflict/blob/master/preview.png
   description: |
     <br>Hypothetical World War 3 in 2013.
+- mapName: Franco-Prussian War
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Franco_Prussian_War/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Franco_Prussian_War/blob/master/preview.png
+  description: |
+    <br>Franco-Prussian War
