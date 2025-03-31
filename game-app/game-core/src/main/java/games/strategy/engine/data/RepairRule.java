@@ -5,11 +5,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import org.triplea.java.collections.IntegerMap;
 
 /** A repair rule. */
-public class RepairRule extends DefaultNamed implements Rule {
+public class RepairRule extends ProductionRule {
   private static final long serialVersionUID = -45646671022993959L;
-
-  private final IntegerMap<Resource> costs;
-  private final IntegerMap<NamedAttachable> results;
 
   public RepairRule(final String name, final GameData data) {
     this(name, data, new IntegerMap<>(), new IntegerMap<>());
@@ -20,31 +17,14 @@ public class RepairRule extends DefaultNamed implements Rule {
       final GameData data,
       final IntegerMap<NamedAttachable> results,
       final IntegerMap<Resource> costs) {
-    super(name, data);
+    super(name, data, results, costs);
 
     checkNotNull(results);
     checkNotNull(costs);
-
-    this.costs = new IntegerMap<>(costs);
-    this.results = new IntegerMap<>(results);
-  }
-
-  public void addCost(final Resource resource, final int quantity) {
-    costs.put(resource, quantity);
-  }
-
-  @Override
-  public IntegerMap<Resource> getCosts() {
-    return new IntegerMap<>(costs);
-  }
-
-  @Override
-  public IntegerMap<NamedAttachable> getResults() {
-    return results;
   }
 
   @Override
   public String toString() {
-    return "RepairRule:" + getName();
+    return "RepairRule: " + getName();
   }
 }
