@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.image.MapImage;
 import games.strategy.ui.ScrollableTextFieldListener;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -19,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
 
@@ -119,9 +121,9 @@ public class IndividualUnitPanelGrouped extends JPanel {
             0));
     selectNoneButton.addActionListener(e -> selectNone());
     autoSelectButton.addActionListener(e -> autoSelect());
-    final JPanel entries = new JPanel();
-    entries.setLayout(new FlowLayout());
-    entries.setBorder(BorderFactory.createEmptyBorder());
+    final JPanel entriesPanel = new JPanel();
+    entriesPanel.setLayout(new FlowLayout());
+    entriesPanel.setBorder(BorderFactory.createEmptyBorder());
     for (final Map.Entry<String, Collection<Unit>> entry : unitsToChooseFrom.entrySet()) {
       final String miniTitle = entry.getKey();
       final Collection<Unit> possibleTargets = entry.getValue();
@@ -129,8 +131,8 @@ public class IndividualUnitPanelGrouped extends JPanel {
       panelChooser.setLayout(new BoxLayout(panelChooser, BoxLayout.Y_AXIS));
       panelChooser.setBorder(BorderFactory.createLineBorder(getBackground()));
       final JLabel chooserTitle = new JLabel("Choose Per Unit");
-      chooserTitle.setHorizontalAlignment(JLabel.LEFT);
-      chooserTitle.setFont(new Font("Arial", Font.BOLD, 12));
+      chooserTitle.setHorizontalAlignment(SwingConstants.LEFT);
+      chooserTitle.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, 12));
       panelChooser.add(chooserTitle);
       panelChooser.add(new JLabel(" "));
       final IndividualUnitPanel chooser =
@@ -158,10 +160,10 @@ public class IndividualUnitPanelGrouped extends JPanel {
                   : (chooserScrollPane.getPreferredSize().width > 220
                       ? chooserScrollPane.getPreferredSize().height + 20
                       : chooserScrollPane.getPreferredSize().height))));
-      entries.add(chooserScrollPane);
+      entriesPanel.add(chooserScrollPane);
     }
     add(
-        entries,
+        entriesPanel,
         new GridBagConstraints(
             0,
             1,

@@ -21,6 +21,7 @@ import lombok.Getter;
  */
 @Getter
 public class MapImage {
+  public static final String FONT_FAMILY_DEFAULT = "Arial";
   private static Font propertyMapFont = null;
   private static Color propertyTerritoryNameAndPuAndCommentColor = null;
   private static Color propertyUnitCountColor = null;
@@ -59,7 +60,7 @@ public class MapImage {
       final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
       propertyMapFont =
           new Font(
-              "Arial",
+              MapImage.FONT_FAMILY_DEFAULT,
               Font.BOLD,
               pref.getInt(PROPERTY_MAP_FONT_SIZE_STRING, MAP_FONT_SIZE_DEFAULT));
     }
@@ -195,7 +196,7 @@ public class MapImage {
 
   public static void resetPropertyMapFont() {
     removeProperty(PROPERTY_MAP_FONT_SIZE_STRING);
-    propertyMapFont = new Font("Arial", Font.BOLD, MAP_FONT_SIZE_DEFAULT);
+    propertyMapFont = new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, MAP_FONT_SIZE_DEFAULT);
   }
 
   public static void resetPropertyTerritoryNameAndPuAndCommentColor() {
