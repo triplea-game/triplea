@@ -23,10 +23,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import org.triplea.domain.data.LobbyConstants;
 import org.triplea.domain.data.PlayerEmailValidation;
 import org.triplea.domain.data.UserName;
 import org.triplea.java.Sha512Hasher;
 import org.triplea.swing.JCheckBoxBuilder;
+import org.triplea.swing.JTextFieldBuilder;
 import org.triplea.swing.KeyTypeValidator;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.swing.key.binding.SwingKeyBinding;
@@ -34,6 +36,7 @@ import org.triplea.swing.key.binding.SwingKeyBinding;
 /** The panel used to create a new lobby account or update an existing lobby account. */
 public final class CreateAccountPanel extends JPanel {
   private static final long serialVersionUID = 2285956517232671122L;
+  public static final int ACCOUNT_PASSWORD_MIN_LENGTH = 5;
 
   /** Indicates how the user dismissed the dialog displaying the panel. */
   public enum ReturnValue {
@@ -43,8 +46,10 @@ public final class CreateAccountPanel extends JPanel {
 
   private static final String TITLE = "Create Account";
   private @Nullable JDialog dialog;
-  private final JTextField usernameField = new JTextField();
-  private final JTextField emailField = new JTextField();
+  private final JTextField usernameField =
+      JTextFieldBuilder.builder().maxLength(LobbyConstants.USERNAME_MAX_LENGTH).build();
+  private final JTextField emailField =
+      JTextFieldBuilder.builder().maxLength(LobbyConstants.EMAIL_MAX_LENGTH).build();
   private final JPasswordField passwordField = new JPasswordField();
   private final JPasswordField passwordConfirmField = new JPasswordField();
   private ReturnValue returnValue = ReturnValue.CANCEL;
@@ -285,8 +290,10 @@ public final class CreateAccountPanel extends JPanel {
       return Optional.of("You must enter an email");
     } else if (passwordField.getPassword().length == 0) {
       return Optional.of("You must enter a password");
-    } else if (passwordField.getPassword().length < 5) {
-      return Optional.of("Passwords must be at least five characters long");
+    } else if (passwordField.getPassword().length < ACCOUNT_PASSWORD_MIN_LENGTH) {
+      return Optional.of(
+          String.format(
+              "Passwords must be at least %s characters long", LobbyConstants.PASSWORD_MIN_LENGTH));
     }
     return Optional.empty();
   }

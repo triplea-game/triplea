@@ -55,7 +55,6 @@ final class ViewMenu extends JMenu {
   private static final long serialVersionUID = -4703734404422047487L;
 
   private JCheckBoxMenuItem showMapDetails;
-  private JCheckBoxMenuItem showMapBlends;
 
   private final List<Territory> gameMapTerritories;
   private final TripleAFrame frame;
@@ -293,6 +292,7 @@ final class ViewMenu extends JMenu {
   }
 
   private void addShowMapBlends() {
+    JCheckBoxMenuItem showMapBlends;
     showMapBlends = new JCheckBoxMenuItem("Show Map Blends");
     showMapBlends.setMnemonic(KeyEvent.VK_B);
     if (uiContext.getMapData().getHasRelief()
@@ -336,9 +336,7 @@ final class ViewMenu extends JMenu {
     final JCheckBoxMenuItem showMapZoomBox = new JCheckBoxMenuItem("Show Zoom Percentage");
 
     showMapZoomBox.addActionListener(
-        e -> {
-          this.frame.getBottomBar().setMapZoomEnabled(showMapZoomBox.isSelected());
-        });
+        e -> this.frame.getBottomBar().setMapZoomEnabled(showMapZoomBox.isSelected()));
 
     add(showMapZoomBox);
   }
@@ -434,7 +432,8 @@ final class ViewMenu extends JMenu {
                 MapImage.resetPropertyUnitHitDamageOutline();
                 frame.getMapPanel().resetMap();
               } else if (result == 0) {
-                MapImage.setPropertyMapFont(new Font("Arial", Font.BOLD, fontsize.getValue()));
+                MapImage.setPropertyMapFont(
+                    new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, fontsize.getValue()));
                 MapImage.setPropertyTerritoryNameAndPuAndCommentColor(
                     territoryNameColor.getValue());
                 MapImage.setPropertyUnitCountColor(unitCountColor.getValue());
@@ -529,10 +528,14 @@ final class ViewMenu extends JMenu {
           }
 
           @Override
-          public void menuDeselected(final MenuEvent e) {}
+          public void menuDeselected(final MenuEvent e) {
+            // not needed interface method
+          }
 
           @Override
-          public void menuCanceled(final MenuEvent e) {}
+          public void menuCanceled(final MenuEvent e) {
+            // not needed interface method
+          }
         });
     add(flagDisplayMenu);
   }
