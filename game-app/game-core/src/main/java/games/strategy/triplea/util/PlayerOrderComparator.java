@@ -35,7 +35,7 @@ public class PlayerOrderComparator implements Comparator<GamePlayer>, Serializab
       try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
         delegate = s.getDelegate();
       }
-      if (delegate != null && delegate.getClass() != null) {
+      if (delegate != null) {
         final String delegateClassName = delegate.getClass().getName();
         if (delegateClassName.equals("games.strategy.triplea.delegate.InitializationDelegate")
             || delegateClassName.equals("games.strategy.triplea.delegate.BidPurchaseDelegate")
@@ -44,7 +44,7 @@ public class PlayerOrderComparator implements Comparator<GamePlayer>, Serializab
           continue;
         }
       } else if (s.getName() != null
-          && (s.getName().endsWith("Bid") || s.getName().endsWith("BidPlace"))) {
+          && (GameStep.isBidStep(s.getName()) || GameStep.isBidPlaceStep(s.getName()))) {
         continue;
       }
       if (s.getPlayerId().equals(p1)) {
