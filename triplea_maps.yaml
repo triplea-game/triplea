@@ -3185,3 +3185,31 @@
   img: https://raw.githubusercontent.com/triplea-maps/2013Conflict/blob/master/preview.png
   description: |
     <br>Hypothetical World War 3 in 2013.
+- mapName: WW2v5_1942_2nd_Edition_High_Production_Mod
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/WW2v5_1942_2nd_Edition_High_Production_Mod/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/WW2v5_1942_2nd_Edition_High_Production_Mod/blob/master/preview.png
+  description: |
+    <br>World War II V 5 with higher incomes.
+- mapName: Hellgate-Europe
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Hellgate-Europe/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Hellgate-Europe/blob/master/preview.png
+  description: |
+    <br>The last year of the World War 2 in Europe, using the Axis & Allies Europe map
+- mapName: Zombieland USA
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/zombielandusa/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/zombielandusa/blob/master/preview.png
+  description: |
+    <br>The United States is overrun by Zombies.
+- mapName: 6 Kingdoms
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/6Kingdoms/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/6Kingdoms/blob/master/preview.png
+  description: |
+    <br>A war between two alliances of fantasy kingdoms.
