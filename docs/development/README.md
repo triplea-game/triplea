@@ -7,7 +7,7 @@
 
 ## Mac
 
-- Install Docker: <https://store.docker.com/editions/community/docker-ce-desktop-mac>
+- Install Docker Desktop: <https://store.docker.com/editions/community/docker-ce-desktop-mac>
 
 ## Windows
 
