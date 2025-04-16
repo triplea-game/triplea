@@ -20,6 +20,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
@@ -617,6 +618,47 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(armour, 2);
     final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertError(results);
+  }
+
+  private Collection<Unit> addBritishFightersToKenya() {
+    final Collection<Unit> fighters = fighter.create(2, british);
+    final Change addFighters = ChangeFactory.addUnits(kenya, fighters);
+    bridge.addChange(addFighters);
+    return fighters;
+  }
+
+  @Test
+  void testCanFlyOverNeutralWhenAllowed() {
+    gameData.getProperties().set(Constants.NEUTRAL_FLYOVER_ALLOWED, true);
+    // try to fly over South Africa, should be possible as neutral flyover is allowed
+    final Route route = new Route(kenya, southAfrica, angola);
+    final Collection<Unit> fighters = addBritishFightersToKenya();
+    final String results = delegate.move(fighters, route);
+    assertValid(results);
+  }
+
+  @Test
+  void testCantFlyOverNeutralWhenNotAllowed() {
+    gameData.getProperties().set(Constants.NEUTRAL_FLYOVER_ALLOWED, false);
+    // try to fly over South Africa, cant because we can't because neutral flyover not allowed
+    final Route route = new Route(kenya, southAfrica, angola);
+    final Collection<Unit> fighters = addBritishFightersToKenya();
+    final String results = delegate.move(fighters, route);
+    assertError(results);
+  }
+
+  @Test
+  void testCantFlyOverNeutralInTwoMovesWhenNotAllowed() {
+    gameData.getProperties().set(Constants.NEUTRAL_FLYOVER_ALLOWED, false);
+    // try to fly over South Africa via 2 moves, can't because neutral flyover not allowed
+    final Route routeFirstMove = new Route(kenya, southAfrica);
+    final Collection<Unit> fighters = addBritishFightersToKenya();
+    final String resultsFirstMove =
+        delegate.performMove(new MoveDescription(fighters, routeFirstMove));
+    assertValid(resultsFirstMove);
+    final Route routeSecondMove = new Route(southAfrica, angola);
+    final String resultsSecondMove = delegate.move(fighters, routeSecondMove);
+    assertError(resultsSecondMove);
   }
 
   @Test

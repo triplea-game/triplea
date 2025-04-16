@@ -1,6 +1,7 @@
 package games.strategy.triplea;
 
 import games.strategy.engine.data.GamePlayer;
+import java.text.MessageFormat;
 import org.jetbrains.annotations.NonNls;
 
 /** Constants used throughout the game. */
@@ -206,7 +207,7 @@ public interface Constants {
   String USE_FUEL_COST = "Use Fuel Cost";
   String USE_SHIPYARDS = "Use Shipyards";
 
-  String OLD_ART_RULE_NAME = "ArtyOld";
+  @NonNls String OLD_ART_RULE_NAME = "ArtyOld";
   String SUPPORT_RULE_NAME_OLD = SUPPORT_ATTACHMENT_PREFIX + OLD_ART_RULE_NAME;
   String SUPPORT_RULE_NAME_OLD_TEMP_FIRST =
       SUPPORT_ATTACHMENT_PREFIX + OLD_ART_RULE_NAME + "TempFirst";
@@ -255,10 +256,10 @@ public interface Constants {
   @NonNls String CONSTRUCTION_TYPE_STRUCTURE = "structure";
 
   static String getIncomePercentageFor(final GamePlayer gamePlayer) {
-    return gamePlayer.getName() + " Income Percentage";
+    return MessageFormat.format("{0} Income Percentage", gamePlayer.getName());
   }
 
   static String getPuIncomeBonus(final GamePlayer gamePlayer) {
-    return gamePlayer.getName() + "PU Income Bonus";
+    return MessageFormat.format("{0} PU Income Bonus", gamePlayer.getName());
   }
 }
