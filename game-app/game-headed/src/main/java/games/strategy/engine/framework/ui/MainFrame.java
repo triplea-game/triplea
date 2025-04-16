@@ -70,6 +70,7 @@ public class MainFrame {
         () -> {
           instance.mainJFrame.requestFocus();
           instance.mainJFrame.toFront();
+          instance.mainJFrame.setLocationRelativeTo(null); // center on screen
           instance.mainJFrame.setVisible(true);
         });
   }

@@ -1,5 +1,7 @@
 package games.strategy.triplea.ui;
 
+import static java.text.MessageFormat.format;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataEvent;
@@ -41,6 +43,7 @@ import org.triplea.swing.SwingComponents;
 
 class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   private static final long serialVersionUID = -4411301492537704785L;
+  public static final String LBL_UNITS_LEFT_TO_PLACE = "Units left to place:";
   private final JLabel leftToPlaceLabel = createIndentedLabel();
   private transient PlaceData placeData;
 
@@ -92,7 +95,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
             if (production.isError()) {
               JOptionPane.showMessageDialog(
                   getTopLevelAncestor(),
-                  production.getErrorMessage() + "\n\n",
+                  production.getErrorMessage(),
                   "Cannot produce units",
                   JOptionPane.INFORMATION_MESSAGE);
             }
@@ -113,7 +116,6 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
           }
           final UnitChooser chooser =
               new UnitChooser(units, Map.of(), false, getMap().getUiContext());
-          final String messageText = "Place units in " + territory.getName();
           if (maxUnits >= 0) {
             chooser.setMaxAndShowMaxButton(maxUnits);
           }
@@ -122,7 +124,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
               JOptionPane.showOptionDialog(
                   getTopLevelAncestor(),
                   scroll,
-                  messageText,
+                  format("Place units in {0}", territory.getName()),
                   JOptionPane.OK_CANCEL_OPTION,
                   JOptionPane.PLAIN_MESSAGE,
                   null,
@@ -173,7 +175,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
     undoableMovesPanel = new UndoablePlacementsPanel(this);
     unitsToPlacePanel = new SimpleUnitPanel(map.getUiContext());
     data.addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, this::updateStep);
-    leftToPlaceLabel.setText("Units left to place:");
+    leftToPlaceLabel.setText(LBL_UNITS_LEFT_TO_PLACE);
   }
 
   private void updateStep() {
@@ -260,7 +262,10 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   private void refreshActionLabelText(final boolean bid) {
     SwingUtilities.invokeLater(
         () ->
-            actionLabel.setText(getCurrentPlayer().getName() + " place" + (bid ? " for bid" : "")));
+            actionLabel.setText(
+                bid
+                    ? format("{0} place for bid", getCurrentPlayer().getName())
+                    : format("{0} place", getCurrentPlayer().getName())));
   }
 
   PlaceData waitForPlace(final boolean bid, final PlayerBridge playerBridge) {
@@ -285,7 +290,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
 
   @Override
   protected final void undoMoveSpecific() {
-    leftToPlaceLabel.setText("Units left to place:");
+    leftToPlaceLabel.setText(LBL_UNITS_LEFT_TO_PLACE);
     updateUnits();
   }
 
@@ -306,7 +311,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
           JOptionPane.showConfirmDialog(
               getTopLevelAncestor(),
               "You have not placed all your units yet.  Are you sure you want to end your turn?",
-              "TripleA",
+              "Confirm End Turn",
               JOptionPane.YES_NO_OPTION,
               JOptionPane.PLAIN_MESSAGE);
       if (option != JOptionPane.YES_OPTION) {
