@@ -1,9 +1,8 @@
 package games.strategy.triplea;
 
 import games.strategy.engine.data.GamePlayer;
-import org.jetbrains.annotations.NonNls;
-
 import java.text.MessageFormat;
+import org.jetbrains.annotations.NonNls;
 
 /** Constants used throughout the game. */
 @NonNls
