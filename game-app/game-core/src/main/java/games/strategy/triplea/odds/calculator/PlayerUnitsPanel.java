@@ -13,6 +13,7 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -135,9 +136,10 @@ public class PlayerUnitsPanel extends JPanel {
     }
 
     // Populate provided units into each category, add any remaining unit categories
+    Collections.sort(allUnitCategories);
     final Set<UnitCategory> unitCategoriesWithUnits = UnitSeparator.categorize(units);
     for (final UnitCategory unitCategoryWithUnits : unitCategoriesWithUnits) {
-      int categoryIndex = allUnitCategories.indexOf(unitCategoryWithUnits);
+      int categoryIndex = Collections.binarySearch(allUnitCategories, unitCategoryWithUnits);
       if (categoryIndex > 0) {
         allUnitCategories.get(categoryIndex).getUnits().addAll(unitCategoryWithUnits.getUnits());
       } else {
