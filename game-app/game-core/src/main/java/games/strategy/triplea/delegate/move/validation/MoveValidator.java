@@ -182,9 +182,10 @@ public class MoveValidator {
       final Route route,
       final GamePlayer player,
       final MoveValidationResult result) {
-    if (units.isEmpty()) {
-      return result.setErrorReturnResult("No units");
-    }
+    if (validateFirstUnits(units, route, result).hasError()) return result;
+
+    if (validateFirstRoute(route, units, player, result).hasError()) return result;
+
     if (!getEditMode(data.getProperties())) {
       final Collection<Unit> matches =
           CollectionUtils.getMatches(
@@ -199,53 +200,62 @@ public class MoveValidator {
         return result;
       }
     }
-    // this should never happen
-    if (new HashSet<>(units).size() != units.size()) {
-      result.setError("Not all units unique, units: " + units + " unique: " + new HashSet<>(units));
-      return result;
-    }
+
+    return result;
+  }
+
+  private MoveValidationResult validateFirstRoute(
+      Route route, Collection<Unit> units, GamePlayer player, MoveValidationResult result) {
     if (!data.getMap().isValidRoute(route)) {
-      result.setError("Invalid route: " + route);
-      return result;
-    }
-    if (validateMovementRestrictedByTerritory(route, player, result).hasError()) {
+      return result.setErrorReturnResult("Invalid route: " + route);
+    } else if (validateMovementRestrictedByTerritory(route, player, result).hasError()) {
       return result;
     }
     // cannot enter territories owned by a player to which we are neutral towards
     final Collection<Territory> landOnRoute = route.getMatches(Matches.territoryIsLand());
-    if (!landOnRoute.isEmpty()) {
-      // TODO: if this ever changes, we need to also update getBestRoute(), because getBestRoute is
-      // also checking to make sure we avoid land territories owned by nations with these 2
-      // relationship type attachment options
-      for (final Territory t : landOnRoute) {
-        if (units.stream().anyMatch(Matches.unitIsLand())
-            && !data.getRelationshipTracker().canMoveLandUnitsOverOwnedLand(player, t.getOwner())) {
-          result.setError(
-              player.getName()
-                  + " may not move land units over land owned by "
-                  + t.getOwner().getName());
-          return result;
-        }
-        if (units.stream().anyMatch(Matches.unitIsAir())
-            && !data.getRelationshipTracker().canMoveAirUnitsOverOwnedLand(player, t.getOwner())) {
-          result.setError(
-              player.getName()
-                  + " may not move air units over land owned by "
-                  + t.getOwner().getName());
-          return result;
-        }
+    // TODO: if this ever changes, we need to also update getBestRoute(), because getBestRoute is
+    // also checking to make sure we avoid land territories owned by nations with these 2
+    // relationship type attachment options
+    for (final Territory t : landOnRoute) {
+      if (units.stream().anyMatch(Matches.unitIsLand())
+          && !data.getRelationshipTracker().canMoveLandUnitsOverOwnedLand(player, t.getOwner())) {
+        return result.setErrorReturnResult(
+            player.getName()
+                + " may not move land units over land owned by "
+                + t.getOwner().getName());
+      }
+      if (units.stream().anyMatch(Matches.unitIsAir())
+          && !data.getRelationshipTracker().canMoveAirUnitsOverOwnedLand(player, t.getOwner())) {
+        return result.setErrorReturnResult(
+            player.getName()
+                + " may not move air units over land owned by "
+                + t.getOwner().getName());
       }
     }
-    for (final Unit unit : units) {
-      if (unit.getSubmerged()) {
-        result.addDisallowedUnit("Cannot move submerged units", unit);
-      } else if (Matches.unitIsDisabled().test(unit)) {
-        result.addDisallowedUnit("Cannot move disabled units", unit);
-      }
+    return result;
+  }
+
+  private static MoveValidationResult validateFirstUnits(
+      Collection<Unit> units, Route route, MoveValidationResult result) {
+    if (units.isEmpty()) {
+      result.setErrorReturnResult("No units");
     }
     // make sure all units are actually in the start territory
-    if (!route.getStart().getUnitCollection().containsAll(units)) {
-      return result.setErrorReturnResult("Not enough units in starting territory");
+    else if (!route.getStart().getUnitCollection().containsAll(units)) {
+      result.setErrorReturnResult("Not enough units in starting territory");
+    }
+    // this should never happen
+    else if (new HashSet<>(units).size() != units.size()) {
+      result.setError("Not all units unique, units: " + units + " unique: " + new HashSet<>(units));
+    } else {
+      units.forEach(
+          unit -> {
+            if (unit.getSubmerged()) {
+              result.addDisallowedUnit("Cannot move submerged units", unit);
+            } else if (Matches.unitIsDisabled().test(unit)) {
+              result.addDisallowedUnit("Cannot move disabled units", unit);
+            }
+          });
     }
     return result;
   }
@@ -684,7 +694,7 @@ public class MoveValidator {
     if (noEnemyUnitsOnPathMiddleSteps(route, player)) {
       return result;
     }
-    // if we are all air, then its ok
+    // if we are all air, then it's ok
     if (units.stream().allMatch(Matches.unitIsAir())) {
       return result;
     }
@@ -853,7 +863,7 @@ public class MoveValidator {
     if (!isEditMode && route.anyMatch(Matches.territoryIsImpassable())) {
       return result.setErrorReturnResult(CANT_MOVE_THROUGH_IMPASSABLE);
     }
-    if (canCrossNeutralTerritory(route, player, result).hasError()) {
+    if (canPayToCrossNeutralTerritory(route, player, result).hasError()) {
       return result;
     }
     if (Properties.getNeutralsImpassable(data.getProperties())
@@ -1113,7 +1123,7 @@ public class MoveValidator {
   // Determines whether we can pay the neutral territory charge for a given route for air units. We
   // can't cross neutral
   // territories in WW2V2.
-  private MoveValidationResult canCrossNeutralTerritory(
+  private MoveValidationResult canPayToCrossNeutralTerritory(
       final Route route, final GamePlayer player, final MoveValidationResult result) {
     // neutrals we will overfly in the first place
     final Collection<Territory> neutrals = MoveDelegate.getEmptyNeutral(route);
