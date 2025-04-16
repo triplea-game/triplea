@@ -1,5 +1,7 @@
 package games.strategy.triplea.odds.calculator;
 
+import static java.text.MessageFormat.format;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
@@ -53,6 +55,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.triplea.java.ThreadRunner;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.IntTextField;
@@ -64,18 +68,18 @@ import org.triplea.swing.jpanel.GridBagConstraintsFill;
 @Slf4j
 class BattleCalculatorPanel extends JPanel {
   private static final long serialVersionUID = -3559687618320469183L;
-  private static final String NO_EFFECTS = "*None*";
+  private static final @NonNls String NO_EFFECTS = "*None*";
   private final JLabel attackerWin = new JLabel();
   private final JLabel defenderWin = new JLabel();
   private final JLabel draw = new JLabel();
-  private final JLabel defenderLeft = new JLabel();
-  private final JLabel attackerLeft = new JLabel();
+  private final @NonNls JLabel defenderLeft = new JLabel();
+  private final @NonNls JLabel attackerLeft = new JLabel();
   private final JLabel defenderLeftWhenDefenderWon = new JLabel();
   private final JLabel attackerLeftWhenAttackerWon = new JLabel();
   private final JLabel averageChangeInTuv = new JLabel();
   private final JLabel roundsAverage = new JLabel();
   private final JLabel count = new JLabel();
-  private final JLabel time = new JLabel();
+  private final @NonNls JLabel time = new JLabel();
   private final IntTextField numRuns = new IntTextField();
   private final IntTextField retreatAfterXRounds = new IntTextField();
   private final IntTextField retreatAfterXUnitsLeft = new IntTextField();
@@ -103,14 +107,15 @@ class BattleCalculatorPanel extends JPanel {
   private final JLabel defenderUnitsTotalPower = new JLabel();
   private String attackerOrderOfLosses = null;
   private String defenderOrderOfLosses = null;
-  private final Territory location;
+  private final Territory battleSiteTerritory;
   private final JList<String> territoryEffectsJList;
   private final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
 
-  BattleCalculatorPanel(final GameData data, final UiContext uiContext, final Territory location) {
+  BattleCalculatorPanel(
+      final GameData data, final UiContext uiContext, final Territory battleSiteTerritory) {
     this.data = data;
     this.uiContext = uiContext;
-    this.location = location;
+    this.battleSiteTerritory = battleSiteTerritory;
     calculateButton.setEnabled(false);
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final Collection<GamePlayer> playerList = new ArrayList<>(data.getPlayerList().getPlayers());
@@ -131,9 +136,9 @@ class BattleCalculatorPanel extends JPanel {
         territoryEffectsJList.setLayoutOrientation(JList.VERTICAL);
         // equal to the amount of space left (number of remaining items on the right)
         territoryEffectsJList.setVisibleRowCount(4);
-        if (location != null) {
+        if (battleSiteTerritory != null) {
           final Collection<TerritoryEffect> currentEffects =
-              TerritoryEffectHelper.getEffects(location);
+              TerritoryEffectHelper.getEffects(battleSiteTerritory);
           if (!currentEffects.isEmpty()) {
             final int[] selectedIndexes = new int[currentEffects.size()];
             int currentIndex = 0;
@@ -365,19 +370,6 @@ class BattleCalculatorPanel extends JPanel {
     buttons.add(closeButton);
     add(buttons);
 
-    defenderCombo.addActionListener(
-        e -> {
-          setDefendingUnits(
-              defendingUnitsPanel.getUnits().stream().anyMatch(Matches.unitIsOwnedBy(getDefender()))
-                  ? defendingUnitsPanel.getUnits()
-                  : List.of());
-          setWidgetActivation();
-        });
-    attackerCombo.addActionListener(
-        e -> {
-          setAttackingUnits(List.of());
-          setWidgetActivation();
-        });
     amphibiousCheckBox.addActionListener(e -> setWidgetActivation());
     landBattleCheckBox.addActionListener(
         e -> {
@@ -465,10 +457,10 @@ class BattleCalculatorPanel extends JPanel {
     defendingUnitsPanel.addChangeListener(this::setWidgetActivation);
 
     // Note: Setting landBattleCheckBox resets the units. Thus, set the units after this.
-    if (location == null) {
+    if (battleSiteTerritory == null) {
       landBattleCheckBox.setSelected(true);
     } else {
-      landBattleCheckBox.setSelected(!location.isWater());
+      landBattleCheckBox.setSelected(!battleSiteTerritory.isWater());
     }
     setupAttackerAndDefender();
 
@@ -500,7 +492,7 @@ class BattleCalculatorPanel extends JPanel {
             .players(data.getPlayerList().getPlayers())
             .currentPlayer(data.getHistory().getCurrentPlayer())
             .relationshipTracker(data.getRelationshipTracker())
-            .territory(location)
+            .territory(battleSiteTerritory)
             .build()
             .getAttackerAndDefender();
 
@@ -560,9 +552,10 @@ class BattleCalculatorPanel extends JPanel {
     ThreadRunner.runInNewThread(
         () -> {
           try {
-            final Territory location = findPotentialBattleSite();
-            if (location == null) {
-              throw new IllegalStateException("No territory found that is land: " + isLandBattle());
+            final Territory newBattleSiteTerritory = findPotentialBattleSite();
+            if (newBattleSiteTerritory == null) {
+              throw new IllegalStateException(
+                  format("No territory found that is land: {0}", isLandBattle()));
             }
             final List<Unit> defending = defendingUnitsPanel.getUnits();
             final List<Unit> attacking = attackingUnitsPanel.getUnits();
@@ -594,7 +587,7 @@ class BattleCalculatorPanel extends JPanel {
                 calculator.calculate(
                     attacker,
                     defender,
-                    location,
+                    newBattleSiteTerritory,
                     attacking,
                     defending,
                     bombarding,
@@ -635,19 +628,19 @@ class BattleCalculatorPanel extends JPanel {
     final int attackersTotal = mainCombatAttackers.size();
     final int defendersTotal = mainCombatDefenders.size();
     defenderLeft.setText(
-        formatValue(results.getAverageDefendingUnitsLeft()) + " / " + defendersTotal);
+        getRelationNumberText(results.getAverageDefendingUnitsLeft(), defendersTotal));
     attackerLeft.setText(
-        formatValue(results.getAverageAttackingUnitsLeft()) + " / " + attackersTotal);
+        getRelationNumberText(results.getAverageAttackingUnitsLeft(), attackersTotal));
     final double avgDefIfDefWon = results.getAverageDefendingUnitsLeftWhenDefenderWon();
     defenderLeftWhenDefenderWon.setText(
         Double.isNaN(avgDefIfDefWon)
             ? "N/A"
-            : formatValue(avgDefIfDefWon) + " / " + defendersTotal);
+            : getRelationNumberText(avgDefIfDefWon, defendersTotal));
     final double avgAttIfAttWon = results.getAverageAttackingUnitsLeftWhenAttackerWon();
     attackerLeftWhenAttackerWon.setText(
         Double.isNaN(avgAttIfAttWon)
             ? "N/A"
-            : formatValue(avgAttIfAttWon) + " / " + attackersTotal);
+            : getRelationNumberText(avgAttIfAttWon, attackersTotal));
     roundsAverage.setText(formatValue(results.getAverageBattleRoundsFought()));
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
       double tuvSwing =
@@ -659,19 +652,23 @@ class BattleCalculatorPanel extends JPanel {
     time.setText(formatValue(results.getTime() / 1000.0) + " s");
   }
 
+  private static @NotNull @NonNls String getRelationNumberText(double results, int defendersTotal) {
+    return formatValue(results) + " / " + defendersTotal;
+  }
+
   private Territory findPotentialBattleSite() {
-    Territory location = null;
-    if (this.location == null || this.location.isWater() == isLandBattle()) {
+    Territory newBattleSiteTerritory = null;
+    if (this.battleSiteTerritory == null || this.battleSiteTerritory.isWater() == isLandBattle()) {
       for (final Territory t : data.getMap()) {
         if (t.isWater() == !isLandBattle()) {
-          location = t;
+          newBattleSiteTerritory = t;
           break;
         }
       }
     } else {
-      location = this.location;
+      newBattleSiteTerritory = this.battleSiteTerritory;
     }
-    return location;
+    return newBattleSiteTerritory;
   }
 
   private static String formatPercentage(final double percentage) {
@@ -703,7 +700,7 @@ class BattleCalculatorPanel extends JPanel {
             Matches.unitCanBeInBattle(
                 true, isLandBattle(), 1, hasMaxRounds(isLandBattle(), data), false, List.of())),
         isLandBattle(),
-        location);
+        battleSiteTerritory);
   }
 
   public void setDefenderWithUnits(final GamePlayer defender, final List<Unit> initialUnits) {
@@ -725,7 +722,7 @@ class BattleCalculatorPanel extends JPanel {
         CollectionUtils.getMatches(
             units, Matches.unitCanBeInBattle(false, isLandBattle(), 1, false)),
         isLandBattle(),
-        location);
+        battleSiteTerritory);
   }
 
   public boolean hasAttackingUnits() {
@@ -766,20 +763,22 @@ class BattleCalculatorPanel extends JPanel {
       final List<Unit> defenders =
           CollectionUtils.getMatches(
               defendingUnitsPanel.getUnits(), Matches.unitCanBeInBattle(false, isLand, 1, true));
-      attackerUnitsTotalNumber.setText("Units: " + attackers.size());
-      defenderUnitsTotalNumber.setText("Units: " + defenders.size());
+      attackerUnitsTotalNumber.setText(getTotalNumberText("Units: ", attackers.size()));
+      defenderUnitsTotalNumber.setText(getTotalNumberText("Units: ", defenders.size()));
       attackerUnitsTotalTuv.setText(
-          "TUV: "
-              + TuvUtils.getTuv(
-                  attackers, getAttacker(), tuvCalculator.getCostsForTuv(getAttacker()), data));
+          getTotalNumberText(
+              "TUV: ",
+              TuvUtils.getTuv(
+                  attackers, getAttacker(), tuvCalculator.getCostsForTuv(getAttacker()), data)));
       defenderUnitsTotalTuv.setText(
-          "TUV: "
-              + TuvUtils.getTuv(
-                  defenders, getDefender(), tuvCalculator.getCostsForTuv(getDefender()), data));
+          getTotalNumberText(
+              "TUV: ",
+              TuvUtils.getTuv(
+                  defenders, getDefender(), tuvCalculator.getCostsForTuv(getDefender()), data)));
       final int attackHitPoints = CasualtyUtil.getTotalHitpointsLeft(attackers);
       final int defenseHitPoints = CasualtyUtil.getTotalHitpointsLeft(defenders);
-      attackerUnitsTotalHitPoints.setText("HP: " + attackHitPoints);
-      defenderUnitsTotalHitPoints.setText("HP: " + defenseHitPoints);
+      attackerUnitsTotalHitPoints.setText(getTotalNumberText("HP: ", attackHitPoints));
+      defenderUnitsTotalHitPoints.setText(getTotalNumberText("HP: ", defenseHitPoints));
       final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
       if (isAmphibiousBattle()) {
         attackers.stream()
@@ -826,9 +825,13 @@ class BattleCalculatorPanel extends JPanel {
                       .territoryEffects(territoryEffects)
                       .build())
               .calculateTotalPower();
-      attackerUnitsTotalPower.setText("Power: " + attackPower);
-      defenderUnitsTotalPower.setText("Power: " + defensePower);
+      attackerUnitsTotalPower.setText(getTotalNumberText("Power: ", attackPower));
+      defenderUnitsTotalPower.setText(getTotalNumberText("Power: ", defensePower));
     }
+  }
+
+  private static @NotNull String getTotalNumberText(final String label, final int totalNumber) {
+    return label + totalNumber;
   }
 
   class PlayerRenderer extends DefaultListCellRenderer {

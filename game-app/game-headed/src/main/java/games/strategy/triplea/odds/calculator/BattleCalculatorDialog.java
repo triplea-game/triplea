@@ -98,6 +98,7 @@ public class BattleCalculatorDialog extends JDialog {
     } else {
       dialog.setLocation(lastPosition);
     }
+    dialog.setLocationRelativeTo(null); // center on screen
     dialog.setVisible(true);
     // On some desktop environments, there is an odd behaviour: The new battle calculator dialog is
     // not put at the front if the last user-interaction was to move the window of an already
@@ -160,10 +161,10 @@ public class BattleCalculatorDialog extends JDialog {
           if (!panel.hasAttackingUnits() && !panel.hasDefendingUnits()) {
             final Optional<GamePlayer> defender =
                 t.getUnitCollection().stream().map(Unit::getOwner).findAny();
-            if (defender.isPresent()) {
-              panel.setDefenderWithUnits(
-                  defender.get(), t.getMatches(Matches.alliedUnit(defender.get())));
-            }
+            defender.ifPresent(
+                gamePlayer ->
+                    panel.setDefenderWithUnits(
+                        gamePlayer, t.getMatches(Matches.alliedUnit(gamePlayer))));
           } else {
             panel.addDefendingUnits(t.getMatches(Matches.alliedUnit(panel.getDefender())));
           }
