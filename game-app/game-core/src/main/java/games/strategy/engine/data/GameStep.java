@@ -199,11 +199,11 @@ public class GameStep extends GameDataComponent {
   }
 
   public static boolean isPurchaseStep(final String stepName) {
-    return stepName.endsWith("Purchase");
+    return stepName != null && stepName.endsWith("Purchase");
   }
 
   public static boolean isBidStep(final String stepName) {
-    return stepName.endsWith("Bid");
+    return stepName != null && stepName.endsWith("Bid");
   }
 
   public static boolean isBidPlaceStep(final String stepName) {
@@ -211,7 +211,7 @@ public class GameStep extends GameDataComponent {
   }
 
   public static boolean isPlaceStep(final String stepName) {
-    return stepName.endsWith("Place");
+    return stepName != null && stepName.endsWith("Place");
   }
 
   public static boolean isTechActivationStep(final String stepName) {
