@@ -1,6 +1,6 @@
 package games.strategy.triplea.odds.calculator;
 
-import static java.text.MessageFormat.*;
+import static java.text.MessageFormat.format;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
