@@ -1690,7 +1690,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                   if (!player.equals(lastPlayer)) {
                     lastPlayer = player;
                     if (!player.isAi()) {
-                      // assume missing offset means there is a new mapPanel build up for which centering is not updating without repaint
+                      // assume missing offset means there is a new mapPanel build up for which
+                      // centering is not updating without repaint
                       final boolean repaintRequired =
                           (mapPanel.getXOffset() == 0 && mapPanel.getYOffset() == 0);
                       try (GameData.Unlocker ignored = data.acquireReadLock()) {
