@@ -24,7 +24,7 @@ allprojects {
             target "*"
             targetExclude "gradlew.bat"
             endWithNewline()
-            indentWithSpaces()
+            leadingTabsToSpaces()
             trimTrailingWhitespace()
         }
     }
