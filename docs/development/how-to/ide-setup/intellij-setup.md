@@ -2,7 +2,7 @@
 
 ## Tasks to be performed
 
-- open the TripleA project from source code
+- open the TripleA project from GitHub source code (path to your fork like `https://github.com/<username>/triplea`)
 - install plugins, configure associated settings
 - download and import IDEA settings file
 
@@ -10,7 +10,7 @@ Approximate time to complete: 10 - 30 minutes
 
 ### Open Project
 - In IDEA, **File > Open** and select the build.gradle file that is located at
-  the top level of the project. (**Tip** by selecting gradle file, IDEA will
+  the top level of the project and run it. (**Tip** by selecting gradle file, IDEA will
   preconfigure the project as a gradle project)
 
 ### Plugins:
@@ -18,11 +18,12 @@ Approximate time to complete: 10 - 30 minutes
 Note: **Settings** menu is accessible via, `File > Settings`  or (on Mac OS): `IntelliJ IDEA > Preferences`
 
 Plugin installation can be initiated from the JetBrains Marketplace web page, by clicking "Install to IDE" link from each plugin's page.
-  1. *Google Java Format* [plugin](https://plugins.jetbrains.com/plugin/8527-google-java-format)
+  1. *google-java-format* [plugin](https://plugins.jetbrains.com/plugin/8527-google-java-format)
         1. **Settings* > google-java-format Settings**
         1.  Check 'enable'
       ![Screenshot from 2019-08-08 17-35-52
-      ](https://user-images.githubusercontent.com/12397753/62746114-07cc2b80-ba03-11e9-9ac0-0b1e6e1e8788.png)
+      ](https://user-images.githubusercontent.com/12397753/62746114-07cc2b80-ba03-11e9-9ac0-0b1e6e1e8788.png)*
+        1.  Check [Intellij JRE config from google-java-format]([url](https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-config)) or do it manually as below.
   1. *checkstyle-IDEA* [plugin](https://github.com/jshiell/checkstyle-idea)
         1. after install finish configuration in: **Other Settings > Checkstyle**
             1. load checkstyle file by clicking on the "plus" and navigating to the file
@@ -40,7 +41,12 @@ Plugin installation can be initiated from the JetBrains Marketplace web page, by
         1. GraphViz also needs to be installed: <https://graphviz.org/download/>
 
 
-## Google Java Format Plugin Fix
+## Download and import IDEA settings file
+
+Import IDEA settings file via `File > Manage IDE Settings > Import Settings...`.
+TODO: Identify file to be imported!
+
+## google-java-format Plugin Fix (if above settings do not work)
 
 Find your IDEA vmoptions file with: `find ~ -name "*vmoptions"`
 (eg: ./.config/JetBrains/IntelliJIdea2022.3/idea64.vmoptions)
