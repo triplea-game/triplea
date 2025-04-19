@@ -3213,3 +3213,31 @@
   img: https://raw.githubusercontent.com/triplea-maps/6Kingdoms/blob/master/preview.png
   description: |
     <br>A war between two alliances of fantasy kingdoms.
+- mapName: Pacific-The Rising Sun 1941
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Pacific1941/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Pacific1941/blob/master/preview.png
+  description: |
+    <br>World War 2 in the Pacific starting in 1941 with many unit types.
+- mapName: WW2v3-1941_v2
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/WW2v3-1941_v2/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/WW2v3-1941_v2/blob/master/preview.png
+  description: |
+    <br>Modified version of World II v3 - 1941
+- mapName: No Mans Land Navalland
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/No_Mans_Land_Navalland/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/No_Mans_Land_Navalland/blob/master/preview.png
+  description: |
+    <br>World War One on a large global map using AA50 rules
+- mapName: Vietnam
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Vietnam/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Vietnam/blob/master/preview.png
+  description: |
+    <br>The Vietnam War expands into World War 3. Uses Classic map and rules.
