@@ -13,7 +13,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   build:
-    runs-on: Ubuntu-20.04
+    runs-on: Ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
