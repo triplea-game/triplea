@@ -15,6 +15,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +34,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.java.concurrency.AsyncRunner;
@@ -52,10 +54,10 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
 
   private final JLabel statusMessage = new JLabel();
 
-  private final JLabel playerLabel = new JLabel("xxxxxx");
-  private final JLabel stepLabel = new JLabel("xxxxxx");
-  private final JLabel roundLabel = new JLabel("xxxxxx");
-  private final JLabel zoomLabel = new JLabel("");
+  private final JLabel playerLabel = new JLabel();
+  private final JLabel stepLabel = new JLabel();
+  private final JLabel roundLabel = new JLabel();
+  private final JLabel zoomLabel = new JLabel();
 
   public BottomBar(final UiContext uiContext, final GameData data, final boolean usingDiceServer) {
     this.uiContext = uiContext;
@@ -139,7 +141,6 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
 
     // Get all the needed data while holding a lock, then invoke UI updates on the EDT.
     try (GameData.Unlocker ignored = territory.getData().acquireReadLock()) {
-      final String territoryName = territory.getName();
       final Collection<Unit> units =
           uiContext.isShowUnitsInStatusBar() ? territory.getUnits() : List.of();
       final TerritoryAttachment ta = TerritoryAttachment.get(territory);
@@ -160,12 +161,12 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
       }
 
       SwingUtilities.invokeLater(
-          () -> updateTerritoryInfo(territoryName, territoryEffectNames, units, resources));
+          () -> updateTerritoryInfo(territory, territoryEffectNames, units, resources));
     }
   }
 
   private void updateTerritoryInfo(
-      String territoryName,
+      Territory territory,
       List<String> territoryEffectNames,
       Collection<Unit> units,
       IntegerMap<Resource> resources) {
@@ -192,7 +193,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
       }
     }
 
-    territoryInfo.add(createTerritoryNameLabel(territoryName));
+    territoryInfo.add(createTerritoryNameLabel(territory));
 
     if (territoryEffectText.length() > 0) {
       territoryEffectText.setLength(territoryEffectText.length() - 2);
@@ -217,14 +218,32 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     SwingComponents.redraw(territoryInfo);
   }
 
-  private JLabel createTerritoryNameLabel(String territoryName) {
-    final JLabel nameLabel = new JLabel(territoryName);
+  private JLabel createTerritoryNameLabel(Territory territory) {
+    String labelTextPattern = getTerritoryLabelTextPattern(territory);
+    final JLabel nameLabel =
+        new JLabel(MessageFormat.format(labelTextPattern, territory.getName()));
     nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
     // Ensure the text position is always the same, regardless of other components, by padding to
     // fill available height.
     final int labelHeight = nameLabel.getPreferredSize().height;
     nameLabel.setBorder(createBorderToFillAvailableHeight(labelHeight, getHeight()));
     return nameLabel;
+  }
+
+  private @NotNull String getTerritoryLabelTextPattern(Territory territory) {
+    GamePlayer territoryOwner = territory.getOwner();
+    GamePlayer currentPlayer = uiContext.getCurrentPlayer();
+    String labelTextPattern;
+    if (territoryOwner.equals(currentPlayer)) {
+      labelTextPattern = "<html>{0} (current player)</html>";
+    } else if (territoryOwner.isAtWar(currentPlayer)) {
+      labelTextPattern = "<html>{0} (<font color=red>At War</font>)</html>";
+    } else if (territoryOwner.isAllied(currentPlayer)) {
+      labelTextPattern = "<html>{0} (<font color=green>Allied</font>)</html>";
+    } else {
+      labelTextPattern = "<html>{0}</html>";
+    }
+    return labelTextPattern;
   }
 
   private Border createBorderToFillAvailableHeight(int componentHeight, int availableHeight) {
@@ -250,23 +269,21 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     resourceBar.gameDataChanged(null);
   }
 
-  public void setStepInfo(
-      int roundNumber, String stepName, @Nullable GamePlayer player, boolean isRemotePlayer) {
+  public void setStepInfo(int roundNumber, String stepName) {
     roundLabel.setText("Round: " + roundNumber + " ");
     stepLabel.setText(stepName);
-    if (player != null) {
-      setCurrentPlayer(player, isRemotePlayer);
-    }
   }
 
-  public void setCurrentPlayer(GamePlayer player, boolean isRemotePlayer) {
+  public void updateFromCurrentPlayer() {
+    GamePlayer player = uiContext.getCurrentPlayer();
+    if (player == null) return;
     final CompletableFuture<?> future =
         CompletableFuture.supplyAsync(() -> uiContext.getFlagImageFactory().getFlag(player))
             .thenApplyAsync(ImageIcon::new)
             .thenAccept(icon -> SwingUtilities.invokeLater(() -> roundLabel.setIcon(icon)));
     CompletableFutureUtils.logExceptionWhenComplete(
         future, throwable -> log.error("Failed to set round icon for " + player, throwable));
-    playerLabel.setText((isRemotePlayer ? "REMOTE: " : "") + player.getName());
+    playerLabel.setText((uiContext.isCurrentPlayerRemote() ? "REMOTE: " : "") + player.getName());
   }
 
   public void setMapZoomEnabled(boolean enabled) {
