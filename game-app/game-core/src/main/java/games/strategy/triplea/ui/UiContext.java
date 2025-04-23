@@ -184,7 +184,7 @@ public class UiContext {
     if (player != null && !player.equals(currentPlayer)
         || player == null && currentPlayer != null) {
       currentPlayer = player;
-      isCurrentPlayerRemote = localPlayers.playing(player);
+      isCurrentPlayerRemote = !localPlayers.playing(player);
       return true;
     }
     return false;
