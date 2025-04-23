@@ -2,7 +2,10 @@ package games.strategy.engine.framework.lookandfeel;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.framework.system.SystemProperties;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.SettingsWindow;
 import java.awt.Color;
@@ -13,7 +16,10 @@ import java.util.Optional;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.triplea.game.client.ui.swing.laf.SubstanceLookAndFeelManager;
 import org.triplea.util.Services;
 
@@ -21,6 +27,8 @@ import org.triplea.util.Services;
 @Slf4j
 public final class LookAndFeel {
   private LookAndFeel() {}
+
+  private static final @NonNls String DARKER_RED = "#8B0000";
 
   /**
    * Initializes the Swing Look-And-Feel subsystem.
@@ -78,6 +86,11 @@ public final class LookAndFeel {
             .orElseGet(UIManager::getSystemLookAndFeelClassName);
   }
 
+  public static @NotNull @NonNls String getLookAndFeelColorRed() {
+    // On a dark theme, use red. Use a darker red with a light theme.
+    return LookAndFeel.isCurrentLookAndFeelDark() ? "red" : DARKER_RED;
+  }
+
   public static boolean isCurrentLookAndFeelDark() {
     final Color background = UIManager.getColor("Panel.background");
     return background != null && isColorDark(background);
@@ -93,7 +106,7 @@ public final class LookAndFeel {
   private static void setupLookAndFeel(final String lookAndFeelName) {
     checkState(SwingUtilities.isEventDispatchThread());
 
-    // On Mac, have the menubar appear at the top of the screen to match how Mac apps are expected
+    // On Mac, have the menu bar appear at the top of the screen to match how Mac apps are expected
     // to behave.
     if (SystemProperties.isMac()) {
       System.setProperty("apple.laf.useScreenMenuBar", "true");
@@ -101,7 +114,11 @@ public final class LookAndFeel {
 
     try {
       UIManager.setLookAndFeel(lookAndFeelName);
-    } catch (final Throwable t) {
+    } catch (RuntimeException
+        | ClassNotFoundException
+        | InstantiationException
+        | IllegalAccessException
+        | UnsupportedLookAndFeelException runtimeException) {
       if (!SystemProperties.isMac()) {
         try {
           UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -109,6 +126,44 @@ public final class LookAndFeel {
           log.error("Failed to set system look and feel", e);
         }
       }
+    }
+  }
+
+  public static @NonNls String convertColorToHex(Color color) {
+    return "#" + Integer.toHexString(color.getRGB()).substring(2);
+  }
+
+  /**
+   * Returns a color to represent the relationship.
+   *
+   * @param relType which relationship to get the color for
+   * @return the color to represent this relationship
+   */
+  public static Color getRelationshipTypeColor(final RelationshipType relType) {
+    return getRelationshipTypeAttachmentColor(relType.getRelationshipTypeAttachment());
+  }
+
+  /**
+   * Returns a color to represent the relationship.
+   *
+   * @param relTypeAttach which relationship attachment to get the color for
+   * @return the color to represent this relationship
+   */
+  public static Color getRelationshipTypeAttachmentColor(
+      final RelationshipTypeAttachment relTypeAttach) {
+    final String archeType = relTypeAttach.getArcheType();
+    switch (archeType) {
+      case Constants.RELATIONSHIP_ARCHETYPE_ALLIED:
+        return Color.green;
+      case Constants.RELATIONSHIP_ARCHETYPE_NEUTRAL:
+        return Color.lightGray;
+      case Constants.RELATIONSHIP_ARCHETYPE_WAR:
+        return Color.red;
+      default:
+        throw new IllegalStateException(
+            "Arche Type for RelationshipTypeAttachment: "
+                + relTypeAttach.getName()
+                + " can only be of archeType Allied, Neutral or War");
     }
   }
 }

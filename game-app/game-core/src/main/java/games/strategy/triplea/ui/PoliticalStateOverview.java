@@ -3,8 +3,7 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.RelationshipType;
-import games.strategy.triplea.Constants;
-import java.awt.Color;
+import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -135,7 +134,7 @@ public class PoliticalStateOverview extends JPanel {
     final JPanel panel =
         new JPanelBuilder().add(getRelationshipComponent(player1, player2, relType)).build();
     panel.setOpaque(true);
-    panel.setBackground(getRelationshipTypeColor(relType));
+    panel.setBackground(LookAndFeel.getRelationshipTypeColor(relType));
     return panel;
   }
 
@@ -206,31 +205,8 @@ public class PoliticalStateOverview extends JPanel {
             redrawPolitics();
           }
         });
-    button.setBackground(getRelationshipTypeColor(relType));
+    button.setBackground(LookAndFeel.getRelationshipTypeColor(relType));
     return button;
-  }
-
-  /**
-   * returns a color to represent the relationship.
-   *
-   * @param relType which relationship to get the color for
-   * @return the color to represent this relationship
-   */
-  private static Color getRelationshipTypeColor(final RelationshipType relType) {
-    final String archeType = relType.getRelationshipTypeAttachment().getArcheType();
-    if (archeType.equals(Constants.RELATIONSHIP_ARCHETYPE_ALLIED)) {
-      return Color.green;
-    }
-    if (archeType.equals(Constants.RELATIONSHIP_ARCHETYPE_NEUTRAL)) {
-      return Color.lightGray;
-    }
-    if (archeType.equals(Constants.RELATIONSHIP_ARCHETYPE_WAR)) {
-      return Color.red;
-    }
-    throw new IllegalStateException(
-        "PoliticsUI: RelationshipType: "
-            + relType.getName()
-            + " can only be of archeType Allied, Neutral or War");
   }
 
   /**

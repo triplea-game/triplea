@@ -1,5 +1,8 @@
 package games.strategy.triplea.ui;
 
+import static games.strategy.engine.framework.lookandfeel.LookAndFeel.convertColorToHex;
+import static games.strategy.engine.framework.lookandfeel.LookAndFeel.getRelationshipTypeAttachmentColor;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
@@ -9,12 +12,8 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.engine.data.events.ZoomMapListener;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
@@ -63,28 +62,28 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     this.uiContext = uiContext;
     this.resourceBar = new ResourceBar(data, uiContext);
 
-    setLayout(new BorderLayout());
-    add(createCenterPanel(), BorderLayout.CENTER);
-    add(createStepPanel(usingDiceServer), BorderLayout.EAST);
+    setLayout(new java.awt.BorderLayout());
+    add(createCenterPanel(), java.awt.BorderLayout.CENTER);
+    add(createStepPanel(usingDiceServer), java.awt.BorderLayout.EAST);
   }
 
   private JPanel createCenterPanel() {
     final JPanel centerPanel = new JPanel();
-    centerPanel.setLayout(new GridBagLayout());
+    centerPanel.setLayout(new java.awt.GridBagLayout());
     final var gridBuilder =
         new GridBagConstraintsBuilder().weightY(1).fill(GridBagConstraintsFill.BOTH);
 
     centerPanel.add(
         resourceBar, gridBuilder.weightX(0).anchor(GridBagConstraintsAnchor.WEST).build());
 
-    territoryInfo.setPreferredSize(new Dimension(0, 0));
+    territoryInfo.setPreferredSize(new java.awt.Dimension(0, 0));
     territoryInfo.setBorder(new EtchedBorder(EtchedBorder.RAISED));
     centerPanel.add(
         territoryInfo,
         gridBuilder.gridX(1).weightX(1).anchor(GridBagConstraintsAnchor.CENTER).build());
 
     statusMessage.setVisible(false);
-    statusMessage.setPreferredSize(new Dimension(0, 0));
+    statusMessage.setPreferredSize(new java.awt.Dimension(0, 0));
     statusMessage.setBorder(new EtchedBorder(EtchedBorder.RAISED));
 
     zoomLabel.setVisible(false);
@@ -99,7 +98,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
 
   private JPanel createStepPanel(boolean usingDiceServer) {
     final JPanel stepPanel = new JPanel();
-    stepPanel.setLayout(new GridBagLayout());
+    stepPanel.setLayout(new java.awt.GridBagLayout());
     final var gridBuilder = new GridBagConstraintsBuilder().fill(GridBagConstraintsFill.BOTH);
     stepPanel.add(playerLabel, gridBuilder.gridX(0).build());
     stepPanel.add(stepLabel, gridBuilder.gridX(1).build());
@@ -116,7 +115,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     return stepPanel;
   }
 
-  public void setStatus(final String msg, final Optional<Image> image) {
+  public void setStatus(final String msg, final Optional<java.awt.Image> image) {
     statusMessage.setVisible(!msg.isEmpty());
     statusMessage.setText(msg);
 
@@ -173,7 +172,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     // Box layout with horizontal glue on both sides achieves the following desirable properties:
     //   1. If the content is narrower than the available space, it will be centered.
     //   2. If the content is wider than the available space, then the beginning will be shown,
-    //      which is the more important information (territory name, income, etc).
+    //      which is the more important information (territory name, income, etc.).
     //   3. Elements are vertically centered.
     territoryInfo.removeAll();
     territoryInfo.setLayout(new BoxLayout(territoryInfo, BoxLayout.LINE_AXIS));
@@ -208,7 +207,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
 
     if (!units.isEmpty()) {
       JSeparator separator = new JSeparator(JSeparator.VERTICAL);
-      separator.setMaximumSize(new Dimension(40, getHeight()));
+      separator.setMaximumSize(new java.awt.Dimension(40, getHeight()));
       separator.setPreferredSize(separator.getMaximumSize());
       territoryInfo.add(separator);
       territoryInfo.add(createUnitBar(units));
@@ -222,7 +221,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     String labelTextPattern = getTerritoryLabelTextPattern(territory);
     final JLabel nameLabel =
         new JLabel(MessageFormat.format(labelTextPattern, territory.getName()));
-    nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
+    nameLabel.setFont(nameLabel.getFont().deriveFont(java.awt.Font.BOLD));
     // Ensure the text position is always the same, regardless of other components, by padding to
     // fill available height.
     final int labelHeight = nameLabel.getPreferredSize().height;
@@ -233,17 +232,27 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
   private @NotNull String getTerritoryLabelTextPattern(Territory territory) {
     GamePlayer territoryOwner = territory.getOwner();
     GamePlayer currentPlayer = uiContext.getCurrentPlayer();
-    String labelTextPattern;
     if (territoryOwner.equals(currentPlayer)) {
-      labelTextPattern = "<html>{0} (current player)</html>";
-    } else if (territoryOwner.isAtWar(currentPlayer)) {
-      labelTextPattern = "<html>{0} (<font color=red>At War</font>)</html>";
-    } else if (territoryOwner.isAllied(currentPlayer)) {
-      labelTextPattern = "<html>{0} (<font color=green>Allied</font>)</html>";
-    } else {
-      labelTextPattern = "<html>{0}</html>";
+      return "<html>{0} (current player)</html>";
     }
-    return labelTextPattern;
+    final RelationshipTypeAttachment relationshipTypeAttachment =
+        territory
+            .getData()
+            .getRelationshipTracker()
+            .getRelationshipType(territoryOwner, currentPlayer)
+            .getRelationshipTypeAttachment();
+    String strArchType;
+    if (relationshipTypeAttachment.isWar()) {
+      strArchType = "at War";
+    } else if (relationshipTypeAttachment.isAllied()) {
+      strArchType = "Allied";
+    } else {
+      strArchType = relationshipTypeAttachment.getArcheType();
+    }
+    return MessageFormat.format(
+        "<html>'{'0'}' (<font color={0}>{1}</font>)</html>",
+        convertColorToHex(getRelationshipTypeAttachmentColor(relationshipTypeAttachment)),
+        strArchType);
   }
 
   private Border createBorderToFillAvailableHeight(int componentHeight, int availableHeight) {
@@ -261,7 +270,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     // Constrain the preferred size to the available size so that unit images that may not fully fit
     // don't cause layout issues.
     final int unitsWidth = unitBar.getPreferredSize().width;
-    unitBar.setPreferredSize(new Dimension(unitsWidth, getHeight()));
+    unitBar.setPreferredSize(new java.awt.Dimension(unitsWidth, getHeight()));
     return unitBar;
   }
 

@@ -18,13 +18,11 @@ import org.triplea.swing.SwingComponents;
 import org.triplea.swing.WrapLayout;
 
 /**
- * A UI component used to display a dice roll. One image is displayed per die in a horizontal
+ * A UI component used to display a roll of dice. One image is displayed per die in a horizontal
  * layout.
  */
 public class DicePanel extends JPanel {
   private static final long serialVersionUID = -7544999867518263506L;
-
-  private static final String DARKER_RED = "#8B0000";
 
   private final UiContext uiContext;
   private final GameData data;
@@ -73,9 +71,7 @@ public class DicePanel extends JPanel {
   }
 
   private static String colorizeHitString(final Object hitsString) {
-    // On a dark theme, use red. Use a darker red with a light theme.
-    final String color = LookAndFeel.isCurrentLookAndFeelDark() ? "red" : DARKER_RED;
-    return "<font color='" + color + "'>" + hitsString + "</font>";
+    return "<font color='" + LookAndFeel.getLookAndFeelColorRed() + "'>" + hitsString + "</font>";
   }
 
   private void add(final JComponent component) {
