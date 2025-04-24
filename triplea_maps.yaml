@@ -3241,3 +3241,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/Vietnam/blob/master/preview.png
   description: |
     <br>The Vietnam War expands into World War 3. Uses Classic map and rules.
+- mapName: Big World - TheHobbesians 1939
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/ClavintheGreat/thehobbesians_1939/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/ClavintheGreat/thehobbesians_1939/blob/main/thehobbesians_1939-master/preview.png
+  description: |
+    <br>TheHobbesian's Variation of Smallman's BigWorld 1939.
