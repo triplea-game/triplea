@@ -37,7 +37,7 @@ class PlacementUnitsCollapsiblePanel {
 
     // Compute data now so that the swing event task is working with unmodifiable data.
     final boolean shouldRenderPanelForThisGameStep =
-        !GameStep.isPlaceStep(step.getName())
+        !GameStep.isPlaceStepName(step.getName())
             && !isInitializationStep(step)
             && stepIsAfterPurchaseAndBeforePlacement(step);
 
@@ -66,11 +66,11 @@ class PlacementUnitsCollapsiblePanel {
       final GameStep previousStep = gameData.getSequence().getStep(i);
 
       if (isNotPlayersTurn(currentPlayer, previousStep)
-          || GameStep.isPlaceStep(previousStep.getName())) {
+          || GameStep.isPlaceStepName(previousStep.getName())) {
         return false;
       }
 
-      if (GameStep.isPurchaseStep(previousStep.getName())) {
+      if (GameStep.isPurchaseStepName(previousStep.getName())) {
         return true;
       }
     }

@@ -44,7 +44,7 @@ public class PlayerOrderComparator implements Comparator<GamePlayer>, Serializab
           continue;
         }
       } else if (s.getName() != null
-          && (GameStep.isBidStep(s.getName()) || GameStep.isBidPlaceStep(s.getName()))) {
+          && (GameStep.isBidStepName(s.getName()) || GameStep.isBidPlaceStepName(s.getName()))) {
         continue;
       }
       if (s.getPlayerId().equals(p1)) {

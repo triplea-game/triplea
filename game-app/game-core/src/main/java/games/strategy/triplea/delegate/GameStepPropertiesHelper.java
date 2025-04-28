@@ -280,26 +280,26 @@ public final class GameStepPropertiesHelper {
   }
 
   private static boolean isNonCombatDelegate(final GameState data) {
-    return GameStep.isNonCombatMoveStep(data.getSequence().getStep().getName());
+    return GameStep.isNonCombatMoveStepName(data.getSequence().getStep().getName());
   }
 
   private static boolean isCombatDelegate(final GameState data) {
-    return GameStep.isCombatMoveStep(data.getSequence().getStep().getName());
+    return GameStep.isCombatMoveStepName(data.getSequence().getStep().getName());
   }
 
   private static boolean isAirborneDelegate(final GameState data) {
-    return GameStep.isAirborneCombatMoveStep(data.getSequence().getStep().getName());
+    return GameStep.isAirborneCombatMoveStepName(data.getSequence().getStep().getName());
   }
 
   private static boolean isBidPurchaseDelegate(final GameState data) {
-    return GameStep.isBidStep(data.getSequence().getStep().getName());
+    return GameStep.isBidStepName(data.getSequence().getStep().getName());
   }
 
   private static boolean isBidPlaceDelegate(final GameState data) {
-    return GameStep.isBidPlaceStep(data.getSequence().getStep().getName());
+    return GameStep.isBidPlaceStepName(data.getSequence().getStep().getName());
   }
 
   private static boolean isPurchaseDelegate(final GameState data) {
-    return GameStep.isPurchaseStep(data.getSequence().getStep().getName());
+    return GameStep.isPurchaseStepName(data.getSequence().getStep().getName());
   }
 }

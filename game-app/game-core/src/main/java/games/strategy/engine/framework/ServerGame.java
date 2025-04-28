@@ -465,7 +465,7 @@ public class ServerGame extends AbstractGame {
       return;
     }
     // save after the step has advanced otherwise, the delegate will execute again.
-    boolean isMoveStep = GameStep.isMoveStep(currentStep.getName());
+    boolean isMoveStep = GameStep.isMoveStepName(currentStep.getName());
     if (isMoveStep && shouldAutoSaveAfterEnd(currentDelegate)) {
       autoSaveAfter(currentStep.getName());
     }
