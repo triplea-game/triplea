@@ -19,12 +19,23 @@ async function closeIssues() {
         for (const issue of issuesToClose) {
             console.log(`Closing issue #${issue.number}...`);
           /*
+            // Add label (if missing)
+            let labelIndex = issue.labels.indexOf('2.5');
+            if (labelIndex < 0 ) {
+                issue.labels.push('2.5');
+            }            
+            await octokit.rest.issues.update({
+                repo: 'triplea',
+                issue_number: issue.number,
+                state: 'closed',
+                labels: issue.labels,
+            });
             await octokit.rest.issues.update({
                 repo: 'triplea',
                 issue_number: issue.number,
                 state: 'closed',
             });
-            */
+        */
             console.log(`Closed issue #${issue.number}.`);
         }
     } catch (error) {
