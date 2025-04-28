@@ -271,7 +271,7 @@ public final class ProUtils {
     }
     return Streams.stream(player.getData().getSequence())
         .filter(s -> player.equals(s.getPlayerId()))
-        .noneMatch(s -> GameStep.isCombatMoveStep(s.getName()));
+        .noneMatch(s -> GameStep.isCombatMoveStepName(s.getName()));
   }
 
   public static String summarizeUnits(Collection<Unit> units) {
