@@ -66,6 +66,7 @@
   mapCategory: BEST
   url: https://github.com/triplea-maps/middle_earth/archive/master.zip
   version: 3
+  img: https://github.com/triplea-maps/middle_earth/blob/master/preview.png
   description: |
     <br>Lord of the Rings
 - mapName: Napoleonic Empires
