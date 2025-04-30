@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="9.0.5" transformSequenceNumber="9">
   <directoryPresets config=".triplea-root" />
-  <application name="TripleA" applicationId="5251-3669-9623-1649" mediaDir="build/releases" mediaFilePattern="${compiler:sys.fullName}_${compiler:sys.version}_${compiler:sys.platform}" compression="9" lzmaCompression="true" pack200Compression="true" createChecksums="false" shortName="TripleA" publisher="TripleA Developer Team" publisherWeb="https://triplea-game.org" version="${compiler:sys.version}" allPathsRelative="true" autoSave="true" convertDotsToUnderscores="false" macVolumeId="af9346379363d40e" javaMinVersion="11" jdkMode="jdk">
-    <jreBundles jdkProviderId="AdoptOpenJDK" release="11/jdk-11.0.19+7" />
+  <application name="TripleA" applicationId="5251-3669-9623-1649" mediaDir="build/releases" mediaFilePattern="${compiler:sys.fullName}_${compiler:sys.version}_${compiler:sys.platform}" compression="9" lzmaCompression="true" pack200Compression="true" createChecksums="false" shortName="TripleA" publisher="TripleA Developer Team" publisherWeb="https://triplea-game.org" version="${compiler:sys.version}" allPathsRelative="true" autoSave="true" convertDotsToUnderscores="false" macVolumeId="af9346379363d40e" javaMinVersion="17" jdkMode="jdk">
+    <jreBundles jdkProviderId="AdoptOpenJDK" release="21/jdk-21.0.7+6" />
   </application>
   <files preserveSymlinks="false">
     <mountPoints>
@@ -787,9 +787,6 @@ return true;</property>
     </styles>
   </installerGui>
   <mediaSets>
-    <windows name="Windows 32 bit" id="90" mediaFileName="${compiler:sys.fullName}_${compiler:sys.version}_windows-32bit" jreBitType="32">
-      <jreBundle usePack200="false" jreBundleSource="preCreated" includedJre="build/assets/install4j/OpenJDK11U-jre_x86-32_windows_hotspot_11.0.4_11.tar.gz" manualJreEntry="true" bundleUrl="https://raw.githubusercontent.com/triplea-game/assets/master/install4j/OpenJDK11U-jre_x86-32_windows_hotspot_11.0.4_11.tar.gz" directDownload="true" />
-    </windows>
     <windows name="Windows 64 bit" id="87" mediaFileName="${compiler:sys.fullName}_${compiler:sys.version}_windows-64bit">
       <jreBundle usePack200="false" directDownload="true" />
     </windows>

@@ -112,7 +112,6 @@ task release(group: "release", dependsOn: [portableInstaller, platformInstallers
         publishArtifacts(portableInstaller.outputs.files + [
             file("$releasesDir/TripleA_${releaseVersion}_macos.dmg"),
             file("$releasesDir/TripleA_${releaseVersion}_unix.sh"),
-            file("$releasesDir/TripleA_${releaseVersion}_windows-32bit.exe"),
             file("$releasesDir/TripleA_${releaseVersion}_windows-64bit.exe")
         ])
     }
