@@ -27,8 +27,26 @@ function install_install4j() {
   mkdir -p $INSTALL4J_HOME
 
   echo "Downloading and installing install4j to '$INSTALL4J_HOME'"
-  wget --no-verbose -O install4j_unix.sh \
-  https://raw.githubusercontent.com/triplea-game/assets/master/install4j/install4j_linux-x64_9_0_5.sh
+  install4j_url="https://raw.githubusercontent.com/triplea-game/assets/master/install4j/install4j_linux-x64_11_0_3.sh"
+
+  # The install4j file is host on github LFS
+  # The 'install4j_url' gives us manifest data, we first get the SHA & size of the object we are downloading
+  sha=$(curl -s "$install4j_url" | grep "^oid" | sed 's/.*sha256://')
+  size=$(curl -s "$install4j_url" | grep "^size" | sed 's/.* //')
+
+  # Now, we can send a request to github LFS for the download URL of the object, we do so, and we get back a response.
+  # We use 'jq' to parse the JSON response for the download href.
+  downloadUrl=$(
+    curl -s -X POST \
+      -H "Accept: application/vnd.git-lfs+json" \
+      -H "Content-type: application/json" \
+      -d "{\"operation\": \"download\", \"transfer\": [\"basic\"], \"objects\": [{\"oid\": \"$sha\", \"size\": $size}]}" \
+      https://github.com/triplea-game/assets.git/info/lfs/objects/batch \
+    | jq -r '.objects[0].actions.download.href')
+
+  # Now, do the download, download the installer
+  wget --no-verbose -O install4j_unix.sh "$downloadUrl"
+
   chmod +x install4j_unix.sh
   ./install4j_unix.sh -q -dir "$INSTALL4J_HOME"
   "$INSTALL4J_HOME/bin/install4jc" -L "$INSTALL4J_LICENSE"
