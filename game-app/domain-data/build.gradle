@@ -3,6 +3,8 @@ plugins {
     id("maven-publish")
 }
 
+version = System.getenv("JAR_VERSION")
+
 publishing {
     publications {
         maven(MavenPublication) {
