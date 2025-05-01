@@ -9,13 +9,14 @@
 Approximate time to complete: 10 - 30 minutes
 
 ### Open Project
-- In IDEA, **File > Open** and select the build.gradle file that is located at
+- In IDEA, `File > Open...`  and select the build.gradle file that is located at
   the top level of the project and run it. (**Tip** by selecting gradle file, IDEA will
   preconfigure the project as a gradle project)
+- Ensure to have the right project settings for the SDK (`File > Project Structure...` and `Project Settings > Project` ) and the bytecode version (`File > Settings...` and `Build, Execution, Deployment > Compiler > Java Compiler`)
 
 ### Plugins:
 
-Note: **Settings** menu is accessible via, `File > Settings`  or (on Mac OS): `IntelliJ IDEA > Preferences`
+Note: **Settings** menu is accessible via, `File > Settings...`  or (on Mac OS): `IntelliJ IDEA > Preferences`
 
 Plugin installation can be initiated from the JetBrains Marketplace web page, by clicking "Install to IDE" link from each plugin's page.
   1. *google-java-format* [plugin](https://plugins.jetbrains.com/plugin/8527-google-java-format)
