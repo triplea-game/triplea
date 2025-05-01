@@ -21,11 +21,11 @@ jobs:
           # Fetch depth of 0 is needed so we checkout the full revision history
           # The current revision count will be used as our build-number
           fetch-depth: '0'
-      - name: Set up JDK 11
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 11
+          java-version: 21
       - name: Build Installers
         run: ./game-app/run/package
         env:
