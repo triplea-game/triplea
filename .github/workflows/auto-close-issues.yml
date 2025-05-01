@@ -21,6 +21,7 @@ jobs:
         run: npm install
 
       - name: Run script closeIssues.js
-        run: node .github/workflows/closeIssues.js
+        working-directory: .github/workflows
+        run: node closeIssues.js
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
