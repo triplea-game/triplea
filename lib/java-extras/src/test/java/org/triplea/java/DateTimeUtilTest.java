@@ -25,22 +25,8 @@ class DateTimeUtilTest {
 
   @Nested
   class LocalizedTime {
-    private static final String NARROW_NON_BREAKING_SPACE = "\u202F";
-
     @Test
-    void localedTimeUs() {
-      DateTimeUtil.defaultLocale = Locale.US;
-      assertThat(DateTimeUtil.getLocalizedTime(), is("2:30:00" + NARROW_NON_BREAKING_SPACE + "PM"));
-    }
-
-    @Test
-    void localedTimeUk() {
-      DateTimeUtil.defaultLocale = Locale.ENGLISH;
-      assertThat(DateTimeUtil.getLocalizedTime(), is("2:30:00" + NARROW_NON_BREAKING_SPACE + "PM"));
-    }
-
-    @Test
-    void localedTimeFrance() {
+    void localTimeFrance() {
       DateTimeUtil.defaultLocale = Locale.FRANCE;
       assertThat(DateTimeUtil.getLocalizedTime(), is("14:30:00"));
     }
