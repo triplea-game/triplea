@@ -2,6 +2,7 @@ name: Auto Close GitHub Issues
 on:
   issues:
     types: [opened]
+  workflow_dispatch:
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
