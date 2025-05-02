@@ -15,11 +15,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 14
-          
-      - name: Debug working directory
-        run: ls -la
-        working-directory: ./scripts
+          node-version: 16
         
       - name: Install dependencies
         run: npm install
