@@ -8,6 +8,7 @@ async function closeIssues() {
     try {
         console.log('Fetching issues...');
         const issues = await octokit.paginate(octokit.rest.issues.listForRepo, {
+            owner: 'triplea-game',
             repo: 'triplea',
             state: 'open',
         });
