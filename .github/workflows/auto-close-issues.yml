@@ -16,13 +16,21 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 14
-
+          
+      - name: Debug working directory
+        run: ls -la
+        working-directory: ./scripts
+  
+      - name: Debug working directory
+        run: ls -la ./scripts
+        working-directory: ./scripts
+        
       - name: Install dependencies
         run: npm install
-        working-directory: scripts
+        working-directory: ./scripts
 
       - name: Run script closeIssues.js
         run: node closeIssues.js
-        working-directory: scripts
+        working-directory: ./scripts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
