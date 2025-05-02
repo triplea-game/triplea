@@ -20,10 +20,6 @@ jobs:
       - name: Debug working directory
         run: ls -la
         working-directory: ./scripts
-  
-      - name: Debug working directory
-        run: ls -la ./scripts
-        working-directory: ./scripts
         
       - name: Install dependencies
         run: npm install
