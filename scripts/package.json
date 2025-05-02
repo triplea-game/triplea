@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Script to auto-close GitHub issues using Octokit",
-  "main": "scripts/closeIssues.js",
+  "main": "closeIssues.js",
   "scripts": {
-    "start": "node scripts/closeIssues.js"
+    "start": "node closeIssues.js"
   },
   "dependencies": {
     "@octokit/rest": "^20.0.0"
