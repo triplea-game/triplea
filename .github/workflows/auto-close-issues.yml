@@ -18,9 +18,11 @@ jobs:
           node-version: 14
 
       - name: Install dependencies
+        working-directory: ./triplea
         run: npm install
 
       - name: Run script closeIssues.js
         run: node scripts/closeIssues.js
+        working-directory: ./triplea
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
