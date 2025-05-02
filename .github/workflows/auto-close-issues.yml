@@ -8,9 +8,6 @@ env:
 jobs:
   build:
     runs-on: Ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./scripts
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -22,8 +19,10 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+        working-directory: scripts
 
       - name: Run script closeIssues.js
         run: node closeIssues.js
+        working-directory: scripts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
