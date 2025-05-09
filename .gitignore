@@ -22,4 +22,4 @@ out/
 
 game-app/smoke-testing/src/test/resources/save-games/
 
-game-headed/triplea.log
+game-app/game-headed/triplea-*.log

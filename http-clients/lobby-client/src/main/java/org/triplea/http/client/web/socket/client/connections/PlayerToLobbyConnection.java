@@ -27,6 +27,7 @@ import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatSentMessag
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ConnectToChatMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerSlapSentMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerStatusUpdateSentMessage;
+import org.triplea.java.Interruptibles;
 
 /**
  * Represents a connection from a player to lobby. A player can do actions like get game listings,

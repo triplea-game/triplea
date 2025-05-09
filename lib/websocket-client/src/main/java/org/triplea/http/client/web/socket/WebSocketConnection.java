@@ -94,6 +94,10 @@ class WebSocketConnection {
     this.headers = headers;
   }
 
+  public boolean isOpen() {
+    return !(client.isInputClosed() && client.isOutputClosed());
+  }
+
   /**
    * Sends pings with retries. Retry threshold is set up to account for disconnect at 60 seconds. We
    * send a ping every 45s, if that fails we'll try again at the 48s mark, again at 51s, again at
@@ -256,6 +260,21 @@ class WebSocketConnection {
     @Override
     public @Nullable CompletionStage<?> onClose(
         final WebSocket webSocket, final int statusCode, final String reason) {
+
+      log.info("Connection closed");
+      Interruptibles.sleep(10_000L);
+      log.info("Reconnecting");
+
+      retryConnection( error  -> {
+        log.info("Failed to connect: {}", error);
+        }
+      );
+
+      if(isOpen()) {
+        log.info("Successfully reconnected to server");
+        return null;
+      }
+      log.info("Connection kis open? " + isOpen());
       pingSender.cancel();
       if (reason.equals(WebSocketConnection.CLIENT_DISCONNECT_MESSAGE)) {
         listener.connectionClosed();

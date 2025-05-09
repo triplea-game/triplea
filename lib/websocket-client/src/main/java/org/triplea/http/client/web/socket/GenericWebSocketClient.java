@@ -3,6 +3,8 @@ package org.triplea.http.client.web.socket;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
+
+import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.web.socket.messages.MessageType;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.ServerErrorMessage;
+import org.triplea.java.Interruptibles;
 
 /**
  * A generic client class for creating websocket connections to a server. This client is based
@@ -83,6 +86,11 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
   }
 
   @Override
+  public boolean isOpen() {
+    return webSocketConnection.isOpen();
+  }
+
+  @Override
   public void connect() {
     addListener(ServerErrorMessage.TYPE, message -> errorHandler.accept(message.getError()));
     webSocketConnection = webSocketConnectionFactory.apply(websocketUri);
@@ -135,6 +143,7 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
     }
   }
 
+  /** Invoked when the client disconnects */
   @Override
   public void connectionClosed() {
     connectionClosedListeners.forEach(Runnable::run);

@@ -9,6 +9,8 @@ public interface WebSocket {
 
   void close();
 
+  boolean isOpen();
+
   <T extends WebSocketMessage> void addListener(
       MessageType<T> messageType, Consumer<T> messageHandler);
 
