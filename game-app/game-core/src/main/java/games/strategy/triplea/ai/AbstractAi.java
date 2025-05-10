@@ -495,35 +495,35 @@ public abstract class AbstractAi extends AbstractBasePlayer {
   public final void start(final String name) {
     super.start(name);
     final GamePlayer gamePlayer = this.getGamePlayer();
-    if (GameStep.isBidStep(name)) {
+    if (GameStep.isBidStepName(name)) {
       final IPurchaseDelegate purchaseDelegate =
           (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
       final String propertyName = gamePlayer.getName() + " bid";
       final int bidAmount = getGameData().getProperties().get(propertyName, 0);
       purchase(true, bidAmount, purchaseDelegate, getGameData(), gamePlayer);
-    } else if (GameStep.isPurchaseStep(name)) {
+    } else if (GameStep.isPurchaseStepName(name)) {
       final IPurchaseDelegate purchaseDelegate =
           (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
       final Resource pus = getGameData().getResourceList().getResource(Constants.PUS);
       final int leftToSpend = gamePlayer.getResources().getQuantity(pus);
       purchase(false, leftToSpend, purchaseDelegate, getGameData(), gamePlayer);
-    } else if (GameStep.isTechStep(name)) {
+    } else if (GameStep.isTechStepName(name)) {
       final ITechDelegate techDelegate = (ITechDelegate) getPlayerBridge().getRemoteDelegate();
       tech(techDelegate, getGameData(), gamePlayer);
-    } else if (GameStep.isMoveStep(name)) {
+    } else if (GameStep.isMoveStepName(name)) {
       final IMoveDelegate moveDel = (IMoveDelegate) getPlayerBridge().getRemoteDelegate();
       if (!GameStepPropertiesHelper.isAirborneMove(getGameData())) {
-        move(GameStep.isNonCombatMoveStep(name), moveDel, getGameData(), gamePlayer);
+        move(GameStep.isNonCombatMoveStepName(name), moveDel, getGameData(), gamePlayer);
       }
-    } else if (GameStep.isBattleStep(name)) {
+    } else if (GameStep.isBattleStepName(name)) {
       battle((IBattleDelegate) getPlayerBridge().getRemoteDelegate());
-    } else if (GameStep.isPoliticsStep(name)) {
+    } else if (GameStep.isPoliticsStepName(name)) {
       politicalActions();
-    } else if (GameStep.isPlaceStep(name)) {
+    } else if (GameStep.isPlaceStepName(name)) {
       final IAbstractPlaceDelegate placeDel =
           (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
-      place(GameStep.isBidStep(name), placeDel, getGameData(), gamePlayer);
-    } else if (GameStep.isEndTurnStep(name)) {
+      place(GameStep.isBidStepName(name), placeDel, getGameData(), gamePlayer);
+    } else if (GameStep.isEndTurnStepName(name)) {
       endTurn((IAbstractForumPosterDelegate) getPlayerBridge().getRemoteDelegate(), gamePlayer);
     }
   }

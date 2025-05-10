@@ -9,9 +9,6 @@
     <rule ref="category/java/bestpractices.xml/UnusedFormalParameter"/>
     <rule ref="category/java/bestpractices.xml/UnusedLocalVariable"/>
     <rule ref="category/java/bestpractices.xml/UnusedPrivateField"/>
-    <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod">
-        <properties>
-            <property name="ignoredAnnotations" value="java.lang.Deprecated|javafx.fxml.FXML"/>
-        </properties>
-    </rule>
+    <!-- UnusedPrivateMethdod is an excellent check, though on migration to Java21 has a bunch of false positives. -->
+<!--    <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod"/>-->
 </ruleset>

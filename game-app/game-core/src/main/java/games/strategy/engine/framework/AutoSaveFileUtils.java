@@ -17,6 +17,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * Provides methods for getting the names of auto-save files periodically generated during a game.
@@ -64,6 +65,7 @@ public class AutoSaveFileUtils {
   }
 
   @VisibleForTesting
+  @NonNls
   String getAutoSaveFileName(final String baseFileName) {
     return baseFileName;
   }
@@ -86,19 +88,19 @@ public class AutoSaveFileUtils {
                     .format(localDateTime)));
   }
 
-  public Path getBeforeStepAutoSaveFile(final String stepName) {
+  public Path getBeforeStepAutoSaveFile(final @NonNls String stepName) {
     checkNotNull(stepName);
 
     return getAutoSaveFile(addExtension("autosaveBefore" + capitalize(stepName)));
   }
 
-  public Path getAfterStepAutoSaveFile(final String stepName) {
+  public Path getAfterStepAutoSaveFile(final @NonNls String stepName) {
     checkNotNull(stepName);
 
     return getAutoSaveFile(addExtension("autosaveAfter" + capitalize(stepName)));
   }
 
-  public String getAutoSaveStepName(final String stepName) {
+  public @NonNls String getAutoSaveStepName(final @NonNls String stepName) {
     return stepName;
   }
 }

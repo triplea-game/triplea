@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import games.strategy.net.TempPasswordHistory;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.function.Predicate;
 import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,15 @@ class ForgotPasswordConversationTest {
 
   @InjectMocks private ForgotPasswordConversation forgotPasswordConversation;
 
-  @Mock private InetAddress address;
+  private static final InetAddress address;
+
+  static {
+    try {
+      address = InetAddress.getByAddress(new byte[] {127, 0, 0, 1});
+    } catch (UnknownHostException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   @Test
   void rejectIfLimitIsReached() {

@@ -201,12 +201,12 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
       // there are units that are available to place, show the panel (set unitsToPlace).
       showUnitsToPlace = (postProductionStep || !playerUnits.isEmpty());
       unitsToPlace = showUnitsToPlace ? playerUnits : List.of();
-      if (GameStep.isPurchaseOrBidStep(step.getName())) {
+      if (GameStep.isPurchaseOrBidStepName(step.getName())) {
         postProductionStep = true;
       }
       lastPlayer = player;
       // During the place step, listen for changes to update the panel.
-      if (GameStep.isPlaceStep(step.getName())) {
+      if (GameStep.isPlaceStepName(step.getName())) {
         data.addDataChangeListener(this);
       } else {
         data.removeDataChangeListener(this);

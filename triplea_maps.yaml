@@ -66,6 +66,7 @@
   mapCategory: BEST
   url: https://github.com/triplea-maps/middle_earth/archive/master.zip
   version: 3
+  img: https://github.com/triplea-maps/middle_earth/blob/master/preview.png
   description: |
     <br>Lord of the Rings
 - mapName: Napoleonic Empires
@@ -2803,7 +2804,7 @@
 - mapName: UHD World War II Global
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/uhd_world_war_ii_global/archive/master.zip
-  version: 7
+  version: 8
   img: https://raw.githubusercontent.com/triplea-maps/uhd_world_war_ii_global/master/preview.png
   description: |
     <br>This is UHD World War II Global using the Black Elk Mega Map
@@ -3068,7 +3069,7 @@
     <br>This is the war for control over Tiberium, a crystal used to make fictional technologies.
 - mapName: World War II Revised Deaths Hand Mod
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/World_War_II_Revised_Deaths_Hand_Mod/tree/master/archive/master.zip
+  url: https://github.com/triplea-maps/World_War_II_Revised_Deaths_Hand_Mod/archive/master.zip
   version: 1
   img: https://raw.githubusercontent.com/triplea-maps/World_War_II_Revised_Deaths_Hand_Mod/blob/master/preview.png
   description: |
@@ -3241,3 +3242,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/Vietnam/blob/master/preview.png
   description: |
     <br>The Vietnam War expands into World War 3. Uses Classic map and rules.
+- mapName: Big World - TheHobbesians 1939
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/ClavintheGreat/thehobbesians_1939/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/ClavintheGreat/thehobbesians_1939/blob/main/thehobbesians_1939-master/preview.png
+  description: |
+    <br>TheHobbesian's Variation of Smallman's BigWorld 1939.

@@ -1,7 +1,7 @@
 plugins {
     id "java"
+    id "pmd"
     id "com.github.ben-manes.versions" version "0.52.0"
-    id "io.franzbecker.gradle-lombok" version "5.0.0" apply false
     id "com.diffplug.spotless" version "7.0.3" apply false
 }
 
@@ -30,19 +30,21 @@ allprojects {
     }
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
 subprojects {
     apply plugin: "checkstyle"
     apply plugin: "jacoco"
     apply plugin: "java"
     apply plugin: "pmd"
-    apply plugin: "io.franzbecker.gradle-lombok"
 
     apply from: rootProject.file("gradle/scripts/release.gradle")
     apply from: rootProject.file("gradle/scripts/version.gradle")
 
     group = "triplea"
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
 
     ext {
         apacheHttpComponentsVersion = "4.5.14"
@@ -54,13 +56,13 @@ subprojects {
         commonsMathVersion = "3.6.1"
         commonsTextVersion = "1.13.1"
         dropwizardWebsocketsVersion = "1.3.14"
-        equalsVerifierVersion = "3.19.3"
+        equalsVerifierVersion = "4.0"
         feignVersion = "13.6"
-        gsonVersion = "2.13.0"
+        gsonVersion = "2.13.1"
         guavaVersion = "33.4.8-jre"
         hamcrestOptionalVersion = "2.0.0"
         hamcrestVersion = "2.0.0.0"
-        jacksonDataTypeVersion = "2.18.3"
+        jacksonDataTypeVersion = "2.19.0"
         jakartaMailVersion = "2.0.1"
         javaWebSocketVersion = "1.6.0"
         jaxbImplVersion = "4.0.5"
@@ -89,6 +91,12 @@ subprojects {
         implementation ("com.googlecode.soundlibs:jlayer:$jlayerVersion") {
             exclude group: 'junit', module: 'junit'
         }
+        compileOnly("org.projectlombok:lombok:1.18.38")
+        annotationProcessor("org.projectlombok:lombok:1.18.38")
+
+        testCompileOnly("org.projectlombok:lombok:1.18.38")
+        testAnnotationProcessor("org.projectlombok:lombok:1.18.38")
+
         implementation "ch.qos.logback:logback-classic:$logbackClassicVersion"
         implementation "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
         implementation "com.google.code.gson:gson:$gsonVersion"
@@ -192,15 +200,12 @@ subprojects {
         }
     }
 
-    lombok {
-        version = "1.18.22"
-    }
-
     pmd {
         consoleOutput = true
         ruleSetFiles = files(rootProject.file(".build/pmd.xml"))
         ruleSets = []
         incrementalAnalysis = true
+        toolVersion = "7.0.0"
     }
 
     spotless {

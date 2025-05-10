@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Properties;
 import javax.annotation.Nullable;
 import lombok.Getter;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * A single step in a game.
@@ -154,67 +155,67 @@ public class GameStep extends GameDataComponent {
     return Optional.ofNullable(properties.getProperty(GameStep.PropertyKeys.NON_COMBAT_MOVE))
             .map(Boolean::parseBoolean)
             .orElse(false)
-        || GameStep.isNonCombatMoveStep(name);
+        || GameStep.isNonCombatMoveStepName(name);
   }
 
-  public static boolean isTechStep(final String stepName) {
-    return stepName.endsWith("Tech");
+  public static boolean isTechStepName(final @NonNls String stepName) {
+    return stepName != null && stepName.endsWith("Tech");
   }
 
-  public static boolean isMoveStep(final String stepName) {
-    return stepName.endsWith("Move");
+  public static boolean isMoveStepName(final @NonNls String stepName) {
+    return stepName != null && stepName.endsWith("Move");
   }
 
-  public static boolean isNonCombatMoveStep(final String stepName) {
-    return stepName.endsWith("NonCombatMove");
+  public static boolean isNonCombatMoveStepName(final @NonNls String stepName) {
+    return stepName != null && stepName.endsWith("NonCombatMove");
   }
 
-  public static boolean isCombatMoveStep(final String stepName) {
+  public static boolean isCombatMoveStepName(final @NonNls String stepName) {
     // NonCombatMove endsWith CombatMove so check for NCM first.
-    return !isNonCombatMoveStep(stepName) && stepName.endsWith("CombatMove");
+    return !isNonCombatMoveStepName(stepName) && stepName.endsWith("CombatMove");
   }
 
-  public static boolean isAirborneCombatMoveStep(final String stepName) {
-    return stepName.endsWith("AirborneCombatMove");
+  public static boolean isAirborneCombatMoveStepName(final @NonNls String stepName) {
+    return stepName != null && stepName.endsWith("AirborneCombatMove");
   }
 
-  public static boolean isBattleStep(final String stepName) {
-    return stepName.endsWith("Battle");
+  public static boolean isBattleStepName(final @NonNls String stepName) {
+    return stepName != null && stepName.endsWith("Battle");
   }
 
-  public static boolean isPoliticsStep(final String stepName) {
-    return stepName.endsWith("Politics");
+  public static boolean isPoliticsStepName(final @NonNls String stepName) {
+    return stepName != null && stepName.endsWith("Politics");
   }
 
-  public static boolean isUserActionsStep(final String stepName) {
-    return stepName.endsWith("UserActions");
+  public static boolean isUserActionsStepName(final @NonNls String stepName) {
+    return stepName != null && stepName.endsWith("UserActions");
   }
 
-  public static boolean isEndTurnStep(final String stepName) {
-    return stepName.endsWith("EndTurn");
+  public static boolean isEndTurnStepName(final @NonNls String stepName) {
+    return stepName != null && stepName.endsWith("EndTurn");
   }
 
-  public static boolean isPurchaseOrBidStep(final String stepName) {
-    return isBidStep(stepName) || isPurchaseStep(stepName);
+  public static boolean isPurchaseOrBidStepName(final @NonNls String stepName) {
+    return isBidStepName(stepName) || isPurchaseStepName(stepName);
   }
 
-  public static boolean isPurchaseStep(final String stepName) {
+  public static boolean isPurchaseStepName(final @NonNls String stepName) {
     return stepName != null && stepName.endsWith("Purchase");
   }
 
-  public static boolean isBidStep(final String stepName) {
+  public static boolean isBidStepName(final @NonNls String stepName) {
     return stepName != null && stepName.endsWith("Bid");
   }
 
-  public static boolean isBidPlaceStep(final String stepName) {
-    return stepName.endsWith("BidPlace");
+  public static boolean isBidPlaceStepName(final @NonNls String stepName) {
+    return stepName != null && stepName.endsWith("BidPlace");
   }
 
-  public static boolean isPlaceStep(final String stepName) {
+  public static boolean isPlaceStepName(final @NonNls String stepName) {
     return stepName != null && stepName.endsWith("Place");
   }
 
-  public static boolean isTechActivationStep(final String stepName) {
-    return stepName.endsWith("TechActivation");
+  public static boolean isTechActivationStepName(final @NonNls String stepName) {
+    return stepName != null && stepName.endsWith("TechActivation");
   }
 }

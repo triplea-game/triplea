@@ -151,30 +151,30 @@ public class TripleAPlayer extends AbstractBasePlayer {
     ui.requiredTurnSeries(this.getGamePlayer());
     enableEditModeMenu();
     boolean badStep = false;
-    if (GameStep.isTechStep(name)) {
+    if (GameStep.isTechStepName(name)) {
       tech();
-    } else if (GameStep.isPurchaseOrBidStep(name)) {
+    } else if (GameStep.isPurchaseOrBidStepName(name)) {
       purchase(GameStepPropertiesHelper.isBid(getGameData()), false);
       if (!GameStepPropertiesHelper.isBid(getGameData())) {
         ui.waitForMoveForumPoster(this.getGamePlayer(), getPlayerBridge());
         // TODO only do forum post if there is a combat
       }
-    } else if (GameStep.isMoveStep(name)) {
+    } else if (GameStep.isMoveStepName(name)) {
       final boolean nonCombat = GameStepPropertiesHelper.isNonCombatMove(getGameData(), false);
       move(nonCombat, name);
       if (!nonCombat) {
         ui.waitForMoveForumPoster(this.getGamePlayer(), getPlayerBridge());
         // TODO only do forum post if there is a combat
       }
-    } else if (GameStep.isBattleStep(name)) {
+    } else if (GameStep.isBattleStepName(name)) {
       battle();
-    } else if (GameStep.isPlaceStep(name)) {
+    } else if (GameStep.isPlaceStepName(name)) {
       place();
-    } else if (GameStep.isPoliticsStep(name)) {
+    } else if (GameStep.isPoliticsStepName(name)) {
       politics(true);
-    } else if (GameStep.isUserActionsStep(name)) {
+    } else if (GameStep.isUserActionsStepName(name)) {
       userActions(true);
-    } else if (GameStep.isEndTurnStep(name)) {
+    } else if (GameStep.isEndTurnStepName(name)) {
       endTurn();
       // reset our sounds
       soundPlayedAlreadyCombatMove = false;
@@ -185,7 +185,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
       soundPlayedAlreadyEndTurn = false;
       soundPlayedAlreadyPlacement = false;
     } else {
-      badStep = !GameStep.isTechActivationStep(name);
+      badStep = !GameStep.isTechActivationStepName(name);
     }
     disableEditModeMenu();
     if (badStep) {
