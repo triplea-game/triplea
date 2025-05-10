@@ -92,6 +92,8 @@ public class UiContext {
 
   @Getter private boolean isShutDown = false;
 
+  @Getter private GamePlayer currentPlayer;
+  @Getter private boolean isCurrentPlayerRemote;
   private final List<Window> windowsToCloseOnShutdown = new ArrayList<>();
   private final List<Runnable> activeToDeactivate = new ArrayList<>();
   private final CountDownLatchHandler latchesToCloseOnShutdown = new CountDownLatchHandler(false);
@@ -172,6 +174,22 @@ public class UiContext {
     tooltipProperties = new TooltipProperties(this);
   }
 
+  /**
+   * Sets new @param(currentPlayer)
+   *
+   * @param player new current player
+   * @return true if new player has been set, false if player was already set
+   */
+  public boolean setCurrentPlayer(GamePlayer player) {
+    if (player != null && !player.equals(currentPlayer)
+        || player == null && currentPlayer != null) {
+      currentPlayer = player;
+      isCurrentPlayerRemote = !localPlayers.playing(player);
+      return true;
+    }
+    return false;
+  }
+
   public JLabel newUnitImageLabel(final ImageKey imageKey) {
     final JLabel label = new JLabel(getUnitImageFactory().getIcon(imageKey));
     MapUnitTooltipManager.setUnitTooltip(label, imageKey.getType(), imageKey.getPlayer(), 1, this);
@@ -221,21 +239,22 @@ public class UiContext {
 
   public void setUnitScaleFactor(final double scaleFactor) {
     unitImageFactory = unitImageFactory.withScaleFactor(scaleFactor);
-    final Preferences prefs =
-        getPreferencesMapOrSkin(Optional.ofNullable(skinName).orElse(mapName));
-    prefs.putDouble(UNIT_SCALE_PREF, scaleFactor);
-    try {
-      prefs.flush();
-    } catch (final BackingStoreException e) {
-      log.error("Failed to flush preferences: " + prefs.absolutePath(), e);
-    }
+    putDoubleToPreferences(UNIT_SCALE_PREF, scaleFactor);
   }
 
   public void setScale(final double scale) {
     this.scale = scale;
+    putDoubleToPreferences(MAP_SCALE_PREF, scale);
+  }
+
+  private void putDoubleToPreferences(String mapScalePref, double scale) {
     final Preferences prefs =
         getPreferencesMapOrSkin(Optional.ofNullable(skinName).orElse(mapName));
-    prefs.putDouble(MAP_SCALE_PREF, scale);
+    prefs.putDouble(mapScalePref, scale);
+    flushPreferences(prefs);
+  }
+
+  private static void flushPreferences(Preferences prefs) {
     try {
       prefs.flush();
     } catch (final BackingStoreException e) {
@@ -261,11 +280,7 @@ public class UiContext {
     } else {
       prefs.remove(MAP_SKIN_PREF);
     }
-    try {
-      prefs.flush();
-    } catch (final BackingStoreException e) {
-      log.error("Failed to flush preferences: " + prefs.absolutePath(), e);
-    }
+    flushPreferences(prefs);
     UiContext uiContext = new UiContext(gameData);
     uiContext.getMapData().verify(gameData);
     return uiContext;
@@ -406,11 +421,7 @@ public class UiContext {
   public void setShowEndOfTurnReport(final boolean value) {
     final Preferences prefs = Preferences.userNodeForPackage(UiContext.class);
     prefs.putBoolean(SHOW_END_OF_TURN_REPORT, value);
-    try {
-      prefs.flush();
-    } catch (final BackingStoreException ex) {
-      log.error("Failed to flush preferences: " + prefs.absolutePath(), ex);
-    }
+    flushPreferences(prefs);
   }
 
   public boolean getShowTriggeredNotifications() {
@@ -421,11 +432,7 @@ public class UiContext {
   public void setShowTriggeredNotifications(final boolean value) {
     final Preferences prefs = Preferences.userNodeForPackage(UiContext.class);
     prefs.putBoolean(SHOW_TRIGGERED_NOTIFICATIONS, value);
-    try {
-      prefs.flush();
-    } catch (final BackingStoreException ex) {
-      log.error("Failed to flush preferences: " + prefs.absolutePath(), ex);
-    }
+    flushPreferences(prefs);
   }
 
   public boolean getShowTriggerChanceSuccessful() {
@@ -436,11 +443,7 @@ public class UiContext {
   public void setShowTriggerChanceSuccessful(final boolean value) {
     final Preferences prefs = Preferences.userNodeForPackage(UiContext.class);
     prefs.putBoolean(SHOW_TRIGGERED_CHANCE_SUCCESSFUL, value);
-    try {
-      prefs.flush();
-    } catch (final BackingStoreException ex) {
-      log.error("Failed to flush preferences: " + prefs.absolutePath(), ex);
-    }
+    flushPreferences(prefs);
   }
 
   public boolean getShowTriggerChanceFailure() {
@@ -451,10 +454,6 @@ public class UiContext {
   public void setShowTriggerChanceFailure(final boolean value) {
     final Preferences prefs = Preferences.userNodeForPackage(UiContext.class);
     prefs.putBoolean(SHOW_TRIGGERED_CHANCE_FAILURE, value);
-    try {
-      prefs.flush();
-    } catch (final BackingStoreException ex) {
-      log.error("Failed to flush preferences: " + prefs.absolutePath(), ex);
-    }
+    flushPreferences(prefs);
   }
 }

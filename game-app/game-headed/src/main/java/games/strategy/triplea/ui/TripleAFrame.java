@@ -197,7 +197,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   @Getter private IEditDelegate editDelegate;
   private final JSplitPane gameCenterPanel;
   @Getter private final BottomBar bottomBar;
-  private GamePlayer lastPlayer;
   private final Map<GamePlayer, Boolean> requiredTurnSeries = new HashMap<>();
   private final ThreadPool messageAndDialogThreadPool = new ThreadPool(1);
   private final MapUnitTooltipManager tooltipManager;
@@ -1144,7 +1143,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         () ->
             SwingAction.invokeAndWait(
                 () -> {
-                  bottomBar.setCurrentPlayer(player, false);
+                  uiContext.setCurrentPlayer(player);
+                  bottomBar.updateFromCurrentPlayer();
                   if (inGame.compareAndSet(false, true)) {
                     showGame();
                   }
@@ -1646,14 +1646,18 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       player = step.getPlayerId();
     }
 
-    final boolean isPlaying = localPlayers.playing(player);
+    uiContext.setCurrentPlayer(player);
+
     SwingUtilities.invokeLater(
-        () -> bottomBar.setStepInfo(round, stepDisplayName, player, !isPlaying));
+        () -> {
+          bottomBar.setStepInfo(round, stepDisplayName);
+          bottomBar.updateFromCurrentPlayer();
+        });
     bottomBar.gameDataChanged();
     // if the game control has passed to someone else and we are not just showing the map, show the
     // history
     if (player != null && !player.isNull()) {
-      if (isPlaying) {
+      if (!uiContext.isCurrentPlayerRemote()) {
         if (inHistory.get()) {
           requiredTurnSeries.put(player, true);
           // if the game control is with us, show the current game
@@ -1681,14 +1685,14 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                 () -> {
                   final Boolean play = requiredTurnSeries.get(player);
                   if (play != null && play) {
-                    getUiContext()
+                    uiContext
                         .getClipPlayer()
                         .play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player);
                     requiredTurnSeries.put(player, false);
                   }
                   // center on capital of player, if it is a new none-AI player
-                  if (!player.equals(lastPlayer)) {
-                    lastPlayer = player;
+                  if (uiContext.setCurrentPlayer(player)) {
+                    bottomBar.updateFromCurrentPlayer();
                     if (!player.isAi()) {
                       // assume missing offset means there is a new mapPanel build up for which
                       // centering is not updating without repaint
