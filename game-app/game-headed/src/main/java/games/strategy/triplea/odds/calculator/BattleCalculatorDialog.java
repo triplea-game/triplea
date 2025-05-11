@@ -17,11 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import org.jetbrains.annotations.Nullable;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.swing.key.binding.SwingKeyBinding;
@@ -48,11 +48,13 @@ public class BattleCalculatorDialog extends JDialog {
    * Shows the Odds Calculator dialog and initializes it using the current state of the specified
    * territory.
    */
-  public static void show(final TripleAFrame taFrame, final Territory t, final GameData data) {
+  public static void show(
+      final TripleAFrame taFrame, @Nullable final Territory territory, final GameData data) {
     // Note: The data param may not be the same as taFrame.getGame().getData() as GameData gets
     // cloned when showing history with a different History instance that doesn't correspond to
     // what's shown.
-    final BattleCalculatorPanel panel = new BattleCalculatorPanel(data, taFrame.getUiContext(), t);
+    final BattleCalculatorPanel panel =
+        new BattleCalculatorPanel(data, taFrame.getUiContext(), territory);
     final BattleCalculatorDialog dialog = new BattleCalculatorDialog(panel, taFrame);
     dialog.pack();
 
@@ -136,16 +138,14 @@ public class BattleCalculatorDialog extends JDialog {
             final List<Unit> units =
                 t.getUnitCollection().stream()
                     .filter(Matches.enemyUnit(panel.getDefender()))
-                    .collect(Collectors.toList());
+                    .toList();
 
             if (!units.isEmpty()) {
               // Count how many units each one has and find the max to update the panel
               final IntegerMap<GamePlayer> unitCountMap = new IntegerMap<>(units, Unit::getOwner);
               final GamePlayer newAttacker = unitCountMap.maxKey();
               final List<Unit> attackingUnits =
-                  units.stream()
-                      .filter(Matches.unitIsOwnedBy(newAttacker))
-                      .collect(Collectors.toList());
+                  units.stream().filter(Matches.unitIsOwnedBy(newAttacker)).toList();
               panel.setAttackerWithUnits(newAttacker, attackingUnits);
             }
           }
