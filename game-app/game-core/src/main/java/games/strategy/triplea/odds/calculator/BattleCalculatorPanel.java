@@ -1,5 +1,6 @@
 package games.strategy.triplea.odds.calculator;
 
+
 import static java.text.MessageFormat.format;
 
 import games.strategy.engine.data.GameData;
@@ -57,6 +58,7 @@ import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.triplea.java.ThreadRunner;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.IntTextField;
@@ -107,12 +109,14 @@ class BattleCalculatorPanel extends JPanel {
   private final JLabel defenderUnitsTotalPower = new JLabel();
   private String attackerOrderOfLosses = null;
   private String defenderOrderOfLosses = null;
-  private final Territory battleSiteTerritory;
+  @Nullable private final Territory battleSiteTerritory;
   private final JList<String> territoryEffectsJList;
   private final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
 
   BattleCalculatorPanel(
-      final GameData data, final UiContext uiContext, final Territory battleSiteTerritory) {
+      final GameData data,
+      final UiContext uiContext,
+      @Nullable final Territory battleSiteTerritory) {
     this.data = data;
     this.uiContext = uiContext;
     this.battleSiteTerritory = battleSiteTerritory;
@@ -471,7 +475,7 @@ class BattleCalculatorPanel extends JPanel {
         .setGameData(data)
         .thenAccept(
             bool -> {
-              if (bool) {
+              if (Boolean.TRUE.equals(bool)) {
                 long millis = Duration.between(start, Instant.now()).toMillis();
                 SwingUtilities.invokeLater(
                     () -> {
@@ -553,10 +557,6 @@ class BattleCalculatorPanel extends JPanel {
         () -> {
           try {
             final Territory newBattleSiteTerritory = findPotentialBattleSite();
-            if (newBattleSiteTerritory == null) {
-              throw new IllegalStateException(
-                  format("No territory found that is land: {0}", isLandBattle()));
-            }
             final List<Unit> defending = defendingUnitsPanel.getUnits();
             final List<Unit> attacking = attackingUnitsPanel.getUnits();
             List<Unit> bombarding = new ArrayList<>();
@@ -668,6 +668,10 @@ class BattleCalculatorPanel extends JPanel {
     } else {
       newBattleSiteTerritory = this.battleSiteTerritory;
     }
+    if (newBattleSiteTerritory == null) {
+      throw new IllegalStateException(
+          format("No territory found that is land: {0}", isLandBattle()));
+    }
     return newBattleSiteTerritory;
   }
 
@@ -726,11 +730,11 @@ class BattleCalculatorPanel extends JPanel {
   }
 
   public boolean hasAttackingUnits() {
-    return !attackingUnitsPanel.isEmpty();
+    return attackingUnitsPanel.hasNoneZeroUnitEntries();
   }
 
   public boolean hasDefendingUnits() {
-    return !defendingUnitsPanel.isEmpty();
+    return defendingUnitsPanel.hasNoneZeroUnitEntries();
   }
 
   private boolean isLandBattle() {

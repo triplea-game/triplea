@@ -23,6 +23,8 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.SwingComponents;
@@ -51,18 +53,15 @@ public class PlayerUnitsPanel extends JPanel {
   }
 
   public List<Unit> getUnits() {
-    return unitPanels.stream()
-        .map(UnitPanel::getUnits)
-        .flatMap(Collection::stream)
-        .collect(Collectors.toList());
+    return unitPanels.stream().map(UnitPanel::getUnits).flatMap(Collection::stream).toList();
   }
 
   /** Sets up components to an initial state. */
   public void init(
-      final GamePlayer panelPlayer,
+      @NotNull final GamePlayer panelPlayer,
       final List<Unit> units,
       final boolean isLandBattle,
-      final Territory territory) {
+      @Nullable final Territory territory) {
     this.isLandBattle = isLandBattle;
     unitPanels.clear();
 
@@ -115,7 +114,7 @@ public class PlayerUnitsPanel extends JPanel {
    * @param units list of units to be populated
    */
   private List<UnitCategory> getAllUnitCategories(
-      final GamePlayer panelPlayer, final List<Unit> units) {
+      @NotNull final GamePlayer panelPlayer, final List<Unit> units) {
 
     final List<UnitCategory> allUnitCategories = new ArrayList<>();
 
@@ -184,11 +183,11 @@ public class PlayerUnitsPanel extends JPanel {
   }
 
   /**
-   * Returns true if all the unit panel numbers are zero, false if there are any units 'added' to
-   * the panel.
+   * Returns true if any unit panel number is not zero (any units 'added' to the panel), false if
+   * all are zero.
    */
-  boolean isEmpty() {
-    return unitPanels.stream().allMatch(unitPanel -> unitPanel.getCount() == 0);
+  boolean hasNoneZeroUnitEntries() {
+    return unitPanels.stream().anyMatch(unitPanel -> unitPanel.getCount() != 0);
   }
 
   public void addChangeListener(final Runnable listener) {

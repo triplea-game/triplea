@@ -46,9 +46,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.triplea.util.Tuple;
 
 /** Orchestrates the rendering of all map tiles. */
@@ -81,73 +82,87 @@ public class TileManager {
     // well as the original rectangle
     final MapData mapData = uiContext.getMapData();
     final Dimension mapDimensions = mapData.getMapDimensions();
-    final boolean testXshift =
+    final boolean testShiftX =
         (mapData.scrollWrapX() && (bounds.getMaxX() > mapDimensions.width || bounds.getMinX() < 0));
-    final boolean testYshift =
+    final boolean testShiftY =
         (mapData.scrollWrapY()
             && (bounds.getMaxY() > mapDimensions.height || bounds.getMinY() < 0));
-    Rectangle2D boundsXshift = null;
-    if (testXshift) {
+    Optional<Rectangle2D> boundsShiftX = getBoundsShiftX(bounds, testShiftX, mapDimensions);
+    Optional<Rectangle2D> boundsShiftY = getBoundsShiftY(bounds, testShiftY, mapDimensions);
+    synchronized (mutex) {
+      final List<Tile> tilesInBounds =
+          new ArrayList<>(
+              tiles.stream()
+                  .filter(
+                      tile -> {
+                        final Rectangle tileBounds = tile.getBounds();
+                        return tileBounds.intersects(bounds);
+                      })
+                  .toList());
+      boundsShiftX.ifPresent(
+          rectangle2D ->
+              tiles.forEach(
+                  tile -> {
+                    final Rectangle tileBounds = tile.getBounds();
+                    if (rectangle2D.contains(tileBounds) || tileBounds.intersects(rectangle2D)) {
+                      tilesInBounds.add(tile);
+                    }
+                  }));
+      boundsShiftY.ifPresent(
+          rectangle2D ->
+              tiles.forEach(
+                  tile -> {
+                    final Rectangle tileBounds = tile.getBounds();
+                    if (rectangle2D.contains(tileBounds) || tileBounds.intersects(rectangle2D)) {
+                      tilesInBounds.add(tile);
+                    }
+                  }));
+      return tilesInBounds;
+    }
+  }
+
+  private static Optional<Rectangle2D> getBoundsShiftX(
+      Rectangle2D bounds, boolean testShiftX, Dimension mapDimensions) {
+    if (testShiftX) {
       if (bounds.getMinX() < 0) {
-        boundsXshift =
+        return Optional.of(
             new Rectangle(
                 (int) bounds.getMinX() + mapDimensions.width,
                 (int) bounds.getMinY(),
                 (int) bounds.getWidth(),
-                (int) bounds.getHeight());
+                (int) bounds.getHeight()));
       } else {
-        boundsXshift =
+        return Optional.of(
             new Rectangle(
                 (int) bounds.getMinX() - mapDimensions.width,
                 (int) bounds.getMinY(),
                 (int) bounds.getWidth(),
-                (int) bounds.getHeight());
+                (int) bounds.getHeight()));
       }
     }
-    Rectangle2D boundsYshift = null;
-    if (testYshift) {
+    return Optional.empty();
+  }
+
+  private static Optional<Rectangle2D> getBoundsShiftY(
+      Rectangle2D bounds, boolean testShiftY, Dimension mapDimensions) {
+    if (testShiftY) {
       if (bounds.getMinY() < 0) {
-        boundsYshift =
+        return Optional.of(
             new Rectangle(
                 (int) bounds.getMinX(),
                 (int) bounds.getMinY() + mapDimensions.height,
                 (int) bounds.getWidth(),
-                (int) bounds.getHeight());
+                (int) bounds.getHeight()));
       } else {
-        boundsYshift =
+        return Optional.of(
             new Rectangle(
                 (int) bounds.getMinX(),
                 (int) bounds.getMinY() - mapDimensions.height,
                 (int) bounds.getWidth(),
-                (int) bounds.getHeight());
+                (int) bounds.getHeight()));
       }
     }
-    synchronized (mutex) {
-      final List<Tile> tilesInBounds = new ArrayList<>();
-      for (final Tile tile : tiles) {
-        final Rectangle tileBounds = tile.getBounds();
-        if (tileBounds.intersects(bounds)) {
-          tilesInBounds.add(tile);
-        }
-      }
-      if (boundsXshift != null) {
-        for (final Tile tile : tiles) {
-          final Rectangle tileBounds = tile.getBounds();
-          if (boundsXshift.contains(tileBounds) || tileBounds.intersects(boundsXshift)) {
-            tilesInBounds.add(tile);
-          }
-        }
-      }
-      if (boundsYshift != null) {
-        for (final Tile tile : tiles) {
-          final Rectangle tileBounds = tile.getBounds();
-          if (boundsYshift.contains(tileBounds) || tileBounds.intersects(boundsYshift)) {
-            tilesInBounds.add(tile);
-          }
-        }
-      }
-      return tilesInBounds;
-    }
+    return Optional.empty();
   }
 
   Collection<UnitsDrawer> getUnitDrawables() {
@@ -214,7 +229,7 @@ public class TileManager {
   }
 
   private void updateTerritory(
-      final Territory territory, final GameData data, final MapData mapData) {
+      @NotNull final Territory territory, final GameData data, final MapData mapData) {
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
       synchronized (mutex) {
         clearTerritory(territory);
@@ -238,7 +253,7 @@ public class TileManager {
   }
 
   private void drawTerritory(
-      final Territory territory, final GameState data, final MapData mapData) {
+      @NotNull final Territory territory, final GameState data, final MapData mapData) {
     final Set<Tile> drawnOn = new HashSet<>();
     final Set<IDrawable> drawing = new HashSet<>();
     if (territoryOverlays.get(territory.getName()) != null) {
@@ -303,7 +318,7 @@ public class TileManager {
   }
 
   private void drawUnits(
-      final Territory territory,
+      @NotNull final Territory territory,
       final MapData mapData,
       final Set<Tile> drawnOn,
       final Set<IDrawable> drawing) {
@@ -319,6 +334,7 @@ public class TileManager {
         lastPlace = new Point(placementPoints.next());
         overflow = false;
       } else {
+        if (lastPlace == null) return; // should not occur, but better safe than sorry
         lastPlace = new Point(lastPlace);
         overflow = true;
         if (mapData.getPlacementOverflowToLeft(territory)) {
@@ -458,7 +474,7 @@ public class TileManager {
             .map(Tile::getDrawables)
             .flatMap(Collection::stream)
             .sorted()
-            .collect(Collectors.toList());
+            .toList();
     for (final IDrawable drawer : drawables) {
       if (drawer.getLevel().ordinal() >= IDrawable.DrawLevel.UNITS_LEVEL.ordinal()) {
         break;
