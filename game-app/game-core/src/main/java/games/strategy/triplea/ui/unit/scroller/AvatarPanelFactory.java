@@ -22,6 +22,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import org.jetbrains.annotations.NotNull;
 import org.triplea.java.Postconditions;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
@@ -77,7 +78,7 @@ class AvatarPanelFactory {
   JPanel buildPanel(
       final List<Unit> units,
       final GamePlayer currentPlayer,
-      final Territory territory,
+      final @NotNull Territory territory,
       final int panelWidth) {
     final int renderingWidth = Math.min(panelWidth, MAX_RENDERING_WIDTH);
 
@@ -104,7 +105,7 @@ class AvatarPanelFactory {
   private static Image createUnitStackImage(
       final UnitImageFactory unitImageFactory,
       final GamePlayer player,
-      final Territory territory,
+      final @NotNull Territory territory,
       final List<Unit> units,
       final int renderingWidth) {
 

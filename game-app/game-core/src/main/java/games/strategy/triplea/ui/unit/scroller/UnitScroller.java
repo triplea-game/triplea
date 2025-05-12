@@ -12,6 +12,7 @@ import games.strategy.triplea.ui.MouseDetails;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.panels.map.MapSelectionListener;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,11 +25,11 @@ import javax.annotation.Nullable;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import org.jetbrains.annotations.NotNull;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.CollapsiblePanel;
@@ -66,7 +67,7 @@ public class UnitScroller {
 
   private Collection<Unit> skippedUnits = new HashSet<>();
   private final Collection<Unit> sleepingUnits = new HashSet<>();
-  private Territory lastFocusedTerritory;
+  private @Nullable Territory lastFocusedTerritory;
 
   private final GameData gameData;
   private final MapPanel mapPanel;
@@ -102,11 +103,15 @@ public class UnitScroller {
     mapPanel.addMapSelectionListener(
         new MapSelectionListener() {
           @Override
-          public void territorySelected(final Territory territory, final MouseDetails md) {}
+          public void territorySelected(final Territory territory, final MouseDetails md) {
+            /*interface method*/
+          }
 
           @Override
           public void mouseEntered(@Nullable final Territory territory) {
-            if (parentPanelIsVisible.get() && territory != null && movesLeft > 0) {
+            if (Boolean.TRUE.equals(parentPanelIsVisible.get())
+                && territory != null
+                && movesLeft > 0) {
               lastFocusedTerritory = territory;
               drawUnitAvatarPane(territory);
               territoryNameLabel.setText(territory.getName());
@@ -114,12 +119,14 @@ public class UnitScroller {
           }
 
           @Override
-          public void mouseMoved(@Nullable final Territory territory, final MouseDetails md) {}
+          public void mouseMoved(@Nullable final Territory territory, final MouseDetails md) {
+            /*interface method*/
+          }
         });
   }
 
   private void unitMoved() {
-    if (!parentPanelIsVisible.get()) {
+    if (Boolean.FALSE.equals(parentPanelIsVisible.get())) {
       return;
     }
 
@@ -196,14 +203,14 @@ public class UnitScroller {
                       player, gameData.getMap());
               Optional.ofNullable(lastFocusedTerritory)
                   .ifPresent(
-                      t -> {
-                        drawUnitAvatarPane(t);
-                        territoryNameLabel.setText(t.getName());
+                      territory -> {
+                        drawUnitAvatarPane(territory);
+                        territoryNameLabel.setText(territory.getName());
                       });
             });
   }
 
-  private void drawUnitAvatarPane(final Territory t) {
+  private void drawUnitAvatarPane(final @NotNull Territory territory) {
     // use 240 as an approximate default if the containing panel does not yet exist.
     final int panelWidth = selectUnitImagePanel.getWidth();
     final int renderingWidth = panelWidth == 0 ? 240 : panelWidth;
@@ -213,14 +220,14 @@ public class UnitScroller {
         player == null
             ? List.of()
             : UnitScrollerModel.getMoveableUnits(
-                t, movePhaseSupplier.get(), player, getAllSkippedUnits());
+                territory, movePhaseSupplier.get(), player, getAllSkippedUnits());
 
     SwingUtilities.invokeLater(
         () -> {
           selectUnitImagePanel.removeAll();
           if (player != null) {
             selectUnitImagePanel.add(
-                avatarPanelFactory.buildPanel(moveableUnits, player, t, renderingWidth));
+                avatarPanelFactory.buildPanel(moveableUnits, player, territory, renderingWidth));
           }
           SwingComponents.redraw(selectUnitImagePanel);
         });
@@ -242,7 +249,7 @@ public class UnitScroller {
 
     final JButton prevUnit = new JButton(UnitScrollerIcon.LEFT_ARROW.get());
     prevUnit.setToolTipText(PREVIOUS_UNITS_TOOLTIP);
-    prevUnit.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+    prevUnit.setAlignmentX(Component.CENTER_ALIGNMENT);
     prevUnit.addActionListener(e -> centerOnPreviousMovableUnit());
 
     final JButton skipButton = new JButton(UnitScrollerIcon.SKIP.get());
@@ -269,7 +276,7 @@ public class UnitScroller {
             .addHorizontalStrut(HORIZONTAL_BUTTON_GAP)
             .add(nextUnit)
             .build();
-    skipAndSleepPanel.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+    skipAndSleepPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
     panel.add(skipAndSleepPanel, BorderLayout.SOUTH);
     panel.add(Box.createVerticalStrut(3));
@@ -320,7 +327,8 @@ public class UnitScroller {
   }
 
   private void showAllUnitsMovedIfNeeded() {
-    if (movesLeft() == 0 && ClientSetting.notifyAllUnitsMoved.getValueOrThrow()) {
+    if (movesLeft() == 0
+        && Boolean.TRUE.equals(ClientSetting.notifyAllUnitsMoved.getValueOrThrow())) {
       showAllUnitsMoved();
     }
   }
@@ -396,7 +404,7 @@ public class UnitScroller {
     }
   }
 
-  private void updateRenderingToTerritory(final Territory selectedTerritory) {
+  private void updateRenderingToTerritory(final @NotNull Territory selectedTerritory) {
     lastFocusedTerritory = selectedTerritory;
     territoryNameLabel.setText(lastFocusedTerritory.getName());
     highlightTerritory(selectedTerritory);
@@ -405,7 +413,7 @@ public class UnitScroller {
   }
 
   private void highlightTerritory(final Territory territory) {
-    if (ClientSetting.unitScrollerHighlightTerritory.getValueOrThrow()) {
+    if (Boolean.TRUE.equals(ClientSetting.unitScrollerHighlightTerritory.getValueOrThrow())) {
       mapPanel.highlightTerritory(
           territory, MapPanel.AnimationDuration.STANDARD, MapPanel.HighlightDelay.SHORT_DELAY);
     }

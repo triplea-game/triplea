@@ -77,7 +77,7 @@ class UnitSeparatorTest {
   }
 
   @Test
-  void testGetSortedUnitCategoriesDontDrawUnit() {
+  void testGetSortedUnitCategoriesDoNotDrawUnit() {
     final GameState data = TestMapGameData.TWW.getGameData();
     final Territory northernGermany = territory("Northern Germany", data);
     northernGermany.getUnitCollection().clear();
