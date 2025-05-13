@@ -14,6 +14,7 @@ import games.strategy.engine.data.events.ZoomMapListener;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
+import java.awt.Image;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
@@ -115,15 +116,24 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     return stepPanel;
   }
 
-  public void setStatus(final String msg, final Optional<java.awt.Image> image) {
+  private void setStatus(final String msg) {
     statusMessage.setVisible(!msg.isEmpty());
     statusMessage.setText(msg);
+  }
 
-    if (!msg.isEmpty() && image.isPresent()) {
-      statusMessage.setIcon(new ImageIcon(image.get()));
+  public void setStatus(final String msg, final Image image) {
+    setStatus(msg);
+
+    if (!msg.isEmpty()) {
+      statusMessage.setIcon(new ImageIcon(image));
     } else {
       statusMessage.setIcon(null);
     }
+  }
+
+  public void setStatusAndClearIcon(final String msg) {
+    setStatus(msg);
+    statusMessage.setIcon(null);
   }
 
   public void setTerritory(final @Nullable Territory territory) {
@@ -231,12 +241,15 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
 
   private @NotNull String getTerritoryLabelTextPattern(Territory territory) {
     GamePlayer territoryOwner = territory.getOwner();
+    if (territoryOwner == null) return "";
     GamePlayer currentPlayer = uiContext.getCurrentPlayer();
+    if (currentPlayer == null)
+      currentPlayer = territoryOwner.getData().getPlayerList().getNullPlayer();
     if (territoryOwner.equals(currentPlayer)) {
       return "<html>{0} (current player)</html>";
     }
     final RelationshipTypeAttachment relationshipTypeAttachment =
-        territory
+        territoryOwner
             .getData()
             .getRelationshipTracker()
             .getRelationshipType(territoryOwner, currentPlayer)
