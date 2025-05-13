@@ -629,15 +629,19 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   }
 
   void clearStatusMessage() {
-    bottomBar.setStatus("", Optional.empty());
+    bottomBar.setStatusAndClearIcon("");
   }
 
   public void setStatusErrorMessage(final String msg) {
-    bottomBar.setStatus(msg, mapPanel.getErrorImage());
+    final Optional<Image> errorImage = mapPanel.getErrorImage();
+    if (errorImage.isPresent()) bottomBar.setStatus(msg, errorImage.get());
+    else bottomBar.setStatusAndClearIcon(msg);
   }
 
   public void setStatusWarningMessage(final String msg) {
-    bottomBar.setStatus(msg, mapPanel.getWarningImage());
+    final Optional<Image> warningImage = mapPanel.getWarningImage();
+    if (warningImage.isPresent()) bottomBar.setStatus(msg, warningImage.get());
+    else bottomBar.setStatusAndClearIcon(msg);
   }
 
   public IntegerMap<ProductionRule> getProduction(
