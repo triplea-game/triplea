@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -159,9 +158,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
         territoryEffectNames = List.of();
       } else {
         territoryEffectNames =
-            ta.getTerritoryEffect().stream()
-                .map(TerritoryEffect::getName)
-                .collect(Collectors.toList());
+            ta.getTerritoryEffect().stream().map(TerritoryEffect::getName).toList();
         final int production = ta.getProduction();
         if (production > 0) {
           resources.add(new Resource(Constants.PUS, territory.getData()), production);
@@ -204,7 +201,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
 
     territoryInfo.add(createTerritoryNameLabel(territory));
 
-    if (territoryEffectText.length() > 0) {
+    if (!territoryEffectText.isEmpty()) {
       territoryEffectText.setLength(territoryEffectText.length() - 2);
       final JLabel territoryEffectTextLabel = new JLabel(" (" + territoryEffectText + ")");
       territoryInfo.add(territoryEffectTextLabel);
@@ -346,10 +343,14 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
   }
 
   @Override
-  public void ownerChanged(Territory territory) {}
+  public void ownerChanged(Territory territory) {
+    /*interface method*/
+  }
 
   @Override
-  public void attachmentChanged(Territory territory) {}
+  public void attachmentChanged(Territory territory) {
+    /*interface method*/
+  }
 
   @Override
   public void zoomMapChanged(Integer newZoom) {
