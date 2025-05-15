@@ -56,8 +56,6 @@ class StatPanel extends JPanel implements GameDataChangeListener {
   }
 
   protected void initLayout() {
-    final boolean hasTech =
-        !TechAdvance.getTechAdvances(gameData.getTechnologyFrontier(), null).isEmpty();
     setLayout(new GridLayout(1, 1));
     add(new JScrollPane(createPlayersTable()));
   }
