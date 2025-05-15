@@ -48,6 +48,7 @@ import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.AirBattle;
 import games.strategy.triplea.delegate.battle.BattleState;
@@ -177,6 +178,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   private final JPanel rightHandSidePanel = new JPanel();
   private final JTabbedPane tabsPanel = new JTabbedPane();
   private final StatPanel statsPanel;
+  private final TechnologyPanel technologyPanel;
   private final EconomyPanel economyPanel;
   private final Runnable clientLeftGame;
   private @Nullable ObjectivePanel objectivePanel;
@@ -392,6 +394,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
     actionButtonsPanel.setBorder(null);
     statsPanel = new StatPanel(data, uiContext);
+    technologyPanel = new TechnologyPanel(data, uiContext);
     economyPanel = new EconomyPanel(data, uiContext);
     objectivePanel = new ObjectivePanel(data, uiContext);
     if (objectivePanel.isEmpty()) {
@@ -543,6 +546,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       addTab("Actions", actionButtonsPanel, KeyCode.C);
     }
     addTab("Players", statsPanel, KeyCode.P);
+    if (!TechAdvance.getTechAdvances(data.getTechnologyFrontier(), null).isEmpty()) {
+      addTab("Technology", technologyPanel, KeyCode.E);
+    }
     addTab("Resources", economyPanel, KeyCode.R);
     if (objectivePanel != null && !objectivePanel.isEmpty()) {
       String objectivePanelName = new ObjectiveProperties(uiContext.getResourceLoader()).getName();
@@ -1791,6 +1797,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       clonedGameData.addDataChangeListener(dataChangeListener);
     }
     statsPanel.setGameData(clonedGameData);
+    if (!TechAdvance.getTechAdvances(data.getTechnologyFrontier(), null).isEmpty()) {
+      technologyPanel.setGameData(clonedGameData);
+    }
     economyPanel.setGameData(clonedGameData);
     if (objectivePanel != null && !objectivePanel.isEmpty()) {
       objectivePanel.setGameData(clonedGameData);
@@ -1962,7 +1971,10 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             }
             historyPanel = null;
             mapPanel.getData().removeDataChangeListener(dataChangeListener);
-            statsPanel.setGameData(data);
+            if (!TechAdvance.getTechAdvances(data.getTechnologyFrontier(), null).isEmpty()) {
+              statsPanel.setGameData(data);
+            }
+            technologyPanel.setGameData(data);
             economyPanel.setGameData(data);
             if (objectivePanel != null && !objectivePanel.isEmpty()) {
               objectivePanel.setGameData(data);

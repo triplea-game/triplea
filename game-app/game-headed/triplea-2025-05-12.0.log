@@ -1,0 +1,6 @@
+498  10:38:16.937 [main] INFO  o.t.game.client.HeadedGameRunner - Launching game, version: 2.7+00000
+1040 10:38:17.479 [Thread-3] DEBUG g.s.e.data.gameparser.GameParser - Parsing game XML: /Users/junchengjia/triplea/downloadedMaps/world_war_ii_global/world_war_ii_global-master/map/games/ww2global40_2nd_edition.xml
+432  10:56:39.009 [main] INFO  o.t.game.client.HeadedGameRunner - Launching game, version: 2.7+00000
+969  10:56:39.546 [Thread-3] DEBUG g.s.e.data.gameparser.GameParser - Parsing game XML: /Users/junchengjia/triplea/downloadedMaps/world_war_ii_global/world_war_ii_global-master/map/games/ww2global40_2nd_edition.xml
+1279 16:42:17.785 [main] INFO  o.t.game.client.HeadedGameRunner - Launching game, version: 2.7+00000
+2934 16:42:19.440 [Thread-3] DEBUG g.s.e.data.gameparser.GameParser - Parsing game XML: /Users/junchengjia/triplea/downloadedMaps/world_war_ii_global/world_war_ii_global-master/map/games/ww2global40_2nd_edition.xml
