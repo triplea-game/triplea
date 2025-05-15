@@ -170,7 +170,8 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
       // copy so that the object doesn't change underneath us
       final GameData gameDataSync = TechnologyPanel.this.gameData;
       try (GameData.Unlocker ignored = gameDataSync.acquireReadLock()) {
-        final int numTechs = TechAdvance.getTechAdvances(gameDataSync.getTechnologyFrontier()).size();
+        final int numTechs =
+            TechAdvance.getTechAdvances(gameDataSync.getTechnologyFrontier()).size();
         if (gameDataSync.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
           useTech = true;
           dataTable = new String[numTechs + 1][colList.length + 2];
@@ -185,7 +186,8 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
         dataTable[row][0] = "Tokens";
         row++;
       }
-      final List<TechAdvance> techAdvances = TechAdvance.getTechAdvances(gameDataSync.getTechnologyFrontier(), null);
+      final List<TechAdvance> techAdvances =
+          TechAdvance.getTechAdvances(gameDataSync.getTechnologyFrontier(), null);
       for (final TechAdvance tech : techAdvances) {
         rowMap.put(tech.getName(), row);
         dataTable[row][0] = tech.getName();
@@ -228,16 +230,18 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
             final int tokens = pid.getResources().getQuantity(Constants.TECH_TOKENS);
             data[row][col] = Integer.toString(tokens);
           }
-          final List<TechAdvance> advancesAll = TechAdvance.getTechAdvances(gameDataSync.getTechnologyFrontier());
-          final List<TechAdvance> has = TechAdvance.getTechAdvances(gameDataSync.getTechnologyFrontier(), pid);
+          final List<TechAdvance> advancesAll =
+              TechAdvance.getTechAdvances(gameDataSync.getTechnologyFrontier());
+          final List<TechAdvance> has =
+              TechAdvance.getTechAdvances(gameDataSync.getTechnologyFrontier(), pid);
           for (final TechAdvance advance : advancesAll) {
             if (!has.contains(advance)) {
               row = rowMap.get(advance.getName());
               data[row][col] = "-";
             }
           }
-          for (final TechAdvance advance : TechTracker.getCurrentTechAdvances(pid,
-              gameDataSync.getTechnologyFrontier())) {
+          for (final TechAdvance advance :
+              TechTracker.getCurrentTechAdvances(pid, gameDataSync.getTechnologyFrontier())) {
             row = rowMap.get(advance.getName());
             data[row][col] = "X";
           }

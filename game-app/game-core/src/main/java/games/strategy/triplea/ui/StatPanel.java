@@ -16,7 +16,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.ui.mapdata.MapData;
 import java.awt.GridLayout;
 import java.awt.Image;
