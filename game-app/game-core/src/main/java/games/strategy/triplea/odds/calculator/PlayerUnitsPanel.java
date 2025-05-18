@@ -53,7 +53,10 @@ public class PlayerUnitsPanel extends JPanel {
   }
 
   public List<Unit> getUnits() {
-    return unitPanels.stream().map(UnitPanel::getUnits).flatMap(Collection::stream).toList();
+    return unitPanels.stream()
+        .map(UnitPanel::getUnits)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toList());
   }
 
   /** Sets up components to an initial state. */
