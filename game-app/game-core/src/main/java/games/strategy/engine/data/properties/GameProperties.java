@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import lombok.extern.slf4j.Slf4j;
@@ -128,8 +129,8 @@ public class GameProperties extends GameDataComponent {
     playerProperties.put(property.getName(), property);
   }
 
-  public IEditableProperty<?> getPlayerProperty(final String name) {
-    return playerProperties.get(name);
+  public Optional<IEditableProperty<?>> getPlayerProperty(final String name) {
+    return Optional.ofNullable(playerProperties.get(name));
   }
 
   /**

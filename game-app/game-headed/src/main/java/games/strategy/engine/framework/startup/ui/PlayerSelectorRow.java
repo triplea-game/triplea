@@ -9,8 +9,7 @@ import games.strategy.triplea.Constants;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -59,23 +58,19 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
     this.playerTypesProvider = playerTypes;
 
     enabledCheckBox = new JCheckBox();
-    final ActionListener disablePlayerActionListener =
-        new ActionListener() {
-          @Override
-          public void actionPerformed(final ActionEvent e) {
-            if (enabledCheckBox.isSelected()) {
-              enabled = true;
-              // the 1st in the list should be human
-              PlayerSelectorRow.this.playerTypes.setSelectedItem(HeadedPlayerTypes.HUMAN_PLAYER);
-            } else {
-              enabled = false;
-              // the 2nd in the list should be Weak AI
-              PlayerSelectorRow.this.playerTypes.setSelectedItem(PlayerTypes.WEAK_AI);
-            }
-            setWidgetActivation();
+    enabledCheckBox.addActionListener( // disablePlayerActionListener
+        e -> {
+          if (enabledCheckBox.isSelected()) {
+            enabled = true;
+            // the 1st in the list should be human
+            PlayerSelectorRow.this.playerTypes.setSelectedItem(HeadedPlayerTypes.HUMAN_PLAYER);
+          } else {
+            enabled = false;
+            // the 2nd in the list should be Weak AI
+            PlayerSelectorRow.this.playerTypes.setSelectedItem(PlayerTypes.WEAK_AI);
           }
-        };
-    enabledCheckBox.addActionListener(disablePlayerActionListener);
+          PlayerSelectorRow.this.setWidgetActivation();
+        });
     enabledCheckBox.setSelected(playersEnablementListing.get(playerName));
     enabledCheckBox.setEnabled(playersThatMayBeDisabled.contains(playerName));
 
@@ -110,10 +105,22 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
     incomePercentage =
         gameProperties
             .getPlayerProperty(Constants.getIncomePercentageFor(player))
+            .orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        MessageFormat.format(
+                            "Property not found: {0}", Constants.getIncomePercentageFor(player))))
             .getEditorComponent();
     incomePercentageLabel = new JLabel("%");
     puIncomeBonus =
-        gameProperties.getPlayerProperty(Constants.getPuIncomeBonus(player)).getEditorComponent();
+        gameProperties
+            .getPlayerProperty(Constants.getPuIncomeBonus(player))
+            .orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        MessageFormat.format(
+                            "Property not found: {0}", Constants.getPuIncomeBonus(player))))
+            .getEditorComponent();
     puIncomeBonusLabel = new JLabel("PUs");
 
     setWidgetActivation();
