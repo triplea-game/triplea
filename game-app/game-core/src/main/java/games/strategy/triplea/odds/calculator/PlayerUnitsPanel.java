@@ -142,7 +142,7 @@ public class PlayerUnitsPanel extends JPanel {
     final Set<UnitCategory> unitCategoriesWithUnits = UnitSeparator.categorize(units);
     for (final UnitCategory unitCategoryWithUnits : unitCategoriesWithUnits) {
       int categoryIndex = Collections.binarySearch(allUnitCategories, unitCategoryWithUnits);
-      if (categoryIndex > 0) {
+      if (categoryIndex >= 0) { // key was found
         allUnitCategories.get(categoryIndex).getUnits().addAll(unitCategoryWithUnits.getUnits());
       } else {
         allUnitCategories.add(unitCategoryWithUnits);
