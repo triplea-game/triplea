@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A collection of relationships between any two players. Provides methods that determine whether
@@ -47,7 +48,8 @@ public class RelationshipTracker extends GameDataComponent {
     relationships.put(new RelatedPlayers(p1, p2), new Relationship(r, roundValue));
   }
 
-  public RelationshipType getRelationshipType(final GamePlayer p1, final GamePlayer p2) {
+  public RelationshipType getRelationshipType(
+      @NotNull final GamePlayer p1, @NotNull final GamePlayer p2) {
     return getRelationship(p1, p2).getRelationshipType();
   }
 
@@ -59,11 +61,11 @@ public class RelationshipTracker extends GameDataComponent {
     return relationships.get(p1p2);
   }
 
-  public Relationship getRelationship(final GamePlayer p1, final GamePlayer p2) {
+  public Relationship getRelationship(@NotNull final GamePlayer p1, @NotNull final GamePlayer p2) {
     return getRelationship(new RelatedPlayers(p1, p2));
   }
 
-  public Set<Relationship> getRelationships(final GamePlayer player1) {
+  public Set<Relationship> getRelationships(@NotNull final GamePlayer player1) {
     final Set<Relationship> relationships = new HashSet<>();
     for (final GamePlayer player2 : getData().getPlayerList().getPlayers()) {
       if (player2 == null || player2.equals(player1)) {

@@ -14,12 +14,12 @@ import games.strategy.engine.data.events.ZoomMapListener;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
+import java.awt.Image;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -115,15 +115,24 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     return stepPanel;
   }
 
-  public void setStatus(final String msg, final Optional<java.awt.Image> image) {
+  private void setStatus(final String msg) {
     statusMessage.setVisible(!msg.isEmpty());
     statusMessage.setText(msg);
+  }
 
-    if (!msg.isEmpty() && image.isPresent()) {
-      statusMessage.setIcon(new ImageIcon(image.get()));
+  public void setStatus(final String msg, final Image image) {
+    setStatus(msg);
+
+    if (!msg.isEmpty()) {
+      statusMessage.setIcon(new ImageIcon(image));
     } else {
       statusMessage.setIcon(null);
     }
+  }
+
+  public void setStatusAndClearIcon(final String msg) {
+    setStatus(msg);
+    statusMessage.setIcon(null);
   }
 
   public void setTerritory(final @Nullable Territory territory) {
@@ -149,9 +158,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
         territoryEffectNames = List.of();
       } else {
         territoryEffectNames =
-            ta.getTerritoryEffect().stream()
-                .map(TerritoryEffect::getName)
-                .collect(Collectors.toList());
+            ta.getTerritoryEffect().stream().map(TerritoryEffect::getName).toList();
         final int production = ta.getProduction();
         if (production > 0) {
           resources.add(new Resource(Constants.PUS, territory.getData()), production);
@@ -194,7 +201,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
 
     territoryInfo.add(createTerritoryNameLabel(territory));
 
-    if (territoryEffectText.length() > 0) {
+    if (!territoryEffectText.isEmpty()) {
       territoryEffectText.setLength(territoryEffectText.length() - 2);
       final JLabel territoryEffectTextLabel = new JLabel(" (" + territoryEffectText + ")");
       territoryInfo.add(territoryEffectTextLabel);
@@ -231,12 +238,15 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
 
   private @NotNull String getTerritoryLabelTextPattern(Territory territory) {
     GamePlayer territoryOwner = territory.getOwner();
+    if (territoryOwner == null) return "";
     GamePlayer currentPlayer = uiContext.getCurrentPlayer();
+    if (currentPlayer == null)
+      currentPlayer = territoryOwner.getData().getPlayerList().getNullPlayer();
     if (territoryOwner.equals(currentPlayer)) {
       return "<html>{0} (current player)</html>";
     }
     final RelationshipTypeAttachment relationshipTypeAttachment =
-        territory
+        territoryOwner
             .getData()
             .getRelationshipTracker()
             .getRelationshipType(territoryOwner, currentPlayer)
@@ -333,10 +343,14 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
   }
 
   @Override
-  public void ownerChanged(Territory territory) {}
+  public void ownerChanged(Territory territory) {
+    /*interface method*/
+  }
 
   @Override
-  public void attachmentChanged(Territory territory) {}
+  public void attachmentChanged(Territory territory) {
+    /*interface method*/
+  }
 
   @Override
   public void zoomMapChanged(Integer newZoom) {
