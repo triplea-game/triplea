@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipException;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -68,6 +69,8 @@ public final class GameDataManager {
           "End of loading file has been reached unexpectedly.\n"
               + "When reporting to TripleA include steps to produce such a corrupted file.",
           e);
+    } catch (final ZipException e) {
+      log.error("Unzipping the file has failed. Check that the correct file was selected.", e);
     } catch (final Exception e) {
       log.error("Error loading game data", e);
     }
