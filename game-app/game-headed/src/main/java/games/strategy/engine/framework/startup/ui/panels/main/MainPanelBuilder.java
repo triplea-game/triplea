@@ -6,9 +6,9 @@ import games.strategy.engine.framework.startup.ui.panels.main.game.selector.Game
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import java.util.Optional;
 import java.util.function.Consumer;
+import javax.annotation.Nonnull;
 import javax.swing.JOptionPane;
 import lombok.AllArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.triplea.game.startup.SetupModel;
 import org.triplea.java.ThreadRunner;
 
@@ -43,7 +43,7 @@ public class MainPanelBuilder {
     return mainPanel;
   }
 
-  public static @NotNull Consumer<MainPanel> getMainPanelLaunchAction(
+  public static @Nonnull Consumer<MainPanel> getMainPanelLaunchAction(
       HeadedServerSetupModel headedServerSetupModel) {
     return uiPanel -> {
       final var setupPanel = headedServerSetupModel.getPanel();

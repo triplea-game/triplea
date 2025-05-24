@@ -49,6 +49,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import org.triplea.java.PredicateBuilder;
@@ -1680,8 +1681,8 @@ public class MoveValidator {
 
   /** Get the route ignoring forced territories. */
   public static @Nullable Route getBestRoute(
-      final Territory start,
-      final Territory end,
+      @Nonnull final Territory start,
+      @Nonnull final Territory end,
       final GameData data,
       final GamePlayer player,
       final Collection<Unit> units,

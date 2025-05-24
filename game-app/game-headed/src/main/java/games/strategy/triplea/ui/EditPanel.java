@@ -50,6 +50,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -66,7 +67,6 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
-import org.jetbrains.annotations.NotNull;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.IntTextField;
@@ -888,7 +888,7 @@ class EditPanel extends ActionPanel {
             cancelEditAction.actionPerformed(null);
           }
 
-          @NotNull
+          @Nonnull
           private JScrollPane getScrollPane(final JPanel panel) {
             final JScrollPane scroll = new JScrollPane(panel);
             scroll.setBorder(BorderFactory.createEmptyBorder());

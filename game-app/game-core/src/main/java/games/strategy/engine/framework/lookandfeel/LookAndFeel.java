@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import javax.annotation.Nonnull;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.triplea.game.client.ui.swing.laf.SubstanceLookAndFeelManager;
 import org.triplea.util.Services;
 
@@ -86,7 +86,7 @@ public final class LookAndFeel {
             .orElseGet(UIManager::getSystemLookAndFeelClassName);
   }
 
-  public static @NotNull @NonNls String getLookAndFeelColorRed() {
+  public static @Nonnull @NonNls String getLookAndFeelColorRed() {
     // On a dark theme, use red. Use a darker red with a light theme.
     return LookAndFeel.isCurrentLookAndFeelDark() ? "red" : DARKER_RED;
   }

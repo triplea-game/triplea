@@ -48,8 +48,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.jetbrains.annotations.NotNull;
 import org.triplea.util.Tuple;
 
 /** Orchestrates the rendering of all map tiles. */
@@ -229,7 +229,7 @@ public class TileManager {
   }
 
   private void updateTerritory(
-      @NotNull final Territory territory, final GameData data, final MapData mapData) {
+      @Nonnull final Territory territory, final GameData data, final MapData mapData) {
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
       synchronized (mutex) {
         clearTerritory(territory);
@@ -253,7 +253,7 @@ public class TileManager {
   }
 
   private void drawTerritory(
-      @NotNull final Territory territory, final GameState data, final MapData mapData) {
+      @Nonnull final Territory territory, final GameState data, final MapData mapData) {
     final Set<Tile> drawnOn = new HashSet<>();
     final Set<IDrawable> drawing = new HashSet<>();
     if (territoryOverlays.get(territory.getName()) != null) {
@@ -318,7 +318,7 @@ public class TileManager {
   }
 
   private void drawUnits(
-      @NotNull final Territory territory,
+      @Nonnull final Territory territory,
       final MapData mapData,
       final Set<Tile> drawnOn,
       final Set<IDrawable> drawing) {

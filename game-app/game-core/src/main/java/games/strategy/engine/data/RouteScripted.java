@@ -1,6 +1,7 @@
 package games.strategy.engine.data;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 
 /**
  * A scripted or cheating Route, designed for use with Triggers and with units stranded in enemy
@@ -16,7 +17,7 @@ public class RouteScripted extends Route {
    * battleTracker protected status or duplicating a zillion lines of code. The End will return the
    * Start, and the Length will be 1.
    */
-  public RouteScripted(final Territory terr) {
+  public RouteScripted(@Nonnull final Territory terr) {
     super(terr);
   }
 

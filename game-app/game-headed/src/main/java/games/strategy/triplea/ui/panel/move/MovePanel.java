@@ -40,7 +40,9 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.io.Serial;
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -52,9 +54,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -76,8 +80,8 @@ import org.triplea.swing.key.binding.SwingKeyBinding;
 
 /** The action panel displayed during the combat and non-combat move actions. */
 public class MovePanel extends AbstractMovePanel {
-  private static final long serialVersionUID = 5004515340964828564L;
-  private static final int defaultMinTransportCost = 5;
+  @Serial private static final long serialVersionUID = 5004515340964828564L;
+  private static final int DEFAULT_MIN_TRANSPORT_COST = 5;
 
   /** Number of units to add/remove when Alt key is down. */
   private static final int MULTI_SELECT_NUMBER = 10;
@@ -86,7 +90,7 @@ public class MovePanel extends AbstractMovePanel {
   private final Map<Unit, Collection<Unit>> airTransportDependents = new HashMap<>();
 
   // access only through getter and setter!
-  @Getter private @Nullable Territory firstSelectedTerritory;
+  private @Nullable Territory firstSelectedTerritory;
   @Getter @Setter private @Nullable Territory selectedEndpointTerritory;
   private Territory mouseCurrentTerritory;
   private @Nullable List<Territory> forced;
@@ -96,7 +100,7 @@ public class MovePanel extends AbstractMovePanel {
   private Point mouseLastUpdatePoint;
   // use a LinkedHashSet because we want to know the order
   private final Set<Unit> selectedUnits = new LinkedHashSet<>();
-  // the must move with details for the currently selected territory
+  // the MustMoveWithDetails for the currently selected territory
   // note this is kept in sync because we do not modify selectedTerritory directly
   // instead we only do so through the private setter
   private @Nullable MustMoveWithDetails mustMoveWithDetails = null;
@@ -119,7 +123,9 @@ public class MovePanel extends AbstractMovePanel {
       new UnitSelectionListener() {
         @Override
         public void unitsSelected(
-            final List<Unit> units, final Territory t, final MouseDetails mouseDetails) {
+            final List<Unit> units,
+            @Nullable final Territory territory,
+            final MouseDetails mouseDetails) {
           if (!getListening()) {
             return;
           }
@@ -127,37 +133,39 @@ public class MovePanel extends AbstractMovePanel {
           if (!isActive()) {
             return;
           }
-          if (t == null) {
+          if (territory == null) {
             return;
           }
           final boolean rightMouse = mouseDetails.isRightButton();
           final boolean isMiddleMouseButton = mouseDetails.getButton() == MouseEvent.BUTTON2;
           final boolean noSelectedTerritory = (firstSelectedTerritory == null);
-          final boolean isFirstSelectedTerritory = Objects.equals(firstSelectedTerritory, t);
+          final boolean isFirstSelectedTerritory = territory.equals(firstSelectedTerritory);
           // select units
           final GameData data = getData();
           try (GameData.Unlocker ignored = data.acquireReadLock()) {
             // de select units
             if (rightMouse && !noSelectedTerritory && !map.wasLastActionDraggingAndReset()) {
-              deselectUnits(units, t, mouseDetails);
+              deselectUnits(units, territory, mouseDetails);
             } else if (!isMiddleMouseButton
                 && !rightMouse
                 && (noSelectedTerritory || isFirstSelectedTerritory)) {
-              selectUnitsToMove(units, t, mouseDetails);
+              selectUnitsToMove(units, territory, mouseDetails);
             } else if (!rightMouse && mouseDetails.isControlDown() && !isFirstSelectedTerritory) {
-              selectWayPoint(t);
+              selectWayPoint(territory);
             } else if (!rightMouse
                 && !noSelectedTerritory
                 && !isFirstSelectedTerritory
                 && !isMiddleMouseButton) {
-              selectEndPoint(t);
+              selectEndPoint(territory);
             }
           }
           getMap().requestFocusInWindow();
         }
 
         private void selectUnitsToMove(
-            final List<Unit> units, final Territory t, final MouseDetails mouseDetails) {
+            final List<Unit> units,
+            @Nonnull final Territory territory,
+            final MouseDetails mouseDetails) {
           if (!canSelectUnits(units)) {
             return;
           }
@@ -165,7 +173,7 @@ public class MovePanel extends AbstractMovePanel {
           // basic match criteria only
           final Predicate<Unit> unitsToMoveMatch = getMovableMatch(null, List.of());
           if (units.isEmpty() && selectedUnits.isEmpty() && !mouseDetails.isShiftDown()) {
-            final List<Unit> unitsToMove = t.getMatches(unitsToMoveMatch);
+            final List<Unit> unitsToMove = territory.getMatches(unitsToMoveMatch);
             if (unitsToMove.isEmpty()) {
               return;
             }
@@ -184,7 +192,7 @@ public class MovePanel extends AbstractMovePanel {
                     false,
                     getMap().getUiContext(),
                     unitsHaveSameOwner);
-            if (!confirmUnitChooserDialog(chooser, "Select units to move from " + t.getName())) {
+            if (notConfirmedUnitChooserDialog(chooser, territory)) {
               return;
             }
             final List<Unit> chosenUnits = chooser.getSelected(false);
@@ -193,15 +201,23 @@ public class MovePanel extends AbstractMovePanel {
             }
             selectedUnits.addAll(chosenUnits);
           }
-          if (getFirstSelectedTerritory() == null) {
-            setFirstSelectedTerritory(t);
+          Optional<Territory> optionalFirstSelectedTerritory = getFirstSelectedTerritory();
+          if (optionalFirstSelectedTerritory.isEmpty()) {
+            setFirstSelectedTerritory(territory);
             mouseSelectedPoint = mouseDetails.getMapPoint();
             mouseCurrentPoint = mouseDetails.getMapPoint();
             enableCancelButton();
-          }
-          if (!getFirstSelectedTerritory().equals(t)) {
+          } else if (!optionalFirstSelectedTerritory.get().equals(territory)) {
             throw new IllegalStateException("Wrong selected territory");
           }
+          addUnitsToMove(units, territory, mouseDetails, unitsToMoveMatch);
+        }
+
+        private void addUnitsToMove(
+            List<Unit> units,
+            Territory t,
+            MouseDetails mouseDetails,
+            Predicate<Unit> unitsToMoveMatch) {
           // add all
           if (mouseDetails.isShiftDown()) {
             // prevent units of multiple owners from being chosen in edit mode
@@ -232,53 +248,61 @@ public class MovePanel extends AbstractMovePanel {
                 .forEachOrdered(selectedUnits::add);
           }
           if (!selectedUnits.isEmpty()) {
-            map.notifyUnitsAreSelected();
-            mouseLastUpdatePoint = mouseDetails.getMapPoint();
-            final Route route = getRoute(getFirstSelectedTerritory(), t, selectedUnits);
-            // Load Bombers with paratroops
-            if ((!nonCombat
-                    || Properties.getParatroopersCanMoveDuringNonCombat(getData().getProperties()))
-                && getCurrentPlayer().getTechAttachment().getParatroopers()
-                && selectedUnits.stream()
-                    .anyMatch(Matches.unitIsAirTransport().and(Matches.unitHasNotMoved()))) {
-              final GamePlayer player = getCurrentPlayer();
-              // TODO Transporting allied units
-              // Get the potential units to load
-              final Predicate<Unit> unitsToLoadMatch =
-                  Matches.unitIsAirTransportable()
-                      .and(Matches.unitIsOwnedBy(player))
-                      .and(Matches.unitHasNotMoved());
-              final Collection<Unit> unitsToLoad =
-                  CollectionUtils.getMatches(route.getStart().getUnits(), unitsToLoadMatch);
-              unitsToLoad.removeAll(selectedUnits);
-              for (final Collection<Unit> units2 : airTransportDependents.values()) {
-                unitsToLoad.removeAll(units2);
-              }
-              // Get the potential air transports to load
-              final Predicate<Unit> candidateAirTransportsMatch =
-                  Matches.unitIsAirTransport()
-                      .and(Matches.unitIsOwnedBy(player))
-                      .and(Matches.unitHasNotMoved())
-                      .and(transport -> transport.getTransporting(t).isEmpty());
-              final Collection<Unit> candidateAirTransports =
-                  t.getMatches(unitsToMoveMatch.and(candidateAirTransportsMatch));
-              candidateAirTransports.removeAll(airTransportDependents.keySet());
-              if (!unitsToLoad.isEmpty() && !candidateAirTransports.isEmpty()) {
-                final Collection<Unit> airTransportsToLoad =
-                    getAirTransportsToLoad(candidateAirTransports);
-                if (!airTransportsToLoad.isEmpty()) {
-                  selectedUnits.addAll(airTransportsToLoad);
-                  final Collection<Unit> loadedAirTransports =
-                      getLoadedAirTransports(route, unitsToLoad, airTransportsToLoad, player);
-                  selectedUnits.addAll(loadedAirTransports);
-                }
-              }
-            }
-            updateUnitsThatCanMoveOnRoute(selectedUnits, route);
-            updateRouteAndMouseShadowUnits(route);
+            addMatchedUnitsToMove(t, mouseDetails, unitsToMoveMatch);
           } else {
             setFirstSelectedTerritory(null);
           }
+        }
+
+        private void addMatchedUnitsToMove(
+            Territory t, MouseDetails mouseDetails, Predicate<Unit> unitsToMoveMatch) {
+          map.notifyUnitsAreSelected();
+          mouseLastUpdatePoint = mouseDetails.getMapPoint();
+          final Route route = getRoute(getFirstSelectedTerritory().orElse(t), t, selectedUnits);
+          if (route == null) {
+            return;
+          }
+          // Load Bombers with paratroops
+          if ((!nonCombat
+                  || Properties.getParatroopersCanMoveDuringNonCombat(getData().getProperties()))
+              && getCurrentPlayer().getTechAttachment().getParatroopers()
+              && selectedUnits.stream()
+                  .anyMatch(Matches.unitIsAirTransport().and(Matches.unitHasNotMoved()))) {
+            final GamePlayer player = getCurrentPlayer();
+            // TODO Transporting allied units
+            // Get the potential units to load
+            final Predicate<Unit> unitsToLoadMatch =
+                Matches.unitIsAirTransportable()
+                    .and(Matches.unitIsOwnedBy(player))
+                    .and(Matches.unitHasNotMoved());
+            final Collection<Unit> unitsToLoad =
+                CollectionUtils.getMatches(route.getStart().getUnits(), unitsToLoadMatch);
+            unitsToLoad.removeAll(selectedUnits);
+            for (final Collection<Unit> units2 : airTransportDependents.values()) {
+              unitsToLoad.removeAll(units2);
+            }
+            // Get the potential air transports to load
+            final Predicate<Unit> candidateAirTransportsMatch =
+                Matches.unitIsAirTransport()
+                    .and(Matches.unitIsOwnedBy(player))
+                    .and(Matches.unitHasNotMoved())
+                    .and(transport -> transport.getTransporting(t).isEmpty());
+            final Collection<Unit> candidateAirTransports =
+                t.getMatches(unitsToMoveMatch.and(candidateAirTransportsMatch));
+            candidateAirTransports.removeAll(airTransportDependents.keySet());
+            if (!unitsToLoad.isEmpty() && !candidateAirTransports.isEmpty()) {
+              final Collection<Unit> airTransportsToLoad =
+                  getAirTransportsToLoad(candidateAirTransports);
+              if (!airTransportsToLoad.isEmpty()) {
+                selectedUnits.addAll(airTransportsToLoad);
+                final Collection<Unit> loadedAirTransports =
+                    getLoadedAirTransports(route, unitsToLoad, airTransportsToLoad, player);
+                selectedUnits.addAll(loadedAirTransports);
+              }
+            }
+          }
+          updateUnitsThatCanMoveOnRoute(selectedUnits, route);
+          updateRouteAndMouseShadowUnits(route);
         }
 
         private boolean canSelectUnits(final List<Unit> units) {
@@ -316,7 +340,7 @@ public class MovePanel extends AbstractMovePanel {
                   transportsToLoadMatch);
           chooser.setAllButtonVisible(false);
           chooser.setTitle("Select air transports to load");
-          if (!confirmUnitChooserDialog(chooser, "What transports do you want to load")) {
+          if (!notConfirmedUnitChooserDialog(chooser, "What transports do you want to load")) {
             return List.of();
           }
           return chooser.getSelected(true);
@@ -365,12 +389,12 @@ public class MovePanel extends AbstractMovePanel {
           final Set<Unit> defaultSelections = new HashSet<>();
           List<Unit> loadedUnits =
               userChooseUnits(defaultSelections, unitsToLoadMatch, unitsToLoad);
-          final Map<Unit, Unit> mapping =
+          final Map<Unit, Unit> mapUnitsToAirTransport =
               TransportUtils.mapTransportsToLoad(loadedUnits, airTransportsToLoad);
-          for (final Unit unit : mapping.keySet()) {
+          for (Map.Entry<Unit, Unit> mapUnitToAirTransport : mapUnitsToAirTransport.entrySet()) {
             final Collection<Unit> unitsColl = new ArrayList<>();
-            unitsColl.add(unit);
-            final Unit airTransport = mapping.get(unit);
+            unitsColl.add(mapUnitToAirTransport.getKey());
+            final Unit airTransport = mapUnitToAirTransport.getValue();
             if (airTransportDependents.containsKey(airTransport)) {
               unitsColl.addAll(airTransportDependents.get(airTransport));
             }
@@ -381,19 +405,70 @@ public class MovePanel extends AbstractMovePanel {
           return loadedUnits;
         }
 
+        private List<Unit> userChooseUnits(
+            final Set<Unit> defaultSelections,
+            final Predicate<Collection<Unit>> unitsToLoadMatch,
+            final List<Unit> unitsToLoad) {
+          // Allow player to select which to load.
+          final UnitChooser chooser =
+              new UnitChooser(
+                  unitsToLoad,
+                  defaultSelections,
+                  airTransportDependents,
+                  UnitSeparator.SeparatorCategories.builder().transportCost(true).build(),
+                  false,
+                  getMap().getUiContext(),
+                  unitsToLoadMatch);
+          chooser.setAllButtonVisible(false);
+          chooser.setTitle("Load air transports");
+          if (!notConfirmedUnitChooserDialog(chooser, "What units do you want to load")) {
+            return List.of();
+          }
+          return chooser.getSelected(true);
+        }
+
         private void deselectUnits(
-            final List<Unit> initialUnits, final Territory t, final MouseDetails me) {
+            final List<Unit> initialUnits,
+            @Nonnull final Territory territory,
+            final MouseDetails me) {
           final Collection<Unit> unitsToRemove = new ArrayList<>(selectedUnits.size());
-          // we have right clicked on a unit stack in a different territory
-          final List<Unit> units = getFirstSelectedTerritory().equals(t) ? initialUnits : List.of();
+          // we have right-clicked on a unit stack in a different territory
+          final List<Unit> units;
+          if (territory.equals(getFirstSelectedTerritory().orElse(null))) {
+            units = initialUnits;
+          } else {
+            units = List.of();
+          }
           // remove the dependent units so we don't have to micromanage them
           final List<Unit> unitsWithoutDependents = new ArrayList<>(selectedUnits);
-          for (final Unit unit : selectedUnits) {
-            final Collection<Unit> forced = mustMoveWithDetails.getMustMoveWith().get(unit);
-            if (forced != null) {
-              unitsWithoutDependents.removeAll(forced);
-            }
+          if (mustMoveWithDetails == null) {
+            return;
           }
+          for (final Unit unit : selectedUnits) {
+            final Collection<Unit> forcedUnits = mustMoveWithDetails.getMustMoveWithForUnit(unit);
+            unitsWithoutDependents.removeAll(forcedUnits);
+          }
+          filterUnitsToRemove(territory, me, units, unitsWithoutDependents, unitsToRemove);
+          // perform the remove
+          unitsToRemove.forEach(selectedUnits::remove);
+          if (selectedUnits.isEmpty()) {
+            // nothing left, cancel move
+            cancelMove();
+          } else {
+            mouseLastUpdatePoint = me.getMapPoint();
+            @Nullable final Territory routeStart = getFirstSelectedTerritory().orElse(null);
+            updateUnitsThatCanMoveOnRoute(
+                selectedUnits, getRoute(routeStart, territory, selectedUnits));
+            updateRouteAndMouseShadowUnits(getRoute(routeStart, territory, selectedUnits));
+          }
+        }
+
+        private void filterUnitsToRemove(
+            @Nonnull Territory territory,
+            MouseDetails me,
+            List<Unit> units,
+            List<Unit> unitsWithoutDependents,
+            Collection<Unit> unitsToRemove) {
           // no unit selected, remove the most recent, but skip dependents
           if (units.isEmpty()) {
             if (me.isControlDown()) {
@@ -431,7 +506,7 @@ public class MovePanel extends AbstractMovePanel {
                 }
               }
             } else { // remove one
-              if (!getFirstSelectedTerritory().equals(t)) {
+              if (!territory.equals(getFirstSelectedTerritory().orElse(null))) {
                 throw new IllegalStateException("Wrong selected territory");
               }
               // doesn't matter which unit we remove since units are assigned to routes later
@@ -457,28 +532,17 @@ public class MovePanel extends AbstractMovePanel {
               }
             }
           }
-          // perform the remove
-          selectedUnits.removeAll(unitsToRemove);
-          if (selectedUnits.isEmpty()) {
-            // nothing left, cancel move
-            cancelMove();
-          } else {
-            mouseLastUpdatePoint = me.getMapPoint();
-            updateUnitsThatCanMoveOnRoute(
-                selectedUnits, getRoute(getFirstSelectedTerritory(), t, selectedUnits));
-            updateRouteAndMouseShadowUnits(getRoute(getFirstSelectedTerritory(), t, selectedUnits));
-          }
         }
 
-        private void selectWayPoint(final Territory territory) {
+        private void selectWayPoint(@Nonnull final Territory territory) {
           if (forced == null) {
             forced = new ArrayList<>();
           }
           if (!forced.contains(territory)) {
             forced.add(territory);
           }
-          updateRouteAndMouseShadowUnits(
-              getRoute(getFirstSelectedTerritory(), getFirstSelectedTerritory(), selectedUnits));
+          @Nullable final Territory firstTerritory = getFirstSelectedTerritory().orElse(null);
+          updateRouteAndMouseShadowUnits(getRoute(firstTerritory, firstTerritory, selectedUnits));
         }
 
         private Predicate<Unit> getUnloadableMatch() {
@@ -489,8 +553,10 @@ public class MovePanel extends AbstractMovePanel {
               .build();
         }
 
-        private void selectEndPoint(final Territory territory) {
-          final Route route = getRoute(getFirstSelectedTerritory(), territory, selectedUnits);
+        private void selectEndPoint(@Nonnull final Territory territory) {
+          @Nullable
+          final Route route =
+              getRoute(getFirstSelectedTerritory().orElse(territory), territory, selectedUnits);
           if (unitsThatCanMoveOnRoute.isEmpty() || route == null) {
             cancelMove();
             return;
@@ -563,8 +629,275 @@ public class MovePanel extends AbstractMovePanel {
           release();
         }
 
+        /**
+         * Allow the user to select specific units, if for example some units have different
+         * movement. Units are sorted in preferred order, so units represents the default
+         * selections.
+         */
+        private void allowSpecificUnitSelection(
+            final Collection<Unit> units,
+            final Route route,
+            final Predicate<Collection<Unit>> matchCriteria) {
+          Optional<Territory> optionalFirstSelectedTerritory = getFirstSelectedTerritory();
+          if (optionalFirstSelectedTerritory.isEmpty()) return;
+          @Nonnull final Territory firstTerritory = optionalFirstSelectedTerritory.get();
+          final List<Unit> candidateUnits =
+              optionalFirstSelectedTerritory.get().getMatches(getMovableMatch(route, units));
+          if (mustMoveWithDetails == null) {
+            return;
+          }
+          final Set<UnitCategory> categories =
+              UnitSeparator.categorize(
+                  candidateUnits,
+                  UnitSeparator.SeparatorCategories.builder()
+                      .dependents(mustMoveWithDetails.getMustMoveWith())
+                      .movement(true)
+                      .build());
+          boolean mustQueryUser = false;
+          for (final UnitCategory category1 : categories) {
+            // we cant move these, don't bother to check
+            if (category1.getMovement().compareTo(BigDecimal.ZERO) == 0) {
+              continue;
+            }
+            for (final UnitCategory category2 : categories) {
+              // we cant move these, don't bother to check
+              if (category2.getMovement().compareTo(BigDecimal.ZERO) == 0) {
+                continue;
+              }
+              // if we find that two categories are compatible, and some units are selected from one
+              // category, but not the
+              // other than the user has to refine his selection
+              if (!ObjectUtils.referenceEquals(category1, category2)
+                  && Objects.equals(category1.getType(), category2.getType())
+                  && !category1.equals(category2)) {
+                // if we are moving all the units from both categories, then nothing to choose
+                if (units.containsAll(category1.getUnits())
+                    && units.containsAll(category2.getUnits())) {
+                  continue;
+                }
+                // if we are moving some of the units from either category, then we need to stop
+                if (!CollectionUtils.intersection(category1.getUnits(), units).isEmpty()
+                    || !CollectionUtils.intersection(category2.getUnits(), units).isEmpty()) {
+                  mustQueryUser = true;
+                }
+              }
+            }
+          }
+          if (mustQueryUser) {
+            final List<Unit> defaultSelections = new ArrayList<>(units.size());
+            if (route.isLoad()) {
+              final Collection<Unit> transportsToLoad = getSeaTransportsToLoad(route, units);
+              defaultSelections.addAll(
+                  TransportUtils.mapTransports(route, units, transportsToLoad).keySet());
+            } else {
+              defaultSelections.addAll(units);
+            }
+            // sort candidateUnits in preferred order
+            sortUnitsToMove(candidateUnits, route);
+            final UnitChooser chooser =
+                new UnitChooser(
+                    candidateUnits,
+                    defaultSelections,
+                    mustMoveWithDetails.getMustMoveWith(),
+                    UnitSeparator.SeparatorCategories.builder().movement(true).build(),
+                    false,
+                    getMap().getUiContext(),
+                    matchCriteria);
+            chooser.setAllButtonVisible(false);
+            if (notConfirmedUnitChooserDialog(chooser, firstTerritory)) {
+              units.clear();
+              return;
+            }
+            units.clear();
+            units.addAll(chooser.getSelected(false));
+          }
+          // add the dependent units
+          if (mustMoveWithDetails == null) {
+            return;
+          }
+          final List<Unit> unitsCopy = new ArrayList<>(units);
+          for (final Unit unit : unitsCopy) {
+            for (final Unit dependent : mustMoveWithDetails.getMustMoveWithForUnit(unit)) {
+              if (!unitsCopy.contains(dependent)) {
+                units.add(dependent);
+              }
+            }
+          }
+        }
+
+        /**
+         * Allow the user to select what transports to load. If an empty collection is returned, the
+         * move should be canceled.
+         */
+        private Collection<Unit> getSeaTransportsToLoad(
+            final Route route, final Collection<Unit> unitsToLoad) {
+          if (!route.isLoad()) {
+            return List.of();
+          }
+          if (unitsToLoad.stream().anyMatch(Matches.unitIsAir())) {
+            return List.of();
+          }
+          final GamePlayer unitOwner = getUnitOwner(unitsToLoad);
+          final MustMoveWithDetails endMustMoveWith =
+              MoveValidator.getMustMoveWith(route.getEnd(), airTransportDependents, unitOwner);
+          int minTransportCost = DEFAULT_MIN_TRANSPORT_COST;
+          for (final Unit unit : unitsToLoad) {
+            minTransportCost =
+                Math.min(minTransportCost, unit.getUnitAttachment().getTransportCost());
+          }
+          final Predicate<Unit> candidateSeaTransportsMatch =
+              Matches.unitIsSeaTransport().and(Matches.alliedUnit(unitOwner));
+          final List<Unit> candidateSeaTransports =
+              CollectionUtils.getMatches(route.getEnd().getUnits(), candidateSeaTransportsMatch);
+
+          // remove transports that don't have enough capacity
+          final Iterator<Unit> transportIter = candidateSeaTransports.iterator();
+          while (transportIter.hasNext()) {
+            final Unit transport = transportIter.next();
+            final int capacity = TransportTracker.getAvailableCapacity(transport);
+            if (capacity < minTransportCost) {
+              transportIter.remove();
+            }
+          }
+
+          // nothing to choose
+          if (candidateSeaTransports.isEmpty()) {
+            return List.of();
+          }
+
+          // sort transports in preferred load order
+          sortTransportsToLoad(candidateSeaTransports, route);
+          final List<Unit> availableUnits = new ArrayList<>(unitsToLoad);
+          final IntegerMap<Unit> availableCapacityMap = new IntegerMap<>();
+          for (final Unit transport : candidateSeaTransports) {
+            final int capacity = TransportTracker.getAvailableCapacity(transport);
+            availableCapacityMap.put(transport, capacity);
+          }
+          final Set<Unit> defaultSelections = new HashSet<>();
+
+          // Algorithm to choose defaultSelections (transports to load)
+          // We are trying to determine which transports are the best defaults to select for
+          // loading,
+          // and so we need a modified algorithm based strictly on candidateTransports order:
+          // - owned, capable transports are chosen first; attempt to fill them
+          // - allied, capable transports are chosen next; attempt to fill them
+          // - finally, incapable transports are chosen last (will generate errors)
+          // Note that if any allied transports qualify as defaults, we will always prompt with a
+          // UnitChooser later on so that it is obvious to the player.
+          final Collection<Unit> capableSeaTransports = new ArrayList<>(candidateSeaTransports);
+
+          // only allow incapable transports for updateUnitsThatCanMoveOnRoute
+          // so that we can have a nice UI error shown if these transports are selected, since it
+          // may not
+          // be obvious
+          final Collection<Unit> incapableTransports =
+              CollectionUtils.getMatches(
+                  capableSeaTransports, Matches.transportCannotUnload(route.getEnd()));
+          capableSeaTransports.removeAll(incapableTransports);
+          final Predicate<Unit> alliedMatch = Matches.unitIsOwnedBy(unitOwner).negate();
+          final Collection<Unit> alliedTransports =
+              CollectionUtils.getMatches(capableSeaTransports, alliedMatch);
+          capableSeaTransports.removeAll(alliedTransports);
+
+          // First, load capable transports
+          final Map<Unit, Unit> unitsToCapableTransports =
+              TransportUtils.mapTransportsToLoadUsingMinTransports(
+                  availableUnits, capableSeaTransports);
+          loadTransport(
+              unitsToCapableTransports, availableCapacityMap, defaultSelections, availableUnits);
+
+          // Next, load allied transports
+          final Map<Unit, Unit> unitsToAlliedTransports =
+              TransportUtils.mapTransportsToLoadUsingMinTransports(
+                  availableUnits, alliedTransports);
+          final boolean useAlliedTransports = !unitsToAlliedTransports.isEmpty();
+          loadTransport(
+              unitsToAlliedTransports, availableCapacityMap, defaultSelections, availableUnits);
+
+          // only allow incapable transports for updateUnitsThatCanMoveOnRoute
+          // so that we can have a nice UI error shown if these transports are selected, since it
+          // may not
+          // be obvious
+          if (getSelectedEndpointTerritory() == null) {
+            final Map<Unit, Unit> unitsToIncapableTransports =
+                TransportUtils.mapTransportsToLoadUsingMinTransports(
+                    availableUnits, incapableTransports);
+            loadTransport(
+                unitsToIncapableTransports,
+                availableCapacityMap,
+                defaultSelections,
+                availableUnits);
+          } else {
+            candidateSeaTransports.removeAll(incapableTransports);
+          }
+
+          // force UnitChooser to pop up if we are choosing allied transports
+          if (!useAlliedTransports) {
+            if (candidateSeaTransports.size() == 1) {
+              return candidateSeaTransports;
+            }
+            // all the same type, don't ask unless we have more than 1 unit type
+            if (UnitSeparator.categorize(
+                            candidateSeaTransports,
+                            UnitSeparator.SeparatorCategories.builder()
+                                .dependents(endMustMoveWith.getMustMoveWith())
+                                .movement(true)
+                                .build())
+                        .size()
+                    == 1
+                && unitsToLoad.size() == 1) {
+              return candidateSeaTransports;
+            }
+            // If we've filled all transports, then no user intervention is required.
+            // It is possible to make "wrong" decisions if there are mixed unit types and
+            // mixed transport categories, but there is no UI to manage that anyway.
+            // Players will need to load incrementally in such cases.
+            if (defaultSelections.containsAll(candidateSeaTransports)) {
+              return candidateSeaTransports;
+            }
+          }
+
+          // the match criteria to ensure that chosen transports will match selected units
+          final Predicate<Collection<Unit>> seaTransportsToLoadMatch =
+              units -> {
+                final Collection<Unit> transports =
+                    CollectionUtils.getMatches(units, Matches.unitIsSeaTransport());
+                // prevent too many transports from being selected
+                return transports.size()
+                    <= Math.min(unitsToLoad.size(), candidateSeaTransports.size());
+              };
+          final UnitChooser chooser =
+              new UnitChooser(
+                  candidateSeaTransports,
+                  defaultSelections,
+                  endMustMoveWith.getMustMoveWith(),
+                  UnitSeparator.SeparatorCategories.builder().movement(true).build(),
+                  false,
+                  getMap().getUiContext(),
+                  seaTransportsToLoadMatch);
+          chooser.setAllButtonVisible(false);
+          if (!notConfirmedUnitChooserDialog(chooser, "Select transports to load")) {
+            return List.of();
+          }
+          return chooser.getSelected(false);
+        }
+
+        private static void loadTransport(
+            Map<Unit, Unit> unitsToCapableTransports,
+            IntegerMap<Unit> availableCapacityMap,
+            Set<Unit> defaultSelections,
+            List<Unit> availableUnits) {
+          for (final Map.Entry<Unit, Unit> unitToTransport : unitsToCapableTransports.entrySet()) {
+            final Unit transport = unitToTransport.getValue();
+            final int unitCost = unitToTransport.getKey().getUnitAttachment().getTransportCost();
+            availableCapacityMap.add(transport, (-1 * unitCost));
+            defaultSelections.add(transport);
+          }
+          availableUnits.removeAll(unitsToCapableTransports.keySet());
+        }
+
         private boolean confirmEndPoint(final Territory territory) {
-          if (!ClientSetting.showPotentialScrambleWarning.getValueOrThrow()
+          if (!Boolean.TRUE.equals(ClientSetting.showPotentialScrambleWarning.getValueOrThrow())
               || !willStartBattle(territory)) {
             return true;
           }
@@ -604,10 +937,10 @@ public class MovePanel extends AbstractMovePanel {
           // multiple units present. Without it, an extra row is added based on a too narrow
           // width initially.
           panel.setSize(new Dimension(400, 100));
-          JCheckBox dontWarnAgain = new JCheckBox("Don't show this warning again");
-          dontWarnAgain.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
+          JCheckBox doNotWarnAgain = new JCheckBox("Don't show this warning again");
+          doNotWarnAgain.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
           JPanel outer =
-              new JPanelBuilder().borderLayout().addCenter(panel).addSouth(dontWarnAgain).build();
+              new JPanelBuilder().borderLayout().addCenter(panel).addSouth(doNotWarnAgain).build();
           final int option =
               JOptionPane.showConfirmDialog(
                   JOptionPane.getFrameForComponent(MovePanel.this),
@@ -615,7 +948,7 @@ public class MovePanel extends AbstractMovePanel {
                   "Scramble Warning",
                   JOptionPane.OK_CANCEL_OPTION,
                   JOptionPane.WARNING_MESSAGE);
-          if (dontWarnAgain.isSelected()) {
+          if (doNotWarnAgain.isSelected()) {
             ClientSetting.showPotentialScrambleWarning.setValue(false);
           }
           return option == JOptionPane.OK_OPTION;
@@ -623,22 +956,19 @@ public class MovePanel extends AbstractMovePanel {
       };
 
   private final MouseOverUnitListener mouseOverUnitListener =
-      new MouseOverUnitListener() {
-        @Override
-        public void mouseEnter(final List<Unit> units, final Territory territory) {
-          if (!getListening()) {
-            return;
-          }
-          final GamePlayer owner = getUnitOwner(selectedUnits);
-          final Predicate<Unit> match = Matches.unitIsOwnedBy(owner).and(Matches.unitCanMove());
-          final boolean someOwned = units.stream().anyMatch(match);
-          final boolean isCorrectTerritory =
-              (firstSelectedTerritory == null) || firstSelectedTerritory.equals(territory);
-          if (someOwned && isCorrectTerritory) {
-            getMap().setUnitHighlight(List.of(Collections.unmodifiableList(units)));
-          } else {
-            getMap().setUnitHighlight(Set.of());
-          }
+      (units, territory) -> {
+        if (!getListening()) {
+          return;
+        }
+        final GamePlayer owner = getUnitOwner(selectedUnits);
+        final Predicate<Unit> match = Matches.unitIsOwnedBy(owner).and(Matches.unitCanMove());
+        final boolean someOwned = units.stream().anyMatch(match);
+        final boolean isCorrectTerritory =
+            (firstSelectedTerritory == null) || firstSelectedTerritory.equals(territory);
+        if (someOwned && isCorrectTerritory) {
+          getMap().setUnitHighlight(List.of(Collections.unmodifiableList(units)));
+        } else {
+          getMap().setUnitHighlight(Set.of());
         }
       };
 
@@ -649,12 +979,13 @@ public class MovePanel extends AbstractMovePanel {
           if (!getListening()) {
             return;
           }
-          if (getFirstSelectedTerritory() != null && territory != null) {
+          Optional<Territory> optionalFirstSelectedTerritory = getFirstSelectedTerritory();
+          if (optionalFirstSelectedTerritory.isPresent() && territory != null) {
             Route route;
             if (mouseCurrentTerritory == null
                 || !mouseCurrentTerritory.equals(territory)
                 || mouseCurrentPoint.equals(mouseLastUpdatePoint)) {
-              route = getRoute(getFirstSelectedTerritory(), territory, selectedUnits);
+              route = getRoute(optionalFirstSelectedTerritory.get(), territory, selectedUnits);
               try (GameData.Unlocker ignored = getData().acquireReadLock()) {
                 updateUnitsThatCanMoveOnRoute(selectedUnits, route);
                 // now, check if there is a better route for just the units that can get there (we
@@ -666,7 +997,7 @@ public class MovePanel extends AbstractMovePanel {
                   final Collection<Unit> airUnits =
                       CollectionUtils.getMatches(selectedUnits, Matches.unitIsAir());
                   if (!airUnits.isEmpty()) {
-                    route = getRoute(getFirstSelectedTerritory(), territory, airUnits);
+                    route = getRoute(optionalFirstSelectedTerritory.get(), territory, airUnits);
                     updateUnitsThatCanMoveOnRoute(airUnits, route);
                   }
                 }
@@ -745,7 +1076,13 @@ public class MovePanel extends AbstractMovePanel {
    */
   private Collection<Unit> getUnitsToUnload(
       final Route route, final Collection<Unit> unitsToUnload) {
-    final Collection<Unit> allUnits = getFirstSelectedTerritory().getUnits();
+    Optional<Territory> optionalFirstSelectedTerritory = getFirstSelectedTerritory();
+    final Collection<Unit> allUnits;
+    if (optionalFirstSelectedTerritory.isPresent()) {
+      allUnits = optionalFirstSelectedTerritory.get().getUnits();
+    } else {
+      return List.of();
+    }
     final List<Unit> candidateUnits =
         CollectionUtils.getMatches(allUnits, getUnloadableMatch(route, unitsToUnload));
     if (unitsToUnload.size() == candidateUnits.size()) {
@@ -770,7 +1107,10 @@ public class MovePanel extends AbstractMovePanel {
       return chooseUnitsToUnload(route, unitsToUnload, candidateUnits, candidateTransports);
     }
 
-    // Are the transports all of the same type and if they are, then don't ask
+    // Are all the transports of the same type and if they are, then don't ask
+    if (mustMoveWithDetails == null) {
+      return List.of();
+    }
     final Collection<UnitCategory> categories =
         UnitSeparator.categorize(
             candidateTransports,
@@ -844,7 +1184,7 @@ public class MovePanel extends AbstractMovePanel {
             // Repeat until there are no units left or no changes occur
           } while (!availableUnits.isEmpty() && hasChanged);
 
-          // If we haven't seen all of the transports (and removed them) then there are extra
+          // If we haven't seen all the transports (and removed them) then there are extra
           // transports that don't fit
           return sortedTransports.isEmpty();
         };
@@ -860,7 +1200,7 @@ public class MovePanel extends AbstractMovePanel {
             getMap().getUiContext(),
             transportsToUnloadMatch);
     chooser.setAllButtonVisible(false);
-    if (!confirmUnitChooserDialog(chooser, "Select transports to unload")) {
+    if (!notConfirmedUnitChooserDialog(chooser, "Select transports to unload")) {
       return List.of();
     }
     final Collection<Unit> chosenTransports =
@@ -926,11 +1266,17 @@ public class MovePanel extends AbstractMovePanel {
       }
     }
     // Return an unmodifiable list for consistent semantics for the caller, which sometimes returns
-    // List.of() and sometimes the result of this functiom.
+    // List.of() and sometimes the result of this function.
     return Collections.unmodifiableList(selectedUnitsToUnload);
   }
 
-  public boolean confirmUnitChooserDialog(final UnitChooser chooser, final String title) {
+  public boolean notConfirmedUnitChooserDialog(
+      final UnitChooser chooser, final Territory territory) {
+    return notConfirmedUnitChooserDialog(
+        chooser, MessageFormat.format("Select units to move from {0}", territory.getName()));
+  }
+
+  public boolean notConfirmedUnitChooserDialog(final UnitChooser chooser, final String title) {
     final int option =
         JOptionPane.showOptionDialog(
             getTopLevelAncestor(),
@@ -941,7 +1287,7 @@ public class MovePanel extends AbstractMovePanel {
             null,
             null,
             null);
-    return option == JOptionPane.OK_OPTION;
+    return option != JOptionPane.OK_OPTION;
   }
 
   private Predicate<Unit> getUnloadableMatch(final Route route, final Collection<Unit> units) {
@@ -1000,8 +1346,13 @@ public class MovePanel extends AbstractMovePanel {
     return EditDelegate.getEditMode(getData().getProperties());
   }
 
-  private Route getRoute(
-      final Territory start, final Territory end, final Collection<Unit> selectedUnits) {
+  private @Nullable Route getRoute(
+      @Nullable final Territory start,
+      @Nullable final Territory end,
+      final Collection<Unit> selectedUnits) {
+    if (start == null || end == null) {
+      return null;
+    }
     try (GameData.Unlocker ignored = getData().acquireReadLock()) {
       return (forced == null)
           ? getRouteNonForced(start, end, selectedUnits)
@@ -1010,15 +1361,22 @@ public class MovePanel extends AbstractMovePanel {
   }
 
   /** Get the route including the territories that we are forced to move through. */
-  private Route getRouteForced(
-      final Territory start, final Territory end, final Collection<Unit> selectedUnits) {
+  private @Nullable Route getRouteForced(
+      @Nonnull final Territory start,
+      @Nonnull final Territory end,
+      final Collection<Unit> selectedUnits) {
+    @Nullable Territory last = null;
+    @Nullable Route total = null;
+    Optional<Territory> optionalFirstSelectedTerritory = getFirstSelectedTerritory();
+    if (optionalFirstSelectedTerritory.isPresent()) {
+      last = optionalFirstSelectedTerritory.get();
+      total = new Route(last);
+    }
+
     if (forced == null || forced.isEmpty()) {
       throw new IllegalStateException(
           "No forced territories: " + forced + " end: " + end + " start: " + start);
     }
-    Territory last = getFirstSelectedTerritory();
-
-    Route total = new Route(last);
     for (final Territory current : forced) {
       final Route add = getRouteNonForced(last, current, selectedUnits);
       final Route newTotal = Route.join(total, add);
@@ -1040,7 +1398,10 @@ public class MovePanel extends AbstractMovePanel {
 
   /** Get the route ignoring forced territories. */
   private @Nullable Route getRouteNonForced(
-      final Territory start, final Territory end, final Collection<Unit> selectedUnits) {
+      @Nullable final Territory start, final Territory end, final Collection<Unit> selectedUnits) {
+    if (start == null) {
+      return null;
+    }
     // can't rely on current player being the unit owner in Edit Mode
     // look at the units being moved to determine allies and enemies
     final GamePlayer owner = getUnitOwner(selectedUnits);
@@ -1115,257 +1476,13 @@ public class MovePanel extends AbstractMovePanel {
     }
   }
 
-  /**
-   * Allow the user to select what transports to load. If an empty collection is returned, the move
-   * should be canceled.
-   */
-  private Collection<Unit> getSeaTransportsToLoad(
-      final Route route, final Collection<Unit> unitsToLoad) {
-    if (!route.isLoad()) {
-      return List.of();
-    }
-    if (unitsToLoad.stream().anyMatch(Matches.unitIsAir())) {
-      return List.of();
-    }
-    final GamePlayer unitOwner = getUnitOwner(unitsToLoad);
-    final MustMoveWithDetails endMustMoveWith =
-        MoveValidator.getMustMoveWith(route.getEnd(), airTransportDependents, unitOwner);
-    int minTransportCost = defaultMinTransportCost;
-    for (final Unit unit : unitsToLoad) {
-      minTransportCost = Math.min(minTransportCost, unit.getUnitAttachment().getTransportCost());
-    }
-    final Predicate<Unit> candidateSeaTransportsMatch =
-        Matches.unitIsSeaTransport().and(Matches.alliedUnit(unitOwner));
-    final List<Unit> candidateSeaTransports =
-        CollectionUtils.getMatches(route.getEnd().getUnits(), candidateSeaTransportsMatch);
-
-    // remove transports that don't have enough capacity
-    final Iterator<Unit> transportIter = candidateSeaTransports.iterator();
-    while (transportIter.hasNext()) {
-      final Unit transport = transportIter.next();
-      final int capacity = TransportTracker.getAvailableCapacity(transport);
-      if (capacity < minTransportCost) {
-        transportIter.remove();
-      }
-    }
-
-    // nothing to choose
-    if (candidateSeaTransports.isEmpty()) {
-      return List.of();
-    }
-
-    // sort transports in preferred load order
-    sortTransportsToLoad(candidateSeaTransports, route);
-    final List<Unit> availableUnits = new ArrayList<>(unitsToLoad);
-    final IntegerMap<Unit> availableCapacityMap = new IntegerMap<>();
-    for (final Unit transport : candidateSeaTransports) {
-      final int capacity = TransportTracker.getAvailableCapacity(transport);
-      availableCapacityMap.put(transport, capacity);
-    }
-    final Set<Unit> defaultSelections = new HashSet<>();
-
-    // Algorithm to choose defaultSelections (transports to load)
-    // We are trying to determine which transports are the best defaults to select for loading,
-    // and so we need a modified algorithm based strictly on candidateTransports order:
-    // - owned, capable transports are chosen first; attempt to fill them
-    // - allied, capable transports are chosen next; attempt to fill them
-    // - finally, incapable transports are chosen last (will generate errors)
-    // Note that if any allied transports qualify as defaults, we will always prompt with a
-    // UnitChooser later on so that it is obvious to the player.
-    boolean useAlliedTransports = false;
-    final Collection<Unit> capableSeaTransports = new ArrayList<>(candidateSeaTransports);
-
-    // only allow incapable transports for updateUnitsThatCanMoveOnRoute
-    // so that we can have a nice UI error shown if these transports are selected, since it may not
-    // be obvious
-    final Collection<Unit> incapableTransports =
-        CollectionUtils.getMatches(
-            capableSeaTransports, Matches.transportCannotUnload(route.getEnd()));
-    capableSeaTransports.removeAll(incapableTransports);
-    final Predicate<Unit> alliedMatch = Matches.unitIsOwnedBy(unitOwner).negate();
-    final Collection<Unit> alliedTransports =
-        CollectionUtils.getMatches(capableSeaTransports, alliedMatch);
-    capableSeaTransports.removeAll(alliedTransports);
-
-    // First, load capable transports
-    final Map<Unit, Unit> unitsToCapableTransports =
-        TransportUtils.mapTransportsToLoadUsingMinTransports(availableUnits, capableSeaTransports);
-    for (final Unit unit : unitsToCapableTransports.keySet()) {
-      final Unit transport = unitsToCapableTransports.get(unit);
-      final int unitCost = unit.getUnitAttachment().getTransportCost();
-      availableCapacityMap.add(transport, (-1 * unitCost));
-      defaultSelections.add(transport);
-    }
-    availableUnits.removeAll(unitsToCapableTransports.keySet());
-
-    // Next, load allied transports
-    final Map<Unit, Unit> unitsToAlliedTransports =
-        TransportUtils.mapTransportsToLoadUsingMinTransports(availableUnits, alliedTransports);
-    for (final Unit unit : unitsToAlliedTransports.keySet()) {
-      final Unit transport = unitsToAlliedTransports.get(unit);
-      final int unitCost = unit.getUnitAttachment().getTransportCost();
-      availableCapacityMap.add(transport, (-1 * unitCost));
-      defaultSelections.add(transport);
-      useAlliedTransports = true;
-    }
-    availableUnits.removeAll(unitsToAlliedTransports.keySet());
-
-    // only allow incapable transports for updateUnitsThatCanMoveOnRoute
-    // so that we can have a nice UI error shown if these transports are selected, since it may not
-    // be obvious
-    if (getSelectedEndpointTerritory() == null) {
-      final Map<Unit, Unit> unitsToIncapableTransports =
-          TransportUtils.mapTransportsToLoadUsingMinTransports(availableUnits, incapableTransports);
-      for (final Unit unit : unitsToIncapableTransports.keySet()) {
-        final Unit transport = unitsToIncapableTransports.get(unit);
-        final int unitCost = unit.getUnitAttachment().getTransportCost();
-        availableCapacityMap.add(transport, (-1 * unitCost));
-        defaultSelections.add(transport);
-      }
-      availableUnits.removeAll(unitsToIncapableTransports.keySet());
-    } else {
-      candidateSeaTransports.removeAll(incapableTransports);
-    }
-
-    // force UnitChooser to pop up if we are choosing allied transports
-    if (!useAlliedTransports) {
-      if (candidateSeaTransports.size() == 1) {
-        return candidateSeaTransports;
-      }
-      // all the same type, don't ask unless we have more than 1 unit type
-      if (UnitSeparator.categorize(
-                      candidateSeaTransports,
-                      UnitSeparator.SeparatorCategories.builder()
-                          .dependents(endMustMoveWith.getMustMoveWith())
-                          .movement(true)
-                          .build())
-                  .size()
-              == 1
-          && unitsToLoad.size() == 1) {
-        return candidateSeaTransports;
-      }
-      // If we've filled all transports, then no user intervention is required.
-      // It is possible to make "wrong" decisions if there are mixed unit types and
-      // mixed transport categories, but there is no UI to manage that anyway.
-      // Players will need to load incrementally in such cases.
-      if (defaultSelections.containsAll(candidateSeaTransports)) {
-        return candidateSeaTransports;
-      }
-    }
-
-    // the match criteria to ensure that chosen transports will match selected units
-    final Predicate<Collection<Unit>> seaTransportsToLoadMatch =
-        units -> {
-          final Collection<Unit> transports =
-              CollectionUtils.getMatches(units, Matches.unitIsSeaTransport());
-          // prevent too many transports from being selected
-          return transports.size() <= Math.min(unitsToLoad.size(), candidateSeaTransports.size());
-        };
-    final UnitChooser chooser =
-        new UnitChooser(
-            candidateSeaTransports,
-            defaultSelections,
-            endMustMoveWith.getMustMoveWith(),
-            UnitSeparator.SeparatorCategories.builder().movement(true).build(),
-            false,
-            getMap().getUiContext(),
-            seaTransportsToLoadMatch);
-    chooser.setAllButtonVisible(false);
-    if (!confirmUnitChooserDialog(chooser, "Select transports to load")) {
-      return List.of();
-    }
-    return chooser.getSelected(false);
-  }
-
-  /**
-   * Allow the user to select specific units, if for example some units have different movement.
-   * Units are sorted in preferred order, so units represents the default selections.
-   */
-  private void allowSpecificUnitSelection(
-      final Collection<Unit> units,
-      final Route route,
-      final Predicate<Collection<Unit>> matchCriteria) {
-    final List<Unit> candidateUnits =
-        getFirstSelectedTerritory().getMatches(getMovableMatch(route, units));
-    final Set<UnitCategory> categories =
-        UnitSeparator.categorize(
-            candidateUnits,
-            UnitSeparator.SeparatorCategories.builder()
-                .dependents(mustMoveWithDetails.getMustMoveWith())
-                .movement(true)
-                .build());
-    boolean mustQueryUser = false;
-    for (final UnitCategory category1 : categories) {
-      // we cant move these, don't bother to check
-      if (category1.getMovement().compareTo(BigDecimal.ZERO) == 0) {
-        continue;
-      }
-      for (final UnitCategory category2 : categories) {
-        // we cant move these, don't bother to check
-        if (category2.getMovement().compareTo(BigDecimal.ZERO) == 0) {
-          continue;
-        }
-        // if we find that two categories are compatible, and some units are selected from one
-        // category, but not the
-        // other then the user has to refine his selection
-        if (!ObjectUtils.referenceEquals(category1, category2)
-            && Objects.equals(category1.getType(), category2.getType())
-            && !category1.equals(category2)) {
-          // if we are moving all the units from both categories, then nothing to choose
-          if (units.containsAll(category1.getUnits()) && units.containsAll(category2.getUnits())) {
-            continue;
-          }
-          // if we are moving some of the units from either category, then we need to stop
-          if (!CollectionUtils.intersection(category1.getUnits(), units).isEmpty()
-              || !CollectionUtils.intersection(category2.getUnits(), units).isEmpty()) {
-            mustQueryUser = true;
-          }
-        }
-      }
-    }
-    if (mustQueryUser) {
-      final List<Unit> defaultSelections = new ArrayList<>(units.size());
-      if (route.isLoad()) {
-        final Collection<Unit> transportsToLoad = getSeaTransportsToLoad(route, units);
-        defaultSelections.addAll(
-            TransportUtils.mapTransports(route, units, transportsToLoad).keySet());
-      } else {
-        defaultSelections.addAll(units);
-      }
-      // sort candidateUnits in preferred order
-      sortUnitsToMove(candidateUnits, route);
-      final UnitChooser chooser =
-          new UnitChooser(
-              candidateUnits,
-              defaultSelections,
-              mustMoveWithDetails.getMustMoveWith(),
-              UnitSeparator.SeparatorCategories.builder().movement(true).build(),
-              false,
-              getMap().getUiContext(),
-              matchCriteria);
-      chooser.setAllButtonVisible(false);
-      final String text = "Select units to move from " + getFirstSelectedTerritory() + ".";
-      if (!confirmUnitChooserDialog(chooser, text)) {
-        units.clear();
-        return;
-      }
-      units.clear();
-      units.addAll(chooser.getSelected(false));
-    }
-    // add the dependent units
-    final List<Unit> unitsCopy = new ArrayList<>(units);
-    for (final Unit unit : unitsCopy) {
-      for (final Unit dependent : mustMoveWithDetails.getMustMoveWithForUnit(unit)) {
-        if (!unitsCopy.contains(dependent)) {
-          units.add(dependent);
-        }
-      }
-    }
-  }
-
   @Override
   public final String toString() {
     return "MovePanel";
+  }
+
+  final Optional<Territory> getFirstSelectedTerritory() {
+    return Optional.ofNullable(firstSelectedTerritory);
   }
 
   final void setFirstSelectedTerritory(final @Nullable Territory firstSelectedTerritory) {
@@ -1380,28 +1497,6 @@ public class MovePanel extends AbstractMovePanel {
           MoveValidator.getMustMoveWith(
               firstSelectedTerritory, airTransportDependents, getCurrentPlayer());
     }
-  }
-
-  private List<Unit> userChooseUnits(
-      final Set<Unit> defaultSelections,
-      final Predicate<Collection<Unit>> unitsToLoadMatch,
-      final List<Unit> unitsToLoad) {
-    // Allow player to select which to load.
-    final UnitChooser chooser =
-        new UnitChooser(
-            unitsToLoad,
-            defaultSelections,
-            airTransportDependents,
-            UnitSeparator.SeparatorCategories.builder().transportCost(true).build(),
-            false,
-            getMap().getUiContext(),
-            unitsToLoadMatch);
-    chooser.setAllButtonVisible(false);
-    chooser.setTitle("Load air transports");
-    if (!confirmUnitChooserDialog(chooser, "What units do you want to load")) {
-      return List.of();
-    }
-    return chooser.getSelected(true);
   }
 
   @Override
