@@ -28,6 +28,10 @@ public class MustMoveWithDetails implements Serializable {
     this.mapping = mapping;
   }
 
+  public @Nonnull Map<Unit, Collection<Unit>> getMustMoveWith() {
+    return mapping;
+  }
+
   public @Nonnull Collection<Unit> getMustMoveWithForUnit(final Unit unit) {
     return Optional.ofNullable(mapping.get(unit)).orElse(List.of());
   }
