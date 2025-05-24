@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -33,7 +34,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.java.concurrency.AsyncRunner;
@@ -236,7 +236,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     return nameLabel;
   }
 
-  private @NotNull String getTerritoryLabelTextPattern(Territory territory) {
+  private @Nonnull String getTerritoryLabelTextPattern(Territory territory) {
     GamePlayer territoryOwner = territory.getOwner();
     if (territoryOwner == null) return "";
     GamePlayer currentPlayer = uiContext.getCurrentPlayer();

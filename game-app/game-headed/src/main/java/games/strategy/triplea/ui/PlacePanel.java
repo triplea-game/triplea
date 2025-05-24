@@ -31,13 +31,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import javax.annotation.Nonnull;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
-import org.jetbrains.annotations.NotNull;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.SwingComponents;
 
@@ -141,7 +141,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
           }
         }
 
-        @NotNull
+        @Nonnull
         private JScrollPane getScrollPaneFromChooser(final UnitChooser chooser) {
           final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
           final int availHeight = screenResolution.height - 120;

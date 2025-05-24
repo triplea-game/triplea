@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -42,7 +43,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import org.jetbrains.annotations.NotNull;
 
 class StatPanel extends JPanel implements GameDataChangeListener {
   private static final long serialVersionUID = 4340684166664492498L;
@@ -306,7 +306,7 @@ class StatPanel extends JPanel implements GameDataChangeListener {
       clearAdvances();
     }
 
-    private synchronized String[] @NotNull [] getDataAndInitRowMap() {
+    private synchronized @Nonnull String[][] getDataAndInitRowMap() {
       final String[][] dataTable;
       boolean useTech = false;
       // copy so that the object doesn't change underneath us

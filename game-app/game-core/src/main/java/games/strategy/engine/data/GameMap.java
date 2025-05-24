@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.IntegerMap;
@@ -296,7 +297,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param cond condition that covered territories of the route must match
    */
   public @Nullable Route getRoute(
-      final Territory start, final Territory end, final Predicate<Territory> cond) {
+      @Nonnull final Territory start,
+      @Nonnull final Territory end,
+      final Predicate<Territory> cond) {
     checkNotNull(start);
     checkNotNull(end);
     return new RouteFinder(this, Matches.territoryIs(end).or(cond))
@@ -306,8 +309,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
   /** See {@link #getRouteForUnits(Territory, Territory, Predicate, Collection, GamePlayer)}. */
   public @Nullable Route getRouteForUnit(
-      final Territory start,
-      final Territory end,
+      @Nonnull final Territory start,
+      @Nonnull final Territory end,
       final Predicate<Territory> cond,
       final Unit unit,
       final GamePlayer player) {
@@ -326,8 +329,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param player player used to check canal ownership
    */
   public @Nullable Route getRouteForUnits(
-      final Territory start,
-      final Territory end,
+      @Nonnull final Territory start,
+      @Nonnull final Territory end,
       final Predicate<Territory> cond,
       final Collection<Unit> units,
       final GamePlayer player) {
