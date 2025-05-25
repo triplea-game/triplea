@@ -96,7 +96,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -1446,7 +1445,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     addTo(sz40, carrier(gameData).create(1, germans));
     addTo(sz40, fighter(gameData).create(1, italians(gameData)));
     addTo(madagascar, fighter(gameData).create(2, germans));
-    final Route route = gameData.getMap().getRoute(madagascar, sz40, it -> true);
+    final Route route = gameData.getMap().getRouteOrElseThrow(madagascar, sz40, it -> true);
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
@@ -1793,7 +1792,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
 
     move(
         uk.getUnitCollection().getMatches(Matches.unitIsAir()),
-        Objects.requireNonNull(gameData.getMap().getRoute(uk, sz5, it -> true)));
+        gameData.getMap().getRouteOrElseThrow(uk, sz5, it -> true));
     // move units for amphibious assault
     moveDelegate(gameData).end();
     advanceToStep(bridge, "Combat");

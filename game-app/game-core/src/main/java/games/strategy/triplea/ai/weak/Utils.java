@@ -11,8 +11,8 @@ import games.strategy.triplea.delegate.Matches;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 
 final class Utils {
@@ -45,18 +45,19 @@ final class Utils {
     return strength;
   }
 
-  static @Nullable Route findNearest(
+  static Optional<Route> findNearest(
       final Territory start,
       final Predicate<Territory> endCondition,
       final Predicate<Territory> routeCondition,
       final GameState data) {
-    Route shortestRoute = null;
+    Optional<Route> shortestRoute = Optional.empty();
     for (final Territory t : data.getMap().getTerritories()) {
       if (endCondition.test(t)) {
-        final Route r = data.getMap().getRoute(start, t, routeCondition);
-        if (r != null
-            && r.hasSteps()
-            && (shortestRoute == null || r.numberOfSteps() < shortestRoute.numberOfSteps())) {
+        final Optional<Route> r = data.getMap().getRoute(start, t, routeCondition);
+        if (r.isPresent()
+            && r.get().hasSteps()
+            && (shortestRoute.isEmpty()
+                || r.get().numberOfSteps() < shortestRoute.get().numberOfSteps())) {
           shortestRoute = r;
         }
       }

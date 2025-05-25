@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -89,11 +90,11 @@ public final class ProMoveUtils {
         }
 
         // Determine route and add to move list
-        Route route = null;
+        Optional<Route> optionalRoute = null;
         if (unitList.stream().anyMatch(Matches.unitIsSea())) {
 
           // Sea unit (including carriers with planes)
-          route =
+          optionalRoute =
               map.getRouteForUnit(
                   startTerritory,
                   t,
@@ -102,7 +103,7 @@ public final class ProMoveUtils {
                   player);
         } else if (unitList.stream().allMatch(Matches.unitIsLand())) {
           // Land unit
-          route =
+          optionalRoute =
               map.getRouteForUnit(
                   startTerritory,
                   t,
@@ -110,8 +111,8 @@ public final class ProMoveUtils {
                       player, u, startTerritory, isCombatMove, List.of()),
                   u,
                   player);
-          if (route == null && startTerritory.equals(lastLandTransport.getFirst())) {
-            route =
+          if (optionalRoute.isEmpty() && startTerritory.equals(lastLandTransport.getFirst())) {
+            optionalRoute =
                 map.getRouteForUnit(
                     startTerritory,
                     t,
@@ -126,7 +127,7 @@ public final class ProMoveUtils {
           }
         } else if (unitList.stream().allMatch(Matches.unitIsAir())) {
           // Air unit
-          route =
+          optionalRoute =
               map.getRouteForUnit(
                   startTerritory,
                   t,
@@ -134,7 +135,7 @@ public final class ProMoveUtils {
                   u,
                   player);
         }
-        if (route == null) {
+        if (optionalRoute.isEmpty()) {
           ProLogger.warn(
               data.getSequence().getRound()
                   + "-"
@@ -146,7 +147,7 @@ public final class ProMoveUtils {
                   + ", units="
                   + unitList);
         } else {
-          moves.add(new MoveDescription(unitList, route));
+          moves.add(new MoveDescription(unitList, optionalRoute.get()));
         }
       }
     }
@@ -341,18 +342,16 @@ public final class ProMoveUtils {
         unitList.add(u);
 
         // Determine route and add to move list
-        Route route = null;
         if (unitList.stream().allMatch(ProMatches.unitCanBeMovedAndIsOwnedSea(player, true))) {
           // Naval unit
-          route =
-              map.getRouteForUnit(
+          map.getRouteForUnit(
                   startTerritory,
                   bombardFromTerritory,
                   ProMatches.territoryCanMoveSeaUnitsThrough(player, true),
                   u,
-                  player);
+                  player)
+              .ifPresent(route -> moves.add(new MoveDescription(unitList, route)));
         }
-        moves.add(new MoveDescription(unitList, route));
       }
     }
 
@@ -393,16 +392,14 @@ public final class ProMoveUtils {
 
         // Determine route and add to move list
         if (unitList.stream().allMatch(Matches.unitIsAir())) {
-          final Route route =
+          final Optional<Route> optionalRoute =
               map.getRouteForUnit(
                   startTerritory,
                   t,
                   ProMatches.territoryCanMoveAirUnitsAndNoAa(data, player, true),
                   u,
                   player);
-          if (route != null) {
-            moves.add(new MoveDescription(unitList, route));
-          }
+          optionalRoute.ifPresent(route -> moves.add(new MoveDescription(unitList, route)));
         }
       }
     }

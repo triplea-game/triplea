@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
@@ -296,19 +297,45 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *
    * @param cond condition that covered territories of the route must match
    */
-  public @Nullable Route getRoute(
+  public Optional<Route> getRoute(
       @Nonnull final Territory start,
       @Nonnull final Territory end,
       final Predicate<Territory> cond) {
     checkNotNull(start);
     checkNotNull(end);
-    return new RouteFinder(this, Matches.territoryIs(end).or(cond))
-        .findRouteByDistance(start, end)
-        .orElse(null);
+    return new RouteFinder(this, Matches.territoryIs(end).or(cond)).findRouteByDistance(start, end);
+  }
+
+  /**
+   * Calls getRoute and throws IllegalStateException in case no Route instance could be found. Only
+   * use this method in case it is supposed to be assumed such a Route can be found. See {@link
+   * #getRoute(Territory, Territory, Predicate)}.
+   */
+  public Route getRouteOrElseThrow(
+      @Nonnull final Territory start,
+      @Nonnull final Territory end,
+      final Predicate<Territory> cond) {
+    return getRoute(start, end, cond)
+        .orElseThrow(() -> new IllegalStateException("Route expected to be returned"));
+  }
+
+  /**
+   * Calls getRouteForUnits and throws IllegalStateException in case no Route instance could be
+   * found. Only use this method in case it is supposed to be assumed such a Route can be found. See
+   * {@link #getRouteForUnits(Territory, Territory, Predicate, Collection, GamePlayer)}.
+   */
+  public Route getRouteForUnitOrElseThrow(
+      @Nonnull final Territory start,
+      @Nonnull final Territory end,
+      final Predicate<Territory> cond,
+      final Unit unit,
+      final GamePlayer player) {
+    return getRouteForUnits(start, end, cond, List.of(unit), player)
+        .orElseThrow(() -> new IllegalStateException("Route expected to be returned"));
   }
 
   /** See {@link #getRouteForUnits(Territory, Territory, Predicate, Collection, GamePlayer)}. */
-  public @Nullable Route getRouteForUnit(
+  public Optional<Route> getRouteForUnit(
       @Nonnull final Territory start,
       @Nonnull final Territory end,
       final Predicate<Territory> cond,
@@ -328,7 +355,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param units checked against canals and for movement costs
    * @param player player used to check canal ownership
    */
-  public @Nullable Route getRouteForUnits(
+  public Optional<Route> getRouteForUnits(
       @Nonnull final Territory start,
       @Nonnull final Territory end,
       final Predicate<Territory> cond,
@@ -337,8 +364,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     checkNotNull(start);
     checkNotNull(end);
     return new RouteFinder(this, Matches.territoryIs(end).or(cond), units, player)
-        .findRouteByCost(start, end)
-        .orElse(null);
+        .findRouteByCost(start, end);
   }
 
   /**

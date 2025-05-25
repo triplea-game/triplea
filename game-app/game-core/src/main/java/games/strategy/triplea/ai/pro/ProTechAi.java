@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -228,10 +229,11 @@ final class ProTechAi {
               continue;
             }
             if (!t4.equals(waterCheck)) {
-              final Route seaRoute =
+              final Optional<Route> optionalSeaRoute =
                   getMaxSeaRoute(
                       data, t4, waterCheck, transports, enemyPlayer, maxTransportDistance);
-              if (seaRoute == null || !seaRoute.getEnd().equals(waterCheck)) {
+              if (optionalSeaRoute.isEmpty()
+                  || !optionalSeaRoute.get().getEnd().equals(waterCheck)) {
                 continue;
               }
             }
@@ -557,7 +559,7 @@ final class ProTechAi {
     return airStrength;
   }
 
-  private static Route getMaxSeaRoute(
+  private static Optional<Route> getMaxSeaRoute(
       final GameState data,
       final Territory start,
       final Territory destination,
@@ -579,18 +581,20 @@ final class ProTechAi {
             .build();
     final Predicate<Territory> routeCond =
         Matches.territoryHasUnitsThatMatch(unitCond).negate().and(Matches.territoryIsWater());
-    Route r = data.getMap().getRouteForUnits(start, destination, routeCond, units, player);
-    if (r == null) {
-      return null;
+    final Optional<Route> optionalRoute =
+        data.getMap().getRouteForUnits(start, destination, routeCond, units, player);
+    if (optionalRoute.isEmpty()) {
+      return optionalRoute;
     }
-    final int routeDistance = r.numberOfSteps();
+    Route route = optionalRoute.get();
+    final int routeDistance = route.numberOfSteps();
     if (routeDistance > maxDistance) {
       final List<Territory> territories = new ArrayList<>();
       territories.add(start);
-      territories.addAll(r.getSteps().subList(0, maxDistance));
-      r = new Route(territories);
+      territories.addAll(route.getSteps().subList(0, maxDistance));
+      route = new Route(territories);
     }
-    return r;
+    return Optional.of(route);
   }
 
   /**

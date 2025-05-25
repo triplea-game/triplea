@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.CollectionUtils;
@@ -1269,8 +1270,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
 
   @Test
   void testRoute() {
-    final Route route = gameData.getMap().getRoute(angola, russia, it -> true);
-    assertNotNull(route);
-    assertEquals(route.getEnd(), russia);
+    final Optional<Route> optionalRoute = gameData.getMap().getRoute(angola, russia, it -> true);
+    assertTrue(optionalRoute.isPresent());
+    assertEquals(optionalRoute.get().getEnd(), russia);
   }
 }

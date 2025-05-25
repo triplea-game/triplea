@@ -1484,14 +1484,14 @@ class ProNonCombatMoveAi {
             final Predicate<Territory> match =
                 ProMatches.territoryCanMoveSeaUnitsThrough(player, isCombatMove)
                     .and(not(cantHoldTerritories::contains));
-            final Route route =
+            final Optional<Route> optionalRoute =
                 data.getMap()
                     .getRouteForUnits(
                         currentTerritory, patd.getTerritory(), match, List.of(transport), player);
-            if (route == null) {
+            if (optionalRoute.isEmpty()) {
               break;
             }
-            final List<Territory> territories = route.getAllTerritories();
+            final List<Territory> territories = optionalRoute.get().getAllTerritories();
             territories.remove(territories.size() - 1);
             final Territory moveToTerritory =
                 territories.get(Math.min(territories.size() - 1, moves));
@@ -2220,7 +2220,8 @@ class ProNonCombatMoveAi {
 
           // Consider max stack of 1 AA in classic
           final Route r =
-              data.getMap().getRouteForUnit(currentTerritory, t, canMoveThrough, u, player);
+              data.getMap()
+                  .getRouteForUnitOrElseThrow(currentTerritory, t, canMoveThrough, u, player);
           final MoveValidationResult result =
               moveValidator.validateMove(new MoveDescription(List.of(u), r), player);
           if (!result.isMoveValid()) {
@@ -2393,7 +2394,7 @@ class ProNonCombatMoveAi {
       return Optional.of(from);
     }
     for (final Territory t : CollectionUtils.getMatches(possibleMoves, finalDestinationTest)) {
-      Route r = data.getMap().getRouteForUnit(from, t, canMoveThrough, unit, player);
+      Route r = data.getMap().getRouteForUnitOrElseThrow(from, t, canMoveThrough, unit, player);
       if (validateMove.test(r)) {
         // Found a reachable destination. Return directly.
         return Optional.of(t);
@@ -2409,15 +2410,20 @@ class ProNonCombatMoveAi {
         (t, distance) -> {
           // If it's a desired final destination, see if we can move towards it.
           if (finalDestinationTest.test(t)) {
-            Route r = data.getMap().getRouteForUnit(from, t, canMoveThrough, unit, player);
-            while (r != null && r.hasSteps()) {
-              final ProTerritory proDestination = proData.getProTerritory(moveMap, r.getEnd());
-              if (proDestination.isCanHold() && validateMove.test(r)) {
-                destination.setValue(r.getEnd());
-                // End the search.
-                return false;
+            final Optional<Route> optionalRoute =
+                data.getMap().getRouteForUnit(from, t, canMoveThrough, unit, player);
+            if (optionalRoute.isPresent()) {
+              Route route = optionalRoute.get();
+              while (route.hasSteps()) {
+                final ProTerritory proDestination =
+                    proData.getProTerritory(moveMap, route.getEnd());
+                if (proDestination.isCanHold() && validateMove.test(route)) {
+                  destination.setValue(route.getEnd());
+                  // End the search.
+                  return false;
+                }
+                route = new Route(from, route.getMiddleSteps());
               }
-              r = new Route(from, r.getMiddleSteps());
             }
           }
           return true;

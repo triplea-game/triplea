@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import org.triplea.java.collections.CollectionUtils;
@@ -332,7 +333,7 @@ public final class ProBattleUtils {
       if (enemySeaUnits.isEmpty()) {
         continue;
       }
-      final Route route =
+      final Optional<Route> optionalRoute =
           data.getMap()
               .getRouteForUnits(
                   t,
@@ -340,10 +341,10 @@ public final class ProBattleUtils {
                   Matches.territoryIsWater(),
                   enemySeaUnits,
                   enemySeaUnits.get(0).getOwner());
-      if (route == null) {
+      if (optionalRoute.isEmpty()) {
         continue;
       }
-      final int routeLength = route.numberOfSteps();
+      final int routeLength = optionalRoute.get().numberOfSteps();
       if (routeLength <= enemyDistance) {
         final double strength = estimateStrength(t, myUnits, enemySeaUnits, false);
         if (strength > strongestEnemyDefenseFleetStrength) {
