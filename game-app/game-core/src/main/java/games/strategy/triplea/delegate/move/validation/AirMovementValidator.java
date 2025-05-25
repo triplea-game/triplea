@@ -27,6 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -425,7 +426,7 @@ public final class AirMovementValidator {
             landingSpotsWithCarrierCapacity.put(carrierSpot, carrierSpotCapacity);
           }
         }
-        final Route toLandingSpot =
+        final Optional<Route> optionalToLandingSpot =
             data.getMap()
                 .getRouteForUnits(
                     carrierSpot,
@@ -433,12 +434,13 @@ public final class AirMovementValidator {
                     Matches.seaCanMoveOver(player),
                     ownedCarriersInCarrierSpot,
                     player);
-        if (toLandingSpot == null) {
+        if (optionalToLandingSpot.isEmpty()) {
           continue;
         }
         final List<Unit> carriersThatCanReach =
             CollectionUtils.getMatches(
-                ownedCarriersInCarrierSpot, Matches.unitHasEnoughMovementForRoute(toLandingSpot));
+                ownedCarriersInCarrierSpot,
+                Matches.unitHasEnoughMovementForRoute(optionalToLandingSpot.get()));
         if (carriersThatCanReach.isEmpty()) {
           // none can reach
           continue;
@@ -639,7 +641,7 @@ public final class AirMovementValidator {
       final BigDecimal movementLeft,
       final Territory landingSpot,
       final boolean areNeutralsPassableByAir) {
-    final Route route =
+    final Optional<Route> optionalRoute =
         data.getMap()
             .getRouteForUnit(
                 currentSpot,
@@ -647,10 +649,11 @@ public final class AirMovementValidator {
                 Matches.airCanFlyOver(player, areNeutralsPassableByAir),
                 unit,
                 player);
-    return (route != null)
-        && (route.getMovementCost(unit).compareTo(movementLeft) <= 0)
+    return (optionalRoute.isPresent())
+        && (optionalRoute.get().getMovementCost(unit).compareTo(movementLeft) <= 0)
         && (!areNeutralsPassableByAir
-            || getNeutralCharge(data, route) <= player.getResources().getQuantity(Constants.PUS));
+            || getNeutralCharge(data, optionalRoute.get())
+                <= player.getResources().getQuantity(Constants.PUS));
   }
 
   /**

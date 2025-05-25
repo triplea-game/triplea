@@ -87,7 +87,8 @@ class VictoryTest {
     moveDelegate.start();
     final String error =
         moveDelegate.move(
-            libya.getUnits(), gameData.getMap().getRoute(libya, belgianCongo, it -> true));
+            libya.getUnits(),
+            gameData.getMap().getRouteOrElseThrow(libya, belgianCongo, it -> true));
     moveDelegate.end();
     assertEquals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error);
   }
@@ -101,7 +102,7 @@ class VictoryTest {
     final String error =
         moveDelegate.move(
             frenchWestAfrica.getUnits(),
-            gameData.getMap().getRoute(frenchWestAfrica, belgianCongo, it -> true));
+            gameData.getMap().getRouteOrElseThrow(frenchWestAfrica, belgianCongo, it -> true));
     moveDelegate.end();
     assertNull(error);
   }
@@ -146,7 +147,8 @@ class VictoryTest {
     moveDelegate.start();
     final String error =
         moveDelegate.move(
-            libya.getUnits(), gameData.getMap().getRoute(libya, belgianCongo, it -> true));
+            libya.getUnits(),
+            gameData.getMap().getRouteOrElseThrow(libya, belgianCongo, it -> true));
     moveDelegate.end();
     assertEquals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error);
   }
@@ -182,7 +184,7 @@ class VictoryTest {
     final List<Unit> infantryUnit = infantry.create(1, italians);
     final List<Unit> tankUnit = armour.create(1, italians);
     final List<Unit> tankAndInfantry = List.of(tankUnit.get(0), infantryUnit.get(0));
-    final Route route = gameData.getMap().getRoute(angloEgypt, transJordan, it -> true);
+    final Route route = gameData.getMap().getRouteOrElseThrow(angloEgypt, transJordan, it -> true);
 
     @BeforeEach
     void setUp() {

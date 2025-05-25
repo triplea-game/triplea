@@ -16,9 +16,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -103,7 +105,7 @@ public final class ProTerritoryValueUtils {
 
     // Determine value for water territories
     final Map<Territory, Double> territoryValueMap = new HashMap<>();
-    final GameState data = player.getData();
+    final GameData data = player.getData();
     for (final Territory t : territoriesToCheck) {
       if (!territoriesThatCantBeHeld.contains(t)
           && t.isWater()
@@ -117,51 +119,21 @@ public final class ProTerritoryValueUtils {
             CollectionUtils.getMatches(
                 nearbySeaTerritories,
                 ProMatches.territoryIsEnemyOrCantBeHeld(player, territoriesThatCantBeHeld));
-        for (final Territory nearbyEnemySeaTerritory : nearbyEnemySeaTerritories) {
-          final Route route =
-              data.getMap()
-                  .getRouteForUnits(
-                      t,
-                      nearbyEnemySeaTerritory,
-                      ProMatches.territoryCanMoveSeaUnits(player, true),
-                      Set.of(),
-                      player);
-          if (route == null) {
-            continue;
-          }
-          final int distance = route.numberOfSteps();
-          if (distance > 0) {
-            nearbySeaProductionValue +=
-                TerritoryAttachment.getProduction(nearbyEnemySeaTerritory) / Math.pow(2, distance);
-          }
-        }
+        calculateTerritoryValueToTargets(
+            t, nearbyEnemySeaTerritories, player, data, TerritoryAttachment::getProduction);
 
         // Determine sea value based on nearby enemy sea units
         double nearbyEnemySeaUnitValue = 0;
         final List<Territory> nearbyEnemySeaUnitTerritories =
             CollectionUtils.getMatches(
                 nearbySeaTerritories, Matches.territoryHasEnemyUnits(player));
-        for (final Territory nearbyEnemySeaTerritory : nearbyEnemySeaUnitTerritories) {
-          final Route route =
-              data.getMap()
-                  .getRouteForUnits(
-                      t,
-                      nearbyEnemySeaTerritory,
-                      ProMatches.territoryCanMoveSeaUnits(player, true),
-                      Set.of(),
-                      player);
-          if (route == null) {
-            continue;
-          }
-          final int distance = route.numberOfSteps();
-          if (distance > 0) {
-            nearbyEnemySeaUnitValue +=
-                nearbyEnemySeaTerritory
-                        .getUnitCollection()
-                        .countMatches(Matches.unitIsEnemyOf(player))
-                    / Math.pow(2, distance);
-          }
-        }
+        calculateTerritoryValueToTargets(
+            t,
+            nearbyEnemySeaUnitTerritories,
+            player,
+            data,
+            targetTerritory ->
+                targetTerritory.getUnitCollection().countMatches(Matches.unitIsEnemyOf(player)));
 
         // Set final values
         final double value = 100 * nearbySeaProductionValue + nearbyEnemySeaUnitValue;
@@ -172,6 +144,36 @@ public final class ProTerritoryValueUtils {
     }
 
     return territoryValueMap;
+  }
+
+  private static double calculateTerritoryValueToTargets(
+      final Territory t,
+      final List<Territory> targetTerritories,
+      final GamePlayer player,
+      final GameData data,
+      ToIntFunction<Territory> toTargetValueFunction) {
+    double territoryValue = 0;
+    for (final Territory targetTerritory : targetTerritories) {
+      final Optional<Route> optionalRoute =
+          data.getMap()
+              .getRouteForUnits(
+                  t,
+                  targetTerritory,
+                  ProMatches.territoryCanMoveSeaUnits(player, true),
+                  Set.of(),
+                  player);
+      if (optionalRoute.isEmpty()) {
+        continue;
+      }
+      final int distance = optionalRoute.get().numberOfSteps();
+      if (distance > 0) {
+        territoryValue += toTargetValueFunction.applyAsInt(targetTerritory) / Math.pow(2, distance);
+        territoryValue +=
+            targetTerritory.getUnitCollection().countMatches(Matches.unitIsEnemyOf(player))
+                / Math.pow(2, distance);
+      }
+    }
+    return territoryValue;
   }
 
   static int findMaxLandMassSize(final GamePlayer player) {
@@ -348,7 +350,7 @@ public final class ProTerritoryValueUtils {
     final Collection<Territory> nearbyEnemyCapitalsAndFactories =
         findNearbyEnemyCapitalsAndFactories(t, enemyCapitalsAndFactoriesMap.keySet());
     for (final Territory enemyCapitalOrFactory : nearbyEnemyCapitalsAndFactories) {
-      final Route route =
+      final Optional<Route> optionalRoute =
           data.getMap()
               .getRouteForUnits(
                   t,
@@ -356,10 +358,10 @@ public final class ProTerritoryValueUtils {
                   ProMatches.territoryCanMoveSeaUnits(player, true),
                   Set.of(),
                   player);
-      if (route == null) {
+      if (optionalRoute.isEmpty()) {
         continue;
       }
-      final int distance = route.numberOfSteps();
+      final int distance = optionalRoute.get().numberOfSteps();
       if (distance > 0) {
         values.add(enemyCapitalsAndFactoriesMap.get(enemyCapitalOrFactory) / Math.pow(2, distance));
       }
@@ -381,7 +383,7 @@ public final class ProTerritoryValueUtils {
             nearbyTerritories, ProMatches.territoryCanPotentiallyMoveLandUnits(player));
     nearbyLandTerritories.removeAll(territoriesToAttack);
     for (final Territory nearbyLandTerritory : nearbyLandTerritories) {
-      final Route route =
+      final Optional<Route> optionalRoute =
           data.getMap()
               .getRouteForUnits(
                   t,
@@ -389,10 +391,10 @@ public final class ProTerritoryValueUtils {
                   ProMatches.territoryCanMoveSeaUnits(player, true),
                   Set.of(),
                   player);
-      if (route == null) {
+      if (optionalRoute.isEmpty()) {
         continue;
       }
-      final int distance = route.numberOfSteps();
+      final int distance = optionalRoute.get().numberOfSteps();
       if (distance > 0 && distance <= 3) {
         if (ProMatches.territoryIsEnemyOrCantBeHeld(player, territoriesThatCantBeHeld)
             .test(nearbyLandTerritory)) {

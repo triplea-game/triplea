@@ -1745,7 +1745,7 @@ class ProPurchaseAi {
         if (enemySeaUnits.isEmpty()) {
           continue;
         }
-        final Route route =
+        final Optional<Route> optionalRoute =
             data.getMap()
                 .getRouteForUnits(
                     t,
@@ -1753,10 +1753,10 @@ class ProPurchaseAi {
                     Matches.territoryIsWater(),
                     enemySeaUnits,
                     enemySeaUnits.get(0).getOwner());
-        if (route == null) {
+        if (optionalRoute.isEmpty()) {
           continue;
         }
-        final int routeLength = route.numberOfSteps();
+        final int routeLength = optionalRoute.get().numberOfSteps();
         if (routeLength <= enemyDistance) {
           enemyUnitsInSeaTerritories.addAll(enemySeaUnits);
         }

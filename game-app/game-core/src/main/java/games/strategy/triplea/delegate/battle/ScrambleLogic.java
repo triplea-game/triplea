@@ -182,7 +182,9 @@ public class ScrambleLogic {
         }
         // TODO: consider movement cost and canals by checking each air unit separately
         final Route toBattleRoute =
-            data.getMap().getRoute(from, to, Matches.territoryIsNotImpassable());
+            data.getMap()
+                .getRoute(from, to, Matches.territoryIsNotImpassable())
+                .orElseThrow(() -> new IllegalStateException("Route object should be found"));
         final Collection<Unit> canScrambleAir =
             fromUnits.getMatches(
                 unitCanScramble.and(Matches.unitCanScrambleOnRouteDistance(toBattleRoute)));

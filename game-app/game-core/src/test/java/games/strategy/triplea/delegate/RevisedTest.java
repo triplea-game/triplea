@@ -860,7 +860,8 @@ class RevisedTest extends AbstractClientSettingTestCase {
     final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     final List<Unit> bombers = uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber());
     addTo(germany, bombers);
-    battle.addAttackChange(gameData.getMap().getRoute(uk, germany, it -> true), bombers, null);
+    battle.addAttackChange(
+        gameData.getMap().getRouteOrElseThrow(uk, germany, it -> true), bombers, null);
     tracker
         .getBattleRecords()
         .addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
@@ -888,7 +889,8 @@ class RevisedTest extends AbstractClientSettingTestCase {
     final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     final List<Unit> bombers = bomber(gameData).create(2, british);
     addTo(germany, bombers);
-    battle.addAttackChange(gameData.getMap().getRoute(uk, germany, it -> true), bombers, null);
+    battle.addAttackChange(
+        gameData.getMap().getRouteOrElseThrow(uk, germany, it -> true), bombers, null);
     tracker
         .getBattleRecords()
         .addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
@@ -924,7 +926,8 @@ class RevisedTest extends AbstractClientSettingTestCase {
     final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     final List<Unit> bombers = bomber(gameData).create(7, british);
     addTo(germany, bombers);
-    battle.addAttackChange(gameData.getMap().getRoute(uk, germany, it -> true), bombers, null);
+    battle.addAttackChange(
+        gameData.getMap().getRouteOrElseThrow(uk, germany, it -> true), bombers, null);
     tracker
         .getBattleRecords()
         .addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
@@ -951,7 +954,7 @@ class RevisedTest extends AbstractClientSettingTestCase {
     final BattleTracker tracker = new BattleTracker();
     final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     battle.addAttackChange(
-        gameData.getMap().getRoute(uk, germany, it -> true),
+        gameData.getMap().getRouteOrElseThrow(uk, germany, it -> true),
         uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()),
         null);
     addTo(germany, uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()));

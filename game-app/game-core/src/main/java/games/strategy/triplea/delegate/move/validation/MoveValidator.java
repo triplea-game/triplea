@@ -52,6 +52,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -1680,7 +1681,7 @@ public class MoveValidator {
   }
 
   /** Get the route ignoring forced territories. */
-  public static @Nullable Route getBestRoute(
+  public static Optional<Route> getBestRoute(
       @Nonnull final Territory start,
       @Nonnull final Territory end,
       final GameData data,
@@ -1701,13 +1702,13 @@ public class MoveValidator {
             .andIf(isNeutralsImpassable, noNeutral)
             .build();
 
-    Route defaultRoute =
+    Optional<Route> optionalDefaultRoute =
         data.getMap()
             .getRouteForUnits(start, end, noImpassableOrRestrictedOrNeutral, units, player);
-    if (defaultRoute == null) {
+    if (optionalDefaultRoute.isEmpty()) {
       // Try for a route without impassable territories, but allowing restricted territories, since
       // there is a chance politics may change in the future
-      defaultRoute =
+      optionalDefaultRoute =
           data.getMap()
               .getRoute(
                   start,
@@ -1716,12 +1717,12 @@ public class MoveValidator {
                       ? noNeutral.and(Matches.territoryIsImpassable())
                       : Matches.territoryIsImpassable()));
       // There really is nothing, so just return any route, without conditions
-      if (defaultRoute == null) {
+      if (optionalDefaultRoute.isEmpty()) {
         return data.getMap().getRoute(start, end, it -> true);
       }
-      return defaultRoute;
+      return optionalDefaultRoute;
     }
-
+    Route defaultRoute = optionalDefaultRoute.get();
     // Avoid looking at the dependents
     final Collection<Unit> unitsWhichAreNotBeingTransportedOrDependent =
         CollectionUtils.getMatches(
@@ -1733,7 +1734,7 @@ public class MoveValidator {
     // moving
     boolean mustGoLand = false;
     if (!start.isWater() && !end.isWater()) {
-      final Route landRoute =
+      final Optional<Route> optionalLandRoute =
           data.getMap()
               .getRouteForUnits(
                   start,
@@ -1741,12 +1742,12 @@ public class MoveValidator {
                   Matches.territoryIsLand().and(noImpassableOrRestrictedOrNeutral),
                   units,
                   player);
-      if ((landRoute != null)
-          && ((landRoute.numberOfSteps() <= defaultRoute.numberOfSteps())
+      if ((optionalLandRoute.isPresent())
+          && ((optionalLandRoute.get().numberOfSteps() <= defaultRoute.numberOfSteps())
               || (forceLandOrSeaRoute
                   && unitsWhichAreNotBeingTransportedOrDependent.stream()
                       .anyMatch(Matches.unitIsLand())))) {
-        defaultRoute = landRoute;
+        defaultRoute = optionalLandRoute.get();
         mustGoLand = true;
       }
     }
@@ -1755,7 +1756,7 @@ public class MoveValidator {
     // planes may be moving
     boolean mustGoSea = false;
     if (start.isWater() && end.isWater()) {
-      final Route waterRoute =
+      final Optional<Route> optionalWaterRoute =
           data.getMap()
               .getRouteForUnits(
                   start,
@@ -1763,36 +1764,18 @@ public class MoveValidator {
                   Matches.territoryIsWater().and(noImpassableOrRestrictedOrNeutral),
                   units,
                   player);
-      if ((waterRoute != null)
-          && ((waterRoute.numberOfSteps() <= defaultRoute.numberOfSteps())
+      if ((optionalWaterRoute.isPresent())
+          && ((optionalWaterRoute.get().numberOfSteps() <= defaultRoute.numberOfSteps())
               || (forceLandOrSeaRoute
                   && unitsWhichAreNotBeingTransportedOrDependent.stream()
                       .anyMatch(Matches.unitIsSea())))) {
-        defaultRoute = waterRoute;
+        defaultRoute = optionalWaterRoute.get();
         mustGoSea = true;
       }
     }
 
-    // These are the conditions we would like the route to satisfy, starting with the most important
-    final Predicate<Territory> hasRequiredUnitsToMove =
-        Matches.territoryHasRequiredUnitsToMove(unitsWhichAreNotBeingTransportedOrDependent);
-    final Predicate<Territory> notEnemyOwned =
-        Matches.isTerritoryEnemy(player)
-            .negate()
-            .and(
-                Matches.territoryWasFoughtOver(AbstractMoveDelegate.getBattleTracker(data))
-                    .negate());
-    final Predicate<Territory> noEnemyUnits = Matches.territoryHasNoEnemyUnits(player);
-    final Predicate<Territory> noAa = Matches.territoryHasEnemyAaForFlyOver(player).negate();
     final List<Predicate<Territory>> prioritizedMovePreferences =
-        new ArrayList<>(
-            List.of(
-                hasRequiredUnitsToMove.and(notEnemyOwned).and(noEnemyUnits),
-                hasRequiredUnitsToMove.and(noEnemyUnits),
-                hasRequiredUnitsToMove.and(noAa),
-                notEnemyOwned.and(noEnemyUnits),
-                noEnemyUnits,
-                noAa));
+        getPrioritizedMovePreferences(data, player, unitsWhichAreNotBeingTransportedOrDependent);
 
     // Determine max distance route is willing to accept
     final List<Unit> landUnits =
@@ -1816,13 +1799,42 @@ public class MoveValidator {
       } else {
         moveCondition = movePreference.and(noImpassableOrRestrictedOrNeutral);
       }
-      final Route route = data.getMap().getRouteForUnits(start, end, moveCondition, units, player);
-      if ((route != null) && (route.numberOfSteps() <= maxSteps)) {
-        return route;
+      final Optional<Route> optionalPreferredRoute =
+          data.getMap().getRouteForUnits(start, end, moveCondition, units, player);
+      if (optionalPreferredRoute.isPresent()
+          && optionalPreferredRoute.get().numberOfSteps() <= maxSteps) {
+        return optionalPreferredRoute;
       }
     }
 
-    return defaultRoute;
+    return Optional.of(defaultRoute);
+  }
+
+  private static @NotNull List<Predicate<Territory>> getPrioritizedMovePreferences(
+      GameData data,
+      GamePlayer player,
+      Collection<Unit> unitsWhichAreNotBeingTransportedOrDependent) {
+    // These are the conditions we would like the route to satisfy, starting with the most important
+    final Predicate<Territory> hasRequiredUnitsToMove =
+        Matches.territoryHasRequiredUnitsToMove(unitsWhichAreNotBeingTransportedOrDependent);
+    final Predicate<Territory> notEnemyOwned =
+        Matches.isTerritoryEnemy(player)
+            .negate()
+            .and(
+                Matches.territoryWasFoughtOver(AbstractMoveDelegate.getBattleTracker(data))
+                    .negate());
+    final Predicate<Territory> noEnemyUnits = Matches.territoryHasNoEnemyUnits(player);
+    final Predicate<Territory> noAa = Matches.territoryHasEnemyAaForFlyOver(player).negate();
+    final List<Predicate<Territory>> prioritizedMovePreferences =
+        new ArrayList<>(
+            List.of(
+                hasRequiredUnitsToMove.and(notEnemyOwned).and(noEnemyUnits),
+                hasRequiredUnitsToMove.and(noEnemyUnits),
+                hasRequiredUnitsToMove.and(noAa),
+                notEnemyOwned.and(noEnemyUnits),
+                noEnemyUnits,
+                noAa));
+    return prioritizedMovePreferences;
   }
 
   private static boolean isNeutralsBlitzable(final GameProperties properties) {
