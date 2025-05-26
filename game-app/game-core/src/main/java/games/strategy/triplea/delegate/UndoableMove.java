@@ -14,26 +14,29 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.IBattle;
+import java.io.Serial;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import lombok.Getter;
+import lombok.Setter;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Contains all the data to describe a move and to undo it. */
 public class UndoableMove extends AbstractUndoableMove {
-  private static final long serialVersionUID = 8490182214651531358L;
+  @Serial private static final long serialVersionUID = 8490182214651531358L;
 
   private String reasonCantUndo;
-  private String description;
+  @Setter private String description;
   // this move is dependent on these moves
-  // these moves cant be undone until this one has been
+  // while these moves can't be undone until this one has been
   private final Set<UndoableMove> dependencies = new HashSet<>();
-  // these moves depend on me
-  // we cant be undone until this is empty
+  // these moves depend on me,
+  // we can't be undone until this is empty
   private final Set<UndoableMove> dependents = new HashSet<>();
   // list of countries we took over
   private final Set<Territory> conquered = new HashSet<>();
@@ -72,10 +75,6 @@ public class UndoableMove extends AbstractUndoableMove {
     reasonCantUndo = reason;
   }
 
-  public void setDescription(final String description) {
-    this.description = description;
-  }
-
   public void load(final Unit transport) {
     loaded.add(transport);
   }
@@ -96,11 +95,8 @@ public class UndoableMove extends AbstractUndoableMove {
     // if we are moving out of a battle zone, mark it
     // this can happen for air units moving out of a battle zone
     for (final IBattle battle : battleTracker.getPendingBattles(route.getStart())) {
-      if (battle == null || battle.isOver()) {
-        continue;
-      }
       for (final Unit unit : units) {
-        final Route routeUnitUsedToMove =
+        final Optional<Route> optionalRouteUnitUsedToMove =
             data.getMoveDelegate().getRouteUsedToMoveInto(unit, route.getStart());
         if (!battle.getBattleType().isBombingRun()) {
           // route units used to move will be null in the case where an enemy sub is submerged in
@@ -108,14 +104,16 @@ public class UndoableMove extends AbstractUndoableMove {
           // another unit moved in to attack it, but some of the units in the original territory are
           // moved out. Undoing
           // this last move, the route used to move into the battle zone will be null
-          if (routeUnitUsedToMove != null) {
-            final Change change = battle.addAttackChange(routeUnitUsedToMove, Set.of(unit), null);
+          if (optionalRouteUnitUsedToMove.isPresent()) {
+            final Change change =
+                battle.addAttackChange(optionalRouteUnitUsedToMove.get(), Set.of(unit), null);
             bridge.addChange(change);
           }
         } else {
           Map<Unit, Set<Unit>> targets = null;
           Unit target = null;
-          if (routeUnitUsedToMove != null) {
+          if (optionalRouteUnitUsedToMove.isPresent()) {
+            final Route routeUnitUsedToMove = optionalRouteUnitUsedToMove.get();
             final Territory end = routeUnitUsedToMove.getEnd();
             final Collection<Unit> enemyTargetsTotal =
                 end.getMatches(
@@ -145,9 +143,10 @@ public class UndoableMove extends AbstractUndoableMove {
               targets = new HashMap<>();
               targets.put(target, new HashSet<>(Set.of(unit)));
             }
+            final Change change =
+                battle.addAttackChange(routeUnitUsedToMove, Set.of(unit), targets);
+            bridge.addChange(change);
           }
-          final Change change = battle.addAttackChange(routeUnitUsedToMove, Set.of(unit), targets);
-          bridge.addChange(change);
         }
       }
     }

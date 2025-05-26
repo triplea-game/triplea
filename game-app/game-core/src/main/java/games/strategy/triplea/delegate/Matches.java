@@ -989,10 +989,9 @@ public final class Matches {
       if (ra == null || ra.getMovementRestrictionTerritories() == null) {
         return true;
       }
-      final String movementRestrictionType = ra.getMovementRestrictionType();
       final Collection<Territory> listedTerritories =
           ra.getListedTerritories(ra.getMovementRestrictionTerritories(), true, true);
-      return (movementRestrictionType.equals("allowed") == listedTerritories.contains(t));
+      return (ra.isMovementRestrictionTypeAllowed() == listedTerritories.contains(t));
     };
   }
 
@@ -1037,10 +1036,9 @@ public final class Matches {
       if (Properties.getMovementByTerritoryRestricted(properties)) {
         final RulesAttachment ra = playerWhoOwnsAllTheUnitsMoving.getRulesAttachment();
         if (ra != null && ra.getMovementRestrictionTerritories() != null) {
-          final String movementRestrictionType = ra.getMovementRestrictionType();
           final Collection<Territory> listedTerritories =
               ra.getListedTerritories(ra.getMovementRestrictionTerritories(), true, true);
-          if (!(movementRestrictionType.equals("allowed") == listedTerritories.contains(t))) {
+          if (!(ra.isMovementRestrictionTypeAllowed() == listedTerritories.contains(t))) {
             return false;
           }
         }
