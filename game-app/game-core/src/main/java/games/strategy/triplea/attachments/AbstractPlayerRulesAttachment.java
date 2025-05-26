@@ -12,6 +12,7 @@ import java.util.Collection;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.collections.IntegerMap;
 
 /**
@@ -30,6 +31,10 @@ import org.triplea.java.collections.IntegerMap;
 @Slf4j
 public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachment {
   private static final long serialVersionUID = 7224407193725789143L;
+
+  public static final @NonNls String MOVEMENT_RESTRICTION_TYPE_ALLOWED = "allowed";
+  public static final @NonNls String MOVEMENT_RESTRICTION_TYPE_DISALLOWED = "disallowed";
+
   // Please do not add new things to this class. Any new Player-Rules type of stuff should go in
   // "PlayerAttachment".
   // These variables are related to a "rulesAttachment" that changes certain rules for the attached
@@ -130,12 +135,21 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     movementRestrictionTerritories = null;
   }
 
-  private void setMovementRestrictionType(final String value) throws GameParseException {
-    if (!(value.equals("disallowed") || value.equals("allowed"))) {
+  private void setMovementRestrictionType(final @NonNls String value) throws GameParseException {
+    if (!(MOVEMENT_RESTRICTION_TYPE_DISALLOWED.equals(value)
+        || MOVEMENT_RESTRICTION_TYPE_ALLOWED.equals(value))) {
       throw new GameParseException(
           "movementRestrictionType must be allowed or disallowed" + thisErrorMsg());
     }
     movementRestrictionType = value.intern();
+  }
+
+  public boolean isMovementRestrictionTypeAllowed() {
+    return MOVEMENT_RESTRICTION_TYPE_ALLOWED.equals(movementRestrictionType);
+  }
+
+  public boolean isMovementRestrictionTypeDisallowed() {
+    return MOVEMENT_RESTRICTION_TYPE_DISALLOWED.equals(movementRestrictionType);
   }
 
   public @Nullable String getMovementRestrictionType() {

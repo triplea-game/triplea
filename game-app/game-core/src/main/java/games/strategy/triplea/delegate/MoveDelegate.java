@@ -21,6 +21,7 @@ import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
+import games.strategy.triplea.delegate.move.validation.AirMovementValidator;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
@@ -626,11 +627,11 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
     // confirm kamikaze moves, and remove them from unresolved units
     if (getKamikazeAir || move.getUnits().stream().anyMatch(Matches.unitIsKamikaze())) {
-      kamikazeUnits = result.getUnresolvedUnits(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND);
+      kamikazeUnits = result.getUnresolvedUnits(AirMovementValidator.NOT_ALL_AIR_UNITS_CAN_LAND);
       if (!kamikazeUnits.isEmpty() && bridge.getRemotePlayer().confirmMoveKamikaze()) {
         for (final Unit unit : kamikazeUnits) {
           if (getKamikazeAir || Matches.unitIsKamikaze().test(unit)) {
-            result.removeUnresolvedUnit(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND, unit);
+            result.removeUnresolvedUnit(AirMovementValidator.NOT_ALL_AIR_UNITS_CAN_LAND, unit);
             isKamikaze = true;
           }
         }

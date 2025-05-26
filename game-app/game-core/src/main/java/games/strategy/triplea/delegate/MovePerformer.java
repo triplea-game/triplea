@@ -22,6 +22,7 @@ import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TransportUtils;
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import org.triplea.java.PredicateBuilder;
@@ -38,7 +40,7 @@ import org.triplea.java.collections.CollectionUtils;
 
 /** Used to move units and make changes to game state. */
 public class MovePerformer implements Serializable {
-  private static final long serialVersionUID = 3752242292777658310L;
+  @Serial private static final long serialVersionUID = 3752242292777658310L;
 
   private transient AbstractMoveDelegate moveDelegate;
   private transient IDelegateBridge bridge;
@@ -92,7 +94,7 @@ public class MovePerformer implements Serializable {
       final Map<Unit, Unit> unitsToTransports) {
     final IExecutable preAaFire =
         new IExecutable() {
-          private static final long serialVersionUID = -7945930782650355037L;
+          @Serial private static final long serialVersionUID = -7945930782650355037L;
 
           @Override
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
@@ -100,10 +102,11 @@ public class MovePerformer implements Serializable {
             // this can happen for air units moving out of a battle zone
             for (final IBattle battle : getBattleTracker().getPendingBattles(route.getStart())) {
               for (final Unit unit : units) {
-                final Route routeUnitUsedToMove =
+                final Optional<Route> optionalRouteUnitUsedToMove =
                     moveDelegate.getRouteUsedToMoveInto(unit, route.getStart());
-                if (battle != null) {
-                  Change change = battle.removeAttack(routeUnitUsedToMove, Set.of(unit));
+                if (optionalRouteUnitUsedToMove.isPresent()) {
+                  Change change =
+                      battle.removeAttack(optionalRouteUnitUsedToMove.get(), Set.of(unit));
                   bridge.addChange(change);
                 }
               }
@@ -113,7 +116,7 @@ public class MovePerformer implements Serializable {
     // hack to allow the executables to share state
     final IExecutable fireAa =
         new IExecutable() {
-          private static final long serialVersionUID = -3780228078499895244L;
+          @Serial private static final long serialVersionUID = -3780228078499895244L;
 
           @Override
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
@@ -142,7 +145,7 @@ public class MovePerformer implements Serializable {
         };
     final IExecutable postAaFire =
         new IExecutable() {
-          private static final long serialVersionUID = 670783657414493643L;
+          @Serial private static final long serialVersionUID = 670783657414493643L;
 
           @Override
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
@@ -236,7 +239,7 @@ public class MovePerformer implements Serializable {
                         .addBattle(
                             route,
                             arrivedCopyForBattles,
-                            bombing,
+                            true,
                             gamePlayer,
                             MovePerformer.this.bridge,
                             currentMove,
@@ -385,7 +388,7 @@ public class MovePerformer implements Serializable {
         Matches.unitIsAirTransport().or(Matches.unitIsAirTransportable());
     final boolean paratroopsLanding =
         arrived.stream().anyMatch(paratroopNAirTransports)
-            && MoveValidator.allLandUnitsAreBeingParatroopered(arrived);
+            && MoveValidator.allLandUnitsHaveAirTransport(arrived);
     final Map<Unit, Collection<Unit>> dependentAirTransportableUnits = new HashMap<>();
     for (final Unit unit : arrived) {
       Unit transport = unit.getTransportedBy();
@@ -408,19 +411,23 @@ public class MovePerformer implements Serializable {
     // load the transports
     if (route.isLoad() || paratroopsLanding) {
       // mark transports as having transported
-      for (final Unit load : transporting.keySet()) {
-        final Unit transport = transporting.get(load);
-        if (!transport.equals(load.getTransportedBy())) {
-          final Change change = TransportTracker.loadTransportChange(transport, load);
+      for (final Map.Entry<Unit, Unit> loadToTransport : transporting.entrySet()) {
+        final Unit loadUnit = loadToTransport.getKey();
+        final Unit transporter = loadToTransport.getValue();
+        if (!loadToTransport.equals(loadUnit.getTransportedBy())) {
+          final Change change = TransportTracker.loadTransportChange(transporter, loadUnit);
           currentMove.addChange(change);
-          currentMove.load(transport);
+          currentMove.load(transporter);
           bridge.addChange(change);
         }
       }
       if (transporting.isEmpty()) {
-        for (final Unit airTransport : dependentAirTransportableUnits.keySet()) {
-          for (final Unit unit : dependentAirTransportableUnits.get(airTransport)) {
-            final Change change = TransportTracker.loadTransportChange(airTransport, unit);
+        for (final Map.Entry<Unit, Collection<Unit>> airTransportToTransportableUnit :
+            dependentAirTransportableUnits.entrySet()) {
+          final Unit airTransport = airTransportToTransportableUnit.getKey();
+          for (final Unit transportableUnit : airTransportToTransportableUnit.getValue()) {
+            final Change change =
+                TransportTracker.loadTransportChange(airTransport, transportableUnit);
             currentMove.addChange(change);
             currentMove.load(airTransport);
             bridge.addChange(change);
@@ -444,10 +451,7 @@ public class MovePerformer implements Serializable {
       final BattleTracker tracker = getBattleTracker();
       final boolean pendingBattles =
           tracker.getPendingBattle(route.getStart(), BattleType.NORMAL) != null;
-      for (final Unit unit : units) {
-        if (Matches.unitIsAir().test(unit)) {
-          continue;
-        }
+      for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitIsAir().negate())) {
         final Unit transportedBy = unit.getTransportedBy();
         // we will unload our paratroopers after they land in battle (after aa guns fire)
         if (paratroopsLanding
