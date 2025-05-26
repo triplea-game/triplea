@@ -17,6 +17,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -43,11 +44,12 @@ class RouteFinder {
     this(new MoveValidator(map.getData(), false), map, condition, units, player);
   }
 
-  Optional<Route> findRouteByDistance(final Territory start, final Territory end) {
+  Optional<Route> findRouteByDistance(
+      final @Nonnull Territory start, final @Nonnull Territory end) {
     return findRouteByCost(start, end, t -> BigDecimal.ONE);
   }
 
-  Optional<Route> findRouteByCost(final Territory start, final Territory end) {
+  Optional<Route> findRouteByCost(final @Nonnull Territory start, final @Nonnull Territory end) {
     return findRouteByCost(start, end, this::getMaxMovementCost);
   }
 

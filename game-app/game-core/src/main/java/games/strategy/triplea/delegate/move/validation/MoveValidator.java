@@ -1686,17 +1686,23 @@ public class MoveValidator {
       final Collection<Unit> units,
       final boolean forceLandOrSeaRoute) {
     final boolean hasLand = units.stream().anyMatch(Matches.unitIsLand());
+    final boolean hasSub = units.stream().anyMatch(Matches.unitCanMoveThroughEnemies());
     final boolean hasAir = units.stream().anyMatch(Matches.unitIsAir());
     final boolean isNeutralsImpassable =
         Properties.getNeutralsImpassable(data.getProperties())
             || (hasAir && !Properties.getNeutralFlyoverAllowed(data.getProperties()));
     final Predicate<Territory> noNeutral = Matches.territoryIsNeutralButNotWater().negate();
+    final Predicate<Territory> noEnemyDestroyer =
+        Matches.territoryHasUnitsThatMatch(
+                Matches.unitIsDestroyer().and(Matches.unitIsEnemyOf(player)))
+            .negate();
     final Predicate<Territory> noImpassableOrRestrictedOrNeutral =
         PredicateBuilder.of(Matches.territoryIsPassableAndNotRestricted(player))
             .and(Matches.territoryEffectsAllowUnits(units))
             .andIf(hasAir, Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player))
             .andIf(hasLand, Matches.territoryAllowsCanMoveLandUnitsOverOwnedLand(player))
             .andIf(isNeutralsImpassable, noNeutral)
+            .andIf(hasSub, noEnemyDestroyer)
             .build();
 
     Optional<Route> optionalDefaultRoute =
