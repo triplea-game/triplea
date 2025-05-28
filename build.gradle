@@ -2,7 +2,7 @@ plugins {
     id "java"
     id "pmd"
     id "com.github.ben-manes.versions" version "0.52.0"
-    id "com.diffplug.spotless" version "7.0.3" apply false
+    id "com.diffplug.spotless" version "7.0.4" apply false
 }
 
 apply plugin: "eclipse"
