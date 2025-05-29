@@ -160,10 +160,14 @@ class LhtrTest extends AbstractClientSettingTestCase {
     // aa guns rolls 3, misses, bomber rolls 2 dice at 3 and 4
     whenGetRandom(bridge).thenAnswer(withValues(2)).thenAnswer(withValues(2, 3));
     final int pusBeforeRaid =
-        germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
+        germans
+            .getResources()
+            .getQuantity(gameData.getResourceList().getResource(Constants.PUS).orElse(null));
     battle.fight(bridge);
     final int pusAfterRaid =
-        germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
+        germans
+            .getResources()
+            .getQuantity(gameData.getResourceList().getResource(Constants.PUS).orElse(null));
     // targets dice is 4, so damage is 1 + 4 = 5
     // Changed to match StrategicBombingRaidBattle changes
     assertEquals(pusBeforeRaid - 5, pusAfterRaid);
@@ -198,10 +202,14 @@ class LhtrTest extends AbstractClientSettingTestCase {
     // aa guns rolls 3,3 both miss, bomber 1 rolls 2 dice at 3,4 and bomber 2 rolls dice at 1,2
     whenGetRandom(bridge).thenAnswer(withValues(3, 3)).thenAnswer(withValues(2, 3, 0, 1));
     final int pusBeforeRaid =
-        germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
+        germans
+            .getResources()
+            .getQuantity(gameData.getResourceList().getResource(Constants.PUS).orElse(null));
     battle.fight(bridge);
     final int pusAfterRaid =
-        germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
+        germans
+            .getResources()
+            .getQuantity(gameData.getResourceList().getResource(Constants.PUS).orElse(null));
     // targets dice is 4, so damage is 1 + 4 = 5
     // bomber 2 hits at 2, so damage is 3, for a total of 8
     // Changed to match StrategicBombingRaidBattle changes

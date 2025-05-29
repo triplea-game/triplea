@@ -1,5 +1,8 @@
 package games.strategy.triplea.ui;
 
+import static games.strategy.triplea.Constants.SIGN_TECH_ENABLED;
+import static games.strategy.triplea.Constants.SIGN_TECH_NOT_ENABLED;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -15,6 +18,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Nullable;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -31,7 +35,6 @@ import javax.swing.table.TableColumn;
 import org.jetbrains.annotations.NotNull;
 
 class TechnologyPanel extends JPanel implements GameDataChangeListener {
-  private static final long serialVersionUID = 4340684166664492498L;
 
   IStat[] stats;
   private final Map<GamePlayer, ImageIcon> mapPlayerImage = new HashMap<>();
@@ -43,7 +46,7 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
     this.gameData = data;
     this.uiContext = uiContext;
     techModel = new TechTableModel();
-    fillPlayerIcons();
+    setIconIfNeeded();
     initLayout();
     gameData.addDataChangeListener(this);
   }
@@ -59,11 +62,11 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
     techTable.getColumnModel().getColumn(0).setPreferredWidth(500);
     // show icons for players:
     final TableCellRenderer componentRenderer = new JComponentTableCellRenderer();
-    for (int i = 1; i < techTable.getColumnCount(); i++) {
-      final TableColumn column = techTable.getColumnModel().getColumn(i);
+    for (int columnId = 1; columnId < techTable.getColumnCount(); columnId++) {
+      final TableColumn column = techTable.getColumnModel().getColumn(columnId);
       column.setHeaderRenderer(componentRenderer);
-      final String player = techTable.getColumnName(i);
-      final JLabel value = new JLabel("", getIcon(player), SwingConstants.CENTER);
+      final String player = techTable.getColumnName(columnId);
+      final JLabel value = new JLabel("", getIcon(player).orElse(null), SwingConstants.CENTER);
       value.setToolTipText(player);
       column.setHeaderValue(value);
     }
@@ -91,7 +94,7 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
   }
 
   @Override
-  public void gameDataChanged(final Change change) {
+  public void gameDataChanged(@Nullable final Change change) {
     techModel.markDirty();
     SwingUtilities.invokeLater(this::repaint);
   }
@@ -102,26 +105,23 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
    * @param player the player to get the flag for
    * @return ImageIcon small flag
    */
-  protected ImageIcon getIcon(final GamePlayer player) {
-    ImageIcon icon = mapPlayerImage.get(player);
-    if (icon == null && uiContext != null) {
+  protected Optional<ImageIcon> getIcon(final GamePlayer player) {
+    Optional<ImageIcon> icon = Optional.ofNullable(mapPlayerImage.get(player));
+    if (icon.isEmpty() && uiContext != null) {
       final Image img = uiContext.getFlagImageFactory().getSmallFlag(player);
-      icon = new ImageIcon(img);
-      icon.setDescription(player.getName());
-      mapPlayerImage.put(player, icon);
+      icon = Optional.of(new ImageIcon(img));
+      icon.get().setDescription(player.getName());
+      mapPlayerImage.put(player, icon.get());
     }
     return icon;
   }
 
-  protected @Nullable ImageIcon getIcon(final String playerName) {
+  protected Optional<ImageIcon> getIcon(final String playerName) {
     final GamePlayer player = gameData.getPlayerList().getPlayerId(playerName);
-    if (player == null) {
-      return null;
-    }
-    return getIcon(player);
+    return player == null ? Optional.empty() : getIcon(player);
   }
 
-  private void fillPlayerIcons() {
+  private void setIconIfNeeded() {
     for (final GamePlayer p : gameData.getPlayerList().getPlayers()) {
       getIcon(p);
     }
@@ -141,7 +141,6 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
   }
 
   class TechTableModel extends AbstractTableModel {
-    private static final long serialVersionUID = -4612476336419396081L;
     /* Flag to indicate whether data needs to be recalculated */
     private boolean isDirty = true;
     /* Column Header Names */
@@ -157,8 +156,9 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
     TechTableModel() {
       initColList();
       /* Load the country -> col mapping */
-      for (int i = 0; i < colList.length; i++) {
-        colMap.put(colList[i], i + 1);
+      for (int columnId = 0; columnId < colList.length; columnId++) {
+        int columnNr = columnId + 1;
+        colMap.put(colList[columnId], columnNr);
       }
       data = getDataAndInitRowMap();
       clearAdvances();
@@ -166,22 +166,23 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
 
     private synchronized String[] @NotNull [] getDataAndInitRowMap() {
       final String[][] dataTable;
-      boolean useTech = false;
+      boolean useToken = false;
       // copy so that the object doesn't change underneath us
       final GameData gameDataSync = TechnologyPanel.this.gameData;
       try (GameData.Unlocker ignored = gameDataSync.acquireReadLock()) {
         final int numTechs =
             TechAdvance.getTechAdvances(gameDataSync.getTechnologyFrontier()).size();
-        if (gameDataSync.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
-          useTech = true;
-          dataTable = new String[numTechs + 1][colList.length + 2];
+        final int tableColNumber = colList.length + 1; // Icons need one more row
+        if (gameDataSync.getResourceList().getResource(Constants.TECH_TOKENS).isPresent()) {
+          useToken = true;
+          dataTable = new String[numTechs + 1][tableColNumber]; // Create a row for tokens
         } else {
-          dataTable = new String[numTechs][colList.length + 1];
+          dataTable = new String[numTechs][tableColNumber];
         }
       }
       /* Load the technology -> row mapping */
       int row = 0;
-      if (useTech) {
+      if (useToken) {
         rowMap.put("Tokens", row);
         dataTable[row][0] = "Tokens";
         row++;
@@ -198,19 +199,16 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
 
     private void clearAdvances() {
       /* Initialize the table with the tech names */
-      for (int i = 0; i < data.length; i++) {
-        for (int j = 1; j <= colList.length; j++) {
-          data[i][j] = "";
+      for (int rowId = 0; rowId < data.length; rowId++) {
+        for (int columId = 1; columId <= colList.length; columId++) {
+          data[rowId][columId] = "";
         }
       }
     }
 
     private void initColList() {
       final List<GamePlayer> players = gameData.getPlayerList().getPlayers();
-      colList = new String[players.size()];
-      for (int i = 0; i < players.size(); i++) {
-        colList[i] = players.get(i).getName();
-      }
+      colList = players.stream().map(GamePlayer::getName).toArray(String[]::new);
       Arrays.sort(colList);
     }
 
@@ -219,31 +217,31 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
       // copy so that the object doesn't change underneath us
       final GameData gameDataSync = TechnologyPanel.this.gameData;
       try (GameData.Unlocker ignored = gameDataSync.acquireReadLock()) {
-        for (final GamePlayer pid : gameDataSync.getPlayerList().getPlayers()) {
-          if (colMap.get(pid.getName()) == null) {
+        for (final GamePlayer playerID : gameDataSync.getPlayerList().getPlayers()) {
+          if (colMap.get(playerID.getName()) == null) {
             throw new IllegalStateException(
-                "Unexpected player in GameData.getPlayerList()" + pid.getName());
+                "Unexpected player in GameData.getPlayerList()" + playerID.getName());
           }
-          final int col = colMap.get(pid.getName());
+          final int col = colMap.get(playerID.getName());
           int row = 0;
-          if (gameDataSync.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
-            final int tokens = pid.getResources().getQuantity(Constants.TECH_TOKENS);
+          if (gameDataSync.getResourceList().getResource(Constants.TECH_TOKENS).isPresent()) {
+            final int tokens = playerID.getResources().getQuantity(Constants.TECH_TOKENS);
             data[row][col] = Integer.toString(tokens);
           }
           final List<TechAdvance> advancesAll =
               TechAdvance.getTechAdvances(gameDataSync.getTechnologyFrontier());
           final List<TechAdvance> has =
-              TechAdvance.getTechAdvances(gameDataSync.getTechnologyFrontier(), pid);
+              TechAdvance.getTechAdvances(gameDataSync.getTechnologyFrontier(), playerID);
           for (final TechAdvance advance : advancesAll) {
             if (!has.contains(advance)) {
               row = rowMap.get(advance.getName());
-              data[row][col] = "-";
+              data[row][col] = SIGN_TECH_NOT_ENABLED;
             }
           }
           for (final TechAdvance advance :
-              TechTracker.getCurrentTechAdvances(pid, gameDataSync.getTechnologyFrontier())) {
+              TechTracker.getCurrentTechAdvances(playerID, gameDataSync.getTechnologyFrontier())) {
             row = rowMap.get(advance.getName());
-            data[row][col] = "X";
+            data[row][col] = SIGN_TECH_ENABLED;
           }
         }
       }
@@ -273,7 +271,7 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
     // Trivial implementations of required methods
     @Override
     public int getColumnCount() {
-      return colList.length + 1;
+      return data[0].length;
     }
 
     @Override

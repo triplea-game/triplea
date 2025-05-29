@@ -82,7 +82,7 @@ public class ResourceCollection extends GameDataComponent {
 
   public int getQuantity(final String name) {
     try (GameData.Unlocker ignored = getData().acquireReadLock()) {
-      final Resource resource = getData().getResourceList().getResource(name);
+      final Resource resource = getData().getResourceList().getResource(name).orElse(null);
       if (resource == null) {
         throw new IllegalArgumentException("No resource named: " + name);
       }
@@ -170,7 +170,7 @@ public class ResourceCollection extends GameDataComponent {
     final StringBuilder sb = new StringBuilder();
     Resource pus = null;
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
-      pus = data.getResourceList().getResource(Constants.PUS);
+      pus = data.getResourceList().getResource(Constants.PUS).orElse(null);
     } catch (final NullPointerException e) {
       // we are getting null pointers here occasionally on deserializing game saves, because
       // data.getResourceList() is

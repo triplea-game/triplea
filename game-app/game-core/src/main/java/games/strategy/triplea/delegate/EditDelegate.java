@@ -192,7 +192,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
     if (result != null) {
       return result;
     }
-    final Resource resource = getData().getResourceList().getResource(resourceName);
+    final Resource resource = getData().getResourceList().getResource(resourceName).orElse(null);
     final int oldTotal = player.getResources().getQuantity(resource);
     if (oldTotal == newTotal) {
       return "New " + resourceName + " total is unchanged";

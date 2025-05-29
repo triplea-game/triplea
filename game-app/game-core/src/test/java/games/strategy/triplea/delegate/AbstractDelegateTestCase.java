@@ -87,7 +87,7 @@ public abstract class AbstractDelegateTestCase extends AbstractClientSettingTest
   protected UnitType bomber = GameDataTestUtil.bomber(gameData);
   protected UnitType battleship = GameDataTestUtil.battleship(gameData);
   protected UnitType carrier = GameDataTestUtil.carrier(gameData);
-  protected Resource pus = gameData.getResourceList().getResource("PUs");
+  protected Resource pus = gameData.getResourceList().getResource("PUs").orElse(null);
 
   protected AbstractDelegateTestCase() {}
 

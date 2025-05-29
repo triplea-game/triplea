@@ -72,7 +72,7 @@ public class ProPurchaseOption {
     this.unitType = unitType;
     this.player = player;
     final UnitAttachment unitAttachment = unitType.getUnitAttachment();
-    final Resource pus = data.getResourceList().getResource(Constants.PUS);
+    final Resource pus = data.getResourceList().getResource(Constants.PUS).orElse(null);
     cost = productionRule.getCosts().getInt(pus);
     costs = productionRule.getCosts();
     isConstruction = unitAttachment.isConstruction();

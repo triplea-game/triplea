@@ -550,7 +550,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       addTab("Technology", technologyPanel, KeyCode.E);
     }
     addTab("Resources", economyPanel, KeyCode.R);
-    if (objectivePanel != null && !objectivePanel.isEmpty()) {
+    if (objectivePanel != null) {
       String objectivePanelName = new ObjectiveProperties(uiContext.getResourceLoader()).getName();
       addTab(objectivePanelName, objectivePanel, KeyCode.O);
     }
@@ -1805,7 +1805,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       technologyPanel.setGameData(clonedGameData);
     }
     economyPanel.setGameData(clonedGameData);
-    if (objectivePanel != null && !objectivePanel.isEmpty()) {
+    if (objectivePanel != null) {
       objectivePanel.setGameData(clonedGameData);
     }
     territoryDetailPanel.setGameData(clonedGameData);
@@ -1980,7 +1980,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             }
             technologyPanel.setGameData(data);
             economyPanel.setGameData(data);
-            if (objectivePanel != null && !objectivePanel.isEmpty()) {
+            if (objectivePanel != null) {
               objectivePanel.setGameData(data);
             }
             territoryDetailPanel.setGameData(data);

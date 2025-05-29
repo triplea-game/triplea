@@ -44,7 +44,8 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
   protected boolean canWePurchaseOrRepair() {
     final ResourceCollection bidCollection = new ResourceCollection(getData());
     // TODO: allow bids to have more than just PUs
-    bidCollection.addResource(getData().getResourceList().getResource(Constants.PUS), bid);
+    bidCollection.addResource(
+        getData().getResourceList().getResource(Constants.PUS).orElse(null), bid);
     if (player.getProductionFrontier() != null
         && player.getProductionFrontier().getRules() != null) {
       for (final ProductionRule rule : player.getProductionFrontier().getRules()) {
@@ -67,7 +68,8 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
   protected boolean canAfford(final IntegerMap<Resource> costs, final GamePlayer player) {
     final ResourceCollection bidCollection = new ResourceCollection(getData());
     // TODO: allow bids to have more than just PUs
-    bidCollection.addResource(getData().getResourceList().getResource(Constants.PUS), bid);
+    bidCollection.addResource(
+        getData().getResourceList().getResource(Constants.PUS).orElse(null), bid);
     return bidCollection.has(costs);
   }
 
@@ -84,7 +86,8 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
   @Override
   protected String removeFromPlayer(
       final IntegerMap<Resource> resources, final CompositeChange change) {
-    spent = resources.getInt(super.getData().getResourceList().getResource(Constants.PUS));
+    spent =
+        resources.getInt(super.getData().getResourceList().getResource(Constants.PUS).orElse(null));
     return (bid - spent) + " PU unused";
   }
 
@@ -105,7 +108,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
     final Change unspentChange =
         ChangeFactory.changeResourcesChange(
             bridge.getGamePlayer(),
-            super.getData().getResourceList().getResource(Constants.PUS),
+            super.getData().getResourceList().getResource(Constants.PUS).orElse(null),
             unspent);
     bridge.addChange(unspentChange);
     hasBid = false;

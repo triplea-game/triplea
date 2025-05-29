@@ -255,6 +255,9 @@ public interface Constants {
   @NonNls String CONSTRUCTION_TYPE_FACTORY = "factory";
   @NonNls String CONSTRUCTION_TYPE_STRUCTURE = "structure";
 
+  @NonNls String SIGN_TECH_NOT_ENABLED = "-";
+  @NonNls String SIGN_TECH_ENABLED = "X";
+
   static String getIncomePercentageFor(final GamePlayer gamePlayer) {
     return MessageFormat.format("{0} Income Percentage", gamePlayer.getName());
   }

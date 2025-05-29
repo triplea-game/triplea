@@ -36,7 +36,7 @@ public final class AiUtils {
    * <p>If the player cannot produce the given unit, return Integer.MAX_VALUE
    */
   static int getCost(final UnitType unitType, final GamePlayer player, final GameState data) {
-    final Resource pus = data.getResourceList().getResource(Constants.PUS);
+    final Resource pus = data.getResourceList().getResource(Constants.PUS).orElse(null);
     final ProductionRule rule = getProductionRule(unitType, player);
     return (rule == null) ? Integer.MAX_VALUE : rule.getCosts().getInt(pus);
   }

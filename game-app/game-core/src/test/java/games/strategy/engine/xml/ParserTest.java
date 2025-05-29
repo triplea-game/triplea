@@ -115,6 +115,7 @@ class ParserTest {
             gameData
                 .getResourceList()
                 .getResource("gold")
+                .orElse(null)
                 .getAttachment(Constants.RESOURCE_ATTACHMENT_NAME);
     assertEquals("gold", att.getValue());
     final UnitAttachment ua =
@@ -162,7 +163,7 @@ class ParserTest {
   @Test
   void testResourcesGiven() {
     final GamePlayer chretian = gameData.getPlayerList().getPlayerId("chretian");
-    final Resource resource = gameData.getResourceList().getResource("silver");
+    final Resource resource = gameData.getResourceList().getResource("silver").orElse(null);
     assertEquals(200, chretian.getResources().getQuantity(resource));
   }
 }

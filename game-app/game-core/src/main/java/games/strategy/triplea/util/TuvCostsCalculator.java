@@ -59,7 +59,7 @@ public class TuvCostsCalculator {
   }
 
   private IntegerMap<UnitType> computeBaseCostsForPlayer(GamePlayer player) {
-    final Resource pus = player.getData().getResourceList().getResource(Constants.PUS);
+    final Resource pus = player.getData().getResourceList().getResource(Constants.PUS).orElse(null);
     final IntegerMap<UnitType> costs = new IntegerMap<>();
     final ProductionFrontier frontier = player.getProductionFrontier();
     if (frontier != null) {
@@ -88,7 +88,7 @@ public class TuvCostsCalculator {
    */
   private static IntegerMap<UnitType> getCostsForTuvForAllPlayersMergedAndAveraged(
       final GameData data) {
-    final Resource pus = data.getResourceList().getResource(Constants.PUS);
+    final Resource pus = data.getResourceList().getResource(Constants.PUS).orElse(null);
     final IntegerMap<UnitType> costs = new IntegerMap<>();
     final Map<UnitType, List<Integer>> differentCosts = new HashMap<>();
     for (final ProductionRule rule : data.getProductionRuleList().getProductionRules()) {

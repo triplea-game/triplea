@@ -325,7 +325,7 @@ public final class GameParser {
 
   /** If mustfind is true and cannot find the Resource an exception will be thrown. */
   private Optional<Resource> getResourceOptional(final String name) {
-    return Optional.ofNullable(data.getResourceList().getResource(name));
+    return data.getResourceList().getResource(name);
   }
 
   /** If the productionFrontier cannot be found an exception will be thrown. */

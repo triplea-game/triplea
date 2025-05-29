@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /** A collection of {@link Resource}s keyed on the resource name. */
 public class ResourceList extends GameDataComponent {
@@ -25,8 +26,8 @@ public class ResourceList extends GameDataComponent {
     return resources.size();
   }
 
-  public Resource getResource(final String name) {
-    return resources.get(name);
+  public Optional<Resource> getResource(final String name) {
+    return Optional.ofNullable(resources.get(name));
   }
 
   public Collection<Resource> getResources() {

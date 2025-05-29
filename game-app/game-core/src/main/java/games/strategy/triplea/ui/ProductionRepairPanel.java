@@ -269,7 +269,8 @@ class ProductionRepairPanel extends JPanel {
       final int bid = data.getProperties().get(propertyName, 0);
       final ResourceCollection bidCollection = new ResourceCollection(data);
       try (GameData.Unlocker ignored = data.acquireReadLock()) {
-        bidCollection.addResource(data.getResourceList().getResource(Constants.PUS), bid);
+        bidCollection.addResource(
+            data.getResourceList().getResource(Constants.PUS).orElse(null), bid);
       }
       return bidCollection;
     }

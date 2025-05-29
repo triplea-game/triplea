@@ -944,7 +944,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
               .playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, attacker);
         }
         // get resources
-        final Resource pus = gameData.getResourceList().getResource(Constants.PUS);
+        final Resource pus = gameData.getResourceList().getResource(Constants.PUS).orElse(null);
         final int have = defender.getResources().getQuantity(pus);
         final int toRemove = Math.min(cost, have);
         final Change change = ChangeFactory.changeResourcesChange(defender, pus, -toRemove);

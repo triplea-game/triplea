@@ -256,7 +256,7 @@ public class RocketsFireHelper implements Serializable {
       final Territory attackedTerritory) {
     final GamePlayer player = bridge.getGamePlayer();
     final GamePlayer attacked = attackedTerritory.getOwner();
-    final Resource pus = data.getResourceList().getResource(Constants.PUS);
+    final Resource pus = data.getResourceList().getResource(Constants.PUS).orElse(null);
     final boolean damageFromBombingDoneToUnits =
         Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties());
     // unit damage vs territory damage

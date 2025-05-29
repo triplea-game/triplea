@@ -124,7 +124,8 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       return false;
     }
     if (Properties.getWW2V3TechModel(getData().getProperties())) {
-      final Resource techTokens = getData().getResourceList().getResource(Constants.TECH_TOKENS);
+      final Resource techTokens =
+          getData().getResourceList().getResource(Constants.TECH_TOKENS).orElse(null);
       if (techTokens != null && player.getResources().getQuantity(techTokens) > 0) {
         return true;
       }
@@ -180,7 +181,8 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     final GameData data = getData();
     if (getAvailableTechs(player, data.getTechnologyFrontier()).isEmpty()) {
       if (Properties.getWW2V3TechModel(getData().getProperties())) {
-        final Resource techTokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
+        final Resource techTokens =
+            data.getResourceList().getResource(Constants.TECH_TOKENS).orElse(null);
         final String transcriptText = player.getName() + " No more available tech advances.";
         bridge.getHistoryWriter().startEvent(transcriptText);
         final Change removeTokens =
@@ -238,7 +240,8 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
         && (techHits > 0 || Properties.getRemoveAllTechTokensAtEndOfTurn(data.getProperties()))) {
       techCategory = techToRollFor;
       // remove all the tokens
-      final Resource techTokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
+      final Resource techTokens =
+          data.getResourceList().getResource(Constants.TECH_TOKENS).orElse(null);
       final String transcriptText =
           player.getName()
               + " removing all Technology Tokens after "
@@ -291,7 +294,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   }
 
   boolean checkEnoughMoney(final int rolls, final IntegerMap<GamePlayer> whoPaysHowMuch) {
-    final Resource pus = getData().getResourceList().getResource(Constants.PUS);
+    final Resource pus = getData().getResourceList().getResource(Constants.PUS).orElse(null);
     final int cost = rolls * getTechCost();
     if (whoPaysHowMuch == null || whoPaysHowMuch.isEmpty()) {
       final int has = bridge.getGamePlayer().getResources().getQuantity(pus);
@@ -311,7 +314,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   }
 
   private void chargeForTechRolls(final int rolls, final IntegerMap<GamePlayer> whoPaysHowMuch) {
-    final Resource pus = getData().getResourceList().getResource(Constants.PUS);
+    final Resource pus = getData().getResourceList().getResource(Constants.PUS).orElse(null);
     int cost = rolls * getTechCost();
     if (whoPaysHowMuch == null || whoPaysHowMuch.isEmpty()) {
       final String transcriptText =
@@ -334,7 +337,8 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       }
     }
     if (Properties.getWW2V3TechModel(getData().getProperties())) {
-      final Resource tokens = getData().getResourceList().getResource(Constants.TECH_TOKENS);
+      final Resource tokens =
+          getData().getResourceList().getResource(Constants.TECH_TOKENS).orElse(null);
       final Change newTokens =
           ChangeFactory.changeResourcesChange(bridge.getGamePlayer(), tokens, rolls);
       bridge.addChange(newTokens);

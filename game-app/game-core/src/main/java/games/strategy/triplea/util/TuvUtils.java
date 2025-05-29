@@ -107,7 +107,7 @@ public class TuvUtils {
     final Map<UnitType, ResourceCollection> average = new HashMap<>();
     final Resource pus;
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
-      pus = data.getResourceList().getResource(Constants.PUS);
+      pus = data.getResourceList().getResource(Constants.PUS).orElse(null);
     }
     final IntegerMap<Resource> defaultMap = new IntegerMap<>();
     defaultMap.put(pus, 1);
