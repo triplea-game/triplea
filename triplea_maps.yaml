@@ -57,6 +57,7 @@
 - mapName: Big World
   mapCategory: BEST
   url: https://github.com/triplea-maps/big_world/archive/master.zip
+  img: https://github.com/triplea-maps/big_world/blob/master/preview.png
   version: 4
   description: |
     <br>WWII style map, larger version of Revised.
