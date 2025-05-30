@@ -618,7 +618,6 @@ public class TerritoryAttachment extends DefaultAttachment {
         || !optionalTerritoryAttachment.get().getConvoyRoute()) {
       return new HashSet<>();
     }
-    final TerritoryAttachment territoryAttachment = optionalTerritoryAttachment.get();
 
     final Collection<Territory> territories = new HashSet<>();
     // already checked above
