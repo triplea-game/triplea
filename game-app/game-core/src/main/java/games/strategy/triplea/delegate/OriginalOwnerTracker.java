@@ -42,7 +42,7 @@ public class OriginalOwnerTracker implements Serializable {
   }
 
   public static Optional<GamePlayer> getOriginalOwner(final Territory t) {
-    return TerritoryAttachment.get(t).map(TerritoryAttachment::getOriginalOwner).orElse(null);
+    return TerritoryAttachment.get(t).flatMap(TerritoryAttachment::getOriginalOwner);
   }
 
   public static GamePlayer getOriginalOwnerOrThrow(final Territory t) {

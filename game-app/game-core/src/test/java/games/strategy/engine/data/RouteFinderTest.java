@@ -10,7 +10,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.common.base.Preconditions;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.attachments.TerritoryAttachment;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -71,6 +74,13 @@ class RouteFinderTest {
             territory6,
             territory7,
             territory8);
+
+    final TerritoryAttachment ta = mock(TerritoryAttachment.class);
+    Mockito.when(ta.getTerritoryEffect()).thenReturn(new ArrayList<>());
+    territories.forEach(
+        territory -> {
+          Mockito.when(territory.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME)).thenReturn(ta);
+        });
   }
 
   private void configureNeighbors(final Territory territory, final Territory... neighbors) {

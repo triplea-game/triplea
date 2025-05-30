@@ -1336,7 +1336,7 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryIsNotUnownedWater() {
-    return t -> !(t.isWater() && TerritoryAttachment.get(t) == null && t.getOwner().isNull());
+    return t -> !(t.isWater() && TerritoryAttachment.get(t).isEmpty() && t.getOwner().isNull());
   }
 
   /**

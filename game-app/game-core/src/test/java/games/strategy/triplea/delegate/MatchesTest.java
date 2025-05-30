@@ -190,7 +190,7 @@ final class MatchesTest {
       assertTrue(TerritoryAttachment.get(seaTerritory).isEmpty());
       TerritoryAttachment.add(
           seaTerritory, new TerritoryAttachment("name", seaTerritory, gameData));
-      assertTrue(TerritoryAttachment.get(seaTerritory).isEmpty());
+      assertTrue(TerritoryAttachment.get(seaTerritory).isPresent());
     }
 
     @Test
