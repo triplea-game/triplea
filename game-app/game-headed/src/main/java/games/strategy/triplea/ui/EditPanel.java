@@ -249,8 +249,9 @@ class EditPanel extends ActionPanel {
         @Override
         public void territorySelected(final Territory territory, final MouseDetails md) {
           if (currentAction == changeTerritoryOwnerAction) {
-            final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-            if (ta == null) {
+            final Optional<TerritoryAttachment> optionalTerritoryAttachment =
+                TerritoryAttachment.get(territory);
+            if (optionalTerritoryAttachment.isEmpty()) {
               JOptionPane.showMessageDialog(
                   getTopLevelAncestor(),
                   "No TerritoryAttachment for " + territory + ".",
@@ -258,11 +259,14 @@ class EditPanel extends ActionPanel {
                   JOptionPane.ERROR_MESSAGE);
               return;
             }
-            // PlayerId defaultPlayer = TerritoryAttachment.get(territory).getOriginalOwner();
-            final GamePlayer defaultPlayer = ta.getOriginalOwner();
+            final Optional<GamePlayer> optionalDefaultPlayer =
+                optionalTerritoryAttachment.get().getOriginalOwner();
             final PlayerChooser playerChooser =
                 new PlayerChooser(
-                    getData().getPlayerList(), defaultPlayer, getMap().getUiContext(), true);
+                    getData().getPlayerList(),
+                    optionalDefaultPlayer.orElse(null),
+                    getMap().getUiContext(),
+                    true);
             final JDialog dialog =
                 playerChooser.createDialog(getTopLevelAncestor(), "Select new owner for territory");
             dialog.setVisible(true);

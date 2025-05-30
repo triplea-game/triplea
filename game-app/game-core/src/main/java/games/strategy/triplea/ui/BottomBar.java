@@ -151,12 +151,14 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     try (GameData.Unlocker ignored = territory.getData().acquireReadLock()) {
       final Collection<Unit> units =
           uiContext.isShowUnitsInStatusBar() ? territory.getUnits() : List.of();
-      final TerritoryAttachment ta = TerritoryAttachment.get(territory);
       final IntegerMap<Resource> resources = new IntegerMap<>();
       final List<String> territoryEffectNames;
-      if (ta == null) {
+      final Optional<TerritoryAttachment> optionalTerritoryAttachment =
+          TerritoryAttachment.get(territory);
+      if (optionalTerritoryAttachment.isEmpty()) {
         territoryEffectNames = List.of();
       } else {
+        final TerritoryAttachment ta = optionalTerritoryAttachment.get();
         territoryEffectNames =
             ta.getTerritoryEffect().stream().map(TerritoryEffect::getName).toList();
         final int production = ta.getProduction();

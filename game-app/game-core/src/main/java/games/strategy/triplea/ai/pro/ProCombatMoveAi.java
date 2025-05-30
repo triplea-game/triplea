@@ -204,15 +204,7 @@ public class ProCombatMoveAi {
       final int isFfa = ProUtils.isFfa(data, player) ? 1 : 0;
 
       // Determine production value and if it is an enemy capital
-      int production = 0;
-      int isEnemyCapital = 0;
-      final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      if (ta != null) {
-        production = ta.getProduction();
-        if (ta.isCapital()) {
-          isEnemyCapital = 1;
-        }
-      }
+      ProductionAndIsCapital productionAndIsCapital = getProductionAndIsCapital(t);
 
       // Calculate attack value for prioritization
       double tuvSwing = patd.getMaxBattleResult().getTuvSwing();
@@ -224,10 +216,10 @@ public class ProCombatMoveAi {
               * (1 + isEmptyLand)
               * (1 + isFactory)
               * (1 - 0.5 * isAmphib)
-              * production;
+              * productionAndIsCapital.production;
       double attackValue =
           (tuvSwing + territoryValue)
-              * (1 + 4.0 * isEnemyCapital)
+              * (1 + 4.0 * productionAndIsCapital.isCapital)
               * (1 + 2.0 * isNotNeutralAdjacentToMyCapital)
               * (1 - 0.9 * isNeutral);
 
@@ -805,16 +797,11 @@ public class ProCombatMoveAi {
                 patd.getUnits(),
                 patd.getMaxEnemyDefenders(player),
                 patd.getBombardTerritoryMap().keySet());
-        int production = 0;
-        int isEnemyCapital = 0;
-        final TerritoryAttachment ta = TerritoryAttachment.get(t);
-        if (ta != null) {
-          production = ta.getProduction();
-          if (ta.isCapital()) {
-            isEnemyCapital = 1;
-          }
-        }
-        final double attackValue = result.getTuvSwing() + production * (1 + 3.0 * isEnemyCapital);
+        ProductionAndIsCapital initialProductionAndIsCapital = getProductionAndIsCapital(t);
+        final double attackValue =
+            result.getTuvSwing()
+                + initialProductionAndIsCapital.production
+                    * (1 + 3.0 * initialProductionAndIsCapital.isCapital);
         if (!patd.isStrafing() && (0.75 * enemyTuvSwing) > attackValue) {
           ProLogger.debug(
               "Removing amphib territory: "
@@ -837,6 +824,24 @@ public class ProCombatMoveAi {
         }
       }
     }
+  }
+
+  public static class ProductionAndIsCapital {
+    public int production = 0;
+    public int isCapital = 0;
+  }
+
+  public static ProductionAndIsCapital getProductionAndIsCapital(Territory t) {
+    final ProductionAndIsCapital productionAndIsCapital = new ProductionAndIsCapital();
+    final Optional<TerritoryAttachment> optionalTerritoryAttachment = TerritoryAttachment.get(t);
+    if (optionalTerritoryAttachment.isPresent()) {
+      final TerritoryAttachment ta = optionalTerritoryAttachment.get();
+      productionAndIsCapital.production = ta.getProduction();
+      if (ta.isCapital()) {
+        productionAndIsCapital.isCapital = 1;
+      }
+    }
+    return productionAndIsCapital;
   }
 
   private void determineUnitsToAttackWith(
@@ -1077,8 +1082,10 @@ public class ProCombatMoveAi {
         final int isFfa = ProUtils.isFfa(data, player) ? 1 : 0;
         final int production = TerritoryAttachment.getProduction(t);
         double capitalValue = 0;
-        final TerritoryAttachment ta = TerritoryAttachment.get(t);
-        if (ta != null && ta.isCapital()) {
+        final Optional<TerritoryAttachment> optionalTerritoryAttachment =
+            TerritoryAttachment.get(t);
+        if (optionalTerritoryAttachment.isPresent()
+            && optionalTerritoryAttachment.get().isCapital()) {
           capitalValue = ProUtils.getPlayerProduction(t.getOwner(), data);
         }
         final double territoryValue =

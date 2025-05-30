@@ -1216,13 +1216,15 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     // create a list of all kamikaze zones, listed by enemy
     final Map<GamePlayer, Collection<Territory>> kamikazeZonesByEnemy = new HashMap<>();
     for (final Territory t : data.getMap().getTerritories()) {
-      final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      if (ta == null || !ta.getKamikazeZone()) {
+      final Optional<TerritoryAttachment> optionalTerritoryAttachment = TerritoryAttachment.get(t);
+      if (optionalTerritoryAttachment.isEmpty()
+          || !optionalTerritoryAttachment.get().getKamikazeZone()) {
         continue;
       }
+      final TerritoryAttachment territoryAttachment = optionalTerritoryAttachment.get();
       final GamePlayer owner =
           !Properties.getKamikazeSuicideAttacksDoneByCurrentTerritoryOwner(data.getProperties())
-              ? ta.getOriginalOwner()
+              ? territoryAttachment.getOriginalOwner().orElse(null)
               : t.getOwner();
       if (owner == null) {
         continue;

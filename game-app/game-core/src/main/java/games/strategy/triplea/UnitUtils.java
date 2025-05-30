@@ -15,6 +15,7 @@ import games.strategy.triplea.delegate.TechTracker;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -103,12 +104,13 @@ public class UnitUtils {
       return 0;
     }
     final UnitAttachment ua = unit.getUnitAttachment();
-    final TerritoryAttachment ta = TerritoryAttachment.get(producer);
     int territoryProduction = 0;
     int territoryUnitProduction = 0;
-    if (ta != null) {
-      territoryProduction = ta.getProduction();
-      territoryUnitProduction = ta.getUnitProduction();
+    final Optional<TerritoryAttachment> optionalTerritoryAttachment =
+        TerritoryAttachment.get(producer);
+    if (optionalTerritoryAttachment.isPresent()) {
+      territoryProduction = optionalTerritoryAttachment.get().getProduction();
+      territoryUnitProduction = optionalTerritoryAttachment.get().getUnitProduction();
     }
     int productionCapacity;
     final GameProperties properties = producer.getData().getProperties();

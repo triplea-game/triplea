@@ -422,10 +422,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
       final Collection<Territory> territories, final GameState data) {
     final IntegerMap<Resource> resources = new IntegerMap<>();
     for (final Territory current : territories) {
-      final TerritoryAttachment attachment = TerritoryAttachment.get(current);
-      if (attachment == null) {
-        throw new IllegalStateException("No attachment for owned territory: " + current.getName());
-      }
+      final TerritoryAttachment attachment = TerritoryAttachment.getOrThrow(current);
       final ResourceCollection toAdd = attachment.getResources();
       if (toAdd == null) {
         continue;

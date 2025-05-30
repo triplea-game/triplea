@@ -241,10 +241,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       int teamVCs = 0;
       for (final Territory t : territories) {
         if (Matches.isTerritoryOwnedByAnyOf(teamMembers).test(t)) {
-          final TerritoryAttachment ta = TerritoryAttachment.get(t);
-          if (ta != null) {
-            teamVCs += ta.getVictoryCity();
-          }
+          teamVCs += TerritoryAttachment.get(t).map(TerritoryAttachment::getVictoryCity).orElse(0);
         }
       }
       if (teamVCs >= vcAmount) {

@@ -1139,8 +1139,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       return 0;
     }
     // if it's an original factory then unlimited production
-    // Can be null!
-    final TerritoryAttachment ta = TerritoryAttachment.get(producer);
     final Predicate<Unit> factoryMatch =
         Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
             .and(Matches.unitIsBeingTransported().negate())
@@ -1149,7 +1147,10 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     // boolean placementRestrictedByFactory = isPlacementRestrictedByFactory();
     final boolean unitPlacementPerTerritoryRestricted =
         Properties.getUnitPlacementPerTerritoryRestricted(properties);
-    final boolean originalFactory = (ta != null && ta.getOriginalFactory());
+    final boolean originalFactory =
+        TerritoryAttachment.get(producer)
+            .map(TerritoryAttachment::getOriginalFactory)
+            .orElse(false);
     final boolean playerIsOriginalOwner =
         !factoryUnits.isEmpty() && this.player.equals(getOriginalFactoryOwner(producer));
     final RulesAttachment ra = player.getRulesAttachment();

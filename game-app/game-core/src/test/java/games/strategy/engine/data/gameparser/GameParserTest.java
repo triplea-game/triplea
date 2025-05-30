@@ -5,6 +5,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.RulesAttachment;
@@ -81,7 +82,9 @@ final class GameParserTest {
                 .getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
 
     assertThat(spartaTerritoryAttachment.getVictoryCity(), is(1));
-    assertThat(spartaTerritoryAttachment.getOriginalOwner().getName(), is("RomanRepublic"));
+    assertThat(
+        spartaTerritoryAttachment.getOriginalOwner().map(GamePlayer::getName).orElse(""),
+        is("RomanRepublic"));
     assertThat(spartaTerritoryAttachment.getIsImpassable(), is(true));
 
     final var romaTerritoryAttachment =

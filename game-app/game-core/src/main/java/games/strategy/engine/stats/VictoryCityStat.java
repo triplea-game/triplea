@@ -5,7 +5,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.mapdata.MapData;
-import java.util.Objects;
+import java.util.Optional;
 
 public class VictoryCityStat implements IStat {
   @Override
@@ -19,7 +19,8 @@ public class VictoryCityStat implements IStat {
     return data.getMap().getTerritories().stream()
         .filter(Matches.isTerritoryOwnedBy(player))
         .map(TerritoryAttachment::get)
-        .filter(Objects::nonNull)
+        .filter(Optional::isPresent)
+        .map(Optional::get)
         .mapToInt(TerritoryAttachment::getVictoryCity)
         .sum();
   }
