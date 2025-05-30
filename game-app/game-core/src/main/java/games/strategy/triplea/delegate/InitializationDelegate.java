@@ -22,6 +22,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.util.BonusIncomeUtils;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.CollectionUtils;
@@ -30,12 +31,6 @@ import org.triplea.java.collections.CollectionUtils;
 @Slf4j
 public class InitializationDelegate extends BaseTripleADelegate {
   private boolean needToInitialize = true;
-
-  @Override
-  public void initialize(final String name, final String displayName) {
-    this.name = name;
-    this.displayName = displayName;
-  }
 
   @Override
   public void start() {
@@ -292,8 +287,11 @@ public class InitializationDelegate extends BaseTripleADelegate {
         if (!(named instanceof UnitType)) {
           continue;
         }
-        final UnitType unit = data.getUnitTypeList().getUnitType(named.getName());
-        final boolean isSea = unit.getUnitAttachment().isSea();
+        Optional<UnitAttachment> optionalUnitAttachment =
+            Optional.ofNullable(data.getUnitTypeList().getUnitType(named.getName()))
+                .map(UnitType::getUnitAttachment);
+        final boolean isSea =
+            optionalUnitAttachment.isPresent() && optionalUnitAttachment.get().isSea();
         if (!isSea) {
           final ProductionRule prodRule =
               data.getProductionRuleList().getProductionRule(rule.getName());
@@ -337,8 +335,6 @@ public class InitializationDelegate extends BaseTripleADelegate {
         changes.add(
             OriginalOwnerTracker.addOriginalOwnerChange(
                 factoryAndInfrastructure, current.getOwner()));
-      } else if (!current.isWater()) {
-        final TerritoryAttachment territoryAttachment = TerritoryAttachment.getOrThrow(current);
       }
     }
     bridge.getHistoryWriter().startEvent("Adding original owners");
