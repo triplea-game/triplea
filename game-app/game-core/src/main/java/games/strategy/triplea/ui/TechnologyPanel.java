@@ -271,12 +271,12 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
     // Trivial implementations of required methods
     @Override
     public int getColumnCount() {
-      return data[0].length;
+      return data[0].length; // the number of columns of the 2D-array data
     }
 
     @Override
     public int getRowCount() {
-      return data.length;
+      return data.length; // the number of rows of the 2D-array data
     }
 
     void markDirty() {
