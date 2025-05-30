@@ -2,15 +2,21 @@ package games.strategy.engine.data;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import org.jetbrains.annotations.NonNls;
 
 /** A collection of {@link ProductionRule}s. */
 public class ProductionFrontier extends DefaultNamed implements Iterable<ProductionRule> {
-  private static final long serialVersionUID = -5967251608158552892L;
+  public static final @NonNls String PRODUCTION = "production";
+  public static final @NonNls String PRODUCTION_INDUSTRIAL_TECHNOLOGY =
+      "productionIndustrialTechnology";
+  public static final @NonNls String PRODUCTION_SHIPYARDS = "productionShipyards";
+  @Serial private static final long serialVersionUID = -5967251608158552892L;
 
   private final List<ProductionRule> rules;
   private List<ProductionRule> cachedRules;

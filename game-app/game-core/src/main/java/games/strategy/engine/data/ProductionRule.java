@@ -1,12 +1,20 @@
 package games.strategy.engine.data;
 
 import games.strategy.triplea.Constants;
+import java.io.Serial;
 import java.util.Map.Entry;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.collections.IntegerMap;
 
 /** A production rule. */
 public class ProductionRule extends DefaultNamed implements Rule {
-  private static final long serialVersionUID = -6598296283127741307L;
+  public static final @NonNls String BUY_ARTILLERY = "buyArtillery";
+  public static final @NonNls String BUY_DESTROYER = "buyDestroyer";
+  public static final @NonNls String BUY_ARTILLERY_INDUSTRIAL_TECHNOLOGY =
+      "buyArtilleryIndustrialTechnology";
+  public static final @NonNls String BUY_DESTROYER_INDUSTRIAL_TECHNOLOGY =
+      "buyDestroyerIndustrialTechnology";
+  @Serial private static final long serialVersionUID = -6598296283127741307L;
 
   private IntegerMap<Resource> costs = new IntegerMap<>();
   private IntegerMap<NamedAttachable> results = new IntegerMap<>();

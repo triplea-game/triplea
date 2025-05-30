@@ -198,7 +198,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
 
   private static void initSkipUnusedBids(final GameState data) {
     // we have a lot of bid steps, 12 for pact of steel
-    // in multi player this can be time consuming, since each vm
+    // in multi-player this can be time-consuming, since each vm
     // must be notified (and have its ui) updated for each step,
     // so remove the bid steps that aren't used
     for (final GameStep step : data.getSequence()) {
@@ -233,11 +233,11 @@ public class InitializationDelegate extends BaseTripleADelegate {
     if (!Properties.getWW2V2(data.getProperties()) && addArtilleryAndDestroyers) {
       final CompositeChange change = new CompositeChange();
       final ProductionRule artillery =
-          data.getProductionRuleList().getProductionRule("buyArtillery");
+          data.getProductionRuleList().getProductionRule(ProductionRule.BUY_ARTILLERY);
       final ProductionRule destroyer =
-          data.getProductionRuleList().getProductionRule("buyDestroyer");
+          data.getProductionRuleList().getProductionRule(ProductionRule.BUY_DESTROYER);
       final ProductionFrontier frontier =
-          data.getProductionFrontierList().getProductionFrontier("production");
+          data.getProductionFrontierList().getProductionFrontier(ProductionFrontier.PRODUCTION);
       if (artillery != null && !frontier.getRules().contains(artillery)) {
         change.add(ChangeFactory.addProductionRule(artillery, frontier));
       }
@@ -245,11 +245,14 @@ public class InitializationDelegate extends BaseTripleADelegate {
         change.add(ChangeFactory.addProductionRule(destroyer, frontier));
       }
       final ProductionRule artilleryIndustrialTechnology =
-          data.getProductionRuleList().getProductionRule("buyArtilleryIndustrialTechnology");
+          data.getProductionRuleList()
+              .getProductionRule(ProductionRule.BUY_ARTILLERY_INDUSTRIAL_TECHNOLOGY);
       final ProductionRule destroyerIndustrialTechnology =
-          data.getProductionRuleList().getProductionRule("buyDestroyerIndustrialTechnology");
+          data.getProductionRuleList()
+              .getProductionRule(ProductionRule.BUY_DESTROYER_INDUSTRIAL_TECHNOLOGY);
       final ProductionFrontier frontierIndustrialTechnology =
-          data.getProductionFrontierList().getProductionFrontier("productionIndustrialTechnology");
+          data.getProductionFrontierList()
+              .getProductionFrontier(ProductionFrontier.PRODUCTION_INDUSTRIAL_TECHNOLOGY);
       if (artilleryIndustrialTechnology != null
           && !frontierIndustrialTechnology.getRules().contains(artilleryIndustrialTechnology)) {
         change.add(
@@ -275,12 +278,13 @@ public class InitializationDelegate extends BaseTripleADelegate {
     if (useShipyards) {
       final CompositeChange change = new CompositeChange();
       final ProductionFrontier frontierShipyards =
-          data.getProductionFrontierList().getProductionFrontier("productionShipyards");
+          data.getProductionFrontierList()
+              .getProductionFrontier(ProductionFrontier.PRODUCTION_SHIPYARDS);
       /*
        * Find the productionRules, if the unit is NOT a sea unit, add it to the ShipYards prod rule.
        */
       final ProductionFrontier frontierNonShipyards =
-          data.getProductionFrontierList().getProductionFrontier("production");
+          data.getProductionFrontierList().getProductionFrontier(ProductionFrontier.PRODUCTION);
       final Collection<ProductionRule> rules = frontierNonShipyards.getRules();
       for (final ProductionRule rule : rules) {
         final NamedAttachable named = rule.getAnyResultKey();
