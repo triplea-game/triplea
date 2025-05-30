@@ -5,8 +5,7 @@ import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
@@ -184,14 +183,14 @@ final class MatchesTest {
 
       landTerritory = gameData.getMap().getTerritory("Germany");
       landTerritory.setOwner(player);
-      assertThat(TerritoryAttachment.get(landTerritory), is(notNullValue()));
+      assertTrue(TerritoryAttachment.get(landTerritory).isPresent());
 
       seaTerritory = gameData.getMap().getTerritory("Baltic Sea Zone");
       seaTerritory.setOwner(player);
-      assertThat(TerritoryAttachment.get(seaTerritory), is(nullValue()));
+      assertTrue(TerritoryAttachment.get(seaTerritory).isEmpty());
       TerritoryAttachment.add(
           seaTerritory, new TerritoryAttachment("name", seaTerritory, gameData));
-      assertThat(TerritoryAttachment.get(seaTerritory), is(notNullValue()));
+      assertTrue(TerritoryAttachment.get(seaTerritory).isEmpty());
     }
 
     @Test

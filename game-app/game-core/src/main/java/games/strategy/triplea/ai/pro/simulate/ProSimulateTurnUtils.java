@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -225,15 +226,14 @@ public final class ProSimulateTurnUtils {
       final GamePlayer player,
       final IDelegateBridge delegateBridge) {
 
-    final @Nullable GamePlayer terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(t);
+    final Optional<GamePlayer> optionalTerrOrigOwner = OriginalOwnerTracker.getOriginalOwner(t);
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
-    final TerritoryAttachment ta = TerritoryAttachment.get(t);
-    if (ta != null
-        && ta.getCapital() != null
-        && terrOrigOwner != null
-        && TerritoryAttachment.getAllCapitals(terrOrigOwner, data.getMap()).contains(t)
-        && relationshipTracker.isAllied(terrOrigOwner, player)) {
-
+    if (TerritoryAttachment.get(t).map(TerritoryAttachment::isCapital).orElse(false)
+        && optionalTerrOrigOwner.isPresent()
+        && TerritoryAttachment.getAllCapitals(optionalTerrOrigOwner.get(), data.getMap())
+            .contains(t)
+        && relationshipTracker.isAllied(optionalTerrOrigOwner.get(), player)) {
+      final GamePlayer terrOrigOwner = optionalTerrOrigOwner.get();
       // Give capital and any allied territories back to original owner
       final Collection<Territory> originallyOwned =
           OriginalOwnerTracker.getOriginallyOwned(data, terrOrigOwner);

@@ -239,8 +239,7 @@ public final class ProTerritoryValueUtils {
 
       // Get player production if capital
       double playerProduction = 0;
-      final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      if (ta != null && ta.isCapital()) {
+      if (TerritoryAttachment.get(t).map(TerritoryAttachment::isCapital).orElse(false)) {
         playerProduction = ProUtils.getPlayerProduction(t.getOwner(), data);
       }
 

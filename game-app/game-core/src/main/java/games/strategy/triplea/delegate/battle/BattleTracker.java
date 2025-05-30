@@ -44,6 +44,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiFunction;
@@ -536,11 +537,13 @@ public class BattleTracker implements Serializable {
       final @Nullable UndoableMove changeTracker,
       final @Nullable Collection<Unit> arrivingUnits) {
     // This could be NULL if unowned water
-    final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-    if (ta == null) {
+    final Optional<TerritoryAttachment> optionalTerritoryAttachment =
+        TerritoryAttachment.get(territory);
+    if (optionalTerritoryAttachment.isEmpty()) {
       // TODO: allow capture/destroy of infrastructure on unowned water
       return;
     }
+    final TerritoryAttachment territoryAttachment = optionalTerritoryAttachment.get();
     final GameData data = bridge.getData();
     IDelegateHistoryWriter historyWriter = bridge.getHistoryWriter();
     final Collection<Unit> arrivedUnits =
@@ -577,41 +580,48 @@ public class BattleTracker implements Serializable {
     }
     // If it was a Convoy Route - check ownership of the associated neighboring territory and set
     // message
-    if (ta.getConvoyRoute()) {
+    if (territoryAttachment.getConvoyRoute()) {
       // we could be part of a convoy route for another territory
       final Collection<Territory> attachedConvoyTo =
           TerritoryAttachment.getWhatTerritoriesThisIsUsedInConvoysFor(territory, data);
-      for (final Territory convoy : attachedConvoyTo) {
-        final TerritoryAttachment cta = TerritoryAttachment.get(convoy);
-        if (!cta.getConvoyRoute()) {
-          continue;
-        }
-        final GamePlayer convoyOwner = convoy.getOwner();
-        if (relationshipTracker.isAllied(gamePlayer, convoyOwner)) {
-          if (cta.getConvoyAttached().stream().noneMatch(Matches.isTerritoryAllied(convoyOwner))) {
-            historyWriter.addChildToEvent(
-                convoyOwner.getName()
-                    + " gains "
-                    + cta.getProduction()
-                    + " production in "
-                    + convoy.getName()
-                    + " for the liberation the convoy route in "
-                    + territory.getName());
-          }
-        } else if (relationshipTracker.isAtWar(gamePlayer, convoyOwner)
-            && CollectionUtils.countMatches(
-                    cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner))
-                == 1) {
-          historyWriter.addChildToEvent(
-              convoyOwner.getName()
-                  + " loses "
-                  + cta.getProduction()
-                  + " production in "
-                  + convoy.getName()
-                  + " due to the capture of the convoy route in "
-                  + territory.getName());
-        }
-      }
+      attachedConvoyTo.forEach(
+          convoy -> {
+            final Optional<TerritoryAttachment> optionalConvoyTerritoryAttachment =
+                TerritoryAttachment.get(convoy);
+            if (optionalConvoyTerritoryAttachment.isEmpty()) {
+              return;
+            }
+            final TerritoryAttachment cta = optionalConvoyTerritoryAttachment.get();
+            if (!cta.getConvoyRoute()) {
+              return;
+            }
+            final GamePlayer convoyOwner = convoy.getOwner();
+            if (relationshipTracker.isAllied(gamePlayer, convoyOwner)) {
+              if (cta.getConvoyAttached().stream()
+                  .noneMatch(Matches.isTerritoryAllied(convoyOwner))) {
+                historyWriter.addChildToEvent(
+                    convoyOwner.getName()
+                        + " gains "
+                        + cta.getProduction()
+                        + " production in "
+                        + convoy.getName()
+                        + " for the liberation the convoy route in "
+                        + territory.getName());
+              }
+            } else if (relationshipTracker.isAtWar(gamePlayer, convoyOwner)
+                && CollectionUtils.countMatches(
+                        cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner))
+                    == 1) {
+              historyWriter.addChildToEvent(
+                  convoyOwner.getName()
+                      + " loses "
+                      + cta.getProduction()
+                      + " production in "
+                      + convoy.getName()
+                      + " due to the capture of the convoy route in "
+                      + territory.getName());
+            }
+          });
     }
     // if neutral, we may charge money to enter
     if (territory.getOwner().isNull()
@@ -657,9 +667,10 @@ public class BattleTracker implements Serializable {
     // NOTE: this is not checking to see if it is an enemy.
     // instead it is relying on the fact that the capital should be owned by the person it is
     // attached to
-    if (isTerritoryOwnerAnEnemy && ta.getCapital() != null) {
+    if (isTerritoryOwnerAnEnemy && territoryAttachment.getCapital() != null) {
       // if the capital is owned by the capitols player take the money
-      final GamePlayer whoseCapital = data.getPlayerList().getPlayerId(ta.getCapital());
+      final GamePlayer whoseCapital =
+          data.getPlayerList().getPlayerId(territoryAttachment.getCapital());
       final PlayerAttachment pa = PlayerAttachment.get(gamePlayer);
       final PlayerAttachment paWhoseCapital = PlayerAttachment.get(whoseCapital);
       final List<Territory> capitalsList =
@@ -714,20 +725,25 @@ public class BattleTracker implements Serializable {
     }
     // is this an allied territory? Revert to original owner if it is,
     // unless they don't own their capital
-    final @Nullable GamePlayer terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(territory);
+    final Optional<GamePlayer> optionalTerrOrigOwner =
+        OriginalOwnerTracker.getOriginalOwner(territory);
+    final boolean isTerritoryOrigOwnerAllied;
+    isTerritoryOrigOwnerAllied =
+        optionalTerrOrigOwner
+            .filter(player -> relationshipTracker.isAllied(player, gamePlayer))
+            .isPresent();
     GamePlayer newOwner = gamePlayer;
     // if the original owner is the current owner, and the current owner is our enemy or
     // canTakeOver, then we do not worry about this.
     if (isTerritoryOwnerAnEnemy
-        && terrOrigOwner != null
-        && relationshipTracker.isAllied(terrOrigOwner, gamePlayer)
-        && !terrOrigOwner.equals(territory.getOwner())) {
+        && isTerritoryOrigOwnerAllied
+        && !optionalTerrOrigOwner.get().equals(territory.getOwner())) {
+      final GamePlayer terrOrigOwner = optionalTerrOrigOwner.get();
       final List<Territory> capitalsListOwned =
           TerritoryAttachment.getAllCurrentlyOwnedCapitals(terrOrigOwner, data.getMap());
       if (!capitalsListOwned.isEmpty()) {
         newOwner = terrOrigOwner;
-      } else {
-        newOwner = gamePlayer;
+      } else { // hence newOwner = gamePlayer;
         for (final Territory current :
             TerritoryAttachment.getAllCapitals(terrOrigOwner, data.getMap())) {
           if (territory.equals(current) || current.getOwner().isNull()) {
@@ -743,16 +759,18 @@ public class BattleTracker implements Serializable {
     if (isTerritoryOwnerAnEnemy
         && newOwner.equals(gamePlayer)
         && Matches.territoryHasCaptureOwnershipChanges().test(territory)) {
-      for (final TerritoryAttachment.CaptureOwnershipChange captureOwnershipChange :
-          ta.getCaptureOwnershipChanges()) {
-        if (captureOwnershipChange.capturingPlayer.equals(captureOwnershipChange.receivingPlayer)) {
-          continue;
-        }
-        if (captureOwnershipChange.capturingPlayer.equals(gamePlayer)) {
-          newOwner = captureOwnershipChange.receivingPlayer;
-          break;
-        }
-      }
+      newOwner =
+          territoryAttachment.getCaptureOwnershipChanges().stream()
+              .filter(
+                  captureOwnershipChange ->
+                      !captureOwnershipChange.capturingPlayer.equals(
+                          captureOwnershipChange.receivingPlayer))
+              .filter(
+                  captureOwnershipChange ->
+                      captureOwnershipChange.capturingPlayer.equals(gamePlayer))
+              .findFirst()
+              .map(captureOwnershipChange -> captureOwnershipChange.receivingPlayer)
+              .orElse(newOwner);
     }
     if (isTerritoryOwnerAnEnemy) {
       final Change takeOver = ChangeFactory.changeOwner(territory, newOwner);
@@ -766,7 +784,7 @@ public class BattleTracker implements Serializable {
       if (territory.isWater()) {
         // should probably see if there is something actually happening for water
         broadcaster.playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_SEA, gamePlayer);
-      } else if (ta.getCapital() != null) {
+      } else if (territoryAttachment.getCapital() != null) {
         broadcaster.playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL, gamePlayer);
       } else if (blitzed.contains(territory)
           && arrivedUnits != null
@@ -790,10 +808,11 @@ public class BattleTracker implements Serializable {
     // is this territory our capitol or a capitol of our ally
     // Also check to make sure playerAttachment even HAS a capital to fix abend
     if (isTerritoryOwnerAnEnemy
-        && terrOrigOwner != null
-        && ta.getCapital() != null
-        && TerritoryAttachment.getAllCapitals(terrOrigOwner, data.getMap()).contains(territory)
-        && relationshipTracker.isAllied(terrOrigOwner, gamePlayer)) {
+        && isTerritoryOrigOwnerAllied
+        && territoryAttachment.getCapital() != null
+        && TerritoryAttachment.getAllCapitals(optionalTerrOrigOwner.get(), data.getMap())
+            .contains(territory)) {
+      final GamePlayer terrOrigOwner = optionalTerrOrigOwner.get();
       // if it is give it back to the original owner
       final Collection<Territory> originallyOwned =
           OriginalOwnerTracker.getOriginallyOwned(data, terrOrigOwner);

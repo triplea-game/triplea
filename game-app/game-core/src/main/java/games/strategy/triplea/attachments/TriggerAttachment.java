@@ -1699,12 +1699,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           // covers TerritoryAttachment, CanalAttachment
           if (t.getTerritoryAttachmentName().getFirst().equals("TerritoryAttachment")) {
             final TerritoryAttachment attachment =
-                TerritoryAttachment.get(territory, t.getTerritoryAttachmentName().getSecond());
-            if (attachment == null) {
-              // water territories may not have an attachment, so this could be null
-              throw new IllegalStateException(
-                  "Triggers: No territory attachment for: " + territory.getName());
-            }
+                TerritoryAttachment.get(territory, t.getTerritoryAttachmentName().getSecond())
+                    .orElseThrow(
+                        () ->
+                            // water territories may not have an attachment, so this could be null
+                            new IllegalStateException(
+                                "Triggers: No territory attachment for: " + territory.getName()));
 
             getPropertyChangeHistoryStartEvent(
                     t,

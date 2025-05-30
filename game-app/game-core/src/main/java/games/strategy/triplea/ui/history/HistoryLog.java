@@ -478,12 +478,13 @@ public class HistoryLog extends JFrame {
     for (final Territory t : territories) {
       final List<Unit> ownedUnits = t.getMatches(Matches.unitIsOwnedByAnyOf(players));
       // see if there's a flag
-      final TerritoryAttachment ta = TerritoryAttachment.get(t);
+      final Optional<TerritoryAttachment> optionalTerritoryAttachment = TerritoryAttachment.get(t);
       final boolean hasFlag =
-          ta != null
+          optionalTerritoryAttachment.isPresent()
               && !t.getOwner().isNull()
               && players.contains(t.getOwner())
-              && (ta.getOriginalOwner() == null || !players.contains(ta.getOriginalOwner()));
+              && (optionalTerritoryAttachment.get().getOriginalOwner().isEmpty()
+                  || !players.contains(optionalTerritoryAttachment.get().getOriginalOwner().get()));
       if (hasFlag || !ownedUnits.isEmpty()) {
         stringBuilder.append("    ").append(t.getName()).append(" : ");
         if (hasFlag && ownedUnits.isEmpty()) {
@@ -542,18 +543,18 @@ public class HistoryLog extends JFrame {
     int production = 0;
     for (final Territory place : data.getMap().getTerritories()) {
       boolean isConvoyOrLand = false;
-      final TerritoryAttachment ta = TerritoryAttachment.get(place);
+      final int terrProduction =
+          TerritoryAttachment.get(place).map(TerritoryAttachment::getProduction).orElse(0);
       if (!place.isWater()
-          || (ta != null
-              && !data.getPlayerList()
+          || (!data.getPlayerList()
                   .getNullPlayer()
                   .equals(OriginalOwnerTracker.getOriginalOwner(place))
               && player.equals(OriginalOwnerTracker.getOriginalOwner(place))
               && place.isOwnedBy(player))) {
         isConvoyOrLand = true;
       }
-      if (place.isOwnedBy(player) && isConvoyOrLand && ta != null) {
-        production += ta.getProduction();
+      if (place.isOwnedBy(player) && isConvoyOrLand && terrProduction > 0) {
+        production += terrProduction;
       }
     }
     return production;

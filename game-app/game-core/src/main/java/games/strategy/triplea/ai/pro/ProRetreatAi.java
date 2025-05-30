@@ -67,27 +67,22 @@ class ProRetreatAi {
             proData, battleTerritory, attackers, defenders, new HashSet<>());
 
     // Determine if it has a factory
-    int isFactory = 0;
-    if (ProMatches.territoryHasInfraFactoryAndIsLand().test(battleTerritory)) {
-      isFactory = 1;
-    }
+    int isFactory = (ProMatches.territoryHasInfraFactoryAndIsLand().test(battleTerritory) ? 1 : 0);
 
     // Determine production value and if it is a capital
-    int production = 0;
-    int isCapital = 0;
-    final TerritoryAttachment ta = TerritoryAttachment.get(battleTerritory);
-    if (ta != null) {
-      production = ta.getProduction();
-      if (ta.isCapital()) {
-        isCapital = 1;
-      }
-    }
+    ProCombatMoveAi.ProductionAndIsCapital productionAndIsCapital =
+        ProCombatMoveAi.getProductionAndIsCapital(battleTerritory);
 
     // Calculate current attack value
     double territoryValue = 0;
     if (result.isHasLandUnitRemaining() || attackers.stream().noneMatch(Matches.unitIsAir())) {
       territoryValue =
-          result.getWinPercentage() / 100 * (2.0 * production * (1 + isFactory) * (1 + isCapital));
+          result.getWinPercentage()
+              / 100
+              * (2.0
+                  * productionAndIsCapital.production
+                  * (1 + isFactory)
+                  * (1 + productionAndIsCapital.isCapital));
     }
     double battleValue = result.getTuvSwing() + territoryValue;
     if (!isAttacker) {

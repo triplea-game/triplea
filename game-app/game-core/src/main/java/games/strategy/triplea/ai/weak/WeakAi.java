@@ -73,8 +73,8 @@ public class WeakAi extends AbstractAi {
     }
     final Predicate<Territory> endMatch =
         o -> {
-          final var ta = TerritoryAttachment.get(o);
-          final boolean impassable = ta != null && ta.getIsImpassable();
+          final boolean impassable =
+              TerritoryAttachment.get(o).map(TerritoryAttachment::getIsImpassable).orElse(false);
           return !impassable
               && !o.isWater()
               && Utils.hasLandRouteToEnemyOwnedCapitol(o, player, data);
@@ -445,8 +445,7 @@ public class WeakAi extends AbstractAi {
       if (t.isWater()) {
         continue;
       }
-      final var ta = TerritoryAttachment.get(t);
-      if (ta != null && ta.isCapital()) {
+      if (TerritoryAttachment.get(t).map(TerritoryAttachment::isCapital).orElse(false)) {
         // if they are a threat to take our capitol, dont move
         // compare the strength of units we can place
         final float ourStrength = AiUtils.strength(player.getUnits(), false, false);
@@ -557,22 +556,26 @@ public class WeakAi extends AbstractAi {
           if (o2 == null) {
             return -1;
           }
-          final TerritoryAttachment ta1 = TerritoryAttachment.get(o1);
-          final TerritoryAttachment ta2 = TerritoryAttachment.get(o2);
-          if (ta1 == null && ta2 == null) {
+          final Optional<TerritoryAttachment> optionalTerritoryAttachment1 =
+              TerritoryAttachment.get(o1);
+          final Optional<TerritoryAttachment> optionalTerritoryAttachment2 =
+              TerritoryAttachment.get(o2);
+          if (optionalTerritoryAttachment1.isEmpty() && optionalTerritoryAttachment2.isEmpty()) {
             return 0;
           }
-          if (ta1 == null) {
+          if (optionalTerritoryAttachment1.isEmpty()) {
             return 1;
           }
-          if (ta2 == null) {
+          if (optionalTerritoryAttachment2.isEmpty()) {
             return -1;
           }
+          final boolean ta1IsCapital = optionalTerritoryAttachment1.get().isCapital();
+          final boolean ta2IsCapital = optionalTerritoryAttachment2.get().isCapital();
           // take capitols first if we can
-          if (ta1.isCapital() && !ta2.isCapital()) {
+          if (ta1IsCapital && !ta2IsCapital) {
             return -1;
           }
-          if (!ta1.isCapital() && ta2.isCapital()) {
+          if (!ta1IsCapital && ta2IsCapital) {
             return 1;
           }
           final boolean factoryInT1 = o1.anyUnitsMatch(Matches.unitCanProduceUnits());
@@ -593,8 +596,9 @@ public class WeakAi extends AbstractAi {
           if (!infrastructureInT1 && infrastructureInT2) {
             return 1;
           }
-          // next take territories with largest PU value
-          return ta2.getProduction() - ta1.getProduction();
+          // next take territories with the largest PU value
+          return optionalTerritoryAttachment2.get().getProduction()
+              - optionalTerritoryAttachment1.get().getProduction();
         });
     final List<Territory> isWaterTerr = Utils.onlyWaterTerr(enemyOwned);
     enemyOwned.removeAll(isWaterTerr);
@@ -661,9 +665,7 @@ public class WeakAi extends AbstractAi {
         final Collection<Territory> attackFrom =
             data.getMap().getNeighbors(enemy, Matches.territoryHasLandUnitsOwnedBy(player));
         for (final Territory owned : attackFrom) {
-          final var ta = TerritoryAttachment.get(owned);
-          if (ta != null
-              && ta.isCapital()
+          if (TerritoryAttachment.get(owned).map(TerritoryAttachment::isCapital).orElse(false)
               && (Utils.getStrengthOfPotentialAttackers(owned, data)
                   > AiUtils.strength(owned.getUnits(), false, false))) {
             dontMoveFrom.add(owned);

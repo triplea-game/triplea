@@ -836,7 +836,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     assertValid(response);
     // placeUnits performPlace
     // get production and unit production values
-    final TerritoryAttachment ta = TerritoryAttachment.get(egypt);
+    final TerritoryAttachment ta = TerritoryAttachment.getOrThrow(egypt);
     assertEquals(ta.getUnitProduction(), ta.getProduction());
   }
 
@@ -1998,8 +1998,8 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     final Territory kiangsu = getTerritory("Kiangsu");
     final Territory mongolia = getTerritory("Mongolia");
     // Remove original capital
-    final TerritoryAttachment taMongolia = TerritoryAttachment.get(mongolia);
-    final TerritoryAttachment taKiangsu = TerritoryAttachment.get(kiangsu);
+    final TerritoryAttachment taMongolia = TerritoryAttachment.getOrThrow(mongolia);
+    final TerritoryAttachment taKiangsu = TerritoryAttachment.getOrThrow(kiangsu);
     taMongolia.getProperty("capital").get().resetValue();
     // Set as NEW capital
     taKiangsu.setCapital(Constants.PLAYER_NAME_CHINESE);

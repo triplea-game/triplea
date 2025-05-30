@@ -256,11 +256,8 @@ public final class ProPurchaseValidationUtils {
       if (Properties.getUnlimitedConstructions(data.getProperties())) {
         maxConstructionType = Integer.MAX_VALUE;
       } else if (Properties.getMoreConstructionsWithFactory(data.getProperties())) {
-        int production = 0;
-        final TerritoryAttachment terrAttachment = TerritoryAttachment.get(territory);
-        if (terrAttachment != null) {
-          production = terrAttachment.getProduction();
-        }
+        int production =
+            TerritoryAttachment.get(territory).map(TerritoryAttachment::getProduction).orElse(0);
         maxConstructionType = Math.max(maxConstructionType, production);
       }
     }

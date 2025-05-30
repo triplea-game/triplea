@@ -528,14 +528,10 @@ class ProNonCombatMoveAi {
       }
 
       // Determine production value and if it is an enemy capital
-      int production = 0;
-      int isEnemyOrAlliedCapital = 0;
-      final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      if (ta != null) {
-        production = ta.getProduction();
-        if (ta.isCapital() && !t.equals(proData.getMyCapital())) {
-          isEnemyOrAlliedCapital = 1;
-        }
+      ProCombatMoveAi.ProductionAndIsCapital productionAndIsEnemyOrAlliedCapital =
+          ProCombatMoveAi.getProductionAndIsCapital(t);
+      if (t.equals(proData.getMyCapital())) {
+        productionAndIsEnemyOrAlliedCapital.production = 0;
       }
 
       // Determine neighbor value
@@ -570,12 +566,12 @@ class ProNonCombatMoveAi {
       // Calculate defense value for prioritization
       final double territoryValue =
           unitOwnerMultiplier
-              * (2.0 * production
+              * (2.0 * productionAndIsEnemyOrAlliedCapital.production
                   + 10.0 * isFactory
                   + 0.5 * cantMoveUnitValue
                   + 0.5 * neighborValue)
               * (1 + 10.0 * isMyCapital)
-              * (1 + 4.0 * isEnemyOrAlliedCapital);
+              * (1 + 4.0 * productionAndIsEnemyOrAlliedCapital.isCapital);
       proTerritory.setValue(territoryValue);
     }
 
@@ -2280,7 +2276,7 @@ class ProNonCombatMoveAi {
 
         // Find value by checking if territory is not conquered and doesn't already have a
         // factory
-        final int production = TerritoryAttachment.get(t).getProduction();
+        final int production = TerritoryAttachment.getProduction(t);
         double value = 0.1 * proTerritory.getValue();
         if (ProMatches.territoryIsNotConqueredOwnedLand(player).test(t)
             && combinedStream(proTerritory.getCantMoveUnits(), proTerritory.getUnits())

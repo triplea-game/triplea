@@ -18,18 +18,23 @@ import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.formatter.MyFormatter;
+import java.io.Serial;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.collections.CollectionUtils;
 
 /**
@@ -38,7 +43,7 @@ import org.triplea.java.collections.CollectionUtils;
  * <p>Note: Empty collection fields default to null to minimize memory use and serialization size.
  */
 public class TerritoryAttachment extends DefaultAttachment {
-  private static final long serialVersionUID = 9102862080104655281L;
+  @Serial private static final long serialVersionUID = 9102862080104655281L;
 
   private @Nullable String capital = null;
   private boolean originalFactory = false;
@@ -47,7 +52,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   @Getter private int production = 0;
   @Getter private int victoryCity = 0;
   private boolean isImpassable = false;
-  @Getter private @Nullable GamePlayer originalOwner = null;
+  private @Nullable GamePlayer originalOwner = null;
   private boolean convoyRoute = false;
   private @Nullable Set<Territory> convoyAttached = null;
   private @Nullable List<GamePlayer> changeUnitOwners = null;
@@ -89,9 +94,11 @@ public class TerritoryAttachment extends DefaultAttachment {
     final List<Territory> capitals = new ArrayList<>();
     final List<Territory> noNeighborCapitals = new ArrayList<>();
     for (final Territory current : gameMap.getTerritories()) {
-      final TerritoryAttachment ta = TerritoryAttachment.get(current);
-      if (ta != null && ta.getCapital() != null) {
-        if (player.getName().equals(ta.getCapital())) {
+      final Optional<TerritoryAttachment> optionalTerritoryAttachment =
+          TerritoryAttachment.get(current);
+      if (optionalTerritoryAttachment.isPresent()) {
+        final @NonNls @Nullable String capital = optionalTerritoryAttachment.get().getCapital();
+        if (player.getName().equals(capital)) {
           if (player.equals(current.getOwner())) {
             if (!gameMap.getNeighbors(current).isEmpty()) {
               return current;
@@ -120,9 +127,11 @@ public class TerritoryAttachment extends DefaultAttachment {
   public static List<Territory> getAllCapitals(final GamePlayer player, final GameMap gameMap) {
     final List<Territory> capitals = new ArrayList<>();
     for (final Territory current : gameMap.getTerritories()) {
-      final TerritoryAttachment ta = TerritoryAttachment.get(current);
-      if (ta != null && ta.getCapital() != null) {
-        if (player.getName().equals(ta.getCapital())) {
+      final Optional<TerritoryAttachment> optionalTerritoryAttachment =
+          TerritoryAttachment.get(current);
+      if (optionalTerritoryAttachment.isPresent()) {
+        final @NonNls @Nullable String capital = optionalTerritoryAttachment.get().getCapital();
+        if (player.getName().equals(capital)) {
           capitals.add(current);
         }
       }
@@ -142,9 +151,11 @@ public class TerritoryAttachment extends DefaultAttachment {
       final GamePlayer player, final GameMap gameMap) {
     final List<Territory> capitals = new ArrayList<>();
     for (final Territory current : gameMap.getTerritories()) {
-      final TerritoryAttachment ta = TerritoryAttachment.get(current);
-      if (ta != null && ta.getCapital() != null) {
-        if (player.getName().equals(ta.getCapital()) && player.equals(current.getOwner())) {
+      final Optional<TerritoryAttachment> optionalTerritoryAttachment =
+          TerritoryAttachment.get(current);
+      if (optionalTerritoryAttachment.isPresent()) {
+        final @NonNls @Nullable String capital = optionalTerritoryAttachment.get().getCapital();
+        if (player.getName().equals(capital) && player.equals(current.getOwner())) {
           capitals.add(current);
         }
       }
@@ -152,19 +163,32 @@ public class TerritoryAttachment extends DefaultAttachment {
     return capitals;
   }
 
-  /** Convenience method. Can return null. */
-  public static @Nullable TerritoryAttachment get(final Territory t) {
-    return (TerritoryAttachment) t.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
+  /** Convenience method. */
+  public static TerritoryAttachment getOrThrow(final @Nonnull Territory t) {
+    return get(t, Constants.TERRITORY_ATTACHMENT_NAME)
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    MessageFormat.format(
+                        "No territory attachment for {0}, but expected here", t.getName())));
   }
 
-  static TerritoryAttachment get(final Territory t, final String nameOfAttachment) {
+  /** Convenience method. */
+  public static Optional<TerritoryAttachment> get(final Territory t) {
+    return get(t, Constants.TERRITORY_ATTACHMENT_NAME);
+  }
+
+  static Optional<TerritoryAttachment> get(final Territory t, final String nameOfAttachment) {
     final TerritoryAttachment territoryAttachment =
         (TerritoryAttachment) t.getAttachment(nameOfAttachment);
     if (territoryAttachment == null && !t.isWater()) {
       throw new IllegalStateException(
-          "No territory attachment for: " + t.getName() + " with name: " + nameOfAttachment);
+          "No territory attachment for: "
+              + t.getName()
+              + "(non-water) with name: "
+              + nameOfAttachment);
     }
-    return territoryAttachment;
+    return java.util.Optional.ofNullable(territoryAttachment);
   }
 
   /**
@@ -173,7 +197,8 @@ public class TerritoryAttachment extends DefaultAttachment {
    * @param territory The territory that will receive the territory attachment.
    * @param territoryAttachment The territory attachment.
    */
-  public static void add(final Territory territory, final TerritoryAttachment territoryAttachment) {
+  public static void add(
+      final @Nonnull Territory territory, final @Nonnull TerritoryAttachment territoryAttachment) {
     checkNotNull(territory);
     checkNotNull(territoryAttachment);
 
@@ -185,7 +210,7 @@ public class TerritoryAttachment extends DefaultAttachment {
    *
    * @param territory The territory from which the attachment will be removed.
    */
-  public static void remove(final Territory territory) {
+  public static void remove(final @Nonnull Territory territory) {
     checkNotNull(territory);
 
     territory.removeAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
@@ -193,20 +218,12 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   /** Convenience method since TerritoryAttachment.get could return null. */
   public static int getProduction(final Territory t) {
-    final TerritoryAttachment ta = TerritoryAttachment.get(t);
-    if (ta == null) {
-      return 0;
-    }
-    return ta.getProduction();
+    return TerritoryAttachment.get(t).map(TerritoryAttachment::getProduction).orElse(0);
   }
 
   /** Convenience method since TerritoryAttachment.get could return null. */
   public static int getUnitProduction(final Territory t) {
-    final TerritoryAttachment ta = TerritoryAttachment.get(t);
-    if (ta == null) {
-      return 0;
-    }
-    return ta.getUnitProduction();
+    return TerritoryAttachment.get(t).map(TerritoryAttachment::getUnitProduction).orElse(0);
   }
 
   private void setResources(final String value) throws GameParseException {
@@ -336,12 +353,29 @@ public class TerritoryAttachment extends DefaultAttachment {
    * Should not be set by a game xml during attachment parsing, but CAN be set by initialization
    * parsing.
    */
-  public void setOriginalOwner(final GamePlayer player) {
-    originalOwner = player;
+  private void setOriginalOwner(final @Nullable GamePlayer gamePlayer) {
+    originalOwner = gamePlayer;
   }
 
   private void setOriginalOwner(final String player) throws GameParseException {
     originalOwner = getPlayerOrThrow(player);
+  }
+
+  public Optional<GamePlayer> getOriginalOwner() {
+    return Optional.ofNullable(originalOwner);
+  }
+
+  /** Should only be used for @link{MutableProperty}. */
+  private GamePlayer getOriginalOwnerOrNull() {
+    return getOriginalOwner().orElse(null);
+  }
+
+  public GamePlayer getOriginalOwnerOrThrow() {
+    return getOriginalOwner()
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    MessageFormat.format("Original owner expected for {0}", this)));
   }
 
   private void resetOriginalOwner() {
@@ -496,8 +530,9 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public static boolean hasNavalBase(final Territory t) {
-    final TerritoryAttachment ta = TerritoryAttachment.get(t);
-    return ta != null && ta.getNavalBase();
+    final Optional<TerritoryAttachment> optionalTerritoryAttachment = TerritoryAttachment.get(t);
+    return optionalTerritoryAttachment.isPresent()
+        && optionalTerritoryAttachment.get().getNavalBase();
   }
 
   private void setNavalBase(final String value) {
@@ -517,8 +552,9 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public static boolean hasAirBase(final Territory t) {
-    final TerritoryAttachment ta = TerritoryAttachment.get(t);
-    return ta != null && ta.getAirBase();
+    final Optional<TerritoryAttachment> optionalTerritoryAttachment = TerritoryAttachment.get(t);
+    return optionalTerritoryAttachment.isPresent()
+        && optionalTerritoryAttachment.get().getAirBase();
   }
 
   private void setAirBase(final String value) {
@@ -576,21 +612,33 @@ public class TerritoryAttachment extends DefaultAttachment {
    */
   public static Collection<Territory> getWhatTerritoriesThisIsUsedInConvoysFor(
       final Territory territory, final GameState data) {
-    final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-    if (ta == null || !ta.getConvoyRoute()) {
+    final Optional<TerritoryAttachment> optionalTerritoryAttachment =
+        TerritoryAttachment.get(territory);
+    if (optionalTerritoryAttachment.isEmpty()
+        || !optionalTerritoryAttachment.get().getConvoyRoute()) {
       return new HashSet<>();
     }
+    final TerritoryAttachment territoryAttachment = optionalTerritoryAttachment.get();
 
     final Collection<Territory> territories = new HashSet<>();
-    for (final Territory current : data.getMap().getTerritories()) {
-      final TerritoryAttachment cta = TerritoryAttachment.get(current);
-      if (cta == null || !cta.getConvoyRoute()) {
-        continue;
-      }
-      if (cta.getConvoyAttached().contains(territory)) {
-        territories.add(current);
-      }
-    }
+    // already checked above
+    data.getMap().getTerritories().stream()
+        .filter(current -> !current.equals(territory))
+        .forEach(
+            current -> {
+              final Optional<TerritoryAttachment> optionalCurrentTerritoryAttachment =
+                  TerritoryAttachment.get(current);
+              if (optionalCurrentTerritoryAttachment.isEmpty()
+                  || !optionalCurrentTerritoryAttachment.get().getConvoyRoute()) {
+                return;
+              }
+              if (optionalCurrentTerritoryAttachment
+                  .get()
+                  .getConvoyAttached()
+                  .contains(territory)) {
+                territories.add(current);
+              }
+            });
     return territories;
   }
 
@@ -619,11 +667,12 @@ public class TerritoryAttachment extends DefaultAttachment {
         sb.append("Current Owner: ").append(t.getOwner().getName());
         sb.append(br);
       }
-      final GamePlayer originalOwner = getOriginalOwner();
-      if (originalOwner != null) {
-        sb.append("Original Owner: ").append(originalOwner.getName());
-        sb.append(br);
-      }
+      getOriginalOwner()
+          .ifPresent(
+              origOwner -> {
+                sb.append("Original Owner: ").append(origOwner.getName());
+                sb.append(br);
+              });
     }
     if (isImpassable) {
       sb.append("Is Impassable");
@@ -753,7 +802,7 @@ public class TerritoryAttachment extends DefaultAttachment {
         return MutableProperty.of(
             this::setOriginalOwner,
             this::setOriginalOwner,
-            this::getOriginalOwner,
+            this::getOriginalOwnerOrNull,
             this::resetOriginalOwner);
       case "convoyRoute":
         return MutableProperty.of(

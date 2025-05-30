@@ -38,6 +38,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -305,12 +306,12 @@ public final class Matches {
       final GamePlayer unitOwner = unit.getOwner();
       final UnitAttachment ua = unit.getUnitAttachment();
       final boolean unitCanBeCapturedByPlayer = ua.getCanBeCapturedOnEnteringBy().contains(player);
-      final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      if (ta == null) {
+      final Optional<TerritoryAttachment> optionalTerritoryAttachment = TerritoryAttachment.get(t);
+      if (optionalTerritoryAttachment.isEmpty()) {
         return false;
       }
       final boolean territoryCanHaveUnitsThatCanBeCapturedByPlayer =
-          ta.getCaptureUnitOnEnteringBy().contains(player);
+          optionalTerritoryAttachment.get().getCaptureUnitOnEnteringBy().contains(player);
       final PlayerAttachment pa = PlayerAttachment.get(unitOwner);
       if (pa == null) {
         return false;
@@ -817,8 +818,7 @@ public final class Matches {
 
   public static Predicate<Territory> territoryIsVictoryCity() {
     return t -> {
-      final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      return ta != null && ta.getVictoryCity() != 0;
+      return 0 != TerritoryAttachment.get(t).map(TerritoryAttachment::getVictoryCity).orElse(0);
     };
   }
 
@@ -836,23 +836,27 @@ public final class Matches {
     final boolean contestedDoNotProduce =
         Properties.getContestedTerritoriesProduceNoIncome(player.getData().getProperties());
     return t -> {
-      final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      if (ta == null) {
+      final Optional<TerritoryAttachment> optionalTerritoryAttachment = TerritoryAttachment.get(t);
+      if (optionalTerritoryAttachment.isEmpty()) {
         return false;
       }
-      final @Nullable GamePlayer origOwner = OriginalOwnerTracker.getOriginalOwner(t);
+      final Optional<GamePlayer> optionalOriginalOwner = OriginalOwnerTracker.getOriginalOwner(t);
       // if it's water, it is a Convoy Center
       // Can't get PUs for capturing a CC, only original owner can get them. (Except capturing
       // null player CCs)
-      if (t.isWater() && !(origOwner == null || origOwner.isNull() || origOwner.equals(player))) {
+      if (t.isWater()
+          && !(optionalOriginalOwner.isEmpty()
+              || optionalOriginalOwner.get().isNull()
+              || optionalOriginalOwner.get().equals(player))) {
         return false;
       }
+      final TerritoryAttachment ta = optionalTerritoryAttachment.get();
       if (ta.getConvoyRoute() && !ta.getConvoyAttached().isEmpty()) {
         // Determine if at least one part of the convoy route is owned by us or an ally
         boolean atLeastOne = false;
         for (final Territory convoy : ta.getConvoyAttached()) {
           if (player.isAllied(convoy.getOwner())
-              && TerritoryAttachment.get(convoy).getConvoyRoute()) {
+              && TerritoryAttachment.getOrThrow(convoy).getConvoyRoute()) {
             atLeastOne = true;
           }
         }
@@ -942,8 +946,7 @@ public final class Matches {
       if (t.isWater()) {
         return false;
       }
-      final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      return ta != null && ta.getIsImpassable();
+      return TerritoryAttachment.get(t).map(TerritoryAttachment::getIsImpassable).orElse(false);
     };
   }
 
@@ -1707,10 +1710,7 @@ public final class Matches {
   }
 
   static Predicate<Territory> territoryIsBlockadeZone() {
-    return t -> {
-      final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      return ta != null && ta.getBlockadeZone();
-    };
+    return t -> TerritoryAttachment.get(t).map(TerritoryAttachment::getBlockadeZone).orElse(false);
   }
 
   public static Predicate<UnitType> unitTypeIsConstruction() {
@@ -1902,10 +1902,11 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryHasCaptureOwnershipChanges() {
-    return t -> {
-      final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      return ta != null && !ta.getCaptureOwnershipChanges().isEmpty();
-    };
+    return t ->
+        !TerritoryAttachment.get(t)
+            .map(TerritoryAttachment::getCaptureOwnershipChanges)
+            .orElse(List.of())
+            .isEmpty();
   }
 
   public static Predicate<Unit> unitWhenHitPointsDamagedChangesInto() {
@@ -1950,15 +1951,15 @@ public final class Matches {
    */
   public static Predicate<Territory> territoryIsOriginallyOwnedBy(final GamePlayer player) {
     return t -> {
-      final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      if (ta == null) {
+      final Optional<TerritoryAttachment> optionalTerritoryAttachment = TerritoryAttachment.get(t);
+      if (optionalTerritoryAttachment.isEmpty()) {
         return false;
       }
-      final GamePlayer originalOwner = ta.getOriginalOwner();
-      if (originalOwner == null) {
-        return player == null;
-      }
-      return originalOwner.equals(player);
+      final Optional<GamePlayer> optionalOriginalOwner =
+          optionalTerritoryAttachment.get().getOriginalOwner();
+      return optionalOriginalOwner
+          .map(gamePlayer -> gamePlayer.equals(player))
+          .orElseGet(() -> player == null);
     };
   }
 

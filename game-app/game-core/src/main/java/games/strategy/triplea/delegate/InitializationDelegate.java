@@ -328,11 +328,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
     final CompositeChange changes = new CompositeChange();
     for (final Territory current : data.getMap()) {
       if (!current.getOwner().isNull()) {
-        final TerritoryAttachment territoryAttachment = TerritoryAttachment.get(current);
-        if (territoryAttachment == null) {
-          throw new IllegalStateException("No territory attachment for " + current);
-        }
-        if (territoryAttachment.getOriginalOwner() == null) {
+        final TerritoryAttachment territoryAttachment = TerritoryAttachment.getOrThrow(current);
+        if (territoryAttachment.getOriginalOwner().isEmpty()) {
           changes.add(OriginalOwnerTracker.addOriginalOwnerChange(current, current.getOwner()));
         }
         final Collection<Unit> factoryAndInfrastructure =
@@ -341,10 +338,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
             OriginalOwnerTracker.addOriginalOwnerChange(
                 factoryAndInfrastructure, current.getOwner()));
       } else if (!current.isWater()) {
-        final TerritoryAttachment territoryAttachment = TerritoryAttachment.get(current);
-        if (territoryAttachment == null) {
-          throw new IllegalStateException("No territory attachment for " + current);
-        }
+        final TerritoryAttachment territoryAttachment = TerritoryAttachment.getOrThrow(current);
       }
     }
     bridge.getHistoryWriter().startEvent("Adding original owners");

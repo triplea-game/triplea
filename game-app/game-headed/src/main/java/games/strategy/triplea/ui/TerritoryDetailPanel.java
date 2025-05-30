@@ -12,6 +12,7 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.OverlayIcon;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -138,21 +139,28 @@ public class TerritoryDetailPanel extends JPanel {
       return;
     }
     setElementsVisible(true);
-    final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     final String labelText;
     final String additionalText =
         frame.getAdditionalTerritoryDetails().computeAdditionalText(territory);
-    if (ta == null) {
-      labelText =
-          "<html>"
-              + territory.getName()
-              + "<br>Water Territory"
-              + "<br><br>"
-              + additionalText
-              + "</html>";
-    } else {
-      labelText = "<html>" + ta.toStringForInfo(true, true) + "<br>" + additionalText + "</html>";
-    }
+    final Optional<TerritoryAttachment> optionalTerritoryAttachment =
+        TerritoryAttachment.get(territory);
+    labelText =
+        optionalTerritoryAttachment
+            .map(
+                territoryAttachment ->
+                    "<html>"
+                        + territoryAttachment.toStringForInfo(true, true)
+                        + "<br>"
+                        + additionalText
+                        + "</html>")
+            .orElseGet(
+                () ->
+                    "<html>"
+                        + territory.getName()
+                        + "<br>Water Territory"
+                        + "<br><br>"
+                        + additionalText
+                        + "</html>");
     territoryInfo.setText(labelText);
 
     final List<UnitCategory> unitsList;

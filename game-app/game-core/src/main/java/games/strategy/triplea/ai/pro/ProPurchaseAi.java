@@ -675,11 +675,7 @@ class ProPurchaseAi {
       }
 
       // Determine production value and if it is an enemy capital
-      int production = 0;
-      final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      if (ta != null) {
-        production = ta.getProduction();
-      }
+      int production = TerritoryAttachment.get(t).map(TerritoryAttachment::getProduction).orElse(0);
 
       // Determine defending unit value
       double defendingUnitValue =
@@ -1259,7 +1255,8 @@ class ProPurchaseAi {
 
       // Only consider territories with production of at least 3 unless there are still remaining
       // PUs
-      final int production = TerritoryAttachment.get(t).getProduction();
+      final int production =
+          TerritoryAttachment.get(t).map(TerritoryAttachment::getProduction).orElse(0);
       if ((production < 3 && !hasExtraPUs) || production < 2) {
         continue;
       }
@@ -1332,7 +1329,8 @@ class ProPurchaseAi {
     double maxValue = 0.0;
     Territory maxTerritory = null;
     for (final Territory t : purchaseFactoryTerritories) {
-      final int production = TerritoryAttachment.get(t).getProduction();
+      final int production =
+          TerritoryAttachment.get(t).map(TerritoryAttachment::getProduction).orElse(0);
       final double value = territoryValueMap.get(t) * production + 0.1 * production;
       final boolean isAdjacentToSea =
           Matches.territoryHasNeighborMatching(data.getMap(), Matches.territoryIsWater()).test(t);

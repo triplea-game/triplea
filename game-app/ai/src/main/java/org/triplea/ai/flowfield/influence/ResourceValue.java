@@ -20,11 +20,11 @@ public class ResourceValue {
   public Function<Territory, Long> territoryToResourceValue(final Resource resource) {
     return territory -> {
       if (resource.getName().equals(Constants.PUS)) {
-        return Optional.ofNullable(TerritoryAttachment.get(territory))
+        return TerritoryAttachment.get(territory)
             .map(territoryAttachment -> (long) territoryAttachment.getProduction())
             .orElse(0L);
       } else {
-        return Optional.ofNullable(TerritoryAttachment.get(territory))
+        return TerritoryAttachment.get(territory)
             .map(
                 territoryAttachment ->
                     Optional.ofNullable(territoryAttachment.getResources())

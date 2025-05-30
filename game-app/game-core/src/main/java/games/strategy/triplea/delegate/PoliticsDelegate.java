@@ -676,13 +676,13 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
           continue;
         }
         for (final Territory t : data.getMap().getTerritoriesOwnedBy(p1)) {
-          final GamePlayer original = OriginalOwnerTracker.getOriginalOwner(t);
-          if (original == null) {
-            continue;
-          }
-          if (original.equals(p2)) {
-            change.add(ChangeFactory.changeOwner(t, original));
-          }
+          OriginalOwnerTracker.getOriginalOwner(t)
+              .ifPresent(
+                  originalOwner -> {
+                    if (originalOwner.equals(p2)) {
+                      change.add(ChangeFactory.changeOwner(t, originalOwner));
+                    }
+                  });
         }
       }
     }

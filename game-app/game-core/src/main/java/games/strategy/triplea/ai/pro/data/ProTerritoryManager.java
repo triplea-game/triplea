@@ -187,13 +187,10 @@ public class ProTerritoryManager {
       }
 
       // Check strafing and using allied attack if enemy capital/factory
-      boolean isEnemyCapitalOrFactory = false;
-      final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      if (!ProUtils.isNeutralLand(t)
-          && ((ta != null && ta.isCapital())
-              || ProMatches.territoryHasInfraFactoryAndIsLand().test(t))) {
-        isEnemyCapitalOrFactory = true;
-      }
+      boolean isEnemyCapitalOrFactory =
+          !ProUtils.isNeutralLand(t)
+              && (TerritoryAttachment.get(t).map(TerritoryAttachment::isCapital).orElse(false)
+                  || ProMatches.territoryHasInfraFactoryAndIsLand().test(t));
       if (patd.getMaxBattleResult().getWinPercentage() < proData.getMinWinPercentage()
           && isEnemyCapitalOrFactory
           && alliedAttackOptions.getMax(t) != null) {

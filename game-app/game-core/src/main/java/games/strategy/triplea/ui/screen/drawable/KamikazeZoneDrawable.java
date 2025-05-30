@@ -11,6 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.Optional;
 
 /**
  * Draws the faded flag image of the original owner for the associated territory. Intended only for
@@ -33,7 +34,6 @@ public class KamikazeZoneDrawable extends AbstractDrawable {
       final MapData mapData) {
     // Change so only original owner gets the kamikaze zone marker
     final Territory terr = data.getMap().getTerritory(location);
-    final TerritoryAttachment ta = TerritoryAttachment.get(terr);
     GamePlayer owner;
     if (Properties.getKamikazeSuicideAttacksDoneByCurrentTerritoryOwner(data.getProperties())) {
       owner = terr.getOwner();
@@ -41,13 +41,16 @@ public class KamikazeZoneDrawable extends AbstractDrawable {
         owner = data.getPlayerList().getNullPlayer();
       }
     } else {
-      if (ta == null) {
+      final Optional<TerritoryAttachment> optionalTerritoryAttachment =
+          TerritoryAttachment.get(terr);
+      if (optionalTerritoryAttachment.isEmpty()) {
         owner = data.getPlayerList().getNullPlayer();
       } else {
-        owner = ta.getOriginalOwner();
-        if (owner == null) {
-          owner = data.getPlayerList().getNullPlayer();
-        }
+        owner =
+            optionalTerritoryAttachment
+                .get()
+                .getOriginalOwner()
+                .orElse(data.getPlayerList().getNullPlayer());
       }
     }
     final Image img = uiContext.getFlagImageFactory().getFadedFlag(owner);
