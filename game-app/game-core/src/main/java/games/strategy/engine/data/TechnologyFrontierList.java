@@ -1,13 +1,16 @@
 package games.strategy.engine.data;
 
 import games.strategy.triplea.delegate.TechAdvance;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NonNls;
 
 /** A collection of {@link TechnologyFrontier}s. */
 public class TechnologyFrontierList extends GameDataComponent {
-  private static final long serialVersionUID = 2958122401265284935L;
+  @Serial private static final long serialVersionUID = 2958122401265284935L;
 
   private final List<TechnologyFrontier> technologyFrontiers = new ArrayList<>();
 
@@ -23,13 +26,15 @@ public class TechnologyFrontierList extends GameDataComponent {
     return technologyFrontiers.size();
   }
 
-  public TechnologyFrontier getTechnologyFrontier(final String name) {
-    for (final TechnologyFrontier tf : technologyFrontiers) {
+  public static TechnologyFrontier getTechnologyFrontierOrThrow(
+      final @Nonnull GamePlayer player, final @NonNls String name) {
+    for (final TechnologyFrontier tf : player.getTechnologyFrontierList().technologyFrontiers) {
       if (tf.getName().equals(name)) {
         return tf;
       }
     }
-    return null;
+    throw new IllegalStateException(
+        "TechnologyFrontier doesn't exist: " + name + " for player: " + player);
   }
 
   public List<TechAdvance> getAdvances() {

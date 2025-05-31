@@ -1,5 +1,7 @@
 package games.strategy.triplea.attachments;
 
+import static games.strategy.engine.data.TechnologyFrontierList.getTechnologyFrontierOrThrow;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -1921,12 +1923,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
       for (final GamePlayer player : t.getPlayers()) {
         for (final String cat : t.getAvailableTech().keySet()) {
-          final TechnologyFrontier tf =
-              player.getTechnologyFrontierList().getTechnologyFrontier(cat);
-          if (tf == null) {
-            throw new IllegalStateException(
-                "Triggers: tech category doesn't exist: " + cat + " for player: " + player);
-          }
+          final TechnologyFrontier tf = getTechnologyFrontierOrThrow(player, cat);
           for (final TechAdvance ta : t.getAvailableTech().get(cat).keySet()) {
             if (t.getAvailableTech().get(cat).get(ta)) {
               historyWriter.startEvent(
