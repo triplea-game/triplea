@@ -9,10 +9,12 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Nullable;
+import java.util.Optional;
 import lombok.Getter;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * An attachment for instances of {@link GamePlayer} that defines properties related to technology
@@ -20,7 +22,7 @@ import lombok.Getter;
  * size.
  */
 public class TechAttachment extends DefaultAttachment {
-  private static final long serialVersionUID = -8780929085456199961L;
+  @Serial private static final long serialVersionUID = -8780929085456199961L;
 
   // getters
   @Getter private int techCost = 5;
@@ -314,79 +316,96 @@ public class TechAttachment extends DefaultAttachment {
   public void validate(final GameState data) {}
 
   @Override
-  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
-    switch (propertyName) {
-      case "techCost":
-        return MutableProperty.of(
-            this::setTechCost, this::setTechCost, this::getTechCost, this::resetTechCost);
-      case "heavyBomber":
-        return MutableProperty.of(
-            this::setHeavyBomber,
-            this::setHeavyBomber,
-            this::getHeavyBomber,
-            this::resetHeavyBomber);
-      case "longRangeAir":
-        return MutableProperty.of(
-            this::setLongRangeAir,
-            this::setLongRangeAir,
-            this::getLongRangeAir,
-            this::resetLongRangeAir);
-      case "jetPower":
-        return MutableProperty.of(
-            this::setJetPower, this::setJetPower, this::getJetPower, this::resetJetPower);
-      case "rocket":
-        return MutableProperty.of(
-            this::setRocket, this::setRocket, this::getRocket, this::resetRocket);
-      case "industrialTechnology":
-        return MutableProperty.of(
-            this::setIndustrialTechnology,
-            this::setIndustrialTechnology,
-            this::getIndustrialTechnology,
-            this::resetIndustrialTechnology);
-      case "superSub":
-        return MutableProperty.of(
-            this::setSuperSub, this::setSuperSub, this::getSuperSub, this::resetSuperSub);
-      case "destroyerBombard":
-        return MutableProperty.of(
-            this::setDestroyerBombard,
-            this::setDestroyerBombard,
-            this::getDestroyerBombard,
-            this::resetDestroyerBombard);
-      case "improvedArtillerySupport":
-        return MutableProperty.of(
-            this::setImprovedArtillerySupport,
-            this::setImprovedArtillerySupport,
-            this::getImprovedArtillerySupport,
-            this::resetImprovedArtillerySupport);
-      case "paratroopers":
-        return MutableProperty.of(
-            this::setParatroopers,
-            this::setParatroopers,
-            this::getParatroopers,
-            this::resetParatroopers);
-      case "increasedFactoryProduction":
-        return MutableProperty.of(
-            this::setIncreasedFactoryProduction,
-            this::setIncreasedFactoryProduction,
-            this::getIncreasedFactoryProduction,
-            this::resetIncreasedFactoryProduction);
-      case "warBonds":
-        return MutableProperty.of(
-            this::setWarBonds, this::setWarBonds, this::getWarBonds, this::resetWarBonds);
-      case "mechanizedInfantry":
-        return MutableProperty.of(
-            this::setMechanizedInfantry,
-            this::setMechanizedInfantry,
-            this::getMechanizedInfantry,
-            this::resetMechanizedInfantry);
-      case "aARadar":
-        return MutableProperty.of(
-            this::setAaRadar, this::setAaRadar, this::getAaRadar, this::resetAaRadar);
-      case "shipyards":
-        return MutableProperty.of(
-            this::setShipyards, this::setShipyards, this::getShipyards, this::resetShipyards);
-      default:
-        return null;
-    }
+  public Optional<MutableProperty<?>> getPropertyOrEmpty(final @NonNls String propertyName) {
+    return switch (propertyName) {
+      case "techCost" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setTechCost, this::setTechCost, this::getTechCost, this::resetTechCost));
+      case "heavyBomber" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setHeavyBomber,
+                  this::setHeavyBomber,
+                  this::getHeavyBomber,
+                  this::resetHeavyBomber));
+      case "longRangeAir" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setLongRangeAir,
+                  this::setLongRangeAir,
+                  this::getLongRangeAir,
+                  this::resetLongRangeAir));
+      case "jetPower" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setJetPower, this::setJetPower, this::getJetPower, this::resetJetPower));
+      case "rocket" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setRocket, this::setRocket, this::getRocket, this::resetRocket));
+      case "industrialTechnology" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setIndustrialTechnology,
+                  this::setIndustrialTechnology,
+                  this::getIndustrialTechnology,
+                  this::resetIndustrialTechnology));
+      case "superSub" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setSuperSub, this::setSuperSub, this::getSuperSub, this::resetSuperSub));
+      case "destroyerBombard" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setDestroyerBombard,
+                  this::setDestroyerBombard,
+                  this::getDestroyerBombard,
+                  this::resetDestroyerBombard));
+      case "improvedArtillerySupport" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setImprovedArtillerySupport,
+                  this::setImprovedArtillerySupport,
+                  this::getImprovedArtillerySupport,
+                  this::resetImprovedArtillerySupport));
+      case "paratroopers" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setParatroopers,
+                  this::setParatroopers,
+                  this::getParatroopers,
+                  this::resetParatroopers));
+      case "increasedFactoryProduction" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setIncreasedFactoryProduction,
+                  this::setIncreasedFactoryProduction,
+                  this::getIncreasedFactoryProduction,
+                  this::resetIncreasedFactoryProduction));
+      case "warBonds" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setWarBonds, this::setWarBonds, this::getWarBonds, this::resetWarBonds));
+      case "mechanizedInfantry" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setMechanizedInfantry,
+                  this::setMechanizedInfantry,
+                  this::getMechanizedInfantry,
+                  this::resetMechanizedInfantry));
+      case "aARadar" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setAaRadar, this::setAaRadar, this::getAaRadar, this::resetAaRadar));
+      case "shipyards" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setShipyards,
+                  this::setShipyards,
+                  this::getShipyards,
+                  this::resetShipyards));
+      default -> Optional.empty();
+    };
   }
 }

@@ -8,7 +8,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
 import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -46,8 +46,8 @@ final class DefaultAttachmentTest {
       public void validate(final GameState data) {}
 
       @Override
-      public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
-        return null;
+      public Optional<MutableProperty<?>> getPropertyOrEmpty(final @NonNls String propertyName) {
+        return Optional.empty();
       }
 
       @Override

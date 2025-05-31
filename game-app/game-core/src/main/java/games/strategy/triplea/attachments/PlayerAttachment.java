@@ -11,9 +11,11 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.gameparser.GameParseException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
 import lombok.Getter;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Triple;
 
@@ -360,100 +362,118 @@ public class PlayerAttachment extends DefaultAttachment {
   public void validate(final GameState data) {}
 
   @Override
-  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
-    switch (propertyName) {
-      case "vps":
-        return MutableProperty.ofMapper(
-            DefaultAttachment::getInt, this::setVps, this::getVps, () -> 0);
-      case "captureVps":
-        return MutableProperty.of(
-            this::setCaptureVps, this::setCaptureVps, this::getCaptureVps, this::resetCaptureVps);
-      case "retainCapitalNumber":
-        return MutableProperty.of(
-            this::setRetainCapitalNumber,
-            this::setRetainCapitalNumber,
-            this::getRetainCapitalNumber,
-            this::resetRetainCapitalNumber);
-      case "retainCapitalProduceNumber":
-        return MutableProperty.of(
-            this::setRetainCapitalProduceNumber,
-            this::setRetainCapitalProduceNumber,
-            this::getRetainCapitalProduceNumber,
-            this::resetRetainCapitalProduceNumber);
-      case "giveUnitControl":
-        return MutableProperty.of(
-            this::setGiveUnitControl,
-            this::setGiveUnitControl,
-            this::getGiveUnitControl,
-            this::resetGiveUnitControl);
-      case "giveUnitControlInAllTerritories":
-        return MutableProperty.ofMapper(
-            DefaultAttachment::getBool,
-            this::setGiveUnitControlInAllTerritories,
-            this::getGiveUnitControlInAllTerritories,
-            () -> false);
-      case "captureUnitOnEnteringBy":
-        return MutableProperty.of(
-            this::setCaptureUnitOnEnteringBy,
-            this::setCaptureUnitOnEnteringBy,
-            this::getCaptureUnitOnEnteringBy,
-            this::resetCaptureUnitOnEnteringBy);
-      case "shareTechnology":
-        return MutableProperty.of(
-            this::setShareTechnology,
-            this::setShareTechnology,
-            this::getShareTechnology,
-            this::resetShareTechnology);
-      case "helpPayTechCost":
-        return MutableProperty.of(
-            this::setHelpPayTechCost,
-            this::setHelpPayTechCost,
-            this::getHelpPayTechCost,
-            this::resetHelpPayTechCost);
-      case "destroysPUs":
-        return MutableProperty.of(
-            this::setDestroysPUs,
-            this::setDestroysPUs,
-            this::getDestroysPUs,
-            this::resetDestroysPUs);
-      case "immuneToBlockade":
-        return MutableProperty.of(
-            this::setImmuneToBlockade,
-            this::setImmuneToBlockade,
-            this::getImmuneToBlockade,
-            this::resetImmuneToBlockade);
-      case "suicideAttackResources":
-        return MutableProperty.of(
-            this::setSuicideAttackResources,
-            this::setSuicideAttackResources,
-            this::getSuicideAttackResources,
-            this::resetSuicideAttackResources);
-      case "suicideAttackTargets":
-        return MutableProperty.of(
-            this::setSuicideAttackTargets,
-            this::setSuicideAttackTargets,
-            this::getSuicideAttackTargets,
-            this::resetSuicideAttackTargets);
-      case "placementLimit":
-        return MutableProperty.of(
-            this::setPlacementLimit,
-            this::setPlacementLimit,
-            this::getPlacementLimit,
-            this::resetPlacementLimit);
-      case "movementLimit":
-        return MutableProperty.of(
-            this::setMovementLimit,
-            this::setMovementLimit,
-            this::getMovementLimit,
-            this::resetMovementLimit);
-      case "attackingLimit":
-        return MutableProperty.of(
-            this::setAttackingLimit,
-            this::setAttackingLimit,
-            this::getAttackingLimit,
-            this::resetAttackingLimit);
-      default:
-        return null;
-    }
+  public Optional<MutableProperty<?>> getPropertyOrEmpty(final @NonNls String propertyName) {
+    return switch (propertyName) {
+      case "vps" ->
+          Optional.of(
+              MutableProperty.ofMapper(
+                  DefaultAttachment::getInt, this::setVps, this::getVps, () -> 0));
+      case "captureVps" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setCaptureVps,
+                  this::setCaptureVps,
+                  this::getCaptureVps,
+                  this::resetCaptureVps));
+      case "retainCapitalNumber" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setRetainCapitalNumber,
+                  this::setRetainCapitalNumber,
+                  this::getRetainCapitalNumber,
+                  this::resetRetainCapitalNumber));
+      case "retainCapitalProduceNumber" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setRetainCapitalProduceNumber,
+                  this::setRetainCapitalProduceNumber,
+                  this::getRetainCapitalProduceNumber,
+                  this::resetRetainCapitalProduceNumber));
+      case "giveUnitControl" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setGiveUnitControl,
+                  this::setGiveUnitControl,
+                  this::getGiveUnitControl,
+                  this::resetGiveUnitControl));
+      case "giveUnitControlInAllTerritories" ->
+          Optional.of(
+              MutableProperty.ofMapper(
+                  DefaultAttachment::getBool,
+                  this::setGiveUnitControlInAllTerritories,
+                  this::getGiveUnitControlInAllTerritories,
+                  () -> false));
+      case "captureUnitOnEnteringBy" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setCaptureUnitOnEnteringBy,
+                  this::setCaptureUnitOnEnteringBy,
+                  this::getCaptureUnitOnEnteringBy,
+                  this::resetCaptureUnitOnEnteringBy));
+      case "shareTechnology" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setShareTechnology,
+                  this::setShareTechnology,
+                  this::getShareTechnology,
+                  this::resetShareTechnology));
+      case "helpPayTechCost" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setHelpPayTechCost,
+                  this::setHelpPayTechCost,
+                  this::getHelpPayTechCost,
+                  this::resetHelpPayTechCost));
+      case "destroysPUs" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setDestroysPUs,
+                  this::setDestroysPUs,
+                  this::getDestroysPUs,
+                  this::resetDestroysPUs));
+      case "immuneToBlockade" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setImmuneToBlockade,
+                  this::setImmuneToBlockade,
+                  this::getImmuneToBlockade,
+                  this::resetImmuneToBlockade));
+      case "suicideAttackResources" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setSuicideAttackResources,
+                  this::setSuicideAttackResources,
+                  this::getSuicideAttackResources,
+                  this::resetSuicideAttackResources));
+      case "suicideAttackTargets" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setSuicideAttackTargets,
+                  this::setSuicideAttackTargets,
+                  this::getSuicideAttackTargets,
+                  this::resetSuicideAttackTargets));
+      case "placementLimit" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setPlacementLimit,
+                  this::setPlacementLimit,
+                  this::getPlacementLimit,
+                  this::resetPlacementLimit));
+      case "movementLimit" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setMovementLimit,
+                  this::setMovementLimit,
+                  this::getMovementLimit,
+                  this::resetMovementLimit));
+      case "attackingLimit" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setAttackingLimit,
+                  this::setAttackingLimit,
+                  this::getAttackingLimit,
+                  this::resetAttackingLimit));
+      default -> Optional.empty();
+    };
   }
 }

@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -195,17 +196,17 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   }
 
   @Override
-  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
-    switch (propertyName) {
-      case "relationshipChange":
-        return MutableProperty.of(
-            this::setRelationshipChange,
-            this::setRelationshipChange,
-            this::getRelationshipChange,
-            this::resetRelationshipChange);
-      default:
-        return super.getPropertyOrNull(propertyName);
-    }
+  public Optional<MutableProperty<?>> getPropertyOrEmpty(String propertyName) {
+    return switch (propertyName) {
+      case "relationshipChange" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setRelationshipChange,
+                  this::setRelationshipChange,
+                  this::getRelationshipChange,
+                  this::resetRelationshipChange));
+      default -> super.getPropertyOrEmpty(propertyName);
+    };
   }
 
   /**
