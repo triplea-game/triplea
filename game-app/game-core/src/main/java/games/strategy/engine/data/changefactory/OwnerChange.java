@@ -4,6 +4,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
+import javax.annotation.Nullable;
 
 /** Changes ownership of a territory. */
 class OwnerChange extends Change {
@@ -12,14 +13,18 @@ class OwnerChange extends Change {
   /** Either new or old owner can be null. */
   private final String oldOwnerName;
 
-  private final String newOwnerName;
+  private final @Nullable String newOwnerName;
   private final String territoryName;
 
   /** newOwner can be null. */
-  OwnerChange(final Territory territory, final GamePlayer newOwner) {
+  OwnerChange(final Territory territory, final @Nullable GamePlayer newOwner) {
     territoryName = territory.getName();
-    newOwnerName = getName(newOwner);
-    oldOwnerName = getName(territory.getOwner());
+    if (newOwner == null) {
+      newOwnerName = null;
+    } else {
+      newOwnerName = newOwner.getName();
+    }
+    oldOwnerName = territory.getOwner().getName();
   }
 
   private OwnerChange(
@@ -27,13 +32,6 @@ class OwnerChange extends Change {
     this.territoryName = territoryName;
     this.newOwnerName = newOwnerName;
     this.oldOwnerName = oldOwnerName;
-  }
-
-  private static String getName(final GamePlayer player) {
-    if (player == null) {
-      return null;
-    }
-    return player.getName();
   }
 
   private static GamePlayer getPlayerId(final String name, final GameState data) {
