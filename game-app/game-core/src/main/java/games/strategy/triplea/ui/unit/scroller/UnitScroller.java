@@ -198,10 +198,8 @@ public class UnitScroller {
     Optional.ofNullable(currentPlayerSupplier.get())
         .ifPresent(
             player -> {
-              lastFocusedTerritory =
-                  TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(
-                      player, gameData.getMap());
-              Optional.ofNullable(lastFocusedTerritory)
+              TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(
+                      player, gameData.getMap())
                   .ifPresent(
                       territory -> {
                         drawUnitAvatarPane(territory);

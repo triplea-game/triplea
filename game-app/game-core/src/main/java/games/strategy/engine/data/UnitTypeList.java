@@ -43,10 +43,9 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
     final Set<UnitType> types = new HashSet<>();
     for (final String name : names) {
       final UnitType type = unitTypes.get(name);
-      if (type == null) {
-        return null;
+      if (type != null) {
+        types.add(type);
       }
-      types.add(type);
     }
     return types;
   }

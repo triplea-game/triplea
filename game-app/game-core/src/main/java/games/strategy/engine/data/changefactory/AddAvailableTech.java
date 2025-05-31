@@ -1,6 +1,7 @@
 package games.strategy.engine.data.changefactory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static games.strategy.engine.data.TechnologyFrontierList.getTechnologyFrontierOrThrow;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GamePlayer;
@@ -27,9 +28,7 @@ class AddAvailableTech extends Change {
 
   @Override
   public void perform(final GameState data) {
-    final TechnologyFrontier front =
-        player.getTechnologyFrontierList().getTechnologyFrontier(frontier.getName());
-    front.addAdvance(tech);
+    getTechnologyFrontierOrThrow(player, frontier.getName()).addAdvance(tech);
   }
 
   @Override

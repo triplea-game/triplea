@@ -44,7 +44,8 @@ public class UnitUtils {
       final boolean accountForDamage,
       final boolean mathMaxZero) {
     return getHowMuchCanUnitProduce(
-        getBiggestProducer(unitsAtStartOfStepInTerritory, producer, player, accountForDamage),
+        getBiggestProducer(unitsAtStartOfStepInTerritory, producer, player, accountForDamage)
+            .orElse(null),
         producer,
         accountForDamage,
         mathMaxZero);
@@ -57,7 +58,7 @@ public class UnitUtils {
    * @param accountForDamage {@code true} if the production capacity should account for unit damage;
    *     otherwise {@code false}.
    */
-  public static @Nullable Unit getBiggestProducer(
+  public static Optional<Unit> getBiggestProducer(
       final Collection<Unit> units,
       final Territory producer,
       final GamePlayer player,
@@ -68,7 +69,7 @@ public class UnitUtils {
             .and(producer.isWater() ? Matches.unitIsLand().negate() : Matches.unitIsSea().negate());
     final Collection<Unit> factories = CollectionUtils.getMatches(units, factoryMatch);
     if (factories.isEmpty()) {
-      return null;
+      return Optional.empty();
     }
     final IntegerMap<Unit> productionPotential = new IntegerMap<>();
     Unit highestUnit = CollectionUtils.getAny(factories);
@@ -81,7 +82,7 @@ public class UnitUtils {
         highestUnit = u;
       }
     }
-    return highestUnit;
+    return Optional.of(highestUnit);
   }
 
   /**
