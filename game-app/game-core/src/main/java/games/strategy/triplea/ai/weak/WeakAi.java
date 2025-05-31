@@ -845,23 +845,26 @@ public class WeakAi extends AbstractAi {
             .test(fixTerr)) {
           continue;
         }
-        final Unit possibleFactoryNeedingRepair =
+        final Optional<Unit> optionalFactoryNeedingRepair =
             UnitUtils.getBiggestProducer(
                 CollectionUtils.getMatches(fixTerr.getUnits(), ourFactories),
                 fixTerr,
                 player,
                 false);
-        if (Matches.unitHasTakenSomeBombingUnitDamage().test(possibleFactoryNeedingRepair)) {
-          unitsThatCanProduceNeedingRepair.put(possibleFactoryNeedingRepair, fixTerr);
+        if (optionalFactoryNeedingRepair.isPresent()) {
+          final Unit factoryNeedingRepair = optionalFactoryNeedingRepair.get();
+          if (Matches.unitHasTakenSomeBombingUnitDamage().test(factoryNeedingRepair)) {
+            unitsThatCanProduceNeedingRepair.put(factoryNeedingRepair, fixTerr);
+          }
+          if (fixTerr.equals(capitol)) {
+            capProduction =
+                UnitUtils.getHowMuchCanUnitProduce(factoryNeedingRepair, fixTerr, true, true);
+            capUnit = factoryNeedingRepair;
+            capUnitTerritory = fixTerr;
+          }
+          currentProduction +=
+              UnitUtils.getHowMuchCanUnitProduce(factoryNeedingRepair, fixTerr, true, true);
         }
-        if (fixTerr.equals(capitol)) {
-          capProduction =
-              UnitUtils.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, true, true);
-          capUnit = possibleFactoryNeedingRepair;
-          capUnitTerritory = fixTerr;
-        }
-        currentProduction +=
-            UnitUtils.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, true, true);
       }
       repairFactories.remove(capitol);
       unitsThatCanProduceNeedingRepair.remove(capUnit);

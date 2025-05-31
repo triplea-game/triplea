@@ -99,14 +99,16 @@ class ProPurchaseAi {
             .test(fixTerr)) {
           continue;
         }
-        final Unit possibleFactoryNeedingRepair =
+        final Optional<Unit> optionalFactoryNeedingRepair =
             UnitUtils.getBiggestProducer(
                 CollectionUtils.getMatches(fixTerr.getUnits(), ourFactories),
                 fixTerr,
                 player,
                 false);
-        if (Matches.unitHasTakenSomeBombingUnitDamage().test(possibleFactoryNeedingRepair)) {
-          unitsThatCanProduceNeedingRepair.put(possibleFactoryNeedingRepair, fixTerr);
+        if (optionalFactoryNeedingRepair.isPresent()
+            && Matches.unitHasTakenSomeBombingUnitDamage()
+                .test(optionalFactoryNeedingRepair.get())) {
+          unitsThatCanProduceNeedingRepair.put(optionalFactoryNeedingRepair.get(), fixTerr);
         }
       }
       ProLogger.debug("Factories that need repaired: " + unitsThatCanProduceNeedingRepair);
