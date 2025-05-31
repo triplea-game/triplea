@@ -12,6 +12,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import org.jetbrains.annotations.NonNls;
@@ -210,39 +211,43 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   @Override
-  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
-    switch (propertyName) {
-      case "text":
-        return MutableProperty.ofString(this::setText, this::getText, this::resetText);
-      case "costPU":
-        return MutableProperty.of(
-            this::setCostPu, this::setCostPu, this::getCostPu, this::resetCostPu);
-      case "costResources":
-        return MutableProperty.of(
-            this::setCostResources,
-            this::setCostResources,
-            this::getCostResources,
-            this::resetCostResources);
-      case "attemptsPerTurn":
-        return MutableProperty.of(
-            this::setAttemptsPerTurn,
-            this::setAttemptsPerTurn,
-            this::getAttemptsPerTurn,
-            this::resetAttemptsPerTurn);
-      case "attemptsLeftThisTurn":
-        return MutableProperty.of(
-            this::setAttemptsLeftThisTurn,
-            this::setAttemptsLeftThisTurn,
-            this::getAttemptsLeftThisTurn,
-            this::resetAttemptsLeftThisTurn);
-      case "actionAccept":
-        return MutableProperty.of(
-            this::setActionAccept,
-            this::setActionAccept,
-            this::getActionAccept,
-            this::resetActionAccept);
-      default:
-        return super.getPropertyOrNull(propertyName);
-    }
+  public Optional<MutableProperty<?>> getPropertyOrEmpty(String propertyName) {
+    return switch (propertyName) {
+      case "text" ->
+          Optional.of(MutableProperty.ofString(this::setText, this::getText, this::resetText));
+      case "costPU" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setCostPu, this::setCostPu, this::getCostPu, this::resetCostPu));
+      case "costResources" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setCostResources,
+                  this::setCostResources,
+                  this::getCostResources,
+                  this::resetCostResources));
+      case "attemptsPerTurn" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setAttemptsPerTurn,
+                  this::setAttemptsPerTurn,
+                  this::getAttemptsPerTurn,
+                  this::resetAttemptsPerTurn));
+      case "attemptsLeftThisTurn" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setAttemptsLeftThisTurn,
+                  this::setAttemptsLeftThisTurn,
+                  this::getAttemptsLeftThisTurn,
+                  this::resetAttemptsLeftThisTurn));
+      case "actionAccept" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setActionAccept,
+                  this::setActionAccept,
+                  this::getActionAccept,
+                  this::resetActionAccept));
+      default -> super.getPropertyOrEmpty(propertyName);
+    };
   }
 }

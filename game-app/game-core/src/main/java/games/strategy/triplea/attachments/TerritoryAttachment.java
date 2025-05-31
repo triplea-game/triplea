@@ -773,99 +773,128 @@ public class TerritoryAttachment extends DefaultAttachment {
   public void validate(final GameState data) {}
 
   @Override
-  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
-    switch (propertyName) {
-      case "capital":
-        return MutableProperty.ofString(this::setCapital, this::getCapital, this::resetCapital);
-      case "originalFactory":
-        return MutableProperty.of(
-            this::setOriginalFactory,
-            this::setOriginalFactory,
-            this::getOriginalFactory,
-            this::resetOriginalFactory);
-      case "production":
-        return MutableProperty.of(
-            this::setProduction, this::setProduction, this::getProduction, this::resetProduction);
-      case "productionOnly":
-        return MutableProperty.ofWriteOnlyString(this::setProductionOnly);
-      case "victoryCity":
-        return MutableProperty.ofMapper(
-            DefaultAttachment::getInt, this::setVictoryCity, this::getVictoryCity, () -> 0);
-      case "isImpassable":
-        return MutableProperty.of(
-            this::setIsImpassable,
-            this::setIsImpassable,
-            this::getIsImpassable,
-            this::resetIsImpassable);
-      case "originalOwner":
-        return MutableProperty.of(
-            this::setOriginalOwner,
-            this::setOriginalOwner,
-            this::getOriginalOwnerOrNull,
-            this::resetOriginalOwner);
-      case "convoyRoute":
-        return MutableProperty.of(
-            this::setConvoyRoute,
-            this::setConvoyRoute,
-            this::getConvoyRoute,
-            this::resetConvoyRoute);
-      case "convoyAttached":
-        return MutableProperty.of(
-            this::setConvoyAttached,
-            this::setConvoyAttached,
-            this::getConvoyAttached,
-            this::resetConvoyAttached);
-      case "changeUnitOwners":
-        return MutableProperty.of(
-            this::setChangeUnitOwners,
-            this::setChangeUnitOwners,
-            this::getChangeUnitOwners,
-            this::resetChangeUnitOwners);
-      case "captureUnitOnEnteringBy":
-        return MutableProperty.of(
-            this::setCaptureUnitOnEnteringBy,
-            this::setCaptureUnitOnEnteringBy,
-            this::getCaptureUnitOnEnteringBy,
-            this::resetCaptureUnitOnEnteringBy);
-      case "navalBase":
-        return MutableProperty.of(
-            this::setNavalBase, this::setNavalBase, this::getNavalBase, this::resetNavalBase);
-      case "airBase":
-        return MutableProperty.of(
-            this::setAirBase, this::setAirBase, this::getAirBase, this::resetAirBase);
-      case "kamikazeZone":
-        return MutableProperty.of(
-            this::setKamikazeZone,
-            this::setKamikazeZone,
-            this::getKamikazeZone,
-            this::resetKamikazeZone);
-      case "unitProduction":
-        return MutableProperty.ofMapper(
-            DefaultAttachment::getInt, this::setUnitProduction, this::getUnitProduction, () -> 0);
-      case "blockadeZone":
-        return MutableProperty.of(
-            this::setBlockadeZone,
-            this::setBlockadeZone,
-            this::getBlockadeZone,
-            this::resetBlockadeZone);
-      case "territoryEffect":
-        return MutableProperty.of(
-            this::setTerritoryEffect,
-            this::setTerritoryEffect,
-            this::getTerritoryEffect,
-            this::resetTerritoryEffect);
-      case "whenCapturedByGoesTo":
-        return MutableProperty.of(
-            this::setWhenCapturedByGoesTo,
-            this::setWhenCapturedByGoesTo,
-            this::getWhenCapturedByGoesTo,
-            this::resetWhenCapturedByGoesTo);
-      case "resources":
-        return MutableProperty.of(
-            this::setResources, this::setResources, this::getResources, this::resetResources);
-      default:
-        return null;
-    }
+  public Optional<MutableProperty<?>> getPropertyOrEmpty(final @NonNls String propertyName) {
+    return switch (propertyName) {
+      case "capital" ->
+          Optional.of(
+              MutableProperty.ofString(this::setCapital, this::getCapital, this::resetCapital));
+      case "originalFactory" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setOriginalFactory,
+                  this::setOriginalFactory,
+                  this::getOriginalFactory,
+                  this::resetOriginalFactory));
+      case "production" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setProduction,
+                  this::setProduction,
+                  this::getProduction,
+                  this::resetProduction));
+      case "productionOnly" ->
+          Optional.of(MutableProperty.ofWriteOnlyString(this::setProductionOnly));
+      case "victoryCity" ->
+          Optional.of(
+              MutableProperty.ofMapper(
+                  DefaultAttachment::getInt, this::setVictoryCity, this::getVictoryCity, () -> 0));
+      case "isImpassable" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setIsImpassable,
+                  this::setIsImpassable,
+                  this::getIsImpassable,
+                  this::resetIsImpassable));
+      case "originalOwner" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setOriginalOwner,
+                  this::setOriginalOwner,
+                  this::getOriginalOwnerOrNull,
+                  this::resetOriginalOwner));
+      case "convoyRoute" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setConvoyRoute,
+                  this::setConvoyRoute,
+                  this::getConvoyRoute,
+                  this::resetConvoyRoute));
+      case "convoyAttached" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setConvoyAttached,
+                  this::setConvoyAttached,
+                  this::getConvoyAttached,
+                  this::resetConvoyAttached));
+      case "changeUnitOwners" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setChangeUnitOwners,
+                  this::setChangeUnitOwners,
+                  this::getChangeUnitOwners,
+                  this::resetChangeUnitOwners));
+      case "captureUnitOnEnteringBy" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setCaptureUnitOnEnteringBy,
+                  this::setCaptureUnitOnEnteringBy,
+                  this::getCaptureUnitOnEnteringBy,
+                  this::resetCaptureUnitOnEnteringBy));
+      case "navalBase" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setNavalBase,
+                  this::setNavalBase,
+                  this::getNavalBase,
+                  this::resetNavalBase));
+      case "airBase" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setAirBase, this::setAirBase, this::getAirBase, this::resetAirBase));
+      case "kamikazeZone" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setKamikazeZone,
+                  this::setKamikazeZone,
+                  this::getKamikazeZone,
+                  this::resetKamikazeZone));
+      case "unitProduction" ->
+          Optional.of(
+              MutableProperty.ofMapper(
+                  DefaultAttachment::getInt,
+                  this::setUnitProduction,
+                  this::getUnitProduction,
+                  () -> 0));
+      case "blockadeZone" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setBlockadeZone,
+                  this::setBlockadeZone,
+                  this::getBlockadeZone,
+                  this::resetBlockadeZone));
+      case "territoryEffect" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setTerritoryEffect,
+                  this::setTerritoryEffect,
+                  this::getTerritoryEffect,
+                  this::resetTerritoryEffect));
+      case "whenCapturedByGoesTo" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setWhenCapturedByGoesTo,
+                  this::setWhenCapturedByGoesTo,
+                  this::getWhenCapturedByGoesTo,
+                  this::resetWhenCapturedByGoesTo));
+      case "resources" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setResources,
+                  this::setResources,
+                  this::getResources,
+                  this::resetResources));
+      default -> Optional.empty();
+    };
   }
 
   /**

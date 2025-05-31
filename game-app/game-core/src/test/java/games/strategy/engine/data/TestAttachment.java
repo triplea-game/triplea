@@ -1,7 +1,9 @@
 package games.strategy.engine.data;
 
+import java.util.Optional;
 import javax.annotation.Nullable;
 import lombok.Getter;
+import org.jetbrains.annotations.NonNls;
 
 /** Fake attachment used for testing. */
 @Getter
@@ -42,12 +44,11 @@ public class TestAttachment extends DefaultAttachment {
   public void validate(final GameState data) {}
 
   @Override
-  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
-    switch (propertyName) {
-      case "value":
-        return MutableProperty.ofString(this::setValue, this::getValue, this::resetValue);
-      default:
-        return null;
-    }
+  public Optional<MutableProperty<?>> getPropertyOrEmpty(final @NonNls String propertyName) {
+    return switch (propertyName) {
+      case "value" ->
+          Optional.of(MutableProperty.ofString(this::setValue, this::getValue, this::resetValue));
+      default -> Optional.empty();
+    };
   }
 }

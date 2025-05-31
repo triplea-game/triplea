@@ -172,16 +172,16 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   }
 
   @Override
-  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
-    switch (propertyName) {
-      case "activateTrigger":
-        return MutableProperty.of(
-            this::setActivateTrigger,
-            this::setActivateTrigger,
-            this::getActivateTrigger,
-            this::resetActivateTrigger);
-      default:
-        return super.getPropertyOrNull(propertyName);
-    }
+  public Optional<MutableProperty<?>> getPropertyOrEmpty(String propertyName) {
+    return switch (propertyName) {
+      case "activateTrigger" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setActivateTrigger,
+                  this::setActivateTrigger,
+                  this::getActivateTrigger,
+                  this::resetActivateTrigger));
+      default -> super.getPropertyOrEmpty(propertyName);
+    };
   }
 }
