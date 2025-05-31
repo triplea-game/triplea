@@ -34,13 +34,6 @@ class OwnerChange extends Change {
     this.oldOwnerName = oldOwnerName;
   }
 
-  private static GamePlayer getPlayerId(final String name, final GameState data) {
-    if (name == null) {
-      return null;
-    }
-    return data.getPlayerList().getPlayerId(name);
-  }
-
   @Override
   public Change invert() {
     return new OwnerChange(territoryName, oldOwnerName, newOwnerName);
@@ -48,7 +41,13 @@ class OwnerChange extends Change {
 
   @Override
   protected void perform(final GameState data) {
-    data.getMap().getTerritory(territoryName).setOwner(getPlayerId(newOwnerName, data));
+    final GamePlayer newOwner;
+    if (newOwnerName == null) {
+      newOwner = null;
+    } else {
+      newOwner = data.getPlayerList().getPlayerId(newOwnerName);
+    }
+    data.getMap().getTerritoryOrThrow(territoryName).setOwner(newOwner);
   }
 
   @Override
