@@ -883,6 +883,7 @@ public class WeakAi extends AbstractAi {
       // if capitol is super safe, we don't have to do this. and if capitol is under siege, we
       // should repair enough to place all our units here
       int maxUnits = (totalPu - 1) / minimumUnitPrice;
+      final @Nullable Territory capitol = optionalCapitol.orElse(null);
       if ((capProduction <= maxUnits / 2 || repairFactories.isEmpty()) && capUnit != null) {
         for (final RepairRule rrule : repairRules) {
           if (!capUnit.getType().equals(rrule.getAnyResultKey())) {
