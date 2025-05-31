@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.UUID;
+import javax.annotation.Nullable;
 
 /**
  * Pro retreat AI.
@@ -95,8 +96,9 @@ class ProRetreatAi {
       // Retreat to capital if available otherwise the territory with highest defense strength
       Territory retreatTerritory = null;
       double maxStrength = Double.NEGATIVE_INFINITY;
-      final Territory myCapital =
-          TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
+      final @Nullable Territory myCapital =
+          TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap())
+              .orElse(null);
       for (final Territory t : possibleTerritories) {
         if (t.equals(myCapital)) {
           retreatTerritory = t;

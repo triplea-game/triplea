@@ -203,9 +203,10 @@ public class ProTerritoryManager {
 
           // Make sure allies' capital isn't next to territory
           final GamePlayer alliedPlayer = CollectionUtils.getAny(alliedUnits).getOwner();
-          final Territory capital =
+          final Optional<Territory> optionalCapital =
               TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(alliedPlayer, gameMap);
-          if (capital != null && !gameMap.getNeighbors(capital).contains(t)) {
+          if (optionalCapital.isPresent()
+              && !gameMap.getNeighbors(optionalCapital.get()).contains(t)) {
 
             // Get max enemy defenders
             final Set<Unit> additionalEnemyDefenders = new HashSet<>();

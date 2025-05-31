@@ -66,11 +66,12 @@ public class WeakAi extends AbstractAi {
     if (!isAmphibAttack(player, data)) {
       return Optional.empty();
     }
-    final Territory ourCapitol =
+    final Optional<Territory> optionalCapital =
         TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
-    if (ourCapitol == null) {
+    if (optionalCapital.isEmpty()) {
       return Optional.empty();
     }
+    final Territory ourCapitol = optionalCapital.get();
     final Predicate<Territory> endMatch =
         o -> {
           final boolean impassable =
@@ -96,16 +97,15 @@ public class WeakAi extends AbstractAi {
   }
 
   private static boolean isAmphibAttack(final GamePlayer player, final GameState data) {
-    final Territory capitol =
+    final Optional<Territory> optionalCapital =
         TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
-    // we don't own our own capitol
-    if (capitol == null || !capitol.isOwnedBy(player)) {
+    if (optionalCapital.isEmpty() || !optionalCapital.get().isOwnedBy(player)) {
       return false;
     }
     // find a land route to an enemy territory from our capitol
     final Optional<Route> invasionRoute =
         Utils.findNearest(
-            capitol,
+            optionalCapital.get(),
             Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player),
             Matches.territoryIsLand().and(Matches.territoryIsNeutralButNotWater().negate()),
             data);
@@ -158,11 +158,12 @@ public class WeakAi extends AbstractAi {
     if (!isAmphibAttack(player, data)) {
       return List.of();
     }
-    final Territory capitol =
+    final Optional<Territory> optionalCapital =
         TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
-    if (capitol == null || !capitol.isOwnedBy(player)) {
+    if (optionalCapital.isEmpty() || !optionalCapital.get().isOwnedBy(player)) {
       return List.of();
     }
+    final Territory capitol = optionalCapital.get();
     final var moves = new ArrayList<MoveDescription>();
     final List<Unit> unitsToLoad =
         capitol.getMatches(
@@ -462,16 +463,19 @@ public class WeakAi extends AbstractAi {
       Optional<Territory> to = Optional.empty();
       // find the nearest enemy owned capital
       for (final GamePlayer otherPlayer : data.getPlayerList().getPlayers()) {
-        final Territory capital =
+        final Optional<Territory> optionalCapital =
             TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(
                 otherPlayer, data.getMap());
-        if (capital != null && !player.isAllied(capital.getOwner()) && moveThrough.test(capital)) {
-          Optional<Route> optionalRoute = data.getMap().getRoute(t, capital, moveThrough);
-          if (optionalRoute.isPresent()) {
-            final int distance = optionalRoute.get().numberOfSteps();
-            if (distance != 0 && distance < minDistance) {
-              minDistance = distance;
-              to = Optional.of(capital);
+        if (optionalCapital.isPresent()) {
+          final Territory capital = optionalCapital.get();
+          if (!player.isAllied(capital.getOwner()) && moveThrough.test(capital)) {
+            Optional<Route> optionalRoute = data.getMap().getRoute(t, capital, moveThrough);
+            if (optionalRoute.isPresent()) {
+              final int distance = optionalRoute.get().numberOfSteps();
+              if (distance != 0 && distance < minDistance) {
+                minDistance = distance;
+                to = Optional.of(capital);
+              }
             }
           }
         }
@@ -814,8 +818,6 @@ public class WeakAi extends AbstractAi {
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
     final int totalPu = player.getResources().getQuantity(pus);
     int leftToSpend = totalPu;
-    final @Nullable Territory capitol =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
     final List<ProductionRule> rules = player.getProductionFrontier().getRules();
     final IntegerMap<ProductionRule> purchase = new IntegerMap<>();
     final List<RepairRule> repairRules;
@@ -837,6 +839,8 @@ public class WeakAi extends AbstractAi {
       Unit capUnit = null;
       Territory capUnitTerritory = null;
       int currentProduction = 0;
+      final Optional<Territory> optionalCapitol =
+          TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
       // we should sort this
       Collections.shuffle(repairFactories);
       for (final Territory fixTerr : repairFactories) {
@@ -856,7 +860,7 @@ public class WeakAi extends AbstractAi {
           if (Matches.unitHasTakenSomeBombingUnitDamage().test(factoryNeedingRepair)) {
             unitsThatCanProduceNeedingRepair.put(factoryNeedingRepair, fixTerr);
           }
-          if (fixTerr.equals(capitol)) {
+          if (optionalCapitol.isPresent() && fixTerr.equals(optionalCapitol.get())) {
             capProduction =
                 UnitUtils.getHowMuchCanUnitProduce(factoryNeedingRepair, fixTerr, true, true);
             capUnit = factoryNeedingRepair;
@@ -866,7 +870,7 @@ public class WeakAi extends AbstractAi {
               UnitUtils.getHowMuchCanUnitProduce(factoryNeedingRepair, fixTerr, true, true);
         }
       }
-      repairFactories.remove(capitol);
+      optionalCapitol.ifPresent(repairFactories::remove);
       unitsThatCanProduceNeedingRepair.remove(capUnit);
       final var territoryIsOwnedAndHasOwnedUnitMatching =
           Matches.territoryIsOwnedAndHasOwnedUnitMatching(
@@ -1044,14 +1048,13 @@ public class WeakAi extends AbstractAi {
     if (player.getUnitCollection().isEmpty()) {
       return;
     }
-    final @Nullable Territory capitol =
+    final Optional<Territory> optionalCapitol =
         TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
-    if (capitol != null) {
-      // place in capitol first
-      placeAllWeCanOn(data, capitol, placeDelegate, player);
-    }
+    // place in capitol first
+    optionalCapitol.ifPresent(capitol -> placeAllWeCanOn(data, capitol, placeDelegate, player));
     final List<Territory> randomTerritories = new ArrayList<>(data.getMap().getTerritories());
     Collections.shuffle(randomTerritories);
+    final @Nullable Territory capitol = optionalCapitol.orElse(null);
     for (final Territory t : randomTerritories) {
       if (!t.equals(capitol)
           && t.isOwnedBy(player)

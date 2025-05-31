@@ -45,7 +45,8 @@ final class ProTechAi {
       return;
     }
     final Territory myCapitol =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap())
+            .orElse(null);
     final float enemyStrength = getStrengthOfPotentialAttackers(myCapitol, data, player);
     float myStrength = getMyStrength(data, player, myCapitol);
     final boolean capDanger = myStrength < (enemyStrength * 1.25F + 3.0F);
@@ -87,7 +88,7 @@ final class ProTechAi {
    * @return strength value for territory {@code myCapitol}
    */
   private static float getMyStrength(
-      final GameData data, final GamePlayer player, final Territory myCapitol) {
+      final GameData data, final GamePlayer player, final @Nullable Territory myCapitol) {
     if (myCapitol == null) {
       return 0.0F;
     }
@@ -108,7 +109,7 @@ final class ProTechAi {
    * fighters or bombers
    */
   private static float getStrengthOfPotentialAttackers(
-      final Territory location, final GameData data, final GamePlayer player) {
+      final @Nullable Territory location, final GameData data, final GamePlayer player) {
     final boolean transportsFirst = false;
 
     @Nullable GamePlayer enemyPlayer = null;

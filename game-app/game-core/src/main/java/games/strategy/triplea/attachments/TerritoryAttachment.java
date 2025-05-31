@@ -85,11 +85,21 @@ public class TerritoryAttachment extends DefaultAttachment {
     return pa.getRetainCapitalProduceNumber() <= capitalsListOwned.size();
   }
 
+  public static Territory getFirstOwnedCapitalOrFirstUnownedCapitalOrThrow(
+      final GamePlayer player, final GameMap gameMap) {
+    return getFirstOwnedCapitalOrFirstUnownedCapital(player, gameMap)
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    MessageFormat.format(
+                        "Player {0} has no owned capital or unowned capital as expected", player)));
+  }
+
   /**
    * If we own one of our capitals, return the first one found, otherwise return the first capital
    * we find that we don't own. If a capital has no neighbor connections, it will be sent last.
    */
-  public static @Nullable Territory getFirstOwnedCapitalOrFirstUnownedCapital(
+  public static Optional<Territory> getFirstOwnedCapitalOrFirstUnownedCapital(
       final GamePlayer player, final GameMap gameMap) {
     final List<Territory> capitals = new ArrayList<>();
     final List<Territory> noNeighborCapitals = new ArrayList<>();
@@ -101,7 +111,7 @@ public class TerritoryAttachment extends DefaultAttachment {
         if (player.getName().equals(capital)) {
           if (player.equals(current.getOwner())) {
             if (!gameMap.getNeighbors(current).isEmpty()) {
-              return current;
+              return Optional.of(current);
             }
             noNeighborCapitals.add(current);
           } else {
@@ -111,14 +121,14 @@ public class TerritoryAttachment extends DefaultAttachment {
       }
     }
     if (!capitals.isEmpty()) {
-      return CollectionUtils.getAny(capitals);
+      return Optional.of(CollectionUtils.getAny(capitals));
     }
     if (!noNeighborCapitals.isEmpty()) {
-      return CollectionUtils.getAny(noNeighborCapitals);
+      return Optional.of(CollectionUtils.getAny(noNeighborCapitals));
     }
     // Added check for optional players- no error thrown for them
     if (player.getOptional()) {
-      return null;
+      return Optional.empty();
     }
     throw new IllegalStateException("Capital not found for: " + player);
   }
