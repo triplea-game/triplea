@@ -295,8 +295,9 @@ public class TileManager {
     drawing.add(new TerritoryNameDrawable(territory.getName(), uiContext));
     if (optionalTerritoryAttachment.map(TerritoryAttachment::isCapital).orElse(false)
         && mapData.drawCapitolMarkers()) {
+
       final GamePlayer capitalOf =
-          data.getPlayerList().getPlayerId(optionalTerritoryAttachment.get().getCapital());
+          data.getPlayerList().getPlayerId(optionalTerritoryAttachment.get().getCapitalOrThrow());
       drawing.add(new CapitolMarkerDrawable(capitalOf, territory, uiContext));
     }
     if (optionalTerritoryAttachment.map(TerritoryAttachment::getVictoryCity).orElse(0) != 0) {

@@ -45,7 +45,7 @@ import org.triplea.java.collections.CollectionUtils;
 public class TerritoryAttachment extends DefaultAttachment {
   @Serial private static final long serialVersionUID = 9102862080104655281L;
 
-  private @Nullable String capital = null;
+  private @NonNls @Nullable String capital = null;
   private boolean originalFactory = false;
   // "setProduction" will set both production and unitProduction.
   // While "setProductionOnly" sets only production.
@@ -107,8 +107,8 @@ public class TerritoryAttachment extends DefaultAttachment {
       final Optional<TerritoryAttachment> optionalTerritoryAttachment =
           TerritoryAttachment.get(current);
       if (optionalTerritoryAttachment.isPresent()) {
-        final @NonNls @Nullable String capital = optionalTerritoryAttachment.get().getCapital();
-        if (player.getName().equals(capital)) {
+        final Optional<String> optionalCapital = optionalTerritoryAttachment.get().getCapital();
+        if (optionalCapital.isPresent() && player.getName().equals(optionalCapital.get())) {
           if (player.equals(current.getOwner())) {
             if (!gameMap.getNeighbors(current).isEmpty()) {
               return Optional.of(current);
@@ -137,14 +137,14 @@ public class TerritoryAttachment extends DefaultAttachment {
   public static List<Territory> getAllCapitals(final GamePlayer player, final GameMap gameMap) {
     final List<Territory> capitals = new ArrayList<>();
     for (final Territory current : gameMap.getTerritories()) {
-      final Optional<TerritoryAttachment> optionalTerritoryAttachment =
-          TerritoryAttachment.get(current);
-      if (optionalTerritoryAttachment.isPresent()) {
-        final @NonNls @Nullable String capital = optionalTerritoryAttachment.get().getCapital();
-        if (player.getName().equals(capital)) {
-          capitals.add(current);
-        }
-      }
+      TerritoryAttachment.get(current)
+          .flatMap(TerritoryAttachment::getCapital)
+          .ifPresent(
+              capital -> {
+                if (player.getName().equals(capital)) {
+                  capitals.add(current);
+                }
+              });
     }
     if (!capitals.isEmpty()) {
       return capitals;
@@ -161,14 +161,14 @@ public class TerritoryAttachment extends DefaultAttachment {
       final GamePlayer player, final GameMap gameMap) {
     final List<Territory> capitals = new ArrayList<>();
     for (final Territory current : gameMap.getTerritories()) {
-      final Optional<TerritoryAttachment> optionalTerritoryAttachment =
-          TerritoryAttachment.get(current);
-      if (optionalTerritoryAttachment.isPresent()) {
-        final @NonNls @Nullable String capital = optionalTerritoryAttachment.get().getCapital();
-        if (player.getName().equals(capital) && player.equals(current.getOwner())) {
-          capitals.add(current);
-        }
-      }
+      TerritoryAttachment.get(current)
+          .flatMap(TerritoryAttachment::getCapital)
+          .ifPresent(
+              capital -> {
+                if (player.getName().equals(capital) && player.equals(current.getOwner())) {
+                  capitals.add(current);
+                }
+              });
     }
     return capitals;
   }
@@ -300,7 +300,26 @@ public class TerritoryAttachment extends DefaultAttachment {
     return capital != null;
   }
 
-  public @Nullable String getCapital() {
+  public Optional<String> getCapital() {
+    return Optional.ofNullable(capital);
+  }
+
+  public String getCapitalOrThrow() {
+    return getCapital()
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    MessageFormat.format(
+                        "No expected capital found for TerritoryAttachment {0}", this)));
+  }
+
+  /**
+   * Might return {@code null} if the attribute is {@code null}. Avoid usage; instead, see {@link
+   * #getCapital()}.
+   *
+   * @return Returns {@link #capital}.
+   */
+  public @Nullable @NonNls String getCapitalOrNull() {
     return capital;
   }
 
@@ -797,7 +816,8 @@ public class TerritoryAttachment extends DefaultAttachment {
     return switch (propertyName) {
       case "capital" ->
           Optional.of(
-              MutableProperty.ofString(this::setCapital, this::getCapital, this::resetCapital));
+              MutableProperty.ofString(
+                  this::setCapital, this::getCapitalOrNull, this::resetCapital));
       case "originalFactory" ->
           Optional.of(
               MutableProperty.of(

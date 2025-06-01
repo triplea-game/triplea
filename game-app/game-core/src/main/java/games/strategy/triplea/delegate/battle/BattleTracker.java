@@ -667,10 +667,10 @@ public class BattleTracker implements Serializable {
     // NOTE: this is not checking to see if it is an enemy.
     // instead it is relying on the fact that the capital should be owned by the person it is
     // attached to
-    if (isTerritoryOwnerAnEnemy && territoryAttachment.getCapital() != null) {
+    if (isTerritoryOwnerAnEnemy && territoryAttachment.isCapital()) {
       // if the capital is owned by the capitols player take the money
       final GamePlayer whoseCapital =
-          data.getPlayerList().getPlayerId(territoryAttachment.getCapital());
+          data.getPlayerList().getPlayerId(territoryAttachment.getCapitalOrThrow());
       final PlayerAttachment pa = PlayerAttachment.get(gamePlayer);
       final PlayerAttachment paWhoseCapital = PlayerAttachment.get(whoseCapital);
       final List<Territory> capitalsList =
