@@ -174,7 +174,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
     }
 
     @Override
-    public Territory retreatQuery(
+    public Optional<Territory> retreatQuery(
         final UUID battleId,
         final boolean submerge,
         final Territory battleSite,

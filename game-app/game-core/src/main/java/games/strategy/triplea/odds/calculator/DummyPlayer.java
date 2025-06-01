@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 import org.triplea.java.collections.CollectionUtils;
@@ -121,7 +122,7 @@ class DummyPlayer extends AbstractAi {
    * coming from.
    */
   @Override
-  public Territory retreatQuery(
+  public Optional<Territory> retreatQuery(
       final UUID battleId,
       final boolean submerge,
       final Territory battleSite,
@@ -129,7 +130,7 @@ class DummyPlayer extends AbstractAi {
       final String message) {
     // null = do not retreat
     if (possibleTerritories.isEmpty()) {
-      return null;
+      return Optional.empty();
     }
     if (submerge) {
       // submerge if all air vs subs
@@ -138,26 +139,26 @@ class DummyPlayer extends AbstractAi {
       final List<Unit> ourUnits = getOurUnits();
       final List<Unit> enemyUnits = getEnemyUnits();
       if (ourUnits == null || enemyUnits == null) {
-        return null;
+        return Optional.empty();
       }
       if (!enemyUnits.isEmpty()
           && enemyUnits.stream().allMatch(planeNotDestroyer)
           && !ourUnits.isEmpty()
           && ourUnits.stream().allMatch(Matches.unitCanNotBeTargetedByAll())) {
-        return CollectionUtils.getAny(possibleTerritories);
+        return Optional.of(CollectionUtils.getAny(possibleTerritories));
       }
-      return null;
+      return Optional.empty();
     }
 
     final MustFightBattle battle = getBattle();
     if (battle == null) {
-      return null;
+      return Optional.empty();
     }
     if (retreatAfterRound > -1 && battle.getBattleRound() >= retreatAfterRound) {
-      return CollectionUtils.getAny(possibleTerritories);
+      return Optional.of(CollectionUtils.getAny(possibleTerritories));
     }
     if (!retreatWhenOnlyAirLeft && retreatAfterXUnitsLeft <= -1) {
-      return null;
+      return Optional.empty();
     }
     final Collection<Unit> unitsLeft =
         isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits();
@@ -174,13 +175,13 @@ class DummyPlayer extends AbstractAi {
         retreatNum += retreatAfterXUnitsLeft;
       }
       if (retreatNum >= unitsLeft.size()) {
-        return CollectionUtils.getAny(possibleTerritories);
+        return Optional.of(CollectionUtils.getAny(possibleTerritories));
       }
     }
     if (retreatAfterXUnitsLeft > -1 && retreatAfterXUnitsLeft >= unitsLeft.size()) {
-      return CollectionUtils.getAny(possibleTerritories);
+      return Optional.of(CollectionUtils.getAny(possibleTerritories));
     }
-    return null;
+    return Optional.empty();
   }
 
   // Added new collection autoKilled to handle killing units prior to casualty selection

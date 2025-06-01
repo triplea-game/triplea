@@ -7,6 +7,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.ai.weak.WeakAi;
 import java.util.Collection;
+import java.util.Optional;
 
 /** Actions that can occur in a battle that require interaction with {@link IDelegateBridge} */
 public interface BattleActions {
@@ -26,14 +27,14 @@ public interface BattleActions {
       Territory battleSite,
       BattleState.Side side);
 
-  Territory queryRetreatTerritory(
+  Optional<Territory> queryRetreatTerritory(
       BattleState battleState,
       IDelegateBridge bridge,
       GamePlayer retreatingPlayer,
       Collection<Territory> availableTerritories,
       String text);
 
-  Territory querySubmergeTerritory(
+  Optional<Territory> querySubmergeTerritory(
       BattleState battleState,
       IDelegateBridge bridge,
       GamePlayer retreatingPlayer,

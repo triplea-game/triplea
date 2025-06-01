@@ -24,6 +24,7 @@ import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.IBattle;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -208,7 +209,7 @@ class CheckGeneralBattleEndTest {
 
     final UnitAttachment unitAttachment =
         (UnitAttachment) attackerUnit.getType().getAttachment(UNIT_ATTACHMENT_NAME);
-    when(unitAttachment.getCanRetreatOnStalemate()).thenReturn(true);
+    when(unitAttachment.getCanRetreatOnStalemate()).thenReturn(Optional.of(true));
 
     final BattleState battleState =
         givenBattleStateBuilder()
@@ -229,10 +230,13 @@ class CheckGeneralBattleEndTest {
     when(attackerUnit.getOwner()).thenReturn(attacker);
     final UnitAttachment unitAttachment =
         (UnitAttachment) attackerUnit.getType().getAttachment(UNIT_ATTACHMENT_NAME);
-    when(unitAttachment.getCanRetreatOnStalemate()).thenReturn(true);
+    when(unitAttachment.getCanRetreatOnStalemate()).thenReturn(Optional.of(true));
 
     final Unit attackerUnit2 = givenAnyUnit();
     when(attackerUnit2.getOwner()).thenReturn(attacker);
+    final UnitAttachment unitAttachment2 =
+        (UnitAttachment) attackerUnit2.getType().getAttachment(UNIT_ATTACHMENT_NAME);
+    when(unitAttachment2.getCanRetreatOnStalemate()).thenReturn(Optional.of(false));
 
     final Unit defenderUnit = givenAnyUnit();
     when(defenderUnit.getOwner()).thenReturn(defender);
@@ -259,7 +263,7 @@ class CheckGeneralBattleEndTest {
 
     final UnitAttachment unitAttachment =
         (UnitAttachment) attackerUnit.getType().getAttachment(UNIT_ATTACHMENT_NAME);
-    when(unitAttachment.getCanRetreatOnStalemate()).thenReturn(null);
+    when(unitAttachment.getCanRetreatOnStalemate()).thenReturn(Optional.empty());
 
     final BattleState battleState =
         givenBattleStateBuilder()

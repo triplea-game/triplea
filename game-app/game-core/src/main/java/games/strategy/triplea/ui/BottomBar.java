@@ -165,7 +165,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
         if (production > 0) {
           resources.add(new Resource(Constants.PUS, territory.getData()), production);
         }
-        Optional.ofNullable(ta.getResources()).ifPresent(r -> resources.add(r.getResourcesCopy()));
+        ta.getResources().ifPresent(r -> resources.add(r.getResourcesCopy()));
       }
 
       SwingUtilities.invokeLater(

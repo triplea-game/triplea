@@ -39,6 +39,7 @@ import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.NotificationMessages;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -100,7 +101,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   private @Nullable Map<Territory, IntegerMap<UnitType>> placement = null;
   private @Nullable Map<Territory, IntegerMap<UnitType>> removeUnits = null;
   private @Nullable IntegerMap<UnitType> purchase = null;
-  private @Nullable String resource = null;
+  private @Nullable @NonNls String resource = null;
   private int resourceCount = 0;
   // never use a map of other attachments, inside of an attachment. java will not be able to
   // deserialize it.
@@ -412,7 +413,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     frontier = value;
   }
 
-  private @Nullable ProductionFrontier getFrontier() {
+  private Optional<ProductionFrontier> getFrontier() {
+    return Optional.ofNullable(frontier);
+  }
+
+  private @Nullable ProductionFrontier getFrontierOrNull() {
     return frontier;
   }
 
@@ -474,7 +479,19 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     victory = s.intern();
   }
 
-  private @Nullable String getVictory() {
+  private Optional<String> getVictory() {
+    return Optional.ofNullable(victory);
+  }
+
+  private String getVictoryOrThrow() {
+    return getVictory()
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    MessageFormat.format("No expected victory for TriggerAttachment {0}", this)));
+  }
+
+  private String getVictoryOrNull() {
     return victory;
   }
 
@@ -592,7 +609,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     resource = s.intern();
   }
 
-  private @Nullable String getResource() {
+  private Optional<@NonNls String> getResource() {
+    return Optional.ofNullable(resource);
+  }
+
+  private @Nullable @NonNls String getResourceOrNull() {
     return resource;
   }
 
@@ -1998,15 +2019,19 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       IDelegateHistoryWriter historyWriter = bridge.getHistoryWriter();
-      for (final GamePlayer player : t.getPlayers()) {
-        change.add(ChangeFactory.changeProductionFrontier(player, t.getFrontier()));
-        historyWriter.startEvent(
-            MyFormatter.attachmentNameToText(t.getName())
-                + ": "
-                + player.getName()
-                + " has their production frontier changed to: "
-                + t.getFrontier().getName());
-      }
+      t.getFrontier()
+          .ifPresent(
+              productionFrontier -> {
+                for (final GamePlayer player : t.getPlayers()) {
+                  change.add(ChangeFactory.changeProductionFrontier(player, productionFrontier));
+                  historyWriter.startEvent(
+                      MyFormatter.attachmentNameToText(t.getName())
+                          + ": "
+                          + player.getName()
+                          + " has their production frontier changed to: "
+                          + productionFrontier.getName());
+                }
+              });
     }
     if (!change.isEmpty()) {
       bridge.addChange(change);
@@ -2300,6 +2325,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (fireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;
       }
+      final Optional<String> optionalResource = t.getResource();
+      if (optionalResource.isEmpty()) {
+        continue;
+      }
+      final String resource = optionalResource.get();
       if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
@@ -2307,18 +2337,18 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       for (final GamePlayer player : t.getPlayers()) {
         for (int i = 0; i < eachMultiple; ++i) {
           int toAdd = t.getResourceCount();
-          if (t.getResource().equals(Constants.PUS)) {
+          if (resource.equals(Constants.PUS)) {
             toAdd *= Properties.getPuMultiplier(data.getProperties());
           }
-          resources.add(data.getResourceList().getResource(t.getResource()), toAdd);
-          int total = player.getResources().getQuantity(t.getResource()) + toAdd;
+          resources.add(data.getResourceList().getResource(resource), toAdd);
+          int total = player.getResources().getQuantity(resource) + toAdd;
           if (total < 0) {
             toAdd -= total;
             total = 0;
           }
           bridge.addChange(
               ChangeFactory.changeResourcesChange(
-                  player, data.getResourceList().getResource(t.getResource()), toAdd));
+                  player, data.getResourceList().getResource(resource), toAdd));
           final String puMessage =
               MyFormatter.attachmentNameToText(t.getName())
                   + ": "
@@ -2446,8 +2476,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
-      final String victoryMessage = notificationMessages.getMessage(t.getVictory().trim());
-      final String sounds = notificationMessages.getSoundsKey(t.getVictory().trim());
+      final String victoryMessage = notificationMessages.getMessage(t.getVictoryOrThrow().trim());
+      final String sounds = notificationMessages.getSoundsKey(t.getVictoryOrThrow().trim());
       if (victoryMessage != null) {
         if (sounds != null) { // only play the sound if we are also notifying everyone
           ISound sound = bridge.getSoundChannelBroadcaster();
@@ -2484,7 +2514,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public static Predicate<TriggerAttachment> prodMatch() {
-    return t -> t.getFrontier() != null;
+    return t -> t.getFrontier().isPresent();
   }
 
   public static Predicate<TriggerAttachment> prodFrontierEditMatch() {
@@ -2548,7 +2578,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public static Predicate<TriggerAttachment> victoryMatch() {
-    return t -> t.getVictory() != null && t.getVictory().length() > 0;
+    return t -> !t.getVictory().orElse("").isEmpty();
   }
 
   public static Predicate<TriggerAttachment> activateTriggerMatch() {
@@ -2561,7 +2591,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       case "frontier" ->
           Optional.of(
               MutableProperty.of(
-                  this::setFrontier, this::setFrontier, this::getFrontier, this::resetFrontier));
+                  this::setFrontier,
+                  this::setFrontier,
+                  this::getFrontierOrNull,
+                  this::resetFrontier));
       case "productionRule" ->
           Optional.of(
               MutableProperty.of(
@@ -2599,7 +2632,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                   this::setPurchase, this::setPurchase, this::getPurchase, this::resetPurchase));
       case "resource" ->
           Optional.of(
-              MutableProperty.ofString(this::setResource, this::getResource, this::resetResource));
+              MutableProperty.ofString(
+                  this::setResource, this::getResourceOrNull, this::resetResource));
       case "resourceCount" ->
           Optional.of(
               MutableProperty.of(
@@ -2620,7 +2654,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                   this::resetRelationshipChange));
       case "victory" ->
           Optional.of(
-              MutableProperty.ofString(this::setVictory, this::getVictory, this::resetVictory));
+              MutableProperty.ofString(
+                  this::setVictory, this::getVictoryOrNull, this::resetVictory));
       case "activateTrigger" ->
           Optional.of(
               MutableProperty.of(

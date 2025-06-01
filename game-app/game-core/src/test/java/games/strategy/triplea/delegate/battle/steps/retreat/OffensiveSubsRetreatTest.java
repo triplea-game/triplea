@@ -37,6 +37,7 @@ import games.strategy.triplea.delegate.battle.steps.MockGameData;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -209,7 +210,7 @@ public class OffensiveSubsRetreatTest extends AbstractClientSettingTestCase {
 
       when(battleActions.querySubmergeTerritory(
               battleState, delegateBridge, attacker, List.of(battleSite), "attacker retreat subs?"))
-          .thenReturn(battleSite);
+          .thenReturn(Optional.of(battleSite));
 
       final OffensiveSubsRetreat offensiveSubsRetreat =
           new OffensiveSubsRetreat(battleState, battleActions);
@@ -242,7 +243,7 @@ public class OffensiveSubsRetreatTest extends AbstractClientSettingTestCase {
 
       when(battleActions.querySubmergeTerritory(
               battleState, delegateBridge, attacker, List.of(battleSite), "attacker retreat subs?"))
-          .thenReturn(battleSite);
+          .thenReturn(Optional.of(battleSite));
 
       final OffensiveSubsRetreat offensiveSubsRetreat =
           new OffensiveSubsRetreat(battleState, battleActions);
@@ -294,7 +295,7 @@ public class OffensiveSubsRetreatTest extends AbstractClientSettingTestCase {
               attacker,
               List.of(retreatTerritory),
               "attacker retreat subs?"))
-          .thenReturn(retreatTerritory);
+          .thenReturn(Optional.of(retreatTerritory));
 
       final OffensiveSubsRetreat offensiveSubsRetreat =
           new OffensiveSubsRetreat(battleState, battleActions);

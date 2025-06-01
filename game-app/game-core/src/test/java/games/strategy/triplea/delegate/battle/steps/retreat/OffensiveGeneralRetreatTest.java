@@ -35,6 +35,7 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -341,7 +342,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
                 attacker,
                 List.of(battleSite),
                 "attacker retreat planes?"))
-            .thenReturn(battleSite);
+            .thenReturn(Optional.of(battleSite));
 
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);
@@ -376,7 +377,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
                 attacker,
                 List.of(battleSite),
                 "attacker retreat planes?"))
-            .thenReturn(battleSite);
+            .thenReturn(Optional.of(battleSite));
 
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);
@@ -407,7 +408,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
                 attacker,
                 List.of(battleSite),
                 "attacker retreat planes?"))
-            .thenReturn(battleSite);
+            .thenReturn(Optional.of(battleSite));
 
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);
@@ -456,7 +457,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
                 attacker,
                 List.of(retreatSite),
                 "attacker retreat non-amphibious units?"))
-            .thenReturn(retreatSite);
+            .thenReturn(Optional.of(retreatSite));
 
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);
@@ -581,7 +582,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
 
         when(battleActions.queryRetreatTerritory(
                 battleState, delegateBridge, attacker, List.of(retreatSite), "attacker retreat?"))
-            .thenReturn(retreatSite);
+            .thenReturn(Optional.of(retreatSite));
 
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);
@@ -614,7 +615,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
 
         when(battleActions.queryRetreatTerritory(
                 battleState, delegateBridge, attacker, List.of(retreatSite), "attacker retreat?"))
-            .thenReturn(retreatSite);
+            .thenReturn(Optional.of(retreatSite));
 
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);

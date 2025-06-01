@@ -76,7 +76,6 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.PredicateBuilder;
@@ -285,7 +284,7 @@ public class MustFightBattle extends DependentBattle
   }
 
   @Override
-  public @Nullable Territory queryRetreatTerritory(
+  public Optional<Territory> queryRetreatTerritory(
       final BattleState battleState,
       final IDelegateBridge bridge,
       final GamePlayer retreatingPlayer,
@@ -295,32 +294,32 @@ public class MustFightBattle extends DependentBattle
         battleState, getRemote(retreatingPlayer, bridge), availableTerritories, false, text);
   }
 
-  private @Nullable Territory retreatQuery(
+  private Optional<Territory> retreatQuery(
       final BattleState battleState,
       final Player remotePlayer,
       final Collection<Territory> availableTerritories,
       final boolean submerge,
       final String text) {
-    final Territory retreatTo =
+    final Optional<Territory> optionalRetreatTo =
         remotePlayer.retreatQuery(
             battleState.getBattleId(),
             submerge,
             battleState.getBattleSite(),
             availableTerritories,
             text);
-    if (retreatTo != null && !availableTerritories.contains(retreatTo)) {
+    if (optionalRetreatTo.isPresent() && !availableTerritories.contains(optionalRetreatTo.get())) {
       log.error(
           "Invalid retreat selection: "
-              + retreatTo
+              + optionalRetreatTo.get()
               + " not in "
               + MyFormatter.defaultNamedToTextList(availableTerritories));
-      return null;
+      return Optional.empty();
     }
-    return retreatTo;
+    return optionalRetreatTo;
   }
 
   @Override
-  public @Nullable Territory querySubmergeTerritory(
+  public Optional<Territory> querySubmergeTerritory(
       final BattleState battleState,
       final IDelegateBridge bridge,
       final GamePlayer retreatingPlayer,

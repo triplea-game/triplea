@@ -2346,7 +2346,17 @@ public class UnitAttachment extends DefaultAttachment {
     movementLimit = value;
   }
 
-  public @Nullable Tuple<Integer, String> getMovementLimit() {
+  public Optional<Tuple<Integer, String>> getMovementLimit() {
+    return Optional.ofNullable(movementLimit);
+  }
+
+  /**
+   * Might return {@code null} if the attribute is {@code null}. Avoid usage; instead, see {@link
+   * #getMovementLimit()}.
+   *
+   * @return Returns {@link #movementLimit}.
+   */
+  private @Nullable Tuple<Integer, String> getMovementLimitOrNull() {
     return movementLimit;
   }
 
@@ -2362,7 +2372,17 @@ public class UnitAttachment extends DefaultAttachment {
     attackingLimit = value;
   }
 
-  public @Nullable Tuple<Integer, String> getAttackingLimit() {
+  public Optional<Tuple<Integer, String>> getAttackingLimit() {
+    return Optional.ofNullable(attackingLimit);
+  }
+
+  /**
+   * Might return {@code null} if the attribute is {@code null}. Avoid usage; instead, see {@link
+   * #getAttackingLimit()}.
+   *
+   * @return Returns {@link #attackingLimit}.
+   */
+  private @Nullable Tuple<Integer, String> getAttackingLimitOrNull() {
     return attackingLimit;
   }
 
@@ -2378,8 +2398,18 @@ public class UnitAttachment extends DefaultAttachment {
     placementLimit = value;
   }
 
-  public @Nullable Tuple<Integer, String> getPlacementLimit() {
-    return placementLimit;
+  public Optional<Tuple<Integer, String>> getPlacementLimit() {
+    return Optional.ofNullable(placementLimit);
+  }
+
+  /**
+   * Might return {@code null} if the attribute is {@code null}. Avoid usage; instead, see {@link
+   * #getPlacementLimit()}.
+   *
+   * @return Returns {@link #placementLimit}.
+   */
+  private @Nullable Tuple<Integer, String> getPlacementLimitOrNull() {
+    return movementLimit;
   }
 
   private void resetPlacementLimit() {
@@ -2431,7 +2461,17 @@ public class UnitAttachment extends DefaultAttachment {
     canRetreatOnStalemate = getBool(value);
   }
 
-  public @Nullable Boolean getCanRetreatOnStalemate() {
+  public Optional<Boolean> getCanRetreatOnStalemate() {
+    return Optional.ofNullable(canRetreatOnStalemate);
+  }
+
+  /**
+   * Might return {@code null} if the attribute is {@code null}. Avoid usage; instead, see {@link
+   * #getCanRetreatOnStalemate()}.
+   *
+   * @return Returns {@link #canRetreatOnStalemate}.
+   */
+  private @Nullable Boolean getCanRetreatOnStalemateOrNull() {
     return canRetreatOnStalemate;
   }
 
@@ -3440,7 +3480,7 @@ public class UnitAttachment extends DefaultAttachment {
               MutableProperty.of(
                   this::setMovementLimit,
                   this::setMovementLimit,
-                  this::getMovementLimit,
+                  this::getMovementLimitOrNull,
                   this::resetMovementLimit));
       case ATTACK_STRENGTH ->
           Optional.of(
@@ -3571,7 +3611,7 @@ public class UnitAttachment extends DefaultAttachment {
               MutableProperty.of(
                   this::setAttackingLimit,
                   this::setAttackingLimit,
-                  this::getAttackingLimit,
+                  this::getAttackingLimitOrNull,
                   this::resetAttackingLimit));
       case ATTACK_ROLL ->
           Optional.of(
@@ -3953,7 +3993,7 @@ public class UnitAttachment extends DefaultAttachment {
               MutableProperty.of(
                   this::setPlacementLimit,
                   this::setPlacementLimit,
-                  this::getPlacementLimit,
+                  this::getPlacementLimitOrNull,
                   this::resetPlacementLimit));
       case "canScramble" ->
           Optional.of(
@@ -4091,7 +4131,7 @@ public class UnitAttachment extends DefaultAttachment {
           Optional.of(
               MutableProperty.of(
                   this::setCanRetreatOnStalemate, this::setCanRetreatOnStalemate,
-                  this::getCanRetreatOnStalemate, this::resetCanRetreatOnStalemate));
+                  this::getCanRetreatOnStalemateOrNull, this::resetCanRetreatOnStalemate));
       default -> Optional.empty();
     };
   }
