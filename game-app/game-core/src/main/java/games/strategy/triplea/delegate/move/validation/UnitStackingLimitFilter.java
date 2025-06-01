@@ -79,14 +79,14 @@ public class UnitStackingLimitFilter {
       if (forbiddenTypes.contains(ut)) {
         continue;
       }
-      Optional<Tuple<Integer, String>> optionalStackingLimit =
-          stackingLimitGetter.apply(ut.getUnitAttachment());
-      if (optionalStackingLimit.isEmpty()) {
-        continue;
-      }
       int maxAllowed =
           getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-              ut, t, owner, optionalStackingLimit.get(), playerStackingLimits, unitsAllowedSoFar);
+              ut,
+              t,
+              owner,
+              stackingLimitGetter.apply(ut.getUnitAttachment()).orElse(null),
+              playerStackingLimits,
+              unitsAllowedSoFar);
       if (maxAllowed > 0) {
         unitsAllowedSoFar.add(unit);
       }
@@ -107,7 +107,7 @@ public class UnitStackingLimitFilter {
       final UnitType ut,
       final Territory t,
       final GamePlayer owner,
-      final Tuple<Integer, String> stackingLimit,
+      final @Nullable Tuple<Integer, String> stackingLimit,
       final Set<Triple<Integer, String, Set<UnitType>>> playerStackingLimits,
       final Collection<Unit> pendingUnits) {
     int max = Integer.MAX_VALUE;
