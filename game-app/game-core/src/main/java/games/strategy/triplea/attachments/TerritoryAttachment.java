@@ -257,7 +257,17 @@ public class TerritoryAttachment extends DefaultAttachment {
     resources = value;
   }
 
-  public @Nullable ResourceCollection getResources() {
+  public Optional<ResourceCollection> getResources() {
+    return Optional.ofNullable(resources);
+  }
+
+  /**
+   * Might return {@code null} if the attribute is {@code null}. Avoid usage; instead, see {@link
+   * #getResources()}.
+   *
+   * @return Returns {@link #resources}.
+   */
+  private ResourceCollection getResourcesOrNull() {
     return resources;
   }
 
@@ -901,7 +911,7 @@ public class TerritoryAttachment extends DefaultAttachment {
               MutableProperty.of(
                   this::setResources,
                   this::setResources,
-                  this::getResources,
+                  this::getResourcesOrNull,
                   this::resetResources));
       default -> Optional.empty();
     };

@@ -4,7 +4,6 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import java.util.Optional;
 import java.util.function.Function;
 import lombok.experimental.UtilityClass;
 
@@ -27,7 +26,8 @@ public class ResourceValue {
         return TerritoryAttachment.get(territory)
             .map(
                 territoryAttachment ->
-                    Optional.ofNullable(territoryAttachment.getResources())
+                    territoryAttachment
+                        .getResources()
                         .map(resources -> (long) resources.getQuantity(resource))
                         .orElse(0L))
             .orElse(0L);
