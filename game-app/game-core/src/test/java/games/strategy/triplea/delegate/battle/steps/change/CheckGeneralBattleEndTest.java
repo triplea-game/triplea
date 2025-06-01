@@ -234,6 +234,9 @@ class CheckGeneralBattleEndTest {
 
     final Unit attackerUnit2 = givenAnyUnit();
     when(attackerUnit2.getOwner()).thenReturn(attacker);
+    final UnitAttachment unitAttachment2 =
+        (UnitAttachment) attackerUnit2.getType().getAttachment(UNIT_ATTACHMENT_NAME);
+    when(unitAttachment2.getCanRetreatOnStalemate()).thenReturn(Optional.of(false));
 
     final Unit defenderUnit = givenAnyUnit();
     when(defenderUnit.getOwner()).thenReturn(defender);
