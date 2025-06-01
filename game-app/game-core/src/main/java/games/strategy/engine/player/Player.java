@@ -13,6 +13,7 @@ import games.strategy.triplea.delegate.data.CasualtyList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
@@ -240,7 +241,7 @@ public interface Player extends IRemote {
    * @return the territory to retreat to, or null if the player doesnt wish to retreat
    */
   @RemoteActionCode(13)
-  Territory retreatQuery(
+  Optional<Territory> retreatQuery(
       UUID battleId,
       boolean submerge,
       Territory battleTerritory,

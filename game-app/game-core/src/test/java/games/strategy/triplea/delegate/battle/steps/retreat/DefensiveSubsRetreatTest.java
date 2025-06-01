@@ -33,6 +33,7 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -156,7 +157,7 @@ class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
 
       when(battleActions.querySubmergeTerritory(
               battleState, delegateBridge, defender, List.of(battleSite), "defender retreat subs?"))
-          .thenReturn(battleSite);
+          .thenReturn(Optional.of(battleSite));
 
       final DefensiveSubsRetreat defensiveSubsRetreat =
           new DefensiveSubsRetreat(battleState, battleActions);
@@ -188,7 +189,7 @@ class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
 
       when(battleActions.querySubmergeTerritory(
               battleState, delegateBridge, defender, List.of(battleSite), "defender retreat subs?"))
-          .thenReturn(battleSite);
+          .thenReturn(Optional.of(battleSite));
 
       final DefensiveSubsRetreat defensiveSubsRetreat =
           new DefensiveSubsRetreat(battleState, battleActions);
@@ -248,7 +249,7 @@ class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
               defender,
               List.of(retreatTerritory),
               "defender retreat subs?"))
-          .thenReturn(retreatTerritory);
+          .thenReturn(Optional.of(retreatTerritory));
 
       final DefensiveSubsRetreat defensiveSubsRetreat =
           new DefensiveSubsRetreat(battleState, battleActions);
@@ -290,7 +291,7 @@ class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
               defender,
               List.of(retreatTerritory, battleSite),
               "defender retreat subs?"))
-          .thenReturn(retreatTerritory);
+          .thenReturn(Optional.of(retreatTerritory));
 
       final DefensiveSubsRetreat defensiveSubsRetreat =
           new DefensiveSubsRetreat(battleState, battleActions);
@@ -333,7 +334,7 @@ class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
               defender,
               List.of(retreatTerritory, battleSite),
               "defender retreat subs?"))
-          .thenReturn(retreatTerritory);
+          .thenReturn(Optional.of(retreatTerritory));
 
       final DefensiveSubsRetreat defensiveSubsRetreat =
           new DefensiveSubsRetreat(battleState, battleActions);

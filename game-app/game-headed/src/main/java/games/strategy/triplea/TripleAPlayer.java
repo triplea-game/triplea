@@ -45,6 +45,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -749,7 +750,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
   }
 
   @Override
-  public Territory retreatQuery(
+  public Optional<Territory> retreatQuery(
       final UUID battleId,
       final boolean submerge,
       final Territory battleTerritory,

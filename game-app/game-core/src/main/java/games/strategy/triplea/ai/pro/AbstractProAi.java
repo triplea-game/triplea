@@ -308,8 +308,7 @@ public abstract class AbstractProAi extends AbstractAi {
     ProTechAi.tech(techDelegate, data, player);
   }
 
-  @Override
-  public Territory retreatQuery(
+  public Optional<Territory> retreatQuery(
       final UUID battleId,
       final boolean submerge,
       final Territory battleTerritory,
@@ -325,7 +324,7 @@ public abstract class AbstractProAi extends AbstractAi {
 
     // If battle is null or amphibious then don't retreat
     if (battle == null || battleTerritory == null || battle.isAmphibious()) {
-      return null;
+      return Optional.empty();
     }
 
     // If attacker with more unit strength or strafing and isn't land battle with only air left then
@@ -352,7 +351,7 @@ public abstract class AbstractProAi extends AbstractAi {
             + isStrafing);
     if ((isStrafing || (isAttacker && strengthDifference > 50))
         && (battleTerritory.isWater() || attackers.stream().anyMatch(Matches.unitIsLand()))) {
-      return null;
+      return Optional.empty();
     }
     prepareData(getGameData());
     return retreatAi.retreatQuery(battleId, battleTerritory, possibleTerritories);

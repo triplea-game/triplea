@@ -16,6 +16,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.settings.ClientSetting;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.experimental.UtilityClass;
@@ -55,7 +56,7 @@ public class EvaderRetreat {
     final boolean isAttemptingSubmerge =
         possibleRetreatSites.size() == 1
             && possibleRetreatSites.contains(parameters.battleState.getBattleSite());
-    final Territory retreatTo =
+    final Optional<Territory> optionalRetreatTo =
         isAttemptingSubmerge
             ? parameters.battleActions.querySubmergeTerritory(
                 parameters.battleState,
@@ -69,9 +70,7 @@ public class EvaderRetreat {
                 retreatingPlayer,
                 possibleRetreatSites,
                 text);
-    if (retreatTo != null) {
-      retreatUnits(parameters, step, retreatTo);
-    }
+    optionalRetreatTo.ifPresent(retreatTo -> retreatUnits(parameters, step, retreatTo));
   }
 
   private static void retreatUnits(

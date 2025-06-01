@@ -99,12 +99,14 @@ public class OffensiveGeneralRetreat implements BattleStep {
       return;
     }
 
-    Retreater retreater = null;
+    final Retreater retreater;
 
     if (battleState.getStatus().isAmphibious()) {
       retreater = getAmphibiousRetreater();
     } else if (canAttackerRetreat()) {
       retreater = new RetreaterGeneral(battleState);
+    } else {
+      retreater = null;
     }
 
     if (retreater != null) {
@@ -124,17 +126,14 @@ public class OffensiveGeneralRetreat implements BattleStep {
       final Collection<Unit> retreatUnits = retreater.getRetreatUnits();
       final Collection<Territory> possibleRetreatSites =
           retreater.getPossibleRetreatSites(retreatUnits);
-      final Territory retreatTo =
-          battleActions.queryRetreatTerritory(
+      battleActions
+          .queryRetreatTerritory(
               battleState,
               bridge,
               battleState.getPlayer(OFFENSE),
               possibleRetreatSites,
-              getQueryText(retreater.getRetreatType()));
-
-      if (retreatTo != null) {
-        retreat(bridge, retreater, retreatTo);
-      }
+              getQueryText(retreater.getRetreatType()))
+          .ifPresent(retreatTo -> retreat(bridge, retreater, retreatTo));
     }
   }
 

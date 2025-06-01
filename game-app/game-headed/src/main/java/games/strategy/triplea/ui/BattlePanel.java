@@ -492,14 +492,14 @@ public final class BattlePanel extends ActionPanel {
         .orElse(null);
   }
 
-  public Territory getRetreat(
+  public Optional<Territory> getRetreat(
       final UUID battleId,
       final String message,
       final Collection<Territory> possible,
       final boolean submerge) {
     // something is really wrong
     if (!ensureBattleIsDisplayed(battleId)) {
-      return null;
+      return Optional.empty();
     }
     return battleDisplay.getRetreat(message, possible, submerge);
   }

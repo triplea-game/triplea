@@ -342,8 +342,7 @@ public class BattleDisplay extends JPanel {
     attackerModel.notifyRetreat(retreating);
   }
 
-  @Nullable
-  Territory getRetreat(
+  Optional<Territory> getRetreat(
       final String message, final Collection<Territory> possible, final boolean submerge) {
     Util.ensureNotOnEventDispatchThread();
     final String title;
@@ -363,7 +362,7 @@ public class BattleDisplay extends JPanel {
           action.actionPerformed(null);
         });
 
-    return uiContext.awaitUserInput(future).orElse(null);
+    return uiContext.awaitUserInput(future);
   }
 
   private Action getPlayerAction(

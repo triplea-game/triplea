@@ -16,6 +16,7 @@ import games.strategy.triplea.delegate.battle.IBattle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nullable;
 
@@ -46,7 +47,7 @@ class ProRetreatAi {
     proData = ai.getProData();
   }
 
-  Territory retreatQuery(
+  Optional<Territory> retreatQuery(
       final UUID battleId,
       final Territory battleTerritory,
       final Collection<Territory> possibleTerritories) {
@@ -124,7 +125,7 @@ class ProRetreatAi {
               + result.getTuvSwing()
               + ", possibleTerritories="
               + possibleTerritories.size());
-      return retreatTerritory;
+      return Optional.ofNullable(retreatTerritory);
     }
     ProLogger.debug(
         player.getName()
@@ -135,6 +136,6 @@ class ProRetreatAi {
             + ", TUVSwing="
             + result.getTuvSwing());
 
-    return null;
+    return Optional.empty();
   }
 }
