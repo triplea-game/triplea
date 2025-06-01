@@ -319,7 +319,7 @@ public class TerritoryAttachment extends DefaultAttachment {
    *
    * @return Returns {@link #capital}.
    */
-  public @Nullable @NonNls String getCapitalOrNull() {
+  private @Nullable @NonNls String getCapitalOrNull() {
     return capital;
   }
 
