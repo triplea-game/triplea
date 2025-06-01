@@ -826,7 +826,7 @@ public class MoveValidator {
     final Predicate<Unit> hasMovementOrAttackingLimit =
         unit -> {
           final var ua = unit.getUnitAttachment();
-          if (ua.getMovementLimit() != null || ua.getAttackingLimit() != null) {
+          if (ua.getMovementLimit().isPresent() || ua.getAttackingLimit().isPresent()) {
             return true;
           }
           for (final var limit : playerMovementLimit) {
