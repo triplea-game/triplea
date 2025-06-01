@@ -3250,3 +3250,38 @@
   img: https://raw.githubusercontent.com/ClavintheGreat/thehobbesians_1939/blob/main/thehobbesians_1939-master/preview.png
   description: |
     <br>TheHobbesian's Variation of Smallman's BigWorld 1939.
+- mapName: Revised with Cavalry
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Revised_With_Cavalry/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Revised_With_Cavalry/blob/master/preview.png
+  description: |
+    <br>World War II Revised with cavalry units added
+- mapName: A Path Beyond
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/apathbeyond/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/apathbeyond/blob/master/preview.png
+  description: |
+    <br>Two nations struggle to control a continent.
+- mapName: AA50-Europe
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/AA50-Europe/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/AA50-Europe/blob/master/preview.png
+  description: |
+    <br>World Word 2 in Europe on the AA50 map
+- mapName: Axis General 1939
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Axisgeneral_1939/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Axisgeneral_1939/blob/master/preview.png
+  description: |
+    <br>World War 2 in 1939 on the Big World map.
+- mapName: AA50-41 Maintenance
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/AA50-41-Maintenance/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/AA50-41-Maintenance/blob/master/preview.png
+  description: |
+    <br>Axis & Allies Version 3 - 1941 Scenario with upkeep costs
