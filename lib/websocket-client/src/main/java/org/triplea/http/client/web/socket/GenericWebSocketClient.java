@@ -44,6 +44,7 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
   private final Collection<Consumer<String>> connectionTerminatedListeners = new ArrayList<>();
 
   private final URI websocketUri;
+  private final String apiKey;
   private final Consumer<String> errorHandler;
   private final Function<URI, WebSocketConnection> webSocketConnectionFactory;
 
@@ -58,29 +59,32 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
 
   @Builder
   public GenericWebSocketClient(
-      @Nonnull final URI websocketUri,
-      @Nonnull final Consumer<String> errorHandler,
-      @Nonnull final Map<String, String> headers) {
+      @Nonnull URI websocketUri,
+      @Nonnull String apiKey,
+      @Nonnull Consumer<String> errorHandler,
+      @Nonnull Map<String, String> headers) {
     this(
         new WebSocketProtocolSwapper().apply(websocketUri),
+        apiKey,
         errorHandler,
         uri -> new WebSocketConnection(uri, headers));
   }
 
   @VisibleForTesting
-  public GenericWebSocketClient(final URI websocketUri, Map<String, String> headers) {
-    this(websocketUri, log::warn, headers);
+  public GenericWebSocketClient(URI websocketUri, String apiKey, Map<String, String> headers) {
+    this(websocketUri, apiKey, log::warn, headers);
   }
 
   GenericWebSocketClient(
       URI websocketUri,
+      String apiKey,
       Consumer<String> errorHandler,
       Function<URI, WebSocketConnection> webSocketConnectionFactory) {
     Preconditions.checkArgument(
         websocketUri.getScheme().equals("ws") || websocketUri.getScheme().equals("wss"),
         "Websocket URI scheme must be either ws or wss, but was: " + websocketUri);
-
     this.websocketUri = websocketUri;
+    this.apiKey = apiKey;
     this.errorHandler = errorHandler;
     this.webSocketConnectionFactory = webSocketConnectionFactory;
   }

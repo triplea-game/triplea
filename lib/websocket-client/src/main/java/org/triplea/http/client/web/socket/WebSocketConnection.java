@@ -163,7 +163,7 @@ class WebSocketConnection {
         .exceptionally(
             throwable -> {
               // Do a single retry with fixed back-off
-              log.info("Failed to connect, will retrying", throwable);
+              log.info("Failed to connect, will retry", throwable);
               Interruptibles.sleep(1000);
               retryConnection(errorHandler);
               return null;
@@ -183,11 +183,22 @@ class WebSocketConnection {
   }
 
   private void retryConnection(final Consumer<String> errorHandler) {
+    connectionIsOpen = false;
+    httpClient = HttpClient.newHttpClient();
     connectAsyncAndStartPingSender()
         .exceptionally(
             throwable -> {
               log.info("Failed to connect", throwable);
               errorHandler.accept("Failed to connect: " + throwable.getMessage());
+
+              Interruptibles.sleep(5000);
+              connectAsyncAndStartPingSender()
+                  .exceptionally(
+                      t -> {
+                        log.info("Failed to connect", t);
+                        errorHandler.accept("Failed to connect: " + t.getMessage());
+                        return null;
+                      });
               return null;
             });
   }
@@ -262,15 +273,15 @@ class WebSocketConnection {
         final WebSocket webSocket, final int statusCode, final String reason) {
 
       log.info("Connection closed");
-      Interruptibles.sleep(10_000L);
+      //      Interruptibles.sleep(10_000L);
       log.info("Reconnecting");
 
-      retryConnection( error  -> {
-        log.info("Failed to connect: {}", error);
-        }
-      );
+      retryConnection(
+          error -> {
+            log.info("Failed to reconnect: {}", error);
+          });
 
-      if(isOpen()) {
+      if (isOpen()) {
         log.info("Successfully reconnected to server");
         return null;
       }

@@ -49,12 +49,6 @@ public class GenericWebSocket {
     this(webSocketMessagingBus, ip -> false, new MessageSender());
   }
 
-  public GenericWebSocket(
-      @Nonnull final WebSocketMessagingBus webSocketMessagingBus,
-      @Nullable final Predicate<InetAddress> banCheck) {
-    this(webSocketMessagingBus, banCheck, new MessageSender());
-  }
-
   public static void init(
       final Class<?> websocketClass,
       final WebSocketMessagingBus webSocketMessagingBus,
@@ -79,10 +73,6 @@ public class GenericWebSocket {
     onOpen(WebSocketSessionAdapter.fromWebSocket(webSocket));
   }
 
-  void onOpen(final Session session) {
-    onOpen(WebSocketSessionAdapter.fromSession(session));
-  }
-
   void onOpen(final WebSocketSession session) {
     if (isSessionBanned(session)) {
       disconnectBannedSession(session);
@@ -103,10 +93,6 @@ public class GenericWebSocket {
 
   public void onMessage(final WebSocket webSocket, final String message) {
     onMessage(WebSocketSessionAdapter.fromWebSocket(webSocket), message, badMessageCache);
-  }
-
-  public void onMessage(final Session session, final String message) {
-    onMessage(WebSocketSessionAdapter.fromSession(session), message, badMessageCache);
   }
 
   public void onMessage(final WebSocketSession session, final String message) {
