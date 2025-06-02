@@ -16,7 +16,6 @@ import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
@@ -471,8 +470,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     for (int i = 1; i < s.length; i++) {
       final String unitTypeToProduce = s[i];
       // validate that this unit exists in the xml
-      final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
-      if (ut == null && !(unitTypeToProduce.equals("any") || unitTypeToProduce.equals("ANY"))) {
+      if (getDataOrThrow().getUnitTypeList().getUnitType(unitTypeToProduce).isEmpty()
+          && !(unitTypeToProduce.equals("any") || unitTypeToProduce.equals("ANY"))) {
         throw new GameParseException("No unit called: " + unitTypeToProduce + thisErrorMsg());
       }
     }

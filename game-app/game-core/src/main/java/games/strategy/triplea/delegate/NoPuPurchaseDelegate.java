@@ -51,7 +51,7 @@ public class NoPuPurchaseDelegate extends PurchaseDelegate {
     if (Properties.getProductionPerValuedTerritoryRestricted(getData().getProperties())
         && (ra == null || ra.getProductionPerXTerritories().isEmpty())) {
       productionPerXTerritories.put(
-          getData().getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INFANTRY), 1);
+          getData().getUnitTypeList().getUnitTypeOrThrow(Constants.UNIT_TYPE_INFANTRY), 1);
     } else if (Properties.getProductionPerXTerritoriesRestricted(getData().getProperties())
         && ra != null) {
       productionPerXTerritories = ra.getProductionPerXTerritories();
@@ -77,7 +77,7 @@ public class NoPuPurchaseDelegate extends PurchaseDelegate {
       }
       unitCount += terrCount / prodPerXTerrs;
       productionUnits.addAll(
-          getData().getUnitTypeList().getUnitType(ut.getName()).create(unitCount, player));
+          getData().getUnitTypeList().getUnitTypeOrThrow(ut.getName()).create(unitCount, player));
     }
     return productionUnits;
   }

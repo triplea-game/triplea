@@ -105,10 +105,7 @@ public class UnitsDrawer extends AbstractDrawable {
           factory.getUnitImageWidth() + 2,
           3);
     }
-    final UnitType type = data.getUnitTypeList().getUnitType(unitType);
-    if (type == null) {
-      throw new IllegalStateException("Type not found: " + unitType);
-    }
+    final UnitType type = data.getUnitTypeList().getUnitTypeOrThrow(unitType);
     final GamePlayer owner = data.getPlayerList().getPlayerId(playerName);
     final boolean damagedImage = damaged > 0 || bombingUnitDamage > 0;
 
@@ -265,7 +262,7 @@ public class UnitsDrawer extends AbstractDrawable {
     // and the map units haven't updated yet, so the unit count from the territory won't match the
     // units in count
     final Territory t = data.getMap().getTerritory(territoryName);
-    final UnitType type = data.getUnitTypeList().getUnitType(unitType);
+    final UnitType type = data.getUnitTypeList().getUnitTypeOrThrow(unitType);
     final Predicate<Unit> selectedUnits =
         Matches.unitIsOfType(type)
             .and(Matches.unitIsOwnedBy(data.getPlayerList().getPlayerId(playerName)))

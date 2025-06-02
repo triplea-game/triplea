@@ -121,7 +121,7 @@ class ParserTest {
         (UnitAttachment)
             gameData
                 .getUnitTypeList()
-                .getUnitType(Constants.UNIT_TYPE_INF)
+                .getUnitTypeOrThrow(Constants.UNIT_TYPE_INF)
                 .getAttachment(Constants.UNIT_ATTACHMENT_NAME);
     assertEquals(1, ua.getTransportCost());
     att =

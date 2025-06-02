@@ -40,11 +40,33 @@ public class Production {
   @TagList
   private List<PlayerRepair> playerRepairs;
 
+  public interface Rule {
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    class Cost {
+      @XmlAttribute @Attribute private String resource;
+      @XmlAttribute @Attribute private Integer quantity;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    class Result {
+      @XmlAttribute @Attribute private String resourceOrUnit;
+      @XmlAttribute @Attribute private Integer quantity;
+    }
+
+    List<Result> getRuleResults();
+  }
+
   @Getter
   @Builder
   @NoArgsConstructor
   @AllArgsConstructor
-  public static class ProductionRule {
+  public static class ProductionRule implements Rule {
     @XmlAttribute @Attribute private String name;
 
     @XmlElement(name = "cost")
@@ -55,22 +77,9 @@ public class Production {
     @TagList
     private List<Result> results;
 
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Cost {
-      @XmlAttribute @Attribute private String resource;
-      @XmlAttribute @Attribute private Integer quantity;
-    }
-
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Result {
-      @XmlAttribute @Attribute private String resourceOrUnit;
-      @XmlAttribute @Attribute private Integer quantity;
+    @Override
+    public List<Result> getRuleResults() {
+      return results;
     }
   }
 
@@ -78,7 +87,7 @@ public class Production {
   @Builder
   @NoArgsConstructor
   @AllArgsConstructor
-  public static class RepairRule {
+  public static class RepairRule implements Rule {
     @XmlAttribute @Attribute private String name;
 
     @XmlElement(name = "cost")
@@ -89,22 +98,9 @@ public class Production {
     @TagList
     private List<ProductionRule.Result> results;
 
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Cost {
-      @XmlAttribute @Attribute private String resource;
-      @XmlAttribute @Attribute private String quantity;
-    }
-
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Result {
-      @XmlAttribute @Attribute private String resourceOrUnit;
-      @XmlAttribute @Attribute private String quantity;
+    @Override
+    public List<Result> getRuleResults() {
+      return results;
     }
   }
 

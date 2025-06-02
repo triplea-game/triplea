@@ -33,13 +33,13 @@ class CasualtyOrderOfLossesTestOnNapoleonic {
       checkNotNull(data.getPlayerList().getPlayerId("UnitedKingdom"));
   private static final Territory NORMANDY = checkNotNull(territory("Normandy", data));
   private static final UnitType HOWITZER = // attacks at 1, gives support
-      checkNotNull(data.getUnitTypeList().getUnitType("Howitzer"));
+      checkNotNull(data.getUnitTypeList().getUnitTypeOrThrow("Howitzer"));
   private static final UnitType ARTILLERY = // attacks at 2, gives support
-      checkNotNull(data.getUnitTypeList().getUnitType("Artillery"));
+      checkNotNull(data.getUnitTypeList().getUnitTypeOrThrow("Artillery"));
   private static final UnitType FUSILIER = // attacks at 1, isSupportable
-      checkNotNull(data.getUnitTypeList().getUnitType("Fusiliers"));
+      checkNotNull(data.getUnitTypeList().getUnitTypeOrThrow("Fusiliers"));
   private static final UnitType GRENADIERS = // attacks at 3, isSupportable
-      checkNotNull(data.getUnitTypeList().getUnitType("Grenadiers"));
+      checkNotNull(data.getUnitTypeList().getUnitTypeOrThrow("Grenadiers"));
 
   private static final IntegerMap<UnitType> COST_MAP =
       IntegerMap.of(Map.of(FUSILIER, 4, HOWITZER, 4));

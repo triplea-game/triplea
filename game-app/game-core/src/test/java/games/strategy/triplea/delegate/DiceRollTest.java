@@ -222,7 +222,7 @@ class DiceRollTest {
     final UnitType infantryType = GameDataTestUtil.infantry(gameData);
     final List<Unit> units = infantryType.create(1, russians);
     final UnitType artillery =
-        gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_ARTILLERY);
+        gameData.getUnitTypeList().getUnitTypeOrThrow(Constants.UNIT_TYPE_ARTILLERY);
     units.addAll(artillery.create(1, russians));
     // artillery supported infantry and art attack at 1 (0 based)
     whenGetRandom(bridge).thenAnswer(withValues(1, 1));
@@ -252,7 +252,7 @@ class DiceRollTest {
     final IDelegateBridge bridge = newDelegateBridge(russians);
     // Add 1 artillery
     final UnitType artillery =
-        gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_ARTILLERY);
+        gameData.getUnitTypeList().getUnitTypeOrThrow(Constants.UNIT_TYPE_ARTILLERY);
     final List<Unit> units = artillery.create(1, russians);
     // Set the supported unit count
     for (final Unit unit : units) {
@@ -317,7 +317,8 @@ class DiceRollTest {
     gameData = TestMapGameData.IRON_BLITZ.getGameData();
     final Territory algeria = gameData.getMap().getTerritory("Algeria");
     final GamePlayer americans = GameDataTestUtil.americans(gameData);
-    final UnitType marine = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
+    final UnitType marine =
+        gameData.getUnitTypeList().getUnitTypeOrThrow(Constants.UNIT_TYPE_MARINE);
     final List<Unit> attackers = marine.create(1, americans);
     attackers.forEach(
         unit ->
@@ -357,7 +358,8 @@ class DiceRollTest {
     GameDataTestUtil.makeGameLowLuck(gameData);
     final Territory algeria = gameData.getMap().getTerritory("Algeria");
     final GamePlayer americans = GameDataTestUtil.americans(gameData);
-    final UnitType marine = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
+    final UnitType marine =
+        gameData.getUnitTypeList().getUnitTypeOrThrow(Constants.UNIT_TYPE_MARINE);
     final List<Unit> attackers = marine.create(3, americans);
     attackers.forEach(
         unit ->
@@ -396,7 +398,8 @@ class DiceRollTest {
     gameData = TestMapGameData.IRON_BLITZ.getGameData();
     final Territory algeria = gameData.getMap().getTerritory("Algeria");
     final GamePlayer americans = GameDataTestUtil.americans(gameData);
-    final UnitType marine = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
+    final UnitType marine =
+        gameData.getUnitTypeList().getUnitTypeOrThrow(Constants.UNIT_TYPE_MARINE);
     final List<Unit> attackers = marine.create(1, americans);
     attackers.forEach(
         unit ->
