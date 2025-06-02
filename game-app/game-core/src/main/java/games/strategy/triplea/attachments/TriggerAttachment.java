@@ -1231,15 +1231,16 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     for (; i < s.length; i++) {
       final Collection<UnitType> types = new ArrayList<>();
-      final UnitType tp = getData().getUnitTypeList().getUnitType(s[i]);
-      if (tp == null) {
+      final Optional<UnitType> optionalUnitType =
+          getDataOrThrow().getUnitTypeList().getUnitType(s[i]);
+      if (optionalUnitType.isEmpty()) {
         if (s[i].equalsIgnoreCase("all")) {
           types.addAll(getData().getUnitTypeList().getAllUnitTypes());
         } else {
           throw new GameParseException("UnitType does not exist " + s[i] + thisErrorMsg());
         }
       } else {
-        types.add(tp);
+        types.add(optionalUnitType.get());
       }
       for (final UnitType type : types) {
         map.add(type, count);

@@ -23,6 +23,7 @@ import games.strategy.engine.data.RepairFrontier;
 import games.strategy.engine.data.RepairFrontierList;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.Rule;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.TechnologyFrontierList;
 import games.strategy.engine.data.Territory;
@@ -39,6 +40,7 @@ import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -296,13 +298,12 @@ public final class GameParser {
   }
 
   private UnitType getUnitType(final String name) throws GameParseException {
-    return getUnitTypeOptional(name)
-        .orElseThrow(() -> new GameParseException("Could not find unitType:" + name));
+    return data.getUnitTypeList().getUnitTypeOrThrow(name);
   }
 
   /** If mustfind is true and cannot find the unitType an exception will be thrown. */
   private Optional<UnitType> getUnitTypeOptional(final String name) {
-    return Optional.ofNullable(data.getUnitTypeList().getUnitType(name));
+    return data.getUnitTypeList().getUnitType(name);
   }
 
   private TechAdvance getTechnology(final String name) throws GameParseException {
@@ -610,7 +611,7 @@ public final class GameParser {
       final String name = current.getName();
       final ProductionRule rule = new ProductionRule(name, data);
       parseCosts(rule, current.getCosts());
-      parseResults(rule, current.getResults());
+      parseResults(rule, current);
       data.getProductionRuleList().addProductionRule(rule);
     }
   }
@@ -620,7 +621,7 @@ public final class GameParser {
     for (final Production.RepairRule current : elements) {
       final RepairRule rule = new RepairRule(current.getName(), data);
       parseRepairCosts(rule, current.getCosts());
-      parseRepairResults(rule, current.getResults());
+      parseResults(rule, current);
       data.getRepairRules().addRepairRule(rule);
     }
   }
@@ -651,45 +652,25 @@ public final class GameParser {
     }
   }
 
-  private void parseResults(
-      final ProductionRule rule, final List<Production.ProductionRule.Result> elements)
+  private void parseResults(final Rule dataRule, final Production.Rule mapRule)
       throws GameParseException {
-    if (elements.isEmpty()) {
-      throw new GameParseException("no results  for rule:" + rule.getName());
+    List<Production.Rule.Result> ruleResults = mapRule.getRuleResults();
+    if (ruleResults.isEmpty()) {
+      throw new GameParseException(
+          MessageFormat.format("No results for rule {0}", dataRule.getName()));
     }
-    for (final Production.ProductionRule.Result current : elements) {
+    for (final Production.ProductionRule.Result current : ruleResults) {
       // must find either a resource or a unit with the given name
-      NamedAttachable result = getResourceOptional(current.getResourceOrUnit()).orElse(null);
-      if (result == null) {
-        result = getUnitTypeOptional(current.getResourceOrUnit()).orElse(null);
+      final String resourceOrUnit = current.getResourceOrUnit();
+      Optional<? extends NamedAttachable> result = getResourceOptional(resourceOrUnit);
+      if (result.isEmpty()) {
+        result = getUnitTypeOptional(resourceOrUnit);
       }
-      if (result == null) {
-        throw new GameParseException(
-            "Could not find resource or unit " + current.getResourceOrUnit());
+      if (result.isEmpty()) {
+        throw new GameParseException("Could not find resource or unit " + resourceOrUnit);
       }
       final int quantity = Optional.ofNullable(current.getQuantity()).orElse(0);
-      rule.addResult(result, quantity);
-    }
-  }
-
-  private void parseRepairResults(
-      final RepairRule rule, final List<Production.ProductionRule.Result> elements)
-      throws GameParseException {
-    if (elements.isEmpty()) {
-      throw new GameParseException("no results  for rule:" + rule.getName());
-    }
-    for (final Production.ProductionRule.Result current : elements) {
-      // must find either a resource or a unit with the given name
-      NamedAttachable result = getResourceOptional(current.getResourceOrUnit()).orElse(null);
-      if (result == null) {
-        result = getUnitTypeOptional(current.getResourceOrUnit()).orElse(null);
-      }
-      if (result == null) {
-        throw new GameParseException(
-            "Could not find resource or unit " + current.getResourceOrUnit());
-      }
-      final int quantity = Optional.ofNullable(current.getQuantity()).orElse(0);
-      rule.addResult(result, quantity);
+      dataRule.addResult(result.get(), quantity);
     }
   }
 

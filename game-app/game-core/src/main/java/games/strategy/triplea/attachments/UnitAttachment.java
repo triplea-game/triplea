@@ -1207,7 +1207,7 @@ public class UnitAttachment extends DefaultAttachment {
         map.put(
             Tuple.of(s[0], s[1]),
             CollectionUtils.countMatches(
-                units, Matches.unitIsOfType(unitTypeList.getUnitType(s[1]))));
+                units, Matches.unitIsOfType(unitTypeList.getUnitTypeOrThrow(s[1]))));
       }
     }
     return map;
@@ -2639,13 +2639,14 @@ public class UnitAttachment extends DefaultAttachment {
 
   public Collection<UnitType> getListedUnits(final String[] list) {
     final List<UnitType> unitTypes = new ArrayList<>();
+    final UnitTypeList unitTypeList = getDataOrThrow().getUnitTypeList();
     for (final String name : list) {
       // Validate all units exist
-      final UnitType ut = getData().getUnitTypeList().getUnitType(name);
-      if (ut == null) {
+      final Optional<UnitType> ut = unitTypeList.getUnitType(name);
+      if (ut.isEmpty()) {
         throw new IllegalStateException("No unit called: " + name + thisErrorMsg());
       }
-      unitTypes.add(ut);
+      unitTypes.add(ut.get());
     }
     return unitTypes;
   }

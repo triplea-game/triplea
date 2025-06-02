@@ -115,15 +115,16 @@ public class CanalAttachment extends DefaultAttachment {
       return;
     }
     if (value.equalsIgnoreCase("ALL")) {
-      excludedUnits.addAll(getData().getUnitTypeList().getAllUnitTypes());
+      excludedUnits.addAll(getDataOrThrow().getUnitTypeList().getAllUnitTypes());
       return;
     }
     for (final String name : splitOnColon(value)) {
-      final UnitType ut = getData().getUnitTypeList().getUnitType(name);
-      if (ut == null) {
+      final Optional<UnitType> optionalUnitType =
+          getDataOrThrow().getUnitTypeList().getUnitType(name);
+      if (optionalUnitType.isEmpty()) {
         throw new IllegalStateException("Canals: No UnitType called: " + name + thisErrorMsg());
       }
-      excludedUnits.add(ut);
+      excludedUnits.add(optionalUnitType.get());
     }
   }
 

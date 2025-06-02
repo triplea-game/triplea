@@ -29,6 +29,7 @@ import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.GameProperties;
 import java.security.SecureRandom;
+import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -71,8 +72,8 @@ class UnitAttachmentTest {
     void setUp() {
       when(gameData.getUnitTypeList()).thenReturn(unitTypeList);
       when(gameData.getPlayerList()).thenReturn(playerList);
-      lenient().when(unitTypeList.getUnitType(unit1String)).thenReturn(unit1);
-      lenient().when(unitTypeList.getUnitType(unit2String)).thenReturn(unit2);
+      lenient().when(unitTypeList.getUnitType(unit1String)).thenReturn(Optional.of(unit1));
+      lenient().when(unitTypeList.getUnitType(unit2String)).thenReturn(Optional.of(unit2));
       lenient().when(playerList.getPlayerId(player1String)).thenReturn(player1);
       lenient().when(playerList.getPlayerId(player2String)).thenReturn(player2);
     }
@@ -106,19 +107,19 @@ class UnitAttachmentTest {
       // Testing for fail-fast here
       verify(playerList).getPlayerId("NOT A PLAYER");
       verify(playerList).getPlayerId(any());
-      verify(unitTypeList, times(0)).getUnitType(any());
+      verify(unitTypeList, times(0)).getUnitTypeOrThrow(any());
       assertThrows(
           GameParseException.class,
           () -> attachment.setWhenCapturedChangesInto("any:NOT A PLAYER:false:Unit2:1"));
       verify(playerList, times(2)).getPlayerId("NOT A PLAYER");
       verify(playerList).getPlayerId("any");
-      verify(unitTypeList, times(0)).getUnitType(any());
+      verify(unitTypeList, times(0)).getUnitTypeOrThrow(any());
       assertThrows(
           IllegalArgumentException.class,
           () -> attachment.setWhenCapturedChangesInto("Player1:any:NOT A BOOLEAN:Unit1:1"));
       verify(playerList).getPlayerId("Player1");
       verify(playerList, times(2)).getPlayerId("any");
-      verify(unitTypeList, times(0)).getUnitType(any());
+      verify(unitTypeList, times(0)).getUnitTypeOrThrow(any());
       assertThrows(
           GameParseException.class,
           () -> attachment.setWhenCapturedChangesInto("any:Player2:true:NOT A UNIT:1"));

@@ -48,7 +48,11 @@ class ChangeTest {
     // add some units
     final Change change =
         ChangeFactory.addUnits(
-            can, gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF).create(10, null));
+            can,
+            gameData
+                .getUnitTypeList()
+                .getUnitTypeOrThrow(Constants.UNIT_TYPE_INF)
+                .create(10, null));
     gameData.performChange(change);
     assertEquals(15, can.getUnitCollection().getUnitCount());
     // invert the change
@@ -64,7 +68,7 @@ class ChangeTest {
     // remove some units
     final Collection<Unit> units =
         can.getUnitCollection()
-            .getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
+            .getUnits(gameData.getUnitTypeList().getUnitTypeOrThrow(Constants.UNIT_TYPE_INF), 3);
     final Change change = ChangeFactory.removeUnits(can, units);
     gameData.performChange(change);
 
@@ -84,7 +88,7 @@ class ChangeTest {
     // remove some units
     final Collection<Unit> units =
         can.getUnitCollection()
-            .getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
+            .getUnits(gameData.getUnitTypeList().getUnitTypeOrThrow(Constants.UNIT_TYPE_INF), 3);
     Change change = ChangeFactory.removeUnits(can, units);
     change = serialize(change);
     gameData.performChange(change);
@@ -103,7 +107,10 @@ class ChangeTest {
     final Change change =
         ChangeFactory.addUnits(
             chretian,
-            gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF).create(10, null));
+            gameData
+                .getUnitTypeList()
+                .getUnitTypeOrThrow(Constants.UNIT_TYPE_INF)
+                .create(10, null));
     gameData.performChange(change);
     assertEquals(20, chretian.getUnitCollection().getUnitCount());
     // invert the change
@@ -120,7 +127,7 @@ class ChangeTest {
     final Collection<Unit> units =
         chretian
             .getUnitCollection()
-            .getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
+            .getUnits(gameData.getUnitTypeList().getUnitTypeOrThrow(Constants.UNIT_TYPE_INF), 3);
     final Change change = ChangeFactory.removeUnits(chretian, units);
     gameData.performChange(change);
     assertEquals(7, chretian.getUnitCollection().getUnitCount());
@@ -138,7 +145,7 @@ class ChangeTest {
     final Collection<Unit> units =
         canada
             .getUnitCollection()
-            .getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
+            .getUnits(gameData.getUnitTypeList().getUnitTypeOrThrow(Constants.UNIT_TYPE_INF), 3);
     final Change change = ChangeFactory.moveUnits(canada, greenland, units);
     gameData.performChange(change);
     assertEquals(2, canada.getUnitCollection().getUnitCount());
@@ -157,7 +164,7 @@ class ChangeTest {
     final Collection<Unit> units =
         canada
             .getUnitCollection()
-            .getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
+            .getUnits(gameData.getUnitTypeList().getUnitTypeOrThrow(Constants.UNIT_TYPE_INF), 3);
     Change change = ChangeFactory.moveUnits(canada, greenland, units);
     change = serialize(change);
     gameData.performChange(change);
@@ -239,7 +246,8 @@ class ChangeTest {
   void testPlayerOwnerChange() {
     final GamePlayer can = gameData.getPlayerList().getPlayerId("chretian");
     final GamePlayer us = gameData.getPlayerList().getPlayerId("bush");
-    final UnitType infantry = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF);
+    final UnitType infantry =
+        gameData.getUnitTypeList().getUnitTypeOrThrow(Constants.UNIT_TYPE_INF);
     final Unit inf1 = infantry.create(1, can).iterator().next();
     final Unit inf2 = infantry.create(1, us).iterator().next();
     final Collection<Unit> units = new ArrayList<>();
@@ -262,7 +270,8 @@ class ChangeTest {
   void testPlayerOwnerChangeSerialize() throws Exception {
     final GamePlayer can = gameData.getPlayerList().getPlayerId("chretian");
     final GamePlayer us = gameData.getPlayerList().getPlayerId("bush");
-    final UnitType infantry = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF);
+    final UnitType infantry =
+        gameData.getUnitTypeList().getUnitTypeOrThrow(Constants.UNIT_TYPE_INF);
     final Unit inf1 = infantry.create(1, can).iterator().next();
     final Unit inf2 = infantry.create(1, us).iterator().next();
     final Collection<Unit> units = new ArrayList<>();

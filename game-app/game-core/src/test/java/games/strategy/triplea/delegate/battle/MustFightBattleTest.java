@@ -294,7 +294,7 @@ class MustFightBattleTest extends AbstractClientSettingTestCase {
     // And it should have no movement left.
     assertFalse(Matches.unitHasMovementLeft().test(unit));
 
-    // And just to double check, we can't move it.
+    // And just to double-check, we can't move it.
     advanceToNonCombatMove(bridge);
     GameDataTestUtil.assertMoveError(sz23.getUnits(), new Route(sz23, sz25));
   }

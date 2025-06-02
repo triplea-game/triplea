@@ -292,8 +292,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
           continue;
         }
         Optional<UnitAttachment> optionalUnitAttachment =
-            Optional.ofNullable(data.getUnitTypeList().getUnitType(named.getName()))
-                .map(UnitType::getUnitAttachment);
+            data.getUnitTypeList().getUnitType(named.getName()).map(UnitType::getUnitAttachment);
         final boolean isSea =
             optionalUnitAttachment.isPresent() && optionalUnitAttachment.get().isSea();
         if (!isSea) {
@@ -310,12 +309,13 @@ public class InitializationDelegate extends BaseTripleADelegate {
   private static void initTwoHitBattleship(final IDelegateBridge bridge) {
     final GameState data = bridge.getData();
     final boolean userEnabled = Properties.getTwoHitBattleships(data.getProperties());
-    final UnitType battleShipUnit =
+    final Optional<UnitType> optionalBattleshipUnitType =
         data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_BATTLESHIP);
-    if (battleShipUnit == null) {
+    if (optionalBattleshipUnitType.isEmpty()) {
       return;
     }
-    final UnitAttachment battleShipAttachment = battleShipUnit.getUnitAttachment();
+    final UnitAttachment battleShipAttachment =
+        optionalBattleshipUnitType.get().getUnitAttachment();
     final boolean defaultEnabled = battleShipAttachment.getHitPoints() > 1;
     if (userEnabled != defaultEnabled) {
       bridge.getHistoryWriter().startEvent("TwoHitBattleships: " + userEnabled);

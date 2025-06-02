@@ -100,7 +100,7 @@ final class GameParserTest {
         (UnitAttachment)
             gameData
                 .getUnitTypeList()
-                .getUnitType("archer")
+                .getUnitTypeOrThrow("archer")
                 .getAttachment(Constants.UNIT_ATTACHMENT_NAME);
 
     assertThat(
@@ -116,7 +116,7 @@ final class GameParserTest {
         ((UnitAttachment)
             gameData
                 .getUnitTypeList()
-                .getUnitType("axeman")
+                .getUnitTypeOrThrow("axeman")
                 .getAttachment(Constants.UNIT_ATTACHMENT_NAME));
 
     assertThat(

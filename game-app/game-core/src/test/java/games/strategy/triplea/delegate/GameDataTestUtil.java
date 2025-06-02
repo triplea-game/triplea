@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import lombok.experimental.UtilityClass;
 import org.junit.jupiter.api.Assertions;
 import org.triplea.java.collections.IntegerMap;
@@ -341,10 +342,11 @@ public final class GameDataTestUtil {
   }
 
   /**
-   * Returns a UnitType object matching the given name for the specified GameData object if present.
+   * Returns a UnitType object matching the given name for the specified GameData object or {@code
+   * null} if not present.
    */
-  public static UnitType unitType(final String name, final GameState data) {
-    return data.getUnitTypeList().getUnitType(name);
+  public static @Nullable UnitType unitType(final String name, final GameState data) {
+    return data.getUnitTypeList().getUnitType(name).orElse(null);
   }
 
   /** Removes all units from the given Collection from the given Territory. */
