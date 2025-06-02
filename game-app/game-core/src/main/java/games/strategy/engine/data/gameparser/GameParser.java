@@ -674,10 +674,6 @@ public final class GameParser {
     }
   }
 
-  private void parseRepairResults(
-      final RepairRule rule, final List<Production.ProductionRule.Result> elements)
-      throws GameParseException {}
-
   private void parseProductionFrontiers(final List<Production.ProductionFrontier> elements)
       throws GameParseException {
     final ProductionFrontierList frontiers = data.getProductionFrontierList();
