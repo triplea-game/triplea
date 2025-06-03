@@ -26,12 +26,6 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
-      - name: Checkout assets with LFS
-        uses: actions/checkout@v4
-        with:
-          repository: triplea-game/assets
-          path: triplea-assets
-          lfs: true
       - name: Build Installers
         run: ./game-app/run/package
         env:
