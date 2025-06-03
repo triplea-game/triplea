@@ -147,7 +147,7 @@ public class UnitSeparator {
   private static Comparator<UnitCategory> getComparatorUnitCategories(
       @Nullable final Territory territory,
       final GameData gameData,
-      final GamePlayer currentPlayer) {
+      final @Nullable GamePlayer currentPlayer) {
     final List<UnitType> xmlUnitTypes =
         new ArrayList<>(gameData.getUnitTypeList().getAllUnitTypes());
     final List<GamePlayer> players = gameData.getPlayerList().getPlayers();
@@ -162,7 +162,7 @@ public class UnitSeparator {
    */
   private static Comparator<UnitCategory> getComparatorUnitCategories(
       @Nullable final Territory territory,
-      final GamePlayer currentPlayer,
+      final @Nullable GamePlayer currentPlayer,
       final List<GamePlayer> players,
       final List<UnitType> xmlUnitTypes) {
     return Comparator.comparing(

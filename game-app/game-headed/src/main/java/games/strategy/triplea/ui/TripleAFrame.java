@@ -1916,7 +1916,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                             currentPlayer = null;
                             stepDisplayName = node.getTitle();
                           } else if (node instanceof Step) {
-                            currentPlayer = ((Step) node).getPlayerId();
+                            currentPlayer = ((Step) node).getPlayerId().orElse(null);
                             stepDisplayName = node.getTitle();
                           }
                         }

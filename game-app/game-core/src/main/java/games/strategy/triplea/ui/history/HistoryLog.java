@@ -22,6 +22,7 @@ import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.awt.BorderLayout;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -48,7 +49,7 @@ import org.triplea.java.collections.IntegerMap;
  */
 @Slf4j
 public class HistoryLog extends JFrame {
-  private static final long serialVersionUID = 4880602702815333376L;
+  @Serial private static final long serialVersionUID = 4880602702815333376L;
   private final JTextArea textArea;
   private final StringBuilder stringBuilder = new StringBuilder();
 
@@ -102,9 +103,9 @@ public class HistoryLog extends JFrame {
       curNode = (HistoryNode) curNode.getPreviousNode();
     }
     if (stepNode != null) {
-      final GamePlayer curPlayer = stepNode.getPlayerId();
-      if (players.isEmpty()) {
-        players.add(curPlayer);
+      final Optional<GamePlayer> optionalCurrentPlayer = stepNode.getPlayerId();
+      if (players.isEmpty() && optionalCurrentPlayer.isPresent()) {
+        players.add(optionalCurrentPlayer.get());
       }
       // get first step for this turn
       Step turnStartNode;
@@ -114,10 +115,11 @@ public class HistoryLog extends JFrame {
         if (stepNode == null) {
           break;
         }
-        if (stepNode.getPlayerId() == null) {
+        final Optional<GamePlayer> optionalStepNodePlayer = stepNode.getPlayerId();
+        if (optionalStepNodePlayer.isEmpty()) {
           break;
         }
-        if (!players.contains(stepNode.getPlayerId())) {
+        if (!players.contains(optionalStepNodePlayer.get())) {
           break;
         }
       }
@@ -130,13 +132,13 @@ public class HistoryLog extends JFrame {
   private static GamePlayer getPlayerId(final HistoryNode printNode) {
     DefaultMutableTreeNode curNode = printNode;
     final TreePath parentPath = new TreePath(printNode.getPath()).getParentPath();
-    GamePlayer curPlayer = null;
+    Optional<GamePlayer> optionalCurrentPlayer = Optional.empty();
     if (parentPath != null) {
       final Object[] pathToNode = parentPath.getPath();
       for (final Object pathNode : pathToNode) {
         final HistoryNode node = (HistoryNode) pathNode;
         if (node instanceof Step) {
-          curPlayer = ((Step) node).getPlayerId();
+          optionalCurrentPlayer = ((Step) node).getPlayerId();
         }
       }
     }
@@ -146,15 +148,17 @@ public class HistoryLog extends JFrame {
         final HistoryNode node = (HistoryNode) nodeEnum.nextElement();
         if (node instanceof Step) {
           final String title = node.getTitle();
-          final GamePlayer gamePlayer = ((Step) node).getPlayerId();
-          if (!title.equals("Initializing Delegates") && gamePlayer != null) {
-            curPlayer = gamePlayer;
+          final Optional<GamePlayer> optionalGamePlayer = ((Step) node).getPlayerId();
+          if (!title.equals("Initializing Delegates") && optionalGamePlayer.isPresent()) {
+            optionalCurrentPlayer = optionalGamePlayer;
           }
         }
       }
       curNode = curNode.getNextSibling();
-    } while ((curNode instanceof Step) && ((Step) curNode).getPlayerId().equals(curPlayer));
-    return curPlayer;
+    } while ((curNode instanceof Step)
+        && ((Step) curNode).getPlayerIdOrThrow().equals(optionalCurrentPlayer.orElse(null)));
+    return optionalCurrentPlayer.orElseThrow(
+        () -> new IllegalStateException("No player ID determined from steps"));
   }
 
   /**
@@ -169,7 +173,7 @@ public class HistoryLog extends JFrame {
     final String moreIndent = "    ";
     // print out the parent nodes
     final TreePath parentPath = new TreePath(printNode.getPath()).getParentPath();
-    GamePlayer currentPlayer = null;
+    Optional<GamePlayer> optionalCurrentPlayer = Optional.empty();
     if (parentPath != null) {
       final Object[] pathToNode = parentPath.getPath();
       for (final Object pathNode : pathToNode) {
@@ -180,7 +184,7 @@ public class HistoryLog extends JFrame {
           stringBuilder.append('\n');
         }
         if (node instanceof Step) {
-          currentPlayer = ((Step) node).getPlayerId();
+          optionalCurrentPlayer = ((Step) node).getPlayerId();
         }
       }
     }
@@ -188,9 +192,7 @@ public class HistoryLog extends JFrame {
     if (playersAllowed != null) {
       players.addAll(playersAllowed);
     }
-    if (currentPlayer != null) {
-      players.add(currentPlayer);
-    }
+    optionalCurrentPlayer.ifPresent(gamePlayer -> players.add(gamePlayer));
     final List<String> moveList = new ArrayList<>();
     boolean moving = false;
     DefaultMutableTreeNode curNode = printNode;
@@ -354,14 +356,14 @@ public class HistoryLog extends JFrame {
             stringBuilder.append(indent).append(title).append('\n');
           }
         } else if (node instanceof Step) {
-          final GamePlayer gamePlayer = ((Step) node).getPlayerId();
           if (!title.equals("Initializing Delegates")) {
             stringBuilder.append('\n').append(indent).append(title);
-            if (gamePlayer != null) {
-              currentPlayer = gamePlayer;
-              players.add(currentPlayer);
-              stringBuilder.append(" - ").append(gamePlayer.getName());
-            }
+            final Optional<GamePlayer> optionalGamePlayer = ((Step) node).getPlayerId();
+            optionalGamePlayer.ifPresent(
+                gamePlayer -> {
+                  players.add(gamePlayer);
+                  stringBuilder.append(" - ").append(gamePlayer.getName());
+                });
             stringBuilder.append('\n');
           }
         } else if (node instanceof Round) {

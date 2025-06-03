@@ -37,9 +37,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
-import javax.annotation.Nullable;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -283,7 +282,7 @@ final class ExportMenu extends JMenu {
       clone.getHistory().gotoNode(clone.getHistory().getLastNode());
       final Enumeration<TreeNode> nodes =
           ((DefaultMutableTreeNode) clone.getHistory().getRoot()).preorderEnumeration();
-      @Nullable GamePlayer currentPlayer = null;
+      Optional<GamePlayer> optionalCurrentPlayer = Optional.empty();
       int round = 0;
       while (nodes.hasMoreElements()) {
         // we want to export on change of turn
@@ -295,17 +294,19 @@ final class ExportMenu extends JMenu {
           continue;
         }
         final Step step = (Step) element;
-        if (step.getPlayerId() == null || step.getPlayerId().isNull()) {
+        final Optional<GamePlayer> optionalStepPlayer = step.getPlayerId();
+        if (optionalStepPlayer.isEmpty() || optionalStepPlayer.get().isNull()) {
           continue;
         }
         // this is to stop from having multiple entries for each players turn.
-        if (!showPhaseStats && Objects.equals(step.getPlayerId(), currentPlayer)) {
+        if (!showPhaseStats
+            && optionalStepPlayer.get().equals(optionalCurrentPlayer.orElse(null))) {
           continue;
         }
-        currentPlayer = step.getPlayerId();
+        optionalCurrentPlayer = step.getPlayerId();
         clone.getHistory().gotoNode(element);
         final String playerName =
-            step.getPlayerId() == null ? "" : step.getPlayerId().getName() + ": ";
+            optionalCurrentPlayer.isEmpty() ? "" : optionalCurrentPlayer.get().getName() + ": ";
         String stepName = step.getStepName();
         // copied directly from TripleAPlayer, will probably have to be updated in the future if
         // more delegates are made
