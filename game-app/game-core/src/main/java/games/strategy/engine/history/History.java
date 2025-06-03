@@ -177,7 +177,7 @@ public class History extends DefaultTreeModel {
     while (enumeration.hasMoreElements()) {
       final HistoryNode node = (HistoryNode) enumeration.nextElement();
       if (node instanceof Step) {
-        player = ((Step) node).getPlayerId();
+        player = ((Step) node).getPlayerId().orElse(null);
       }
       if (node.isLeaf()) {
         // Don't do this logic on non-leaf nodes as getNextChange() will return

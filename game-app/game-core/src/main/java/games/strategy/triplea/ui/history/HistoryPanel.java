@@ -406,8 +406,9 @@ public class HistoryPanel extends JPanel {
         final int row,
         final boolean haveFocus) {
       if (value instanceof Step) {
-        final GamePlayer player = ((Step) value).getPlayerId();
-        if (player != null) {
+        final Optional<GamePlayer> optionalGamePlayer = ((Step) value).getPlayerId();
+        if (optionalGamePlayer.isPresent()) {
+          final GamePlayer player = optionalGamePlayer.get();
           final String text = value + " (" + player.getName() + ")";
           if (uiContext != null) {
             super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);
