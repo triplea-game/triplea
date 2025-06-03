@@ -3204,7 +3204,7 @@
 - mapName: Zombieland USA
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/zombielandusa/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/zombielandusa/blob/master/preview.png
   description: |
     <br>The United States is overrun by Zombies.
