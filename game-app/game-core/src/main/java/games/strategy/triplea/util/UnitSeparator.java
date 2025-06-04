@@ -124,7 +124,8 @@ public class UnitSeparator {
    * use a method returning List of <code>UnitCategory></code> instead
    */
   public static Comparator<UnitCategory> getComparatorUnitCategories(final GameData gameData) {
-    return getComparatorUnitCategories(null, gameData, gameData.getHistory().getCurrentPlayer());
+    return getComparatorUnitCategories(
+        null, gameData, gameData.getHistory().getCurrentPlayer().orElse(null));
   }
 
   /** Returns <code>Comparator</code> for unit categories of a <code>Territory</code> */
@@ -140,7 +141,7 @@ public class UnitSeparator {
     GameData gameData = territory.getData();
     if (gameData == null) gameData = territory.getOwner().getData();
     return getComparatorUnitCategories(
-        territory, gameData, gameData.getHistory().getCurrentPlayer());
+        territory, gameData, gameData.getHistory().getCurrentPlayer().orElse(null));
   }
 
   /** Returns <code>Comparator</code> for unit categories of a <code>Territory</code> */

@@ -7,12 +7,12 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.ui.Util;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.Nullable;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -30,7 +30,7 @@ import javax.swing.tree.DefaultTreeModel;
  * </dl>
  */
 public class History extends DefaultTreeModel {
-  private static final long serialVersionUID = -1769876896869L;
+  @Serial private static final long serialVersionUID = -1769876896869L;
 
   private final HistoryWriter writer = new HistoryWriter(this);
   private final List<Change> changes = new ArrayList<>();
@@ -87,16 +87,16 @@ public class History extends DefaultTreeModel {
     int lastChangeIndex;
     if (node == getRoot()) {
       lastChangeIndex = 0;
-    } else if (node instanceof Event) {
-      lastChangeIndex = ((Event) node).getChangeEndIndex();
-    } else if (node instanceof EventChild) {
-      lastChangeIndex = ((Event) node.getParent()).getChangeEndIndex();
-    } else if (node instanceof IndexedHistoryNode) {
-      lastChangeIndex = ((IndexedHistoryNode) node).getChangeEndIndex();
+    } else if (node instanceof Event event) {
+      lastChangeIndex = event.getChangeEndIndex();
+    } else if (node instanceof EventChild eventChild) {
+      lastChangeIndex = ((Event) eventChild.getParent()).getChangeEndIndex();
+    } else if (node instanceof IndexedHistoryNode indexedHistoryNode) {
+      lastChangeIndex = indexedHistoryNode.getChangeEndIndex();
       // If this node is still current, or comes from an old save game where we didn't set it, get
       // the last change index from its last child node.
-      if (lastChangeIndex == -1 && node.getChildCount() > 0) {
-        lastChangeIndex = getNextChange((HistoryNode) node.getLastChild());
+      if (lastChangeIndex == -1 && indexedHistoryNode.getChildCount() > 0) {
+        lastChangeIndex = getNextChange((HistoryNode) indexedHistoryNode.getLastChild());
       }
     } else {
       lastChangeIndex = 0;
@@ -151,9 +151,8 @@ public class History extends DefaultTreeModel {
       final List<HistoryNode> nodesToRemove = new ArrayList<>();
       while (enumeration.hasMoreElements()) {
         final HistoryNode node = (HistoryNode) enumeration.nextElement();
-        if (node instanceof IndexedHistoryNode) {
-          final int index = ((IndexedHistoryNode) node).getChangeStartIndex();
-          if (index >= nextChangeIndex) {
+        if (node instanceof IndexedHistoryNode indexedHistoryNode) {
+          if (indexedHistoryNode.getChangeStartIndex() >= nextChangeIndex) {
             startRemoving = true;
           }
           if (startRemoving) {
@@ -171,13 +170,13 @@ public class History extends DefaultTreeModel {
    * Returns the current player, accounting for the fact that we may be looking at a previous node
    * in history, unlike data.getSequence().getStep().getPlayerId().
    */
-  public @Nullable GamePlayer getCurrentPlayer() {
-    GamePlayer player = null;
+  public Optional<GamePlayer> getCurrentPlayer() {
+    Optional<GamePlayer> optionalCurrentPlayer = Optional.empty();
     final Enumeration<?> enumeration = ((DefaultMutableTreeNode) getRoot()).preorderEnumeration();
     while (enumeration.hasMoreElements()) {
       final HistoryNode node = (HistoryNode) enumeration.nextElement();
-      if (node instanceof Step) {
-        player = ((Step) node).getPlayerId().orElse(null);
+      if (node instanceof Step step) {
+        optionalCurrentPlayer = step.getPlayerId();
       }
       if (node.isLeaf()) {
         // Don't do this logic on non-leaf nodes as getNextChange() will return
@@ -188,7 +187,7 @@ public class History extends DefaultTreeModel {
         }
       }
     }
-    return player;
+    return optionalCurrentPlayer;
   }
 
   public Optional<HistoryNode> getNearestLeafAtOrBefore(HistoryNode node) {
