@@ -69,7 +69,7 @@ public class ExtendedStats extends StatPanel {
     // add tech related stuff
     if (Properties.getTechDevelopment(data.getProperties())) {
       // add tech tokens
-      if (data.getResourceList().getResource(Constants.TECH_TOKENS).orElse(null) != null) {
+      if (data.getResourceList().getResourceOptional(Constants.TECH_TOKENS).isPresent()) {
         final List<IStat> statsExtended = new ArrayList<>(List.of(this.statsExtended));
         statsExtended.add(new TechTokenStat());
         this.statsExtended = statsExtended.toArray(new IStat[0]);
@@ -224,7 +224,7 @@ public class ExtendedStats extends StatPanel {
 
   class TechTokenStat extends ResourceStat {
     TechTokenStat() {
-      super(gameData.getResourceList().getResource(Constants.TECH_TOKENS).orElse(null));
+      super(gameData.getResourceList().getResourceOptional(Constants.TECH_TOKENS).orElse(null));
     }
   }
 

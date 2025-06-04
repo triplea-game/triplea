@@ -186,10 +186,7 @@ public class PlayerAttachment extends DefaultAttachment {
       throw new GameParseException(
           "suicideAttackResources attack value must be positive" + thisErrorMsg());
     }
-    final Resource r = getData().getResourceList().getResource(s[1]).orElse(null);
-    if (r == null) {
-      throw new GameParseException("no such resource: " + s[1] + thisErrorMsg());
-    }
+    final Resource r = getData().getResourceList().getResourceOrThrow(s[1]);
     if (suicideAttackResources == null) {
       suicideAttackResources = new IntegerMap<>();
     }

@@ -21,14 +21,8 @@ import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
@@ -124,9 +118,9 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       return false;
     }
     if (Properties.getWW2V3TechModel(getData().getProperties())) {
-      final Resource techTokens =
-          getData().getResourceList().getResource(Constants.TECH_TOKENS).orElse(null);
-      if (techTokens != null && player.getResources().getQuantity(techTokens) > 0) {
+      final Optional<Resource> techTokens =
+          getData().getResourceList().getResourceOptional(Constants.TECH_TOKENS);
+      if (techTokens.isPresent() && player.getResources().getQuantity(techTokens.get()) > 0) {
         return true;
       }
     }
@@ -182,7 +176,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     if (getAvailableTechs(player, data.getTechnologyFrontier()).isEmpty()) {
       if (Properties.getWW2V3TechModel(getData().getProperties())) {
         final Resource techTokens =
-            data.getResourceList().getResource(Constants.TECH_TOKENS).orElse(null);
+            data.getResourceList().getResourceOrThrow(Constants.TECH_TOKENS);
         final String transcriptText = player.getName() + " No more available tech advances.";
         bridge.getHistoryWriter().startEvent(transcriptText);
         final Change removeTokens =
@@ -240,8 +234,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
         && (techHits > 0 || Properties.getRemoveAllTechTokensAtEndOfTurn(data.getProperties()))) {
       techCategory = techToRollFor;
       // remove all the tokens
-      final Resource techTokens =
-          data.getResourceList().getResource(Constants.TECH_TOKENS).orElse(null);
+      final Resource techTokens = data.getResourceList().getResourceOrThrow(Constants.TECH_TOKENS);
       final String transcriptText =
           player.getName()
               + " removing all Technology Tokens after "
@@ -294,7 +287,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   }
 
   boolean checkEnoughMoney(final int rolls, final IntegerMap<GamePlayer> whoPaysHowMuch) {
-    final Resource pus = getData().getResourceList().getResource(Constants.PUS).orElse(null);
+    final Resource pus = getData().getResourceList().getResourceOrThrow(Constants.PUS);
     final int cost = rolls * getTechCost();
     if (whoPaysHowMuch == null || whoPaysHowMuch.isEmpty()) {
       final int has = bridge.getGamePlayer().getResources().getQuantity(pus);
@@ -314,7 +307,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   }
 
   private void chargeForTechRolls(final int rolls, final IntegerMap<GamePlayer> whoPaysHowMuch) {
-    final Resource pus = getData().getResourceList().getResource(Constants.PUS).orElse(null);
+    final Resource pus = getData().getResourceList().getResourceOrThrow(Constants.PUS);
     int cost = rolls * getTechCost();
     if (whoPaysHowMuch == null || whoPaysHowMuch.isEmpty()) {
       final String transcriptText =
@@ -337,8 +330,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       }
     }
     if (Properties.getWW2V3TechModel(getData().getProperties())) {
-      final Resource tokens =
-          getData().getResourceList().getResource(Constants.TECH_TOKENS).orElse(null);
+      final Resource tokens = getData().getResourceList().getResourceOrThrow(Constants.TECH_TOKENS);
       final Change newTokens =
           ChangeFactory.changeResourcesChange(bridge.getGamePlayer(), tokens, rolls);
       bridge.addChange(newTokens);

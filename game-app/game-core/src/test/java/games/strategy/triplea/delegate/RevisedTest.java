@@ -870,12 +870,12 @@ class RevisedTest extends AbstractClientSettingTestCase {
     final int pusBeforeRaid =
         germans
             .getResources()
-            .getQuantity(gameData.getResourceList().getResource(Constants.PUS).orElse(null));
+            .getQuantity(gameData.getResourceList().getResourceOrThrow(Constants.PUS));
     battle.fight(bridge);
     final int pusAfterRaid =
         germans
             .getResources()
-            .getQuantity(gameData.getResourceList().getResource(Constants.PUS).orElse(null));
+            .getQuantity(gameData.getResourceList().getResourceOrThrow(Constants.PUS));
     assertEquals(pusBeforeRaid, pusAfterRaid);
     assertEquals(0, germany.getUnitCollection().getMatches(Matches.unitIsOwnedBy(british)).size());
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
@@ -910,12 +910,12 @@ class RevisedTest extends AbstractClientSettingTestCase {
     final int pusBeforeRaid =
         germans
             .getResources()
-            .getQuantity(gameData.getResourceList().getResource(Constants.PUS).orElse(null));
+            .getQuantity(gameData.getResourceList().getResourceOrThrow(Constants.PUS));
     battle.fight(bridge);
     final int pusAfterRaid =
         germans
             .getResources()
-            .getQuantity(gameData.getResourceList().getResource(Constants.PUS).orElse(null));
+            .getQuantity(gameData.getResourceList().getResourceOrThrow(Constants.PUS));
     assertEquals(pusBeforeRaid - 1, pusAfterRaid);
     assertEquals(1, germany.getUnitCollection().getMatches(Matches.unitIsOwnedBy(british)).size());
     thenGetRandomShouldHaveBeenCalled(bridge, times(3));
@@ -942,12 +942,12 @@ class RevisedTest extends AbstractClientSettingTestCase {
     final int pusBeforeRaid =
         germans
             .getResources()
-            .getQuantity(gameData.getResourceList().getResource(Constants.PUS).orElse(null));
+            .getQuantity(gameData.getResourceList().getResourceOrThrow(Constants.PUS));
     battle.fight(bridge);
     final int pusAfterRaid =
         germans
             .getResources()
-            .getQuantity(gameData.getResourceList().getResource(Constants.PUS).orElse(null));
+            .getQuantity(gameData.getResourceList().getResourceOrThrow(Constants.PUS));
     assertEquals(pusBeforeRaid - 5, pusAfterRaid);
     // 2 bombers get hit
     assertEquals(5, germany.getUnitCollection().getMatches(Matches.unitIsOwnedBy(british)).size());
@@ -981,12 +981,12 @@ class RevisedTest extends AbstractClientSettingTestCase {
     final int pusBeforeRaid =
         germans
             .getResources()
-            .getQuantity(gameData.getResourceList().getResource(Constants.PUS).orElse(null));
+            .getQuantity(gameData.getResourceList().getResourceOrThrow(Constants.PUS));
     battle.fight(bridge);
     final int pusAfterRaid =
         germans
             .getResources()
-            .getQuantity(gameData.getResourceList().getResource(Constants.PUS).orElse(null));
+            .getQuantity(gameData.getResourceList().getResourceOrThrow(Constants.PUS));
     assertEquals(pusBeforeRaid - 6, pusAfterRaid);
   }
 

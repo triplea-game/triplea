@@ -90,7 +90,7 @@ public final class ProPurchaseUtils {
     final GameState data = proData.getData();
 
     // Determine most cost efficient defender that can be produced in this territory
-    final Resource pus = data.getResourceList().getResource(Constants.PUS).orElse(null);
+    final Resource pus = data.getResourceList().getResourceOrThrow(Constants.PUS);
     final int pusRemaining = player.getResources().getQuantity(pus);
     final List<ProPurchaseOption> purchaseOptionsForTerritory =
         ProPurchaseValidationUtils.findPurchaseOptionsForTerritory(
@@ -261,7 +261,7 @@ public final class ProPurchaseUtils {
    * How many PU's does it cost the given player to produce the given unit including any dependents.
    */
   public static double getCost(final ProData proData, final Unit unit) {
-    final Resource pus = unit.getData().getResourceList().getResource(Constants.PUS).orElse(null);
+    final Resource pus = unit.getData().getResourceList().getResourceOrThrow(Constants.PUS);
     final Collection<Unit> units = TransportTracker.transportingAndUnloaded(unit);
     units.add(unit);
     double cost = 0.0;

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import org.jetbrains.annotations.NonNls;
 
 /** A collection of {@link Resource}s keyed on the resource name. */
 public class ResourceList extends GameDataComponent {
@@ -26,8 +27,13 @@ public class ResourceList extends GameDataComponent {
     return resources.size();
   }
 
-  public Optional<Resource> getResource(final String name) {
+  public Optional<Resource> getResourceOptional(final String name) {
     return Optional.ofNullable(resources.get(name));
+  }
+
+  public Resource getResourceOrThrow(final @NonNls String name) {
+    return getResourceOptional(name)
+        .orElseThrow(() -> new IllegalArgumentException("No resource named: " + name));
   }
 
   public Collection<Resource> getResources() {

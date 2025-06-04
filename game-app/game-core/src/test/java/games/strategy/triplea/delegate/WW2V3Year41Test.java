@@ -434,9 +434,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     // Add tech token
     gameData.performChange(
         ChangeFactory.changeResourcesChange(
-            germans,
-            gameData.getResourceList().getResource(Constants.TECH_TOKENS).orElse(null),
-            1));
+            germans, gameData.getResourceList().getResourceOrThrow(Constants.TECH_TOKENS), 1));
     // Check to make sure it was successful
     final int initTokens = germans.getResources().getQuantity("techTokens");
     assertEquals(1, initTokens);

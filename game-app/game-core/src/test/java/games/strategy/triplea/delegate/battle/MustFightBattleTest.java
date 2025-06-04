@@ -183,7 +183,7 @@ class MustFightBattleTest extends AbstractClientSettingTestCase {
     addTo(china, infantry(gameData).create(1, chinese(gameData)));
     addTo(china, fighter(gameData).create(1, chinese(gameData)));
     // We'll need 3 fuel to move the fighter...
-    final Resource fuel = gameData.getResourceList().getResource("Fuel").orElse(null);
+    final Resource fuel = gameData.getResourceList().getResourceOrThrow("Fuel");
     chinese(gameData).getResources().addResource(fuel, 3);
 
     final Territory indoChina = territory("French Indochina", gameData);

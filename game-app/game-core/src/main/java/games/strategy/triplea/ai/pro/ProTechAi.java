@@ -17,17 +17,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
@@ -48,11 +38,13 @@ final class ProTechAi {
     final float enemyStrength = getStrengthOfPotentialAttackers(myCapitol, data, player);
     float myStrength = getMyStrength(data, player, myCapitol);
     final boolean capDanger = myStrength < (enemyStrength * 1.25F + 3.0F);
-    final Resource pus = data.getResourceList().getResource(Constants.PUS).orElse(null);
+    final Resource pus = data.getResourceList().getResourceOrThrow(Constants.PUS);
     final int pusRemaining = player.getResources().getQuantity(pus);
-    final Resource techTokens =
-        data.getResourceList().getResource(Constants.TECH_TOKENS).orElse(null);
-    final int techTokensQuantity = player.getResources().getQuantity(techTokens);
+    final Optional<Resource> techTokensOptional =
+        data.getResourceList().getResourceOptional(Constants.TECH_TOKENS);
+    // If the token was not used, set the token num -1
+    final int techTokensQuantity =
+        techTokensOptional.map(resource -> player.getResources().getQuantity(resource)).orElse(-1);
     final ThreadLocalRandom localRandom = ThreadLocalRandom.current();
     int tokensToBuy = 0;
     if (!capDanger && techTokensQuantity < 3 && pusRemaining > localRandom.nextInt(160)) {

@@ -266,7 +266,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
               * rule.getEachMultiple()
               * Properties.getPuMultiplier(data.getProperties()));
     }
-    resources.add(data.getResourceList().getResource(Constants.PUS).orElse(null), pus);
+    resources.add(data.getResourceList().getResourceOrThrow(Constants.PUS), pus);
 
     return resources;
   }
@@ -315,7 +315,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
       }
       final Change change =
           ChangeFactory.changeResourcesChange(
-              player, data.getResourceList().getResource(Constants.PUS).orElse(null), toAdd);
+              player, data.getResourceList().getResourceOrThrow(Constants.PUS), toAdd);
       bridge.addChange(change);
       if (uses > 0) {
         uses--;

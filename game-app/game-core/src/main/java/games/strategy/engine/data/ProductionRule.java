@@ -54,7 +54,7 @@ public class ProductionRule extends DefaultNamed implements Rule {
     final StringBuilder sb = new StringBuilder();
     final Resource pus;
     try (GameData.Unlocker ignored = getData().acquireReadLock()) {
-      pus = getData().getResourceList().getResource(Constants.PUS).orElse(null);
+      pus = getData().getResourceList().getResourceOrThrow(Constants.PUS);
     }
     if (costs.getInt(pus) != 0) {
       sb.append("; ");

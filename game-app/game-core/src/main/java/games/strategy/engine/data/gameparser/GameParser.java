@@ -318,14 +318,13 @@ public final class GameParser {
         .orElseThrow(() -> new GameParseException("Could not find delegate:" + name));
   }
 
-  private Resource getResource(final String name) throws GameParseException {
-    return getResourceOptional(name)
-        .orElseThrow(() -> new GameParseException("Could not find resource:" + name));
+  /** If must find is true and cannot find the Resource, an exception will be thrown. */
+  private Resource getResourceOrThrow(final String name) throws GameParseException {
+    return data.getResourceList().getResourceOrThrow(name);
   }
 
-  /** If mustfind is true and cannot find the Resource an exception will be thrown. */
   private Optional<Resource> getResourceOptional(final String name) {
-    return data.getResourceList().getResource(name);
+    return data.getResourceList().getResourceOptional(name);
   }
 
   /** If the productionFrontier cannot be found an exception will be thrown. */
@@ -632,7 +631,7 @@ public final class GameParser {
       throw new GameParseException("no costs  for rule:" + rule.getName());
     }
     for (final Production.ProductionRule.Cost current : elements) {
-      final Resource resource = getResource(current.getResource());
+      final Resource resource = getResourceOrThrow(current.getResource());
       final int quantity = Optional.ofNullable(current.getQuantity()).orElse(0);
       rule.addCost(resource, quantity);
     }
@@ -645,7 +644,7 @@ public final class GameParser {
       throw new GameParseException("no costs  for rule:" + rule.getName());
     }
     for (final Production.ProductionRule.Cost current : elements) {
-      final Resource resource = getResource(current.getResource());
+      final Resource resource = getResourceOrThrow(current.getResource());
       final int quantity = Optional.ofNullable(current.getQuantity()).orElse(0);
       rule.addCost(resource, quantity);
     }
@@ -868,7 +867,7 @@ public final class GameParser {
       case "territory":
         return getTerritory(attachTo);
       case "resource":
-        return getResource(attachTo);
+        return getResourceOrThrow(attachTo);
       case "territoryEffect":
         return getTerritoryEffect(attachTo);
       case "player":
@@ -1003,7 +1002,7 @@ public final class GameParser {
       throws GameParseException {
     for (final Initialize.ResourceInitialize.ResourceGiven current : elements.getResourcesGiven()) {
       final GamePlayer player = getPlayerId(current.getPlayer());
-      final Resource resource = getResource(current.getResource());
+      final Resource resource = getResourceOrThrow(current.getResource());
       final int quantity = current.getQuantity();
       player.getResources().addResource(resource, quantity);
     }

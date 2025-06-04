@@ -90,7 +90,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
   public void start() {
     // figure out our current PUs before we do anything else, including super methods
     final GameData data = bridge.getData();
-    final Resource pus = data.getResourceList().getResource(Constants.PUS).orElse(null);
+    final Resource pus = data.getResourceList().getResourceOrThrow(Constants.PUS);
     final int leftOverPUs = bridge.getGamePlayer().getResources().getQuantity(pus);
     final IntegerMap<Resource> leftOverResources =
         bridge.getGamePlayer().getResources().getResourcesCopy();
@@ -372,7 +372,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     for (int i = 0; i < dice.size(); i++) {
       totalWarBonds += dice.getDie(i).getValue() + 1;
     }
-    final Resource pus = resourceList.getResource(Constants.PUS).orElse(null);
+    final Resource pus = resourceList.getResourceOrThrow(Constants.PUS);
     final int currentPUs = giveWarBondsTo.getResources().getQuantity(pus);
     final String transcriptText =
         player.getName()

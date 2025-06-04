@@ -504,7 +504,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
     } else if (GameStep.isPurchaseStepName(name)) {
       final IPurchaseDelegate purchaseDelegate =
           (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
-      final Resource pus = getGameData().getResourceList().getResource(Constants.PUS).orElse(null);
+      final Resource pus = getGameData().getResourceList().getResourceOrThrow(Constants.PUS);
       final int leftToSpend = gamePlayer.getResources().getQuantity(pus);
       purchase(false, leftToSpend, purchaseDelegate, getGameData(), gamePlayer);
     } else if (GameStep.isTechStepName(name)) {

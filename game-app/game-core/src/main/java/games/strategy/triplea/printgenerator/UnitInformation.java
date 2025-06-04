@@ -121,7 +121,7 @@ class UnitInformation {
         if (currentType.equals(type)) {
           return currentRule
               .getCosts()
-              .getInt(data.getResourceList().getResource(Constants.PUS).orElse(null));
+              .getInt(data.getResourceList().getResourceOrThrow(Constants.PUS));
         }
       }
     } else {

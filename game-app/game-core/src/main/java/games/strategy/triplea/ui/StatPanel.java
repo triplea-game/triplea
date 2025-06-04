@@ -233,7 +233,7 @@ class StatPanel extends JPanel implements GameDataChangeListener {
   private static Resource getResourcePUs(final GameData data) {
     final Resource pus;
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
-      pus = data.getResourceList().getResource(Constants.PUS).orElse(null);
+      pus = data.getResourceList().getResourceOrThrow(Constants.PUS);
     }
     return pus;
   }

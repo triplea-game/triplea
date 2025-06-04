@@ -173,7 +173,7 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
         final int numTechs =
             TechAdvance.getTechAdvances(gameDataSync.getTechnologyFrontier()).size();
         final int tableColNumber = colList.length + 1; // Icons need one more row
-        if (gameDataSync.getResourceList().getResource(Constants.TECH_TOKENS).isPresent()) {
+        if (gameDataSync.getResourceList().getResourceOptional(Constants.TECH_TOKENS).isPresent()) {
           useToken = true;
           dataTable = new String[numTechs + 1][tableColNumber]; // Create a row for tokens
         } else {
@@ -224,7 +224,10 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
           }
           final int col = colMap.get(playerID.getName());
           int row = 0;
-          if (gameDataSync.getResourceList().getResource(Constants.TECH_TOKENS).isPresent()) {
+          if (gameDataSync
+              .getResourceList()
+              .getResourceOptional(Constants.TECH_TOKENS)
+              .isPresent()) {
             final int tokens = playerID.getResources().getQuantity(Constants.TECH_TOKENS);
             data[row][col] = Integer.toString(tokens);
           }

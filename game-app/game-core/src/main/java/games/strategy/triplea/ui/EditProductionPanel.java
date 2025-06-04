@@ -73,7 +73,7 @@ class EditProductionPanel extends ProductionPanel {
               final IntegerMap<NamedAttachable> result = new IntegerMap<>();
               result.add(ut, 1);
               final IntegerMap<Resource> cost = new IntegerMap<>();
-              cost.add(data.getResourceList().getResource(Constants.PUS).orElse(null), 1);
+              cost.add(data.getResourceList().getResourceOrThrow(Constants.PUS), 1);
               final ProductionRule newRule = new ProductionRule(ut.getName(), data, result, cost);
               final Rule rule = new Rule(newRule, player);
               rule.setQuantity(0);
@@ -94,7 +94,7 @@ class EditProductionPanel extends ProductionPanel {
                 final IntegerMap<NamedAttachable> result = new IntegerMap<>();
                 result.add(ut, 1);
                 final IntegerMap<Resource> cost = new IntegerMap<>();
-                cost.add(data.getResourceList().getResource(Constants.PUS).orElse(null), 1);
+                cost.add(data.getResourceList().getResourceOrThrow(Constants.PUS), 1);
                 final ProductionRule newRule = new ProductionRule(ut.getName(), data, result, cost);
                 final Rule rule = new Rule(newRule, player);
                 rule.setQuantity(0);
