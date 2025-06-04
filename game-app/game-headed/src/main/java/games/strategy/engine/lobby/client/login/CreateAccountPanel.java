@@ -285,7 +285,7 @@ public final class CreateAccountPanel extends JPanel {
     } else if (!PlayerEmailValidation.isValid(emailField.getText())) {
       return Optional.of("Email must be valid");
     } else if (!UserName.isValid(usernameField.getText())) {
-      return Optional.ofNullable(UserName.validate(usernameField.getText()));
+      return UserName.validate(usernameField.getText());
     } else if (emailField.getText().isEmpty()) {
       return Optional.of("You must enter an email");
     } else if (passwordField.getPassword().length == 0) {
