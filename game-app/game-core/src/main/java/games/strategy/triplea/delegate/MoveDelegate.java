@@ -34,6 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import org.triplea.java.PredicateBuilder;
@@ -596,7 +597,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
   }
 
   @Override
-  public String performMove(final MoveDescription move) {
+  public Optional<String> performMove(final MoveDescription move) {
     final GameData data = getData();
 
     // the reason we use this, is if we are in edit mode, we may have a different unit owner than
@@ -616,10 +617,11 @@ public class MoveDelegate extends AbstractMoveDelegate {
                 + " not shown")
             : "";
     if (result.hasError()) {
-      return errorMsg.append(result.getError()).append(numErrorsMsg).toString();
+      return Optional.of(errorMsg.append(result.getError()).append(numErrorsMsg).toString());
     }
     if (result.hasDisallowedUnits()) {
-      return errorMsg.append(result.getDisallowedUnitWarning(0)).append(numErrorsMsg).toString();
+      return Optional.of(
+          errorMsg.append(result.getDisallowedUnitWarning(0)).append(numErrorsMsg).toString());
     }
     boolean isKamikaze = false;
     final boolean getKamikazeAir = Properties.getKamikazeAirplanes(data.getProperties());
@@ -638,7 +640,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
       }
     }
     if (result.hasUnresolvedUnits()) {
-      return errorMsg.append(result.getUnresolvedUnitWarning(0)).append(numErrorsMsg).toString();
+      return Optional.of(
+          errorMsg.append(result.getUnresolvedUnitWarning(0)).append(numErrorsMsg).toString());
     }
 
     // allow user to cancel move if aa guns will fire
@@ -648,7 +651,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
         aaInMoveUtil.getTerritoriesWhereAaWillFire(move.getRoute(), move.getUnits());
     if (!aaFiringTerritores.isEmpty()
         && !bridge.getRemotePlayer().confirmMoveInFaceOfAa(aaFiringTerritores)) {
-      return null;
+      return Optional.empty();
     }
 
     // do the move
@@ -671,7 +674,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     tempMovePerformer.initialize(this);
     tempMovePerformer.moveUnits(move, player, currentMove);
     tempMovePerformer = null;
-    return null;
+    return Optional.empty();
   }
 
   public static Collection<Territory> getEmptyNeutral(final Route route) {

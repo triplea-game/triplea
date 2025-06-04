@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -14,6 +15,8 @@ import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
 /**
@@ -111,10 +114,20 @@ public abstract class AbstractDelegateTestCase extends AbstractClientSettingTest
         new TechAttachment(Constants.TECH_ATTACHMENT_NAME, player, gameData));
   }
 
+  protected static void assertValid(final Optional<String> string) {
+    string.ifPresent(Assertions::fail);
+  }
+
+  protected static void assertError(final Optional<String> string) {
+    assertTrue(string.isPresent());
+  }
+
+  @Deprecated
   protected static void assertValid(final String string) {
     assertNull(string, string);
   }
 
+  @Deprecated
   protected static void assertError(final String string) {
     assertNotNull(string, string);
   }

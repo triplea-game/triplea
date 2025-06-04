@@ -1,11 +1,12 @@
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.assertError;
+import static games.strategy.triplea.delegate.GameDataTestUtil.assertValid;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.unitType;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -27,8 +28,8 @@ import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
-import org.hamcrest.Matcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,7 @@ import org.triplea.java.collections.IntegerMap;
 
 /**
  * "Victory" map is just a branch/mod of Pact of Steel 2. POS2 is an actual game with good gameplay
- * that we don't want to mess with, so "Victory" is more of an xml purely for testing purposes, and
+ * that we don't want to mess with, so "Victory" is more of a xml purely for testing purposes, and
  * probably should never be played.
  */
 class VictoryTest {
@@ -85,12 +86,12 @@ class VictoryTest {
     advanceToStep(testBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
-    final String error =
+    final Optional<String> error =
         moveDelegate.move(
             libya.getUnits(),
             gameData.getMap().getRouteOrElseThrow(libya, belgianCongo, it -> true));
     moveDelegate.end();
-    assertEquals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error);
+    assertEquals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error.orElse(""));
   }
 
   @Test
@@ -99,12 +100,12 @@ class VictoryTest {
     advanceToStep(testBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
-    final String error =
+    final Optional<String> error =
         moveDelegate.move(
             frenchWestAfrica.getUnits(),
             gameData.getMap().getRouteOrElseThrow(frenchWestAfrica, belgianCongo, it -> true));
     moveDelegate.end();
-    assertNull(error);
+    assertValid(error);
   }
 
   @Test
@@ -113,13 +114,13 @@ class VictoryTest {
     advanceToStep(testBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
-    String error = moveDelegate.move(libya.getUnits(), new Route(libya, angloEgypt));
+    Optional<String> error = moveDelegate.move(libya.getUnits(), new Route(libya, angloEgypt));
     // first step is legal
-    assertNull(error);
+    assertValid(error);
     // second step isn't legal because we lost blitz even though we took the mountain
     error = moveDelegate.move(angloEgypt.getUnits(), new Route(angloEgypt, belgianCongo));
     moveDelegate.end();
-    assertEquals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error);
+    assertError(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error);
   }
 
   @Test
@@ -128,15 +129,15 @@ class VictoryTest {
     advanceToStep(testBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
-    String error =
+    Optional<String> error =
         moveDelegate.move(
             frenchWestAfrica.getUnits(), new Route(frenchWestAfrica, frenchEquatorialAfrica));
-    assertNull(error);
+    assertValid(error);
     error =
         moveDelegate.move(
             frenchEquatorialAfrica.getUnits(), new Route(frenchEquatorialAfrica, belgianCongo));
     moveDelegate.end();
-    assertNull(error);
+    assertValid(error);
   }
 
   @Test
@@ -145,12 +146,12 @@ class VictoryTest {
     advanceToStep(testBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
-    final String error =
+    final Optional<String> error =
         moveDelegate.move(
             libya.getUnits(),
             gameData.getMap().getRouteOrElseThrow(libya, belgianCongo, it -> true));
     moveDelegate.end();
-    assertEquals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error);
+    assertError(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error);
   }
 
   @Test
@@ -163,15 +164,15 @@ class VictoryTest {
     advanceToStep(testBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
-    String error =
+    Optional<String> error =
         moveDelegate.move(
             frenchEquatorialAfrica.getUnits(), new Route(frenchEquatorialAfrica, belgianCongo));
-    assertNull(error);
+    assertValid(error);
     error = moveDelegate.move(kenya.getUnits(), new Route(kenya, belgianCongo));
-    assertNull(error);
+    assertValid(error);
     error =
         moveDelegate.move(belgianCongo.getUnits(), new Route(belgianCongo, frenchEquatorialAfrica));
-    assertEquals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error);
+    assertError(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error);
     moveDelegate.end();
   }
 
@@ -208,42 +209,42 @@ class VictoryTest {
     /** Attack with tank and infantry from a battle in angloEgypt to a battle in transJordan. */
     @Test
     void testAttackWithBothUnits() {
-      assertThat(
-          moveDelegate.move(tankAndInfantry, route),
-          is(MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY));
+      assertError(
+          MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY,
+          moveDelegate.move(tankAndInfantry, route));
       // If CAN_ATTACK_FROM_CONTESTED_TERRITORIES is true, the attack is valid.
       gameData.getProperties().set(Constants.ALL_UNITS_CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
-      assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
+      assertValid(moveDelegate.move(tankAndInfantry, route));
     }
 
     /** Attack with infantry, then tank from a battle in angloEgypt to a battle in transJordan. */
     @Test
     void testAttackWithInfantryThenTank() {
-      assertThat(
-          moveDelegate.move(infantryUnit, route),
-          is(MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY));
-      assertThat(
-          moveDelegate.move(tankUnit, route),
-          is(MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY));
+      assertError(
+          MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY,
+          moveDelegate.move(infantryUnit, route));
+      assertError(
+          MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY,
+          moveDelegate.move(tankUnit, route));
       // If CAN_ATTACK_FROM_CONTESTED_TERRITORIES is true, the attack is valid.
       gameData.getProperties().set(Constants.ALL_UNITS_CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
-      assertThat(moveDelegate.move(infantryUnit, route), wasPerformedSuccessfully());
-      assertThat(moveDelegate.move(tankUnit, route), wasPerformedSuccessfully());
+      assertValid(moveDelegate.move(infantryUnit, route));
+      assertValid(moveDelegate.move(tankUnit, route));
     }
 
     /** Attack with tank, then infantry from a battle in angloEgypt to a battle in transJordan. */
     @Test
     void testAttackWithTankThenInfantry() {
-      assertThat(
-          moveDelegate.move(tankUnit, route),
-          is(MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY));
-      assertThat(
-          moveDelegate.move(infantryUnit, route),
-          is(MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY));
+      assertError(
+          MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY,
+          moveDelegate.move(tankUnit, route));
+      assertError(
+          MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY,
+          moveDelegate.move(infantryUnit, route));
       // If CAN_ATTACK_FROM_CONTESTED_TERRITORIES is true, the attack is valid.
       gameData.getProperties().set(Constants.ALL_UNITS_CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
-      assertThat(moveDelegate.move(tankUnit, route), wasPerformedSuccessfully());
-      assertThat(moveDelegate.move(infantryUnit, route), wasPerformedSuccessfully());
+      assertValid(moveDelegate.move(tankUnit, route));
+      assertValid(moveDelegate.move(infantryUnit, route));
     }
 
     /** Attack from a battle in angloEgypt to an empty enemy-owned transJordan. */
@@ -252,18 +253,18 @@ class VictoryTest {
       removeEnemyUnits(italians, transJordan);
       assertThat(transJordan.getOwner().isAtWar(italians), is(true));
 
-      assertThat(
-          moveDelegate.move(tankAndInfantry, route),
-          is(MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY));
-      assertThat(
-          moveDelegate.move(infantryUnit, route),
-          is(MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY));
-      assertThat(
-          moveDelegate.move(tankUnit, route),
-          is(MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY));
+      assertError(
+          MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY,
+          moveDelegate.move(tankAndInfantry, route));
+      assertError(
+          MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY,
+          moveDelegate.move(infantryUnit, route));
+      assertError(
+          MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY,
+          moveDelegate.move(tankUnit, route));
       // If CAN_ATTACK_FROM_CONTESTED_TERRITORIES is true, the attack is valid.
       gameData.getProperties().set(Constants.ALL_UNITS_CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
-      assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
+      assertValid(moveDelegate.move(tankAndInfantry, route));
     }
 
     /** Attack from an empty enemy-owned angloEgypt to a battle in transJordan. */
@@ -272,13 +273,13 @@ class VictoryTest {
       removeEnemyUnits(italians, angloEgypt);
       assertThat(angloEgypt.getOwner().isAtWar(italians), is(true));
 
-      assertThat(
-          moveDelegate.move(tankAndInfantry, route),
-          is(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ_OUT_OF_EMPTY_ENEMY_TERRITORY));
-      assertThat(
-          moveDelegate.move(infantryUnit, route),
-          is(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ_OUT_OF_EMPTY_ENEMY_TERRITORY));
-      assertThat(moveDelegate.move(tankUnit, route), wasPerformedSuccessfully());
+      assertError(
+          MoveValidator.NOT_ALL_UNITS_CAN_BLITZ_OUT_OF_EMPTY_ENEMY_TERRITORY,
+          moveDelegate.move(tankAndInfantry, route));
+      assertError(
+          MoveValidator.NOT_ALL_UNITS_CAN_BLITZ_OUT_OF_EMPTY_ENEMY_TERRITORY,
+          moveDelegate.move(infantryUnit, route));
+      assertValid(moveDelegate.move(tankUnit, route));
     }
 
     /** Attack from an empty enemy-owned angloEgypt to a battle in transJordan. */
@@ -288,7 +289,7 @@ class VictoryTest {
       assertThat(angloEgypt.getOwner().isAtWar(italians), is(true));
 
       gameData.getProperties().set(Constants.ALL_UNITS_CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
-      assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
+      assertValid(moveDelegate.move(tankAndInfantry, route));
     }
 
     /** Attack from an empty enemy-owned angloEgypt to an empty enemy-owned transJordan. */
@@ -299,13 +300,13 @@ class VictoryTest {
       removeEnemyUnits(italians, transJordan);
       assertThat(transJordan.getOwner().isAtWar(italians), is(true));
 
-      assertThat(
-          moveDelegate.move(tankAndInfantry, route),
-          is(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ_OUT_OF_EMPTY_ENEMY_TERRITORY));
-      assertThat(
-          moveDelegate.move(infantryUnit, route),
-          is(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ_OUT_OF_EMPTY_ENEMY_TERRITORY));
-      assertThat(moveDelegate.move(tankUnit, route), wasPerformedSuccessfully());
+      assertError(
+          MoveValidator.NOT_ALL_UNITS_CAN_BLITZ_OUT_OF_EMPTY_ENEMY_TERRITORY,
+          moveDelegate.move(tankAndInfantry, route));
+      assertError(
+          MoveValidator.NOT_ALL_UNITS_CAN_BLITZ_OUT_OF_EMPTY_ENEMY_TERRITORY,
+          moveDelegate.move(infantryUnit, route));
+      assertValid(moveDelegate.move(tankUnit, route));
     }
 
     /** Attack from an empty enemy-owned angloEgypt to an empty enemy-owned transJordan. */
@@ -317,7 +318,7 @@ class VictoryTest {
       assertThat(transJordan.getOwner().isAtWar(italians), is(true));
 
       gameData.getProperties().set(Constants.ALL_UNITS_CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
-      assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
+      assertValid(moveDelegate.move(tankAndInfantry, route));
     }
 
     /** Attack from friendly angloEgypt with enemy units to a battle in transJordan. */
@@ -327,18 +328,18 @@ class VictoryTest {
       angloEgypt.setOwner(italians);
       assertThat(Matches.territoryHasEnemyUnits(italians).test(angloEgypt), is(true));
 
-      assertThat(
-          moveDelegate.move(tankAndInfantry, route),
-          is(MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_INTO_ENEMY_TERRITORY));
-      assertThat(
-          moveDelegate.move(tankUnit, route),
-          is(MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_INTO_ENEMY_TERRITORY));
-      assertThat(
-          moveDelegate.move(infantryUnit, route),
-          is(MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_INTO_ENEMY_TERRITORY));
+      assertError(
+          MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_INTO_ENEMY_TERRITORY,
+          moveDelegate.move(tankAndInfantry, route));
+      assertError(
+          MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_INTO_ENEMY_TERRITORY,
+          moveDelegate.move(tankUnit, route));
+      assertError(
+          MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_INTO_ENEMY_TERRITORY,
+          moveDelegate.move(infantryUnit, route));
       // If CAN_ATTACK_FROM_CONTESTED_TERRITORIES is true, the attack is valid.
       gameData.getProperties().set(Constants.ALL_UNITS_CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
-      assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
+      assertValid(moveDelegate.move(tankAndInfantry, route));
     }
 
     /** Attack from a battle in angloEgypt to friendly transJordan with enemy units. */
@@ -348,7 +349,7 @@ class VictoryTest {
       transJordan.setOwner(italians);
       assertThat(Matches.territoryHasEnemyUnits(italians).test(transJordan), is(true));
 
-      assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
+      assertValid(moveDelegate.move(tankAndInfantry, route));
     }
 
     /** Attack from a battle in angloEgypt to friendly transJordan with enemy units. */
@@ -359,7 +360,7 @@ class VictoryTest {
       assertThat(Matches.territoryHasEnemyUnits(italians).test(transJordan), is(true));
 
       gameData.getProperties().set(Constants.ALL_UNITS_CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
-      assertThat(moveDelegate.move(tankAndInfantry, route), wasPerformedSuccessfully());
+      assertValid(moveDelegate.move(tankAndInfantry, route));
     }
 
     private void removeEnemyUnits(GamePlayer player, Territory t) {
@@ -367,10 +368,6 @@ class VictoryTest {
       Collection<Unit> enemyUnits = CollectionUtils.getMatches(t.getUnits(), isEnemy);
       gameData.performChange(ChangeFactory.removeUnits(t, enemyUnits));
       assertThat(CollectionUtils.countMatches(t.getUnits(), isEnemy), is(0));
-    }
-
-    Matcher<Object> wasPerformedSuccessfully() {
-      return is(nullValue());
     }
   }
 
@@ -410,8 +407,10 @@ class VictoryTest {
     assertEquals(oreAmount - 12, italians.getResources().getQuantity("Ore"));
 
     gameData.performChange(ChangeFactory.addUnits(kenya, motorized.create(50, italians)));
-    final String error = moveDelegate.move(kenya.getUnits(), new Route(kenya, belgianCongo));
-    assertTrue(error.startsWith("Not enough resources to perform this move"));
+    final Optional<String> error =
+        moveDelegate.move(kenya.getUnits(), new Route(kenya, belgianCongo));
+    assertTrue(
+        error.isPresent() && error.get().startsWith("Not enough resources to perform this move"));
     moveDelegate.end();
   }
 
@@ -475,11 +474,11 @@ class VictoryTest {
     purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
     purchaseDelegate.start();
     final IntegerMap<ProductionRule> purchaseList = new IntegerMap<>();
-    final ProductionRule armourtest =
+    final ProductionRule armourTest =
         gameData.getProductionRuleList().getProductionRule("buyArmourtest");
-    assertNotNull(armourtest);
-    italianResources.subtract(armourtest.getCosts());
-    purchaseList.add(armourtest, 1);
+    assertNotNull(armourTest);
+    italianResources.subtract(armourTest.getCosts());
+    purchaseList.add(armourTest, 1);
     final String error = purchaseDelegate.purchase(purchaseList);
     assertNull(error);
     assertEquals(italianResources, italians.getResources().getResourcesCopy());
@@ -491,11 +490,11 @@ class VictoryTest {
     purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
     purchaseDelegate.start();
     final IntegerMap<ProductionRule> purchaseList = new IntegerMap<>();
-    final ProductionRule armourtest =
+    final ProductionRule armourTest =
         gameData.getProductionRuleList().getProductionRule("buyArmourtest2");
-    assertNotNull(armourtest);
-    italianResources.subtract(armourtest.getCosts());
-    purchaseList.add(armourtest, 1);
+    assertNotNull(armourTest);
+    italianResources.subtract(armourTest.getCosts());
+    purchaseList.add(armourTest, 1);
     final String error = purchaseDelegate.purchase(purchaseList);
     assertEquals(PurchaseDelegate.NOT_ENOUGH_RESOURCES, error);
   }

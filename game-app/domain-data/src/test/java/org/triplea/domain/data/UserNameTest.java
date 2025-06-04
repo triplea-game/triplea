@@ -1,5 +1,6 @@
 package org.triplea.domain.data;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -64,6 +65,6 @@ class UserNameTest {
             "Expected name: %s, to have no validation error messages, but had %s",
             validName, validateResult),
         UserName.validate(validName),
-        isPresent());
+        isEmpty());
   }
 }

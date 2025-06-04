@@ -11,28 +11,30 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nls;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Logic for unit placement when bid mode is active. */
 public class BidPlaceDelegate extends AbstractPlaceDelegate {
   // Allow production of any number of units
   @Override
-  protected @Nullable String checkProduction(
+  protected Optional<String> checkProduction(
       final Territory to, final Collection<Unit> units, final GamePlayer player) {
-    return null;
+    return Optional.empty();
   }
 
   // Return whether we can place bid in a certain territory
   @Override
-  protected @Nullable String canProduce(
+  protected Optional<@Nls String> canProduce(
       final Territory to, final Collection<Unit> units, final GamePlayer player) {
     return canProduce(to, to, units, player);
   }
 
   @Override
-  protected @Nullable String canProduce(
+  protected Optional<@Nls String> canProduce(
       final Territory producer,
       final Territory to,
       final Collection<Unit> units,
@@ -40,29 +42,29 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
     // we can place if no enemy units and its water
     if (to.isWater()) {
       if (units.stream().anyMatch(Matches.unitIsLand())) {
-        return "Can't place land units at sea";
+        return Optional.of("Can't place land units at sea");
       } else if (to.anyUnitsMatch(Matches.enemyUnit(player))) {
-        return "Can't place in sea zone containing enemy units";
+        return Optional.of("Can't place in sea zone containing enemy units");
       } else if (!to.anyUnitsMatch(Matches.unitIsOwnedBy(player))) {
-        return "Can't place in sea zone that does not contain a unit owned by you";
+        return Optional.of("Can't place in sea zone that does not contain a unit owned by you");
       } else {
-        return null;
+        return Optional.empty();
       }
     }
 
     // we can place on territories we own
     if (units.stream().anyMatch(Matches.unitIsSea())) {
-      return "Can't place sea units on land";
+      return Optional.of("Can't place sea units on land");
     } else if (!to.isOwnedBy(player)) {
       final PlayerAttachment pa = PlayerAttachment.get(to.getOwner());
       if (pa != null && pa.getGiveUnitControl().contains(player)) {
-        return null;
+        return Optional.empty();
       } else if (to.anyUnitsMatch(Matches.unitIsOwnedBy(player))) {
-        return null;
+        return Optional.empty();
       }
-      return "You don't own " + to.getName();
+      return Optional.of(getErrorMessageYouDoNotOwn(to));
     } else {
-      return null;
+      return Optional.empty();
     }
   }
 
