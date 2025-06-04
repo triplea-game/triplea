@@ -6,6 +6,8 @@ import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.in;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
@@ -26,6 +28,7 @@ import games.strategy.triplea.util.TransportUtils;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import lombok.experimental.UtilityClass;
@@ -408,26 +411,27 @@ public final class GameDataTestUtil {
     if (unitsToTransports.size() != units.size()) {
       throw new IllegalStateException("Not all units mapped to transports");
     }
-    final String error =
-        moveDelegate.performMove(new MoveDescription(units, route, unitsToTransports));
-    if (error != null) {
-      throw new IllegalStateException("Illegal move: " + error);
-    }
+    moveDelegate
+        .performMove(new MoveDescription(units, route, unitsToTransports))
+        .ifPresent(
+            error -> {
+              throw new IllegalStateException("Illegal move: " + error);
+            });
   }
 
   public static void move(final Collection<Unit> units, final Route route) {
     Preconditions.checkArgument(!units.isEmpty());
-    final String error =
-        moveDelegate(route.getStart().getData()).performMove(new MoveDescription(units, route));
-    if (error != null) {
-      throw new IllegalStateException("Illegal move: " + error);
-    }
+    moveDelegate(route.getStart().getData())
+        .performMove(new MoveDescription(units, route))
+        .ifPresent(
+            error -> {
+              throw new IllegalStateException("Illegal move: " + error);
+            });
   }
 
   public static void assertMoveError(final Collection<Unit> units, final Route route) {
     Preconditions.checkArgument(!units.isEmpty());
-    final String error = moveDelegate(route.getStart().getData()).move(units, route);
-    if (error == null) {
+    if (moveDelegate(route.getStart().getData()).move(units, route).isEmpty()) {
       throw new IllegalStateException("Should not be Legal move");
     }
   }
@@ -474,17 +478,32 @@ public final class GameDataTestUtil {
     player.getTechAttachment().setAaRadar(Boolean.TRUE.toString());
   }
 
-  /** Helper method to check if a String is null and otherwise print the String. */
-  static void assertValid(final String string) {
-    Assertions.assertNull(string, string);
+  static void assertError(final String expectedError, final Optional<String> string) {
+    assertTrue(string.isPresent());
+    assertEquals(expectedError, string.get());
   }
 
   /**
    * Helper method to check if a String is not null. In this scenario used to verify an error
    * message exists.
    */
+  static void assertError(final Optional<String> string) {
+    assertTrue(string.isPresent());
+  }
+
+  @Deprecated
   static void assertError(final String string) {
     Assertions.assertNotNull(string);
+  }
+
+  /** Helper method to check if {@see Optional<String>} is empty and otherwise print the String. */
+  static void assertValid(final Optional<String> string) {
+    string.ifPresent(Assertions::fail);
+  }
+
+  @Deprecated
+  static void assertValid(final String string) {
+    Assertions.assertNull(string, string);
   }
 
   /**

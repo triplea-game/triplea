@@ -12,6 +12,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 class BigWorldTest {
@@ -27,7 +28,7 @@ class BigWorldTest {
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final String error = moveDelegate.move(sz28.getUnits(), new Route(sz28, sz27, sz29));
+    final Optional<String> error = moveDelegate.move(sz28.getUnits(), new Route(sz28, sz27, sz29));
     assertError(error);
   }
 }

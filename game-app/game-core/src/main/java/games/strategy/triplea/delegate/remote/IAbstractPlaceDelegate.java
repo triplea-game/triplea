@@ -9,6 +9,7 @@ import games.strategy.triplea.delegate.UndoablePlacement;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Optional;
 import javax.annotation.Nullable;
 import org.triplea.java.RemoveOnNextMajorRelease;
 
@@ -22,10 +23,10 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
    * @return an error code if the placement was not successful
    */
   @RemoteActionCode(13)
-  String placeUnits(Collection<Unit> units, Territory at, BidMode bidMode);
+  Optional<String> placeUnits(Collection<Unit> units, Territory at, BidMode bidMode);
 
   /** Convenience method for testing. Never called over the network. */
-  default String placeUnits(final Collection<Unit> units, final Territory at) {
+  default Optional<String> placeUnits(final Collection<Unit> units, final Territory at) {
     return placeUnits(units, at, BidMode.NOT_BID);
   }
 

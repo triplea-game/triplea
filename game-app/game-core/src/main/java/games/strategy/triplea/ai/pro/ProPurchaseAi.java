@@ -2632,12 +2632,12 @@ class ProPurchaseAi {
   private static void doPlace(
       final Territory t, final Collection<Unit> toPlace, final IAbstractPlaceDelegate del) {
     for (final Unit unit : toPlace) {
-      final String message =
-          del.placeUnits(List.of(unit), t, IAbstractPlaceDelegate.BidMode.NOT_BID);
-      if (message != null) {
-        ProLogger.warn(message);
-        ProLogger.warn("Attempt was at: " + t + " with: " + unit);
-      }
+      del.placeUnits(List.of(unit), t, IAbstractPlaceDelegate.BidMode.NOT_BID)
+          .ifPresent(
+              message -> {
+                ProLogger.warn(message);
+                ProLogger.warn("Attempt was at: " + t + " with: " + unit);
+              });
     }
     AbstractAi.movePause();
   }
