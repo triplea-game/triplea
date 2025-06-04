@@ -26,12 +26,6 @@ dependencies {
     testImplementation project(":lib:test-common")
 }
 
-install4j {
-    // If you wish to build the installers, you must install install4j and define the "install4jHomeDir" property on the
-    // command line (e.g. -Pinstall4jHomeDir=...) or in your personal Gradle properties (e.g. ~/.gradle/gradle.properties).
-    installDir = file(project.findProperty("install4jHomeDir") ?: ".")
-}
-
 jar {
     manifest {
         attributes "Main-Class": mainClassName
@@ -66,25 +60,10 @@ runShadow {
     dependsOn downloadAssets
 }
 
-// Downloads JDK bundles that are used to create installers
-task downloadPlatformInstallerAssets(group: "release", dependsOn: downloadAssets) {
-    doLast {
-        [
-            "install4j/OpenJDK11U-jre_x86-32_windows_hotspot_11.0.4_11.tar.gz",
-        ].each { path ->
-            download.run {
-                src "https://raw.githubusercontent.com/triplea-game/assets/master/$path"
-                dest "$buildDir/assets/$path"
-                overwrite false
-            }
-        }
-    }
-}
-
 task platformInstallers(
     type: com.install4j.gradle.Install4jTask,
     group: "release",
-    dependsOn: [shadowJar, downloadPlatformInstallerAssets]) {
+    dependsOn: [shadowJar]) {
     projectFile = file("build.install4j")
     release = releaseVersion
 
@@ -107,7 +86,7 @@ task portableInstaller(type: Zip, group: "release", dependsOn: shadowJar) {
 }
 
 // creates installer files using install4j (eg: install.exe)
-task release(group: "release", dependsOn: [portableInstaller, platformInstallers]) {
+task release(group: "release", dependsOn: [portableInstaller, platformInstallers, downloadAssets]) {
     doLast {
         publishArtifacts(portableInstaller.outputs.files + [
             file("$releasesDir/TripleA_${releaseVersion}_macos.dmg"),
