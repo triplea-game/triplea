@@ -118,13 +118,13 @@ public abstract class AbstractDelegateTestCase extends AbstractClientSettingTest
     string.ifPresent(Assertions::fail);
   }
 
-  protected static void assertError(final Optional<String> string) {
-    assertTrue(string.isPresent());
-  }
-
   @Deprecated
   protected static void assertValid(final String string) {
     assertNull(string, string);
+  }
+
+  protected static void assertError(final Optional<String> string) {
+    assertTrue(string.isPresent());
   }
 
   @Deprecated

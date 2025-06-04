@@ -2049,13 +2049,13 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     string.ifPresent(Assertions::fail);
   }
 
-  void assertError(final Optional<String> string) {
-    assertTrue(string.isPresent());
-  }
-
   @Deprecated
   void assertValid(final String string) {
     assertNull(string, string);
+  }
+
+  void assertError(final Optional<String> string) {
+    assertTrue(string.isPresent());
   }
 
   @Deprecated

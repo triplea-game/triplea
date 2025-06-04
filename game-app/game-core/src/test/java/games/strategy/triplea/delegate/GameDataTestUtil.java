@@ -478,11 +478,6 @@ public final class GameDataTestUtil {
     player.getTechAttachment().setAaRadar(Boolean.TRUE.toString());
   }
 
-  /** Helper method to check if {@see Optional<String>} is empty and otherwise print the String. */
-  static void assertValid(final Optional<String> string) {
-    string.ifPresent(Assertions::fail);
-  }
-
   static void assertError(final String expectedError, final Optional<String> string) {
     assertTrue(string.isPresent());
     assertEquals(expectedError, string.get());
@@ -497,13 +492,18 @@ public final class GameDataTestUtil {
   }
 
   @Deprecated
-  static void assertValid(final String string) {
-    Assertions.assertNull(string, string);
+  static void assertError(final String string) {
+    Assertions.assertNotNull(string);
+  }
+
+  /** Helper method to check if {@see Optional<String>} is empty and otherwise print the String. */
+  static void assertValid(final Optional<String> string) {
+    string.ifPresent(Assertions::fail);
   }
 
   @Deprecated
-  static void assertError(final String string) {
-    Assertions.assertNotNull(string);
+  static void assertValid(final String string) {
+    Assertions.assertNull(string, string);
   }
 
   /**
