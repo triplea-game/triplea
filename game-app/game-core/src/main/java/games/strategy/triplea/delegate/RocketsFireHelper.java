@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import org.triplea.java.PredicateBuilder;
@@ -231,9 +232,9 @@ public class RocketsFireHelper implements Serializable {
     final Predicate<Unit> attackableUnits =
         Matches.enemyUnit(player).and(Matches.unitIsBeingTransported().negate());
     for (final Territory current : possible) {
-      final Route route = data.getMap().getRoute(territory, current, allowed);
-      if (route != null
-          && route.numberOfSteps() <= maxDistance
+      final Optional<Route> optionalRoute = data.getMap().getRoute(territory, current, allowed);
+      if (optionalRoute.isPresent()
+          && optionalRoute.get().numberOfSteps() <= maxDistance
           && current.anyUnitsMatch(
               attackableUnits.and(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(current).negate()))) {
         hasFactory.add(current);

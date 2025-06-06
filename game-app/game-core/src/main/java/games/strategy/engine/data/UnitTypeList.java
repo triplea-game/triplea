@@ -2,15 +2,20 @@ package games.strategy.engine.data;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
+import java.io.Serial;
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A collection of unit types.
@@ -18,7 +23,7 @@ import javax.annotation.Nullable;
  * <p>The content of the UnitTypeList doesn't change during a game.
  */
 public class UnitTypeList extends GameDataComponent implements Iterable<UnitType> {
-  private static final long serialVersionUID = 9002927658524651749L;
+  @Serial private static final long serialVersionUID = 9002927658524651749L;
 
   private final Map<String, UnitType> unitTypes = new LinkedHashMap<>();
   // Cached support rules. Marked transient as the cache does not need to be part of saved games.
@@ -34,8 +39,16 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
     unitTypes.put(type.getName(), type);
   }
 
-  public @Nullable UnitType getUnitType(final String name) {
-    return unitTypes.get(name);
+  public Optional<UnitType> getUnitType(final @NonNls String name) {
+    return Optional.ofNullable(unitTypes.get(name));
+  }
+
+  public UnitType getUnitTypeOrThrow(final @NonNls String name) {
+    return getUnitType(name)
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    MessageFormat.format("UnitTypeList has no unit type for {0}", name)));
   }
 
   /** Will return null if even a single name is not on the unit list. */
@@ -43,10 +56,9 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
     final Set<UnitType> types = new HashSet<>();
     for (final String name : names) {
       final UnitType type = unitTypes.get(name);
-      if (type == null) {
-        return null;
+      if (type != null) {
+        types.add(type);
       }
-      types.add(type);
     }
     return types;
   }
@@ -86,7 +98,7 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
   }
 
   @Override
-  public Iterator<UnitType> iterator() {
+  public @NotNull Iterator<UnitType> iterator() {
     return unitTypes.values().iterator();
   }
 

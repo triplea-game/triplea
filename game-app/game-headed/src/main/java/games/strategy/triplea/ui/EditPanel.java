@@ -50,6 +50,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -66,7 +67,6 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
-import org.jetbrains.annotations.NotNull;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.IntTextField;
@@ -249,8 +249,9 @@ class EditPanel extends ActionPanel {
         @Override
         public void territorySelected(final Territory territory, final MouseDetails md) {
           if (currentAction == changeTerritoryOwnerAction) {
-            final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-            if (ta == null) {
+            final Optional<TerritoryAttachment> optionalTerritoryAttachment =
+                TerritoryAttachment.get(territory);
+            if (optionalTerritoryAttachment.isEmpty()) {
               JOptionPane.showMessageDialog(
                   getTopLevelAncestor(),
                   "No TerritoryAttachment for " + territory + ".",
@@ -258,11 +259,14 @@ class EditPanel extends ActionPanel {
                   JOptionPane.ERROR_MESSAGE);
               return;
             }
-            // PlayerId defaultPlayer = TerritoryAttachment.get(territory).getOriginalOwner();
-            final GamePlayer defaultPlayer = ta.getOriginalOwner();
+            final Optional<GamePlayer> optionalDefaultPlayer =
+                optionalTerritoryAttachment.get().getOriginalOwner();
             final PlayerChooser playerChooser =
                 new PlayerChooser(
-                    getData().getPlayerList(), defaultPlayer, getMap().getUiContext(), true);
+                    getData().getPlayerList(),
+                    optionalDefaultPlayer.orElse(null),
+                    getMap().getUiContext(),
+                    true);
             final JDialog dialog =
                 playerChooser.createDialog(getTopLevelAncestor(), "Select new owner for territory");
             dialog.setVisible(true);
@@ -888,7 +892,7 @@ class EditPanel extends ActionPanel {
             cancelEditAction.actionPerformed(null);
           }
 
-          @NotNull
+          @Nonnull
           private JScrollPane getScrollPane(final JPanel panel) {
             final JScrollPane scroll = new JScrollPane(panel);
             scroll.setBorder(BorderFactory.createEmptyBorder());

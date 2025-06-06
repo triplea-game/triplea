@@ -24,6 +24,12 @@ public class GameDataComponent implements Serializable {
     return gameData;
   }
 
+  public GameData getDataOrThrow() {
+    if (gameData == null)
+      throw new IllegalStateException("GameData reference is not expected to be null");
+    return gameData;
+  }
+
   private void writeObject(final ObjectOutputStream stream) throws IOException {
     // if were writing to a game object stream
     // then we get the game data from the context

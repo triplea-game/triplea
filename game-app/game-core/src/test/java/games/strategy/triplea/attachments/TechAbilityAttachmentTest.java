@@ -18,6 +18,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.TechAdvance;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -36,7 +37,8 @@ class TechAbilityAttachmentTest {
   void setUp() {
     when(attachment.toString()).thenReturn(customToString);
     when(data.getUnitTypeList()).thenReturn(list);
-    when(list.getUnitType(testUnitType)).thenReturn(dummyUnitType);
+    when(list.getUnitType(testUnitType)).thenReturn(Optional.of(dummyUnitType));
+    when(list.getUnitTypeOrThrow(testUnitType)).thenReturn(dummyUnitType);
     final TechAdvance advance = mock(TechAdvance.class);
     when(advance.getAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME))
         .thenReturn(attachment, null, attachment, attachment);

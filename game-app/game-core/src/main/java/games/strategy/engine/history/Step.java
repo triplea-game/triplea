@@ -1,19 +1,23 @@
 package games.strategy.engine.history;
 
 import games.strategy.engine.data.GamePlayer;
+import java.io.Serial;
+import java.text.MessageFormat;
+import java.util.Optional;
 import javax.annotation.Nullable;
 import lombok.Getter;
+import org.jetbrains.annotations.NonNls;
 
 /** A history node that represents one step of game play (e.g. "Britain Combat Move"). */
 public class Step extends IndexedHistoryNode {
-  private static final long serialVersionUID = 1015799886178275645L;
+  @Serial private static final long serialVersionUID = 1015799886178275645L;
   private final @Nullable GamePlayer player;
-  @Getter private final String stepName;
-  private final String delegateName;
+  @Getter @NonNls private final String stepName;
+  @NonNls private final String delegateName;
 
   Step(
-      final String stepName,
-      final String delegateName,
+      final @NonNls String stepName,
+      final @NonNls String delegateName,
       final @Nullable GamePlayer player,
       final int changeStartIndex,
       final String displayName) {
@@ -23,8 +27,16 @@ public class Step extends IndexedHistoryNode {
     this.player = player;
   }
 
-  public @Nullable GamePlayer getPlayerId() {
-    return player;
+  public Optional<GamePlayer> getPlayerId() {
+    return Optional.ofNullable(player);
+  }
+
+  public GamePlayer getPlayerIdOrThrow() {
+    return Optional.ofNullable(player)
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    MessageFormat.format("No expected player for Step {0}", this.stepName)));
   }
 
   @Override

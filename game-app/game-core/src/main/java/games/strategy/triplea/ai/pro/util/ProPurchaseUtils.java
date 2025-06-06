@@ -204,8 +204,10 @@ public final class ProPurchaseUtils {
             .and(Matches.unitIsBeingTransported().negate())
             .and((territory.isWater() ? Matches.unitIsLand() : Matches.unitIsSea()).negate());
     final Collection<Unit> factoryUnits = territory.getMatches(factoryMatch);
-    final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-    final boolean originalFactory = (ta != null && ta.getOriginalFactory());
+    final boolean originalFactory =
+        TerritoryAttachment.get(territory)
+            .map(TerritoryAttachment::getOriginalFactory)
+            .orElse(false);
     final boolean playerIsOriginalOwner =
         !factoryUnits.isEmpty() && player.equals(getOriginalFactoryOwner(territory, player));
     final RulesAttachment ra = player.getRulesAttachment();

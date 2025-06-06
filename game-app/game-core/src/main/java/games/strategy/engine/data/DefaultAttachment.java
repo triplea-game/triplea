@@ -18,6 +18,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.collections.IntegerMap;
 
 /**
@@ -36,7 +37,7 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   private static final Splitter COLON_SPLITTER = Splitter.on(':');
 
   @Setter private Attachable attachedTo;
-  private @Nullable String name;
+  private @NonNls @Nullable String name;
 
   protected DefaultAttachment(
       final String name, final Attachable attachable, final GameData gameData) {
@@ -97,7 +98,7 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   }
 
   protected String thisErrorMsg() {
-    return ",   for: " + this;
+    return ", for: " + this;
   }
 
   /** Returns null or the toString() of the field value. */
@@ -120,7 +121,11 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
    */
   @Override
   public String toString() {
-    return getClass().getSimpleName() + " attached to: " + attachedTo + " with name: " + name;
+    return getClass().getSimpleName()
+        + " attached to: "
+        + attachedTo
+        + " with name: "
+        + Optional.ofNullable(name).orElse("<no name>");
   }
 
   @Override
@@ -176,7 +181,9 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   }
 
   public UnitType getUnitTypeOrThrow(String unitType) throws GameParseException {
-    return Optional.ofNullable(getData().getUnitTypeList().getUnitType(unitType))
+    return getDataOrThrow()
+        .getUnitTypeList()
+        .getUnitType(unitType)
         .orElseThrow(() -> new GameParseException("No unit type: " + unitType + thisErrorMsg()));
   }
 

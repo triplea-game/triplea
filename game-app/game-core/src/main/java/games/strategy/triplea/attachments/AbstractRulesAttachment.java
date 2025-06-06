@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
 import lombok.Getter;
@@ -405,34 +406,37 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   @Override
-  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
-    switch (propertyName) {
-      case "countEach":
-        return MutableProperty.ofReadOnly(this::getCountEach);
-      case "eachMultiple":
-        return MutableProperty.ofReadOnly(this::getEachMultiple);
-      case "players":
-        return MutableProperty.of(
-            this::setPlayers, this::setPlayers, this::getPlayers, this::resetPlayers);
-      case "objectiveValue":
-        return MutableProperty.of(
-            this::setObjectiveValue,
-            this::setObjectiveValue,
-            this::getObjectiveValue,
-            this::resetObjectiveValue);
-      case "uses":
-        return MutableProperty.of(this::setUses, this::setUses, this::getUses, this::resetUses);
-      case "rounds":
-        return MutableProperty.of(
-            this::setRounds, this::setRounds, this::getRounds, this::resetRounds);
-      case "switch":
-        return MutableProperty.of(
-            this::setSwitch, this::setSwitch, this::getSwitch, this::resetSwitch);
-      case "gameProperty":
-        return MutableProperty.ofString(
-            this::setGameProperty, this::getGameProperty, this::resetGameProperty);
-      default:
-        return super.getPropertyOrNull(propertyName);
-    }
+  public Optional<MutableProperty<?>> getPropertyOrEmpty(String propertyName) {
+    return switch (propertyName) {
+      case "countEach" -> Optional.of(MutableProperty.ofReadOnly(this::getCountEach));
+      case "eachMultiple" -> Optional.of(MutableProperty.ofReadOnly(this::getEachMultiple));
+      case "players" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setPlayers, this::setPlayers, this::getPlayers, this::resetPlayers));
+      case "objectiveValue" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setObjectiveValue,
+                  this::setObjectiveValue,
+                  this::getObjectiveValue,
+                  this::resetObjectiveValue));
+      case "uses" ->
+          Optional.of(
+              MutableProperty.of(this::setUses, this::setUses, this::getUses, this::resetUses));
+      case "rounds" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setRounds, this::setRounds, this::getRounds, this::resetRounds));
+      case "switch" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setSwitch, this::setSwitch, this::getSwitch, this::resetSwitch));
+      case "gameProperty" ->
+          Optional.of(
+              MutableProperty.ofString(
+                  this::setGameProperty, this::getGameProperty, this::resetGameProperty));
+      default -> super.getPropertyOrEmpty(propertyName);
+    };
   }
 }

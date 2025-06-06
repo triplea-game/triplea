@@ -187,13 +187,10 @@ public class ProTerritoryManager {
       }
 
       // Check strafing and using allied attack if enemy capital/factory
-      boolean isEnemyCapitalOrFactory = false;
-      final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      if (!ProUtils.isNeutralLand(t)
-          && ((ta != null && ta.isCapital())
-              || ProMatches.territoryHasInfraFactoryAndIsLand().test(t))) {
-        isEnemyCapitalOrFactory = true;
-      }
+      boolean isEnemyCapitalOrFactory =
+          !ProUtils.isNeutralLand(t)
+              && (TerritoryAttachment.get(t).map(TerritoryAttachment::isCapital).orElse(false)
+                  || ProMatches.territoryHasInfraFactoryAndIsLand().test(t));
       if (patd.getMaxBattleResult().getWinPercentage() < proData.getMinWinPercentage()
           && isEnemyCapitalOrFactory
           && alliedAttackOptions.getMax(t) != null) {
@@ -206,9 +203,10 @@ public class ProTerritoryManager {
 
           // Make sure allies' capital isn't next to territory
           final GamePlayer alliedPlayer = CollectionUtils.getAny(alliedUnits).getOwner();
-          final Territory capital =
+          final Optional<Territory> optionalCapital =
               TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(alliedPlayer, gameMap);
-          if (capital != null && !gameMap.getNeighbors(capital).contains(t)) {
+          if (optionalCapital.isPresent()
+              && !gameMap.getNeighbors(optionalCapital.get()).contains(t)) {
 
             // Get max enemy defenders
             final Set<Unit> additionalEnemyDefenders = new HashSet<>();
@@ -763,13 +761,13 @@ public class ProTerritoryManager {
 
         for (final Territory potentialTerritory : potentialTerritories) {
           // Find route over water
-          final Route myRoute =
+          final Optional<Route> optionalRoute =
               gameMap.getRouteForUnit(
                   myUnitTerritory, potentialTerritory, canMove, mySeaUnit, player);
-          if (myRoute == null) {
+          if (optionalRoute.isEmpty()) {
             continue;
           }
-          final BigDecimal myRouteLength = myRoute.getMovementCost(mySeaUnit);
+          final BigDecimal myRouteLength = optionalRoute.get().getMovementCost(mySeaUnit);
           if (myRouteLength.compareTo(range) > 0) {
             continue;
           }
@@ -867,19 +865,21 @@ public class ProTerritoryManager {
       final Territory to,
       final BigDecimal range,
       final Predicate<Territory> canMove) {
-    Route r = player.getData().getMap().getRouteForUnit(from, to, canMove, u, player);
-    if (r == null) {
+    final Optional<Route> optionalRoute =
+        player.getData().getMap().getRouteForUnit(from, to, canMove, u, player);
+    if (optionalRoute.isEmpty()) {
       return false;
     }
-    if (r.hasMoreThanOneStep()
-        && r.getMiddleSteps().stream().anyMatch(Matches.isTerritoryEnemy(player))
+    final Route route = optionalRoute.get();
+    if (route.hasMoreThanOneStep()
+        && route.getMiddleSteps().stream().anyMatch(Matches.isTerritoryEnemy(player))
         && Matches.unitIsOfTypes(
-                TerritoryEffectHelper.getUnitTypesThatLostBlitz(r.getAllTerritories()))
+                TerritoryEffectHelper.getUnitTypesThatLostBlitz(route.getAllTerritories()))
             .test(u)) {
       // If blitzing then make sure none of the territories cause blitz ability to be lost
       return false;
     }
-    if (r.getMovementCost(u).compareTo(range) > 0) {
+    if (route.getMovementCost(u).compareTo(range) > 0) {
       return false;
     }
 
@@ -970,13 +970,13 @@ public class ProTerritoryManager {
         }
 
         for (final Territory potentialTerritory : potentialTerritories) {
-          final Route myRoute =
+          final Optional<Route> optionalRoute =
               gameMap.getRouteForUnit(
                   myUnitTerritory, potentialTerritory, canFlyOverMatch, myAirUnit, player);
-          if (myRoute == null) {
+          if (optionalRoute.isEmpty()) {
             continue;
           }
-          final BigDecimal myRouteLength = myRoute.getMovementCost(myAirUnit);
+          final BigDecimal myRouteLength = optionalRoute.get().getMovementCost(myAirUnit);
           final BigDecimal remainingMoves = range.subtract(myRouteLength);
           if (remainingMoves.compareTo(BigDecimal.ZERO) < 0) {
             continue;
@@ -1209,13 +1209,13 @@ public class ProTerritoryManager {
         potentialTerritories.retainAll(unloadFromTerritories);
         for (final Territory bombardFromTerritory : potentialTerritories) {
           // Find route over water with no enemy units blocking
-          final Route myRoute =
+          final Optional<Route> optionalRoute =
               gameMap.getRouteForUnit(
                   myUnitTerritory, bombardFromTerritory, canMove, mySeaUnit, player);
-          if (myRoute == null) {
+          if (optionalRoute.isEmpty()) {
             continue;
           }
-          final BigDecimal myRouteLength = myRoute.getMovementCost(mySeaUnit);
+          final BigDecimal myRouteLength = optionalRoute.get().getMovementCost(mySeaUnit);
           if (myRouteLength.compareTo(range) > 0) {
             continue;
           }

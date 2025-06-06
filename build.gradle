@@ -2,7 +2,7 @@ plugins {
     id "java"
     id "pmd"
     id "com.github.ben-manes.versions" version "0.52.0"
-    id "com.diffplug.spotless" version "7.0.3" apply false
+    id "com.diffplug.spotless" version "7.0.4" apply false
 }
 
 apply plugin: "eclipse"
@@ -68,8 +68,8 @@ subprojects {
         jaxbImplVersion = "4.0.5"
         jetbrainsAnnotationsVersion = "26.0.2"
         jlayerVersion = "1.0.1.4"
-        junitJupiterVersion = "5.12.2"
-        junitPlatformLauncherVersion = "1.12.2"
+        junitJupiterVersion = "5.13.0"
+        junitPlatformLauncherVersion = "1.13.0"
         logbackClassicVersion = "1.5.18"
         mockitoVersion = "5.18.0"
         openFeignVersion = "13.3"
@@ -79,8 +79,8 @@ subprojects {
         wireMockJunit5Version = "1.3.1"
         wireMockVersion = "3.0.1"
         xchartVersion = "3.8.8"
-        xmlUnitCore = "2.10.1"
-        xmlUnitMatchers = "2.10.0"
+        xmlUnitCore = "2.10.2"
+        xmlUnitMatchers = "2.10.2"
     }
 
     repositories {

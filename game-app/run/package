@@ -8,50 +8,17 @@
 ## install install4j
 scriptDir=$(dirname "$0")
 
-if [ -z "$INSTALL4J_LICENSE" ]; then
-  echo "Environment variable 'INSTALL4J_LICENSE' must be set"
+if [ -z "$INSTALL4J_LICENSE_KEY" ]; then
+  echo "Environment variable 'INSTALL4J_LICENSE_KEY' must be set"
   exit 1
 fi
 
 set -ex
 
 function main() {
-  install_install4j
   build_installers
   collect_artifacts
 }
-
-# Installs install4j, the license key is injected into install4j during this step.
-function install_install4j() {
-  INSTALL4J_HOME=/tmp/install4j
-  mkdir -p $INSTALL4J_HOME
-
-  echo "Downloading and installing install4j to '$INSTALL4J_HOME'"
-  install4j_url="https://raw.githubusercontent.com/triplea-game/assets/master/install4j/install4j_linux-x64_11_0_3.sh"
-
-  # The install4j file is host on github LFS
-  # The 'install4j_url' gives us manifest data, we first get the SHA & size of the object we are downloading
-  sha=$(curl -s "$install4j_url" | grep "^oid" | sed 's/.*sha256://')
-  size=$(curl -s "$install4j_url" | grep "^size" | sed 's/.* //')
-
-  # Now, we can send a request to github LFS for the download URL of the object, we do so, and we get back a response.
-  # We use 'jq' to parse the JSON response for the download href.
-  downloadUrl=$(
-    curl -s -X POST \
-      -H "Accept: application/vnd.git-lfs+json" \
-      -H "Content-type: application/json" \
-      -d "{\"operation\": \"download\", \"transfer\": [\"basic\"], \"objects\": [{\"oid\": \"$sha\", \"size\": $size}]}" \
-      https://github.com/triplea-game/assets.git/info/lfs/objects/batch \
-    | jq -r '.objects[0].actions.download.href')
-
-  # Now, do the download, download the installer
-  wget --no-verbose -O install4j_unix.sh "$downloadUrl"
-
-  chmod +x install4j_unix.sh
-  ./install4j_unix.sh -q -dir "$INSTALL4J_HOME"
-  "$INSTALL4J_HOME/bin/install4jc" -L "$INSTALL4J_LICENSE"
-}
-
 
 ## Runs gradle command that creates the installer executables, uses intall4j
 function build_installers() {

@@ -17,7 +17,18 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
@@ -34,7 +45,8 @@ final class ProTechAi {
       return;
     }
     final Territory myCapitol =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap())
+            .orElse(null);
     final float enemyStrength = getStrengthOfPotentialAttackers(myCapitol, data, player);
     float myStrength = getMyStrength(data, player, myCapitol);
     final boolean capDanger = myStrength < (enemyStrength * 1.25F + 3.0F);
@@ -79,7 +91,7 @@ final class ProTechAi {
    * @return strength value for territory {@code myCapitol}
    */
   private static float getMyStrength(
-      final GameData data, final GamePlayer player, final Territory myCapitol) {
+      final GameData data, final GamePlayer player, final @Nullable Territory myCapitol) {
     if (myCapitol == null) {
       return 0.0F;
     }
@@ -100,7 +112,7 @@ final class ProTechAi {
    * fighters or bombers
    */
   private static float getStrengthOfPotentialAttackers(
-      final Territory location, final GameData data, final GamePlayer player) {
+      final @Nullable Territory location, final GameData data, final GamePlayer player) {
     final boolean transportsFirst = false;
 
     @Nullable GamePlayer enemyPlayer = null;
@@ -221,10 +233,11 @@ final class ProTechAi {
               continue;
             }
             if (!t4.equals(waterCheck)) {
-              final Route seaRoute =
+              final Optional<Route> optionalSeaRoute =
                   getMaxSeaRoute(
                       data, t4, waterCheck, transports, enemyPlayer, maxTransportDistance);
-              if (seaRoute == null || !seaRoute.getEnd().equals(waterCheck)) {
+              if (optionalSeaRoute.isEmpty()
+                  || !optionalSeaRoute.get().getEnd().equals(waterCheck)) {
                 continue;
               }
             }
@@ -550,7 +563,7 @@ final class ProTechAi {
     return airStrength;
   }
 
-  private static Route getMaxSeaRoute(
+  private static Optional<Route> getMaxSeaRoute(
       final GameState data,
       final Territory start,
       final Territory destination,
@@ -572,18 +585,20 @@ final class ProTechAi {
             .build();
     final Predicate<Territory> routeCond =
         Matches.territoryHasUnitsThatMatch(unitCond).negate().and(Matches.territoryIsWater());
-    Route r = data.getMap().getRouteForUnits(start, destination, routeCond, units, player);
-    if (r == null) {
-      return null;
+    final Optional<Route> optionalRoute =
+        data.getMap().getRouteForUnits(start, destination, routeCond, units, player);
+    if (optionalRoute.isEmpty()) {
+      return optionalRoute;
     }
-    final int routeDistance = r.numberOfSteps();
+    Route route = optionalRoute.get();
+    final int routeDistance = route.numberOfSteps();
     if (routeDistance > maxDistance) {
       final List<Territory> territories = new ArrayList<>();
       territories.add(start);
-      territories.addAll(r.getSteps().subList(0, maxDistance));
-      r = new Route(territories);
+      territories.addAll(route.getSteps().subList(0, maxDistance));
+      route = new Route(territories);
     }
-    return r;
+    return Optional.of(route);
   }
 
   /**

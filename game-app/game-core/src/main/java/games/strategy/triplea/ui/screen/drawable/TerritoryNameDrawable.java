@@ -36,7 +36,8 @@ public class TerritoryNameDrawable extends AbstractDrawable {
       final Graphics2D graphics,
       final MapData mapData) {
     final Territory territory = data.getMap().getTerritory(territoryName);
-    final TerritoryAttachment ta = TerritoryAttachment.get(territory);
+    final Optional<TerritoryAttachment> optionalTerritoryAttachment =
+        TerritoryAttachment.get(territory);
     final boolean drawFromTopLeft = mapData.drawNamesFromTopLeft();
     final boolean showSeaNames = mapData.drawSeaZoneNames();
     final boolean showComments = mapData.drawComments();
@@ -44,8 +45,10 @@ public class TerritoryNameDrawable extends AbstractDrawable {
     String commentText = null;
     if (territory.isWater()) {
       // this is for special comments, like convoy zones, etc.
-      if (ta != null && showComments) {
-        if (ta.getConvoyRoute() && ta.getProduction() > 0 && ta.getOriginalOwner() != null) {
+      if (optionalTerritoryAttachment.isPresent() && showComments) {
+        final TerritoryAttachment ta = optionalTerritoryAttachment.get();
+        Optional<GamePlayer> optionalOriginalOwner = ta.getOriginalOwner();
+        if (ta.getConvoyRoute() && ta.getProduction() > 0 && optionalOriginalOwner.isPresent()) {
           drawComments = true;
           if (ta.getConvoyAttached().isEmpty()) {
             commentText =
@@ -53,13 +56,13 @@ public class TerritoryNameDrawable extends AbstractDrawable {
                         TerritoryAttachment.getWhatTerritoriesThisIsUsedInConvoysFor(
                             territory, data))
                     + " "
-                    + ta.getOriginalOwner().getName()
+                    + optionalOriginalOwner.get().getName()
                     + " Blockade Route";
           } else {
             commentText =
                 MyFormatter.defaultNamedToTextList(ta.getConvoyAttached())
                     + " "
-                    + ta.getOriginalOwner().getName()
+                    + optionalOriginalOwner.get().getName()
                     + " Convoy Route";
           }
         } else if (ta.getConvoyRoute()) {
@@ -74,10 +77,9 @@ public class TerritoryNameDrawable extends AbstractDrawable {
             commentText =
                 MyFormatter.defaultNamedToTextList(ta.getConvoyAttached()) + " Convoy Route";
           }
-        } else if (ta.getProduction() > 0 && ta.getOriginalOwner() != null) {
+        } else if (ta.getProduction() > 0 && optionalOriginalOwner.isPresent()) {
           drawComments = true;
-          final GamePlayer originalOwner = ta.getOriginalOwner();
-          commentText = originalOwner.getName() + " Convoy Center";
+          commentText = optionalOriginalOwner.get().getName() + " Convoy Center";
         }
       }
       if (!drawComments && !showSeaNames) {
@@ -125,9 +127,11 @@ public class TerritoryNameDrawable extends AbstractDrawable {
       draw(bounds, graphics, x, y, nameImage, territory.getName(), drawFromTopLeft);
     }
     // draw the PUs.
-    if (ta != null && ta.getProduction() > 0 && mapData.drawResources()) {
-      final Image img = uiContext.getPuImageFactory().getPuImage(ta.getProduction()).orElse(null);
-      final String prod = Integer.valueOf(ta.getProduction()).toString();
+    final int production =
+        optionalTerritoryAttachment.map(TerritoryAttachment::getProduction).orElse(0);
+    if (production > 0 && mapData.drawResources()) {
+      final Image img = uiContext.getPuImageFactory().getPuImage(production).orElse(null);
+      final String prod = Integer.toString(production);
       final Optional<Point> place = mapData.getPuPlacementPoint(territory);
       // if pu_place.txt is specified draw there
       if (place.isPresent()) {

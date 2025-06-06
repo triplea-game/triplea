@@ -51,6 +51,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -722,7 +723,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (battleTracker.hasPendingNonBombingBattle(to)) {
           defender = AbstractBattle.findDefender(to, player, data);
         }
-        // find possible scrambling defending in the from territories
+        // find possible scrambling defending in the from-territories
         if (defender.isNull()) {
           defender =
               scramblers.keySet().stream()
@@ -1215,13 +1216,15 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     // create a list of all kamikaze zones, listed by enemy
     final Map<GamePlayer, Collection<Territory>> kamikazeZonesByEnemy = new HashMap<>();
     for (final Territory t : data.getMap().getTerritories()) {
-      final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      if (ta == null || !ta.getKamikazeZone()) {
+      final Optional<TerritoryAttachment> optionalTerritoryAttachment = TerritoryAttachment.get(t);
+      if (optionalTerritoryAttachment.isEmpty()
+          || !optionalTerritoryAttachment.get().getKamikazeZone()) {
         continue;
       }
+      final TerritoryAttachment territoryAttachment = optionalTerritoryAttachment.get();
       final GamePlayer owner =
           !Properties.getKamikazeSuicideAttacksDoneByCurrentTerritoryOwner(data.getProperties())
-              ? ta.getOriginalOwner()
+              ? territoryAttachment.getOriginalOwner().orElse(null)
               : t.getOwner();
       if (owner == null) {
         continue;
@@ -1491,7 +1494,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                 Matches.airCanFlyOver(alliedPlayer, areNeutralsPassableByAir));
     final Iterator<Territory> possibleIter = possibleTerrs.iterator();
     while (possibleIter.hasNext()) {
-      final Route route =
+      final Optional<Route> optionalRoute =
           data.getMap()
               .getRouteForUnit(
                   currentTerr,
@@ -1499,8 +1502,12 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                   Matches.airCanFlyOver(alliedPlayer, areNeutralsPassableByAir),
                   strandedAir,
                   alliedPlayer);
-      if ((route == null)
-          || (route.getMovementCost(strandedAir).compareTo(new BigDecimal(maxDistance)) > 0)) {
+      if ((optionalRoute.isEmpty())
+          || (optionalRoute
+                  .get()
+                  .getMovementCost(strandedAir)
+                  .compareTo(new BigDecimal(maxDistance))
+              > 0)) {
         possibleIter.remove();
       }
     }

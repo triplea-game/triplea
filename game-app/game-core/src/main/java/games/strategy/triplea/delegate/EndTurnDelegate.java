@@ -34,6 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import org.triplea.java.Interruptibles;
@@ -422,17 +423,14 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
       final Collection<Territory> territories, final GameState data) {
     final IntegerMap<Resource> resources = new IntegerMap<>();
     for (final Territory current : territories) {
-      final TerritoryAttachment attachment = TerritoryAttachment.get(current);
-      if (attachment == null) {
-        throw new IllegalStateException("No attachment for owned territory: " + current.getName());
-      }
-      final ResourceCollection toAdd = attachment.getResources();
-      if (toAdd == null) {
+      final TerritoryAttachment attachment = TerritoryAttachment.getOrThrow(current);
+      final Optional<ResourceCollection> optionalToAdd = attachment.getResources();
+      if (optionalToAdd.isEmpty()) {
         continue;
       }
       // Match will check if territory is originally owned convoy center, or if contested
       if (Matches.territoryCanCollectIncomeFrom(current.getOwner()).test(current)) {
-        resources.add(toAdd.getResourcesCopy());
+        resources.add(optionalToAdd.get().getResourcesCopy());
       }
     }
     return resources;

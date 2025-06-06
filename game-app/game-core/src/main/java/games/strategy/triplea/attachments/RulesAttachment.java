@@ -16,7 +16,6 @@ import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
@@ -471,8 +470,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     for (int i = 1; i < s.length; i++) {
       final String unitTypeToProduce = s[i];
       // validate that this unit exists in the xml
-      final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
-      if (ut == null && !(unitTypeToProduce.equals("any") || unitTypeToProduce.equals("ANY"))) {
+      if (getDataOrThrow().getUnitTypeList().getUnitType(unitTypeToProduce).isEmpty()
+          && !(unitTypeToProduce.equals("any") || unitTypeToProduce.equals("ANY"))) {
         throw new GameParseException("No unit called: " + unitTypeToProduce + thisErrorMsg());
       }
     }
@@ -1078,96 +1077,109 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @Override
-  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
-    switch (propertyName) {
-      case "techs":
-        return MutableProperty.of(this::setTechs, this::setTechs, this::getTechs, this::resetTechs);
-      case "techCount":
-        return MutableProperty.ofReadOnly(this::getTechCount);
-      case "relationship":
-        return MutableProperty.of(
-            this::setRelationship,
-            this::setRelationship,
-            this::getRelationship,
-            this::resetRelationship);
-      case "isAI":
-        return MutableProperty.of(this::setIsAI, this::setIsAI, this::getIsAI, this::resetIsAI);
-      case "atWarPlayers":
-        return MutableProperty.of(
-            this::setAtWarPlayers,
-            this::setAtWarPlayers,
-            this::getAtWarPlayers,
-            this::resetAtWarPlayers);
-      case "atWarCount":
-        return MutableProperty.ofReadOnly(this::getAtWarCount);
-      case "destroyedTUV":
-        return MutableProperty.ofString(
-            this::setDestroyedTuv, this::getDestroyedTuv, this::resetDestroyedTuv);
-      case "battle":
-        return MutableProperty.of(
-            this::setBattle, this::setBattle, this::getBattle, this::resetBattle);
-      case "alliedOwnershipTerritories":
-        return MutableProperty.of(
-            this::setAlliedOwnershipTerritories,
-            this::setAlliedOwnershipTerritories,
-            this::getAlliedOwnershipTerritories,
-            this::resetAlliedOwnershipTerritories);
-      case "directOwnershipTerritories":
-        return MutableProperty.of(
-            this::setDirectOwnershipTerritories,
-            this::setDirectOwnershipTerritories,
-            this::getDirectOwnershipTerritories,
-            this::resetDirectOwnershipTerritories);
-      case "alliedExclusionTerritories":
-        return MutableProperty.of(
-            this::setAlliedExclusionTerritories,
-            this::setAlliedExclusionTerritories,
-            this::getAlliedExclusionTerritories,
-            this::resetAlliedExclusionTerritories);
-      case "directExclusionTerritories":
-        return MutableProperty.of(
-            this::setDirectExclusionTerritories,
-            this::setDirectExclusionTerritories,
-            this::getDirectExclusionTerritories,
-            this::resetDirectExclusionTerritories);
-      case "enemyExclusionTerritories":
-        return MutableProperty.of(
-            this::setEnemyExclusionTerritories,
-            this::setEnemyExclusionTerritories,
-            this::getEnemyExclusionTerritories,
-            this::resetEnemyExclusionTerritories);
-      case "enemySurfaceExclusionTerritories":
-        return MutableProperty.of(
-            this::setEnemySurfaceExclusionTerritories,
-            this::setEnemySurfaceExclusionTerritories,
-            this::getEnemySurfaceExclusionTerritories,
-            this::resetEnemySurfaceExclusionTerritories);
-      case "directPresenceTerritories":
-        return MutableProperty.of(
-            this::setDirectPresenceTerritories,
-            this::setDirectPresenceTerritories,
-            this::getDirectPresenceTerritories,
-            this::resetDirectPresenceTerritories);
-      case "alliedPresenceTerritories":
-        return MutableProperty.of(
-            this::setAlliedPresenceTerritories,
-            this::setAlliedPresenceTerritories,
-            this::getAlliedPresenceTerritories,
-            this::resetAlliedPresenceTerritories);
-      case "enemyPresenceTerritories":
-        return MutableProperty.of(
-            this::setEnemyPresenceTerritories,
-            this::setEnemyPresenceTerritories,
-            this::getEnemyPresenceTerritories,
-            this::resetEnemyPresenceTerritories);
-      case "unitPresence":
-        return MutableProperty.of(
-            this::setUnitPresence,
-            this::setUnitPresence,
-            this::getUnitPresence,
-            this::resetUnitPresence);
-      default:
-        return super.getPropertyOrNull(propertyName);
-    }
+  public Optional<MutableProperty<?>> getPropertyOrEmpty(String propertyName) {
+    return switch (propertyName) {
+      case "techs" ->
+          Optional.of(
+              MutableProperty.of(this::setTechs, this::setTechs, this::getTechs, this::resetTechs));
+      case "techCount" -> Optional.of(MutableProperty.ofReadOnly(this::getTechCount));
+      case "relationship" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setRelationship,
+                  this::setRelationship,
+                  this::getRelationship,
+                  this::resetRelationship));
+      case "isAI" ->
+          Optional.of(
+              MutableProperty.of(this::setIsAI, this::setIsAI, this::getIsAI, this::resetIsAI));
+      case "atWarPlayers" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setAtWarPlayers,
+                  this::setAtWarPlayers,
+                  this::getAtWarPlayers,
+                  this::resetAtWarPlayers));
+      case "atWarCount" -> Optional.of(MutableProperty.ofReadOnly(this::getAtWarCount));
+      case "destroyedTUV" ->
+          Optional.of(
+              MutableProperty.ofString(
+                  this::setDestroyedTuv, this::getDestroyedTuv, this::resetDestroyedTuv));
+      case "battle" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setBattle, this::setBattle, this::getBattle, this::resetBattle));
+      case "alliedOwnershipTerritories" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setAlliedOwnershipTerritories,
+                  this::setAlliedOwnershipTerritories,
+                  this::getAlliedOwnershipTerritories,
+                  this::resetAlliedOwnershipTerritories));
+      case "directOwnershipTerritories" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setDirectOwnershipTerritories,
+                  this::setDirectOwnershipTerritories,
+                  this::getDirectOwnershipTerritories,
+                  this::resetDirectOwnershipTerritories));
+      case "alliedExclusionTerritories" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setAlliedExclusionTerritories,
+                  this::setAlliedExclusionTerritories,
+                  this::getAlliedExclusionTerritories,
+                  this::resetAlliedExclusionTerritories));
+      case "directExclusionTerritories" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setDirectExclusionTerritories,
+                  this::setDirectExclusionTerritories,
+                  this::getDirectExclusionTerritories,
+                  this::resetDirectExclusionTerritories));
+      case "enemyExclusionTerritories" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setEnemyExclusionTerritories,
+                  this::setEnemyExclusionTerritories,
+                  this::getEnemyExclusionTerritories,
+                  this::resetEnemyExclusionTerritories));
+      case "enemySurfaceExclusionTerritories" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setEnemySurfaceExclusionTerritories,
+                  this::setEnemySurfaceExclusionTerritories,
+                  this::getEnemySurfaceExclusionTerritories,
+                  this::resetEnemySurfaceExclusionTerritories));
+      case "directPresenceTerritories" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setDirectPresenceTerritories,
+                  this::setDirectPresenceTerritories,
+                  this::getDirectPresenceTerritories,
+                  this::resetDirectPresenceTerritories));
+      case "alliedPresenceTerritories" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setAlliedPresenceTerritories,
+                  this::setAlliedPresenceTerritories,
+                  this::getAlliedPresenceTerritories,
+                  this::resetAlliedPresenceTerritories));
+      case "enemyPresenceTerritories" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setEnemyPresenceTerritories,
+                  this::setEnemyPresenceTerritories,
+                  this::getEnemyPresenceTerritories,
+                  this::resetEnemyPresenceTerritories));
+      case "unitPresence" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setUnitPresence,
+                  this::setUnitPresence,
+                  this::getUnitPresence,
+                  this::resetUnitPresence));
+      default -> super.getPropertyOrEmpty(propertyName);
+    };
   }
 }

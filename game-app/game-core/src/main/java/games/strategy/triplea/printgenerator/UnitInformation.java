@@ -114,7 +114,7 @@ class UnitInformation {
 
   private int getCostInformation(final UnitType type, final GameData data) {
     final ProductionFrontier production =
-        data.getProductionFrontierList().getProductionFrontier("production");
+        data.getProductionFrontierList().getProductionFrontier(ProductionFrontier.PRODUCTION);
     if (production != null) {
       for (final ProductionRule currentRule : production.getRules()) {
         final NamedAttachable currentType = currentRule.getAnyResultKey();

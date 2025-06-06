@@ -373,33 +373,41 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   @Override
-  public @Nullable MutableProperty<?> getPropertyOrNull(@NonNls String propertyName) {
-    switch (propertyName) {
-      case "conditions":
-        return MutableProperty.of(
-            this::setConditions, this::setConditions, this::getConditions, this::resetConditions);
-      case "conditionType":
-        return MutableProperty.ofString(
-            this::setConditionType, this::getConditionType, this::resetConditionType);
-      case "invert":
-        return MutableProperty.ofMapper(
-            DefaultAttachment::getBool, this::setInvert, this::getInvert, () -> false);
-      case PROPERTY_CHANCE:
-        return MutableProperty.ofString(this::setChance, this::getChance, this::resetChance);
-      case "chanceIncrementOnFailure":
-        return MutableProperty.ofMapper(
-            DefaultAttachment::getInt,
-            this::setChanceIncrementOnFailure,
-            this::getChanceIncrementOnFailure,
-            () -> 0);
-      case "chanceDecrementOnSuccess":
-        return MutableProperty.ofMapper(
-            DefaultAttachment::getInt,
-            this::setChanceDecrementOnSuccess,
-            this::getChanceDecrementOnSuccess,
-            () -> 0);
-      default:
-        return null;
-    }
+  public Optional<MutableProperty<?>> getPropertyOrEmpty(@NonNls String propertyName) {
+    return switch (propertyName) {
+      case "conditions" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setConditions,
+                  this::setConditions,
+                  this::getConditions,
+                  this::resetConditions));
+      case "conditionType" ->
+          Optional.of(
+              MutableProperty.ofString(
+                  this::setConditionType, this::getConditionType, this::resetConditionType));
+      case "invert" ->
+          Optional.of(
+              MutableProperty.ofMapper(
+                  DefaultAttachment::getBool, this::setInvert, this::getInvert, () -> false));
+      case PROPERTY_CHANCE ->
+          Optional.of(
+              MutableProperty.ofString(this::setChance, this::getChance, this::resetChance));
+      case "chanceIncrementOnFailure" ->
+          Optional.of(
+              MutableProperty.ofMapper(
+                  DefaultAttachment::getInt,
+                  this::setChanceIncrementOnFailure,
+                  this::getChanceIncrementOnFailure,
+                  () -> 0));
+      case "chanceDecrementOnSuccess" ->
+          Optional.of(
+              MutableProperty.ofMapper(
+                  DefaultAttachment::getInt,
+                  this::setChanceDecrementOnSuccess,
+                  this::getChanceDecrementOnSuccess,
+                  () -> 0));
+      default -> Optional.empty();
+    };
   }
 }

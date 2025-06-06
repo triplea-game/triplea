@@ -14,6 +14,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 class BidPlaceDelegateTest extends PlaceDelegateTestCommon {
@@ -28,13 +29,14 @@ class BidPlaceDelegateTest extends PlaceDelegateTestCommon {
 
   @Test
   void tesCanPlaceWithoutFactory() {
-    final String response = delegate.placeUnits(create(british, infantry, 2), egypt, BID);
+    final Optional<String> response = delegate.placeUnits(create(british, infantry, 2), egypt, BID);
     assertValid(response);
   }
 
   @Test
   void testCanPlaceSeaWithoutFactory() {
-    final String response = delegate.placeUnits(create(british, transport, 2), redSea, BID);
+    final Optional<String> response =
+        delegate.placeUnits(create(british, transport, 2), redSea, BID);
     assertValid(response);
   }
 

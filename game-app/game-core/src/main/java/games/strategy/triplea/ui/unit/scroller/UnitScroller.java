@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -29,7 +30,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import org.jetbrains.annotations.NotNull;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.CollapsiblePanel;
@@ -198,10 +198,8 @@ public class UnitScroller {
     Optional.ofNullable(currentPlayerSupplier.get())
         .ifPresent(
             player -> {
-              lastFocusedTerritory =
-                  TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(
-                      player, gameData.getMap());
-              Optional.ofNullable(lastFocusedTerritory)
+              TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(
+                      player, gameData.getMap())
                   .ifPresent(
                       territory -> {
                         drawUnitAvatarPane(territory);
@@ -210,7 +208,7 @@ public class UnitScroller {
             });
   }
 
-  private void drawUnitAvatarPane(final @NotNull Territory territory) {
+  private void drawUnitAvatarPane(final @Nonnull Territory territory) {
     // use 240 as an approximate default if the containing panel does not yet exist.
     final int panelWidth = selectUnitImagePanel.getWidth();
     final int renderingWidth = panelWidth == 0 ? 240 : panelWidth;
@@ -404,7 +402,7 @@ public class UnitScroller {
     }
   }
 
-  private void updateRenderingToTerritory(final @NotNull Territory selectedTerritory) {
+  private void updateRenderingToTerritory(final @Nonnull Territory selectedTerritory) {
     lastFocusedTerritory = selectedTerritory;
     territoryNameLabel.setText(lastFocusedTerritory.getName());
     highlightTerritory(selectedTerritory);

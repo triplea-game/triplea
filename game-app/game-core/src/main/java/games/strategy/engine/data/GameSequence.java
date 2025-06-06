@@ -3,6 +3,7 @@ package games.strategy.engine.data;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,7 +27,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
    * game at a certain point in history, for example).
    */
   public synchronized void setRoundAndStep(
-      final int currentRound, final String stepDisplayName, final GamePlayer player) {
+      final int currentRound, final String stepDisplayName, final @Nullable GamePlayer player) {
     round = currentRound;
     boolean found = false;
     for (int i = 0; i < steps.size(); i++) {

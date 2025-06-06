@@ -38,6 +38,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -188,13 +189,13 @@ public abstract class AbstractAi extends AbstractBasePlayer {
   }
 
   @Override
-  public Territory retreatQuery(
+  public Optional<Territory> retreatQuery(
       final UUID battleId,
       final boolean submerge,
       final Territory battleTerritory,
       final Collection<Territory> possibleTerritories,
       final String message) {
-    return null;
+    return Optional.empty();
   }
 
   @Override

@@ -193,8 +193,9 @@ class CommentPanel extends JPanel {
             if (node instanceof Round) {
               round++;
             } else if (node instanceof Step) {
-              final GamePlayer gamePlayer = ((Step) node).getPlayerId();
-              if (gamePlayer != null) {
+              final Optional<GamePlayer> optionalGamePlayeramePlayer = ((Step) node).getPlayerId();
+              if (optionalGamePlayeramePlayer.isPresent()) {
+                final GamePlayer gamePlayer = optionalGamePlayeramePlayer.get();
                 player = gamePlayer.getName();
                 icon = iconMap.get(gamePlayer);
               }

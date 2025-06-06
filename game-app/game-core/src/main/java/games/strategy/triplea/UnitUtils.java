@@ -15,6 +15,7 @@ import games.strategy.triplea.delegate.TechTracker;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -43,7 +44,8 @@ public class UnitUtils {
       final boolean accountForDamage,
       final boolean mathMaxZero) {
     return getHowMuchCanUnitProduce(
-        getBiggestProducer(unitsAtStartOfStepInTerritory, producer, player, accountForDamage),
+        getBiggestProducer(unitsAtStartOfStepInTerritory, producer, player, accountForDamage)
+            .orElse(null),
         producer,
         accountForDamage,
         mathMaxZero);
@@ -56,7 +58,7 @@ public class UnitUtils {
    * @param accountForDamage {@code true} if the production capacity should account for unit damage;
    *     otherwise {@code false}.
    */
-  public static @Nullable Unit getBiggestProducer(
+  public static Optional<Unit> getBiggestProducer(
       final Collection<Unit> units,
       final Territory producer,
       final GamePlayer player,
@@ -67,7 +69,7 @@ public class UnitUtils {
             .and(producer.isWater() ? Matches.unitIsLand().negate() : Matches.unitIsSea().negate());
     final Collection<Unit> factories = CollectionUtils.getMatches(units, factoryMatch);
     if (factories.isEmpty()) {
-      return null;
+      return Optional.empty();
     }
     final IntegerMap<Unit> productionPotential = new IntegerMap<>();
     Unit highestUnit = CollectionUtils.getAny(factories);
@@ -80,7 +82,7 @@ public class UnitUtils {
         highestUnit = u;
       }
     }
-    return highestUnit;
+    return Optional.of(highestUnit);
   }
 
   /**
@@ -103,12 +105,13 @@ public class UnitUtils {
       return 0;
     }
     final UnitAttachment ua = unit.getUnitAttachment();
-    final TerritoryAttachment ta = TerritoryAttachment.get(producer);
     int territoryProduction = 0;
     int territoryUnitProduction = 0;
-    if (ta != null) {
-      territoryProduction = ta.getProduction();
-      territoryUnitProduction = ta.getUnitProduction();
+    final Optional<TerritoryAttachment> optionalTerritoryAttachment =
+        TerritoryAttachment.get(producer);
+    if (optionalTerritoryAttachment.isPresent()) {
+      territoryProduction = optionalTerritoryAttachment.get().getProduction();
+      territoryUnitProduction = optionalTerritoryAttachment.get().getUnitProduction();
     }
     int productionCapacity;
     final GameProperties properties = producer.getData().getProperties();

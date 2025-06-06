@@ -96,8 +96,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -385,8 +386,8 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     final Route sz12To13 = new Route(sz12, sz13);
-    final String error = moveDelegate.move(sz12.getUnits(), sz12To13);
-    assertNull(error);
+    final Optional<String> error = moveDelegate.move(sz12.getUnits(), sz12To13);
+    assertValid(error);
     assertEquals(3, sz13.getUnitCollection().size());
     moveDelegate.end();
     // the transport was not removed automatically
@@ -412,10 +413,10 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     del.setDelegateBridgeAndPlayer(newDelegateBridge(british(gameData)));
     del.start();
     addTo(british(gameData), transport(gameData).create(1, british(gameData)), gameData);
-    final String error =
+    final Optional<String> error =
         del.placeUnits(
             List.of(), getTerritory("United Kingdom"), IAbstractPlaceDelegate.BidMode.NOT_BID);
-    assertNull(error);
+    assertValid(error);
   }
 
   @Test
@@ -583,11 +584,11 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     moveDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     moveDelegate.start();
     // add a blitz attack
-    String errorResults =
+    Optional<String> errorResults =
         moveDelegate.move(
             poland.getUnitCollection().getMatches(Matches.unitCanBlitz()),
             new Route(poland, eastPoland, ukraine));
-    assertError(errorResults);
+    assertFalse(errorResults.isEmpty());
     /*
      * Now try with an AA
      */
@@ -605,7 +606,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
         moveDelegate.move(
             poland.getUnitCollection().getMatches(Matches.unitCanBlitz()),
             new Route(poland, eastPoland, ukraine));
-    assertError(errorResults);
+    assertFalse(errorResults.isEmpty());
   }
 
   @Test
@@ -624,7 +625,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     /*
      * Move one
      */
-    String errorResults =
+    Optional<String> errorResults =
         moveDelegate.move(
             poland.getUnitCollection().getMatches(Matches.unitIsAaForAnything()),
             new Route(poland, germany));
@@ -709,16 +710,16 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     moveUnits.addAll(poland.getUnitCollection().getMatches(Matches.unitCanBlitz()));
     assertThat(moveUnits, hasSize(5));
     // add a INVALID blitz attack
-    final String errorResults =
+    final Optional<String> errorResults =
         moveDelegate.move(moveUnits, new Route(poland, eastPoland, belorussia));
-    assertError(errorResults);
+    assertFalse(errorResults.isEmpty());
     // Fix the number of units, so there's 2 land transports and 2 infantry.
     moveUnits.clear();
     moveUnits.addAll(poland.getUnitCollection().getUnits(infantryType, 2));
     moveUnits.addAll(poland.getUnitCollection().getMatches(Matches.unitCanBlitz()));
     assertThat(moveUnits, hasSize(4));
     // add a VALID blitz attack
-    final String validResults =
+    final Optional<String> validResults =
         moveDelegate.move(moveUnits, new Route(poland, eastPoland, belorussia));
     assertValid(validResults);
     // Get number of units in territories after move (adjusted for movement)
@@ -809,8 +810,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     final PlaceableUnits placeable = bidPlaceDelegate(gameData).getPlaceableUnits(units, uk);
     assertEquals(20, placeable.getMaxUnits());
     assertNull(placeable.getErrorMessage());
-    final String error = bidPlaceDelegate(gameData).placeUnits(units, uk);
-    assertNull(error);
+    assertValid(bidPlaceDelegate(gameData).placeUnits(units, uk));
   }
 
   @Test
@@ -832,12 +832,12 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     map.add(factoryType, 1);
     addTo(british(gameData), factory(gameData).create(1, british(gameData)), gameData);
     // Place the factory
-    final String response =
+    final Optional<String> response =
         placeDelegate.placeUnits(GameDataTestUtil.getUnits(map, british), egypt);
     assertValid(response);
     // placeUnits performPlace
     // get production and unit production values
-    final TerritoryAttachment ta = TerritoryAttachment.get(egypt);
+    final TerritoryAttachment ta = TerritoryAttachment.getOrThrow(egypt);
     assertEquals(ta.getUnitProduction(), ta.getProduction());
   }
 
@@ -865,7 +865,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     removeFrom(kiangsu, kiangsu.getUnits());
     // add a VALID attack
     final Collection<Unit> moveUnits = hupeh.getUnits();
-    final String validResults = moveDelegate.move(moveUnits, new Route(hupeh, kiangsu));
+    final Optional<String> validResults = moveDelegate.move(moveUnits, new Route(hupeh, kiangsu));
     assertValid(validResults);
     /*
      * Place units in just captured territory
@@ -881,7 +881,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     // Get the number of units before placing
     int preCount = kiangsu.getUnitCollection().getUnitCount();
     // Place the infantry
-    String response =
+    Optional<String> response =
         placeDelegate.placeUnits(
             GameDataTestUtil.getUnits(map, chinese),
             kiangsu,
@@ -918,7 +918,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
             GameDataTestUtil.getUnits(map, chinese),
             yunnan,
             IAbstractPlaceDelegate.BidMode.NOT_BID);
-    assertError(response);
+    assertFalse(response.isEmpty());
     // Make sure none were placed
     final int postCount = yunnan.getUnitCollection().getUnitCount();
     assertEquals(midCount, postCount);
@@ -945,7 +945,8 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     map.add(transportType, 1);
     addTo(germans, transport(gameData).create(1, germans), gameData);
     // Place it
-    final String response = placeDelegate.placeUnits(GameDataTestUtil.getUnits(map, germans), sz5);
+    final Optional<String> response =
+        placeDelegate.placeUnits(GameDataTestUtil.getUnits(map, germans), sz5);
     assertValid(response);
   }
 
@@ -957,8 +958,8 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     moveDelegate(gameData).start();
     final Territory sz6 = getTerritory("6 Sea Zone");
     final Route route = new Route(sz6, getTerritory("7 Sea Zone"), getTerritory("8 Sea Zone"));
-    final String error = moveDelegate(gameData).move(sz6.getUnits(), route);
-    assertNull(error, error);
+    final Optional<String> error = moveDelegate(gameData).move(sz6.getUnits(), route);
+    assertValid(error);
   }
 
   @Test
@@ -969,8 +970,8 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     moveDelegate(gameData).start();
     final Territory sz12 = getTerritory("12 Sea Zone");
     final Route route = new Route(sz12, getTerritory("13 Sea Zone"), getTerritory("14 Sea Zone"));
-    final String error = moveDelegate(gameData).move(sz12.getUnits(), route);
-    assertNull(error, error);
+    final Optional<String> error = moveDelegate(gameData).move(sz12.getUnits(), route);
+    assertValid(error);
   }
 
   @Test
@@ -983,8 +984,8 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     final Territory sz14 = getTerritory("14 Sea Zone");
     removeFrom(sz14, sz14.getUnits());
     final Route route = new Route(sz12, getTerritory("13 Sea Zone"), sz14);
-    final String error = moveDelegate(gameData).move(sz12.getUnits(), route);
-    assertNull(error, error);
+    final Optional<String> error = moveDelegate(gameData).move(sz12.getUnits(), route);
+    assertValid(error);
   }
 
   @Test
@@ -1446,14 +1447,14 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     addTo(sz40, carrier(gameData).create(1, germans));
     addTo(sz40, fighter(gameData).create(1, italians(gameData)));
     addTo(madagascar, fighter(gameData).create(2, germans));
-    final Route route = gameData.getMap().getRoute(madagascar, sz40, it -> true);
+    final Route route = gameData.getMap().getRouteOrElseThrow(madagascar, sz40, it -> true);
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     // don't allow kamikaze
-    final String error = moveDelegate(gameData).move(madagascar.getUnits(), route);
-    assertError(error);
+    final Optional<String> error = moveDelegate(gameData).move(madagascar.getUnits(), route);
+    assertFalse(error.isEmpty());
   }
 
   /** Tests verifying legal moves with the mech infantry tech. */
@@ -1497,7 +1498,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
           new Route(germany, france));
       // try to move all the units in france, the infantry should not be able to move
       final Route r = new Route(france, germany);
-      assertError(moveDelegate(gameData).move(france.getUnits(), r));
+      assertFalse(moveDelegate(gameData).move(france.getUnits(), r).isEmpty());
     }
 
     /** Test blitzing behavior to ensure a tank can blitz while carrying an infantry (but not 2). */
@@ -1611,7 +1612,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
       final List<Unit> bomberAndParatroop = List.of(paratrooper, airTransport);
       Route route = new Route(germany, poland, eastPoland);
       // move the units to east poland
-      assertError(moveDelegate(gameData).move(bomberAndParatroop, route));
+      assertFalse(moveDelegate(gameData).move(bomberAndParatroop, route).isEmpty());
       // Also not valid with e a dependents map.
       Map<Unit, Collection<Unit>> dependents = Map.of(airTransport, List.of(paratrooper));
       MoveDescription move = new MoveDescription(bomberAndParatroop, route, Map.of(), dependents);
@@ -1793,7 +1794,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
 
     move(
         uk.getUnitCollection().getMatches(Matches.unitIsAir()),
-        Objects.requireNonNull(gameData.getMap().getRoute(uk, sz5, it -> true)));
+        gameData.getMap().getRouteOrElseThrow(uk, sz5, it -> true));
     // move units for amphibious assault
     moveDelegate(gameData).end();
     advanceToStep(bridge, "Combat");
@@ -1853,10 +1854,10 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
             getTerritory("Poland"),
             getTerritory("Baltic States"),
             getTerritory("5 Sea Zone"));
-    final String error =
+    final Optional<String> error =
         moveDelegate(gameData)
             .move(neEurope.getUnitCollection().getMatches(Matches.unitIsAir()), route);
-    assertNotNull(error);
+    assertFalse(error.isEmpty());
   }
 
   @Test
@@ -1975,7 +1976,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     final String preOwner = kiangsu.getOwner().getName();
     assertEquals(Constants.PLAYER_NAME_JAPANESE, preOwner);
     // add a VALID attack
-    final String validResults = moveDelegate.move(moveUnits, new Route(hupeh, kiangsu));
+    final Optional<String> validResults = moveDelegate.move(moveUnits, new Route(hupeh, kiangsu));
     assertValid(validResults);
     // Ensure owner after attack doesn't match attacker
     final String postOwner = kiangsu.getOwner().getName();
@@ -1999,8 +2000,8 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     final Territory kiangsu = getTerritory("Kiangsu");
     final Territory mongolia = getTerritory("Mongolia");
     // Remove original capital
-    final TerritoryAttachment taMongolia = TerritoryAttachment.get(mongolia);
-    final TerritoryAttachment taKiangsu = TerritoryAttachment.get(kiangsu);
+    final TerritoryAttachment taMongolia = TerritoryAttachment.getOrThrow(mongolia);
+    final TerritoryAttachment taKiangsu = TerritoryAttachment.getOrThrow(kiangsu);
     taMongolia.getProperty("capital").get().resetValue();
     // Set as NEW capital
     taKiangsu.setCapital(Constants.PLAYER_NAME_CHINESE);
@@ -2015,7 +2016,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     final String preOwner = kiangsu.getOwner().getName();
     assertEquals(Constants.PLAYER_NAME_JAPANESE, preOwner);
     // add a VALID attack
-    final String validResults = moveDelegate.move(moveUnits, new Route(hupeh, kiangsu));
+    final Optional<String> validResults = moveDelegate.move(moveUnits, new Route(hupeh, kiangsu));
     assertValid(validResults);
     // Ensure owner after attack doesn't match attacker
     final String postOwner = kiangsu.getOwner().getName();
@@ -2044,10 +2045,20 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     move(armour, new Route(libya, morocco));
   }
 
+  void assertValid(final Optional<String> string) {
+    string.ifPresent(Assertions::fail);
+  }
+
+  @Deprecated
   void assertValid(final String string) {
     assertNull(string, string);
   }
 
+  void assertError(final Optional<String> string) {
+    assertTrue(string.isPresent());
+  }
+
+  @Deprecated
   void assertError(final String string) {
     assertNotNull(string, string);
   }

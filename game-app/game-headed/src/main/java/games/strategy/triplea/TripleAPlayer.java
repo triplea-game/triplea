@@ -45,6 +45,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -371,10 +372,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
       }
       return;
     }
-    final String error = moveDel.performMove(moveDescription);
-    if (error != null) {
-      ui.notifyError(error);
-    }
+    moveDel.performMove(moveDescription).ifPresent(error -> ui.notifyError(error));
     move(nonCombat, stepName);
   }
 
@@ -581,14 +579,12 @@ public class TripleAPlayer extends AbstractBasePlayer {
         }
         continue;
       }
-      final String error =
-          placeDel.placeUnits(
+      placeDel
+          .placeUnits(
               placeData.getUnits(),
               placeData.getAt(),
-              bid ? IAbstractPlaceDelegate.BidMode.BID : IAbstractPlaceDelegate.BidMode.NOT_BID);
-      if (error != null) {
-        ui.notifyError(error);
-      }
+              bid ? IAbstractPlaceDelegate.BidMode.BID : IAbstractPlaceDelegate.BidMode.NOT_BID)
+          .ifPresent(error -> ui.notifyError(error));
     }
   }
 
@@ -749,7 +745,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
   }
 
   @Override
-  public Territory retreatQuery(
+  public Optional<Territory> retreatQuery(
       final UUID battleId,
       final boolean submerge,
       final Territory battleTerritory,

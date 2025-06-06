@@ -9,6 +9,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -219,11 +220,11 @@ final class LoginPanel extends JPanel {
   }
 
   private void logonPressed() {
-    final String validationMessage = UserName.validate(username.getText());
+    final Optional<String> optionalValidationMessage = UserName.validate(username.getText());
 
-    if (validationMessage != null) {
+    if (optionalValidationMessage.isPresent()) {
       JOptionPane.showMessageDialog(
-          this, validationMessage, "Invalid Username", JOptionPane.ERROR_MESSAGE);
+          this, optionalValidationMessage.get(), "Invalid Username", JOptionPane.ERROR_MESSAGE);
       return;
     } else if (password.getPassword().length == 0 && !anonymousLogin.isSelected()) {
       JOptionPane.showMessageDialog(

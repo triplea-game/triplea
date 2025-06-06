@@ -20,8 +20,9 @@ public final class TerritoryEffectHelper {
   private TerritoryEffectHelper() {}
 
   public static Collection<TerritoryEffect> getEffects(final Territory location) {
-    final TerritoryAttachment ta = TerritoryAttachment.get(location);
-    return (ta != null) ? ta.getTerritoryEffect() : new ArrayList<>();
+    return TerritoryAttachment.get(location)
+        .map(TerritoryAttachment::getTerritoryEffect)
+        .orElse(new ArrayList<>());
   }
 
   public static int getTerritoryCombatBonus(

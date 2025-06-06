@@ -148,23 +148,26 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     }
     // Quick check to see who still owns their own capital
     final boolean russia =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(russians, data.getMap())
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapitalOrThrow(
+                russians, data.getMap())
             .getOwner()
             .equals(russians);
     final boolean germany =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(germans, data.getMap())
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapitalOrThrow(germans, data.getMap())
             .getOwner()
             .equals(germans);
     final boolean britain =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(british, data.getMap())
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapitalOrThrow(british, data.getMap())
             .getOwner()
             .equals(british);
     final boolean japan =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(japanese, data.getMap())
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapitalOrThrow(
+                japanese, data.getMap())
             .getOwner()
             .equals(japanese);
     final boolean america =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(americans, data.getMap())
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapitalOrThrow(
+                americans, data.getMap())
             .getOwner()
             .equals(americans);
     int count = 0;
@@ -241,10 +244,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       int teamVCs = 0;
       for (final Territory t : territories) {
         if (Matches.isTerritoryOwnedByAnyOf(teamMembers).test(t)) {
-          final TerritoryAttachment ta = TerritoryAttachment.get(t);
-          if (ta != null) {
-            teamVCs += ta.getVictoryCity();
-          }
+          teamVCs += TerritoryAttachment.get(t).map(TerritoryAttachment::getVictoryCity).orElse(0);
         }
       }
       if (teamVCs >= vcAmount) {

@@ -33,10 +33,8 @@ public class LandTerritoryDrawable extends TerritoryDrawable {
       final Graphics2D graphics,
       final MapData mapData,
       final float saturation) {
-    final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-
     final Color territoryColor =
-        (ta != null && ta.getIsImpassable())
+        (TerritoryAttachment.get(territory).map(TerritoryAttachment::getIsImpassable).orElse(false))
             ? mapData.impassableColor()
             : mapData.getPlayerColor(territory.getOwner().getName());
 

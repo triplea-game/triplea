@@ -526,9 +526,9 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   private void notifyUnitSelected(
-      final List<Unit> units, final Territory t, final MouseDetails me) {
+      final List<Unit> units, @Nullable final Territory territory, final MouseDetails me) {
     for (final UnitSelectionListener listener : unitSelectionListeners) {
-      listener.unitsSelected(units, t, me);
+      listener.unitsSelected(units, territory, me);
     }
   }
 

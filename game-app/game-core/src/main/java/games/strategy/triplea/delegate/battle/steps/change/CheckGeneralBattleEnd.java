@@ -22,7 +22,7 @@ import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -153,7 +153,7 @@ public class CheckGeneralBattleEnd implements BattleStep {
         battleState.filterUnits(ALIVE, OFFENSE).stream()
             .map(Unit::getUnitAttachment)
             .map(UnitAttachment::getCanRetreatOnStalemate)
-            .filter(Objects::nonNull)
+            .flatMap(Optional::stream)
             .collect(Collectors.toSet());
 
     final boolean propertyIsSetAtLeastOnce = !canRetreatOptions.isEmpty();

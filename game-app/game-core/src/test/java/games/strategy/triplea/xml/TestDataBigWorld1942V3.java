@@ -33,12 +33,12 @@ public class TestDataBigWorld1942V3 {
     gameData = TestMapGameData.BIG_WORLD_1942_V3.getGameData();
     british = checkNotNull(gameData.getPlayerList().getPlayerId("British"));
     france = checkNotNull(gameData.getMap().getTerritory("France"));
-    tank = checkNotNull(gameData.getUnitTypeList().getUnitType("armour"));
-    infantry = checkNotNull(gameData.getUnitTypeList().getUnitType("infantry"));
-    marine = checkNotNull(gameData.getUnitTypeList().getUnitType("marine"));
-    artillery = checkNotNull(gameData.getUnitTypeList().getUnitType("artillery"));
-    fighter = checkNotNull(gameData.getUnitTypeList().getUnitType("fighter"));
-    bomber = checkNotNull(gameData.getUnitTypeList().getUnitType("bomber"));
+    tank = checkNotNull(gameData.getUnitTypeList().getUnitTypeOrThrow("armour"));
+    infantry = checkNotNull(gameData.getUnitTypeList().getUnitTypeOrThrow("infantry"));
+    marine = checkNotNull(gameData.getUnitTypeList().getUnitTypeOrThrow("marine"));
+    artillery = checkNotNull(gameData.getUnitTypeList().getUnitTypeOrThrow("artillery"));
+    fighter = checkNotNull(gameData.getUnitTypeList().getUnitTypeOrThrow("fighter"));
+    bomber = checkNotNull(gameData.getUnitTypeList().getUnitTypeOrThrow("bomber"));
 
     costMap =
         IntegerMap.of(

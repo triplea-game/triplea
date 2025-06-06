@@ -48,8 +48,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.jetbrains.annotations.NotNull;
 import org.triplea.util.Tuple;
 
 /** Orchestrates the rendering of all map tiles. */
@@ -229,7 +229,7 @@ public class TileManager {
   }
 
   private void updateTerritory(
-      @NotNull final Territory territory, final GameData data, final MapData mapData) {
+      @Nonnull final Territory territory, final GameData data, final MapData mapData) {
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
       synchronized (mutex) {
         clearTerritory(territory);
@@ -253,7 +253,7 @@ public class TileManager {
   }
 
   private void drawTerritory(
-      @NotNull final Territory territory, final GameState data, final MapData mapData) {
+      @Nonnull final Territory territory, final GameState data, final MapData mapData) {
     final Set<Tile> drawnOn = new HashSet<>();
     final Set<IDrawable> drawing = new HashSet<>();
     if (territoryOverlays.get(territory.getName()) != null) {
@@ -266,11 +266,13 @@ public class TileManager {
       drawUnits(territory, mapData, drawnOn, drawing);
     }
     drawing.add(new BattleDrawable(territory.getName()));
-    final TerritoryAttachment ta = TerritoryAttachment.get(territory);
+    final Optional<TerritoryAttachment> optionalTerritoryAttachment =
+        TerritoryAttachment.get(territory);
     if (!territory.isWater()) {
       drawing.add(new LandTerritoryDrawable(territory));
     } else {
-      if (ta != null) {
+      if (optionalTerritoryAttachment.isPresent()) {
+        final TerritoryAttachment ta = optionalTerritoryAttachment.get();
         // Kamikaze Zones
         if (ta.getKamikazeZone()) {
           drawing.add(new KamikazeZoneDrawable(territory, uiContext));
@@ -291,11 +293,14 @@ public class TileManager {
       drawing.add(new SeaZoneOutlineDrawable(territory.getName()));
     }
     drawing.add(new TerritoryNameDrawable(territory.getName(), uiContext));
-    if (ta != null && ta.isCapital() && mapData.drawCapitolMarkers()) {
-      final GamePlayer capitalOf = data.getPlayerList().getPlayerId(ta.getCapital());
+    if (optionalTerritoryAttachment.map(TerritoryAttachment::isCapital).orElse(false)
+        && mapData.drawCapitolMarkers()) {
+
+      final GamePlayer capitalOf =
+          data.getPlayerList().getPlayerId(optionalTerritoryAttachment.get().getCapitalOrThrow());
       drawing.add(new CapitolMarkerDrawable(capitalOf, territory, uiContext));
     }
-    if (ta != null && (ta.getVictoryCity() != 0)) {
+    if (optionalTerritoryAttachment.map(TerritoryAttachment::getVictoryCity).orElse(0) != 0) {
       drawing.add(new VcDrawable(territory));
     }
     // add to the relevant tiles
@@ -318,7 +323,7 @@ public class TileManager {
   }
 
   private void drawUnits(
-      @NotNull final Territory territory,
+      @Nonnull final Territory territory,
       final MapData mapData,
       final Set<Tile> drawnOn,
       final Set<IDrawable> drawing) {

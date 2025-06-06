@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -487,12 +488,13 @@ public class AirBattle extends AbstractBattle {
 
     final GamePlayer retreatingPlayer = defender ? this.defender : attacker;
     final String text = retreatingPlayer.getName() + " retreat?";
-    final Territory retreatTo =
+    final Optional<Territory> optionalRetreatTo =
         getRemote(retreatingPlayer, bridge)
             .retreatQuery(battleId, false, battleSite, List.of(battleSite), text);
-    if (retreatTo == null) {
+    if (optionalRetreatTo.isEmpty()) {
       return;
     }
+    final Territory retreatTo = optionalRetreatTo.get();
     if (!retreatTo.equals(battleSite)) {
       log.error("Invalid retreat selection : {} does not equal {}", retreatTo, battleSite);
       return;

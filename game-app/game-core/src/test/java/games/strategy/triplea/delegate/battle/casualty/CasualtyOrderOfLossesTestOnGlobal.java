@@ -41,20 +41,23 @@ class CasualtyOrderOfLossesTestOnGlobal {
       checkNotNull(data.getPlayerList().getPlayerId("British"));
   private static final Territory FRANCE = checkNotNull(territory("France", data));
   private static final UnitType INFANTRY =
-      checkNotNull(data.getUnitTypeList().getUnitType("infantry"));
-  private static final UnitType TANK = checkNotNull(data.getUnitTypeList().getUnitType("armour"));
-  private static final UnitType MARINE = checkNotNull(data.getUnitTypeList().getUnitType("marine"));
+      checkNotNull(data.getUnitTypeList().getUnitTypeOrThrow("infantry"));
+  private static final UnitType TANK =
+      checkNotNull(data.getUnitTypeList().getUnitTypeOrThrow("armour"));
+  private static final UnitType MARINE =
+      checkNotNull(data.getUnitTypeList().getUnitTypeOrThrow("marine"));
   private static final UnitType ARTILLERY =
-      checkNotNull(data.getUnitTypeList().getUnitType("artillery"));
+      checkNotNull(data.getUnitTypeList().getUnitTypeOrThrow("artillery"));
   private static final UnitType SUBMARINE =
-      checkNotNull(data.getUnitTypeList().getUnitType("submarine"));
+      checkNotNull(data.getUnitTypeList().getUnitTypeOrThrow("submarine"));
   private static final UnitType DESTROYER =
-      checkNotNull(data.getUnitTypeList().getUnitType("destroyer"));
+      checkNotNull(data.getUnitTypeList().getUnitTypeOrThrow("destroyer"));
   private static final UnitType CARRIER =
-      checkNotNull(data.getUnitTypeList().getUnitType("carrier"));
-  private static final UnitType BOMBER = checkNotNull(data.getUnitTypeList().getUnitType("bomber"));
+      checkNotNull(data.getUnitTypeList().getUnitTypeOrThrow("carrier"));
+  private static final UnitType BOMBER =
+      checkNotNull(data.getUnitTypeList().getUnitTypeOrThrow("bomber"));
   private static final UnitType BATTLESHIP =
-      checkNotNull(data.getUnitTypeList().getUnitType("battleship"));
+      checkNotNull(data.getUnitTypeList().getUnitTypeOrThrow("battleship"));
 
   private static final IntegerMap<UnitType> COST_MAP =
       IntegerMap.of(

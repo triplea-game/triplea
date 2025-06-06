@@ -1,5 +1,7 @@
 package games.strategy.triplea.attachments;
 
+import static games.strategy.engine.data.TechnologyFrontierList.getTechnologyFrontierOrThrow;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -37,6 +39,7 @@ import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.NotificationMessages;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -54,6 +57,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
@@ -97,7 +101,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   private @Nullable Map<Territory, IntegerMap<UnitType>> placement = null;
   private @Nullable Map<Territory, IntegerMap<UnitType>> removeUnits = null;
   private @Nullable IntegerMap<UnitType> purchase = null;
-  private @Nullable String resource = null;
+  private @Nullable @NonNls String resource = null;
   private int resourceCount = 0;
   // never use a map of other attachments, inside of an attachment. java will not be able to
   // deserialize it.
@@ -409,7 +413,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     frontier = value;
   }
 
-  private @Nullable ProductionFrontier getFrontier() {
+  private Optional<ProductionFrontier> getFrontier() {
+    return Optional.ofNullable(frontier);
+  }
+
+  private @Nullable ProductionFrontier getFrontierOrNull() {
     return frontier;
   }
 
@@ -471,7 +479,19 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     victory = s.intern();
   }
 
-  private @Nullable String getVictory() {
+  private Optional<String> getVictory() {
+    return Optional.ofNullable(victory);
+  }
+
+  private String getVictoryOrThrow() {
+    return getVictory()
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    MessageFormat.format("No expected victory for TriggerAttachment {0}", this)));
+  }
+
+  private String getVictoryOrNull() {
     return victory;
   }
 
@@ -586,7 +606,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     resource = s.intern();
   }
 
-  private @Nullable String getResource() {
+  private Optional<@NonNls String> getResource() {
+    return Optional.ofNullable(resource);
+  }
+
+  private @Nullable @NonNls String getResourceOrNull() {
     return resource;
   }
 
@@ -1204,15 +1228,16 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     for (; i < s.length; i++) {
       final Collection<UnitType> types = new ArrayList<>();
-      final UnitType tp = getData().getUnitTypeList().getUnitType(s[i]);
-      if (tp == null) {
+      final Optional<UnitType> optionalUnitType =
+          getDataOrThrow().getUnitTypeList().getUnitType(s[i]);
+      if (optionalUnitType.isEmpty()) {
         if (s[i].equalsIgnoreCase("all")) {
           types.addAll(getData().getUnitTypeList().getAllUnitTypes());
         } else {
           throw new GameParseException("UnitType does not exist " + s[i] + thisErrorMsg());
         }
       } else {
-        types.add(tp);
+        types.add(optionalUnitType.get());
       }
       for (final UnitType type : types) {
         map.add(type, count);
@@ -1696,12 +1721,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           // covers TerritoryAttachment, CanalAttachment
           if (t.getTerritoryAttachmentName().getFirst().equals("TerritoryAttachment")) {
             final TerritoryAttachment attachment =
-                TerritoryAttachment.get(territory, t.getTerritoryAttachmentName().getSecond());
-            if (attachment == null) {
-              // water territories may not have an attachment, so this could be null
-              throw new IllegalStateException(
-                  "Triggers: No territory attachment for: " + territory.getName());
-            }
+                TerritoryAttachment.get(territory, t.getTerritoryAttachmentName().getSecond())
+                    .orElseThrow(
+                        () ->
+                            // water territories may not have an attachment, so this could be null
+                            new IllegalStateException(
+                                "Triggers: No territory attachment for: " + territory.getName()));
 
             getPropertyChangeHistoryStartEvent(
                     t,
@@ -1917,12 +1942,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
       for (final GamePlayer player : t.getPlayers()) {
         for (final String cat : t.getAvailableTech().keySet()) {
-          final TechnologyFrontier tf =
-              player.getTechnologyFrontierList().getTechnologyFrontier(cat);
-          if (tf == null) {
-            throw new IllegalStateException(
-                "Triggers: tech category doesn't exist: " + cat + " for player: " + player);
-          }
+          final TechnologyFrontier tf = getTechnologyFrontierOrThrow(player, cat);
           for (final TechAdvance ta : t.getAvailableTech().get(cat).keySet()) {
             if (t.getAvailableTech().get(cat).get(ta)) {
               historyWriter.startEvent(
@@ -1997,15 +2017,19 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       IDelegateHistoryWriter historyWriter = bridge.getHistoryWriter();
-      for (final GamePlayer player : t.getPlayers()) {
-        change.add(ChangeFactory.changeProductionFrontier(player, t.getFrontier()));
-        historyWriter.startEvent(
-            MyFormatter.attachmentNameToText(t.getName())
-                + ": "
-                + player.getName()
-                + " has their production frontier changed to: "
-                + t.getFrontier().getName());
-      }
+      t.getFrontier()
+          .ifPresent(
+              productionFrontier -> {
+                for (final GamePlayer player : t.getPlayers()) {
+                  change.add(ChangeFactory.changeProductionFrontier(player, productionFrontier));
+                  historyWriter.startEvent(
+                      MyFormatter.attachmentNameToText(t.getName())
+                          + ": "
+                          + player.getName()
+                          + " has their production frontier changed to: "
+                          + productionFrontier.getName());
+                }
+              });
     }
     if (!change.isEmpty()) {
       bridge.addChange(change);
@@ -2299,6 +2323,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (fireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;
       }
+      final Optional<String> optionalResource = t.getResource();
+      if (optionalResource.isEmpty()) {
+        continue;
+      }
+      final String resource = optionalResource.get();
       if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
@@ -2306,7 +2335,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       for (final GamePlayer player : t.getPlayers()) {
         for (int i = 0; i < eachMultiple; ++i) {
           int toAdd = t.getResourceCount();
-          if (t.getResource().equals(Constants.PUS)) {
+          if (resource.equals(Constants.PUS)) {
             toAdd *= Properties.getPuMultiplier(data.getProperties());
           }
           resources.add(data.getResourceList().getResourceOrThrow(t.getResource()), toAdd);
@@ -2445,8 +2474,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
-      final String victoryMessage = notificationMessages.getMessage(t.getVictory().trim());
-      final String sounds = notificationMessages.getSoundsKey(t.getVictory().trim());
+      final String victoryMessage = notificationMessages.getMessage(t.getVictoryOrThrow().trim());
+      final String sounds = notificationMessages.getSoundsKey(t.getVictoryOrThrow().trim());
       if (victoryMessage != null) {
         if (sounds != null) { // only play the sound if we are also notifying everyone
           ISound sound = bridge.getSoundChannelBroadcaster();
@@ -2483,7 +2512,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public static Predicate<TriggerAttachment> prodMatch() {
-    return t -> t.getFrontier() != null;
+    return t -> t.getFrontier().isPresent();
   }
 
   public static Predicate<TriggerAttachment> prodFrontierEditMatch() {
@@ -2547,7 +2576,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public static Predicate<TriggerAttachment> victoryMatch() {
-    return t -> t.getVictory() != null && t.getVictory().length() > 0;
+    return t -> !t.getVictory().orElse("").isEmpty();
   }
 
   public static Predicate<TriggerAttachment> activateTriggerMatch() {
@@ -2555,154 +2584,190 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @Override
-  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
-    switch (propertyName) {
-      case "frontier":
-        return MutableProperty.of(
-            this::setFrontier, this::setFrontier, this::getFrontier, this::resetFrontier);
-      case "productionRule":
-        return MutableProperty.of(
-            this::setProductionRule,
-            this::setProductionRule,
-            this::getProductionRule,
-            this::resetProductionRule);
-      case "tech":
-        return MutableProperty.of(this::setTech, this::setTech, this::getTech, this::resetTech);
-      case "availableTech":
-        return MutableProperty.of(
-            this::setAvailableTech,
-            this::setAvailableTech,
-            this::getAvailableTech,
-            this::resetAvailableTech);
-      case "placement":
-        return MutableProperty.of(
-            this::setPlacement, this::setPlacement, this::getPlacement, this::resetPlacement);
-      case "removeUnits":
-        return MutableProperty.of(
-            this::setRemoveUnits,
-            this::setRemoveUnits,
-            this::getRemoveUnits,
-            this::resetRemoveUnits);
-      case "purchase":
-        return MutableProperty.of(
-            this::setPurchase, this::setPurchase, this::getPurchase, this::resetPurchase);
-      case "resource":
-        return MutableProperty.ofString(this::setResource, this::getResource, this::resetResource);
-      case "resourceCount":
-        return MutableProperty.of(
-            this::setResourceCount,
-            this::setResourceCount,
-            this::getResourceCount,
-            this::resetResourceCount);
-      case "support":
-        return MutableProperty.of(
-            this::setSupport, this::setSupport, this::getSupport, this::resetSupport);
-      case "relationshipChange":
-        return MutableProperty.of(
-            this::setRelationshipChange,
-            this::setRelationshipChange,
-            this::getRelationshipChange,
-            this::resetRelationshipChange);
-      case "victory":
-        return MutableProperty.ofString(this::setVictory, this::getVictory, this::resetVictory);
-      case "activateTrigger":
-        return MutableProperty.of(
-            this::setActivateTrigger,
-            this::setActivateTrigger,
-            this::getActivateTrigger,
-            this::resetActivateTrigger);
-      case "changeOwnership":
-        return MutableProperty.of(
-            this::setChangeOwnership,
-            this::setChangeOwnership,
-            this::getChangeOwnership,
-            this::resetChangeOwnership);
-      case "unitType":
-        return MutableProperty.of(
-            this::setUnitType, this::setUnitType, this::getUnitType, this::resetUnitType);
-      case "unitAttachmentName":
-        return MutableProperty.of(
-            this::setUnitAttachmentName,
-            this::setUnitAttachmentName,
-            this::getUnitAttachmentName,
-            this::resetUnitAttachmentName);
-      case "unitProperty":
-        return MutableProperty.of(
-            this::setUnitProperty,
-            this::setUnitProperty,
-            this::getUnitProperty,
-            this::resetUnitProperty);
-      case "territories":
-        return MutableProperty.of(
-            this::setTerritories,
-            this::setTerritories,
-            this::getTerritories,
-            this::resetTerritories);
-      case "territoryAttachmentName":
-        return MutableProperty.of(
-            this::setTerritoryAttachmentName,
-            this::setTerritoryAttachmentName,
-            this::getTerritoryAttachmentName,
-            this::resetTerritoryAttachmentName);
-      case "territoryProperty":
-        return MutableProperty.of(
-            this::setTerritoryProperty,
-            this::setTerritoryProperty,
-            this::getTerritoryProperty,
-            this::resetTerritoryProperty);
-      case "players":
-        return MutableProperty.of(
-            this::setPlayers, this::setPlayers, this::getPlayers, this::resetPlayers);
-      case "playerAttachmentName":
-        return MutableProperty.of(
-            this::setPlayerAttachmentName,
-            this::setPlayerAttachmentName,
-            this::getPlayerAttachmentName,
-            this::resetPlayerAttachmentName);
-      case "playerProperty":
-        return MutableProperty.of(
-            this::setPlayerProperty,
-            this::setPlayerProperty,
-            this::getPlayerProperty,
-            this::resetPlayerProperty);
-      case "relationshipTypes":
-        return MutableProperty.of(
-            this::setRelationshipTypes,
-            this::setRelationshipTypes,
-            this::getRelationshipTypes,
-            this::resetRelationshipTypes);
-      case "relationshipTypeAttachmentName":
-        return MutableProperty.of(
-            this::setRelationshipTypeAttachmentName,
-            this::setRelationshipTypeAttachmentName,
-            this::getRelationshipTypeAttachmentName,
-            this::resetRelationshipTypeAttachmentName);
-      case "relationshipTypeProperty":
-        return MutableProperty.of(
-            this::setRelationshipTypeProperty,
-            this::setRelationshipTypeProperty,
-            this::getRelationshipTypeProperty,
-            this::resetRelationshipTypeProperty);
-      case "territoryEffects":
-        return MutableProperty.of(
-            this::setTerritoryEffects,
-            this::setTerritoryEffects,
-            this::getTerritoryEffects,
-            this::resetTerritoryEffects);
-      case "territoryEffectAttachmentName":
-        return MutableProperty.of(
-            this::setTerritoryEffectAttachmentName,
-            this::setTerritoryEffectAttachmentName,
-            this::getTerritoryEffectAttachmentName,
-            this::resetTerritoryEffectAttachmentName);
-      case "territoryEffectProperty":
-        return MutableProperty.of(
-            this::setTerritoryEffectProperty,
-            this::setTerritoryEffectProperty,
-            this::getTerritoryEffectProperty,
-            this::resetTerritoryEffectProperty);
-      default:
-        return super.getPropertyOrNull(propertyName);
-    }
+  public Optional<MutableProperty<?>> getPropertyOrEmpty(final @NonNls String propertyName) {
+    return switch (propertyName) {
+      case "frontier" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setFrontier,
+                  this::setFrontier,
+                  this::getFrontierOrNull,
+                  this::resetFrontier));
+      case "productionRule" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setProductionRule,
+                  this::setProductionRule,
+                  this::getProductionRule,
+                  this::resetProductionRule));
+      case "tech" ->
+          Optional.of(
+              MutableProperty.of(this::setTech, this::setTech, this::getTech, this::resetTech));
+      case "availableTech" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setAvailableTech,
+                  this::setAvailableTech,
+                  this::getAvailableTech,
+                  this::resetAvailableTech));
+      case "placement" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setPlacement,
+                  this::setPlacement,
+                  this::getPlacement,
+                  this::resetPlacement));
+      case "removeUnits" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setRemoveUnits,
+                  this::setRemoveUnits,
+                  this::getRemoveUnits,
+                  this::resetRemoveUnits));
+      case "purchase" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setPurchase, this::setPurchase, this::getPurchase, this::resetPurchase));
+      case "resource" ->
+          Optional.of(
+              MutableProperty.ofString(
+                  this::setResource, this::getResourceOrNull, this::resetResource));
+      case "resourceCount" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setResourceCount,
+                  this::setResourceCount,
+                  this::getResourceCount,
+                  this::resetResourceCount));
+      case "support" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setSupport, this::setSupport, this::getSupport, this::resetSupport));
+      case "relationshipChange" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setRelationshipChange,
+                  this::setRelationshipChange,
+                  this::getRelationshipChange,
+                  this::resetRelationshipChange));
+      case "victory" ->
+          Optional.of(
+              MutableProperty.ofString(
+                  this::setVictory, this::getVictoryOrNull, this::resetVictory));
+      case "activateTrigger" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setActivateTrigger,
+                  this::setActivateTrigger,
+                  this::getActivateTrigger,
+                  this::resetActivateTrigger));
+      case "changeOwnership" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setChangeOwnership,
+                  this::setChangeOwnership,
+                  this::getChangeOwnership,
+                  this::resetChangeOwnership));
+      case "unitType" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setUnitType, this::setUnitType, this::getUnitType, this::resetUnitType));
+      case "unitAttachmentName" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setUnitAttachmentName,
+                  this::setUnitAttachmentName,
+                  this::getUnitAttachmentName,
+                  this::resetUnitAttachmentName));
+      case "unitProperty" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setUnitProperty,
+                  this::setUnitProperty,
+                  this::getUnitProperty,
+                  this::resetUnitProperty));
+      case "territories" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setTerritories,
+                  this::setTerritories,
+                  this::getTerritories,
+                  this::resetTerritories));
+      case "territoryAttachmentName" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setTerritoryAttachmentName,
+                  this::setTerritoryAttachmentName,
+                  this::getTerritoryAttachmentName,
+                  this::resetTerritoryAttachmentName));
+      case "territoryProperty" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setTerritoryProperty,
+                  this::setTerritoryProperty,
+                  this::getTerritoryProperty,
+                  this::resetTerritoryProperty));
+      case "players" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setPlayers, this::setPlayers, this::getPlayers, this::resetPlayers));
+      case "playerAttachmentName" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setPlayerAttachmentName,
+                  this::setPlayerAttachmentName,
+                  this::getPlayerAttachmentName,
+                  this::resetPlayerAttachmentName));
+      case "playerProperty" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setPlayerProperty,
+                  this::setPlayerProperty,
+                  this::getPlayerProperty,
+                  this::resetPlayerProperty));
+      case "relationshipTypes" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setRelationshipTypes,
+                  this::setRelationshipTypes,
+                  this::getRelationshipTypes,
+                  this::resetRelationshipTypes));
+      case "relationshipTypeAttachmentName" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setRelationshipTypeAttachmentName,
+                  this::setRelationshipTypeAttachmentName,
+                  this::getRelationshipTypeAttachmentName,
+                  this::resetRelationshipTypeAttachmentName));
+      case "relationshipTypeProperty" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setRelationshipTypeProperty,
+                  this::setRelationshipTypeProperty,
+                  this::getRelationshipTypeProperty,
+                  this::resetRelationshipTypeProperty));
+      case "territoryEffects" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setTerritoryEffects,
+                  this::setTerritoryEffects,
+                  this::getTerritoryEffects,
+                  this::resetTerritoryEffects));
+      case "territoryEffectAttachmentName" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setTerritoryEffectAttachmentName,
+                  this::setTerritoryEffectAttachmentName,
+                  this::getTerritoryEffectAttachmentName,
+                  this::resetTerritoryEffectAttachmentName));
+      case "territoryEffectProperty" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setTerritoryEffectProperty,
+                  this::setTerritoryEffectProperty,
+                  this::getTerritoryEffectProperty,
+                  this::resetTerritoryEffectProperty));
+      default -> super.getPropertyOrEmpty(propertyName);
+    };
   }
 }

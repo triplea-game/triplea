@@ -99,14 +99,16 @@ class ProPurchaseAi {
             .test(fixTerr)) {
           continue;
         }
-        final Unit possibleFactoryNeedingRepair =
+        final Optional<Unit> optionalFactoryNeedingRepair =
             UnitUtils.getBiggestProducer(
                 CollectionUtils.getMatches(fixTerr.getUnits(), ourFactories),
                 fixTerr,
                 player,
                 false);
-        if (Matches.unitHasTakenSomeBombingUnitDamage().test(possibleFactoryNeedingRepair)) {
-          unitsThatCanProduceNeedingRepair.put(possibleFactoryNeedingRepair, fixTerr);
+        if (optionalFactoryNeedingRepair.isPresent()
+            && Matches.unitHasTakenSomeBombingUnitDamage()
+                .test(optionalFactoryNeedingRepair.get())) {
+          unitsThatCanProduceNeedingRepair.put(optionalFactoryNeedingRepair.get(), fixTerr);
         }
       }
       ProLogger.debug("Factories that need repaired: " + unitsThatCanProduceNeedingRepair);
@@ -675,11 +677,7 @@ class ProPurchaseAi {
       }
 
       // Determine production value and if it is an enemy capital
-      int production = 0;
-      final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      if (ta != null) {
-        production = ta.getProduction();
-      }
+      int production = TerritoryAttachment.get(t).map(TerritoryAttachment::getProduction).orElse(0);
 
       // Determine defending unit value
       double defendingUnitValue =
@@ -1259,7 +1257,8 @@ class ProPurchaseAi {
 
       // Only consider territories with production of at least 3 unless there are still remaining
       // PUs
-      final int production = TerritoryAttachment.get(t).getProduction();
+      final int production =
+          TerritoryAttachment.get(t).map(TerritoryAttachment::getProduction).orElse(0);
       if ((production < 3 && !hasExtraPUs) || production < 2) {
         continue;
       }
@@ -1332,7 +1331,8 @@ class ProPurchaseAi {
     double maxValue = 0.0;
     Territory maxTerritory = null;
     for (final Territory t : purchaseFactoryTerritories) {
-      final int production = TerritoryAttachment.get(t).getProduction();
+      final int production =
+          TerritoryAttachment.get(t).map(TerritoryAttachment::getProduction).orElse(0);
       final double value = territoryValueMap.get(t) * production + 0.1 * production;
       final boolean isAdjacentToSea =
           Matches.territoryHasNeighborMatching(data.getMap(), Matches.territoryIsWater()).test(t);
@@ -1745,7 +1745,7 @@ class ProPurchaseAi {
         if (enemySeaUnits.isEmpty()) {
           continue;
         }
-        final Route route =
+        final Optional<Route> optionalRoute =
             data.getMap()
                 .getRouteForUnits(
                     t,
@@ -1753,10 +1753,10 @@ class ProPurchaseAi {
                     Matches.territoryIsWater(),
                     enemySeaUnits,
                     enemySeaUnits.get(0).getOwner());
-        if (route == null) {
+        if (optionalRoute.isEmpty()) {
           continue;
         }
-        final int routeLength = route.numberOfSteps();
+        final int routeLength = optionalRoute.get().numberOfSteps();
         if (routeLength <= enemyDistance) {
           enemyUnitsInSeaTerritories.addAll(enemySeaUnits);
         }
@@ -2632,12 +2632,12 @@ class ProPurchaseAi {
   private static void doPlace(
       final Territory t, final Collection<Unit> toPlace, final IAbstractPlaceDelegate del) {
     for (final Unit unit : toPlace) {
-      final String message =
-          del.placeUnits(List.of(unit), t, IAbstractPlaceDelegate.BidMode.NOT_BID);
-      if (message != null) {
-        ProLogger.warn(message);
-        ProLogger.warn("Attempt was at: " + t + " with: " + unit);
-      }
+      del.placeUnits(List.of(unit), t, IAbstractPlaceDelegate.BidMode.NOT_BID)
+          .ifPresent(
+              message -> {
+                ProLogger.warn(message);
+                ProLogger.warn("Attempt was at: " + t + " with: " + unit);
+              });
     }
     AbstractAi.movePause();
   }

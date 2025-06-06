@@ -21,6 +21,7 @@ import games.strategy.triplea.delegate.Matches;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -82,14 +83,14 @@ public final class ProPurchaseValidationUtils {
     }
     final IDelegateBridge bridge = new ProDummyDelegateBridge(proData.getProAi(), player, data);
     placeDelegate.setDelegateBridgeAndPlayer(bridge);
-    final String error;
+    final Optional<String> error;
     if (isPlacingFightersOnNewCarriers(t, units)) {
       Collection<Unit> nonAirUnits = CollectionUtils.getMatches(units, Matches.unitIsNotAir());
       error = placeDelegate.canUnitsBePlaced(t, nonAirUnits, player);
     } else {
       error = placeDelegate.canUnitsBePlaced(t, units, player);
     }
-    if (error != null) {
+    if (error.isPresent()) {
       return false;
     }
     return unitsToConsumeAreAllPresent(proData, player, t, units);
@@ -256,11 +257,8 @@ public final class ProPurchaseValidationUtils {
       if (Properties.getUnlimitedConstructions(data.getProperties())) {
         maxConstructionType = Integer.MAX_VALUE;
       } else if (Properties.getMoreConstructionsWithFactory(data.getProperties())) {
-        int production = 0;
-        final TerritoryAttachment terrAttachment = TerritoryAttachment.get(territory);
-        if (terrAttachment != null) {
-          production = terrAttachment.getProduction();
-        }
+        int production =
+            TerritoryAttachment.get(territory).map(TerritoryAttachment::getProduction).orElse(0);
         maxConstructionType = Math.max(maxConstructionType, production);
       }
     }

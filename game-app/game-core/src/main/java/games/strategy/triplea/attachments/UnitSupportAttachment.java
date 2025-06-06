@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
@@ -414,49 +415,53 @@ public class UnitSupportAttachment extends DefaultAttachment {
   public void validate(final GameState data) {}
 
   @Override
-  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
-    switch (propertyName) {
-      case UNIT_TYPE:
-        return MutableProperty.of(
-            this::setUnitType, this::setUnitType, this::getUnitType, this::resetUnitType);
-      case "offence":
-        return MutableProperty.ofReadOnly(this::getOffence);
-      case "defence":
-        return MutableProperty.ofReadOnly(this::getDefence);
-      case "roll":
-        return MutableProperty.ofReadOnly(this::getRoll);
-      case "strength":
-        return MutableProperty.ofReadOnly(this::getStrength);
-      case "aaRoll":
-        return MutableProperty.ofReadOnly(this::getAaRoll);
-      case "aaStrength":
-        return MutableProperty.ofReadOnly(this::getAaStrength);
-      case BONUS:
-        return MutableProperty.of(this::setBonus, this::setBonus, this::getBonus, this::resetBonus);
-      case "number":
-        return MutableProperty.of(
-            this::setNumber, this::setNumber, this::getNumber, this::resetNumber);
-      case "allied":
-        return MutableProperty.ofReadOnly(this::getAllied);
-      case "enemy":
-        return MutableProperty.ofReadOnly(this::getEnemy);
-      case BONUS_TYPE:
-        return MutableProperty.of(
-            this::setBonusType, this::setBonusType, this::getBonusType, this::resetBonusType);
-      case "players":
-        return MutableProperty.of(
-            this::setPlayers, this::setPlayers, this::getPlayers, this::resetPlayers);
-      case "impArtTech":
-        return MutableProperty.of(
-            this::setImpArtTech, this::setImpArtTech, this::getImpArtTech, this::resetImpArtTech);
-      case DICE:
-        return MutableProperty.ofString(this::setDice, this::getDice, this::resetDice);
-      case "side":
-        return MutableProperty.ofString(this::setSide, this::getSide, this::resetSide);
-      case "faction":
-        return MutableProperty.ofString(this::setFaction, this::getFaction, this::resetFaction);
-      default:
-        return null;
-    }
+  public Optional<MutableProperty<?>> getPropertyOrEmpty(final @NonNls String propertyName) {
+    return switch (propertyName) {
+      case UNIT_TYPE ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setUnitType, this::setUnitType, this::getUnitType, this::resetUnitType));
+      case "offence" -> Optional.of(MutableProperty.ofReadOnly(this::getOffence));
+      case "defence" -> Optional.of(MutableProperty.ofReadOnly(this::getDefence));
+      case "roll" -> Optional.of(MutableProperty.ofReadOnly(this::getRoll));
+      case "strength" -> Optional.of(MutableProperty.ofReadOnly(this::getStrength));
+      case "aaRoll" -> Optional.of(MutableProperty.ofReadOnly(this::getAaRoll));
+      case "aaStrength" -> Optional.of(MutableProperty.ofReadOnly(this::getAaStrength));
+      case BONUS ->
+          Optional.of(
+              MutableProperty.of(this::setBonus, this::setBonus, this::getBonus, this::resetBonus));
+      case "number" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setNumber, this::setNumber, this::getNumber, this::resetNumber));
+      case "allied" -> Optional.of(MutableProperty.ofReadOnly(this::getAllied));
+      case "enemy" -> Optional.of(MutableProperty.ofReadOnly(this::getEnemy));
+      case BONUS_TYPE ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setBonusType,
+                  this::setBonusType,
+                  this::getBonusType,
+                  this::resetBonusType));
+      case "players" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setPlayers, this::setPlayers, this::getPlayers, this::resetPlayers));
+      case "impArtTech" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setImpArtTech,
+                  this::setImpArtTech,
+                  this::getImpArtTech,
+                  this::resetImpArtTech));
+      case DICE ->
+          Optional.of(MutableProperty.ofString(this::setDice, this::getDice, this::resetDice));
+      case "side" ->
+          Optional.of(MutableProperty.ofString(this::setSide, this::getSide, this::resetSide));
+      case "faction" ->
+          Optional.of(
+              MutableProperty.ofString(this::setFaction, this::getFaction, this::resetFaction));
+      default -> Optional.empty();
+    };
   }
 }

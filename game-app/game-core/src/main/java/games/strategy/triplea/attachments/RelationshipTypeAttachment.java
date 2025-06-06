@@ -9,7 +9,7 @@ import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
 import java.util.Locale;
-import javax.annotation.Nullable;
+import java.util.Optional;
 import lombok.Getter;
 import org.jetbrains.annotations.NonNls;
 
@@ -437,64 +437,77 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   public void validate(final GameState data) {}
 
   @Override
-  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
-    switch (propertyName) {
-      case "archeType":
-        return MutableProperty.ofString(
-            this::setArcheType, this::getArcheType, this::resetArcheType);
-      case "canMoveLandUnitsOverOwnedLand":
-        return MutableProperty.ofString(
-            this::setCanMoveLandUnitsOverOwnedLand,
-            this::getCanMoveLandUnitsOverOwnedLand,
-            this::resetCanMoveLandUnitsOverOwnedLand);
-      case "canMoveAirUnitsOverOwnedLand":
-        return MutableProperty.ofString(
-            this::setCanMoveAirUnitsOverOwnedLand,
-            this::getCanMoveAirUnitsOverOwnedLand,
-            this::resetCanMoveAirUnitsOverOwnedLand);
-      case "alliancesCanChainTogether":
-        return MutableProperty.ofString(
-            this::setAlliancesCanChainTogether,
-            this::getAlliancesCanChainTogether,
-            this::resetAlliancesCanChainTogether);
-      case "isDefaultWarPosition":
-        return MutableProperty.ofString(
-            this::setIsDefaultWarPosition,
-            this::getIsDefaultWarPosition,
-            this::resetIsDefaultWarPosition);
-      case "upkeepCost":
-        return MutableProperty.ofString(
-            this::setUpkeepCost, this::getUpkeepCost, this::resetUpkeepCost);
-      case "canLandAirUnitsOnOwnedLand":
-        return MutableProperty.ofString(
-            this::setCanLandAirUnitsOnOwnedLand,
-            this::getCanLandAirUnitsOnOwnedLand,
-            this::resetCanLandAirUnitsOnOwnedLand);
-      case "canTakeOverOwnedTerritory":
-        return MutableProperty.ofString(
-            this::setCanTakeOverOwnedTerritory,
-            this::getCanTakeOverOwnedTerritory,
-            this::resetCanTakeOverOwnedTerritory);
-      case "givesBackOriginalTerritories":
-        return MutableProperty.ofString(
-            this::setGivesBackOriginalTerritories,
-            this::getGivesBackOriginalTerritories,
-            this::resetGivesBackOriginalTerritories);
-      case "canMoveIntoDuringCombatMove":
-        return MutableProperty.ofString(
-            this::setCanMoveIntoDuringCombatMove,
-            this::getCanMoveIntoDuringCombatMove,
-            this::resetCanMoveIntoDuringCombatMove);
-      case "canMoveThroughCanals":
-        return MutableProperty.ofString(
-            this::setCanMoveThroughCanals,
-            this::getCanMoveThroughCanals,
-            this::resetCanMoveThroughCanals);
-      case "rocketsCanFlyOver":
-        return MutableProperty.ofString(
-            this::setRocketsCanFlyOver, this::getRocketsCanFlyOver, this::resetRocketsCanFlyOver);
-      default:
-        return null;
-    }
+  public Optional<MutableProperty<?>> getPropertyOrEmpty(final @NonNls String propertyName) {
+    return switch (propertyName) {
+      case "archeType" ->
+          Optional.of(
+              MutableProperty.ofString(
+                  this::setArcheType, this::getArcheType, this::resetArcheType));
+      case "canMoveLandUnitsOverOwnedLand" ->
+          Optional.of(
+              MutableProperty.ofString(
+                  this::setCanMoveLandUnitsOverOwnedLand,
+                  this::getCanMoveLandUnitsOverOwnedLand,
+                  this::resetCanMoveLandUnitsOverOwnedLand));
+      case "canMoveAirUnitsOverOwnedLand" ->
+          Optional.of(
+              MutableProperty.ofString(
+                  this::setCanMoveAirUnitsOverOwnedLand,
+                  this::getCanMoveAirUnitsOverOwnedLand,
+                  this::resetCanMoveAirUnitsOverOwnedLand));
+      case "alliancesCanChainTogether" ->
+          Optional.of(
+              MutableProperty.ofString(
+                  this::setAlliancesCanChainTogether,
+                  this::getAlliancesCanChainTogether,
+                  this::resetAlliancesCanChainTogether));
+      case "isDefaultWarPosition" ->
+          Optional.of(
+              MutableProperty.ofString(
+                  this::setIsDefaultWarPosition,
+                  this::getIsDefaultWarPosition,
+                  this::resetIsDefaultWarPosition));
+      case "upkeepCost" ->
+          Optional.of(
+              MutableProperty.ofString(
+                  this::setUpkeepCost, this::getUpkeepCost, this::resetUpkeepCost));
+      case "canLandAirUnitsOnOwnedLand" ->
+          Optional.of(
+              MutableProperty.ofString(
+                  this::setCanLandAirUnitsOnOwnedLand,
+                  this::getCanLandAirUnitsOnOwnedLand,
+                  this::resetCanLandAirUnitsOnOwnedLand));
+      case "canTakeOverOwnedTerritory" ->
+          Optional.of(
+              MutableProperty.ofString(
+                  this::setCanTakeOverOwnedTerritory,
+                  this::getCanTakeOverOwnedTerritory,
+                  this::resetCanTakeOverOwnedTerritory));
+      case "givesBackOriginalTerritories" ->
+          Optional.of(
+              MutableProperty.ofString(
+                  this::setGivesBackOriginalTerritories,
+                  this::getGivesBackOriginalTerritories,
+                  this::resetGivesBackOriginalTerritories));
+      case "canMoveIntoDuringCombatMove" ->
+          Optional.of(
+              MutableProperty.ofString(
+                  this::setCanMoveIntoDuringCombatMove,
+                  this::getCanMoveIntoDuringCombatMove,
+                  this::resetCanMoveIntoDuringCombatMove));
+      case "canMoveThroughCanals" ->
+          Optional.of(
+              MutableProperty.ofString(
+                  this::setCanMoveThroughCanals,
+                  this::getCanMoveThroughCanals,
+                  this::resetCanMoveThroughCanals));
+      case "rocketsCanFlyOver" ->
+          Optional.of(
+              MutableProperty.ofString(
+                  this::setRocketsCanFlyOver,
+                  this::getRocketsCanFlyOver,
+                  this::resetRocketsCanFlyOver));
+      default -> Optional.empty();
+    };
   }
 }

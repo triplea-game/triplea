@@ -109,7 +109,7 @@ public class GameTestUtils {
   }
 
   public static UnitType getUnitType(GameData data, String name) {
-    return Optional.ofNullable(data.getUnitTypeList().getUnitType(name)).orElseThrow();
+    return data.getUnitTypeList().getUnitTypeOrThrow(name);
   }
 
   public static Territory getTerritory(GameData data, String name) {

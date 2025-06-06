@@ -82,6 +82,7 @@ import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
@@ -138,7 +139,8 @@ class RevisedTest extends AbstractClientSettingTestCase {
     advanceToStep(bridge, "NonCombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
-    final String error = moveDelegate(gameData).move(sz1.getUnits(), new Route(sz1, sz11, sz9));
+    final Optional<String> error =
+        moveDelegate(gameData).move(sz1.getUnits(), new Route(sz1, sz11, sz9));
     assertNotNull(error);
   }
 
@@ -303,7 +305,7 @@ class RevisedTest extends AbstractClientSettingTestCase {
     final List<Unit> transports = sz2.getUnitCollection().getMatches(Matches.unitIsSeaTransport());
     final Map<Unit, Unit> unitsToTransports =
         TransportUtils.mapTransports(new Route(uk, sz2), units, transports);
-    final String error =
+    final Optional<String> error =
         moveDelegate(gameData)
             .performMove(new MoveDescription(units, new Route(uk, sz2), unitsToTransports));
     // should not be able to load on british turn, only on american turn
@@ -323,8 +325,7 @@ class RevisedTest extends AbstractClientSettingTestCase {
     final PlaceableUnits placeable = bidPlaceDelegate(gameData).getPlaceableUnits(units, uk);
     assertEquals(20, placeable.getMaxUnits());
     assertNull(placeable.getErrorMessage());
-    final String error = bidPlaceDelegate(gameData).placeUnits(units, uk);
-    assertNull(error);
+    assertTrue(bidPlaceDelegate(gameData).placeUnits(units, uk).isEmpty());
   }
 
   @Test
@@ -430,11 +431,11 @@ class RevisedTest extends AbstractClientSettingTestCase {
         eastEurope.getUnitCollection().getMatches(Matches.unitIsOfType(infantryType));
     assertEquals(2, infantry.size());
     final Unit transport = sz5.getUnitCollection().getMatches(Matches.unitIsSeaTransport()).get(0);
-    final String error =
+    final Optional<String> error =
         moveDelegate.performMove(
             new MoveDescription(
                 infantry, eeToSz5, Map.of(infantry.get(0), transport, infantry.get(1), transport)));
-    assertNull(error, error);
+    assertValid(error);
     // make sure the transport was loaded
     assertTrue(moveDelegate.getMovesMade().get(0).wasTransportLoaded(transport));
     // make sure it was laoded
@@ -466,17 +467,17 @@ class RevisedTest extends AbstractClientSettingTestCase {
     assertEquals(2, infantry.size());
     final Unit transport = sz5.getUnitCollection().getMatches(Matches.unitIsSeaTransport()).get(0);
     // load the transport
-    String error =
+    Optional<String> error =
         moveDelegate.performMove(
             new MoveDescription(
                 infantry, eeToSz5, Map.of(infantry.get(0), transport, infantry.get(1), transport)));
-    assertNull(error, error);
+    assertValid(error);
     final Route sz5ToNorway = new Route(sz5, norway);
     // move the infantry in two steps
     error = moveDelegate.move(infantry.subList(0, 1), sz5ToNorway);
-    assertNull(error);
+    assertValid(error);
     error = moveDelegate.move(infantry.subList(1, 2), sz5ToNorway);
-    assertNull(error);
+    assertValid(error);
     assertEquals(3, moveDelegate.getMovesMade().size());
     // the load
     final UndoableMove move1 = moveDelegate.getMovesMade().get(0);
@@ -484,12 +485,12 @@ class RevisedTest extends AbstractClientSettingTestCase {
     // AbstractUndoableMove move2 = moveDelegate.getMovesMade().get(0);
     // the second unload must be done first
     assertFalse(move1.getCanUndo());
-    error = moveDelegate.undoMove(2);
-    assertNull(error);
+    String undoError = moveDelegate.undoMove(2);
+    assertNull(undoError);
     // the second unload must be done first
     assertFalse(move1.getCanUndo());
-    error = moveDelegate.undoMove(1);
-    assertNull(error);
+    undoError = moveDelegate.undoMove(1);
+    assertNull(undoError);
     // we can now be undone
     assertTrue(move1.getCanUndo());
   }
@@ -513,16 +514,16 @@ class RevisedTest extends AbstractClientSettingTestCase {
     final Unit transport = sz5.getUnitCollection().getMatches(Matches.unitIsSeaTransport()).get(0);
     // load the transports
     // in two moves
-    String error =
+    Optional<String> error =
         moveDelegate.performMove(
             new MoveDescription(
                 infantry.subList(0, 1), eeToSz5, Map.of(infantry.get(0), transport)));
-    assertNull(error, error);
+    assertValid(error);
     error =
         moveDelegate.performMove(
             new MoveDescription(
                 infantry.subList(1, 2), eeToSz5, Map.of(infantry.get(1), transport)));
-    assertNull(error, error);
+    assertValid(error);
     // make sure the transport was loaded
     assertTrue(moveDelegate.getMovesMade().get(0).wasTransportLoaded(transport));
     assertTrue(moveDelegate.getMovesMade().get(1).wasTransportLoaded(transport));
@@ -557,14 +558,16 @@ class RevisedTest extends AbstractClientSettingTestCase {
             .getMatches(Matches.unitIsOfType(infantryType).and(Matches.unitIsOwnedBy(japanese)));
     assertEquals(1, infantry.size());
     final Unit transport = sz5.getUnitCollection().getMatches(Matches.unitIsSeaTransport()).get(0);
-    String error =
+    Optional<String> error =
         moveDelegate.performMove(
             new MoveDescription(infantry, eeToSz5, Map.of(infantry.get(0), transport)));
-    assertNull(error, error);
+    assertValid(error);
     // try to unload
     final Route sz5ToEee = new Route(sz5, eastEurope);
     error = moveDelegate.move(infantry, sz5ToEee);
-    assertEquals(MoveValidator.CANNOT_LOAD_AND_UNLOAD_AN_ALLIED_TRANSPORT_IN_THE_SAME_ROUND, error);
+    assertEquals(
+        MoveValidator.CANNOT_LOAD_AND_UNLOAD_AN_ALLIED_TRANSPORT_IN_THE_SAME_ROUND,
+        error.orElse(""));
   }
 
   @Test
@@ -585,23 +588,23 @@ class RevisedTest extends AbstractClientSettingTestCase {
         eastEurope.getUnitCollection().getMatches(Matches.unitIsOfType(infantryType));
     assertEquals(2, infantry.size());
     final Unit transport = sz5.getUnitCollection().getMatches(Matches.unitIsSeaTransport()).get(0);
-    String error =
+    Optional<String> error =
         moveDelegate.performMove(
             new MoveDescription(
                 infantry, eeToSz5, Map.of(infantry.get(0), transport, infantry.get(1), transport)));
-    assertNull(error, error);
+    assertValid(error);
     // unload one infantry to Norway
     final Territory norway = gameData.getMap().getTerritory("Norway");
     final Route sz5ToNorway = new Route(sz5, norway);
     error = moveDelegate.move(infantry.subList(0, 1), sz5ToNorway);
-    assertNull(error, error);
+    assertValid(error);
     // make sure the transport was unloaded
     assertTrue(moveDelegate.getMovesMade().get(1).wasTransportUnloaded(transport));
     // try to unload the other infantry somewhere else, an error occurs
     final Route sz5ToEastEurope = new Route(sz5, eastEurope);
     error = moveDelegate.move(infantry.subList(1, 2), sz5ToEastEurope);
-    assertNotNull(error, error);
-    assertTrue(error.startsWith(MoveValidator.TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO));
+    assertError(error);
+    assertTrue(error.get().startsWith(MoveValidator.TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO));
     // end the round
     moveDelegate.end();
     advanceToStep(bridge, "NonCombatMove");
@@ -615,7 +618,7 @@ class RevisedTest extends AbstractClientSettingTestCase {
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     error = moveDelegate.move(infantry.subList(1, 2), sz5ToEastEurope);
-    assertNull(error);
+    assertValid(error);
   }
 
   @Test
@@ -636,16 +639,16 @@ class RevisedTest extends AbstractClientSettingTestCase {
         eastEurope.getUnitCollection().getMatches(Matches.unitIsOfType(infantryType));
     assertEquals(2, infantry.size());
     final Unit transport = sz5.getUnitCollection().getMatches(Matches.unitIsSeaTransport()).get(0);
-    String error =
+    Optional<String> error =
         moveDelegate.performMove(
             new MoveDescription(
                 infantry, eeToSz5, Map.of(infantry.get(0), transport, infantry.get(1), transport)));
-    assertNull(error, error);
+    assertValid(error);
     // unload one infantry to Norway
     final Territory norway = gameData.getMap().getTerritory("Norway");
     final Route sz5ToNorway = new Route(sz5, norway);
     error = moveDelegate.move(infantry.subList(0, 1), sz5ToNorway);
-    assertNull(error, error);
+    assertValid(error);
     assertTrue(infantry.get(0).getWasUnloadedInCombatPhase());
     // start non combat
     moveDelegate.end();
@@ -658,9 +661,11 @@ class RevisedTest extends AbstractClientSettingTestCase {
     moveDelegate.start();
     // try to unload the other infantry somewhere else, an error occurs
     error = moveDelegate.move(infantry.subList(1, 2), sz5ToNorway);
-    assertNotNull(error, error);
+    assertError(error);
     assertTrue(
-        error.startsWith(MoveValidator.TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE));
+        error
+            .get()
+            .startsWith(MoveValidator.TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE));
   }
 
   @Test
@@ -675,7 +680,7 @@ class RevisedTest extends AbstractClientSettingTestCase {
     advanceToStep(bridge, "NonCombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final String error = moveDelegate(gameData).move(sz8.getUnits(), new Route(sz8, sz1));
+    final Optional<String> error = moveDelegate(gameData).move(sz8.getUnits(), new Route(sz8, sz1));
     assertError(error);
   }
 
@@ -691,7 +696,7 @@ class RevisedTest extends AbstractClientSettingTestCase {
     advanceToStep(bridge, "NonCombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final String error = moveDelegate(gameData).move(sz8.getUnits(), new Route(sz8, sz2));
+    final Optional<String> error = moveDelegate(gameData).move(sz8.getUnits(), new Route(sz8, sz2));
     assertError(error);
   }
 
@@ -707,7 +712,7 @@ class RevisedTest extends AbstractClientSettingTestCase {
     advanceToStep(bridge, "NonCombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final String error = moveDelegate(gameData).move(sz8.getUnits(), new Route(sz1, sz8));
+    final Optional<String> error = moveDelegate(gameData).move(sz8.getUnits(), new Route(sz1, sz8));
     assertError(error);
   }
 
@@ -729,9 +734,9 @@ class RevisedTest extends AbstractClientSettingTestCase {
     moveDelegate.start();
     // move a fighter into the sea zone, this will cause a battle
     final Route sz50To45 = new Route(sz50, sz45);
-    String error =
+    Optional<String> error =
         moveDelegate.move(sz50.getUnitCollection().getMatches(Matches.unitIsAir()), sz50To45);
-    assertNull(error);
+    assertValid(error);
     final var battleTracker = AbstractMoveDelegate.getBattleTracker(gameData);
     assertEquals(1, battleTracker.getPendingBattleSitesWithoutBombing().size());
     // we should be able to move the sub out of the sz
@@ -741,15 +746,15 @@ class RevisedTest extends AbstractClientSettingTestCase {
             .getMatches(Matches.unitCanEvade().and(Matches.unitIsOwnedBy(japanese)));
     error = moveDelegate.move(japSub, sz45To50);
     // make sure no error
-    assertNull(error);
+    assertValid(error);
     // make sure the battle is still there
     assertEquals(1, battleTracker.getPendingBattleSitesWithoutBombing().size());
     // we should be able to undo the move of the sub
-    error = moveDelegate.undoMove(1);
-    assertNull(error);
+    String undoError = moveDelegate.undoMove(1);
+    assertNull(undoError);
     // undo the move of the fighter, should be no battles now
-    error = moveDelegate.undoMove(0);
-    assertNull(error);
+    undoError = moveDelegate.undoMove(0);
+    assertNull(undoError);
     assertEquals(0, battleTracker.getPendingBattleSitesWithoutBombing().size());
   }
 
@@ -788,7 +793,7 @@ class RevisedTest extends AbstractClientSettingTestCase {
     /*
      * add a VALID BRITISH attack
      */
-    String validResults = moveDelegate.move(britishUnits, new Route(india, fic));
+    Optional<String> validResults = moveDelegate.move(britishUnits, new Route(india, fic));
     assertValid(validResults);
     moveDelegate(gameData).end();
     // Set up battle
@@ -860,7 +865,8 @@ class RevisedTest extends AbstractClientSettingTestCase {
     final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     final List<Unit> bombers = uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber());
     addTo(germany, bombers);
-    battle.addAttackChange(gameData.getMap().getRoute(uk, germany, it -> true), bombers, null);
+    battle.addAttackChange(
+        gameData.getMap().getRouteOrElseThrow(uk, germany, it -> true), bombers, null);
     tracker
         .getBattleRecords()
         .addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
@@ -892,7 +898,8 @@ class RevisedTest extends AbstractClientSettingTestCase {
     final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     final List<Unit> bombers = bomber(gameData).create(2, british);
     addTo(germany, bombers);
-    battle.addAttackChange(gameData.getMap().getRoute(uk, germany, it -> true), bombers, null);
+    battle.addAttackChange(
+        gameData.getMap().getRouteOrElseThrow(uk, germany, it -> true), bombers, null);
     tracker
         .getBattleRecords()
         .addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
@@ -932,7 +939,8 @@ class RevisedTest extends AbstractClientSettingTestCase {
     final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     final List<Unit> bombers = bomber(gameData).create(7, british);
     addTo(germany, bombers);
-    battle.addAttackChange(gameData.getMap().getRoute(uk, germany, it -> true), bombers, null);
+    battle.addAttackChange(
+        gameData.getMap().getRouteOrElseThrow(uk, germany, it -> true), bombers, null);
     tracker
         .getBattleRecords()
         .addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
@@ -963,7 +971,7 @@ class RevisedTest extends AbstractClientSettingTestCase {
     final BattleTracker tracker = new BattleTracker();
     final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     battle.addAttackChange(
-        gameData.getMap().getRoute(uk, germany, it -> true),
+        gameData.getMap().getRouteOrElseThrow(uk, germany, it -> true),
         uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()),
         null);
     addTo(germany, uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()));
@@ -1557,7 +1565,7 @@ class RevisedTest extends AbstractClientSettingTestCase {
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final String error = moveDelegate.move(sz15.getUnits(), new Route(sz15, sz34));
+    final Optional<String> error = moveDelegate.move(sz15.getUnits(), new Route(sz15, sz34));
     assertValid(error);
   }
 
@@ -1573,7 +1581,7 @@ class RevisedTest extends AbstractClientSettingTestCase {
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final String error = moveDelegate.move(sz14.getUnits(), new Route(sz14, sz15, sz34));
+    final Optional<String> error = moveDelegate.move(sz14.getUnits(), new Route(sz14, sz15, sz34));
     assertError(error);
   }
 

@@ -12,9 +12,11 @@ import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Triple;
 import org.triplea.util.Tuple;
@@ -48,8 +50,8 @@ public class UnitStackingLimitFilter {
       final GamePlayer owner,
       final Territory t,
       final Collection<Unit> existingUnitsToBePlaced) {
-    final PlayerAttachment pa = PlayerAttachment.get(owner);
-    final Function<UnitAttachment, Tuple<Integer, String>> stackingLimitGetter;
+    final @Nullable PlayerAttachment pa = PlayerAttachment.get(owner);
+    final Function<UnitAttachment, Optional<Tuple<Integer, String>>> stackingLimitGetter;
     final Set<Triple<Integer, String, Set<UnitType>>> playerStackingLimits;
     switch (limitType) {
       case MOVEMENT_LIMIT:
@@ -77,10 +79,14 @@ public class UnitStackingLimitFilter {
       if (forbiddenTypes.contains(ut)) {
         continue;
       }
-      Tuple<Integer, String> stackingLimit = stackingLimitGetter.apply(ut.getUnitAttachment());
       int maxAllowed =
           getMaximumNumberOfThisUnitTypeToReachStackingLimit(
-              ut, t, owner, stackingLimit, playerStackingLimits, unitsAllowedSoFar);
+              ut,
+              t,
+              owner,
+              stackingLimitGetter.apply(ut.getUnitAttachment()).orElse(null),
+              playerStackingLimits,
+              unitsAllowedSoFar);
       if (maxAllowed > 0) {
         unitsAllowedSoFar.add(unit);
       }
@@ -101,7 +107,7 @@ public class UnitStackingLimitFilter {
       final UnitType ut,
       final Territory t,
       final GamePlayer owner,
-      final Tuple<Integer, String> stackingLimit,
+      final @Nullable Tuple<Integer, String> stackingLimit,
       final Set<Triple<Integer, String, Set<UnitType>>> playerStackingLimits,
       final Collection<Unit> pendingUnits) {
     int max = Integer.MAX_VALUE;

@@ -28,6 +28,9 @@ import org.triplea.ai.flowfield.odds.BattleDetails;
 @Builder(builderMethodName = "setup")
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class InfluenceMapBuilder {
+  public static final @Nonnull String RELATIONSHIP_ALLY = "ALLY";
+  public static final @Nonnull String RELATIONSHIP_UNKNOWN = "UNKNOWN";
+  public static final @Nonnull String RELATIONSHIP_ENEMY = "ENEMY";
   @Nonnull GamePlayer gamePlayer;
   @Nonnull PlayerList playerList;
   @Nonnull ResourceList resourceList;
@@ -78,23 +81,25 @@ public class InfluenceMapBuilder {
                   Collectors.groupingBy(
                       unit -> {
                         if (allies.contains(unit.getOwner())) {
-                          return "ALLY";
+                          return RELATIONSHIP_ALLY;
                         } else if (enemies.contains(unit.getOwner())) {
-                          return "ENEMY";
+                          return RELATIONSHIP_ENEMY;
                         } else {
-                          return "UNKNOWN";
+                          return RELATIONSHIP_UNKNOWN;
                         }
                       }));
-      if (!unitsGroupedByRelationship.containsKey("ALLY")
-          && !unitsGroupedByRelationship.containsKey("ENEMY")) {
+      if (!unitsGroupedByRelationship.containsKey(RELATIONSHIP_ALLY)
+          && !unitsGroupedByRelationship.containsKey(RELATIONSHIP_ENEMY)) {
         return BattleDetails.EMPTY_DETAILS;
       }
       return new BattleDetails(
-          unitsGroupedByRelationship.getOrDefault("ALLY", List.of()),
-          unitsGroupedByRelationship.getOrDefault("ENEMY", List.of()),
+          unitsGroupedByRelationship.getOrDefault(RELATIONSHIP_ALLY, List.of()),
+          unitsGroupedByRelationship.getOrDefault(RELATIONSHIP_ENEMY, List.of()),
           offenseCombatBuilder,
           defenseCombatBuilder,
-          TerritoryAttachment.get(territory).getTerritoryEffect());
+          TerritoryAttachment.get(territory)
+              .map(TerritoryAttachment::getTerritoryEffect)
+              .orElse(List.of()));
     };
   }
 }

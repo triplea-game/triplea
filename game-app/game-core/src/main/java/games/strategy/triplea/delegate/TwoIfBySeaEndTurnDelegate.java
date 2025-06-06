@@ -24,11 +24,12 @@ public class TwoIfBySeaEndTurnDelegate extends AbstractEndTurnDelegate {
     final GamePlayer japanese = playerList.getPlayerId(Constants.PLAYER_NAME_JAPANESE);
     // Quick check to see who still owns their own capital
     final boolean britain =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(british, data.getMap())
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapitalOrThrow(british, data.getMap())
             .getOwner()
             .equals(british);
     final boolean japan =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(japanese, data.getMap())
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapitalOrThrow(
+                japanese, data.getMap())
             .getOwner()
             .equals(japanese);
     if (!gameOver) {

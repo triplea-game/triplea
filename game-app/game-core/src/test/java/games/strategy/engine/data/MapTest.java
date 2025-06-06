@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -124,7 +125,7 @@ class MapTest {
 
   @Test
   void testImpossibleConditionRoute() {
-    assertNull(map.getRoute(aa, ca, it -> false));
+    assertTrue(map.getRoute(aa, ca, it -> false).isEmpty());
   }
 
   @Test
@@ -164,14 +165,14 @@ class MapTest {
 
   @Test
   void testRouteSizeOne() {
-    final Route rt = map.getRoute(aa, ab, it -> true);
+    final Route rt = map.getRouteOrElseThrow(aa, ab, it -> true);
     assertEquals(1, rt.numberOfSteps());
   }
 
   @Test
   void testImpossibleRoute() {
-    final Route rt = map.getRoute(aa, nowhere, it -> true);
-    assertNull(rt);
+    final Optional<Route> rt = map.getRoute(aa, nowhere, it -> true);
+    assertTrue(rt.isEmpty());
   }
 
   @Test
@@ -182,7 +183,7 @@ class MapTest {
 
   @Test
   void testMultiplePossible() {
-    final Route rt = map.getRoute(aa, dd, it -> true);
+    final Route rt = map.getRouteOrElseThrow(aa, dd, it -> true);
     assertEquals(aa, rt.getStart());
     assertEquals(dd, rt.getEnd());
     assertEquals(6, rt.numberOfSteps());

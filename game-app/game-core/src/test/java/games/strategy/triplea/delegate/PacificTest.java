@@ -350,7 +350,7 @@ class PacificTest {
     assertMoveError(GameDataTestUtil.getUnits(map, toSz30.getStart()), toSz30);
 
     // Finally, adding a naval base in Canada shouldn't boost movement further.
-    TerritoryAttachment.get(canada).getPropertyOrThrow("navalBase").setValue(true);
+    TerritoryAttachment.getOrThrow(canada).getPropertyOrThrow("navalBase").setValue(true);
     assertThat(TerritoryAttachment.hasNavalBase(canada), is(true));
     // Should still fail to move 4.
     assertMoveError(GameDataTestUtil.getUnits(map, toSz30.getStart()), toSz30);

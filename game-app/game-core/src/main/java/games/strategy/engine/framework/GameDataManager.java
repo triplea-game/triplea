@@ -7,6 +7,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -18,6 +19,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipException;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -62,10 +64,17 @@ public final class GameDataManager {
   public static Optional<GameData> loadGame(final InputStream is) {
     try (GZIPInputStream input = new GZIPInputStream(is)) {
       return loadGameUncompressed(input);
-    } catch (final Throwable e) {
+    } catch (final EOFException e) {
+      log.error(
+          "End of loading file has been reached unexpectedly.\n"
+              + "When reporting to TripleA include steps to produce such a corrupted file.",
+          e);
+    } catch (final ZipException e) {
+      log.error("Unzipping the file has failed. Check that the correct file was selected.", e);
+    } catch (final Exception e) {
       log.error("Error loading game data", e);
-      return Optional.empty();
     }
+    return Optional.empty();
   }
 
   public static Optional<GameData> loadGameUncompressed(final InputStream is) {
@@ -77,7 +86,7 @@ public final class GameDataManager {
       loadDelegates(input, data);
       data.fixUpNullPlayersInDelegates();
       return Optional.of(data);
-    } catch (final Throwable e) {
+    } catch (final Exception e) {
       log.warn(
           "Error loading save game, saved version might not be compatible with current engine.", e);
       return Optional.empty();

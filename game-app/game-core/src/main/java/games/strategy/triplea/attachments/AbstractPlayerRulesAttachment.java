@@ -9,9 +9,11 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
 import java.util.Collection;
+import java.util.Optional;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.collections.IntegerMap;
 
 /**
@@ -30,6 +32,10 @@ import org.triplea.java.collections.IntegerMap;
 @Slf4j
 public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachment {
   private static final long serialVersionUID = 7224407193725789143L;
+
+  public static final @NonNls String MOVEMENT_RESTRICTION_TYPE_ALLOWED = "allowed";
+  public static final @NonNls String MOVEMENT_RESTRICTION_TYPE_DISALLOWED = "disallowed";
+
   // Please do not add new things to this class. Any new Player-Rules type of stuff should go in
   // "PlayerAttachment".
   // These variables are related to a "rulesAttachment" that changes certain rules for the attached
@@ -130,12 +136,21 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     movementRestrictionTerritories = null;
   }
 
-  private void setMovementRestrictionType(final String value) throws GameParseException {
-    if (!(value.equals("disallowed") || value.equals("allowed"))) {
+  private void setMovementRestrictionType(final @NonNls String value) throws GameParseException {
+    if (!(MOVEMENT_RESTRICTION_TYPE_DISALLOWED.equals(value)
+        || MOVEMENT_RESTRICTION_TYPE_ALLOWED.equals(value))) {
       throw new GameParseException(
           "movementRestrictionType must be allowed or disallowed" + thisErrorMsg());
     }
     movementRestrictionType = value.intern();
+  }
+
+  public boolean isMovementRestrictionTypeAllowed() {
+    return MOVEMENT_RESTRICTION_TYPE_ALLOWED.equals(movementRestrictionType);
+  }
+
+  public boolean isMovementRestrictionTypeDisallowed() {
+    return MOVEMENT_RESTRICTION_TYPE_DISALLOWED.equals(movementRestrictionType);
   }
 
   public @Nullable String getMovementRestrictionType() {
@@ -326,81 +341,92 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   }
 
   @Override
-  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
-    switch (propertyName) {
-      case "movementRestrictionType":
-        return MutableProperty.ofString(
-            this::setMovementRestrictionType,
-            this::getMovementRestrictionType,
-            this::resetMovementRestrictionType);
-      case "movementRestrictionTerritories":
-        return MutableProperty.of(
-            this::setMovementRestrictionTerritories,
-            this::setMovementRestrictionTerritories,
-            this::getMovementRestrictionTerritories,
-            this::resetMovementRestrictionTerritories);
-      case "placementAnyTerritory":
-        return MutableProperty.of(
-            this::setPlacementAnyTerritory,
-            this::setPlacementAnyTerritory,
-            this::getPlacementAnyTerritory,
-            this::resetPlacementAnyTerritory);
-      case "placementAnySeaZone":
-        return MutableProperty.of(
-            this::setPlacementAnySeaZone,
-            this::setPlacementAnySeaZone,
-            this::getPlacementAnySeaZone,
-            this::resetPlacementAnySeaZone);
-      case "placementCapturedTerritory":
-        return MutableProperty.of(
-            this::setPlacementCapturedTerritory,
-            this::setPlacementCapturedTerritory,
-            this::getPlacementCapturedTerritory,
-            this::resetPlacementCapturedTerritory);
-      case "unlimitedProduction":
-        return MutableProperty.of(
-            this::setUnlimitedProduction,
-            this::setUnlimitedProduction,
-            this::getUnlimitedProduction,
-            this::resetUnlimitedProduction);
-      case "placementInCapitalRestricted":
-        return MutableProperty.of(
-            this::setPlacementInCapitalRestricted,
-            this::setPlacementInCapitalRestricted,
-            this::getPlacementInCapitalRestricted,
-            this::resetPlacementInCapitalRestricted);
-      case "dominatingFirstRoundAttack":
-        return MutableProperty.of(
-            this::setDominatingFirstRoundAttack,
-            this::setDominatingFirstRoundAttack,
-            this::getDominatingFirstRoundAttack,
-            this::resetDominatingFirstRoundAttack);
-      case "negateDominatingFirstRoundAttack":
-        return MutableProperty.of(
-            this::setNegateDominatingFirstRoundAttack,
-            this::setNegateDominatingFirstRoundAttack,
-            this::getNegateDominatingFirstRoundAttack,
-            this::resetNegateDominatingFirstRoundAttack);
-      case "productionPerXTerritories":
-        return MutableProperty.of(
-            this::setProductionPerXTerritories,
-            this::setProductionPerXTerritories,
-            this::getProductionPerXTerritories,
-            this::resetProductionPerXTerritories);
-      case "placementPerTerritory":
-        return MutableProperty.of(
-            this::setPlacementPerTerritory,
-            this::setPlacementPerTerritory,
-            this::getPlacementPerTerritory,
-            this::resetPlacementPerTerritory);
-      case "maxPlacePerTerritory":
-        return MutableProperty.of(
-            this::setMaxPlacePerTerritory,
-            this::setMaxPlacePerTerritory,
-            this::getMaxPlacePerTerritory,
-            this::resetMaxPlacePerTerritory);
-      default:
-        return super.getPropertyOrNull(propertyName);
-    }
+  public Optional<MutableProperty<?>> getPropertyOrEmpty(String propertyName) {
+    return switch (propertyName) {
+      case "movementRestrictionType" ->
+          Optional.of(
+              MutableProperty.ofString(
+                  this::setMovementRestrictionType,
+                  this::getMovementRestrictionType,
+                  this::resetMovementRestrictionType));
+      case "movementRestrictionTerritories" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setMovementRestrictionTerritories,
+                  this::setMovementRestrictionTerritories,
+                  this::getMovementRestrictionTerritories,
+                  this::resetMovementRestrictionTerritories));
+      case "placementAnyTerritory" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setPlacementAnyTerritory,
+                  this::setPlacementAnyTerritory,
+                  this::getPlacementAnyTerritory,
+                  this::resetPlacementAnyTerritory));
+      case "placementAnySeaZone" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setPlacementAnySeaZone,
+                  this::setPlacementAnySeaZone,
+                  this::getPlacementAnySeaZone,
+                  this::resetPlacementAnySeaZone));
+      case "placementCapturedTerritory" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setPlacementCapturedTerritory,
+                  this::setPlacementCapturedTerritory,
+                  this::getPlacementCapturedTerritory,
+                  this::resetPlacementCapturedTerritory));
+      case "unlimitedProduction" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setUnlimitedProduction,
+                  this::setUnlimitedProduction,
+                  this::getUnlimitedProduction,
+                  this::resetUnlimitedProduction));
+      case "placementInCapitalRestricted" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setPlacementInCapitalRestricted,
+                  this::setPlacementInCapitalRestricted,
+                  this::getPlacementInCapitalRestricted,
+                  this::resetPlacementInCapitalRestricted));
+      case "dominatingFirstRoundAttack" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setDominatingFirstRoundAttack,
+                  this::setDominatingFirstRoundAttack,
+                  this::getDominatingFirstRoundAttack,
+                  this::resetDominatingFirstRoundAttack));
+      case "negateDominatingFirstRoundAttack" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setNegateDominatingFirstRoundAttack,
+                  this::setNegateDominatingFirstRoundAttack,
+                  this::getNegateDominatingFirstRoundAttack,
+                  this::resetNegateDominatingFirstRoundAttack));
+      case "productionPerXTerritories" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setProductionPerXTerritories,
+                  this::setProductionPerXTerritories,
+                  this::getProductionPerXTerritories,
+                  this::resetProductionPerXTerritories));
+      case "placementPerTerritory" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setPlacementPerTerritory,
+                  this::setPlacementPerTerritory,
+                  this::getPlacementPerTerritory,
+                  this::resetPlacementPerTerritory));
+      case "maxPlacePerTerritory" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setMaxPlacePerTerritory,
+                  this::setMaxPlacePerTerritory,
+                  this::getMaxPlacePerTerritory,
+                  this::resetMaxPlacePerTerritory));
+      default -> super.getPropertyOrEmpty(propertyName);
+    };
   }
 }

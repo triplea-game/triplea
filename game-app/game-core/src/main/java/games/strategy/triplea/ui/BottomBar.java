@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -33,7 +34,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.java.concurrency.AsyncRunner;
@@ -151,19 +151,21 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     try (GameData.Unlocker ignored = territory.getData().acquireReadLock()) {
       final Collection<Unit> units =
           uiContext.isShowUnitsInStatusBar() ? territory.getUnits() : List.of();
-      final TerritoryAttachment ta = TerritoryAttachment.get(territory);
       final IntegerMap<Resource> resources = new IntegerMap<>();
       final List<String> territoryEffectNames;
-      if (ta == null) {
+      final Optional<TerritoryAttachment> optionalTerritoryAttachment =
+          TerritoryAttachment.get(territory);
+      if (optionalTerritoryAttachment.isEmpty()) {
         territoryEffectNames = List.of();
       } else {
+        final TerritoryAttachment ta = optionalTerritoryAttachment.get();
         territoryEffectNames =
             ta.getTerritoryEffect().stream().map(TerritoryEffect::getName).toList();
         final int production = ta.getProduction();
         if (production > 0) {
           resources.add(new Resource(Constants.PUS, territory.getData()), production);
         }
-        Optional.ofNullable(ta.getResources()).ifPresent(r -> resources.add(r.getResourcesCopy()));
+        ta.getResources().ifPresent(r -> resources.add(r.getResourcesCopy()));
       }
 
       SwingUtilities.invokeLater(
@@ -236,7 +238,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     return nameLabel;
   }
 
-  private @NotNull String getTerritoryLabelTextPattern(Territory territory) {
+  private @Nonnull String getTerritoryLabelTextPattern(Territory territory) {
     GamePlayer territoryOwner = territory.getOwner();
     if (territoryOwner == null) return "";
     GamePlayer currentPlayer = uiContext.getCurrentPlayer();

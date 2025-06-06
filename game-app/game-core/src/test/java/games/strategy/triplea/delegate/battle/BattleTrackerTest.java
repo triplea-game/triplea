@@ -15,6 +15,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attachments.TerritoryAttachment;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -48,6 +49,9 @@ class BattleTrackerTest {
   @Test
   void verifyRaids() {
     final Territory territory = new Territory("terrName", mockGameData);
+    territory.addAttachment(
+        Constants.TERRITORY_ATTACHMENT_NAME,
+        new TerritoryAttachment("name", territory, mockGameData));
     final Route route = new Route(territory);
     final GamePlayer gamePlayer = new GamePlayer("name", mockGameData);
 

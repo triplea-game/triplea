@@ -21,6 +21,7 @@ import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
+import games.strategy.triplea.delegate.move.validation.AirMovementValidator;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
@@ -33,6 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import org.triplea.java.PredicateBuilder;
@@ -595,7 +597,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
   }
 
   @Override
-  public String performMove(final MoveDescription move) {
+  public Optional<String> performMove(final MoveDescription move) {
     final GameData data = getData();
 
     // the reason we use this, is if we are in edit mode, we may have a different unit owner than
@@ -615,10 +617,11 @@ public class MoveDelegate extends AbstractMoveDelegate {
                 + " not shown")
             : "";
     if (result.hasError()) {
-      return errorMsg.append(result.getError()).append(numErrorsMsg).toString();
+      return Optional.of(errorMsg.append(result.getError()).append(numErrorsMsg).toString());
     }
     if (result.hasDisallowedUnits()) {
-      return errorMsg.append(result.getDisallowedUnitWarning(0)).append(numErrorsMsg).toString();
+      return Optional.of(
+          errorMsg.append(result.getDisallowedUnitWarning(0)).append(numErrorsMsg).toString());
     }
     boolean isKamikaze = false;
     final boolean getKamikazeAir = Properties.getKamikazeAirplanes(data.getProperties());
@@ -626,18 +629,19 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
     // confirm kamikaze moves, and remove them from unresolved units
     if (getKamikazeAir || move.getUnits().stream().anyMatch(Matches.unitIsKamikaze())) {
-      kamikazeUnits = result.getUnresolvedUnits(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND);
+      kamikazeUnits = result.getUnresolvedUnits(AirMovementValidator.NOT_ALL_AIR_UNITS_CAN_LAND);
       if (!kamikazeUnits.isEmpty() && bridge.getRemotePlayer().confirmMoveKamikaze()) {
         for (final Unit unit : kamikazeUnits) {
           if (getKamikazeAir || Matches.unitIsKamikaze().test(unit)) {
-            result.removeUnresolvedUnit(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND, unit);
+            result.removeUnresolvedUnit(AirMovementValidator.NOT_ALL_AIR_UNITS_CAN_LAND, unit);
             isKamikaze = true;
           }
         }
       }
     }
     if (result.hasUnresolvedUnits()) {
-      return errorMsg.append(result.getUnresolvedUnitWarning(0)).append(numErrorsMsg).toString();
+      return Optional.of(
+          errorMsg.append(result.getUnresolvedUnitWarning(0)).append(numErrorsMsg).toString());
     }
 
     // allow user to cancel move if aa guns will fire
@@ -647,7 +651,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
         aaInMoveUtil.getTerritoriesWhereAaWillFire(move.getRoute(), move.getUnits());
     if (!aaFiringTerritores.isEmpty()
         && !bridge.getRemotePlayer().confirmMoveInFaceOfAa(aaFiringTerritores)) {
-      return null;
+      return Optional.empty();
     }
 
     // do the move
@@ -670,7 +674,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     tempMovePerformer.initialize(this);
     tempMovePerformer.moveUnits(move, player, currentMove);
     tempMovePerformer = null;
-    return null;
+    return Optional.empty();
   }
 
   public static Collection<Territory> getEmptyNeutral(final Route route) {

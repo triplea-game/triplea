@@ -39,6 +39,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
@@ -56,8 +58,6 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.triplea.java.ThreadRunner;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.IntTextField;
@@ -493,7 +493,7 @@ class BattleCalculatorPanel extends JPanel {
     final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
         AttackerAndDefenderSelector.builder()
             .players(data.getPlayerList().getPlayers())
-            .currentPlayer(data.getHistory().getCurrentPlayer())
+            .currentPlayer(data.getHistory().getCurrentPlayer().orElse(null))
             .relationshipTracker(data.getRelationshipTracker())
             .territory(battleSiteTerritory)
             .build()
@@ -651,7 +651,7 @@ class BattleCalculatorPanel extends JPanel {
     time.setText(formatValue(results.getTime() / 1000.0) + " s");
   }
 
-  private static @NotNull @NonNls String getRelationNumberText(double results, int defendersTotal) {
+  private static @Nonnull @NonNls String getRelationNumberText(double results, int defendersTotal) {
     return formatValue(results) + " / " + defendersTotal;
   }
 
@@ -833,7 +833,7 @@ class BattleCalculatorPanel extends JPanel {
     }
   }
 
-  private static @NotNull String getTotalNumberText(final String label, final int totalNumber) {
+  private static @Nonnull String getTotalNumberText(final String label, final int totalNumber) {
     return label + totalNumber;
   }
 

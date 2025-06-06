@@ -11,6 +11,7 @@ import games.strategy.triplea.delegate.UndoableMove;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nullable;
 
 /** Remote interface for MoveDelegate. */
@@ -23,7 +24,7 @@ public interface IMoveDelegate
    * @return an error message if the move can't be made, null otherwise
    */
   @RemoteActionCode(13)
-  String performMove(MoveDescription move);
+  Optional<String> performMove(MoveDescription move);
 
   /**
    * Get what air units must move before the end of the players turn.

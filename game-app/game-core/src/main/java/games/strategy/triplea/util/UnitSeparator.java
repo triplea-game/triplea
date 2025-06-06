@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.Builder;
-import org.jetbrains.annotations.NotNull;
 
 /** Separates a group of units into distinct categories. */
 public class UnitSeparator {
@@ -53,7 +53,7 @@ public class UnitSeparator {
    * according to <code>MapData</code> and then sorts them
    */
   public static List<UnitCategory> getSortedUnitCategories(
-      @NotNull final Territory territory, final MapData mapData) {
+      @Nonnull final Territory territory, final MapData mapData) {
     final List<UnitCategory> categories =
         new ArrayList<>(UnitSeparator.categorize(territory.getUnits()));
     categories.removeIf(uc -> !mapData.shouldDrawUnit(uc.getType().getName()));
@@ -83,7 +83,7 @@ public class UnitSeparator {
    */
   public static List<UnitCategory> getSortedUnitCategories(
       final Collection<Unit> units,
-      final @NotNull Territory territory,
+      final @Nonnull Territory territory,
       final GamePlayer gamePlayer) {
     final List<UnitCategory> categories = new ArrayList<>(UnitSeparator.categorize(units));
     categories.sort(getComparatorUnitCategories(territory, gamePlayer));
@@ -115,7 +115,7 @@ public class UnitSeparator {
   public static void sortUnitCategories(
       final List<UnitCategory> unitCategories,
       @Nullable final Territory territory,
-      @NotNull final GamePlayer currentPlayer) {
+      @Nonnull final GamePlayer currentPlayer) {
     unitCategories.sort(getComparatorUnitCategories(territory, currentPlayer));
   }
 
@@ -124,30 +124,31 @@ public class UnitSeparator {
    * use a method returning List of <code>UnitCategory></code> instead
    */
   public static Comparator<UnitCategory> getComparatorUnitCategories(final GameData gameData) {
-    return getComparatorUnitCategories(null, gameData, gameData.getHistory().getCurrentPlayer());
+    return getComparatorUnitCategories(
+        null, gameData, gameData.getHistory().getCurrentPlayer().orElse(null));
   }
 
   /** Returns <code>Comparator</code> for unit categories of a <code>Territory</code> */
   private static Comparator<UnitCategory> getComparatorUnitCategories(
-      @Nullable final Territory territory, @NotNull final GamePlayer currentPlayer) {
+      @Nullable final Territory territory, @Nonnull final GamePlayer currentPlayer) {
     final GameData gameData = currentPlayer.getData();
     return getComparatorUnitCategories(territory, gameData, currentPlayer);
   }
 
   /** Returns <code>Comparator</code> for unit categories of a <code>Territory</code> */
   private static Comparator<UnitCategory> getComparatorUnitCategories(
-      @NotNull final Territory territory) {
+      @Nonnull final Territory territory) {
     GameData gameData = territory.getData();
     if (gameData == null) gameData = territory.getOwner().getData();
     return getComparatorUnitCategories(
-        territory, gameData, gameData.getHistory().getCurrentPlayer());
+        territory, gameData, gameData.getHistory().getCurrentPlayer().orElse(null));
   }
 
   /** Returns <code>Comparator</code> for unit categories of a <code>Territory</code> */
   private static Comparator<UnitCategory> getComparatorUnitCategories(
       @Nullable final Territory territory,
       final GameData gameData,
-      final GamePlayer currentPlayer) {
+      final @Nullable GamePlayer currentPlayer) {
     final List<UnitType> xmlUnitTypes =
         new ArrayList<>(gameData.getUnitTypeList().getAllUnitTypes());
     final List<GamePlayer> players = gameData.getPlayerList().getPlayers();
@@ -162,7 +163,7 @@ public class UnitSeparator {
    */
   private static Comparator<UnitCategory> getComparatorUnitCategories(
       @Nullable final Territory territory,
-      final GamePlayer currentPlayer,
+      final @Nullable GamePlayer currentPlayer,
       final List<GamePlayer> players,
       final List<UnitType> xmlUnitTypes) {
     return Comparator.comparing(

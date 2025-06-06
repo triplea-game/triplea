@@ -8,7 +8,6 @@ import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -34,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.CollectionUtils;
@@ -63,14 +63,14 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final Route route = new Route(egypt, eastAfrica);
     final Unit unit = armour.create(british);
     final List<Unit> units = List.of(unit, unit);
-    final String results = delegate.move(units, route);
+    final Optional<String> results = delegate.move(units, route);
     assertError(results);
   }
 
   @Test
   void testNotEnoughUnits() {
     final Route route = new Route(egypt, eastAfrica);
-    final String results = delegate.move(armour.create(10, british), route);
+    final Optional<String> results = delegate.move(armour.create(10, british), route);
     assertEquals(18, egypt.getUnitCollection().size());
     assertEquals(2, eastAfrica.getUnitCollection().size());
     assertError(results);
@@ -85,7 +85,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final Route route = new Route(algeria, libya);
     assertEquals(1, algeria.getUnitCollection().size());
     assertEquals(0, libya.getUnitCollection().size());
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertError(results);
     assertEquals(1, algeria.getUnitCollection().size());
     assertEquals(0, libya.getUnitCollection().size());
@@ -98,7 +99,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final Route route = new Route(egypt, eastAfrica);
     assertEquals(18, egypt.getUnitCollection().size());
     assertEquals(2, eastAfrica.getUnitCollection().size());
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     assertEquals(16, egypt.getUnitCollection().size());
     assertEquals(4, eastAfrica.getUnitCollection().size());
@@ -111,7 +113,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final Route route = new Route(egypt, eastAfrica, kenya);
     assertEquals(18, egypt.getUnitCollection().size());
     assertEquals(0, kenya.getUnitCollection().size());
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     assertEquals(16, egypt.getUnitCollection().size());
     assertEquals(2, kenya.getUnitCollection().size());
@@ -122,7 +125,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 3);
     final Route route = new Route(congoSeaZone, southAtlantic, antarticSea);
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
   }
 
@@ -134,7 +138,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     // extra movement to force landing
     assertEquals(18, egypt.getUnitCollection().size());
     assertEquals(4, redSea.getUnitCollection().size());
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     assertEquals(16, egypt.getUnitCollection().size());
     assertEquals(6, redSea.getUnitCollection().size());
@@ -149,7 +154,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     // no carriers
     assertEquals(18, egypt.getUnitCollection().size());
     assertEquals(4, redSea.getUnitCollection().size());
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertError(results);
     assertEquals(18, egypt.getUnitCollection().size());
     assertEquals(4, redSea.getUnitCollection().size());
@@ -163,7 +169,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     // exact movement to force landing
     assertEquals(18, egypt.getUnitCollection().size());
     assertEquals(4, redSea.getUnitCollection().size());
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertError(results);
     assertEquals(18, egypt.getUnitCollection().size());
     assertEquals(4, redSea.getUnitCollection().size());
@@ -177,7 +184,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     // exact movement to force landing
     assertEquals(18, egypt.getUnitCollection().size());
     assertEquals(0, eastMediteranean.getUnitCollection().size());
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertError(results);
     assertEquals(18, egypt.getUnitCollection().size());
     assertEquals(0, eastMediteranean.getUnitCollection().size());
@@ -191,7 +199,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     // exact movement to force landing
     assertEquals(4, redSea.getUnitCollection().size());
     assertEquals(0, mozambiqueSeaZone.getUnitCollection().size());
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     assertEquals(2, redSea.getUnitCollection().size());
     assertEquals(2, mozambiqueSeaZone.getUnitCollection().size());
@@ -205,7 +214,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     // exact movement to force landing
     assertEquals(4, redSea.getUnitCollection().size());
     assertEquals(18, egypt.getUnitCollection().size());
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertError(results);
     assertEquals(4, redSea.getUnitCollection().size());
     assertEquals(18, egypt.getUnitCollection().size());
@@ -220,7 +230,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     // exact movement to force landing
     assertEquals(4, equatorialAfrica.getUnitCollection().size());
     assertEquals(11, congoSeaZone.getUnitCollection().size());
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertError(results);
     assertEquals(4, equatorialAfrica.getUnitCollection().size());
     assertEquals(11, congoSeaZone.getUnitCollection().size());
@@ -232,7 +243,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(bomber, 2);
     final Route route = new Route(egypt, redSea, syria);
     // exact movement to force landing
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
   }
 
@@ -247,7 +259,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final Collection<Unit> units = GameDataTestUtil.getUnits(map, route.getStart());
     final Map<Unit, Unit> unitsToTransports =
         TransportUtils.mapTransports(route, units, route.getEnd().getUnits());
-    final String results =
+    final Optional<String> results =
         delegate.performMove(new MoveDescription(units, route, unitsToTransports));
     assertValid(results);
     assertEquals(16, egypt.getUnitCollection().size());
@@ -262,7 +274,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     assertEquals(18, egypt.getUnitCollection().size());
     assertEquals(1, algeria.getUnitCollection().size());
     assertEquals(libya.getOwner(), japanese);
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     assertEquals(16, egypt.getUnitCollection().size());
     assertEquals(3, algeria.getUnitCollection().size());
@@ -277,7 +290,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     // Disable canBlitz attachment
     gameData.performChange(
         ChangeFactory.attachmentPropertyChange(armour.getUnitAttachment(), "false", "canBlitz"));
-    String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     // Validate move happened
     assertEquals(1, libya.getUnitCollection().size());
@@ -296,7 +310,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final Route route = new Route(equatorialAfrica, westAfrica, algeria);
     assertEquals(4, equatorialAfrica.getUnitCollection().size());
     assertEquals(1, algeria.getUnitCollection().size());
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertError(results);
     assertEquals(4, equatorialAfrica.getUnitCollection().size());
     assertEquals(1, algeria.getUnitCollection().size());
@@ -311,7 +326,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     assertEquals(0, westAfrica.getUnitCollection().size());
     assertEquals(gameData.getPlayerList().getNullPlayer(), westAfrica.getOwner());
     assertEquals(35, british.getResources().getQuantity(pus));
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     assertEquals(2, equatorialAfrica.getUnitCollection().size());
     assertEquals(2, westAfrica.getUnitCollection().size());
@@ -324,7 +340,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(bomber, 2);
     final Route route = new Route(egypt, libya, algeria, equatorialAfrica);
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
   }
 
@@ -333,7 +350,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     Route route = new Route(equatorialAfrica, westAfrica);
-    String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     map = new IntegerMap<>();
     map.put(armour, 2);
@@ -349,7 +367,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     Route route = new Route(eastAfrica, kenya);
     assertEquals(2, eastAfrica.getUnitCollection().size());
     assertEquals(0, kenya.getUnitCollection().size());
-    String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     assertEquals(0, eastAfrica.getUnitCollection().size());
     assertEquals(2, kenya.getUnitCollection().size());
@@ -370,7 +389,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     Route route = new Route(egypt, equatorialAfrica);
     assertEquals(18, egypt.getUnitCollection().size());
     assertEquals(4, equatorialAfrica.getUnitCollection().size());
-    String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     assertEquals(16, egypt.getUnitCollection().size());
     assertEquals(6, equatorialAfrica.getUnitCollection().size());
@@ -394,7 +414,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final Collection<Unit> units = GameDataTestUtil.getUnits(map, route.getStart());
     final Map<Unit, Unit> unitsToTransports =
         TransportUtils.mapTransports(route, units, route.getEnd().getUnits());
-    String results = delegate.performMove(new MoveDescription(units, route, unitsToTransports));
+    Optional<String> results =
+        delegate.performMove(new MoveDescription(units, route, unitsToTransports));
     assertValid(results);
     map = new IntegerMap<>();
     map.put(transport, 2);
@@ -411,7 +432,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final Collection<Unit> units = GameDataTestUtil.getUnits(map, route.getStart());
     final Map<Unit, Unit> unitsToTransports =
         TransportUtils.mapTransports(route, units, route.getEnd().getUnits());
-    String results = delegate.performMove(new MoveDescription(units, route, unitsToTransports));
+    Optional<String> results =
+        delegate.performMove(new MoveDescription(units, route, unitsToTransports));
     assertValid(results);
     map = new IntegerMap<>();
     map.put(armour, 2);
@@ -425,7 +447,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 2);
     final Route route = new Route(congoSeaZone, equatorialAfrica);
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
   }
 
@@ -463,7 +486,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final Collection<Unit> moveInf = infantry.create(2, russians);
     final Route route = new Route(karelia, balticSeaZone, westEurope);
     // Once loaded, shouldn't be able to unload
-    final String results = delegate.move(moveInf, route);
+    final Optional<String> results = delegate.move(moveInf, route);
     assertError(results);
   }
 
@@ -485,17 +508,17 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
         CollectionUtils.getMatches(japanSeaZone.getUnits(), Matches.unitIsOfType(transport));
     final List<Unit> infantry1 =
         CollectionUtils.getNMatches(japan.getUnits(), 1, Matches.unitIsOfType(infantry));
-    String results =
+    Optional<String> results =
         delegate.performMove(
             new MoveDescription(infantry1, load, Map.of(infantry1.get(0), transports.get(0))));
-    assertNull(results);
+    assertValid(results);
     assertEquals(
         infantry1,
         CollectionUtils.getNMatches(japanSeaZone.getUnits(), 1, Matches.unitIsOfType(infantry)));
     // Perform the first unload
     final Route unload = new Route(japanSeaZone, manchuria);
     results = delegate.move(infantry1, unload);
-    assertNull(results);
+    assertValid(results);
     // Load another trn
     final Route route2 = new Route(japan, japanSeaZone);
     final List<Unit> infantry2 =
@@ -503,7 +526,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     results =
         delegate.performMove(
             new MoveDescription(infantry2, route2, Map.of(infantry2.get(0), transports.get(1))));
-    assertNull(results);
+    assertValid(results);
     // Move remaining units
     final Route route3 = new Route(japanSeaZone, sfeSeaZone);
     final Collection<Unit> remainingTransports =
@@ -511,7 +534,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
             japanSeaZone.getUnits(),
             Matches.unitHasNotMoved().and(Matches.unitWasNotLoadedThisTurn()));
     results = delegate.move(remainingTransports, route3);
-    assertNull(results);
+    assertValid(results);
   }
 
   @Test
@@ -519,7 +542,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 2);
     Route route = new Route(congoSeaZone, equatorialAfrica);
-    String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     map = new IntegerMap<>();
     // only 2 originally, would have to move the 2 we just unloaded as well
@@ -535,7 +559,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 4);
     Route route = new Route(congoSeaZone, equatorialAfrica);
-    String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     map = new IntegerMap<>();
     map.put(transport, 2);
@@ -554,7 +579,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     Collection<Unit> units = GameDataTestUtil.getUnits(map, route.getStart());
     Map<Unit, Unit> unitsToTransports =
         TransportUtils.mapTransports(route, units, route.getEnd().getUnits());
-    String results = delegate.performMove(new MoveDescription(units, route, unitsToTransports));
+    Optional<String> results =
+        delegate.performMove(new MoveDescription(units, route, unitsToTransports));
     assertValid(results);
     // move two infantry to red sea
     route = new Route(eastAfrica, redSea);
@@ -587,7 +613,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(transport, 1);
     map.put(infantry, 2);
-    String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     // move transport back
     route = new Route(angolaSeaZone, congoSeaZone);
@@ -616,7 +643,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final Route route = new Route(egypt, kenya, southAfrica);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertError(results);
   }
 
@@ -633,7 +661,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     // try to fly over South Africa, should be possible as neutral flyover is allowed
     final Route route = new Route(kenya, southAfrica, angola);
     final Collection<Unit> fighters = addBritishFightersToKenya();
-    final String results = delegate.move(fighters, route);
+    final Optional<String> results = delegate.move(fighters, route);
     assertValid(results);
   }
 
@@ -643,7 +671,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     // try to fly over South Africa, cant because we can't because neutral flyover not allowed
     final Route route = new Route(kenya, southAfrica, angola);
     final Collection<Unit> fighters = addBritishFightersToKenya();
-    final String results = delegate.move(fighters, route);
+    final Optional<String> results = delegate.move(fighters, route);
     assertError(results);
   }
 
@@ -653,11 +681,11 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     // try to fly over South Africa via 2 moves, can't because neutral flyover not allowed
     final Route routeFirstMove = new Route(kenya, southAfrica);
     final Collection<Unit> fighters = addBritishFightersToKenya();
-    final String resultsFirstMove =
+    final Optional<String> resultsFirstMove =
         delegate.performMove(new MoveDescription(fighters, routeFirstMove));
     assertValid(resultsFirstMove);
     final Route routeSecondMove = new Route(southAfrica, angola);
-    final String resultsSecondMove = delegate.move(fighters, routeSecondMove);
+    final Optional<String> resultsSecondMove = delegate.move(fighters, routeSecondMove);
     assertError(resultsSecondMove);
   }
 
@@ -666,7 +694,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final Route route = new Route(egypt, kenya, southAfrica);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 2);
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
   }
 
@@ -676,7 +705,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final Route route = new Route(equatorialAfrica, westAfrica);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 1);
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     assertTrue(gameData.getBattleDelegate().getBattleTracker().wasConquered(westAfrica));
     assertFalse(gameData.getBattleDelegate().getBattleTracker().wasBlitzed(westAfrica));
@@ -689,7 +719,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 2);
     map.put(transport, 1);
-    String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     // move again
     route = new Route(southAtlantic, angolaSeaZone);
@@ -703,7 +734,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     Route route = new Route(equatorialAfrica, westAfrica);
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 1);
-    String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     // make sure we cant move through it by land
     route = new Route(equatorialAfrica, westAfrica, algeria);
@@ -731,7 +763,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     Route route = new Route(equatorialAfrica, libya);
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 1);
-    String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     // make sure we can still blitz through it
     route = new Route(equatorialAfrica, libya, algeria);
@@ -747,7 +780,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     Route route = new Route(egypt, kenya, southAfrica);
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 1);
-    String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     // move carriers to ensure they can't go anywhere
     route = new Route(congoSeaZone, westAfricaSea, northAtlantic);
@@ -780,7 +814,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(transport, 1);
     map.put(infantry, 2);
-    String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     route = new Route(westAfricaSeaZone, westAfrica);
     map = new IntegerMap<>();
@@ -795,7 +830,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     Route route = new Route(egypt, libya);
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(bomber, 1);
-    String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     route = new Route(libya, algeria);
     // planes cannot leave a battle zone, but the territory was empty so no battle occurred
@@ -810,7 +846,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final Route route = new Route(egypt, libya);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(bomber, 1);
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
   }
 
@@ -822,7 +859,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(bomber, 6);
     map.put(fighter, 6);
     map.put(armour, 6);
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
   }
 
@@ -833,7 +871,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(transport, 2);
     map.put(infantry, 4);
-    String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     // try to unload transports
     route = new Route(southBrazilSeaZone, brazil);
@@ -864,7 +903,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(transport, 1);
     map.put(infantry, 2);
     // Move from the NorthSea to the BalticSea and validate the move
-    String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     // Unload transports into Finland and validate
     route = new Route(balticSeaZone, finlandNorway);
@@ -940,7 +980,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(transport, 1);
     map.put(infantry, 2);
     // Move from the NorthSea to the BalticSea and validate the move
-    String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     // Unload transports into Finland and validate
     route = new Route(balticSeaZone, finlandNorway);
@@ -1016,7 +1057,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(transport, 1);
     map.put(infantry, 2);
     // Move from the NorthSea to the BalticSea and validate the move
-    String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     // Unload transports into Finland and validate
     route = new Route(balticSeaZone, karelia);
@@ -1078,7 +1120,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(transport, 1);
     map.put(infantry, 2);
     // Move from the NorthSea to the BalticSea and validate the move
-    String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     // Unload transports into Finland and validate
     route = new Route(balticSeaZone, karelia);
@@ -1136,7 +1179,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 3);
     map.put(bomber, 3);
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
   }
 
@@ -1148,7 +1192,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final Route route = new Route(equatorialAfrica, algeria);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertError(results);
   }
 
@@ -1160,7 +1205,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final Route route = new Route(equatorialAfrica, westAfrica);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertError(results);
   }
 
@@ -1170,7 +1216,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     Route route = new Route(equatorialAfrica, libya);
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 1);
-    String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     // go to non combat
     advanceToStep(bridge, "britishNonCombatMove");
@@ -1193,7 +1240,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final Route route = new Route(congo, kenya);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
-    String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     final BattleTracker tracker = gameData.getBattleDelegate().getBattleTracker();
     assertTrue(tracker.wasBlitzed(kenya));
@@ -1209,7 +1257,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     Route route = new Route(equatorialAfrica, westAfrica);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 1);
-    String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     final BattleTracker tracker = gameData.getBattleDelegate().getBattleTracker();
     assertFalse(tracker.wasBlitzed(westAfrica));
@@ -1232,7 +1281,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final Route route = new Route(equatorialAfrica, libya);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 1);
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     final BattleTracker tracker = gameData.getBattleDelegate().getBattleTracker();
     assertTrue(tracker.wasBlitzed(libya));
@@ -1246,7 +1296,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final Route route = new Route(egypt, eastMediteranean, blackSea);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
-    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    final Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
   }
 
@@ -1258,7 +1309,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     Route route = new Route(congoSeaZone, southAtlantic, antarticSea, angolaSeaZone);
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
-    String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
+    Optional<String> results =
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     route = new Route(congoSeaZone, southAtlantic, antarticSea, angolaSeaZone);
     map = new IntegerMap<>();
@@ -1269,8 +1321,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
 
   @Test
   void testRoute() {
-    final Route route = gameData.getMap().getRoute(angola, russia, it -> true);
-    assertNotNull(route);
-    assertEquals(route.getEnd(), russia);
+    final Optional<Route> optionalRoute = gameData.getMap().getRoute(angola, russia, it -> true);
+    assertTrue(optionalRoute.isPresent());
+    assertEquals(optionalRoute.get().getEnd(), russia);
   }
 }

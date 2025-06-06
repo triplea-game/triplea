@@ -48,9 +48,10 @@ class SerializationTest {
 
   @Test
   void testWriteUnitType() throws Exception {
-    final Object orig = gameDataSource.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF);
+    final Object orig =
+        gameDataSource.getUnitTypeList().getUnitTypeOrThrow(Constants.UNIT_TYPE_INF);
     final Object read = serialize(orig);
-    final Object local = gameDataSink.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF);
+    final Object local = gameDataSink.getUnitTypeList().getUnitTypeOrThrow(Constants.UNIT_TYPE_INF);
     assertThat(local, is(not(sameInstance(read))));
   }
 

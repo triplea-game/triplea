@@ -15,6 +15,7 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import java.awt.Color;
 import java.awt.Component;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,7 +38,7 @@ import org.triplea.util.Tuple;
  * order.
  */
 class OrderOfLossesInputPanel extends JPanel {
-  private static final long serialVersionUID = 8815617685388156219L;
+  @Serial private static final long serialVersionUID = 8815617685388156219L;
   private static final char OOL_SEPARATOR = ';';
   private static final char OOL_AMOUNT_DESCRIPTOR = '^';
   private static final String OOL_ALL = "*";
@@ -112,8 +113,7 @@ class OrderOfLossesInputPanel extends JPanel {
             return false;
           }
         }
-        final UnitType type = unitTypes.getUnitType(amountThenType[1]);
-        if (type == null) {
+        if (unitTypes.getUnitType(amountThenType[1]).isEmpty()) {
           return false;
         }
       }
@@ -150,7 +150,7 @@ class OrderOfLossesInputPanel extends JPanel {
           amountThenType[0].equals(OOL_ALL)
               ? Integer.MAX_VALUE
               : Integer.parseInt(amountThenType[0]);
-      final UnitType type = data.getUnitTypeList().getUnitType(amountThenType[1]);
+      final UnitType type = data.getUnitTypeList().getUnitTypeOrThrow(amountThenType[1]);
       map.add(Tuple.of(amount, type));
     }
     Collections.reverse(map);

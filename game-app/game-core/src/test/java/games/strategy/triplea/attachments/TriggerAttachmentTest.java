@@ -390,7 +390,8 @@ class TriggerAttachmentTest {
     void testTriggerProductionChange() throws Exception {
       final GameData gameData = bridge.getData();
 
-      final ProductionFrontier startingFrontier = new ProductionFrontier("production", gameData);
+      final ProductionFrontier startingFrontier =
+          new ProductionFrontier(ProductionFrontier.PRODUCTION, gameData);
       final ProductionFrontier newFrontier =
           new ProductionFrontier("Americans_Super_Carrier_production", gameData);
 

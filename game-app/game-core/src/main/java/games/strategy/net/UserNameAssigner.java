@@ -20,7 +20,7 @@ public final class UserNameAssigner {
    */
   public static String assignName(
       final String desiredName, final String mac, final Collection<String> loggedInNames) {
-    Preconditions.checkArgument(UserName.validate(desiredName) == null);
+    Preconditions.checkArgument(UserName.validate(desiredName).isEmpty());
     Preconditions.checkNotNull(mac);
     Preconditions.checkNotNull(loggedInNames);
 

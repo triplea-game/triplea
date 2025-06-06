@@ -144,7 +144,7 @@ class LhtrTest extends AbstractClientSettingTestCase {
     final BattleTracker tracker = new BattleTracker();
     final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     battle.addAttackChange(
-        gameData.getMap().getRoute(uk, germany, it -> true),
+        gameData.getMap().getRouteOrElseThrow(uk, germany, it -> true),
         uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()),
         null);
     addTo(germany, uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()));
@@ -186,7 +186,7 @@ class LhtrTest extends AbstractClientSettingTestCase {
     final BattleTracker tracker = new BattleTracker();
     final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     battle.addAttackChange(
-        gameData.getMap().getRoute(uk, germany, it -> true),
+        gameData.getMap().getRouteOrElseThrow(uk, germany, it -> true),
         uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()),
         null);
     addTo(germany, uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()));

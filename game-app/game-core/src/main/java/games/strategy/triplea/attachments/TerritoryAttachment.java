@@ -18,18 +18,23 @@ import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.formatter.MyFormatter;
+import java.io.Serial;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.collections.CollectionUtils;
 
 /**
@@ -38,16 +43,16 @@ import org.triplea.java.collections.CollectionUtils;
  * <p>Note: Empty collection fields default to null to minimize memory use and serialization size.
  */
 public class TerritoryAttachment extends DefaultAttachment {
-  private static final long serialVersionUID = 9102862080104655281L;
+  @Serial private static final long serialVersionUID = 9102862080104655281L;
 
-  private @Nullable String capital = null;
+  private @NonNls @Nullable String capital = null;
   private boolean originalFactory = false;
   // "setProduction" will set both production and unitProduction.
   // While "setProductionOnly" sets only production.
   @Getter private int production = 0;
   @Getter private int victoryCity = 0;
   private boolean isImpassable = false;
-  @Getter private @Nullable GamePlayer originalOwner = null;
+  private @Nullable GamePlayer originalOwner = null;
   private boolean convoyRoute = false;
   private @Nullable Set<Territory> convoyAttached = null;
   private @Nullable List<GamePlayer> changeUnitOwners = null;
@@ -80,21 +85,33 @@ public class TerritoryAttachment extends DefaultAttachment {
     return pa.getRetainCapitalProduceNumber() <= capitalsListOwned.size();
   }
 
+  public static Territory getFirstOwnedCapitalOrFirstUnownedCapitalOrThrow(
+      final GamePlayer player, final GameMap gameMap) {
+    return getFirstOwnedCapitalOrFirstUnownedCapital(player, gameMap)
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    MessageFormat.format(
+                        "Player {0} has no owned capital or unowned capital as expected", player)));
+  }
+
   /**
    * If we own one of our capitals, return the first one found, otherwise return the first capital
    * we find that we don't own. If a capital has no neighbor connections, it will be sent last.
    */
-  public static @Nullable Territory getFirstOwnedCapitalOrFirstUnownedCapital(
+  public static Optional<Territory> getFirstOwnedCapitalOrFirstUnownedCapital(
       final GamePlayer player, final GameMap gameMap) {
     final List<Territory> capitals = new ArrayList<>();
     final List<Territory> noNeighborCapitals = new ArrayList<>();
     for (final Territory current : gameMap.getTerritories()) {
-      final TerritoryAttachment ta = TerritoryAttachment.get(current);
-      if (ta != null && ta.getCapital() != null) {
-        if (player.getName().equals(ta.getCapital())) {
+      final Optional<TerritoryAttachment> optionalTerritoryAttachment =
+          TerritoryAttachment.get(current);
+      if (optionalTerritoryAttachment.isPresent()) {
+        final Optional<String> optionalCapital = optionalTerritoryAttachment.get().getCapital();
+        if (optionalCapital.isPresent() && player.getName().equals(optionalCapital.get())) {
           if (player.equals(current.getOwner())) {
             if (!gameMap.getNeighbors(current).isEmpty()) {
-              return current;
+              return Optional.of(current);
             }
             noNeighborCapitals.add(current);
           } else {
@@ -104,14 +121,14 @@ public class TerritoryAttachment extends DefaultAttachment {
       }
     }
     if (!capitals.isEmpty()) {
-      return CollectionUtils.getAny(capitals);
+      return Optional.of(CollectionUtils.getAny(capitals));
     }
     if (!noNeighborCapitals.isEmpty()) {
-      return CollectionUtils.getAny(noNeighborCapitals);
+      return Optional.of(CollectionUtils.getAny(noNeighborCapitals));
     }
     // Added check for optional players- no error thrown for them
     if (player.getOptional()) {
-      return null;
+      return Optional.empty();
     }
     throw new IllegalStateException("Capital not found for: " + player);
   }
@@ -120,12 +137,14 @@ public class TerritoryAttachment extends DefaultAttachment {
   public static List<Territory> getAllCapitals(final GamePlayer player, final GameMap gameMap) {
     final List<Territory> capitals = new ArrayList<>();
     for (final Territory current : gameMap.getTerritories()) {
-      final TerritoryAttachment ta = TerritoryAttachment.get(current);
-      if (ta != null && ta.getCapital() != null) {
-        if (player.getName().equals(ta.getCapital())) {
-          capitals.add(current);
-        }
-      }
+      TerritoryAttachment.get(current)
+          .flatMap(TerritoryAttachment::getCapital)
+          .ifPresent(
+              capital -> {
+                if (player.getName().equals(capital)) {
+                  capitals.add(current);
+                }
+              });
     }
     if (!capitals.isEmpty()) {
       return capitals;
@@ -142,29 +161,44 @@ public class TerritoryAttachment extends DefaultAttachment {
       final GamePlayer player, final GameMap gameMap) {
     final List<Territory> capitals = new ArrayList<>();
     for (final Territory current : gameMap.getTerritories()) {
-      final TerritoryAttachment ta = TerritoryAttachment.get(current);
-      if (ta != null && ta.getCapital() != null) {
-        if (player.getName().equals(ta.getCapital()) && player.equals(current.getOwner())) {
-          capitals.add(current);
-        }
-      }
+      TerritoryAttachment.get(current)
+          .flatMap(TerritoryAttachment::getCapital)
+          .ifPresent(
+              capital -> {
+                if (player.getName().equals(capital) && player.equals(current.getOwner())) {
+                  capitals.add(current);
+                }
+              });
     }
     return capitals;
   }
 
-  /** Convenience method. Can return null. */
-  public static @Nullable TerritoryAttachment get(final Territory t) {
-    return (TerritoryAttachment) t.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
+  /** Convenience method. */
+  public static TerritoryAttachment getOrThrow(final @Nonnull Territory t) {
+    return get(t, Constants.TERRITORY_ATTACHMENT_NAME)
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    MessageFormat.format(
+                        "No territory attachment for {0}, but expected here", t.getName())));
   }
 
-  static TerritoryAttachment get(final Territory t, final String nameOfAttachment) {
+  /** Convenience method. */
+  public static Optional<TerritoryAttachment> get(final Territory t) {
+    return get(t, Constants.TERRITORY_ATTACHMENT_NAME);
+  }
+
+  static Optional<TerritoryAttachment> get(final Territory t, final String nameOfAttachment) {
     final TerritoryAttachment territoryAttachment =
         (TerritoryAttachment) t.getAttachment(nameOfAttachment);
     if (territoryAttachment == null && !t.isWater()) {
       throw new IllegalStateException(
-          "No territory attachment for: " + t.getName() + " with name: " + nameOfAttachment);
+          "No territory attachment for: "
+              + t.getName()
+              + "(non-water) with name: "
+              + nameOfAttachment);
     }
-    return territoryAttachment;
+    return java.util.Optional.ofNullable(territoryAttachment);
   }
 
   /**
@@ -173,7 +207,8 @@ public class TerritoryAttachment extends DefaultAttachment {
    * @param territory The territory that will receive the territory attachment.
    * @param territoryAttachment The territory attachment.
    */
-  public static void add(final Territory territory, final TerritoryAttachment territoryAttachment) {
+  public static void add(
+      final @Nonnull Territory territory, final @Nonnull TerritoryAttachment territoryAttachment) {
     checkNotNull(territory);
     checkNotNull(territoryAttachment);
 
@@ -185,7 +220,7 @@ public class TerritoryAttachment extends DefaultAttachment {
    *
    * @param territory The territory from which the attachment will be removed.
    */
-  public static void remove(final Territory territory) {
+  public static void remove(final @Nonnull Territory territory) {
     checkNotNull(territory);
 
     territory.removeAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
@@ -193,20 +228,12 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   /** Convenience method since TerritoryAttachment.get could return null. */
   public static int getProduction(final Territory t) {
-    final TerritoryAttachment ta = TerritoryAttachment.get(t);
-    if (ta == null) {
-      return 0;
-    }
-    return ta.getProduction();
+    return TerritoryAttachment.get(t).map(TerritoryAttachment::getProduction).orElse(0);
   }
 
   /** Convenience method since TerritoryAttachment.get could return null. */
   public static int getUnitProduction(final Territory t) {
-    final TerritoryAttachment ta = TerritoryAttachment.get(t);
-    if (ta == null) {
-      return 0;
-    }
-    return ta.getUnitProduction();
+    return TerritoryAttachment.get(t).map(TerritoryAttachment::getUnitProduction).orElse(0);
   }
 
   private void setResources(final String value) throws GameParseException {
@@ -227,7 +254,17 @@ public class TerritoryAttachment extends DefaultAttachment {
     resources = value;
   }
 
-  public @Nullable ResourceCollection getResources() {
+  public Optional<ResourceCollection> getResources() {
+    return Optional.ofNullable(resources);
+  }
+
+  /**
+   * Might return {@code null} if the attribute is {@code null}. Avoid usage; instead, see {@link
+   * #getResources()}.
+   *
+   * @return Returns {@link #resources}.
+   */
+  private ResourceCollection getResourcesOrNull() {
     return resources;
   }
 
@@ -260,7 +297,26 @@ public class TerritoryAttachment extends DefaultAttachment {
     return capital != null;
   }
 
-  public @Nullable String getCapital() {
+  public Optional<String> getCapital() {
+    return Optional.ofNullable(capital);
+  }
+
+  public String getCapitalOrThrow() {
+    return getCapital()
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    MessageFormat.format(
+                        "No expected capital found for TerritoryAttachment {0}", this)));
+  }
+
+  /**
+   * Might return {@code null} if the attribute is {@code null}. Avoid usage; instead, see {@link
+   * #getCapital()}.
+   *
+   * @return Returns {@link #capital}.
+   */
+  private @Nullable @NonNls String getCapitalOrNull() {
     return capital;
   }
 
@@ -333,12 +389,29 @@ public class TerritoryAttachment extends DefaultAttachment {
    * Should not be set by a game xml during attachment parsing, but CAN be set by initialization
    * parsing.
    */
-  public void setOriginalOwner(final GamePlayer player) {
-    originalOwner = player;
+  private void setOriginalOwner(final @Nullable GamePlayer gamePlayer) {
+    originalOwner = gamePlayer;
   }
 
   private void setOriginalOwner(final String player) throws GameParseException {
     originalOwner = getPlayerOrThrow(player);
+  }
+
+  public Optional<GamePlayer> getOriginalOwner() {
+    return Optional.ofNullable(originalOwner);
+  }
+
+  /** Should only be used for @link{MutableProperty}. */
+  private GamePlayer getOriginalOwnerOrNull() {
+    return getOriginalOwner().orElse(null);
+  }
+
+  public GamePlayer getOriginalOwnerOrThrow() {
+    return getOriginalOwner()
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    MessageFormat.format("Original owner expected for {0}", this)));
   }
 
   private void resetOriginalOwner() {
@@ -493,8 +566,9 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public static boolean hasNavalBase(final Territory t) {
-    final TerritoryAttachment ta = TerritoryAttachment.get(t);
-    return ta != null && ta.getNavalBase();
+    final Optional<TerritoryAttachment> optionalTerritoryAttachment = TerritoryAttachment.get(t);
+    return optionalTerritoryAttachment.isPresent()
+        && optionalTerritoryAttachment.get().getNavalBase();
   }
 
   private void setNavalBase(final String value) {
@@ -514,8 +588,9 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public static boolean hasAirBase(final Territory t) {
-    final TerritoryAttachment ta = TerritoryAttachment.get(t);
-    return ta != null && ta.getAirBase();
+    final Optional<TerritoryAttachment> optionalTerritoryAttachment = TerritoryAttachment.get(t);
+    return optionalTerritoryAttachment.isPresent()
+        && optionalTerritoryAttachment.get().getAirBase();
   }
 
   private void setAirBase(final String value) {
@@ -573,21 +648,32 @@ public class TerritoryAttachment extends DefaultAttachment {
    */
   public static Collection<Territory> getWhatTerritoriesThisIsUsedInConvoysFor(
       final Territory territory, final GameState data) {
-    final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-    if (ta == null || !ta.getConvoyRoute()) {
+    final Optional<TerritoryAttachment> optionalTerritoryAttachment =
+        TerritoryAttachment.get(territory);
+    if (optionalTerritoryAttachment.isEmpty()
+        || !optionalTerritoryAttachment.get().getConvoyRoute()) {
       return new HashSet<>();
     }
 
     final Collection<Territory> territories = new HashSet<>();
-    for (final Territory current : data.getMap().getTerritories()) {
-      final TerritoryAttachment cta = TerritoryAttachment.get(current);
-      if (cta == null || !cta.getConvoyRoute()) {
-        continue;
-      }
-      if (cta.getConvoyAttached().contains(territory)) {
-        territories.add(current);
-      }
-    }
+    // already checked above
+    data.getMap().getTerritories().stream()
+        .filter(current -> !current.equals(territory))
+        .forEach(
+            current -> {
+              final Optional<TerritoryAttachment> optionalCurrentTerritoryAttachment =
+                  TerritoryAttachment.get(current);
+              if (optionalCurrentTerritoryAttachment.isEmpty()
+                  || !optionalCurrentTerritoryAttachment.get().getConvoyRoute()) {
+                return;
+              }
+              if (optionalCurrentTerritoryAttachment
+                  .get()
+                  .getConvoyAttached()
+                  .contains(territory)) {
+                territories.add(current);
+              }
+            });
     return territories;
   }
 
@@ -616,11 +702,12 @@ public class TerritoryAttachment extends DefaultAttachment {
         sb.append("Current Owner: ").append(t.getOwner().getName());
         sb.append(br);
       }
-      final GamePlayer originalOwner = getOriginalOwner();
-      if (originalOwner != null) {
-        sb.append("Original Owner: ").append(originalOwner.getName());
-        sb.append(br);
-      }
+      getOriginalOwner()
+          .ifPresent(
+              origOwner -> {
+                sb.append("Original Owner: ").append(origOwner.getName());
+                sb.append(br);
+              });
     }
     if (isImpassable) {
       sb.append("Is Impassable");
@@ -722,99 +809,129 @@ public class TerritoryAttachment extends DefaultAttachment {
   public void validate(final GameState data) {}
 
   @Override
-  public @Nullable MutableProperty<?> getPropertyOrNull(String propertyName) {
-    switch (propertyName) {
-      case "capital":
-        return MutableProperty.ofString(this::setCapital, this::getCapital, this::resetCapital);
-      case "originalFactory":
-        return MutableProperty.of(
-            this::setOriginalFactory,
-            this::setOriginalFactory,
-            this::getOriginalFactory,
-            this::resetOriginalFactory);
-      case "production":
-        return MutableProperty.of(
-            this::setProduction, this::setProduction, this::getProduction, this::resetProduction);
-      case "productionOnly":
-        return MutableProperty.ofWriteOnlyString(this::setProductionOnly);
-      case "victoryCity":
-        return MutableProperty.ofMapper(
-            DefaultAttachment::getInt, this::setVictoryCity, this::getVictoryCity, () -> 0);
-      case "isImpassable":
-        return MutableProperty.of(
-            this::setIsImpassable,
-            this::setIsImpassable,
-            this::getIsImpassable,
-            this::resetIsImpassable);
-      case "originalOwner":
-        return MutableProperty.of(
-            this::setOriginalOwner,
-            this::setOriginalOwner,
-            this::getOriginalOwner,
-            this::resetOriginalOwner);
-      case "convoyRoute":
-        return MutableProperty.of(
-            this::setConvoyRoute,
-            this::setConvoyRoute,
-            this::getConvoyRoute,
-            this::resetConvoyRoute);
-      case "convoyAttached":
-        return MutableProperty.of(
-            this::setConvoyAttached,
-            this::setConvoyAttached,
-            this::getConvoyAttached,
-            this::resetConvoyAttached);
-      case "changeUnitOwners":
-        return MutableProperty.of(
-            this::setChangeUnitOwners,
-            this::setChangeUnitOwners,
-            this::getChangeUnitOwners,
-            this::resetChangeUnitOwners);
-      case "captureUnitOnEnteringBy":
-        return MutableProperty.of(
-            this::setCaptureUnitOnEnteringBy,
-            this::setCaptureUnitOnEnteringBy,
-            this::getCaptureUnitOnEnteringBy,
-            this::resetCaptureUnitOnEnteringBy);
-      case "navalBase":
-        return MutableProperty.of(
-            this::setNavalBase, this::setNavalBase, this::getNavalBase, this::resetNavalBase);
-      case "airBase":
-        return MutableProperty.of(
-            this::setAirBase, this::setAirBase, this::getAirBase, this::resetAirBase);
-      case "kamikazeZone":
-        return MutableProperty.of(
-            this::setKamikazeZone,
-            this::setKamikazeZone,
-            this::getKamikazeZone,
-            this::resetKamikazeZone);
-      case "unitProduction":
-        return MutableProperty.ofMapper(
-            DefaultAttachment::getInt, this::setUnitProduction, this::getUnitProduction, () -> 0);
-      case "blockadeZone":
-        return MutableProperty.of(
-            this::setBlockadeZone,
-            this::setBlockadeZone,
-            this::getBlockadeZone,
-            this::resetBlockadeZone);
-      case "territoryEffect":
-        return MutableProperty.of(
-            this::setTerritoryEffect,
-            this::setTerritoryEffect,
-            this::getTerritoryEffect,
-            this::resetTerritoryEffect);
-      case "whenCapturedByGoesTo":
-        return MutableProperty.of(
-            this::setWhenCapturedByGoesTo,
-            this::setWhenCapturedByGoesTo,
-            this::getWhenCapturedByGoesTo,
-            this::resetWhenCapturedByGoesTo);
-      case "resources":
-        return MutableProperty.of(
-            this::setResources, this::setResources, this::getResources, this::resetResources);
-      default:
-        return null;
-    }
+  public Optional<MutableProperty<?>> getPropertyOrEmpty(final @NonNls String propertyName) {
+    return switch (propertyName) {
+      case "capital" ->
+          Optional.of(
+              MutableProperty.ofString(
+                  this::setCapital, this::getCapitalOrNull, this::resetCapital));
+      case "originalFactory" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setOriginalFactory,
+                  this::setOriginalFactory,
+                  this::getOriginalFactory,
+                  this::resetOriginalFactory));
+      case "production" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setProduction,
+                  this::setProduction,
+                  this::getProduction,
+                  this::resetProduction));
+      case "productionOnly" ->
+          Optional.of(MutableProperty.ofWriteOnlyString(this::setProductionOnly));
+      case "victoryCity" ->
+          Optional.of(
+              MutableProperty.ofMapper(
+                  DefaultAttachment::getInt, this::setVictoryCity, this::getVictoryCity, () -> 0));
+      case "isImpassable" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setIsImpassable,
+                  this::setIsImpassable,
+                  this::getIsImpassable,
+                  this::resetIsImpassable));
+      case "originalOwner" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setOriginalOwner,
+                  this::setOriginalOwner,
+                  this::getOriginalOwnerOrNull,
+                  this::resetOriginalOwner));
+      case "convoyRoute" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setConvoyRoute,
+                  this::setConvoyRoute,
+                  this::getConvoyRoute,
+                  this::resetConvoyRoute));
+      case "convoyAttached" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setConvoyAttached,
+                  this::setConvoyAttached,
+                  this::getConvoyAttached,
+                  this::resetConvoyAttached));
+      case "changeUnitOwners" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setChangeUnitOwners,
+                  this::setChangeUnitOwners,
+                  this::getChangeUnitOwners,
+                  this::resetChangeUnitOwners));
+      case "captureUnitOnEnteringBy" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setCaptureUnitOnEnteringBy,
+                  this::setCaptureUnitOnEnteringBy,
+                  this::getCaptureUnitOnEnteringBy,
+                  this::resetCaptureUnitOnEnteringBy));
+      case "navalBase" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setNavalBase,
+                  this::setNavalBase,
+                  this::getNavalBase,
+                  this::resetNavalBase));
+      case "airBase" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setAirBase, this::setAirBase, this::getAirBase, this::resetAirBase));
+      case "kamikazeZone" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setKamikazeZone,
+                  this::setKamikazeZone,
+                  this::getKamikazeZone,
+                  this::resetKamikazeZone));
+      case "unitProduction" ->
+          Optional.of(
+              MutableProperty.ofMapper(
+                  DefaultAttachment::getInt,
+                  this::setUnitProduction,
+                  this::getUnitProduction,
+                  () -> 0));
+      case "blockadeZone" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setBlockadeZone,
+                  this::setBlockadeZone,
+                  this::getBlockadeZone,
+                  this::resetBlockadeZone));
+      case "territoryEffect" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setTerritoryEffect,
+                  this::setTerritoryEffect,
+                  this::getTerritoryEffect,
+                  this::resetTerritoryEffect));
+      case "whenCapturedByGoesTo" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setWhenCapturedByGoesTo,
+                  this::setWhenCapturedByGoesTo,
+                  this::getWhenCapturedByGoesTo,
+                  this::resetWhenCapturedByGoesTo));
+      case "resources" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setResources,
+                  this::setResources,
+                  this::getResourcesOrNull,
+                  this::resetResources));
+      default -> Optional.empty();
+    };
   }
 
   /**

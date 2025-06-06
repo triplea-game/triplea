@@ -402,13 +402,16 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     final CompositeChange change = new CompositeChange();
     final Collection<Tuple<Territory, Collection<Unit>>> changeList = new ArrayList<>();
     for (final Territory currTerritory : bridge.getData().getMap().getTerritories()) {
-      final TerritoryAttachment ta = TerritoryAttachment.get(currTerritory);
+      final List<GamePlayer> currTerrChangeUnitOwners =
+          TerritoryAttachment.get(currTerritory)
+              .map(TerritoryAttachment::getChangeUnitOwners)
+              .orElse(List.of());
       // if ownership should change in this territory
-      if (inAllTerritories || (ta != null && !ta.getChangeUnitOwners().isEmpty())) {
+      if (inAllTerritories || (currTerrChangeUnitOwners.isEmpty())) {
         final List<GamePlayer> newOwners =
             new ArrayList<>(
-                (ta != null && !ta.getChangeUnitOwners().isEmpty())
-                    ? ta.getChangeUnitOwners()
+                (currTerrChangeUnitOwners.isEmpty())
+                    ? currTerrChangeUnitOwners
                     : bridge.getData().getPlayerList().getPlayers());
         newOwners.retainAll(possibleNewOwners);
         for (final GamePlayer newOwner : newOwners) {
@@ -462,13 +465,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
   public static int getProduction(final Collection<Territory> territories, final GameState data) {
     int value = 0;
     for (final Territory current : territories) {
-      final TerritoryAttachment attachment = TerritoryAttachment.get(current);
-      if (attachment == null) {
-        throw new IllegalStateException("No attachment for owned territory: " + current.getName());
-      }
       // Match will Check if territory is originally owned convoy center, or if it is contested
       if (Matches.territoryCanCollectIncomeFrom(current.getOwner()).test(current)) {
-        value += attachment.getProduction();
+        value += TerritoryAttachment.get(current).map(TerritoryAttachment::getProduction).orElse(0);
       }
     }
     return value;
@@ -649,10 +648,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
           if (n2 == 1 && n1 != 1) {
             return 1;
           }
-          return Comparator.comparing(
-                  TerritoryAttachment::get,
-                  Comparator.nullsFirst(
-                      Comparator.comparingInt(TerritoryAttachment::getProduction)))
+
+          return Comparator.comparingInt(t -> TerritoryAttachment.getProduction((Territory) t))
               .compare(t1, t2);
         });
   }

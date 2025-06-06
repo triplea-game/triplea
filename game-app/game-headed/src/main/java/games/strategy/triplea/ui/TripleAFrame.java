@@ -1709,9 +1709,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                       final boolean repaintRequired =
                           (mapPanel.getXOffset() == 0 && mapPanel.getYOffset() == 0);
                       try (GameData.Unlocker ignored = data.acquireReadLock()) {
-                        mapPanel.centerOn(
-                            TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(
-                                player, data.getMap()));
+                        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(
+                                player, data.getMap())
+                            .ifPresent(territory -> mapPanel.centerOn(territory));
                         if (repaintRequired) mapPanel.repaint();
                       }
                     }
@@ -1925,7 +1925,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                             currentPlayer = null;
                             stepDisplayName = node.getTitle();
                           } else if (node instanceof Step) {
-                            currentPlayer = ((Step) node).getPlayerId();
+                            currentPlayer = ((Step) node).getPlayerId().orElse(null);
                             stepDisplayName = node.getTitle();
                           }
                         }

@@ -21,6 +21,7 @@ import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -81,9 +82,9 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   }
 
   @Override
-  public String performMove(final MoveDescription move) {
+  public Optional<String> performMove(final MoveDescription move) {
     if (!allowAirborne(player, getData())) {
-      return "No Airborne Movement Allowed Yet";
+      return Optional.of("No Airborne Movement Allowed Yet");
     }
     final GameData data = getData();
     final Collection<Unit> units = move.getUnits();
@@ -106,13 +107,15 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
                 + " not shown")
             : "";
     if (result.hasError()) {
-      return errorMsg.append(result.getError()).append(numErrorsMsg).toString();
+      return Optional.of(errorMsg.append(result.getError()).append(numErrorsMsg).toString());
     }
     if (result.hasDisallowedUnits()) {
-      return errorMsg.append(result.getDisallowedUnitWarning(0)).append(numErrorsMsg).toString();
+      return Optional.of(
+          errorMsg.append(result.getDisallowedUnitWarning(0)).append(numErrorsMsg).toString());
     }
     if (result.hasUnresolvedUnits()) {
-      return errorMsg.append(result.getUnresolvedUnitWarning(0)).append(numErrorsMsg).toString();
+      return Optional.of(
+          errorMsg.append(result.getUnresolvedUnitWarning(0)).append(numErrorsMsg).toString());
     }
     // allow user to cancel move if aa guns will fire
     final AaInMoveUtil aaInMoveUtil = new AaInMoveUtil();
@@ -121,7 +124,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
         aaInMoveUtil.getTerritoriesWhereAaWillFire(route, units);
     if (!aaFiringTerritories.isEmpty()
         && !bridge.getRemotePlayer().confirmMoveInFaceOfAa(aaFiringTerritories)) {
-      return null;
+      return Optional.empty();
     }
     // do the move
     final UndoableMove currentMove = new UndoableMove(units, route);
@@ -158,7 +161,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     tempMovePerformer.initialize(this);
     tempMovePerformer.moveUnits(move, player, currentMove);
     tempMovePerformer = null;
-    return null;
+    return Optional.empty();
   }
 
   private static Change getNewAssignmentOfNumberLaunchedChange(

@@ -21,8 +21,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
@@ -43,7 +45,7 @@ public class Route implements Serializable, Iterable<Territory> {
 
   private final List<Territory> steps = new ArrayList<>();
 
-  public Route(final Territory start, final List<Territory> territories) {
+  public Route(@Nonnull final Territory start, final List<Territory> territories) {
     this.start = checkNotNull(start);
     for (final Territory t : territories) {
       add(t);
@@ -54,12 +56,12 @@ public class Route implements Serializable, Iterable<Territory> {
     this(territories.get(0), territories.subList(1, territories.size()));
   }
 
-  public Route(final Territory start, final Territory... territories) {
+  public Route(@Nonnull final Territory start, final Territory... territories) {
     this(start, List.of(territories));
   }
 
   /** Add the given territory to the end of the route. */
-  private void add(final Territory territory) {
+  private void add(@Nonnull final Territory territory) {
     checkNotNull(territory);
     if (territory.equals(start) || steps.contains(territory)) {
       throw new IllegalArgumentException(
@@ -78,9 +80,9 @@ public class Route implements Serializable, Iterable<Territory> {
    * @return a new Route starting at r1.start() going to r2.end() along r1, r2, or null if the
    *     routes can't be joined it the joining would form a loop
    */
-  public static @Nullable Route join(final @Nullable Route r1, final @Nullable Route r2) {
+  public static Optional<Route> join(final @Nullable Route r1, final @Nullable Route r2) {
     if (r1 == null || r2 == null) {
-      return null;
+      return Optional.empty();
     }
     if (r1.numberOfSteps() == 0) {
       if (!r1.getStart().equals(r2.getStart())) {
@@ -96,7 +98,7 @@ public class Route implements Serializable, Iterable<Territory> {
     final Collection<Territory> c1 = new ArrayList<>(r1.steps);
     c1.add(r1.getStart());
     if (!CollectionUtils.intersection(c1, r2.steps).isEmpty()) {
-      return null;
+      return Optional.empty();
     }
     final Route joined = new Route(r1.getStart());
     for (final Territory t : r1.getSteps()) {
@@ -105,7 +107,7 @@ public class Route implements Serializable, Iterable<Territory> {
     for (final Territory t : r2.getSteps()) {
       joined.add(t);
     }
-    return joined;
+    return Optional.of(joined);
   }
 
   @Override

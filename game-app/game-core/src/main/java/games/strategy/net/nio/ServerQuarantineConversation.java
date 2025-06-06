@@ -85,7 +85,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
                             remoteName,
                             remoteMac,
                             (InetSocketAddress) channel.socket().getRemoteSocketAddress()))
-                    .orElseGet(() -> UserName.validate(remoteName));
+                    .orElseGet(() -> UserName.validate(remoteName).orElse(null));
             if (error != null) {
               step = Step.ACK_ERROR;
               send(error);

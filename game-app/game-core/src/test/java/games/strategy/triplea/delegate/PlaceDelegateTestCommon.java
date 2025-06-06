@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.CollectionUtils;
@@ -39,84 +40,91 @@ public abstract class PlaceDelegateTestCommon extends AbstractDelegateTestCase {
 
   @Test
   void testValid() {
-    final String response = delegate.placeUnits(create(british, infantry, 2), uk, NOT_BID);
+    final Optional<String> response =
+        delegate.placeUnits(create(british, infantry, 2), uk, NOT_BID);
     assertValid(response);
   }
 
   @Test
   void testNotCorrectUnitsValid() {
     final var unitsNotHeldByPlayer = infantry.create(3, british);
-    final String response = delegate.placeUnits(unitsNotHeldByPlayer, uk, NOT_BID);
+    final Optional<String> response = delegate.placeUnits(unitsNotHeldByPlayer, uk, NOT_BID);
     assertError(response);
   }
 
   @Test
   void testOnlySeaInSeaZone() {
-    final String response =
+    final Optional<String> response =
         delegate.canUnitsBePlaced(northSea, create(british, infantry, 2), british);
     assertError(response);
   }
 
   @Test
   void testSeaCanGoInSeaZone() {
-    final String response =
+    final Optional<String> response =
         delegate.canUnitsBePlaced(northSea, create(british, transport, 2), british);
     assertValid(response);
   }
 
   @Test
   void testLandCanGoInLandZone() {
-    final String response = delegate.placeUnits(create(british, infantry, 2), uk, NOT_BID);
+    final Optional<String> response =
+        delegate.placeUnits(create(british, infantry, 2), uk, NOT_BID);
     assertValid(response);
   }
 
   @Test
   void testSeaCantGoInSeaInLandZone() {
-    final String response = delegate.canUnitsBePlaced(uk, create(british, transport, 2), british);
+    final Optional<String> response =
+        delegate.canUnitsBePlaced(uk, create(british, transport, 2), british);
     assertError(response);
   }
 
   @Test
   void testNoGoIfOpposingTroopsSea() {
-    final String response =
+    final Optional<String> response =
         delegate.canUnitsBePlaced(northSea, create(japanese, transport, 2), japanese);
     assertError(response);
   }
 
   @Test
   void testNoGoIfOpposingTroopsLand() {
-    final String response = delegate.canUnitsBePlaced(japan, create(british, infantry, 2), british);
+    final Optional<String> response =
+        delegate.canUnitsBePlaced(japan, create(british, infantry, 2), british);
     assertError(response);
   }
 
   @Test
   void testOnlyOneFactoryPlaced() {
-    final String response = delegate.canUnitsBePlaced(uk, create(british, factory, 1), british);
+    final Optional<String> response =
+        delegate.canUnitsBePlaced(uk, create(british, factory, 1), british);
     assertError(response);
   }
 
   @Test
   void testCantPlaceAaWhenOneAlreadyThere() {
-    final String response = delegate.canUnitsBePlaced(uk, create(british, aaGun, 1), british);
+    final Optional<String> response =
+        delegate.canUnitsBePlaced(uk, create(british, aaGun, 1), british);
     assertError(response);
   }
 
   @Test
   void testCantPlaceTwoAa() {
-    final String response =
+    final Optional<String> response =
         delegate.canUnitsBePlaced(westCanada, create(british, aaGun, 2), british);
     assertError(response);
   }
 
   @Test
   void testProduceFactory() {
-    final String response = delegate.canUnitsBePlaced(egypt, create(british, factory, 1), british);
+    final Optional<String> response =
+        delegate.canUnitsBePlaced(egypt, create(british, factory, 1), british);
     assertValid(response);
   }
 
   @Test
   void testMustOwnToPlace() {
-    final String response =
+    final Optional<String> response =
         delegate.canUnitsBePlaced(germany, create(british, infantry, 2), british);
     assertError(response);
   }
@@ -137,7 +145,8 @@ public abstract class PlaceDelegateTestCommon extends AbstractDelegateTestCase {
 
   @Test
   void testMultipleFactories() {
-    String response = delegate.canUnitsBePlaced(egypt, create(british, factory, 1), british);
+    Optional<String> response =
+        delegate.canUnitsBePlaced(egypt, create(british, factory, 1), british);
     // we can place 1 factory
     assertValid(response);
     // we can't place 2

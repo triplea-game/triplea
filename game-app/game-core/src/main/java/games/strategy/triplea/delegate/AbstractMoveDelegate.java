@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Optional;
 import java.util.stream.IntStream;
 import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
@@ -111,12 +112,9 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
         : CollectionUtils.getAny(units).getOwner();
   }
 
-  public String move(final Collection<Unit> units, final Route route) {
+  public Optional<String> move(final Collection<Unit> units, final Route route) {
     return performMove(new MoveDescription(units, route));
   }
-
-  @Override
-  public abstract String performMove(MoveDescription move);
 
   @Override
   public Collection<Territory> getTerritoriesWhereAirCantLand(final GamePlayer player) {
@@ -139,7 +137,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
    * @param unit referring unit.
    * @param end target territory
    */
-  public Route getRouteUsedToMoveInto(final Unit unit, final Territory end) {
+  public Optional<Route> getRouteUsedToMoveInto(final Unit unit, final Territory end) {
     return AbstractMoveDelegate.getRouteUsedToMoveInto(movesToUndo, unit, end);
   }
 
@@ -151,7 +149,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
    * @param end target territory
    * @return the route that a unit used to move into the given territory.
    */
-  public static @Nullable Route getRouteUsedToMoveInto(
+  public static Optional<Route> getRouteUsedToMoveInto(
       final List<UndoableMove> undoableMoves, final Unit unit, final Territory end) {
     final ListIterator<UndoableMove> iter = undoableMoves.listIterator(undoableMoves.size());
     while (iter.hasPrevious()) {
@@ -160,10 +158,10 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
         continue;
       }
       if (move.getRoute().getEnd().equals(end)) {
-        return move.getRoute();
+        return Optional.of(move.getRoute());
       }
     }
-    return null;
+    return Optional.empty();
   }
 
   public static BattleTracker getBattleTracker(final GameData data) {
