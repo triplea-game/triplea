@@ -2338,15 +2338,15 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           if (resource.equals(Constants.PUS)) {
             toAdd *= Properties.getPuMultiplier(data.getProperties());
           }
-          resources.add(data.getResourceList().getResourceOrThrow(t.getResource()), toAdd);
-          int total = player.getResources().getQuantity(t.getResource()) + toAdd;
+          resources.add(data.getResourceList().getResourceOrThrow(resource), toAdd);
+          int total = player.getResources().getQuantity(resource) + toAdd;
           if (total < 0) {
             toAdd -= total;
             total = 0;
           }
           bridge.addChange(
               ChangeFactory.changeResourcesChange(
-                  player, data.getResourceList().getResourceOrThrow(t.getResource()), toAdd));
+                  player, data.getResourceList().getResourceOrThrow(resource), toAdd));
           final String puMessage =
               MyFormatter.attachmentNameToText(t.getName())
                   + ": "
