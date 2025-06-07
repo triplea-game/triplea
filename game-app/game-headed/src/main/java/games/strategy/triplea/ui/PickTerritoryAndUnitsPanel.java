@@ -1,12 +1,10 @@
 package games.strategy.triplea.ui;
 
 import com.google.common.base.Preconditions;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.panels.map.MapSelectionListener;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -31,7 +29,7 @@ import org.triplea.util.Tuple;
 @Slf4j
 public class PickTerritoryAndUnitsPanel extends ActionPanel {
   private static final long serialVersionUID = -2672163347536778594L;
-  private final TripleAFrame parent;
+  private final TripleAFrame frame;
   private JButton doneButton = null;
   private JButton selectTerritoryButton = null;
   private JButton selectUnitsButton = null;
@@ -55,7 +53,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
               new UnitChooser(unitChoices, Map.of(), false, getMap().getUiContext());
           unitChooser.setMaxAndShowMaxButton(unitsPerPick);
           if (EventThreadJOptionPane.showConfirmDialog(
-              parent, unitChooser, "Select Units", ConfirmDialogType.OK_CANCEL)) {
+              frame, unitChooser, "Select Units", ConfirmDialogType.OK_CANCEL)) {
             pickedUnits.clear();
             pickedUnits.addAll(unitChooser.getSelected());
           }
@@ -83,7 +81,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
           if (currentAction == selectTerritoryAction) {
             if (!territoryChoices.contains(territory)) {
               EventThreadJOptionPane.showMessageDialog(
-                  parent,
+                  frame,
                   "You must pick an unowned land territory (will have a white highlight)",
                   "Must Pick An Unowned Land Territory",
                   JOptionPane.WARNING_MESSAGE);
@@ -127,10 +125,9 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
         }
       };
 
-  public PickTerritoryAndUnitsPanel(
-      final GameData data, final MapPanel map, final TripleAFrame parent) {
-    super(data, map);
-    this.parent = parent;
+  public PickTerritoryAndUnitsPanel(final TripleAFrame frame) {
+    super(frame);
+    this.frame = frame;
   }
 
   @Override
@@ -167,7 +164,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
     setWidgetActivation();
     if (pickedTerritory == null || !territoryChoices.contains(pickedTerritory)) {
       EventThreadJOptionPane.showMessageDialog(
-          parent,
+          frame,
           "Must Pick An Unowned Territory",
           "Must Pick An Unowned Territory",
           JOptionPane.WARNING_MESSAGE);
@@ -182,7 +179,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
     }
     if (!pickedUnits.isEmpty() && !unitChoices.containsAll(pickedUnits)) {
       EventThreadJOptionPane.showMessageDialog(
-          parent, "Invalid Units?!?", "Invalid Units?!?", JOptionPane.WARNING_MESSAGE);
+          frame, "Invalid Units?!?", "Invalid Units?!?", JOptionPane.WARNING_MESSAGE);
       currentAction = null;
       pickedUnits.clear();
       setWidgetActivation();
@@ -190,7 +187,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
     }
     if (pickedUnits.size() > Math.max(0, unitsPerPick)) {
       EventThreadJOptionPane.showMessageDialog(
-          parent, "Too Many Units?!?", "Too Many Units?!?", JOptionPane.WARNING_MESSAGE);
+          frame, "Too Many Units?!?", "Too Many Units?!?", JOptionPane.WARNING_MESSAGE);
       currentAction = null;
       pickedUnits.clear();
       setWidgetActivation();
@@ -207,7 +204,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
         pickedUnits.addAll(CollectionUtils.getNMatches(unitChoices, unitsPerPick, it -> true));
       } else {
         EventThreadJOptionPane.showMessageDialog(
-            parent,
+            frame,
             "Must Choose Units For This Territory",
             "Must Choose Units For This Territory",
             JOptionPane.WARNING_MESSAGE);

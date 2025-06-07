@@ -99,6 +99,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serial;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -247,7 +248,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   @Getter
   private final Action showGameAction =
       new AbstractAction("Show current game") {
-        private static final long serialVersionUID = -7551760679570164254L;
+        @Serial private static final long serialVersionUID = -7551760679570164254L;
 
         {
           setEnabled(false);
@@ -377,8 +378,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     tabsPanel.setBorder(null);
     rightHandSidePanel.add(tabsPanel, BorderLayout.CENTER);
 
-    final MovePanel movePanel = new MovePanel(data, mapPanel, this);
-    actionButtonsPanel = new ActionButtonsPanel(data, mapPanel, movePanel, this);
+    final MovePanel movePanel = new MovePanel(this);
+    actionButtonsPanel = new ActionButtonsPanel(movePanel, this);
 
     final CollapsiblePanel placementsPanel =
         new PlacementUnitsCollapsiblePanel(data, uiContext).getPanel();
@@ -401,8 +402,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       objectivePanel.removeDataChangeListener();
       objectivePanel = null;
     }
-    territoryDetailPanel = new TerritoryDetailPanel(mapPanel, data, uiContext, this);
-    editPanel = new EditPanel(data, mapPanel, this);
+    territoryDetailPanel = new TerritoryDetailPanel(this);
+    editPanel = new EditPanel(this);
     addTabs(null);
     // Register a change listener
     tabsPanel.addChangeListener(

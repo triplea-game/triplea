@@ -2,16 +2,15 @@ package games.strategy.triplea.ui;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.DefaultAttachment;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
-import games.strategy.triplea.ui.panels.map.MapPanel;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -33,11 +32,11 @@ import org.triplea.swing.SwingComponents;
 
 /** Similar to PoliticsPanel, but for UserActionAttachment/Delegate. */
 public class UserActionPanel extends ActionPanel {
-  private static final long serialVersionUID = -2735582890226625860L;
+  @Serial private static final long serialVersionUID = -2735582890226625860L;
   private JButton selectUserActionButton = null;
   private JButton doneButton = null;
   private UserActionAttachment choice = null;
-  private final TripleAFrame parent;
+  private final TripleAFrame frame;
   private boolean firstRun = true;
   private List<UserActionAttachment> validUserActions = List.of();
 
@@ -47,11 +46,11 @@ public class UserActionPanel extends ActionPanel {
    */
   private final Action selectUserActionAction =
       new AbstractAction("Take Action...") {
-        private static final long serialVersionUID = 2389485901611958851L;
+        @Serial private static final long serialVersionUID = 2389485901611958851L;
 
         @Override
         public void actionPerformed(final ActionEvent event) {
-          final JDialog userChoiceDialog = new JDialog(parent, "Actions and Operations", true);
+          final JDialog userChoiceDialog = new JDialog(frame, "Actions and Operations", true);
 
           final JPanel userChoicePanel = new JPanel();
           userChoicePanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
@@ -96,15 +95,15 @@ public class UserActionPanel extends ActionPanel {
 
           userChoiceDialog.setContentPane(userChoicePanel);
           userChoiceDialog.pack();
-          userChoiceDialog.setLocationRelativeTo(parent);
+          userChoiceDialog.setLocationRelativeTo(frame);
           userChoiceDialog.setVisible(true);
           userChoiceDialog.dispose();
         }
       };
 
-  UserActionPanel(final GameData data, final MapPanel map, final TripleAFrame parent) {
-    super(data, map);
-    this.parent = parent;
+  UserActionPanel(final TripleAFrame frame) {
+    super(frame);
+    this.frame = frame;
   }
 
   @Override
@@ -157,14 +156,14 @@ public class UserActionPanel extends ActionPanel {
     this.firstRun = firstRun;
 
     validUserActions = new ArrayList<>(userActionsDelegate.getValidActions());
-    validUserActions.sort(Comparator.comparing(DefaultAttachment::getName));
+    validUserActions.sort(Comparator.comparing(DefaultAttachment::getNameOrThrow));
     if (validUserActions.isEmpty()) {
       // No Valid User actions, do nothing
       return null;
     }
 
     if (this.firstRun) {
-      parent
+      frame
           .getUiContext()
           .getClipPlayer()
           .play(SoundPath.CLIP_PHASE_USER_ACTIONS, getCurrentPlayer());
@@ -280,7 +279,7 @@ public class UserActionPanel extends ActionPanel {
   /**
    * Convenient method to get a JComponent showing the flags involved in this action.
    *
-   * @param uaa the User action attachment to get the "otherflags" for
+   * @param uaa the User action attachment to get the "other flags" for
    * @return a JComponent with the flags involved.
    */
   private JPanel getOtherPlayerFlags(final UserActionAttachment uaa) {

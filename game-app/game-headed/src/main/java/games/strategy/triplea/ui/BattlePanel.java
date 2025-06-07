@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -28,7 +27,6 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -56,9 +54,9 @@ public final class BattlePanel extends ActionPanel {
   private final JDialog battleWindow;
   private BattleListing battleListing;
 
-  BattlePanel(final GameData data, final MapPanel map, final JFrame parent) {
-    super(data, map);
-    battleWindow = new JDialog(parent);
+  BattlePanel(final TripleAFrame frame) {
+    super(frame);
+    battleWindow = new JDialog(frame);
     battleWindow.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     battleWindow.addWindowListener(
         new WindowAdapter() {

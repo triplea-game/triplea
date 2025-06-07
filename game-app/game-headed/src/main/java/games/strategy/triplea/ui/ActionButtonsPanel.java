@@ -32,6 +32,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.key.binding.ButtonDownMask;
 import org.triplea.swing.key.binding.KeyCode;
@@ -64,23 +65,21 @@ public class ActionButtonsPanel extends JPanel {
 
   private @Nullable ActionPanel actionPanel;
 
-  public ActionButtonsPanel(
-      final GameData data,
-      final MapPanel map,
-      final MovePanel movePanel,
-      final TripleAFrame parent) {
-    registerKeyBindings(parent);
-    battlePanel = new BattlePanel(data, map, parent);
+  public ActionButtonsPanel(final @NotNull MovePanel movePanel, final TripleAFrame frame) {
+    registerKeyBindings(frame);
+    final MapPanel mapPanel = frame.getMapPanel();
+    final GameData gameData = mapPanel.getData();
+    battlePanel = new BattlePanel(frame);
     this.movePanel = movePanel;
-    purchasePanel = new PurchasePanel(data, map);
-    repairPanel = new RepairPanel(data, map);
-    placePanel = new PlacePanel(data, map, parent);
-    techPanel = new TechPanel(data, map);
-    endTurnPanel = new EndTurnPanel(data, map);
-    moveForumPosterPanel = new MoveForumPosterPanel(data, map);
-    politicsPanel = new PoliticsPanel(data, map, parent, parent.getUiContext().getClipPlayer());
-    userActionPanel = new UserActionPanel(data, map, parent);
-    pickTerritoryAndUnitsPanel = new PickTerritoryAndUnitsPanel(data, map, parent);
+    purchasePanel = new PurchasePanel(gameData, mapPanel);
+    repairPanel = new RepairPanel(gameData, mapPanel);
+    placePanel = new PlacePanel(frame);
+    techPanel = new TechPanel(gameData, mapPanel);
+    endTurnPanel = new EndTurnPanel(gameData, mapPanel);
+    moveForumPosterPanel = new MoveForumPosterPanel(gameData, mapPanel);
+    politicsPanel = new PoliticsPanel(frame);
+    userActionPanel = new UserActionPanel(frame);
+    pickTerritoryAndUnitsPanel = new PickTerritoryAndUnitsPanel(frame);
     actionPanel = techPanel;
     setLayout(layout);
     add(new JLabel(""), "");
@@ -98,7 +97,8 @@ public class ActionButtonsPanel extends JPanel {
     // this should not be necessary, but it makes tracking down garbage leaks easier in the profiler
     // since it removes a lot of links between objects and if there is a memory leak, this will
     // minimize the damage
-    map.getUiContext()
+    mapPanel
+        .getUiContext()
         .addShutdownHook(
             () -> {
               removeAll();

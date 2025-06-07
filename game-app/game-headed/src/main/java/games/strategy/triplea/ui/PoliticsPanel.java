@@ -6,7 +6,6 @@ import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
-import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -22,7 +21,6 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -58,10 +56,9 @@ public class PoliticsPanel extends ActionPanel {
    */
   private final Action selectPoliticalActionAction;
 
-  PoliticsPanel(
-      final GameData data, final MapPanel map, final JFrame parent, final ClipPlayer clipPlayer) {
-    super(data, map);
-    this.clipPlayer = clipPlayer;
+  PoliticsPanel(final TripleAFrame frame) {
+    super(frame);
+    this.clipPlayer = frame.getUiContext().getClipPlayer();
     selectPoliticalActionAction =
         SwingAction.of(
             "Do Politics...",
@@ -72,7 +69,7 @@ public class PoliticsPanel extends ActionPanel {
               final int availHeightOverview = (int) ((float) availHeight * 2 / 3);
               final int availHeightChoice = (int) ((float) availHeight / 3);
 
-              final JDialog politicalChoiceDialog = new JDialog(parent, "Political Actions", true);
+              final JDialog politicalChoiceDialog = new JDialog(frame, "Political Actions", true);
               final Insets insets = new Insets(1, 1, 1, 1);
               final JPanel politicalChoicePanel = new JPanel();
               politicalChoicePanel.setLayout(new GridBagLayout());
@@ -161,7 +158,7 @@ public class PoliticsPanel extends ActionPanel {
                       0));
               politicalChoiceDialog.add(politicalChoicePanel);
               politicalChoiceDialog.pack();
-              politicalChoiceDialog.setLocationRelativeTo(parent);
+              politicalChoiceDialog.setLocationRelativeTo(frame);
               politicalChoiceDialog.setVisible(true);
               politicalChoiceDialog.dispose();
             });
