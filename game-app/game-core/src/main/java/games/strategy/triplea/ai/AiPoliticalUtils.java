@@ -143,7 +143,7 @@ public final class AiPoliticalUtils {
     // price.
     final float production =
         AbstractEndTurnDelegate.getProduction(data.getMap().getTerritoriesOwnedBy(player), data);
-    final Resource r = data.getResourceList().getResource(Constants.PUS);
+    final Resource r = data.getResourceList().getResourceOrThrow(Constants.PUS);
     return production >= 21 && nextAction.getCostResources().getInt(r) <= (production / 10);
   }
 }

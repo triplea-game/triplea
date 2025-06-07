@@ -270,7 +270,7 @@ class ProductionPanel extends JPanel {
         final String propertyName = gamePlayer.getName() + " bid";
         final int bid = data.getProperties().get(propertyName, 0);
         final ResourceCollection bidCollection = new ResourceCollection(data);
-        bidCollection.addResource(data.getResourceList().getResource(Constants.PUS), bid);
+        bidCollection.addResource(data.getResourceList().getResourceOrThrow(Constants.PUS), bid);
         return bidCollection;
       }
     }

@@ -18,7 +18,7 @@ public class ProResourceTracker {
 
   public ProResourceTracker(final int pus, final GameState data) {
     resources = new IntegerMap<>();
-    resources.add(data.getResourceList().getResource(Constants.PUS), pus);
+    resources.add(data.getResourceList().getResourceOrThrow(Constants.PUS), pus);
   }
 
   public boolean hasEnough(final ProPurchaseOption ppo) {
@@ -64,7 +64,7 @@ public class ProResourceTracker {
   }
 
   public int getTempPUs(final GameState data) {
-    final Resource pus = data.getResourceList().getResource(Constants.PUS);
+    final Resource pus = data.getResourceList().getResourceOrThrow(Constants.PUS);
     return tempPurchases.getInt(pus);
   }
 

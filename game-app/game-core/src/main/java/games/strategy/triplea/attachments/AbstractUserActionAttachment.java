@@ -81,7 +81,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
 
   @Deprecated
   public void setCostPu(final Integer s) {
-    final Resource r = getData().getResourceList().getResource(Constants.PUS);
+    final Resource r = getData().getResourceList().getResourceOrThrow(Constants.PUS);
     if (costResources == null) {
       costResources = new IntegerMap<>();
     }
@@ -105,7 +105,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
           "costResources cannot be empty or have more than two fields: " + value + thisErrorMsg());
     }
     final String resourceToProduce = s[1];
-    final Resource r = getData().getResourceList().getResource(resourceToProduce);
+    final Resource r = getData().getResourceList().getResourceOrThrow(resourceToProduce);
     if (r == null) {
       throw new GameParseException(
           "costResources: No resource called: " + resourceToProduce + thisErrorMsg());

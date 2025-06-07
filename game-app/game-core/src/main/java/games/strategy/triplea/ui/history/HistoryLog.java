@@ -518,7 +518,7 @@ public class HistoryLog extends JFrame {
     final Collection<GamePlayer> players;
     final Resource pus;
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
-      pus = data.getResourceList().getResource(Constants.PUS);
+      pus = data.getResourceList().getResourceOrThrow(Constants.PUS);
       players = data.getPlayerList().getPlayers();
     }
     if (pus == null) {

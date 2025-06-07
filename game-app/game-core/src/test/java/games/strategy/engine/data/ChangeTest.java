@@ -193,7 +193,7 @@ class ChangeTest {
   @Test
   void testChangeResourcesChange() {
     final GamePlayer can = gameData.getPlayerList().getPlayerId("chretian");
-    final Resource gold = gameData.getResourceList().getResource("gold");
+    final Resource gold = gameData.getResourceList().getResourceOrThrow("gold");
     final Change change = ChangeFactory.changeResourcesChange(can, gold, 50);
     assertEquals(100, can.getResources().getQuantity(gold));
     gameData.performChange(change);
@@ -205,7 +205,7 @@ class ChangeTest {
   @Test
   void testSerializeResourceChange() throws Exception {
     final GamePlayer can = gameData.getPlayerList().getPlayerId("chretian");
-    final Resource gold = gameData.getResourceList().getResource("gold");
+    final Resource gold = gameData.getResourceList().getResourceOrThrow("gold");
     Change change = ChangeFactory.changeResourcesChange(can, gold, 50);
     change = serialize(change);
     assertEquals(100, can.getResources().getQuantity(gold));

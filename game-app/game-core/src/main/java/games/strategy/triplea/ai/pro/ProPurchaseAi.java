@@ -428,7 +428,7 @@ class ProPurchaseAi {
     }
     // Don't save up more if we already have enough PUs to buy the biggest fleet we can.
     IntegerMap<Resource> maxShipCost = new IntegerMap<>();
-    Resource pus = player.getData().getResourceList().getResource(Constants.PUS);
+    Resource pus = player.getData().getResourceList().getResourceOrThrow(Constants.PUS);
     for (ProPurchaseOption option : purchaseOptions.getSeaDefenseOptions()) {
       if (option.getCost() > maxShipCost.getInt(pus)) {
         maxShipCost = option.getCosts();

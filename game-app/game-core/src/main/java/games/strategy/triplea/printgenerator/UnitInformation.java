@@ -119,7 +119,9 @@ class UnitInformation {
       for (final ProductionRule currentRule : production.getRules()) {
         final NamedAttachable currentType = currentRule.getAnyResultKey();
         if (currentType.equals(type)) {
-          return currentRule.getCosts().getInt(data.getResourceList().getResource(Constants.PUS));
+          return currentRule
+              .getCosts()
+              .getInt(data.getResourceList().getResourceOrThrow(Constants.PUS));
         }
       }
     } else {

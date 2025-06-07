@@ -627,7 +627,7 @@ public class BattleTracker implements Serializable {
     if (territory.getOwner().isNull()
         && !territory.isWater()
         && Properties.getNeutralCharge(data.getProperties()) >= 0) {
-      final Resource pus = data.getResourceList().getResource(Constants.PUS);
+      final Resource pus = data.getResourceList().getResourceOrThrow(Constants.PUS);
       final int puChargeIdeal = -Properties.getNeutralCharge(data.getProperties());
       final int puChargeReal =
           Math.min(0, Math.max(puChargeIdeal, -gamePlayer.getResources().getQuantity(pus)));
@@ -681,7 +681,7 @@ public class BattleTracker implements Serializable {
         historyWriter.addChildToEvent(
             gamePlayer.getName() + " captures one of " + whoseCapital.getName() + " capitals");
       } else if (whoseCapital.equals(territory.getOwner())) {
-        final Resource pus = data.getResourceList().getResource(Constants.PUS);
+        final Resource pus = data.getResourceList().getResourceOrThrow(Constants.PUS);
         final int capturedPuCount = whoseCapital.getResources().getQuantity(pus);
         if (pa != null && Properties.getPacificTheater(data.getProperties())) {
           final Change changeVp =
@@ -714,13 +714,11 @@ public class BattleTracker implements Serializable {
           addChange(bridge, changeTracker, add);
         }
         // remove all the tokens of the captured player
-        final Resource tokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
-        if (tokens != null) {
-          final int currTokens = whoseCapital.getResources().getQuantity(Constants.TECH_TOKENS);
-          final Change removeTokens =
-              ChangeFactory.changeResourcesChange(whoseCapital, tokens, -currTokens);
-          addChange(bridge, changeTracker, removeTokens);
-        }
+        final Resource tokens = data.getResourceList().getResourceOrThrow(Constants.TECH_TOKENS);
+        final int currTokens = whoseCapital.getResources().getQuantity(Constants.TECH_TOKENS);
+        final Change removeTokens =
+            ChangeFactory.changeResourcesChange(whoseCapital, tokens, -currTokens);
+        addChange(bridge, changeTracker, removeTokens);
       }
     }
     // is this an allied territory? Revert to original owner if it is,

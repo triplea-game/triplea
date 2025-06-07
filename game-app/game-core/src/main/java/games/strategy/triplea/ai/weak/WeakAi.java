@@ -757,7 +757,7 @@ public class WeakAi extends AbstractAi {
     if (purchaseForBid) {
       // bid will only buy land units, due to weak ai placement for bid not being able to handle sea
       // units
-      final Resource pus = data.getResourceList().getResource(Constants.PUS);
+      final Resource pus = data.getResourceList().getResourceOrThrow(Constants.PUS);
       int leftToSpend = pusToSpend;
       final List<ProductionRule> rules = player.getProductionFrontier().getRules();
       final IntegerMap<ProductionRule> purchase = new IntegerMap<>();
@@ -815,7 +815,7 @@ public class WeakAi extends AbstractAi {
             optionalAmphibRoute.get().getEnd().getUnitCollection().getUnitCount();
       }
     }
-    final Resource pus = data.getResourceList().getResource(Constants.PUS);
+    final Resource pus = data.getResourceList().getResourceOrThrow(Constants.PUS);
     final int totalPu = player.getResources().getQuantity(pus);
     int leftToSpend = totalPu;
     final List<ProductionRule> rules = player.getProductionFrontier().getRules();

@@ -601,11 +601,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     support = null;
   }
 
-  private void setResource(final String s) throws GameParseException {
-    final Resource r = getData().getResourceList().getResource(s);
-    if (r == null) {
-      throw new GameParseException("Invalid resource: " + s + thisErrorMsg());
-    }
+  private void setResource(final String s) {
+    getData().getResourceList().getResourceOrThrow(s);
     resource = s.intern();
   }
 
@@ -2341,7 +2338,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           if (resource.equals(Constants.PUS)) {
             toAdd *= Properties.getPuMultiplier(data.getProperties());
           }
-          resources.add(data.getResourceList().getResource(resource), toAdd);
+          resources.add(data.getResourceList().getResourceOrThrow(resource), toAdd);
           int total = player.getResources().getQuantity(resource) + toAdd;
           if (total < 0) {
             toAdd -= total;
@@ -2349,7 +2346,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           }
           bridge.addChange(
               ChangeFactory.changeResourcesChange(
-                  player, data.getResourceList().getResource(resource), toAdd));
+                  player, data.getResourceList().getResourceOrThrow(resource), toAdd));
           final String puMessage =
               MyFormatter.attachmentNameToText(t.getName())
                   + ": "

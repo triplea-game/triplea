@@ -50,10 +50,13 @@ final class ProTechAi {
     final float enemyStrength = getStrengthOfPotentialAttackers(myCapitol, data, player);
     float myStrength = getMyStrength(data, player, myCapitol);
     final boolean capDanger = myStrength < (enemyStrength * 1.25F + 3.0F);
-    final Resource pus = data.getResourceList().getResource(Constants.PUS);
+    final Resource pus = data.getResourceList().getResourceOrThrow(Constants.PUS);
     final int pusRemaining = player.getResources().getQuantity(pus);
-    final Resource techTokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
-    final int techTokensQuantity = player.getResources().getQuantity(techTokens);
+    final Optional<Resource> techTokensOptional =
+        data.getResourceList().getResourceOptional(Constants.TECH_TOKENS);
+    // If the token was not used, set the token num -1
+    final int techTokensQuantity =
+        techTokensOptional.map(resource -> player.getResources().getQuantity(resource)).orElse(-1);
     final ThreadLocalRandom localRandom = ThreadLocalRandom.current();
     int tokensToBuy = 0;
     if (!capDanger && techTokensQuantity < 3 && pusRemaining > localRandom.nextInt(160)) {
