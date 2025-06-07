@@ -6,6 +6,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,7 +34,7 @@ import org.triplea.java.collections.IntegerMap;
  */
 @Getter
 public abstract class DefaultAttachment extends GameDataComponent implements IAttachment {
-  private static final long serialVersionUID = -1985116207387301730L;
+  @Serial private static final long serialVersionUID = -1985116207387301730L;
   private static final Splitter COLON_SPLITTER = Splitter.on(':');
 
   @Setter private Attachable attachedTo;
@@ -44,6 +45,13 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
     super(gameData);
     setName(name);
     setAttachedTo(attachable);
+  }
+
+  public String getNameOrThrow() {
+    if (name == null) {
+      throw new IllegalStateException("DefaultAttachment expected name not found");
+    }
+    return name;
   }
 
   /**

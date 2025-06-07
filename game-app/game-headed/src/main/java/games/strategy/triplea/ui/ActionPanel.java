@@ -4,6 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import java.awt.Dimension;
+import java.io.Serial;
 import java.util.concurrent.CountDownLatch;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -20,7 +21,7 @@ import org.triplea.swing.SwingComponents;
 
 /** Abstract superclass for all action panels. */
 public abstract class ActionPanel extends JPanel {
-  private static final long serialVersionUID = -5954576036704958641L;
+  @Serial private static final long serialVersionUID = -5954576036704958641L;
   protected final JLabel actionLabel = createIndentedLabel();
 
   @Getter(AccessLevel.PROTECTED)
@@ -42,12 +43,16 @@ public abstract class ActionPanel extends JPanel {
   private CountDownLatch latch;
   private final Object latchLock = new Object();
 
-  public ActionPanel(final GameData data, final MapPanel map) {
+  protected ActionPanel(final GameData data, final MapPanel map) {
     this.data = data;
     this.map = map;
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
     setMinimumSize(new Dimension(240, 0));
+  }
+
+  protected ActionPanel(final TripleAFrame frame) {
+    this(frame.getMapPanel().getData(), frame.getMapPanel());
   }
 
   /**
@@ -101,7 +106,7 @@ public abstract class ActionPanel extends JPanel {
   /**
    * Release the latch acquired by waitOnNewLatch().
    *
-   * <p>This method will crossed on entering this method.
+   * <p>This method will be crossed on entering this method.
    */
   protected void release() {
     synchronized (latchLock) {
@@ -131,10 +136,10 @@ public abstract class ActionPanel extends JPanel {
   }
 
   /**
-   * Executes the appropriate action when a user clicks the 'done' button. Typically this will be to
-   * end the current turn phase. If the turn phase ends in some other way than a button click, then
-   * this should be a no-op. For example, battle phase ends when all battles have been fought and
-   * not when the user clicks done (there is no done button during the battle phase).
+   * Executes the appropriate action when a user clicks the 'done' button. Typically, this will be
+   * to end the current turn phase. If the turn phase ends in some other way than a button click,
+   * then this should be a no-op. For example, battle phase ends when all battles have been fought
+   * and not when the user clicks done (there is no done button during the battle phase).
    */
   public abstract void performDone();
 }

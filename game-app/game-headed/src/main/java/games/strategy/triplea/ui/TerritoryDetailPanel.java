@@ -7,7 +7,6 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.odds.calculator.BattleCalculatorDialog;
-import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.OverlayIcon;
@@ -44,21 +43,19 @@ public class TerritoryDetailPanel extends JPanel {
   private @Nullable Territory currentTerritory;
   private final TripleAFrame frame;
 
-  TerritoryDetailPanel(
-      final MapPanel mapPanel,
-      final GameData data,
-      final UiContext uiContext,
-      final TripleAFrame frame) {
-    this.gameData = data;
+  TerritoryDetailPanel(final TripleAFrame frame) {
     this.frame = frame;
-    this.uiContext = uiContext;
-    mapPanel.addMapSelectionListener(
-        new DefaultMapSelectionListener() {
-          @Override
-          public void mouseEntered(final Territory territory) {
-            territoryChanged(territory);
-          }
-        });
+    this.uiContext = frame.getUiContext();
+    this.gameData = frame.getGame().getData();
+    frame
+        .getMapPanel()
+        .addMapSelectionListener(
+            new DefaultMapSelectionListener() {
+              @Override
+              public void mouseEntered(final Territory territory) {
+                territoryChanged(territory);
+              }
+            });
 
     findTerritoryButton = new JButton(new FindTerritoryAction(frame));
     findTerritoryButton.setText(findTerritoryButton.getText() + " (Ctrl-F)");

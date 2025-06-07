@@ -18,7 +18,6 @@ import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
-import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.panels.map.MapSelectionListener;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -170,11 +169,11 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
         }
       };
 
-  PlacePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
-    super(data, map, frame);
+  PlacePanel(final TripleAFrame frame) {
+    super(frame);
     undoableMovesPanel = new UndoablePlacementsPanel(this);
     unitsToPlacePanel = new SimpleUnitPanel(map.getUiContext());
-    data.addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, this::updateStep);
+    getData().addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, this::updateStep);
     leftToPlaceLabel.setText(LBL_UNITS_LEFT_TO_PLACE);
   }
 

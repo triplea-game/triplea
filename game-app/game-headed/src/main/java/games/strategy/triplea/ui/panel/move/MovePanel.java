@@ -28,7 +28,6 @@ import games.strategy.triplea.ui.SimpleUnitPanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UndoableMovesPanel;
 import games.strategy.triplea.ui.UnitChooser;
-import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.panels.map.MapSelectionListener;
 import games.strategy.triplea.ui.panels.map.MouseOverUnitListener;
 import games.strategy.triplea.ui.panels.map.UnitSelectionListener;
@@ -1021,8 +1020,8 @@ public class MovePanel extends AbstractMovePanel {
         }
       };
 
-  public MovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
-    super(data, map, frame);
+  public MovePanel(final TripleAFrame frame) {
+    super(frame);
 
     undoableMovesPanel = new UndoableMovesPanel(this);
     mouseCurrentTerritory = null;

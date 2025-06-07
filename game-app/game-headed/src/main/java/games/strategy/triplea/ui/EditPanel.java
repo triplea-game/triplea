@@ -25,7 +25,6 @@ import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.triplea.ui.panels.map.MapSelectionListener;
 import games.strategy.triplea.ui.panels.map.UnitSelectionListener;
 import games.strategy.triplea.util.TransportUtils;
@@ -37,6 +36,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -346,12 +346,12 @@ class EditPanel extends ActionPanel {
         }
       };
 
-  EditPanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
-    super(data, map);
+  EditPanel(final TripleAFrame frame) {
+    super(frame);
     this.frame = frame;
     performMoveAction =
         new AbstractAction("Perform Move or Other Actions") {
-          private static final long serialVersionUID = 2205085537962024476L;
+          @Serial private static final long serialVersionUID = 2205085537962024476L;
 
           @Override
           public void actionPerformed(final ActionEvent event) {
@@ -362,7 +362,7 @@ class EditPanel extends ActionPanel {
         };
     addUnitsAction =
         new AbstractAction("Add Units") {
-          private static final long serialVersionUID = 2205085537962024476L;
+          @Serial private static final long serialVersionUID = 2205085537962024476L;
 
           @Override
           public void actionPerformed(final ActionEvent event) {
@@ -580,7 +580,8 @@ class EditPanel extends ActionPanel {
             }
             final Collection<TechAdvance> techs;
             try (GameData.Unlocker ignored = getData().acquireReadLock()) {
-              techs = TechnologyDelegate.getAvailableTechs(player, data.getTechnologyFrontier());
+              techs =
+                  TechnologyDelegate.getAvailableTechs(player, getData().getTechnologyFrontier());
             }
             if (techs.isEmpty()) {
               cancelEditAction.actionPerformed(null);
@@ -639,7 +640,7 @@ class EditPanel extends ActionPanel {
             }
             final Collection<TechAdvance> techs;
             try (GameData.Unlocker ignored = getData().acquireReadLock()) {
-              techs = TechTracker.getCurrentTechAdvances(player, data.getTechnologyFrontier());
+              techs = TechTracker.getCurrentTechAdvances(player, getData().getTechnologyFrontier());
               // there is no way to "undo" these two techs, so do not allow them to be removed
               techs.removeIf(
                   ta ->
@@ -929,6 +930,7 @@ class EditPanel extends ActionPanel {
       add(new JButton(addTechAction));
       add(new JButton(removeTechAction));
     }
+    final GameData data = getData();
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
       final Set<UnitType> allUnitTypes = data.getUnitTypeList().getAllUnitTypes();
       if (allUnitTypes.stream().anyMatch(Matches.unitTypeHasMoreThanOneHitPointTotal())) {

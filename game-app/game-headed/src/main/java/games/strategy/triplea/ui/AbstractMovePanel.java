@@ -1,15 +1,13 @@
 package games.strategy.triplea.ui;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.player.PlayerBridge;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.remote.IAbstractMoveDelegate;
-import games.strategy.triplea.ui.panels.map.MapPanel;
 import java.awt.Component;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -33,7 +31,7 @@ import org.triplea.swing.key.binding.SwingKeyBinding;
 
 @Slf4j
 public abstract class AbstractMovePanel extends ActionPanel {
-  private static final long serialVersionUID = -4153574987414031433L;
+  @Serial private static final long serialVersionUID = -4153574987414031433L;
 
   protected AbstractUndoableMovesPanel undoableMovesPanel;
   private final TripleAFrame frame;
@@ -50,8 +48,8 @@ public abstract class AbstractMovePanel extends ActionPanel {
   private final JButton undoAllButton =
       new JButtonBuilder().title("Undo All").actionListener(this::undoAll).build();
 
-  protected AbstractMovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
-    super(data, map);
+  protected AbstractMovePanel(final TripleAFrame frame) {
+    super(frame);
     this.frame = frame;
     disableCancelButton();
     undoableMoves = List.of();
@@ -67,14 +65,14 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
   protected abstract Component getUnitScrollerPanel();
 
-  /*
-   * sub-classes method for done handling
+  /**
+   * Subclasses method for done handling
+   *
+   * @return {@code true} if move action was done successfully
    */
   protected abstract boolean doneMoveAction();
 
-  /*
-   * sub-classes method for cancel handling
-   */
+  /** Subclasses method for cancel action handling */
   protected abstract void cancelMoveAction();
 
   // frame methods
@@ -109,10 +107,6 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
   private void disableCancelButton() {
     cancelMoveButton.setEnabled(false);
-  }
-
-  protected final GameState getGameData() {
-    return playerBridge.getGameData();
   }
 
   @SuppressWarnings("unchecked")
@@ -198,7 +192,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
   }
 
   /*
-   * Undo moves in reverse order, from largest index to smallest. Undo will reorder
+   * Undo moves in reverse order, from the largest index to the smallest. Undo will reorder
    * move index numbers, so going top down avoids this renumbering.
    */
   private void undoMovesInReverseOrder(final Set<UndoableMove> movesToUndo) {
@@ -217,7 +211,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
     return moveIndexes;
   }
 
-  /** sub-classes method for undo handling. */
+  /** Subclasses method for undo handling. */
   protected abstract void undoMoveSpecific();
 
   final void cleanUp() {
@@ -235,9 +229,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
         });
   }
 
-  /*
-   * sub-classes method for clean-up
-   */
+  /** Subclasses method for clean-up */
   protected abstract void cleanUpSpecific();
 
   @Override
@@ -303,9 +295,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
         });
   }
 
-  /*
-   * sub-classes method for set-up
-   */
+  /** Subclasses method for set-up */
   protected abstract void setUpSpecific();
 
   public final MoveDescription waitForMove(final PlayerBridge bridge) {
