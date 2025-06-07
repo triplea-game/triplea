@@ -3,11 +3,8 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
-import games.strategy.engine.data.Resource;
-import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.UnitTypeList;
 import games.strategy.engine.stats.IStat;
 import games.strategy.engine.stats.ResourceStat;
 import games.strategy.triplea.Constants;
@@ -16,9 +13,13 @@ import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.ui.mapdata.MapData;
+import java.io.Serial;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
+import org.jetbrains.annotations.Nls;
 
 /**
  * A UI component that displays an extended set of game statistics beyond those displayed by {@link
@@ -34,8 +35,8 @@ import java.util.function.Predicate;
  * </ul>
  */
 public class ExtendedStats extends StatPanel {
-  private static final long serialVersionUID = 2502397606419491543L;
-  private IStat[] statsExtended = new IStat[] {};
+  @Serial private static final long serialVersionUID = 2502397606419491543L;
+  private transient IStat[] statsExtended = new IStat[] {};
 
   public ExtendedStats(final GameData data, final UiContext uiContext) {
     super(data, uiContext);
@@ -55,53 +56,36 @@ public class ExtendedStats extends StatPanel {
 
   private void fillExtendedStats(final GameState data) {
     // add other resources, other than PUs and tech tokens
-    for (final Resource r : data.getResourceList().getResources()) {
-      if (r.getName().equals(Constants.PUS) || r.getName().equals(Constants.TECH_TOKENS)) {
-        continue;
-      }
-
-      final GenericResourceStat resourceStat = new GenericResourceStat();
-      resourceStat.init(r.getName());
-      final List<IStat> statsExtended = new ArrayList<>(List.of(this.statsExtended));
-      statsExtended.add(resourceStat);
-      this.statsExtended = statsExtended.toArray(new IStat[0]);
-    }
+    final List<IStat> newStatsExtended = new ArrayList<>();
+    data.getResourceList().getResources().stream()
+        .filter(
+            r -> !r.getName().equals(Constants.PUS) && !r.getName().equals(Constants.TECH_TOKENS))
+        .forEach(r -> newStatsExtended.add((new GenericResourceStat()).init(r.getName())));
     // add tech related stuff
     if (Properties.getTechDevelopment(data.getProperties())) {
       // add tech tokens
       if (data.getResourceList().getResourceOptional(Constants.TECH_TOKENS).isPresent()) {
-        final List<IStat> statsExtended = new ArrayList<>(List.of(this.statsExtended));
-        statsExtended.add(new TechTokenStat());
-        this.statsExtended = statsExtended.toArray(new IStat[0]);
+        newStatsExtended.add(new TechTokenStat());
       }
       // add number of techs
-      final List<IStat> techStatsExtended = new ArrayList<>(List.of(statsExtended));
-      techStatsExtended.add(new TechCountStat());
-      statsExtended = techStatsExtended.toArray(new IStat[0]);
+      newStatsExtended.add(new TechCountStat());
 
       // add individual techs
-      for (final TechAdvance ta : TechAdvance.getTechAdvances(gameData.getTechnologyFrontier())) {
-        final GenericTechNameStat techNameStat = new GenericTechNameStat();
-        techNameStat.init(ta);
-        final List<IStat> statsExtended = new ArrayList<>(List.of(this.statsExtended));
-        statsExtended.add(techNameStat);
-        this.statsExtended = statsExtended.toArray(new IStat[0]);
-      }
+      TechAdvance.getTechAdvances(gameData.getTechnologyFrontier())
+          .forEach(ta -> newStatsExtended.add((new GenericTechNameStat()).init(ta)));
     }
     // now add actual number of each unit type (holy gumdrops batman, this is going to be long!)
-    final UnitTypeList allUnitTypes = data.getUnitTypeList();
-    for (final UnitType ut : allUnitTypes) {
-      final GenericUnitNameStat unitNameStat = new GenericUnitNameStat();
-      unitNameStat.init(ut);
-      final List<IStat> statsExtended = new ArrayList<>(List.of(this.statsExtended));
-      statsExtended.add(unitNameStat);
-      this.statsExtended = statsExtended.toArray(new IStat[0]);
+    data.getUnitTypeList()
+        .forEach(ut -> newStatsExtended.add((new GenericUnitNameStat()).init(ut)));
+
+    if (!newStatsExtended.isEmpty()) {
+      this.statsExtended = newStatsExtended.toArray(new IStat[0]);
     }
   }
 
   static class TechCountStat implements IStat {
     @Override
-    public String getName() {
+    public @Nls String getName() {
       return "Techs";
     }
 
@@ -109,67 +93,43 @@ public class ExtendedStats extends StatPanel {
     public double getValue(final GamePlayer player, final GameData data, final MapData mapData) {
       int count = 0;
       final TechAttachment ta = player.getTechAttachment();
-      if (ta.getHeavyBomber()) {
-        count++;
-      }
-      if (ta.getLongRangeAir()) {
-        count++;
-      }
-      if (ta.getJetPower()) {
-        count++;
-      }
-      if (ta.getRocket()) {
-        count++;
-      }
-      if (ta.getIndustrialTechnology()) {
-        count++;
-      }
-      if (ta.getSuperSub()) {
-        count++;
-      }
-      if (ta.getDestroyerBombard()) {
-        count++;
-      }
-      if (ta.getImprovedArtillerySupport()) {
-        count++;
-      }
-      if (ta.getParatroopers()) {
-        count++;
-      }
-      if (ta.getIncreasedFactoryProduction()) {
-        count++;
-      }
-      if (ta.getWarBonds()) {
-        count++;
-      }
-      if (ta.getMechanizedInfantry()) {
-        count++;
-      }
-      if (ta.getAaRadar()) {
-        count++;
-      }
-      if (ta.getShipyards()) {
-        count++;
-      }
-      for (final boolean value : ta.getGenericTech().values()) {
-        if (value) {
-          count++;
-        }
-      }
+      final List<Supplier<Boolean>> list =
+          List.of(
+              ta::getHeavyBomber,
+              ta::getLongRangeAir,
+              ta::getJetPower,
+              ta::getRocket,
+              ta::getIndustrialTechnology,
+              ta::getSuperSub,
+              ta::getDestroyerBombard,
+              ta::getImprovedArtillerySupport,
+              ta::getParatroopers,
+              ta::getIncreasedFactoryProduction,
+              ta::getWarBonds,
+              ta::getMechanizedInfantry,
+              ta::getAaRadar,
+              ta::getShipyards);
+      count += (int) list.stream().filter(Supplier::get).count();
+      count += (int) ta.getGenericTech().values().stream().filter(Boolean.TRUE::equals).count();
       return count;
     }
   }
 
-  static class GenericResourceStat implements IStat {
+  interface GenericStat<T> extends IStat {
+    GenericStat<T> init(final T stat);
+  }
+
+  static class GenericResourceStat implements GenericStat<String> {
     private String name = null;
 
-    public void init(final String name) {
+    public GenericStat<String> init(final String name) {
       this.name = name;
+      return this;
     }
 
     @Override
-    public String getName() {
-      return "Resource: " + name;
+    public @Nls String getName() {
+      return MessageFormat.format("Resource: {0}", name);
     }
 
     @Override
@@ -178,16 +138,17 @@ public class ExtendedStats extends StatPanel {
     }
   }
 
-  static class GenericTechNameStat implements IStat {
+  static class GenericTechNameStat implements GenericStat<TechAdvance> {
     private TechAdvance ta = null;
 
-    public void init(final TechAdvance ta) {
+    public GenericStat<TechAdvance> init(final TechAdvance ta) {
       this.ta = ta;
+      return this;
     }
 
     @Override
-    public String getName() {
-      return "TechAdvance: " + ta.getName();
+    public @Nls String getName() {
+      return MessageFormat.format("TechAdvance: {0}", ta.getName());
     }
 
     @Override
@@ -199,26 +160,25 @@ public class ExtendedStats extends StatPanel {
     }
   }
 
-  static class GenericUnitNameStat implements IStat {
+  static class GenericUnitNameStat implements GenericStat<UnitType> {
     private UnitType ut = null;
 
-    public void init(final UnitType ut) {
+    public GenericStat<UnitType> init(final UnitType ut) {
       this.ut = ut;
+      return this;
     }
 
     @Override
-    public String getName() {
-      return "UnitType: " + ut.getName();
+    public @Nls String getName() {
+      return MessageFormat.format("UnitType: {0}", ut.getName());
     }
 
     @Override
     public double getValue(final GamePlayer player, final GameData data, final MapData mapData) {
-      int matchCount = 0;
       final Predicate<Unit> ownedBy = Matches.unitIsOwnedBy(player).and(Matches.unitIsOfType(ut));
-      for (final Territory place : data.getMap().getTerritories()) {
-        matchCount += place.getUnitCollection().countMatches(ownedBy);
-      }
-      return matchCount;
+      return data.getMap().getTerritories().stream()
+          .mapToInt(place -> place.getUnitCollection().countMatches(ownedBy))
+          .sum();
     }
   }
 
