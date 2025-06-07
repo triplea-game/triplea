@@ -4,6 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.triplea.ui.mapdata.MapData;
 import java.text.DecimalFormat;
+import org.jetbrains.annotations.Nls;
 
 /**
  * A game statistic, such as total resources, total unit value, etc. Statistics can be obtained per
@@ -12,6 +13,7 @@ import java.text.DecimalFormat;
 public interface IStat {
   DecimalFormat DECIMAL_FORMAT = new DecimalFormat("##0.##");
 
+  @Nls
   String getName();
 
   double getValue(GamePlayer player, GameData data, MapData mapData);

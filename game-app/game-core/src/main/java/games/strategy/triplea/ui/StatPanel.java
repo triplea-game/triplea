@@ -3,6 +3,7 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.AllianceTracker;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataEvent;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.events.GameDataChangeListener;
@@ -19,12 +20,11 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.mapdata.MapData;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -35,14 +35,18 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
+import lombok.Setter;
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.Nullable;
 
 class StatPanel extends JPanel implements GameDataChangeListener {
-  private static final long serialVersionUID = 4340684166664492498L;
+  @Serial private static final long serialVersionUID = 4340684166664492498L;
 
-  IStat[] stats;
+  transient IStat[] stats;
   private final Map<GamePlayer, ImageIcon> mapPlayerImage = new HashMap<>();
-  protected GameData gameData;
-  private final UiContext uiContext;
+  @Setter protected GameData gameData;
+  private final transient UiContext uiContext;
   private final StatTableModel dataModel;
 
   StatPanel(final GameData data, final UiContext uiContext) {
@@ -51,7 +55,7 @@ class StatPanel extends JPanel implements GameDataChangeListener {
     dataModel = new StatTableModel();
     fillPlayerIcons();
     initLayout();
-    gameData.addDataChangeListener(this);
+    addListenerToGameDataChanged();
   }
 
   protected void initLayout() {
@@ -80,11 +84,8 @@ class StatPanel extends JPanel implements GameDataChangeListener {
     return statsTable;
   }
 
-  public void setGameData(final GameData data) {
-    gameData.removeDataChangeListener(this);
-    gameData = data;
-    gameData.addDataChangeListener(this);
-    gameDataChanged(null);
+  private void addListenerToGameDataChanged() {
+    gameData.addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, () -> gameDataChanged(null));
   }
 
   @Override
@@ -94,12 +95,11 @@ class StatPanel extends JPanel implements GameDataChangeListener {
   }
 
   /**
-   * Gets the small flag for a given PlayerId.
+   * Creates the player image icon for {@code player} if it is not yet created.
    *
-   * @param player the player to get the flag for
-   * @return ImageIcon small flag
+   * @param player the player for the image icon
    */
-  protected ImageIcon getIcon(final GamePlayer player) {
+  private void createImageIconIfNeeded(final GamePlayer player) {
     ImageIcon icon = mapPlayerImage.get(player);
     if (icon == null && uiContext != null) {
       final Image img = uiContext.getFlagImageFactory().getSmallFlag(player);
@@ -107,28 +107,19 @@ class StatPanel extends JPanel implements GameDataChangeListener {
       icon.setDescription(player.getName());
       mapPlayerImage.put(player, icon);
     }
-    return icon;
-  }
-
-  protected @Nullable ImageIcon getIcon(final String playerName) {
-    final GamePlayer player = gameData.getPlayerList().getPlayerId(playerName);
-    if (player == null) {
-      return null;
-    }
-    return getIcon(player);
   }
 
   private void fillPlayerIcons() {
     for (final GamePlayer p : gameData.getPlayerList().getPlayers()) {
-      getIcon(p);
+      createImageIconIfNeeded(p);
     }
   }
 
   /** Custom table model. This model is thread safe. */
   class StatTableModel extends AbstractTableModel {
-    private static final long serialVersionUID = -6156153062049822444L;
+    @Serial private static final long serialVersionUID = -6156153062049822444L;
     /* Underlying data for the table. If null, needs to be computed. */
-    private String[][] collectedData;
+    private @Nullable @NonNls String[][] collectedData;
 
     StatTableModel() {
       setStatColumns();
@@ -166,7 +157,7 @@ class StatPanel extends JPanel implements GameDataChangeListener {
           }
           row++;
         }
-        for (final String alliance : alliances) {
+        for (final @Nls String alliance : alliances) {
           collectedData[row][0] = "<html><b>" + alliance;
           for (int i = 0; i < stats.length; i++) {
             double value = stats[i].getValue(alliance, gameDataSync, uiContext.getMapData());
@@ -177,11 +168,11 @@ class StatPanel extends JPanel implements GameDataChangeListener {
       }
     }
 
-    private List<String> getAlliancesToShow(AllianceTracker tracker) {
+    private List<@Nls String> getAlliancesToShow(AllianceTracker tracker) {
       return tracker.getAlliances().stream()
           .filter(a -> tracker.getPlayersInAlliance(a).size() > 1)
           .sorted()
-          .collect(Collectors.toList());
+          .toList();
     }
 
     /*
@@ -195,7 +186,7 @@ class StatPanel extends JPanel implements GameDataChangeListener {
 
     // Trivial implementations of required methods
     @Override
-    public String getColumnName(final int col) {
+    public @Nls String getColumnName(final int col) {
       if (col == 0) {
         return "Player";
       }
