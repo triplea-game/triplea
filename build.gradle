@@ -56,7 +56,7 @@ subprojects {
         commonsMathVersion = "3.6.1"
         commonsTextVersion = "1.13.1"
         dropwizardWebsocketsVersion = "1.3.14"
-        equalsVerifierVersion = "4.0"
+        equalsVerifierVersion = "4.0.1"
         feignVersion = "13.6"
         gsonVersion = "2.13.1"
         guavaVersion = "33.4.8-jre"
