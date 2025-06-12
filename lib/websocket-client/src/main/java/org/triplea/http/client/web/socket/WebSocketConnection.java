@@ -94,6 +94,10 @@ class WebSocketConnection {
     this.headers = headers;
   }
 
+  public boolean isOpen() {
+    return !client.isInputClosed() && !client.isOutputClosed();
+  }
+
   /**
    * Sends pings with retries. Retry threshold is set up to account for disconnect at 60 seconds. We
    * send a ping every 45s, if that fails we'll try again at the 48s mark, again at 51s, again at
@@ -159,7 +163,7 @@ class WebSocketConnection {
         .exceptionally(
             throwable -> {
               // Do a single retry with fixed back-off
-              log.info("Failed to connect, will retrying", throwable);
+              log.info("Failed to connect, will retry", throwable);
               Interruptibles.sleep(1000);
               retryConnection(errorHandler);
               return null;
@@ -179,11 +183,22 @@ class WebSocketConnection {
   }
 
   private void retryConnection(final Consumer<String> errorHandler) {
+    connectionIsOpen = false;
+    httpClient = HttpClient.newHttpClient();
     connectAsyncAndStartPingSender()
         .exceptionally(
             throwable -> {
               log.info("Failed to connect", throwable);
               errorHandler.accept("Failed to connect: " + throwable.getMessage());
+
+              Interruptibles.sleep(5000);
+              connectAsyncAndStartPingSender()
+                  .exceptionally(
+                      t -> {
+                        log.info("Failed to connect", t);
+                        errorHandler.accept("Failed to connect: " + t.getMessage());
+                        return null;
+                      });
               return null;
             });
   }
@@ -256,13 +271,29 @@ class WebSocketConnection {
     @Override
     public @Nullable CompletionStage<?> onClose(
         final WebSocket webSocket, final int statusCode, final String reason) {
-      pingSender.cancel();
-      if (reason.equals(WebSocketConnection.CLIENT_DISCONNECT_MESSAGE)) {
-        listener.connectionClosed();
+
+      log.info("Connection closed");
+
+      log.info("Attempting to reconnect..");
+      retryConnection(
+          error -> {
+            log.info("Failed to reconnect: {}", error);
+          });
+
+      if (isOpen()) {
+        log.info("Successfully reconnected to server");
+        listener.reconnected();
+        return null;
       } else {
-        listener.connectionTerminated(reason.isBlank() ? "Server disconnected" : reason);
+        log.info("Reconnect failed..");
+        pingSender.cancel();
+        if (reason.equals(WebSocketConnection.CLIENT_DISCONNECT_MESSAGE)) {
+          listener.connectionClosed();
+        } else {
+          listener.connectionTerminated(reason.isBlank() ? "Server disconnected" : reason);
+        }
+        return null;
       }
-      return null;
     }
 
     @Override

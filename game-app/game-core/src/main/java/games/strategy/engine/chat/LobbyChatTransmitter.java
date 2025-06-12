@@ -50,6 +50,9 @@ public class LobbyChatTransmitter implements ChatTransmitter {
     playerToLobbyConnection.addMessageListener(
         PlayerSlapReceivedMessage.TYPE, message -> handleSlapMessage(chatClient, message));
 
+    playerToLobbyConnection.addConnectionResetListener(
+        playerToLobbyConnection::sendConnectToChatMessage);
+
     playerToLobbyConnection.sendConnectToChatMessage();
   }
 

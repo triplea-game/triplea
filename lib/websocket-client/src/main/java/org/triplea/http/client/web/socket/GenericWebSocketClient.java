@@ -38,6 +38,8 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
   /** These are called whenever connection is closed, whether by us or server. */
   private final Collection<Runnable> connectionClosedListeners = new ArrayList<>();
 
+  private final Collection<Runnable> connectionResetListeners = new ArrayList<>();
+
   private final Collection<Consumer<String>> connectionTerminatedListeners = new ArrayList<>();
 
   private final URI websocketUri;
@@ -76,7 +78,6 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
     Preconditions.checkArgument(
         websocketUri.getScheme().equals("ws") || websocketUri.getScheme().equals("wss"),
         "Websocket URI scheme must be either ws or wss, but was: " + websocketUri);
-
     this.websocketUri = websocketUri;
     this.errorHandler = errorHandler;
     this.webSocketConnectionFactory = webSocketConnectionFactory;
@@ -87,6 +88,11 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
     addListener(ServerErrorMessage.TYPE, message -> errorHandler.accept(message.getError()));
     webSocketConnection = webSocketConnectionFactory.apply(websocketUri);
     webSocketConnection.connect(this, errorHandler);
+  }
+
+  @Override
+  public void reconnected() {
+    connectionResetListeners.forEach(Runnable::run);
   }
 
   /** Starts a non-blocking close of the websocket connection. */
@@ -125,6 +131,11 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
   }
 
   @Override
+  public void addConnectionResetListener(Runnable listener) {
+    connectionResetListeners.add(listener);
+  }
+
+  @Override
   @Synchronized
   public void messageReceived(final String message) {
     final MessageEnvelope converted = gson.fromJson(message, MessageEnvelope.class);
@@ -135,6 +146,7 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
     }
   }
 
+  /** Invoked when the client disconnects */
   @Override
   public void connectionClosed() {
     connectionClosedListeners.forEach(Runnable::run);

@@ -142,4 +142,8 @@ public class PlayerToLobbyConnection {
   public Collection<String> fetchPlayersInGame(final String gameId) {
     return httpLobbyClient.getPlayerLobbyActionsClient().fetchPlayersInGame(gameId);
   }
+
+  public void addConnectionResetListener(final Runnable listener) {
+    webSocket.addConnectionResetListener(listener);
+  }
 }

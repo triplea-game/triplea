@@ -11,7 +11,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
@@ -114,7 +113,6 @@ public final class BackgroundTaskRunner {
       final Consumer<T> runOnEdtBeforeDialogClose,
       final Class<E> exceptionType)
       throws E, InterruptedException {
-    checkState(SwingUtilities.isEventDispatchThread());
     checkNotNull(message);
     checkNotNull(backgroundAction);
     checkNotNull(exceptionType);

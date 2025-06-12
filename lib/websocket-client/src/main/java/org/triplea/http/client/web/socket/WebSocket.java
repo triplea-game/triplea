@@ -24,4 +24,6 @@ public interface WebSocket {
    *     string arg is the close reason reported from server.
    */
   void addConnectionTerminatedListener(Consumer<String> connectionTerminatedListener);
+
+  void addConnectionResetListener(Runnable listener);
 }

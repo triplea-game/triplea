@@ -3,14 +3,18 @@ package games.strategy.engine.lobby.client.login;
 import com.google.common.base.Strings;
 import feign.FeignException;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
+import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.IOException;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import javax.swing.JFrame;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.domain.data.ApiKey;
+import org.triplea.domain.data.SystemIdLoader;
 import org.triplea.domain.data.UserName;
+import org.triplea.http.client.LobbyHttpClientConfig;
 import org.triplea.http.client.forgot.password.ForgotPasswordClient;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
 import org.triplea.http.client.lobby.login.CreateAccountResponse;
@@ -33,6 +37,31 @@ public class LobbyLogin {
   private final JFrame parentWindow;
 
   private final LobbyLoginClient lobbyLoginClient;
+
+  /**
+   * Helper 'main' method to launch a lobby client faster. The target lobby is pulled from
+   * `ClientSetting`, which can be set to a 'localhost' by running the 'Headed' client and updating
+   * the settings through the settings UI.
+   */
+  public static void main(String[] args) {
+    ClientSetting.initialize();
+
+    LobbyHttpClientConfig.setConfig(
+        LobbyHttpClientConfig.builder()
+            .clientVersion(ProductVersionReader.getCurrentVersion().toMajorMinorString())
+            .systemId(SystemIdLoader.load().getValue())
+            .build());
+
+    JFrame frame = new JFrame();
+    LobbyLogin login = new LobbyLogin(frame);
+    login
+        .promptLogin(LoginMode.REGISTRATION_NOT_REQUIRED)
+        .ifPresent(
+            loginResult -> {
+              LobbyFrame lobbyFrame = new LobbyFrame(loginResult);
+              lobbyFrame.setVisible(true);
+            });
+  }
 
   public LobbyLogin(final JFrame parentWindow) {
     this.parentWindow = parentWindow;
