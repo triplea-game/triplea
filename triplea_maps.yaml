@@ -3285,3 +3285,28 @@
   img: https://raw.githubusercontent.com/triplea-maps/AA50-41-Maintenance/blob/master/preview.png
   description: |
     <br>Axis & Allies Version 3 - 1941 Scenario with upkeep costs
+- mapName: WW2_v3 Bad-Ass 4 Nation_FFA
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/WW2.v3_Bad-Ass_4_Nation_FFA/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/WW2.v3_Bad-Ass_4_Nation_FFA/blob/master/preview.png
+  description: |
+    <br>This a 4 nation free for all based on the "WWIIv3" map. The capitals, territory values, canals, national objectives, and technology model are different. So please read game notes below and scan the map well.
+    <br>The core of the MOD is governed by version 3 rules, with the exception of changes listed in game notes. Each nation, New Britain, Germany, Japan & Russia start in their respective capitals, with identical bids and 1 national technology advantage each.
+    <br>The rest of the world is separated into 2 groups of neutrals. The Green Neutrals (Chinese) hold the very lucrative National Objectives. The Orange Neutrals (True) hold the rest.
+    <br>From there all nations fight it out until a win is declared. The MOD is designed to give each nation a uniquely challenging, and equal chance at the win. The world is not perfect symmetry, so plan your strategy based on your geographic location, national strengths, and lastly but certainly not least, adjust your tactics as needed to counter your immediate threats and to exploit your enemies weaknesses.
+    <br>If the world were 100% perfectly symmetrical no one would win. So that being said, all forms of diplomatic negotiations are allowed via combinations of the chat function and the game supported diplomatic actions. From a simple agreement and friendly cooperation to non-aggression pacts and alliances of mutual interests. However long term alliances are discouraged in order to keep within the proper spirit of the free for all game concept. Not to mention your so called long term ally will certainly backstab you in the end anyways. There can only be one!
+- mapName: Gilbert-1939-AAE
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Gilbert-1939-AAE/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/Gilbert-1939-AAE/blob/master/preview.png
+  description: |
+    <br>World War 2 starting from 1939 on Axis & Allies Europe map. Inspired by Martin Gilbert-Recent History Atlas
+- mapName: NekahNets 1939
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/NekahNets_1939_3/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/NekahNets_1939_3/blob/master/preview.png
+  description: |
+    <br>World War 2 in 1939 using Big World Map
