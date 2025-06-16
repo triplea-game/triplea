@@ -467,11 +467,11 @@ public final class Properties implements Constants {
 
   public static int getIncomePercentage(
       final GamePlayer gamePlayer, final GameProperties properties) {
-    return properties.get(Constants.getIncomePercentageFor(gamePlayer), 100);
+    return properties.get(Constants.getPropertyNameIncomePercentageFor(gamePlayer), 100);
   }
 
   public static int getPuIncomeBonus(final GamePlayer gamePlayer, final GameProperties properties) {
-    return properties.get(Constants.getPuIncomeBonus(gamePlayer), 0);
+    return properties.get(Constants.getPropertyNamePuIncomeBonusFor(gamePlayer), 0);
   }
 
   public static int getRelationshipsLastExtraRounds(final GameProperties properties) {

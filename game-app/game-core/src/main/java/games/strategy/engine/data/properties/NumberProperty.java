@@ -2,13 +2,14 @@ package games.strategy.engine.data.properties;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import java.io.Serial;
 import javax.swing.JComponent;
 import lombok.Getter;
 import org.triplea.swing.IntTextField;
 
 /** Implementation of {@link IEditableProperty} for an integer value. */
 public class NumberProperty extends AbstractEditableProperty<Integer> {
-  private static final long serialVersionUID = 6826763550643504789L;
+  @Serial private static final long serialVersionUID = 6826763550643504789L;
 
   @Getter private final int max;
   @Getter private final int min;
@@ -58,5 +59,16 @@ public class NumberProperty extends AbstractEditableProperty<Integer> {
       return i <= max && i >= min;
     }
     return false;
+  }
+
+  /**
+   * Copy method.
+   *
+   * @param newName New name of the cloned instance
+   * @return Cloned instance with a new name
+   */
+  public NumberProperty cloneAs(final String newName) {
+    return new NumberProperty(
+        newName, this.getDescription(), this.getMax(), this.getMin(), this.getValue());
   }
 }
