@@ -258,11 +258,11 @@ public interface Constants {
   @NonNls String SIGN_TECH_NOT_ENABLED = "-";
   @NonNls String SIGN_TECH_ENABLED = "X";
 
-  static String getIncomePercentageFor(final GamePlayer gamePlayer) {
+  static String getPropertyNameIncomePercentageFor(final GamePlayer gamePlayer) {
     return MessageFormat.format("{0} Income Percentage", gamePlayer.getName());
   }
 
-  static String getPuIncomeBonus(final GamePlayer gamePlayer) {
+  static String getPropertyNamePuIncomeBonusFor(final GamePlayer gamePlayer) {
     return MessageFormat.format("{0} PU Income Bonus", gamePlayer.getName());
   }
 }

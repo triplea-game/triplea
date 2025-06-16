@@ -9,7 +9,6 @@ import games.strategy.triplea.Constants;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -104,23 +103,11 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
 
     incomePercentage =
         gameProperties
-            .getPlayerProperty(Constants.getIncomePercentageFor(player))
-            .orElseThrow(
-                () ->
-                    new IllegalArgumentException(
-                        MessageFormat.format(
-                            "Property not found: {0}", Constants.getIncomePercentageFor(player))))
+            .getPlayerPropertyOrThrow(Constants.getPropertyNameIncomePercentageFor(player))
             .getEditorComponent();
     incomePercentageLabel = new JLabel("%");
-    puIncomeBonus =
-        gameProperties
-            .getPlayerProperty(Constants.getPuIncomeBonus(player))
-            .orElseThrow(
-                () ->
-                    new IllegalArgumentException(
-                        MessageFormat.format(
-                            "Property not found: {0}", Constants.getPuIncomeBonus(player))))
-            .getEditorComponent();
+
+    puIncomeBonus = gameProperties.ensurePropertyPuIncomeBonusFor(player).getEditorComponent();
     puIncomeBonusLabel = new JLabel("PUs");
 
     setWidgetActivation();

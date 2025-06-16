@@ -1,5 +1,6 @@
 package games.strategy.engine.data.properties;
 
+import java.io.Serializable;
 import javax.swing.JComponent;
 
 /**
@@ -7,7 +8,7 @@ import javax.swing.JComponent;
  *
  * @param <T> The generic Type of the value being stored.
  */
-public interface IEditableProperty<T> {
+public interface IEditableProperty<T> extends Serializable {
   /**
    * get the name of the property.
    *

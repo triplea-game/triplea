@@ -2,11 +2,16 @@ package games.strategy.engine.data.properties;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataComponent;
+import games.strategy.engine.data.GamePlayer;
+import games.strategy.triplea.Constants;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serial;
+import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,6 +21,7 @@ import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 import org.triplea.io.IoUtils;
 
 /**
@@ -25,9 +31,9 @@ import org.triplea.io.IoUtils;
  */
 @Slf4j
 public class GameProperties extends GameDataComponent {
-  private static final long serialVersionUID = -1448163357090677564L;
+  @Serial private static final long serialVersionUID = -1448163357090677564L;
 
-  private final Map<String, Object> constantProperties = new HashMap<>();
+  private final Map<String, Serializable> constantProperties = new HashMap<>();
   private final Map<String, IEditableProperty<?>> editableProperties = new HashMap<>();
   // This list is used to keep track of order properties were added.
   private final List<String> ordering = new ArrayList<>();
@@ -46,13 +52,13 @@ public class GameProperties extends GameDataComponent {
   }
 
   /**
-   * Setting a property to null has the effect of unbinding the key.
+   * Sets a serializable {@code value} for a specified {@code key}. Setting a property to {@code
+   * null} has the effect of unbinding the key.
    *
    * @param key key of property
    * @param value property
    */
-  public void set(final String key, final Object value) {
-    // TODO should only accept serializable, not object
+  public void set(final String key, final @Nullable Serializable value) {
     if (value == null) {
       constantProperties.remove(key);
       ordering.remove(key);
@@ -62,20 +68,69 @@ public class GameProperties extends GameDataComponent {
     }
   }
 
+  public void set(final String key, final @Nullable Object value) {
+    set(key, (Serializable) value);
+  }
+
+  /**
+   * Ensures that the properties contain the one for {@code propertyKey}
+   *
+   * @param propertyKey property key
+   * @return property according to {@link #getPlayerProperty(String)} or throws ans
+   */
+  public IEditableProperty<?> getPlayerPropertyOrThrow(final String propertyKey) {
+    final Optional<IEditableProperty<?>> optionalPlayerProperty = getPlayerProperty(propertyKey);
+    return optionalPlayerProperty.orElseThrow(
+        () ->
+            new IllegalArgumentException(
+                MessageFormat.format("Property not found: {0}", propertyKey)));
+  }
+
+  /**
+   * Ensures that the properties contain the one for PU Income Bonus for a {@code gamePlayer}
+   *
+   * @param gamePlayer {@code GamePlayer} of the property
+   * @return property according to {@link Constants#getPropertyNamePuIncomeBonusFor(GamePlayer)} or
+   *     default
+   */
+  public IEditableProperty<?> ensurePropertyPuIncomeBonusFor(final GamePlayer gamePlayer) {
+    final String propertyKey = Constants.getPropertyNamePuIncomeBonusFor(gamePlayer);
+    final Optional<IEditableProperty<?>> optionalNewPlayerPropertyPuIncomeBonus =
+        getPlayerProperty(propertyKey);
+    if (optionalNewPlayerPropertyPuIncomeBonus.isEmpty()) {
+      final String oldPropertyKey =
+          MessageFormat.format("{0}PU Income Bonus", gamePlayer.getName());
+      final Optional<IEditableProperty<?>> optionalOldPlayerPropertyPuIncomeBonus =
+          getPlayerProperty(oldPropertyKey);
+      final NumberProperty newProperty =
+          ((NumberProperty)
+                  optionalOldPlayerPropertyPuIncomeBonus.orElseThrow(
+                      () ->
+                          new IllegalArgumentException(
+                              MessageFormat.format(
+                                  "Property not found: {0} or {1}", propertyKey, oldPropertyKey))))
+              .cloneAs(propertyKey);
+      addPlayerProperty(newProperty);
+      set(oldPropertyKey, null);
+      return newProperty;
+    }
+    return optionalNewPlayerPropertyPuIncomeBonus.get();
+  }
+
   /**
    * Returns property with key or null if property is not contained in the list. (The object
    * returned should not be modified, as modifications will not appear globally.)
    *
    * @param key referring key
    */
-  public Object get(final String key) {
+  public Serializable get(final String key) {
     IEditableProperty found = editableProperties.get(key);
     if (found != null) {
-      return found.getValue();
+      return (Serializable) found.getValue();
     }
     found = playerProperties.get(key);
     if (found != null) {
-      return found.getValue();
+      return (Serializable) found.getValue();
     }
     return constantProperties.get(key);
   }

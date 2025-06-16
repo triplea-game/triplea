@@ -39,6 +39,7 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -496,7 +497,8 @@ public final class GameParser {
       // Next, infer the type of property based on its value
       // and set the property  in game data properties.
       if (current.getEditable() == null || !current.getEditable()) {
-        final Object castedValue = PropertyValueTypeInference.castToInferredType(value);
+        final Serializable castedValue =
+            (Serializable) PropertyValueTypeInference.castToInferredType(value);
         properties.set(propertyName, castedValue);
       } else {
         final Class<?> dataType = PropertyValueTypeInference.inferType(value);
@@ -535,13 +537,18 @@ public final class GameParser {
                 data.getProperties()
                     .addPlayerProperty(
                         new NumberProperty(
-                            Constants.getIncomePercentageFor(playerId), null, 999, 0, 100)));
+                            Constants.getPropertyNameIncomePercentageFor(playerId),
+                            null,
+                            999,
+                            0,
+                            100)));
     data.getPlayerList()
         .forEach(
             playerId ->
                 data.getProperties()
                     .addPlayerProperty(
-                        new NumberProperty(Constants.getPuIncomeBonus(playerId), null, 999, 0, 0)));
+                        new NumberProperty(
+                            Constants.getPropertyNamePuIncomeBonusFor(playerId), null, 999, 0, 0)));
   }
 
   private void parseOffset(final GamePlay.Offset offset) {
