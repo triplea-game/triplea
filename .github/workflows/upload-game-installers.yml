@@ -27,15 +27,16 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
-      - name: Build Installers
-        run: ./game-app/run/package
-        env:
-          INSTALL4J_LICENSE_KEY: ${{ secrets.INSTALL4J_LICENSE_KEY }}
-      - name: set build version variables
+      - name: set env variables
         run: |
           BUILD_VERSION=$(game-app/run/.build/get-build-version)
           echo "build_version=$BUILD_VERSION" | tee -a $GITHUB_ENV
           echo "release_name=$(date +%Y-%B-%d) - $BUILD_VERSION" | tee -a $GITHUB_ENV
+          echo "INSTALL4J_LICENSE_KEY=$INSTALL4J_LICENSE_KEY" | tee -a $GITHUB_ENV
+        env:
+          INSTALL4J_LICENSE_KEY: ${{ secrets.INSTALL4J_LICENSE_KEY }}
+      - name: Build Installers
+        run: ./game-app/run/package
       - name: Create Github Release
         uses: ncipollo/release-action@v1
         with:        
