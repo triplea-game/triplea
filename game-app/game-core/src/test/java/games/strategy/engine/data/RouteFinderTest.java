@@ -76,10 +76,10 @@ class RouteFinderTest {
             territory8);
 
     final TerritoryAttachment ta = mock(TerritoryAttachment.class);
-    Mockito.when(ta.getTerritoryEffect()).thenReturn(new ArrayList<>());
+    when(ta.getTerritoryEffect()).thenReturn(new ArrayList<>());
     territories.forEach(
         territory -> {
-          Mockito.when(territory.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME)).thenReturn(ta);
+          when(territory.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME)).thenReturn(ta);
         });
   }
 
