@@ -984,10 +984,10 @@
   version: 2
   description: |
     <br>6 army ffa
-    <br><img src="https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/preview.png
+    <br><img src="https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/description/TripleA_ww2v2_ffa_mini.png
     <br>
     <br>7 power ww2v2
-    <br><img src="https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/preview.png
+    <br><img src="https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/description/TripleA_ww2v2_7power_mini.png
     <br>
     <br>
     <br>1. Free-For-All for 6 players
@@ -2822,7 +2822,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/shogun_advanced/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/shogun_advanced/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/shogun_advanced/master/Preview.png
   description: |
     <br>* A historical map set about 1561 Japan, intended for solo play or a Free for All with the balance being played by the Fast AI or Hard AI
     <br>* Immersive Campaign - Serious time & effort to provide suitable sound effects
@@ -2918,7 +2918,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/world-war-i-1914-improved-main/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/world-war-i-1914-main/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/world-war-i-1914-improved-main/master/preview.png
   description: |
     <br>Based on the boardgame: Axis & Allies: World War I 1914 (2013). Contains two modules:
     <ul>
