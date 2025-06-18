@@ -129,7 +129,7 @@
     <br>
     <br>
     <b>There is a detailed manual included within the map zip. If you do not know how to get to it, you can download it here:
-    <br>https://github.com/triplea-maps/total_world_war/raw/master/TWW_lossy_new.pdf </b>
+    <br>https://github.com/triplea-maps/total_world_war_manual/raw/master/TWW_lossy_new.pdf </b>
     <br>
     <b>This manual is also accessible within the game using the help tab.</b>
     <br>
@@ -2846,14 +2846,14 @@
 - mapName: Hearts of Iron 2-Europe
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/HOI2Europe/archive/refs/heads/master.zip
-  img: https://raw.githubusercontent.com/triplea-maps/HOI2Europe/blob/master/HOI2Europe/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/HOI2Europe/master/HOI2Europe/preview.png
   version: 1
   description: |
     <br>World War 2 in Europe starting in 1941
 - mapName: Blood and Iron
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/blood_and_iron/archive/refs/heads/master.zip
-  img: https://raw.githubusercontent.com/triplea-maps/blood_and_iron/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/blood_and_iron/master/preview.png
   version: 1
   description: |
     <br>World War 2 on a world map starting in 1941
@@ -2861,7 +2861,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/tiberian_conquest_au/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/tiberian_conquest_au/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/tiberian_conquest_au/master/preview.png
   description: |
     <br>Tiberian Conquest mod for TripleA, the Australian war theatre, by Fei.
 - mapName: Europe Improved
@@ -2879,21 +2879,21 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/stalingrad/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/stalingrad/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/stalingrad/master/preview.png
   description: |
     <br>The Battle of Stalingrad
 - mapName: AA Enhanced Revised
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/aa_enhanced_revised/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/aa_enhanced_revised/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/aa_enhanced_revised/master/preview.png
   description: |
     <br>Modified version of the Revised game
 - mapName: Operation Market Garden
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/operation_market_garden/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/operation_market_garden/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/operation_market_garden/master/preview.png
   description: |
     <br>The infamous attempt by the Allies to capture a stretch of roadway that crossed the Rhine River, thus giving the Allies a speedy way into Nazi Germany.
 - mapName: WW2v3-Navaland
@@ -2932,364 +2932,364 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/1939ARevised/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/1939ARevised/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/1939ARevised/master/preview.png
   description: |
     <br>The 1939A scenario from Iron Blitz, adapted to the Revised Map
 - mapName: Newyawk
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/newyawk/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/newyawk/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/newyawk/master/preview.png
   description: |
     <br>Gang Warfare on the streets of New York City.
 - mapName: Aggression 1914
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/aggression_1914/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/aggression_1914/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/aggression_1914/master/preview.png
   description: |
     <br>World War One on world map
 - mapName: Operation Dandelion
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/Operation_Dandelion/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/Operation_Dandelion/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/Operation_Dandelion/master/preview.png
   description: |
     <br>The book The Man in the High Castle by Philip K. Dick, supposes an alternate history where the AXis won in WW2. Set in 1962, The German government plans a surprise nuclear attack on Japan, before the Japanese complete the development of their own nuclear weapons.
 - mapName: WW2 NWO Neutrals Politics
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/WW2_NWO_Neutrals_Politics/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/WW2_NWO_Neutrals_Politics/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/WW2_NWO_Neutrals_Politics/master/preview.png
   description: |
     <br>World War II in Europe on the New World Order map with political actions to gain alliances with minor powers.
 - mapName: AAR-BuildCaps
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/AAR-BuildCaps/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/AAR-BuildCaps/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/AAR-BuildCaps/master/preview.png
   description: |
     <br>World War II Revised with caps on how many units of each type that can be built.
 - mapName: MEWWW
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/mewww/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/mewww/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/mewww/master/preview.png
   description: |
     <br>Hypothetical conflict centering on Middle East.
 - mapName: Hellas Athens vs. Sparta (beta)
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/hellas/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/hellas/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/hellas/master/preview.png
   description: |
     <br>The Peloponnesian War, fought primarily between the powerful city-states of Athens and Sparta from 431 to 404 BCE, was the greatest armed conflict the civilized world had ever seen. As leaders in the Persian War, which freed the Greeks from the Persian Empire to the east, both emerged as super powers of the day, and it was perhaps inevitable that they'd go to war for the rulership of all Hellas, as they called the Greek world.
 - mapName: Pacific 1942
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/pacific_1942/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/pacific_1942/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/pacific_1942/master/preview.png
   description: |
     <br>An adaption of the Axis & Allies: Pacific game to TripleA.
 - mapName: World War II Halifax
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/World_War_II_Halifax/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/World_War_II_Halifax/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/World_War_II_Halifax/master/preview.png
   description: |
     <br>A modified version of the World War II Global game.
 - mapName: Election_USA
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/Election_Usa/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/Election_Usa/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/Election_Usa/master/preview.png
   description: |
     <br>A game inspired by US elections.
 - mapName: Downfall-July1944
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/Downfall-July1944/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/Downfall-July1944/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/Downfall-July1944/master/preview.png
   description: |
     <br>Last year of World War 2 in Europe.
 - mapName: Ageworld
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/ageworld/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/ageworld/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/ageworld/master/preview.png
   description: |
     <br>The World Through the Ages
 - mapName: War of the Roses
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/War_of_the_Roses_Revamp/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/War_of_the_Roses_Revamp/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/War_of_the_Roses_Revamp/master/preview.png
   description: |
     <br>The Wars of the Roses (1455-1487), were a series of civil wars fought over control of the English throne in the mid- to late fifteenth century.
 - mapName: Five If By Sea
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/five_if_by_sea/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/five_if_by_sea/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/five_if_by_sea/master/preview.png
   description: |
     <br>5 island nations try to takeover the world
 - mapName: Europe-Revised
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/Europe-Revised/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/Europe-Revised/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/Europe-Revised/master/preview.png
   description: |
     <br>Modified version of Axis & Allies: Europe
 - mapName: Hearts of Iron-Fatherland
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/HeartsofIron_Fatherland/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/HeartsofIron_Fatherland/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/HeartsofIron_Fatherland/master/preview.png
   description: |
     <br>A scenario loosely based on the best selling alternative history noval 'Fatherland' by Robert Harris, set in roughly 1946.
 - mapName: Nazi-Soviet Pact
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/NaziSovietPact/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/NaziSovietPact/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/NaziSovietPact/master/preview.png
   description: |
     <br>A hypothetical WW2 scenario where the Molotov-Ribbentrop pact develops until a full alliance.
 - mapName: Franco-Prussian War
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/Franco_Prussian_War/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/Franco_Prussian_War/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/Franco_Prussian_War/master/preview.png
   description: |
     <br>Franco-Prussian War
 - mapName: XD_Tiberium
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/XD_TIBERIUM/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/XD_TIBERIUM/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/XD_TIBERIUM/master/preview.png
   description: |
     <br>This is the war for control over Tiberium, a crystal used to make fictional technologies.
 - mapName: World War II Revised Deaths Hand Mod
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/World_War_II_Revised_Deaths_Hand_Mod/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/World_War_II_Revised_Deaths_Hand_Mod/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/World_War_II_Revised_Deaths_Hand_Mod/master/preview.png
   description: |
     <br>A modified version of World World II Revised.
 - mapName: Revised Middle Earth
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/revised_middle_earth/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/revised_middle_earth/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/revised_middle_earth/master/preview.png
   description: |
     <br>A fantasy scenario using the World War II Revised Map
 - mapName: WW3 Circa 1955
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/WW3Circa1955/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/WW3Circa1955/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/WW3Circa1955/master/preview.png
   description: |
     <br>A hypothetical Third World War in 1955, using the Classic map.
 - mapName: NWO DoomsDay
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/nwodoomsday/master/archive/master.zip
+  url: https://github.com/triplea-maps/nwodoomsday/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/nwodoomsday/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/nwodoomsday/master/preview.png
   description: |
     <br>A hypothetical Soviet invasion of Europe in 1945.
 - mapName: Big World 1942 - Factions
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/big_world_factions/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/big_world_factions/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/big_world_factions/master/preview.png
   description: |
     <br>1942 on the Big World Map with extra nations.
 - mapName: Smalls 1939
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/Smalls_1939/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/Smalls_1939/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/Smalls_1939/master/preview.png
   description: |
     <br>World War II starting in 1939 on the Big World map.
 - mapName: Axis Ascension
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/axis_ascension/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/Smalls_1939/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/Smalls_1939/master/preview.png
   description: |
     <br>World War II starting in 1942 on a large map
 - mapName: Operation Unthinkable
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/Operation_Unthinkable/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/Operation_Unthinkable/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/Operation_Unthinkable/master/preview.png
   description: |
     <br>This scenario is inspired by Winston Churchill's proposed war against Russia.For details see https://en.wikipedia.org/wiki/Operation_Unthinkable .
 - mapName: Eight Army Free for All
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/eight_army_free_for_all/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/eight_army_free_for_all/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/eight_army_free_for_all/master/preview.png
   description: |
     <br>Eight armies on a world map
 - mapName: Broken Earth
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/Broken_Earth/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/Broken_Earth/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/Broken_Earth/master/preview.png
   description: |
     <br>Eight power free for all on the Anniversary edition map
 - mapName: Viking
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/Viking/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/Viking/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/Viking/master/preview.png
   description: |
     <br>The Viking invasions of England. A work in progress.
 - mapName: Churchills 1939
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/churchills_1939/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/churchills_1939/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/churchills_1939/master/preview.png
   description: |
     <br>World War 2 on the Global map starting in 1939 with detailed rules for neutrals.
 - mapName: Death from Above
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/Death_from_Above/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/Death_from_Above/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/Death_from_Above/master/preview.png
   description: |
     <br>The Classic game with more emphasis on air power.
 - mapName: WWII Nazi Threat
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/wwiinazithreat/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/wwiinazithreat/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/wwiinazithreat/master/preview.png
   description: |
     <br>War in Europe startiing in 1939
 - mapName: NSP_V4
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/NSP_v4/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/NSP_v4/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/NSP_v4/master/preview.png
   description: |
     <br>What if the Nazi-Soviet pact had held? Russia is Axis, Japan is Allied.
 - mapName: CCLXXbc
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/CCLXXbc/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/CCLXXbc/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/CCLXXbc/master/preview.png
   description: |
     <br>Make yourself an empire around the Mediterranean Ocean (the known world).
 - mapName: 2013 Conflict
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/2013Conflict/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/2013Conflict/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/2013Conflict/master/preview.png
   description: |
     <br>Hypothetical World War 3 in 2013.
 - mapName: WW2v5_1942_2nd_Edition_High_Production_Mod
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/WW2v5_1942_2nd_Edition_High_Production_Mod/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/WW2v5_1942_2nd_Edition_High_Production_Mod/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/WW2v5_1942_2nd_Edition_High_Production_Mod/master/preview.png
   description: |
     <br>World War II V 5 with higher incomes.
 - mapName: Hellgate-Europe
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/Hellgate-Europe/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/Hellgate-Europe/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/Hellgate-Europe/master/preview.png
   description: |
     <br>The last year of the World War 2 in Europe, using the Axis & Allies Europe map
 - mapName: Zombieland USA
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/zombielandusa/archive/refs/heads/master.zip
   version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/zombielandusa/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/zombielandusa/master/preview.png
   description: |
     <br>The United States is overrun by Zombies.
 - mapName: 6 Kingdoms
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/6Kingdoms/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/6Kingdoms/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/6Kingdoms/master/preview.png
   description: |
     <br>A war between two alliances of fantasy kingdoms.
 - mapName: Pacific-The Rising Sun 1941
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/Pacific1941/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/Pacific1941/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/Pacific1941/master/preview.png
   description: |
     <br>World War 2 in the Pacific starting in 1941 with many unit types.
 - mapName: WW2v3-1941_v2
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/WW2v3-1941_v2/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/WW2v3-1941_v2/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/WW2v3-1941_v2/master/preview.png
   description: |
     <br>Modified version of World II v3 - 1941
 - mapName: No Mans Land Navalland
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/No_Mans_Land_Navalland/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/No_Mans_Land_Navalland/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/No_Mans_Land_Navalland/master/preview.png
   description: |
     <br>World War One on a large global map using AA50 rules
 - mapName: Vietnam
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/Vietnam/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/Vietnam/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/Vietnam/master/preview.png
   description: |
     <br>The Vietnam War expands into World War 3. Uses Classic map and rules.
 - mapName: Big World - TheHobbesians 1939
   mapCategory: EXPERIMENTAL
   url: https://github.com/ClavintheGreat/thehobbesians_1939/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/ClavintheGreat/thehobbesians_1939/blob/main/thehobbesians_1939-master/preview.png
+  img: https://raw.githubusercontent.com/ClavintheGreat/thehobbesians_1939/main/thehobbesians_1939-master/preview.png
   description: |
     <br>TheHobbesian's Variation of Smallman's BigWorld 1939.
 - mapName: Revised with Cavalry
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/Revised_With_Cavalry/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/Revised_With_Cavalry/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/Revised_With_Cavalry/master/preview.png
   description: |
     <br>World War II Revised with cavalry units added
 - mapName: A Path Beyond
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/apathbeyond/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/apathbeyond/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/apathbeyond/master/preview.png
   description: |
     <br>Two nations struggle to control a continent.
 - mapName: AA50-Europe
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/AA50-Europe/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/AA50-Europe/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/AA50-Europe/master/preview.png
   description: |
     <br>World Word 2 in Europe on the AA50 map
 - mapName: Axis General 1939
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/Axisgeneral_1939/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/Axisgeneral_1939/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/Axisgeneral_1939/master/preview.png
   description: |
     <br>World War 2 in 1939 on the Big World map.
 - mapName: AA50-41 Maintenance
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/AA50-41-Maintenance/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/AA50-41-Maintenance/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/AA50-41-Maintenance/master/preview.png
   description: |
     <br>Axis & Allies Version 3 - 1941 Scenario with upkeep costs
 - mapName: WW2_v3 Bad-Ass 4 Nation_FFA
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/WW2.v3_Bad-Ass_4_Nation_FFA/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/WW2.v3_Bad-Ass_4_Nation_FFA/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/WW2.v3_Bad-Ass_4_Nation_FFA/master/preview.png
   description: |
     <br>This a 4 nation free for all based on the "WWIIv3" map. The capitals, territory values, canals, national objectives, and technology model are different. So please read game notes below and scan the map well.
     <br>The core of the MOD is governed by version 3 rules, with the exception of changes listed in game notes. Each nation, New Britain, Germany, Japan & Russia start in their respective capitals, with identical bids and 1 national technology advantage each.
@@ -3300,13 +3300,13 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/Gilbert-1939-AAE/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/Gilbert-1939-AAE/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/Gilbert-1939-AAE/master/preview.png
   description: |
     <br>World War 2 starting from 1939 on Axis & Allies Europe map. Inspired by Martin Gilbert-Recent History Atlas
 - mapName: NekahNets 1939
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/NekahNets_1939_3/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/NekahNets_1939_3/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/NekahNets_1939_3/master/preview.png
   description: |
     <br>World War 2 in 1939 using Big World Map
