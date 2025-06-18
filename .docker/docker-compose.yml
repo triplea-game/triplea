@@ -1,0 +1,62 @@
+# This docker-compose file depends on './gradlew shadowJar'
+#
+# Launches all of the background servers used by TripleA.
+# The main entrypoint to those services is NGINX which
+# is listening on localhost:80
+#
+version: '3'
+services:
+  database:
+    image: postgres:10
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - ./database/01-init.sql:/docker-entrypoint-initdb.d/01-init.sql
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    healthcheck:
+      test: echo 'select 1' | psql -h localhost -U postgres  | grep -q '1 row'
+      interval: 3s
+      retries: 10
+      timeout: 3s
+  flyway:
+    image: ghcr.io/triplea-game/lobby/flyway:latest
+    command: >
+      -locations=filesystem:/flyway/sql
+      -connectRetries=60
+      -user=lobby_user
+      -password=lobby_user
+      -url=jdbc:postgresql://database:5432/lobby_db
+      -ignoreMigrationPatterns=repeatable:missing
+      migrate
+    volumes:
+      - ./docker-flyway.config:/flyway/conf/flyway.config
+    depends_on:
+      - database
+  sample_data:
+    image: ghcr.io/triplea-game/lobby/sample_data:latest
+    command: >
+      -locations=filesystem:/flyway/sql
+      -connectRetries=60
+      -user=lobby_user
+      -password=lobby_user
+      -url=jdbc:postgresql://database:5432/lobby_db
+      migrate
+    volumes:
+      - ./docker-flyway.config:/flyway/conf/flyway.config
+    depends_on:
+      flyway:
+        condition: service_completed_successfully
+  lobby:
+    image: ghcr.io/triplea-game/lobby/server:latest
+    environment:
+      - DATABASE_USER=lobby_user
+      - DATABASE_PASSWORD=lobby_user
+      - DB_URL=database:5432/lobby_db
+    ports:
+      - "${LOBBY_PORT}:8080"
+    depends_on:
+      sample_data:
+         condition: service_completed_successfully
