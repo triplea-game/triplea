@@ -984,10 +984,10 @@
   version: 2
   description: |
     <br>6 army ffa
-    <br><img src="https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/preview.png
+    <br><img src="https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/description/TripleA_ww2v2_ffa_mini.png
     <br>
     <br>7 power ww2v2
-    <br><img src="https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/preview.png
+    <br><img src="https://raw.githubusercontent.com/triplea-maps/world_war_ii_revised_variations/master/description/TripleA_ww2v2_7power_mini.png
     <br>
     <br>
     <br>1. Free-For-All for 6 players
@@ -2822,7 +2822,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/shogun_advanced/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/shogun_advanced/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/shogun_advanced/master/Preview.png
   description: |
     <br>* A historical map set about 1561 Japan, intended for solo play or a Free for All with the balance being played by the Fast AI or Hard AI
     <br>* Immersive Campaign - Serious time & effort to provide suitable sound effects
@@ -2918,7 +2918,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/world-war-i-1914-improved-main/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/world-war-i-1914-main/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/world-war-i-1914-improved-main/master/preview.png
   description: |
     <br>Based on the boardgame: Axis & Allies: World War I 1914 (2013). Contains two modules:
     <ul>
@@ -3098,7 +3098,7 @@
     <br>A hypothetical Soviet invasion of Europe in 1945.
 - mapName: Big World 1942 - Factions
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/big_world_factions/tree/master/archive/master.zip
+  url: https://github.com/triplea-maps/big_world_factions/archive/master.zip
   version: 1
   img: https://raw.githubusercontent.com/triplea-maps/big_world_factions/blob/master/preview.png
   description: |
@@ -3123,7 +3123,7 @@
   version: 1
   img: https://raw.githubusercontent.com/triplea-maps/Operation_Unthinkable/blob/master/preview.png
   description: |
-    <br>This scenario is inspired by Winston Churchill's proposed war against Russia.For details see https://en.wikipedia.org/wiki/Operation_Unthinkable.
+    <br>This scenario is inspired by Winston Churchill's proposed war against Russia.For details see https://en.wikipedia.org/wiki/Operation_Unthinkable .
 - mapName: Eight Army Free for All
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/eight_army_free_for_all/archive/master.zip
@@ -3161,7 +3161,7 @@
     <br>The Classic game with more emphasis on air power.
 - mapName: WWII Nazi Threat
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/wwiinazithreat/tree/master/archive/master.zip
+  url: https://github.com/triplea-maps/wwiinazithreat/archive/master.zip
   version: 1
   img: https://raw.githubusercontent.com/triplea-maps/wwiinazithreat/blob/master/preview.png
   description: |
