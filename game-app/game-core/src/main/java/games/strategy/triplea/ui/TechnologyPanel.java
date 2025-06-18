@@ -5,15 +5,16 @@ import static games.strategy.triplea.Constants.SIGN_TECH_NOT_ENABLED;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataEvent;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.events.GameDataChangeListener;
-import games.strategy.engine.stats.IStat;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -36,10 +37,9 @@ import org.jetbrains.annotations.NotNull;
 
 class TechnologyPanel extends JPanel implements GameDataChangeListener {
 
-  IStat[] stats;
   private final Map<GamePlayer, ImageIcon> mapPlayerImage = new HashMap<>();
   protected GameData gameData;
-  private final UiContext uiContext;
+  private final transient UiContext uiContext;
   private final TechTableModel techModel;
 
   TechnologyPanel(final GameData data, final UiContext uiContext) {
@@ -48,7 +48,8 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
     techModel = new TechTableModel();
     setIconIfNeeded();
     initLayout();
-    gameData.addDataChangeListener(this);
+    gameData.addGameDataEventListener(
+        GameDataEvent.TECH_ATTACHMENT_CHANGED, () -> gameDataChanged(null));
   }
 
   protected void initLayout() {
@@ -89,7 +90,8 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
   public void setGameData(final GameData data) {
     gameData.removeDataChangeListener(this);
     gameData = data;
-    gameData.addDataChangeListener(this);
+    gameData.addGameDataEventListener(
+        GameDataEvent.TECH_ATTACHMENT_CHANGED, () -> gameDataChanged(null));
     gameDataChanged(null);
   }
 
@@ -220,7 +222,8 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
         for (final GamePlayer playerID : gameDataSync.getPlayerList().getPlayers()) {
           if (colMap.get(playerID.getName()) == null) {
             throw new IllegalStateException(
-                "Unexpected player in GameData.getPlayerList()" + playerID.getName());
+                MessageFormat.format(
+                    "Unexpected player in GameData.getPlayerList(): {0}", playerID.getName()));
           }
           final int col = colMap.get(playerID.getName());
           int row = 0;
@@ -271,10 +274,9 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
       return data[row][col];
     }
 
-    // Trivial implementations of required methods
     @Override
     public int getColumnCount() {
-      return data[0].length; // the number of columns of the 2D-array data
+      return colList.length + 1;
     }
 
     @Override
