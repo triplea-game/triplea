@@ -2900,7 +2900,6 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/v3_Navalland/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/v3_Navalland/blob/master/preview.png
   description: |
     <br>A modified version of WW2v3 (AA50)
 - mapName: World War I 1914 Balanced
