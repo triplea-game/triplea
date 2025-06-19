@@ -1977,9 +1977,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             historyPanel = null;
             mapPanel.getData().removeDataChangeListener(dataChangeListener);
             if (!TechAdvance.getTechAdvances(data.getTechnologyFrontier(), null).isEmpty()) {
-              statsPanel.setGameData(data);
+              technologyPanel.setGameData(data);
             }
-            technologyPanel.setGameData(data);
+            statsPanel.setGameData(data);
             economyPanel.setGameData(data);
             if (objectivePanel != null) {
               objectivePanel.setGameData(data);
