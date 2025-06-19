@@ -11,9 +11,11 @@ import games.strategy.triplea.EngineImageLoader;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Rectangle;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -24,6 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -34,12 +37,19 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.RowFilter;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.java.Interruptibles;
-import org.triplea.java.ThreadRunner;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
@@ -156,33 +166,60 @@ public class DownloadMapsWindow extends JFrame {
     SINGLETON_MANAGER.showAndDownload(mapNamesToDownload);
   }
 
-  private String newLabelText(final MapDownloadItem map) {
-    final String doubleSpace = "&nbsp;&nbsp;";
+  /**
+   * Returns an HTML-formatted label text based on the current map selection.
+   *
+   * <p>Return values based on the selection:
+   *
+   * <ul>
+   *   <li><b>One map:</b> the map name
+   *   <li><b>Multiple maps:</b> a comma separated list of the names of the selected maps
+   *   <li><b>No map:</b> a string indicating there is no selection
+   * </ul>
+   *
+   * @param selectedMapItems List of selected maps
+   * @return a descriptive HTML string depending on the selection
+   */
+  private String newMapUrlAndSizeLabelText(final List<MapDownloadItem> selectedMapItems) {
+    if (selectedMapItems.isEmpty()) {
+      return "<html>None selected</html>";
+    }
+    final @NonNls String doubleSpace = "&nbsp;&nbsp;";
+
+    String mapsString =
+        String.join(", ", selectedMapItems.stream().map(MapDownloadItem::getMapName).toList());
 
     final StringBuilder sb = new StringBuilder();
-    sb.append("<html>").append(map.getMapName()).append(doubleSpace);
+    sb.append("<html>")
+        .append(MessageFormat.format("Selected: {0}", mapsString))
+        .append(doubleSpace);
 
-    if (!downloadMapsWindowModel.isInstalled(map)) {
-      if (map.getDownloadSizeInBytes() != -1L) {
-        sb.append(doubleSpace)
-            .append(" (")
-            .append(FileUtils.byteCountToDisplaySize(map.getDownloadSizeInBytes()))
-            .append(")");
+    if (selectedMapItems.size() == 1) {
+      final MapDownloadItem map = selectedMapItems.get(0);
+      if (!downloadMapsWindowModel.isInstalled(map)) {
+        if (map.getDownloadSizeInBytes() != -1L) {
+          sb.append(doubleSpace)
+              .append(" (")
+              .append(FileUtils.byteCountToDisplaySize(map.getDownloadSizeInBytes()))
+              .append(")");
+        }
+      } else {
+        downloadMapsWindowModel
+            .getInstallLocation(map)
+            .ifPresent(
+                mapPath -> {
+                  sb.append(doubleSpace).append(" (");
+                  try {
+                    sb.append(FileUtils.byteCountToDisplaySize(Files.size(mapPath)));
+                  } catch (final IOException e) {
+                    log.warn("Failed to read file size", e);
+                    sb.append("N/A");
+                  }
+                  sb.append(")")
+                      .append("<br>")
+                      .append(MessageFormat.format("Path: {0}", mapPath.toAbsolutePath()));
+                });
       }
-    } else {
-      downloadMapsWindowModel
-          .getInstallLocation(map)
-          .ifPresent(
-              mapPath -> {
-                sb.append(doubleSpace).append(" (");
-                try {
-                  sb.append(FileUtils.byteCountToDisplaySize(Files.size(mapPath)));
-                } catch (final IOException e) {
-                  log.warn("Failed to read file size", e);
-                  sb.append("N/A");
-                }
-                sb.append(")").append("<br>").append(mapPath.toAbsolutePath());
-              });
     }
     sb.append("<br>");
     sb.append("</html>");
@@ -277,12 +314,61 @@ public class DownloadMapsWindow extends JFrame {
       mapDownloadSwingTable.addMapSelectionListener(
           mapSelections ->
               newDescriptionPanelUpdatingSelectionListener(
-                  mapSelections.get(0), descriptionPane, unsortedMaps, mapSizeLabel));
+                  mapSelections, descriptionPane, unsortedMaps, mapSizeLabel));
 
       descriptionPane.setText(downloadMapsWindowModel.toHtmlString(unsortedMaps.get(0)));
       descriptionPane.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
 
-      main.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.WEST);
+      // Create label and search field
+      final JLabel searchLabel = new JLabel("Search:");
+      final JTextField searchField = new JTextField(15);
+      searchField.setToolTipText("Search maps...");
+
+      // Panel for label + field
+      JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+      searchPanel.add(searchLabel);
+      searchPanel.add(searchField);
+
+      // Row sorter for filtering
+      TableRowSorter<TableModel> rowSorter = new TableRowSorter<>(gamesList.getModel());
+      gamesList.setRowSorter(rowSorter);
+      searchField
+          .getDocument()
+          .addDocumentListener(
+              new DocumentListener() {
+                private void updateFilter() {
+                  String text = searchField.getText();
+                  if (text.trim().isEmpty()) {
+                    rowSorter.setRowFilter(null);
+                  } else {
+                    rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + Pattern.quote(text)));
+                  }
+                }
+
+                public void insertUpdate(DocumentEvent e) {
+                  updateFilter();
+                }
+
+                public void removeUpdate(DocumentEvent e) {
+                  updateFilter();
+                }
+
+                public void changedUpdate(DocumentEvent e) {
+                  updateFilter();
+                }
+              });
+
+      // Layout: put search box above games list
+      JPanel leftPanel = new JPanel(new BorderLayout());
+      leftPanel.add(searchPanel, BorderLayout.NORTH);
+      leftPanel.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.CENTER);
+      main.add(leftPanel, BorderLayout.WEST);
+
+      // select first entry by default
+      if (gamesList.getRowCount() > 0) {
+        gamesList.setRowSelectionInterval(0, 0);
+      }
+
       final JPanel southPanel =
           new JPanelBuilder()
               .gridLayout(2, 1)
@@ -301,31 +387,69 @@ public class DownloadMapsWindow extends JFrame {
   }
 
   private void newDescriptionPanelUpdatingSelectionListener(
-      final String mapName,
+      final List<String> mapNames,
       final JEditorPane descriptionPanel,
       final List<MapDownloadItem> maps,
       final JLabel mapSizeLabelToUpdate) {
 
-    // find the map description by map name and update the map download detail panel
-    maps.stream()
-        .filter(mapDescription -> mapDescription.getMapName().equals(mapName))
-        .findAny()
-        .ifPresent(
-            map -> {
-              final String text = downloadMapsWindowModel.toHtmlString(map);
-              descriptionPanel.setText(text);
-              descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-              updateMapUrlAndSizeLabel(map, mapSizeLabelToUpdate);
-            });
+    List<MapDownloadItem> selectedMapItems = getSelectedMapDownloadItems(mapNames, maps);
+
+    final String newMapSizeLabelText = newMapUrlAndSizeLabelText(selectedMapItems);
+    mapSizeLabelToUpdate.setText(newMapSizeLabelText);
+
+    final String newDescriptionPanelText = newDescriptionPanelText(selectedMapItems);
+    descriptionPanel.setText(newDescriptionPanelText);
+    descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
   }
 
-  private void updateMapUrlAndSizeLabel(final MapDownloadItem map, final JLabel mapSizeLabel) {
-    mapSizeLabel.setText(" ");
-    ThreadRunner.runInNewThread(
-        () -> {
-          final String labelText = newLabelText(map);
-          SwingUtilities.invokeLater(() -> mapSizeLabel.setText(labelText));
-        });
+  /**
+   * Returns an HTML-formatted label for the description panel based on the current map selection.
+   *
+   * <p>Return values:
+   *
+   * <ul>
+   *   <li><b>Single map selected:</b> the result of {@link
+   *       DownloadMapsWindowModel#toHtmlString(MapDownloadItem)}
+   *   <li><b>Multiple maps selected:</b> a generic message indicating multiple maps are selected
+   *   <li><b>No selection:</b> an empty string
+   * </ul>
+   *
+   * @param selectedMapItems List of selected maps
+   * @return a descriptive HTML string depending on the selection
+   */
+  private String newDescriptionPanelText(List<MapDownloadItem> selectedMapItems) {
+    final int countSelectedMapItems = selectedMapItems.size();
+    final String descriptionPanelText;
+    if (countSelectedMapItems == 1) {
+      descriptionPanelText = downloadMapsWindowModel.toHtmlString(selectedMapItems.get(0));
+    } else if (countSelectedMapItems > 1) {
+      descriptionPanelText = "(multiple maps selected)";
+    } else {
+      descriptionPanelText = "";
+    }
+    return descriptionPanelText;
+  }
+
+  /**
+   * Returns a sublist of {@code maps} which entries match one entry in {@code mapNames} by {@link
+   * MapDownloadItem#getMapName}.
+   *
+   * @param mapNames List of Strings for map names
+   * @param maps List of MapDownloadItem that are available
+   * @return Matching MapDownloadItem sublist
+   */
+  private static @NotNull List<MapDownloadItem> getSelectedMapDownloadItems(
+      List<String> mapNames, List<MapDownloadItem> maps) {
+    List<MapDownloadItem> selectedMapItems = new ArrayList<>();
+    for (final MapDownloadItem map : maps) {
+      if (mapNames.contains(map.getMapName())) {
+        selectedMapItems.add(map);
+        if (selectedMapItems.size() == mapNames.size()) {
+          break;
+        }
+      }
+    }
+    return selectedMapItems;
   }
 
   private static final class SingletonManager {
