@@ -42,7 +42,7 @@
 - mapName: WW2 Oil and Snow 2nd Edition
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/ww2_oil_and_snow_2nd_edition/archive/refs/heads/master.zip
-  img: https://github.com/triplea-maps/ww2_oil_and_snow_2nd_edition/raw/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/ww2_oil_and_snow_2nd_edition/master/preview.png
   version: 2
   description: |
     <br>* Combined terrain effects + true seasonal winter & fuel production / usage
@@ -57,7 +57,7 @@
 - mapName: Big World
   mapCategory: BEST
   url: https://github.com/triplea-maps/big_world/archive/refs/heads/master.zip
-  img: https://github.com/triplea-maps/big_world/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/big_world/master/preview.png
   version: 4
   description: |
     <br>WWII style map, larger version of Revised.
@@ -67,7 +67,7 @@
   mapCategory: BEST
   url: https://github.com/triplea-maps/middle_earth/archive/refs/heads/master.zip
   version: 3
-  img: https://github.com/triplea-maps/middle_earth/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/middle_earth/master/preview.png
   description: |
     <br>Lord of the Rings
 - mapName: Napoleonic Empires
@@ -2242,7 +2242,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/270bc_wars/archive/refs/heads/master.zip
   version: 1
-  img: https://github.com/triplea-maps/270bc_wars/raw/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/270bc_wars/master/preview.png
   description: |
     <br>By Cernel.
     <br>Original 270BC map and game by Doctor Che.
@@ -2574,7 +2574,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/New_World_Order_Variants/archive/refs/heads/master.zip
   version: 2
-  img: https://github.com/triplea-maps/New_World_Order_Variants/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/New_World_Order_Variants/master/preview.png
   description: |
    <br>3 Variants on the New World Order Map that handle smaller neutral nations differently
    <br>New World Order Variant - Neutrals Unassigned
@@ -2703,7 +2703,7 @@
 - mapName: argomidweight
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/argomidweight/archive/refs/heads/master.zip
-  img: https://github.com/triplea-maps/argomidweight/raw/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/argomidweight/master/preview.png
   version: 1
   description: |
     <br>* A medium-weight global WWII map set in 1939 or 1942
