@@ -483,6 +483,7 @@
 - mapName: Capture the Flag
   mapCategory: GOOD
   url: https://github.com/triplea-maps/capture_the_flag/archive/refs/heads/master.zip
+  img: https://github.com/triplea-maps/capture_the_flag/blob/master/preview.png
   version: 1
   description: |
     <br>Small even balanced map
