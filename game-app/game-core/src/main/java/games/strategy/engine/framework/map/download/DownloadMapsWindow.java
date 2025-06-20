@@ -310,9 +310,6 @@ public class DownloadMapsWindow extends JFrame {
     if (!unsortedMaps.isEmpty()) {
       final MapDownloadSwingTable mapDownloadSwingTable = new MapDownloadSwingTable(unsortedMaps);
       final JTable gamesList = mapDownloadSwingTable.getSwingComponent();
-      if (requestFocus) {
-        SwingUtilities.invokeLater(gamesList::requestFocus);
-      }
       mapDownloadSwingTable.addMapSelectionListener(
           mapSelections ->
               newDescriptionPanelUpdatingSelectionListener(
@@ -325,6 +322,9 @@ public class DownloadMapsWindow extends JFrame {
       final JLabel searchLabel = new JLabel("Search:");
       final JTextField searchField = new JTextField(15);
       searchField.setToolTipText("Search maps...");
+      if (requestFocus) {
+        SwingUtilities.invokeLater(searchField::requestFocus);
+      }
 
       // Panel for label + field
       JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
