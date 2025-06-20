@@ -12,10 +12,7 @@ echo "Checking URLs..."
 failed_urls=()
 
 while IFS= read -r url; do
-  status=$(curl -o /dev/null -s -w "%{http_code}" -I -L "$url")
-  if [[ ! "$status" = 200 ]]; then
-    failed_urls+=("$url")
-  fi
+  curl --fail --silent "$url" > /dev/null || failed_urls+=("$url")
 done < triplea_maps_urls.txt
 
 if [ "${#failed_urls[@]}" -ne 0 ]; then
