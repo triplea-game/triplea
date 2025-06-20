@@ -31,7 +31,7 @@ jobs:
 
           while IFS= read -r url; do
             status=$(curl -o /dev/null -s -w "%{http_code}" -I -L "$url")
-            if [[ ! "$status" =~ ^2|3 ]]; then
+            if [[ ! "$status" = 200 ]]; then
               failed_urls+=("$url")
             fi
           done < triplea_maps_urls.txt
