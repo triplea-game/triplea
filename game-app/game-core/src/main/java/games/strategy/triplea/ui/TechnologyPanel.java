@@ -146,7 +146,6 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
     /* Flag to indicate whether data needs to be recalculated */
     private boolean isDirty = true;
     /* Column Header Names */
-    /* Row Header Names */
     private String[] colList;
     /* Underlying data for the table */
     private final String[][] data;
@@ -276,7 +275,8 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
 
     @Override
     public int getColumnCount() {
-      return colList.length + 1;
+      return colList.length
+          + 1; // add one because there is a column for the name of the technologies
     }
 
     @Override
