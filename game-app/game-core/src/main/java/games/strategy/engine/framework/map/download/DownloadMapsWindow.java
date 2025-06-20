@@ -14,6 +14,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Rectangle;
 import java.io.IOException;
+import java.io.Serial;
 import java.nio.file.Files;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -27,7 +28,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
@@ -39,6 +39,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -63,7 +65,7 @@ public class DownloadMapsWindow extends JFrame {
     REMOVE
   }
 
-  private static final long serialVersionUID = -1542210716764178580L;
+  @Serial private static final long serialVersionUID = -1542210716764178580L;
   private static final int WINDOW_WIDTH = 1200;
   private static final int WINDOW_HEIGHT = 700;
   private static final int DIVIDER_POSITION = WINDOW_HEIGHT - 150;
@@ -73,7 +75,7 @@ public class DownloadMapsWindow extends JFrame {
 
   private final MapDownloadProgressPanel progressPanel;
 
-  private final DownloadMapsWindowModel downloadMapsWindowModel;
+  private final transient DownloadMapsWindowModel downloadMapsWindowModel;
 
   private DownloadMapsWindow(
       final Collection<String> pendingDownloadMapNames, final List<MapDownloadItem> allDownloads) {
@@ -102,7 +104,7 @@ public class DownloadMapsWindow extends JFrame {
         DownloadCoordinator.instance.getDownloads().stream()
             .filter(download -> download.getDownloadState() != DownloadState.CANCELLED)
             .map(DownloadFile::getDownload)
-            .collect(Collectors.toList()));
+            .toList());
 
     if (!unknownMapNames.isEmpty()) {
       SwingComponents.newMessageDialog(formatIgnoredPendingMapsMessage(unknownMapNames));
@@ -287,7 +289,7 @@ public class DownloadMapsWindow extends JFrame {
           newMapSelectionPanel(
               mapList.getInstalled().keySet().stream()
                   .sorted(Comparator.comparing(m -> m.getMapName().toUpperCase(Locale.ENGLISH)))
-                  .collect(Collectors.toList()),
+                  .toList(),
               MapAction.REMOVE,
               false);
       tabbedPane.addTab("Installed", installed);
@@ -309,7 +311,7 @@ public class DownloadMapsWindow extends JFrame {
       final MapDownloadSwingTable mapDownloadSwingTable = new MapDownloadSwingTable(unsortedMaps);
       final JTable gamesList = mapDownloadSwingTable.getSwingComponent();
       if (requestFocus) {
-        SwingUtilities.invokeLater(() -> gamesList.requestFocus());
+        SwingUtilities.invokeLater(gamesList::requestFocus);
       }
       mapDownloadSwingTable.addMapSelectionListener(
           mapSelections ->
@@ -364,8 +366,10 @@ public class DownloadMapsWindow extends JFrame {
       leftPanel.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.CENTER);
       main.add(leftPanel, BorderLayout.WEST);
 
-      // select first entry by default
+      // sort initially and select first entry by default
       if (gamesList.getRowCount() > 0) {
+        rowSorter.setSortKeys(java.util.List.of(new RowSorter.SortKey(0, SortOrder.ASCENDING)));
+        rowSorter.sort();
         gamesList.setRowSelectionInterval(0, 0);
       }
 
@@ -566,8 +570,7 @@ public class DownloadMapsWindow extends JFrame {
             new JButtonBuilder()
                 .title("Close")
                 .toolTip(
-                    "Click this button to close the map download window and "
-                        + "cancel any in-progress downloads.")
+                    "Click this button to close the map download window and cancel any in-progress downloads.")
                 .actionListener(
                     () -> {
                       setVisible(false);
@@ -589,8 +592,9 @@ public class DownloadMapsWindow extends JFrame {
           new JButtonBuilder()
               .title("Remove")
               .toolTip(
-                  "Click this button to remove the maps selected above from your computer. "
-                      + MULTIPLE_SELECT_MSG)
+                  MessageFormat.format(
+                      "Click this button to remove the maps selected above from your computer. {0}",
+                      MULTIPLE_SELECT_MSG))
               .actionListener(removeAction(mapSelection, maps, tableRemoveAction))
               .build();
     } else {
@@ -598,8 +602,9 @@ public class DownloadMapsWindow extends JFrame {
           new JButtonBuilder()
               .title((action == MapAction.INSTALL) ? "Install" : "Update")
               .toolTip(
-                  "Click this button to download and install the maps selected above. "
-                      + MULTIPLE_SELECT_MSG)
+                  MessageFormat.format(
+                      "Click this button to download and install the maps selected above. {0}",
+                      MULTIPLE_SELECT_MSG))
               .actionListener(installAction(mapSelection, maps, tableRemoveAction))
               .build();
     }
@@ -613,9 +618,7 @@ public class DownloadMapsWindow extends JFrame {
     return () -> {
       final List<String> selectedValues = mapSelection.get();
       final List<MapDownloadItem> selectedMaps =
-          maps.stream()
-              .filter(map -> selectedValues.contains(map.getMapName()))
-              .collect(Collectors.toList());
+          maps.stream().filter(map -> selectedValues.contains(map.getMapName())).toList();
       if (!selectedMaps.isEmpty()) {
         FileSystemAccessStrategy.remove(
             downloadMapsWindowModel::delete, selectedMaps, tableRemoveAction);
@@ -630,9 +633,7 @@ public class DownloadMapsWindow extends JFrame {
     return () -> {
       final List<String> selectedValues = mapSelection.get();
       final List<MapDownloadItem> downloadList =
-          maps.stream()
-              .filter(map -> selectedValues.contains(map.getMapName()))
-              .collect(Collectors.toList());
+          maps.stream().filter(map -> selectedValues.contains(map.getMapName())).toList();
 
       if (!downloadList.isEmpty()) {
         progressPanel.download(downloadList);
