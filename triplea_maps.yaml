@@ -3310,3 +3310,24 @@
   img: https://raw.githubusercontent.com/triplea-maps/NekahNets_1939_3/master/preview.png
   description: |
     <br>World War 2 in 1939 using Big World Map
+- mapName: Future Wars - Fallen Empire
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/futurewars_fallen_empire/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/futurewars_fallen_empire/blob/master/preview.png
+  description: |
+    <br>A conflict on fictional continent with Cold War level technology
+- mapName: Battle of Iwo Jima
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Iwo_Jima/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/Iwo_Jima/blob/master/preview.png
+  description: |
+    <br>From February 19th to March 26th of the year 1945 many brave men from the Japanese Imperial Army and United States Marine Corps lost their lives to protect and capture an 8 sq mi volcanic island named Iwo Jima.
+- mapName: Spoils of War
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Spoils_of_War/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/Spoils_of_War/blob/master/preview.png
+  description: |
+    <br>3-Way Conflict between Russia, Germany & the United States
