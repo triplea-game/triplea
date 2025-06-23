@@ -55,6 +55,23 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   }
 
   /**
+   * Get method for resource by resource name.
+   *
+   * @param resourceName name of the resource
+   * @return {@link Resource} from the resource list
+   * @throws GameParseException if resource list does not have a resource with name {@code
+   *     resourceName}
+   */
+  public Resource getResourceOrThrowGameParseException(final String resourceName)
+      throws GameParseException {
+    try {
+      return getData().getResourceList().getResourceOrThrow(resourceName);
+    } catch (IllegalArgumentException e) {
+      throw new GameParseException(e.getMessage(), e);
+    }
+  }
+
+  /**
    * Gets the attachment with the specified name and type from the specified object.
    *
    * @param namedAttachable The object from which the attachment is to be retrieved.

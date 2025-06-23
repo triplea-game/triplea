@@ -1948,7 +1948,7 @@ public class UnitAttachment extends DefaultAttachment {
     }
     final String resourceToProduce = s[1];
     // validate that this resource exists in the xml
-    final Resource r = getData().getResourceList().getResourceOrThrow(resourceToProduce);
+    final Resource r = getResourceOrThrowGameParseException(resourceToProduce);
     final int n = getInt(s[0]);
     if (!allowNegative && n < 0) {
       throw new GameParseException(description + " must have positive values" + thisErrorMsg());

@@ -9,6 +9,7 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.gameparser.GameParseException;
+import java.io.Serial;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +26,7 @@ import org.triplea.util.Triple;
  * default to null to minimize memory use and serialization size.
  */
 public class PlayerAttachment extends DefaultAttachment {
-  private static final long serialVersionUID = 1880755875866426270L;
+  @Serial private static final long serialVersionUID = 1880755875866426270L;
 
   @Getter private int vps = 0;
   // need to store some data during a turn
@@ -188,7 +189,7 @@ public class PlayerAttachment extends DefaultAttachment {
       throw new GameParseException(
           "suicideAttackResources attack value must be positive" + thisErrorMsg());
     }
-    final Resource r = getData().getResourceList().getResourceOrThrow(s[1]);
+    final Resource r = getResourceOrThrowGameParseException(s[1]);
     if (suicideAttackResources == null) {
       suicideAttackResources = new IntegerMap<>();
     }

@@ -601,8 +601,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     support = null;
   }
 
-  private void setResource(final String s) {
-    getData().getResourceList().getResourceOrThrow(s);
+  private void setResource(final String s) throws GameParseException {
+    getResourceOrThrowGameParseException(s);
     resource = s.intern();
   }
 
