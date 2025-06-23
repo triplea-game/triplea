@@ -533,7 +533,7 @@ public final class GameParser {
               .orElseGet(current::getValue);
 
       // Next, infer the type of property based on its value
-      // and set the property  in game data properties.
+      // and set the property in game data properties.
       if (current.getEditable() == null || !current.getEditable()) {
         final Serializable castedValue =
             (Serializable) PropertyValueTypeInference.castToInferredType(value);
@@ -674,7 +674,7 @@ public final class GameParser {
       throws GameParseException {
     if (elements.isEmpty()) {
       throw new GameParseException(
-          MessageFormat.format("No costs  for production rule: {0}", productionRule.getName()));
+          MessageFormat.format("No costs for production rule: {0}", productionRule.getName()));
     }
     parseCostsForRule(productionRule, elements);
   }
@@ -703,7 +703,7 @@ public final class GameParser {
     List<Production.Rule.Result> ruleResults = mapRule.getRuleResults();
     if (ruleResults.isEmpty()) {
       throw new GameParseException(
-          MessageFormat.format("No results for production rule: {0}", dataRule.getName()));
+          MessageFormat.format("No results for rule: {0}", dataRule.getName()));
     }
     for (final Production.ProductionRule.Result current : ruleResults) {
       // must find either a resource or a unit with the given name
