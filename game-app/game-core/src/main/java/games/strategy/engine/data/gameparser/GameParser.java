@@ -264,7 +264,10 @@ public final class GameParser {
 
   private GamePlayer getPlayerId(final String name) throws GameParseException {
     return getPlayerIdOptional(name)
-        .orElseThrow(() -> new GameParseException("Could not find player name:" + name));
+        .orElseThrow(
+            () ->
+                new GameParseException(
+                    MessageFormat.format("Could not find player name: {0}", name)));
   }
 
   private Optional<GamePlayer> getPlayerIdOptional(final String name) {
@@ -273,33 +276,52 @@ public final class GameParser {
 
   private RelationshipType getRelationshipType(final String name) throws GameParseException {
     return Optional.ofNullable(data.getRelationshipTypeList().getRelationshipType(name))
-        .orElseThrow(() -> new GameParseException("Could not find relationship type:" + name));
+        .orElseThrow(
+            () ->
+                new GameParseException(
+                    MessageFormat.format("Could not find relationship type: {0}", name)));
   }
 
   private TerritoryEffect getTerritoryEffect(final String name) throws GameParseException {
     return Optional.ofNullable(data.getTerritoryEffectList().get(name))
-        .orElseThrow(() -> new GameParseException("Could not find territoryEffect:" + name));
+        .orElseThrow(
+            () ->
+                new GameParseException(
+                    MessageFormat.format("Could not find territory effect: {0}", name)));
   }
 
   /** If the productionRule cannot be found an exception will be thrown. */
   private ProductionRule getProductionRule(final String name) throws GameParseException {
     return Optional.ofNullable(data.getProductionRuleList().getProductionRule(name))
-        .orElseThrow(() -> new GameParseException("Could not find production rule:" + name));
+        .orElseThrow(
+            () ->
+                new GameParseException(
+                    MessageFormat.format("Could not find production rule: {0}", name)));
   }
 
   /** If the repairRule cannot be found an exception will be thrown. */
   private RepairRule getRepairRule(final String name) throws GameParseException {
     return Optional.ofNullable(data.getRepairRules().getRepairRule(name))
-        .orElseThrow(() -> new GameParseException("Could not find repair rule:" + name));
+        .orElseThrow(
+            () ->
+                new GameParseException(
+                    MessageFormat.format("Could not find repair rule: {0}", name)));
   }
 
   private Territory getTerritory(final String name) throws GameParseException {
     return Optional.ofNullable(data.getMap().getTerritory(name))
-        .orElseThrow(() -> new GameParseException("Could not find territory:" + name));
+        .orElseThrow(
+            () ->
+                new GameParseException(
+                    MessageFormat.format("Could not find territory: {0}", name)));
   }
 
   private UnitType getUnitType(final String name) throws GameParseException {
-    return data.getUnitTypeList().getUnitTypeOrThrow(name);
+    try {
+      return data.getUnitTypeList().getUnitTypeOrThrow(name);
+    } catch (final IllegalArgumentException e) {
+      throw new GameParseException(e.getMessage(), e);
+    }
   }
 
   /** If mustfind is true and cannot find the unitType an exception will be thrown. */
@@ -311,18 +333,27 @@ public final class GameParser {
     final TechnologyFrontier frontier = data.getTechnologyFrontier();
     return Optional.ofNullable(frontier.getAdvanceByName(name))
         .or(() -> Optional.ofNullable(frontier.getAdvanceByProperty(name)))
-        .orElseThrow(() -> new GameParseException("Could not find technology:" + name));
+        .orElseThrow(
+            () ->
+                new GameParseException(
+                    MessageFormat.format("Could not find technology: {0}", name)));
   }
 
   /** If the Delegate cannot be found an exception will be thrown. */
   private IDelegate getDelegate(final String name) throws GameParseException {
     return Optional.ofNullable(data.getDelegate(name))
-        .orElseThrow(() -> new GameParseException("Could not find delegate:" + name));
+        .orElseThrow(
+            () ->
+                new GameParseException(MessageFormat.format("Could not find delegate: {0}", name)));
   }
 
   /** If must find is true and cannot find the Resource, an exception will be thrown. */
   private Resource getResourceOrThrow(final String name) throws GameParseException {
-    return data.getResourceList().getResourceOrThrow(name);
+    try {
+      return data.getResourceList().getResourceOrThrow(name);
+    } catch (final IllegalArgumentException e) {
+      throw new GameParseException(e.getMessage(), e);
+    }
   }
 
   private Optional<Resource> getResourceOptional(final String name) {
@@ -332,13 +363,19 @@ public final class GameParser {
   /** If the productionFrontier cannot be found an exception will be thrown. */
   private ProductionFrontier getProductionFrontier(final String name) throws GameParseException {
     return Optional.ofNullable(data.getProductionFrontierList().getProductionFrontier(name))
-        .orElseThrow(() -> new GameParseException("Could not find production frontier:" + name));
+        .orElseThrow(
+            () ->
+                new GameParseException(
+                    MessageFormat.format("Could not find production frontier: {0}", name)));
   }
 
   /** If the repairFrontier cannot be found an exception will be thrown. */
   private RepairFrontier getRepairFrontier(final String name) throws GameParseException {
     return Optional.ofNullable(data.getRepairFrontierList().getRepairFrontier(name))
-        .orElseThrow(() -> new GameParseException("Could not find repair frontier:" + name));
+        .orElseThrow(
+            () ->
+                new GameParseException(
+                    MessageFormat.format("Could not find repair frontier: {0}", name)));
   }
 
   private void parseTerritories(
@@ -384,7 +421,8 @@ public final class GameParser {
     for (final String playerName : Splitter.on(':').split(encodedPlayerNames)) {
       final @Nullable GamePlayer player = data.getPlayerList().getPlayerId(playerName);
       if (player == null) {
-        throw new GameParseException("Parse resources could not find player: " + playerName);
+        throw new GameParseException(
+            MessageFormat.format("Parse resources could not find player: {0}", playerName));
       }
       players.add(player);
     }
@@ -564,7 +602,9 @@ public final class GameParser {
           xmlGameElementMapper
               .newDelegate(className)
               .orElseThrow(
-                  () -> new GameParseException("Class <" + className + "> is not a delegate."));
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format("Class <{0}> is not a delegate.", className)));
       final String name = current.getName();
       String displayName = current.getDisplay();
       if (displayName == null) {
@@ -581,12 +621,9 @@ public final class GameParser {
       final GamePlayer player = getPlayerIdOptional(current.getPlayer()).orElse(null);
       if (player == null && current.getPlayer() != null && !current.getPlayer().isBlank()) {
         throw new GameParseException(
-            "The step "
-                + current.getName()
-                + " wants a player with the name of '"
-                + current.getPlayer()
-                + "' but that player can not be found. "
-                + "Make sure the player's name is spelled correctly.");
+            MessageFormat.format(
+                "The step {0} wants a player with the name of ''{1}'', but that player cannot be found. Make sure the player''s name is spelled correctly.",
+                current.getName(), current.getPlayer()));
       }
       final String name = current.getName();
       String displayName = null;
@@ -616,7 +653,7 @@ public final class GameParser {
     for (final Production.ProductionRule current : elements) {
       final String name = current.getName();
       final ProductionRule rule = new ProductionRule(name, data);
-      parseCosts(rule, current.getCosts());
+      parseProductionCosts(rule, current.getCosts());
       parseResults(rule, current);
       data.getProductionRuleList().addProductionRule(rule);
     }
@@ -632,26 +669,29 @@ public final class GameParser {
     }
   }
 
-  private void parseCosts(
-      final ProductionRule rule, final List<Production.ProductionRule.Cost> elements)
+  private void parseProductionCosts(
+      final ProductionRule productionRule, final List<Production.ProductionRule.Cost> elements)
       throws GameParseException {
     if (elements.isEmpty()) {
-      throw new GameParseException("no costs  for rule:" + rule.getName());
+      throw new GameParseException(
+          MessageFormat.format("No costs  for production rule: {0}", productionRule.getName()));
     }
-    for (final Production.ProductionRule.Cost current : elements) {
-      final Resource resource = getResourceOrThrow(current.getResource());
-      final int quantity = Optional.ofNullable(current.getQuantity()).orElse(0);
-      rule.addCost(resource, quantity);
-    }
+    parseCostsForRule(productionRule, elements);
   }
 
   private void parseRepairCosts(
-      final RepairRule rule, final List<Production.ProductionRule.Cost> elements)
+      final RepairRule repairRule, final List<Production.ProductionRule.Cost> elements)
       throws GameParseException {
     if (elements.isEmpty()) {
-      throw new GameParseException("no costs  for rule:" + rule.getName());
+      throw new GameParseException(
+          MessageFormat.format("No costs for repair rule: {0}", repairRule.getName()));
     }
-    for (final Production.ProductionRule.Cost current : elements) {
+    parseCostsForRule(repairRule, elements);
+  }
+
+  private void parseCostsForRule(Rule rule, List<Production.Rule.Cost> elements)
+      throws GameParseException {
+    for (final Production.Rule.Cost current : elements) {
       final Resource resource = getResourceOrThrow(current.getResource());
       final int quantity = Optional.ofNullable(current.getQuantity()).orElse(0);
       rule.addCost(resource, quantity);
@@ -663,7 +703,7 @@ public final class GameParser {
     List<Production.Rule.Result> ruleResults = mapRule.getRuleResults();
     if (ruleResults.isEmpty()) {
       throw new GameParseException(
-          MessageFormat.format("No results for rule {0}", dataRule.getName()));
+          MessageFormat.format("No results for production rule: {0}", dataRule.getName()));
     }
     for (final Production.ProductionRule.Result current : ruleResults) {
       // must find either a resource or a unit with the given name
@@ -673,7 +713,8 @@ public final class GameParser {
         result = getUnitTypeOptional(resourceOrUnit);
       }
       if (result.isEmpty()) {
-        throw new GameParseException("Could not find resource or unit " + resourceOrUnit);
+        throw new GameParseException(
+            MessageFormat.format("Could not find resource or unit: {0}", resourceOrUnit));
       }
       final int quantity = Optional.ofNullable(current.getQuantity()).orElse(0);
       dataRule.addResult(result.get(), quantity);
@@ -787,7 +828,8 @@ public final class GameParser {
         ta = data.getTechnologyFrontier().getAdvanceByName(current.getName());
       }
       if (ta == null) {
-        throw new GameParseException("Technology not found :" + current.getName());
+        throw new GameParseException(
+            MessageFormat.format("Could not find technology: {0}", current.getName()));
       }
       frontier.addAdvance(ta);
     }
@@ -833,7 +875,8 @@ public final class GameParser {
             .orElseThrow(
                 () ->
                     new GameParseException(
-                        "Attachment of type " + className + " could not be instantiated"));
+                        MessageFormat.format(
+                            "Attachment of type {0} could not be instantiated", className)));
     // replace-all to automatically correct legacy (1.8) attachment spelling
     attachable.addAttachment(name, attachment);
 
@@ -865,7 +908,8 @@ public final class GameParser {
       case "technology":
         return getTechnology(attachTo);
       default:
-        throw new GameParseException("Type not found to attach to: " + type);
+        throw new GameParseException(
+            MessageFormat.format("Type not found to attach to: {0}", type));
     }
   }
 
@@ -886,7 +930,8 @@ public final class GameParser {
           LegacyPropertyMapper.mapLegacyOptionName(decapitalize(optionName)).intern();
       if (name.isEmpty()) {
         throw new GameParseException(
-            "Option name with zero length for attachment: " + attachment.getName());
+            MessageFormat.format(
+                "Option name with zero length for attachment: {0}", attachment.getName()));
       }
       if (LegacyPropertyMapper.ignoreOptionName(name, value)) {
         continue;
@@ -907,16 +952,16 @@ public final class GameParser {
             .orElseThrow(
                 () ->
                     new GameParseException(
-                        String.format(
-                            "Missing property definition for option '%s' in attachment '%s'",
+                        MessageFormat.format(
+                            "Missing property definition for option ''{0}'' in attachment ''{1}''",
                             name, attachment.getName())))
             .setValue(finalValue);
       } catch (final GameParseException e) {
         throw e;
       } catch (final Exception e) {
         throw new GameParseException(
-            String.format(
-                "map name: '%s', Unexpected Exception while setting values for attachment: %s, %s",
+            MessageFormat.format(
+                "map name: ''{0}'', unexpected exception while setting values for attachment: {1}, {2}",
                 xmlUri, attachment, e.getMessage()),
             e);
       }
@@ -957,12 +1002,17 @@ public final class GameParser {
       final int hits = Optional.ofNullable(current.getHitsTaken()).orElse(0);
       if (hits < 0 || hits > type.getUnitAttachment().getHitPoints() - 1) {
         throw new GameParseException(
-            "hitsTaken cannot be less than zero or greater than one less than total hitPoints");
+            MessageFormat.format(
+                "Unit placement issue for unit type {0} in territory {1}: hitsTaken is {2}, but cannot be less than zero or greater than {3} (one less than total hitPoints)",
+                type, territory, hits, type.getUnitAttachment().getHitPoints() - 1));
       }
 
       final int unitDamage = Optional.ofNullable(current.getUnitDamage()).orElse(0);
       if (unitDamage < 0) {
-        throw new GameParseException("unitDamage cannot be less than zero");
+        throw new GameParseException(
+            MessageFormat.format(
+                "Unit placement issue for unit type {0} in territory {1}: unitDamage is {2}, but cannot be less than zero",
+                type, territory, unitDamage));
       }
 
       final GamePlayer owner;
