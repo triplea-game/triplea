@@ -713,12 +713,14 @@ public class BattleTracker implements Serializable {
           final Change add = ChangeFactory.changeResourcesChange(gamePlayer, pus, capturedPuCount);
           addChange(bridge, changeTracker, add);
         }
-        // remove all the tokens of the captured player
-        final Resource tokens = data.getResourceList().getResourceOrThrow(Constants.TECH_TOKENS);
-        final int currTokens = whoseCapital.getResources().getQuantity(Constants.TECH_TOKENS);
-        final Change removeTokens =
-            ChangeFactory.changeResourcesChange(whoseCapital, tokens, -currTokens);
-        addChange(bridge, changeTracker, removeTokens);
+        // remove all the tokens of the captured player if tokens are used
+        if (data.getResourceList().getResourceOptional(Constants.TECH_TOKENS).isPresent()) {
+          final Resource tokens = data.getResourceList().getResourceOrThrow(Constants.TECH_TOKENS);
+          final int currTokens = whoseCapital.getResources().getQuantity(Constants.TECH_TOKENS);
+          final Change removeTokens =
+              ChangeFactory.changeResourcesChange(whoseCapital, tokens, -currTokens);
+          addChange(bridge, changeTracker, removeTokens);
+        }
       }
     }
     // is this an allied territory? Revert to original owner if it is,
