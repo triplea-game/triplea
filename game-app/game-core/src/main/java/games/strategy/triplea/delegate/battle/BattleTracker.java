@@ -713,7 +713,7 @@ public class BattleTracker implements Serializable {
           final Change add = ChangeFactory.changeResourcesChange(gamePlayer, pus, capturedPuCount);
           addChange(bridge, changeTracker, add);
         }
-        // remove all the tokens of the captured player if token was used
+        // remove all the tokens of the captured player if tokens are used
         if (data.getResourceList().getResourceOptional(Constants.TECH_TOKENS).isPresent()) {
           final Resource tokens = data.getResourceList().getResourceOrThrow(Constants.TECH_TOKENS);
           final int currTokens = whoseCapital.getResources().getQuantity(Constants.TECH_TOKENS);
