@@ -39,8 +39,8 @@ public class ProductionRule extends DefaultNamed implements Rule {
   }
 
   @Override
-  public IntegerMap<Resource> getInternalCosts() {
-    return costs;
+  public void addCost(final Resource resource, final int quantity) {
+    costs.put(resource, quantity);
   }
 
   @Override
