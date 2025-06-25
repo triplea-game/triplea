@@ -246,7 +246,7 @@ public class TerritoryAttachment extends DefaultAttachment {
       throw new GameParseException(
           "Please set PUs using production, not resource" + thisErrorMsg());
     }
-    final Resource resource = getData().getResourceList().getResourceOrThrow(s[1]);
+    final Resource resource = getResourceOrThrowGameParseException(s[1]);
     resources.putResource(resource, amount);
   }
 
