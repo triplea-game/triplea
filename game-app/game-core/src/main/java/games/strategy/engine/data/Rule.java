@@ -20,17 +20,7 @@ public interface Rule {
 
   IntegerMap<NamedAttachable> getResults();
 
-  IntegerMap<Resource> getInternalCosts();
-
-  /**
-   * Add resource cost to rule.
-   *
-   * @param resource of the cost
-   * @param quantity of the {@code resource}
-   */
-  default void addCost(final Resource resource, final int quantity) {
-    getInternalCosts().put(resource, quantity);
-  }
+  void addCost(final Resource resource, final int quantity);
 
   /**
    * Benefits must be a resource or a unit.
