@@ -3331,3 +3331,31 @@
   img: https://github.com/triplea-maps/Spoils_of_War/blob/master/preview.png
   description: |
     <br>3-Way Conflict between Russia, Germany & the United States
+- mapName: Churchills 1939 Path to Victory
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/churchills_1939_ww2_ptv/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/churchills_1939_ww2_ptv/blob/master/preview.png
+  description: |
+    <br>A 1939 scenario for the Path to Victory map
+- mapName: Forty Thousand
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Forty_thousand/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/Forty_thousand/blob/master/preview.png
+  description: |
+    <br>Conflict in the Warhammer 40K Universe
+- mapName: Nova Games Edition
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Nova_Games_Edition/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/Nova_Games_Edition/blob/master/preview.png
+  description: |
+    <br>TripleA implementation of the original 1981 Nova Games edition
+- mapName: Wolfys 1939
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Wolfy_s_1939/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/Nova_Games_Edition/blob/master/preview.png
+  description: |
+    <br>https://github.com/triplea-maps/Wolfy_s_1939/blob/master/preview.png
