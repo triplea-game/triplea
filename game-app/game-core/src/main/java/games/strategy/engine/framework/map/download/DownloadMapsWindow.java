@@ -15,7 +15,6 @@ import java.awt.FlowLayout;
 import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.Serial;
-import java.nio.file.Files;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -186,7 +185,6 @@ public class DownloadMapsWindow extends JFrame {
     if (selectedMapItems.isEmpty()) {
       return "<html>None selected</html>";
     }
-    final @NonNls String doubleSpace = "&nbsp;&nbsp;";
 
     String mapsString =
         String.join(", ", selectedMapItems.stream().map(MapDownloadItem::getMapName).toList());
@@ -194,39 +192,80 @@ public class DownloadMapsWindow extends JFrame {
     final StringBuilder sb = new StringBuilder();
     sb.append("<html>")
         .append(MessageFormat.format("Selected: {0}", mapsString))
-        .append(doubleSpace);
+        .append("&nbsp;&nbsp;");
 
-    if (selectedMapItems.size() == 1) {
-      final MapDownloadItem map = selectedMapItems.get(0);
-      if (!downloadMapsWindowModel.isInstalled(map)) {
-        if (map.getDownloadSizeInBytes() != -1L) {
-          sb.append(doubleSpace)
-              .append(" (")
-              .append(FileUtils.byteCountToDisplaySize(map.getDownloadSizeInBytes()))
-              .append(")");
-        }
-      } else {
-        downloadMapsWindowModel
-            .getInstallLocation(map)
-            .ifPresent(
-                mapPath -> {
-                  sb.append(doubleSpace).append(" (");
-                  try {
-                    sb.append(FileUtils.byteCountToDisplaySize(Files.size(mapPath)));
-                  } catch (final IOException e) {
-                    log.warn("Failed to read file size", e);
-                    sb.append("N/A");
-                  }
-                  sb.append(")")
-                      .append("<br>")
-                      .append(MessageFormat.format("Path: {0}", mapPath.toAbsolutePath()));
-                });
-      }
-    }
+    getTextForSizeAndPath(selectedMapItems, downloadMapsWindowModel).ifPresent(sb::append);
     sb.append("<br>");
     sb.append("</html>");
 
     return sb.toString();
+  }
+
+  private static Optional<String> getTextForSizeAndPath(
+      final List<MapDownloadItem> selectedMapItems, DownloadMapsWindowModel mapsWindowModel) {
+    if (selectedMapItems.size() == 1) {
+      final MapDownloadItem map = selectedMapItems.get(0);
+      if (!mapsWindowModel.isInstalled(map)) {
+        if (map.getDownloadSizeInBytes() != -1L) {
+          return Optional.of(
+              "(" + FileUtils.byteCountToDisplaySize(map.getDownloadSizeInBytes()) + ")");
+        } else {
+          return getTextForSizeAndPathByMapPath(map, mapsWindowModel);
+        }
+      } else {
+        return getTextForSizeAndPathByMapPath(map, mapsWindowModel);
+      }
+    } else if (selectedMapItems.size() > 1) {
+      return getTextForSizeAndPathFromMaps(selectedMapItems, mapsWindowModel);
+    }
+    return Optional.empty();
+  }
+
+  private static Optional<String> getTextForSizeAndPathByMapPath(
+      final MapDownloadItem map, final DownloadMapsWindowModel mapsWindowModel) {
+    return mapsWindowModel
+        .getInstallLocation(map)
+        .map(
+            mapPath -> {
+              @NonNls String byteSizeText;
+              try {
+                final long byteSize = org.triplea.io.FileUtils.getByteSizeFromPath(mapPath);
+                byteSizeText = "(" + FileUtils.byteCountToDisplaySize(byteSize) + ")";
+              } catch (final IOException e) {
+                log.warn("Failed to read file size", e);
+                byteSizeText = "(N/A)";
+              }
+              return byteSizeText
+                  + "<br>"
+                  + MessageFormat.format("Path: {0}", mapPath.toAbsolutePath());
+            });
+  }
+
+  private static @NotNull Optional<String> getTextForSizeAndPathFromMaps(
+      List<MapDownloadItem> selectedMapItems, final DownloadMapsWindowModel mapsWindowModel) {
+    final long totalSizeSelected =
+        selectedMapItems.stream()
+            .mapToLong(
+                map -> {
+                  long byteSize = map.getDownloadSizeInBytes();
+                  if (byteSize != -1L) {
+                    return byteSize;
+                  } else {
+                    return mapsWindowModel
+                        .getInstallLocation(map)
+                        .map(
+                            mapPath1 -> {
+                              try {
+                                return org.triplea.io.FileUtils.getByteSizeFromPath(mapPath1);
+                              } catch (IOException e) {
+                                return 0L;
+                              }
+                            })
+                        .orElse(0L);
+                  }
+                })
+            .sum();
+    return Optional.of("(total: " + FileUtils.byteCountToDisplaySize(totalSizeSelected) + ")");
   }
 
   private static String formatIgnoredPendingMapsMessage(final Collection<String> unknownMapNames) {
