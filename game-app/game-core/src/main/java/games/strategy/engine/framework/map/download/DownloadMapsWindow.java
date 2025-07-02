@@ -47,7 +47,7 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.java.Interruptibles;
@@ -58,6 +58,9 @@ import org.triplea.swing.jpanel.JPanelBuilder;
 /** Window that allows for map downloads and removal. */
 @Slf4j
 public class DownloadMapsWindow extends JFrame {
+
+  public static final @Nls String TEXT_ABBREVIATION_NOT_APPLICABLE = "N/A";
+
   private enum MapAction {
     INSTALL,
     UPDATE,
@@ -204,16 +207,16 @@ public class DownloadMapsWindow extends JFrame {
   private static Optional<String> getTextForSizeAndPath(
       final List<MapDownloadItem> selectedMapItems, DownloadMapsWindowModel mapsWindowModel) {
     if (selectedMapItems.size() == 1) {
-      final MapDownloadItem map = selectedMapItems.get(0);
-      if (!mapsWindowModel.isInstalled(map)) {
-        if (map.getDownloadSizeInBytes() != -1L) {
+      final MapDownloadItem selectedMap = selectedMapItems.get(0);
+      if (!mapsWindowModel.isInstalled(selectedMap)) {
+        if (selectedMap.getDownloadSizeInBytes() != -1L) {
           return Optional.of(
-              "(" + FileUtils.byteCountToDisplaySize(map.getDownloadSizeInBytes()) + ")");
+              "(" + FileUtils.byteCountToDisplaySize(selectedMap.getDownloadSizeInBytes()) + ")");
         } else {
-          return getTextForSizeAndPathByMapPath(map, mapsWindowModel);
+          return mapsWindowModel.getByteSizeTextForMap(selectedMap);
         }
       } else {
-        return getTextForSizeAndPathByMapPath(map, mapsWindowModel);
+        return mapsWindowModel.getByteSizeTextForMap(selectedMap);
       }
     } else if (selectedMapItems.size() > 1) {
       return getTextForSizeAndPathFromMaps(selectedMapItems, mapsWindowModel);
@@ -221,42 +224,22 @@ public class DownloadMapsWindow extends JFrame {
     return Optional.empty();
   }
 
-  private static Optional<String> getTextForSizeAndPathByMapPath(
-      final MapDownloadItem map, final DownloadMapsWindowModel mapsWindowModel) {
-    return mapsWindowModel
-        .getInstallLocation(map)
-        .map(
-            mapPath -> {
-              @NonNls String byteSizeText;
-              try {
-                final long byteSize = org.triplea.io.FileUtils.getByteSizeFromPath(mapPath);
-                byteSizeText = "(" + FileUtils.byteCountToDisplaySize(byteSize) + ")";
-              } catch (final IOException e) {
-                log.warn("Failed to read file size", e);
-                byteSizeText = "(N/A)";
-              }
-              return byteSizeText
-                  + "<br>"
-                  + MessageFormat.format("Path: {0}", mapPath.toAbsolutePath());
-            });
-  }
-
-  private static @NotNull Optional<String> getTextForSizeAndPathFromMaps(
+  private static Optional<String> getTextForSizeAndPathFromMaps(
       List<MapDownloadItem> selectedMapItems, final DownloadMapsWindowModel mapsWindowModel) {
     final long totalSizeSelected =
         selectedMapItems.stream()
             .mapToLong(
-                map -> {
-                  long byteSize = map.getDownloadSizeInBytes();
+                mapItem -> {
+                  long byteSize = mapItem.getDownloadSizeInBytes();
                   if (byteSize != -1L) {
                     return byteSize;
                   } else {
                     return mapsWindowModel
-                        .getInstallLocation(map)
+                        .getInstallLocation(mapItem)
                         .map(
-                            mapPath1 -> {
+                            mapPath -> {
                               try {
-                                return org.triplea.io.FileUtils.getByteSizeFromPath(mapPath1);
+                                return org.triplea.io.FileUtils.getByteSizeFromPath(mapPath);
                               } catch (IOException e) {
                                 return 0L;
                               }

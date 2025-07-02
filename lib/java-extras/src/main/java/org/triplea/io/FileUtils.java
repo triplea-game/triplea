@@ -42,6 +42,23 @@ public final class FileUtils {
   }
 
   /**
+   * Calculates the size behind a path.
+   *
+   * @param path to file or folder
+   * @return file size in byters or the sum of bytes of the files contained in the folder
+   * @throws IOException if an I/O error is thrown by a visitor method traversing the folder path
+   */
+  public static long getByteSizeFromPath(Path path) throws IOException {
+    final long byteSize;
+    if (path.toFile().isFile()) {
+      byteSize = Files.size(path);
+    } else {
+      byteSize = getFolderSize(path);
+    }
+    return byteSize;
+  }
+
+  /**
    * Calculates the folder size in bytes.
    *
    * @param folderPath assumed folder path
@@ -63,23 +80,6 @@ public final class FileUtils {
         });
 
     return size[0];
-  }
-
-  /**
-   * Calculates the size behind a path.
-   *
-   * @param path to file or folder
-   * @return file size in byters or the sum of bytes of the files contained in the folder
-   * @throws IOException if an I/O error is thrown by a visitor method traversing the folder path
-   */
-  public static long getByteSizeFromPath(Path path) throws IOException {
-    final long byteSize;
-    if (path.toFile().isFile()) {
-      byteSize = Files.size(path);
-    } else {
-      byteSize = getFolderSize(path);
-    }
-    return byteSize;
   }
 
   private static class FileSystemException extends RuntimeException {
