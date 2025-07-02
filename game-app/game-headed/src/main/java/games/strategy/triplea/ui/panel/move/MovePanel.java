@@ -341,7 +341,7 @@ public class MovePanel extends AbstractMovePanel {
                   transportsToLoadMatch);
           chooser.setAllButtonVisible(false);
           chooser.setTitle("Select air transports to load");
-          if (!notConfirmedUnitChooserDialog(chooser, "What transports do you want to load")) {
+          if (notConfirmedUnitChooserDialog(chooser, "What transports do you want to load")) {
             return List.of();
           }
           return chooser.getSelected(true);
@@ -422,7 +422,7 @@ public class MovePanel extends AbstractMovePanel {
                   unitsToLoadMatch);
           chooser.setAllButtonVisible(false);
           chooser.setTitle("Load air transports");
-          if (!notConfirmedUnitChooserDialog(chooser, "What units do you want to load")) {
+          if (notConfirmedUnitChooserDialog(chooser, "What units do you want to load")) {
             return List.of();
           }
           return chooser.getSelected(true);
@@ -880,7 +880,7 @@ public class MovePanel extends AbstractMovePanel {
                   getMap().getUiContext(),
                   seaTransportsToLoadMatch);
           chooser.setAllButtonVisible(false);
-          if (!notConfirmedUnitChooserDialog(chooser, "Select transports to load")) {
+          if (notConfirmedUnitChooserDialog(chooser, "Select transports to load")) {
             return List.of();
           }
           return chooser.getSelected(false);
@@ -1208,7 +1208,7 @@ public class MovePanel extends AbstractMovePanel {
             getMap().getUiContext(),
             transportsToUnloadMatch);
     chooser.setAllButtonVisible(false);
-    if (!notConfirmedUnitChooserDialog(chooser, "Select transports to unload")) {
+    if (notConfirmedUnitChooserDialog(chooser, "Select transports to unload")) {
       return List.of();
     }
     final Collection<Unit> chosenTransports =
