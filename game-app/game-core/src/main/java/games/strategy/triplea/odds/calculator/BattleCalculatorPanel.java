@@ -9,6 +9,7 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.ui.background.WaitDialog;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
@@ -633,12 +634,12 @@ class BattleCalculatorPanel extends JPanel {
     final double avgDefIfDefWon = results.getAverageDefendingUnitsLeftWhenDefenderWon();
     defenderLeftWhenDefenderWon.setText(
         Double.isNaN(avgDefIfDefWon)
-            ? "N/A"
+            ? DownloadMapsWindow.TEXT_ABBREVIATION_NOT_APPLICABLE
             : getRelationNumberText(avgDefIfDefWon, defendersTotal));
     final double avgAttIfAttWon = results.getAverageAttackingUnitsLeftWhenAttackerWon();
     attackerLeftWhenAttackerWon.setText(
         Double.isNaN(avgAttIfAttWon)
-            ? "N/A"
+            ? DownloadMapsWindow.TEXT_ABBREVIATION_NOT_APPLICABLE
             : getRelationNumberText(avgAttIfAttWon, attackersTotal));
     roundsAverage.setText(formatValue(results.getAverageBattleRoundsFought()));
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
