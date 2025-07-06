@@ -3359,3 +3359,24 @@
   img: https://github.com/triplea-maps/Nova_Games_Edition/blob/master/preview.png
   description: |
     <br>World War 2 in 1939 on Big World Map
+- mapName: Apocalypse 2012
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Apocalypse2012/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/Apocalypse2012/blob/master/preview.png
+  description: |
+    <br>Hypothetical World War 3 in 2012
+- mapName: Second World War
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/SecondWorldWar/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/SecondWorldWar/blob/master/preview.png
+  description: |
+    <br>The Second World War starting in late 1941.
+- mapName: NWO-Finest_Hour_The_Tipping_point
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/NWO-Finest_Hour_The_Tipping_point/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/NWO-Finest_Hour_The_Tipping_point/blob/master/preview.png
+  description: |
+    <br>World War 2 in Europe starting in Fall 1942
