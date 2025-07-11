@@ -1101,7 +1101,8 @@ public class ProTerritoryManager {
               final Predicate<Territory> canMove =
                   isCheckingEnemyAttacks ? canMoveSea : canMoveSeaThrough;
               for (final Territory to : map.getNeighbors(from, movesLeft, canMove)) {
-                if (map.getRouteForUnit(from, to, canMoveSeaThrough, transport, player).isPresent()) {
+                if (map.getRouteForUnit(from, to, canMoveSeaThrough, transport, player)
+                    .isPresent()) {
                   seaMoveTerritories.add(to);
                 }
               }
