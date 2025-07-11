@@ -784,7 +784,7 @@ public class BattleTracker implements Serializable {
       if (territory.isWater()) {
         // should probably see if there is something actually happening for water
         broadcaster.playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_SEA, gamePlayer);
-      } else if (territoryAttachment.getCapital() != null) {
+      } else if (territoryAttachment.getCapital().isPresent()) {
         broadcaster.playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL, gamePlayer);
       } else if (blitzed.contains(territory)
           && arrivedUnits != null
@@ -809,7 +809,7 @@ public class BattleTracker implements Serializable {
     // Also check to make sure playerAttachment even HAS a capital to fix abend
     if (isTerritoryOwnerAnEnemy
         && isTerritoryOrigOwnerAllied
-        && territoryAttachment.getCapital() != null
+        && territoryAttachment.getCapital().isPresent()
         && TerritoryAttachment.getAllCapitals(optionalTerrOrigOwner.get(), data.getMap())
             .contains(territory)) {
       final GamePlayer terrOrigOwner = optionalTerrOrigOwner.get();
