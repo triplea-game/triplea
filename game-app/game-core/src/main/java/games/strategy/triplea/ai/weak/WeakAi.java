@@ -391,7 +391,7 @@ public class WeakAi extends AbstractAi {
   private static Optional<Route> getAlternativeAmphibRoute(
       final GamePlayer player, final GameState data) {
     if (!isAmphibAttack(player, data)) {
-      return null;
+      return Optional.empty();
     }
     final Predicate<Territory> routeCondition =
         Matches.territoryIsWater().and(Matches.territoryHasNoEnemyUnits(player));
