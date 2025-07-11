@@ -244,11 +244,10 @@ public class WeakAi extends AbstractAi {
     // we want to move loaded transports before we try to fight our battles
     final List<MoveDescription> moves = calculateNonCombatSea(false, data, player);
     // find second amphib target
-    final Optional<Route> optionalAmphibRoute = getAlternativeAmphibRoute(player, data);
-    if (optionalAmphibRoute.isEmpty()) {
+    final Route amphibRoute = getAlternativeAmphibRoute(player, data).orElse(null);
+    if (amphibRoute == null) {
       return moves;
     }
-    final Route amphibRoute = optionalAmphibRoute.get();
     // TODO workaround - should check if amphibRoute is in moves
     if (moves.size() == 2) {
       moves.remove(1);
