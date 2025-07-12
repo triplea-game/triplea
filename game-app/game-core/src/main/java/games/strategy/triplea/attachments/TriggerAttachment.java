@@ -2540,7 +2540,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public static Predicate<TriggerAttachment> resourceMatch() {
-    return t -> t.getResource() != null && t.getResourceCount() != 0;
+    return t -> t.getResource().isPresent() && t.getResourceCount() != 0;
   }
 
   public static Predicate<TriggerAttachment> supportMatch() {

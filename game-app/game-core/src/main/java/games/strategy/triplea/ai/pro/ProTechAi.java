@@ -573,7 +573,7 @@ final class ProTechAi {
     // note this does not care if subs are submerged or not, should it?
     // does submerging affect movement of enemies?
     if (start == null || destination == null || !start.isWater() || !destination.isWater()) {
-      return null;
+      return Optional.empty();
     }
     final Predicate<Unit> transport =
         Matches.unitIsSeaTransport().negate().and(Matches.unitIsLand().negate());
