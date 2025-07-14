@@ -3380,3 +3380,24 @@
   img: https://github.com/triplea-maps/NWO-Finest_Hour_The_Tipping_point/blob/master/preview.png
   description: |
     <br>World War 2 in Europe starting in Fall 1942
+- mapName: Alexander 350BC
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/alexander350/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/alexander350/blob/master/preview.png
+  description: |
+    <br>The world in the time of Alexander the Great.
+- mapName: Total World War USA
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Total_World_War_USA/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/Total_World_War_USA/blob/master/preview.png
+  description: |
+    <br>Invasion of the United States in an alternate history World War 2
+- mapName: Empty Hexes
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/emptyhexes/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/emptyhexes/blob/master/preview.png
+  description: |
+    <br>Modding Resource. Not a playable scenario.
