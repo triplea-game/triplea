@@ -402,54 +402,71 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     final CompositeChange change = new CompositeChange();
     final Collection<Tuple<Territory, Collection<Unit>>> changeList = new ArrayList<>();
     for (final Territory currTerritory : bridge.getData().getMap().getTerritories()) {
-      final List<GamePlayer> currTerrChangeUnitOwners =
-          TerritoryAttachment.get(currTerritory)
-              .map(TerritoryAttachment::getChangeUnitOwners)
-              .orElse(List.of());
-      // if ownership should change in this territory
-      if (inAllTerritories || (currTerrChangeUnitOwners.isEmpty())) {
-        final List<GamePlayer> newOwners =
-            new ArrayList<>(
-                (currTerrChangeUnitOwners.isEmpty())
-                    ? currTerrChangeUnitOwners
-                    : bridge.getData().getPlayerList().getPlayers());
-        newOwners.retainAll(possibleNewOwners);
-        for (final GamePlayer newOwner : newOwners) {
-          final Collection<Unit> units =
-              currTerritory.getMatches(
-                  Matches.unitIsOwnedBy(player).and(Matches.unitCanBeGivenByTerritoryTo(newOwner)));
-          if (!units.isEmpty()) {
-            change.add(ChangeFactory.changeOwner(units, newOwner, currTerritory));
-            changeList.add(Tuple.of(currTerritory, units));
-          }
-        }
-      }
+      changeUnitOwnershipInTerritory(
+          bridge, currTerritory, inAllTerritories, possibleNewOwners, player, change, changeList);
     }
     if (!change.isEmpty() && !changeList.isEmpty()) {
-      if (changeList.size() == 1) {
-        final Tuple<Territory, Collection<Unit>> tuple = CollectionUtils.getAny(changeList);
+      writeHistoryEventForChangeUnitOwnership(bridge, changeList);
+      bridge.addChange(change);
+    }
+  }
+
+  private static void writeHistoryEventForChangeUnitOwnership(
+      IDelegateBridge bridge, Collection<Tuple<Territory, Collection<Unit>>> changeList) {
+    if (changeList.size() == 1) {
+      final Tuple<Territory, Collection<Unit>> tuple = CollectionUtils.getAny(changeList);
+      bridge
+          .getHistoryWriter()
+          .startEvent(
+              "Some Units in "
+                  + tuple.getFirst().getName()
+                  + " change ownership: "
+                  + MyFormatter.unitsToTextNoOwner(tuple.getSecond()),
+              tuple.getSecond());
+    } else {
+      bridge.getHistoryWriter().startEvent("Units Change Ownership");
+      for (final Tuple<Territory, Collection<Unit>> tuple : changeList) {
         bridge
             .getHistoryWriter()
-            .startEvent(
+            .addChildToEvent(
                 "Some Units in "
                     + tuple.getFirst().getName()
                     + " change ownership: "
                     + MyFormatter.unitsToTextNoOwner(tuple.getSecond()),
                 tuple.getSecond());
-      } else {
-        bridge.getHistoryWriter().startEvent("Units Change Ownership");
-        for (final Tuple<Territory, Collection<Unit>> tuple : changeList) {
-          bridge
-              .getHistoryWriter()
-              .addChildToEvent(
-                  "Some Units in "
-                      + tuple.getFirst().getName()
-                      + " change ownership: "
-                      + MyFormatter.unitsToTextNoOwner(tuple.getSecond()),
-                  tuple.getSecond());
+      }
+    }
+  }
+
+  private static void changeUnitOwnershipInTerritory(
+      IDelegateBridge bridge,
+      Territory currTerritory,
+      boolean inAllTerritories,
+      Collection<GamePlayer> possibleNewOwners,
+      GamePlayer player,
+      CompositeChange change,
+      Collection<Tuple<Territory, Collection<Unit>>> changeList) {
+    final List<GamePlayer> currTerrChangeUnitOwners =
+        TerritoryAttachment.get(currTerritory)
+            .map(TerritoryAttachment::getChangeUnitOwners)
+            .orElse(List.of());
+    // if ownership should change in this territory
+    if (inAllTerritories || (!currTerrChangeUnitOwners.isEmpty())) {
+      final List<GamePlayer> candidateOwners =
+          new ArrayList<>(
+              currTerrChangeUnitOwners.isEmpty()
+                  ? bridge.getData().getPlayerList().getPlayers()
+                  : currTerrChangeUnitOwners);
+      candidateOwners.retainAll(possibleNewOwners);
+      for (final GamePlayer newOwner : candidateOwners) {
+        final Collection<Unit> transferableUnits =
+            currTerritory.getMatches(
+                Matches.unitIsOwnedBy(player).and(Matches.unitCanBeGivenByTerritoryTo(newOwner)));
+        if (!transferableUnits.isEmpty()) {
+          change.add(ChangeFactory.changeOwner(transferableUnits, newOwner, currTerritory));
+          changeList.add(Tuple.of(currTerritory, transferableUnits));
         }
       }
-      bridge.addChange(change);
     }
   }
 
