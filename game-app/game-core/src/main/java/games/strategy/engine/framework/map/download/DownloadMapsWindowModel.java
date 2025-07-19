@@ -1,9 +1,12 @@
 package games.strategy.engine.framework.map.download;
 
+import static games.strategy.engine.framework.map.download.DownloadMapsWindow.TEXT_ABBREVIATION_NOT_APPLICABLE;
+
 import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
@@ -27,6 +30,24 @@ class DownloadMapsWindowModel {
   /** File reference for where to install the file, empty if not installed. */
   Optional<Path> getInstallLocation(final MapDownloadItem mapDownloadItem) {
     return installedMapsListing.findMapFolderByName(mapDownloadItem.getMapName());
+  }
+
+  public Optional<@NonNls String> getByteSizeTextForMap(final MapDownloadItem mapDownloadItem) {
+    return getInstallLocation(mapDownloadItem)
+        .map(
+            mapPath -> {
+              @NonNls String byteSizeText;
+              try {
+                byteSizeText =
+                    org.apache.commons.io.FileUtils.byteCountToDisplaySize(
+                        org.triplea.io.FileUtils.getByteSizeFromPath(mapPath));
+              } catch (final IOException e) {
+                log.warn("Failed to read file size", e);
+                byteSizeText = TEXT_ABBREVIATION_NOT_APPLICABLE;
+              }
+              return MessageFormat.format(
+                  "({0})<br>Path: {1}", byteSizeText, mapPath.toAbsolutePath());
+            });
   }
 
   boolean delete(final MapDownloadItem mapDownloadItem) {
