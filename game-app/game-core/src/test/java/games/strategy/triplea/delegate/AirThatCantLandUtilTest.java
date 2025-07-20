@@ -54,7 +54,7 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
   void testCantLandEnemyTerritory() {
     final GamePlayer player = americansPlayer;
     final IDelegateBridge bridge = newDelegateBridge(player);
-    final Territory balkans = gameData.getMap().getTerritory("Balkans");
+    final Territory balkans = gameData.getMap().getTerritoryOrThrow("Balkans");
     final Change addAir = ChangeFactory.addUnits(balkans, fighterType.create(2, player));
     gameData.performChange(addAir);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
@@ -71,7 +71,7 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
   void testCantLandWater() {
     final GamePlayer player = americansPlayer;
     final IDelegateBridge bridge = newDelegateBridge(player);
-    final Territory sz55 = gameData.getMap().getTerritory("55 Sea Zone");
+    final Territory sz55 = gameData.getMap().getTerritoryOrThrow("55 Sea Zone");
     final Change addAir = ChangeFactory.addUnits(sz55, fighterType.create(2, player));
     gameData.performChange(addAir);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
@@ -87,7 +87,7 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
   void testSpareNextToFactory() {
     final GamePlayer player = americansPlayer;
     final IDelegateBridge bridge = newDelegateBridge(player);
-    final Territory sz55 = gameData.getMap().getTerritory("55 Sea Zone");
+    final Territory sz55 = gameData.getMap().getTerritoryOrThrow("55 Sea Zone");
     final Change addAir = ChangeFactory.addUnits(sz55, fighterType.create(2, player));
     gameData.performChange(addAir);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
@@ -100,7 +100,7 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
     // 1 carrier in the region, but three fighters, make sure we cant land
     final GamePlayer player = americansPlayer;
     final IDelegateBridge bridge = newDelegateBridge(player);
-    final Territory sz52 = gameData.getMap().getTerritory("52 Sea Zone");
+    final Territory sz52 = gameData.getMap().getTerritoryOrThrow("52 Sea Zone");
     final Change addAir = ChangeFactory.addUnits(sz52, fighterType.create(2, player));
     gameData.performChange(addAir);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
@@ -125,9 +125,9 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
     initDel.start();
     initDel.end();
     // Get necessary sea zones and unit types for this test
-    final Territory sz44 = gameData.getMap().getTerritory("44 Sea Zone");
-    final Territory sz45 = gameData.getMap().getTerritory("45 Sea Zone");
-    final Territory sz52 = gameData.getMap().getTerritory("52 Sea Zone");
+    final Territory sz44 = gameData.getMap().getTerritoryOrThrow("44 Sea Zone");
+    final Territory sz45 = gameData.getMap().getTerritoryOrThrow("45 Sea Zone");
+    final Territory sz52 = gameData.getMap().getTerritoryOrThrow("52 Sea Zone");
     final UnitType subType = GameDataTestUtil.submarine(gameData);
     final UnitType carrierType = GameDataTestUtil.carrier(gameData);
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);
@@ -174,10 +174,10 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
     initDel.start();
     initDel.end();
     // Get necessary sea zones and unit types for this test
-    final Territory sz43 = gameData.getMap().getTerritory("43 Sea Zone");
-    final Territory sz44 = gameData.getMap().getTerritory("44 Sea Zone");
-    final Territory sz45 = gameData.getMap().getTerritory("45 Sea Zone");
-    final Territory sz52 = gameData.getMap().getTerritory("52 Sea Zone");
+    final Territory sz43 = gameData.getMap().getTerritoryOrThrow("43 Sea Zone");
+    final Territory sz44 = gameData.getMap().getTerritoryOrThrow("44 Sea Zone");
+    final Territory sz45 = gameData.getMap().getTerritoryOrThrow("45 Sea Zone");
+    final Territory sz52 = gameData.getMap().getTerritoryOrThrow("52 Sea Zone");
     final UnitType subType = GameDataTestUtil.submarine(gameData);
     final UnitType carrierType = GameDataTestUtil.carrier(gameData);
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);
@@ -224,9 +224,9 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
     initDel.start();
     initDel.end();
     // Get necessary sea zones and unit types for this test
-    final Territory sz9 = gameData.getMap().getTerritory("9 Sea Zone");
-    final Territory eastCanada = gameData.getMap().getTerritory("Eastern Canada");
-    final Territory sz11 = gameData.getMap().getTerritory("11 Sea Zone");
+    final Territory sz9 = gameData.getMap().getTerritoryOrThrow("9 Sea Zone");
+    final Territory eastCanada = gameData.getMap().getTerritoryOrThrow("Eastern Canada");
+    final Territory sz11 = gameData.getMap().getTerritoryOrThrow("11 Sea Zone");
     final UnitType subType = GameDataTestUtil.submarine(gameData);
     final UnitType carrierType = GameDataTestUtil.carrier(gameData);
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);
@@ -263,9 +263,9 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
     final GamePlayer americans = GameDataTestUtil.americans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(japanese);
     // Get necessary sea zones and unit types for this test
-    final Territory sz9 = gameData.getMap().getTerritory("9 Sea Zone");
-    final Territory eastCanada = gameData.getMap().getTerritory("Eastern Canada");
-    final Territory sz11 = gameData.getMap().getTerritory("11 Sea Zone");
+    final Territory sz9 = gameData.getMap().getTerritoryOrThrow("9 Sea Zone");
+    final Territory eastCanada = gameData.getMap().getTerritoryOrThrow("Eastern Canada");
+    final Territory sz11 = gameData.getMap().getTerritoryOrThrow("11 Sea Zone");
     final UnitType subType = GameDataTestUtil.submarine(gameData);
     final UnitType carrierType = GameDataTestUtil.carrier(gameData);
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);

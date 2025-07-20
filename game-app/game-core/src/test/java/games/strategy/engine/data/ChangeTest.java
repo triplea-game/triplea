@@ -43,7 +43,7 @@ class ChangeTest {
   @Test
   void testUnitsAddTerritory() {
     // make sure we know where we are starting
-    final Territory can = gameData.getMap().getTerritory("canada");
+    final Territory can = gameData.getMap().getTerritoryOrThrow("canada");
     assertEquals(5, can.getUnitCollection().getUnitCount());
     // add some units
     final Change change =
@@ -63,7 +63,7 @@ class ChangeTest {
   @Test
   void testUnitsRemoveTerritory() {
     // make sure we now where we are starting
-    final Territory can = gameData.getMap().getTerritory("canada");
+    final Territory can = gameData.getMap().getTerritoryOrThrow("canada");
     assertEquals(5, can.getUnitCollection().getUnitCount());
     // remove some units
     final Collection<Unit> units =
@@ -83,7 +83,7 @@ class ChangeTest {
   @Test
   void testSerializeUnitsRemoteTerritory() throws Exception {
     // make sure we now where we are starting
-    final Territory can = gameData.getMap().getTerritory("canada");
+    final Territory can = gameData.getMap().getTerritoryOrThrow("canada");
     assertEquals(5, can.getUnitCollection().getUnitCount());
     // remove some units
     final Collection<Unit> units =
@@ -138,8 +138,8 @@ class ChangeTest {
 
   @Test
   void testUnitsMove() {
-    final Territory canada = gameData.getMap().getTerritory("canada");
-    final Territory greenland = gameData.getMap().getTerritory("greenland");
+    final Territory canada = gameData.getMap().getTerritoryOrThrow("canada");
+    final Territory greenland = gameData.getMap().getTerritoryOrThrow("greenland");
     assertEquals(5, canada.getUnitCollection().getUnitCount());
     assertEquals(0, greenland.getUnitCollection().getUnitCount());
     final Collection<Unit> units =
@@ -157,8 +157,8 @@ class ChangeTest {
 
   @Test
   void testUnitsMoveSerialization() throws Exception {
-    final Territory canada = gameData.getMap().getTerritory("canada");
-    final Territory greenland = gameData.getMap().getTerritory("greenland");
+    final Territory canada = gameData.getMap().getTerritoryOrThrow("canada");
+    final Territory greenland = gameData.getMap().getTerritoryOrThrow("greenland");
     assertEquals(5, canada.getUnitCollection().getUnitCount());
     assertEquals(0, greenland.getUnitCollection().getUnitCount());
     final Collection<Unit> units =
@@ -217,7 +217,7 @@ class ChangeTest {
   void testChangeOwner() {
     final GamePlayer can = gameData.getPlayerList().getPlayerId("chretian");
     final GamePlayer us = gameData.getPlayerList().getPlayerId("bush");
-    final Territory greenland = gameData.getMap().getTerritory("greenland");
+    final Territory greenland = gameData.getMap().getTerritoryOrThrow("greenland");
     final Change change = ChangeFactory.changeOwner(greenland, us);
     assertEquals(greenland.getOwner(), can);
     gameData.performChange(change);
@@ -230,7 +230,7 @@ class ChangeTest {
   void testChangeOwnerSerialize() throws Exception {
     final GamePlayer can = gameData.getPlayerList().getPlayerId("chretian");
     final GamePlayer us = gameData.getPlayerList().getPlayerId("bush");
-    final Territory greenland = gameData.getMap().getTerritory("greenland");
+    final Territory greenland = gameData.getMap().getTerritoryOrThrow("greenland");
     Change change = ChangeFactory.changeOwner(greenland, us);
     change = serialize(change);
     assertEquals(greenland.getOwner(), can);
@@ -256,7 +256,7 @@ class ChangeTest {
     assertEquals(can, inf1.getOwner());
     assertEquals(us, inf2.getOwner());
     Change change =
-        ChangeFactory.changeOwner(units, can, gameData.getMap().getTerritory("greenland"));
+        ChangeFactory.changeOwner(units, can, gameData.getMap().getTerritoryOrThrow("greenland"));
     gameData.performChange(change);
     assertEquals(can, inf1.getOwner());
     assertEquals(can, inf2.getOwner());
@@ -280,7 +280,7 @@ class ChangeTest {
     assertEquals(can, inf1.getOwner());
     assertEquals(us, inf2.getOwner());
     Change change =
-        ChangeFactory.changeOwner(units, can, gameData.getMap().getTerritory("greenland"));
+        ChangeFactory.changeOwner(units, can, gameData.getMap().getTerritoryOrThrow("greenland"));
     change = serialize(change);
     gameData.performChange(change);
     assertEquals(can, inf1.getOwner());
@@ -321,7 +321,7 @@ class ChangeTest {
     assertTrue(compositeChange.isEmpty());
     compositeChange.add(new CompositeChange());
     assertTrue(compositeChange.isEmpty());
-    final Territory can = gameData.getMap().getTerritory("canada");
+    final Territory can = gameData.getMap().getTerritoryOrThrow("canada");
     final Collection<Unit> units = List.of();
     compositeChange.add(ChangeFactory.removeUnits(can, units));
     assertFalse(compositeChange.isEmpty());

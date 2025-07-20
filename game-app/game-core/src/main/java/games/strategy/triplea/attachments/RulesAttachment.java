@@ -210,10 +210,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     final GameMap map = getData().getMap();
     // this loop starts on 4, so do not replace with an enhanced for loop
     for (int i = 4; i < s.length; i++) {
-      final Territory t = map.getTerritory(s[i]);
-      if (t == null) {
-        throw new GameParseException("no such territory called: " + s[i] + thisErrorMsg());
-      }
+      final Territory t = getTerritoryOrThrowGameParseException(s[i]);
       terrs.add(t);
     }
     if (battle == null) {

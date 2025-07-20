@@ -57,13 +57,13 @@ public class GameSelectorModel extends Observable implements GameSelector {
   public boolean loadMap(Path xmlFile) {
     ensureExists(xmlFile);
     fileName = null;
-    GameData gameData = parseAndValidate(xmlFile);
-    if (gameData != null && gameData.getGameName() == null) {
-      gameData = null;
+    GameData parsedGameData = parseAndValidate(xmlFile).orElse(null);
+    if (parsedGameData != null && parsedGameData.getGameName() == null) {
+      parsedGameData = null;
     }
-    setGameData(gameData);
-    this.setDefaultGame(xmlFile, gameData);
-    return gameData != null;
+    setGameData(parsedGameData);
+    this.setDefaultGame(xmlFile, parsedGameData);
+    return parsedGameData != null;
   }
 
   public boolean loadSave(Path saveFile) {
@@ -112,22 +112,22 @@ public class GameSelectorModel extends Observable implements GameSelector {
     setDefaultGame(null, null);
   }
 
-  @Nullable
-  private GameData parseAndValidate(final Path file) {
-    final GameData gameData = GameParser.parse(file, false).orElse(null);
-    if (gameData == null) {
-      return null;
+  private Optional<GameData> parseAndValidate(final Path file) {
+    final Optional<GameData> optionalGameData = GameParser.parse(file, false);
+    if (optionalGameData.isEmpty()) {
+      return optionalGameData;
     }
-    final List<String> validationErrors = new GameParsingValidation(gameData).validate();
+    final List<String> validationErrors =
+        new GameParsingValidation(optionalGameData.get()).validate();
 
     if (validationErrors.isEmpty()) {
-      return gameData;
+      return optionalGameData;
     } else {
       log.error(
           "Validation errors parsing game-XML file: {}, errors:\n{}",
           file.toAbsolutePath(),
           String.join("\n", validationErrors));
-      return null;
+      return Optional.empty();
     }
   }
 
@@ -158,7 +158,7 @@ public class GameSelectorModel extends Observable implements GameSelector {
     return Optional.ofNullable(fileName).orElse("-");
   }
 
-  public void setGameData(final GameData data) {
+  public void setGameData(final @Nullable GameData data) {
     synchronized (this) {
       if (data == null) {
         gameName = gameRound = "-";

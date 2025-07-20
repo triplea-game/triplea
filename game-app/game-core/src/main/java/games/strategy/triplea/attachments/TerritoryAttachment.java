@@ -545,7 +545,7 @@ public class TerritoryAttachment extends DefaultAttachment {
       return;
     }
     for (final String subString : splitOnColon(value)) {
-      final Territory territory = getTerritoryOrThrow(subString);
+      final Territory territory = getTerritoryOrThrowGameParseException(subString);
       if (convoyAttached == null) {
         convoyAttached = new HashSet<>();
       }

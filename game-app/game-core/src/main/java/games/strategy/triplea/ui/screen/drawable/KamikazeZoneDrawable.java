@@ -33,7 +33,7 @@ public class KamikazeZoneDrawable extends AbstractDrawable {
       final Graphics2D graphics,
       final MapData mapData) {
     // Change so only original owner gets the kamikaze zone marker
-    final Territory terr = data.getMap().getTerritory(location);
+    final Territory terr = data.getMap().getTerritoryOrThrow(location);
     GamePlayer owner;
     if (Properties.getKamikazeSuicideAttacksDoneByCurrentTerritoryOwner(data.getProperties())) {
       owner = terr.getOwner();
@@ -54,7 +54,8 @@ public class KamikazeZoneDrawable extends AbstractDrawable {
       }
     }
     final Image img = uiContext.getFlagImageFactory().getFadedFlag(owner);
-    final Point point = mapData.getKamikazeMarkerLocation(data.getMap().getTerritory(location));
+    final Point point =
+        mapData.getKamikazeMarkerLocation(data.getMap().getTerritoryOrThrow(location));
     graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
   }
 
