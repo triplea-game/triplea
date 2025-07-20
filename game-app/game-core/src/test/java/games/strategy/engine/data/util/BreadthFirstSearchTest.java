@@ -11,10 +11,10 @@ import org.junit.jupiter.api.Test;
 
 public class BreadthFirstSearchTest {
   private final GameData gameData = TestMapGameData.REVISED.getGameData();
-  private final Territory caucasus = gameData.getMap().getTerritory("Caucasus");
-  private final Territory germany = gameData.getMap().getTerritory("Germany");
-  private final Territory russia = gameData.getMap().getTerritory("Russia");
-  private final Territory uk = gameData.getMap().getTerritory("United Kingdom");
+  private final Territory caucasus = gameData.getMap().getTerritoryOrThrow("Caucasus");
+  private final Territory germany = gameData.getMap().getTerritoryOrThrow("Germany");
+  private final Territory russia = gameData.getMap().getTerritoryOrThrow("Russia");
+  private final Territory uk = gameData.getMap().getTerritoryOrThrow("United Kingdom");
 
   private int getLandDistance(Territory from, Territory to) {
     var territoryFinder = new BreadthFirstSearch.TerritoryFinder(to);

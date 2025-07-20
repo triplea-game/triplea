@@ -94,7 +94,7 @@ public final class ProSimulateTurnUtils {
         }
         battleDelegate.getBattleTracker().getConquered().add(t);
         battleDelegate.getBattleTracker().removeBattle(battle, data);
-        final Territory updatedTerritory = data.getMap().getTerritory(t.getName());
+        final Territory updatedTerritory = data.getMap().getTerritoryOrNull(t.getName());
         ProLogger.debug(
             "after changes owner="
                 + updatedTerritory.getOwner()
@@ -122,7 +122,7 @@ public final class ProSimulateTurnUtils {
     final Map<Territory, ProTerritory> result = new HashMap<>();
     final List<Unit> usedUnits = new ArrayList<>();
     for (final Territory fromTerritory : moveMap.keySet()) {
-      final Territory toTerritory = toData.getMap().getTerritory(fromTerritory.getName());
+      final Territory toTerritory = toData.getMap().getTerritoryOrNull(fromTerritory.getName());
       final ProTerritory patd = new ProTerritory(toTerritory, proData);
       result.put(toTerritory, patd);
       final Map<Unit, List<Unit>> amphibAttackMap = moveMap.get(fromTerritory).getAmphibAttackMap();
@@ -168,7 +168,9 @@ public final class ProSimulateTurnUtils {
           patd.getTransportTerritoryMap()
               .put(
                   toTransport,
-                  toData.getMap().getTerritory(transportTerritoryMap.get(transport).getName()));
+                  toData
+                      .getMap()
+                      .getTerritoryOrNull(transportTerritoryMap.get(transport).getName()));
         }
         ProLogger.trace(
             "---Transferring transport="
@@ -204,7 +206,7 @@ public final class ProSimulateTurnUtils {
         final Unit toUnit = transferUnit(u, unitTerritoryMap, usedUnits, toData, player);
         if (toUnit != null) {
           patd.getBombardTerritoryMap()
-              .put(toUnit, toData.getMap().getTerritory(bombardMap.get(u).getName()));
+              .put(toUnit, toData.getMap().getTerritoryOrNull(bombardMap.get(u).getName()));
           ProLogger.trace(
               "---Transferring bombard="
                   + u
@@ -269,7 +271,7 @@ public final class ProSimulateTurnUtils {
     final List<Unit> toUnits =
         toData
             .getMap()
-            .getTerritory(unitTerritory.getName())
+            .getTerritoryOrNull(unitTerritory.getName())
             .getMatches(
                 ProMatches.unitIsOwnedAndMatchesTypeAndNotTransporting(player, u.getType()));
     for (final Unit toUnit : toUnits) {
@@ -293,7 +295,7 @@ public final class ProSimulateTurnUtils {
     final List<Unit> toTransports =
         toData
             .getMap()
-            .getTerritory(unitTerritory.getName())
+            .getTerritoryOrNull(unitTerritory.getName())
             .getMatches(
                 ProMatches.unitIsOwnedAndMatchesTypeAndIsTransporting(player, transport.getType()));
     for (final Unit toTransport : toTransports) {

@@ -109,7 +109,7 @@ final class MatchesTest {
       enemyPlayer = GameDataTestUtil.russians(gameData);
       assertThat(player.isAtWar(enemyPlayer), is(true));
 
-      territory = gameData.getMap().getTerritory("Germany");
+      territory = gameData.getMap().getTerritoryOrThrow("Germany");
       territory.setOwner(player);
       territory.getUnitCollection().clear();
     }
@@ -181,11 +181,11 @@ final class MatchesTest {
 
       player = GameDataTestUtil.germans(gameData);
 
-      landTerritory = gameData.getMap().getTerritory("Germany");
+      landTerritory = gameData.getMap().getTerritoryOrThrow("Germany");
       landTerritory.setOwner(player);
       assertTrue(TerritoryAttachment.get(landTerritory).isPresent());
 
-      seaTerritory = gameData.getMap().getTerritory("Baltic Sea Zone");
+      seaTerritory = gameData.getMap().getTerritoryOrThrow("Baltic Sea Zone");
       seaTerritory.setOwner(player);
       assertTrue(TerritoryAttachment.get(seaTerritory).isEmpty());
       TerritoryAttachment.add(

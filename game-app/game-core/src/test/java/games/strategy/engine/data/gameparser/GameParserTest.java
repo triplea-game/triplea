@@ -78,7 +78,7 @@ final class GameParserTest {
         (TerritoryAttachment)
             gameData
                 .getMap()
-                .getTerritory("Sparta")
+                .getTerritoryOrThrow("Sparta")
                 .getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
 
     assertThat(spartaTerritoryAttachment.getVictoryCity(), is(1));
@@ -91,7 +91,7 @@ final class GameParserTest {
         (TerritoryAttachment)
             gameData
                 .getMap()
-                .getTerritory("Roma")
+                .getTerritoryOrThrow("Roma")
                 .getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
 
     assertThat(romaTerritoryAttachment.getVictoryCity(), is(0));
