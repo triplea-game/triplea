@@ -64,7 +64,7 @@ public class GameObjectStreamData implements Externalizable {
         case PLAYERID:
           return data.getPlayerList().getPlayerId(name);
         case TERRITORY:
-          return data.getMap().getTerritory(name);
+          return data.getMap().getTerritoryOrThrow(name);
         case UNITTYPE:
           return data.getUnitTypeList().getUnitTypeOrThrow(name);
         case PRODUCTIONRULE:

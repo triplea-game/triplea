@@ -30,7 +30,7 @@ public class BattleDrawable extends TerritoryDrawable {
       final GameData data,
       final Graphics2D graphics,
       final MapData mapData) {
-    final Territory territory = data.getMap().getTerritory(territoryName);
+    final Territory territory = data.getMap().getTerritoryOrThrow(territoryName);
     final Set<GamePlayer> players = new HashSet<>();
     for (final Unit u : territory.getUnitCollection()) {
       if (!u.getSubmerged()) {

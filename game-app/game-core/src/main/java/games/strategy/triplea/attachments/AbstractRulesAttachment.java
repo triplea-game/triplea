@@ -283,10 +283,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
         setTerritoryCount(allTerritories.size());
         return allTerritories;
       default: // The list just contained 1 territory
-        final Territory t = data.getMap().getTerritory(name);
-        if (t == null) {
-          throw new IllegalStateException("No territory called: " + name + thisErrorMsg());
-        }
+        final Territory t = getTerritoryOrThrowIllegalStateException(name);
         final Set<Territory> terr = new HashSet<>();
         terr.add(t);
         setTerritoryCount(1);
@@ -392,10 +389,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
         // territory name is not an integer; fall through
       }
       // Validate all territories exist
-      final Territory territory = getData().getMap().getTerritory(name);
-      if (territory == null) {
-        throw new IllegalStateException("No territory called: " + name + thisErrorMsg());
-      }
+      final Territory territory = getTerritoryOrThrowIllegalStateException(name);
       territories.add(territory);
     }
     if (mustSetTerritoryCount && !haveSetCount) {

@@ -56,7 +56,7 @@ public class UnitDamageReceivedChange extends Change {
         });
     // invoke territory change listeners
     for (final String territory : territoriesToNotify) {
-      data.getMap().getTerritory(territory).notifyChanged();
+      data.getMap().getTerritoryOrThrow(territory).notifyChanged();
     }
   }
 

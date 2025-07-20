@@ -534,23 +534,24 @@ public class MapData {
     final Iterator<String> iter = keys.iterator();
     while (iter.hasNext()) {
       final String name = iter.next();
-      final Territory terr = data.getMap().getTerritory(name);
+      final Territory terr = data.getMap().getTerritoryOrNull(name);
       // allow loading saved games with missing territories; just ignore them
       if (terr == null) {
         iter.remove();
       }
     }
-
-    for (final Territory terr : data.getMap().getTerritories()) {
-      if (!keys.contains(terr.getName())) {
-        errors
-            .append("No data of type ")
-            .append(dataTypeForErrorMessage)
-            .append(" for territory: ")
-            .append(terr.getName())
-            .append("\n");
-      }
-    }
+    data.getMap().getTerritories().stream()
+        .map(Territory::getName)
+        .filter(territoryName -> !keys.contains(territoryName))
+        .forEach(
+            territoryName -> {
+              errors
+                  .append("No data of type ")
+                  .append(dataTypeForErrorMessage)
+                  .append(" for territory: ")
+                  .append(territoryName)
+                  .append("\n");
+            });
     if (errors.length() > 0) {
       throw new IllegalStateException(errors.toString());
     }
