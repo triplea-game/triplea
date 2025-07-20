@@ -309,7 +309,7 @@ public final class GameParser {
   }
 
   private Territory getTerritory(final String name) throws GameParseException {
-    return Optional.ofNullable(data.getMap().getTerritory(name))
+    return Optional.ofNullable(data.getMap().getTerritoryOrNull(name))
         .orElseThrow(
             () ->
                 new GameParseException(

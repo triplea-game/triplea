@@ -96,16 +96,16 @@ public class AiGameTest {
     GameTestUtils.runStepsUntil(game, "BlueWealthPlace");
 
     // Now, set up some units on another continent to verify how the AI will handle them.
-    Territory oaxaca = GameTestUtils.getTerritory(gameData, "Oaxaca");
+    Territory oaxaca = GameTestUtils.getTerritoryOrThrow(gameData, "Oaxaca");
     oaxaca.setOwner(blue);
     GameTestUtils.addUnits(oaxaca, blue, "army", "port");
-    Territory stLucia = GameTestUtils.getTerritory(gameData, "St Lucia");
+    Territory stLucia = GameTestUtils.getTerritoryOrThrow(gameData, "St Lucia");
     stLucia.setOwner(blue);
     GameTestUtils.addUnits(stLucia, blue, "army", "wealth");
-    Territory andres = GameTestUtils.getTerritory(gameData, "Andres");
+    Territory andres = GameTestUtils.getTerritoryOrThrow(gameData, "Andres");
     andres.setOwner(blue);
     GameTestUtils.addUnits(andres, blue, "army");
-    Territory culiacan = GameTestUtils.getTerritory(gameData, "Culiacan");
+    Territory culiacan = GameTestUtils.getTerritoryOrThrow(gameData, "Culiacan");
     culiacan.setOwner(blue);
     GameTestUtils.addUnits(culiacan, blue, "army", "wealth");
 

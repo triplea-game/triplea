@@ -18,7 +18,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import lombok.experimental.UtilityClass;
@@ -112,7 +111,7 @@ public class GameTestUtils {
     return data.getUnitTypeList().getUnitTypeOrThrow(name);
   }
 
-  public static Territory getTerritory(GameData data, String name) {
-    return Optional.ofNullable(data.getMap().getTerritory(name)).orElseThrow();
+  public static Territory getTerritoryOrThrow(GameData data, String name) {
+    return data.getMap().getTerritoryOrThrow(name);
   }
 }

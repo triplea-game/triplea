@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui.screen.drawable;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.ui.Util;
 import java.awt.Color;
@@ -27,8 +26,8 @@ public class SeaZoneOutlineDrawable extends AbstractDrawable {
       final GameData data,
       final Graphics2D graphics,
       final MapData mapData) {
-    final Territory territory = data.getMap().getTerritory(territoryName);
-    final List<Polygon> polys = mapData.getPolygons(territory);
+    final List<Polygon> polys =
+        mapData.getPolygons(data.getMap().getTerritoryOrThrow(territoryName));
     graphics.setColor(Color.BLACK);
     for (final Polygon polygon : polys) {
       if (!polygon.intersects(bounds) && !polygon.contains(bounds)) {
