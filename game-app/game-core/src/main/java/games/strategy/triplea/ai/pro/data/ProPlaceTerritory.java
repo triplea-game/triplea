@@ -7,13 +7,14 @@ import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 
 /** The result of an AI placement analysis for a single territory. */
 @EqualsAndHashCode(of = "territory")
 @Getter
 @Setter
 public class ProPlaceTerritory {
-  private final Territory territory;
+  private final @NotNull Territory territory;
   private final List<Unit> placeUnits = new ArrayList<>();
   private List<Unit> defendingUnits = new ArrayList<>();
   private ProBattleResult minBattleResult = new ProBattleResult();
@@ -21,7 +22,7 @@ public class ProPlaceTerritory {
   private double strategicValue = 0;
   private boolean canHold = true;
 
-  ProPlaceTerritory(final Territory territory) {
+  ProPlaceTerritory(final @NotNull Territory territory) {
     this.territory = territory;
   }
 

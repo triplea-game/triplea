@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Logic for unit placement when bid mode is active. */
@@ -22,14 +23,14 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
   // Allow production of any number of units
   @Override
   protected Optional<String> checkProduction(
-      final Territory to, final Collection<Unit> units, final GamePlayer player) {
+      final @NotNull Territory to, final Collection<Unit> units, final GamePlayer player) {
     return Optional.empty();
   }
 
   // Return whether we can place bid in a certain territory
   @Override
   protected Optional<@Nls String> canProduce(
-      final Territory to, final Collection<Unit> units, final GamePlayer player) {
+      final @NotNull Territory to, final Collection<Unit> units, final GamePlayer player) {
     return canProduce(to, to, units, player);
   }
 

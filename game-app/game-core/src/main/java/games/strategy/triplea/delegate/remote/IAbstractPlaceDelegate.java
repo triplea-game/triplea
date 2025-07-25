@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Optional;
 import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.triplea.java.RemoveOnNextMajorRelease;
 
 /** Logic for placing units within a territory. */
@@ -23,7 +24,8 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
    * @return an error code if the placement was not successful
    */
   @RemoteActionCode(13)
-  Optional<String> placeUnits(Collection<Unit> units, Territory at, BidMode bidMode);
+  Optional<String> placeUnits(
+      @NotNull Collection<Unit> units, @NotNull Territory at, BidMode bidMode);
 
   /** Convenience method for testing. Never called over the network. */
   default Optional<String> placeUnits(final Collection<Unit> units, final Territory at) {
