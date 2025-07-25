@@ -3,6 +3,7 @@ package tools.map.making;
 import static com.google.common.base.Preconditions.checkState;
 
 import games.strategy.engine.data.properties.PropertiesUi;
+import games.strategy.triplea.Constants;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -496,7 +497,10 @@ public final class MapPropertiesMaker {
     private void saveProperties() {
       try {
         final Path fileName =
-            new FileSave("Where To Save map.properties ?", "map.properties", mapFolderLocation)
+            new FileSave(
+                    "Where To Save map.properties ?",
+                    Constants.FILE_NAME_MAP_PROPERTIES,
+                    mapFolderLocation)
                 .getFile();
         if (fileName == null) {
           return;

@@ -3,6 +3,7 @@ package tools.image;
 import static com.google.common.base.Preconditions.checkState;
 
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.MapImage;
 import java.awt.BorderLayout;
@@ -122,6 +123,130 @@ public final class DecorationPlacer {
     }
   }
 
+  /**
+   * Helper method to load the centers.txt file. It searches for the file inside of {@code
+   * mapFolderLocation}. If no file exists there it tries to search inside a directory specified by
+   * {@code mapFolder}. If also this fails the
+   *
+   * @param mapFolderLocation The folder to check first.
+   * @param mapFolder The folder to check as a fallback.
+   * @return Map of territory name to its polygons.
+   * @throws IOException Loading of the file failed.
+   */
+  public static Map<String, Point> loadCentersFile(
+      final Path mapFolder, final Path mapFolderLocation) throws IOException {
+    final Path fileCenters =
+        FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, Constants.FILE_NAME_CENTERS);
+    if (Files.exists(fileCenters)
+        && JOptionPane.showConfirmDialog(
+                new JPanel(),
+                "A centers.txt file was found in the map's folder, do you want to use "
+                    + "the file to supply the territories centers?",
+                "File Suggestion",
+                JOptionPane.YES_NO_CANCEL_OPTION)
+            == 0) {
+      try {
+        log.info("Centers : " + fileCenters);
+        return PointFileReaderWriter.readOneToOne(fileCenters);
+      } catch (final IOException e) {
+        log.error("Something wrong with Centers file");
+        throw e;
+      }
+    } else {
+      final Optional<Map<String, Point>> optionalCenters =
+          selectAndLoadCentersFile(mapFolderLocation);
+      if (optionalCenters.isPresent()) {
+        return optionalCenters.get();
+      } else {
+        log.info("You must specify a file centers.txt.");
+        log.info("Shutting down.");
+        throw new IOException("no centers file specified");
+      }
+    }
+  }
+
+  private static Optional<Map<String, Point>> selectAndLoadCentersFile(final Path mapFolderLocation)
+      throws IOException {
+    log.info("Select the centers file");
+    final Path centerPath =
+        new FileOpen("Select the centers file", mapFolderLocation, ".txt").getFile();
+    if (centerPath != null) {
+      log.info("Centers : " + centerPath);
+      try {
+        return Optional.of(PointFileReaderWriter.readOneToOne(centerPath));
+      } catch (IOException e) {
+        log.error("Something wrong with your centers file");
+        throw e;
+      }
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * Helper method to load the polygons.txt file. It searches for the file inside of {@code
+   * mapFolderLocation}. If no file exists there it tries to search inside a directory specified by
+   * {@code mapFolder}. If also this fails the
+   *
+   * @param mapFolderLocation The folder to check first.
+   * @param mapFolder The folder to check as a fallback.
+   * @return Map of territory name to its polygons.
+   * @throws IOException Loading of the file failed.
+   */
+  public static Map<String, List<Polygon>> loadPolygonsFile(
+      final Path mapFolder, final Path mapFolderLocation) throws IOException {
+    final Path filePoly =
+        FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, Constants.FILE_NAME_POLYGONS);
+    if (Files.exists(filePoly)
+        && JOptionPane.showConfirmDialog(
+                new JPanel(),
+                "A polygons.txt file was found in the map's folder, "
+                    + "do you want to use the file to supply the territories polygons?",
+                "File Suggestion",
+                JOptionPane.YES_NO_CANCEL_OPTION)
+            == 0) {
+      try {
+        log.info("Polygons : " + filePoly);
+        return PointFileReaderWriter.readOneToManyPolygons(filePoly);
+      } catch (final IOException e) {
+        log.error("Something wrong with your polygons file: " + filePoly.toAbsolutePath());
+        throw e;
+      }
+    } else {
+      final Optional<Map<String, List<Polygon>>> optionalPolygons =
+          selectAndLoadPolygonsFile(mapFolderLocation);
+      if (optionalPolygons.isPresent()) {
+        return optionalPolygons.get();
+      } else {
+        log.info("You must specify a Polgyon file.");
+        log.info("Shutting down.");
+        throw new IOException("no polygons file specified");
+      }
+    }
+  }
+
+  public static Optional<Map<String, List<Polygon>>> selectAndLoadPolygonsFile(
+      final Path mapFolderLocation) throws IOException {
+    log.info("Select the polygons file");
+    final Path polyPath =
+        new FileOpen("Select the polygons file", mapFolderLocation, ".txt").getFile();
+    if (polyPath != null) {
+      log.info("Polygons : " + polyPath);
+      try {
+        try {
+          return Optional.of(PointFileReaderWriter.readOneToManyPolygons(polyPath));
+        } catch (IOException e) {
+          log.error("Something wrong with polygons file");
+          throw e;
+        }
+
+      } catch (final IOException e) {
+        log.error("Failed to load polygons: " + polyPath);
+        throw e;
+      }
+    }
+    return Optional.empty();
+  }
+
   private void runInternal() throws IOException {
     mapFolderLocation = MapFolderLocationSystemProperty.read();
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
@@ -213,76 +338,8 @@ public final class DecorationPlacer {
       setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       setLocationRelativeTo(null);
       highlightAll = false;
-      final Path fileCenters =
-          FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "centers.txt");
-      if (Files.exists(fileCenters)
-          && JOptionPane.showConfirmDialog(
-                  new JPanel(),
-                  "A centers.txt file was found in the map's folder, do you want to use "
-                      + "the file to supply the territories centers?",
-                  "File Suggestion",
-                  JOptionPane.YES_NO_CANCEL_OPTION)
-              == 0) {
-        try {
-          log.info("Centers : " + fileCenters);
-          centers = PointFileReaderWriter.readOneToOne(fileCenters);
-        } catch (final IOException e) {
-          log.error("Something wrong with Centers file");
-          throw e;
-        }
-      } else {
-        try {
-          log.info("Select the Centers file");
-          final Path centerPath =
-              new FileOpen("Select A Center File", mapFolderLocation, ".txt").getFile();
-          if (centerPath != null) {
-            log.info("Centers : " + centerPath);
-            centers = PointFileReaderWriter.readOneToOne(centerPath);
-          } else {
-            log.info("You must specify a centers file.");
-            log.info("Shutting down.");
-            throw new IOException("no centers file specified");
-          }
-        } catch (final IOException e) {
-          log.error("Something wrong with Centers file");
-          throw e;
-        }
-      }
-      final Path filePoly =
-          FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "polygons.txt");
-      if (Files.exists(filePoly)
-          && JOptionPane.showConfirmDialog(
-                  new JPanel(),
-                  "A polygons.txt file was found in the map's folder, "
-                      + "do you want to use the file to supply the territories polygons?",
-                  "File Suggestion",
-                  JOptionPane.YES_NO_CANCEL_OPTION)
-              == 0) {
-        try {
-          log.info("Polygons : " + filePoly);
-          polygons = PointFileReaderWriter.readOneToManyPolygons(filePoly);
-        } catch (final IOException e) {
-          log.error("Something wrong with your Polygons file: " + filePoly.toAbsolutePath());
-          throw e;
-        }
-      } else {
-        log.info("Select the Polygons file");
-        final Path polyPath =
-            new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile();
-        if (polyPath != null) {
-          log.info("Polygons : " + polyPath);
-          try {
-            polygons = PointFileReaderWriter.readOneToManyPolygons(polyPath);
-          } catch (final IOException e) {
-            log.error("Something wrong with your Polygons file: " + polyPath);
-            throw e;
-          }
-        } else {
-          log.info("You must specify a Polgyon file.");
-          log.info("Shutting down.");
-          throw new IOException("no polygons file specified");
-        }
-      }
+      centers = loadCentersFile(mapFolder, mapFolderLocation);
+      polygons = loadPolygonsFile(mapFolder, mapFolderLocation);
       image = FileHelper.newImage(mapFolder);
       final JPanel imagePanel = newMainPanel();
       /*
@@ -877,7 +934,7 @@ public final class DecorationPlacer {
   @Getter
   enum ImagePointType {
     decorations(
-        "decorations.txt",
+        Constants.FILE_NAME_DECORATIONS,
         "misc",
         "decorationExample.png",
         true,
@@ -892,7 +949,7 @@ public final class DecorationPlacer {
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
     name_place(
-        "name_place.txt",
+        Constants.FILE_NAME_TERRITORY_NAME_PLACE,
         "territoryNames",
         "territoryName.png",
         true,
@@ -908,7 +965,7 @@ public final class DecorationPlacer {
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
     pu_place(
-        "pu_place.txt",
+        Constants.FILE_NAME_PU_PLACE,
         "PUs",
         "2.png",
         false,
@@ -924,7 +981,7 @@ public final class DecorationPlacer {
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
     capitols(
-        "capitols.txt",
+        Constants.FILE_NAME_CAPITAL_MARKERS,
         "flags",
         "Neutral_large.png",
         false,
@@ -956,7 +1013,7 @@ public final class DecorationPlacer {
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
     blockade(
-        "blockade.txt",
+        Constants.FILE_NAME_BLOCKADE_MARKERS,
         "misc",
         "blockade.png",
         false,
@@ -972,7 +1029,7 @@ public final class DecorationPlacer {
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
     convoy(
-        "convoy.txt",
+        Constants.FILE_NAME_CONVOY_MARKERS,
         "flags",
         "Neutral.png",
         false,
@@ -988,7 +1045,7 @@ public final class DecorationPlacer {
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
     comments(
-        "comments.txt",
+        Constants.FILE_NAME_COMMENT_MARKERS,
         "misc",
         "exampleConvoyText.png",
         false,
@@ -1004,7 +1061,7 @@ public final class DecorationPlacer {
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
     kamikaze_place(
-        "kamikaze_place.txt",
+        Constants.FILE_NAME_KAMIKAZE_PLACE,
         "flags",
         "Neutral_fade.png",
         false,
@@ -1020,7 +1077,7 @@ public final class DecorationPlacer {
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
     territory_effects(
-        "territory_effects.txt",
+        Constants.FILE_NAME_TERRITORY_EFFECT,
         "territoryEffects",
         "mountain_large.png",
         false,

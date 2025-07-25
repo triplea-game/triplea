@@ -2,6 +2,7 @@ package tools.map.making;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import games.strategy.triplea.Constants;
 import java.awt.Dimension;
 import java.awt.Polygon;
 import java.awt.Shape;
@@ -87,7 +88,7 @@ public final class ConnectionFinder {
     log.info("Select polygons.txt");
     Path polyFile = null;
     if (mapFolderLocation != null && Files.exists(mapFolderLocation)) {
-      polyFile = mapFolderLocation.resolve("polygons.txt");
+      polyFile = mapFolderLocation.resolve(Constants.FILE_NAME_POLYGONS);
     }
     if (polyFile == null
         || !Files.exists(polyFile)
@@ -97,7 +98,7 @@ public final class ConnectionFinder {
                 "File Suggestion",
                 JOptionPane.YES_NO_CANCEL_OPTION)
             != 0) {
-      polyFile = new FileOpen("Select The polygons.txt file", mapFolderLocation, ".txt").getFile();
+      polyFile = new FileOpen("Select the file polygons.txt", mapFolderLocation, ".txt").getFile();
     }
     if (polyFile == null || !Files.exists(polyFile)) {
       log.info("No polygons.txt Selected. Shutting down.");

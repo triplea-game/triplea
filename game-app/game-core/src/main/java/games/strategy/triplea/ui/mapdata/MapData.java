@@ -3,6 +3,7 @@ package games.strategy.triplea.ui.mapdata;
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.UnitImageFactory;
 import java.awt.Color;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -79,12 +81,12 @@ public class MapData {
   @NonNls
   public static final String PROPERTY_MAP_USENATION_CONVOYFLAGS = "map.useNation_convoyFlags";
 
+  @NonNls
   public static final String PROPERTY_DONT_DRAW_TERRITORY_NAMES = "dont_draw_territory_names";
+
   @NonNls public static final String PROPERTY_MAP_MAPBLENDS = "map.mapBlends";
   @NonNls public static final String PROPERTY_MAP_MAPBLENDMODE = "map.mapBlendMode";
   @NonNls public static final String PROPERTY_MAP_MAPBLENDALPHA = "map.mapBlendAlpha";
-
-  @NonNls public static final String POLYGON_FILE = "polygons.txt";
 
   @NonNls private static final String PROPERTY_DONT_DRAW_UNITS = "dont_draw_units";
 
@@ -114,20 +116,6 @@ public class MapData {
   private static final String PROPERTY_UNITS_TRANSFORM_FLIP_PREFIX = "units.transform.flip.";
 
   @NonNls private static final String PROPERTY_UNITS_TRANSFORM_IGNORE = "units.transform.ignore";
-
-  @NonNls private static final String CENTERS_FILE = "centers.txt";
-  @NonNls private static final String PLACEMENT_FILE = "place.txt";
-  @NonNls private static final String TERRITORY_EFFECT_FILE = "territory_effects.txt";
-  @NonNls private static final String MAP_PROPERTIES = "map.properties";
-  @NonNls private static final String CAPITAL_MARKERS = "capitols.txt";
-  @NonNls private static final String CONVOY_MARKERS = "convoy.txt";
-  @NonNls private static final String COMMENT_MARKERS = "comments.txt";
-  @NonNls private static final String VC_MARKERS = "vc.txt";
-  @NonNls private static final String BLOCKADE_MARKERS = "blockade.txt";
-  @NonNls private static final String PU_PLACE_FILE = "pu_place.txt";
-  @NonNls private static final String TERRITORY_NAME_PLACE_FILE = "name_place.txt";
-  @NonNls private static final String KAMIKAZE_FILE = "kamikaze_place.txt";
-  @NonNls private static final String DECORATIONS_FILE = "decorations.txt";
 
   private final PlayerColors playerColors;
   private Set<String> ignoreTransformingUnits;
@@ -162,25 +150,27 @@ public class MapData {
   public MapData(final ResourceLoader loader) {
     this.loader = loader;
     try {
-      place.putAll(readOptionalPlacementsOneToMany(PLACEMENT_FILE));
-      territoryEffects.putAll(readOptionalPointsOneToMany(TERRITORY_EFFECT_FILE));
+      place.putAll(readOptionalPlacementsOneToMany(Constants.FILE_NAME_PLACEMENT));
+      territoryEffects.putAll(readOptionalPointsOneToMany(Constants.FILE_NAME_TERRITORY_EFFECT));
 
       polys.putAll(
-          PointFileReaderWriter.readOneToManyPolygons(loader.requiredResource(POLYGON_FILE)));
-      centers.putAll(PointFileReaderWriter.readOneToOne(loader.requiredResource(CENTERS_FILE)));
-      vcPlace.putAll(readOptionalPointsOneToOne(VC_MARKERS));
-      convoyPlace.putAll(readOptionalPointsOneToOne(CONVOY_MARKERS));
-      commentPlace.putAll(readOptionalPointsOneToOne(COMMENT_MARKERS));
-      blockadePlace.putAll(readOptionalPointsOneToOne(BLOCKADE_MARKERS));
-      capitolPlace.putAll(readOptionalPointsOneToOne(CAPITAL_MARKERS));
-      puPlace.putAll(readOptionalPointsOneToOne(PU_PLACE_FILE));
-      namePlace.putAll(readOptionalPointsOneToOne(TERRITORY_NAME_PLACE_FILE));
-      kamikazePlace.putAll(readOptionalPointsOneToOne(KAMIKAZE_FILE));
+          PointFileReaderWriter.readOneToManyPolygons(
+              loader.requiredResource(Constants.FILE_NAME_POLYGONS)));
+      centers.putAll(
+          PointFileReaderWriter.readOneToOne(loader.requiredResource(Constants.FILE_NAME_CENTERS)));
+      vcPlace.putAll(readOptionalPointsOneToOne(Constants.FILE_NAME_VC_MARKERS));
+      convoyPlace.putAll(readOptionalPointsOneToOne(Constants.FILE_NAME_CONVOY_MARKERS));
+      commentPlace.putAll(readOptionalPointsOneToOne(Constants.FILE_NAME_COMMENT_MARKERS));
+      blockadePlace.putAll(readOptionalPointsOneToOne(Constants.FILE_NAME_BLOCKADE_MARKERS));
+      capitolPlace.putAll(readOptionalPointsOneToOne(Constants.FILE_NAME_CAPITAL_MARKERS));
+      puPlace.putAll(readOptionalPointsOneToOne(Constants.FILE_NAME_PU_PLACE));
+      namePlace.putAll(readOptionalPointsOneToOne(Constants.FILE_NAME_TERRITORY_NAME_PLACE));
+      kamikazePlace.putAll(readOptionalPointsOneToOne(Constants.FILE_NAME_KAMIKAZE_PLACE));
       decorations.putAll(loadDecorations());
       territoryNameImages.putAll(territoryNameImages());
 
       try (InputStream inputStream =
-          Files.newInputStream(loader.requiredResource(MAP_PROPERTIES))) {
+          Files.newInputStream(loader.requiredResource(Constants.FILE_NAME_MAP_PROPERTIES))) {
         mapProperties.load(inputStream);
       } catch (final Exception e) {
         log.warn("Error reading map.properties, {}", e.getMessage(), e);
@@ -257,7 +247,7 @@ public class MapData {
   }
 
   private Map<Image, List<Point>> loadDecorations() throws IOException {
-    return readOptionalPointsOneToMany(DECORATIONS_FILE).entrySet().stream()
+    return readOptionalPointsOneToMany(Constants.FILE_NAME_DECORATIONS).entrySet().stream()
         .map(entry -> Map.entry(loader.loadImage("misc/" + entry.getKey()), entry.getValue()))
         .filter(entry -> entry.getKey().isPresent())
         .collect(Collectors.toMap(entry -> entry.getKey().orElseThrow(), Entry::getValue));
@@ -524,7 +514,7 @@ public class MapData {
   }
 
   private static void verifyKeys(
-      final GameState data, final Set<String> keys, final String dataTypeForErrorMessage) {
+      final GameState data, final Set<String> keys, final @NonNls String dataTypeForErrorMessage) {
     final StringBuilder errors = new StringBuilder();
 
     // This block ignores mismatched territory data and the result of removing
@@ -544,14 +534,11 @@ public class MapData {
         .map(Territory::getName)
         .filter(territoryName -> !keys.contains(territoryName))
         .forEach(
-            territoryName -> {
-              errors
-                  .append("No data of type ")
-                  .append(dataTypeForErrorMessage)
-                  .append(" for territory: ")
-                  .append(territoryName)
-                  .append("\n");
-            });
+            territoryName ->
+                errors.append(
+                    MessageFormat.format(
+                        "No data of type {0} for territory: {1}\n",
+                        dataTypeForErrorMessage, territoryName)));
     if (errors.length() > 0) {
       throw new IllegalStateException(errors.toString());
     }
@@ -575,7 +562,8 @@ public class MapData {
 
   public Point getCenter(final String terr) {
     if (centers.get(terr) == null) {
-      throw new IllegalStateException("Missing " + CENTERS_FILE + " data for " + terr);
+      throw new IllegalStateException(
+          "Missing " + Constants.FILE_NAME_CENTERS + " data for " + terr);
     }
     return new Point(centers.get(terr));
   }
@@ -658,7 +646,12 @@ public class MapData {
     final String heightProperty = mapProperties.getProperty(PROPERTY_MAP_HEIGHT);
     if (widthProperty == null || heightProperty == null) {
       throw new IllegalStateException(
-          "Missing " + PROPERTY_MAP_WIDTH + " or " + PROPERTY_MAP_HEIGHT + " in " + MAP_PROPERTIES);
+          "Missing "
+              + PROPERTY_MAP_WIDTH
+              + " or "
+              + PROPERTY_MAP_HEIGHT
+              + " in "
+              + Constants.FILE_NAME_MAP_PROPERTIES);
     }
     final int width = Integer.parseInt(widthProperty.trim());
     final int height = Integer.parseInt(heightProperty.trim());

@@ -2,6 +2,7 @@ package tools.image;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import games.strategy.triplea.Constants;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -124,7 +125,8 @@ public final class CenterPicker {
     CenterPickerFrame(final Path mapFolder) throws IOException {
       super("Center Picker");
       setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      final Path file = FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "polygons.txt");
+      final Path file =
+          FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, Constants.FILE_NAME_POLYGONS);
       if (Files.exists(file)
           && JOptionPane.showConfirmDialog(
                   new JPanel(),
@@ -231,7 +233,9 @@ public final class CenterPicker {
     /** Saves the centers to disk. */
     private void saveCenters() {
       final Path fileName =
-          new FileSave("Where To Save centers.txt ?", "centers.txt", mapFolderLocation).getFile();
+          new FileSave(
+                  "Where To Save centers.txt ?", Constants.FILE_NAME_CENTERS, mapFolderLocation)
+              .getFile();
       if (fileName == null) {
         return;
       }

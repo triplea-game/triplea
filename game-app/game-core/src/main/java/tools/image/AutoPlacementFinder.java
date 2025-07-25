@@ -3,6 +3,7 @@ package tools.image;
 import static com.google.common.base.Preconditions.checkState;
 
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -271,7 +272,8 @@ public final class AutoPlacementFinder {
     textOptionPane.appendNewLine("\r\nAll Finished!");
     textOptionPane.countDown();
     final Path fileName =
-        new FileSave("Where To Save place.txt ?", "place.txt", mapFolderLocation).getFile();
+        new FileSave("Where To Save place.txt ?", Constants.FILE_NAME_PLACEMENT, mapFolderLocation)
+            .getFile();
     if (fileName == null) {
       textOptionPane.appendNewLine("You chose not to save, Shutting down");
       textOptionPane.dispose();
@@ -309,11 +311,13 @@ public final class AutoPlacementFinder {
     return ClientFileSystemHelper.getUserMapsFolder()
         .resolve(mapDir)
         .resolve("map")
-        .resolve("map.properties");
+        .resolve(Constants.FILE_NAME_MAP_PROPERTIES);
   }
 
   private static Path getMapPropertiesFileForLegacyFolderStructure(final String mapDir) {
-    return ClientFileSystemHelper.getUserMapsFolder().resolve(mapDir).resolve("map.properties");
+    return ClientFileSystemHelper.getUserMapsFolder()
+        .resolve(mapDir)
+        .resolve(Constants.FILE_NAME_MAP_PROPERTIES);
   }
 
   private static String getUnitsScale() {
