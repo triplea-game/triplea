@@ -270,7 +270,8 @@ public class UnitImageFactory {
   }
 
   private Image createNoImageImage(ImageKey imageKey) {
-    BufferedImage image = resourceLoader.getImageOrThrow(FILE_NAME_BASE + "missing_unit_image.png");
+    BufferedImage image =
+        resourceLoader.getImageOrThrow(FILE_NAME_BASE + Constants.FILE_NAME_IMAGE_MISSING_UNIT);
     Color playerColor = mapData.getPlayerColor(imageKey.getPlayer().getName());
     ImageTransformer.colorize(playerColor, image);
 

@@ -546,7 +546,7 @@ public final class DecorationPlacer {
       }
       final Path fileName =
           new FileSave(
-                  "Where To Save Image Points Text File?",
+                  "Where to save image points text file?",
                   JFileChooser.FILES_ONLY,
                   currentImagePointsTextFile,
                   mapFolderLocation)
@@ -997,7 +997,7 @@ public final class DecorationPlacer {
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
     vc(
-        "vc.txt",
+        Constants.FILE_NAME_VC_MARKERS,
         "misc",
         "vc.png",
         false,

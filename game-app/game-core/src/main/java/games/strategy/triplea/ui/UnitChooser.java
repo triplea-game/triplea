@@ -3,6 +3,7 @@ package games.strategy.triplea.ui;
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.delegate.data.CasualtyList;
@@ -755,12 +756,12 @@ public final class UnitChooser extends JPanel {
      *     getNonWithdrawableImageHeight</code>.
      */
     private BufferedImage loadNonWithdrawableImage(final int nonWithdrawableImageHeight) {
-      final BufferedImage imgSmall = loadImage("non-withdrawable_small.png");
+      final BufferedImage imgSmall = loadImage(Constants.FILE_NAME_IMAGE_NON_WITHDRAWABLE_SMALL);
 
       if (nonWithdrawableImageHeight <= imgSmall.getHeight(null)) {
         return imgSmall;
       } else {
-        final BufferedImage imgBig = loadImage("non-withdrawable.png");
+        final BufferedImage imgBig = loadImage(Constants.FILE_NAME_IMAGE_NON_WITHDRAWABLE);
 
         return nonWithdrawableImageHeight < imgBig.getHeight(null) ? imgSmall : imgBig;
       }

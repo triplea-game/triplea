@@ -272,7 +272,7 @@ public final class AutoPlacementFinder {
     textOptionPane.appendNewLine("\r\nAll Finished!");
     textOptionPane.countDown();
     final Path fileName =
-        new FileSave("Where To Save place.txt ?", Constants.FILE_NAME_PLACEMENT, mapFolderLocation)
+        new FileSave("Where to save place.txt ?", Constants.FILE_NAME_PLACEMENT, mapFolderLocation)
             .getFile();
     if (fileName == null) {
       textOptionPane.appendNewLine("You chose not to save, Shutting down");

@@ -498,7 +498,7 @@ public final class MapPropertiesMaker {
       try {
         final Path fileName =
             new FileSave(
-                    "Where To Save map.properties ?",
+                    "Where to save map.properties ?",
                     Constants.FILE_NAME_MAP_PROPERTIES,
                     mapFolderLocation)
                 .getFile();

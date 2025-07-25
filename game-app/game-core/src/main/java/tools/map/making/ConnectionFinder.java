@@ -219,7 +219,7 @@ public final class ConnectionFinder {
     try {
       final Path fileName =
           new FileSave(
-                  "Where To Save connections.txt ? (cancel to print to console)",
+                  "Where to save connections.txt ? (cancel to print to console)",
                   "connections.txt",
                   mapFolderLocation)
               .getFile();

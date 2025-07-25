@@ -234,7 +234,7 @@ public final class CenterPicker {
     private void saveCenters() {
       final Path fileName =
           new FileSave(
-                  "Where To Save centers.txt ?", Constants.FILE_NAME_CENTERS, mapFolderLocation)
+                  "Where to save centers.txt ?", Constants.FILE_NAME_CENTERS, mapFolderLocation)
               .getFile();
       if (fileName == null) {
         return;

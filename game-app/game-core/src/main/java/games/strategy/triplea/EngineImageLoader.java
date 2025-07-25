@@ -18,7 +18,7 @@ public class EngineImageLoader {
   public static final String ASSETS_FOLDER = "assets";
 
   public Image loadFrameIcon() {
-    return loadImage("icons", "ta_icon.png");
+    return loadImage("icons", Constants.FILE_NAME_IMAGE_TA_ICON);
   }
 
   /**

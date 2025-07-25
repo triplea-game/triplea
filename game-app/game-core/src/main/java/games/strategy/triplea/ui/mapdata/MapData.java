@@ -182,10 +182,10 @@ public class MapData {
     }
 
     playerColors = new PlayerColors(mapProperties);
-    vcImage = loader.loadImage("misc/vc.png").orElse(null);
-    blockadeImage = loader.loadImage("misc/blockade.png").orElse(null);
-    errorImage = loader.loadImage("misc/error.gif").orElse(null);
-    warningImage = loader.loadImage("misc/warning.gif").orElse(null);
+    vcImage = loader.loadImage(Constants.FILE_PATH_IMAGE_VC).orElse(null);
+    blockadeImage = loader.loadImage(Constants.FILE_PATH_IMAGE_BLOCKADE).orElse(null);
+    errorImage = loader.loadImage(Constants.FILE_PATH_IMAGE_ERROR).orElse(null);
+    warningImage = loader.loadImage(Constants.FILE_PATH_IMAGE_WARNING).orElse(null);
   }
 
   private Map<String, Point> readOptionalPointsOneToOne(final String path) throws IOException {
