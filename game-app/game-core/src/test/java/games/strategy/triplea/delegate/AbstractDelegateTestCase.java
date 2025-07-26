@@ -31,54 +31,63 @@ public abstract class AbstractDelegateTestCase extends AbstractClientSettingTest
   protected GamePlayer japanese = GameDataTestUtil.japanese(gameData);
   protected GamePlayer russians = GameDataTestUtil.russians(gameData);
   protected GamePlayer germans = GameDataTestUtil.germans(gameData);
-  protected Territory northSea = gameData.getMap().getTerritory("North Sea Zone");
-  protected Territory blackSea = gameData.getMap().getTerritory("Black Sea Zone");
-  protected Territory uk = gameData.getMap().getTerritory("United Kingdom");
-  protected Territory japan = gameData.getMap().getTerritory("Japan");
-  protected Territory japanSeaZone = gameData.getMap().getTerritory("Japan Sea Zone");
-  protected Territory sfeSeaZone = gameData.getMap().getTerritory("Soviet Far East Sea Zone");
-  protected Territory brazil = gameData.getMap().getTerritory("Brazil");
-  protected Territory westCanada = gameData.getMap().getTerritory("West Canada");
-  protected Territory eastCanada = gameData.getMap().getTerritory("East Canada");
-  protected Territory westCanadaSeaZone = gameData.getMap().getTerritory("West Canada Sea Zone");
-  protected Territory germany = gameData.getMap().getTerritory("Germany");
-  protected Territory syria = gameData.getMap().getTerritory("Syria Jordan");
-  protected Territory manchuria = gameData.getMap().getTerritory("Manchuria");
-  protected Territory egypt = gameData.getMap().getTerritory("Anglo Sudan Egypt");
-  protected Territory congo = gameData.getMap().getTerritory("Congo");
-  protected Territory congoSeaZone = gameData.getMap().getTerritory("Congo Sea Zone");
-  protected Territory northAtlantic = gameData.getMap().getTerritory("North Atlantic Sea Zone");
-  protected Territory westAfricaSea = gameData.getMap().getTerritory("West Africa Sea Zone");
-  protected Territory kenya = gameData.getMap().getTerritory("Kenya-Rhodesia");
-  protected Territory eastAfrica = gameData.getMap().getTerritory("Italian East Africa");
-  protected Territory libya = gameData.getMap().getTerritory("Libya");
-  protected Territory algeria = gameData.getMap().getTerritory("Algeria");
-  protected Territory equatorialAfrica = gameData.getMap().getTerritory("French Equatorial Africa");
-  protected Territory redSea = gameData.getMap().getTerritory("Red Sea Zone");
-  protected Territory westAfrica = gameData.getMap().getTerritory("French West Africa");
-  protected Territory angola = gameData.getMap().getTerritory("Angola");
-  protected Territory angolaSeaZone = gameData.getMap().getTerritory("Angola Sea Zone");
-  protected Territory eastCompass = gameData.getMap().getTerritory("East Compass Sea Zone");
-  protected Territory westCompass = gameData.getMap().getTerritory("West Compass Sea Zone");
-  protected Territory mozambiqueSeaZone = gameData.getMap().getTerritory("Mozambique Sea Zone");
+  protected Territory northSea = gameData.getMap().getTerritoryOrThrow("North Sea Zone");
+  protected Territory blackSea = gameData.getMap().getTerritoryOrThrow("Black Sea Zone");
+  protected Territory uk = gameData.getMap().getTerritoryOrThrow("United Kingdom");
+  protected Territory japan = gameData.getMap().getTerritoryOrThrow("Japan");
+  protected Territory japanSeaZone = gameData.getMap().getTerritoryOrThrow("Japan Sea Zone");
+  protected Territory sfeSeaZone =
+      gameData.getMap().getTerritoryOrThrow("Soviet Far East Sea Zone");
+  protected Territory brazil = gameData.getMap().getTerritoryOrThrow("Brazil");
+  protected Territory westCanada = gameData.getMap().getTerritoryOrThrow("West Canada");
+  protected Territory eastCanada = gameData.getMap().getTerritoryOrThrow("East Canada");
+  protected Territory westCanadaSeaZone =
+      gameData.getMap().getTerritoryOrThrow("West Canada Sea Zone");
+  protected Territory germany = gameData.getMap().getTerritoryOrThrow("Germany");
+  protected Territory syria = gameData.getMap().getTerritoryOrThrow("Syria Jordan");
+  protected Territory manchuria = gameData.getMap().getTerritoryOrThrow("Manchuria");
+  protected Territory egypt = gameData.getMap().getTerritoryOrThrow("Anglo Sudan Egypt");
+  protected Territory congo = gameData.getMap().getTerritoryOrThrow("Congo");
+  protected Territory congoSeaZone = gameData.getMap().getTerritoryOrThrow("Congo Sea Zone");
+  protected Territory northAtlantic =
+      gameData.getMap().getTerritoryOrThrow("North Atlantic Sea Zone");
+  protected Territory westAfricaSea = gameData.getMap().getTerritoryOrThrow("West Africa Sea Zone");
+  protected Territory kenya = gameData.getMap().getTerritoryOrThrow("Kenya-Rhodesia");
+  protected Territory eastAfrica = gameData.getMap().getTerritoryOrThrow("Italian East Africa");
+  protected Territory libya = gameData.getMap().getTerritoryOrThrow("Libya");
+  protected Territory algeria = gameData.getMap().getTerritoryOrThrow("Algeria");
+  protected Territory equatorialAfrica =
+      gameData.getMap().getTerritoryOrThrow("French Equatorial Africa");
+  protected Territory redSea = gameData.getMap().getTerritoryOrThrow("Red Sea Zone");
+  protected Territory westAfrica = gameData.getMap().getTerritoryOrThrow("French West Africa");
+  protected Territory angola = gameData.getMap().getTerritoryOrThrow("Angola");
+  protected Territory angolaSeaZone = gameData.getMap().getTerritoryOrThrow("Angola Sea Zone");
+  protected Territory eastCompass = gameData.getMap().getTerritoryOrThrow("East Compass Sea Zone");
+  protected Territory westCompass = gameData.getMap().getTerritoryOrThrow("West Compass Sea Zone");
+  protected Territory mozambiqueSeaZone =
+      gameData.getMap().getTerritoryOrThrow("Mozambique Sea Zone");
   protected Territory eastMediteranean =
-      gameData.getMap().getTerritory("East Mediteranean Sea Zone");
-  protected Territory indianOcean = gameData.getMap().getTerritory("Indian Ocean Sea Zone");
-  protected Territory westAfricaSeaZone = gameData.getMap().getTerritory("West Africa Sea Zone");
-  protected Territory southAfrica = gameData.getMap().getTerritory("South Africa");
-  protected Territory saudiArabia = gameData.getMap().getTerritory("Saudi Arabia");
-  protected Territory india = gameData.getMap().getTerritory("India");
-  protected Territory southAtlantic = gameData.getMap().getTerritory("South Atlantic Sea Zone");
-  protected Territory antarticSea = gameData.getMap().getTerritory("Antartic Sea Zone");
-  protected Territory southAfricaSeaZone = gameData.getMap().getTerritory("South Africa Sea Zone");
-  protected Territory southBrazilSeaZone = gameData.getMap().getTerritory("South Brazil Sea Zone");
-  protected Territory russia = gameData.getMap().getTerritory("Russia");
-  protected Territory spain = gameData.getMap().getTerritory("Spain");
-  protected Territory gibraltar = gameData.getMap().getTerritory("Gibraltar");
-  protected Territory balticSeaZone = gameData.getMap().getTerritory("Baltic Sea Zone");
-  protected Territory karelia = gameData.getMap().getTerritory("Karelia S.S.R.");
-  protected Territory westEurope = gameData.getMap().getTerritory("West Europe");
-  protected Territory finlandNorway = gameData.getMap().getTerritory("Finland Norway");
+      gameData.getMap().getTerritoryOrThrow("East Mediteranean Sea Zone");
+  protected Territory indianOcean = gameData.getMap().getTerritoryOrThrow("Indian Ocean Sea Zone");
+  protected Territory westAfricaSeaZone =
+      gameData.getMap().getTerritoryOrThrow("West Africa Sea Zone");
+  protected Territory southAfrica = gameData.getMap().getTerritoryOrThrow("South Africa");
+  protected Territory saudiArabia = gameData.getMap().getTerritoryOrThrow("Saudi Arabia");
+  protected Territory india = gameData.getMap().getTerritoryOrThrow("India");
+  protected Territory southAtlantic =
+      gameData.getMap().getTerritoryOrThrow("South Atlantic Sea Zone");
+  protected Territory antarticSea = gameData.getMap().getTerritoryOrThrow("Antartic Sea Zone");
+  protected Territory southAfricaSeaZone =
+      gameData.getMap().getTerritoryOrThrow("South Africa Sea Zone");
+  protected Territory southBrazilSeaZone =
+      gameData.getMap().getTerritoryOrThrow("South Brazil Sea Zone");
+  protected Territory russia = gameData.getMap().getTerritoryOrThrow("Russia");
+  protected Territory spain = gameData.getMap().getTerritoryOrThrow("Spain");
+  protected Territory gibraltar = gameData.getMap().getTerritoryOrThrow("Gibraltar");
+  protected Territory balticSeaZone = gameData.getMap().getTerritoryOrThrow("Baltic Sea Zone");
+  protected Territory karelia = gameData.getMap().getTerritoryOrThrow("Karelia S.S.R.");
+  protected Territory westEurope = gameData.getMap().getTerritoryOrThrow("West Europe");
+  protected Territory finlandNorway = gameData.getMap().getTerritoryOrThrow("Finland Norway");
   protected UnitType armour = GameDataTestUtil.armour(gameData);
   protected UnitType infantry = GameDataTestUtil.infantry(gameData);
   protected UnitType transport = GameDataTestUtil.transport(gameData);

@@ -1,7 +1,9 @@
 package tools.image;
 
 import static com.google.common.base.Preconditions.checkState;
+import static tools.image.DecorationPlacer.loadCentersFile;
 
+import games.strategy.triplea.Constants;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -17,7 +19,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -140,39 +141,7 @@ public final class PolygonGrabber {
     PolygonGrabberFrame(final Path mapFolder) throws IOException {
       super("Polygon grabber");
       setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      final Path file = FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "centers.txt");
-      if (Files.exists(file)
-          && JOptionPane.showConfirmDialog(
-                  new JPanel(),
-                  "A centers.txt file was found in the map's folder, do you want to use "
-                      + "the file to supply the territories names?",
-                  "File Suggestion",
-                  JOptionPane.YES_NO_CANCEL_OPTION)
-              == 0) {
-        try {
-          log.info("Centers : " + file);
-          centers = PointFileReaderWriter.readOneToOne(file);
-        } catch (final IOException e) {
-          log.error("Something wrong with Centers file", e);
-        }
-      } else {
-        try {
-          log.info("Select the Centers file");
-          final Path centerPath =
-              new FileOpen("Select A Center File", mapFolderLocation, ".txt").getFile();
-          if (centerPath != null) {
-            log.info("Centers : " + centerPath);
-            centers = PointFileReaderWriter.readOneToOne(centerPath);
-          } else {
-            log.info("You must specify a centers file.");
-            log.info("Shutting down.");
-            throw new IOException("no centers file specified");
-          }
-        } catch (final IOException e) {
-          log.error("Something wrong with Centers file");
-          throw e;
-        }
-      }
+      centers = loadCentersFile(mapFolder, mapFolderLocation);
       bufferedImage = newBufferedImage(mapFolder);
       imagePanel = newMainPanel();
       /*
@@ -428,7 +397,9 @@ public final class PolygonGrabber {
     /** Saves the polygons to disk. */
     private void savePolygons() {
       final Path polyName =
-          new FileSave("Where To Save Polygons.txt ?", "polygons.txt", mapFolderLocation).getFile();
+          new FileSave(
+                  "Where to save polygons.txt ?", Constants.FILE_NAME_POLYGONS, mapFolderLocation)
+              .getFile();
       if (polyName == null) {
         return;
       }
@@ -442,9 +413,9 @@ public final class PolygonGrabber {
 
     /** Loads a pre-defined file with map polygon points. */
     private void loadPolygons() {
-      log.info("Load a polygon file");
+      log.info("Load a polygons file");
       final @Nullable Path polyName =
-          new FileOpen("Load A Polygon File", mapFolderLocation, ".txt").getFile();
+          new FileOpen("Load the polygons file", mapFolderLocation, ".txt").getFile();
       if (polyName == null) {
         return;
       }

@@ -58,6 +58,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
@@ -772,7 +773,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (territories == null) {
         territories = new ArrayList<>();
       }
-      territories.add(getTerritoryOrThrow(element));
+      territories.add(getTerritoryOrThrowGameParseException(element));
     }
   }
 
@@ -1166,7 +1167,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (s.length == 1 && count != -1) {
       throw new GameParseException("Empty placement list" + thisErrorMsg());
     }
-    final Territory territory = getTerritoryOrThrow(s[i]);
+    final Territory territory = getTerritoryOrThrowGameParseException(s[i]);
 
     i++;
     final IntegerMap<UnitType> map = new IntegerMap<>();
@@ -1213,17 +1214,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (s.length == 1 && count != -1) {
       throw new GameParseException("Empty removeUnits list" + thisErrorMsg());
     }
-    final Collection<Territory> territories = new ArrayList<>();
-    final Territory terr = getData().getMap().getTerritory(s[i]);
-    if (terr == null) {
-      if (s[i].equalsIgnoreCase("all")) {
-        territories.addAll(getData().getMap().getTerritories());
-      } else {
-        throw new GameParseException("Territory does not exist " + s[i] + thisErrorMsg());
-      }
-    } else {
-      territories.add(terr);
-    }
+    final Collection<Territory> territories = getTerritoriesFromFieldValue(s[i]);
     i++;
     final IntegerMap<UnitType> map = new IntegerMap<>();
     for (; i < s.length; i++) {
@@ -1261,6 +1252,22 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   private void resetRemoveUnits() {
     removeUnits = null;
+  }
+
+  public @NotNull Collection<Territory> getTerritoriesFromFieldValue(
+      @NonNls final String territoryFieldValue) throws GameParseException {
+    final Collection<Territory> territories = new ArrayList<>();
+    try {
+      final Territory terr = getTerritoryOrThrowGameParseException(territoryFieldValue);
+      territories.add(terr);
+    } catch (GameParseException gameParseException) {
+      if (territoryFieldValue.equalsIgnoreCase("all")) {
+        territories.addAll(getData().getMap().getTerritories());
+      } else {
+        throw gameParseException;
+      }
+    }
+    return territories;
   }
 
   private void setPurchase(final String place) throws GameParseException {
@@ -1314,7 +1321,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               + thisErrorMsg());
     }
     if (!s[0].equalsIgnoreCase("all")) {
-      getTerritoryOrThrow(s[0]);
+      getTerritoryOrThrowGameParseException(s[0]);
     }
     if (!s[1].equalsIgnoreCase("any")) {
       getPlayerOrThrow(s[1]);
@@ -2163,12 +2170,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
       for (final String value : t.getChangeOwnership()) {
         final String[] s = splitOnColon(value);
-        final Collection<Territory> territories = new ArrayList<>();
-        if (s[0].equalsIgnoreCase("all")) {
-          territories.addAll(data.getMap().getTerritories());
-        } else {
-          final Territory territorySet = data.getMap().getTerritory(s[0]);
-          territories.add(territorySet);
+        final Collection<Territory> territories;
+        try {
+          territories = t.getTerritoriesFromFieldValue(s[0]);
+        } catch (GameParseException e) {
+          throw new RuntimeException(e);
         }
         // if null, then is must be "any", so then any player
         final GamePlayer oldOwner = data.getPlayerList().getPlayerId(s[1]);
