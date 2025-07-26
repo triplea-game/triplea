@@ -86,28 +86,31 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * Case-sensitive search for {@link Territory} by name. *
+   * Case-sensitive search for {@link Territory} by name. Use {@link #getTerritoryOrThrow} if it is
+   * expected that the territory is found.
    *
    * @param territoryName name of the searched territory (case-sensitive)
-   * @return Territory with the given name or {@code null} if no territory can be found.
+   * @return {@link Optional} of {@link Territory} with the given name.
    */
-  public @Nullable Territory getTerritoryOrNull(final String territoryName) {
-    return territoryLookup.get(territoryName);
+  public Optional<Territory> getTerritory(final @NotNull String territoryName) {
+    return Optional.ofNullable(territoryLookup.get(territoryName));
   }
 
   /**
-   * Case-sensitive search for {@link Territory} by name.
+   * Case-sensitive search for {@link Territory} by name. If it is not found a {@link
+   * IllegalArgumentException} is thrown. Use {@link #getTerritory} if it is expected that the
+   * territory might not be found.
    *
    * @param territoryName name of the searched territory (case-sensitive)
    * @return Territory with the given name or {@link Territory} if no territory can be found.
    */
-  public Territory getTerritoryOrThrow(final String territoryName) {
-    return Optional.ofNullable(getTerritoryOrNull(territoryName))
-        .orElseThrow(
-            () ->
-                new IllegalArgumentException(
-                    MessageFormat.format(
-                        "Territory with name {0} could not be found", territoryName)));
+  public Territory getTerritoryOrThrow(final @NotNull String territoryName) {
+    final Territory t = territoryLookup.get(territoryName);
+    if (t == null) {
+      throw new IllegalArgumentException(
+          MessageFormat.format("Territory with name {0} could not be found", territoryName));
+    }
+    return t;
   }
 
   /**

@@ -2652,9 +2652,9 @@ public class UnitAttachment extends DefaultAttachment {
     final Set<Territory> territories = new HashSet<>();
     for (final String name : list) {
       // Validate all territories exist
-      final Territory territory = getData().getMap().getTerritoryOrNull(name);
-      if (territory != null) {
-        territories.add(territory);
+      final Optional<Territory> optionalTerritory = getData().getMap().getTerritory(name);
+      if (optionalTerritory.isPresent()) {
+        territories.add(optionalTerritory.get());
       } else {
         // Check if it's a territory effect and get all territories
         if (getData().getTerritoryEffectList().containsKey(name)) {

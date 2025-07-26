@@ -524,9 +524,8 @@ public class MapData {
     final Iterator<String> iter = keys.iterator();
     while (iter.hasNext()) {
       final String name = iter.next();
-      final Territory terr = data.getMap().getTerritoryOrNull(name);
       // allow loading saved games with missing territories; just ignore them
-      if (terr == null) {
+      if (data.getMap().getTerritory(name).isEmpty()) {
         iter.remove();
       }
     }

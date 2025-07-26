@@ -2,8 +2,6 @@ package games.strategy.engine.data;
 
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -110,12 +108,12 @@ class MapTest {
 
   @Test
   void testCantFindByName() {
-    assertNull(map.getTerritoryOrNull("nowhere"));
+    assertTrue(map.getTerritory("nowhere").isEmpty());
   }
 
   @Test
   void testCanFindByName() {
-    assertNotNull(map.getTerritoryOrNull("aa"));
+    assertTrue(map.getTerritory("aa").isPresent());
   }
 
   @Test
