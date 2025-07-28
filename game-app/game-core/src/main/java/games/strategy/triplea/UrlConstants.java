@@ -16,7 +16,7 @@ public final class UrlConstants {
   public static final String MAP_MAKER_HELP =
       "https://github.com/triplea-game/triplea/wiki/How-to-create-custom-maps";
   public static final String PAYPAL_DONATE =
-      "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GKZL7598EDZLN";
+      "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ASJLHWGTA94MW";
   public static final String RELEASE_NOTES = "https://triplea-game.org/release_notes/";
   public static final String TRIPLEA_FORUM = "https://forums.triplea-game.org/";
   public static final String USER_GUIDE = "https://triplea-game.org/user-guide/";
