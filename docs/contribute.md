@@ -70,7 +70,7 @@ role from below and find out what you can do to help.
 
 #### _How to become one_
 
-- [![PayPal donation icon](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate?token=WFUEUa_Q4Zsq1NOF97Vhe_qVPoqCoj7ZtSAegmMdX6uAt7sziJKO1swbSjYnfEr9lDdAp6dDZNOh4DA8)
+- [![PayPal donation icon](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ASJLHWGTA94MW)
 
 ### :golf: Map Maker
 
