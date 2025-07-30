@@ -112,7 +112,7 @@ class BattleCalculatorPanel extends JPanel {
   @Nullable private final Territory battleSiteTerritory;
   private final JList<String> territoryEffectsJList;
   private final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
-  private boolean comboListenerEnabled = true;
+  private boolean determineUnitsOnComboSelectionChange = true;
 
   BattleCalculatorPanel(
       final GameData data,
@@ -158,8 +158,8 @@ class BattleCalculatorPanel extends JPanel {
     }
     attackerCombo.addItemListener(
         e -> {
-          if (e.getStateChange() != ItemEvent.SELECTED || !comboListenerEnabled) {
-            return; // no change to selected item
+          if (e.getStateChange() != ItemEvent.SELECTED || !determineUnitsOnComboSelectionChange) {
+            return;
           }
           attackerOrderOfLosses = null;
           final GamePlayer newAttacker = (GamePlayer) attackerCombo.getSelectedItem();
@@ -171,8 +171,8 @@ class BattleCalculatorPanel extends JPanel {
         });
     defenderCombo.addItemListener(
         e -> {
-          if (e.getStateChange() != ItemEvent.SELECTED || !comboListenerEnabled) {
-            return; // no change to selected item
+          if (e.getStateChange() != ItemEvent.SELECTED || !determineUnitsOnComboSelectionChange) {
+            return;
           }
           defenderOrderOfLosses = null;
           final GamePlayer newDefender = (GamePlayer) defenderCombo.getSelectedItem();
@@ -527,10 +527,11 @@ class BattleCalculatorPanel extends JPanel {
             .territory(battleSiteTerritory)
             .build()
             .getAttackerAndDefender();
-    comboListenerEnabled = false;
+    // units are set later, combo change during setup should not trigger the auto-unit-determination
+    determineUnitsOnComboSelectionChange = false;
     attAndDef.getAttacker().ifPresent(this::setAttacker);
     attAndDef.getDefender().ifPresent(this::setDefender);
-    comboListenerEnabled = true;
+    determineUnitsOnComboSelectionChange = true;
     setAttackingUnits(attAndDef.getAttackingUnits());
     setDefendingUnits(attAndDef.getDefendingUnits());
   }
@@ -712,11 +713,19 @@ class BattleCalculatorPanel extends JPanel {
     return new DecimalFormat("#0.##").format(value);
   }
 
+  /**
+   * Sets a new {@code attacker} including the attacker's units. The flag {@link
+   * #determineUnitsOnComboSelectionChange} is disabled before setting the defender and enabled
+   * again at the end.
+   *
+   * @param attacker {@link GamePlayer} to be set as attacker
+   * @param initialUnits list of units to be set for the attacker
+   */
   public void setAttackerWithUnits(final GamePlayer attacker, final List<Unit> initialUnits) {
-    comboListenerEnabled = false;
+    determineUnitsOnComboSelectionChange = false;
     setAttacker(attacker);
+    determineUnitsOnComboSelectionChange = true;
     setAttackingUnits(initialUnits);
-    comboListenerEnabled = true;
   }
 
   void addAttackingUnits(final List<Unit> unitsToAdd) {
@@ -738,11 +747,19 @@ class BattleCalculatorPanel extends JPanel {
         battleSiteTerritory);
   }
 
+  /**
+   * Sets a new {@code defender} including the defender's units. The flag {@link
+   * #determineUnitsOnComboSelectionChange} is disabled before setting the defender and enabled
+   * again at the end.
+   *
+   * @param defender {@link GamePlayer} to be set as defender
+   * @param initialUnits list of units to be set for the defender
+   */
   public void setDefenderWithUnits(final GamePlayer defender, final List<Unit> initialUnits) {
-    comboListenerEnabled = false;
+    determineUnitsOnComboSelectionChange = false;
     setDefender(defender);
+    determineUnitsOnComboSelectionChange = true;
     setDefendingUnits(initialUnits);
-    comboListenerEnabled = true;
   }
 
   void addDefendingUnits(final List<Unit> unitsToAdd) {
