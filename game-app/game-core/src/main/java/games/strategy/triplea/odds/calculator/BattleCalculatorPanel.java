@@ -29,6 +29,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.Window;
+import java.awt.event.ItemEvent;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
 import java.time.Duration;
@@ -111,6 +112,7 @@ class BattleCalculatorPanel extends JPanel {
   @Nullable private final Territory battleSiteTerritory;
   private final JList<String> territoryEffectsJList;
   private final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
+  private boolean comboListenerEnabled = true;
 
   BattleCalculatorPanel(
       final GameData data,
@@ -154,6 +156,33 @@ class BattleCalculatorPanel extends JPanel {
         }
       }
     }
+    attackerCombo.addItemListener(
+        e -> {
+          if (e.getStateChange() != ItemEvent.SELECTED || !comboListenerEnabled) {
+            return; // no change to selected item
+          }
+          attackerOrderOfLosses = null;
+          final GamePlayer newAttacker = (GamePlayer) attackerCombo.getSelectedItem();
+          final List<Unit> newAttackerUnits =
+              CollectionUtils.getMatches(
+                  newAttacker.getUnits(), Matches.unitCanBeInBattle(true, isLandBattle(), 1, true));
+          setAttackerWithUnits(newAttacker, newAttackerUnits);
+          setWidgetActivation();
+        });
+    defenderCombo.addItemListener(
+        e -> {
+          if (e.getStateChange() != ItemEvent.SELECTED || !comboListenerEnabled) {
+            return; // no change to selected item
+          }
+          defenderOrderOfLosses = null;
+          final GamePlayer newDefender = (GamePlayer) defenderCombo.getSelectedItem();
+          final List<Unit> newDefenderUnits =
+              CollectionUtils.getMatches(
+                  newDefender.getUnits(),
+                  Matches.unitCanBeInBattle(false, isLandBattle(), 1, true));
+          setDefenderWithUnits(newDefender, newDefenderUnits);
+          setWidgetActivation();
+        });
     defenderCombo.setRenderer(new PlayerRenderer());
     attackerCombo.setRenderer(new PlayerRenderer());
     defendingUnitsPanel = new PlayerUnitsPanel(data, uiContext, true);
@@ -422,7 +451,7 @@ class BattleCalculatorPanel extends JPanel {
           final List<Unit> newDefenderUnits =
               CollectionUtils.getMatches(
                   attackingUnitsPanel.getUnits(),
-                  Matches.unitCanBeInBattle(true, isLandBattle(), 1, true));
+                  Matches.unitCanBeInBattle(false, isLandBattle(), 1, true));
           setAttackerWithUnits(newAttacker, newAttackerUnits);
           setDefenderWithUnits(newDefender, newDefenderUnits);
           setWidgetActivation();
@@ -498,9 +527,10 @@ class BattleCalculatorPanel extends JPanel {
             .territory(battleSiteTerritory)
             .build()
             .getAttackerAndDefender();
-
+    comboListenerEnabled = false;
     attAndDef.getAttacker().ifPresent(this::setAttacker);
     attAndDef.getDefender().ifPresent(this::setDefender);
+    comboListenerEnabled = true;
     setAttackingUnits(attAndDef.getAttackingUnits());
     setDefendingUnits(attAndDef.getDefendingUnits());
   }
@@ -683,8 +713,10 @@ class BattleCalculatorPanel extends JPanel {
   }
 
   public void setAttackerWithUnits(final GamePlayer attacker, final List<Unit> initialUnits) {
+    comboListenerEnabled = false;
     setAttacker(attacker);
     setAttackingUnits(initialUnits);
+    comboListenerEnabled = true;
   }
 
   void addAttackingUnits(final List<Unit> unitsToAdd) {
@@ -707,8 +739,10 @@ class BattleCalculatorPanel extends JPanel {
   }
 
   public void setDefenderWithUnits(final GamePlayer defender, final List<Unit> initialUnits) {
+    comboListenerEnabled = false;
     setDefender(defender);
     setDefendingUnits(initialUnits);
+    comboListenerEnabled = true;
   }
 
   void addDefendingUnits(final List<Unit> unitsToAdd) {
