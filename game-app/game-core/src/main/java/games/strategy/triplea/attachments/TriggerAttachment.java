@@ -55,10 +55,10 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
@@ -1254,7 +1254,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     removeUnits = null;
   }
 
-  public @NotNull Collection<Territory> getTerritoriesFromFieldValue(
+  public @Nonnull Collection<Territory> getTerritoriesFromFieldValue(
       @NonNls final String territoryFieldValue) throws GameParseException {
     final Collection<Territory> territories = new ArrayList<>();
     try {
