@@ -24,8 +24,8 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.util.List;
 import java.util.function.Predicate;
+import javax.annotation.Nonnull;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Draws units for the associated territory.
@@ -276,7 +276,7 @@ public class UnitsDrawer extends AbstractDrawable {
     return territory.getMatches(selectedUnits);
   }
 
-  public @NotNull Territory getTerritory(GameData data) {
+  public @Nonnull Territory getTerritory(GameData data) {
     return data.getMap().getTerritoryOrThrow(territoryName);
   }
 

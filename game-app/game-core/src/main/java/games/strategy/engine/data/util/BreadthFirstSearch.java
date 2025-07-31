@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+import javax.annotation.Nonnull;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -46,10 +46,10 @@ public final class BreadthFirstSearch {
    * caller before running the BreadthFirstSearch.
    */
   public static class TerritoryFinder implements Visitor {
-    @NotNull final Territory destination;
+    @Nonnull final Territory destination;
     @Getter int distanceFound = -1;
 
-    public TerritoryFinder(@NotNull Territory destination) {
+    public TerritoryFinder(@Nonnull Territory destination) {
       this.destination = destination;
     }
 

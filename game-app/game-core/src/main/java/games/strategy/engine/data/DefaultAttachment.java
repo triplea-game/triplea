@@ -16,11 +16,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.triplea.java.collections.IntegerMap;
 
 /**
@@ -178,7 +178,7 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
     return Optional.ofNullable(getData().getMap().getTerritoryOrNull(territoryName));
   }
 
-  @NotNull
+  @Nonnull
   protected Territory getTerritoryOrThrowGameParseException(String territoryName)
       throws GameParseException {
     return getTerritory(territoryName)
@@ -186,7 +186,7 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
             () -> new GameParseException("No territory named: " + territoryName + thisErrorMsg()));
   }
 
-  @NotNull
+  @Nonnull
   protected Territory getTerritoryOrThrowIllegalStateException(@Nullable String territoryName)
       throws IllegalStateException {
     return getTerritory(territoryName)
