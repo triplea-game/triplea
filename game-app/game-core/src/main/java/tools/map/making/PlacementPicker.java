@@ -1,7 +1,9 @@
 package tools.map.making;
 
 import static com.google.common.base.Preconditions.checkState;
+import static tools.image.DecorationPlacer.loadPolygonsFile;
 
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import java.awt.BorderLayout;
@@ -172,7 +174,8 @@ public final class PlacementPicker {
       if (!placeDimensionsSet) {
         try {
           final Path file =
-              FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "map.properties");
+              FileHelper.getFileInMapRoot(
+                  mapFolderLocation, mapFolder, Constants.FILE_NAME_MAP_PROPERTIES);
           if (Files.exists(file)) {
             double scale = unitZoomPercent;
             int width = unitWidth;
@@ -301,38 +304,7 @@ public final class PlacementPicker {
           log.error("Failed to initialize from user input", e);
         }
       }
-      final Path file = FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "polygons.txt");
-      if (Files.exists(file)
-          && JOptionPane.showConfirmDialog(
-                  new JPanel(),
-                  "A polygons.txt file was found in the map's folder, do you want to "
-                      + "use the file to supply the territories?",
-                  "File Suggestion",
-                  JOptionPane.YES_NO_CANCEL_OPTION)
-              == 0) {
-        try {
-          log.info("Polygons : " + file);
-          polygons = PointFileReaderWriter.readOneToManyPolygons(file);
-        } catch (final IOException e) {
-          log.error("Failed to load polygons: " + file.toAbsolutePath());
-          throw e;
-        }
-      } else {
-        log.info("Select the Polygons file");
-        final Path polyPath =
-            new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile();
-        if (polyPath != null) {
-          log.info("Polygons : " + polyPath);
-          try {
-            polygons = PointFileReaderWriter.readOneToManyPolygons(polyPath);
-          } catch (final IOException e) {
-            log.error("Failed to load polygons: " + polyPath);
-            throw e;
-          }
-        } else {
-          log.info("Polygons file not given. Will run regardless");
-        }
-      }
+      polygons = loadPolygonsFile(mapFolder, mapFolderLocation);
       image = FileHelper.newImage(mapFolder);
       final JPanel imagePanel = newMainPanel();
       /*
@@ -529,7 +501,9 @@ public final class PlacementPicker {
     /** Saves the placements to disk. */
     private void savePlacements() {
       final Path fileName =
-          new FileSave("Where To Save place.txt ?", "place.txt", mapFolderLocation).getFile();
+          new FileSave(
+                  "Where to save place.txt ?", Constants.FILE_NAME_PLACEMENT, mapFolderLocation)
+              .getFile();
       if (fileName == null) {
         return;
       }
@@ -543,9 +517,9 @@ public final class PlacementPicker {
 
     /** Loads a pre-defined file with map placement points. */
     private void loadPlacements() {
-      log.info("Load a placement file");
+      log.info("Load the placements file");
       final Path placeName =
-          new FileOpen("Load A Placement File", mapFolderLocation, ".txt").getFile();
+          new FileOpen("Load a placements file", mapFolderLocation, ".txt").getFile();
       if (placeName == null) {
         return;
       }
