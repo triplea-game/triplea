@@ -10,8 +10,11 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.MalformedInputException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Comparator;
@@ -23,6 +26,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 /** A collection of useful methods related to files. */
 @UtilityClass
@@ -35,6 +39,30 @@ public final class FileUtils {
     } catch (final IOException e) {
       throw new FileSystemException(e);
     }
+  }
+
+  /**
+   * Calculates the size behind a file or a path.
+   *
+   * @param path to file or folder
+   * @return file size in bytes or the sum of bytes of the files contained in the folder
+   * @throws IOException if an I/O error is thrown by a visitor method traversing the folder path
+   */
+  public static long getByteSizeFromPath(Path path) throws IOException {
+    final long[] byteSize = {0};
+
+    Files.walkFileTree(
+        path,
+        new SimpleFileVisitor<>() {
+          @Override
+          public @NotNull FileVisitResult visitFile(
+              @NotNull Path file, @NotNull BasicFileAttributes attrs) {
+            byteSize[0] += attrs.size();
+            return FileVisitResult.CONTINUE;
+          }
+        });
+
+    return byteSize[0];
   }
 
   private static class FileSystemException extends RuntimeException {
