@@ -19,7 +19,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serial;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -91,8 +90,8 @@ public class TerritoryAttachment extends DefaultAttachment {
         .orElseThrow(
             () ->
                 new IllegalStateException(
-                    MessageFormat.format(
-                        "Player {0} has no owned capital or unowned capital as expected", player)));
+                    String.format(
+                        "Player %s has no owned capital or unowned capital as expected", player)));
   }
 
   /**
@@ -179,8 +178,8 @@ public class TerritoryAttachment extends DefaultAttachment {
         .orElseThrow(
             () ->
                 new IllegalStateException(
-                    MessageFormat.format(
-                        "No territory attachment for {0}, but expected here", t.getName())));
+                    String.format(
+                        "No territory attachment for %s, but expected here", t.getName())));
   }
 
   /** Convenience method. */
@@ -306,8 +305,7 @@ public class TerritoryAttachment extends DefaultAttachment {
         .orElseThrow(
             () ->
                 new IllegalStateException(
-                    MessageFormat.format(
-                        "No expected capital found for TerritoryAttachment {0}", this)));
+                    String.format("No expected capital found for TerritoryAttachment %s", this)));
   }
 
   /**
@@ -409,9 +407,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   public GamePlayer getOriginalOwnerOrThrow() {
     return getOriginalOwner()
         .orElseThrow(
-            () ->
-                new IllegalStateException(
-                    MessageFormat.format("Original owner expected for {0}", this)));
+            () -> new IllegalStateException(String.format("Original owner expected for %s", this)));
   }
 
   private void resetOriginalOwner() {

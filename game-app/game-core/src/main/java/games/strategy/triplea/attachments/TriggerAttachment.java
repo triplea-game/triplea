@@ -39,7 +39,6 @@ import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.NotificationMessages;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -488,7 +487,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         .orElseThrow(
             () ->
                 new IllegalStateException(
-                    MessageFormat.format("No expected victory for TriggerAttachment {0}", this)));
+                    String.format("No expected victory for TriggerAttachment %s", this)));
   }
 
   private String getVictoryOrNull() {

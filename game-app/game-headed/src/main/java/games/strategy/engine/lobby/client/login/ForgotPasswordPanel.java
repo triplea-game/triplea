@@ -7,7 +7,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
-import java.text.MessageFormat;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -155,8 +154,8 @@ final class ForgotPasswordPanel extends JPanel {
               .orElseThrow(
                   () ->
                       new IllegalStateException(
-                          MessageFormat.format(
-                              "UserName.isValid return false, but validate return is empty for {0}",
+                          String.format(
+                              "UserName.isValid return false, but validate return is empty for %s",
                               userNameField.getText()))),
           "Invalid name",
           JOptionPane.ERROR_MESSAGE);

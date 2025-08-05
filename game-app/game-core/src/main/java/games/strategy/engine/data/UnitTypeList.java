@@ -3,7 +3,6 @@ package games.strategy.engine.data;
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import java.io.Serial;
-import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -48,7 +47,7 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
         .orElseThrow(
             () ->
                 new IllegalStateException(
-                    MessageFormat.format("UnitTypeList has no unit type for {0}", name)));
+                    String.format("UnitTypeList has no unit type for %s", name)));
   }
 
   /** Will return null if even a single name is not on the unit list. */
