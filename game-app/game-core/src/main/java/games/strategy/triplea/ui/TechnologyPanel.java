@@ -33,7 +33,6 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import org.jetbrains.annotations.NotNull;
 
 class TechnologyPanel extends JPanel implements GameDataChangeListener {
 
@@ -165,7 +164,7 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
       clearAdvances();
     }
 
-    private synchronized String[] @NotNull [] getDataAndInitRowMap() {
+    private synchronized String[][] getDataAndInitRowMap() {
       final String[][] dataTable;
       boolean useToken = false;
       // copy so that the object doesn't change underneath us

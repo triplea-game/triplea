@@ -52,7 +52,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -1813,7 +1812,7 @@ public class MoveValidator {
     return Optional.of(defaultRoute);
   }
 
-  private static @NotNull List<Predicate<Territory>> getPrioritizedMovePreferences(
+  private static @Nonnull List<Predicate<Territory>> getPrioritizedMovePreferences(
       GameData data,
       GamePlayer player,
       Collection<Unit> unitsWhichAreNotBeingTransportedOrDependent) {
