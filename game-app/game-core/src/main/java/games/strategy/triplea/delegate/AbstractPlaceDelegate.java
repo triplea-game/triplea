@@ -43,7 +43,6 @@ import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import javax.annotation.Nullable;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.sound.SoundPath;
@@ -902,7 +901,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     return Optional.empty();
   }
 
-  protected static @NotNull String getErrorMessageYouDoNotOwn(Territory to) {
+  protected static @Nullable String getErrorMessageYouDoNotOwn(Territory to) {
     return "You don't own " + to.getName();
   }
 
