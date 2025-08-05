@@ -26,13 +26,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.key.binding.ButtonDownMask;
 import org.triplea.swing.key.binding.KeyCode;
@@ -65,7 +65,7 @@ public class ActionButtonsPanel extends JPanel {
 
   private @Nullable ActionPanel actionPanel;
 
-  public ActionButtonsPanel(final @NotNull MovePanel movePanel, final TripleAFrame frame) {
+  public ActionButtonsPanel(final @Nonnull MovePanel movePanel, final TripleAFrame frame) {
     registerKeyBindings(frame);
     final MapPanel mapPanel = frame.getMapPanel();
     final GameData gameData = mapPanel.getData();
