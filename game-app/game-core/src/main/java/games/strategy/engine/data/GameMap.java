@@ -85,12 +85,18 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     connections.put(from, Collections.unmodifiableSet(modified));
   }
 
+  public Optional<Territory> getTerritory(final String territoryName) {
+    return Optional.ofNullable(territoryLookup.get(territoryName));
+  }
+
   /**
    * Case-sensitive search for {@link Territory} by name. *
    *
    * @param territoryName name of the searched territory (case-sensitive)
    * @return Territory with the given name or {@code null} if no territory can be found.
+   * @deprecated Use either: `getTerritory(String)` or `getTerritoryOrThrow(String)` instead
    */
+  @Deprecated
   public @Nullable Territory getTerritoryOrNull(final String territoryName) {
     return territoryLookup.get(territoryName);
   }
@@ -102,7 +108,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @return Territory with the given name or {@link Territory} if no territory can be found.
    */
   public Territory getTerritoryOrThrow(final String territoryName) {
-    return Optional.ofNullable(getTerritoryOrNull(territoryName))
+    return getTerritory(territoryName)
         .orElseThrow(
             () ->
                 new IllegalArgumentException(

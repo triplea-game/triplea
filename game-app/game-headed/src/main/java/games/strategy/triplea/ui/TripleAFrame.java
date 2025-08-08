@@ -1232,10 +1232,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             Collections.reverse(sortedUnits);
             possibleUnitsToAttackStringForm.put(entry.getKey().getName(), sortedUnits);
           }
-          mapPanel.centerOn(
-              data.getMap()
-                  .getTerritoryOrNull(
-                      CollectionUtils.getAny(possibleUnitsToAttackStringForm.keySet())));
+          data.getMap()
+              .getTerritory(CollectionUtils.getAny(possibleUnitsToAttackStringForm.keySet()))
+              .ifPresent(mapPanel::centerOn);
           final IndividualUnitPanelGrouped unitPanel =
               new IndividualUnitPanelGrouped(
                   possibleUnitsToAttackStringForm,

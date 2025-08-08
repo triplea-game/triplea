@@ -174,8 +174,12 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
         && (Objects.equals(name, other.name) || this.toString().equals(other.toString()));
   }
 
+  /**
+   * @deprecated Call 'getData().getMap().getTerritory(String)' directly instead.
+   */
+  @Deprecated
   public Optional<Territory> getTerritory(String territoryName) {
-    return Optional.ofNullable(getData().getMap().getTerritoryOrNull(territoryName));
+    return getData().getMap().getTerritory(territoryName);
   }
 
   protected List<GamePlayer> parsePlayerList(final String value, List<GamePlayer> existingList)
