@@ -2,7 +2,6 @@ package games.strategy.engine.history;
 
 import games.strategy.engine.data.GamePlayer;
 import java.io.Serial;
-import java.text.MessageFormat;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import lombok.Getter;
@@ -36,7 +35,7 @@ public class Step extends IndexedHistoryNode {
         .orElseThrow(
             () ->
                 new IllegalStateException(
-                    MessageFormat.format("No expected player for Step {0}", this.stepName)));
+                    String.format("No expected player for Step %s", this.stepName)));
   }
 
   @Override

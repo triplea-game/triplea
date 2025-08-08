@@ -13,7 +13,6 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.image.UnitImageFactory.ImageKey;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -60,8 +59,8 @@ public class UnitStatsTable {
           lineIndex++;
           addUnitStatsTableLineColored(
               hints,
-              MessageFormat.format(
-                  "<td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td>",
+              String.format(
+                  "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>",
                   getUnitImageUrl(ut, player, uiContext),
                   ut.getName(),
                   costs.get(player).get(ut).toStringForHtml(),
