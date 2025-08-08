@@ -253,7 +253,7 @@ public class GameData implements Serializable, GameState {
       case UnitHolder.PLAYER:
         return playerList.getPlayerId(name);
       case UnitHolder.TERRITORY:
-        return map.getTerritory(name);
+        return map.getTerritoryOrThrow(name);
       default:
         throw new IllegalStateException("Invalid type: " + type);
     }
