@@ -174,20 +174,11 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
         && (Objects.equals(name, other.name) || this.toString().equals(other.toString()));
   }
 
-  private Optional<Territory> getTerritory(@Nullable String territoryName) {
+  public Optional<Territory> getTerritory(String territoryName) {
     return Optional.ofNullable(getData().getMap().getTerritoryOrNull(territoryName));
   }
 
-  @Nonnull
-  protected Territory getTerritoryOrThrowGameParseException(String territoryName)
-      throws GameParseException {
-    return getTerritory(territoryName)
-        .orElseThrow(
-            () -> new GameParseException("No territory named: " + territoryName + thisErrorMsg()));
-  }
-
-  @Nonnull
-  protected Territory getTerritoryOrThrowIllegalStateException(@Nullable String territoryName)
+  protected Territory getTerritoryOrThrowIllegalStateException(String territoryName)
       throws IllegalStateException {
     return getTerritory(territoryName)
         .orElseThrow(

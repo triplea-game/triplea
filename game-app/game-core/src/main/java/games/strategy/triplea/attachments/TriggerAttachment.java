@@ -773,7 +773,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (territories == null) {
         territories = new ArrayList<>();
       }
-      territories.add(getTerritoryOrThrowGameParseException(element));
+      territories.add(
+          getTerritory(element)
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          String.format(
+                              "Unable to find territory: %s, from element: %s, available territories: %s",
+                              element, names, getData().getMap().getTerritories()))));
     }
   }
 
@@ -1167,8 +1174,15 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (s.length == 1 && count != -1) {
       throw new GameParseException("Empty placement list" + thisErrorMsg());
     }
-    final Territory territory = getTerritoryOrThrowGameParseException(s[i]);
-
+    String territoryName = s[i];
+    final Territory territory =
+        getTerritory(territoryName)
+            .orElseThrow(
+                () ->
+                    new GameParseException(
+                        String.format(
+                            "Unable to find territory: %s, from %s, available territories: %s",
+                            territoryName, place, getData().getMap().getTerritories())));
     i++;
     final IntegerMap<UnitType> map = new IntegerMap<>();
     for (; i < s.length; i++) {
@@ -1254,12 +1268,18 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     removeUnits = null;
   }
 
-  public @Nonnull Collection<Territory> getTerritoriesFromFieldValue(
+  public Collection<Territory> getTerritoriesFromFieldValue(
       @NonNls final String territoryFieldValue) throws GameParseException {
     final Collection<Territory> territories = new ArrayList<>();
     try {
-      final Territory terr = getTerritoryOrThrowGameParseException(territoryFieldValue);
-      territories.add(terr);
+      territories.add(
+          getTerritory(territoryFieldValue)
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          String.format(
+                              "Unable to find territory: %s, available territories: %s",
+                              territoryFieldValue, getData().getMap().getTerritories()))));
     } catch (GameParseException gameParseException) {
       if (territoryFieldValue.equalsIgnoreCase("all")) {
         territories.addAll(getData().getMap().getTerritories());
@@ -1321,7 +1341,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               + thisErrorMsg());
     }
     if (!s[0].equalsIgnoreCase("all")) {
-      getTerritoryOrThrowGameParseException(s[0]);
+      String territory = s[0];
+      getTerritory(territory)
+          .orElseThrow(
+              () ->
+                  new GameParseException(
+                      String.format(
+                          "Unable to find territory in changeOwnership: %s, available territories: %s",
+                          value, getData().getMap().getTerritories())));
     }
     if (!s[1].equalsIgnoreCase("any")) {
       getPlayerOrThrow(s[1]);

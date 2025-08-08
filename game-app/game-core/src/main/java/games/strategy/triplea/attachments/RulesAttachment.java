@@ -208,8 +208,15 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     final List<Territory> terrs = new ArrayList<>();
     // this loop starts on 4, so do not replace with an enhanced for loop
     for (int i = 4; i < s.length; i++) {
-      final Territory t = getTerritoryOrThrowGameParseException(s[i]);
-      terrs.add(t);
+      String territory = s[i];
+      terrs.add(
+          getTerritory(s[i])
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          String.format(
+                              "Unable to find territory: %s, in: %s",
+                              territory, getData().getMap().getTerritories()))));
     }
     if (battle == null) {
       battle = new ArrayList<>();
