@@ -86,7 +86,14 @@ public class CanalAttachment extends DefaultAttachment {
   private void setLandTerritories(final String landTerritories) {
     final Set<Territory> terrs = new HashSet<>();
     for (final String name : splitOnColon(landTerritories)) {
-      final Territory territory = getTerritoryOrThrowIllegalStateException(name);
+      final Territory territory =
+          getTerritory(name)
+              .orElseThrow(
+                  () ->
+                      new IllegalStateException(
+                          String.format(
+                              "CanalAttachment - Could not find territory: %s, from: %s, valid territories: %s",
+                              name, landTerritories, getData().getMap().getTerritories())));
       terrs.add(territory);
     }
     this.landTerritories = terrs;

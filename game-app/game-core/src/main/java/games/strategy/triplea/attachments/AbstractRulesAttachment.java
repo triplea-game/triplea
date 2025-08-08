@@ -283,7 +283,14 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
         setTerritoryCount(allTerritories.size());
         return allTerritories;
       default: // The list just contained 1 territory
-        final Territory t = getTerritoryOrThrowIllegalStateException(name);
+        final Territory t =
+            getTerritory(name)
+                .orElseThrow(
+                    () ->
+                        new IllegalStateException(
+                            String.format(
+                                "RulesAttachment - Unable to find territory: %s, from: %s",
+                                name, data.getMap().getTerritories())));
         final Set<Territory> terr = new HashSet<>();
         terr.add(t);
         setTerritoryCount(1);
@@ -388,9 +395,14 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
         }
         // territory name is not an integer; fall through
       }
-      // Validate all territories exist
-      final Territory territory = getTerritoryOrThrowIllegalStateException(name);
-      territories.add(territory);
+      territories.add(
+          getTerritory(name)
+              .orElseThrow(
+                  () ->
+                      new IllegalStateException(
+                          String.format(
+                              "Could not find territory: %s, valid territories: %s",
+                              name, getData().getMap().getTerritories()))));
     }
     if (mustSetTerritoryCount && !haveSetCount) {
       // if we have not set it, then set it to be the size of this list

@@ -178,14 +178,6 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
     return Optional.ofNullable(getData().getMap().getTerritoryOrNull(territoryName));
   }
 
-  protected Territory getTerritoryOrThrowIllegalStateException(String territoryName)
-      throws IllegalStateException {
-    return getTerritory(territoryName)
-        .orElseThrow(
-            () ->
-                new IllegalStateException("No territory named: " + territoryName + thisErrorMsg()));
-  }
-
   protected List<GamePlayer> parsePlayerList(final String value, List<GamePlayer> existingList)
       throws GameParseException {
     for (final String name : splitOnColon(value)) {
