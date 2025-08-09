@@ -4,17 +4,19 @@ message: |
   Welcome to the TripleA lobby!
   Please no politics, stay respectful, be welcoming, have fun.
 
+  Donation Drive
+  https://forums.triplea-game.org/category/41/donation-drive-2025-26
+
+
 servers:
   - version: "2.5.22294"
     lobby_uri: https://prod.triplea-game.org
     message: |
-      Release 2.7 is expected in late October. For early access,
-      latest info, or to help volunteer with release testing, see:
-          https://tinyurl.com/release-27
-
       Welcome to the TripleA lobby!
       Please no politics, stay respectful, be welcoming, have fun.
 
+      Donation Drive
+      https://forums.triplea-game.org/category/41/donation-drive-2025-26
   - version: "2.0.20057"
     inactive: true
   - version: "0.0"
