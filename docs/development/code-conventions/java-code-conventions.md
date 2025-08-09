@@ -24,7 +24,6 @@ Value method() {
 Avoid passing `boolean` values as parameters to public APIs. Instead create
 overloaded methods, or use factory methods, or an enum parameter instead.
 
-
 **Good**
 ```
 // create method overloads instead of having a boolean parameter
@@ -88,7 +87,7 @@ Value method() {
 AKA: "step-down-order"
 
 > A caller function should always reside above the callee function...
-> 
+>
 > The Stepdown Rule tells us that we should organize our code so that we can read the code top-to-bottom"
 
 For more details:
@@ -130,7 +129,6 @@ private void firstPrivateMethodInvoked() { }
 private void secondPrivateMethodInvoked() { }
 ```
 
-
 **Avoid**
 ```java
 
@@ -155,7 +153,7 @@ void method() {
   int a = 123;
   functionCall(a);
   int b = 999;
-  functionCall(b);  
+  functionCall(b);
 }
 ```
 
@@ -165,7 +163,7 @@ void method() {
   int a = 123;
   int b = 999;
   functionCall(a);
-  functionCall(b);  
+  functionCall(b);
 }
 ```
 
@@ -174,7 +172,7 @@ void method() {
 ```
 class Foo {
   private final int a;
-  
+
   Foo(int a) {
     this.a = a;
   }
@@ -185,9 +183,9 @@ class Foo {
 ```
 class Foo {
   private int a;
-  
+
   Foo() { }
-  
+
   void setA(int a) {
     this.a = a;
   }
@@ -230,7 +228,6 @@ void processCollection(Collection<String> input) {
 }
 ```
 
-
 ## TODO comments: attach a tracking 'token' [#5249](https://github.com/triplea-game/triplea/issues/5249)
 
 Attach a 'tracking token', or a 'grep token' to TODO comments so that they can all be found as part of larger piece of
@@ -245,7 +242,6 @@ TODO: Topic#1183 ... this relates to a forum discussion
 
 ## Import inner classes
 
-
 **Good**
 ```
 import someClass.innerClass;
@@ -257,7 +253,6 @@ innerClass.methodCall();
 ```
 someClass.innerClass.methodCall();
 ```
-
 
 ## Refer to objects by their interfaces [#5489](https://github.com/triplea-game/triplea/issues/5489)
 
@@ -272,7 +267,6 @@ Collection<String> strings = new ArrayList<>();
 ```
 ArrayList<String> strings = new ArrayList<>();
 ```
-
 
 ##  Use most restrictive scope possible [#5489](https://github.com/triplea-game/triplea/issues/5489)
 
@@ -297,7 +291,6 @@ private static void thisDoesNotUseClassState(GuaranteedByTheCompiler arg) {}
 private void thisDoesNotUseClassState(NoCompilerGuarantee arg) { }
 ```
 
-
 ##  Avoid 'static coupling' [#5489](https://github.com/triplea-game/triplea/issues/5489)
 
 The idea is to avoid using static dependencies. A common way to avoid static dependencies is to use interfaces.
@@ -315,7 +308,6 @@ public constructor() {
   myVar = StaticCall.compute();
 }
 ```
-
 
 ### Avoid boolean property values [#5489](https://github.com/triplea-game/triplea/issues/5489)
 

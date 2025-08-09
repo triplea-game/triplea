@@ -13,7 +13,6 @@
 
 Set up WSL (see [WSL installation guide](https://learn.microsoft.com/de-de/windows/wsl/install)), this will give you a command line that can be used to run docker, gradle and the code check scripts.
 
-
 ## Getting Started
 
 - Fork & Clone: <https://github.com/triplea-game/triplea>
@@ -78,7 +77,6 @@ To really re-execute a test, use the `--rerun-tasks` option:
 
 We use 'Google Java Format', be sure to install the plugin in your IDE to properly format from IDE.
 
-
 ## Code Conventions (Style Guide)
 
 Full list of coding conventions can be found at: [reference/code-conventions](code-conventions)
@@ -89,7 +87,7 @@ Run:
 ```
 ./gradlew composeUp
 ./gradlew :game-app:game-headed:run
-``` 
+```
 Nginx will be running on port 80 following the 'composeUp'.
 All requests are sent to NGINX and then routed to the correct
 docker container.
@@ -118,7 +116,6 @@ To connect to local lobby, from the game client:
 ./spitfire-server/database/reset_docker_db
 ```
 
-
 ## Deployment & Infrastructure Development
 
 The deployment code is inside of the '[/infrastructure](./infrastructure)' folder.
@@ -144,9 +141,7 @@ save games from loading.
 
 '@RemoteMethod' indicates methods invoked over network. The API of these methods may not change.
 
-
 # FAQ - common problems
-
 
 ### Assets folder not found
 
@@ -156,7 +151,7 @@ to find the assets folder in that root directory. If launching from IDE, chances
 directory is not set.
 
 Ideally the IDE launcher is checked in and pre-configured. This could be broken and needs to be 're-checked'
-back in properly. 
+back in properly.
 
 In short:
 - check working directory is 'game-app/game-headed'
@@ -166,5 +161,4 @@ In short:
 
 IDEA needs a tweak to overcome a JDK9 problem. The Google Java Format plugin should show a warning dialog about
 this if it is a problem.
-
 
