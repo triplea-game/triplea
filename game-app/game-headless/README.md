@@ -47,9 +47,7 @@ cd work/triplea/triplea/game-app/game-headless/
 Start Triplea-Game, in 'settings' > 'testing', update Lobby URI to be: `http://localhost:3000`,
 'save' & then connect to lobby via 'play online'.
 
-
 ### Running bots (on prod)
-
 
 ### Linux:
 
