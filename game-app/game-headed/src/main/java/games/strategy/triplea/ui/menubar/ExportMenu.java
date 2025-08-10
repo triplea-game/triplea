@@ -8,9 +8,9 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.export.GameDataExporter;
-import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.framework.system.SystemProperties;
+import games.strategy.engine.history.History;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
@@ -169,35 +169,31 @@ final class ExportMenu extends JMenu {
     if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
       return;
     }
-    final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
-    final GameData clone = GameDataUtils.cloneGameData(gameData, cloneOptions).orElse(null);
-    if (clone == null) {
-      return;
-    }
+    final GameData clone = getGameDataCloneWithHistory();
     try (PrintWriter writer = new PrintWriter(chooser.getSelectedFile(), StandardCharsets.UTF_8);
-        GameData.Unlocker ignored = gameData.acquireReadLock()) {
+        GameData.Unlocker ignored = clone.acquireReadLock()) {
       writer.append(defaultFileName).println(',');
       writer.append("TripleA Engine Version: ,");
       writer.append(ProductVersionReader.getCurrentVersion().toString()).println(',');
       writer.append("Game Name: ,");
-      writer.append(gameData.getGameName()).println(',');
+      writer.append(clone.getGameName()).println(',');
       writer.println();
       writer.append("Current Round: ,");
       writer.print(currentRound);
       writer.println(',');
       writer.append("Number of Players: ,");
-      writer.print(gameData.getPlayerList().size());
+      writer.print(clone.getPlayerList().size());
       writer.println(',');
       writer.append("Number of Alliances: ,");
-      writer.print(gameData.getAllianceTracker().getAlliances().size());
+      writer.print(clone.getAllianceTracker().getAlliances().size());
       writer.println(',');
       writer.println();
       writer.println("Turn Order: ,");
-      final List<GamePlayer> orderedPlayers = gameData.getPlayerList().getSortedPlayers();
+      final List<GamePlayer> orderedPlayers = clone.getPlayerList().getSortedPlayers();
       for (final GamePlayer currentGamePlayer : orderedPlayers) {
         writer.append(currentGamePlayer.getName()).append(',');
         final Collection<String> allianceNames =
-            gameData.getAllianceTracker().getAlliancesPlayerIsIn(currentGamePlayer);
+            clone.getAllianceTracker().getAlliancesPlayerIsIn(currentGamePlayer);
         for (final String allianceName : allianceNames) {
           writer.append(allianceName).append(',');
         }
@@ -205,7 +201,7 @@ final class ExportMenu extends JMenu {
       }
       writer.println();
       writer.append("Winners: ,");
-      final EndRoundDelegate delegateEndRound = (EndRoundDelegate) gameData.getDelegate("endRound");
+      final EndRoundDelegate delegateEndRound = (EndRoundDelegate) clone.getDelegate("endRound");
       if (delegateEndRound != null && delegateEndRound.getWinners() != null) {
         for (final GamePlayer p : delegateEndRound.getWinners()) {
           writer.append(p.getName()).append(',');
@@ -216,7 +212,7 @@ final class ExportMenu extends JMenu {
       writer.println();
       writer.println();
       writer.println("Resource Chart: ,");
-      for (final Resource resource : gameData.getResourceList().getResources()) {
+      for (final Resource resource : clone.getResourceList().getResources()) {
         writer.append(resource.getName()).println(',');
       }
       // if short, we won't both showing production and unit info
@@ -225,7 +221,7 @@ final class ExportMenu extends JMenu {
         writer.println("Production Rules: ,");
         writer.append("Name,Result,Quantity,Cost,Resource,\n");
         final Collection<ProductionRule> purchaseOptions =
-            gameData.getProductionRuleList().getProductionRules();
+            clone.getProductionRuleList().getProductionRules();
         for (final ProductionRule pr : purchaseOptions) {
           final String costString = pr.toStringCosts().replaceAll(";? ", ",");
           writer.append(pr.getName()).append(',');
@@ -236,7 +232,7 @@ final class ExportMenu extends JMenu {
         writer.println();
         writer.println("Unit Types: ,");
         writer.append("Name,Listed Abilities\n");
-        for (final UnitType unitType : gameData.getUnitTypeList()) {
+        for (final UnitType unitType : clone.getUnitTypeList()) {
           final UnitAttachment ua = unitType.getUnitAttachment();
           if (ua == null) {
             continue;
@@ -256,7 +252,7 @@ final class ExportMenu extends JMenu {
               : "Short Stats (only shows first phase with activity per player per round),");
       writer.println("Turn Stats: ,");
       writer.append("Round,Player Turn,Phase Name,");
-      final Set<String> alliances = gameData.getAllianceTracker().getAlliances();
+      final Set<String> alliances = clone.getAllianceTracker().getAlliances();
       // its important here to use the player objects from the cloned game data
       // the players for the stat panel are only relevant with respect to the game data they belong
       // to
@@ -266,7 +262,7 @@ final class ExportMenu extends JMenu {
       // resources or tech  tokens or # techs, etc.
       final Iterable<IStat> stats =
           Iterables.concat(
-              List.of(statPanel.getStats()), List.of(statPanel.getStatsExtended(gameData)));
+              List.of(statPanel.getStats()), List.of(statPanel.getStatsExtended(clone)));
       for (final IStat stat : stats) {
         for (final GamePlayer player : players) {
           writer.append(stat.getName()).append(' ');
@@ -278,7 +274,6 @@ final class ExportMenu extends JMenu {
         }
       }
       writer.println();
-      clone.getHistory().enableSeeking(null);
       clone.getHistory().gotoNode(clone.getHistory().getLastNode());
       final Enumeration<TreeNode> nodes =
           ((DefaultMutableTreeNode) clone.getHistory().getRoot()).preorderEnumeration();
@@ -360,6 +355,18 @@ final class ExportMenu extends JMenu {
     }
   }
 
+  /**
+   * Provides a game data copy with its history.
+   * @return {@link GameData} clone incl. {@link History} which has already {@link History#enableSeeking(HistoryPanel)} called. Fails with {@link IllegalStateException} in case the cloning fails.
+   */
+  private GameData getGameDataCloneWithHistory() {
+    return GameDataUtils.cloneGameDataWithHistory(gameData, true)
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    "ExportMenu: Cloning of game data for exporting failed."));
+  }
+
   private JMenuItem createExportUnitStatsMenu() {
     return new JMenuItemBuilder("Export Unit Charts", KeyCode.U)
         .actionListener(this::exportUnitCharts)
@@ -396,12 +403,7 @@ final class ExportMenu extends JMenu {
   private void exportSetupCharts() {
     final JFrame frame = new JFrame("Export Setup Charts");
     frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
-    final GameData clonedGameData =
-        GameDataUtils.cloneGameData(gameData, cloneOptions).orElse(null);
-    if (clonedGameData == null) {
-      return;
-    }
+    final GameData clonedGameData = getGameDataCloneWithHistory();
     final JComponent newContentPane = new SetupFrame(clonedGameData);
     // content panes must be opaque
     newContentPane.setOpaque(true);
