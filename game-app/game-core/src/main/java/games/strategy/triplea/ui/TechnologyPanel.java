@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -165,7 +164,7 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
       clearAdvances();
     }
 
-    private synchronized String[] @Nonnull [] getDataAndInitRowMap() {
+    private synchronized String[][] getDataAndInitRowMap() {
       final String[][] dataTable;
       boolean useToken = false;
       // copy so that the object doesn't change underneath us
