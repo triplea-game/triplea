@@ -21,7 +21,6 @@ Client request routing to lobby depends on a header value sent by game clients.
 NGINX will route this to a corresponding lobby.
 Incrementing version number will cause a new lobby to be deployed.
 
-
 ## Finalize Release Notes
 
 Update the release-notes.md page on website.
