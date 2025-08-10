@@ -23,6 +23,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.IntegerMap;
 
@@ -63,7 +64,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     territoryLookup.put(t1.getName(), t1);
   }
 
-  /** Bi-directional. T1 connects to T2, and T2 connects to T1. */
+  /** Bidirectional. T1 connects to T2, and T2 connects to T1. */
   public void addConnection(final Territory t1, final Territory t2) {
     if (t1.equals(t2)) {
       throw new IllegalArgumentException("Cannot connect a territory to itself: " + t1);
@@ -85,21 +86,31 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * Returns the territory with the given name, or null if no territory can be found (case
-   * sensitive).
+   * Case-sensitive search for {@link Territory} by name. Use {@link #getTerritoryOrThrow} if it is
+   * expected that the territory is found.
    *
-   * @param s name of the searched territory (case sensitive)
+   * @param territoryName name of the searched territory (case-sensitive)
+   * @return {@link Optional} of {@link Territory} with the given name.
    */
-  public @Nullable Territory getTerritory(final String s) {
-    return territoryLookup.get(s);
+  public Optional<Territory> getTerritory(final @NotNull String territoryName) {
+    return Optional.ofNullable(territoryLookup.get(territoryName));
   }
 
-  public Territory getTerritoryOrThrow(final String s) {
-    return Optional.ofNullable(territoryLookup.get(s))
-        .orElseThrow(
-            () ->
-                new IllegalArgumentException(
-                    MessageFormat.format("Territory with name {0} could not be found", s)));
+  /**
+   * Case-sensitive search for {@link Territory} by name. If it is not found a {@link
+   * IllegalArgumentException} is thrown. Use {@link #getTerritory} if it is expected that the
+   * territory might not be found.
+   *
+   * @param territoryName name of the searched territory (case-sensitive)
+   * @return Territory with the given name or {@link Territory} if no territory can be found.
+   */
+  public Territory getTerritoryOrThrow(final @NotNull String territoryName) {
+    final Territory t = territoryLookup.get(territoryName);
+    if (t == null) {
+      throw new IllegalArgumentException(
+          MessageFormat.format("Territory with name {0} could not be found", territoryName));
+    }
+    return t;
   }
 
   /**
@@ -382,7 +393,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param t1 start territory of the route
    * @param t2 end territory of the route
    */
-  public int getDistance(final Territory t1, final Territory t2) {
+  public int getDistance(@NotNull final Territory t1, @NotNull final Territory t2) {
     return getDistance(t1, t2, it -> true);
   }
 
@@ -394,7 +405,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param t2 end territory of the route
    * @param cond condition that covered territories of the route must match
    */
-  public int getDistance(final Territory t1, final Territory t2, final Predicate<Territory> cond) {
+  public int getDistance(
+      @NotNull final Territory t1, @NotNull final Territory t2, final Predicate<Territory> cond) {
     return getDistance(t1, t2, (it, it2) -> cond.test(it2));
   }
 
@@ -407,7 +419,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param routeCond condition that neighboring territories along route must match.
    */
   public int getDistance(
-      final Territory t1, final Territory t2, final BiPredicate<Territory, Territory> routeCond) {
+      @NotNull final Territory t1,
+      @NotNull final Territory t2,
+      final BiPredicate<Territory, Territory> routeCond) {
     if (t1.equals(t2)) {
       return 0;
     }

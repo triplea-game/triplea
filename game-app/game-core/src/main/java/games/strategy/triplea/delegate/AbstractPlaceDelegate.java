@@ -196,13 +196,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
 
   @Override
   public Optional<@Nls String> placeUnits(
-      final Collection<Unit> units, final Territory at, final BidMode bidMode) {
+      final @NotNull Collection<Unit> units, final @NotNull Territory at, final BidMode bidMode) {
     // The bidMode param is unused.
     return placeUnits(units, at);
   }
 
   @Override
-  public Optional<String> placeUnits(final Collection<Unit> units, final Territory at) {
+  public Optional<String> placeUnits(final Collection<Unit> units, @NotNull final Territory at) {
     if (units.isEmpty()) {
       return Optional.empty();
     }
@@ -571,7 +571,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
    * @return null if placement is valid
    */
   private Optional<String> isValidPlacement(
-      final Collection<Unit> units, final Territory at, final GamePlayer player) {
+      final Collection<Unit> units, @NotNull final Territory at, final GamePlayer player) {
     // do we hold enough units
     Optional<String> error = playerHasEnoughUnits(units, player);
     if (error.isPresent()) {
@@ -606,7 +606,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
    * maps territory->units already produced this turn by that territory.
    */
   protected Optional<@Nls String> canProduce(
-      final Territory to, final Collection<Unit> units, final GamePlayer player) {
+      final @NotNull Territory to, final Collection<Unit> units, final GamePlayer player) {
     final Collection<Territory> producers = getAllProducers(to, player, units, true);
     // the only reason it could be empty is if its water and no territories adjacent have factories
     if (producers.isEmpty()) {
@@ -754,7 +754,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
    * @return - List of territories that can produce here.
    */
   private List<Territory> getAllProducers(
-      final Territory to,
+      final @NotNull Territory to,
       final GamePlayer player,
       final @Nullable Collection<Unit> unitsToPlace,
       final boolean simpleCheck) {
@@ -778,7 +778,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   }
 
   protected List<Territory> getAllProducers(
-      final Territory to, final GamePlayer player, final Collection<Unit> unitsToPlace) {
+      final @NotNull Territory to, final GamePlayer player, final Collection<Unit> unitsToPlace) {
     return getAllProducers(to, player, unitsToPlace, false);
   }
 
@@ -787,7 +787,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
    * maps territory->units already produced this turn by that territory.
    */
   protected Optional<@Nls String> checkProduction(
-      final Territory to, final Collection<Unit> units, final GamePlayer player) {
+      final @NotNull Territory to, final Collection<Unit> units, final GamePlayer player) {
     final List<Territory> producers = getAllProducers(to, player, units);
     if (producers.isEmpty()) {
       return Optional.of(MessageFormat.format("No factory in or adjacent to {0}", to.getName()));
@@ -1503,7 +1503,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   }
 
   private Comparator<Territory> getBestProducerComparator(
-      final Territory to, final Collection<Unit> units, final GamePlayer player) {
+      @NotNull final Territory to, final Collection<Unit> units, final GamePlayer player) {
     return (t1, t2) -> {
       if (Objects.equals(t1, t2)) {
         return 0;

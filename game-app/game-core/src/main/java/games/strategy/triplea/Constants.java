@@ -257,6 +257,37 @@ public interface Constants {
 
   @NonNls String SIGN_TECH_NOT_ENABLED = "-";
   @NonNls String SIGN_TECH_ENABLED = "X";
+  /*
+   * File names that should not change
+   */
+  // Text files
+  @NonNls String FILE_NAME_BLOCKADE_MARKERS = "blockade.txt";
+  @NonNls String FILE_NAME_CENTERS = "centers.txt";
+  @NonNls String FILE_NAME_DECORATIONS = "decorations.txt";
+  @NonNls String FILE_NAME_CAPITAL_MARKERS = "capitols.txt";
+  @NonNls String FILE_NAME_CONVOY_MARKERS = "convoy.txt";
+  @NonNls String FILE_NAME_COMMENT_MARKERS = "comments.txt";
+  @NonNls String FILE_NAME_KAMIKAZE_PLACE = "kamikaze_place.txt";
+  @NonNls String FILE_NAME_MAP_PROPERTIES = "map.properties";
+  @NonNls String FILE_NAME_TERRITORY_NAME_PLACE = "name_place.txt";
+  @NonNls String FILE_NAME_PLACEMENT = "place.txt";
+  @NonNls String FILE_NAME_PU_PLACE = "pu_place.txt";
+  @NonNls String FILE_NAME_POLYGONS = "polygons.txt";
+  @NonNls String FILE_NAME_TERRITORY_EFFECT = "territory_effects.txt";
+  @NonNls String FILE_NAME_VC_MARKERS = "vc.txt";
+  // Image files
+  @NonNls String FILE_NAME_IMAGE_TA_ICON = "ta_icon.png";
+  @NonNls String FILE_NAME_IMAGE_MISSING_UNIT = "missing_unit_image.png";
+  @NonNls String FILE_NAME_IMAGE_NON_WITHDRAWABLE = "non-withdrawable.png";
+  @NonNls String FILE_NAME_IMAGE_NON_WITHDRAWABLE_SMALL = "non-withdrawable_small.png";
+
+  /*
+   * Paths to file that should not change
+   */
+  @NonNls String FILE_PATH_IMAGE_BLOCKADE = "misc/blockade.png";
+  @NonNls String FILE_PATH_IMAGE_ERROR = "misc/error.gif";
+  @NonNls String FILE_PATH_IMAGE_VC = "misc/vc.png";
+  @NonNls String FILE_PATH_IMAGE_WARNING = "misc/warning.gif";
 
   static String getPropertyNameIncomePercentageFor(final GamePlayer gamePlayer) {
     return MessageFormat.format("{0} Income Percentage", gamePlayer.getName());

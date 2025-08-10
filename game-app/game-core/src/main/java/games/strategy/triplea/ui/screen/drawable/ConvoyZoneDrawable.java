@@ -35,7 +35,8 @@ public class ConvoyZoneDrawable extends AbstractDrawable {
     } else {
       img = uiContext.getFlagImageFactory().getFlag(data.getPlayerList().getPlayerId(player));
     }
-    final Point point = mapData.getConvoyMarkerLocation(data.getMap().getTerritory(location));
+    final Point point =
+        mapData.getConvoyMarkerLocation(data.getMap().getTerritoryOrThrow(location));
     graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
   }
 
