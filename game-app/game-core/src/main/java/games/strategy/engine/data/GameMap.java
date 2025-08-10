@@ -23,7 +23,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.jetbrains.annotations.NotNull;
 import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.IntegerMap;
 
@@ -390,7 +389,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param t1 start territory of the route
    * @param t2 end territory of the route
    */
-  public int getDistance(@NotNull final Territory t1, @NotNull final Territory t2) {
+  public int getDistance(@Nonnull final Territory t1, @Nonnull final Territory t2) {
     return getDistance(t1, t2, it -> true);
   }
 
@@ -403,7 +402,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param cond condition that covered territories of the route must match
    */
   public int getDistance(
-      @NotNull final Territory t1, @NotNull final Territory t2, final Predicate<Territory> cond) {
+      @Nonnull final Territory t1, @Nonnull final Territory t2, final Predicate<Territory> cond) {
     return getDistance(t1, t2, (it, it2) -> cond.test(it2));
   }
 
@@ -416,8 +415,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param routeCond condition that neighboring territories along route must match.
    */
   public int getDistance(
-      @NotNull final Territory t1,
-      @NotNull final Territory t2,
+      @Nonnull final Territory t1,
+      @Nonnull final Territory t2,
       final BiPredicate<Territory, Territory> routeCond) {
     if (t1.equals(t2)) {
       return 0;
