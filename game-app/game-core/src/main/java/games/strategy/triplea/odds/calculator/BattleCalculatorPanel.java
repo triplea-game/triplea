@@ -401,7 +401,19 @@ class BattleCalculatorPanel extends JPanel {
     final JButton closeButton = new JButton("Close");
     buttons.add(closeButton);
     add(buttons);
-
+    defenderCombo.addActionListener(
+        e -> {
+          setDefendingUnits(
+              defendingUnitsPanel.getUnits().stream().anyMatch(Matches.unitIsOwnedBy(getDefender()))
+                  ? defendingUnitsPanel.getUnits()
+                  : List.of());
+          setWidgetActivation();
+        });
+    attackerCombo.addActionListener(
+        e -> {
+          setAttackingUnits(List.of());
+          setWidgetActivation();
+        });
     amphibiousCheckBox.addActionListener(e -> setWidgetActivation());
     landBattleCheckBox.addActionListener(
         e -> {

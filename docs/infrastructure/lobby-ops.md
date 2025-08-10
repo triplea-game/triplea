@@ -24,7 +24,6 @@ sudo ps -ef | grep java
 lobby_s+   55674       1 99 05:16 ?        00:00:01 /usr/bin/java -jar bin/triplea-lobby-server-2.6.jar
 ```
 
-
 ## Logs
 
 ```bash
@@ -49,7 +48,6 @@ Restart database:
 ```
 sudo service postgresql reload
 ```
-
 
 ### Check Nginx
 

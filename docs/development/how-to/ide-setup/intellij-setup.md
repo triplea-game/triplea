@@ -28,7 +28,7 @@ Plugin installation can be initiated from the JetBrains Marketplace web page, by
   1. *checkstyle-IDEA* [plugin](https://github.com/jshiell/checkstyle-idea)
         1. after install finish configuration in: **Other Settings > Checkstyle**
             1. load checkstyle file by clicking on the "plus" and navigating to the file
-            `.\IdeaProjects\triplea\config\checkstyle` (If you can't find it, you can download it from 
+            `.\IdeaProjects\triplea\config\checkstyle` (If you can't find it, you can download it from
              [the repository](https://github.com/triplea-game/triplea/blob/master/.build/checkstyle.xml))
             1. set checkstyle version
             1. set to scan all sources
@@ -40,7 +40,6 @@ Plugin installation can be initiated from the JetBrains Marketplace web page, by
         ![annotationprocessing2](https://user-images.githubusercontent.com/54828470/95939758-6da00a00-0da2-11eb-9c7a-823040578c4e.png)
   1. *PlantUML Integration*
         1. GraphViz also needs to be installed: <https://graphviz.org/download/>
-
 
 ## Download and import IDEA settings file
 

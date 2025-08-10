@@ -13,9 +13,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A collection of unit types.
@@ -98,7 +98,7 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
   }
 
   @Override
-  public @NotNull Iterator<UnitType> iterator() {
+  public @Nonnull Iterator<UnitType> iterator() {
     return unitTypes.values().iterator();
   }
 
