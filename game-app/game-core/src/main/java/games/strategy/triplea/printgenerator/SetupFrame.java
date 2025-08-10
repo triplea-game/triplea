@@ -111,6 +111,7 @@ public class SetupFrame extends JPanel {
           return true; // directory is empty
         }
       } catch (IOException ignored) {
+        // consider this to be a selection issue raised in the following message to the user
       }
     }
     JOptionPane.showMessageDialog(
