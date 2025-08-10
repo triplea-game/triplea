@@ -22,7 +22,7 @@ class InitialSetup {
       final UnitAttachment currentTypeUnitAttachment = currentType.getUnitAttachment();
       unitInfoMap.put(currentType, currentTypeUnitAttachment);
     }
-    new UnitInformation().saveToFile(printData, unitInfoMap);
+    new UnitInformation(unitInfoMap).saveToFile(printData);
     for (final GamePlayer currentPlayer : printData.getData().getPlayerList()) {
       new CountryChart().saveToFile(currentPlayer, printData);
     }

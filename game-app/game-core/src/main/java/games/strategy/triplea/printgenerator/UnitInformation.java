@@ -12,103 +12,105 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.util.TuvCostsCalculator;
 import java.io.IOException;
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Map;
 import java.util.Map.Entry;
-import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.StringUtils;
 import org.triplea.java.collections.CollectionUtils;
 
-@Slf4j
-class UnitInformation {
-  public static final String FILE_NAME_GENERAL_INFORMATION_CSV = "General Information.csv";
+class UnitInformation extends InfoForFile {
   final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
+  final Map<UnitType, UnitAttachment> unitInfoMap;
+  GameData gameData;
 
-  void saveToFile(
-      final PrintGenerationData printData, final Map<UnitType, UnitAttachment> unitInfoMap) {
-    final Path outFile = printData.getOutDir().resolve(FILE_NAME_GENERAL_INFORMATION_CSV);
-    try {
-      try (Writer unitInformation = Files.newBufferedWriter(outFile, StandardCharsets.UTF_8)) {
-        for (int i = 0; i < 8; i++) {
-          unitInformation.write(",");
-        }
-        unitInformation.write("Unit Information");
-        for (int i = 10; i < 20; i++) {
-          unitInformation.write(",");
-        }
-        unitInformation.write("\r\n");
-        unitInformation.write(
-            "Unit,Cost,Movement,Attack,Defense,CanBlitz,Artillery?,ArtillerySupportable?,"
-                + "Can Produce Units?,Marine?,Transport Cost,AA Gun?,Air Unit?,Strategic Bomber?,"
-                + "Carrier Cost,Sea Unit?,Hit Points?,Transport Capacity,Carrier Capacity,"
-                + "Submarine?,Destroyer?");
-        unitInformation.write("\r\n");
-        for (final Entry<UnitType, UnitAttachment> entry : unitInfoMap.entrySet()) {
-          final UnitType currentType = entry.getKey();
-          final UnitAttachment currentAttachment = entry.getValue();
-          if (currentType.getName().equals(Constants.UNIT_TYPE_AAGUN)) {
-            unitInformation.write(currentType.getName() + ",");
-          } else {
-            unitInformation.write(StringUtils.capitalize(currentType.getName()) + ",");
-          }
-          unitInformation.write(getCostInformation(currentType, printData.getData()) + ",");
-          final GamePlayer nullPlayer = currentType.getData().getPlayerList().getNullPlayer();
-          unitInformation.write(
-              currentAttachment.getMovement(nullPlayer)
-                  + ","
-                  + currentAttachment.getAttack(nullPlayer)
-                  + ","
-                  + currentAttachment.getDefense(nullPlayer)
-                  + ","
-                  + (!currentAttachment.getCanBlitz(nullPlayer) ? "-" : "true")
-                  + ","
-                  + (!currentAttachment.getArtillery() ? "-" : "true")
-                  + ","
-                  + (!currentAttachment.getArtillerySupportable() ? "-" : "true")
-                  + ","
-                  + (!currentAttachment.canProduceUnits() ? "-" : "true")
-                  + ","
-                  + (currentAttachment.getIsMarine() == 0 ? "-" : currentAttachment.getIsMarine())
-                  + ","
-                  + (currentAttachment.getTransportCost() == -1
-                      ? "-"
-                      : currentAttachment.getTransportCost())
-                  + ","
-                  + (!Matches.unitTypeIsAaForAnything().test(currentType) ? "-" : "true")
-                  + ","
-                  + (!currentAttachment.isAir() ? "-" : "true")
-                  + ","
-                  + (!currentAttachment.isStrategicBomber() ? "-" : "true")
-                  + ","
-                  + (currentAttachment.getCarrierCost() == -1
-                      ? "-"
-                      : currentAttachment.getCarrierCost())
-                  + ","
-                  + (!currentAttachment.isSea() ? "-" : "true")
-                  + ","
-                  + currentAttachment.getHitPoints()
-                  + ","
-                  + (currentAttachment.getTransportCapacity() == -1
-                      ? "-"
-                      : currentAttachment.getTransportCapacity())
-                  + ","
-                  + (currentAttachment.getCarrierCapacity() == -1
-                      ? "-"
-                      : currentAttachment.getCarrierCapacity())
-                  + ","
-                  + (!(currentAttachment.getCanEvade() && currentAttachment.getIsFirstStrike())
-                      ? "-"
-                      : "true")
-                  + ","
-                  + (!currentAttachment.isDestroyer() ? "-" : "true"));
-          unitInformation.write("\r\n");
-        }
-        unitInformation.write("\r\n");
+  UnitInformation(Map<UnitType, UnitAttachment> unitInfoMap) {
+    this.unitInfoMap = unitInfoMap;
+  }
+
+  @Override
+  protected void gatherDataBeforeWriting(PrintGenerationData printData) {
+    gameData = printData.getData();
+  }
+
+  @Override
+  protected void writeIntoFile(Writer writer) throws IOException {
+    for (int i = 0; i < 8; i++) {
+      writer.write(DELIMITER);
+    }
+    writer.write("Unit Information");
+    for (int i = 10; i < 20; i++) {
+      writer.write(DELIMITER);
+    }
+    writer.write(LINE_SEPARATOR);
+    writer.write(
+        "Unit,Cost,Movement,Attack,Defense,CanBlitz,Artillery?,ArtillerySupportable?,"
+            + "Can Produce Units?,Marine?,Transport Cost,AA Gun?,Air Unit?,Strategic Bomber?,"
+            + "Carrier Cost,Sea Unit?,Hit Points?,Transport Capacity,Carrier Capacity,"
+            + "Submarine?,Destroyer?");
+    writer.write(LINE_SEPARATOR);
+    writeData(writer);
+    writer.write(LINE_SEPARATOR);
+  }
+
+  private void writeData(Writer writer) throws IOException {
+    for (final Entry<UnitType, UnitAttachment> entry : unitInfoMap.entrySet()) {
+      final UnitType currentType = entry.getKey();
+      final UnitAttachment currentAttachment = entry.getValue();
+      if (currentType.getName().equals(Constants.UNIT_TYPE_AAGUN)) {
+        writer.write(currentType.getName() + DELIMITER);
+      } else {
+        writer.write(StringUtils.capitalize(currentType.getName()) + DELIMITER);
       }
-    } catch (final IOException e) {
-      log.error("There was an error while trying to save File " + outFile, e);
+      writer.write(getCostInformation(currentType, gameData) + DELIMITER);
+      final GamePlayer nullPlayer = currentType.getData().getPlayerList().getNullPlayer();
+      writer.write(
+          currentAttachment.getMovement(nullPlayer)
+              + DELIMITER
+              + currentAttachment.getAttack(nullPlayer)
+              + DELIMITER
+              + currentAttachment.getDefense(nullPlayer)
+              + DELIMITER
+              + (!currentAttachment.getCanBlitz(nullPlayer) ? "-" : "true")
+              + DELIMITER
+              + (!currentAttachment.getArtillery() ? "-" : "true")
+              + DELIMITER
+              + (!currentAttachment.getArtillerySupportable() ? "-" : "true")
+              + DELIMITER
+              + (!currentAttachment.canProduceUnits() ? "-" : "true")
+              + DELIMITER
+              + (currentAttachment.getIsMarine() == 0 ? "-" : currentAttachment.getIsMarine())
+              + DELIMITER
+              + (currentAttachment.getTransportCost() == -1
+                  ? "-"
+                  : currentAttachment.getTransportCost())
+              + DELIMITER
+              + (!Matches.unitTypeIsAaForAnything().test(currentType) ? "-" : "true")
+              + DELIMITER
+              + (!currentAttachment.isAir() ? "-" : "true")
+              + DELIMITER
+              + (!currentAttachment.isStrategicBomber() ? "-" : "true")
+              + DELIMITER
+              + (currentAttachment.getCarrierCost() == -1
+                  ? "-"
+                  : currentAttachment.getCarrierCost())
+              + DELIMITER
+              + (!currentAttachment.isSea() ? "-" : "true")
+              + DELIMITER
+              + currentAttachment.getHitPoints()
+              + DELIMITER
+              + (currentAttachment.getTransportCapacity() == -1
+                  ? "-"
+                  : currentAttachment.getTransportCapacity())
+              + DELIMITER
+              + (currentAttachment.getCarrierCapacity() == -1
+                  ? "-"
+                  : currentAttachment.getCarrierCapacity())
+              + DELIMITER
+              + (!(currentAttachment.getCanEvade() && currentAttachment.getIsFirstStrike())
+                  ? "-"
+                  : "true")
+              + DELIMITER
+              + (!currentAttachment.isDestroyer() ? "-" : "true"));
+      writer.write(LINE_SEPARATOR);
     }
   }
 
