@@ -23,13 +23,13 @@ import org.triplea.java.collections.CollectionUtils;
 
 @Slf4j
 class UnitInformation {
+  public static final String FILE_NAME_GENERAL_INFORMATION_CSV = "General Information.csv";
   final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
 
   void saveToFile(
       final PrintGenerationData printData, final Map<UnitType, UnitAttachment> unitInfoMap) {
-    final Path outFile = printData.getOutDir().resolve("General Information.csv");
+    final Path outFile = printData.getOutDir().resolve(FILE_NAME_GENERAL_INFORMATION_CSV);
     try {
-      Files.createDirectory(printData.getOutDir());
       try (Writer unitInformation = Files.newBufferedWriter(outFile, StandardCharsets.UTF_8)) {
         for (int i = 0; i < 8; i++) {
           unitInformation.write(",");

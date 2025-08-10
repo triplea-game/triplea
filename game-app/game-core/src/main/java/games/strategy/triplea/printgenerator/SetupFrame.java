@@ -2,6 +2,10 @@ package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GameData;
 import java.awt.BorderLayout;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -43,9 +47,9 @@ public class SetupFrame extends JPanel {
     outDirButton.addActionListener(
         e -> {
           final int returnVal = outChooser.showOpenDialog(null);
-          if (returnVal == JFileChooser.APPROVE_OPTION) {
-            final Path outDir = outChooser.getSelectedFile().toPath();
-            outField.setText(outDir.toAbsolutePath().toString());
+          if (returnVal == JFileChooser.APPROVE_OPTION && verifySelectedOutIsEmpty()) {
+            final Path outDirSelected = outChooser.getSelectedFile().toPath().toAbsolutePath();
+            outField.setText(outDirSelected.toString());
           }
         });
     runButton.setText("Generate the Files");
@@ -60,8 +64,8 @@ public class SetupFrame extends JPanel {
           } else {
             JOptionPane.showMessageDialog(
                 null,
-                "You need to select an Output Directory.",
-                "Select an Output Directory!",
+                "You need to select an empty Output Directory.",
+                "Select an empty Output Directory!",
                 JOptionPane.ERROR_MESSAGE);
           }
         });
@@ -97,5 +101,23 @@ public class SetupFrame extends JPanel {
     super.add(textButtonRadioPanel, BorderLayout.CENTER);
 
     super.add(runButton, BorderLayout.SOUTH);
+  }
+
+  boolean verifySelectedOutIsEmpty() {
+    File selectedFile = outChooser.getSelectedFile();
+    if (selectedFile.isDirectory()) {
+      try (DirectoryStream<Path> directory = Files.newDirectoryStream(selectedFile.toPath())) {
+        if (!directory.iterator().hasNext()) {
+          return true; // directory is empty
+        }
+      } catch (IOException ignored) {
+      }
+    }
+    JOptionPane.showMessageDialog(
+        null,
+        "The selection for the empty Output Directory is invalid.",
+        "Incorrect directory selected",
+        JOptionPane.WARNING_MESSAGE);
+    return false;
   }
 }

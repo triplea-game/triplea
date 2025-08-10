@@ -1,5 +1,7 @@
 package games.strategy.triplea.printgenerator;
 
+import static games.strategy.triplea.printgenerator.UnitInformation.FILE_NAME_GENERAL_INFORMATION_CSV;
+
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import java.io.IOException;
@@ -28,7 +30,7 @@ class PuInfo {
                       Function.identity(), currentPlayer.getResources()::getQuantity)));
     }
     try {
-      final Path outFile = printData.getOutDir().resolve("General Information.csv");
+      final Path outFile = printData.getOutDir().resolve(FILE_NAME_GENERAL_INFORMATION_CSV);
       try (Writer resourceWriter =
           Files.newBufferedWriter(
               outFile,
