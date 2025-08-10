@@ -9,6 +9,7 @@ import java.security.SecureRandom;
 import java.security.spec.KeySpec;
 import java.util.Base64;
 import java.util.Map;
+import javax.annotation.Nullable;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -110,6 +111,7 @@ final class HmacSha512Authenticator {
   }
 
   @VisibleForTesting
+  @Nullable
   static byte[] decodeOptionalProperty(final Map<String, String> properties, final String name)
       throws AuthenticationException {
     final String value = properties.get(name);
