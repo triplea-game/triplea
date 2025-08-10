@@ -51,7 +51,7 @@ public class BombingUnitDamageChange extends Change {
                     .get(UUID.fromString(unitId))
                     .setUnitDamage(newDamage.getInt(unitId)));
     this.territoriesToNotify.forEach(
-        territory -> data.getMap().getTerritory(territory).notifyChanged());
+        territory -> data.getMap().getTerritoryOrThrow(territory).notifyChanged());
   }
 
   @Override
