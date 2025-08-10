@@ -71,7 +71,8 @@ public final class GameDataUtils {
     }
   }
 
-  public static Optional<GameData> cloneGameDataWithHistory(GameData gameData, boolean enableSeeking) {
+  public static Optional<GameData> cloneGameDataWithHistory(
+      GameData gameData, boolean enableSeeking) {
     final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
     Optional<GameData> optionalGameDataClone = cloneGameData(gameData, cloneOptions);
     if (enableSeeking) {

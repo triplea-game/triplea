@@ -357,7 +357,10 @@ final class ExportMenu extends JMenu {
 
   /**
    * Provides a game data copy with its history.
-   * @return {@link GameData} clone incl. {@link History} which has already {@link History#enableSeeking(HistoryPanel)} called. Fails with {@link IllegalStateException} in case the cloning fails.
+   *
+   * @return {@link GameData} clone incl. {@link History} which has already {@link
+   *     History#enableSeeking(HistoryPanel)} called. Fails with {@link IllegalStateException} in
+   *     case the cloning fails.
    */
   private GameData getGameDataCloneWithHistory() {
     return GameDataUtils.cloneGameDataWithHistory(gameData, true)
