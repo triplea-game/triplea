@@ -39,6 +39,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -166,10 +167,11 @@ final class ExportMenu extends JMenu {
                     showPhaseStats ? "full" : "short"))
             + ".csv";
     chooser.setSelectedFile(rootDir.resolve(defaultFileName).toFile());
+    final CompletableFuture<GameData> cloneCompletableFuture = getGameDataCloneWithHistory();
     if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
       return;
     }
-    final GameData clone = getGameDataCloneWithHistory();
+    final GameData clone = cloneCompletableFuture.join();
     try (PrintWriter writer = new PrintWriter(chooser.getSelectedFile(), StandardCharsets.UTF_8);
         GameData.Unlocker ignored = clone.acquireReadLock()) {
       writer.append(defaultFileName).println(',');
@@ -355,21 +357,6 @@ final class ExportMenu extends JMenu {
     }
   }
 
-  /**
-   * Provides a game data copy with its history.
-   *
-   * @return {@link GameData} clone incl. {@link History} which has already {@link
-   *     History#enableSeeking(HistoryPanel)} called. Fails with {@link IllegalStateException} in
-   *     case the cloning fails.
-   */
-  private GameData getGameDataCloneWithHistory() {
-    return GameDataUtils.cloneGameDataWithHistory(gameData, true)
-        .orElseThrow(
-            () ->
-                new IllegalStateException(
-                    "ExportMenu: Cloning of game data for exporting failed."));
-  }
-
   private JMenuItem createExportUnitStatsMenu() {
     return new JMenuItemBuilder("Export Unit Charts", KeyCode.U)
         .actionListener(this::exportUnitCharts)
@@ -404,17 +391,34 @@ final class ExportMenu extends JMenu {
   }
 
   private void exportSetupCharts() {
-    final JFrame frame = new JFrame("Export Setup Charts");
-    frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    final GameData clonedGameData = getGameDataCloneWithHistory();
-    final JComponent newContentPane = new SetupFrame(clonedGameData);
+    final JFrame frameExportSetupCharte = new JFrame("Export Setup Charts");
+    frameExportSetupCharte.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    final JComponent newContentPane = new SetupFrame(getGameDataCloneWithHistory());
     // content panes must be opaque
     newContentPane.setOpaque(true);
-    frame.setContentPane(newContentPane);
+    frameExportSetupCharte.setContentPane(newContentPane);
     // Display the window.
-    frame.pack();
-    frame.setLocationRelativeTo(frame);
-    frame.setVisible(true);
-    uiContext.addShutdownWindow(frame);
+    frameExportSetupCharte.pack();
+    frameExportSetupCharte.setLocationRelativeTo(frameExportSetupCharte);
+    frameExportSetupCharte.setVisible(true);
+    uiContext.addShutdownWindow(frameExportSetupCharte);
+  }
+
+  /**
+   * Provides a game data copy with its history by triggering an asynchronous process for the
+   * copying task.
+   *
+   * @return {@link GameData} clone as {@link CompletableFuture} incl. {@link History} which has
+   *     already {@link History#enableSeeking(HistoryPanel)} called. Fails with {@link
+   *     IllegalStateException} in case the cloning fails.
+   */
+  private CompletableFuture<GameData> getGameDataCloneWithHistory() {
+    return CompletableFuture.supplyAsync(
+        () ->
+            GameDataUtils.cloneGameDataWithHistory(gameData, true)
+                .orElseThrow(
+                    () ->
+                        new IllegalStateException(
+                            "ExportMenu: Cloning of game data for exporting failed.")));
   }
 }

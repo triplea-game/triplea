@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.CompletableFuture;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -23,12 +24,9 @@ public class SetupFrame extends JPanel {
   private final JTextField outField;
   private final JFileChooser outChooser;
   private final JRadioButton originalState;
-  private final GameData data;
-  private Path outDir;
 
-  public SetupFrame(final GameData data) {
+  public SetupFrame(final CompletableFuture<GameData> clonedGameData) {
     super(new BorderLayout());
-    this.data = data;
     final JButton outDirButton = new JButton();
     final JButton runButton = new JButton();
     outField = new JTextField(15);
@@ -56,9 +54,9 @@ public class SetupFrame extends JPanel {
     runButton.addActionListener(
         e -> {
           if (!outField.getText().isEmpty()) {
-            outDir = Path.of(outField.getText());
+            final Path outDir = Path.of(outField.getText());
             final PrintGenerationData printData =
-                PrintGenerationData.builder().outDir(outDir).data(this.data).build();
+                PrintGenerationData.builder().outDir(outDir).data(clonedGameData.join()).build();
             new InitialSetup().run(printData, originalState.isSelected());
             JOptionPane.showMessageDialog(null, "Done!", "Done!", JOptionPane.INFORMATION_MESSAGE);
           } else {
@@ -111,6 +109,7 @@ public class SetupFrame extends JPanel {
           return true; // directory is empty
         }
       } catch (IOException ignored) {
+        // following message dialog is sufficient handling
       }
     }
     JOptionPane.showMessageDialog(
