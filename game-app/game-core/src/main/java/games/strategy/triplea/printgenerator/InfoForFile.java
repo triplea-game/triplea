@@ -14,6 +14,15 @@ abstract class InfoForFile {
   public static final String FILE_NAME_GENERAL_INFORMATION_CSV = "General Information.csv";
   public static final String DELIMITER = ",";
   public static final String LINE_SEPARATOR = "\r\n";
+  private final Path chosenOutFile;
+
+  InfoForFile() {
+    this.chosenOutFile = null;
+  }
+
+  InfoForFile(Path chosenOutFile) {
+    this.chosenOutFile = chosenOutFile;
+  }
 
   /**
    * Saves the data to be printed by collecting it in {@link
@@ -24,7 +33,10 @@ abstract class InfoForFile {
    */
   void saveToFile(final PrintGenerationData printData) {
     gatherDataBeforeWriting(printData);
-    final Path outFile = printData.getOutDir().resolve(FILE_NAME_GENERAL_INFORMATION_CSV);
+    final Path outFile =
+        chosenOutFile != null
+            ? chosenOutFile
+            : printData.getOutDir().resolve(FILE_NAME_GENERAL_INFORMATION_CSV);
     try {
       try (Writer writer =
           Files.newBufferedWriter(
