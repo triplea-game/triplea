@@ -3,6 +3,7 @@ package games.strategy.triplea.printgenerator;
 import com.google.common.collect.Iterables;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.UnitType;
@@ -218,27 +219,27 @@ public class StatsInfo extends InfoForFile {
     String stepName = step.getStepName();
     // copied directly from TripleAPlayer, will probably have to be updated in the future if
     // more delegates are made
-    if (stepName.endsWith("Bid")) {
+    if (GameStep.isBidStepName(stepName)) {
       stepName = "Bid";
-    } else if (stepName.endsWith("Tech")) {
+    } else if (GameStep.isTechStepName(stepName)) {
       stepName = "Tech";
-    } else if (stepName.endsWith("TechActivation")) {
+    } else if (GameStep.isTechActivationStepName(stepName)) {
       stepName = "TechActivation";
-    } else if (stepName.endsWith("Purchase")) {
+    } else if (GameStep.isPurchaseStepName(stepName)) {
       stepName = "Purchase";
-    } else if (stepName.endsWith("NonCombatMove")) {
+    } else if (GameStep.isNonCombatMoveStepName(stepName)) {
       stepName = "NonCombatMove";
-    } else if (stepName.endsWith("Move")) {
+    } else if (GameStep.isMoveStepName(stepName)) {
       stepName = "Move";
-    } else if (stepName.endsWith("Battle")) {
+    } else if (GameStep.isBattleStepName(stepName)) {
       stepName = "Battle";
-    } else if (stepName.endsWith("BidPlace")) {
+    } else if (GameStep.isBidPlaceStepName(stepName)) {
       stepName = "BidPlace";
-    } else if (stepName.endsWith("Place")) {
+    } else if (GameStep.isPlaceStepName(stepName)) {
       stepName = "Place";
-    } else if (stepName.endsWith("Politics")) {
+    } else if (GameStep.isPoliticsStepName(stepName)) {
       stepName = "Politics";
-    } else if (stepName.endsWith("EndTurn")) {
+    } else if (GameStep.isEndTurnStepName(stepName)) {
       stepName = "EndTurn";
     } else {
       stepName = "";
