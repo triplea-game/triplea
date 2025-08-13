@@ -1,5 +1,7 @@
 package games.strategy.triplea.printgenerator;
 
+import static games.strategy.triplea.printgenerator.UnitInformation.FILE_NAME_GENERAL_INFORMATION_CSV;
+
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
 import games.strategy.triplea.delegate.BidPlaceDelegate;
@@ -47,8 +49,7 @@ class PlayerOrder {
       }
     }
     playerSet.sort(new PlayerOrderComparator(printData.getData()));
-    Files.createDirectory(printData.getOutDir());
-    final Path outFile = printData.getOutDir().resolve("General Information.csv");
+    final Path outFile = printData.getOutDir().resolve(FILE_NAME_GENERAL_INFORMATION_CSV);
     try (Writer turnWriter =
         Files.newBufferedWriter(
             outFile,
