@@ -6,6 +6,7 @@ import games.strategy.engine.data.export.GameDataExporter;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.history.History;
 import games.strategy.engine.history.HistoryNode;
+import games.strategy.triplea.EngineImageLoader;
 import games.strategy.triplea.printgenerator.SetupFrame;
 import games.strategy.triplea.printgenerator.StatsInfo;
 import games.strategy.triplea.ui.TripleAFrame;
@@ -24,18 +25,18 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.WindowConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.map.data.elements.Game;
 import org.triplea.map.xml.writer.GameXmlWriter;
 import org.triplea.swing.FileChooser;
+import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.JMenuItemBuilder;
+import org.triplea.swing.SwingAction;
+import org.triplea.swing.jpanel.JPanelBuilder;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.util.FileNameUtils;
 
@@ -181,17 +182,22 @@ final class ExportMenu extends JMenu {
   }
 
   private void exportSetupCharts() {
-    final JFrame frameExportSetupCharts = new JFrame("Export Setup Charts");
-    frameExportSetupCharts.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    final JComponent newContentPane = new SetupFrame(getGameDataCloneWithHistory());
-    // content panes must be opaque
-    newContentPane.setOpaque(true);
-    frameExportSetupCharts.setContentPane(newContentPane);
-    // Display the window.
-    frameExportSetupCharts.pack();
-    frameExportSetupCharts.setLocationRelativeTo(frameExportSetupCharts);
-    frameExportSetupCharts.setVisible(true);
-    uiContext.addShutdownWindow(frameExportSetupCharts);
+    SwingAction.invokeNowOrLater(
+        () ->
+            JFrameBuilder.builder()
+                .title("Export Setup Charts")
+                .locateRelativeTo(frame)
+                .iconImage(EngineImageLoader.loadFrameIcon())
+                .pack()
+                .disposeOnClose()
+                .alwaysOnTop()
+                .add(
+                    exportSetupChartsFrame ->
+                        new JPanelBuilder()
+                            .add(new SetupFrame(getGameDataCloneWithHistory()))
+                            .build())
+                .visible(true)
+                .build());
   }
 
   /**
