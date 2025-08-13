@@ -41,7 +41,6 @@ import games.strategy.triplea.delegate.TechAdvance;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.file.Path;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -265,9 +264,7 @@ public final class GameParser {
   private GamePlayer getPlayerId(final String name) throws GameParseException {
     return getPlayerIdOptional(name)
         .orElseThrow(
-            () ->
-                new GameParseException(
-                    MessageFormat.format("Could not find player name: {0}", name)));
+            () -> new GameParseException(String.format("Could not find player name: %s", name)));
   }
 
   private Optional<GamePlayer> getPlayerIdOptional(final String name) {
@@ -279,15 +276,14 @@ public final class GameParser {
         .orElseThrow(
             () ->
                 new GameParseException(
-                    MessageFormat.format("Could not find relationship type: {0}", name)));
+                    String.format("Could not find relationship type: %s", name)));
   }
 
   private TerritoryEffect getTerritoryEffect(final String name) throws GameParseException {
     return Optional.ofNullable(data.getTerritoryEffectList().get(name))
         .orElseThrow(
             () ->
-                new GameParseException(
-                    MessageFormat.format("Could not find territory effect: {0}", name)));
+                new GameParseException(String.format("Could not find territory effect: %s", name)));
   }
 
   /** If the productionRule cannot be found an exception will be thrown. */
@@ -295,25 +291,20 @@ public final class GameParser {
     return Optional.ofNullable(data.getProductionRuleList().getProductionRule(name))
         .orElseThrow(
             () ->
-                new GameParseException(
-                    MessageFormat.format("Could not find production rule: {0}", name)));
+                new GameParseException(String.format("Could not find production rule: %s", name)));
   }
 
   /** If the repairRule cannot be found an exception will be thrown. */
   private RepairRule getRepairRule(final String name) throws GameParseException {
     return Optional.ofNullable(data.getRepairRules().getRepairRule(name))
         .orElseThrow(
-            () ->
-                new GameParseException(
-                    MessageFormat.format("Could not find repair rule: {0}", name)));
+            () -> new GameParseException(String.format("Could not find repair rule: %s", name)));
   }
 
   private Territory getTerritory(final String name) throws GameParseException {
     return Optional.ofNullable(data.getMap().getTerritory(name))
         .orElseThrow(
-            () ->
-                new GameParseException(
-                    MessageFormat.format("Could not find territory: {0}", name)));
+            () -> new GameParseException(String.format("Could not find territory: %s", name)));
   }
 
   private UnitType getUnitType(final String name) throws GameParseException {
@@ -334,17 +325,14 @@ public final class GameParser {
     return Optional.ofNullable(frontier.getAdvanceByName(name))
         .or(() -> Optional.ofNullable(frontier.getAdvanceByProperty(name)))
         .orElseThrow(
-            () ->
-                new GameParseException(
-                    MessageFormat.format("Could not find technology: {0}", name)));
+            () -> new GameParseException(String.format("Could not find technology: %s", name)));
   }
 
   /** If the Delegate cannot be found an exception will be thrown. */
   private IDelegate getDelegate(final String name) throws GameParseException {
     return Optional.ofNullable(data.getDelegate(name))
         .orElseThrow(
-            () ->
-                new GameParseException(MessageFormat.format("Could not find delegate: {0}", name)));
+            () -> new GameParseException(String.format("Could not find delegate: %s", name)));
   }
 
   /** If must find is true and cannot find the Resource, an exception will be thrown. */
@@ -366,7 +354,7 @@ public final class GameParser {
         .orElseThrow(
             () ->
                 new GameParseException(
-                    MessageFormat.format("Could not find production frontier: {0}", name)));
+                    String.format("Could not find production frontier: %s", name)));
   }
 
   /** If the repairFrontier cannot be found an exception will be thrown. */
@@ -374,8 +362,7 @@ public final class GameParser {
     return Optional.ofNullable(data.getRepairFrontierList().getRepairFrontier(name))
         .orElseThrow(
             () ->
-                new GameParseException(
-                    MessageFormat.format("Could not find repair frontier: {0}", name)));
+                new GameParseException(String.format("Could not find repair frontier: %s", name)));
   }
 
   private void parseTerritories(
@@ -422,7 +409,7 @@ public final class GameParser {
       final @Nullable GamePlayer player = data.getPlayerList().getPlayerId(playerName);
       if (player == null) {
         throw new GameParseException(
-            MessageFormat.format("Parse resources could not find player: {0}", playerName));
+            String.format("Parse resources could not find player: %s", playerName));
       }
       players.add(player);
     }
@@ -604,7 +591,7 @@ public final class GameParser {
               .orElseThrow(
                   () ->
                       new GameParseException(
-                          MessageFormat.format("Class <{0}> is not a delegate.", className)));
+                          String.format("Class <%s> is not a delegate.", className)));
       final String name = current.getName();
       String displayName = current.getDisplay();
       if (displayName == null) {
@@ -621,8 +608,8 @@ public final class GameParser {
       final GamePlayer player = getPlayerIdOptional(current.getPlayer()).orElse(null);
       if (player == null && current.getPlayer() != null && !current.getPlayer().isBlank()) {
         throw new GameParseException(
-            MessageFormat.format(
-                "The step {0} wants a player with the name of ''{1}'', but that player cannot be found. Make sure the player''s name is spelled correctly.",
+            String.format(
+                "The step %s wants a player with the name of ''%s'', but that player cannot be found. Make sure the player''s name is spelled correctly.",
                 current.getName(), current.getPlayer()));
       }
       final String name = current.getName();
@@ -674,7 +661,7 @@ public final class GameParser {
       throws GameParseException {
     if (elements.isEmpty()) {
       throw new GameParseException(
-          MessageFormat.format("No costs for production rule: {0}", productionRule.getName()));
+          String.format("No costs for production rule: %s", productionRule.getName()));
     }
     parseCostsForRule(productionRule, elements);
   }
@@ -684,7 +671,7 @@ public final class GameParser {
       throws GameParseException {
     if (elements.isEmpty()) {
       throw new GameParseException(
-          MessageFormat.format("No costs for repair rule: {0}", repairRule.getName()));
+          String.format("No costs for repair rule: %s", repairRule.getName()));
     }
     parseCostsForRule(repairRule, elements);
   }
@@ -702,8 +689,7 @@ public final class GameParser {
       throws GameParseException {
     List<Production.Rule.Result> ruleResults = mapRule.getRuleResults();
     if (ruleResults.isEmpty()) {
-      throw new GameParseException(
-          MessageFormat.format("No results for rule: {0}", dataRule.getName()));
+      throw new GameParseException(String.format("No results for rule: %s", dataRule.getName()));
     }
     for (final Production.ProductionRule.Result current : ruleResults) {
       // must find either a resource or a unit with the given name
@@ -714,7 +700,7 @@ public final class GameParser {
       }
       if (result.isEmpty()) {
         throw new GameParseException(
-            MessageFormat.format("Could not find resource or unit: {0}", resourceOrUnit));
+            String.format("Could not find resource or unit: %s", resourceOrUnit));
       }
       final int quantity = Optional.ofNullable(current.getQuantity()).orElse(0);
       dataRule.addResult(result.get(), quantity);
@@ -829,7 +815,7 @@ public final class GameParser {
       }
       if (ta == null) {
         throw new GameParseException(
-            MessageFormat.format("Could not find technology: {0}", current.getName()));
+            String.format("Could not find technology: %s", current.getName()));
       }
       frontier.addAdvance(ta);
     }
@@ -875,8 +861,8 @@ public final class GameParser {
             .orElseThrow(
                 () ->
                     new GameParseException(
-                        MessageFormat.format(
-                            "Attachment of type {0} could not be instantiated", className)));
+                        String.format(
+                            "Attachment of type %s could not be instantiated", className)));
     // replace-all to automatically correct legacy (1.8) attachment spelling
     attachable.addAttachment(name, attachment);
 
@@ -908,8 +894,7 @@ public final class GameParser {
       case "technology":
         return getTechnology(attachTo);
       default:
-        throw new GameParseException(
-            MessageFormat.format("Type not found to attach to: {0}", type));
+        throw new GameParseException(String.format("Type not found to attach to: %s", type));
     }
   }
 
@@ -930,8 +915,7 @@ public final class GameParser {
           LegacyPropertyMapper.mapLegacyOptionName(decapitalize(optionName)).intern();
       if (name.isEmpty()) {
         throw new GameParseException(
-            MessageFormat.format(
-                "Option name with zero length for attachment: {0}", attachment.getName()));
+            String.format("Option name with zero length for attachment: %s", attachment.getName()));
       }
       if (LegacyPropertyMapper.ignoreOptionName(name, value)) {
         continue;
@@ -952,16 +936,16 @@ public final class GameParser {
             .orElseThrow(
                 () ->
                     new GameParseException(
-                        MessageFormat.format(
-                            "Missing property definition for option ''{0}'' in attachment ''{1}''",
+                        String.format(
+                            "Missing property definition for option ''%s'' in attachment ''%s''",
                             name, attachment.getName())))
             .setValue(finalValue);
       } catch (final GameParseException e) {
         throw e;
       } catch (final Exception e) {
         throw new GameParseException(
-            MessageFormat.format(
-                "map name: ''{0}'', unexpected exception while setting values for attachment: {1}, {2}",
+            String.format(
+                "map name: ''%s'', unexpected exception while setting values for attachment: %s, %s",
                 xmlUri, attachment, e.getMessage()),
             e);
       }
@@ -1002,16 +986,16 @@ public final class GameParser {
       final int hits = Optional.ofNullable(current.getHitsTaken()).orElse(0);
       if (hits < 0 || hits > type.getUnitAttachment().getHitPoints() - 1) {
         throw new GameParseException(
-            MessageFormat.format(
-                "Unit placement issue for unit type {0} in territory {1}: hitsTaken is {2}, but cannot be less than zero or greater than {3} (one less than total hitPoints)",
+            String.format(
+                "Unit placement issue for unit type %s in territory %s: hitsTaken is %d, but cannot be less than zero or greater than %d (one less than total hitPoints)",
                 type, territory, hits, type.getUnitAttachment().getHitPoints() - 1));
       }
 
       final int unitDamage = Optional.ofNullable(current.getUnitDamage()).orElse(0);
       if (unitDamage < 0) {
         throw new GameParseException(
-            MessageFormat.format(
-                "Unit placement issue for unit type {0} in territory {1}: unitDamage is {2}, but cannot be less than zero",
+            String.format(
+                "Unit placement issue for unit type %s in territory %s: unitDamage is %d, but cannot be less than zero",
                 type, territory, unitDamage));
       }
 
