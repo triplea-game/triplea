@@ -14,10 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.CollectionUtils;
 
-@Slf4j
 class CountryChart extends InfoForFile {
   private final Map<Territory, List<Map<UnitType, Integer>>> infoMap = new HashMap<>();
   private final GamePlayer player;
