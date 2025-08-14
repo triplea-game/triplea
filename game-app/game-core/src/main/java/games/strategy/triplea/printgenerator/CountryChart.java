@@ -50,35 +50,34 @@ class CountryChart extends InfoForFile {
   }
 
   @Override
-  protected void writeIntoFile(Writer writer) throws IOException {
-    // Print Title
+  protected void writeIntoFile(final Writer writer) throws IOException {
+    // Print Title (followed by delimiters, one for each unit type to allow
+    // later pattern territory, ut1, ut2, ut3, ...)
     final int numUnits = gameData.getUnitTypeList().size();
-    for (int i = 0; i < numUnits / 2 - 1 + numUnits % 2; i++) {
-      writer.write(",");
-    }
-    writer.write("Setup Chart for the " + player.getName());
-    for (int i = 0; i < numUnits / 2 - numUnits % 2; i++) {
-      writer.write(",");
-    }
-    writer.write("\r\n");
-    // Print Unit Types
-    writer.write(",");
+    writer
+        .append("Setup Chart for the ")
+        .append(player.getName())
+        .append(DELIMITER.repeat(numUnits))
+        .append(LINE_SEPARATOR);
+
+    writer.append(DELIMITER);
     for (final UnitType currentType : gameData.getUnitTypeList()) {
-      writer.write(currentType.getName() + ",");
+      writer.append(currentType.getName()).append(DELIMITER);
     }
-    writer.write("\r\n");
-    // Print Territories and Info
+    writer.append(LINE_SEPARATOR);
+
+    // Print per row: Territory name followed be unit type info
     for (final Territory currentTerritory :
         CollectionUtils.getMatches(
             gameData.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player))) {
-      writer.write(currentTerritory.getName());
+      writer.append(currentTerritory.getName());
       final List<Map<UnitType, Integer>> currentList = infoMap.get(currentTerritory);
       for (final Map<UnitType, Integer> currentMap : currentList) {
         for (final int here : currentMap.values()) {
-          writer.write("," + here);
+          writer.append(DELIMITER).append(String.valueOf(here));
         }
       }
-      writer.write("\r\n");
+      writer.append(LINE_SEPARATOR);
     }
   }
 }
