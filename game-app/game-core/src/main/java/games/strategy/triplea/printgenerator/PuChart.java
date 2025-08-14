@@ -16,8 +16,10 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.IntegerMap;
 
+@Slf4j
 class PuChart {
   static final int DRAW_ROWS = 6;
   static final int DRAW_COLS = 7;
@@ -126,7 +128,11 @@ class PuChart {
     // Write to file
     final int firstNum = DRAW_COLS * DRAW_ROWS * numChartsNeeded;
     final int secondNum = DRAW_COLS * DRAW_ROWS * (numChartsNeeded + 1) - 1;
-    final Path outputFile = outDir.resolve("PUchart" + firstNum + "-" + secondNum + ".png");
-    ImageIO.write(puImage, "png", outputFile.toFile());
+    final Path outFile = outDir.resolve("PUchart" + firstNum + "-" + secondNum + ".png");
+    try {
+      ImageIO.write(puImage, "png", outFile.toFile());
+    } catch (final IOException e) {
+      log.error("Failed to save print generation data to file {}", outFile, e);
+    }
   }
 }
