@@ -23,8 +23,13 @@ import org.triplea.java.collections.CollectionUtils;
 @Slf4j
 class CountryChart {
   private final Map<Territory, List<Map<UnitType, Integer>>> infoMap = new HashMap<>();
+  private final GamePlayer player;
 
-  void saveToFile(final GamePlayer player, final PrintGenerationData printData) {
+  CountryChart(final GamePlayer player) {
+    this.player = player;
+  }
+
+  void saveToFile(final PrintGenerationData printData) {
     final Collection<Territory> terrCollection =
         CollectionUtils.getMatches(
             printData.getData().getMap().getTerritories(),

@@ -12,6 +12,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.util.TuvCostsCalculator;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.triplea.java.StringUtils;
@@ -19,16 +20,16 @@ import org.triplea.java.collections.CollectionUtils;
 
 class UnitInformation extends InfoForFile {
   final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
-  final Map<UnitType, UnitAttachment> unitInfoMap;
-  GameData gameData;
-
-  UnitInformation(Map<UnitType, UnitAttachment> unitInfoMap) {
-    this.unitInfoMap = unitInfoMap;
-  }
+  private Map<UnitType, UnitAttachment> unitInfoMap = new HashMap<>();
+  private GameData gameData;
 
   @Override
   protected void gatherDataBeforeWriting(PrintGenerationData printData) {
     gameData = printData.getData();
+    for (final UnitType currentType : printData.getData().getUnitTypeList()) {
+      final UnitAttachment currentTypeUnitAttachment = currentType.getUnitAttachment();
+      unitInfoMap.put(currentType, currentTypeUnitAttachment);
+    }
   }
 
   @Override
@@ -134,5 +135,9 @@ class UnitInformation extends InfoForFile {
       }
     }
     return -1;
+  }
+
+  public static void export(PrintGenerationData printData) {
+    new UnitInformation().saveToFile(printData);
   }
 }
