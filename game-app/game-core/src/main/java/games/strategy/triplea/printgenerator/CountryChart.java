@@ -5,14 +5,13 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.UnitTypeList;
 import games.strategy.triplea.delegate.Matches;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -32,26 +31,22 @@ class CountryChart extends InfoForFile {
   @Override
   protected void gatherDataBeforeWriting(PrintGenerationData printData) {
     gameData = printData.getData();
-    final Collection<Territory> terrCollection =
-        CollectionUtils.getMatches(
-            printData.getData().getMap().getTerritories(),
-            Matches.territoryHasUnitsOwnedBy(player));
-    Iterator<Territory> terrIterator = terrCollection.iterator();
-    Iterator<UnitType> availableUnits = printData.getData().getUnitTypeList().iterator();
-    while (terrIterator.hasNext()) {
-      final Territory currentTerritory = terrIterator.next();
-      final UnitCollection unitsHere = currentTerritory.getUnitCollection();
-      final List<Map<UnitType, Integer>> unitPairs = new ArrayList<>();
-      while (availableUnits.hasNext()) {
-        final UnitType currentUnit = availableUnits.next();
-        final int amountHere = unitsHere.getUnitCount(currentUnit, player);
-        final Map<UnitType, Integer> innerMap = new HashMap<>();
-        innerMap.put(currentUnit, amountHere);
-        unitPairs.add(innerMap);
-      }
-      infoMap.put(currentTerritory, unitPairs);
-      availableUnits = printData.getData().getUnitTypeList().iterator();
-    }
+    final UnitTypeList unitTypeList = printData.getData().getUnitTypeList();
+    CollectionUtils.getMatches(
+            printData.getData().getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player))
+        .forEach(
+            currentTerritory -> {
+              final UnitCollection unitsHere = currentTerritory.getUnitCollection();
+              final List<Map<UnitType, Integer>> unitPairs = new ArrayList<>();
+              unitTypeList.forEach(
+                  currentUnit -> {
+                    final int amountHere = unitsHere.getUnitCount(currentUnit, player);
+                    final Map<UnitType, Integer> innerMap = new HashMap<>();
+                    innerMap.put(currentUnit, amountHere);
+                    unitPairs.add(innerMap);
+                  });
+              infoMap.put(currentTerritory, unitPairs);
+            });
   }
 
   @Override
