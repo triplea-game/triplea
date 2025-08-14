@@ -62,19 +62,20 @@ public class StatsInfo extends InfoForFile {
     for (final Resource resource : gameData.getResourceList().getResources()) {
       writer.append(resource.getName()).append(DELIMITER).append(LINE_SEPARATOR);
     }
+    writer.append(LINE_SEPARATOR);
     // if short, we won't both showing production and unit info
     if (showPhaseStats) {
       writeProductionRulesAndUnitInfo(writer);
     }
-    writer.append(LINE_SEPARATOR);
     writer
         .append(
             showPhaseStats
-                ? "Full Stats (includes each phase that had activity),"
-                : "Short Stats (only shows first phase with activity per player per round),")
+                ? "Full Stats (includes each phase that had activity)"
+                : "Short Stats (only shows first phase with activity per player per round)")
+        .append(DELIMITER)
         .append(LINE_SEPARATOR);
     writer.append("Turn Stats:").append(DELIMITER);
-    writer.append("Round,Player Turn,Phase Name,");
+    writer.append("Round,Player Turn,Phase Name").append(DELIMITER);
     // its important here to use the player objects from the cloned game data
     // the players for the stat panel are only relevant with respect to the game data they belong
     // to
@@ -97,36 +98,34 @@ public class StatsInfo extends InfoForFile {
     writer
         .append(String.format("stats_%s", showPhaseStats ? "full" : "short"))
         .append(DELIMITER)
-        .append(LINE_SEPARATOR)
+        .append(LINE_SEPARATOR);
+    writer
         .append("TripleA Engine Version:")
         .append(DELIMITER)
         .append(ProductVersionReader.getCurrentVersion().toString())
         .append(DELIMITER)
-        .append(LINE_SEPARATOR)
+        .append(LINE_SEPARATOR);
+    writer
         .append("Game Name:")
         .append(DELIMITER)
         .append(gameData.getGameName())
         .append(DELIMITER)
         .append(LINE_SEPARATOR)
-        .append(LINE_SEPARATOR)
-        .append("Current Round:")
-        .append(DELIMITER);
+        .append(LINE_SEPARATOR);
+
+    writer.append("Current Round:").append(DELIMITER);
     final int currentRound = gameData.getCurrentRound();
     writer.write(currentRound);
-    writer.append(DELIMITER).append(LINE_SEPARATOR).append("Number of Players:").append(DELIMITER);
+    writer.append(LINE_SEPARATOR);
+
+    writer.append("Number of Players:").append(DELIMITER);
     writer.write(gameData.getPlayerList().size());
-    writer
-        .append(DELIMITER)
-        .append(LINE_SEPARATOR)
-        .append("Number of Alliances:")
-        .append(DELIMITER);
+    writer.append(DELIMITER).append(LINE_SEPARATOR);
+    writer.append("Number of Alliances:").append(DELIMITER);
     writer.write(alliances.size());
-    writer
-        .append(DELIMITER)
-        .append(LINE_SEPARATOR)
-        .append(LINE_SEPARATOR)
-        .append("Turn Order:")
-        .append(DELIMITER);
+    writer.append(DELIMITER).append(LINE_SEPARATOR).append(LINE_SEPARATOR);
+
+    writer.append("Turn Order:").append(DELIMITER);
     for (final GamePlayer currentGamePlayer : orderedPlayers) {
       writer.append(currentGamePlayer.getName()).append(DELIMITER);
       final Collection<String> allianceNames =
@@ -137,6 +136,7 @@ public class StatsInfo extends InfoForFile {
       writer.append(LINE_SEPARATOR);
     }
     writer.append(LINE_SEPARATOR);
+
     writer.append("Winners:").append(DELIMITER);
     final EndRoundDelegate delegateEndRound = (EndRoundDelegate) gameData.getDelegate("endRound");
     if (delegateEndRound != null && delegateEndRound.getWinners() != null) {
@@ -144,7 +144,7 @@ public class StatsInfo extends InfoForFile {
         writer.append(p.getName()).append(DELIMITER);
       }
     } else {
-      writer.append("none yet; game not over,");
+      writer.append("none yet; game not over").append(DELIMITER);
     }
   }
 
@@ -248,21 +248,32 @@ public class StatsInfo extends InfoForFile {
   }
 
   private void writeProductionRulesAndUnitInfo(Writer writer) throws IOException {
-    writer.append(LINE_SEPARATOR);
     writer.append("Production Rules:").append(DELIMITER);
-    writer.append("Name,Result,Quantity,Cost,Resource,\n");
+    writer
+        .append("Name")
+        .append(DELIMITER)
+        .append("Result")
+        .append(DELIMITER)
+        .append("Quantity")
+        .append(DELIMITER)
+        .append("Cost")
+        .append(DELIMITER)
+        .append("Resource")
+        .append(LINE_SEPARATOR);
+
     final Collection<ProductionRule> purchaseOptions =
         gameData.getProductionRuleList().getProductionRules();
     for (final ProductionRule pr : purchaseOptions) {
-      final String costString = pr.toStringCosts().replaceAll(";? ", ",");
+      final String costString = pr.toStringCosts().replaceAll(";? ", DELIMITER);
       writer.append(pr.getName()).append(DELIMITER);
       writer.append(pr.getAnyResultKey().getName()).append(DELIMITER);
       writer.write(pr.getResults().getInt(pr.getAnyResultKey()));
       writer.append(DELIMITER).append(costString).append(DELIMITER).append(LINE_SEPARATOR);
     }
     writer.append(LINE_SEPARATOR);
+
     writer.append("Unit Types:").append(DELIMITER);
-    writer.append("Name,Listed Abilities\n");
+    writer.append("Name").append(DELIMITER).append("Listed Abilities").append(LINE_SEPARATOR);
     for (final UnitType unitType : gameData.getUnitTypeList()) {
       final UnitAttachment ua = unitType.getUnitAttachment();
       if (ua == null) {
@@ -272,9 +283,10 @@ public class StatsInfo extends InfoForFile {
           ua.allUnitStatsForExporter()
               .replaceAll("UnitType called | with:|games\\.strategy\\.engine\\.data\\.", "")
               .replaceAll("[\n,]", ";")
-              .replaceAll(" {2}| ?, ?", ",");
-      writer.append(toModify);
+              .replaceAll(" {2}| ?, ?", DELIMITER);
+      writer.append(toModify).append(LINE_SEPARATOR);
     }
+    writer.append(LINE_SEPARATOR);
   }
 
   public static void export(
