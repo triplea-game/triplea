@@ -1,7 +1,6 @@
 package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.GameState;
 import games.strategy.triplea.Constants;
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -13,8 +12,10 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.MessageFormat;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 import javax.imageio.ImageIO;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.collections.IntegerMap;
@@ -23,40 +24,130 @@ import org.triplea.java.collections.IntegerMap;
 class PuChart {
   static final int DRAW_ROWS = 6;
   static final int DRAW_COLS = 7;
+  static final int CIRCLES_PER_IMAGE = DRAW_COLS * DRAW_ROWS;
+  public static final int IMAGE_WIDTH = 600;
+  public static final int IMAGE_HEIGHT = 600;
 
-  private Iterable<GamePlayer> players;
-  private IntegerMap<GamePlayer> moneyMap;
-  private int numPlayers;
-  private GamePlayer[] playerArray;
-  private Integer[] moneyArray;
-  private Map<Integer, Integer> avoidMap;
+  private List<GamePlayer> players; // list of players sorted by Pus
+  private final IntegerMap<GamePlayer> moneyMap = new IntegerMap<>();
   private final Font chartFont = new Font("Serif", Font.PLAIN, 12);
-  private BufferedImage puImage;
   private Path outDir;
 
-  private void initializeMap() {
-    int count = 0;
-    for (final GamePlayer currentPlayer : players) {
-      int playerQuantityPu = currentPlayer.getResources().getQuantity(Constants.PUS);
-      moneyMap.put(currentPlayer, playerQuantityPu);
-      playerArray[count] = currentPlayer;
-      moneyArray[count] = playerQuantityPu;
-      count++;
+  protected void gatherDataBeforeWriting(PrintGenerationData printData) {
+    outDir = printData.getOutDir();
+    players = printData.getData().getPlayerList().getPlayers();
+    players.forEach(
+        currentPlayer ->
+            moneyMap.put(currentPlayer, currentPlayer.getResources().getQuantity(Constants.PUS)));
+    players.sort(Comparator.comparing(moneyMap::getInt));
+  }
+
+  class SortedPlayers {
+
+    final Iterator<GamePlayer> iteratorPlayer;
+    GamePlayer currentPlayer;
+    int playerPuValue;
+
+    SortedPlayers(final List<GamePlayer> players) {
+      iteratorPlayer = players.iterator();
+      getNextPlayerPu();
+    }
+
+    boolean finished() {
+      return (currentPlayer == null);
+    }
+
+    int getNextPlayerPu() {
+      if (iteratorPlayer.hasNext()) {
+        currentPlayer = iteratorPlayer.next();
+        playerPuValue = moneyMap.getInt(currentPlayer);
+      } else {
+        currentPlayer = null;
+        playerPuValue = -1;
+      }
+      return playerPuValue;
     }
   }
 
-  private void initializeAvoidMap() {
-    for (int i = 0; i < numPlayers - 1; i++) {
-      for (int j = i + 1; j < numPlayers; j++) {
-        // i = firstPlayerMoney ; j = secondPlayerMoney
-        if (moneyArray[i].equals(moneyArray[j])) {
-          avoidMap.put(i, j);
+  private void drawChartImagesAndSaveFiles() {
+    final BufferedImage puImage =
+        new BufferedImage(IMAGE_WIDTH, IMAGE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+    final Graphics2D g2d = puImage.createGraphics();
+
+    SortedPlayers sortedPlayers = new SortedPlayers(players);
+    for (int imgCount = 0; !sortedPlayers.finished(); imgCount++) {
+      g2d.setColor(Color.black);
+      drawPlayerNames(sortedPlayers, imgCount, g2d);
+      drawCirclesAndNumbers(imgCount, g2d);
+      writeImageToFile(imgCount, puImage);
+      clearImageGraphics(g2d);
+    }
+  }
+
+  private void drawPlayerNames(SortedPlayers sortedPlayers, final int imgCount, Graphics2D g2d) {
+    int samePuCount = 0;
+    while (sortedPlayers.playerPuValue / 42 == imgCount) {
+      final int valMod42 = sortedPlayers.playerPuValue % 42;
+      final int valModXDim = valMod42 % DRAW_COLS;
+      final int valFloorXDim = valMod42 / DRAW_COLS;
+      int drawY =
+          switch (samePuCount) {
+            case 0 -> 61 + 87 * valFloorXDim; // underneath the PU number
+            case 1 -> 32 + 87 * valFloorXDim; // above the PU number
+            case 2 -> 20 + 87 * valFloorXDim; // above the PU number
+            default -> 73 + 87 * valFloorXDim; // underneath the PU number
+          };
+      int lastPlayerPuValue = sortedPlayers.playerPuValue;
+      if (samePuCount < 3) {
+        drawString(g2d, sortedPlayers.currentPlayer.getName(), valModXDim, drawY);
+        if (lastPlayerPuValue == sortedPlayers.getNextPlayerPu()) {
+          samePuCount++;
+          continue;
         }
+      } else {
+        drawStringFourAndMore(sortedPlayers, g2d, lastPlayerPuValue, valModXDim, drawY);
+      }
+      if (sortedPlayers.finished()) {
+        return;
+      }
+      samePuCount = 0;
+    }
+  }
+
+  private void drawStringFourAndMore(
+      SortedPlayers sortedPlayers,
+      Graphics2D g2d,
+      int lastPlayerPuValue,
+      int valModXDim,
+      int drawY) {
+    int countNotShown = 1;
+    while (lastPlayerPuValue == sortedPlayers.getNextPlayerPu()) {
+      countNotShown++;
+    }
+    if (countNotShown == 1) { // only one player more, draw this last players name
+      drawString(g2d, sortedPlayers.currentPlayer.getName(), valModXDim, drawY);
+    } else { // more than one player more, draw message about the number of players
+      drawString(g2d, MessageFormat.format("{0} more players", countNotShown), valModXDim, drawY);
+    }
+  }
+
+  private void drawString(Graphics2D g2d, String string, int valModXDim, int drawY) {
+    final FontMetrics metrics = g2d.getFontMetrics();
+    final int widthToStringCenter = metrics.stringWidth(string) / 2;
+    int drawX = 42 + 87 * valModXDim - widthToStringCenter;
+    g2d.drawString(string, drawX, drawY);
+  }
+
+  private void drawCirclesAndNumbers(int imgCount, Graphics2D g2d) {
+    for (int j = 0; j < DRAW_ROWS; j++) {
+      for (int k = 0; k < DRAW_COLS; k++) {
+        final int numberInCircle = CIRCLES_PER_IMAGE * imgCount + DRAW_COLS * j + k;
+        drawCircleAndString(g2d, k, j, Integer.toString(numberInCircle));
       }
     }
   }
 
-  private void drawEllipseAndString(
+  private void drawCircleAndString(
       final Graphics2D g2d, final int x, final int y, final String string) {
     g2d.setFont(chartFont);
     g2d.draw(new Ellipse2D.Double(5 + 87.0 * x, 5 + 87.0 * y, 72, 72));
@@ -66,76 +157,26 @@ class PuChart {
     g2d.drawString(string, 42 + 87 * x - h, 39 + 87 * y + k);
   }
 
-  protected void gatherDataBeforeWriting(PrintGenerationData printData) {
-    final GameState gameData = printData.getData();
-    players = gameData.getPlayerList();
-    moneyMap = new IntegerMap<>();
-    numPlayers = gameData.getPlayerList().size();
-    playerArray = new GamePlayer[numPlayers];
-    moneyArray = new Integer[numPlayers];
-    avoidMap = new HashMap<>();
-    puImage = new BufferedImage(600, 600, BufferedImage.TYPE_INT_ARGB);
-    outDir = printData.getOutDir();
-
-    initializeMap();
-    initializeAvoidMap();
-  }
-
-  private void drawImage(int numChartsNeeded) {
-    final Graphics2D g2d = puImage.createGraphics();
-    for (int i = 0; i < numChartsNeeded; i++) {
-      g2d.setColor(Color.black);
-      drawCountryNames(i, g2d);
-      // Draw Ellipses and Numbers
-      for (int j = 0; j < DRAW_ROWS; j++) {
-        for (int k = 0; k < DRAW_COLS; k++) {
-          final int numberInCircle = DRAW_COLS * DRAW_ROWS * i + DRAW_COLS * j + k;
-          drawEllipseAndString(g2d, k, j, Integer.toString(numberInCircle));
-        }
-      }
-    }
-    g2d.setColor(Color.black);
-    g2d.setComposite(AlphaComposite.Src);
-    g2d.fill(new Rectangle2D.Float(0, 0, 600, 600));
-  }
-
-  private void drawCountryNames(int i, Graphics2D g2d) {
-    for (int z = 0; z < playerArray.length; z++) {
-      final int valMod42 = moneyArray[z] % 42;
-      final int valModXDim = valMod42 % DRAW_COLS;
-      final int valFloorXDim = valMod42 / DRAW_COLS;
-      if (avoidMap.containsKey(z) && moneyArray[z] / 42 == i) {
-        final FontMetrics metrics = g2d.getFontMetrics();
-        final int width = metrics.stringWidth(playerArray[z].getName()) / 2;
-        g2d.drawString(
-            playerArray[z].getName(), 42 + 87 * valModXDim - width, 63 + 87 * valFloorXDim);
-      } else if (avoidMap.containsValue(z) && moneyArray[z] / 42 == i) {
-        final FontMetrics metrics = g2d.getFontMetrics();
-        final int width = metrics.stringWidth(playerArray[z].getName()) / 2;
-        g2d.drawString(
-            playerArray[z].getName(), 42 + 87 * valModXDim - width, 30 + 87 * valFloorXDim);
-      } else if (moneyArray[z] / 42 == i) {
-        final FontMetrics metrics = g2d.getFontMetrics();
-        final int width = metrics.stringWidth(playerArray[z].getName()) / 2;
-        g2d.drawString(
-            playerArray[z].getName(), 42 + 87 * valModXDim - width, 60 + 87 * valFloorXDim);
-      }
-    }
-  }
-
-  void saveToFile(final PrintGenerationData printData) {
-    gatherDataBeforeWriting(printData);
-    final int numChartsNeeded =
-        (int) Math.ceil(((double) moneyMap.totalValues()) / (DRAW_COLS * DRAW_ROWS));
-    drawImage(numChartsNeeded);
-    // Write to file
-    final int firstNum = DRAW_COLS * DRAW_ROWS * numChartsNeeded;
-    final int secondNum = DRAW_COLS * DRAW_ROWS * (numChartsNeeded + 1) - 1;
+  private void writeImageToFile(int imgCount, BufferedImage puImage) {
+    final int firstNum = CIRCLES_PER_IMAGE * imgCount;
+    final int secondNum = firstNum + CIRCLES_PER_IMAGE - 1;
     final Path outFile = outDir.resolve("PuChart" + firstNum + "-" + secondNum + ".png");
     try {
       ImageIO.write(puImage, "png", outFile.toFile());
     } catch (final IOException e) {
       log.error("Failed to save print generation data to file {}", outFile, e);
     }
+  }
+
+  private static void clearImageGraphics(Graphics2D g2d) {
+    final Color transparent = new Color(0, 0, 0, 0);
+    g2d.setColor(transparent);
+    g2d.setComposite(AlphaComposite.Src);
+    g2d.fill(new Rectangle2D.Float(0, 0, IMAGE_WIDTH, IMAGE_HEIGHT));
+  }
+
+  void saveToFiles(final PrintGenerationData printData) {
+    gatherDataBeforeWriting(printData);
+    drawChartImagesAndSaveFiles();
   }
 }

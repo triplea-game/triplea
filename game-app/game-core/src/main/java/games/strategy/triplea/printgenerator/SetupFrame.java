@@ -140,6 +140,6 @@ public class SetupFrame extends JPanel {
     }
     new PuInfo().saveToFile(printData);
     new PlayerOrder().saveToFile(printData);
-    new PuChart().saveToFile(printData);
+    new PuChart().saveToFiles(printData);
   }
 }
