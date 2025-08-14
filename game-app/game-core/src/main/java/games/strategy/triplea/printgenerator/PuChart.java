@@ -120,7 +120,7 @@ class PuChart {
     g2d.fill(new Rectangle2D.Float(0, 0, 600, 600));
   }
 
-  void saveToFile(final PrintGenerationData printData) throws IOException {
+  void saveToFile(final PrintGenerationData printData) {
     gatherDataBeforeWriting(printData);
     final int numChartsNeeded =
         (int) Math.ceil(((double) moneyMap.totalValues()) / (DRAW_COLS * DRAW_ROWS));

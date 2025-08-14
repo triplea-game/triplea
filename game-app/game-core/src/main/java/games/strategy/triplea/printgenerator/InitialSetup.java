@@ -2,7 +2,6 @@ package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.history.HistoryNode;
-import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -18,11 +17,7 @@ class InitialSetup {
       new CountryChart(printData.getOutDir(), currentPlayer).saveToFile(printData);
     }
     new PuInfo().saveToFile(printData);
-    try {
-      new PlayerOrder().saveToFile(printData);
-      new PuChart().saveToFile(printData);
-    } catch (final IOException e) {
-      log.error("Failed to save print generation data", e);
-    }
+    new PlayerOrder().saveToFile(printData);
+    new PuChart().saveToFile(printData);
   }
 }
