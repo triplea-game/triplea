@@ -58,5 +58,5 @@ abstract class InfoForFile {
    */
   protected abstract void gatherDataBeforeWriting(PrintGenerationData printData);
 
-  protected abstract void writeIntoFile(Writer writer) throws IOException;
+  protected abstract void writeIntoFile(final Writer writer) throws IOException;
 }

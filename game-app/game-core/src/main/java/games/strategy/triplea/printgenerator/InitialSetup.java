@@ -15,7 +15,7 @@ class InitialSetup {
     }
     new UnitInformation().saveToFile(printData);
     for (final GamePlayer currentPlayer : printData.getData().getPlayerList()) {
-      new CountryChart(currentPlayer).saveToFile(printData);
+      new CountryChart(printData.getOutDir(), currentPlayer).saveToFile(printData);
     }
     new PuInfo().saveToFile(printData);
     try {
