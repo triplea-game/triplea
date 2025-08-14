@@ -136,8 +136,4 @@ class UnitInformation extends InfoForFile {
     }
     return -1;
   }
-
-  public static void export(PrintGenerationData printData) {
-    new UnitInformation().saveToFile(printData);
-  }
 }
