@@ -128,7 +128,7 @@ class PuChart {
     // Write to file
     final int firstNum = DRAW_COLS * DRAW_ROWS * numChartsNeeded;
     final int secondNum = DRAW_COLS * DRAW_ROWS * (numChartsNeeded + 1) - 1;
-    final Path outFile = outDir.resolve("PUchart" + firstNum + "-" + secondNum + ".png");
+    final Path outFile = outDir.resolve("PuChart" + firstNum + "-" + secondNum + ".png");
     try {
       ImageIO.write(puImage, "png", outFile.toFile());
     } catch (final IOException e) {
