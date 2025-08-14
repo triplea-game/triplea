@@ -188,7 +188,9 @@ final class ExportMenu extends JMenu {
                 .add(
                     exportSetupChartsFrame ->
                         new JPanelBuilder()
-                            .add(new SetupFrame(getGameDataCloneWithHistory()))
+                            .add(
+                                new SetupFrame(
+                                    exportSetupChartsFrame, getGameDataCloneWithHistory()))
                             .build())
                 .visible(true)
                 .build());

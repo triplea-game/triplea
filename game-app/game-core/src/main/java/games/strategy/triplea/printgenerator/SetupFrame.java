@@ -2,14 +2,17 @@ package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.history.HistoryNode;
 import java.awt.BorderLayout;
+import java.awt.Frame;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
+import javax.annotation.Nonnull;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -27,48 +30,29 @@ public class SetupFrame extends JPanel {
   private final JFileChooser outChooser;
   private final JRadioButton originalState;
 
-  public SetupFrame(final CompletableFuture<GameData> clonedGameData) {
+  public SetupFrame(final Frame frame, final CompletableFuture<GameData> clonedGameData) {
     super(new BorderLayout());
-    final JButton outDirButton = new JButton();
-    final JButton runButton = new JButton();
     outField = new JTextField(15);
-    outChooser = new JFileChooser();
+    outChooser = new JFileChooser(Path.of(SystemProperties.getUserDir()).toFile());
     outChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-    final JRadioButton currentState = new JRadioButton();
-    originalState = new JRadioButton();
-    final ButtonGroup radioButtonGroup = new ButtonGroup();
-
-    currentState.setText("Current Position/State");
-    originalState.setText("Starting Position/State");
-    radioButtonGroup.add(currentState);
-    radioButtonGroup.add(originalState);
-    originalState.setSelected(true);
-    outDirButton.setText("Choose the Output Directory");
+    final JButton outDirButton = new JButton("Choose the Output Directory");
     outDirButton.addActionListener(
         e -> {
-          final int returnVal = outChooser.showOpenDialog(null);
-          if (returnVal == JFileChooser.APPROVE_OPTION && verifySelectedOutIsEmpty()) {
+          final int returnVal = outChooser.showDialog(frame, outDirButton.getText());
+          if (returnVal == JFileChooser.APPROVE_OPTION && verifySelectedOutIsEmpty(frame)) {
             final Path outDirSelected = outChooser.getSelectedFile().toPath().toAbsolutePath();
             outField.setText(outDirSelected.toString());
           }
         });
-    runButton.setText("Generate the Files");
-    runButton.addActionListener(
-        e -> {
-          if (!outField.getText().isEmpty()) {
-            final Path outDir = Path.of(outField.getText());
-            final PrintGenerationData printData =
-                PrintGenerationData.builder().outDir(outDir).data(clonedGameData.join()).build();
-            generateFiles(printData, originalState.isSelected());
-            JOptionPane.showMessageDialog(null, "Done!", "Done!", JOptionPane.INFORMATION_MESSAGE);
-          } else {
-            JOptionPane.showMessageDialog(
-                null,
-                "You need to select an empty Output Directory.",
-                "Select an empty Output Directory!",
-                JOptionPane.ERROR_MESSAGE);
-          }
-        });
+
+    final ButtonGroup radioButtonGroup = new ButtonGroup();
+    originalState = new JRadioButton("Starting Position/State");
+    radioButtonGroup.add(originalState);
+    originalState.setSelected(true);
+    final JRadioButton currentState = new JRadioButton("Current Position/State");
+    radioButtonGroup.add(currentState);
+
+    final JButton runButton = getRunButton(frame, clonedGameData);
 
     final JPanel infoPanel =
         new JPanelBuilder()
@@ -103,7 +87,30 @@ public class SetupFrame extends JPanel {
     super.add(runButton, BorderLayout.SOUTH);
   }
 
-  boolean verifySelectedOutIsEmpty() {
+  @Nonnull
+  private JButton getRunButton(
+      final Frame frame, final CompletableFuture<GameData> clonedGameData) {
+    final JButton runButton = new JButton("Generate the Files");
+    runButton.addActionListener(
+        e -> {
+          if (!outField.getText().isEmpty()) {
+            final Path outDir = Path.of(outField.getText());
+            final PrintGenerationData printData =
+                PrintGenerationData.builder().outDir(outDir).data(clonedGameData.join()).build();
+            generateFiles(printData, originalState.isSelected());
+            JOptionPane.showMessageDialog(frame, "Done!", "Done!", JOptionPane.INFORMATION_MESSAGE);
+          } else {
+            JOptionPane.showMessageDialog(
+                null,
+                "You need to select an empty Output Directory.",
+                "Select an empty Output Directory!",
+                JOptionPane.ERROR_MESSAGE);
+          }
+        });
+    return runButton;
+  }
+
+  boolean verifySelectedOutIsEmpty(final Frame frame) {
     File selectedFile = outChooser.getSelectedFile();
     if (selectedFile.isDirectory()) {
       try (DirectoryStream<Path> directory = Files.newDirectoryStream(selectedFile.toPath())) {
@@ -115,7 +122,7 @@ public class SetupFrame extends JPanel {
       }
     }
     JOptionPane.showMessageDialog(
-        null,
+        frame,
         "The selection for the empty Output Directory is invalid.",
         "Incorrect directory selected",
         JOptionPane.WARNING_MESSAGE);
