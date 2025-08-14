@@ -353,7 +353,6 @@ public class StatsInfo extends InfoForFile {
     final StatsInfo statsInfo = new StatsInfo(chosenOutFile, uiContext, showPhaseStats);
     final PrintGenerationData printData =
         PrintGenerationData.builder().outDir(null).data(clonedGameData).build();
-    statsInfo.gatherDataBeforeWriting(printData);
     statsInfo.saveToFile(printData);
   }
 }
