@@ -34,6 +34,9 @@ public class StatsInfo extends InfoForFile {
   List<GamePlayer> orderedPlayers;
   Set<String> alliances;
   Iterable<IStat> stats;
+  int totalColumns;
+  private String emptyColumnsExceptOne;
+  private String emptyColumnsExceptTwo;
 
   public StatsInfo(Path chosenOutFile, UiContext uiContext, boolean showPhaseStats) {
     super(chosenOutFile);
@@ -49,33 +52,55 @@ public class StatsInfo extends InfoForFile {
     // extended stats covers stuff that doesn't show up in the game stats menu bar, like custom
     // resources or tech  tokens or # techs, etc.
     final ExtendedStats statPanel = new ExtendedStats(gameData, uiContext);
-    stats =
-        Iterables.concat(
-            List.of(statPanel.getStats()), List.of(statPanel.getStatsExtended(gameData)));
+    final List<IStat> statPanelStats = List.of(statPanel.getStats());
+    final List<IStat> statPanelStatsExtended = List.of(statPanel.getStatsExtended(gameData));
+    stats = Iterables.concat(statPanelStats, statPanelStatsExtended);
+    // CSV files need to on each row the same number of delimiters, so calculate total number coming
+    // from the round steps
+    totalColumns =
+        2
+            + (statPanelStats.size() + statPanelStatsExtended.size())
+                * (orderedPlayers.size() + alliances.size());
+    emptyColumnsExceptOne = DELIMITER.repeat(totalColumns - 1);
+    emptyColumnsExceptTwo = DELIMITER.repeat(totalColumns - 2);
   }
 
   @Override
   protected void writeIntoFile(Writer writer) throws IOException {
     writeHeaderInfo(writer);
-    writer.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
-    writer.append("Resource Chart:").append(DELIMITER);
-    for (final Resource resource : gameData.getResourceList().getResources()) {
-      writer.append(resource.getName()).append(DELIMITER).append(LINE_SEPARATOR);
-    }
     writer.append(LINE_SEPARATOR);
+
+    writer.append("Resource Chart:").append(DELIMITER);
+    final Collection<Resource> resources = gameData.getResourceList().getResources();
+    for (final Resource resource : resources) {
+      writer.append(resource.getName()).append(DELIMITER);
+    }
+    writer.append(DELIMITER.repeat(totalColumns - 1 - resources.size()));
+    writer.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
     // if short, we won't both showing production and unit info
     if (showPhaseStats) {
       writeProductionRulesAndUnitInfo(writer);
     }
+    writeStatsHeader(writer);
+    writeFromHistoryNodes(writer);
+  }
+
+  private void writeStatsHeader(Writer writer) throws IOException {
     writer
         .append(
             showPhaseStats
                 ? "Full Stats (includes each phase that had activity)"
                 : "Short Stats (only shows first phase with activity per player per round)")
-        .append(DELIMITER)
+        .append(emptyColumnsExceptOne)
         .append(LINE_SEPARATOR);
-    writer.append("Turn Stats:").append(DELIMITER);
-    writer.append("Round,Player Turn,Phase Name").append(DELIMITER);
+    writer.append("Turn Stats:").append(emptyColumnsExceptOne).append(LINE_SEPARATOR);
+    writer
+        .append("Round")
+        .append(DELIMITER)
+        .append("Player Turn")
+        .append(DELIMITER)
+        .append("Phase Name")
+        .append(DELIMITER);
     // its important here to use the player objects from the cloned game data
     // the players for the stat panel are only relevant with respect to the game data they belong
     // to
@@ -88,68 +113,81 @@ public class StatsInfo extends InfoForFile {
       }
     }
     writer.append(LINE_SEPARATOR);
-    gameData.getHistory().gotoNode(gameData.getHistory().getLastNode());
-    final Enumeration<TreeNode> nodes =
-        ((DefaultMutableTreeNode) gameData.getHistory().getRoot()).preorderEnumeration();
-    writeFromHistoryNodes(writer, nodes);
   }
 
   private void writeHeaderInfo(Writer writer) throws IOException {
     writer
         .append(String.format("stats_%s", showPhaseStats ? "full" : "short"))
-        .append(DELIMITER)
+        .append(emptyColumnsExceptOne)
         .append(LINE_SEPARATOR);
     writer
         .append("TripleA Engine Version:")
         .append(DELIMITER)
         .append(ProductVersionReader.getCurrentVersion().toString())
-        .append(DELIMITER)
+        .append(emptyColumnsExceptTwo)
         .append(LINE_SEPARATOR);
     writer
         .append("Game Name:")
         .append(DELIMITER)
         .append(gameData.getGameName())
-        .append(DELIMITER)
+        .append(emptyColumnsExceptTwo)
         .append(LINE_SEPARATOR)
         .append(LINE_SEPARATOR);
 
-    writer.append("Current Round:").append(DELIMITER);
-    final int currentRound = gameData.getCurrentRound();
-    writer.write(currentRound);
-    writer.append(LINE_SEPARATOR);
+    writer
+        .append("Current Round:")
+        .append(DELIMITER)
+        .append(Integer.toString(gameData.getCurrentRound()))
+        .append(emptyColumnsExceptTwo)
+        .append(LINE_SEPARATOR);
 
-    writer.append("Number of Players:").append(DELIMITER);
-    writer.write(gameData.getPlayerList().size());
-    writer.append(DELIMITER).append(LINE_SEPARATOR);
+    writer
+        .append("Number of Players:")
+        .append(DELIMITER)
+        .append(Integer.toString(orderedPlayers.size()))
+        .append(emptyColumnsExceptTwo)
+        .append(LINE_SEPARATOR);
+
     writer.append("Number of Alliances:").append(DELIMITER);
-    writer.write(alliances.size());
-    writer.append(DELIMITER).append(LINE_SEPARATOR).append(LINE_SEPARATOR);
+    writer.append(Integer.toString(alliances.size()));
+    writer.append(emptyColumnsExceptTwo).append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
-    writer.append("Turn Order:").append(DELIMITER);
+    writeTurnOrder(writer);
+
+    writeWinners(writer);
+  }
+
+  private void writeWinners(Writer writer) throws IOException {
+    writer.append("Winners:").append(DELIMITER);
+    final EndRoundDelegate delegateEndRound = (EndRoundDelegate) gameData.getDelegate("endRound");
+    if (delegateEndRound != null && !delegateEndRound.isGameOver()) {
+      Collection<GamePlayer> winners = delegateEndRound.getWinners();
+      for (final GamePlayer p : winners) {
+        writer.append(p.getName()).append(DELIMITER);
+      }
+      writer.append(DELIMITER.repeat(totalColumns - 1 - winners.size()));
+    } else {
+      writer.append("none yet; game not over").append(emptyColumnsExceptTwo);
+    }
+    writer.append(LINE_SEPARATOR);
+  }
+
+  private void writeTurnOrder(Writer writer) throws IOException {
+    writer.append("Turn Order:").append(emptyColumnsExceptOne).append(LINE_SEPARATOR);
     for (final GamePlayer currentGamePlayer : orderedPlayers) {
       writer.append(currentGamePlayer.getName()).append(DELIMITER);
       final Collection<String> allianceNames =
           gameData.getAllianceTracker().getAlliancesPlayerIsIn(currentGamePlayer);
-      for (final String allianceName : allianceNames) {
-        writer.append(allianceName).append(DELIMITER);
-      }
-      writer.append(LINE_SEPARATOR);
+      writer.append(String.join(";", allianceNames));
+      writer.append(emptyColumnsExceptTwo).append(LINE_SEPARATOR);
     }
     writer.append(LINE_SEPARATOR);
-
-    writer.append("Winners:").append(DELIMITER);
-    final EndRoundDelegate delegateEndRound = (EndRoundDelegate) gameData.getDelegate("endRound");
-    if (delegateEndRound != null && delegateEndRound.getWinners() != null) {
-      for (final GamePlayer p : delegateEndRound.getWinners()) {
-        writer.append(p.getName()).append(DELIMITER);
-      }
-    } else {
-      writer.append("none yet; game not over").append(DELIMITER);
-    }
   }
 
-  private void writeFromHistoryNodes(Writer writer, Enumeration<TreeNode> nodes)
-      throws IOException {
+  private void writeFromHistoryNodes(Writer writer) throws IOException {
+    gameData.getHistory().gotoNode(gameData.getHistory().getLastNode());
+    final Enumeration<TreeNode> nodes =
+        ((DefaultMutableTreeNode) gameData.getHistory().getRoot()).preorderEnumeration();
     Optional<GamePlayer> optionalCurrentPlayer = Optional.empty();
     int round = 0;
     while (nodes.hasMoreElements()) {
@@ -190,7 +228,7 @@ public class StatsInfo extends InfoForFile {
 
   private void writeRoundStepStats(Writer writer, int round, String playerName, Step step)
       throws IOException {
-    writer.write(round);
+    writer.append(Integer.toString(round));
     writer
         .append(DELIMITER)
         .append(playerName)
@@ -248,7 +286,8 @@ public class StatsInfo extends InfoForFile {
   }
 
   private void writeProductionRulesAndUnitInfo(Writer writer) throws IOException {
-    writer.append("Production Rules:").append(DELIMITER);
+    writer.append("Production Rules:").append(emptyColumnsExceptOne).append(LINE_SEPARATOR);
+    final String emptyColumnsAfterProductionRules = DELIMITER.repeat(totalColumns - 5);
     writer
         .append("Name")
         .append(DELIMITER)
@@ -259,21 +298,33 @@ public class StatsInfo extends InfoForFile {
         .append("Cost")
         .append(DELIMITER)
         .append("Resource")
+        .append(emptyColumnsAfterProductionRules)
         .append(LINE_SEPARATOR);
 
     final Collection<ProductionRule> purchaseOptions =
         gameData.getProductionRuleList().getProductionRules();
     for (final ProductionRule pr : purchaseOptions) {
       final String costString = pr.toStringCosts().replaceAll(";? ", DELIMITER);
-      writer.append(pr.getName()).append(DELIMITER);
-      writer.append(pr.getAnyResultKey().getName()).append(DELIMITER);
-      writer.write(pr.getResults().getInt(pr.getAnyResultKey()));
-      writer.append(DELIMITER).append(costString).append(DELIMITER).append(LINE_SEPARATOR);
+      writer
+          .append(pr.getName())
+          .append(DELIMITER)
+          .append(pr.getAnyResultKey().getName())
+          .append(DELIMITER)
+          .append(Integer.toString(pr.getResults().getInt(pr.getAnyResultKey())))
+          .append(DELIMITER)
+          .append(costString)
+          .append(emptyColumnsAfterProductionRules)
+          .append(LINE_SEPARATOR);
     }
     writer.append(LINE_SEPARATOR);
 
-    writer.append("Unit Types:").append(DELIMITER);
-    writer.append("Name").append(DELIMITER).append("Listed Abilities").append(LINE_SEPARATOR);
+    writer.append("Unit Types:").append(emptyColumnsExceptOne).append(LINE_SEPARATOR);
+    writer
+        .append("Name")
+        .append(DELIMITER)
+        .append("Listed Abilities")
+        .append(DELIMITER.repeat(totalColumns - 3))
+        .append(LINE_SEPARATOR);
     for (final UnitType unitType : gameData.getUnitTypeList()) {
       final UnitAttachment ua = unitType.getUnitAttachment();
       if (ua == null) {
@@ -281,10 +332,18 @@ public class StatsInfo extends InfoForFile {
       }
       final String toModify =
           ua.allUnitStatsForExporter()
+              .replaceFirst("UnitType\\{name=.*?\\}", unitType.getName())
               .replaceAll("UnitType called | with:|games\\.strategy\\.engine\\.data\\.", "")
               .replaceAll("[\n,]", ";")
               .replaceAll(" {2}| ?, ?", DELIMITER);
-      writer.append(toModify).append(LINE_SEPARATOR);
+      writer.append(toModify);
+      // fill up with delimiters depending on how many are already used
+      final char usedDelimiter = DELIMITER.charAt(0);
+      final long delimiterCount = toModify.chars().filter(c -> usedDelimiter == c).count();
+      if (delimiterCount < totalColumns) {
+        writer.append(DELIMITER.repeat(totalColumns - (int) delimiterCount));
+      }
+      writer.append(LINE_SEPARATOR);
     }
     writer.append(LINE_SEPARATOR);
   }
