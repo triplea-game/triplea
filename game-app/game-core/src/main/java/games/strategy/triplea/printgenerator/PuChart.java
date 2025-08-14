@@ -19,29 +19,19 @@ import javax.imageio.ImageIO;
 import org.triplea.java.collections.IntegerMap;
 
 class PuChart {
-  private final Iterable<GamePlayer> players;
-  private final IntegerMap<GamePlayer> moneyMap;
-  private final int numPlayers;
-  private final GamePlayer[] playerArray;
-  private final Integer[] moneyArray;
-  private final Map<Integer, Integer> avoidMap;
-  private final Font chartFont = new Font("Serif", Font.PLAIN, 12);
-  private final BufferedImage puImage;
-  private final Graphics2D g2d;
-  private final Path outDir;
+  static final int DRAW_ROWS = 6;
+  static final int DRAW_COLS = 7;
 
-  PuChart(final PrintGenerationData printData) {
-    final GameState gameData = printData.getData();
-    players = gameData.getPlayerList();
-    moneyMap = new IntegerMap<>();
-    numPlayers = gameData.getPlayerList().size();
-    playerArray = new GamePlayer[numPlayers];
-    moneyArray = new Integer[numPlayers];
-    avoidMap = new HashMap<>();
-    puImage = new BufferedImage(600, 600, BufferedImage.TYPE_INT_ARGB);
-    g2d = puImage.createGraphics();
-    outDir = printData.getOutDir();
-  }
+  private Iterable<GamePlayer> players;
+  private IntegerMap<GamePlayer> moneyMap;
+  private int numPlayers;
+  private GamePlayer[] playerArray;
+  private Integer[] moneyArray;
+  private Map<Integer, Integer> avoidMap;
+  private final Font chartFont = new Font("Serif", Font.PLAIN, 12);
+  private BufferedImage puImage;
+  private Graphics2D g2d;
+  private Path outDir;
 
   private void initializeMap() {
     int count = 0;
@@ -58,7 +48,6 @@ class PuChart {
       for (int j = i + 1; j < numPlayers; j++) {
         // i = firstPlayerMoney ; j = secondPlayerMoney
         if (moneyArray[i].equals(moneyArray[j])) {
-          // avoidMap.put(playerArray[i], playerArray[j]);
           avoidMap.put(i, j);
         }
       }
@@ -74,19 +63,30 @@ class PuChart {
     g2d.drawString(string, 42 + 87 * x - h, 39 + 87 * y + k);
   }
 
-  void saveToFile() throws IOException {
+  protected void gatherDataBeforeWriting(PrintGenerationData printData) {
+    final GameState gameData = printData.getData();
+    players = gameData.getPlayerList();
+    moneyMap = new IntegerMap<>();
+    numPlayers = gameData.getPlayerList().size();
+    playerArray = new GamePlayer[numPlayers];
+    moneyArray = new Integer[numPlayers];
+    avoidMap = new HashMap<>();
+    puImage = new BufferedImage(600, 600, BufferedImage.TYPE_INT_ARGB);
+    g2d = puImage.createGraphics();
+    outDir = printData.getOutDir();
+
     initializeMap();
     initializeAvoidMap();
-    final int rows = 6;
-    final int cols = 7;
-    final int numChartsNeeded = (int) Math.ceil(((double) moneyMap.totalValues()) / (cols * rows));
+  }
+
+  private void drawImage(int numChartsNeeded) {
     for (int i = 0; i < numChartsNeeded; i++) {
       g2d.setColor(Color.black);
       // Draw Country Names
       for (int z = 0; z < playerArray.length; z++) {
         final int valMod42 = moneyArray[z] % 42;
-        final int valModXDim = valMod42 % cols;
-        final int valFloorXDim = valMod42 / cols;
+        final int valModXDim = valMod42 % DRAW_COLS;
+        final int valFloorXDim = valMod42 / DRAW_COLS;
         if (avoidMap.containsKey(z) && moneyArray[z] / 42 == i) {
           final FontMetrics metrics = g2d.getFontMetrics();
           final int width = metrics.stringWidth(playerArray[z].getName()) / 2;
@@ -105,22 +105,28 @@ class PuChart {
         }
       }
       // Draw Ellipses and Numbers
-      for (int j = 0; j < rows; j++) {
-        for (int k = 0; k < cols; k++) {
-          final int numberInCircle = cols * rows * i + cols * j + k;
+      for (int j = 0; j < DRAW_ROWS; j++) {
+        for (int k = 0; k < DRAW_COLS; k++) {
+          final int numberInCircle = DRAW_COLS * DRAW_ROWS * i + DRAW_COLS * j + k;
           final String string = "" + numberInCircle;
           drawEllipseAndString(k, j, string);
         }
       }
-      // Write to file
-      final int firstNum = cols * rows * i;
-      final int secondNum = cols * rows * (i + 1) - 1;
-      final Path outputFile = outDir.resolve("PUchart" + firstNum + "-" + secondNum + ".png");
-      ImageIO.write(puImage, "png", outputFile.toFile());
-      final Color transparent = new Color(0, 0, 0, 0);
-      g2d.setColor(transparent);
-      g2d.setComposite(AlphaComposite.Src);
-      g2d.fill(new Rectangle2D.Float(0, 0, 600, 600));
     }
+    g2d.setColor(Color.black);
+    g2d.setComposite(AlphaComposite.Src);
+    g2d.fill(new Rectangle2D.Float(0, 0, 600, 600));
+  }
+
+  void saveToFile(final PrintGenerationData printData) throws IOException {
+    gatherDataBeforeWriting(printData);
+    final int numChartsNeeded =
+        (int) Math.ceil(((double) moneyMap.totalValues()) / (DRAW_COLS * DRAW_ROWS));
+    drawImage(numChartsNeeded);
+    // Write to file
+    final int firstNum = DRAW_COLS * DRAW_ROWS * numChartsNeeded;
+    final int secondNum = DRAW_COLS * DRAW_ROWS * (numChartsNeeded + 1) - 1;
+    final Path outputFile = outDir.resolve("PUchart" + firstNum + "-" + secondNum + ".png");
+    ImageIO.write(puImage, "png", outputFile.toFile());
   }
 }

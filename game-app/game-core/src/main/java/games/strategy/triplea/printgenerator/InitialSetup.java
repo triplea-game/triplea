@@ -20,7 +20,7 @@ class InitialSetup {
     new PuInfo().saveToFile(printData);
     try {
       new PlayerOrder().saveToFile(printData);
-      new PuChart(printData).saveToFile();
+      new PuChart().saveToFile(printData);
     } catch (final IOException e) {
       log.error("Failed to save print generation data", e);
     }
