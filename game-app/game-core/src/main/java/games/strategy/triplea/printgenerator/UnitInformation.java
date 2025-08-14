@@ -20,13 +20,13 @@ import org.triplea.java.collections.CollectionUtils;
 
 class UnitInformation extends InfoForFile {
   final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
-  private Map<UnitType, UnitAttachment> unitInfoMap = new HashMap<>();
+  private final Map<UnitType, UnitAttachment> unitInfoMap = new HashMap<>();
   private GameData gameData;
 
   @Override
   protected void gatherDataBeforeWriting(PrintGenerationData printData) {
     gameData = printData.getData();
-    for (final UnitType currentType : printData.getData().getUnitTypeList()) {
+    for (final UnitType currentType : gameData.getUnitTypeList()) {
       final UnitAttachment currentTypeUnitAttachment = currentType.getUnitAttachment();
       unitInfoMap.put(currentType, currentTypeUnitAttachment);
     }
@@ -34,22 +34,51 @@ class UnitInformation extends InfoForFile {
 
   @Override
   protected void writeIntoFile(Writer writer) throws IOException {
-    for (int i = 0; i < 8; i++) {
-      writer.write(DELIMITER);
-    }
-    writer.write("Unit Information");
-    for (int i = 10; i < 20; i++) {
-      writer.write(DELIMITER);
-    }
-    writer.write(LINE_SEPARATOR);
-    writer.write(
-        "Unit,Cost,Movement,Attack,Defense,CanBlitz,Artillery?,ArtillerySupportable?,"
-            + "Can Produce Units?,Marine?,Transport Cost,AA Gun?,Air Unit?,Strategic Bomber?,"
-            + "Carrier Cost,Sea Unit?,Hit Points?,Transport Capacity,Carrier Capacity,"
-            + "Submarine?,Destroyer?");
-    writer.write(LINE_SEPARATOR);
+    writer.append("Unit Information").append(DELIMITER.repeat(20)).append(LINE_SEPARATOR);
+    writer
+        .append("Unit")
+        .append(DELIMITER)
+        .append("Cost")
+        .append(DELIMITER)
+        .append("Movement")
+        .append(DELIMITER)
+        .append("Attack")
+        .append(DELIMITER)
+        .append("Defense")
+        .append(DELIMITER)
+        .append("CanBlitz")
+        .append(DELIMITER)
+        .append("Artillery?")
+        .append(DELIMITER)
+        .append("ArtillerySupportable?")
+        .append(DELIMITER)
+        .append("Can Produce Units?")
+        .append(DELIMITER)
+        .append("Marine?")
+        .append(DELIMITER)
+        .append("Transport Cost")
+        .append(DELIMITER)
+        .append("AA Gun?")
+        .append(DELIMITER)
+        .append("Air Unit?")
+        .append(DELIMITER)
+        .append("Strategic Bomber?")
+        .append(DELIMITER)
+        .append("Carrier Cost")
+        .append(DELIMITER)
+        .append("Sea Unit?")
+        .append(DELIMITER)
+        .append("Hit Points?")
+        .append(DELIMITER)
+        .append("Transport Capacity")
+        .append(DELIMITER)
+        .append("Carrier Capacity")
+        .append(DELIMITER)
+        .append("Submarine?")
+        .append(DELIMITER)
+        .append("Destroyer?")
+        .append(LINE_SEPARATOR);
     writeData(writer);
-    writer.write(LINE_SEPARATOR);
   }
 
   private void writeData(Writer writer) throws IOException {
@@ -57,61 +86,72 @@ class UnitInformation extends InfoForFile {
       final UnitType currentType = entry.getKey();
       final UnitAttachment currentAttachment = entry.getValue();
       if (currentType.getName().equals(Constants.UNIT_TYPE_AAGUN)) {
-        writer.write(currentType.getName() + DELIMITER);
+        writer.append(currentType.getName());
       } else {
-        writer.write(StringUtils.capitalize(currentType.getName()) + DELIMITER);
+        writer.append(StringUtils.capitalize(currentType.getName()));
       }
-      writer.write(getCostInformation(currentType, gameData) + DELIMITER);
-      final GamePlayer nullPlayer = currentType.getData().getPlayerList().getNullPlayer();
-      writer.write(
-          currentAttachment.getMovement(nullPlayer)
-              + DELIMITER
-              + currentAttachment.getAttack(nullPlayer)
-              + DELIMITER
-              + currentAttachment.getDefense(nullPlayer)
-              + DELIMITER
-              + (!currentAttachment.getCanBlitz(nullPlayer) ? "-" : "true")
-              + DELIMITER
-              + (!currentAttachment.getArtillery() ? "-" : "true")
-              + DELIMITER
-              + (!currentAttachment.getArtillerySupportable() ? "-" : "true")
-              + DELIMITER
-              + (!currentAttachment.canProduceUnits() ? "-" : "true")
-              + DELIMITER
-              + (currentAttachment.getIsMarine() == 0 ? "-" : currentAttachment.getIsMarine())
-              + DELIMITER
-              + (currentAttachment.getTransportCost() == -1
+      writer
+          .append(DELIMITER)
+          .append(Integer.toString(getCostInformation(currentType, gameData)))
+          .append(DELIMITER);
+      final GamePlayer nullPlayer = gameData.getPlayerList().getNullPlayer();
+      writer
+          .append(Integer.toString(currentAttachment.getMovement(nullPlayer)))
+          .append(DELIMITER)
+          .append(Integer.toString(currentAttachment.getAttack(nullPlayer)))
+          .append(DELIMITER)
+          .append(Integer.toString(currentAttachment.getDefense(nullPlayer)))
+          .append(DELIMITER)
+          .append((!currentAttachment.getCanBlitz(nullPlayer) ? "-" : "true"))
+          .append(DELIMITER)
+          .append((!currentAttachment.getArtillery() ? "-" : "true"))
+          .append(DELIMITER)
+          .append((!currentAttachment.getArtillerySupportable() ? "-" : "true"))
+          .append(DELIMITER)
+          .append((!currentAttachment.canProduceUnits() ? "-" : "true"))
+          .append(DELIMITER)
+          .append(
+              (currentAttachment.getIsMarine() == 0
                   ? "-"
-                  : currentAttachment.getTransportCost())
-              + DELIMITER
-              + (!Matches.unitTypeIsAaForAnything().test(currentType) ? "-" : "true")
-              + DELIMITER
-              + (!currentAttachment.isAir() ? "-" : "true")
-              + DELIMITER
-              + (!currentAttachment.isStrategicBomber() ? "-" : "true")
-              + DELIMITER
-              + (currentAttachment.getCarrierCost() == -1
+                  : Integer.toString(currentAttachment.getIsMarine())))
+          .append(DELIMITER)
+          .append(
+              (currentAttachment.getTransportCost() == -1
                   ? "-"
-                  : currentAttachment.getCarrierCost())
-              + DELIMITER
-              + (!currentAttachment.isSea() ? "-" : "true")
-              + DELIMITER
-              + currentAttachment.getHitPoints()
-              + DELIMITER
-              + (currentAttachment.getTransportCapacity() == -1
+                  : Integer.toString(currentAttachment.getTransportCost())))
+          .append(DELIMITER)
+          .append((!Matches.unitTypeIsAaForAnything().test(currentType) ? "-" : "true"))
+          .append(DELIMITER)
+          .append((!currentAttachment.isAir() ? "-" : "true"))
+          .append(DELIMITER)
+          .append((!currentAttachment.isStrategicBomber() ? "-" : "true"))
+          .append(DELIMITER)
+          .append(
+              (currentAttachment.getCarrierCost() == -1
                   ? "-"
-                  : currentAttachment.getTransportCapacity())
-              + DELIMITER
-              + (currentAttachment.getCarrierCapacity() == -1
+                  : Integer.toString(currentAttachment.getCarrierCost())))
+          .append(DELIMITER)
+          .append((!currentAttachment.isSea() ? "-" : "true"))
+          .append(DELIMITER)
+          .append(Integer.toString(currentAttachment.getHitPoints()))
+          .append(DELIMITER)
+          .append(
+              (currentAttachment.getTransportCapacity() == -1
                   ? "-"
-                  : currentAttachment.getCarrierCapacity())
-              + DELIMITER
-              + (!(currentAttachment.getCanEvade() && currentAttachment.getIsFirstStrike())
+                  : Integer.toString(currentAttachment.getTransportCapacity())))
+          .append(DELIMITER)
+          .append(
+              (currentAttachment.getCarrierCapacity() == -1
                   ? "-"
-                  : "true")
-              + DELIMITER
-              + (!currentAttachment.isDestroyer() ? "-" : "true"));
-      writer.write(LINE_SEPARATOR);
+                  : Integer.toString(currentAttachment.getCarrierCapacity())))
+          .append(DELIMITER)
+          .append(
+              (!(currentAttachment.getCanEvade() && currentAttachment.getIsFirstStrike())
+                  ? "-"
+                  : "true"))
+          .append(DELIMITER)
+          .append((!currentAttachment.isDestroyer() ? "-" : "true"));
+      writer.append(LINE_SEPARATOR);
     }
   }
 
