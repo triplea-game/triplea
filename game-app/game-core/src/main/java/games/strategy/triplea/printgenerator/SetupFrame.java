@@ -1,6 +1,8 @@
 package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.history.HistoryNode;
 import java.awt.BorderLayout;
 import java.io.File;
 import java.io.IOException;
@@ -57,7 +59,7 @@ public class SetupFrame extends JPanel {
             final Path outDir = Path.of(outField.getText());
             final PrintGenerationData printData =
                 PrintGenerationData.builder().outDir(outDir).data(clonedGameData.join()).build();
-            new InitialSetup().run(printData, originalState.isSelected());
+            generateFiles(printData, originalState.isSelected());
             JOptionPane.showMessageDialog(null, "Done!", "Done!", JOptionPane.INFORMATION_MESSAGE);
           } else {
             JOptionPane.showMessageDialog(
@@ -118,5 +120,19 @@ public class SetupFrame extends JPanel {
         "Incorrect directory selected",
         JOptionPane.WARNING_MESSAGE);
     return false;
+  }
+
+  private void generateFiles(final PrintGenerationData printData, final boolean useOriginalState) {
+    if (useOriginalState) {
+      final HistoryNode root = (HistoryNode) printData.getData().getHistory().getRoot();
+      printData.getData().getHistory().gotoNode(root);
+    }
+    new UnitInformation().saveToFile(printData);
+    for (final GamePlayer currentPlayer : printData.getData().getPlayerList()) {
+      new CountryChart(printData.getOutDir(), currentPlayer).saveToFile(printData);
+    }
+    new PuInfo().saveToFile(printData);
+    new PlayerOrder().saveToFile(printData);
+    new PuChart().saveToFile(printData);
   }
 }
