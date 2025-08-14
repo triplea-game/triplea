@@ -32,15 +32,15 @@ class PuChart {
   private Map<Integer, Integer> avoidMap;
   private final Font chartFont = new Font("Serif", Font.PLAIN, 12);
   private BufferedImage puImage;
-  private Graphics2D g2d;
   private Path outDir;
 
   private void initializeMap() {
     int count = 0;
     for (final GamePlayer currentPlayer : players) {
-      moneyMap.put(currentPlayer, currentPlayer.getResources().getQuantity(Constants.PUS));
+      int playerQuantityPu = currentPlayer.getResources().getQuantity(Constants.PUS);
+      moneyMap.put(currentPlayer, playerQuantityPu);
       playerArray[count] = currentPlayer;
-      moneyArray[count] = currentPlayer.getResources().getQuantity(Constants.PUS);
+      moneyArray[count] = playerQuantityPu;
       count++;
     }
   }
@@ -56,7 +56,8 @@ class PuChart {
     }
   }
 
-  private void drawEllipseAndString(final int x, final int y, final String string) {
+  private void drawEllipseAndString(
+      final Graphics2D g2d, final int x, final int y, final String string) {
     g2d.setFont(chartFont);
     g2d.draw(new Ellipse2D.Double(5 + 87.0 * x, 5 + 87.0 * y, 72, 72));
     final FontMetrics metrics = g2d.getFontMetrics();
@@ -74,7 +75,6 @@ class PuChart {
     moneyArray = new Integer[numPlayers];
     avoidMap = new HashMap<>();
     puImage = new BufferedImage(600, 600, BufferedImage.TYPE_INT_ARGB);
-    g2d = puImage.createGraphics();
     outDir = printData.getOutDir();
 
     initializeMap();
@@ -82,42 +82,45 @@ class PuChart {
   }
 
   private void drawImage(int numChartsNeeded) {
+    final Graphics2D g2d = puImage.createGraphics();
     for (int i = 0; i < numChartsNeeded; i++) {
       g2d.setColor(Color.black);
-      // Draw Country Names
-      for (int z = 0; z < playerArray.length; z++) {
-        final int valMod42 = moneyArray[z] % 42;
-        final int valModXDim = valMod42 % DRAW_COLS;
-        final int valFloorXDim = valMod42 / DRAW_COLS;
-        if (avoidMap.containsKey(z) && moneyArray[z] / 42 == i) {
-          final FontMetrics metrics = g2d.getFontMetrics();
-          final int width = metrics.stringWidth(playerArray[z].getName()) / 2;
-          g2d.drawString(
-              playerArray[z].getName(), 42 + 87 * valModXDim - width, 63 + 87 * valFloorXDim);
-        } else if (avoidMap.containsValue(z) && moneyArray[z] / 42 == i) {
-          final FontMetrics metrics = g2d.getFontMetrics();
-          final int width = metrics.stringWidth(playerArray[z].getName()) / 2;
-          g2d.drawString(
-              playerArray[z].getName(), 42 + 87 * valModXDim - width, 30 + 87 * valFloorXDim);
-        } else if (moneyArray[z] / 42 == i) {
-          final FontMetrics metrics = g2d.getFontMetrics();
-          final int width = metrics.stringWidth(playerArray[z].getName()) / 2;
-          g2d.drawString(
-              playerArray[z].getName(), 42 + 87 * valModXDim - width, 60 + 87 * valFloorXDim);
-        }
-      }
+      drawCountryNames(i, g2d);
       // Draw Ellipses and Numbers
       for (int j = 0; j < DRAW_ROWS; j++) {
         for (int k = 0; k < DRAW_COLS; k++) {
           final int numberInCircle = DRAW_COLS * DRAW_ROWS * i + DRAW_COLS * j + k;
-          final String string = "" + numberInCircle;
-          drawEllipseAndString(k, j, string);
+          drawEllipseAndString(g2d, k, j, Integer.toString(numberInCircle));
         }
       }
     }
     g2d.setColor(Color.black);
     g2d.setComposite(AlphaComposite.Src);
     g2d.fill(new Rectangle2D.Float(0, 0, 600, 600));
+  }
+
+  private void drawCountryNames(int i, Graphics2D g2d) {
+    for (int z = 0; z < playerArray.length; z++) {
+      final int valMod42 = moneyArray[z] % 42;
+      final int valModXDim = valMod42 % DRAW_COLS;
+      final int valFloorXDim = valMod42 / DRAW_COLS;
+      if (avoidMap.containsKey(z) && moneyArray[z] / 42 == i) {
+        final FontMetrics metrics = g2d.getFontMetrics();
+        final int width = metrics.stringWidth(playerArray[z].getName()) / 2;
+        g2d.drawString(
+            playerArray[z].getName(), 42 + 87 * valModXDim - width, 63 + 87 * valFloorXDim);
+      } else if (avoidMap.containsValue(z) && moneyArray[z] / 42 == i) {
+        final FontMetrics metrics = g2d.getFontMetrics();
+        final int width = metrics.stringWidth(playerArray[z].getName()) / 2;
+        g2d.drawString(
+            playerArray[z].getName(), 42 + 87 * valModXDim - width, 30 + 87 * valFloorXDim);
+      } else if (moneyArray[z] / 42 == i) {
+        final FontMetrics metrics = g2d.getFontMetrics();
+        final int width = metrics.stringWidth(playerArray[z].getName()) / 2;
+        g2d.drawString(
+            playerArray[z].getName(), 42 + 87 * valModXDim - width, 60 + 87 * valFloorXDim);
+      }
+    }
   }
 
   void saveToFile(final PrintGenerationData printData) {
