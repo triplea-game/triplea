@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui.menubar;
 
-import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.export.GameDataExporter;
 import games.strategy.engine.framework.GameDataUtils;
@@ -25,7 +24,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -80,28 +78,24 @@ final class ExportMenu extends JMenu {
       JOptionPane.showMessageDialog(frame, "Error: Existing XML file not found.");
       return;
     }
-
-    final JFileChooser chooser = new JFileChooser();
-    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-    final int round = gameData.getCurrentRound();
     final String defaultFileName =
         FileNameUtils.removeIllegalCharacters(
                 String.format(
-                    "xml_%s_%s_round_%s",
+                    "xml_%s_%s_round_%d",
                     dateTimeFormatter.format(LocalDateTime.now(ZoneId.systemDefault())),
                     gameData.getGameName(),
-                    round))
+                    gameData.getCurrentRound()))
             + ".xml";
-    final Path rootDir = ClientFileSystemHelper.getUserRootFolder();
-    chooser.setSelectedFile(rootDir.resolve(defaultFileName).toFile());
-    if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
-      return;
-    }
-    try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
-      final Game xmlGameModel = GameDataExporter.convertToXmlModel(gameData, gameXmlPath);
-      GameXmlWriter.exportXml(xmlGameModel, chooser.getSelectedFile().toPath());
-    }
+
+    Optional<Path> chosenFilePath =
+        FileChooser.chooseExportFileWithDefaultName(frame, defaultFileName);
+    chosenFilePath.ifPresent(
+        path -> {
+          try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
+            final Game xmlGameModel = GameDataExporter.convertToXmlModel(gameData, gameXmlPath);
+            GameXmlWriter.exportXml(xmlGameModel, path);
+          }
+        });
   }
 
   private JMenuItem createSaveScreenshotMenu() {
