@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -104,6 +105,7 @@ public class PlayerBridge {
    * Get a remote reference to the named delegate, the type of the reference is declared by the
    * delegates getRemoteType() method.
    */
+  @Nullable
   public IRemote getRemotePersistentDelegate(final String name) {
     if (game.isGameOver()) {
       throw new GameOverException("Game Over");

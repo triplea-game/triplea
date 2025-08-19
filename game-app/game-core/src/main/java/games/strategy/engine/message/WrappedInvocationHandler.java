@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import javax.annotation.Nullable;
 
 /**
  * Implementation of {@link InvocationHandler} that delegates the {@link Object#equals(Object)},
@@ -51,6 +52,7 @@ public class WrappedInvocationHandler implements InvocationHandler {
   }
 
   @Override
+  @Nullable
   public Object invoke(final Object proxy, final Method method, final Object[] args)
       throws Throwable {
     if (shouldHandle(method, args)) {
