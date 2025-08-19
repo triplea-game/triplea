@@ -24,6 +24,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.util.List;
 import java.util.function.Predicate;
+import javax.annotation.Nonnull;
 import lombok.Getter;
 
 /**
@@ -261,7 +262,7 @@ public class UnitsDrawer extends AbstractDrawable {
     // note - it may be the case where the territory is being changed as a result to a mouse click,
     // and the map units haven't updated yet, so the unit count from the territory won't match the
     // units in count
-    final Territory t = data.getMap().getTerritory(territoryName);
+    final Territory territory = data.getMap().getTerritoryOrThrow(territoryName);
     final UnitType type = data.getUnitTypeList().getUnitTypeOrThrow(unitType);
     final Predicate<Unit> selectedUnits =
         Matches.unitIsOfType(type)
@@ -272,11 +273,11 @@ public class UnitsDrawer extends AbstractDrawable {
                 bombingUnitDamage > 0
                     ? Matches.unitHasTakenSomeBombingUnitDamage()
                     : Matches.unitHasNotTakenAnyBombingUnitDamage());
-    return t.getMatches(selectedUnits);
+    return territory.getMatches(selectedUnits);
   }
 
-  public Territory getTerritory(GameData data) {
-    return data.getMap().getTerritory(territoryName);
+  public @Nonnull Territory getTerritory(GameData data) {
+    return data.getMap().getTerritoryOrThrow(territoryName);
   }
 
   @Override

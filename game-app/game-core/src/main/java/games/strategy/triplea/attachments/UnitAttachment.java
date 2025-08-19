@@ -2652,7 +2652,7 @@ public class UnitAttachment extends DefaultAttachment {
     final Set<Territory> territories = new HashSet<>();
     for (final String name : list) {
       // Validate all territories exist
-      final Territory territory = getData().getMap().getTerritory(name);
+      final Territory territory = getData().getMap().getTerritoryOrNull(name);
       if (territory != null) {
         territories.add(territory);
       } else {
