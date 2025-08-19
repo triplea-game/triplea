@@ -132,9 +132,9 @@ class RevisedTest extends AbstractClientSettingTestCase {
   @Test
   void testMoveBadRoute() {
     final GamePlayer british = british(gameData);
-    final Territory sz1 = gameData.getMap().getTerritory("1 Sea Zone");
-    final Territory sz11 = gameData.getMap().getTerritory("11 Sea Zone");
-    final Territory sz9 = gameData.getMap().getTerritory("9 Sea Zone");
+    final Territory sz1 = gameData.getMap().getTerritoryOrThrow("1 Sea Zone");
+    final Territory sz11 = gameData.getMap().getTerritoryOrThrow("11 Sea Zone");
+    final Territory sz9 = gameData.getMap().getTerritoryOrThrow("9 Sea Zone");
     final IDelegateBridge bridge = newDelegateBridge(british);
     advanceToStep(bridge, "NonCombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
@@ -175,9 +175,9 @@ class RevisedTest extends AbstractClientSettingTestCase {
   @Test
   void testMoveThroughSubmergedSubs() {
     final GamePlayer british = british(gameData);
-    final Territory sz1 = gameData.getMap().getTerritory("1 Sea Zone");
-    final Territory sz7 = gameData.getMap().getTerritory("7 Sea Zone");
-    final Territory sz8 = gameData.getMap().getTerritory("8 Sea Zone");
+    final Territory sz1 = gameData.getMap().getTerritoryOrThrow("1 Sea Zone");
+    final Territory sz7 = gameData.getMap().getTerritoryOrThrow("7 Sea Zone");
+    final Territory sz8 = gameData.getMap().getTerritoryOrThrow("8 Sea Zone");
     final Unit sub = sz8.getUnitCollection().iterator().next();
     sub.setSubmerged(true);
     // now move to attack it
@@ -207,7 +207,7 @@ class RevisedTest extends AbstractClientSettingTestCase {
     initDel.start();
     initDel.end();
     // make sinkian japanese owned, put one infantry in it
-    final Territory sinkiang = gameData.getMap().getTerritory("Sinkiang");
+    final Territory sinkiang = gameData.getMap().getTerritoryOrThrow("Sinkiang");
     gameData.performChange(ChangeFactory.removeUnits(sinkiang, sinkiang.getUnits()));
     final GamePlayer japanese = japanese(gameData);
     sinkiang.setOwner(japanese);
@@ -218,7 +218,7 @@ class RevisedTest extends AbstractClientSettingTestCase {
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final Territory novo = gameData.getMap().getTerritory("Novosibirsk");
+    final Territory novo = gameData.getMap().getTerritoryOrThrow("Novosibirsk");
     move(novo.getUnits(), new Route(novo, sinkiang));
     moveDelegate.end();
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegate("battle");
@@ -231,7 +231,7 @@ class RevisedTest extends AbstractClientSettingTestCase {
     advanceToStep(bridge, "NonCombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final Territory russia = gameData.getMap().getTerritory("Russia");
+    final Territory russia = gameData.getMap().getTerritoryOrThrow("Russia");
     // move two tanks from russia, then undo
     final Route r = new Route(russia, novo, sinkiang);
     move(russia.getUnitCollection().getMatches(Matches.unitCanBlitz()), r);
@@ -253,9 +253,9 @@ class RevisedTest extends AbstractClientSettingTestCase {
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     // set up battle
-    final Territory germany = gameData.getMap().getTerritory("Germany");
-    final Territory karelia = gameData.getMap().getTerritory("Karelia S.S.R.");
-    final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
+    final Territory germany = gameData.getMap().getTerritoryOrThrow("Germany");
+    final Territory karelia = gameData.getMap().getTerritoryOrThrow("Karelia S.S.R.");
+    final Territory sz5 = gameData.getMap().getTerritoryOrThrow("5 Sea Zone");
     gameData.performChange(ChangeFactory.removeUnits(sz5, sz5.getUnits()));
     final UnitType infantryType = infantry(gameData);
     final UnitType subType = submarine(gameData);
@@ -400,8 +400,8 @@ class RevisedTest extends AbstractClientSettingTestCase {
 
   @Test
   void testTransportAttack() {
-    final Territory sz14 = gameData.getMap().getTerritory("14 Sea Zone");
-    final Territory sz13 = gameData.getMap().getTerritory("13 Sea Zone");
+    final Territory sz14 = gameData.getMap().getTerritoryOrThrow("14 Sea Zone");
+    final Territory sz13 = gameData.getMap().getTerritoryOrThrow("13 Sea Zone");
     final GamePlayer germans = germans(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
     final IDelegateBridge bridge = newDelegateBridge(germans);
@@ -416,8 +416,8 @@ class RevisedTest extends AbstractClientSettingTestCase {
 
   @Test
   void testLoadUndo() {
-    final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
-    final Territory eastEurope = gameData.getMap().getTerritory("Eastern Europe");
+    final Territory sz5 = gameData.getMap().getTerritoryOrThrow("5 Sea Zone");
+    final Territory eastEurope = gameData.getMap().getTerritoryOrThrow("Eastern Europe");
     final UnitType infantryType = infantry(gameData);
     final GamePlayer germans = germans(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
@@ -450,9 +450,9 @@ class RevisedTest extends AbstractClientSettingTestCase {
 
   @Test
   void testLoadDependencies() {
-    final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
-    final Territory eastEurope = gameData.getMap().getTerritory("Eastern Europe");
-    final Territory norway = gameData.getMap().getTerritory("Norway");
+    final Territory sz5 = gameData.getMap().getTerritoryOrThrow("5 Sea Zone");
+    final Territory eastEurope = gameData.getMap().getTerritoryOrThrow("Eastern Europe");
+    final Territory norway = gameData.getMap().getTerritoryOrThrow("Norway");
     final UnitType infantryType = infantry(gameData);
     final GamePlayer germans = germans(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
@@ -497,8 +497,8 @@ class RevisedTest extends AbstractClientSettingTestCase {
 
   @Test
   void testLoadUndoInWrongOrder() {
-    final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
-    final Territory eastEurope = gameData.getMap().getTerritory("Eastern Europe");
+    final Territory sz5 = gameData.getMap().getTerritoryOrThrow("5 Sea Zone");
+    final Territory eastEurope = gameData.getMap().getTerritoryOrThrow("Eastern Europe");
     final UnitType infantryType = GameDataTestUtil.infantry(gameData);
     final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
@@ -539,12 +539,12 @@ class RevisedTest extends AbstractClientSettingTestCase {
   void testLoadUnloadAlliedTransport() {
     // you cant load and unload an allied transport the same turn
     final UnitType infantryType = infantry(gameData);
-    final Territory eastEurope = gameData.getMap().getTerritory("Eastern Europe");
+    final Territory eastEurope = gameData.getMap().getTerritoryOrThrow("Eastern Europe");
     // add japanese infantry to eastern europe
     final GamePlayer japanese = japanese(gameData);
     final Change change = ChangeFactory.addUnits(eastEurope, infantryType.create(1, japanese));
     gameData.performChange(change);
-    final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
+    final Territory sz5 = gameData.getMap().getTerritoryOrThrow("5 Sea Zone");
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
     final IDelegateBridge bridge = newDelegateBridge(japanese);
     advanceToStep(bridge, "CombatMove");
@@ -573,8 +573,8 @@ class RevisedTest extends AbstractClientSettingTestCase {
   @Test
   void testUnloadMultipleTerritories() {
     // in revised a transport may only unload to 1 territory.
-    final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
-    final Territory eastEurope = gameData.getMap().getTerritory("Eastern Europe");
+    final Territory sz5 = gameData.getMap().getTerritoryOrThrow("5 Sea Zone");
+    final Territory eastEurope = gameData.getMap().getTerritoryOrThrow("Eastern Europe");
     final UnitType infantryType = GameDataTestUtil.infantry(gameData);
     final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
@@ -594,7 +594,7 @@ class RevisedTest extends AbstractClientSettingTestCase {
                 infantry, eeToSz5, Map.of(infantry.get(0), transport, infantry.get(1), transport)));
     assertValid(error);
     // unload one infantry to Norway
-    final Territory norway = gameData.getMap().getTerritory("Norway");
+    final Territory norway = gameData.getMap().getTerritoryOrThrow("Norway");
     final Route sz5ToNorway = new Route(sz5, norway);
     error = moveDelegate.move(infantry.subList(0, 1), sz5ToNorway);
     assertValid(error);
@@ -624,8 +624,8 @@ class RevisedTest extends AbstractClientSettingTestCase {
   @Test
   void testUnloadInPreviousPhase() {
     // a transport may not unload in both combat and non combat
-    final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
-    final Territory eastEurope = gameData.getMap().getTerritory("Eastern Europe");
+    final Territory sz5 = gameData.getMap().getTerritoryOrThrow("5 Sea Zone");
+    final Territory eastEurope = gameData.getMap().getTerritoryOrThrow("Eastern Europe");
     final UnitType infantryType = GameDataTestUtil.infantry(gameData);
     final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
@@ -645,7 +645,7 @@ class RevisedTest extends AbstractClientSettingTestCase {
                 infantry, eeToSz5, Map.of(infantry.get(0), transport, infantry.get(1), transport)));
     assertValid(error);
     // unload one infantry to Norway
-    final Territory norway = gameData.getMap().getTerritory("Norway");
+    final Territory norway = gameData.getMap().getTerritoryOrThrow("Norway");
     final Route sz5ToNorway = new Route(sz5, norway);
     error = moveDelegate.move(infantry.subList(0, 1), sz5ToNorway);
     assertValid(error);
@@ -718,8 +718,8 @@ class RevisedTest extends AbstractClientSettingTestCase {
 
   @Test
   void testMoveSubAwayFromSubmergedSubsInBattleZone() {
-    final Territory sz45 = gameData.getMap().getTerritory("45 Sea Zone");
-    final Territory sz50 = gameData.getMap().getTerritory("50 Sea Zone");
+    final Territory sz45 = gameData.getMap().getTerritoryOrThrow("45 Sea Zone");
+    final Territory sz50 = gameData.getMap().getTerritoryOrThrow("50 Sea Zone");
     final GamePlayer british = british(gameData);
     final GamePlayer japanese = japanese(gameData);
     // put 1 british sub in sz 45, this simulates a submerged enemy sub
@@ -857,8 +857,8 @@ class RevisedTest extends AbstractClientSettingTestCase {
 
   @Test
   void testStratBombCasualties() {
-    final Territory germany = gameData.getMap().getTerritory("Germany");
-    final Territory uk = gameData.getMap().getTerritory("United Kingdom");
+    final Territory germany = gameData.getMap().getTerritoryOrThrow("Germany");
+    final Territory uk = gameData.getMap().getTerritoryOrThrow("United Kingdom");
     final GamePlayer germans = germans(gameData);
     final GamePlayer british = british(gameData);
     final BattleTracker tracker = new BattleTracker();
@@ -890,8 +890,8 @@ class RevisedTest extends AbstractClientSettingTestCase {
   @Test
   void testStratBombCasualtiesLowLuck() {
     makeGameLowLuck(gameData);
-    final Territory germany = gameData.getMap().getTerritory("Germany");
-    final Territory uk = gameData.getMap().getTerritory("United Kingdom");
+    final Territory germany = gameData.getMap().getTerritoryOrThrow("Germany");
+    final Territory uk = gameData.getMap().getTerritoryOrThrow("United Kingdom");
     final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final GamePlayer british = GameDataTestUtil.british(gameData);
     final BattleTracker tracker = new BattleTracker();
@@ -931,8 +931,8 @@ class RevisedTest extends AbstractClientSettingTestCase {
   @Test
   void testStratBombCasualtiesLowLuckManyBombers() {
     makeGameLowLuck(gameData);
-    final Territory germany = gameData.getMap().getTerritory("Germany");
-    final Territory uk = gameData.getMap().getTerritory("United Kingdom");
+    final Territory germany = gameData.getMap().getTerritoryOrThrow("Germany");
+    final Territory uk = gameData.getMap().getTerritoryOrThrow("United Kingdom");
     final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final GamePlayer british = GameDataTestUtil.british(gameData);
     final BattleTracker tracker = new BattleTracker();
@@ -964,8 +964,8 @@ class RevisedTest extends AbstractClientSettingTestCase {
 
   @Test
   void testStratBombRaidWithHeavyBombers() {
-    final Territory germany = gameData.getMap().getTerritory("Germany");
-    final Territory uk = gameData.getMap().getTerritory("United Kingdom");
+    final Territory germany = gameData.getMap().getTerritoryOrThrow("Germany");
+    final Territory uk = gameData.getMap().getTerritoryOrThrow("United Kingdom");
     final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final GamePlayer british = GameDataTestUtil.british(gameData);
     final BattleTracker tracker = new BattleTracker();

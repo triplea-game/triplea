@@ -11,6 +11,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.jetbrains.annotations.NotNull;
 import org.triplea.java.collections.CollectionUtils;
 
 /** The result of an AI purchase analysis for a single territory. */
@@ -18,7 +19,7 @@ import org.triplea.java.collections.CollectionUtils;
 @ToString
 public class ProPurchaseTerritory {
 
-  private final Territory territory;
+  private final @NotNull Territory territory;
   @Setter private int unitProduction;
   private final List<ProPlaceTerritory> canPlaceTerritories;
 
@@ -40,7 +41,7 @@ public class ProPurchaseTerritory {
    * @param isBid - true when bid phase, false when normal purchase phase
    */
   public ProPurchaseTerritory(
-      final Territory territory,
+      final @NotNull Territory territory,
       final GameData data,
       final GamePlayer player,
       final int unitProduction,
