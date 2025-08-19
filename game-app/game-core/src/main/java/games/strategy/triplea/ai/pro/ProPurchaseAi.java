@@ -473,7 +473,7 @@ class ProPurchaseAi {
               }
             }
             doPlace(
-                data.getMap().getTerritory(ppt.getTerritory().getName()),
+                data.getMap().getTerritoryOrNull(ppt.getTerritory().getName()),
                 unitsToPlace,
                 placeDelegate);
             ProLogger.debug(ppt.getTerritory() + " placed units: " + unitsToPlace);
@@ -494,7 +494,7 @@ class ProPurchaseAi {
               }
             }
             doPlace(
-                data.getMap().getTerritory(ppt.getTerritory().getName()),
+                data.getMap().getTerritoryOrNull(ppt.getTerritory().getName()),
                 unitsToPlace,
                 placeDelegate);
             ProLogger.debug(ppt.getTerritory() + " placed units: " + unitsToPlace);
