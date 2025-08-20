@@ -1,12 +1,11 @@
 package org.triplea.debug;
 
 import com.google.common.base.Preconditions;
+import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
+import games.strategy.triplea.EngineImageLoader;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.Dialog;
-import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.net.URI;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JButton;
@@ -17,6 +16,7 @@ import org.triplea.debug.error.reporting.UploadDecisionModule;
 import org.triplea.http.client.error.report.ErrorReportClient;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JEditorPaneWithClickableLinks;
+import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
@@ -35,7 +35,7 @@ import org.triplea.swing.jpanel.JPanelBuilder;
 public enum ErrorMessage {
   INSTANCE;
 
-  private final JFrame windowReference = new JFrame("Error");
+  private final JFrame windowReference;
   private final JEditorPaneWithClickableLinks errorMessagePane =
       new JEditorPaneWithClickableLinks("");
   private final AtomicBoolean isVisible = new AtomicBoolean(false);
@@ -48,38 +48,38 @@ public enum ErrorMessage {
           .build();
 
   ErrorMessage() {
-    windowReference.setAlwaysOnTop(true);
-    windowReference.setMinimumSize(new Dimension(350, 150));
-    windowReference.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
-    windowReference.addWindowListener(
-        new WindowAdapter() {
-          @Override
-          public void windowClosing(final WindowEvent e) {
-            hide();
-          }
-        });
     errorMessagePane.setBorder(new EmptyBorder(5, 20, 5, 10));
-    windowReference.add(
-        new JPanelBuilder()
-            .border(10)
-            .borderLayout()
-            .addCenter(SwingComponents.newJScrollPane(errorMessagePane))
-            .addSouth(
+    windowReference =
+        new JFrameBuilder()
+            .title(("Error"))
+            .iconImage(EngineImageLoader.loadFrameIcon())
+            .alwaysOnTop()
+            .minSize(350, 150)
+            .windowClosedAction(this::hide)
+            .add(
                 new JPanelBuilder()
-                    .border(20, 0, 0, 0)
-                    .boxLayoutHorizontal()
-                    .addHorizontalGlue()
-                    .add(
-                        new JButtonBuilder()
-                            .okTitle()
-                            .actionListener(this::hide)
-                            .selected(true)
+                    .border(10)
+                    .borderLayout()
+                    .addCenter(SwingComponents.newJScrollPane(errorMessagePane))
+                    .addSouth(
+                        new JPanelBuilder()
+                            .border(20, 0, 0, 0)
+                            .boxLayoutHorizontal()
+                            .addHorizontalGlue()
+                            .add(
+                                new JButtonBuilder()
+                                    .okTitle()
+                                    .actionListener(this::hide)
+                                    .selected(true)
+                                    .build())
+                            .addHorizontalStrut(5)
+                            .add(uploadButton)
+                            .addHorizontalGlue()
                             .build())
-                    .addHorizontalStrut(5)
-                    .add(uploadButton)
-                    .addHorizontalGlue()
                     .build())
-            .build());
+            .build();
+    windowReference.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
+    LookAndFeelSwingFrameListener.register(windowReference);
   }
 
   /**
