@@ -160,6 +160,12 @@ public class CanalAttachment extends DefaultAttachment {
       throw new GameParseException(
           MessageFormat.format("Canals must have a canalName set!{0}", thisErrorMsg()));
     }
+    if (getName() == null || !getName().startsWith(Constants.CANAL_ATTACHMENT_PREFIX)) {
+      throw new GameParseException(
+          MessageFormat.format(
+              "Canal attachment name invalid. Must start with ''{0}''!{1}",
+              Constants.CANAL_ATTACHMENT_PREFIX, thisErrorMsg()));
+    }
     if (getLandTerritories().isEmpty()) {
       throw new GameParseException(
           MessageFormat.format(
