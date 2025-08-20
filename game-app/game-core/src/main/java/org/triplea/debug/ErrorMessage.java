@@ -1,12 +1,11 @@
 package org.triplea.debug;
 
 import com.google.common.base.Preconditions;
+import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
+import games.strategy.triplea.EngineImageLoader;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.Dialog;
-import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.net.URI;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JButton;
@@ -17,25 +16,24 @@ import org.triplea.debug.error.reporting.UploadDecisionModule;
 import org.triplea.http.client.error.report.ErrorReportClient;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JEditorPaneWithClickableLinks;
+import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
  * Class for showing a modal error dialog to the user. The dialog has an 'ok' button to close it and
- * a 'show details' that will bring up the error console.
+ * an 'upload and report' button if it greater than 'warning' to upload an error report.
  *
  * <p>Note on threading: If we get an error while EDT thread is lock, we will not be able to create
- * a new window. If we do it tries to grab an EDT lock and we get into a deadlock situation. To
+ * a new window. If we do it tries to grab an EDT lock, and we get into a deadlock situation. To
  * avoid this we create the error message window early and then show/hide it as needed.
  *
- * <p>Async behavior note: once the window is displayed, further error messages are ignored. The
- * error message is intended to be user friendly, clicking 'show details' would show full details of
- * all error messages.
+ * <p>Async behavior note: once the window is displayed, further error messages are ignored.
  */
 public enum ErrorMessage {
   INSTANCE;
 
-  private final JFrame windowReference = new JFrame("Error");
+  private final JFrame windowReference;
   private final JEditorPaneWithClickableLinks errorMessagePane =
       new JEditorPaneWithClickableLinks("");
   private final AtomicBoolean isVisible = new AtomicBoolean(false);
@@ -48,38 +46,38 @@ public enum ErrorMessage {
           .build();
 
   ErrorMessage() {
-    windowReference.setAlwaysOnTop(true);
-    windowReference.setMinimumSize(new Dimension(350, 150));
-    windowReference.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
-    windowReference.addWindowListener(
-        new WindowAdapter() {
-          @Override
-          public void windowClosing(final WindowEvent e) {
-            hide();
-          }
-        });
     errorMessagePane.setBorder(new EmptyBorder(5, 20, 5, 10));
-    windowReference.add(
-        new JPanelBuilder()
-            .border(10)
-            .borderLayout()
-            .addCenter(SwingComponents.newJScrollPane(errorMessagePane))
-            .addSouth(
+    windowReference =
+        new JFrameBuilder()
+            .title(("Error"))
+            .iconImage(EngineImageLoader.loadFrameIcon())
+            .alwaysOnTop()
+            .minSize(350, 150)
+            .windowClosedAction(this::hide)
+            .add(
                 new JPanelBuilder()
-                    .border(20, 0, 0, 0)
-                    .boxLayoutHorizontal()
-                    .addHorizontalGlue()
-                    .add(
-                        new JButtonBuilder()
-                            .okTitle()
-                            .actionListener(this::hide)
-                            .selected(true)
+                    .border(10)
+                    .borderLayout()
+                    .addCenter(SwingComponents.newJScrollPane(errorMessagePane))
+                    .addSouth(
+                        new JPanelBuilder()
+                            .border(20, 0, 0, 0)
+                            .boxLayoutHorizontal()
+                            .addHorizontalGlue()
+                            .add(
+                                new JButtonBuilder()
+                                    .okTitle()
+                                    .actionListener(this::hide)
+                                    .selected(true)
+                                    .build())
+                            .addHorizontalStrut(5)
+                            .add(uploadButton)
+                            .addHorizontalGlue()
                             .build())
-                    .addHorizontalStrut(5)
-                    .add(uploadButton)
-                    .addHorizontalGlue()
                     .build())
-            .build());
+            .build();
+    windowReference.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
+    LookAndFeelSwingFrameListener.register(windowReference);
   }
 
   /**
@@ -120,7 +118,7 @@ public enum ErrorMessage {
 
   private void activateUploadErrorReportButton(final URI lobbyUri, final LoggerRecord logRecord) {
     // Set upload button to be visible only if the logging is greater than a 'warning'.
-    // Warning logging should tell a user how to correct the error and it should be something
+    // Warning logging should tell a user how to correct the error, and it should be something
     // that is 'normal' (but maybe not happy, like no internet) and something they can fix
     // (or perhaps something that we simply can never fix). Hence, for warning we want to inform
     // the user that the problem happened, how to fix it, and let them create a bug report manually.
