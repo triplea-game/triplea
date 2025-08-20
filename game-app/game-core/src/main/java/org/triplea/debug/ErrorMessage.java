@@ -22,15 +22,13 @@ import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
  * Class for showing a modal error dialog to the user. The dialog has an 'ok' button to close it and
- * a 'show details' that will bring up the error console.
+ * an 'upload and report' button if it greater than 'warning' to upload an error report.
  *
  * <p>Note on threading: If we get an error while EDT thread is lock, we will not be able to create
- * a new window. If we do it tries to grab an EDT lock and we get into a deadlock situation. To
+ * a new window. If we do it tries to grab an EDT lock, and we get into a deadlock situation. To
  * avoid this we create the error message window early and then show/hide it as needed.
  *
- * <p>Async behavior note: once the window is displayed, further error messages are ignored. The
- * error message is intended to be user friendly, clicking 'show details' would show full details of
- * all error messages.
+ * <p>Async behavior note: once the window is displayed, further error messages are ignored.
  */
 public enum ErrorMessage {
   INSTANCE;
@@ -120,7 +118,7 @@ public enum ErrorMessage {
 
   private void activateUploadErrorReportButton(final URI lobbyUri, final LoggerRecord logRecord) {
     // Set upload button to be visible only if the logging is greater than a 'warning'.
-    // Warning logging should tell a user how to correct the error and it should be something
+    // Warning logging should tell a user how to correct the error, and it should be something
     // that is 'normal' (but maybe not happy, like no internet) and something they can fix
     // (or perhaps something that we simply can never fix). Hence, for warning we want to inform
     // the user that the problem happened, how to fix it, and let them create a bug report manually.
