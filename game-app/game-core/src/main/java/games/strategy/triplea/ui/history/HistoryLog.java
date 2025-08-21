@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -48,12 +49,13 @@ import org.triplea.java.collections.IntegerMap;
  * descendants, if applicable.
  */
 @Slf4j
-public class HistoryLog extends JFrame {
+public class HistoryLog extends JDialog {
   @Serial private static final long serialVersionUID = 4880602702815333376L;
   private final JTextArea textArea;
   private final StringBuilder stringBuilder = new StringBuilder();
 
-  public HistoryLog() {
+  public HistoryLog(final JFrame parent) {
+    super(parent);
     textArea = new JTextArea(40, 80);
     textArea.setEditable(false);
     final JScrollPane scrollingArea = new JScrollPane(textArea);

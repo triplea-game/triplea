@@ -1951,7 +1951,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   }
 
   private void showHistoryLog(boolean verboseLog, GameData clonedGameData) {
-    final HistoryLog historyLog = new HistoryLog();
+    final HistoryLog historyLog = new HistoryLog(this);
     historyLog.printRemainingTurn(
         historyPanel.getCurrentPopupNode(), verboseLog, data.getDiceSides(), null);
     historyLog.printTerritorySummary(historyPanel.getCurrentPopupNode(), clonedGameData);
