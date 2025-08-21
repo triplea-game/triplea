@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -48,12 +49,13 @@ import org.triplea.java.collections.IntegerMap;
  * descendants, if applicable.
  */
 @Slf4j
-public class HistoryLog extends JFrame {
+public class HistoryLog extends JDialog {
   @Serial private static final long serialVersionUID = 4880602702815333376L;
   private final JTextArea textArea;
   private final StringBuilder stringBuilder = new StringBuilder();
 
-  public HistoryLog() {
+  public HistoryLog(final JFrame parent) {
+    super(parent);
     textArea = new JTextArea(40, 80);
     textArea.setEditable(false);
     final JScrollPane scrollingArea = new JScrollPane(textArea);
@@ -89,43 +91,39 @@ public class HistoryLog extends JFrame {
   public void printFullTurn(
       final GameData data, final boolean verbose, final Collection<GamePlayer> playersAllowed) {
     HistoryNode curNode = data.getHistory().getLastNode();
-    final Collection<GamePlayer> players = new HashSet<>();
-    if (playersAllowed != null) {
-      players.addAll(playersAllowed);
-    }
     // find Step node, if exists in this path
-    Step stepNode = null;
     while (curNode != null) {
-      if (curNode instanceof Step) {
-        stepNode = (Step) curNode;
-        break;
+      if (curNode instanceof Step stepNode) {
+        final Collection<GamePlayer> players = new HashSet<>();
+        if (playersAllowed != null) {
+          players.addAll(playersAllowed);
+        }
+        final Optional<GamePlayer> optionalCurrentPlayer = stepNode.getPlayerId();
+        if (players.isEmpty() && optionalCurrentPlayer.isPresent()) {
+          players.add(optionalCurrentPlayer.get());
+        }
+        final Step turnStartNode = getFirstStepForTurn(stepNode, players);
+        printRemainingTurn(turnStartNode, verbose, data.getDiceSides(), players);
+        return;
       }
       curNode = (HistoryNode) curNode.getPreviousNode();
     }
-    if (stepNode != null) {
-      final Optional<GamePlayer> optionalCurrentPlayer = stepNode.getPlayerId();
-      if (players.isEmpty() && optionalCurrentPlayer.isPresent()) {
-        players.add(optionalCurrentPlayer.get());
+    log.error("No step node found in!");
+  }
+
+  private static Step getFirstStepForTurn(
+      final Step initialStepNode, Collection<GamePlayer> players) {
+    Step stepNode = initialStepNode;
+    while (true) {
+      Step turnStartNode = stepNode;
+      stepNode = (Step) stepNode.getPreviousSibling();
+      if (stepNode == null) {
+        return turnStartNode;
       }
-      // get first step for this turn
-      Step turnStartNode;
-      while (true) {
-        turnStartNode = stepNode;
-        stepNode = (Step) stepNode.getPreviousSibling();
-        if (stepNode == null) {
-          break;
-        }
-        final Optional<GamePlayer> optionalStepNodePlayer = stepNode.getPlayerId();
-        if (optionalStepNodePlayer.isEmpty()) {
-          break;
-        }
-        if (!players.contains(optionalStepNodePlayer.get())) {
-          break;
-        }
+      final Optional<GamePlayer> optionalStepNodePlayer = stepNode.getPlayerId();
+      if (optionalStepNodePlayer.isEmpty() || !players.contains(optionalStepNodePlayer.get())) {
+        return turnStartNode;
       }
-      printRemainingTurn(turnStartNode, verbose, data.getDiceSides(), players);
-    } else {
-      log.error("No step node found in!");
     }
   }
 
@@ -183,8 +181,8 @@ public class HistoryLog extends JFrame {
         if (node.getLevel() == 0) {
           stringBuilder.append('\n');
         }
-        if (node instanceof Step) {
-          optionalCurrentPlayer = ((Step) node).getPlayerId();
+        if (node instanceof Step nodeStep) {
+          optionalCurrentPlayer = nodeStep.getPlayerId();
         }
       }
     }
@@ -192,7 +190,7 @@ public class HistoryLog extends JFrame {
     if (playersAllowed != null) {
       players.addAll(playersAllowed);
     }
-    optionalCurrentPlayer.ifPresent(gamePlayer -> players.add(gamePlayer));
+    optionalCurrentPlayer.ifPresent(players::add);
     final List<String> moveList = new ArrayList<>();
     boolean moving = false;
     DefaultMutableTreeNode curNode = printNode;
@@ -214,9 +212,9 @@ public class HistoryLog extends JFrame {
           }
           moving = false;
         }
-        if (node instanceof Renderable) {
-          final Object details = ((Renderable) node).getRenderingData();
-          if (details instanceof DiceRoll) {
+        if (node instanceof Renderable renderableNode) {
+          final Object details = renderableNode.getRenderingData();
+          if (details instanceof DiceRoll diceRoll) {
             if (!verbose) {
               continue;
             }
@@ -229,7 +227,6 @@ public class HistoryLog extends JFrame {
               stringBuilder.append(indent).append(moreIndent).append(diceMsg1);
               final String hitDifferentialKey =
                   parseHitDifferentialKeyFromDiceRollMessage(diceMsg1);
-              final DiceRoll diceRoll = (DiceRoll) details;
               final int hits = diceRoll.getHits();
               int rolls = 0;
               for (int i = 1; i <= diceSides; i++) {
@@ -264,11 +261,10 @@ public class HistoryLog extends JFrame {
             final Iterator<Object> objIter = objects.iterator();
             if (objIter.hasNext()) {
               final Object obj = objIter.next();
-              if (obj instanceof Unit) {
+              if (obj instanceof Unit unit) {
                 @SuppressWarnings("unchecked")
                 final Collection<Unit> allUnitsInDetails = (Collection<Unit>) details;
-                // purchase/place units - don't need details
-                Unit unit = (Unit) obj;
+                // purchase/place units don't need details
                 if (title.matches("\\w+ buy .*")
                     || title.matches("\\w+ attack with .*")
                     || title.matches("\\w+ defend with .*")) {
@@ -341,7 +337,7 @@ public class HistoryLog extends JFrame {
                 // British take Libya from Germans
                 if (moving) {
                   final String str = moveList.remove(moveList.size() - 1);
-                  moveList.add(str + "\n  " + indent + title.replaceAll(" takes ", " take "));
+                  moveList.add(str + "\n  " + indent + title.replace(" takes ", " take "));
                 } else {
                   conquerStr.append(title.replaceAll("^\\w+ takes ", ", taking "));
                 }
@@ -355,10 +351,10 @@ public class HistoryLog extends JFrame {
             // unknown details object
             stringBuilder.append(indent).append(title).append('\n');
           }
-        } else if (node instanceof Step) {
+        } else if (node instanceof Step nodeStep) {
           if (!title.equals("Initializing Delegates")) {
             stringBuilder.append('\n').append(indent).append(title);
-            final Optional<GamePlayer> optionalGamePlayer = ((Step) node).getPlayerId();
+            final Optional<GamePlayer> optionalGamePlayer = nodeStep.getPlayerId();
             optionalGamePlayer.ifPresent(
                 gamePlayer -> {
                   players.add(gamePlayer);
@@ -373,7 +369,8 @@ public class HistoryLog extends JFrame {
         }
       }
       curNode = curNode.getNextSibling();
-    } while ((curNode instanceof Step) && players.contains(((Step) curNode).getPlayerId()));
+    } while (curNode instanceof Step nodeStep
+        && players.contains(nodeStep.getPlayerId().orElse(null)));
     // if we are mid-phase, this might not get flushed
     if (moving && !moveList.isEmpty()) {
       final Iterator<String> moveIter = moveList.iterator();
@@ -385,12 +382,12 @@ public class HistoryLog extends JFrame {
     stringBuilder.append('\n');
     if (verbose) {
       stringBuilder.append("Combat Hit Differential Summary :\n\n");
-      for (final String player : hitDifferentialMap.keySet()) {
+      for (final var playerHitEntry : hitDifferentialMap.entrySet()) {
         stringBuilder
             .append(moreIndent)
-            .append(player)
+            .append(playerHitEntry.getKey())
             .append(" : ")
-            .append(String.format("%.2f", hitDifferentialMap.get(player)))
+            .append(String.format("%.2f", playerHitEntry.getValue()))
             .append('\n');
       }
     }
