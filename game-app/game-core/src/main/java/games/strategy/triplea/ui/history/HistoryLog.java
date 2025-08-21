@@ -91,43 +91,39 @@ public class HistoryLog extends JDialog {
   public void printFullTurn(
       final GameData data, final boolean verbose, final Collection<GamePlayer> playersAllowed) {
     HistoryNode curNode = data.getHistory().getLastNode();
-    final Collection<GamePlayer> players = new HashSet<>();
-    if (playersAllowed != null) {
-      players.addAll(playersAllowed);
-    }
     // find Step node, if exists in this path
-    Step stepNode = null;
     while (curNode != null) {
-      if (curNode instanceof Step) {
-        stepNode = (Step) curNode;
-        break;
+      if (curNode instanceof Step stepNode) {
+        final Collection<GamePlayer> players = new HashSet<>();
+        if (playersAllowed != null) {
+          players.addAll(playersAllowed);
+        }
+        final Optional<GamePlayer> optionalCurrentPlayer = stepNode.getPlayerId();
+        if (players.isEmpty() && optionalCurrentPlayer.isPresent()) {
+          players.add(optionalCurrentPlayer.get());
+        }
+        final Step turnStartNode = getFirstStepForTurn(stepNode, players);
+        printRemainingTurn(turnStartNode, verbose, data.getDiceSides(), players);
+        return;
       }
       curNode = (HistoryNode) curNode.getPreviousNode();
     }
-    if (stepNode != null) {
-      final Optional<GamePlayer> optionalCurrentPlayer = stepNode.getPlayerId();
-      if (players.isEmpty() && optionalCurrentPlayer.isPresent()) {
-        players.add(optionalCurrentPlayer.get());
+    log.error("No step node found in!");
+  }
+
+  private static Step getFirstStepForTurn(
+      final Step initialStepNode, Collection<GamePlayer> players) {
+    Step stepNode = initialStepNode;
+    while (true) {
+      Step turnStartNode = stepNode;
+      stepNode = (Step) stepNode.getPreviousSibling();
+      if (stepNode == null) {
+        return turnStartNode;
       }
-      // get first step for this turn
-      Step turnStartNode;
-      while (true) {
-        turnStartNode = stepNode;
-        stepNode = (Step) stepNode.getPreviousSibling();
-        if (stepNode == null) {
-          break;
-        }
-        final Optional<GamePlayer> optionalStepNodePlayer = stepNode.getPlayerId();
-        if (optionalStepNodePlayer.isEmpty()) {
-          break;
-        }
-        if (!players.contains(optionalStepNodePlayer.get())) {
-          break;
-        }
+      final Optional<GamePlayer> optionalStepNodePlayer = stepNode.getPlayerId();
+      if (optionalStepNodePlayer.isEmpty() || !players.contains(optionalStepNodePlayer.get())) {
+        return turnStartNode;
       }
-      printRemainingTurn(turnStartNode, verbose, data.getDiceSides(), players);
-    } else {
-      log.error("No step node found in!");
     }
   }
 
