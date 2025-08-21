@@ -181,8 +181,8 @@ public class HistoryLog extends JDialog {
         if (node.getLevel() == 0) {
           stringBuilder.append('\n');
         }
-        if (node instanceof Step) {
-          optionalCurrentPlayer = ((Step) node).getPlayerId();
+        if (node instanceof Step nodeStep) {
+          optionalCurrentPlayer = nodeStep.getPlayerId();
         }
       }
     }
@@ -190,7 +190,7 @@ public class HistoryLog extends JDialog {
     if (playersAllowed != null) {
       players.addAll(playersAllowed);
     }
-    optionalCurrentPlayer.ifPresent(gamePlayer -> players.add(gamePlayer));
+    optionalCurrentPlayer.ifPresent(players::add);
     final List<String> moveList = new ArrayList<>();
     boolean moving = false;
     DefaultMutableTreeNode curNode = printNode;
@@ -212,9 +212,9 @@ public class HistoryLog extends JDialog {
           }
           moving = false;
         }
-        if (node instanceof Renderable) {
-          final Object details = ((Renderable) node).getRenderingData();
-          if (details instanceof DiceRoll) {
+        if (node instanceof Renderable renderableNode) {
+          final Object details = renderableNode.getRenderingData();
+          if (details instanceof DiceRoll diceRoll) {
             if (!verbose) {
               continue;
             }
@@ -227,7 +227,6 @@ public class HistoryLog extends JDialog {
               stringBuilder.append(indent).append(moreIndent).append(diceMsg1);
               final String hitDifferentialKey =
                   parseHitDifferentialKeyFromDiceRollMessage(diceMsg1);
-              final DiceRoll diceRoll = (DiceRoll) details;
               final int hits = diceRoll.getHits();
               int rolls = 0;
               for (int i = 1; i <= diceSides; i++) {
@@ -262,11 +261,10 @@ public class HistoryLog extends JDialog {
             final Iterator<Object> objIter = objects.iterator();
             if (objIter.hasNext()) {
               final Object obj = objIter.next();
-              if (obj instanceof Unit) {
+              if (obj instanceof Unit unit) {
                 @SuppressWarnings("unchecked")
                 final Collection<Unit> allUnitsInDetails = (Collection<Unit>) details;
-                // purchase/place units - don't need details
-                Unit unit = (Unit) obj;
+                // purchase/place units don't need details
                 if (title.matches("\\w+ buy .*")
                     || title.matches("\\w+ attack with .*")
                     || title.matches("\\w+ defend with .*")) {
@@ -339,7 +337,7 @@ public class HistoryLog extends JDialog {
                 // British take Libya from Germans
                 if (moving) {
                   final String str = moveList.remove(moveList.size() - 1);
-                  moveList.add(str + "\n  " + indent + title.replaceAll(" takes ", " take "));
+                  moveList.add(str + "\n  " + indent + title.replace(" takes ", " take "));
                 } else {
                   conquerStr.append(title.replaceAll("^\\w+ takes ", ", taking "));
                 }
@@ -353,10 +351,10 @@ public class HistoryLog extends JDialog {
             // unknown details object
             stringBuilder.append(indent).append(title).append('\n');
           }
-        } else if (node instanceof Step) {
+        } else if (node instanceof Step nodeStep) {
           if (!title.equals("Initializing Delegates")) {
             stringBuilder.append('\n').append(indent).append(title);
-            final Optional<GamePlayer> optionalGamePlayer = ((Step) node).getPlayerId();
+            final Optional<GamePlayer> optionalGamePlayer = nodeStep.getPlayerId();
             optionalGamePlayer.ifPresent(
                 gamePlayer -> {
                   players.add(gamePlayer);
@@ -371,7 +369,8 @@ public class HistoryLog extends JDialog {
         }
       }
       curNode = curNode.getNextSibling();
-    } while ((curNode instanceof Step) && players.contains(((Step) curNode).getPlayerId()));
+    } while (curNode instanceof Step nodeStep
+        && players.contains(nodeStep.getPlayerId().orElse(null)));
     // if we are mid-phase, this might not get flushed
     if (moving && !moveList.isEmpty()) {
       final Iterator<String> moveIter = moveList.iterator();
@@ -383,12 +382,12 @@ public class HistoryLog extends JDialog {
     stringBuilder.append('\n');
     if (verbose) {
       stringBuilder.append("Combat Hit Differential Summary :\n\n");
-      for (final String player : hitDifferentialMap.keySet()) {
+      for (final var playerHitEntry : hitDifferentialMap.entrySet()) {
         stringBuilder
             .append(moreIndent)
-            .append(player)
+            .append(playerHitEntry.getKey())
             .append(" : ")
-            .append(String.format("%.2f", hitDifferentialMap.get(player)))
+            .append(String.format("%.2f", playerHitEntry.getValue()))
             .append('\n');
       }
     }
