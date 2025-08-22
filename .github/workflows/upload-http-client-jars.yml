@@ -18,7 +18,7 @@ jobs:
     runs-on: Ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           # Fetch depth of 0 is needed so we checkout the full revision history
           # The current revision count will be used as our build-number
