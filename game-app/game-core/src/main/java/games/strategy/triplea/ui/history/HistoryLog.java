@@ -52,9 +52,12 @@ import org.triplea.java.collections.IntegerMap;
  */
 @Slf4j
 public class HistoryLog extends JDialog {
+  static final String MORE_INDENT = "    ";
+
   @Serial private static final long serialVersionUID = 4880602702815333376L;
   private final JTextArea textArea;
   private final StringBuilder stringBuilder = new StringBuilder();
+  private boolean verboseLog = false;
 
   public HistoryLog(final JFrame parent) {
     super(parent);
@@ -181,7 +184,7 @@ public class HistoryLog extends JDialog {
       final boolean verbose,
       final int diceSides,
       final Collection<GamePlayer> playersAllowed) {
-    final String moreIndent = "    ";
+    this.verboseLog = verbose;
     // print out the parent nodes
     final TreePath parentPath = new TreePath(printNode.getPath()).getParentPath();
     Optional<GamePlayer> optionalCurrentPlayer = Optional.empty();
@@ -189,7 +192,7 @@ public class HistoryLog extends JDialog {
       final Object[] pathToNode = parentPath.getPath();
       for (final Object pathNode : pathToNode) {
         final HistoryNode node = (HistoryNode) pathNode;
-        stringBuilder.append(moreIndent.repeat(Math.max(0, node.getLevel())));
+        stringBuilder.append(MORE_INDENT.repeat(Math.max(0, node.getLevel())));
         stringBuilder.append(node.getTitle()).append('\n');
         if (node.getLevel() == 0) {
           stringBuilder.append('\n');
@@ -204,186 +207,19 @@ public class HistoryLog extends JDialog {
       players.addAll(playersAllowed);
     }
     optionalCurrentPlayer.ifPresent(players::add);
+    fillStringBuilderForRemainingTurn(printNode, diceSides, players);
+    textArea.setText(stringBuilder.toString());
+  }
+
+  StringBuilder conquerStr = new StringBuilder();
+
+  private void fillStringBuilderForRemainingTurn(
+      HistoryNode printNode, int diceSides, Collection<GamePlayer> players) {
     final List<String> moveList = new ArrayList<>();
-    boolean moving = false;
-    DefaultMutableTreeNode curNode = printNode;
     final Map<String, Double> hitDifferentialMap = new HashMap<>();
-    do {
-      // keep track of conquered territory during combat
-      StringBuilder conquerStr = new StringBuilder();
-      final Enumeration<?> nodeEnum = curNode.preorderEnumeration();
-      while (nodeEnum.hasMoreElements()) {
-        final HistoryNode node = (HistoryNode) nodeEnum.nextElement();
-        final String title = node.getTitle();
-        final String indent = moreIndent.repeat(Math.max(0, node.getLevel()));
-        // flush move list
-        if (moving && !(node instanceof Renderable)) {
-          final Iterator<String> moveIter = moveList.iterator();
-          while (moveIter.hasNext()) {
-            stringBuilder.append(moveIter.next()).append('\n');
-            moveIter.remove();
-          }
-          moving = false;
-        }
-        if (node instanceof Renderable renderableNode) {
-          final Object details = renderableNode.getRenderingData();
-          if (details instanceof DiceRoll diceRoll) {
-            if (!verbose) {
-              continue;
-            }
-            final String diceMsg1 = title.substring(0, title.indexOf(':') + 1);
-            if (diceMsg1.isEmpty()) {
-              // tech roll
-              stringBuilder.append(indent).append(moreIndent).append(title).append('\n');
-            } else {
-              // dice roll
-              stringBuilder.append(indent).append(moreIndent).append(diceMsg1);
-              final String hitDifferentialKey =
-                  parseHitDifferentialKeyFromDiceRollMessage(diceMsg1);
-              final int hits = diceRoll.getHits();
-              int rolls = 0;
-              for (int i = 1; i <= diceSides; i++) {
-                rolls += diceRoll.getRolls(i).size();
-              }
-              final double expectedHits = diceRoll.getExpectedHits();
-              stringBuilder
-                  .append(" ")
-                  .append(hits)
-                  .append("/")
-                  .append(rolls)
-                  .append(" hits, ")
-                  .append(String.format("%.2f", expectedHits))
-                  .append(" expected hits")
-                  .append('\n');
-              final double hitDifferential = hits - expectedHits;
-              hitDifferentialMap.merge(hitDifferentialKey, hitDifferential, Double::sum);
-            }
-          } else if (details instanceof MoveDescription) {
-            // movement
-            final Pattern p = Pattern.compile("\\w+ undo move (\\d+).");
-            final Matcher m = p.matcher(title);
-            if (m.matches()) {
-              moveList.remove(Integer.parseInt(m.group(1)) - 1);
-            } else {
-              moveList.add(indent + title);
-              moving = true;
-            }
-          } else if (details instanceof Collection) {
-            @SuppressWarnings("unchecked")
-            final Collection<Object> objects = (Collection<Object>) details;
-            final Iterator<Object> objIter = objects.iterator();
-            if (objIter.hasNext()) {
-              final Object obj = objIter.next();
-              if (obj instanceof Unit unit) {
-                @SuppressWarnings("unchecked")
-                final Collection<Unit> allUnitsInDetails = (Collection<Unit>) details;
-                // purchase/place units don't need details
-                if (title.matches("\\w+ buy .*")
-                    || title.matches("\\w+ attack with .*")
-                    || title.matches("\\w+ defend with .*")) {
-                  stringBuilder.append(indent).append(title).append('\n');
-                } else if (title.matches("\\d+ \\w+ owned by the .*? lost .*")
-                    || title.matches("\\d+ \\w+ owned by the .*? lost")) {
-                  if (!verbose) {
-                    continue;
-                  }
-                  stringBuilder.append(indent).append(moreIndent).append(title).append('\n');
-                } else if (title.startsWith("Battle casualty summary:")) {
-                  stringBuilder
-                      .append(indent)
-                      .append(conquerStr)
-                      .append(". Battle score ")
-                      .append(title.substring(title.indexOf("for attacker is")))
-                      .append('\n');
-                  conquerStr = new StringBuilder();
-                  // separate units by player and show casualty summary
-                  final IntegerMap<GamePlayer> unitCount = new IntegerMap<>();
-                  unitCount.add(unit.getOwner(), 1);
-                  while (objIter.hasNext()) {
-                    unit = (Unit) objIter.next();
-                    unitCount.add(unit.getOwner(), 1);
-                  }
-                  for (final GamePlayer player : unitCount.keySet()) {
-                    stringBuilder
-                        .append(indent)
-                        .append("Casualties for ")
-                        .append(player.getName())
-                        .append(": ")
-                        .append(MyFormatter.unitsToTextNoOwner(allUnitsInDetails, player))
-                        .append('\n');
-                  }
-                } else if (title.matches(".*? placed in .*")
-                    || title.matches(".* owned by the \\w+ retreated to .*")) {
-                  stringBuilder.append(indent).append(title).append('\n');
-                } else if (title.matches("\\w+ win")) {
-                  conquerStr =
-                      new StringBuilder(
-                          title
-                              + conquerStr
-                              + " with "
-                              + MyFormatter.unitsToTextNoOwner(allUnitsInDetails)
-                              + " remaining");
-                } else {
-                  stringBuilder.append(indent).append(title).append('\n');
-                }
-              } else {
-                // collection of unhandled objects
-                stringBuilder.append(indent).append(title).append('\n');
-              }
-            } else {
-              // empty collection of something
-              if (title.matches("\\w+ win")) {
-                conquerStr = new StringBuilder(title + conquerStr + " with no units remaining");
-              } else {
-                // empty collection of unhandled objects
-                stringBuilder.append(indent).append(title).append('\n');
-              }
-            }
-          } else if (details instanceof Territory) {
-            // territory details
-            stringBuilder.append(indent).append(title).append('\n');
-          } else if (details == null) {
-            if (titleNeedsFurtherProcessing(title)) {
-              if (title.matches("\\w+ collect \\d+ PUs?.*")) {
-                stringBuilder.append(indent).append(title).append('\n');
-              } else if (title.matches("\\w+ takes? .*? from \\w+")) {
-                // British take Libya from Germans
-                if (moving) {
-                  final String str = moveList.remove(moveList.size() - 1);
-                  moveList.add(str + "\n  " + indent + title.replace(" takes ", " take "));
-                } else {
-                  conquerStr.append(title.replaceAll("^\\w+ takes ", ", taking "));
-                }
-              } else if (title.matches("\\w+ spend \\d+ on tech rolls")) {
-                stringBuilder.append(indent).append(title).append('\n');
-              } else if (!title.startsWith("Rolls to resolve tech hits:")) {
-                stringBuilder.append(indent).append(title).append('\n');
-              }
-            }
-          } else {
-            // unknown details object
-            stringBuilder.append(indent).append(title).append('\n');
-          }
-        } else if (node instanceof Step nodeStep) {
-          if (!title.equals("Initializing Delegates")) {
-            stringBuilder.append('\n').append(indent).append(title);
-            final Optional<GamePlayer> optionalGamePlayer = nodeStep.getPlayerId();
-            optionalGamePlayer.ifPresent(
-                gamePlayer -> {
-                  players.add(gamePlayer);
-                  stringBuilder.append(" - ").append(gamePlayer.getName());
-                });
-            stringBuilder.append('\n');
-          }
-        } else if (node instanceof Round) {
-          stringBuilder.append('\n').append(indent).append(title).append('\n');
-        } else {
-          stringBuilder.append(indent).append(title).append('\n');
-        }
-      }
-      curNode = curNode.getNextSibling();
-    } while (curNode instanceof Step nodeStep
-        && players.contains(nodeStep.getPlayerId().orElse(null)));
+    final boolean moving =
+        fillStringBuilderForEachTurnNode(
+            diceSides, players, printNode, moveList, hitDifferentialMap);
     // if we are mid-phase, this might not get flushed
     if (moving && !moveList.isEmpty()) {
       final Iterator<String> moveIter = moveList.iterator();
@@ -393,11 +229,11 @@ public class HistoryLog extends JDialog {
       }
     }
     stringBuilder.append('\n');
-    if (verbose) {
+    if (verboseLog) {
       stringBuilder.append("Combat Hit Differential Summary :\n\n");
       for (final var playerHitEntry : hitDifferentialMap.entrySet()) {
         stringBuilder
-            .append(moreIndent)
+            .append(MORE_INDENT)
             .append(playerHitEntry.getKey())
             .append(" : ")
             .append(String.format("%.2f", playerHitEntry.getValue()))
@@ -405,7 +241,255 @@ public class HistoryLog extends JDialog {
       }
     }
     stringBuilder.append('\n');
-    textArea.setText(stringBuilder.toString());
+  }
+
+  private boolean fillStringBuilderForEachTurnNode(
+      int diceSides,
+      Collection<GamePlayer> players,
+      DefaultMutableTreeNode turnNode,
+      List<String> moveList,
+      Map<String, Double> hitDifferentialMap) {
+    boolean moving = false;
+    do {
+      // keep track of conquered territory during combat
+      final Enumeration<?> nodeEnum = turnNode.preorderEnumeration();
+      while (nodeEnum.hasMoreElements()) {
+        final HistoryNode node = (HistoryNode) nodeEnum.nextElement();
+        final String title = node.getTitle();
+        final String indent = MORE_INDENT.repeat(Math.max(0, node.getLevel()));
+        moving = flushMoveList(moveList, moving, node);
+        if (node instanceof Renderable renderableNode) {
+          moving =
+              fillSbWithNodeRenderable(
+                  diceSides, renderableNode, title, indent, hitDifferentialMap, moveList, moving);
+        } else if (node instanceof Step nodeStep) {
+          fillSbWithNodeStep(players, nodeStep, title, indent);
+        } else if (node instanceof Round) {
+          stringBuilder.append('\n').append(indent).append(title).append('\n');
+        } else {
+          stringBuilder.append(indent).append(title).append('\n');
+        }
+      }
+      turnNode = turnNode.getNextSibling();
+    } while (turnNode instanceof Step nodeStep
+        && players.contains(nodeStep.getPlayerId().orElse(null)));
+    return moving;
+  }
+
+  private boolean flushMoveList(List<String> moveList, boolean moving, HistoryNode node) {
+    if (moving && !(node instanceof Renderable)) {
+      final Iterator<String> moveIter = moveList.iterator();
+      while (moveIter.hasNext()) {
+        stringBuilder.append(moveIter.next()).append('\n');
+        moveIter.remove();
+      }
+      moving = false;
+    }
+    return moving;
+  }
+
+  private void fillSbWithNodeStep(
+      Collection<GamePlayer> players, Step nodeStep, String title, String indent) {
+    if (!title.equals("Initializing Delegates")) {
+      stringBuilder.append('\n').append(indent).append(title);
+      final Optional<GamePlayer> optionalGamePlayer = nodeStep.getPlayerId();
+      optionalGamePlayer.ifPresent(
+          gamePlayer -> {
+            players.add(gamePlayer);
+            stringBuilder.append(" - ").append(gamePlayer.getName());
+          });
+      stringBuilder.append('\n');
+    }
+  }
+
+  private boolean fillSbWithNodeRenderable(
+      int diceSides,
+      Renderable renderableNode,
+      String title,
+      String indent,
+      Map<String, Double> hitDifferentialMap,
+      List<String> moveList,
+      boolean moving) {
+    final Object details = renderableNode.getRenderingData();
+    if (details instanceof DiceRoll diceRoll && verboseLog) {
+      fillSbWithDetailsDiceRoll(diceSides, diceRoll, title, indent, hitDifferentialMap);
+    } else if (details instanceof MoveDescription) {
+      // movement
+      final Pattern p = Pattern.compile("\\w+ undo move (\\d+).");
+      final Matcher m = p.matcher(title);
+      if (m.matches()) {
+        moveList.remove(Integer.parseInt(m.group(1)) - 1);
+      } else {
+        moveList.add(indent + title);
+        moving = true;
+      }
+    } else if (details instanceof Collection) {
+      fillSbWithDetailsCollection(details, title, indent);
+    } else if (details instanceof Territory) {
+      // territory details
+      stringBuilder.append(indent).append(title).append('\n');
+    } else if (details == null) {
+      fillSbWithDetailsNull(title, indent, moving, moveList, conquerStr);
+    } else {
+      // unknown details object
+      stringBuilder.append(indent).append(title).append('\n');
+    }
+    return moving;
+  }
+
+  /**
+   * @param details details object to be printed
+   * @param title current title
+   * @param indent indent text to be used as prefix to line
+   */
+  private void fillSbWithDetailsCollection(Object details, String title, String indent) {
+
+    @SuppressWarnings("unchecked")
+    final Collection<Object> objects = (Collection<Object>) details;
+    final Iterator<Object> objIter = objects.iterator();
+    if (objIter.hasNext()) {
+      final Object obj = objIter.next();
+      if (obj instanceof Unit unit) {
+        @SuppressWarnings("unchecked")
+        final Collection<Unit> allUnitsInDetails = (Collection<Unit>) details;
+        fillSbWithDetailsCollectionUnits(title, indent, unit, objIter, allUnitsInDetails);
+      } else {
+        // collection of unhandled objects
+        stringBuilder.append(indent).append(title).append('\n');
+      }
+    } else {
+      // empty collection of something
+      if (title.matches("\\w+ win")) {
+        conquerStr = new StringBuilder(title + conquerStr + " with no units remaining");
+      } else {
+        // empty collection of unhandled objects
+        stringBuilder.append(indent).append(title).append('\n');
+      }
+    }
+  }
+
+  private void fillSbWithDetailsCollectionUnits(
+      String title,
+      String indent,
+      Unit unit,
+      Iterator<Object> objIter,
+      Collection<Unit> allUnitsInDetails) {
+    // purchase/place units don't need details
+    if (title.matches("\\w+ buy .*")
+        || title.matches("\\w+ attack with .*")
+        || title.matches("\\w+ defend with .*")) {
+      stringBuilder.append(indent).append(title).append('\n');
+    } else if (title.matches("\\d+ \\w+ owned by the .*? lost .*")
+        || title.matches("\\d+ \\w+ owned by the .*? lost")) {
+      if (verboseLog) {
+        stringBuilder.append(indent).append(MORE_INDENT).append(title).append('\n');
+      }
+    } else if (title.startsWith("Battle casualty summary:")) {
+      fillSbWithBattleSummary(title, indent, unit, objIter, allUnitsInDetails);
+    } else if (title.matches(".*? placed in .*")
+        || title.matches(".* owned by the \\w+ retreated to .*")) {
+      stringBuilder.append(indent).append(title).append('\n');
+    } else if (title.matches("\\w+ win")) {
+      conquerStr =
+          new StringBuilder(
+              title
+                  + conquerStr
+                  + " with "
+                  + MyFormatter.unitsToTextNoOwner(allUnitsInDetails)
+                  + " remaining");
+    } else {
+      stringBuilder.append(indent).append(title).append('\n');
+    }
+  }
+
+  private void fillSbWithBattleSummary(
+      String title,
+      String indent,
+      Unit unit,
+      Iterator<Object> objIter,
+      Collection<Unit> allUnitsInDetails) {
+    stringBuilder
+        .append(indent)
+        .append(conquerStr)
+        .append(". Battle score ")
+        .append(title.substring(title.indexOf("for attacker is")))
+        .append('\n');
+    conquerStr = new StringBuilder();
+    // separate units by player and show casualty summary
+    final IntegerMap<GamePlayer> unitCount = new IntegerMap<>();
+    unitCount.add(unit.getOwner(), 1);
+    while (objIter.hasNext()) {
+      unit = (Unit) objIter.next();
+      unitCount.add(unit.getOwner(), 1);
+    }
+    for (final GamePlayer player : unitCount.keySet()) {
+      stringBuilder
+          .append(indent)
+          .append("Casualties for ")
+          .append(player.getName())
+          .append(": ")
+          .append(MyFormatter.unitsToTextNoOwner(allUnitsInDetails, player))
+          .append('\n');
+    }
+  }
+
+  private void fillSbWithDetailsNull(
+      String title,
+      String indent,
+      boolean moving,
+      List<String> moveList,
+      StringBuilder conquerStr) {
+    if (titleNeedsFurtherProcessing(title)) {
+      if (title.matches("\\w+ collect \\d+ PUs?.*")) {
+        stringBuilder.append(indent).append(title).append('\n');
+      } else if (title.matches("\\w+ takes? .*? from \\w+")) {
+        // British take Libya from Germans
+        if (moving) {
+          final String str = moveList.remove(moveList.size() - 1);
+          moveList.add(str + "\n  " + indent + title.replace(" takes ", " take "));
+        } else {
+          conquerStr.append(title.replaceAll("^\\w+ takes ", ", taking "));
+        }
+      } else if (title.matches("\\w+ spend \\d+ on tech rolls")) {
+        stringBuilder.append(indent).append(title).append('\n');
+      } else if (!title.startsWith("Rolls to resolve tech hits:")) {
+        stringBuilder.append(indent).append(title).append('\n');
+      }
+    }
+  }
+
+  private void fillSbWithDetailsDiceRoll(
+      int diceSides,
+      DiceRoll diceRoll,
+      String title,
+      String indent,
+      Map<String, Double> hitDifferentialMap) {
+    final String diceMsg1 = title.substring(0, title.indexOf(':') + 1);
+    if (diceMsg1.isEmpty()) {
+      // tech roll
+      stringBuilder.append(indent).append(MORE_INDENT).append(title).append('\n');
+    } else {
+      // dice roll
+      stringBuilder.append(indent).append(MORE_INDENT).append(diceMsg1);
+      final String hitDifferentialKey = parseHitDifferentialKeyFromDiceRollMessage(diceMsg1);
+      final int hits = diceRoll.getHits();
+      int rolls = 0;
+      for (int i = 1; i <= diceSides; i++) {
+        rolls += diceRoll.getRolls(i).size();
+      }
+      final double expectedHits = diceRoll.getExpectedHits();
+      stringBuilder
+          .append(" ")
+          .append(hits)
+          .append("/")
+          .append(rolls)
+          .append(" hits, ")
+          .append(String.format("%.2f", expectedHits))
+          .append(" expected hits")
+          .append('\n');
+      final double hitDifferential = hits - expectedHits;
+      hitDifferentialMap.merge(hitDifferentialKey, hitDifferential, Double::sum);
+    }
   }
 
   private static boolean titleNeedsFurtherProcessing(final String title) {
@@ -494,7 +578,7 @@ public class HistoryLog extends JDialog {
               && players.contains(t.getOwner())
               && isOriginalOwnerInPlayers(TerritoryAttachment.get(t).orElse(null), players);
       if (isOwnerInPlayersAndAttachmentOriginalOwnerNot || !ownedUnits.isEmpty()) {
-        stringBuilder.append("    ").append(t.getName()).append(" : ");
+        stringBuilder.append(MORE_INDENT).append(t.getName()).append(" : ");
         if (isOwnerInPlayersAndAttachmentOriginalOwnerNot && ownedUnits.isEmpty()) {
           stringBuilder.append("1 flag").append('\n');
         } else if (isOwnerInPlayersAndAttachmentOriginalOwnerNot) {
@@ -544,7 +628,7 @@ public class HistoryLog extends JDialog {
       final int pusQuantity = player.getResources().getQuantity(pus);
       final int production = getProduction(player, data);
       stringBuilder
-          .append("    ")
+          .append(MORE_INDENT)
           .append(player.getName())
           .append(" : ")
           .append(production)
