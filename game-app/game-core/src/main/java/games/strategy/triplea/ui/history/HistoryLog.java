@@ -32,6 +32,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JDialog;
@@ -130,33 +131,44 @@ public class HistoryLog extends JDialog {
   private static GamePlayer getPlayerId(final HistoryNode printNode) {
     DefaultMutableTreeNode curNode = printNode;
     final TreePath parentPath = new TreePath(printNode.getPath()).getParentPath();
-    Optional<GamePlayer> optionalCurrentPlayer = Optional.empty();
+    Optional<GamePlayer> optionalCurrentPlayerId = Optional.empty();
     if (parentPath != null) {
       final Object[] pathToNode = parentPath.getPath();
       for (final Object pathNode : pathToNode) {
-        final HistoryNode node = (HistoryNode) pathNode;
-        if (node instanceof Step) {
-          optionalCurrentPlayer = ((Step) node).getPlayerId();
-        }
+        optionalCurrentPlayerId = getPlayerFromHistoryNode((HistoryNode) pathNode);
       }
     }
     do {
       final Enumeration<?> nodeEnum = curNode.preorderEnumeration();
       while (nodeEnum.hasMoreElements()) {
-        final HistoryNode node = (HistoryNode) nodeEnum.nextElement();
-        if (node instanceof Step) {
-          final String title = node.getTitle();
-          final Optional<GamePlayer> optionalGamePlayer = ((Step) node).getPlayerId();
-          if (!title.equals("Initializing Delegates") && optionalGamePlayer.isPresent()) {
-            optionalCurrentPlayer = optionalGamePlayer;
-          }
+        final Optional<GamePlayer> optionalGamePlayerStep =
+            getPlayerFromHistoryNode(
+                (HistoryNode) nodeEnum.nextElement(),
+                historyNode -> !historyNode.getTitle().equals("Initializing Delegates"));
+        if (optionalGamePlayerStep.isPresent()) {
+          optionalCurrentPlayerId = optionalGamePlayerStep;
         }
       }
       curNode = curNode.getNextSibling();
-    } while ((curNode instanceof Step)
-        && ((Step) curNode).getPlayerIdOrThrow().equals(optionalCurrentPlayer.orElse(null)));
-    return optionalCurrentPlayer.orElseThrow(
+    } while ((curNode instanceof Step nodeStep)
+        && nodeStep.getPlayerIdOrThrow().equals(optionalCurrentPlayerId.orElse(null)));
+    return optionalCurrentPlayerId.orElseThrow(
         () -> new IllegalStateException("No player ID determined from steps"));
+  }
+
+  private static Optional<GamePlayer> getPlayerFromHistoryNode(HistoryNode node) {
+    if (node instanceof Step nodeStep) {
+      return nodeStep.getPlayerId();
+    }
+    return Optional.empty();
+  }
+
+  private static Optional<GamePlayer> getPlayerFromHistoryNode(
+      HistoryNode node, Predicate<HistoryNode> predicate) {
+    if (predicate.test(node)) {
+      return getPlayerFromHistoryNode(node);
+    }
+    return Optional.empty();
   }
 
   /**
