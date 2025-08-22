@@ -35,6 +35,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.annotation.Nullable;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -488,19 +489,15 @@ public class HistoryLog extends JDialog {
         .append(" : \n\n");
     for (final Territory t : territories) {
       final List<Unit> ownedUnits = t.getMatches(Matches.unitIsOwnedByAnyOf(players));
-      // see if there's a flag
-      final Optional<TerritoryAttachment> optionalTerritoryAttachment = TerritoryAttachment.get(t);
-      final boolean hasFlag =
-          optionalTerritoryAttachment.isPresent()
-              && !t.getOwner().isNull()
+      final boolean isOwnerInPlayersAndAttachmentOriginalOwnerNot =
+          !t.getOwner().isNull()
               && players.contains(t.getOwner())
-              && (optionalTerritoryAttachment.get().getOriginalOwner().isEmpty()
-                  || !players.contains(optionalTerritoryAttachment.get().getOriginalOwner().get()));
-      if (hasFlag || !ownedUnits.isEmpty()) {
+              && isOriginalOwnerInPlayers(TerritoryAttachment.get(t).orElse(null), players);
+      if (isOwnerInPlayersAndAttachmentOriginalOwnerNot || !ownedUnits.isEmpty()) {
         stringBuilder.append("    ").append(t.getName()).append(" : ");
-        if (hasFlag && ownedUnits.isEmpty()) {
+        if (isOwnerInPlayersAndAttachmentOriginalOwnerNot && ownedUnits.isEmpty()) {
           stringBuilder.append("1 flag").append('\n');
-        } else if (hasFlag) {
+        } else if (isOwnerInPlayersAndAttachmentOriginalOwnerNot) {
           stringBuilder.append("1 flag, ");
         }
         if (!ownedUnits.isEmpty()) {
@@ -513,10 +510,19 @@ public class HistoryLog extends JDialog {
     textArea.setText(stringBuilder.toString());
   }
 
+  private static boolean isOriginalOwnerInPlayers(
+      @Nullable TerritoryAttachment territoryAttachment, Collection<GamePlayer> players) {
+    if (territoryAttachment == null) {
+      return false;
+    }
+    final Optional<GamePlayer> optionalOriginalOwner = territoryAttachment.getOriginalOwner();
+    return (optionalOriginalOwner.isEmpty() || !players.contains(optionalOriginalOwner.get()));
+  }
+
   public void printDiceStatistics(final GameData data, final IRandomStats randomStats) {
     final RandomStatsDetails stats = randomStats.getRandomStats(data.getDiceSides());
     final String diceStats = stats.getAllStatsString();
-    if (diceStats.length() > 0) {
+    if (!diceStats.isEmpty()) {
       stringBuilder.append(diceStats).append('\n').append('\n').append('\n');
     }
     textArea.setText(stringBuilder.toString());
@@ -556,12 +562,7 @@ public class HistoryLog extends JDialog {
       boolean isConvoyOrLand = false;
       final int terrProduction =
           TerritoryAttachment.get(place).map(TerritoryAttachment::getProduction).orElse(0);
-      if (!place.isWater()
-          || (!data.getPlayerList()
-                  .getNullPlayer()
-                  .equals(OriginalOwnerTracker.getOriginalOwner(place))
-              && player.equals(OriginalOwnerTracker.getOriginalOwner(place))
-              && place.isOwnedBy(player))) {
+      if (!place.isWater() || isPlayerOwnerAndOriginalOwnerOfLand(player, place)) {
         isConvoyOrLand = true;
       }
       if (place.isOwnedBy(player) && isConvoyOrLand && terrProduction > 0) {
@@ -569,5 +570,19 @@ public class HistoryLog extends JDialog {
       }
     }
     return production;
+  }
+
+  /**
+   * @param territory {@link Territory} to be checked
+   * @param player {@link GamePlayer} to be checked
+   * @return {@code true} when player is not the NullPlayer and the same as the land territory's
+   *     current owner as well as original owner
+   */
+  private static boolean isPlayerOwnerAndOriginalOwnerOfLand(
+      GamePlayer player, Territory territory) {
+    GamePlayer originalOwner = OriginalOwnerTracker.getOriginalOwner(territory).orElse(null);
+    return !player.getData().getPlayerList().getNullPlayer().equals(originalOwner)
+        && player.equals(originalOwner)
+        && territory.isOwnedBy(player);
   }
 }
