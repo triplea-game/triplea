@@ -41,6 +41,7 @@ public class ImageScrollerLargeView extends JComponent {
   private static final int BOTTOM = 0b1000;
 
   protected final ImageScrollModel model;
+  private final List<ScrollListener> scrollListeners = new ArrayList<>();
   protected double scale = 1;
   private int dragScrollingLastX;
   private int dragScrollingLastY;
@@ -64,6 +65,9 @@ public class ImageScrollerLargeView extends JComponent {
    */
   private boolean wasLastActionDragging = false;
 
+  private boolean inside = false;
+  private int insideCount = 0;
+  private int edge = NONE;
   private final ActionListener timerAction =
       new ActionListener() {
         @Override
@@ -84,10 +88,6 @@ public class ImageScrollerLargeView extends JComponent {
       };
   // scrolling
   private final Timer timer = new Timer(50, timerAction);
-  private boolean inside = false;
-  private int insideCount = 0;
-  private int edge = NONE;
-  private final List<ScrollListener> scrollListeners = new ArrayList<>();
 
   public ImageScrollerLargeView(final Dimension dimension, final ImageScrollModel model) {
     this.model = model;
@@ -222,6 +222,22 @@ public class ImageScrollerLargeView extends JComponent {
         this, (double factor) -> setScaleViaMouseZoom(scale * factor));
   }
 
+  private static int getNewEdge(final int x, final int y, final int width, final int height) {
+    final int mapEdgeScrollZoneSize = ClientSetting.mapEdgeScrollZoneSize.getValueOrThrow();
+    int newEdge = NONE;
+    if (x < mapEdgeScrollZoneSize) {
+      newEdge |= LEFT;
+    } else if (width - x < mapEdgeScrollZoneSize) {
+      newEdge |= RIGHT;
+    }
+    if (y < mapEdgeScrollZoneSize) {
+      newEdge |= TOP;
+    } else if (height - y < mapEdgeScrollZoneSize) {
+      newEdge |= BOTTOM;
+    }
+    return newEdge;
+  }
+
   public boolean wasLastActionDraggingAndReset() {
     if (wasLastActionDragging) {
       wasLastActionDragging = false;
@@ -275,22 +291,6 @@ public class ImageScrollerLargeView extends JComponent {
     return new Dimension(model.getMaxWidth(), model.getMaxHeight());
   }
 
-  private static int getNewEdge(final int x, final int y, final int width, final int height) {
-    final int mapEdgeScrollZoneSize = ClientSetting.mapEdgeScrollZoneSize.getValueOrThrow();
-    int newEdge = NONE;
-    if (x < mapEdgeScrollZoneSize) {
-      newEdge |= LEFT;
-    } else if (width - x < mapEdgeScrollZoneSize) {
-      newEdge |= RIGHT;
-    }
-    if (y < mapEdgeScrollZoneSize) {
-      newEdge |= TOP;
-    } else if (height - y < mapEdgeScrollZoneSize) {
-      newEdge |= BOTTOM;
-    }
-    return newEdge;
-  }
-
   private void refreshBoxSize() {
     model.setBoxDimensions((int) (getWidth() / scale), (int) (getHeight() / scale));
   }
@@ -310,7 +310,10 @@ public class ImageScrollerLargeView extends JComponent {
     final int oldWidth = model.getBoxWidth();
     final int oldHeight = model.getBoxHeight();
     setScale(newScale);
-    final Point mouse = getMousePosition();
+    Point mouse = getMousePosition();
+    if (mouse == null) { // fallback, e.g., for touchpad case
+      mouse = new Point(getWidth() / 2, getHeight() / 2);
+    }
     final int dx = (int) (mouse.getX() / getWidth() * (oldWidth - model.getBoxWidth()));
     final int dy = (int) (mouse.getY() / getHeight() * (oldHeight - model.getBoxHeight()));
     model.set(model.getX() + dx, model.getY() + dy);
