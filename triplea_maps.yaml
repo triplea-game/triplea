@@ -2199,7 +2199,7 @@
     <br>A simple symmetrical map made for 4 players.
 - mapName: Over The Top
   mapCategory: GOOD
-  version: 2
+  version: 3
   url: https://github.com/triplea-maps/over_the_top/archive/refs/heads/master.zip
   img: https://raw.githubusercontent.com/triplea-maps/over-the-top/master/preview.png
   description: |
