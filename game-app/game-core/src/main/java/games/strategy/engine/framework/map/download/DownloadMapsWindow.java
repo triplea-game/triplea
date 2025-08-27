@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+import javax.annotation.Nonnull;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
@@ -48,7 +49,6 @@ import javax.swing.table.TableRowSorter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
 import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.JButtonBuilder;
@@ -464,7 +464,7 @@ public class DownloadMapsWindow extends JFrame {
    * @param maps List of MapDownloadItem that are available
    * @return Matching MapDownloadItem sublist
    */
-  private static @NotNull List<MapDownloadItem> getSelectedMapDownloadItems(
+  private static @Nonnull List<MapDownloadItem> getSelectedMapDownloadItems(
       List<String> mapNames, List<MapDownloadItem> maps) {
     List<MapDownloadItem> selectedMapItems = new ArrayList<>();
     for (final MapDownloadItem map : maps) {

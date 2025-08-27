@@ -90,7 +90,7 @@ public final class ProMoveUtils {
         }
 
         // Determine route and add to move list
-        Optional<Route> optionalRoute = null;
+        Optional<Route> optionalRoute = Optional.empty();
         if (unitList.stream().anyMatch(Matches.unitIsSea())) {
 
           // Sea unit (including carriers with planes)

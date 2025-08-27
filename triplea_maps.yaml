@@ -496,6 +496,7 @@
 - mapName: MiniMap
   mapCategory: GOOD
   url: https://github.com/triplea-maps/minimap/archive/refs/heads/master.zip
+  img: https://github.com/triplea-maps/minimap/blob/master/map/minigame.gif
   version: 1
   description: |
     <br>
@@ -2198,7 +2199,7 @@
     <br>A simple symmetrical map made for 4 players.
 - mapName: Over The Top
   mapCategory: GOOD
-  version: 2
+  version: 3
   url: https://github.com/triplea-maps/over_the_top/archive/refs/heads/master.zip
   img: https://raw.githubusercontent.com/triplea-maps/over-the-top/master/preview.png
   description: |
@@ -2900,6 +2901,7 @@
 - mapName: WW2v3-Navaland
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/v3_Navalland/archive/refs/heads/master.zip
+  img: https://raw.githubusercontent.com/triplea-maps/v3_Navalland/master/preview.png
   version: 1
   description: |
     <br>A modified version of WW2v3 (AA50)
@@ -3331,3 +3333,94 @@
   img: https://github.com/triplea-maps/Spoils_of_War/blob/master/preview.png
   description: |
     <br>3-Way Conflict between Russia, Germany & the United States
+- mapName: Churchills 1939 Path to Victory
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/churchills_1939_ww2_ptv/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/churchills_1939_ww2_ptv/blob/master/preview.png
+  description: |
+    <br>A 1939 scenario for the Path to Victory map
+- mapName: Forty Thousand
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Forty_thousand/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/Forty_thousand/blob/master/preview.png
+  description: |
+    <br>Conflict in the Warhammer 40K Universe
+- mapName: Nova Games Edition
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Nova_Games_Edition/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/Nova_Games_Edition/blob/master/preview.png
+  description: |
+    <br>TripleA implementation of the original 1981 Nova Games edition
+- mapName: Wolfys 1939
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Wolfy_s_1939/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/Nova_Games_Edition/blob/master/preview.png
+  description: |
+    <br>World War 2 in 1939 on Big World Map
+- mapName: Apocalypse 2012
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Apocalypse2012/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/Apocalypse2012/blob/master/preview.png
+  description: |
+    <br>Hypothetical World War 3 in 2012
+- mapName: Second World War
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/SecondWorldWar/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/SecondWorldWar/blob/master/preview.png
+  description: |
+    <br>The Second World War starting in late 1941.
+- mapName: NWO-Finest_Hour_The_Tipping_point
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/NWO-Finest_Hour_The_Tipping_point/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/NWO-Finest_Hour_The_Tipping_point/blob/master/preview.png
+  description: |
+    <br>World War 2 in Europe starting in Fall 1942
+- mapName: Alexander 350BC
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/alexander350/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/alexander350/blob/master/preview.png
+  description: |
+    <br>The world in the time of Alexander the Great.
+- mapName: Total World War USA
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Total_World_War_USA/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/Total_World_War_USA/blob/master/preview.png
+  description: |
+    <br>Invasion of the United States in an alternate history World War 2
+- mapName: Empty Hexes
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/emptyhexes/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/emptyhexes/blob/master/preview.png
+  description: |
+    <br>Modding Resource. Not a playable scenario.
+- mapName: Zombies 1942
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/AAZ42/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/AAZ42/blob/master/preview.png
+  description: |
+    <br>Inspired by Axis & Allies & Zombies using the 1942 map
+- mapName: Settlers - Age of Tribes
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/settlers_age_of_tribes/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/settlers_age_of_tribes/blob/master/preview.png
+  description: |
+    <br>Fantasy races fight over Europe with a randomized start.
+- mapName: World in Conflict
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/World_in_conflict/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/World_in_conflict/blob/master/preview.png
+  description: |
+    <br>Full scale WW2 Fall 1941
