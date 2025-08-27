@@ -3424,3 +3424,12 @@
   img: https://github.com/triplea-maps/World_in_conflict/blob/master/preview.png
   description: |
     <br>Full scale WW2 Fall 1941
+- mapName: World War v3 1941 Deluxe
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/world_war_ii_v3_deluxe/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/world_war_ii_v3_deluxe/blob/master/preview.png
+  description: |
+    <br>A slightly expanded edition of the v3 map with a November 1941 start date and new territories in the Med, Middle East, and South Pacific.
+    <br>National objectives have been replaced with 'lend-lease' rules simulating aid to Russia and China, and with oil derricks that benefit the Axis when captured.
+    <br>Adds bunkers, barracks, and cheaper ships, but otherwise faithful to the units availalbe in wwii_v3.
