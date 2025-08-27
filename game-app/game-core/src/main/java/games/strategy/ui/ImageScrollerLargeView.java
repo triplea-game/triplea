@@ -5,7 +5,6 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.UiContext;
 import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -41,6 +40,7 @@ public class ImageScrollerLargeView extends JComponent {
   private static final int BOTTOM = 0b1000;
 
   protected final ImageScrollModel model;
+  private final List<ScrollListener> scrollListeners = new ArrayList<>();
   protected double scale = 1;
   private int dragScrollingLastX;
   private int dragScrollingLastY;
@@ -58,36 +58,31 @@ public class ImageScrollerLargeView extends JComponent {
    *
    * <p>But, if the map is dragged without any units being selected, this puts us in a bad state
    * where the next right click will no-op. We get into this state because the unit deselect logic
-   * is never invoked and does not clear the flag. Hence the next right click instead of
+   * is never invoked and does not clear the flag. Hence, the next right click instead of
    * de-selecting will no-op. To overcome this, whenever units are selected, we'll set this flag
    * back to false.
    */
   private boolean wasLastActionDragging = false;
 
+  private boolean inside = false;
+  private int insideCount = 0;
+  private int edge = NONE;
   private final ActionListener timerAction =
-      new ActionListener() {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          if (JOptionPane.getFrameForComponent(ImageScrollerLargeView.this).getFocusOwner()
-              == null) {
-            insideCount = 0;
-            return;
-          }
-          if (inside && edge != NONE) {
-            insideCount++;
-            if (insideCount > 6) {
-              // Scroll the map when the mouse has hovered inside the scroll zone for long enough
-              SwingUtilities.invokeLater(ImageScrollerLargeView.this::scroll);
-            }
+      e -> {
+        if (JOptionPane.getFrameForComponent(ImageScrollerLargeView.this).getFocusOwner() == null) {
+          insideCount = 0;
+          return;
+        }
+        if (inside && edge != NONE) {
+          insideCount++;
+          if (insideCount > 6) {
+            // Scroll the map when the mouse has hovered inside the scroll zone for long enough
+            SwingUtilities.invokeLater(ImageScrollerLargeView.this::scroll);
           }
         }
       };
   // scrolling
   private final Timer timer = new Timer(50, timerAction);
-  private boolean inside = false;
-  private int insideCount = 0;
-  private int edge = NONE;
-  private final List<ScrollListener> scrollListeners = new ArrayList<>();
 
   public ImageScrollerLargeView(final Dimension dimension, final ImageScrollModel model) {
     this.model = model;
@@ -216,10 +211,26 @@ public class ImageScrollerLargeView extends JComponent {
     this.model.addListener(
         () -> {
           repaint();
-          notifyScollListeners();
+          notifyScrollListeners();
         });
     Gestures.registerMagnificationListener(
         this, (double factor) -> setScaleViaMouseZoom(scale * factor));
+  }
+
+  private static int getNewEdge(final int x, final int y, final int width, final int height) {
+    final int mapEdgeScrollZoneSize = ClientSetting.mapEdgeScrollZoneSize.getValueOrThrow();
+    int newEdge = NONE;
+    if (x < mapEdgeScrollZoneSize) {
+      newEdge |= LEFT;
+    } else if (width - x < mapEdgeScrollZoneSize) {
+      newEdge |= RIGHT;
+    }
+    if (y < mapEdgeScrollZoneSize) {
+      newEdge |= TOP;
+    } else if (height - y < mapEdgeScrollZoneSize) {
+      newEdge |= BOTTOM;
+    }
+    return newEdge;
   }
 
   public boolean wasLastActionDraggingAndReset() {
@@ -255,7 +266,7 @@ public class ImageScrollerLargeView extends JComponent {
     scrollListeners.add(s);
   }
 
-  private void notifyScollListeners() {
+  private void notifyScrollListeners() {
     for (final ScrollListener element : new ArrayList<>(scrollListeners)) {
       element.scrolled(model.getX(), model.getY());
     }
@@ -273,22 +284,6 @@ public class ImageScrollerLargeView extends JComponent {
 
   public Dimension getImageDimensions() {
     return new Dimension(model.getMaxWidth(), model.getMaxHeight());
-  }
-
-  private static int getNewEdge(final int x, final int y, final int width, final int height) {
-    final int mapEdgeScrollZoneSize = ClientSetting.mapEdgeScrollZoneSize.getValueOrThrow();
-    int newEdge = NONE;
-    if (x < mapEdgeScrollZoneSize) {
-      newEdge |= LEFT;
-    } else if (width - x < mapEdgeScrollZoneSize) {
-      newEdge |= RIGHT;
-    }
-    if (y < mapEdgeScrollZoneSize) {
-      newEdge |= TOP;
-    } else if (height - y < mapEdgeScrollZoneSize) {
-      newEdge |= BOTTOM;
-    }
-    return newEdge;
   }
 
   private void refreshBoxSize() {
@@ -310,7 +305,10 @@ public class ImageScrollerLargeView extends JComponent {
     final int oldWidth = model.getBoxWidth();
     final int oldHeight = model.getBoxHeight();
     setScale(newScale);
-    final Point mouse = getMousePosition();
+    Point mouse = getMousePosition();
+    if (mouse == null) { // fallback, e.g., for touchpad case
+      mouse = new Point(getWidth() / 2, getHeight() / 2);
+    }
     final int dx = (int) (mouse.getX() / getWidth() * (oldWidth - model.getBoxWidth()));
     final int dy = (int) (mouse.getY() / getHeight() * (oldHeight - model.getBoxHeight()));
     model.set(model.getX() + dx, model.getY() + dy);
