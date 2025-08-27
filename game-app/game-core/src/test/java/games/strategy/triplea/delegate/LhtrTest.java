@@ -43,7 +43,7 @@ class LhtrTest extends AbstractClientSettingTestCase {
 
   @Test
   void testFightersCanLandOnNewPlacedCarrier() {
-    final MoveDelegate delegate = gameData.getMoveDelegate();
+    final AbstractMoveDelegate delegate = gameData.getMoveDelegate();
     delegate.initialize("MoveDelegate", "MoveDelegate");
     final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(germans);
@@ -70,7 +70,7 @@ class LhtrTest extends AbstractClientSettingTestCase {
 
   @Test
   void testFightersDestroyedWhenNoPendingCarriers() {
-    final MoveDelegate delegate = gameData.getMoveDelegate();
+    final AbstractMoveDelegate delegate = gameData.getMoveDelegate();
     delegate.initialize("MoveDelegate", "MoveDelegate");
     final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(germans);
@@ -93,7 +93,7 @@ class LhtrTest extends AbstractClientSettingTestCase {
 
   @Test
   void testAaGunsDontFireNonCombat() {
-    final MoveDelegate delegate = gameData.getMoveDelegate();
+    final AbstractMoveDelegate delegate = gameData.getMoveDelegate();
     delegate.initialize("MoveDelegate", "MoveDelegate");
     final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(germans);

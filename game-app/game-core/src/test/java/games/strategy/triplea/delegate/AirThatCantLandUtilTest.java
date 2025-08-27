@@ -139,7 +139,7 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
     final int preCountSz52 = sz52.getUnitCollection().size();
     final int preCountAirSz44 = sz44.getUnitCollection().getMatches(Matches.unitIsAir()).size();
     // now move to attack
-    final MoveDelegate moveDelegate = gameData.getMoveDelegate();
+    final AbstractMoveDelegate moveDelegate = gameData.getMoveDelegate();
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -190,7 +190,7 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
     final int preCountSz52 = sz52.getUnitCollection().size();
     final int preCountSz43 = sz43.getUnitCollection().size();
     // now move to attack
-    final MoveDelegate moveDelegate = gameData.getMoveDelegate();
+    final AbstractMoveDelegate moveDelegate = gameData.getMoveDelegate();
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -238,7 +238,7 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
     final int preCountCanada = eastCanada.getUnitCollection().size();
     final int preCountAirSz9 = sz9.getUnitCollection().getMatches(Matches.unitIsAir()).size();
     // now move to attack
-    final MoveDelegate moveDelegate = gameData.getMoveDelegate();
+    final AbstractMoveDelegate moveDelegate = gameData.getMoveDelegate();
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -287,7 +287,7 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
     final int preCountCanada = eastCanada.getUnitCollection().size();
     final int preCountAirSz9 = sz9.getUnitCollection().getMatches(Matches.unitIsAir()).size();
     // now move to attack
-    final MoveDelegate moveDelegate = gameData.getMoveDelegate();
+    final AbstractMoveDelegate moveDelegate = gameData.getMoveDelegate();
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
