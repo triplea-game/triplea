@@ -12,6 +12,7 @@ import games.strategy.engine.history.History;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleA;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
+import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.TechnologyDelegate;
@@ -503,6 +504,11 @@ public class GameData implements Serializable, GameState {
   @Override
   public TechnologyDelegate getTechDelegate() {
     return (TechnologyDelegate) getDelegate("tech");
+  }
+
+  @Override
+  public EndRoundDelegate getEndRoundDelegate() {
+    return (EndRoundDelegate) getDelegate("endRound");
   }
 
   /**
