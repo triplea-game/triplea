@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -64,18 +65,19 @@ public class PlayerBridge {
     }
     try {
       try (GameData.Unlocker ignored = game.getData().acquireReadLock()) {
-        final IDelegate delegate = game.getData().getDelegate(currentDelegate);
+        final Optional<IDelegate> optionalDelegate =
+            game.getData().getDelegateOptional(currentDelegate);
         // TODO: before converting this Preconditions check to checkNotNull, make sure we do not
         // depend on the illegal state exception type in a catch block.
         Preconditions.checkState(
-            delegate != null,
+            optionalDelegate.isPresent(),
             "IDelegate in PlayerBridge.getRemote() cannot be null. CurrentStep: "
                 + stepName
                 + ", and CurrentDelegate: "
                 + currentDelegate);
         final RemoteName remoteName;
         try {
-          remoteName = ServerGame.getRemoteName(delegate);
+          remoteName = ServerGame.getRemoteName(optionalDelegate.get());
         } catch (final Exception e) {
           final String errorMessage =
               "IDelegate IRemote interface class returned null or was not correct "
@@ -111,13 +113,6 @@ public class PlayerBridge {
     try {
       try (GameData.Unlocker ignored = game.getData().acquireReadLock()) {
         final IDelegate delegate = game.getData().getDelegate(name);
-        if (delegate == null) {
-          final String errorMessage =
-              "IDelegate in PlayerBridge.getRemote() cannot be null. "
-                  + "Looking for delegate named: "
-                  + name;
-          throw new IllegalStateException(errorMessage);
-        }
         if (!(delegate instanceof IPersistentDelegate)) {
           return null;
         }

@@ -15,6 +15,7 @@ import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.player.Player;
@@ -39,6 +40,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.CollectionUtils;
@@ -68,14 +70,15 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
 
     // Only add territory resources if endTurn not endTurnNoPU
     for (final GameStep step : data.getSequence()) {
-      if (player.equals(step.getPlayerId())
-          && step.getDelegate() != null
-          && step.getDelegate().getName().equals("endTurn")) {
-        final List<Territory> territories = data.getMap().getTerritoriesOwnedBy(player);
-        final int pusFromTerritories =
-            getProduction(territories, data) * Properties.getPuMultiplier(data.getProperties());
-        resources.add(new Resource(Constants.PUS, data), pusFromTerritories);
-        resources.add(EndTurnDelegate.getResourceProduction(territories, data));
+      if (player.equals(step.getPlayerId())) {
+        Optional<IDelegate> optionalDelegate = step.getDelegateOptional();
+        if (optionalDelegate.isPresent() && optionalDelegate.get().getName().equals("endTurn")) {
+          final List<Territory> territories = data.getMap().getTerritoriesOwnedBy(player);
+          final int pusFromTerritories =
+              getProduction(territories, data) * Properties.getPuMultiplier(data.getProperties());
+          resources.add(new Resource(Constants.PUS, data), pusFromTerritories);
+          resources.add(EndTurnDelegate.getResourceProduction(territories, data));
+        }
       }
     }
 
