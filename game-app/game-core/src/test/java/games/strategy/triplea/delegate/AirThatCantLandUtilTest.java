@@ -146,7 +146,7 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
     moveDelegate.move(sz45.getUnits(), new Route(sz45, sz44));
     moveDelegate.end();
     // fight the battle
-    final BattleDelegate battle = (BattleDelegate) gameData.getDelegate("battle");
+    final BattleDelegate battle = gameData.getBattleDelegate();
     battle.setDelegateBridgeAndPlayer(bridge);
     whenGetRandom(bridge)
         .thenAnswer(withValues(0, 0))
@@ -197,7 +197,7 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
     moveDelegate.move(sz45.getUnits(), new Route(sz45, sz44));
     moveDelegate.end();
     // fight the battle
-    final BattleDelegate battle = (BattleDelegate) gameData.getDelegate("battle");
+    final BattleDelegate battle = gameData.getBattleDelegate();
     battle.setDelegateBridgeAndPlayer(bridge);
     whenGetRandom(bridge).thenAnswer(withValues(0, 0)).thenAnswer(withValues(0, 0, 0));
     battle.start();
@@ -245,7 +245,7 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
     moveDelegate.move(sz11.getUnits(), new Route(sz11, sz9));
     moveDelegate.end();
     // fight the battle
-    final BattleDelegate battle = (BattleDelegate) gameData.getDelegate("battle");
+    final BattleDelegate battle = gameData.getBattleDelegate();
     battle.setDelegateBridgeAndPlayer(bridge);
     whenGetRandom(bridge).thenAnswer(withValues(0));
     battle.start();
@@ -296,7 +296,7 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
         sz9.getUnitCollection().getUnits(infantryType, 1), new Route(sz9, eastCanada));
     moveDelegate.end();
     // fight the battle
-    final BattleDelegate battle = (BattleDelegate) gameData.getDelegate("battle");
+    final BattleDelegate battle = gameData.getBattleDelegate();
     battle.setDelegateBridgeAndPlayer(bridge);
     battle.start();
     whenGetRandom(bridge).thenAnswer(withValues(0)).thenAnswer(withValues(0, 0));

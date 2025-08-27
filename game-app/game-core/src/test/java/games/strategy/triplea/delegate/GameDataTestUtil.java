@@ -375,7 +375,7 @@ public final class GameDataTestUtil {
 
   /** Returns a BattleDelegate from the given GameData object. */
   public static BattleDelegate battleDelegate(final GameData data) {
-    return (BattleDelegate) data.getDelegate("battle");
+    return data.getBattleDelegate();
   }
 
   /** Returns a MoveDelegate from the given GameData object. */

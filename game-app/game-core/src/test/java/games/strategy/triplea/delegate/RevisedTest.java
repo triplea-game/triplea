@@ -221,7 +221,7 @@ class RevisedTest extends AbstractClientSettingTestCase {
     final Territory novo = gameData.getMap().getTerritory("Novosibirsk");
     move(novo.getUnits(), new Route(novo, sinkiang));
     moveDelegate.end();
-    final BattleDelegate battle = (BattleDelegate) gameData.getDelegate("battle");
+    final BattleDelegate battle = gameData.getBattleDelegate();
     battle.setDelegateBridgeAndPlayer(bridge);
     whenGetRandom(bridge).thenAnswer(withValues(0, 0)).thenAnswer(withValues(0));
     battle.start(); // fights battle
@@ -277,7 +277,7 @@ class RevisedTest extends AbstractClientSettingTestCase {
         CollectionUtils.getNMatches(sz5.getUnits(), 1, Matches.unitIsOfType(infantryType)),
         new Route(sz5, karelia));
     moveDelegate.end();
-    final IDelegate battle = gameData.getDelegate("battle");
+    final IDelegate battle = gameData.getBattleDelegate();
     battle.setDelegateBridgeAndPlayer(bridge);
     battle.start();
     final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(gameData);
