@@ -39,7 +39,7 @@ public class AiGameTest {
     }
     assertThat(game.isGameOver(), is(true));
     assertThat(game.getData().getSequence().getRound(), greaterThan(2));
-    EndRoundDelegate endDelegate = (EndRoundDelegate) game.getData().getDelegate("endRound");
+    EndRoundDelegate endDelegate = (EndRoundDelegate) game.getData().getEndRoundDelegate();
     assertThat(endDelegate.getWinners(), not(empty()));
     log.info("Game completed at round: " + game.getData().getSequence().getRound());
     log.info("Game winners: " + endDelegate.getWinners());

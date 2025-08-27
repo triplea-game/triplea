@@ -98,6 +98,10 @@ public class GameStep extends GameDataComponent {
     return player;
   }
 
+  public Optional<IDelegate> getDelegateOptional() {
+    return getData().getDelegateOptional(delegateName);
+  }
+
   public IDelegate getDelegate() {
     return getData().getDelegate(delegateName);
   }
@@ -132,8 +136,8 @@ public class GameStep extends GameDataComponent {
 
   public String getDisplayName() {
     if (displayName == null) {
-      IDelegate delegate = getDelegate();
-      return delegate != null ? delegate.getDisplayName() : delegateName;
+      Optional<IDelegate> optionalDelegate = getDelegateOptional();
+      return optionalDelegate.isPresent() ? optionalDelegate.get().getDisplayName() : delegateName;
     }
     return displayName;
   }

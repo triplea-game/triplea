@@ -118,12 +118,12 @@ To connect to local lobby, from the game client:
 
 ## Deployment & Infrastructure Development
 
-The deployment code is inside of the '[/infrastructure](./infrastructure)' folder.
+The deployment code is inside of the '[infrastructure](../infrastructure)' folder.
 
 We use [ansible](https://www.ansible.com/) to execute deployments.
 
 You can test out deployment code by first launching a virtual machine and then running a deployment
-against that virtual machine. See '[infrastructure/vagrant/REAMDE.md](./infrastructure/vagrant/REAMDE.md)'
+against that virtual machine. See '[infrastructure/REAMDE.md](../infrastructure/REAMDE.md)'
 for more information.
 
 # Pitfalls and Pain Points to be aware of

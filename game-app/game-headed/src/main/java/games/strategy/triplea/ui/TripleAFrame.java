@@ -1831,14 +1831,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
                 @Override
                 public void actionPerformed(final ActionEvent ae) {
-                  final HistoryLog historyLog = new HistoryLog();
-                  historyLog.printRemainingTurn(
-                      historyPanel.getCurrentPopupNode(), false, data.getDiceSides(), null);
-                  historyLog.printTerritorySummary(
-                      historyPanel.getCurrentPopupNode(), clonedGameData);
-                  historyLog.printProductionSummary(clonedGameData);
-                  historyPanel.clearCurrentPopupNode();
-                  historyLog.setVisible(true);
+                  showHistoryLog(false, clonedGameData);
                 }
               });
           popup.add(
@@ -1847,14 +1840,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
                 @Override
                 public void actionPerformed(final ActionEvent ae) {
-                  final HistoryLog historyLog = new HistoryLog();
-                  historyLog.printRemainingTurn(
-                      historyPanel.getCurrentPopupNode(), true, data.getDiceSides(), null);
-                  historyLog.printTerritorySummary(
-                      historyPanel.getCurrentPopupNode(), clonedGameData);
-                  historyLog.printProductionSummary(clonedGameData);
-                  historyPanel.clearCurrentPopupNode();
-                  historyLog.setVisible(true);
+                  showHistoryLog(true, clonedGameData);
                 }
               });
           popup.add(
@@ -1964,6 +1950,16 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
           getContentPane().add(historyComponent, BorderLayout.CENTER);
           validate();
         });
+  }
+
+  private void showHistoryLog(boolean verboseLog, GameData clonedGameData) {
+    final HistoryLog historyLog = new HistoryLog(this);
+    historyLog.printRemainingTurn(
+        historyPanel.getCurrentPopupNode(), verboseLog, data.getDiceSides(), null);
+    historyLog.printTerritorySummary(historyPanel.getCurrentPopupNode(), clonedGameData);
+    historyLog.printProductionSummary(clonedGameData);
+    historyPanel.clearCurrentPopupNode();
+    historyLog.setVisible(true);
   }
 
   private void showGame() {

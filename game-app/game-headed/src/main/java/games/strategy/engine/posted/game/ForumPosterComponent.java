@@ -96,7 +96,7 @@ public final class ForumPosterComponent extends JPanel {
     this.forumPosterDelegate = forumPosterDelegate;
     this.frame = frame;
     this.poster = poster;
-    historyLog = new HistoryLog();
+    historyLog = new HistoryLog(frame);
     updateHistoryLog();
     // only show widgets if there are PBEM messengers
     removeAll();
