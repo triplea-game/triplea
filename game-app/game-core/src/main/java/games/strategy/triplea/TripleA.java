@@ -25,13 +25,13 @@ public class TripleA implements IGameLoader {
 
   protected transient IGame game;
 
+  private static Player toGamePlayer(final Map.Entry<String, PlayerTypes.Type> namePlayerType) {
+    return namePlayerType.getValue().newPlayerWithName(namePlayerType.getKey());
+  }
+
   @Override
   public Set<Player> newPlayers(final Map<String, PlayerTypes.Type> playerNames) {
     return playerNames.entrySet().stream().map(TripleA::toGamePlayer).collect(Collectors.toSet());
-  }
-
-  private static Player toGamePlayer(final Map.Entry<String, PlayerTypes.Type> namePlayerType) {
-    return namePlayerType.getValue().newPlayerWithName(namePlayerType.getKey());
   }
 
   @Override
@@ -49,7 +49,7 @@ public class TripleA implements IGameLoader {
       final LaunchAction launchAction,
       @Nullable final Chat chat) {
     this.game = game;
-    if (game.getData().getDelegate("edit") == null) {
+    if (game.getData().getDelegateOptional("edit").isEmpty()) {
       // An evil hack: instead of modifying the XML, force an EditDelegate by adding one here
       final EditDelegate delegate = new EditDelegate();
       delegate.initialize("edit", "edit");

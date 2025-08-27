@@ -31,7 +31,6 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
-import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TechAdvance;
@@ -2502,8 +2501,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                   + MyFormatter.defaultNamedToTextList(t.getPlayers())
                   + " have just won the game, with this victory: "
                   + messageForRecord);
-          final EndRoundDelegate delegateEndRound = (EndRoundDelegate) data.getDelegate("endRound");
-          delegateEndRound.signalGameOver(victoryMessage.trim(), t.getPlayers(), bridge);
+          data.getEndRoundDelegate().signalGameOver(victoryMessage.trim(), t.getPlayers(), bridge);
         } catch (final Exception e) {
           log.error("Failed to signal game over", e);
         }

@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doAnswer;
@@ -63,7 +62,6 @@ public class TripleATest {
   void testStartGameAndShutDownWhenServerGameStartedWithoutEditDelegate() {
 
     when(serverGame.getData()).thenReturn(gameData);
-    when(gameData.getDelegate(anyString())).thenReturn(null);
     doAnswer(
             invocation -> {
               IGame game = invocation.getArgument(1);

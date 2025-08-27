@@ -496,6 +496,7 @@
 - mapName: MiniMap
   mapCategory: GOOD
   url: https://github.com/triplea-maps/minimap/archive/refs/heads/master.zip
+  img: https://github.com/triplea-maps/minimap/blob/master/map/minigame.gif
   version: 1
   description: |
     <br>
@@ -2198,7 +2199,7 @@
     <br>A simple symmetrical map made for 4 players.
 - mapName: Over The Top
   mapCategory: GOOD
-  version: 2
+  version: 3
   url: https://github.com/triplea-maps/over_the_top/archive/refs/heads/master.zip
   img: https://raw.githubusercontent.com/triplea-maps/over-the-top/master/preview.png
   description: |
@@ -3402,3 +3403,24 @@
   img: https://github.com/triplea-maps/emptyhexes/blob/master/preview.png
   description: |
     <br>Modding Resource. Not a playable scenario.
+- mapName: Zombies 1942
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/AAZ42/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/AAZ42/blob/master/preview.png
+  description: |
+    <br>Inspired by Axis & Allies & Zombies using the 1942 map
+- mapName: Settlers - Age of Tribes
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/settlers_age_of_tribes/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/settlers_age_of_tribes/blob/master/preview.png
+  description: |
+    <br>Fantasy races fight over Europe with a randomized start.
+- mapName: World in Conflict
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/World_in_conflict/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/World_in_conflict/blob/master/preview.png
+  description: |
+    <br>Full scale WW2 Fall 1941
