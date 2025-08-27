@@ -243,8 +243,13 @@ public class GameData implements Serializable, GameState {
     delegates.put(delegate.getName(), delegate);
   }
 
+  public Optional<IDelegate> getDelegateOptional(final String name) {
+    return Optional.ofNullable(delegates.get(name));
+  }
+
   public IDelegate getDelegate(final String name) {
-    return delegates.get(name);
+    return getDelegateOptional(name)
+        .orElseThrow(() -> new IllegalStateException(name + " delegate not found"));
   }
 
   @Override
@@ -399,10 +404,12 @@ public class GameData implements Serializable, GameState {
 
   @RemoveOnNextMajorRelease
   public void fixUpNullPlayersInDelegates() {
-    BattleDelegate battleDelegate = (BattleDelegate) getDelegate("battle");
-    if (battleDelegate != null) {
-      battleDelegate.getBattleTracker().fixUpNullPlayers(playerList.getNullPlayer());
-    }
+    getDelegateOptional("battle")
+        .ifPresent(
+            delegate ->
+                ((BattleDelegate) delegate)
+                    .getBattleTracker()
+                    .fixUpNullPlayers(playerList.getNullPlayer()));
   }
 
   public interface Unlocker extends Closeable {
@@ -480,30 +487,22 @@ public class GameData implements Serializable, GameState {
 
   @Override
   public PoliticsDelegate getPoliticsDelegate() {
-    return (PoliticsDelegate) findDelegate("politics");
-  }
-
-  private IDelegate findDelegate(final String delegateName) {
-    final IDelegate delegate = this.getDelegate(delegateName);
-    if (delegate == null) {
-      throw new IllegalStateException(delegateName + " delegate not found");
-    }
-    return delegate;
+    return (PoliticsDelegate) getDelegate("politics");
   }
 
   @Override
   public BattleDelegate getBattleDelegate() {
-    return (BattleDelegate) findDelegate("battle");
+    return (BattleDelegate) getDelegate("battle");
   }
 
   @Override
   public AbstractMoveDelegate getMoveDelegate() {
-    return (AbstractMoveDelegate) findDelegate("move");
+    return (AbstractMoveDelegate) getDelegate("move");
   }
 
   @Override
   public TechnologyDelegate getTechDelegate() {
-    return (TechnologyDelegate) findDelegate("tech");
+    return (TechnologyDelegate) getDelegate("tech");
   }
 
   /**
