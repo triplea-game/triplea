@@ -15,6 +15,11 @@ async function closeIssues() {
         console.log(`Fetched ${openIssues.length} open issues.`);
 
         for (const issue of openIssues) {
+            // Filter out those with label 'avoidAutoClose'
+            if (issue.labels.some(l => l.name === "avoidAutoClose")) {
+                continue; // label exists, so no check required
+            }
+            
             console.log(`Checking issue #${issue.number}...`);
             // Add label '2.5' (if missing)
             const checkPrefix2_5 = (issue) => issue.title.startsWith('2.5.');

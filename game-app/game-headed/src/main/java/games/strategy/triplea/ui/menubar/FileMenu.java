@@ -80,7 +80,7 @@ final class FileMenu extends JMenu {
                             ? gameData.getPlayerList().getNullPlayer()
                             : step.getPlayerId()));
                 final int round = gameData.getSequence().getRound();
-                final HistoryLog historyLog = new HistoryLog();
+                final HistoryLog historyLog = new HistoryLog(frame);
                 historyLog.printFullTurn(
                     gameData, true, GameStepPropertiesHelper.getTurnSummaryPlayers(gameData));
                 final PbemMessagePoster poster =
