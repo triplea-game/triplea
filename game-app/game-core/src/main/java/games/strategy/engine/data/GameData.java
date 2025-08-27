@@ -250,7 +250,10 @@ public class GameData implements Serializable, GameState {
 
   public IDelegate getDelegate(final String name) {
     return getDelegateOptional(name)
-        .orElseThrow(() -> new IllegalStateException(name + " delegate not found"));
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    name + " delegate not found in list: " + delegates.keySet()));
   }
 
   @Override
