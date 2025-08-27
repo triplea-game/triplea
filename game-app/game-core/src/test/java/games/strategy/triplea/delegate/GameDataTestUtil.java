@@ -380,7 +380,7 @@ public final class GameDataTestUtil {
 
   /** Returns a MoveDelegate from the given GameData object. */
   public static MoveDelegate moveDelegate(final GameData data) {
-    return (MoveDelegate) data.getDelegate("move");
+    return data.getMoveDelegate();
   }
 
   /** Returns a TechnologyDelegate from the given GameData object. */

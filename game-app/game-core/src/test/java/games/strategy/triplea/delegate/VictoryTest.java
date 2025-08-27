@@ -77,7 +77,7 @@ class VictoryTest {
 
     italianResources = italians.getResources().getResourcesCopy();
     purchaseDelegate = (PurchaseDelegate) gameData.getDelegate("purchase");
-    moveDelegate = (MoveDelegate) gameData.getDelegate("move");
+    moveDelegate = gameData.getMoveDelegate();
   }
 
   @Test
