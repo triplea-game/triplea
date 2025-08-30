@@ -3424,3 +3424,24 @@
   img: https://github.com/triplea-maps/World_in_conflict/blob/master/preview.png
   description: |
     <br>Full scale WW2 Fall 1941
+- mapName: AA50-Realistic
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/AA50-realistic/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/AA50-realistic/blob/master/preview.png
+  description: |
+    <br>World War II v3 1942 with an modified setup.
+- mapName: Russian Spring
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Russian_Spring/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/Russian_Spring/blob/master/preview.png
+  description: |
+    <br>Russia tries to conquer all of Europe
+- mapName: France Goes First
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/France_Goes_First/tree/master/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/France_Goes_First/blob/master/preview.png
+  description: |
+    <br>Frances goes first in WW2 Global
