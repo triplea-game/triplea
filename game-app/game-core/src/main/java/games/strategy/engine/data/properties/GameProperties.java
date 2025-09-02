@@ -11,7 +11,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serial;
 import java.io.Serializable;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -81,9 +80,7 @@ public class GameProperties extends GameDataComponent {
   public IEditableProperty<?> getPlayerPropertyOrThrow(final String propertyKey) {
     final Optional<IEditableProperty<?>> optionalPlayerProperty = getPlayerProperty(propertyKey);
     return optionalPlayerProperty.orElseThrow(
-        () ->
-            new IllegalArgumentException(
-                MessageFormat.format("Property not found: {0}", propertyKey)));
+        () -> new IllegalArgumentException(String.format("Property not found: %s", propertyKey)));
   }
 
   /**
@@ -98,8 +95,7 @@ public class GameProperties extends GameDataComponent {
     final Optional<IEditableProperty<?>> optionalNewPlayerPropertyPuIncomeBonus =
         getPlayerProperty(propertyKey);
     if (optionalNewPlayerPropertyPuIncomeBonus.isEmpty()) {
-      final String oldPropertyKey =
-          MessageFormat.format("{0}PU Income Bonus", gamePlayer.getName());
+      final String oldPropertyKey = String.format("%sPU Income Bonus", gamePlayer.getName());
       final Optional<IEditableProperty<?>> optionalOldPlayerPropertyPuIncomeBonus =
           getPlayerProperty(oldPropertyKey);
       final NumberProperty newProperty =
@@ -107,8 +103,8 @@ public class GameProperties extends GameDataComponent {
                   optionalOldPlayerPropertyPuIncomeBonus.orElseThrow(
                       () ->
                           new IllegalArgumentException(
-                              MessageFormat.format(
-                                  "Property not found: {0} or {1}", propertyKey, oldPropertyKey))))
+                              String.format(
+                                  "Property not found: %s or %s", propertyKey, oldPropertyKey))))
               .cloneAs(propertyKey);
       addPlayerProperty(newProperty);
       set(oldPropertyKey, null);
