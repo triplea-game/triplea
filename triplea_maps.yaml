@@ -3445,3 +3445,10 @@
   img: https://github.com/triplea-maps/France_Goes_First/blob/master/preview.png
   description: |
     <br>Frances goes first in WW2 Global
+- mapName: World War II v3 1941 Deluxe
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/world_war_ii_v3_deluxe/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/France_Goes_First/blob/master/preview.png
+  description: |
+    <br>World War II v3 with more nations and unit types
