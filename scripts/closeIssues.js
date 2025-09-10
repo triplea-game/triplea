@@ -21,34 +21,53 @@ async function closeIssues() {
             }
             
             console.log(`Checking issue #${issue.number}...`);
+            let closeNeeded = false;
+            let closeMessage = '';
             // Add label '2.5' (if missing)
             const checkPrefix2_5 = (issue) => issue.title.startsWith('2.5.');
-            let closeNeeded = await checkAndLabelIssue(issue, '2.5', checkPrefix2_5);
-
-            // Check for earlier open issue (then it is a duplicate))
-            const duplicates = openIssues.filter( other =>
-              other.title === issue.title &&
-              new Date(other.created_at) < new Date(issue.created_at) &&
-              other.number !== issue.number
-            );
-            if (duplicates.length > 0) {
+            if (await checkAndLabelIssue(issue, '2.5', checkPrefix2_5)) {
                 closeNeeded = true;
-                const earliest = duplicates.reduce((prev, curr) =>
-                   new Date(curr.created_at) < new Date(prev.created_at) ? curr : prev
-                );
-                console.log(`Duplicate (indicated by same title) of #${earliest.number}.`);
-                await octokit.rest.issues.createComment({
-                  owner: 'triplea-game',
-                  repo: 'triplea',
-                  issue_number: issue.number,
-                  body: `Closing as duplicate (indicated by same title) of #${earliest.number}.`,
-                });
+                closeMessage = `Closing as issue from version 2.5 are assumed to be fixed in newest release.`
+            } 
+                
+            if (!closeNeeded) {
+                // Check for earliest open issue (then it is a duplicate))
+                const findEarliestDuplicate = (issue, issues) => {
+                  const duplicates = issues.filter(
+                    (other) =>
+                      other.title === issue.title &&
+                      new Date(other.created_at) < new Date(issue.created_at) &&
+                      other.number !== issue.number
+                  );
+                
+                  if (duplicates.length === 0) return null;
+                
+                  return duplicates.reduce((earliest, current) =>
+                    new Date(current.created_at) < new Date(earliest.created_at)
+                      ? current
+                      : earliest
+                  );
+                };
+                const earliestDuplicate = findEarliestDuplicate(issue, openIssues);
+                if (earliestDuplicate) {
+                    closeNeeded = true;    
+                    closeMessage = `Closing as duplicate (indicated by same title) of #${earliestDuplicate.number}.`;
+                }
             }
 
             if (closeNeeded) {
-                console.log(`Issue #${issue.number} should be closed.`);
                 // Add label 'auto-close' (if missing)
                 await checkAndLabelIssue(issue, 'auto-close', (issue) => true);
+
+                // Add last comment before closing (cannot be combined in one API call)
+                if (closeMessage) {
+                    await octokit.rest.issues.createComment({
+                      owner: 'triplea-game',
+                      repo: 'triplea',
+                      issue_number: issue.number,
+                      body: closeMessage,
+                    });
+                }
                 
                 // Add close issue
                 await octokit.rest.issues.update({
@@ -58,7 +77,7 @@ async function closeIssues() {
                     state: 'closed',
                     labels: issue.labels,  // ensure the labels are updated
                 });
-                console.log(`Closed issue #${issue.number}.`);
+                console.log(`Closed issue #${issue.number}${closeMessage ? " (" + closeMessage + ")" : ""}.`);
             }  
             else {
                 console.log(`Nothing to be done for #${issue.number}.`);
