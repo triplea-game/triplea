@@ -2,6 +2,7 @@ package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
+import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.delegate.BidPlaceDelegate;
 import games.strategy.triplea.delegate.BidPurchaseDelegate;
 import games.strategy.triplea.delegate.EndRoundDelegate;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 class PlayerOrder {
@@ -28,8 +30,9 @@ class PlayerOrder {
 
   void saveToFile(final PrintGenerationData printData) throws IOException {
     for (final GameStep currentStep : printData.getData().getSequence()) {
-      if (currentStep.getDelegate() != null) {
-        final String delegateClassName = currentStep.getDelegate().getClass().getName();
+      Optional<IDelegate> optionalDelegate = currentStep.getDelegateOptional();
+      if (optionalDelegate.isPresent()) {
+        final String delegateClassName = optionalDelegate.get().getClass().getName();
         if (delegateClassName.equals(InitializationDelegate.class.getName())
             || delegateClassName.equals(BidPurchaseDelegate.class.getName())
             || delegateClassName.equals(BidPlaceDelegate.class.getName())

@@ -1,6 +1,6 @@
 # Profiling TripleA
 
-When investigating performance issues or looking for opportunities to improve TripleA performance (for example, 
+When investigating performance issues or looking for opportunities to improve TripleA performance (for example,
 to speed up AI turns), it's useful to profile TripleA execution.
 
 One tool that can be used for this is VisualVM. Here's how it can be used:
@@ -10,7 +10,7 @@ One tool that can be used for this is VisualVM. Here's how it can be used:
   3. Before ending the turn, connect to the TripleA process from VisualVM.
   4. Once attached, switch to the Sampler tab and click "CPU".
   5. Switch back to TripleA and end the turn. The AIs will now execute.
-  6. Once TripleA is finished the AI turn(s) and it's at the start of a human turn, switch back to VisualVM and click 
+  6. Once TripleA is finished the AI turn(s) and it's at the start of a human turn, switch back to VisualVM and click
   the "CPU" button again to stop sampling.
 
 At this point, in the CPU samples view, you should be able to see different threads. There will be one thread that is

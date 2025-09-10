@@ -7,8 +7,10 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.GameStep;
+import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.Properties;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
 import lombok.experimental.UtilityClass;
@@ -188,11 +190,11 @@ public final class GameStepPropertiesHelper {
       if (prop != null) {
         return Boolean.parseBoolean(prop);
       }
-      return (data.getSequence().getStep().getDelegate() == null
-              || !NoAirCheckPlaceDelegate.class.equals(
-                  data.getSequence().getStep().getDelegate().getClass()))
+      Optional<IDelegate> optionalDelegate = data.getSequence().getStep().getDelegateOptional();
+      return (optionalDelegate.isEmpty()
+              || !NoAirCheckPlaceDelegate.class.equals(optionalDelegate.get().getClass()))
           && (isNonCombatDelegate(data)
-              || data.getSequence().getStep().getName().endsWith("Place"));
+              || GameStep.isPlaceStepName(data.getSequence().getStep().getName()));
     }
   }
 

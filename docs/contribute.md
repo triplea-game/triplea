@@ -70,7 +70,7 @@ role from below and find out what you can do to help.
 
 #### _How to become one_
 
-- [![PayPal donation icon](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate?token=WFUEUa_Q4Zsq1NOF97Vhe_qVPoqCoj7ZtSAegmMdX6uAt7sziJKO1swbSjYnfEr9lDdAp6dDZNOh4DA8)
+- [![PayPal donation icon](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ASJLHWGTA94MW)
 
 ### :golf: Map Maker
 
@@ -79,7 +79,7 @@ role from below and find out what you can do to help.
 - Basic knowledge of [XML](https://www.w3schools.com/XML/)
 - Using a text editing tool like [Notepad++](https://notepad-plus-plus.org/downloads/)
 - Graphic designer, i.e., creation of image files with advanced image editing software
-- Using a raster image program like [paint.NET](https://www.getpaint.net/) or Adobe Photoshop to produce baseTiles.pngs 
+- Using a raster image program like [paint.NET](https://www.getpaint.net/) or Adobe Photoshop to produce baseTiles.pngs
   and reliefTiles.pngs
 - Use vector software like [Inkscape Project](https://inkscape.org/) to produce baseTiles.pngs or the extra image
   layers on top of reliefTiles.pngs
@@ -126,11 +126,11 @@ https://github.com/triplea-game/triplea/tree/master/docs/map-making
 - Report rules related bugs to Github
 - Approve/Deny rules related Github issues
 - Investigate deeper to allow rules compliant implementation
-- Check results of rules related pull requests (resulting pre-releases) for rules compliance 
+- Check results of rules related pull requests (resulting pre-releases) for rules compliance
 
 #### _How to become one_
 
-- Show your expertise by answering related questions on Github or the forum, then ... 
+- Show your expertise by answering related questions on Github or the forum, then ...
 - ... be appointed by the forum admin team
 
 ### :speech_balloon: Lobby Moderator
@@ -155,11 +155,11 @@ https://github.com/triplea-game/triplea/tree/master/docs/map-making
 
 - GitHub account
 - Basic knowledge of GitHub (Web) workflow
-- Expertise on one or more of these spheres: user software support, rules, game workflow, coding 
+- Expertise on one or more of these spheres: user software support, rules, game workflow, coding
 
 #### _Contributions_
 
-- Analyze issues regarding their validity 
+- Analyze issues regarding their validity
 - Accept or deny issues
 - Sort valid issues according to their priority
 

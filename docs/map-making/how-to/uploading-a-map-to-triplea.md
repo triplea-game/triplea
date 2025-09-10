@@ -24,7 +24,7 @@ or like this:
 * Create a github account
 * Create a repository
 * Upload your map folder to it
-**If the upload size is too large, do it a few files/folders at a time or use 'Github Desktop' or 'Git for Windows' or 'SourceTree' to do it in bulk.** 
+**If the upload size is too large, do it a few files/folders at a time or use 'Github Desktop' or 'Git for Windows' or 'SourceTree' to do it in bulk.**
 Note, the files and folders uploaded should be unzipped. Zips are for download only convenience. When working with a map, you can and should have it unzipped, and same for upload.
 
 ## More about triplea_maps.yaml

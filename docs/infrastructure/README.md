@@ -1,6 +1,6 @@
 # Infrastructure Project
 
-[/infrastructure](/infrastructure) Hosts the code and configuration that 
+[/infrastructure](/infrastructure) Hosts the code and configuration that
 controls deployments. To modify what is run on the servers, we modify
 the checked-in configuration. After merging in configuration changes,
 automation will pick up and deploy these changes to the production servers.
@@ -14,7 +14,7 @@ cd ../../
 ./infrastructure/run_ansible --env vagrant
 ```
 Lobby will be deployed to an Ubuntu VM launched by Vagrant running on VirtualBox.
-To connect, open game settings, testing, and connect to lobby address 
+To connect, open game settings, testing, and connect to lobby address
 'https://localhost:8000'. Be sure to install cert to your OS.
 
 ### Install Lobby SSH Cert on Your Local OS
@@ -25,7 +25,7 @@ On Linux/Ubuntu:
 ```bash
 sudo cp triplea/infrastructure/ansible/roles/nginx/files/vagrant-only.cert.crt \
   /usr/local/share/ca-certificates/
-sudo update-ca-certificates 
+sudo update-ca-certificates
 ```
 
 ## Working With Ansible
@@ -39,16 +39,15 @@ run ansible deployments with a simple wrapper script: 'run_ansible'
 For how to set up and work with vagrant, see:
 [/infrastructure/vagrant/README.md](/infrastructure/vagrant/README.md)
 
-
 ### --diff flag
 
 You can toggle a '--diff' flag to see what changes ansible is doing
 while it does them. If you run ansible a second time, you will see that
-there are no changes made (server is in fully configured state). 
+there are no changes made (server is in fully configured state).
 
 ### --dry-run flag
 You can add a '--dry-run' flag to enable ansible to run in a 'check mode'.
-When in 'check mode', ansible will only simulate changes and will not actually 
+When in 'check mode', ansible will only simulate changes and will not actually
 make any updates.
 
 ### Use 'diff' and 'dry-run' to preview changes before committing them
@@ -72,7 +71,6 @@ Consider this workflow:
   production, and other developers would pick up the same updates when they
   update their local copy of the code.
 
-
 ### Running with ansible
 
 There is a wrapper script to run ansible, run it without args to get a usage text:
@@ -80,7 +78,6 @@ There is a wrapper script to run ansible, run it without args to get a usage tex
 ```bash
 $ ./infrastructure/run_ansible
 ```
-
 
 #### Tags
 
@@ -92,7 +89,6 @@ development. EG:
 $ ./infrastructure/run_ansible --env vagrant --tags nginx,database,lobby
 ```
 
-
 ## Checking in '.orig' files
 
 There are '.orig' files checked in alongside with the copies ansible uses to deploy.
@@ -100,5 +96,4 @@ These files are checked in for convenience to do diffs to see how we have deviat
 from defaults. When modifying configuration on a remote server, first check in a copy
 of the original configuration as a '.orig' file, then continue with checking in a new
 version that is actually deployed.
-
 
