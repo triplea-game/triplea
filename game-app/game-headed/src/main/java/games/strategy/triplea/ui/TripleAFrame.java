@@ -185,13 +185,13 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   private @Nullable ObjectivePanel objectivePanel;
   @Getter private final TerritoryDetailPanel territoryDetailPanel;
   private final JPanel historyComponent = new JPanel();
-  @Getter private HistoryPanel historyPanel;
+  @Getter private @Nullable HistoryPanel historyPanel;
   private final AtomicBoolean inHistory = new AtomicBoolean(false);
   private final AtomicBoolean inGame = new AtomicBoolean(true);
-  private HistorySynchronizer historySyncher;
+  private @Nullable HistorySynchronizer historySyncher;
   @Getter private UiContext uiContext;
   private final JPanel mapAndChatPanel;
-  private final ChatPanel chatPanel;
+  private final @Nullable ChatPanel chatPanel;
   private final CommentPanel commentPanel;
   private final JSplitPane chatSplit;
   private JSplitPane commentSplit;
