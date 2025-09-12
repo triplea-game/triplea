@@ -1885,9 +1885,11 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                                   data, GameDataManager.Options.withEverything())
                               .orElse(null);
                       if (gameDataCopy != null) {
-                        gameDataCopy
-                            .getHistory()
-                            .removeAllHistoryAfterNode(historyPanel.getCurrentPopupNode());
+                        if (historyPanel != null) {
+                          gameDataCopy
+                              .getHistory()
+                              .removeAllHistoryAfterNode(historyPanel.getCurrentPopupNode());
+                        }
                         // TODO: the saved current delegate is still the current delegate,
                         // rather than the delegate at that history popup node
                         // TODO: it still shows the current round number, rather than the round at
@@ -1930,8 +1932,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                       log.error("Failed to save game: " + f.get().toAbsolutePath(), e);
                     }
                   }
-
-                  historyPanel.clearCurrentPopupNode();
+                  if (historyPanel != null) {
+                    historyPanel.clearCurrentPopupNode();
+                  }
                 }
               });
           final JSplitPane split = new JSplitPane();
