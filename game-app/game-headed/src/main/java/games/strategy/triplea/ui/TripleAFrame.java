@@ -1848,8 +1848,10 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                 @Override
                 public void actionPerformed(final ActionEvent ae) {
                   ScreenshotExporter.exportScreenshot(
-                      TripleAFrame.this, data, historyPanel.getCurrentPopupNode());
-                  historyPanel.clearCurrentPopupNode();
+                      TripleAFrame.this, data, getCurrentPopupNodeOrLastNode());
+                  if (historyPanel != null) {
+                    historyPanel.clearCurrentPopupNode();
+                  }
                 }
               });
           popup.add(
