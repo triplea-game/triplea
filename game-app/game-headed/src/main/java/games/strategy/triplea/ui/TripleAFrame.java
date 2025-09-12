@@ -185,13 +185,13 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   private @Nullable ObjectivePanel objectivePanel;
   @Getter private final TerritoryDetailPanel territoryDetailPanel;
   private final JPanel historyComponent = new JPanel();
-  @Getter private HistoryPanel historyPanel;
+  @Getter private @Nullable HistoryPanel historyPanel;
   private final AtomicBoolean inHistory = new AtomicBoolean(false);
   private final AtomicBoolean inGame = new AtomicBoolean(true);
-  private HistorySynchronizer historySyncher;
+  private @Nullable HistorySynchronizer historySyncher;
   @Getter private UiContext uiContext;
   private final JPanel mapAndChatPanel;
-  private final ChatPanel chatPanel;
+  private final @Nullable ChatPanel chatPanel;
   private final CommentPanel commentPanel;
   private final JSplitPane chatSplit;
   private JSplitPane commentSplit;
@@ -1848,8 +1848,10 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                 @Override
                 public void actionPerformed(final ActionEvent ae) {
                   ScreenshotExporter.exportScreenshot(
-                      TripleAFrame.this, data, historyPanel.getCurrentPopupNode());
-                  historyPanel.clearCurrentPopupNode();
+                      TripleAFrame.this, data, getCurrentPopupNodeOrLastNode());
+                  if (historyPanel != null) {
+                    historyPanel.clearCurrentPopupNode();
+                  }
                 }
               });
           popup.add(
@@ -1885,9 +1887,11 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                                   data, GameDataManager.Options.withEverything())
                               .orElse(null);
                       if (gameDataCopy != null) {
-                        gameDataCopy
-                            .getHistory()
-                            .removeAllHistoryAfterNode(historyPanel.getCurrentPopupNode());
+                        if (historyPanel != null) {
+                          gameDataCopy
+                              .getHistory()
+                              .removeAllHistoryAfterNode(historyPanel.getCurrentPopupNode());
+                        }
                         // TODO: the saved current delegate is still the current delegate,
                         // rather than the delegate at that history popup node
                         // TODO: it still shows the current round number, rather than the round at
@@ -1930,8 +1934,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                       log.error("Failed to save game: " + f.get().toAbsolutePath(), e);
                     }
                   }
-
-                  historyPanel.clearCurrentPopupNode();
+                  if (historyPanel != null) {
+                    historyPanel.clearCurrentPopupNode();
+                  }
                 }
               });
           final JSplitPane split = new JSplitPane();
@@ -1952,12 +1957,21 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
   private void showHistoryLog(boolean verboseLog, GameData clonedGameData) {
     final HistoryLog historyLog = new HistoryLog(this);
+    final HistoryNode currentPopupNodeOrLastNode = getCurrentPopupNodeOrLastNode();
     historyLog.printRemainingTurn(
-        historyPanel.getCurrentPopupNode(), verboseLog, data.getDiceSides(), null);
-    historyLog.printTerritorySummary(historyPanel.getCurrentPopupNode(), clonedGameData);
+        currentPopupNodeOrLastNode, verboseLog, data.getDiceSides(), null);
+    historyLog.printTerritorySummary(currentPopupNodeOrLastNode, clonedGameData);
     historyLog.printProductionSummary(clonedGameData);
-    historyPanel.clearCurrentPopupNode();
+    if (historyPanel != null) {
+      historyPanel.clearCurrentPopupNode();
+    }
     historyLog.setVisible(true);
+  }
+
+  private HistoryNode getCurrentPopupNodeOrLastNode() {
+    return (historyPanel != null
+        ? historyPanel.getCurrentPopupNode()
+        : data.getHistory().getLastNode());
   }
 
   private void showGame() {
