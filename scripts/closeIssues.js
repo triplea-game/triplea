@@ -7,17 +7,49 @@ const octokit = new Octokit({
 async function closeIssues() {
     try {
         console.log('Fetching issues...');
+        
+        // 1. Get all open issues (about 300 → 3 API calls with per_page=100)
         const openIssues = await octokit.paginate(octokit.rest.issues.listForRepo, {
             owner: 'triplea-game',
             repo: 'triplea',
             state: 'open',
+            per_page: 100,
         });
-        console.log(`Fetched ${openIssues.length} open issues.`);
+        console.log(`Fetched ${openIssues.length} issues in total.`);
 
+        // 2. Get recently (=updated in the last year) closed issues (not more than 300 expected → 3 API calls max)
+        const sinceDate = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString();
+        
+        const recentlyClosedIssues = [];
+        for await (const response of octokit.paginate.iterator(
+          octokit.rest.issues.listForRepo,
+          {
+          owner: "triplea-game",
+          repo: "triplea",
+          state: "closed",
+          sort: "updated",
+          direction: "desc",
+          since: sinceDate,
+          per_page: 100,
+          }
+        )) { 
+          for (const issue of response.data) {
+            // extra check on closed_at as we focus strictly on closure date (later comments affect updated again)
+            if (
+              issue.closed_at &&
+              new Date(issue.closed_at) >= new Date(sinceDate) &&
+              !issue.labels.some(l => l.name === "auto-close")
+            ) {
+              recentlyClosedIssues.push(issue);
+            }
+          }
+        }
+        console.log(`Fetched ${recentlyClosedIssues.length} recently closed issues in total.`);
+        
         for (const issue of openIssues) {
             // Filter out those with label 'avoidAutoClose'
             if (issue.labels.some(l => l.name === "avoidAutoClose")) {
-                continue; // label exists, so no check required
+                continue; // label exists, so no close-check required
             }
             
             console.log(`Checking issue #${issue.number}...`);
@@ -48,10 +80,16 @@ async function closeIssues() {
                       : earliest
                   );
                 };
-                const earliestDuplicate = findEarliestDuplicate(issue, openIssues);
-                if (earliestDuplicate) {
+                const earliestOpenDuplicate = findEarliestDuplicate(issue, openIssues);
+                if (earliestOpenDuplicate) {
                     closeNeeded = true;    
-                    closeMessage = `Closing as duplicate (indicated by same title) of #${earliestDuplicate.number}.`;
+                    closeMessage = `Closing as duplicate (indicated by same title) of #${earliestOpenDuplicate.number}.`;
+                } else {
+                    const earliestRecentlyClosedDuplicate = findEarliestDuplicate(issue, recentlyClosedIssues);
+                    if (earliestRecentlyClosedDuplicate) {
+                        closeNeeded = true;    
+                        closeMessage = `Closing as duplicate (indicated by same title) of #${earliestRecentlyClosedDuplicate.number} is already closed.`;
+                    }
                 }
             }
 
