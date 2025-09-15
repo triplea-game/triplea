@@ -33,24 +33,30 @@ import org.triplea.java.collections.CollectionUtils;
 @Getter
 @EqualsAndHashCode(of = "id", callSuper = false)
 public class Unit extends GameDataComponent implements DynamicallyModifiable {
-  @NonNls public static final String TRANSPORTED_BY = "transportedBy";
-  @NonNls public static final String UNLOADED = "unloaded";
-  @NonNls public static final String LOADED_THIS_TURN = "wasLoadedThisTurn";
-  @NonNls public static final String UNLOADED_TO = "unloadedTo";
-  @NonNls public static final String UNLOADED_IN_COMBAT_PHASE = "wasUnloadedInCombatPhase";
-  @NonNls public static final String ALREADY_MOVED = "alreadyMoved";
-  @NonNls public static final String BONUS_MOVEMENT = "bonusMovement";
-  @NonNls public static final String SUBMERGED = "submerged";
-  @NonNls public static final String WAS_IN_COMBAT = "wasInCombat";
-  @NonNls public static final String LOADED_AFTER_COMBAT = "wasLoadedAfterCombat";
-  @NonNls public static final String UNLOADED_AMPHIBIOUS = "wasAmphibious";
-  @NonNls public static final String ORIGINATED_FROM = "originatedFrom";
-  @NonNls public static final String WAS_SCRAMBLED = "wasScrambled";
-  @NonNls public static final String MAX_SCRAMBLE_COUNT = "maxScrambleCount";
-  @NonNls public static final String WAS_IN_AIR_BATTLE = "wasInAirBattle";
-  @NonNls public static final String LAUNCHED = "launched";
-  @NonNls public static final String AIRBORNE = "airborne";
-  @NonNls public static final String CHARGED_FLAT_FUEL_COST = "chargedFlatFuelCost";
+  public static final class PropertyName {
+    @NonNls public static final String TRANSPORTED_BY = "transportedBy";
+    @NonNls public static final String UNLOADED = "unloaded";
+    @NonNls public static final String LOADED_THIS_TURN = "wasLoadedThisTurn";
+    @NonNls public static final String UNLOADED_TO = "unloadedTo";
+    @NonNls public static final String UNLOADED_IN_COMBAT_PHASE = "wasUnloadedInCombatPhase";
+    @NonNls public static final String ALREADY_MOVED = "alreadyMoved";
+    @NonNls public static final String BONUS_MOVEMENT = "bonusMovement";
+    @NonNls public static final String SUBMERGED = "submerged";
+    @NonNls public static final String WAS_IN_COMBAT = "wasInCombat";
+    @NonNls public static final String LOADED_AFTER_COMBAT = "wasLoadedAfterCombat";
+    @NonNls public static final String UNLOADED_AMPHIBIOUS = "wasAmphibious";
+    @NonNls public static final String ORIGINATED_FROM = "originatedFrom";
+    @NonNls public static final String WAS_SCRAMBLED = "wasScrambled";
+    @NonNls public static final String MAX_SCRAMBLE_COUNT = "maxScrambleCount";
+    @NonNls public static final String WAS_IN_AIR_BATTLE = "wasInAirBattle";
+    @NonNls public static final String LAUNCHED = "launched";
+    @NonNls public static final String AIRBORNE = "airborne";
+    @NonNls public static final String CHARGED_FLAT_FUEL_COST = "chargedFlatFuelCost";
+
+    private PropertyName() {
+      throw new IllegalStateException("Utility class constructor should not be called");
+    }
+  }
 
   private static final long serialVersionUID = -79061939642779999L;
 
@@ -230,50 +236,53 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
       case "uid" -> Optional.of(MutableProperty.ofReadOnlySimple(this::getId));
       case "hits" -> Optional.of(MutableProperty.ofSimple(this::setHits, this::getHits));
       case "type" -> Optional.of(MutableProperty.ofReadOnlySimple(this::getType));
-      case TRANSPORTED_BY ->
+      case PropertyName.TRANSPORTED_BY ->
           Optional.of(MutableProperty.ofSimple(this::setTransportedBy, this::getTransportedBy));
-      case UNLOADED -> Optional.of(MutableProperty.ofSimple(this::setUnloaded, this::getUnloaded));
-      case LOADED_THIS_TURN ->
+      case PropertyName.UNLOADED ->
+          Optional.of(MutableProperty.ofSimple(this::setUnloaded, this::getUnloaded));
+      case PropertyName.LOADED_THIS_TURN ->
           Optional.of(
               MutableProperty.ofSimple(this::setWasLoadedThisTurn, this::getWasLoadedThisTurn));
-      case UNLOADED_TO ->
+      case PropertyName.UNLOADED_TO ->
           Optional.of(MutableProperty.ofSimple(this::setUnloadedTo, this::getUnloadedTo));
-      case UNLOADED_IN_COMBAT_PHASE ->
+      case PropertyName.UNLOADED_IN_COMBAT_PHASE ->
           Optional.of(
               MutableProperty.ofSimple(
                   this::setWasUnloadedInCombatPhase, this::getWasUnloadedInCombatPhase));
-      case ALREADY_MOVED ->
+      case PropertyName.ALREADY_MOVED ->
           Optional.of(MutableProperty.ofSimple(this::setAlreadyMoved, this::getAlreadyMoved));
-      case BONUS_MOVEMENT ->
+      case PropertyName.BONUS_MOVEMENT ->
           Optional.of(MutableProperty.ofSimple(this::setBonusMovement, this::getBonusMovement));
       case "unitDamage" ->
           Optional.of(MutableProperty.ofSimple(this::setUnitDamage, this::getUnitDamage));
-      case SUBMERGED ->
+      case PropertyName.SUBMERGED ->
           Optional.of(MutableProperty.ofSimple(this::setSubmerged, this::getSubmerged));
       case Constants.ORIGINAL_OWNER ->
           Optional.of(MutableProperty.ofSimple(this::setOriginalOwner, this::getOriginalOwner));
-      case WAS_IN_COMBAT ->
+      case PropertyName.WAS_IN_COMBAT ->
           Optional.of(MutableProperty.ofSimple(this::setWasInCombat, this::getWasInCombat));
-      case LOADED_AFTER_COMBAT ->
+      case PropertyName.LOADED_AFTER_COMBAT ->
           Optional.of(
               MutableProperty.ofSimple(
                   this::setWasLoadedAfterCombat, this::getWasLoadedAfterCombat));
-      case UNLOADED_AMPHIBIOUS ->
+      case PropertyName.UNLOADED_AMPHIBIOUS ->
           Optional.of(MutableProperty.ofSimple(this::setWasAmphibious, this::getWasAmphibious));
-      case ORIGINATED_FROM ->
+      case PropertyName.ORIGINATED_FROM ->
           Optional.of(MutableProperty.ofSimple(this::setOriginatedFrom, this::getOriginatedFrom));
-      case WAS_SCRAMBLED ->
+      case PropertyName.WAS_SCRAMBLED ->
           Optional.of(MutableProperty.ofSimple(this::setWasScrambled, this::getWasScrambled));
-      case MAX_SCRAMBLE_COUNT ->
+      case PropertyName.MAX_SCRAMBLE_COUNT ->
           Optional.of(
               MutableProperty.ofSimple(this::setMaxScrambleCount, this::getMaxScrambleCount));
-      case WAS_IN_AIR_BATTLE ->
+      case PropertyName.WAS_IN_AIR_BATTLE ->
           Optional.of(MutableProperty.ofSimple(this::setWasInAirBattle, this::getWasInAirBattle));
       case "disabled" ->
           Optional.of(MutableProperty.ofSimple(this::setDisabled, this::getDisabled));
-      case LAUNCHED -> Optional.of(MutableProperty.ofSimple(this::setLaunched, this::getLaunched));
-      case AIRBORNE -> Optional.of(MutableProperty.ofSimple(this::setAirborne, this::getAirborne));
-      case CHARGED_FLAT_FUEL_COST ->
+      case PropertyName.LAUNCHED ->
+          Optional.of(MutableProperty.ofSimple(this::setLaunched, this::getLaunched));
+      case PropertyName.AIRBORNE ->
+          Optional.of(MutableProperty.ofSimple(this::setAirborne, this::getAirborne));
+      case PropertyName.CHARGED_FLAT_FUEL_COST ->
           Optional.of(
               MutableProperty.ofSimple(this::setChargedFlatFuelCost, this::getChargedFlatFuelCost));
       default -> Optional.empty();

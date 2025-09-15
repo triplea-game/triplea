@@ -322,7 +322,7 @@ class DiceRollTest {
     final List<Unit> attackers = marine.create(1, americans);
     attackers.forEach(
         unit ->
-            unit.getProperty(Unit.UNLOADED_AMPHIBIOUS)
+            unit.getProperty(Unit.PropertyName.UNLOADED_AMPHIBIOUS)
                 .ifPresent(
                     property -> {
                       try {
@@ -363,7 +363,7 @@ class DiceRollTest {
     final List<Unit> attackers = marine.create(3, americans);
     attackers.forEach(
         unit ->
-            unit.getProperty(Unit.UNLOADED_AMPHIBIOUS)
+            unit.getProperty(Unit.PropertyName.UNLOADED_AMPHIBIOUS)
                 .ifPresent(
                     property -> {
                       try {
@@ -403,7 +403,7 @@ class DiceRollTest {
     final List<Unit> attackers = marine.create(1, americans);
     attackers.forEach(
         unit ->
-            unit.getProperty(Unit.UNLOADED_AMPHIBIOUS)
+            unit.getProperty(Unit.PropertyName.UNLOADED_AMPHIBIOUS)
                 .ifPresent(
                     property -> {
                       try {

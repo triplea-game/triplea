@@ -77,7 +77,8 @@ class MarkNoMovementLeftTest {
         .addChange(
             argThat(
                 compositeChangeContains(
-                    propertyChange(Unit.ALREADY_MOVED, BigDecimal.ONE, BigDecimal.ZERO))));
+                    propertyChange(
+                        Unit.PropertyName.ALREADY_MOVED, BigDecimal.ONE, BigDecimal.ZERO))));
   }
 
   private Unit givenNonAirUnitWithMovementLeft(final BigDecimal movement) {
@@ -108,7 +109,8 @@ class MarkNoMovementLeftTest {
         .addChange(
             argThat(
                 compositeChangeContains(
-                    propertyChange(Unit.ALREADY_MOVED, BigDecimal.ONE, BigDecimal.ZERO))));
+                    propertyChange(
+                        Unit.PropertyName.ALREADY_MOVED, BigDecimal.ONE, BigDecimal.ZERO))));
   }
 
   @Test
