@@ -184,7 +184,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   private final Runnable clientLeftGame;
   private @Nullable ObjectivePanel objectivePanel;
   @Getter private final TerritoryDetailPanel territoryDetailPanel;
-  private final JPanel historyComponent = new JPanel();
   @Getter private @Nullable HistoryPanel historyPanel;
   private final AtomicBoolean inHistory = new AtomicBoolean(false);
   private final AtomicBoolean inGame = new AtomicBoolean(true);
@@ -1018,6 +1017,25 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         .orElse(null);
   }
 
+  private class HistoryPanelPopupMenuBuilder {
+    private final JPopupMenu popup = new JPopupMenu();
+
+    public HistoryPanelPopupMenuBuilder add(String title, Runnable action) {
+      popup.add(
+          new AbstractAction(title) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+              action.run();
+            }
+          });
+      return this;
+    }
+
+    public JPopupMenu build() {
+      return popup;
+    }
+  }
+
   /** Create a unit option with icon and description. */
   private class UnitRenderer extends JLabel implements ListCellRenderer<Unit> {
 
@@ -1811,55 +1829,25 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     }
     territoryDetailPanel.setGameData(clonedGameData);
     mapPanel.setGameData(clonedGameData);
-    SwingUtilities.invokeLater(
-        () -> {
-          final HistoryDetailsPanel historyDetailPanel =
-              new HistoryDetailsPanel(clonedGameData, mapPanel);
-          tabsPanel.removeAll();
-          addTabs(historyDetailPanel);
-          actionButtonsPanel.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
-          historyComponent.removeAll();
-          historyComponent.setLayout(new BorderLayout());
-          // create history tree context menu
-          // actions need to clear the history panel popup state when done
-          final JPopupMenu popup = new JPopupMenu();
-          popup.add(
-              new AbstractAction("Show Summary Log") {
-                private static final long serialVersionUID = -6730966512179268157L;
-
-                @Override
-                public void actionPerformed(final ActionEvent ae) {
-                  showHistoryLog(false, clonedGameData);
-                }
-              });
-          popup.add(
-              new AbstractAction("Show Detailed Log") {
-                private static final long serialVersionUID = -8709762764495294671L;
-
-                @Override
-                public void actionPerformed(final ActionEvent ae) {
-                  showHistoryLog(true, clonedGameData);
-                }
-              });
-          popup.add(
-              new AbstractAction("Export Gameboard Picture") {
-                private static final long serialVersionUID = 1222760138263428443L;
-
-                @Override
-                public void actionPerformed(final ActionEvent ae) {
+    final HistoryDetailsPanel historyDetailPanel =
+        new HistoryDetailsPanel(clonedGameData, mapPanel);
+    // actions need to clear the history panel popup state when done
+    final JPopupMenu popup =
+        new HistoryPanelPopupMenuBuilder()
+            .add("Show Summary Log", () -> showHistoryLog(false, clonedGameData))
+            .add("Show Detailed Log", () -> showHistoryLog(true, clonedGameData))
+            .add(
+                "Show Detailed Log",
+                () -> {
                   ScreenshotExporter.exportScreenshot(
                       TripleAFrame.this, data, getCurrentPopupNodeOrLastNode());
                   if (historyPanel != null) {
                     historyPanel.clearCurrentPopupNode();
                   }
-                }
-              });
-          popup.add(
-              new AbstractAction("Save Game at this point (BETA)") {
-                private static final long serialVersionUID = 1430512376199927896L;
-
-                @Override
-                public void actionPerformed(final ActionEvent ae) {
+                })
+            .add(
+                "\"Save Game at this point (BETA)\"",
+                () -> {
                   JOptionPane.showMessageDialog(
                       TripleAFrame.this,
                       "Please first left click on the spot you want to save from, "
@@ -1937,18 +1925,28 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                   if (historyPanel != null) {
                     historyPanel.clearCurrentPopupNode();
                   }
-                }
-              });
-          final JSplitPane split = new JSplitPane();
-          split.setOneTouchExpandable(true);
-          split.setContinuousLayout(true);
-          split.setDividerSize(8);
-          historyPanel = new HistoryPanel(clonedGameData, historyDetailPanel, popup, uiContext);
-          split.setLeftComponent(historyPanel);
-          split.setRightComponent(gameCenterPanel);
-          split.setDividerLocation(150);
-          historyComponent.add(split, BorderLayout.CENTER);
-          historyComponent.add(bottomBar, BorderLayout.SOUTH);
+                })
+            .build();
+    historyPanel = new HistoryPanel(clonedGameData, historyDetailPanel, popup, uiContext);
+    // create history tree context menu
+    final JSplitPane historyComponentSplitPane = new JSplitPane();
+    historyComponentSplitPane.setOneTouchExpandable(true);
+    historyComponentSplitPane.setContinuousLayout(true);
+    historyComponentSplitPane.setDividerSize(8);
+    historyComponentSplitPane.setLeftComponent(historyPanel);
+    historyComponentSplitPane.setRightComponent(gameCenterPanel);
+    historyComponentSplitPane.setDividerLocation(150);
+    final JPanel historyComponent =
+        new JPanelBuilder()
+            .borderLayout()
+            .addCenter(historyComponentSplitPane)
+            .addSouth(bottomBar)
+            .build();
+    SwingUtilities.invokeLater(
+        () -> {
+          tabsPanel.removeAll();
+          addTabs(historyDetailPanel);
+          actionButtonsPanel.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
           getContentPane().removeAll();
           getContentPane().add(historyComponent, BorderLayout.CENTER);
           validate();
