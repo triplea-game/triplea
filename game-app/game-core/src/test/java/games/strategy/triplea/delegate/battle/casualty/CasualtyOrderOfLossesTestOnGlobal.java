@@ -214,7 +214,7 @@ class CasualtyOrderOfLossesTestOnGlobal {
   private CasualtyOrderOfLosses.Parameters amphibAssault(final Collection<Unit> amphibUnits) {
     amphibUnits.forEach(
         unit ->
-            unit.getProperty(Unit.UNLOADED_AMPHIBIOUS)
+            unit.getProperty(Unit.PropertyName.UNLOADED_AMPHIBIOUS)
                 .ifPresent(
                     property -> {
                       try {

@@ -326,7 +326,8 @@ public class AirBattle extends AbstractBattle {
       final Collection<Unit> units, final IDelegateBridge bridge) {
     final CompositeChange wasInAirBattleChange = new CompositeChange();
     for (final Unit u : units) {
-      wasInAirBattleChange.add(ChangeFactory.unitPropertyChange(u, true, Unit.WAS_IN_AIR_BATTLE));
+      wasInAirBattleChange.add(
+          ChangeFactory.unitPropertyChange(u, true, Unit.PropertyName.WAS_IN_AIR_BATTLE));
     }
     if (!wasInAirBattleChange.isEmpty()) {
       bridge.addChange(wasInAirBattleChange);
