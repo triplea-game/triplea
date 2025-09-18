@@ -59,7 +59,7 @@ subprojects {
         equalsVerifierVersion = "4.1"
         feignVersion = "13.6"
         gsonVersion = "2.13.2"
-        guavaVersion = "33.4.8-jre"
+        guavaVersion = "33.5.0-jre"
         hamcrestOptionalVersion = "2.0.0"
         hamcrestVersion = "2.0.0.0"
         jacksonDataTypeVersion = "2.20.0"
