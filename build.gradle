@@ -91,11 +91,11 @@ subprojects {
         implementation ("com.googlecode.soundlibs:jlayer:$jlayerVersion") {
             exclude group: 'junit', module: 'junit'
         }
-        compileOnly("org.projectlombok:lombok:1.18.40")
-        annotationProcessor("org.projectlombok:lombok:1.18.40")
+        compileOnly("org.projectlombok:lombok:1.18.42")
+        annotationProcessor("org.projectlombok:lombok:1.18.42")
 
-        testCompileOnly("org.projectlombok:lombok:1.18.40")
-        testAnnotationProcessor("org.projectlombok:lombok:1.18.40")
+        testCompileOnly("org.projectlombok:lombok:1.18.42")
+        testAnnotationProcessor("org.projectlombok:lombok:1.18.42")
 
         implementation "ch.qos.logback:logback-classic:$logbackClassicVersion"
         implementation "com.github.ben-manes.caffeine:caffeine:$caffeineVersion"
