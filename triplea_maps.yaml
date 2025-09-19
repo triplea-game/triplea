@@ -496,7 +496,7 @@
 - mapName: MiniMap
   mapCategory: GOOD
   url: https://github.com/triplea-maps/minimap/archive/refs/heads/master.zip
-  img: https://github.com/triplea-maps/minimap/blob/master/map/minigame.gif
+  img: https://github.com/triplea-maps/minimap/blob/master/preview.png
   version: 1
   description: |
     <br>
