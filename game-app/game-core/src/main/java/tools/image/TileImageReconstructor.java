@@ -144,7 +144,7 @@ public final class TileImageReconstructor {
       try {
         log.info("Load a polygon file");
         final Path polyName =
-            new FileOpen("Load A Polygon File", mapFolderLocation, ".txt").getFile();
+            new FileOpen("Load the polygons file", mapFolderLocation, ".txt").getFile();
         if (polyName != null) {
           try {
             polygons = PointFileReaderWriter.readOneToManyPolygons(polyName);
