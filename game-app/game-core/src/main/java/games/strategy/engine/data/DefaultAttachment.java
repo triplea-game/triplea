@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
@@ -173,9 +174,31 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
         && (Objects.equals(name, other.name) || this.toString().equals(other.toString()));
   }
 
+  @Deprecated
   protected Territory getTerritoryOrThrow(String name) throws GameParseException {
     return Optional.ofNullable(getData().getMap().getTerritoryOrNull(name))
         .orElseThrow(() -> new GameParseException("No territory named: " + name + thisErrorMsg()));
+  }
+
+  private Optional<Territory> getTerritory(@Nullable String territoryName) {
+    return Optional.ofNullable(getData().getMap().getTerritoryOrNull(territoryName));
+  }
+
+  @Nonnull
+  protected Territory getTerritoryOrThrowGameParseException(String territoryName)
+      throws GameParseException {
+    return getTerritory(territoryName)
+        .orElseThrow(
+            () -> new GameParseException("No territory named: " + territoryName + thisErrorMsg()));
+  }
+
+  @Nonnull
+  protected Territory getTerritoryOrThrowIllegalStateException(@Nullable String territoryName)
+      throws IllegalStateException {
+    return getTerritory(territoryName)
+        .orElseThrow(
+            () ->
+                new IllegalStateException("No territory named: " + territoryName + thisErrorMsg()));
   }
 
   protected List<GamePlayer> parsePlayerList(final String value, List<GamePlayer> existingList)
