@@ -174,7 +174,7 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   }
 
   protected Territory getTerritoryOrThrow(String name) throws GameParseException {
-    return Optional.ofNullable(getData().getMap().getTerritory(name))
+    return Optional.ofNullable(getData().getMap().getTerritoryOrNull(name))
         .orElseThrow(() -> new GameParseException("No territory named: " + name + thisErrorMsg()));
   }
 

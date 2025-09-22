@@ -1213,7 +1213,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       throw new GameParseException("Empty removeUnits list" + thisErrorMsg());
     }
     final Collection<Territory> territories = new ArrayList<>();
-    final Territory terr = getData().getMap().getTerritory(s[i]);
+    final Territory terr = getData().getMap().getTerritoryOrNull(s[i]);
     if (terr == null) {
       if (s[i].equalsIgnoreCase("all")) {
         territories.addAll(getData().getMap().getTerritories());
@@ -2166,7 +2166,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         if (s[0].equalsIgnoreCase("all")) {
           territories.addAll(data.getMap().getTerritories());
         } else {
-          final Territory territorySet = data.getMap().getTerritory(s[0]);
+          final Territory territorySet = data.getMap().getTerritoryOrNull(s[0]);
           territories.add(territorySet);
         }
         // if null, then is must be "any", so then any player

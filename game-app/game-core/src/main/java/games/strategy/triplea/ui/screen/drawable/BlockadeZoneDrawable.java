@@ -22,7 +22,8 @@ public class BlockadeZoneDrawable extends AbstractDrawable {
       final Graphics2D graphics,
       final MapData mapData) {
     // Find blockade.png from misc folder
-    final Point point = mapData.getBlockadePlacementPoint(data.getMap().getTerritory(location));
+    final Point point =
+        mapData.getBlockadePlacementPoint(data.getMap().getTerritoryOrNull(location));
     drawImage(graphics, mapData.getBlockadeImage(), point, bounds);
   }
 

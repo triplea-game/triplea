@@ -32,7 +32,7 @@ public class TestDataBigWorld1942V3 {
   public TestDataBigWorld1942V3() {
     gameData = TestMapGameData.BIG_WORLD_1942_V3.getGameData();
     british = checkNotNull(gameData.getPlayerList().getPlayerId("British"));
-    france = checkNotNull(gameData.getMap().getTerritory("France"));
+    france = checkNotNull(gameData.getMap().getTerritoryOrNull("France"));
     tank = checkNotNull(gameData.getUnitTypeList().getUnitTypeOrThrow("armour"));
     infantry = checkNotNull(gameData.getUnitTypeList().getUnitTypeOrThrow("infantry"));
     marine = checkNotNull(gameData.getUnitTypeList().getUnitTypeOrThrow("marine"));

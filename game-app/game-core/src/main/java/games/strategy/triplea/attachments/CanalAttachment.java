@@ -87,7 +87,7 @@ public class CanalAttachment extends DefaultAttachment {
   private void setLandTerritories(final String landTerritories) {
     final Set<Territory> terrs = new HashSet<>();
     for (final String name : splitOnColon(landTerritories)) {
-      final Territory territory = getData().getMap().getTerritory(name);
+      final Territory territory = getData().getMap().getTerritoryOrNull(name);
       if (territory == null) {
         throw new IllegalStateException("Canals: No territory called: " + name + thisErrorMsg());
       }

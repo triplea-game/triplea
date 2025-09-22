@@ -27,7 +27,7 @@ public class SeaZoneOutlineDrawable extends AbstractDrawable {
       final GameData data,
       final Graphics2D graphics,
       final MapData mapData) {
-    final Territory territory = data.getMap().getTerritory(territoryName);
+    final Territory territory = data.getMap().getTerritoryOrNull(territoryName);
     final List<Polygon> polys = mapData.getPolygons(territory);
     graphics.setColor(Color.BLACK);
     for (final Polygon polygon : polys) {
