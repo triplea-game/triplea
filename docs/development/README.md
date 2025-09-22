@@ -11,7 +11,34 @@
 
 ## Windows
 
-Set up WSL (see [WSL installation guide](https://learn.microsoft.com/de-de/windows/wsl/install)), this will give you a command line that can be used to run docker, gradle and the code check scripts.
+- Set up WSL (see [WSL installation guide](https://learn.microsoft.com/de-de/windows/wsl/install)), this will give you a command line that can be used to run docker, gradle and the code check scripts
+- Open git folder, e.g., `C:\Users\<user>\git\triplea`, in WSL via explorer `Shift+Right click` and option `Open Linux shell here`
+- Install/upgrade [GitHub CLI](https://github.com/cli/cli#installation)
+
+Install: 
+```bash
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
+sudo apt-add-repository https://cli.github.com/packages
+sudo apt update
+sudo apt install gh
+```
+ 
+Upgrade:
+```bash
+sudo apt update
+sudo apt upgrade gh
+```
+
+- Login to your GitHub account (e.g. via `HTTPS > Credentials > Login with a web browser`, copy URL to open window in browser and copy one-time code for device connection)
+```bash
+gh auth login
+```
+<img width="716" height="255" alt="image" src="https://github.com/user-attachments/assets/d79a9ada-930f-4eaa-993d-03344159e3d4" />
+
+- Sync changes in your IDE with WSL
+```bash
+git status
+```
 
 ## Getting Started
 
