@@ -37,8 +37,8 @@ class WW2V3Year42Test {
 
   @Test
   void testTransportAttack() {
-    final Territory sz13 = gameData.getMap().getTerritory("13 Sea Zone");
-    final Territory sz12 = gameData.getMap().getTerritory("12 Sea Zone");
+    final Territory sz13 = gameData.getMap().getTerritoryOrThrow("13 Sea Zone");
+    final Territory sz12 = gameData.getMap().getTerritoryOrThrow("12 Sea Zone");
     final GamePlayer germans = germans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");
