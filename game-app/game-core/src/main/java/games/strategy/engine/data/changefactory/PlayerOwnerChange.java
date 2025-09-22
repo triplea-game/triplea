@@ -60,7 +60,7 @@ class PlayerOwnerChange extends Change {
       final GamePlayer player = data.getPlayerList().getPlayerId(owner);
       unit.setOwner(player);
     }
-    data.getMap().getTerritory(territoryName).notifyChanged();
+    data.getMap().getTerritoryOrNull(territoryName).notifyChanged();
   }
 
   @Override

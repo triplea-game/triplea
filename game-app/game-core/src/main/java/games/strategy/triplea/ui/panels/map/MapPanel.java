@@ -544,7 +544,7 @@ public class MapPanel extends ImageScrollerLargeView {
     if (name == null) {
       return null;
     }
-    return gameData.getMap().getTerritory(name);
+    return gameData.getMap().getTerritoryOrNull(name);
   }
 
   private double normalizeX(final double x) {
