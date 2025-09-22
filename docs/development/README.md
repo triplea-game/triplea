@@ -39,7 +39,11 @@ gh auth login
 ```bash
 git status
 ```
-
+- Declare repository `triplea-game/triplea` as your default to create PR to with WSL
+```bash
+gh repo set-default triplea-game/triplea
+```
+ 
 ## Getting Started
 
 - Fork & Clone: <https://github.com/triplea-game/triplea>
