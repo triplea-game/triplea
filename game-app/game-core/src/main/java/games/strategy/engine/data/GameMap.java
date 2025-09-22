@@ -382,7 +382,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param t1 start territory of the route
    * @param t2 end territory of the route
    */
-  public int getDistance(final Territory t1, final Territory t2) {
+  public int getDistance(final @Nonnull Territory t1, final @Nonnull Territory t2) {
     return getDistance(t1, t2, it -> true);
   }
 
@@ -394,7 +394,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param t2 end territory of the route
    * @param cond condition that covered territories of the route must match
    */
-  public int getDistance(final Territory t1, final Territory t2, final Predicate<Territory> cond) {
+  public int getDistance(
+      final @Nonnull Territory t1, final @Nonnull Territory t2, final Predicate<Territory> cond) {
     return getDistance(t1, t2, (it, it2) -> cond.test(it2));
   }
 
@@ -407,7 +408,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param routeCond condition that neighboring territories along route must match.
    */
   public int getDistance(
-      final Territory t1, final Territory t2, final BiPredicate<Territory, Territory> routeCond) {
+      final @Nonnull Territory t1,
+      final @Nonnull Territory t2,
+      final BiPredicate<Territory, Territory> routeCond) {
     if (t1.equals(t2)) {
       return 0;
     }

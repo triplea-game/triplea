@@ -24,6 +24,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.util.List;
 import java.util.function.Predicate;
+import javax.annotation.Nonnull;
 import lombok.Getter;
 
 /**
@@ -275,8 +276,8 @@ public class UnitsDrawer extends AbstractDrawable {
     return t.getMatches(selectedUnits);
   }
 
-  public Territory getTerritory(GameData data) {
-    return data.getMap().getTerritoryOrNull(territoryName);
+  public @Nonnull Territory getTerritory(GameData data) {
+    return data.getMap().getTerritoryOrThrow(territoryName);
   }
 
   @Override
