@@ -48,7 +48,7 @@ subprojects {
 
     ext {
         apacheHttpComponentsVersion = "4.5.14"
-        assertjCoreVersion = '3.27.5'
+        assertjCoreVersion = '3.27.6'
         awaitilityVersion = "4.3.0"
         caffeineVersion = "3.2.2"
         checkstyleVersion = "8.45"
