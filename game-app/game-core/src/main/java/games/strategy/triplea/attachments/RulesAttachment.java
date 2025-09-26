@@ -6,7 +6,6 @@ import static com.google.common.base.Preconditions.checkState;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.BattleRecordsList;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.IAttachment;
@@ -207,13 +206,9 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       }
     }
     final List<Territory> terrs = new ArrayList<>();
-    final GameMap map = getData().getMap();
     // this loop starts on 4, so do not replace with an enhanced for loop
     for (int i = 4; i < s.length; i++) {
-      final Territory t = map.getTerritoryOrNull(s[i]);
-      if (t == null) {
-        throw new GameParseException("no such territory called: " + s[i] + thisErrorMsg());
-      }
+      final Territory t = getTerritoryOrThrowGameParseException(s[i]);
       terrs.add(t);
     }
     if (battle == null) {
