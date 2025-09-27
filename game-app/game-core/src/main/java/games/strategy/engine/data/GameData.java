@@ -109,7 +109,7 @@ public class GameData implements Serializable, GameState {
       new TechnologyFrontier("allTechsForGame", this);
   @Getter private transient TechTracker techTracker = new TechTracker(this);
   private final IGameLoader loader = new TripleA();
-  private final StateGameData stateGameData = new StateGameData(this);
+  private StateGameData stateGameData = new StateGameData(this);
   private transient History legacyStateDataGameHistory = null;
 
   @Setter @Getter
@@ -127,9 +127,12 @@ public class GameData implements Serializable, GameState {
     in.defaultReadObject();
     gameDataEventListeners = new GameDataEventListeners();
     techTracker = new TechTracker(this);
-    if (legacyStateDataGameHistory != null) {
-      stateGameData.setGameHistory(legacyStateDataGameHistory);
-      legacyStateDataGameHistory = null; // drop it after migration
+    if (stateGameData == null) {
+      stateGameData = new StateGameData(this);
+      if (legacyStateDataGameHistory != null) {
+        stateGameData.setGameHistory(legacyStateDataGameHistory);
+        legacyStateDataGameHistory = null; // drop it after migration
+      }
     }
   }
 
