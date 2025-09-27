@@ -5,6 +5,7 @@ import com.google.common.base.MoreObjects;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.data.statedata.StateGameData;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.IGameLoader;
@@ -108,7 +109,7 @@ public class GameData implements Serializable, GameState {
       new TechnologyFrontier("allTechsForGame", this);
   @Getter private transient TechTracker techTracker = new TechTracker(this);
   private final IGameLoader loader = new TripleA();
-  private History gameHistory = new History(this);
+  private final StateGameData stateGameData = new StateGameData(this);
 
   @Setter @Getter
   private List<Tuple<IAttachment, List<Tuple<String, String>>>> attachmentOrderAndValues =
@@ -358,20 +359,20 @@ public class GameData implements Serializable, GameState {
     // don't ensure the lock is held when getting the history
     // history operations often acquire the write lock and we can't acquire the write lock if we
     // have the read lock
-    return gameHistory;
+    return stateGameData.getGameHistory();
   }
 
   public void setHistory(final History history) {
-    gameHistory = history;
+    stateGameData.setGameHistory(history);
   }
 
   public void resetHistory() {
-    gameHistory = new History(this);
+    setHistory(new History(this));
     GameStep step = getSequence().getStep();
     // Put the history in a round and step, so that child nodes can be added without errors.
     final boolean oldForceInSwingEventThread = forceInSwingEventThread;
     forceInSwingEventThread = false;
-    gameHistory
+    getHistory()
         .getHistoryWriter()
         .startNextStep(
             step.getName(), step.getDelegateName(), step.getPlayerId(), step.getDisplayName());
