@@ -110,7 +110,8 @@ public class GameData implements Serializable, GameState {
   @Getter private transient TechTracker techTracker = new TechTracker(this);
   private final IGameLoader loader = new TripleA();
   private StateGameData stateGameData = new StateGameData(this);
-  private transient History legacyStateDataGameHistory = null;
+  // legacy fields only kept for compatibility reasons
+  private transient History gameHistory = null;
 
   @Setter @Getter
   private List<Tuple<IAttachment, List<Tuple<String, String>>>> attachmentOrderAndValues =
@@ -129,9 +130,9 @@ public class GameData implements Serializable, GameState {
     techTracker = new TechTracker(this);
     if (stateGameData == null) {
       stateGameData = new StateGameData(this);
-      if (legacyStateDataGameHistory != null) {
-        stateGameData.setGameHistory(legacyStateDataGameHistory);
-        legacyStateDataGameHistory = null; // drop it after migration
+      if (gameHistory != null) {
+        stateGameData.setGameHistory(gameHistory);
+        gameHistory = null; // drop it after migration
       }
     }
   }
