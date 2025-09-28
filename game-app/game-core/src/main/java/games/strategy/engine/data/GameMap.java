@@ -63,7 +63,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     territoryLookup.put(t1.getName(), t1);
   }
 
-  /** Bi-directional. T1 connects to T2, and T2 connects to T1. */
+  /** Bidirectional. T1 connects to T2, and T2 connects to T1. */
   public void addConnection(final Territory t1, final Territory t2) {
     if (t1.equals(t2)) {
       throw new IllegalArgumentException("Cannot connect a territory to itself: " + t1);
@@ -85,13 +85,13 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * Returns the territory with the given name, or null if no territory can be found (case
-   * sensitive).
+   * Case-sensitive search for {@link Territory} by name. *
    *
-   * @param s name of the searched territory (case sensitive)
+   * @param territoryName name of the searched territory (case-sensitive)
+   * @return Territory with the given name or {@code null} if no territory can be found.
    */
-  public @Nullable Territory getTerritory(final String s) {
-    return territoryLookup.get(s);
+  public @Nullable Territory getTerritoryOrNull(final String territoryName) {
+    return territoryLookup.get(territoryName);
   }
 
   public Territory getTerritoryOrThrow(final String s) {

@@ -26,7 +26,7 @@ class AiUtilsTest {
 
   @Test
   void testSortByCost() {
-    final Territory germany = gameData.getMap().getTerritory("Germany");
+    final Territory germany = gameData.getMap().getTerritoryOrNull("Germany");
     final List<Unit> sorted = new ArrayList<>(germany.getUnits());
     sorted.sort(AiUtils.getCostComparator());
     assertEquals(Constants.UNIT_TYPE_INFANTRY, sorted.get(0).getType().getName());
