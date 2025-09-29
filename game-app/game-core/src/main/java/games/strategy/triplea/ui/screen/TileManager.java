@@ -349,17 +349,7 @@ public class TileManager {
         }
       }
       final UnitsDrawer drawable =
-          new UnitsDrawer(
-              category.getUnits().size(),
-              category.getType().getName(),
-              category.getOwner().getName(),
-              lastPlace,
-              category.getDamaged(),
-              category.getBombingDamage(),
-              category.getDisabled(),
-              overflow,
-              territory.getName(),
-              uiContext);
+          new UnitsDrawer(category, lastPlace, overflow, territory.getName(), uiContext);
       drawing.add(drawable);
       allUnitDrawables.add(drawable);
       for (final Tile tile : getTiles(drawable.getPlacementRectangle())) {

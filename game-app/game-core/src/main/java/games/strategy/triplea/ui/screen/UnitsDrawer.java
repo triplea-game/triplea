@@ -16,6 +16,7 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.AbstractDrawable;
+import games.strategy.triplea.util.UnitCategory;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -34,16 +35,11 @@ import lombok.Getter;
  * territory's default placement point, will be drawn under all units in this case.
  */
 public class UnitsDrawer extends AbstractDrawable {
-  private final int count;
-  private final String unitType;
-  private final String playerName;
   @Getter private final Point placementPoint;
-  private final int damaged;
-  private final int bombingUnitDamage;
-  private final boolean disabled;
   private final boolean overflow;
   private final String territoryName;
   private final UiContext uiContext;
+  private final UnitCategory unitCategory;
 
   /** Identifies the location where a nation flag is drawn relative to a unit. */
   public enum UnitFlagDrawMode {
@@ -53,23 +49,14 @@ public class UnitsDrawer extends AbstractDrawable {
   }
 
   public UnitsDrawer(
-      final int count,
-      final String unitType,
-      final String playerName,
+      final UnitCategory unitCategory,
       final Point placementPoint,
-      final int damaged,
-      final int bombingUnitDamage,
-      final boolean disabled,
       final boolean overflow,
       final String territoryName,
       final UiContext uiContext) {
-    this.count = count;
-    this.unitType = unitType;
-    this.playerName = playerName;
+
+    this.unitCategory = unitCategory;
     this.placementPoint = placementPoint;
-    this.damaged = damaged;
-    this.bombingUnitDamage = bombingUnitDamage;
-    this.disabled = disabled;
     this.overflow = overflow;
     this.territoryName = territoryName;
     this.uiContext = uiContext;
@@ -85,7 +72,7 @@ public class UnitsDrawer extends AbstractDrawable {
   }
 
   public String getPlayer() {
-    return playerName;
+    return unitCategory.getOwner().getName();
   }
 
   @Override
@@ -105,20 +92,21 @@ public class UnitsDrawer extends AbstractDrawable {
           factory.getUnitImageWidth() + 2,
           3);
     }
-    final UnitType type = data.getUnitTypeList().getUnitTypeOrThrow(unitType);
-    final GamePlayer owner = data.getPlayerList().getPlayerId(playerName);
-    final boolean damagedImage = damaged > 0 || bombingUnitDamage > 0;
+    final GamePlayer owner = unitCategory.getOwner();
+    final boolean damagedImage =
+        unitCategory.getDamaged() > 0 || unitCategory.getBombingDamage() > 0;
 
+    final UnitType unitType = unitCategory.getType();
     final var imageKey =
         ImageKey.builder()
-            .type(type)
+            .type(unitType)
             .player(owner)
             .damaged(damagedImage)
-            .disabled(disabled)
+            .disabled(unitCategory.getDisabled())
             .build();
 
     final Image img = factory.getImage(imageKey);
-    final int maxRange = new Unit(type, owner, data).getMaxMovementAllowed();
+    final int maxRange = new Unit(unitType, owner, data).getMaxMovementAllowed();
 
     final UnitFlagDrawMode drawMode =
         ClientSetting.unitFlagDrawMode.getValue().orElse(UnitFlagDrawMode.NONE);
@@ -157,15 +145,16 @@ public class UnitsDrawer extends AbstractDrawable {
     }
 
     // more than 1 unit of this category
-    if (count != 1) {
+    int unitsCount = unitCategory.getUnits().size();
+    if (unitsCount != 1) {
       final int stackSize = mapData.getDefaultUnitsStackSize();
       if (stackSize > 0) { // Display more units as a stack
-        for (int i = 1; i < count && i < stackSize; i++) {
+        for (int i = 1; i < unitsCount && i < stackSize; i++) {
           graphics.drawImage(
               img, placementPoint.x + 2 * i - bounds.x, placementPoint.y - 2 * i - bounds.y, null);
         }
-        if (count > stackSize) {
-          final String s = String.valueOf(count);
+        if (unitsCount > stackSize) {
+          final String s = String.valueOf(unitsCount);
 
           drawOutlinedText(
               graphics,
@@ -176,7 +165,7 @@ public class UnitsDrawer extends AbstractDrawable {
               MapImage.getPropertyUnitCountOutline());
         }
       } else { // Display a white number at the bottom of the unit
-        final String s = String.valueOf(count);
+        final String s = String.valueOf(unitsCount);
         drawOutlinedText(
             graphics,
             s,
@@ -189,7 +178,7 @@ public class UnitsDrawer extends AbstractDrawable {
     displayHitDamage(bounds, graphics);
     // Display Factory Damage
     if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())
-        && Matches.unitTypeCanBeDamaged().test(type)) {
+        && Matches.unitTypeCanBeDamaged().test(unitType)) {
       displayFactoryDamage(bounds, graphics);
     }
   }
@@ -200,7 +189,9 @@ public class UnitsDrawer extends AbstractDrawable {
 
     // draw unit icons in top right corner
     final List<Image> unitIcons =
-        uiContext.getUnitIconImageFactory().getImages(playerName, unitType);
+        uiContext
+            .getUnitIconImageFactory()
+            .getImages(unitCategory.getOwner().getName(), unitCategory.getType().getName());
     for (final Image unitIcon : unitIcons) {
       final int xOffset = image.getWidth(null) - unitIcon.getWidth(null);
       graphics.drawImage(
@@ -209,6 +200,7 @@ public class UnitsDrawer extends AbstractDrawable {
   }
 
   private void displayHitDamage(final Rectangle bounds, final Graphics2D graphics) {
+    final int damaged = unitCategory.getDamaged();
     if (!territoryName.isEmpty() && damaged > 1) {
       final String s = String.valueOf(damaged);
       final var factory = uiContext.getUnitImageFactory();
@@ -223,8 +215,9 @@ public class UnitsDrawer extends AbstractDrawable {
   }
 
   private void displayFactoryDamage(final Rectangle bounds, final Graphics2D graphics) {
-    if (!territoryName.isEmpty() && bombingUnitDamage > 0) {
-      final String s = String.valueOf(bombingUnitDamage);
+    int bombingDamage = unitCategory.getBombingDamage();
+    if (!territoryName.isEmpty() && bombingDamage > 0) {
+      final String s = String.valueOf(bombingDamage);
       final var factory = uiContext.getUnitImageFactory();
       drawOutlinedText(
           graphics,
@@ -262,14 +255,16 @@ public class UnitsDrawer extends AbstractDrawable {
     // and the map units haven't updated yet, so the unit count from the territory won't match the
     // units in count
     final Territory t = data.getMap().getTerritoryOrNull(territoryName);
-    final UnitType type = data.getUnitTypeList().getUnitTypeOrThrow(unitType);
+    final UnitType unitType = unitCategory.getType();
     final Predicate<Unit> selectedUnits =
-        Matches.unitIsOfType(type)
-            .and(Matches.unitIsOwnedBy(data.getPlayerList().getPlayerId(playerName)))
+        Matches.unitIsOfType(unitType)
+            .and(Matches.unitIsOwnedBy(unitCategory.getOwner()))
             .and(
-                damaged > 0 ? Matches.unitHasTakenSomeDamage() : Matches.unitHasNotTakenAnyDamage())
+                unitCategory.getDamaged() > 0
+                    ? Matches.unitHasTakenSomeDamage()
+                    : Matches.unitHasNotTakenAnyDamage())
             .and(
-                bombingUnitDamage > 0
+                unitCategory.getBombingDamage() > 0
                     ? Matches.unitHasTakenSomeBombingUnitDamage()
                     : Matches.unitHasNotTakenAnyBombingUnitDamage());
     return t.getMatches(selectedUnits);
