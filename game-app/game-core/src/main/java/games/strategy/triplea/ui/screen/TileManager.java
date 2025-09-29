@@ -349,7 +349,7 @@ public class TileManager {
         }
       }
       final UnitsDrawer drawable =
-          new UnitsDrawer(category, lastPlace, overflow, territory.getName(), uiContext);
+          new UnitsDrawer(category, territory, lastPlace, overflow, uiContext);
       drawing.add(drawable);
       allUnitDrawables.add(drawable);
       for (final Tile tile : getTiles(drawable.getPlacementRectangle())) {
@@ -504,7 +504,7 @@ public class TileManager {
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
       synchronized (mutex) {
         for (final UnitsDrawer drawer : allUnitDrawables) {
-          final List<Unit> drawerUnits = drawer.getUnits(data);
+          final List<Unit> drawerUnits = drawer.getUnits();
           if (!drawerUnits.isEmpty() && units.containsAll(drawerUnits)) {
             return drawer.getPlacementRectangle();
           }
@@ -524,7 +524,7 @@ public class TileManager {
       synchronized (mutex) {
         for (final UnitsDrawer drawer : allUnitDrawables) {
           if (drawer.getPlacementRectangle().contains(x, y)) {
-            return Tuple.of(drawer.getTerritory(gameData), drawer.getUnits(gameData));
+            return Tuple.of(drawer.getTerritory(), drawer.getUnits());
           }
         }
         return null;

@@ -4,7 +4,6 @@ import static games.strategy.triplea.image.UnitImageFactory.ImageKey;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -23,8 +22,10 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import lombok.Getter;
 
 /**
@@ -37,9 +38,9 @@ import lombok.Getter;
 public class UnitsDrawer extends AbstractDrawable {
   @Getter private final Point placementPoint;
   private final boolean overflow;
-  private final String territoryName;
   private final UiContext uiContext;
   private final UnitCategory unitCategory;
+  @Getter @Nullable private final Territory territory;
 
   /** Identifies the location where a nation flag is drawn relative to a unit. */
   public enum UnitFlagDrawMode {
@@ -50,15 +51,15 @@ public class UnitsDrawer extends AbstractDrawable {
 
   public UnitsDrawer(
       final UnitCategory unitCategory,
+      final @Nullable Territory territory,
       final Point placementPoint,
       final boolean overflow,
-      final String territoryName,
       final UiContext uiContext) {
 
     this.unitCategory = unitCategory;
+    this.territory = territory;
     this.placementPoint = placementPoint;
     this.overflow = overflow;
-    this.territoryName = territoryName;
     this.uiContext = uiContext;
   }
 
@@ -201,7 +202,7 @@ public class UnitsDrawer extends AbstractDrawable {
 
   private void displayHitDamage(final Rectangle bounds, final Graphics2D graphics) {
     final int damaged = unitCategory.getDamaged();
-    if (!territoryName.isEmpty() && damaged > 1) {
+    if (damaged > 1) {
       final String s = String.valueOf(damaged);
       final var factory = uiContext.getUnitImageFactory();
       drawOutlinedText(
@@ -216,7 +217,7 @@ public class UnitsDrawer extends AbstractDrawable {
 
   private void displayFactoryDamage(final Rectangle bounds, final Graphics2D graphics) {
     int bombingDamage = unitCategory.getBombingDamage();
-    if (!territoryName.isEmpty() && bombingDamage > 0) {
+    if (bombingDamage > 0) {
       final String s = String.valueOf(bombingDamage);
       final var factory = uiContext.getUnitImageFactory();
       drawOutlinedText(
@@ -250,11 +251,13 @@ public class UnitsDrawer extends AbstractDrawable {
     }
   }
 
-  List<Unit> getUnits(final GameState data) {
+  List<Unit> getUnits() {
     // note - it may be the case where the territory is being changed as a result to a mouse click,
     // and the map units haven't updated yet, so the unit count from the territory won't match the
     // units in count
-    final Territory t = data.getMap().getTerritoryOrNull(territoryName);
+    if (territory == null) {
+      return Collections.emptyList();
+    }
     final UnitType unitType = unitCategory.getType();
     final Predicate<Unit> selectedUnits =
         Matches.unitIsOfType(unitType)
@@ -267,11 +270,7 @@ public class UnitsDrawer extends AbstractDrawable {
                 unitCategory.getBombingDamage() > 0
                     ? Matches.unitHasTakenSomeBombingUnitDamage()
                     : Matches.unitHasNotTakenAnyBombingUnitDamage());
-    return t.getMatches(selectedUnits);
-  }
-
-  public Territory getTerritory(GameData data) {
-    return data.getMap().getTerritoryOrNull(territoryName);
+    return territory.getMatches(selectedUnits);
   }
 
   @Override
