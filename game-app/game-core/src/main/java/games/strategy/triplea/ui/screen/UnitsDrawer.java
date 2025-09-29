@@ -124,7 +124,8 @@ public class UnitsDrawer extends AbstractDrawable {
     }
   }
 
-  private void drawUnitByDrawMode(Rectangle bounds, Graphics2D graphics, int maxRange, GamePlayer owner, Image img) {
+  private void drawUnitByDrawMode(
+      Rectangle bounds, Graphics2D graphics, int maxRange, GamePlayer owner, Image img) {
     final UnitFlagDrawMode drawMode =
         ClientSetting.unitFlagDrawMode.getValue().orElse(UnitFlagDrawMode.NONE);
 
@@ -162,7 +163,13 @@ public class UnitsDrawer extends AbstractDrawable {
     }
   }
 
-  private void drawMultipleUnits(Rectangle bounds, Graphics2D graphics, MapData mapData, int unitsCount, Image img, UnitImageFactory factory) {
+  private void drawMultipleUnits(
+      Rectangle bounds,
+      Graphics2D graphics,
+      MapData mapData,
+      int unitsCount,
+      Image img,
+      UnitImageFactory factory) {
     final int stackSize = mapData.getDefaultUnitsStackSize();
     if (stackSize > 0) { // Display more units as a stack
       for (int i = 1; i < unitsCount && i < stackSize; i++) {
