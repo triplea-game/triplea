@@ -412,7 +412,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (t1.equals(t2)) {
       return 0;
     }
-    var territoryFinder = new BreadthFirstSearch.TerritoryFinder(t2);
+    var territoryFinder = BreadthFirstSearch.createTerritoryFinder(t2);
     new BreadthFirstSearch(List.of(t1), routeCond).traverse(territoryFinder);
     return territoryFinder.getDistanceFound();
   }
