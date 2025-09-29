@@ -109,6 +109,22 @@ public class UnitsDrawer extends AbstractDrawable {
     final Image img = factory.getImage(imageKey);
     final int maxRange = new Unit(unitType, owner, data).getMaxMovementAllowed();
 
+    drawUnitByDrawMode(bounds, graphics, maxRange, owner, img);
+
+    // more than 1 unit of this category
+    int unitsCount = unitCategory.getUnits().size();
+    if (unitsCount != 1) {
+      drawMultipleUnits(bounds, graphics, mapData, unitsCount, img, factory);
+    }
+    displayHitDamage(bounds, graphics);
+    // Display Factory Damage
+    if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())
+        && Matches.unitTypeCanBeDamaged().test(unitType)) {
+      displayFactoryDamage(bounds, graphics);
+    }
+  }
+
+  private void drawUnitByDrawMode(Rectangle bounds, Graphics2D graphics, int maxRange, GamePlayer owner, Image img) {
     final UnitFlagDrawMode drawMode =
         ClientSetting.unitFlagDrawMode.getValue().orElse(UnitFlagDrawMode.NONE);
 
@@ -144,43 +160,35 @@ public class UnitsDrawer extends AbstractDrawable {
     } else {
       drawUnit(graphics, img, bounds);
     }
+  }
 
-    // more than 1 unit of this category
-    int unitsCount = unitCategory.getUnits().size();
-    if (unitsCount != 1) {
-      final int stackSize = mapData.getDefaultUnitsStackSize();
-      if (stackSize > 0) { // Display more units as a stack
-        for (int i = 1; i < unitsCount && i < stackSize; i++) {
-          graphics.drawImage(
-              img, placementPoint.x + 2 * i - bounds.x, placementPoint.y - 2 * i - bounds.y, null);
-        }
-        if (unitsCount > stackSize) {
-          final String s = String.valueOf(unitsCount);
-
-          drawOutlinedText(
-              graphics,
-              s,
-              placementPoint.x - bounds.x + 2 * stackSize + factory.getUnitImageWidth() * 6 / 10,
-              placementPoint.y - 2 * stackSize - bounds.y + factory.getUnitImageHeight() / 3,
-              MapImage.getPropertyUnitCountColor(),
-              MapImage.getPropertyUnitCountOutline());
-        }
-      } else { // Display a white number at the bottom of the unit
+  private void drawMultipleUnits(Rectangle bounds, Graphics2D graphics, MapData mapData, int unitsCount, Image img, UnitImageFactory factory) {
+    final int stackSize = mapData.getDefaultUnitsStackSize();
+    if (stackSize > 0) { // Display more units as a stack
+      for (int i = 1; i < unitsCount && i < stackSize; i++) {
+        graphics.drawImage(
+            img, placementPoint.x + 2 * i - bounds.x, placementPoint.y - 2 * i - bounds.y, null);
+      }
+      if (unitsCount > stackSize) {
         final String s = String.valueOf(unitsCount);
+
         drawOutlinedText(
             graphics,
             s,
-            placementPoint.x - bounds.x + factory.getUnitCounterOffsetWidth(),
-            placementPoint.y - bounds.y + factory.getUnitCounterOffsetHeight(),
+            placementPoint.x - bounds.x + 2 * stackSize + factory.getUnitImageWidth() * 6 / 10,
+            placementPoint.y - 2 * stackSize - bounds.y + factory.getUnitImageHeight() / 3,
             MapImage.getPropertyUnitCountColor(),
             MapImage.getPropertyUnitCountOutline());
       }
-    }
-    displayHitDamage(bounds, graphics);
-    // Display Factory Damage
-    if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())
-        && Matches.unitTypeCanBeDamaged().test(unitType)) {
-      displayFactoryDamage(bounds, graphics);
+    } else { // Display a white number at the bottom of the unit
+      final String s = String.valueOf(unitsCount);
+      drawOutlinedText(
+          graphics,
+          s,
+          placementPoint.x - bounds.x + factory.getUnitCounterOffsetWidth(),
+          placementPoint.y - bounds.y + factory.getUnitCounterOffsetHeight(),
+          MapImage.getPropertyUnitCountColor(),
+          MapImage.getPropertyUnitCountOutline());
     }
   }
 
