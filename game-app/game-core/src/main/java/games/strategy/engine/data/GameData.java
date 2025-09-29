@@ -127,9 +127,6 @@ public class GameData implements Serializable, GameState {
     readWriteLock = new ReentrantReadWriteLock();
     in.defaultReadObject();
     gameDataEventListeners = new GameDataEventListeners();
-    if (state == null) {
-      state = new GameDataState(this);
-    }
   }
 
   /**

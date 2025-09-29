@@ -12,7 +12,8 @@ public class GameDataState implements Serializable {
 
   @Getter @Setter private transient TechTracker techTracker;
 
+  // @TODO remove gameData usages with "baseGameData" and history in the future
   public GameDataState(GameData gameData) {
-    techTracker = new TechTracker(gameData);
+    techTracker = new TechTracker(gameData); //
   }
 }
