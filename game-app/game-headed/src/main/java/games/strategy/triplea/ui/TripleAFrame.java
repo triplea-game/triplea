@@ -1791,8 +1791,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     try (GameData.Unlocker ignored = data.acquireWriteLock()) {
       // we want to use a clone of the data, so we can make changes to it as we walk up and down the
       // history
-      final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
-      clonedGameData = GameDataUtils.cloneGameData(data, cloneOptions).orElse(null);
+      clonedGameData = GameDataUtils.cloneGameDataWithHistory(data, false).orElse(null);
       if (clonedGameData == null) {
         return;
       }
