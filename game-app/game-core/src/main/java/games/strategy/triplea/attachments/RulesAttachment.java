@@ -25,6 +25,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.formatter.MyFormatter;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -208,7 +209,15 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     final List<Territory> terrs = new ArrayList<>();
     // this loop starts on 4, so do not replace with an enhanced for loop
     for (int i = 4; i < s.length; i++) {
-      final Territory t = getTerritoryOrThrowGameParseException(s[i]);
+      int currentIndex = i;
+      final Territory t =
+          getTerritory(s[currentIndex])
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "RulesAttachment: Setting Battle with value {0} not possible; Index {1}: No territory found for {2}",
+                              value, currentIndex, s[currentIndex])));
       terrs.add(t);
     }
     if (battle == null) {

@@ -84,10 +84,17 @@ public class CanalAttachment extends DefaultAttachment {
     canalName = "";
   }
 
-  private void setLandTerritories(final String landTerritories) {
+  private void setLandTerritories(final String landTerritories) throws GameParseException {
     final Set<Territory> terrs = new HashSet<>();
-    for (final String name : splitOnColon(landTerritories)) {
-      final Territory territory = getTerritoryOrThrowIllegalStateException(name);
+    for (final String territoryName : splitOnColon(landTerritories)) {
+      final Territory territory =
+          getTerritory(territoryName)
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "TerritoryAttachment: Setting landTerritories with value {0} not possible; No territory found for {1}",
+                              landTerritories, territoryName)));
       terrs.add(territory);
     }
     this.landTerritories = terrs;
