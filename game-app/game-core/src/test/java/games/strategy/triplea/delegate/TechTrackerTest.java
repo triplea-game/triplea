@@ -87,7 +87,8 @@ public class TechTrackerTest {
     IDelegateBridge bridge = newDelegateBridge(player);
     TechnologyFrontier technologyFrontier = gameData.getTechnologyFrontier();
 
-    TechAdvance heavyBomber = technologyFrontier.getAdvanceByName("Heavy Bomber");
+    TechAdvance heavyBomber =
+        technologyFrontier.getAdvanceByPropertyOrName("Heavy Bomber").orElse(null);
     assertThat(heavyBomber, is(notNullValue()));
 
     // Check that modifying tech via tech tracker (via Change objects), invalidates the cache.

@@ -26,8 +26,8 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.formatter.MyFormatter;
+import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -563,16 +563,18 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       throw new GameParseException("Empty tech list" + thisErrorMsg());
     }
     techs = new ArrayList<>();
+    final TechnologyFrontier technologyFrontier = getData().getTechnologyFrontier();
     for (int i = count == -1 ? 0 : 1; i < s.length; i++) {
-      TechAdvance ta = getData().getTechnologyFrontier().getAdvanceByProperty(s[i]);
-      if (ta == null) {
-        ta = getData().getTechnologyFrontier().getAdvanceByName(s[i]);
-      }
-      if (ta == null) {
-        throw new GameParseException(
-            "Technology not found: " + Arrays.toString(s) + thisErrorMsg());
-      }
-      techs.add(ta);
+      final int currentIndex = i;
+      techs.add(
+          technologyFrontier
+              .getAdvanceByPropertyOrName(s[i])
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "Could not parseCategoryTechs; Technology {0} not found by property or name: {0} in {1}{2}",
+                              s[currentIndex], technologyFrontier.getTechs(), thisErrorMsg()))));
     }
   }
 
