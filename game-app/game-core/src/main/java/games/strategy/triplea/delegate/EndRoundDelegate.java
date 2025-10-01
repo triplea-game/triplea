@@ -27,14 +27,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.StreamSupport;
-import javax.annotation.Nullable;
+import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.sound.SoundPath;
 
 /** A delegate used to check for end of game conditions. */
 public class EndRoundDelegate extends BaseTripleADelegate {
   private boolean gameOver = false;
-  private Collection<GamePlayer> winners = new ArrayList<>();
+  @Getter private Collection<GamePlayer> winners = new ArrayList<>();
 
   public EndRoundDelegate() {}
 
@@ -326,12 +326,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     }
   }
 
-  /** if null, the game is not over yet. */
-  public @Nullable Collection<GamePlayer> getWinners() {
-    if (!gameOver) {
-      return null;
-    }
-    return winners;
+  public boolean isGameOver() {
+    return gameOver;
   }
 
   private int getProduction(final GamePlayer gamePlayer) {
