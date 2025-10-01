@@ -110,7 +110,7 @@ public class EvaderRetreat {
   public static void submergeEvaders(final Parameters parameters) {
     final CompositeChange change = new CompositeChange();
     for (final Unit u : parameters.units) {
-      change.add(ChangeFactory.unitPropertyChange(u, true, Unit.SUBMERGED));
+      change.add(ChangeFactory.unitPropertyChange(u, true, Unit.PropertyName.SUBMERGED));
     }
     parameters.bridge.addChange(change);
     parameters.battleState.retreatUnits(parameters.side, parameters.units);

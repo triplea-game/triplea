@@ -121,7 +121,7 @@ abstract class AbstractBattle implements IBattle {
           CollectionUtils.getMatches(dependents, Matches.unitWasUnloadedThisTurn());
       final CompositeChange change = new CompositeChange();
       for (final Unit unit : dependentsUnloadedThisTurn) {
-        change.add(ChangeFactory.unitPropertyChange(unit, null, Unit.TRANSPORTED_BY));
+        change.add(ChangeFactory.unitPropertyChange(unit, null, Unit.PropertyName.TRANSPORTED_BY));
       }
       if (!change.isEmpty()) {
         bridge.addChange(change);

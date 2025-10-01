@@ -103,20 +103,26 @@ public class TransportTracker {
     }
     final List<Unit> newUnloaded = new ArrayList<>(transport.getUnloaded());
     newUnloaded.add(unit);
-    change.add(ChangeFactory.unitPropertyChange(unit, territory, Unit.UNLOADED_TO));
+    change.add(ChangeFactory.unitPropertyChange(unit, territory, Unit.PropertyName.UNLOADED_TO));
     if (!GameStepPropertiesHelper.isNonCombatMove(unit.getData(), true)) {
-      change.add(ChangeFactory.unitPropertyChange(unit, true, Unit.UNLOADED_IN_COMBAT_PHASE));
-      change.add(ChangeFactory.unitPropertyChange(unit, true, Unit.UNLOADED_AMPHIBIOUS));
-      change.add(ChangeFactory.unitPropertyChange(transport, true, Unit.UNLOADED_IN_COMBAT_PHASE));
-      change.add(ChangeFactory.unitPropertyChange(transport, true, Unit.UNLOADED_AMPHIBIOUS));
+      change.add(
+          ChangeFactory.unitPropertyChange(unit, true, Unit.PropertyName.UNLOADED_IN_COMBAT_PHASE));
+      change.add(
+          ChangeFactory.unitPropertyChange(unit, true, Unit.PropertyName.UNLOADED_AMPHIBIOUS));
+      change.add(
+          ChangeFactory.unitPropertyChange(
+              transport, true, Unit.PropertyName.UNLOADED_IN_COMBAT_PHASE));
+      change.add(
+          ChangeFactory.unitPropertyChange(transport, true, Unit.PropertyName.UNLOADED_AMPHIBIOUS));
     }
     if (!dependentBattle) {
       // TODO: this is causing issues with Scrambling. if the units were unloaded, then scrambling
       // creates a battle,
       // there is no longer any way to have the units removed if those transports die.
-      change.add(ChangeFactory.unitPropertyChange(unit, null, Unit.TRANSPORTED_BY));
+      change.add(ChangeFactory.unitPropertyChange(unit, null, Unit.PropertyName.TRANSPORTED_BY));
     }
-    change.add(ChangeFactory.unitPropertyChange(transport, newUnloaded, Unit.UNLOADED));
+    change.add(
+        ChangeFactory.unitPropertyChange(transport, newUnloaded, Unit.PropertyName.UNLOADED));
     return change;
   }
 
@@ -128,16 +134,19 @@ public class TransportTracker {
       return change;
     }
     assertTransport(transport);
-    change.add(ChangeFactory.unitPropertyChange(unit, territory, Unit.UNLOADED_TO));
+    change.add(ChangeFactory.unitPropertyChange(unit, territory, Unit.PropertyName.UNLOADED_TO));
     if (!GameStepPropertiesHelper.isNonCombatMove(unit.getData(), true)) {
-      change.add(ChangeFactory.unitPropertyChange(unit, true, Unit.UNLOADED_IN_COMBAT_PHASE));
-      change.add(ChangeFactory.unitPropertyChange(transport, true, Unit.UNLOADED_IN_COMBAT_PHASE));
+      change.add(
+          ChangeFactory.unitPropertyChange(unit, true, Unit.PropertyName.UNLOADED_IN_COMBAT_PHASE));
+      change.add(
+          ChangeFactory.unitPropertyChange(
+              transport, true, Unit.PropertyName.UNLOADED_IN_COMBAT_PHASE));
     }
     if (!dependentBattle) {
       // TODO: this is causing issues with Scrambling. if the units were unloaded, then scrambling
       // creates a battle,
       // there is no longer any way to have the units removed if those transports die.
-      change.add(ChangeFactory.unitPropertyChange(unit, null, Unit.TRANSPORTED_BY));
+      change.add(ChangeFactory.unitPropertyChange(unit, null, Unit.PropertyName.TRANSPORTED_BY));
     }
     // dependencies for battle calc and casualty selection include unloaded. therefore even if we
     // have unloaded this
@@ -163,18 +172,21 @@ public class TransportTracker {
     assertTransport(transport);
     final CompositeChange change = new CompositeChange();
     // clear the loaded by
-    change.add(ChangeFactory.unitPropertyChange(unit, transport, Unit.TRANSPORTED_BY));
+    change.add(ChangeFactory.unitPropertyChange(unit, transport, Unit.PropertyName.TRANSPORTED_BY));
     final Collection<Unit> newCarrying = new ArrayList<>(transport.getTransporting());
     if (newCarrying.contains(unit)) {
       throw new IllegalStateException(
           "Already carrying, transport: " + transport + " unt: " + unit);
     }
     newCarrying.add(unit);
-    change.add(ChangeFactory.unitPropertyChange(unit, Boolean.TRUE, Unit.LOADED_THIS_TURN));
-    change.add(ChangeFactory.unitPropertyChange(transport, true, Unit.LOADED_THIS_TURN));
+    change.add(
+        ChangeFactory.unitPropertyChange(unit, Boolean.TRUE, Unit.PropertyName.LOADED_THIS_TURN));
+    change.add(
+        ChangeFactory.unitPropertyChange(transport, true, Unit.PropertyName.LOADED_THIS_TURN));
     // If the transport was in combat, flag it as being loaded AFTER combat
     if (transport.getWasInCombat()) {
-      change.add(ChangeFactory.unitPropertyChange(transport, true, Unit.LOADED_AFTER_COMBAT));
+      change.add(
+          ChangeFactory.unitPropertyChange(transport, true, Unit.PropertyName.LOADED_AFTER_COMBAT));
     }
     return change;
   }
@@ -298,7 +310,7 @@ public class TransportTracker {
                       airUnit -> {
                         change.add(
                             ChangeFactory.unitPropertyChange(
-                                airUnit, carrier, Unit.TRANSPORTED_BY));
+                                airUnit, carrier, Unit.PropertyName.TRANSPORTED_BY));
                         alliedAir.add(airUnit);
                       });
             });
@@ -338,7 +350,8 @@ public class TransportTracker {
           if (!Matches.unitHasWhenCombatDamagedEffect(
                   UnitAttachment.UNITS_MAY_NOT_LEAVE_ALLIED_CARRIER)
               .test(carrierTransportingThisUnit)) {
-            change.add(ChangeFactory.unitPropertyChange(fighter, null, Unit.TRANSPORTED_BY));
+            change.add(
+                ChangeFactory.unitPropertyChange(fighter, null, Unit.PropertyName.TRANSPORTED_BY));
           }
         }
       }

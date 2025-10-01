@@ -276,7 +276,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final CompositeChange change = new CompositeChange();
     for (final Unit u : data.getUnits()) {
       if (u.getBonusMovement() != 0) {
-        change.add(ChangeFactory.unitPropertyChange(u, 0, Unit.BONUS_MOVEMENT));
+        change.add(ChangeFactory.unitPropertyChange(u, 0, Unit.PropertyName.BONUS_MOVEMENT));
       }
     }
     return change;
@@ -300,39 +300,49 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final CompositeChange change = new CompositeChange();
     for (final Unit unit : data.getUnits()) {
       if (unit.getAlreadyMoved().compareTo(BigDecimal.ZERO) != 0) {
-        change.add(ChangeFactory.unitPropertyChange(unit, BigDecimal.ZERO, Unit.ALREADY_MOVED));
+        change.add(
+            ChangeFactory.unitPropertyChange(
+                unit, BigDecimal.ZERO, Unit.PropertyName.ALREADY_MOVED));
       }
       if (unit.getWasInCombat()) {
-        change.add(ChangeFactory.unitPropertyChange(unit, false, Unit.WAS_IN_COMBAT));
+        change.add(ChangeFactory.unitPropertyChange(unit, false, Unit.PropertyName.WAS_IN_COMBAT));
       }
       if (unit.getSubmerged()) {
-        change.add(ChangeFactory.unitPropertyChange(unit, false, Unit.SUBMERGED));
+        change.add(ChangeFactory.unitPropertyChange(unit, false, Unit.PropertyName.SUBMERGED));
       }
       if (unit.getAirborne()) {
-        change.add(ChangeFactory.unitPropertyChange(unit, false, Unit.AIRBORNE));
+        change.add(ChangeFactory.unitPropertyChange(unit, false, Unit.PropertyName.AIRBORNE));
       }
       if (unit.getLaunched() != 0) {
-        change.add(ChangeFactory.unitPropertyChange(unit, 0, Unit.LAUNCHED));
+        change.add(ChangeFactory.unitPropertyChange(unit, 0, Unit.PropertyName.LAUNCHED));
       }
       if (!unit.getUnloaded().isEmpty()) {
-        change.add(ChangeFactory.unitPropertyChange(unit, Collections.EMPTY_LIST, Unit.UNLOADED));
+        change.add(
+            ChangeFactory.unitPropertyChange(
+                unit, Collections.EMPTY_LIST, Unit.PropertyName.UNLOADED));
       }
       if (unit.getWasLoadedThisTurn()) {
-        change.add(ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, Unit.LOADED_THIS_TURN));
+        change.add(
+            ChangeFactory.unitPropertyChange(
+                unit, Boolean.FALSE, Unit.PropertyName.LOADED_THIS_TURN));
       }
       if (unit.getUnloadedTo() != null) {
-        change.add(ChangeFactory.unitPropertyChange(unit, null, Unit.UNLOADED_TO));
+        change.add(ChangeFactory.unitPropertyChange(unit, null, Unit.PropertyName.UNLOADED_TO));
       }
       if (unit.getWasUnloadedInCombatPhase()) {
         change.add(
-            ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, Unit.UNLOADED_IN_COMBAT_PHASE));
+            ChangeFactory.unitPropertyChange(
+                unit, Boolean.FALSE, Unit.PropertyName.UNLOADED_IN_COMBAT_PHASE));
       }
       if (unit.getWasAmphibious()) {
-        change.add(ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, Unit.UNLOADED_AMPHIBIOUS));
+        change.add(
+            ChangeFactory.unitPropertyChange(
+                unit, Boolean.FALSE, Unit.PropertyName.UNLOADED_AMPHIBIOUS));
       }
       if (unit.getChargedFlatFuelCost()) {
         change.add(
-            ChangeFactory.unitPropertyChange(unit, Boolean.FALSE, Unit.CHARGED_FLAT_FUEL_COST));
+            ChangeFactory.unitPropertyChange(
+                unit, Boolean.FALSE, Unit.PropertyName.CHARGED_FLAT_FUEL_COST));
       }
     }
     return change;
@@ -424,7 +434,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
         }
         if (bonusMovement != Integer.MIN_VALUE && bonusMovement != 0) {
           bonusMovement = Math.max(bonusMovement, (u.getUnitAttachment().getMovement(player) * -1));
-          change.add(ChangeFactory.unitPropertyChange(u, bonusMovement, Unit.BONUS_MOVEMENT));
+          change.add(
+              ChangeFactory.unitPropertyChange(u, bonusMovement, Unit.PropertyName.BONUS_MOVEMENT));
         }
       }
     }

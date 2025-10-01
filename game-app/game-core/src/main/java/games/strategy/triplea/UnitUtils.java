@@ -201,7 +201,8 @@ public class UnitUtils {
     final CompositeChange unitChange = new CompositeChange();
     final List<Unit> unloaded = unitGivingAttributes.getUnloaded();
     if (!unloaded.isEmpty()) {
-      unitChange.add(ChangeFactory.unitPropertyChange(receivingUnit, unloaded, Unit.UNLOADED));
+      unitChange.add(
+          ChangeFactory.unitPropertyChange(receivingUnit, unloaded, Unit.PropertyName.UNLOADED));
     }
 
     final List<Unit> transporting = unitGivingAttributes.getTransporting();
@@ -210,7 +211,7 @@ public class UnitUtils {
             transported ->
                 new CompositeChange(
                     ChangeFactory.unitPropertyChange(
-                        transported, receivingUnit, Unit.TRANSPORTED_BY)))
+                        transported, receivingUnit, Unit.PropertyName.TRANSPORTED_BY)))
         .reduce(unitChange, CompositeChange::new);
   }
 

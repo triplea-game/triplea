@@ -40,6 +40,6 @@ public enum GameDataEvent {
       }
     }
     return (change instanceof ObjectPropertyChange
-        && ((ObjectPropertyChange) change).getProperty().equals(Unit.ALREADY_MOVED));
+        && ((ObjectPropertyChange) change).getProperty().equals(Unit.PropertyName.ALREADY_MOVED));
   }
 }
