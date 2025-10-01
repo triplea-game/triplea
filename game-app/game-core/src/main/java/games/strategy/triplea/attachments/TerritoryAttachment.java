@@ -289,7 +289,13 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public void setCapital(final String value) throws GameParseException {
-    getPlayerOrThrow(value);
+    getPlayerByName(value)
+        .orElseThrow(
+            () ->
+                new GameParseException(
+                    MessageFormat.format(
+                        "TerritoryAttachment: Setting capital with value {0} not possible; No such player found",
+                        value)));
     capital = value;
   }
 
@@ -394,7 +400,14 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   private void setOriginalOwner(final String player) throws GameParseException {
-    originalOwner = getPlayerOrThrow(player);
+    originalOwner =
+        getPlayerByName(player)
+            .orElseThrow(
+                () ->
+                    new GameParseException(
+                        MessageFormat.format(
+                            "TerritoryAttachment: Setting originalOwner with value {0} not possible; No such player found",
+                            player)));
   }
 
   public Optional<GamePlayer> getOriginalOwner() {
@@ -478,7 +491,13 @@ public class TerritoryAttachment extends DefaultAttachment {
           "whenCapturedByGoesTo must have 2 player names separated by a colon" + thisErrorMsg());
     }
     for (final String name : s) {
-      getPlayerOrThrow(name);
+      getPlayerByName(name)
+          .orElseThrow(
+              () ->
+                  new GameParseException(
+                      MessageFormat.format(
+                          "TerritoryAttachment: Setting whenCapturedByGoesTo with value {0} not possible; No player found for {1}",
+                          value, name)));
     }
     if (whenCapturedByGoesTo == null) {
       whenCapturedByGoesTo = new ArrayList<>();

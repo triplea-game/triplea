@@ -1337,9 +1337,21 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                           value, s[0])));
     }
     if (!s[1].equalsIgnoreCase("any")) {
-      getPlayerOrThrow(s[1]);
+      getPlayerByName(s[1])
+          .orElseThrow(
+              () ->
+                  new GameParseException(
+                      MessageFormat.format(
+                          "TriggerAttachment: Setting changeOwnership with value {0} not possible; No source player found for {1}",
+                          s, s[1])));
     }
-    getPlayerOrThrow(s[2]);
+    getPlayerByName(s[2])
+        .orElseThrow(
+            () ->
+                new GameParseException(
+                    MessageFormat.format(
+                        "TriggerAttachment: Setting changeOwnership with value {0} not possible; No target player found for {1}",
+                        s, s[2])));
     getBool(s[3]);
     if (changeOwnership == null) {
       changeOwnership = new ArrayList<>();

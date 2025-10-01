@@ -24,6 +24,7 @@ import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serial;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -629,9 +630,9 @@ public class UnitAttachment extends DefaultAttachment {
     // "BY" since this is called by destroyedWhenCapturedBy
     String value = initialValue;
     String byOrFrom = "BY";
-    if (value.startsWith("BY:") && getData().getPlayerList().getPlayerId("BY") == null) {
+    if (value.startsWith("BY:") && getPlayerByName("BY").isEmpty()) {
       value = value.replaceFirst("BY:", "");
-    } else if (value.startsWith("FROM:") && getData().getPlayerList().getPlayerId("FROM") == null) {
+    } else if (value.startsWith("FROM:") && getPlayerByName("FROM").isEmpty()) {
       byOrFrom = "FROM";
       value = value.replaceFirst("FROM:", "");
     }
@@ -640,7 +641,16 @@ public class UnitAttachment extends DefaultAttachment {
       if (destroyedWhenCapturedBy == null) {
         destroyedWhenCapturedBy = new ArrayList<>();
       }
-      destroyedWhenCapturedBy.add(Tuple.of(byOrFrom.intern(), getPlayerOrThrow(name)));
+      destroyedWhenCapturedBy.add(
+          Tuple.of(
+              byOrFrom.intern(),
+              getPlayerByName(name)
+                  .orElseThrow(
+                      () ->
+                          new GameParseException(
+                              MessageFormat.format(
+                                  "UnitAttachment: Setting destroyedWhenCapturedBy with value {0} not possible; No player found for {1}",
+                                  initialValue, name)))));
     }
   }
 

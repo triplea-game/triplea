@@ -7,6 +7,7 @@ import com.google.common.collect.Iterables;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
 import java.io.Serial;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -183,14 +184,20 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
       if (existingList == null) {
         existingList = new ArrayList<>();
       }
-      existingList.add(getPlayerOrThrow(name));
+      existingList.add(
+          getPlayerByName(name)
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "DefaultAttachment: Parsing PlayerList with value {0} not possible; No player found for {1}",
+                              value, name))));
     }
     return existingList;
   }
 
-  protected GamePlayer getPlayerOrThrow(String name) throws GameParseException {
-    return Optional.ofNullable(getData().getPlayerList().getPlayerId(name))
-        .orElseThrow(() -> new GameParseException("No player named: " + name + thisErrorMsg()));
+  protected Optional<GamePlayer> getPlayerByName(String name) {
+    return Optional.ofNullable(getData().getPlayerList().getPlayerId(name));
   }
 
   protected Set<UnitType> parseUnitTypes(String context, String value, Set<UnitType> existingSet)

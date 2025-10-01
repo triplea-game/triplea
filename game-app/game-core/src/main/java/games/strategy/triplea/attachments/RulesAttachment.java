@@ -535,7 +535,15 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
     atWarPlayers = new HashSet<>();
     for (int i = count == -1 ? 0 : 1; i < s.length; i++) {
-      atWarPlayers.add(getPlayerOrThrow(s[i]));
+      final int currentIndex = i;
+      atWarPlayers.add(
+          getPlayerByName(s[currentIndex])
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "RulesAttachment: Setting atWarPlayers with value {0} not possible; No player found for {1}",
+                              players, s[currentIndex]))));
     }
   }
 
