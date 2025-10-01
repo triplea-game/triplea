@@ -527,9 +527,28 @@ public class TerritoryAttachment extends DefaultAttachment {
       final String encodedCaptureOwnershipChange) {
     final String[] tokens = splitOnColon(encodedCaptureOwnershipChange);
     assert tokens.length == 2;
-    return new CaptureOwnershipChange(
-        getData().getPlayerList().getPlayerId(tokens[0]),
-        getData().getPlayerList().getPlayerId(tokens[1]));
+    try {
+      return new CaptureOwnershipChange(
+          getPlayerByName(tokens[0])
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "Invalid captureOwnershipChange with value {0} \n from-player: {1} unknown{2}",
+                              encodedCaptureOwnershipChange, tokens[0], thisErrorMsg()))),
+          getPlayerByName(tokens[1])
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "Invalid captureOwnershipChange with value {0} \n to-player: {1} unknown{2}",
+                              encodedCaptureOwnershipChange, tokens[1], thisErrorMsg()))));
+    } catch (GameParseException gameParseException) {
+      // @TODO: ownershipChanges should not be a list of strings that have to be parsed all the
+      // time;
+      // separate object needed in the future to ensure parsing is done only once
+      throw new IllegalStateException(gameParseException);
+    }
   }
 
   private void setTerritoryEffect(final String value) throws GameParseException {

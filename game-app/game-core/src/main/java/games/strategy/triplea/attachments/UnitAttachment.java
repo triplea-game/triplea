@@ -587,15 +587,23 @@ public class UnitAttachment extends DefaultAttachment {
               + "(you may have additional unitType:howMany:unitType:howMany, etc"
               + thisErrorMsg());
     }
-    final GamePlayer pfrom = getData().getPlayerList().getPlayerId(s[0]);
-    if (pfrom == null && !s[0].equals("any")) {
-      throw new GameParseException(
-          "whenCapturedChangesInto: No player named: " + s[0] + thisErrorMsg());
+    if (!s[0].equalsIgnoreCase("any")) {
+      getPlayerByName(s[0])
+          .orElseThrow(
+              () ->
+                  new GameParseException(
+                      MessageFormat.format(
+                          "Invalid whenCapturedChangesInto with value {0} \n from-player: {1} unknown{2}",
+                          value, s[0], thisErrorMsg())));
     }
-    final GamePlayer pto = getData().getPlayerList().getPlayerId(s[1]);
-    if (pto == null && !s[1].equals("any")) {
-      throw new GameParseException(
-          "whenCapturedChangesInto: No player named: " + s[1] + thisErrorMsg());
+    if (!s[0].equalsIgnoreCase("any")) {
+      getPlayerByName(s[1])
+          .orElseThrow(
+              () ->
+                  new GameParseException(
+                      MessageFormat.format(
+                          "Invalid whenCapturedChangesInto with value {0} \n to-player: {1} unknown{2}",
+                          value, s[1], thisErrorMsg())));
     }
     getBool(s[2]);
     final IntegerMap<UnitType> unitsToMake = new IntegerMap<>();
