@@ -275,8 +275,16 @@ public class UnitsDrawer extends AbstractDrawable {
     return t.getMatches(selectedUnits);
   }
 
+  /**
+   * Try to avoid this method. Territory by name search is only needed as UnitsDrawer does not (yet)
+   * have a reference to the territory itself.
+   *
+   * @param data GameData object
+   * @return {@link Territory} found by name {@link UnitsDrawer#territoryName}
+   */
+  @Deprecated(since = "2.7", forRemoval = true)
   public Territory getTerritory(GameData data) {
-    return data.getMap().getTerritoryOrNull(territoryName);
+    return data.getMap().getTerritoryOrThrow(territoryName);
   }
 
   @Override

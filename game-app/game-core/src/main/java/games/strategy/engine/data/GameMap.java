@@ -408,10 +408,11 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    */
   public int getDistance(
       final Territory t1, final Territory t2, final BiPredicate<Territory, Territory> routeCond) {
+    checkNotNull(t2);
     if (t1.equals(t2)) {
       return 0;
     }
-    var territoryFinder = new BreadthFirstSearch.TerritoryFinder(t2);
+    var territoryFinder = BreadthFirstSearch.createTerritoryFinder(t2);
     new BreadthFirstSearch(List.of(t1), routeCond).traverse(territoryFinder);
     return territoryFinder.getDistanceFound();
   }
