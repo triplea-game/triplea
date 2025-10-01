@@ -771,7 +771,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (territories == null) {
         territories = new ArrayList<>();
       }
-      territories.add(getTerritoryOrThrow(element));
+      territories.add(
+          getTerritory(element)
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "TriggerAttachment: Setting territories with value {0} not possible; No territory found for {1}",
+                              names, element))));
     }
   }
 
@@ -1165,7 +1172,15 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (s.length == 1 && count != -1) {
       throw new GameParseException("Empty placement list" + thisErrorMsg());
     }
-    final Territory territory = getTerritoryOrThrow(s[i]);
+    final int currentIndex = i;
+    final Territory territory =
+        getTerritory(s[currentIndex])
+            .orElseThrow(
+                () ->
+                    new GameParseException(
+                        MessageFormat.format(
+                            "TriggerAttachment: Setting placement with value {0} not possible; Index {1}: No territory found for {2}",
+                            place, currentIndex, s[currentIndex])));
 
     i++;
     final IntegerMap<UnitType> map = new IntegerMap<>();
@@ -1313,7 +1328,13 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               + thisErrorMsg());
     }
     if (!s[0].equalsIgnoreCase("all")) {
-      getTerritoryOrThrow(s[0]);
+      getTerritory(s[0])
+          .orElseThrow(
+              () ->
+                  new GameParseException(
+                      MessageFormat.format(
+                          "TriggerAttachment: Setting changeOwnership with value {0} not possible; Index 0: No territory found for {1}",
+                          value, s[0])));
     }
     if (!s[1].equalsIgnoreCase("any")) {
       getPlayerOrThrow(s[1]);

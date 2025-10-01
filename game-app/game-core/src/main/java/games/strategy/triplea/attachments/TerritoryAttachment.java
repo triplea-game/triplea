@@ -541,11 +541,18 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   private void setConvoyAttached(final String value) throws GameParseException {
-    if (value.length() <= 0) {
+    if (value.isEmpty()) {
       return;
     }
     for (final String subString : splitOnColon(value)) {
-      final Territory territory = getTerritoryOrThrow(subString);
+      final Territory territory =
+          getTerritory(subString)
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "TerritoryAttachment: Setting convoyAttached with value {0} not possible; No territory found for {1}",
+                              value, subString)));
       if (convoyAttached == null) {
         convoyAttached = new HashSet<>();
       }
