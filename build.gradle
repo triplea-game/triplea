@@ -68,8 +68,8 @@ subprojects {
         jaxbImplVersion = "4.0.6"
         jetbrainsAnnotationsVersion = "26.0.2-1"
         jlayerVersion = "1.0.1.4"
-        junitJupiterVersion = "5.13.4"
-        junitPlatformLauncherVersion = "1.13.4"
+        junitJupiterVersion = "6.0.0"
+        junitPlatformLauncherVersion = "6.0.0"
         logbackClassicVersion = "1.5.19"
         mockitoVersion = "5.20.0"
         openFeignVersion = "13.3"
@@ -88,7 +88,7 @@ subprojects {
     }
 
     dependencies {
-        implementation ("com.googlecode.soundlibs:jlayer:$jlayerVersion") {
+        implementation("com.googlecode.soundlibs:jlayer:$jlayerVersion") {
             exclude group: 'junit', module: 'junit'
         }
         compileOnly("org.projectlombok:lombok:1.18.42")
@@ -136,7 +136,7 @@ subprojects {
 
     tasks.withType(JavaCompile).configureEach {
         options.compilerArgs += [
-            "-Xlint:none,-processing"
+                "-Xlint:none,-processing"
         ]
         options.encoding = "UTF-8"
         options.incremental = true
@@ -158,7 +158,7 @@ subprojects {
     // add a testlistener to all tasks of type Test
     tasks.withType(Test) {
         afterTest { TestDescriptor descriptor, TestResult result ->
-            if(result.resultType == TestResult.ResultType.FAILURE){
+            if (result.resultType == TestResult.ResultType.FAILURE) {
                 failedTests << ["${descriptor.className}::${descriptor.name}"]
             }
         }
@@ -166,7 +166,7 @@ subprojects {
 
     // print out tracked failed tests when the build has finished
     gradle.buildFinished {
-        if(!failedTests.empty){
+        if (!failedTests.empty) {
             println "Failed tests for ${project.name}:"
             failedTests.each { failedTest ->
                 println failedTest
