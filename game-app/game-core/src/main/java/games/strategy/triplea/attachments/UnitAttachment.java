@@ -596,7 +596,7 @@ public class UnitAttachment extends DefaultAttachment {
                           "Invalid whenCapturedChangesInto with value {0} \n from-player: {1} unknown{2}",
                           value, s[0], thisErrorMsg())));
     }
-    if (!s[0].equalsIgnoreCase("any")) {
+    if (!s[1].equalsIgnoreCase("any")) {
       getPlayerByName(s[1])
           .orElseThrow(
               () ->
