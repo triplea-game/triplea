@@ -1,6 +1,7 @@
 package org.triplea.swing;
 
 import com.google.common.annotations.VisibleForTesting;
+import games.strategy.engine.framework.system.SystemProperties;
 import java.awt.FileDialog;
 import java.awt.Frame;
 import java.io.FilenameFilter;
@@ -9,8 +10,10 @@ import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Optional;
 import javax.annotation.Nullable;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import lombok.Builder;
+import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NonNls;
 
 @Builder
@@ -24,6 +27,25 @@ public class FileChooser {
   @Nullable private FilenameFilter filenameFilter;
   @Nullable private String fileName;
   @Nullable private String fileExtension;
+
+  /**
+   * Wraps the file chooser for a given {@code defaultFileName}, infers its file extension and uses
+   * as starting directory the user directory.
+   *
+   * @param frame parent frame for the file chooser
+   * @param defaultFileName default name of the file
+   * @return path to the chosen file
+   */
+  public static Optional<Path> chooseExportFileWithDefaultName(
+      JFrame frame, String defaultFileName) {
+    return builder()
+        .parent(frame)
+        .directory(Path.of(SystemProperties.getUserDir()))
+        .fileName(defaultFileName)
+        .fileExtension("." + FilenameUtils.getExtension(defaultFileName))
+        .build()
+        .chooseFile();
+  }
 
   public Optional<Path> chooseFile() {
     // Use FileDialog rather than JFileChooser as the former results in a native dialog, which on
