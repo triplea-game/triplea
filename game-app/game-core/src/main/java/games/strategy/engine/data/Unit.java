@@ -33,30 +33,36 @@ import org.triplea.java.collections.CollectionUtils;
 @Getter
 @EqualsAndHashCode(of = "id", callSuper = false)
 public class Unit extends GameDataComponent implements DynamicallyModifiable {
-  public static final class PropertyName {
-    @NonNls public static final String TRANSPORTED_BY = "transportedBy";
-    @NonNls public static final String UNLOADED = "unloaded";
-    @NonNls public static final String LOADED_THIS_TURN = "wasLoadedThisTurn";
-    @NonNls public static final String UNLOADED_TO = "unloadedTo";
-    @NonNls public static final String UNLOADED_IN_COMBAT_PHASE = "wasUnloadedInCombatPhase";
-    @NonNls public static final String ALREADY_MOVED = "alreadyMoved";
-    @NonNls public static final String BONUS_MOVEMENT = "bonusMovement";
-    @NonNls public static final String SUBMERGED = "submerged";
-    @NonNls public static final String WAS_IN_COMBAT = "wasInCombat";
-    @NonNls public static final String LOADED_AFTER_COMBAT = "wasLoadedAfterCombat";
-    @NonNls public static final String UNLOADED_AMPHIBIOUS = "wasAmphibious";
-    @NonNls public static final String ORIGINATED_FROM = "originatedFrom";
-    @NonNls public static final String WAS_SCRAMBLED = "wasScrambled";
-    @NonNls public static final String MAX_SCRAMBLE_COUNT = "maxScrambleCount";
-    @NonNls public static final String WAS_IN_AIR_BATTLE = "wasInAirBattle";
-    @NonNls public static final String LAUNCHED = "launched";
-    @NonNls public static final String AIRBORNE = "airborne";
-    @NonNls public static final String CHARGED_FLAT_FUEL_COST = "chargedFlatFuelCost";
+  @AllArgsConstructor
+  public enum PropertyName {
+    TRANSPORTED_BY("transportedBy"),
+    UNLOADED("unloaded"),
+    LOADED_THIS_TURN("wasLoadedThisTurn"),
+    UNLOADED_TO("unloadedTo"),
+    UNLOADED_IN_COMBAT_PHASE("wasUnloadedInCombatPhase"),
+    ALREADY_MOVED("alreadyMoved"),
+    BONUS_MOVEMENT("bonusMovement"),
+    SUBMERGED("submerged"),
+    WAS_IN_COMBAT("wasInCombat"),
+    LOADED_AFTER_COMBAT("wasLoadedAfterCombat"),
+    UNLOADED_AMPHIBIOUS("wasAmphibious"),
+    ORIGINATED_FROM("originatedFrom"),
+    WAS_SCRAMBLED("wasScrambled"),
+    MAX_SCRAMBLE_COUNT("maxScrambleCount"),
+    WAS_IN_AIR_BATTLE("wasInAirBattle"),
+    LAUNCHED("launched"),
+    AIRBORNE("airborne"),
+    CHARGED_FLAT_FUEL_COST("chargedFlatFuelCost"),
+    ;
 
-    private PropertyName() {
-      throw new IllegalStateException("Utility class constructor should not be called");
+    private final String value;
+
+    @Override
+    public String toString() {
+      return value;
     }
   }
+
 
   private static final long serialVersionUID = -79061939642779999L;
 
