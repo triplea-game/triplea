@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui.menubar;
 
 import com.google.common.collect.Iterables;
-import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ProductionRule;
@@ -52,6 +51,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.map.data.elements.Game;
 import org.triplea.map.xml.writer.GameXmlWriter;
+import org.triplea.swing.FileChooser;
 import org.triplea.swing.JMenuItemBuilder;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.util.FileNameUtils;
@@ -96,28 +96,23 @@ final class ExportMenu extends JMenu {
       JOptionPane.showMessageDialog(frame, "Error: Existing XML file not found.");
       return;
     }
-
-    final JFileChooser chooser = new JFileChooser();
-    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-    final int round = gameData.getCurrentRound();
     final String defaultFileName =
         FileNameUtils.removeIllegalCharacters(
                 String.format(
-                    "xml_%s_%s_round_%s",
+                    "xml_%s_%s_round_%d",
                     dateTimeFormatter.format(LocalDateTime.now(ZoneId.systemDefault())),
                     gameData.getGameName(),
-                    round))
+                    gameData.getCurrentRound()))
             + ".xml";
-    final Path rootDir = ClientFileSystemHelper.getUserRootFolder();
-    chooser.setSelectedFile(rootDir.resolve(defaultFileName).toFile());
-    if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
-      return;
-    }
-    try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
-      final Game xmlGameModel = GameDataExporter.convertToXmlModel(gameData, gameXmlPath);
-      GameXmlWriter.exportXml(xmlGameModel, chooser.getSelectedFile().toPath());
-    }
+
+    FileChooser.chooseExportFileWithDefaultName(frame, defaultFileName)
+        .ifPresent(
+            path -> {
+              try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
+                final Game xmlGameModel = GameDataExporter.convertToXmlModel(gameData, gameXmlPath);
+                GameXmlWriter.exportXml(xmlGameModel, path);
+              }
+            });
   }
 
   private JMenuItem createSaveScreenshotMenu() {
@@ -368,24 +363,20 @@ final class ExportMenu extends JMenu {
   }
 
   private void exportUnitCharts() {
-    final JFileChooser chooser = new JFileChooser();
-    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    final Path rootDir = Path.of(SystemProperties.getUserDir());
     final String defaultFileName =
         FileNameUtils.removeIllegalCharacters(gameData.getGameName()) + "_unit_stats.html";
-    chooser.setSelectedFile(rootDir.resolve(defaultFileName).toFile());
-    if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
-      return;
-    }
-    try (Writer writer =
-        Files.newBufferedWriter(chooser.getSelectedFile().toPath(), StandardCharsets.UTF_8)) {
-      writer.write(
-          UnitStatsTable.getUnitStatsTable(gameData, uiContext)
-              .replaceAll("</?p>|</tr>", "$0\r\n")
-              .replaceAll("(?i)<img[^>]+/>", ""));
-    } catch (final IOException e1) {
-      log.error("Failed to write unit stats: " + chooser.getSelectedFile().getAbsolutePath(), e1);
-    }
+    FileChooser.chooseExportFileWithDefaultName(frame, defaultFileName)
+        .ifPresent(
+            path -> {
+              try (Writer writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+                writer.write(
+                    UnitStatsTable.getUnitStatsTable(gameData, uiContext)
+                        .replaceAll("</?p>|</tr>", "$0\r\n")
+                        .replaceAll("(?i)<img[^>]+/>", ""));
+              } catch (final IOException e1) {
+                log.error("Failed to write unit stats: {}", path, e1);
+              }
+            });
   }
 
   private JMenuItem createExportSetupChartsMenu() {
