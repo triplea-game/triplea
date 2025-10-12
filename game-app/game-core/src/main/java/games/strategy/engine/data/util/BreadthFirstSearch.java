@@ -52,7 +52,7 @@ public final class BreadthFirstSearch {
    * caller before running the BreadthFirstSearch.
    */
   public static class TerritoryFinder implements Visitor {
-    final @Nonnull Territory destination;
+    private final Territory destination;
     @Getter int distanceFound = -1;
 
     private TerritoryFinder(Territory destination) {
