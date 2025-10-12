@@ -10,6 +10,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -58,13 +59,10 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
 
     private final String value;
 
-    public static boolean isValid(final String stringPropertyValue) {
-      try {
-        valueOf(stringPropertyValue);
-        return true;
-      } catch (IllegalStateException e) {
-        return false;
-      }
+    public static Optional<PropertyName> parseFromString(final String stringPropertyValue) {
+      return Arrays.stream(PropertyName.values())
+          .filter(propertyName -> propertyName.value.equals(stringPropertyValue))
+          .findAny();
     }
 
     @Override
@@ -258,65 +256,63 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
       case "disabled" ->
           Optional.of(MutableProperty.ofSimple(this::setDisabled, this::getDisabled));
       default ->
-          !PropertyName.isValid(propertyName)
-              ? Optional.empty()
-              : switch (PropertyName.valueOf(propertyName)) {
-                case TRANSPORTED_BY ->
-                    Optional.of(
-                        MutableProperty.ofSimple(this::setTransportedBy, this::getTransportedBy));
-                case UNLOADED ->
-                    Optional.of(MutableProperty.ofSimple(this::setUnloaded, this::getUnloaded));
-                case LOADED_THIS_TURN ->
-                    Optional.of(
-                        MutableProperty.ofSimple(
-                            this::setWasLoadedThisTurn, this::getWasLoadedThisTurn));
-                case UNLOADED_TO ->
-                    Optional.of(MutableProperty.ofSimple(this::setUnloadedTo, this::getUnloadedTo));
-                case UNLOADED_IN_COMBAT_PHASE ->
-                    Optional.of(
-                        MutableProperty.ofSimple(
-                            this::setWasUnloadedInCombatPhase, this::getWasUnloadedInCombatPhase));
-                case ALREADY_MOVED ->
-                    Optional.of(
-                        MutableProperty.ofSimple(this::setAlreadyMoved, this::getAlreadyMoved));
-                case BONUS_MOVEMENT ->
-                    Optional.of(
-                        MutableProperty.ofSimple(this::setBonusMovement, this::getBonusMovement));
-                case SUBMERGED ->
-                    Optional.of(MutableProperty.ofSimple(this::setSubmerged, this::getSubmerged));
-                case WAS_IN_COMBAT ->
-                    Optional.of(
-                        MutableProperty.ofSimple(this::setWasInCombat, this::getWasInCombat));
-                case LOADED_AFTER_COMBAT ->
-                    Optional.of(
-                        MutableProperty.ofSimple(
-                            this::setWasLoadedAfterCombat, this::getWasLoadedAfterCombat));
-                case UNLOADED_AMPHIBIOUS ->
-                    Optional.of(
-                        MutableProperty.ofSimple(this::setWasAmphibious, this::getWasAmphibious));
-                case ORIGINATED_FROM ->
-                    Optional.of(
-                        MutableProperty.ofSimple(this::setOriginatedFrom, this::getOriginatedFrom));
-                case WAS_SCRAMBLED ->
-                    Optional.of(
-                        MutableProperty.ofSimple(this::setWasScrambled, this::getWasScrambled));
-                case MAX_SCRAMBLE_COUNT ->
-                    Optional.of(
-                        MutableProperty.ofSimple(
-                            this::setMaxScrambleCount, this::getMaxScrambleCount));
-                case WAS_IN_AIR_BATTLE ->
-                    Optional.of(
-                        MutableProperty.ofSimple(this::setWasInAirBattle, this::getWasInAirBattle));
-                case LAUNCHED ->
-                    Optional.of(MutableProperty.ofSimple(this::setLaunched, this::getLaunched));
-                case AIRBORNE ->
-                    Optional.of(MutableProperty.ofSimple(this::setAirborne, this::getAirborne));
-                case CHARGED_FLAT_FUEL_COST ->
-                    Optional.of(
-                        MutableProperty.ofSimple(
-                            this::setChargedFlatFuelCost, this::getChargedFlatFuelCost));
-              };
+          PropertyName.parseFromString(propertyName)
+              .map(
+                  unitPropertyName ->
+                      switch (unitPropertyName) {
+                        case TRANSPORTED_BY ->
+                            MutableProperty.ofSimple(
+                                this::setTransportedBy, this::getTransportedBy);
+                        case UNLOADED ->
+                            MutableProperty.ofSimple(this::setUnloaded, this::getUnloaded);
+                        case LOADED_THIS_TURN ->
+                            MutableProperty.ofSimple(
+                                this::setWasLoadedThisTurn, this::getWasLoadedThisTurn);
+                        case UNLOADED_TO ->
+                            MutableProperty.ofSimple(this::setUnloadedTo, this::getUnloadedTo);
+                        case UNLOADED_IN_COMBAT_PHASE ->
+                            MutableProperty.ofSimple(
+                                this::setWasUnloadedInCombatPhase,
+                                this::getWasUnloadedInCombatPhase);
+                        case ALREADY_MOVED ->
+                            MutableProperty.ofSimple(this::setAlreadyMoved, this::getAlreadyMoved);
+                        case BONUS_MOVEMENT ->
+                            MutableProperty.ofSimple(
+                                this::setBonusMovement, this::getBonusMovement);
+                        case SUBMERGED ->
+                            MutableProperty.ofSimple(this::setSubmerged, this::getSubmerged);
+                        case WAS_IN_COMBAT ->
+                            MutableProperty.ofSimple(this::setWasInCombat, this::getWasInCombat);
+                        case LOADED_AFTER_COMBAT ->
+                            MutableProperty.ofSimple(
+                                this::setWasLoadedAfterCombat, this::getWasLoadedAfterCombat);
+                        case UNLOADED_AMPHIBIOUS ->
+                            MutableProperty.ofSimple(
+                                this::setWasAmphibious, this::getWasAmphibious);
+                        case ORIGINATED_FROM ->
+                            MutableProperty.ofSimple(
+                                this::setOriginatedFrom, this::getOriginatedFrom);
+                        case WAS_SCRAMBLED ->
+                            MutableProperty.ofSimple(this::setWasScrambled, this::getWasScrambled);
+                        case MAX_SCRAMBLE_COUNT ->
+                            MutableProperty.ofSimple(
+                                this::setMaxScrambleCount, this::getMaxScrambleCount);
+                        case WAS_IN_AIR_BATTLE ->
+                            MutableProperty.ofSimple(
+                                this::setWasInAirBattle, this::getWasInAirBattle);
+                        case LAUNCHED ->
+                            MutableProperty.ofSimple(this::setLaunched, this::getLaunched);
+                        case AIRBORNE ->
+                            MutableProperty.ofSimple(this::setAirborne, this::getAirborne);
+                        case CHARGED_FLAT_FUEL_COST ->
+                            MutableProperty.ofSimple(
+                                this::setChargedFlatFuelCost, this::getChargedFlatFuelCost);
+                      });
     };
+  }
+
+  public Optional<MutableProperty<?>> getProperty(PropertyName propertyName) {
+    return getPropertyOrEmpty(propertyName.toString());
   }
 
   public void setUnitDamage(final int unitDamage) {
