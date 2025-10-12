@@ -39,6 +39,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import lombok.Getter;
+import lombok.Setter;
 
 /** Shows the history as a tree. */
 public class HistoryPanel extends JPanel {
@@ -47,7 +48,8 @@ public class HistoryPanel extends JPanel {
   private final JTree tree;
   private final HistoryDetailsPanel details;
   @Getter private HistoryNode currentPopupNode;
-  private final JPopupMenu popup;
+  @Setter
+  private JPopupMenu popup;
   // remember which paths were expanded
   private final Collection<TreePath> stayExpandedPaths = new ArrayList<>();
   private boolean mouseOverPanel;
@@ -57,10 +59,7 @@ public class HistoryPanel extends JPanel {
   private TreePath lastParent = null;
 
   public HistoryPanel(
-      final GameData data,
-      final HistoryDetailsPanel details,
-      final JPopupMenu popup,
-      final UiContext uiContext) {
+      final GameData data, final HistoryDetailsPanel details, final UiContext uiContext) {
     Preconditions.checkState(data.areChangesOnlyInSwingEventThread());
     this.data = data;
     this.details = details;
@@ -82,7 +81,6 @@ public class HistoryPanel extends JPanel {
     // Register the tree with the tooltip manager to make the tooltips we set work.
     ToolTipManager.sharedInstance().registerComponent(tree);
     tree.expandRow(0);
-    this.popup = popup;
     tree.add(this.popup);
     this.popup.addPopupMenuListener(
         new PopupMenuListener() {

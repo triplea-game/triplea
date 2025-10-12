@@ -1017,25 +1017,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         .orElse(null);
   }
 
-  private class HistoryPanelPopupMenuBuilder {
-    private final JPopupMenu popup = new JPopupMenu();
-
-    public HistoryPanelPopupMenuBuilder add(String title, Runnable action) {
-      popup.add(
-          new AbstractAction(title) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              action.run();
-            }
-          });
-      return this;
-    }
-
-    public JPopupMenu build() {
-      return popup;
-    }
-  }
-
   /** Create a unit option with icon and description. */
   private class UnitRenderer extends JLabel implements ListCellRenderer<Unit> {
 
@@ -1832,21 +1813,21 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     final HistoryDetailsPanel historyDetailPanel =
         new HistoryDetailsPanel(clonedGameData, mapPanel);
     // actions need to clear the history panel popup state when done
+    final HistoryPanel popupHistoryPanel =
+        new HistoryPanel(clonedGameData, historyDetailPanel, uiContext);
     final JPopupMenu popup =
         new HistoryPanelPopupMenuBuilder()
-            .add("Show Summary Log", () -> showHistoryLog(false, clonedGameData))
-            .add("Show Detailed Log", () -> showHistoryLog(true, clonedGameData))
+            .add("Show Summary Log", () -> showHistoryLog(popupHistoryPanel, false, clonedGameData))
+            .add("Show Detailed Log", () -> showHistoryLog(popupHistoryPanel, true, clonedGameData))
             .add(
-                "Show Detailed Log",
+                "Export Gameboard Picture",
                 () -> {
                   ScreenshotExporter.exportScreenshot(
-                      TripleAFrame.this, data, getCurrentPopupNodeOrLastNode());
-                  if (historyPanel != null) {
-                    historyPanel.clearCurrentPopupNode();
-                  }
+                      TripleAFrame.this, data, popupHistoryPanel.getCurrentPopupNode());
+                  popupHistoryPanel.clearCurrentPopupNode();
                 })
             .add(
-                "\"Save Game at this point (BETA)\"",
+                "Save Game at this point (BETA)",
                 () -> {
                   JOptionPane.showMessageDialog(
                       TripleAFrame.this,
@@ -1875,11 +1856,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                                   data, GameDataManager.Options.withEverything())
                               .orElse(null);
                       if (gameDataCopy != null) {
-                        if (historyPanel != null) {
-                          gameDataCopy
-                              .getHistory()
-                              .removeAllHistoryAfterNode(historyPanel.getCurrentPopupNode());
-                        }
+                        gameDataCopy
+                            .getHistory()
+                            .removeAllHistoryAfterNode(popupHistoryPanel.getCurrentPopupNode());
                         // TODO: the saved current delegate is still the current delegate,
                         // rather than the delegate at that history popup node
                         // TODO: it still shows the current round number, rather than the round at
@@ -1922,12 +1901,11 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                       log.error("Failed to save game: " + f.get().toAbsolutePath(), e);
                     }
                   }
-                  if (historyPanel != null) {
-                    historyPanel.clearCurrentPopupNode();
-                  }
+                  popupHistoryPanel.clearCurrentPopupNode();
                 })
             .build();
-    historyPanel = new HistoryPanel(clonedGameData, historyDetailPanel, popup, uiContext);
+    popupHistoryPanel.setPopup(popup);
+    historyPanel = popupHistoryPanel;
     // create history tree context menu
     final JSplitPane historyComponentSplitPane = new JSplitPane();
     historyComponentSplitPane.setOneTouchExpandable(true);
@@ -1953,23 +1931,35 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         });
   }
 
-  private void showHistoryLog(boolean verboseLog, GameData clonedGameData) {
+  private static class HistoryPanelPopupMenuBuilder {
+    private final JPopupMenu popup = new JPopupMenu();
+
+    public HistoryPanelPopupMenuBuilder add(String title, Runnable action) {
+      popup.add(
+          new AbstractAction(title) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+              action.run();
+            }
+          });
+      return this;
+    }
+
+    public JPopupMenu build() {
+      return popup;
+    }
+  }
+
+  private void showHistoryLog(
+      final HistoryPanel popupHistoryPanel, boolean verboseLog, GameData clonedGameData) {
     final HistoryLog historyLog = new HistoryLog(this);
-    final HistoryNode currentPopupNodeOrLastNode = getCurrentPopupNodeOrLastNode();
+    final HistoryNode currentPopupNodeOrLastNode = popupHistoryPanel.getCurrentPopupNode();
     historyLog.printRemainingTurn(
         currentPopupNodeOrLastNode, verboseLog, data.getDiceSides(), null);
     historyLog.printTerritorySummary(currentPopupNodeOrLastNode, clonedGameData);
     historyLog.printProductionSummary(clonedGameData);
-    if (historyPanel != null) {
-      historyPanel.clearCurrentPopupNode();
-    }
+    popupHistoryPanel.clearCurrentPopupNode();
     historyLog.setVisible(true);
-  }
-
-  private HistoryNode getCurrentPopupNodeOrLastNode() {
-    return (historyPanel != null
-        ? historyPanel.getCurrentPopupNode()
-        : data.getHistory().getLastNode());
   }
 
   private void showGame() {
