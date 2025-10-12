@@ -183,6 +183,11 @@ public class ChangeFactory {
     return new ObjectPropertyChange(unit, propertyName, newValue);
   }
 
+  public static Change unitPropertyChange(
+      final Unit unit, final Object newValue, final Unit.PropertyName unitPropertyName) {
+    return unitPropertyChange(unit, newValue, unitPropertyName.toString());
+  }
+
   public static Change addBattleRecords(final BattleRecords records, final GameState data) {
     return new AddBattleRecordsChange(records, data);
   }
