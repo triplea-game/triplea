@@ -70,4 +70,14 @@ public final class GameDataUtils {
       throw new RuntimeException(e);
     }
   }
+
+  public static Optional<GameData> cloneGameDataWithHistory(
+      GameData gameData, boolean enableSeeking) {
+    final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
+    Optional<GameData> optionalGameDataClone = cloneGameData(gameData, cloneOptions);
+    if (enableSeeking) {
+      optionalGameDataClone.ifPresent(clone -> clone.getHistory().enableSeeking(null));
+    }
+    return optionalGameDataClone;
+  }
 }
