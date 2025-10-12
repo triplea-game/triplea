@@ -48,8 +48,7 @@ public class HistoryPanel extends JPanel {
   private final JTree tree;
   private final HistoryDetailsPanel details;
   @Getter private HistoryNode currentPopupNode;
-  @Setter
-  private JPopupMenu popup;
+  @Setter private JPopupMenu popup;
   // remember which paths were expanded
   private final Collection<TreePath> stayExpandedPaths = new ArrayList<>();
   private boolean mouseOverPanel;
