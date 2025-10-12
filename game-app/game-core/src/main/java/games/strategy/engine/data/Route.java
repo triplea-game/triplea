@@ -347,7 +347,8 @@ public class Route implements Serializable, Iterable<Territory> {
       changes.add(ChangeFactory.removeResourceCollection(player, tuple.getFirst()));
       for (final Unit unit : tuple.getSecond()) {
         changes.add(
-            ChangeFactory.unitPropertyChange(unit, Boolean.TRUE, Unit.CHARGED_FLAT_FUEL_COST));
+            ChangeFactory.unitPropertyChange(
+                unit, Boolean.TRUE, Unit.PropertyName.CHARGED_FLAT_FUEL_COST));
       }
     }
     return changes;
