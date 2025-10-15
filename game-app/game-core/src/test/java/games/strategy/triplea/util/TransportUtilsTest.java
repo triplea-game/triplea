@@ -62,7 +62,7 @@ public class TransportUtilsTest {
     // Create a dummy unit that was "unloaded".
     final Unit dummyUnit = infantry(transport.getData()).create(transport.getOwner());
     transport.setUnloaded(List.of(dummyUnit));
-    dummyUnit.getPropertyOrThrow(Unit.UNLOADED_TO).setValue(t);
+    dummyUnit.getProperty(Unit.PropertyName.UNLOADED_TO).orElseThrow().setValue(t);
     assertThat(dummyUnit.getUnloadedTo(), equalTo(t));
   }
 

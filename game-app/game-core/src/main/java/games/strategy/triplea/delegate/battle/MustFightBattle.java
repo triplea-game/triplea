@@ -721,7 +721,7 @@ public class MustFightBattle extends DependentBattle
     if (!transports.isEmpty()) {
       final CompositeChange change = new CompositeChange();
       for (final Unit unit : transports) {
-        change.add(ChangeFactory.unitPropertyChange(unit, true, Unit.WAS_IN_COMBAT));
+        change.add(ChangeFactory.unitPropertyChange(unit, true, Unit.PropertyName.WAS_IN_COMBAT));
       }
       bridge.addChange(change);
     }

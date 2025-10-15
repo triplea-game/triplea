@@ -717,7 +717,9 @@ public class BattleDisplay extends JPanel {
         final boolean hasFocus,
         final int row,
         final int column) {
-      ((BattleModel.TableData) value).updateStamp(stamp);
+      if (value != null) {
+        ((BattleModel.TableData) value).updateStamp(stamp);
+      }
       return stamp;
     }
   }

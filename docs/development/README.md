@@ -43,6 +43,13 @@ git status
 ```bash
 gh repo set-default triplea-game/triplea
 ```
+
+- (if wanted) declare start path for WSL by adjusting `.bashrc` or `.zshrc` inside WSL by adding at the end
+`cd ~/projects/my-repo`
+
+```bash
+nano ~/.bashrc
+```
  
 ## Getting Started
 
