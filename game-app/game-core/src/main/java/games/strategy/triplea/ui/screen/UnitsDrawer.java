@@ -285,18 +285,7 @@ public class UnitsDrawer extends AbstractDrawable {
                 unitCategory.getBombingDamage() > 0
                     ? Matches.unitHasTakenSomeBombingUnitDamage()
                     : Matches.unitHasNotTakenAnyBombingUnitDamage());
-  }
-
-  /**
-   * Try to avoid this method. Territory by name search is only needed as UnitsDrawer does not (yet)
-   * have a reference to the territory itself.
-   *
-   * @param data GameData object
-   * @return {@link Territory} found by name {@link UnitsDrawer#territoryName}
-   */
-  @Deprecated(since = "2.7", forRemoval = true)
-  public Territory getTerritory(GameData data) {
-    return data.getMap().getTerritoryOrThrow(territoryName);
+    return territory.getMatches(selectedUnits);
   }
 
   @Override

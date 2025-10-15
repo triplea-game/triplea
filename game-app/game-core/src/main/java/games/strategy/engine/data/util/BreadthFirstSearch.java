@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
 import lombok.Getter;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.collections.CollectionUtils;
