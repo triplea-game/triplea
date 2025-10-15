@@ -1,5 +1,6 @@
 package games.strategy.engine.data.util;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
 import java.util.ArrayDeque;
@@ -24,6 +25,11 @@ public final class BreadthFirstSearch {
   private final ArrayDeque<Territory> territoriesToCheck;
   private final BiPredicate<Territory, Territory> neighborCondition;
 
+  public static TerritoryFinder createTerritoryFinder(Territory destination) {
+    Preconditions.checkNotNull(destination);
+    return new TerritoryFinder(destination);
+  }
+
   @FunctionalInterface
   public interface Visitor {
     /**
@@ -45,10 +51,10 @@ public final class BreadthFirstSearch {
    * caller before running the BreadthFirstSearch.
    */
   public static class TerritoryFinder implements Visitor {
-    final Territory destination;
+    private final Territory destination;
     @Getter int distanceFound = -1;
 
-    public TerritoryFinder(Territory destination) {
+    private TerritoryFinder(Territory destination) {
       this.destination = destination;
     }
 
