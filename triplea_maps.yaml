@@ -3453,3 +3453,11 @@
   description: |
     <br>A deluxe version of WW2v3 that includes separate nations for Italy and Free France, new territories in the Mediterranean and south Pacific, and revised national objectives focused on Axis oil and Allied lend-lease routes.
     <br>The game is meant to be similar enough to v3 to allow players who are familiar with its map and units to apply their expertise, yet should have enough new features to keep even the most grizzled veteran interested
+- mapName: 1888A Steam and Steel
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/1888a_steam_and_steel/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/1888a_steam_and_steel/blob/master/preview.png
+  description: |
+    <br>A Steampunk Tech Race FFA map, also good vs AI.
+    
