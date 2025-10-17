@@ -6,6 +6,7 @@ import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
+import games.strategy.engine.data.IPropertyEnum;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
@@ -13,7 +14,6 @@ import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +26,7 @@ import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import lombok.Value;
 import org.jetbrains.annotations.NonNls;
 
@@ -37,9 +38,9 @@ import org.jetbrains.annotations.NonNls;
  * <p>The set of UnitSupportAttachments do not change during a game.
  */
 public class UnitSupportAttachment extends DefaultAttachment {
-
+  @ToString(onlyExplicitlyIncluded = true)
   @AllArgsConstructor
-  public enum PropertyName {
+  public enum PropertyName implements IPropertyEnum<UnitSupportAttachment> {
     AA_ROLL("aaRoll", a -> MutableProperty.ofReadOnly(a::getAaRoll)),
     AA_STRENGTH("aaStrength", a -> MutableProperty.ofReadOnly(a::getAaStrength)),
     ALLIED("allied", a -> MutableProperty.ofReadOnly(a::getAllied)),
@@ -74,22 +75,21 @@ public class UnitSupportAttachment extends DefaultAttachment {
         a -> MutableProperty.of(a::setUnitType, a::setUnitType, a::getUnitType, a::resetUnitType)),
     ;
 
-    private final String value;
+    @ToString.Include private final String value;
     private final Function<UnitSupportAttachment, MutableProperty<?>> propertyAccessor;
-
-    public static Optional<PropertyName> parseFromString(final String stringPropertyValue) {
-      return Arrays.stream(PropertyName.values())
-          .filter(propertyName -> propertyName.value.equals(stringPropertyValue))
-          .findAny();
-    }
 
     public MutableProperty<?> getMutableProperty(UnitSupportAttachment attachment) {
       return propertyAccessor.apply(attachment);
     }
 
     @Override
-    public String toString() {
+    public String getValue() {
       return value;
+    }
+
+    @Override
+    public Function<UnitSupportAttachment, MutableProperty<?>> getPropertyAccessor() {
+      return propertyAccessor;
     }
   }
 
@@ -468,9 +468,9 @@ public class UnitSupportAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameState data) {}
 
+  @SuppressWarnings("unchecked")
   @Override
   public Optional<MutableProperty<?>> getPropertyOrEmpty(final @NonNls String propertyName) {
-    return PropertyName.parseFromString(propertyName)
-        .map(propertyValue -> propertyValue.getMutableProperty(this));
+    return IPropertyEnum.getPropertyOrEmpty(PropertyName.class, propertyName, this);
   }
 }
