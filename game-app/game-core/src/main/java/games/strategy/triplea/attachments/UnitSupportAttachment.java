@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,26 +40,42 @@ public class UnitSupportAttachment extends DefaultAttachment {
 
   @AllArgsConstructor
   public enum PropertyName {
-    AA_ROLL("aaRoll"),
-    AA_STRENGTH("aaStrength"),
-    ALLIED("allied"),
-    BONUS("bonus"),
-    BONUS_TYPE("bonusType"),
-    DEFENCE("defence"),
-    DICE("dice"),
-    ENEMY("enemy"),
-    FACTION("faction"),
-    IMP_ART_TECH("impArtTech"),
-    NUMBER("number"),
-    OFFENCE("offence"),
-    PLAYERS("players"),
-    ROLL("roll"),
-    SIDE("side"),
-    STRENGTH("strength"),
-    UNIT_TYPE("unitType"),
+    AA_ROLL("aaRoll", a -> MutableProperty.ofReadOnly(a::getAaRoll)),
+    AA_STRENGTH("aaStrength", a -> MutableProperty.ofReadOnly(a::getAaStrength)),
+    ALLIED("allied", a -> MutableProperty.ofReadOnly(a::getAllied)),
+    BONUS("bonus", a -> MutableProperty.of(a::setBonus, a::setBonus, a::getBonus, a::resetBonus)),
+    BONUS_TYPE(
+        "bonusType",
+        a ->
+            MutableProperty.of(
+                a::setBonusType, a::setBonusType, a::getBonusType, a::resetBonusType)),
+    DEFENCE("defence", a -> MutableProperty.ofReadOnly(a::getDefence)),
+    DICE("dice", a -> MutableProperty.ofString(a::setDice, a::getDice, a::resetDice)),
+    ENEMY("enemy", a -> MutableProperty.ofReadOnly(a::getEnemy)),
+    FACTION(
+        "faction", a -> MutableProperty.ofString(a::setFaction, a::getFaction, a::resetFaction)),
+    IMP_ART_TECH(
+        "impArtTech",
+        a ->
+            MutableProperty.of(
+                a::setImpArtTech, a::setImpArtTech, a::getImpArtTech, a::resetImpArtTech)),
+    NUMBER(
+        "number",
+        a -> MutableProperty.of(a::setNumber, a::setNumber, a::getNumber, a::resetNumber)),
+    OFFENCE("offence", a -> MutableProperty.ofReadOnly(a::getOffence)),
+    PLAYERS(
+        "players",
+        a -> MutableProperty.of(a::setPlayers, a::setPlayers, a::getPlayers, a::resetPlayers)),
+    ROLL("roll", a -> MutableProperty.ofReadOnly(a::getRoll)),
+    SIDE("side", a -> MutableProperty.ofString(a::setSide, a::getSide, a::resetSide)),
+    STRENGTH("strength", a -> MutableProperty.ofReadOnly(a::getStrength)),
+    UNIT_TYPE(
+        "unitType",
+        a -> MutableProperty.of(a::setUnitType, a::setUnitType, a::getUnitType, a::resetUnitType)),
     ;
 
     private final String value;
+    private final Function<UnitSupportAttachment, MutableProperty<?>> propertyAccessor;
 
     public static Optional<PropertyName> parseFromString(final String stringPropertyValue) {
       return Arrays.stream(PropertyName.values())
@@ -66,49 +83,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
           .findAny();
     }
 
-    public static MutableProperty<?> getMutablePropertyFor(
-        PropertyName propertyNameValue, UnitSupportAttachment object) {
-      return switch (propertyNameValue) {
-        case AA_ROLL -> MutableProperty.ofReadOnly(object::getAaRoll);
-        case AA_STRENGTH -> MutableProperty.ofReadOnly(object::getAaStrength);
-        case ALLIED -> MutableProperty.ofReadOnly(object::getAllied);
-        case BONUS ->
-            MutableProperty.of(
-                object::setBonus, object::setBonus, object::getBonus, object::resetBonus);
-        case BONUS_TYPE ->
-            MutableProperty.of(
-                object::setBonusType,
-                object::setBonusType,
-                object::getBonusType,
-                object::resetBonusType);
-        case DEFENCE -> MutableProperty.ofReadOnly(object::getDefence);
-        case DICE -> MutableProperty.ofString(object::setDice, object::getDice, object::resetDice);
-        case ENEMY -> MutableProperty.ofReadOnly(object::getEnemy);
-        case FACTION ->
-            MutableProperty.ofString(object::setFaction, object::getFaction, object::resetFaction);
-        case IMP_ART_TECH ->
-            MutableProperty.of(
-                object::setImpArtTech,
-                object::setImpArtTech,
-                object::getImpArtTech,
-                object::resetImpArtTech);
-        case NUMBER ->
-            MutableProperty.of(
-                object::setNumber, object::setNumber, object::getNumber, object::resetNumber);
-        case OFFENCE -> MutableProperty.ofReadOnly(object::getOffence);
-        case PLAYERS ->
-            MutableProperty.of(
-                object::setPlayers, object::setPlayers, object::getPlayers, object::resetPlayers);
-        case ROLL -> MutableProperty.ofReadOnly(object::getRoll);
-        case SIDE -> MutableProperty.ofString(object::setSide, object::getSide, object::resetSide);
-        case STRENGTH -> MutableProperty.ofReadOnly(object::getStrength);
-        case UNIT_TYPE ->
-            MutableProperty.of(
-                object::setUnitType,
-                object::setUnitType,
-                object::getUnitType,
-                object::resetUnitType);
-      };
+    public MutableProperty<?> getMutableProperty(UnitSupportAttachment attachment) {
+      return propertyAccessor.apply(attachment);
     }
 
     @Override
@@ -495,6 +471,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
   @Override
   public Optional<MutableProperty<?>> getPropertyOrEmpty(final @NonNls String propertyName) {
     return PropertyName.parseFromString(propertyName)
-        .map(propertyValue -> PropertyName.getMutablePropertyFor(propertyValue, this));
+        .map(propertyValue -> propertyValue.getMutableProperty(this));
   }
 }
