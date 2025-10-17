@@ -180,9 +180,9 @@ public class UnitSupportAttachment extends DefaultAttachment {
     allied = false;
     enemy = false;
     for (final String element : splitOnColon(faction)) {
-      if (element.equalsIgnoreCase("allied")) {
+      if (element.equalsIgnoreCase(PropertyName.ALLIED.value)) {
         allied = true;
-      } else if (element.equalsIgnoreCase("enemy")) {
+      } else if (element.equalsIgnoreCase(PropertyName.ENEMY.value)) {
         enemy = true;
       } else {
         throw new GameParseException(
@@ -206,9 +206,9 @@ public class UnitSupportAttachment extends DefaultAttachment {
     defence = false;
     offence = false;
     for (final String element : splitOnColon(side)) {
-      if (element.equalsIgnoreCase("defence")) {
+      if (element.equalsIgnoreCase(PropertyName.DEFENCE.value)) {
         defence = true;
-      } else if (element.equalsIgnoreCase("offence")) {
+      } else if (element.equalsIgnoreCase(PropertyName.OFFENCE.value)) {
         offence = true;
       } else {
         throw new GameParseException(side + " side must be defence or offence" + thisErrorMsg());
@@ -233,13 +233,13 @@ public class UnitSupportAttachment extends DefaultAttachment {
     resetDice();
     this.dice = dice.intern();
     for (final String element : splitOnColon(dice)) {
-      if (element.equalsIgnoreCase("roll")) {
+      if (element.equalsIgnoreCase(PropertyName.ROLL.value)) {
         roll = true;
-      } else if (element.equalsIgnoreCase("strength")) {
+      } else if (element.equalsIgnoreCase(PropertyName.STRENGTH.value)) {
         strength = true;
-      } else if (element.equalsIgnoreCase("AAroll")) {
+      } else if (element.equalsIgnoreCase(PropertyName.AA_ROLL.value)) {
         aaRoll = true;
-      } else if (element.equalsIgnoreCase("AAstrength")) {
+      } else if (element.equalsIgnoreCase(PropertyName.AA_STRENGTH.value)) {
         aaStrength = true;
       } else {
         throw new GameParseException(
@@ -405,11 +405,11 @@ public class UnitSupportAttachment extends DefaultAttachment {
     final UnitSupportAttachment rule = new UnitSupportAttachment(attachmentName, type, data);
     rule.setBonus(1);
     rule.setBonusType(Constants.OLD_ART_RULE_NAME);
-    rule.setDice("strength");
-    rule.setFaction("allied");
+    rule.setDice(PropertyName.STRENGTH.value);
+    rule.setFaction(PropertyName.ALLIED.value);
     rule.setImpArtTech(true);
     rule.setNumber(first ? 0 : 1);
-    rule.setSide("offence");
+    rule.setSide(PropertyName.OFFENCE.value);
     rule.addUnitTypes(first ? Set.of(type) : getTargets(data.getUnitTypeList()));
     if (!first) {
       rule.setPlayers(new ArrayList<>(data.getPlayerList().getPlayers()));
