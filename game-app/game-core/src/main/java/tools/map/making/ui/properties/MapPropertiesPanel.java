@@ -69,7 +69,7 @@ public class MapPropertiesPanel {
               final Path mapFolder =
                   new FileSave("Where is your map's folder?", null, null).getFile();
               if (mapFolder != null && Files.exists(mapFolder)) {
-                System.setProperty(ToolArguments.MAP_FOLDER, mapFolder.toString());
+                ToolArguments.MAP_FOLDER.setSystemProperty(mapFolder.toString());
               }
             }));
     panel.add(mapFolderButton);
@@ -89,7 +89,7 @@ public class MapPropertiesPanel {
             try {
               final double unitZoom =
                   Math.min(4.0, Math.max(0.1, Double.parseDouble(unitZoomText.getText())));
-              System.setProperty(ToolArguments.UNIT_ZOOM, "" + unitZoom);
+              ToolArguments.UNIT_ZOOM.setSystemProperty(unitZoom);
               unitZoomText.setText(String.valueOf(unitZoom));
             } catch (final NumberFormatException ex) {
               // ignore malformed input
@@ -111,7 +111,7 @@ public class MapPropertiesPanel {
           public void focusLost(final FocusEvent e) {
             try {
               unitWidth = Math.min(400, Math.max(1, Integer.parseInt(unitWidthText.getText())));
-              System.setProperty(ToolArguments.UNIT_WIDTH, "" + unitWidth);
+              ToolArguments.UNIT_WIDTH.setSystemProperty(unitWidth);
             } catch (final Exception ex) {
               // ignore malformed input
             }
@@ -132,7 +132,7 @@ public class MapPropertiesPanel {
           public void focusLost(final FocusEvent e) {
             try {
               unitHeight = Math.min(400, Math.max(1, Integer.parseInt(unitHeightText.getText())));
-              System.setProperty(ToolArguments.UNIT_HEIGHT, "" + unitHeight);
+              ToolArguments.UNIT_HEIGHT.setSystemProperty(unitHeight);
             } catch (final Exception ex) {
               // ignore malformed input
             }

@@ -51,7 +51,6 @@ import org.triplea.util.Tuple;
 import tools.image.FileHelper;
 import tools.image.FileOpen;
 import tools.image.FileSave;
-import tools.image.MapFolderLocationSystemProperty;
 import tools.util.ToolArguments;
 import tools.util.ToolsUtil;
 
@@ -608,32 +607,11 @@ public final class PlacementPicker {
   }
 
   private void handleSystemProperties() {
-    mapFolderLocation = MapFolderLocationSystemProperty.read();
-    final String zoomString = System.getProperty(ToolArguments.UNIT_ZOOM);
-    if (zoomString != null && zoomString.length() > 0) {
-      try {
-        unitZoomPercent = Double.parseDouble(zoomString);
-      } catch (final Exception e) {
-        log.error("Not a decimal percentage: " + zoomString);
-      }
-    }
-    final String widthString = System.getProperty(ToolArguments.UNIT_WIDTH);
-    if (widthString != null && widthString.length() > 0) {
-      try {
-        unitWidth = Integer.parseInt(widthString);
-        placeWidth = (int) (unitZoomPercent * unitWidth);
-      } catch (final Exception e) {
-        log.error("Not an integer: " + widthString);
-      }
-    }
-    final String heightString = System.getProperty(ToolArguments.UNIT_HEIGHT);
-    if (heightString != null && heightString.length() > 0) {
-      try {
-        unitHeight = Integer.parseInt(heightString);
-        placeHeight = (int) (unitZoomPercent * unitHeight);
-      } catch (final Exception e) {
-        log.error("Not an integer: " + heightString);
-      }
-    }
+    ToolArguments.ifMapFolder(mapFolderProperty -> mapFolderLocation = mapFolderProperty);
+    ToolArguments.ifUnitZoom(unitZoomProperty -> unitZoomPercent = unitZoomProperty);
+    ToolArguments.ifUnitWidth(
+        unitWidthProperty -> placeWidth = (int) (unitZoomPercent * unitWidthProperty));
+    ToolArguments.ifUnitHeight(
+        unitHeightProperty -> placeHeight = (int) (unitZoomPercent * unitHeightProperty));
   }
 }
