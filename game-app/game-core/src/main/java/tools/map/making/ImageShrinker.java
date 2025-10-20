@@ -22,7 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import tools.image.FileOpen;
-import tools.image.MapFolderLocationSystemProperty;
+import tools.util.ToolArguments;
 
 /** Takes an image and shrinks it. Used for making small images. */
 @Slf4j
@@ -46,7 +46,7 @@ public final class ImageShrinker {
   }
 
   private void runInternal() throws IOException {
-    final Path mapFolderLocation = MapFolderLocationSystemProperty.read();
+    final Path mapFolderLocation = ToolArguments.getPropertyMapFolderPath().orElse(null);
     JOptionPane.showMessageDialog(
         null,
         new JLabel(

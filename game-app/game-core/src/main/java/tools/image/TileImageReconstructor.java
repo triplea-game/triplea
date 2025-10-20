@@ -32,6 +32,7 @@ import javax.swing.filechooser.FileFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.util.PointFileReaderWriter;
+import tools.util.ToolArguments;
 
 /** For taking a folder of basetiles and putting them back together into an image. */
 @Slf4j
@@ -67,7 +68,7 @@ public final class TileImageReconstructor {
   }
 
   private void runInternal() {
-    @Nullable Path mapFolderLocation = MapFolderLocationSystemProperty.read();
+    @Nullable Path mapFolderLocation = ToolArguments.getPropertyMapFolderPath().orElse(null);
     JOptionPane.showMessageDialog(
         null,
         new JLabel(

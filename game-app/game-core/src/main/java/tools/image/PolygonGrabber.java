@@ -44,6 +44,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.FileChooser;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
+import tools.util.ToolArguments;
 
 /**
  * Utility to break a map into polygons. Inputs - a map with 1 pixel wide borders - a list of
@@ -52,7 +53,7 @@ import org.triplea.util.PointFileReaderWriter;
  */
 @Slf4j
 public final class PolygonGrabber {
-  private Path mapFolderLocation;
+  private Path mapFolderLocation = null;
 
   private PolygonGrabber() {}
 
@@ -72,7 +73,7 @@ public final class PolygonGrabber {
   }
 
   private void runInternal() throws IOException {
-    mapFolderLocation = MapFolderLocationSystemProperty.read();
+    ToolArguments.ifMapFolder(mapFolderProperty -> mapFolderLocation = mapFolderProperty);
     log.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
     final Path mapName = mapSelection.getFile();

@@ -34,7 +34,7 @@ import org.triplea.java.AlphanumComparator;
 import org.triplea.util.PointFileReaderWriter;
 import tools.image.FileOpen;
 import tools.image.FileSave;
-import tools.image.MapFolderLocationSystemProperty;
+import tools.util.ToolArguments;
 import tools.util.ToolsUtil;
 
 /**
@@ -424,7 +424,7 @@ public final class ConnectionFinder {
   }
 
   private void handleSystemProperties() {
-    mapFolderLocation = MapFolderLocationSystemProperty.read();
+    ToolArguments.ifMapFolder(mapFolderProperty -> mapFolderLocation = mapFolderProperty);
     String value = System.getProperty(LINE_THICKNESS);
     if (value != null && !value.isEmpty()) {
       final int lineThickness = Integer.parseInt(value);

@@ -53,6 +53,7 @@ import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
 import org.triplea.util.Triple;
 import org.triplea.util.Tuple;
+import tools.util.ToolArguments;
 import tools.util.ToolsUtil;
 
 /**
@@ -103,7 +104,7 @@ import tools.util.ToolsUtil;
  */
 @Slf4j
 public final class DecorationPlacer {
-  private Path mapFolderLocation;
+  private Path mapFolderLocation = null;
 
   private DecorationPlacer() {}
 
@@ -123,7 +124,7 @@ public final class DecorationPlacer {
   }
 
   private void runInternal() throws IOException {
-    mapFolderLocation = MapFolderLocationSystemProperty.read();
+    ToolArguments.ifMapFolder(mapFolderProperty -> mapFolderLocation = mapFolderProperty);
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
     final Path map = mapSelection.getFile();
     if (mapFolderLocation == null && mapSelection.getFile() != null) {
