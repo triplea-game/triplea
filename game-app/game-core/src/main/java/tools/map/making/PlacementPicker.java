@@ -610,8 +610,14 @@ public final class PlacementPicker {
     ToolArguments.ifMapFolder(mapFolderProperty -> mapFolderLocation = mapFolderProperty);
     ToolArguments.ifUnitZoom(unitZoomProperty -> unitZoomPercent = unitZoomProperty);
     ToolArguments.ifUnitWidth(
-        unitWidthProperty -> placeWidth = (int) (unitZoomPercent * unitWidthProperty));
+        unitWidthProperty -> {
+          unitWidth = unitWidthProperty;
+          placeWidth = (int) (unitZoomPercent * unitWidth);
+        });
     ToolArguments.ifUnitHeight(
-        unitHeightProperty -> placeHeight = (int) (unitZoomPercent * unitHeightProperty));
+        unitHeightProperty -> {
+          unitHeight = unitHeightProperty;
+          placeHeight = (int) (unitZoomPercent * unitHeight);
+        });
   }
 }
