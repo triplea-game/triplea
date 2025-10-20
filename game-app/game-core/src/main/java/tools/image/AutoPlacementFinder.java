@@ -1,7 +1,5 @@
 package tools.image;
 
-import static com.google.common.base.Preconditions.checkState;
-
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.UnitImageFactory;
@@ -26,11 +24,11 @@ import java.util.Set;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.util.PointFileReaderWriter;
 import tools.util.ToolArguments;
+import tools.util.ToolRunnableTask;
 
 /**
  * The auto-placement finder map making tool.
@@ -40,7 +38,7 @@ import tools.util.ToolArguments;
  * placement locations.
  */
 @Slf4j
-public final class AutoPlacementFinder {
+public final class AutoPlacementFinder extends ToolRunnableTask {
   private int placeWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private int placeHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private boolean placeDimensionsSet = false;
@@ -62,18 +60,12 @@ public final class AutoPlacementFinder {
 
   private AutoPlacementFinder() {}
 
-  /**
-   * Runs the auto-placement finder tool.
-   *
-   * @throws IllegalStateException If not invoked on the EDT.
-   */
   public static void run() {
-    checkState(SwingUtilities.isEventDispatchThread());
-
-    new AutoPlacementFinder().runInternal();
+    runTask(AutoPlacementFinder.class);
   }
 
-  private void runInternal() {
+  @Override
+  protected void runInternal() {
     handleSystemProperties();
     JOptionPane.showMessageDialog(
         null,

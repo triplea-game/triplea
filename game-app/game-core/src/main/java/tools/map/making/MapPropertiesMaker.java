@@ -1,7 +1,5 @@
 package tools.map.making;
 
-import static com.google.common.base.Preconditions.checkState;
-
 import games.strategy.engine.data.properties.PropertiesUi;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -45,7 +43,6 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.IntTextField;
 import org.triplea.swing.SwingAction;
@@ -53,6 +50,7 @@ import org.triplea.swing.SwingComponents;
 import org.triplea.util.Tuple;
 import tools.image.FileSave;
 import tools.util.ToolArguments;
+import tools.util.ToolRunnableTask;
 
 /**
  * This is the MapPropertiesMaker, it will create a map.properties file for you. <br>
@@ -64,24 +62,18 @@ import tools.util.ToolArguments;
  * optional, fields.
  */
 @Slf4j
-public final class MapPropertiesMaker {
+public final class MapPropertiesMaker extends ToolRunnableTask {
   private Path mapFolderLocation = null;
   private final MapProperties mapProperties = new MapProperties();
 
   private MapPropertiesMaker() {}
 
-  /**
-   * Runs the map properties maker tool.
-   *
-   * @throws IllegalStateException If not invoked on the EDT.
-   */
   public static void run() {
-    checkState(SwingUtilities.isEventDispatchThread());
-
-    new MapPropertiesMaker().runInternal();
+    runTask(MapPropertiesMaker.class);
   }
 
-  private void runInternal() {
+  @Override
+  protected void runInternal() {
     handleSystemProperties();
     if (mapFolderLocation == null) {
       log.info("Select the map folder");

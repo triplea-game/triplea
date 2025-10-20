@@ -1,7 +1,5 @@
 package tools.map.making;
 
-import static com.google.common.base.Preconditions.checkState;
-
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
@@ -19,33 +17,23 @@ import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import tools.image.FileOpen;
 import tools.util.ToolArguments;
+import tools.util.ToolRunnableTask;
 
 /** Takes an image and shrinks it. Used for making small images. */
 @Slf4j
-public final class ImageShrinker {
+public final class ImageShrinker extends ToolRunnableTask {
 
   private ImageShrinker() {}
 
-  /**
-   * Runs the image shrinker tool.
-   *
-   * @throws IllegalStateException If not invoked on the EDT.
-   */
   public static void run() {
-    checkState(SwingUtilities.isEventDispatchThread());
-
-    try {
-      new ImageShrinker().runInternal();
-    } catch (final IOException e) {
-      log.error("failed to run image shrinker", e);
-    }
+    runTask(ImageShrinker.class);
   }
 
-  private void runInternal() throws IOException {
+  @Override
+  protected void runInternal() throws IOException {
     final Path mapFolderLocation = ToolArguments.getPropertyMapFolderPath().orElse(null);
     JOptionPane.showMessageDialog(
         null,
@@ -88,6 +76,6 @@ public final class ImageShrinker {
       encoder.setOutput(out);
       encoder.write(null, new IIOImage(thumbImage, null, null), param);
     }
-    log.info("Image successfully written to " + file);
+    log.info("Image successfully written to {}", file);
   }
 }
