@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.startup.ui;
 
-
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameDataEvent;
 import games.strategy.engine.framework.IGame;
