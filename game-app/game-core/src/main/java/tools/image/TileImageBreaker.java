@@ -21,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import tools.util.ToolArguments;
 
 /**
  * Utility for breaking an image into separate smaller images. User must make a new directory called
@@ -63,7 +64,7 @@ public final class TileImageBreaker {
   }
 
   private void runInternal() throws IOException {
-    mapFolderLocation = MapFolderLocationSystemProperty.read();
+    ToolArguments.ifMapFolder(mapFolderProperty -> mapFolderLocation = mapFolderProperty);
     JOptionPane.showMessageDialog(
         null,
         new JLabel(

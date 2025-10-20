@@ -36,6 +36,7 @@ import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
+import tools.util.ToolArguments;
 import tools.util.ToolsUtil;
 
 /**
@@ -47,7 +48,7 @@ import tools.util.ToolsUtil;
  */
 @Slf4j
 public final class CenterPicker {
-  private Path mapFolderLocation;
+  private Path mapFolderLocation = null;
 
   private CenterPicker() {}
 
@@ -67,7 +68,7 @@ public final class CenterPicker {
   }
 
   private void runInternal() throws IOException {
-    mapFolderLocation = MapFolderLocationSystemProperty.read();
+    ToolArguments.ifMapFolder(mapFolderProperty -> mapFolderLocation = mapFolderProperty);
     log.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
     final Path map = mapSelection.getFile();
