@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.startup.ui;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameDataEvent;
@@ -200,7 +199,7 @@ public class InGameLobbyWatcher {
 
   @NonNls
   @VisibleForTesting
-  static String getLobbySystemProperty(final String key) {
+  static @Nullable String getLobbySystemProperty(final String key) {
     @NonNls final String backupKey = key + ".backup";
     final @Nullable String value = System.getProperty(key);
     if (value != null) {
@@ -208,7 +207,7 @@ public class InGameLobbyWatcher {
       return value;
     }
 
-    return checkNotNull(System.getProperty(backupKey));
+    return System.getProperty(backupKey);
   }
 
   private void setGame(@Nullable final IGame game) {
