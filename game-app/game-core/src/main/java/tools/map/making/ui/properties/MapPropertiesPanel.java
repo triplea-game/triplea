@@ -86,15 +86,8 @@ public class MapPropertiesPanel {
 
           @Override
           public void focusLost(final FocusEvent e) {
-            try {
-              final double unitZoom =
-                  Math.min(4.0, Math.max(0.1, Double.parseDouble(unitZoomText.getText())));
-              ToolArguments.UNIT_ZOOM.setSystemProperty(unitZoom);
-              unitZoomText.setText(String.valueOf(unitZoom));
-            } catch (final NumberFormatException ex) {
-              // ignore malformed input
-              unitZoomText.setText("");
-            }
+            ToolArguments.UNIT_ZOOM.setSystemProperty(unitZoomText.getText());
+            unitZoomText.setText(ToolArguments.UNIT_ZOOM.getSystemPropertyValuePlain());
           }
         });
     panel.add(unitZoomText);
@@ -109,13 +102,8 @@ public class MapPropertiesPanel {
 
           @Override
           public void focusLost(final FocusEvent e) {
-            try {
-              unitWidth = Math.min(400, Math.max(1, Integer.parseInt(unitWidthText.getText())));
-              ToolArguments.UNIT_WIDTH.setSystemProperty(unitWidth);
-            } catch (final Exception ex) {
-              // ignore malformed input
-            }
-            unitWidthText.setText("" + unitWidth);
+            ToolArguments.UNIT_WIDTH.setSystemProperty(unitWidthText.getText());
+            unitWidthText.setText(ToolArguments.UNIT_WIDTH.getSystemPropertyValuePlain());
           }
         });
     panel.add(unitWidthText);
@@ -130,13 +118,8 @@ public class MapPropertiesPanel {
 
           @Override
           public void focusLost(final FocusEvent e) {
-            try {
-              unitHeight = Math.min(400, Math.max(1, Integer.parseInt(unitHeightText.getText())));
-              ToolArguments.UNIT_HEIGHT.setSystemProperty(unitHeight);
-            } catch (final Exception ex) {
-              // ignore malformed input
-            }
-            unitHeightText.setText("" + unitHeight);
+            ToolArguments.UNIT_HEIGHT.setSystemProperty(unitHeightText.getText());
+            unitHeightText.setText(ToolArguments.UNIT_HEIGHT.getSystemPropertyValuePlain());
           }
         });
     panel.add(unitHeightText);

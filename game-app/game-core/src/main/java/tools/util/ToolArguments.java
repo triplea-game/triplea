@@ -12,12 +12,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @AllArgsConstructor
 public enum ToolArguments {
-  MAP_FOLDER("triplea.map.folder", String.class, ""),
-  UNIT_HEIGHT("triplea.unit.height", Integer.class, 0),
-  UNIT_WIDTH("triplea.unit.width", Integer.class, 0),
-  UNIT_ZOOM("triplea.unit.zoom", Double.class, 0);
+  MAP_FOLDER("triplea.map.folder", String.class, "", null, null),
+  UNIT_HEIGHT("triplea.unit.height", Integer.class, 0, 1.0, 400.0),
+  UNIT_WIDTH("triplea.unit.width", Integer.class, 0, 1.0, 400.0),
+  UNIT_ZOOM("triplea.unit.zoom", Double.class, 0, 0.1, 4.0);
 
   private final String value;
+  private final Class<?> type;
+  private final Object invalidDefaultValue;
+  private final Double minValue;
+  private final Double maxValue;
 
   public static Optional<Path> getPropertyMapFolderPath() {
     final @Nullable String value = System.getProperty(MAP_FOLDER.value);
@@ -81,16 +85,9 @@ public enum ToolArguments {
     }
   }
 
-  private final Class<?> type;
-  private final Object invalidDefaultValue;
-
   @Override
   public String toString() {
     return value;
-  }
-
-  public String getSystemProperty() {
-    return System.getProperty(value);
   }
 
   @SuppressWarnings("unchecked")
@@ -113,6 +110,12 @@ public enum ToolArguments {
     return (T) prop;
   }
 
+  public String getSystemPropertyValuePlain() {
+    final String prop = System.getProperty(value);
+    if (prop == null) return "";
+    return prop;
+  }
+
   /** Generic setter that enforces correct type */
   public void setSystemProperty(Object newValue) {
     if (newValue == null) {
@@ -125,6 +128,29 @@ public enum ToolArguments {
           "Invalid type for " + value + ": expected " + type.getSimpleName());
     }
 
-    System.setProperty(value, newValue.toString());
+    String systemPropertyValue;
+    if (Number.class.isAssignableFrom(type)) {
+      try {
+        double typedValue = Double.parseDouble((String) newValue);
+        double rangeSaveValue = Math.min(maxValue, Math.max(minValue, typedValue));
+        if (typedValue != rangeSaveValue) {
+          log.info(
+              "New value {} for {} not in range [{},{}]. {} used",
+              newValue,
+              value,
+              minValue,
+              maxValue,
+              rangeSaveValue);
+        }
+        systemPropertyValue = type.cast(rangeSaveValue).toString();
+      } catch (NumberFormatException e) {
+        log.error("New value {} malformed. System property {} not set.", newValue, value);
+        return; // no new valid value, so leave existing value untouched
+      }
+    } else {
+      systemPropertyValue = newValue.toString();
+    }
+
+    System.setProperty(value, systemPropertyValue);
   }
 }
