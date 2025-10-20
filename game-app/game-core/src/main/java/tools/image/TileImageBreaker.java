@@ -1,6 +1,5 @@
 package tools.image;
 
-import static com.google.common.base.Preconditions.checkState;
 import static games.strategy.triplea.ui.screen.TileManager.TILE_SIZE;
 
 import java.awt.GraphicsConfiguration;
@@ -19,9 +18,9 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import tools.util.ToolArguments;
+import tools.util.ToolRunnableTask;
 
 /**
  * Utility for breaking an image into separate smaller images. User must make a new directory called
@@ -30,7 +29,7 @@ import tools.util.ToolArguments;
  * be renamed to "seazone
  */
 @Slf4j
-public final class TileImageBreaker {
+public final class TileImageBreaker extends ToolRunnableTask {
   private Path location = null;
   private final JFrame observer = new JFrame();
   private Path mapFolderLocation = null;
@@ -48,22 +47,12 @@ public final class TileImageBreaker {
 
   private TileImageBreaker() {}
 
-  /**
-   * Runs the tile image breaker tool.
-   *
-   * @throws IllegalStateException If not invoked on the EDT.
-   */
   public static void run() {
-    checkState(SwingUtilities.isEventDispatchThread());
-
-    try {
-      new TileImageBreaker().runInternal();
-    } catch (final IOException e) {
-      log.error("failed to run tile image breaker", e);
-    }
+    runTask(TileImageBreaker.class);
   }
 
-  private void runInternal() throws IOException {
+  @Override
+  protected void runInternal() throws IOException {
     ToolArguments.ifMapFolder(mapFolderProperty -> mapFolderLocation = mapFolderProperty);
     JOptionPane.showMessageDialog(
         null,

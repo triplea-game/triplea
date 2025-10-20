@@ -1,7 +1,5 @@
 package tools.map.making;
 
-import static com.google.common.base.Preconditions.checkState;
-
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import java.awt.BorderLayout;
@@ -52,6 +50,7 @@ import tools.image.FileHelper;
 import tools.image.FileOpen;
 import tools.image.FileSave;
 import tools.util.ToolArguments;
+import tools.util.ToolRunnableTask;
 import tools.util.ToolsUtil;
 
 /**
@@ -61,7 +60,7 @@ import tools.util.ToolsUtil;
  * given map. It will generate a {@code places.txt} file containing the unit placement locations.
  */
 @Slf4j
-public final class PlacementPicker {
+public final class PlacementPicker extends ToolRunnableTask {
   private int placeWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private int placeHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private boolean placeDimensionsSet = false;
@@ -72,22 +71,12 @@ public final class PlacementPicker {
 
   private PlacementPicker() {}
 
-  /**
-   * Runs the placement picker tool.
-   *
-   * @throws IllegalStateException If not invoked on the EDT.
-   */
   public static void run() {
-    checkState(SwingUtilities.isEventDispatchThread());
-
-    try {
-      new PlacementPicker().runInternal();
-    } catch (final IOException e) {
-      log.error("failed to run placement picker", e);
-    }
+    runTask(PlacementPicker.class);
   }
 
-  private void runInternal() throws IOException {
+  @Override
+  protected void runInternal() throws IOException {
     handleSystemProperties();
     JOptionPane.showMessageDialog(
         null,

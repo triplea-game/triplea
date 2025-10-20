@@ -1,6 +1,5 @@
 package tools.image;
 
-import static com.google.common.base.Preconditions.checkState;
 import static games.strategy.triplea.ui.screen.TileManager.TILE_SIZE;
 
 import games.strategy.ui.Util;
@@ -27,16 +26,16 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.util.PointFileReaderWriter;
 import tools.util.ToolArguments;
+import tools.util.ToolRunnableTask;
 
 /** For taking a folder of basetiles and putting them back together into an image. */
 @Slf4j
-public final class TileImageReconstructor {
+public final class TileImageReconstructor extends ToolRunnableTask {
   private Path baseTileLocation = null;
   private Path imageSaveLocation = null;
   private final JTextAreaOptionPane textOptionPane =
@@ -56,18 +55,12 @@ public final class TileImageReconstructor {
 
   private TileImageReconstructor() {}
 
-  /**
-   * Runs the tile image reconstructor tool.
-   *
-   * @throws IllegalStateException If not invoked on the EDT.
-   */
   public static void run() {
-    checkState(SwingUtilities.isEventDispatchThread());
-
-    new TileImageReconstructor().runInternal();
+    runTask(TileImageReconstructor.class);
   }
 
-  private void runInternal() {
+  @Override
+  protected void runInternal() {
     @Nullable Path mapFolderLocation = ToolArguments.getPropertyMapFolderPath().orElse(null);
     JOptionPane.showMessageDialog(
         null,

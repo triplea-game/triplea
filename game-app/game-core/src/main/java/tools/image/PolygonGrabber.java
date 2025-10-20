@@ -1,7 +1,5 @@
 package tools.image;
 
-import static com.google.common.base.Preconditions.checkState;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -45,6 +43,7 @@ import org.triplea.swing.FileChooser;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
 import tools.util.ToolArguments;
+import tools.util.ToolRunnableTask;
 
 /**
  * Utility to break a map into polygons. Inputs - a map with 1 pixel wide borders - a list of
@@ -52,27 +51,17 @@ import tools.util.ToolArguments;
  * Outputs - a list of polygons for each country
  */
 @Slf4j
-public final class PolygonGrabber {
+public final class PolygonGrabber extends ToolRunnableTask {
   private Path mapFolderLocation = null;
 
   private PolygonGrabber() {}
 
-  /**
-   * Runs the polygon grabber tool.
-   *
-   * @throws IllegalStateException If not invoked on the EDT.
-   */
   public static void run() {
-    checkState(SwingUtilities.isEventDispatchThread());
-
-    try {
-      new PolygonGrabber().runInternal();
-    } catch (final IOException e) {
-      log.error("failed to run polygon grabber", e);
-    }
+    runTask(PolygonGrabber.class);
   }
 
-  private void runInternal() throws IOException {
+  @Override
+  protected void runInternal() throws IOException {
     ToolArguments.ifMapFolder(mapFolderProperty -> mapFolderLocation = mapFolderProperty);
     log.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");

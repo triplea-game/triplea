@@ -1,7 +1,5 @@
 package tools.image;
 
-import static com.google.common.base.Preconditions.checkState;
-
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.MapImage;
@@ -54,6 +52,7 @@ import org.triplea.util.PointFileReaderWriter;
 import org.triplea.util.Triple;
 import org.triplea.util.Tuple;
 import tools.util.ToolArguments;
+import tools.util.ToolRunnableTask;
 import tools.util.ToolsUtil;
 
 /**
@@ -103,27 +102,17 @@ import tools.util.ToolsUtil;
  * 'Load Image Points'.
  */
 @Slf4j
-public final class DecorationPlacer {
+public final class DecorationPlacer extends ToolRunnableTask {
   private Path mapFolderLocation = null;
 
   private DecorationPlacer() {}
 
-  /**
-   * Runs the decoration placer tool.
-   *
-   * @throws IllegalStateException If not invoked on the EDT.
-   */
   public static void run() {
-    checkState(SwingUtilities.isEventDispatchThread());
-
-    try {
-      new DecorationPlacer().runInternal();
-    } catch (final IOException e) {
-      log.error("failed to run decoration placer", e);
-    }
+    runTask(DecorationPlacer.class);
   }
 
-  private void runInternal() throws IOException {
+  @Override
+  protected void runInternal() throws IOException {
     ToolArguments.ifMapFolder(mapFolderProperty -> mapFolderLocation = mapFolderProperty);
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
     final Path map = mapSelection.getFile();

@@ -1,7 +1,5 @@
 package tools.image;
 
-import static com.google.common.base.Preconditions.checkState;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -37,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
 import tools.util.ToolArguments;
+import tools.util.ToolRunnableTask;
 import tools.util.ToolsUtil;
 
 /**
@@ -47,27 +46,17 @@ import tools.util.ToolsUtil;
  * It will generate a {@code centers.txt} file containing the territory center locations.
  */
 @Slf4j
-public final class CenterPicker {
+public final class CenterPicker extends ToolRunnableTask {
   private Path mapFolderLocation = null;
 
   private CenterPicker() {}
 
-  /**
-   * Runs the center picker tool.
-   *
-   * @throws IllegalStateException If not invoked on the EDT.
-   */
   public static void run() {
-    checkState(SwingUtilities.isEventDispatchThread());
-
-    try {
-      new CenterPicker().runInternal();
-    } catch (final IOException e) {
-      log.error("failed to run center picker", e);
-    }
+    runTask(TileImageBreaker.class);
   }
 
-  private void runInternal() throws IOException {
+  @Override
+  protected void runInternal() throws IOException {
     ToolArguments.ifMapFolder(mapFolderProperty -> mapFolderLocation = mapFolderProperty);
     log.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
