@@ -516,7 +516,7 @@ public final class MapPropertiesMaker extends ToolRunnableTask {
         } catch (final IllegalArgumentException
             | InvocationTargetException
             | IllegalAccessException e) {
-          log.error("Failed to invoke method reflectively: " + outMethod.getName(), e);
+          log.error("Failed to invoke method reflectively: {}", outMethod.getName(), e);
         }
       }
       return outString.toString();

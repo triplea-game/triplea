@@ -299,10 +299,10 @@ public final class PlacementPicker extends ToolRunnableTask {
                   JOptionPane.YES_NO_CANCEL_OPTION)
               == 0) {
         try {
-          log.info("Polygons : " + file);
+          log.info("Polygons : {}", file);
           polygons = PointFileReaderWriter.readOneToManyPolygons(file);
         } catch (final IOException e) {
-          log.error("Failed to load polygons: " + file.toAbsolutePath());
+          log.error("Failed to load polygons: {}", file.toAbsolutePath());
           throw e;
         }
       } else {
@@ -310,11 +310,11 @@ public final class PlacementPicker extends ToolRunnableTask {
         final Path polyPath =
             new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile();
         if (polyPath != null) {
-          log.info("Polygons : " + polyPath);
+          log.info("Polygons : {}", polyPath);
           try {
             polygons = PointFileReaderWriter.readOneToManyPolygons(polyPath);
           } catch (final IOException e) {
-            log.error("Failed to load polygons: " + polyPath);
+            log.error("Failed to load polygons: {}", polyPath);
             throw e;
           }
         } else {
@@ -523,9 +523,9 @@ public final class PlacementPicker extends ToolRunnableTask {
       }
       try {
         PointFileReaderWriter.writeOneToManyPlacements(fileName, placements);
-        log.info("Data written to: " + fileName.normalize().toAbsolutePath());
+        log.info("Data written to: {}", fileName.normalize().toAbsolutePath());
       } catch (final IOException e) {
-        log.error("Failed to write placements: " + fileName, e);
+        log.error("Failed to write placements: {}", fileName, e);
       }
     }
 
@@ -540,7 +540,7 @@ public final class PlacementPicker extends ToolRunnableTask {
       try {
         placements = PointFileReaderWriter.readOneToManyPlacements(placeName);
       } catch (final IOException e) {
-        log.error("Failed to load placements: " + placeName, e);
+        log.error("Failed to load placements: {}", placeName, e);
       }
       repaint();
     }
@@ -575,7 +575,7 @@ public final class PlacementPicker extends ToolRunnableTask {
         if (currentPlacements != null) {
           placements.put(currentCountry, Tuple.of(currentPlacements, currentOverflowToLeft));
           currentPlacements = new ArrayList<>();
-          log.info("done: " + currentCountry);
+          log.info("done: {}", currentCountry);
         }
       } else {
         if (currentPlacements != null && !currentPlacements.isEmpty()) {
