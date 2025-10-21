@@ -189,7 +189,7 @@ public final class AutoPlacementFinder extends ToolRunnableTask {
           }
         }
       } catch (final Exception e) {
-        log.error("Failed to initialize from map properties: " + file.toAbsolutePath(), e);
+        log.error("Failed to initialize from map properties: {}", file.toAbsolutePath(), e);
       }
     }
     if (!placeDimensionsSet
@@ -273,7 +273,7 @@ public final class AutoPlacementFinder extends ToolRunnableTask {
       PointFileReaderWriter.writeOneToMany(fileName, placements);
       textOptionPane.appendNewLine("Data written to: " + fileName.normalize().toAbsolutePath());
     } catch (final IOException e) {
-      log.error("Failed to write points file: " + fileName, e);
+      log.error("Failed to write points file: {}", fileName, e);
       textOptionPane.dispose();
       return;
     }
