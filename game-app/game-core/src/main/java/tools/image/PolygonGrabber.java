@@ -109,7 +109,7 @@ public final class PolygonGrabber extends ToolRunnableTask {
 
     private boolean islandMode;
     private final JCheckBoxMenuItem modeItem;
-    // the current set of polyongs
+    // the current set of polygons
     private List<Polygon> current;
     // holds the map image
     private final BufferedImage bufferedImage;
@@ -122,7 +122,7 @@ public final class PolygonGrabber extends ToolRunnableTask {
     private final Point testPoint = new Point();
 
     /**
-     * Asks user to specify a file with center points. If not program will exit. We setup the mouse
+     * Asks user to specify a file with center points. If not program will exit. We set up the mouse
      * listeners and toolbars and load the actual image of the map here.
      *
      * @param mapFolder The {@link Path} pointing to the map folder.
@@ -166,7 +166,7 @@ public final class PolygonGrabber extends ToolRunnableTask {
       bufferedImage = newBufferedImage(mapFolder);
       imagePanel = newMainPanel();
       /*
-       * Add a mouse listener to show X : Y coordinates on the lower left corner of the screen.
+       * Add a mouse listener to show X : Y coordinates in the lower left corner of the screen.
        */
       imagePanel.addMouseMotionListener(
           new MouseMotionAdapter() {
@@ -235,20 +235,21 @@ public final class PolygonGrabber extends ToolRunnableTask {
                         BufferedImage.TYPE_INT_ARGB);
                 final Graphics g = imageCopy.getGraphics();
                 g.drawImage(bufferedImage, 0, 0, null);
-                for (final String territoryName : centers.keySet()) {
-                  final Point center = centers.get(territoryName);
+                for (Entry<String, Point> center : centers.entrySet()) {
+                  final String territoryName = center.getKey();
+                  final Point centerPoint = center.getValue();
                   log.info("Detecting Polygon for: {}", territoryName);
-                  final @Nullable Polygon p = findPolygon(center.x, center.y);
+                  final @Nullable Polygon p = findPolygon(centerPoint.x, centerPoint.y);
                   // test if the poly contains the center point (this often fails when there is an
                   // island right above (because findPolygon will grab the island instead)
-                  if (p == null || !p.contains(center)) {
+                  if (p == null || !p.contains(centerPoint)) {
                     continue;
                   }
                   // test if this poly contains any other centers, and if so do not do this one. let
                   // the user manually do it to make sure it gets done properly
                   boolean hasIslands = false;
                   for (final Point otherCenterPoint : centers.values()) {
-                    if (center.equals(otherCenterPoint)) {
+                    if (centerPoint.equals(otherCenterPoint)) {
                       continue;
                     }
                     if (p.contains(otherCenterPoint)) {
@@ -322,7 +323,7 @@ public final class PolygonGrabber extends ToolRunnableTask {
         ImageIO.write(bufferedImage, "PNG", target.toFile());
         JOptionPane.showMessageDialog(null, "Saved to: " + target);
       } catch (IOException e) {
-        e.printStackTrace();
+        log.error("Writing the image to {} failed", target, e);
       }
     }
 
@@ -364,14 +365,14 @@ public final class PolygonGrabber extends ToolRunnableTask {
      * @param mapFolder The {@link Path} pointing to the map folder.
      */
     private BufferedImage newBufferedImage(final Path mapFolder) {
-      final Image image = FileHelper.newImage(mapFolder);
-      final BufferedImage bufferedImage =
+      final Image newImage = FileHelper.newImage(mapFolder);
+      final BufferedImage newBufferedImage =
           new BufferedImage(
-              image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-      final Graphics g = bufferedImage.getGraphics();
-      g.drawImage(image, 0, 0, this);
+              newImage.getWidth(null), newImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+      final Graphics g = newBufferedImage.getGraphics();
+      g.drawImage(newImage, 0, 0, this);
       g.dispose();
-      return bufferedImage;
+      return newBufferedImage;
     }
 
     /**
@@ -507,9 +508,9 @@ public final class PolygonGrabber extends ToolRunnableTask {
 
     /** Guess the country name based on the location of the previous centers. */
     private void guessCountryName(
-        final JTextField text, final Iterable<Entry<String, Point>> centersiter) {
+        final JTextField text, final Iterable<Entry<String, Point>> centersIterator) {
       final List<String> options = new ArrayList<>();
-      for (final Entry<String, Point> item : centersiter) {
+      for (final Entry<String, Point> item : centersIterator) {
         final Point p = new Point(item.getValue());
         for (final Polygon polygon : current) {
           if (polygon.contains(p)) {
@@ -598,7 +599,7 @@ public final class PolygonGrabber extends ToolRunnableTask {
       return false;
     }
 
-    /** Algorithm to find a polygon given a x/y coordinates and returns the found polygon. */
+    /** Algorithm to find a polygon given an x/y coordinates and returns the found polygon. */
     private @Nullable Polygon findPolygon(final int x, final int y) {
       // walk up, find the first black point
       final Point startPoint = new Point(x, y);
@@ -641,16 +642,16 @@ public final class PolygonGrabber extends ToolRunnableTask {
           }
         }
       }
-      final int[] xpoints = new int[points.size()];
-      final int[] ypoints = new int[points.size()];
+      final int[] xPoints = new int[points.size()];
+      final int[] yPoints = new int[points.size()];
       int i = 0;
       for (final Point item : points) {
-        xpoints[i] = item.x;
-        ypoints[i] = item.y;
+        xPoints[i] = item.x;
+        yPoints[i] = item.y;
         i++;
       }
-      log.info("Done finding polygon. total points;{}", xpoints.length);
-      return new Polygon(xpoints, ypoints, xpoints.length);
+      log.info("Done finding polygon. total points;{}", xPoints.length);
+      return new Polygon(xPoints, yPoints, xPoints.length);
     }
   }
 }
