@@ -209,10 +209,10 @@ public final class CenterPicker extends ToolRunnableTask {
         public void paint(final Graphics g) {
           g.drawImage(image, 0, 0, this);
           g.setColor(Color.red);
-          for (final String centerName : centers.keySet()) {
-            final Point item = centers.get(centerName);
+          for (final Entry<String, Point> center : centers.entrySet()) {
+            final Point item = center.getValue();
             g.fillOval(item.x, item.y, 15, 15);
-            g.drawString(centerName, item.x + 17, item.y + 13);
+            g.drawString(center.getKey(), item.x + 17, item.y + 13);
           }
         }
       };
