@@ -2,7 +2,6 @@ package tools.util;
 
 import java.awt.Point;
 import java.awt.Polygon;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,9 +23,9 @@ public class ToolsUtil {
     String lastWaterTerrName = null;
     // try to find a land territory.
     // sea zones often surround a land territory
-    for (final String terrName : terrPolygons.keySet()) {
-      final Collection<Polygon> polygons = terrPolygons.get(terrName);
-      for (final Polygon poly : polygons) {
+    for (Map.Entry<String, List<Polygon>> terrPolygonsEntry : terrPolygons.entrySet()) {
+      final String terrName = terrPolygonsEntry.getKey();
+      for (final Polygon poly : terrPolygonsEntry.getValue()) {
         if (poly.contains(p)) {
           if (isTerritoryNameIndicatingWater(terrName)) {
             lastWaterTerrName = terrName;
