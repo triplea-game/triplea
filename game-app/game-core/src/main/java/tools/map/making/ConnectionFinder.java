@@ -107,7 +107,7 @@ public final class ConnectionFinder extends ToolRunnableTask {
             entry.getKey(), entry.getValue().stream().map(Area::new).collect(Collectors.toList()));
       }
     } catch (final IOException e) {
-      log.error("Failed to load polygons: " + polyFile.toAbsolutePath(), e);
+      log.error("Failed to load polygons: {}", polyFile.toAbsolutePath(), e);
       return;
     }
     if (!dimensionsSet) {
@@ -227,7 +227,7 @@ public final class ConnectionFinder extends ToolRunnableTask {
           }
           out.write(String.valueOf(connectionsString).getBytes(StandardCharsets.UTF_8));
         }
-        log.info("Data written to: " + fileName.normalize().toAbsolutePath());
+        log.info("Data written to: {}", fileName.normalize().toAbsolutePath());
       }
     } catch (final Exception e) {
       log.error("Failed to write connections", e);

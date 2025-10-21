@@ -93,12 +93,12 @@ public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
     final Object value = getValue();
     final Object[] args = {value};
     try {
-      log.info(setter + "   to   " + value);
+      log.info("{}   to   {}", setter, value);
       setter.invoke(object, args);
     } catch (final IllegalArgumentException
         | InvocationTargetException
         | IllegalAccessException e) {
-      log.error("Failed to invoke setter reflectively: " + setter.getName(), e);
+      log.error("Failed to invoke setter reflectively: {}", setter.getName(), e);
     }
   }
 
@@ -118,7 +118,7 @@ public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
       try {
         currentValue = field.get(object);
       } catch (final IllegalArgumentException | IllegalAccessException e) {
-        log.error("Failed to get field value reflectively: " + field.getName(), e);
+        log.error("Failed to get field value reflectively: {}", field.getName(), e);
         continue;
       }
       try {
