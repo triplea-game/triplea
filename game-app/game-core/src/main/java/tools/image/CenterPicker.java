@@ -65,7 +65,7 @@ public final class CenterPicker extends ToolRunnableTask {
       mapFolderLocation = mapSelection.getFile().getParent();
     }
     if (map != null) {
-      log.info("Map : " + map);
+      log.info("Map : {}", map);
       final CenterPickerFrame frame = new CenterPickerFrame(map);
       frame.setSize(800, 600);
       frame.setLocationRelativeTo(null);
@@ -126,7 +126,7 @@ public final class CenterPicker extends ToolRunnableTask {
         try {
           polygons = PointFileReaderWriter.readOneToManyPolygons(file);
         } catch (final IOException e) {
-          log.error("Something wrong with your Polygons file: " + file.toAbsolutePath());
+          log.error("Something wrong with your Polygons file: {}", file.toAbsolutePath());
           throw e;
         }
       } else {
@@ -136,7 +136,7 @@ public final class CenterPicker extends ToolRunnableTask {
           try {
             polygons = PointFileReaderWriter.readOneToManyPolygons(polyPath);
           } catch (final IOException e) {
-            log.error("Something wrong with your Polygons file: " + polyPath);
+            log.error("Something wrong with your Polygons file: {}", polyPath);
             throw e;
           }
         }
@@ -227,9 +227,9 @@ public final class CenterPicker extends ToolRunnableTask {
       }
       try {
         PointFileReaderWriter.writeOneToOne(fileName, centers);
-        log.info("Data written to: " + fileName.normalize().toAbsolutePath());
+        log.info("Data written to: {}", fileName.normalize().toAbsolutePath());
       } catch (final IOException e) {
-        log.error("Failed to save centers: " + fileName, e);
+        log.error("Failed to save centers: {}", fileName, e);
       }
     }
 
@@ -244,7 +244,7 @@ public final class CenterPicker extends ToolRunnableTask {
       try {
         centers = PointFileReaderWriter.readOneToOne(centerName);
       } catch (final IOException e) {
-        log.error("Failed to load centers: " + centerName, e);
+        log.error("Failed to load centers: {}", centerName, e);
       }
       repaint();
     }

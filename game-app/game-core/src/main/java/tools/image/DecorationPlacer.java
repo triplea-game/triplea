@@ -214,7 +214,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
                   JOptionPane.YES_NO_CANCEL_OPTION)
               == 0) {
         try {
-          log.info("Centers : " + fileCenters);
+          log.info("Centers : {}", fileCenters);
           centers = PointFileReaderWriter.readOneToOne(fileCenters);
         } catch (final IOException e) {
           log.error("Something wrong with Centers file");
@@ -226,7 +226,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
           final Path centerPath =
               new FileOpen("Select A Center File", mapFolderLocation, ".txt").getFile();
           if (centerPath != null) {
-            log.info("Centers : " + centerPath);
+            log.info("Centers : {}", centerPath);
             centers = PointFileReaderWriter.readOneToOne(centerPath);
           } else {
             log.info("You must specify a centers file.");
@@ -249,10 +249,10 @@ public final class DecorationPlacer extends ToolRunnableTask {
                   JOptionPane.YES_NO_CANCEL_OPTION)
               == 0) {
         try {
-          log.info("Polygons : " + filePoly);
+          log.info("Polygons : {}", filePoly);
           polygons = PointFileReaderWriter.readOneToManyPolygons(filePoly);
         } catch (final IOException e) {
-          log.error("Something wrong with your Polygons file: " + filePoly.toAbsolutePath());
+          log.error("Something wrong with your Polygons file: {}", filePoly.toAbsolutePath());
           throw e;
         }
       } else {
@@ -260,11 +260,11 @@ public final class DecorationPlacer extends ToolRunnableTask {
         final Path polyPath =
             new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile();
         if (polyPath != null) {
-          log.info("Polygons : " + polyPath);
+          log.info("Polygons : {}", polyPath);
           try {
             polygons = PointFileReaderWriter.readOneToManyPolygons(polyPath);
           } catch (final IOException e) {
-            log.error("Something wrong with your Polygons file: " + polyPath);
+            log.error("Something wrong with your Polygons file: {}", polyPath);
             throw e;
           }
         } else {
@@ -489,9 +489,9 @@ public final class DecorationPlacer extends ToolRunnableTask {
       }
       try {
         PointFileReaderWriter.writeOneToMany(fileName, currentPoints);
-        log.info("Data written to: " + fileName.normalize().toAbsolutePath());
+        log.info("Data written to: {}", fileName.normalize().toAbsolutePath());
       } catch (final IOException e) {
-        log.error("Failed to save points: " + fileName, e);
+        log.error("Failed to save points: {}", fileName, e);
       }
     }
 
@@ -519,7 +519,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
       for (final ImagePointType type : ImagePointType.getTypes()) {
         if (type.toString().equals(choice)) {
           imagePointType = type;
-          log.info("Selected Type: " + choice);
+          log.info("Selected Type: {}", choice);
           break;
         }
       }
@@ -657,7 +657,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
         try {
           currentPoints = PointFileReaderWriter.readOneToMany(centerName.getFile());
         } catch (final IOException e) {
-          log.error("Failed to load image points: " + centerName.getFile(), e);
+          log.error("Failed to load image points: {}", centerName.getFile(), e);
           currentPoints = new HashMap<>();
         }
       } else {
@@ -706,7 +706,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
         for (final Entry<String, Point> entry : centers.entrySet()) {
           List<Point> points = currentPoints.get(entry.getKey());
           if (points == null) {
-            log.info("Did NOT find point for: " + entry.getKey());
+            log.info("Did NOT find point for: {}", entry.getKey());
             points = new ArrayList<>();
             final Point p =
                 new Point(
@@ -714,7 +714,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
                     entry.getValue().y + addY + ((showFromTopLeft ? -1 : 1) * (height / 2)));
             points.add(p);
           } else {
-            log.info("Found point for: " + entry.getKey());
+            log.info("Found point for: {}", entry.getKey());
           }
           currentImagePoints.put(entry.getKey(), Tuple.of(staticImageForPlacing, points));
         }
@@ -752,7 +752,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
           points = new ArrayList<>();
           Point p = centers.get(possibleTerritoryName);
           if (p == null) {
-            log.info("Did NOT find point for: " + possibleTerritoryName);
+            log.info("Did NOT find point for: {}", possibleTerritoryName);
             points.add(new Point(50, 50));
           } else {
             p =
@@ -763,7 +763,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
                         + ((showFromTopLeft ? -1 : 1) * (territoryImage.getHeight(null) / 2)));
             points.add(p);
             allTerritories.remove(possibleTerritoryName);
-            log.info("Found point for: " + possibleTerritoryName);
+            log.info("Found point for: {}", possibleTerritoryName);
           }
         } else {
           allTerritories.remove(possibleTerritoryName);
@@ -775,7 +775,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
       if (!allTerritories.isEmpty() && imagePointType == ImagePointType.name_place) {
         JOptionPane.showMessageDialog(
             this, new JLabel("Territory images not found in folder: " + allTerritories));
-        log.info("Territory images not found in folder: " + allTerritories);
+        log.info("Territory images not found in folder: {}", allTerritories);
       }
     }
 

@@ -70,7 +70,7 @@ public final class PolygonGrabber extends ToolRunnableTask {
       mapFolderLocation = mapSelection.getFile().getParent();
     }
     if (mapName != null) {
-      log.info("Map : " + mapName);
+      log.info("Map : {}", mapName);
       final PolygonGrabberFrame frame = new PolygonGrabberFrame(mapName);
       frame.setSize(800, 600);
       frame.setLocationRelativeTo(null);
@@ -140,7 +140,7 @@ public final class PolygonGrabber extends ToolRunnableTask {
                   JOptionPane.YES_NO_CANCEL_OPTION)
               == 0) {
         try {
-          log.info("Centers : " + file);
+          log.info("Centers : {}", file);
           centers = PointFileReaderWriter.readOneToOne(file);
         } catch (final IOException e) {
           log.error("Something wrong with Centers file", e);
@@ -151,7 +151,7 @@ public final class PolygonGrabber extends ToolRunnableTask {
           final Path centerPath =
               new FileOpen("Select A Center File", mapFolderLocation, ".txt").getFile();
           if (centerPath != null) {
-            log.info("Centers : " + centerPath);
+            log.info("Centers : {}", centerPath);
             centers = PointFileReaderWriter.readOneToOne(centerPath);
           } else {
             log.info("You must specify a centers file.");
@@ -237,7 +237,7 @@ public final class PolygonGrabber extends ToolRunnableTask {
                 g.drawImage(bufferedImage, 0, 0, null);
                 for (final String territoryName : centers.keySet()) {
                   final Point center = centers.get(territoryName);
-                  log.info("Detecting Polygon for: " + territoryName);
+                  log.info("Detecting Polygon for: {}", territoryName);
                   final @Nullable Polygon p = findPolygon(center.x, center.y);
                   // test if the poly contains the center point (this often fails when there is an
                   // island right above (because findPolygon will grab the island instead)
@@ -424,9 +424,9 @@ public final class PolygonGrabber extends ToolRunnableTask {
       }
       try {
         PointFileReaderWriter.writeOneToManyPolygons(polyName, polygons);
-        log.info("Data written to: " + polyName.normalize().toAbsolutePath());
+        log.info("Data written to: {}", polyName.normalize().toAbsolutePath());
       } catch (final IOException e) {
-        log.error("Failed to save polygons: " + polyName, e);
+        log.error("Failed to save polygons: {}", polyName, e);
       }
     }
 
@@ -441,7 +441,7 @@ public final class PolygonGrabber extends ToolRunnableTask {
       try {
         polygons = PointFileReaderWriter.readOneToManyPolygons(polyName);
       } catch (final IOException e) {
-        log.error("Failed to load polygons: " + polyName, e);
+        log.error("Failed to load polygons: {}", polyName, e);
       }
       repaint();
     }
@@ -649,7 +649,7 @@ public final class PolygonGrabber extends ToolRunnableTask {
         ypoints[i] = item.y;
         i++;
       }
-      log.info("Done finding polygon. total points;" + xpoints.length);
+      log.info("Done finding polygon. total points;{}", xpoints.length);
       return new Polygon(xpoints, ypoints, xpoints.length);
     }
   }

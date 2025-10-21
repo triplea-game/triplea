@@ -143,7 +143,7 @@ public final class TileImageReconstructor extends ToolRunnableTask {
           try {
             polygons = PointFileReaderWriter.readOneToManyPolygons(polyName);
           } catch (final IOException e) {
-            log.error("Failed to load polygons: " + polyName, e);
+            log.error("Failed to load polygons: {}", polyName, e);
             return;
           }
         }
@@ -205,7 +205,7 @@ public final class TileImageReconstructor extends ToolRunnableTask {
     try {
       ImageIO.write(mapImage, "png", imageSaveLocation.toFile());
     } catch (final IOException e) {
-      log.error("Failed to save image: " + imageSaveLocation, e);
+      log.error("Failed to save image: {}", imageSaveLocation, e);
     }
     textOptionPane.appendNewLine("Wrote " + imageSaveLocation);
     textOptionPane.appendNewLine("\r\nAll Finished!");
