@@ -93,6 +93,7 @@
   url: https://github.com/triplea-maps/new_world_order/archive/refs/heads/master.zip
   mapCategory: BEST
   version: 1
+  img: https://github.com/triplea-maps/new_world_order/blob/master/map/doc/images/nwoi.jpg
   description: |
     <br>Classic european theatre World War II Map
 - mapName: The Pact of Steel
