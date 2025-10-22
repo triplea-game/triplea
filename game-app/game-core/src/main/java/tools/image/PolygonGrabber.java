@@ -122,7 +122,7 @@ public final class PolygonGrabber extends ToolRunnableTask {
     // maps String -> List of polygons
     private Map<String, List<Polygon>> polygons = new HashMap<>();
     // holds the centers for the polygons
-    private Map<String, Point> centers;
+    private final Map<String, Point> centers;
 
     @Deprecated(since = "2.7", forRemoval = true)
     @SuppressWarnings({"unused"})
@@ -139,38 +139,13 @@ public final class PolygonGrabber extends ToolRunnableTask {
     PolygonGrabberFrame(final Path mapFolder) throws IOException {
       super("Polygon grabber");
       setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      final Path file = FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "centers.txt");
-      if (Files.exists(file)
-          && JOptionPane.showConfirmDialog(
-                  new JPanel(),
-                  "A centers.txt file was found in the map's folder, do you want to use "
-                      + "the file to supply the territories names?",
-                  "File Suggestion",
-                  JOptionPane.YES_NO_CANCEL_OPTION)
-              == 0) {
-        try {
-          log.info("Centers : {}", file);
-          centers = PointFileReaderWriter.readOneToOne(file);
-        } catch (final IOException e) {
-          log.error("Something wrong with Centers file", e);
-        }
-      } else {
-        try {
-          log.info("Select the Centers file");
-          final Path centerPath =
-              new FileOpen("Select A Center File", mapFolderLocation, ".txt").getFile();
-          if (centerPath != null) {
-            log.info("Centers : {}", centerPath);
-            centers = PointFileReaderWriter.readOneToOne(centerPath);
-          } else {
-            log.info("You must specify a centers file.");
-            log.info("Shutting down.");
-            throw new IOException("no centers file specified");
-          }
-        } catch (final IOException e) {
-          log.error("Something wrong with Centers file");
-          throw e;
-        }
+      final Path centersFile = getCentersFile(mapFolder);
+      try {
+        log.info("Centers : {}", centersFile);
+        centers = PointFileReaderWriter.readOneToOne(centersFile);
+      } catch (final IOException e) {
+        log.error("Something wrong with Centers file", e);
+        throw e;
       }
       bufferedImage = newBufferedImage(mapFolder);
       imagePanel = newMainPanel();
@@ -288,6 +263,31 @@ public final class PolygonGrabber extends ToolRunnableTask {
       autoAction.putValue(Action.SHORT_DESCRIPTION, "Autodetect Polygons around Centers");
       islandMode = false;
       setupMenuBar(openAction, saveAction, exitAction, autoAction);
+    }
+
+    private Path getCentersFile(Path mapFolder) throws IOException {
+      final Path file = FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "centers.txt");
+      if (Files.exists(file)
+          && JOptionPane.showConfirmDialog(
+                  new JPanel(),
+                  "A centers.txt file was found in the map's folder, do you want to use "
+                      + "the file to supply the territories names?",
+                  "File Suggestion",
+                  JOptionPane.YES_NO_CANCEL_OPTION)
+              == 0) {
+        return file;
+      } else {
+        log.info("Select the Centers file");
+        final Path centerPath =
+            new FileOpen("Select A Center File", mapFolderLocation, ".txt").getFile();
+        if (centerPath != null) {
+          return centerPath;
+        } else {
+          log.info("You must specify a centers file.");
+          log.info("Shutting down.");
+          throw new IOException("no centers file specified");
+        }
+      }
     }
 
     private void setupMenuBar(
