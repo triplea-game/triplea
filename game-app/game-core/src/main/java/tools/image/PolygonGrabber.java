@@ -108,7 +108,12 @@ public final class PolygonGrabber extends ToolRunnableTask {
     private static final long serialVersionUID = 6381498094805120687L;
 
     private boolean islandMode;
-    private final JCheckBoxMenuItem modeItem;
+
+    @Deprecated(since = "2.7", forRemoval = true)
+    @SuppressWarnings({"unused"})
+    private transient JCheckBoxMenuItem modeItem =
+        null; // legacy field retained for backward compatibility
+
     // the current set of polygons
     private List<Polygon> current;
     // holds the map image
@@ -276,17 +281,22 @@ public final class PolygonGrabber extends ToolRunnableTask {
                 repaint();
               });
       autoAction.putValue(Action.SHORT_DESCRIPTION, "Autodetect Polygons around Centers");
+      islandMode = false;
+      setupMenuBar(openAction, saveAction, exitAction, autoAction);
+    }
+
+    private void setupMenuBar(
+        Action openAction, Action saveAction, Action exitAction, Action autoAction) {
       // set up the menu items
       final JMenuItem openItem = new JMenuItem(openAction);
       openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
       final JMenuItem saveItem = new JMenuItem(saveAction);
       saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
       final JMenuItem exitItem = new JMenuItem(exitAction);
-      islandMode = false;
-      modeItem = new JCheckBoxMenuItem("Island Mode", false);
-      modeItem.addActionListener(
+      final JCheckBoxMenuItem islandModeItem = new JCheckBoxMenuItem("Island Mode", false);
+      islandModeItem.addActionListener(
           event -> {
-            islandMode = modeItem.getState();
+            islandMode = islandModeItem.getState();
             repaint();
           });
       // set up the menu bar
@@ -304,7 +314,7 @@ public final class PolygonGrabber extends ToolRunnableTask {
       final JMenu editMenu = new JMenu("Edit");
       final JMenuItem autoItem = new JMenuItem(autoAction);
       editMenu.setMnemonic('E');
-      editMenu.add(modeItem);
+      editMenu.add(islandModeItem);
       editMenu.add(autoItem);
       final JMenuItem cleanImageItem = new JMenuItem("Clean Up Image...");
       cleanImageItem.addActionListener(e -> cleanImage());
