@@ -2,6 +2,7 @@ package tools.image;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -38,6 +39,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.FileChooser;
 import org.triplea.swing.SwingAction;
@@ -72,8 +74,6 @@ public final class PolygonGrabber extends ToolRunnableTask {
     if (mapName != null) {
       log.info("Map : {}", mapName);
       final PolygonGrabberFrame frame = new PolygonGrabberFrame(mapName);
-      frame.setSize(800, 600);
-      frame.setLocationRelativeTo(null);
       frame.setVisible(true);
       JOptionPane.showMessageDialog(
           frame,
@@ -107,7 +107,7 @@ public final class PolygonGrabber extends ToolRunnableTask {
   private final class PolygonGrabberFrame extends JFrame {
     private static final long serialVersionUID = 6381498094805120687L;
 
-    private boolean islandMode;
+    private boolean islandMode = false;
 
     @Deprecated(since = "2.7", forRemoval = true)
     @SuppressWarnings({"unused"})
@@ -138,7 +138,11 @@ public final class PolygonGrabber extends ToolRunnableTask {
      */
     PolygonGrabberFrame(final Path mapFolder) throws IOException {
       super("Polygon grabber");
-      setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+      setSize(800, 600);
+      setLayout(new BorderLayout());
+      setLocationRelativeTo(null);
+      // initialize final attributes
       final Path centersFile = getCentersFile(mapFolder);
       try {
         log.info("Centers : {}", centersFile);
@@ -148,22 +152,24 @@ public final class PolygonGrabber extends ToolRunnableTask {
         throw e;
       }
       bufferedImage = newBufferedImage(mapFolder);
-      imagePanel = newMainPanel();
-      /*
-       * Add a mouse listener to show X : Y coordinates in the lower left corner of the screen.
-       */
       final JLabel locationLabel = new JLabel();
-      imagePanel.addMouseMotionListener(
-          new MouseMotionAdapter() {
-            @Override
-            public void mouseMoved(final MouseEvent e) {
-              locationLabel.setText("x: " + e.getX() + " y: " + e.getY());
-            }
-          });
-      /*
-       * Add a mouse listener to monitor for right mouse button being clicked.
-       */
-      imagePanel.addMouseListener(
+      imagePanel = newImagePanel(locationLabel);
+
+      initializeLayout(locationLabel);
+    }
+
+    private JPanel newImagePanel(JLabel locationLabel) {
+      final JPanel newImagePanel = newMainPanel();
+      newImagePanel
+          .addMouseMotionListener( // to show X : Y coordinates in the lower left corner of the
+              // screen
+              new MouseMotionAdapter() {
+                @Override
+                public void mouseMoved(final MouseEvent e) {
+                  locationLabel.setText("x: " + e.getX() + " y: " + e.getY());
+                }
+              });
+      newImagePanel.addMouseListener( // to monitor for right mouse button being clicked
           new MouseAdapter() {
             @Override
             public void mouseClicked(final MouseEvent e) {
@@ -173,17 +179,19 @@ public final class PolygonGrabber extends ToolRunnableTask {
                   SwingUtilities.isRightMouseButton(e));
             }
           });
-      // set up the image panel size dimensions ...etc
-      imagePanel.setMinimumSize(
-          new Dimension(bufferedImage.getWidth(this), bufferedImage.getHeight(this)));
-      imagePanel.setPreferredSize(
-          new Dimension(bufferedImage.getWidth(this), bufferedImage.getHeight(this)));
-      imagePanel.setMaximumSize(
-          new Dimension(bufferedImage.getWidth(this), bufferedImage.getHeight(this)));
-      // set up the layout manager
-      this.getContentPane().setLayout(new BorderLayout());
-      this.getContentPane().add(new JScrollPane(imagePanel), BorderLayout.CENTER);
-      this.getContentPane().add(locationLabel, BorderLayout.SOUTH);
+      // set up the image panel size dimensions
+      final Dimension bufferedImageDimension =
+          new Dimension(bufferedImage.getWidth(this), bufferedImage.getHeight(this));
+      newImagePanel.setMinimumSize(bufferedImageDimension);
+      newImagePanel.setPreferredSize(bufferedImageDimension);
+      newImagePanel.setMaximumSize(bufferedImageDimension);
+      return newImagePanel;
+    }
+
+    private void initializeLayout(JLabel locationLabel) {
+      final Container contentPane = this.getContentPane();
+      contentPane.add(new JScrollPane(imagePanel), BorderLayout.CENTER);
+      contentPane.add(locationLabel, BorderLayout.SOUTH);
       // set up the actions
       final Action openAction = SwingAction.of("Load Polygons", e -> loadPolygons());
       openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Polygon Points FIle");
@@ -261,7 +269,6 @@ public final class PolygonGrabber extends ToolRunnableTask {
                 repaint();
               });
       autoAction.putValue(Action.SHORT_DESCRIPTION, "Autodetect Polygons around Centers");
-      islandMode = false;
       setupMenuBar(openAction, saveAction, exitAction, autoAction);
     }
 
