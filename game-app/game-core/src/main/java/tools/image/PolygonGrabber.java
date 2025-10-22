@@ -123,7 +123,11 @@ public final class PolygonGrabber extends ToolRunnableTask {
     private Map<String, List<Polygon>> polygons = new HashMap<>();
     // holds the centers for the polygons
     private Map<String, Point> centers;
-    private final JLabel location = new JLabel();
+
+    @Deprecated(since = "2.7", forRemoval = true)
+    @SuppressWarnings({"unused"})
+    private transient JLabel location = null;
+
     private final Point testPoint = new Point();
 
     /**
@@ -173,11 +177,12 @@ public final class PolygonGrabber extends ToolRunnableTask {
       /*
        * Add a mouse listener to show X : Y coordinates in the lower left corner of the screen.
        */
+      final JLabel locationLabel = new JLabel();
       imagePanel.addMouseMotionListener(
           new MouseMotionAdapter() {
             @Override
             public void mouseMoved(final MouseEvent e) {
-              location.setText("x: " + e.getX() + " y: " + e.getY());
+              locationLabel.setText("x: " + e.getX() + " y: " + e.getY());
             }
           });
       /*
@@ -203,7 +208,7 @@ public final class PolygonGrabber extends ToolRunnableTask {
       // set up the layout manager
       this.getContentPane().setLayout(new BorderLayout());
       this.getContentPane().add(new JScrollPane(imagePanel), BorderLayout.CENTER);
-      this.getContentPane().add(location, BorderLayout.SOUTH);
+      this.getContentPane().add(locationLabel, BorderLayout.SOUTH);
       // set up the actions
       final Action openAction = SwingAction.of("Load Polygons", e -> loadPolygons());
       openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Polygon Points FIle");
