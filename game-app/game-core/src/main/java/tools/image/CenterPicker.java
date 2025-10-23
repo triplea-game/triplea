@@ -107,10 +107,6 @@ public final class CenterPicker extends ToolRunnableTask {
     // hash map for polygon points
     private final Map<String, List<Polygon>> polygons;
 
-    @Deprecated(since = "2.7", forRemoval = true)
-    @SuppressWarnings({"unused"})
-    private final JLabel locationLabel = null;
-
     /**
      * Sets up all GUI components, initializes variables with default or needed values, and prepares
      * the map for user commands.
@@ -132,16 +128,16 @@ public final class CenterPicker extends ToolRunnableTask {
         throw e;
       }
       image = FileHelper.newImage(mapFolder);
-      final JLabel locationPointLabel = new JLabel();
-      imagePanel = newImagePanel(locationPointLabel);
+      final JLabel locationLabel = new JLabel();
+      imagePanel = newImagePanel(locationLabel);
 
-      initializeLayout(locationPointLabel);
+      initializeLayout(locationLabel);
     }
 
-    private void initializeLayout(JLabel locationPointLabel) {
+    private void initializeLayout(JLabel locationLabel) {
       final Container contentPane = this.getContentPane();
       contentPane.add(new JScrollPane(imagePanel), BorderLayout.CENTER);
-      contentPane.add(locationPointLabel, BorderLayout.SOUTH);
+      contentPane.add(locationLabel, BorderLayout.SOUTH);
       // set up the actions
       final Action openAction = SwingAction.of("Load Centers", e -> loadCenters());
       openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Center Points File");
@@ -197,7 +193,7 @@ public final class CenterPicker extends ToolRunnableTask {
     }
 
     @Nonnull
-    private JPanel newImagePanel(JLabel locationPointLabel) {
+    private JPanel newImagePanel(final JLabel locationLabel) {
       final JPanel newImagePanel = newMainPanel();
       newImagePanel
           .addMouseMotionListener( // to show X : Y coordinates on the lower left corner of the
@@ -205,7 +201,7 @@ public final class CenterPicker extends ToolRunnableTask {
               new MouseMotionAdapter() {
                 @Override
                 public void mouseMoved(final MouseEvent e) {
-                  locationPointLabel.setText("x: " + e.getX() + " y: " + e.getY());
+                  locationLabel.setText("x: " + e.getX() + " y: " + e.getY());
                 }
               });
       newImagePanel.addMouseListener( // to monitor for right mouse button being clicked
