@@ -101,10 +101,11 @@ public final class CenterPicker extends ToolRunnableTask {
 
     // The map image will be stored here
     private final Image image;
+    private final JPanel imagePanel;
     // hash map for center points
     private Map<String, Point> centers = new HashMap<>();
     // hash map for polygon points
-    private Map<String, List<Polygon>> polygons = new HashMap<>();
+    private final Map<String, List<Polygon>> polygons;
 
     @Deprecated(since = "2.7", forRemoval = true)
     @SuppressWarnings({"unused"})
@@ -132,12 +133,12 @@ public final class CenterPicker extends ToolRunnableTask {
       }
       image = FileHelper.newImage(mapFolder);
       final JLabel locationPointLabel = new JLabel();
-      final JPanel imagePanel = newImagePanel(locationPointLabel);
-      // set up the layout manager
-      initializeLayout(imagePanel, locationPointLabel);
+      imagePanel = newImagePanel(locationPointLabel);
+
+      initializeLayout(locationPointLabel);
     }
 
-    private void initializeLayout(JPanel imagePanel, JLabel locationPointLabel) {
+    private void initializeLayout(JLabel locationPointLabel) {
       final Container contentPane = this.getContentPane();
       contentPane.add(new JScrollPane(imagePanel), BorderLayout.CENTER);
       contentPane.add(locationPointLabel, BorderLayout.SOUTH);
@@ -197,8 +198,8 @@ public final class CenterPicker extends ToolRunnableTask {
 
     @Nonnull
     private JPanel newImagePanel(JLabel locationPointLabel) {
-      final JPanel imagePanel = newMainPanel();
-      imagePanel
+      final JPanel newImagePanel = newMainPanel();
+      newImagePanel
           .addMouseMotionListener( // to show X : Y coordinates on the lower left corner of the
               // screen
               new MouseMotionAdapter() {
@@ -207,7 +208,7 @@ public final class CenterPicker extends ToolRunnableTask {
                   locationPointLabel.setText("x: " + e.getX() + " y: " + e.getY());
                 }
               });
-      imagePanel.addMouseListener( // to monitor for right mouse button being clicked
+      newImagePanel.addMouseListener( // to monitor for right mouse button being clicked
           new MouseAdapter() {
             @Override
             public void mouseClicked(final MouseEvent e) {
@@ -216,10 +217,10 @@ public final class CenterPicker extends ToolRunnableTask {
           });
       // set up the image panel size dimensions ...etc
       final Dimension imageDimension = new Dimension(image.getWidth(this), image.getHeight(this));
-      imagePanel.setMinimumSize(imageDimension);
-      imagePanel.setPreferredSize(imageDimension);
-      imagePanel.setMaximumSize(imageDimension);
-      return imagePanel;
+      newImagePanel.setMinimumSize(imageDimension);
+      newImagePanel.setPreferredSize(imageDimension);
+      newImagePanel.setMaximumSize(imageDimension);
+      return newImagePanel;
     }
 
     /** Creates the main panel and returns a JPanel object. */
