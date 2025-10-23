@@ -228,48 +228,43 @@ public final class PolygonGrabber extends ToolRunnableTask {
                         BufferedImage.TYPE_INT_ARGB);
                 final Graphics g = imageCopy.getGraphics();
                 g.drawImage(bufferedImage, 0, 0, null);
-                for (Entry<String, Point> center : centers.entrySet()) {
-                  final String territoryName = center.getKey();
-                  final Point centerPoint = center.getValue();
-                  log.info("Detecting Polygon for: {}", territoryName);
-                  final @Nullable Polygon p = findPolygon(centerPoint.x, centerPoint.y);
-                  // test if the poly contains the center point (this often fails when there is an
-                  // island right above (because findPolygon will grab the island instead)
-                  if (p == null || !p.contains(centerPoint)) {
-                    continue;
-                  }
-                  // test if this poly contains any other centers, and if so do not do this one. let
-                  // the user manually do it to make sure it gets done properly
-                  boolean hasIslands = false;
-                  for (final Point otherCenterPoint : centers.values()) {
-                    if (centerPoint.equals(otherCenterPoint)) {
-                      continue;
-                    }
-                    if (p.contains(otherCenterPoint)) {
-                      hasIslands = true;
-                      break;
-                    }
-                  }
-                  if (hasIslands) {
-                    continue;
-                  }
-                  // some islands do not have centers on them because they are island chains that
-                  // are also part of an island or
-                  // territory touching a sidewall or outside of this polygon. we should still skip
-                  // them.
-                  if (doesPolygonContainAnyBlackInside(p, imageCopy, g)) {
-                    continue;
-                  }
-                  final List<Polygon> polys = new ArrayList<>();
-                  polys.add(p);
-                  polygons.put(territoryName, polys);
-                }
+                detectPolygonsFromCenters(imageCopy, g);
                 g.dispose();
                 imageCopy.flush();
                 repaint();
               });
       autoAction.putValue(Action.SHORT_DESCRIPTION, "Autodetect Polygons around Centers");
       setupMenuBar(openAction, saveAction, exitAction, autoAction);
+    }
+
+    private void detectPolygonsFromCenters(BufferedImage imageCopy, Graphics g) {
+      for (Entry<String, Point> center : centers.entrySet()) {
+        final String territoryName = center.getKey();
+        final Point centerPoint = center.getValue();
+        log.info("Detecting Polygon for: {}", territoryName);
+        final @Nullable Polygon p = findPolygon(centerPoint.x, centerPoint.y);
+        // Skip found polygon if anything of the following is true:
+        // 1. Poly contains the center point. This often fails when there is an
+        // island right above (because findPolygon will grab the island instead)
+        if (p == null
+            || !p.contains(centerPoint)
+            // 2. Poly contains any other centers.
+            // Let the user manually do it to make sure it gets done properly.
+            || centers.values().stream()
+                .anyMatch(
+                    otherCenterPoint ->
+                        !centerPoint.equals(otherCenterPoint) && p.contains(otherCenterPoint))
+            // 3. Poly contains black inside
+            // Some islands do not have centers on them because they are island chains that
+            // are also part of an island or territory touching a sidewall or outside of this
+            // polygon.
+            || doesPolygonContainAnyBlackInside(p, imageCopy, g)) {
+          continue;
+        }
+        final List<Polygon> polys = new ArrayList<>();
+        polys.add(p);
+        polygons.put(territoryName, polys);
+      }
     }
 
     private Path getCentersFile(Path mapFolder) throws IOException {
