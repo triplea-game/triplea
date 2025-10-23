@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -119,56 +121,17 @@ public final class CenterPicker extends ToolRunnableTask {
       setSize(800, 600);
       setLayout(new BorderLayout());
       setLocationRelativeTo(null);
-      final Path file = FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "polygons.txt");
-      if (Files.exists(file)
-          && JOptionPane.showConfirmDialog(
-                  new JPanel(),
-                  "A polygons.txt file was found in the map's folder, do you want to use "
-                      + "the file to supply the territories names?",
-                  "File Suggestion",
-                  JOptionPane.YES_NO_CANCEL_OPTION)
-              == 0) {
-        try {
-          polygons = PointFileReaderWriter.readOneToManyPolygons(file);
-        } catch (final IOException e) {
-          log.error("Something wrong with your Polygons file: {}", file.toAbsolutePath());
-          throw e;
-        }
-      } else {
-        final Path polyPath =
-            new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile();
-        if (polyPath != null) {
-          try {
-            polygons = PointFileReaderWriter.readOneToManyPolygons(polyPath);
-          } catch (final IOException e) {
-            log.error("Something wrong with your Polygons file: {}", polyPath);
-            throw e;
-          }
-        }
+      final Path polygonsPath = getPolygonsPath(mapFolder);
+      try {
+        log.info("Polygons : {}", polygonsPath);
+        polygons = PointFileReaderWriter.readOneToManyPolygons(polygonsPath);
+      } catch (final IOException e) {
+        log.error("Something wrong with your Polygons file: {}", polygonsPath);
+        throw e;
       }
       image = FileHelper.newImage(mapFolder);
-      final JPanel imagePanel = newMainPanel();
       final JLabel locationPointLabel = new JLabel();
-      imagePanel
-          .addMouseMotionListener( // to show X : Y coordinates on the lower left corner of the
-              // screen
-              new MouseMotionAdapter() {
-                @Override
-                public void mouseMoved(final MouseEvent e) {
-                  locationPointLabel.setText("x: " + e.getX() + " y: " + e.getY());
-                }
-              });
-      imagePanel.addMouseListener( // to monitor for right mouse button being clicked
-          new MouseAdapter() {
-            @Override
-            public void mouseClicked(final MouseEvent e) {
-              mouseEvent(e.getPoint(), SwingUtilities.isRightMouseButton(e));
-            }
-          });
-      // set up the image panel size dimensions ...etc
-      imagePanel.setMinimumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
-      imagePanel.setPreferredSize(new Dimension(image.getWidth(this), image.getHeight(this)));
-      imagePanel.setMaximumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
+      final JPanel imagePanel = newImagePanel(locationPointLabel);
       // set up the layout manager
       this.getContentPane().add(new JScrollPane(imagePanel), BorderLayout.CENTER);
       this.getContentPane().add(locationPointLabel, BorderLayout.SOUTH);
@@ -201,6 +164,52 @@ public final class CenterPicker extends ToolRunnableTask {
       fileMenu.addSeparator();
       fileMenu.add(exitItem);
       menuBar.add(fileMenu);
+    }
+
+    @Nullable
+    private Path getPolygonsPath(Path mapFolder) {
+      final Path file = FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "polygons.txt");
+      Path polygonsPath;
+      if (Files.exists(file)
+          && JOptionPane.showConfirmDialog(
+                  new JPanel(),
+                  "A polygons.txt file was found in the map's folder, do you want to use "
+                      + "the file to supply the territories names?",
+                  "File Suggestion",
+                  JOptionPane.YES_NO_CANCEL_OPTION)
+              == 0) {
+        polygonsPath = file;
+      } else {
+        polygonsPath = new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile();
+      }
+      return polygonsPath;
+    }
+
+    @Nonnull
+    private JPanel newImagePanel(JLabel locationPointLabel) {
+      final JPanel imagePanel = newMainPanel();
+      imagePanel
+          .addMouseMotionListener( // to show X : Y coordinates on the lower left corner of the
+              // screen
+              new MouseMotionAdapter() {
+                @Override
+                public void mouseMoved(final MouseEvent e) {
+                  locationPointLabel.setText("x: " + e.getX() + " y: " + e.getY());
+                }
+              });
+      imagePanel.addMouseListener( // to monitor for right mouse button being clicked
+          new MouseAdapter() {
+            @Override
+            public void mouseClicked(final MouseEvent e) {
+              mouseEvent(e.getPoint(), SwingUtilities.isRightMouseButton(e));
+            }
+          });
+      // set up the image panel size dimensions ...etc
+      final Dimension imageDimension = new Dimension(image.getWidth(this), image.getHeight(this));
+      imagePanel.setMinimumSize(imageDimension);
+      imagePanel.setPreferredSize(imageDimension);
+      imagePanel.setMaximumSize(imageDimension);
+      return imagePanel;
     }
 
     /** Creates the main panel and returns a JPanel object. */
