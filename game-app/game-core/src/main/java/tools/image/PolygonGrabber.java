@@ -397,29 +397,29 @@ public final class PolygonGrabber extends ToolRunnableTask {
 
         @Override
         public void paint(final Graphics g) {
-          // super.paint(g);
           g.drawImage(bufferedImage, 0, 0, this);
           g.setColor(Color.red);
-          for (final Entry<String, List<Polygon>> entry : polygons.entrySet()) {
-            if (islandMode) {
-              for (final Polygon item : entry.getValue()) {
-                g.drawPolygon(item.xpoints, item.ypoints, item.npoints);
-              } // while
-            } else {
-              for (final Polygon item : entry.getValue()) {
-                g.setColor(Color.yellow);
-                g.fillPolygon(item.xpoints, item.ypoints, item.npoints);
-                g.setColor(Color.black);
-                g.drawPolygon(item.xpoints, item.ypoints, item.npoints);
-              } // while
-            }
-          } // while
+          if (islandMode) {
+            polygons
+                .values()
+                .forEach(territoryPolygons -> territoryPolygons.forEach(g::drawPolygon));
+          } else {
+            polygons
+                .values()
+                .forEach(
+                    territoryPolygons ->
+                        territoryPolygons.forEach(
+                            polygon -> {
+                              g.setColor(Color.yellow);
+                              g.fillPolygon(polygon);
+                              g.setColor(Color.black);
+                              g.drawPolygon(polygon);
+                            }));
+          }
           g.setColor(Color.red);
           if (current != null) {
-            for (final Polygon item : current) {
-              g.fillPolygon(item.xpoints, item.ypoints, item.npoints);
-            } // while
-          } // if
+            current.forEach(g::fillPolygon);
+          }
         } // paint
       };
     }
