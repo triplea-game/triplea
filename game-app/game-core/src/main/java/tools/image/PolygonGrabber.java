@@ -303,7 +303,7 @@ public final class PolygonGrabber extends ToolRunnableTask {
       final JMenuBar menuBar = new JMenuBar();
       setJMenuBar(menuBar);
       final JMenu fileMenu = new JMenu("File");
-      fileMenu.setMnemonic('F');
+      fileMenu.setMnemonic(KeyEvent.VK_F);
       fileMenu.add(openItem);
       fileMenu.add(saveItem);
       final JMenuItem saveImageItem = new JMenuItem("Save Image...");
@@ -313,7 +313,7 @@ public final class PolygonGrabber extends ToolRunnableTask {
       fileMenu.add(exitItem);
       final JMenu editMenu = new JMenu("Edit");
       final JMenuItem autoItem = new JMenuItem(autoAction);
-      editMenu.setMnemonic('E');
+      editMenu.setMnemonic(KeyEvent.VK_E);
       editMenu.add(islandModeItem);
       editMenu.add(autoItem);
       final JMenuItem cleanImageItem = new JMenuItem("Clean Up Image...");

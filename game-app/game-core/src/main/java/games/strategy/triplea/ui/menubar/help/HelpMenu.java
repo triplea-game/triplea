@@ -26,7 +26,7 @@ public final class HelpMenu {
   public static JMenu buildMenu(final UiContext uiContext, final GameData gameData) {
     final JMenu menu = new JMenu();
     menu.setText("Help");
-    menu.setMnemonic('h');
+    menu.setMnemonic(KeyEvent.VK_H);
 
     menu.add(MoveHelpMenu.buildMenu()).setMnemonic(KeyEvent.VK_M);
 
