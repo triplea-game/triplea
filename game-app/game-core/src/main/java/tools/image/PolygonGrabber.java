@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.swing.Action;
@@ -233,7 +235,7 @@ public final class PolygonGrabber extends ToolRunnableTask {
         final String territoryName = center.getKey();
         final Point centerPoint = center.getValue();
         log.info("Detecting Polygon for: {}", territoryName);
-        final @Nullable Polygon p = findPolygon(centerPoint.x, centerPoint.y);
+        final @Nullable Polygon p = findPolygon(centerPoint.x, centerPoint.y).orElse(null);
         // Skip found polygon if anything of the following is true:
         // 1. Poly contains the center point. This often fails when there is an
         // island right above (because findPolygon will grab the island instead)
@@ -456,7 +458,7 @@ public final class PolygonGrabber extends ToolRunnableTask {
     }
 
     private void mouseEvent(final Point point, final boolean ctrlDown, final boolean rightMouse) {
-      final @Nullable Polygon p = findPolygon(point.x, point.y);
+      final @Nullable Polygon p = findPolygon(point.x, point.y).orElse(null);
       if (p == null) {
         return;
       }
@@ -608,13 +610,8 @@ public final class PolygonGrabber extends ToolRunnableTask {
     }
 
     /** Algorithm to find a polygon given an x/y coordinates and returns the found polygon. */
-    private @Nullable Polygon findPolygon(final int x, final int y) {
-      // walk up, find the first black point
-      final Point startPoint = new Point(x, y);
-      while (inBounds(startPoint.x, startPoint.y - 1, bufferedImage)
-          && !isBlack(startPoint.x, startPoint.y, bufferedImage)) {
-        startPoint.y--;
-      }
+    private Optional<Polygon> findPolygon(final int x, final int y) {
+      final Point startPoint = getFirstBlackPoint(x, y);
       final List<Point> points = new ArrayList<>(100);
       points.add(new Point(startPoint));
       int currentDirection = 2;
@@ -632,7 +629,7 @@ public final class PolygonGrabber extends ToolRunnableTask {
                   + "\r\n"
                   + "Note that this is a common error and can usually be fixed by 'smoothing out' "
                   + "the territory border and removing any anti-aliasing.");
-          return null;
+          return Optional.empty();
         }
         for (int i = 2; i >= -3; i--) {
           final int tempDirection = Math.floorMod(currentDirection + i, 8);
@@ -650,6 +647,21 @@ public final class PolygonGrabber extends ToolRunnableTask {
           }
         }
       }
+      return Optional.of(getPolygonFromPoints(points));
+    }
+
+    @Nonnull
+    private Point getFirstBlackPoint(int x, int y) {
+      final Point startPoint = new Point(x, y);
+      while (inBounds(startPoint.x, startPoint.y - 1, bufferedImage)
+          && !isBlack(startPoint.x, startPoint.y, bufferedImage)) {
+        startPoint.y--;
+      }
+      return startPoint;
+    }
+
+    @Nonnull
+    private Polygon getPolygonFromPoints(List<Point> points) {
       final int[] xPoints = new int[points.size()];
       final int[] yPoints = new int[points.size()];
       int i = 0;
