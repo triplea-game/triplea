@@ -458,23 +458,20 @@ public final class PolygonGrabber extends ToolRunnableTask {
     }
 
     private void mouseEvent(final Point point, final boolean ctrlDown, final boolean rightMouse) {
-      final @Nullable Polygon p = findPolygon(point.x, point.y).orElse(null);
-      if (p == null) {
-        return;
-      }
       if (rightMouse && current != null) { // right click and list of polys is not empty
         doneCurrentGroup();
       } else if (pointInCurrentPolygon(point)) { // point clicked is already highlighted
         log.info("rejecting");
         return;
-      } else if (ctrlDown) {
-        if (current == null) {
+      } else {
+        final Optional<Polygon> foundPolygon = findPolygon(point.x, point.y);
+        if (foundPolygon.isEmpty()) {
+          return;
+        }
+        if (!ctrlDown || current == null) {
           current = new ArrayList<>();
         }
-        current.add(p);
-      } else {
-        current = new ArrayList<>();
-        current.add(p);
+        current.add(foundPolygon.get());
       }
       repaint();
     }
