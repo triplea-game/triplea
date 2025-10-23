@@ -1,11 +1,8 @@
 package tools.image;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
@@ -13,7 +10,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,20 +17,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.Action;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
@@ -96,29 +88,16 @@ public final class CenterPicker extends ToolRunnableTask {
     }
   }
 
-  private final class CenterPickerFrame extends JFrame {
+  private final class CenterPickerFrame extends MapEditorFrame {
     private static final long serialVersionUID = -5633998810385136625L;
 
-    // The map image will be stored here
-    private final Image image;
-    private final JPanel imagePanel;
     // hash map for center points
     private Map<String, Point> centers = new HashMap<>();
     // hash map for polygon points
     private final Map<String, List<Polygon>> polygons;
 
-    /**
-     * Sets up all GUI components, initializes variables with default or needed values, and prepares
-     * the map for user commands.
-     *
-     * @param mapFolder The {@link Path} pointing to the map folder.
-     */
     CenterPickerFrame(final Path mapFolder) throws IOException {
-      super("Center Picker");
-      setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-      setSize(800, 600);
-      setLayout(new BorderLayout());
-      setLocationRelativeTo(null);
+      super("Center Picker", mapFolder);
       final Path polygonsPath = getPolygonsPath(mapFolder);
       try {
         log.info("Polygons : {}", polygonsPath);
@@ -127,17 +106,38 @@ public final class CenterPicker extends ToolRunnableTask {
         log.error("Something wrong with your Polygons file: {}", polygonsPath);
         throw e;
       }
-      image = FileHelper.newImage(mapFolder);
-      final JLabel locationLabel = new JLabel();
-      imagePanel = newImagePanel(locationLabel);
-
-      initializeLayout(locationLabel);
     }
 
-    private void initializeLayout(JLabel locationLabel) {
-      final Container contentPane = this.getContentPane();
-      contentPane.add(new JScrollPane(imagePanel), BorderLayout.CENTER);
-      contentPane.add(locationLabel, BorderLayout.SOUTH);
+    @Override
+    protected JPanel createMainPanel() {
+      return new JPanel() {
+        private static final long serialVersionUID = -7130828419508975924L;
+
+        @Override
+        public void paint(final Graphics g) {
+          g.drawImage(image, 0, 0, this);
+          g.setColor(Color.red);
+          for (final Entry<String, Point> center : centers.entrySet()) {
+            final Point item = center.getValue();
+            g.fillOval(item.x, item.y, 15, 15);
+            g.drawString(center.getKey(), item.x + 17, item.y + 13);
+          }
+        }
+      };
+    }
+
+    @Override
+    protected MouseAdapter getMouseClickedAdapter() {
+      return new MouseAdapter() {
+        @Override
+        public void mouseClicked(final MouseEvent e) {
+          mouseEvent(e.getPoint(), SwingUtilities.isRightMouseButton(e));
+        }
+      };
+    }
+
+    @Override
+    protected void initializeLayout() {
       // set up the actions
       final Action openAction = SwingAction.of("Load Centers", e -> loadCenters());
       openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Center Points File");
@@ -190,51 +190,6 @@ public final class CenterPicker extends ToolRunnableTask {
         polygonsPath = new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile();
       }
       return polygonsPath;
-    }
-
-    @Nonnull
-    private JPanel newImagePanel(final JLabel locationLabel) {
-      final JPanel newImagePanel = newMainPanel();
-      newImagePanel
-          .addMouseMotionListener( // to show X : Y coordinates on the lower left corner of the
-              // screen
-              new MouseMotionAdapter() {
-                @Override
-                public void mouseMoved(final MouseEvent e) {
-                  locationLabel.setText("x: " + e.getX() + " y: " + e.getY());
-                }
-              });
-      newImagePanel.addMouseListener( // to monitor for right mouse button being clicked
-          new MouseAdapter() {
-            @Override
-            public void mouseClicked(final MouseEvent e) {
-              mouseEvent(e.getPoint(), SwingUtilities.isRightMouseButton(e));
-            }
-          });
-      // set up the image panel size dimensions ...etc
-      final Dimension imageDimension = new Dimension(image.getWidth(this), image.getHeight(this));
-      newImagePanel.setMinimumSize(imageDimension);
-      newImagePanel.setPreferredSize(imageDimension);
-      newImagePanel.setMaximumSize(imageDimension);
-      return newImagePanel;
-    }
-
-    /** Creates the main panel and returns a JPanel object. */
-    private JPanel newMainPanel() {
-      return new JPanel() {
-        private static final long serialVersionUID = -7130828419508975924L;
-
-        @Override
-        public void paint(final Graphics g) {
-          g.drawImage(image, 0, 0, this);
-          g.setColor(Color.red);
-          for (final Entry<String, Point> center : centers.entrySet()) {
-            final Point item = center.getValue();
-            g.fillOval(item.x, item.y, 15, 15);
-            g.drawString(center.getKey(), item.x + 17, item.y + 13);
-          }
-        }
-      };
     }
 
     /** Saves the centers to disk. */
