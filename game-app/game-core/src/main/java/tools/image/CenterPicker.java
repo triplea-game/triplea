@@ -2,6 +2,7 @@ package tools.image;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -133,8 +134,13 @@ public final class CenterPicker extends ToolRunnableTask {
       final JLabel locationPointLabel = new JLabel();
       final JPanel imagePanel = newImagePanel(locationPointLabel);
       // set up the layout manager
-      this.getContentPane().add(new JScrollPane(imagePanel), BorderLayout.CENTER);
-      this.getContentPane().add(locationPointLabel, BorderLayout.SOUTH);
+      initializeLayout(imagePanel, locationPointLabel);
+    }
+
+    private void initializeLayout(JPanel imagePanel, JLabel locationPointLabel) {
+      final Container contentPane = this.getContentPane();
+      contentPane.add(new JScrollPane(imagePanel), BorderLayout.CENTER);
+      contentPane.add(locationPointLabel, BorderLayout.SOUTH);
       // set up the actions
       final Action openAction = SwingAction.of("Load Centers", e -> loadCenters());
       openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Center Points File");
@@ -148,6 +154,10 @@ public final class CenterPicker extends ToolRunnableTask {
                 dispose();
               });
       exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
+      setupMenuBar(openAction, saveAction, exitAction);
+    }
+
+    private void setupMenuBar(Action openAction, Action saveAction, Action exitAction) {
       // set up the menu items
       final JMenuItem openItem = new JMenuItem(openAction);
       openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
@@ -287,28 +297,20 @@ public final class CenterPicker extends ToolRunnableTask {
         }
         centers.put(name, point);
       } else {
-        mouseEvenRightClickOnPoint(point);
+        String centerClicked = null;
+        for (final Entry<String, Point> cur : centers.entrySet()) {
+          if (new Rectangle(cur.getValue(), new Dimension(15, 15))
+              .intersects(new Rectangle(point, new Dimension(1, 1)))) {
+            centerClicked = cur.getKey();
+          }
+        }
+        if (centerClicked != null
+            && JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this center?")
+                == 0) {
+          centers.remove(centerClicked);
+        }
       }
       repaint();
-    }
-
-    private void mouseEvenRightClickOnPoint(Point point) {
-      final Rectangle rectangle1x1 = new Rectangle(point, new Dimension(1, 1));
-      final Dimension dimension15x15 = new Dimension(15, 15);
-      final String centerClicked =
-          centers.entrySet().stream()
-              .filter(
-                  centerEntry ->
-                      rectangle1x1.intersects(
-                          new Rectangle(centerEntry.getValue(), dimension15x15)))
-              .findAny()
-              .map(Entry::getKey)
-              .orElse(null);
-      if (centerClicked != null
-          && JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this center?")
-              == 0) {
-        centers.remove(centerClicked);
-      }
     }
   }
 }
