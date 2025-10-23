@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
@@ -67,8 +68,6 @@ public final class CenterPicker extends ToolRunnableTask {
     if (map != null) {
       log.info("Map : {}", map);
       final CenterPickerFrame frame = new CenterPickerFrame(map);
-      frame.setSize(800, 600);
-      frame.setLocationRelativeTo(null);
       frame.setVisible(true);
       JOptionPane.showMessageDialog(
           frame,
@@ -103,7 +102,10 @@ public final class CenterPicker extends ToolRunnableTask {
     private Map<String, Point> centers = new HashMap<>();
     // hash map for polygon points
     private Map<String, List<Polygon>> polygons = new HashMap<>();
-    private final JLabel locationLabel = new JLabel();
+
+    @Deprecated(since = "2.7", forRemoval = true)
+    @SuppressWarnings({"unused"})
+    private final JLabel locationLabel = null;
 
     /**
      * Sets up all GUI components, initializes variables with default or needed values, and prepares
@@ -113,7 +115,10 @@ public final class CenterPicker extends ToolRunnableTask {
      */
     CenterPickerFrame(final Path mapFolder) throws IOException {
       super("Center Picker");
-      setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+      setSize(800, 600);
+      setLayout(new BorderLayout());
+      setLocationRelativeTo(null);
       final Path file = FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "polygons.txt");
       if (Files.exists(file)
           && JOptionPane.showConfirmDialog(
@@ -143,18 +148,17 @@ public final class CenterPicker extends ToolRunnableTask {
       }
       image = FileHelper.newImage(mapFolder);
       final JPanel imagePanel = newMainPanel();
-      /*
-       * Add a mouse listener to show X : Y coordinates on the lower left corner of the screen.
-       */
-      imagePanel.addMouseMotionListener(
-          new MouseMotionAdapter() {
-            @Override
-            public void mouseMoved(final MouseEvent e) {
-              locationLabel.setText("x: " + e.getX() + " y: " + e.getY());
-            }
-          });
-      // Add a mouse listener to monitor for right mouse button being clicked.
-      imagePanel.addMouseListener(
+      final JLabel locationPointLabel = new JLabel();
+      imagePanel
+          .addMouseMotionListener( // to show X : Y coordinates on the lower left corner of the
+              // screen
+              new MouseMotionAdapter() {
+                @Override
+                public void mouseMoved(final MouseEvent e) {
+                  locationPointLabel.setText("x: " + e.getX() + " y: " + e.getY());
+                }
+              });
+      imagePanel.addMouseListener( // to monitor for right mouse button being clicked
           new MouseAdapter() {
             @Override
             public void mouseClicked(final MouseEvent e) {
@@ -166,9 +170,8 @@ public final class CenterPicker extends ToolRunnableTask {
       imagePanel.setPreferredSize(new Dimension(image.getWidth(this), image.getHeight(this)));
       imagePanel.setMaximumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
       // set up the layout manager
-      this.getContentPane().setLayout(new BorderLayout());
       this.getContentPane().add(new JScrollPane(imagePanel), BorderLayout.CENTER);
-      this.getContentPane().add(locationLabel, BorderLayout.SOUTH);
+      this.getContentPane().add(locationPointLabel, BorderLayout.SOUTH);
       // set up the actions
       final Action openAction = SwingAction.of("Load Centers", e -> loadCenters());
       openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Center Points File");
