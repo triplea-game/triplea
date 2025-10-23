@@ -287,20 +287,28 @@ public final class CenterPicker extends ToolRunnableTask {
         }
         centers.put(name, point);
       } else {
-        String centerClicked = null;
-        for (final Entry<String, Point> cur : centers.entrySet()) {
-          if (new Rectangle(cur.getValue(), new Dimension(15, 15))
-              .intersects(new Rectangle(point, new Dimension(1, 1)))) {
-            centerClicked = cur.getKey();
-          }
-        }
-        if (centerClicked != null
-            && JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this center?")
-                == 0) {
-          centers.remove(centerClicked);
-        }
+        mouseEvenRightClickOnPoint(point);
       }
       repaint();
+    }
+
+    private void mouseEvenRightClickOnPoint(Point point) {
+      final Rectangle rectangle1x1 = new Rectangle(point, new Dimension(1, 1));
+      final Dimension dimension15x15 = new Dimension(15, 15);
+      final String centerClicked =
+          centers.entrySet().stream()
+              .filter(
+                  centerEntry ->
+                      rectangle1x1.intersects(
+                          new Rectangle(centerEntry.getValue(), dimension15x15)))
+              .findAny()
+              .map(Entry::getKey)
+              .orElse(null);
+      if (centerClicked != null
+          && JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this center?")
+              == 0) {
+        centers.remove(centerClicked);
+      }
     }
   }
 }
