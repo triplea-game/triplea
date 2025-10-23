@@ -107,26 +107,17 @@ public final class PolygonGrabber extends ToolRunnableTask {
   private final class PolygonGrabberFrame extends JFrame {
     private static final long serialVersionUID = 6381498094805120687L;
 
-    private boolean islandMode = false;
-
-    @Deprecated(since = "2.7", forRemoval = true)
-    @SuppressWarnings({"unused"})
-    private transient JCheckBoxMenuItem modeItem =
-        null; // legacy field retained for backward compatibility
-
-    // the current set of polygons
-    private List<Polygon> current;
     // holds the map image
     private final BufferedImage bufferedImage;
     private final JPanel imagePanel;
-    // maps String -> List of polygons
+    private boolean islandMode = false;
+    // maps territory String -> List of polygons
     private Map<String, List<Polygon>> polygons = new HashMap<>();
-    // holds the centers for the polygons
-    private final Map<String, Point> centers;
 
-    @Deprecated(since = "2.7", forRemoval = true)
-    @SuppressWarnings({"unused"})
-    private transient JLabel location = null;
+    // the current set of polygons
+    private List<Polygon> current;
+    // maps territory String ->  polygon center of territory
+    private final Map<String, Point> centers;
 
     private final Point testPoint = new Point();
 
