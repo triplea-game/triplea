@@ -391,7 +391,7 @@ public final class PlacementPicker extends ToolRunnableTask {
       final JMenuBar menuBar = new JMenuBar();
       setJMenuBar(menuBar);
       final JMenu fileMenu = new JMenu("File");
-      fileMenu.setMnemonic('F');
+      fileMenu.setMnemonic(KeyEvent.VK_F);
       fileMenu.add(openItem);
       fileMenu.add(saveItem);
       fileMenu.addSeparator();
@@ -427,7 +427,7 @@ public final class PlacementPicker extends ToolRunnableTask {
             repaint();
           });
       final JMenu editMenu = new JMenu("Edit");
-      editMenu.setMnemonic('E');
+      editMenu.setMnemonic(KeyEvent.VK_E);
       editMenu.add(showAllModeItem);
       editMenu.add(showOverflowModeItem);
       editMenu.add(showIncompleteModeItem);
