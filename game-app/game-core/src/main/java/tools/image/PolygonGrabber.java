@@ -1,9 +1,6 @@
 package tools.image;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
@@ -13,7 +10,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,18 +26,15 @@ import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.FileChooser;
 import org.triplea.swing.SwingAction;
@@ -106,12 +99,10 @@ public final class PolygonGrabber extends ToolRunnableTask {
     }
   }
 
-  private final class PolygonGrabberFrame extends JFrame {
+  private final class PolygonGrabberFrame extends MapEditorFrame {
     private static final long serialVersionUID = 6381498094805120687L;
 
     // holds the map image
-    private final BufferedImage bufferedImage;
-    private final JPanel imagePanel;
     private boolean islandMode = false;
     // maps territory String -> List of polygons
     private Map<String, List<Polygon>> polygons = new HashMap<>();
@@ -130,12 +121,7 @@ public final class PolygonGrabber extends ToolRunnableTask {
      * @param mapFolder The {@link Path} pointing to the map folder.
      */
     PolygonGrabberFrame(final Path mapFolder) throws IOException {
-      super("Polygon grabber");
-      setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-      setSize(800, 600);
-      setLayout(new BorderLayout());
-      setLocationRelativeTo(null);
-      // initialize final attributes
+      super("Polygon grabber", mapFolder);
       final Path centersFile = getCentersFile(mapFolder);
       try {
         log.info("Centers : {}", centersFile);
@@ -144,47 +130,66 @@ public final class PolygonGrabber extends ToolRunnableTask {
         log.error("Something wrong with Centers file", e);
         throw e;
       }
-      bufferedImage = newBufferedImage(mapFolder);
-      final JLabel locationLabel = new JLabel();
-      imagePanel = newImagePanel(locationLabel);
-
-      initializeLayout(locationLabel);
     }
 
-    private JPanel newImagePanel(JLabel locationLabel) {
-      final JPanel newImagePanel = newMainPanel();
-      newImagePanel
-          .addMouseMotionListener( // to show X : Y coordinates in the lower left corner of the
-              // screen
-              new MouseMotionAdapter() {
-                @Override
-                public void mouseMoved(final MouseEvent e) {
-                  locationLabel.setText("x: " + e.getX() + " y: " + e.getY());
-                }
-              });
-      newImagePanel.addMouseListener( // to monitor for right mouse button being clicked
-          new MouseAdapter() {
-            @Override
-            public void mouseClicked(final MouseEvent e) {
-              mouseEvent(
-                  e.getPoint(),
-                  e.isControlDown() || e.isShiftDown(),
-                  SwingUtilities.isRightMouseButton(e));
-            }
-          });
-      // set up the image panel size dimensions
-      final Dimension bufferedImageDimension =
-          new Dimension(bufferedImage.getWidth(this), bufferedImage.getHeight(this));
-      newImagePanel.setMinimumSize(bufferedImageDimension);
-      newImagePanel.setPreferredSize(bufferedImageDimension);
-      newImagePanel.setMaximumSize(bufferedImageDimension);
-      return newImagePanel;
+    /**
+     * We create the image of the map here and assure that it is loaded properly.
+     *
+     * @param mapFolder The {@link Path} pointing to the map folder.
+     */
+    @Override
+    protected BufferedImage loadImage(final Path mapFolder) {
+      final Image newImage = FileHelper.newImage(mapFolder);
+      final BufferedImage newBufferedImage =
+          new BufferedImage(
+              newImage.getWidth(null), newImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+      final Graphics g = newBufferedImage.getGraphics();
+      g.drawImage(newImage, 0, 0, this);
+      g.dispose();
+      return newBufferedImage;
     }
 
-    private void initializeLayout(JLabel locationLabel) {
-      final Container contentPane = this.getContentPane();
-      contentPane.add(new JScrollPane(imagePanel), BorderLayout.CENTER);
-      contentPane.add(locationLabel, BorderLayout.SOUTH);
+    /**
+     * Current problem is that islands inside sea zones are not recognized when filling in the sea
+     * zone with a color, so we just outline in red instead of filling. We fill for selecting
+     * territories only for ease of use. We use var "islandMode" to dictate how to paint the map.
+     */
+    @Override
+    protected JPanel createMainPanel() {
+      return new JPanel() {
+        private static final long serialVersionUID = 4106539186003148628L;
+
+        @Override
+        public void paint(final Graphics g) {
+          g.drawImage(image, 0, 0, this);
+          g.setColor(Color.red);
+          if (islandMode) {
+            polygons
+                .values()
+                .forEach(territoryPolygons -> territoryPolygons.forEach(g::drawPolygon));
+          } else {
+            polygons
+                .values()
+                .forEach(
+                    territoryPolygons ->
+                        territoryPolygons.forEach(
+                            polygon -> {
+                              g.setColor(Color.yellow);
+                              g.fillPolygon(polygon);
+                              g.setColor(Color.black);
+                              g.drawPolygon(polygon);
+                            }));
+          }
+          g.setColor(Color.red);
+          if (current != null) {
+            current.forEach(g::fillPolygon);
+          }
+        } // paint
+      };
+    }
+
+    @Override
+    protected void initializeLayout() {
       // set up the actions
       final Action openAction = SwingAction.of("Load Polygons", e -> loadPolygons());
       openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Polygon Points FIle");
@@ -216,11 +221,9 @@ public final class PolygonGrabber extends ToolRunnableTask {
                 current = new ArrayList<>();
                 final BufferedImage imageCopy =
                     new BufferedImage(
-                        bufferedImage.getWidth(null),
-                        bufferedImage.getHeight(null),
-                        BufferedImage.TYPE_INT_ARGB);
+                        image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
                 final Graphics g = imageCopy.getGraphics();
-                g.drawImage(bufferedImage, 0, 0, null);
+                g.drawImage(image, 0, 0, null);
                 detectPolygonsFromCenters(imageCopy, g);
                 g.dispose();
                 imageCopy.flush();
@@ -228,6 +231,19 @@ public final class PolygonGrabber extends ToolRunnableTask {
               });
       autoAction.putValue(Action.SHORT_DESCRIPTION, "Autodetect Polygons around Centers");
       setupMenuBar(openAction, saveAction, exitAction, autoAction);
+    }
+
+    @Override
+    protected MouseAdapter getMouseClickedAdapter() {
+      return new MouseAdapter() {
+        @Override
+        public void mouseClicked(final MouseEvent e) {
+          mouseEvent(
+              e.getPoint(),
+              e.isControlDown() || e.isShiftDown(),
+              SwingUtilities.isRightMouseButton(e));
+        }
+      };
     }
 
     private void detectPolygonsFromCenters(BufferedImage imageCopy, Graphics g) {
@@ -330,11 +346,15 @@ public final class PolygonGrabber extends ToolRunnableTask {
         return;
       }
       try {
-        ImageIO.write(bufferedImage, "PNG", target.toFile());
+        ImageIO.write(getBufferedImage(), "PNG", target.toFile());
         JOptionPane.showMessageDialog(null, "Saved to: " + target);
       } catch (IOException e) {
         log.error("Writing the image to {} failed", target, e);
       }
+    }
+
+    private BufferedImage getBufferedImage() {
+      return (BufferedImage) image;
     }
 
     private void cleanImage() {
@@ -365,65 +385,8 @@ public final class PolygonGrabber extends ToolRunnableTask {
         JOptionPane.showMessageDialog(getParent(), "Minimum region size must be a number");
         return;
       }
-      new MapImageCleaner(bufferedImage, minimumRegionSize).cleanUpImage();
+      new MapImageCleaner(getBufferedImage(), minimumRegionSize).cleanUpImage();
       imagePanel.repaint();
-    }
-
-    /**
-     * We create the image of the map here and assure that it is loaded properly.
-     *
-     * @param mapFolder The {@link Path} pointing to the map folder.
-     */
-    private BufferedImage newBufferedImage(final Path mapFolder) {
-      final Image newImage = FileHelper.newImage(mapFolder);
-      final BufferedImage newBufferedImage =
-          new BufferedImage(
-              newImage.getWidth(null), newImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-      final Graphics g = newBufferedImage.getGraphics();
-      g.drawImage(newImage, 0, 0, this);
-      g.dispose();
-      return newBufferedImage;
-    }
-
-    /**
-     * Creates a JPanel to be used. Dictates how the map is painted. Current problem is that islands
-     * inside sea zones are not recognized when filling in the sea zone with a color, so we just
-     * outline in red instead of filling. We fill for selecting territories only for ease of use. We
-     * use var "islandMode" to dictate how to paint the map.
-     *
-     * @return The newly created panel.
-     */
-    private JPanel newMainPanel() {
-      return new JPanel() {
-        private static final long serialVersionUID = 4106539186003148628L;
-
-        @Override
-        public void paint(final Graphics g) {
-          g.drawImage(bufferedImage, 0, 0, this);
-          g.setColor(Color.red);
-          if (islandMode) {
-            polygons
-                .values()
-                .forEach(territoryPolygons -> territoryPolygons.forEach(g::drawPolygon));
-          } else {
-            polygons
-                .values()
-                .forEach(
-                    territoryPolygons ->
-                        territoryPolygons.forEach(
-                            polygon -> {
-                              g.setColor(Color.yellow);
-                              g.fillPolygon(polygon);
-                              g.setColor(Color.black);
-                              g.drawPolygon(polygon);
-                            }));
-          }
-          g.setColor(Color.red);
-          if (current != null) {
-            current.forEach(g::fillPolygon);
-          }
-        } // paint
-      };
     }
 
     /** Saves the polygons to disk. */
@@ -532,12 +495,12 @@ public final class PolygonGrabber extends ToolRunnableTask {
     }
 
     /** Checks to see if the given point is of color black. */
-    private boolean isBlack(final Point p) {
+    private boolean isBlack(final Point p, final BufferedImage bufferedImage) {
       return isBlack(p.x, p.y, bufferedImage);
     }
 
     private boolean isBlack(final int x, final int y, final BufferedImage bufferedImage) {
-      if (!inBounds(x, y, bufferedImage)) {
+      if (!inBounds(x, y)) {
         // not inbounds, can't be black
         return false;
       }
@@ -547,8 +510,9 @@ public final class PolygonGrabber extends ToolRunnableTask {
       return (bufferedImage.getRGB(x, y) & 0x00FFFFFF) == 0;
     }
 
-    private boolean inBounds(final int x, final int y, final BufferedImage image) {
-      return x >= 0 && x < image.getWidth() && y >= 0 && y < image.getHeight();
+    private boolean inBounds(final int x, final int y) {
+      BufferedImage bufferedImage = getBufferedImage();
+      return x >= 0 && x < bufferedImage.getWidth() && y >= 0 && y < bufferedImage.getHeight();
     }
 
     /**
@@ -577,9 +541,9 @@ public final class PolygonGrabber extends ToolRunnableTask {
       move(testPoint, direction);
       return testPoint.x == 0
           || testPoint.y == 0
-          || testPoint.y == bufferedImage.getHeight(this)
-          || testPoint.x == bufferedImage.getWidth(this)
-          || isBlack(testPoint);
+          || testPoint.y == image.getHeight(this)
+          || testPoint.x == image.getWidth(this)
+          || isBlack(testPoint, getBufferedImage());
     }
 
     private boolean doesPolygonContainAnyBlackInside(
@@ -650,8 +614,8 @@ public final class PolygonGrabber extends ToolRunnableTask {
     @Nonnull
     private Point getFirstBlackPoint(int x, int y) {
       final Point startPoint = new Point(x, y);
-      while (inBounds(startPoint.x, startPoint.y - 1, bufferedImage)
-          && !isBlack(startPoint.x, startPoint.y, bufferedImage)) {
+      while (inBounds(startPoint.x, startPoint.y - 1)
+          && !isBlack(startPoint.x, startPoint.y, getBufferedImage())) {
         startPoint.y--;
       }
       return startPoint;
