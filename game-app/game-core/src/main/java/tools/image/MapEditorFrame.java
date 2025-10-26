@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 
-abstract class MapEditorFrame extends JFrame {
+public abstract class MapEditorFrame extends JFrame {
   protected Image image;
   protected final JPanel imagePanel;
 

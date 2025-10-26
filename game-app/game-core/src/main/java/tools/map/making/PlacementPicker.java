@@ -2,19 +2,14 @@ package tools.map.making;
 
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -32,17 +27,14 @@ import java.util.Scanner;
 import java.util.Set;
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.swing.SwingAction;
@@ -51,6 +43,7 @@ import org.triplea.util.Tuple;
 import tools.image.FileHelper;
 import tools.image.FileOpen;
 import tools.image.FileSave;
+import tools.image.MapEditorFrame;
 import tools.util.ToolArguments;
 import tools.util.ToolRunnableTask;
 import tools.util.ToolsUtil;
@@ -129,28 +122,14 @@ public final class PlacementPicker extends ToolRunnableTask {
     }
   }
 
-  private final class PlacementPickerFrame extends JFrame {
+  private final class PlacementPickerFrame extends MapEditorFrame {
     private static final long serialVersionUID = 953019978051420881L;
-
-    @Deprecated(since = "2.7", forRemoval = true)
-    @SuppressWarnings({"unused"})
-    private final JCheckBoxMenuItem showAllModeItem = null;
-
-    @Deprecated(since = "2.7", forRemoval = true)
-    @SuppressWarnings({"unused"})
-    private final JCheckBoxMenuItem showOverflowModeItem = null;
-
-    @Deprecated(since = "2.7", forRemoval = true)
-    @SuppressWarnings({"unused"})
-    private final JCheckBoxMenuItem showIncompleteModeItem = null;
 
     private boolean showAllMode = false;
     private boolean showOverflowMode = false;
     private boolean showIncompleteMode = false;
     private int incompleteNum = 1;
     private Point currentSquare;
-    private final Image image;
-    private final JLabel locationLabel = new JLabel();
     private Map<String, List<Polygon>> polygons = new HashMap<>();
     private Map<String, Tuple<List<Point>, Boolean>> placements = new HashMap<>();
     private List<Point> currentPlacements;
@@ -164,10 +143,7 @@ public final class PlacementPicker extends ToolRunnableTask {
      * @param mapFolder The {@link Path} pointing to the map folder.
      */
     PlacementPickerFrame(final Path mapFolder) throws IOException {
-      super("Placement Picker");
-      setSize(800, 600);
-      setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-      setLocationRelativeTo(null);
+      super("Placement Picker", mapFolder);
       if (!placeDimensionsSet) {
         extractMapPropertiesFromFile(mapFolder);
       }
@@ -196,8 +172,9 @@ public final class PlacementPicker extends ToolRunnableTask {
           log.error("Failed to load polygons: {}", polygonsPath.toAbsolutePath());
           throw e;
         }
+      } else {
+        log.info("Polygons file not given. Will run regardless");
       }
-
       this.addKeyListener(
           new KeyAdapter() {
             @Override
@@ -208,47 +185,23 @@ public final class PlacementPicker extends ToolRunnableTask {
               }
             }
           });
-
-      image = FileHelper.newImage(mapFolder);
-      final JPanel imagePanel = newMainPanel();
-      /*
-       * Add a mouse listener to show X : Y coordinates in the lower left corner of the screen.
-       */
-      imagePanel.addMouseMotionListener(
-          new MouseMotionAdapter() {
-            @Override
-            public void mouseMoved(final MouseEvent e) {
-              locationLabel.setText("x: " + e.getX() + " y: " + e.getY());
-              currentSquare = new Point(e.getPoint());
-              repaint();
-            }
-          });
-      /*
-       * Add a mouse listener to monitor for right mouse button being clicked.
-       */
-      imagePanel.addMouseListener(
-          new MouseAdapter() {
-            @Override
-            public void mouseClicked(final MouseEvent e) {
-              mouseEvent(
-                  e.getPoint(),
-                  e.isControlDown() || e.isShiftDown(),
-                  SwingUtilities.isRightMouseButton(e));
-            }
-          });
-
-      // set up the image panel size dimensions ...etc
-      imagePanel.setMinimumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
-      imagePanel.setPreferredSize(new Dimension(image.getWidth(this), image.getHeight(this)));
-      imagePanel.setMaximumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
-      // set up the layout manager
-      this.getContentPane().setLayout(new BorderLayout());
-      this.getContentPane().add(new JScrollPane(imagePanel), BorderLayout.CENTER);
-      this.getContentPane().add(locationLabel, BorderLayout.SOUTH);
       initializeLayout();
     }
 
-    private void initializeLayout() {
+    @Override
+    protected void reactToMouseMoved(MouseEvent e) {
+      currentSquare = new Point(e.getPoint());
+      repaint();
+    }
+
+    @Override
+    protected void reactToMouseClicked(MouseEvent e) {
+      mouseEvent(
+          e.getPoint(), e.isControlDown() || e.isShiftDown(), SwingUtilities.isRightMouseButton(e));
+    }
+
+    @Override
+    protected void initializeLayout() {
       // set up the actions
       final Action openAction = SwingAction.of("Load Placements", e -> loadPlacements());
       openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Placement File");
@@ -336,14 +289,8 @@ public final class PlacementPicker extends ToolRunnableTask {
         return Optional.of(file);
       } else {
         log.info("Select the Polygons file");
-        final Path polyPath =
-            new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile();
-        if (polyPath != null) {
-          log.info("Polygons : {}", polyPath);
-        } else {
-          log.info("Polygons file not given. Will run regardless");
-        }
-        return Optional.ofNullable(polyPath);
+        return Optional.ofNullable(
+            new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile());
       }
     }
 
@@ -397,7 +344,7 @@ public final class PlacementPicker extends ToolRunnableTask {
           @NonNls final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
           @NonNls final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
           @NonNls final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
-          try (Scanner scanner = new Scanner(file, StandardCharsets.UTF_8.name())) {
+          try (Scanner scanner = new Scanner(file, StandardCharsets.UTF_8)) {
             while (scanner.hasNextLine()) {
               final String line = scanner.nextLine();
               if (line.contains(scaleProperty)) {
@@ -470,13 +417,13 @@ public final class PlacementPicker extends ToolRunnableTask {
     }
 
     /** Creates the main panel and returns a JPanel object. */
-    private JPanel newMainPanel() {
+    @Override
+    protected JPanel createMainPanel() {
       return new JPanel() {
         private static final long serialVersionUID = -3941975573431195136L;
 
         @Override
         public void paint(final Graphics g) {
-          // super.paint(g);
           g.drawImage(image, 0, 0, this);
           if (showAllMode) {
             g.setColor(Color.yellow);
@@ -492,7 +439,7 @@ public final class PlacementPicker extends ToolRunnableTask {
                 g.fillRect(item.x, item.y, placeWidth, placeHeight);
                 if (showOverflowMode && !pointIter.hasNext()) {
                   g.setColor(Color.gray);
-                  if (entry.getValue().getSecond()) {
+                  if (Boolean.TRUE.equals(entry.getValue().getSecond())) {
                     g.fillRect(item.x - placeWidth, item.y + placeHeight / 2, placeWidth, 4);
                   } else {
                     g.fillRect(item.x + placeWidth, item.y + placeHeight / 2, placeWidth, 4);
