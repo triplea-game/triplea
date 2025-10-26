@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -44,6 +46,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.FileUtils;
@@ -121,8 +124,6 @@ public final class DecorationPlacer extends ToolRunnableTask {
     }
     if (map != null) {
       final DecorationPlacerFrame frame = new DecorationPlacerFrame(map);
-      frame.setSize(800, 600);
-      frame.setLocationRelativeTo(null);
       frame.setVisible(true);
       JOptionPane.showMessageDialog(
           frame,
@@ -184,15 +185,19 @@ public final class DecorationPlacer extends ToolRunnableTask {
     private final Map<String, Point> centers;
     // hash map for polygon points
     private final Map<String, List<Polygon>> polygons;
-    private final JLabel locationLabel = new JLabel();
-    private Path currentImageFolderLocation = null;
+
+    @Deprecated(since = "2.7", forRemoval = true)
+    @SuppressWarnings({"unused"})
+    private final JLabel locationLabel = null;
+
+    private @Nullable Path currentImageFolderLocation = null;
     private Path currentImagePointsTextFile = null;
     private Point currentMousePoint = new Point(0, 0);
     private Triple<String, Image, Point> currentSelectedImage = null;
     private Map<String, Tuple<Image, List<Point>>> currentImagePoints = new HashMap<>();
     private boolean highlightAll;
     private boolean createNewImageOnRightClick = false;
-    private Image staticImageForPlacing = null;
+    private @Nullable Image staticImageForPlacing = null;
     private boolean showFromTopLeft = true;
     private ImagePointType imagePointType = ImagePointType.decorations;
     private boolean cheapMutex = false;
@@ -200,89 +205,38 @@ public final class DecorationPlacer extends ToolRunnableTask {
 
     DecorationPlacerFrame(final Path mapFolder) throws IOException {
       super("Decoration Placer");
-      setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      setSize(800, 600);
+      setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+      setLayout(new BorderLayout());
       setLocationRelativeTo(null);
       highlightAll = false;
-      final Path fileCenters =
-          FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "centers.txt");
-      if (Files.exists(fileCenters)
-          && JOptionPane.showConfirmDialog(
-                  new JPanel(),
-                  "A centers.txt file was found in the map's folder, do you want to use "
-                      + "the file to supply the territories centers?",
-                  "File Suggestion",
-                  JOptionPane.YES_NO_CANCEL_OPTION)
-              == 0) {
-        try {
-          log.info("Centers : {}", fileCenters);
-          centers = PointFileReaderWriter.readOneToOne(fileCenters);
-        } catch (final IOException e) {
-          log.error("Something wrong with Centers file");
-          throw e;
-        }
-      } else {
-        try {
-          log.info("Select the Centers file");
-          final Path centerPath =
-              new FileOpen("Select A Center File", mapFolderLocation, ".txt").getFile();
-          if (centerPath != null) {
-            log.info("Centers : {}", centerPath);
-            centers = PointFileReaderWriter.readOneToOne(centerPath);
-          } else {
-            log.info("You must specify a centers file.");
-            log.info("Shutting down.");
-            throw new IOException("no centers file specified");
-          }
-        } catch (final IOException e) {
-          log.error("Something wrong with Centers file");
-          throw e;
-        }
+      final Path centersFile = getCentersFile(mapFolder);
+      try {
+        log.info("Centers : {}", centersFile);
+        centers = PointFileReaderWriter.readOneToOne(centersFile);
+      } catch (final IOException e) {
+        log.error("Something wrong with Centers file", e);
+        throw e;
       }
-      final Path filePoly =
-          FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "polygons.txt");
-      if (Files.exists(filePoly)
-          && JOptionPane.showConfirmDialog(
-                  new JPanel(),
-                  "A polygons.txt file was found in the map's folder, "
-                      + "do you want to use the file to supply the territories polygons?",
-                  "File Suggestion",
-                  JOptionPane.YES_NO_CANCEL_OPTION)
-              == 0) {
-        try {
-          log.info("Polygons : {}", filePoly);
-          polygons = PointFileReaderWriter.readOneToManyPolygons(filePoly);
-        } catch (final IOException e) {
-          log.error("Something wrong with your Polygons file: {}", filePoly.toAbsolutePath());
-          throw e;
-        }
-      } else {
-        log.info("Select the Polygons file");
-        final Path polyPath =
-            new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile();
-        if (polyPath != null) {
-          log.info("Polygons : {}", polyPath);
-          try {
-            polygons = PointFileReaderWriter.readOneToManyPolygons(polyPath);
-          } catch (final IOException e) {
-            log.error("Something wrong with your Polygons file: {}", polyPath);
-            throw e;
-          }
-        } else {
-          log.info("You must specify a Polgyon file.");
-          log.info("Shutting down.");
-          throw new IOException("no polygons file specified");
-        }
+      final Path polygonsPath = getPolygonsPath(mapFolder);
+      try {
+        log.info("Polygons : {}", polygonsPath);
+        polygons = PointFileReaderWriter.readOneToManyPolygons(polygonsPath);
+      } catch (final IOException e) {
+        log.error("Something wrong with your Polygons file: {}", polygonsPath);
+        throw e;
       }
       image = FileHelper.newImage(mapFolder);
+      final JLabel locationLabelImagePanel = new JLabel();
       final JPanel imagePanel = newMainPanel();
       /*
-       * Add a mouse listener to show X : Y coordinates on the lower left corner of the screen.
+       * Add a mouse listener to show X : Y coordinates in the lower left corner of the screen.
        */
       imagePanel.addMouseMotionListener(
           new MouseMotionAdapter() {
             @Override
             public void mouseMoved(final MouseEvent e) {
-              locationLabel.setText(
+              locationLabelImagePanel.setText(
                   (currentSelectedImage == null ? "" : currentSelectedImage.getFirst())
                       + "    x:"
                       + e.getX()
@@ -292,7 +246,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
               repaint();
             }
           });
-      locationLabel.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, 16));
+      locationLabelImagePanel.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, 16));
       /*
        * Add a mouse listener to monitor for right mouse button being clicked.
        */
@@ -309,9 +263,12 @@ public final class DecorationPlacer extends ToolRunnableTask {
       imagePanel.setPreferredSize(new Dimension(image.getWidth(this), image.getHeight(this)));
       imagePanel.setMaximumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
       // set up the layout manager
-      this.getContentPane().setLayout(new BorderLayout());
       this.getContentPane().add(new JScrollPane(imagePanel), BorderLayout.CENTER);
-      this.getContentPane().add(locationLabel, BorderLayout.SOUTH);
+      this.getContentPane().add(locationLabelImagePanel, BorderLayout.SOUTH);
+      initializeLayout();
+    }
+
+    private void initializeLayout() {
       // set up the actions
       final Action openAction = SwingAction.of("Load Image Locations", e -> loadImagesAndPoints());
       openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Image Points File");
@@ -337,6 +294,11 @@ public final class DecorationPlacer extends ToolRunnableTask {
                 dispose();
               });
       exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
+      setupMenuBar(openAction, saveAction, exitAction, keepGoingAction);
+    }
+
+    private void setupMenuBar(
+        Action openAction, Action saveAction, Action exitAction, Action keepGoingAction) {
       // set up the menu items
       final JMenuItem openItem = new JMenuItem(openAction);
       openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
@@ -376,6 +338,64 @@ public final class DecorationPlacer extends ToolRunnableTask {
       editMenu.add(clearAction);
       menuBar.add(fileMenu);
       menuBar.add(editMenu);
+    }
+
+    @Nonnull
+    private Path getPolygonsPath(Path mapFolder) throws IOException {
+      final Path polygonsPath;
+      final Path filePoly =
+          FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "polygons.txt");
+      if (Files.exists(filePoly)
+          && JOptionPane.showConfirmDialog(
+                  new JPanel(),
+                  "A polygons.txt file was found in the map's folder, "
+                      + "do you want to use the file to supply the territories polygons?",
+                  "File Suggestion",
+                  JOptionPane.YES_NO_CANCEL_OPTION)
+              == 0) {
+        polygonsPath = filePoly;
+      } else {
+        log.info("Select the Polygons file");
+        final Path polyPath =
+            new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile();
+        if (polyPath != null) {
+          polygonsPath = polyPath;
+        } else {
+          log.info("You must specify a Polgyon file.");
+          log.info("Shutting down.");
+          throw new IOException("no polygons file specified");
+        }
+      }
+      return polygonsPath;
+    }
+
+    @Nonnull
+    private Path getCentersFile(Path mapFolder) throws IOException {
+      Path centersFile;
+      final Path fileCenters =
+          FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "centers.txt");
+      if (Files.exists(fileCenters)
+          && JOptionPane.showConfirmDialog(
+                  new JPanel(),
+                  "A centers.txt file was found in the map's folder, do you want to use "
+                      + "the file to supply the territories centers?",
+                  "File Suggestion",
+                  JOptionPane.YES_NO_CANCEL_OPTION)
+              == 0) {
+        centersFile = fileCenters;
+      } else {
+        log.info("Select the Centers file");
+        final Path centerPath =
+            new FileOpen("Select A Center File", mapFolderLocation, ".txt").getFile();
+        if (centerPath != null) {
+          centersFile = centerPath;
+        } else {
+          log.info("You must specify a centers file.");
+          log.info("Shutting down.");
+          throw new IOException("no centers file specified");
+        }
+      }
+      return centersFile;
     }
 
     private JPanel newMainPanel() {
