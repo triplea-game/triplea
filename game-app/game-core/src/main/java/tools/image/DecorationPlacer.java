@@ -518,7 +518,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
       showFromTopLeft =
           JOptionPane.showOptionDialog(
                   this,
-              """
+                  """
                   Are the images shown from the top left, or from the bottom left point? \r
                   All images are shown from the top left, except for 'name_place.txt', \
                   'pu_place.txt', and 'comments.txt'. \r
@@ -600,7 +600,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
         fillCurrentImagePointsBasedOnTextFile(
             JOptionPane.showOptionDialog(
                     this,
-                """
+                    """
                     Are you going to do a point for every single territory (pu_place.txt) \r
                     Or are you going to do just a few territories (capitols.txt, \
                     convoy.txt, vc.txt, etc, most others)?\r
@@ -1052,16 +1052,16 @@ public final class DecorationPlacer extends ToolRunnableTask {
 
     static ImagePointType[] getTypes() {
       return new ImagePointType[] {
-          DECORATIONS,
-          NAME_PLACE,
-          PU_PLACE,
-          CAPITOLS,
-          VICTORY_CITIES,
-          BLOCKADE,
-          CONVOY,
-          COMMENTS,
-          KAMIKAZE_PLACE,
-          TERRITORY_EFFECTS
+        DECORATIONS,
+        NAME_PLACE,
+        PU_PLACE,
+        CAPITOLS,
+        VICTORY_CITIES,
+        BLOCKADE,
+        CONVOY,
+        COMMENTS,
+        KAMIKAZE_PLACE,
+        TERRITORY_EFFECTS
       };
     }
   }
