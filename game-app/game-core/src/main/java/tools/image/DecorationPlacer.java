@@ -61,7 +61,7 @@ import tools.util.ToolsUtil;
  * creating. <br>
  * <br>
  * There are basically 2 different kinds of image point files, and with each of those are 2
- * different sub-types. <br>
+ * different subtypes. <br>
  * The 1st type is a folder full of many different images, that after being placed on the map will
  * never be changed. <br>
  * Examples of this are the decorations.txt file [misc folder] and the name_place.txt file
@@ -79,7 +79,7 @@ import tools.util.ToolsUtil;
  * different name, <br>
  * and is chosen by the engine based on the game data. For things like the pu_place you may want the
  * decoration placer <br>
- * to generate placements for all territories, while others like capitols are more rare and you may
+ * to generate placements for all territories, while others like capitols are rarer, and you may
  * want to individually <br>
  * select which territories you need a placement point for. <br>
  * <br>
@@ -90,7 +90,7 @@ import tools.util.ToolsUtil;
  * <br>
  * Any images that this program cannot find the point for, will start in the upper left corner of
  * the map, <br>
- * and you may click on them to move them to their appropriate place." <br>
+ * and you may click on them to move them to their appropriate place. <br>
  * <br>
  * Do not forget to save the points when finished. To save and continue with another set of images,
  * choose the <br>
@@ -186,7 +186,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
     private boolean createNewImageOnRightClick = false;
     private @Nullable Image staticImageForPlacing = null;
     private boolean showFromTopLeft = true;
-    private ImagePointType imagePointType = ImagePointType.decorations;
+    private ImagePointType imagePointType = ImagePointType.DECORATIONS;
     private boolean cheapMutex = false;
     private boolean showPointNames = false;
 
@@ -327,7 +327,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
         if (polyPath != null) {
           polygonsPath = polyPath;
         } else {
-          log.info("You must specify a Polgyon file.");
+          log.info("You must specify a Polygon file.");
           log.info("Shutting down.");
           throw new IOException("no polygons file specified");
         }
@@ -518,15 +518,16 @@ public final class DecorationPlacer extends ToolRunnableTask {
       showFromTopLeft =
           JOptionPane.showOptionDialog(
                   this,
-                  "Are the images shown from the top left, or from the bottom left point? \r\n"
-                      + "All images are shown from the top left, except for 'name_place.txt', "
-                      + "'pu_place.txt', and 'comments.txt'. \r\n"
-                      + "For these 3 files, whether they are top left or bottom left is determined "
-                      + "by the \r\n"
-                      + "'map.properties' property: 'map.drawNamesFromTopLeft', which defaults to "
-                      + "false if not specified [meaning bottom left]. \r\n"
-                      + "Do NOT change this from whatever the default has choosen, unless you know "
-                      + "exactly what you are doing!",
+              """
+                  Are the images shown from the top left, or from the bottom left point? \r
+                  All images are shown from the top left, except for 'name_place.txt', \
+                  'pu_place.txt', and 'comments.txt'. \r
+                  For these 3 files, whether they are top left or bottom left is determined \
+                  by the \r
+                  'map.properties' property: 'map.drawNamesFromTopLeft', which defaults to \
+                  false if not specified [meaning bottom left]. \r
+                  Do NOT change this from whatever the default has chosen, unless you know \
+                  exactly what you are doing!""",
                   "Show images from top left or bottom left point?",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.QUESTION_MESSAGE,
@@ -599,11 +600,12 @@ public final class DecorationPlacer extends ToolRunnableTask {
         fillCurrentImagePointsBasedOnTextFile(
             JOptionPane.showOptionDialog(
                     this,
-                    "Are you going to do a point for every single territory (pu_place.txt) \r\n"
-                        + "Or are you going to do just a few territories (capitols.txt, "
-                        + "convoy.txt, vc.txt, etc, most others)?\r\n"
-                        + "(If you choose the later option, you must Right Click on a territory "
-                        + "to create an image for that territory.)",
+                """
+                    Are you going to do a point for every single territory (pu_place.txt) \r
+                    Or are you going to do just a few territories (capitols.txt, \
+                    convoy.txt, vc.txt, etc, most others)?\r
+                    (If you choose the later option, you must Right Click on a territory \
+                    to create an image for that territory.)""",
                     "Fill in all territories OR let you select them?",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
@@ -684,9 +686,9 @@ public final class DecorationPlacer extends ToolRunnableTask {
       final int width = staticImageForPlacing.getWidth(null);
       final int height = staticImageForPlacing.getHeight(null);
       final int addY =
-          (imagePointType == ImagePointType.comments
+          (imagePointType == ImagePointType.COMMENTS
               ? -ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS
-              : (imagePointType == ImagePointType.pu_place
+              : (imagePointType == ImagePointType.PU_PLACE
                   ? ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS
                   : 0));
       if (fillInAllTerritories) {
@@ -710,16 +712,15 @@ public final class DecorationPlacer extends ToolRunnableTask {
           currentImagePoints.put(entry.getKey(), Tuple.of(staticImageForPlacing, entry.getValue()));
         }
       }
-      // !fillInAllTerritories;
       createNewImageOnRightClick = true;
     }
 
     private void fillCurrentImagePointsBasedOnImageFolder(
         final boolean pointsAreExactlyTerritoryNames) {
       final int addY =
-          (imagePointType == ImagePointType.comments
+          (imagePointType == ImagePointType.COMMENTS
               ? -ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS
-              : (imagePointType == ImagePointType.pu_place
+              : (imagePointType == ImagePointType.PU_PLACE
                   ? ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS
                   : 0));
       final List<String> allTerritories = new ArrayList<>(centers.keySet());
@@ -759,7 +760,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
             (pointsAreExactlyTerritoryNames ? possibleTerritoryName : imageName),
             Tuple.of(territoryImage, points));
       }
-      if (!allTerritories.isEmpty() && imagePointType == ImagePointType.name_place) {
+      if (!allTerritories.isEmpty() && imagePointType == ImagePointType.NAME_PLACE) {
         JOptionPane.showMessageDialog(
             this, new JLabel("Territory images not found in folder: " + allTerritories));
         log.info("Territory images not found in folder: {}", allTerritories);
@@ -771,7 +772,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
         return;
       }
       if (!rightMouse && !ctrlDown && currentSelectedImage == null) {
-        // find whatever image we are left clicking on
+        // find whatever image we are left-clicking on
         Point testPoint = null;
         for (final Entry<String, Tuple<Image, List<Point>>> entry : currentImagePoints.entrySet()) {
           for (final Point p : entry.getValue().getSecond()) {
@@ -853,7 +854,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
 
   @Getter
   enum ImagePointType {
-    decorations(
+    DECORATIONS(
         "decorations.txt",
         "misc",
         "decorationExample.png",
@@ -868,7 +869,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
             + "Right click = create a copy of currently selected image OR closest image <br>"
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-    name_place(
+    NAME_PLACE(
         "name_place.txt",
         "territoryNames",
         "territoryName.png",
@@ -884,7 +885,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
             + "Right click = nothing <br>"
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-    pu_place(
+    PU_PLACE(
         "pu_place.txt",
         "PUs",
         "2.png",
@@ -900,7 +901,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
             + "Right click = create an image and point for this territory if none exists yet <br>"
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-    capitols(
+    CAPITOLS(
         "capitols.txt",
         "flags",
         "Neutral_large.png",
@@ -916,7 +917,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
             + "Right click = create an image and point for this territory if none exists yet <br>"
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-    vc(
+    VICTORY_CITIES(
         "vc.txt",
         "misc",
         "vc.png",
@@ -932,7 +933,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
             + "Right click = create an image and point for this territory if none exists yet <br>"
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-    blockade(
+    BLOCKADE(
         "blockade.txt",
         "misc",
         "blockade.png",
@@ -948,7 +949,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
             + "Right click = create an image and point for this territory if none exists yet <br>"
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-    convoy(
+    CONVOY(
         "convoy.txt",
         "flags",
         "Neutral.png",
@@ -964,7 +965,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
             + "Right click = create an image and point for this territory if none exists yet <br>"
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-    comments(
+    COMMENTS(
         "comments.txt",
         "misc",
         "exampleConvoyText.png",
@@ -980,7 +981,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
             + "Right click = create an image and point for this territory if none exists yet <br>"
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-    kamikaze_place(
+    KAMIKAZE_PLACE(
         "kamikaze_place.txt",
         "flags",
         "Neutral_fade.png",
@@ -996,7 +997,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
             + "Right click = create an image and point for this territory if none exists yet <br>"
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-    territory_effects(
+    TERRITORY_EFFECTS(
         "territory_effects.txt",
         "territoryEffects",
         "mountain_large.png",
@@ -1051,16 +1052,16 @@ public final class DecorationPlacer extends ToolRunnableTask {
 
     static ImagePointType[] getTypes() {
       return new ImagePointType[] {
-        decorations,
-        name_place,
-        pu_place,
-        capitols,
-        vc,
-        blockade,
-        convoy,
-        comments,
-        kamikaze_place,
-        territory_effects
+          DECORATIONS,
+          NAME_PLACE,
+          PU_PLACE,
+          CAPITOLS,
+          VICTORY_CITIES,
+          BLOCKADE,
+          CONVOY,
+          COMMENTS,
+          KAMIKAZE_PLACE,
+          TERRITORY_EFFECTS
       };
     }
   }
