@@ -8,7 +8,6 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -127,13 +126,8 @@ public final class CenterPicker extends ToolRunnableTask {
     }
 
     @Override
-    protected MouseAdapter getMouseClickedAdapter() {
-      return new MouseAdapter() {
-        @Override
-        public void mouseClicked(final MouseEvent e) {
-          mouseEvent(e.getPoint(), SwingUtilities.isRightMouseButton(e));
-        }
-      };
+    protected void reactToMouseClicked(MouseEvent e) {
+      mouseEvent(e.getPoint(), SwingUtilities.isRightMouseButton(e));
     }
 
     @Override

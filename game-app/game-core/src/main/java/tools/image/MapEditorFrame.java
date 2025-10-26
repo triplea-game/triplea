@@ -36,7 +36,7 @@ abstract class MapEditorFrame extends JFrame {
 
     JLabel locationLabel = new JLabel();
     locationLabel.setFont(getLocationLabelFont(locationLabel.getFont()));
-    imagePanel = createImagePanel(locationLabel, getMouseClickedAdapter());
+    imagePanel = createImagePanel(locationLabel);
 
     Container contentPane = this.getContentPane();
     contentPane.add(new JScrollPane(imagePanel), BorderLayout.CENTER);
@@ -53,7 +53,7 @@ abstract class MapEditorFrame extends JFrame {
     return defaultFont;
   }
 
-  protected JPanel createImagePanel(JLabel locationLabel, MouseAdapter mouseClickedAdapter) {
+  protected JPanel createImagePanel(JLabel locationLabel) {
     final JPanel newImagePanel = createMainPanel();
     newImagePanel
         .addMouseMotionListener( // to show X : Y coordinates on the lower left corner of the
@@ -66,7 +66,13 @@ abstract class MapEditorFrame extends JFrame {
                 reactToMouseMoved(e);
               }
             });
-    newImagePanel.addMouseListener(mouseClickedAdapter);
+    newImagePanel.addMouseListener(
+        new MouseAdapter() {
+          @Override
+          public void mouseClicked(final MouseEvent e) {
+            reactToMouseClicked(e);
+          }
+        });
     // set up the image panel size dimensions ...etc
     final Dimension imageDimension = new Dimension(image.getWidth(this), image.getHeight(this));
     newImagePanel.setMinimumSize(imageDimension);
@@ -86,7 +92,7 @@ abstract class MapEditorFrame extends JFrame {
   /** Creates the main panel and returns a JPanel object. */
   protected abstract JPanel createMainPanel();
 
-  protected abstract MouseAdapter getMouseClickedAdapter();
+  protected abstract void reactToMouseClicked(MouseEvent e);
 
   protected abstract void initializeLayout();
 }

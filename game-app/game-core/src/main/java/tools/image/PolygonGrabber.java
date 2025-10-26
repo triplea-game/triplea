@@ -8,7 +8,6 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -234,16 +233,9 @@ public final class PolygonGrabber extends ToolRunnableTask {
     }
 
     @Override
-    protected MouseAdapter getMouseClickedAdapter() {
-      return new MouseAdapter() {
-        @Override
-        public void mouseClicked(final MouseEvent e) {
-          mouseEvent(
-              e.getPoint(),
-              e.isControlDown() || e.isShiftDown(),
-              SwingUtilities.isRightMouseButton(e));
-        }
-      };
+    protected void reactToMouseClicked(MouseEvent e) {
+      mouseEvent(
+          e.getPoint(), e.isControlDown() || e.isShiftDown(), SwingUtilities.isRightMouseButton(e));
     }
 
     private void detectPolygonsFromCenters(BufferedImage imageCopy, Graphics g) {
