@@ -3,9 +3,7 @@ package tools.image;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.MapImage;
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -15,7 +13,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -35,7 +32,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -43,10 +39,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.FileUtils;
@@ -174,22 +168,16 @@ public final class DecorationPlacer extends ToolRunnableTask {
     }
   }
 
-  private final class DecorationPlacerFrame extends JFrame {
+  private final class DecorationPlacerFrame extends MapEditorFrame {
     private static final long serialVersionUID = 6385408390173085656L;
 
     // The map image will be stored here
-    private Image image;
     // hash map for image points
     private Map<String, List<Point>> currentPoints = new HashMap<>();
     // hash map for center points
     private final Map<String, Point> centers;
     // hash map for polygon points
     private final Map<String, List<Polygon>> polygons;
-
-    @Deprecated(since = "2.7", forRemoval = true)
-    @SuppressWarnings({"unused"})
-    private final JLabel locationLabel = null;
-
     private @Nullable Path currentImageFolderLocation = null;
     private Path currentImagePointsTextFile = null;
     private Point currentMousePoint = new Point(0, 0);
@@ -204,11 +192,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
     private boolean showPointNames = false;
 
     DecorationPlacerFrame(final Path mapFolder) throws IOException {
-      super("Decoration Placer");
-      setSize(800, 600);
-      setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-      setLayout(new BorderLayout());
-      setLocationRelativeTo(null);
+      super("Decoration Placer", mapFolder);
       highlightAll = false;
       final Path centersFile = getCentersFile(mapFolder);
       try {
@@ -226,49 +210,37 @@ public final class DecorationPlacer extends ToolRunnableTask {
         log.error("Something wrong with your Polygons file: {}", polygonsPath);
         throw e;
       }
-      image = FileHelper.newImage(mapFolder);
-      final JLabel locationLabelImagePanel = new JLabel();
-      final JPanel imagePanel = newMainPanel();
-      /*
-       * Add a mouse listener to show X : Y coordinates in the lower left corner of the screen.
-       */
-      imagePanel.addMouseMotionListener(
-          new MouseMotionAdapter() {
-            @Override
-            public void mouseMoved(final MouseEvent e) {
-              locationLabelImagePanel.setText(
-                  (currentSelectedImage == null ? "" : currentSelectedImage.getFirst())
-                      + "    x:"
-                      + e.getX()
-                      + " y:"
-                      + e.getY());
-              currentMousePoint = new Point(e.getPoint());
-              repaint();
-            }
-          });
-      locationLabelImagePanel.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, 16));
-      /*
-       * Add a mouse listener to monitor for right mouse button being clicked.
-       */
-      imagePanel.addMouseListener(
-          new MouseAdapter() {
-            @Override
-            public void mouseClicked(final MouseEvent e) {
-              mouseEvent(
-                  e.isControlDown() || e.isShiftDown(), SwingUtilities.isRightMouseButton(e));
-            }
-          });
-      // set up the image panel size dimensions ...etc
-      imagePanel.setMinimumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
-      imagePanel.setPreferredSize(new Dimension(image.getWidth(this), image.getHeight(this)));
-      imagePanel.setMaximumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
-      // set up the layout manager
-      this.getContentPane().add(new JScrollPane(imagePanel), BorderLayout.CENTER);
-      this.getContentPane().add(locationLabelImagePanel, BorderLayout.SOUTH);
       initializeLayout();
     }
 
-    private void initializeLayout() {
+    @Override
+    protected Font getLocationLabelFont(Font defaultFont) {
+      return new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, 16);
+    }
+
+    @Override
+    protected String getLocationLabelPrefix() {
+      return (currentSelectedImage == null ? "" : currentSelectedImage.getFirst()) + "    ";
+    }
+
+    @Override
+    protected void reactToMouseMoved(MouseEvent e) {
+      currentMousePoint = new Point(e.getPoint());
+      repaint();
+    }
+
+    @Override
+    protected MouseAdapter getMouseClickedAdapter() {
+      return new MouseAdapter() {
+        @Override
+        public void mouseClicked(final MouseEvent e) {
+          mouseEvent(e.isControlDown() || e.isShiftDown(), SwingUtilities.isRightMouseButton(e));
+        }
+      };
+    }
+
+    @Override
+    protected void initializeLayout() {
       // set up the actions
       final Action openAction = SwingAction.of("Load Image Locations", e -> loadImagesAndPoints());
       openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Image Points File");
@@ -398,7 +370,8 @@ public final class DecorationPlacer extends ToolRunnableTask {
       return centersFile;
     }
 
-    private JPanel newMainPanel() {
+    @Override
+    protected JPanel createMainPanel() {
       return new JPanel() {
         private static final long serialVersionUID = -7130828419508975924L;
 

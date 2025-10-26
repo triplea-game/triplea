@@ -3,6 +3,7 @@ package tools.image;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -15,7 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 
 abstract class MapEditorFrame extends JFrame {
-  protected final Image image;
+  protected Image image;
   protected final JPanel imagePanel;
 
   /**
@@ -34,6 +35,7 @@ abstract class MapEditorFrame extends JFrame {
     this.image = loadImage(mapFolder);
 
     JLabel locationLabel = new JLabel();
+    locationLabel.setFont(getLocationLabelFont(locationLabel.getFont()));
     imagePanel = createImagePanel(locationLabel, getMouseClickedAdapter());
 
     Container contentPane = this.getContentPane();
@@ -47,6 +49,10 @@ abstract class MapEditorFrame extends JFrame {
     return FileHelper.newImage(mapFolder);
   }
 
+  protected Font getLocationLabelFont(Font defaultFont) {
+    return defaultFont;
+  }
+
   protected JPanel createImagePanel(JLabel locationLabel, MouseAdapter mouseClickedAdapter) {
     final JPanel newImagePanel = createMainPanel();
     newImagePanel
@@ -55,7 +61,9 @@ abstract class MapEditorFrame extends JFrame {
             new MouseMotionAdapter() {
               @Override
               public void mouseMoved(final MouseEvent e) {
-                locationLabel.setText("x: " + e.getX() + " y: " + e.getY());
+                locationLabel.setText(
+                    getLocationLabelPrefix() + "x: " + e.getX() + " y: " + e.getY());
+                reactToMouseMoved(e);
               }
             });
     newImagePanel.addMouseListener(mouseClickedAdapter);
@@ -65,6 +73,14 @@ abstract class MapEditorFrame extends JFrame {
     newImagePanel.setPreferredSize(imageDimension);
     newImagePanel.setMaximumSize(imageDimension);
     return newImagePanel;
+  }
+
+  protected String getLocationLabelPrefix() {
+    return "";
+  }
+
+  protected void reactToMouseMoved(MouseEvent e) {
+    // intentionally empty: subclasses may override
   }
 
   /** Creates the main panel and returns a JPanel object. */
