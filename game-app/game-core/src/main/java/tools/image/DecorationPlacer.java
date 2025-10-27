@@ -47,8 +47,7 @@ import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
 import org.triplea.util.Triple;
 import org.triplea.util.Tuple;
-import tools.util.ToolArguments;
-import tools.util.ToolRunnableTask;
+import tools.util.MapEditorRunnableTask;
 import tools.util.ToolsUtil;
 
 /**
@@ -98,7 +97,7 @@ import tools.util.ToolsUtil;
  * 'Load Image Points'.
  */
 @Slf4j
-public final class DecorationPlacer extends ToolRunnableTask {
+public final class DecorationPlacer extends MapEditorRunnableTask {
 
   private DecorationPlacer() {}
 
@@ -107,63 +106,55 @@ public final class DecorationPlacer extends ToolRunnableTask {
   }
 
   @Override
-  protected void runInternal() throws IOException {
-    log.info("Select the map");
-    final Path mapFolderLocation = ToolArguments.getPropertyMapFolderPath().orElse(null);
-    final Path map = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png").getFile();
-    if (map != null) {
-      final DecorationPlacerFrame frame = new DecorationPlacerFrame(map);
-      frame.setVisible(true);
-      JOptionPane.showMessageDialog(
-          frame,
-          new JLabel(
-              "<html>"
-                  + "This is the DecorationPlacer, it will create a text file for you containing "
-                  + "the points to place images at. "
-                  + "<br><br>In order to begin this, you must already have the map file, as well "
-                  + "as the centers.txt and polygons.txt finished. "
-                  + "<br>To start, load you map image. Then you will be asked which kind of Image "
-                  + "Point File you are creating. "
-                  + "<br><br>There are basically 2 different kinds of image point files, and with "
-                  + "each of those are 2 different sub-types. "
-                  + "<br>The 1st type is a folder full of many different images, that after being "
-                  + "placed on the map will never be changed. "
-                  + "<br>Examples of this are the decorations.txt file [misc folder] and the "
-                  + "name_place.txt file [territoryNames folder]. "
-                  + "<br>In these files the 'point' string directly corresponds to exact name of "
-                  + "an image file in the folder, with the only "
-                  + "<br>exception being whether the point string needs the .png extension or "
-                  + "not (decorations do, name_place does not). "
-                  + "<br><br>The 2nd type is single image, or small set of images, where the "
-                  + "chosen image is determined by something in the xml file. "
-                  + "<br>Examples of this are the pu_place.txt file [PUs folder] and the "
-                  + "capitols.txt file [flags folder]. "
-                  + "<br>In these files, the 'point' string is the exact name of a territory, "
-                  + "while the image file has a different name, "
-                  + "<br>and is chosen by the engine based on the game data.  For things like the "
-                  + "pu_place you may want the decoration placer "
-                  + "<br>to generate placements for all territories, while others like capitols "
-                  + "are more rare and you may want to individually "
-                  + "<br>select which territories you need a placement point for."
-                  + "<br><br>After selecting the point file type you want to make, the program "
-                  + "will choose the default selections for you, "
-                  + "<br>but it will still confirm with you by asking you the questions. Just hit "
-                  + "'enter' a lot if you do not know the answers. "
-                  + "<br><br>Any images that this program cannot find the point for, will start "
-                  + "in the upper left corner of the map, "
-                  + "<br>and you may click on them to move them to their appropriate place."
-                  + "<br><br>Do not forget to save the points when finished. To save and continue "
-                  + "with another set of images, choose the "
-                  + "<br>option to 'Save Current And Keep On Map And Load New'.  To reset all "
-                  + "currently image points, use 'Load Image Points'."
-                  + "</html>"));
-      frame.loadImagesAndPoints();
-    } else {
-      log.info("No Image Map Selected. Shutting down.");
-    }
+  public MapEditorFrame getFrame(Path mapPath) throws IOException {
+    return new DecorationPlacerFrame(mapPath);
   }
 
-  private final class DecorationPlacerFrame extends MapEditorFrame {
+  @Override
+  public String getWelcomeMessage() {
+    return "<html>"
+        + "This is the DecorationPlacer, it will create a text file for you containing "
+        + "the points to place images at. "
+        + "<br><br>In order to begin this, you must already have the map file, as well "
+        + "as the centers.txt and polygons.txt finished. "
+        + "<br>To start, load you map image. Then you will be asked which kind of Image "
+        + "Point File you are creating. "
+        + "<br><br>There are basically 2 different kinds of image point files, and with "
+        + "each of those are 2 different sub-types. "
+        + "<br>The 1st type is a folder full of many different images, that after being "
+        + "placed on the map will never be changed. "
+        + "<br>Examples of this are the decorations.txt file [misc folder] and the "
+        + "name_place.txt file [territoryNames folder]. "
+        + "<br>In these files the 'point' string directly corresponds to exact name of "
+        + "an image file in the folder, with the only "
+        + "<br>exception being whether the point string needs the .png extension or "
+        + "not (decorations do, name_place does not). "
+        + "<br><br>The 2nd type is single image, or small set of images, where the "
+        + "chosen image is determined by something in the xml file. "
+        + "<br>Examples of this are the pu_place.txt file [PUs folder] and the "
+        + "capitols.txt file [flags folder]. "
+        + "<br>In these files, the 'point' string is the exact name of a territory, "
+        + "while the image file has a different name, "
+        + "<br>and is chosen by the engine based on the game data.  For things like the "
+        + "pu_place you may want the decoration placer "
+        + "<br>to generate placements for all territories, while others like capitols "
+        + "are more rare and you may want to individually "
+        + "<br>select which territories you need a placement point for."
+        + "<br><br>After selecting the point file type you want to make, the program "
+        + "will choose the default selections for you, "
+        + "<br>but it will still confirm with you by asking you the questions. Just hit "
+        + "'enter' a lot if you do not know the answers. "
+        + "<br><br>Any images that this program cannot find the point for, will start "
+        + "in the upper left corner of the map, "
+        + "<br>and you may click on them to move them to their appropriate place."
+        + "<br><br>Do not forget to save the points when finished. To save and continue "
+        + "with another set of images, choose the "
+        + "<br>option to 'Save Current And Keep On Map And Load New'.  To reset all "
+        + "currently image points, use 'Load Image Points'."
+        + "</html>";
+  }
+
+  private static final class DecorationPlacerFrame extends MapEditorFrame {
     private static final long serialVersionUID = 6385408390173085656L;
 
     // The map image will be stored here
@@ -206,6 +197,7 @@ public final class DecorationPlacer extends ToolRunnableTask {
         throw e;
       }
       initializeLayout();
+      loadImagesAndPoints();
     }
 
     @Override
