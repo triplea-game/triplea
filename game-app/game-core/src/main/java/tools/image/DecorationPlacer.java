@@ -99,7 +99,6 @@ import tools.util.ToolsUtil;
  */
 @Slf4j
 public final class DecorationPlacer extends ToolRunnableTask {
-  private Path mapFolderLocation = null;
 
   private DecorationPlacer() {}
 
@@ -109,12 +108,9 @@ public final class DecorationPlacer extends ToolRunnableTask {
 
   @Override
   protected void runInternal() throws IOException {
-    ToolArguments.ifMapFolder(mapFolderProperty -> mapFolderLocation = mapFolderProperty);
-    final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
-    final Path map = mapSelection.getFile();
-    if (mapFolderLocation == null && mapSelection.getFile() != null) {
-      mapFolderLocation = mapSelection.getFile().getParent();
-    }
+    log.info("Select the map");
+    final Path mapFolderLocation = ToolArguments.getPropertyMapFolderPath().orElse(null);
+    final Path map = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png").getFile();
     if (map != null) {
       final DecorationPlacerFrame frame = new DecorationPlacerFrame(map);
       frame.setVisible(true);

@@ -42,7 +42,6 @@ import tools.util.ToolsUtil;
  */
 @Slf4j
 public final class CenterPicker extends ToolRunnableTask {
-  private Path mapFolderLocation = null;
 
   private CenterPicker() {}
 
@@ -52,13 +51,9 @@ public final class CenterPicker extends ToolRunnableTask {
 
   @Override
   protected void runInternal() throws IOException {
-    ToolArguments.ifMapFolder(mapFolderProperty -> mapFolderLocation = mapFolderProperty);
     log.info("Select the map");
-    final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
-    final Path map = mapSelection.getFile();
-    if (mapFolderLocation == null && mapSelection.getFile() != null) {
-      mapFolderLocation = mapSelection.getFile().getParent();
-    }
+    final Path mapFolderLocation = ToolArguments.getPropertyMapFolderPath().orElse(null);
+    final Path map = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png").getFile();
     if (map != null) {
       log.info("Map : {}", map);
       final CenterPickerFrame frame = new CenterPickerFrame(map);
