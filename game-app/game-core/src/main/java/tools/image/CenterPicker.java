@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nullable;
 import javax.swing.Action;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -29,8 +28,7 @@ import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
-import tools.util.ToolArguments;
-import tools.util.ToolRunnableTask;
+import tools.util.MapEditorRunnableTask;
 import tools.util.ToolsUtil;
 
 /**
@@ -41,7 +39,7 @@ import tools.util.ToolsUtil;
  * It will generate a {@code centers.txt} file containing the territory center locations.
  */
 @Slf4j
-public final class CenterPicker extends ToolRunnableTask {
+public final class CenterPicker extends MapEditorRunnableTask {
 
   private CenterPicker() {}
 
@@ -50,39 +48,32 @@ public final class CenterPicker extends ToolRunnableTask {
   }
 
   @Override
-  protected void runInternal() throws IOException {
-    log.info("Select the map");
-    final Path mapFolderLocation = ToolArguments.getPropertyMapFolderPath().orElse(null);
-    final Path map = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png").getFile();
-    if (map != null) {
-      log.info("Map : {}", map);
-      final CenterPickerFrame frame = new CenterPickerFrame(map);
-      frame.setVisible(true);
-      JOptionPane.showMessageDialog(
-          frame,
-          new JLabel(
-              "<html>"
-                  + "This is the CenterPicker, it will create a centers.txt file for you. "
-                  + "<br>Please click on the center of every single territory and sea zone on your "
-                  + "map, and give each a name. "
-                  + "<br>The point you clicked on will tell TripleA where to put things like any "
-                  + "flags, text, unit placements, etc, "
-                  + "<br>so be sure to click in the exact middle, or slight up and left of the "
-                  + "middle, of each territory "
-                  + "<br>(but still within the territory borders)."
-                  + "<br>Do not use special or illegal characters in territory names."
-                  + "<br><br>You can also load an existing centers.txt file, then make "
-                  + "modifications to it, then save it again."
-                  + "<br><br>LEFT CLICK = create a new center point for a territory/zone."
-                  + "<br><br>RIGHT CLICK on an existing center = delete that center point."
-                  + "<br><br>When finished, save the centers and exit."
-                  + "</html>"));
-    } else {
-      log.info("No Image Map Selected. Shutting down.");
-    }
+  public MapEditorFrame getFrame(Path mapPath) throws IOException {
+    return new CenterPickerFrame(mapPath);
   }
 
-  private final class CenterPickerFrame extends MapEditorFrame {
+  @Override
+  public String getWelcomeMessage() {
+    return """
+        <html>\
+        This is the CenterPicker, it will create a centers.txt file for you. \
+        <br>Please click on the center of every single territory and sea zone on your \
+        map, and give each a name. \
+        <br>The point you clicked on will tell TripleA where to put things like any \
+        flags, text, unit placements, etc, \
+        <br>so be sure to click in the exact middle, or slight up and left of the \
+        middle, of each territory \
+        <br>(but still within the territory borders).\
+        <br>Do not use special or illegal characters in territory names.\
+        <br><br>You can also load an existing centers.txt file, then make \
+        modifications to it, then save it again.\
+        <br><br>LEFT CLICK = create a new center point for a territory/zone.\
+        <br><br>RIGHT CLICK on an existing center = delete that center point.\
+        <br><br>When finished, save the centers and exit.\
+        </html>""";
+  }
+
+  private static final class CenterPickerFrame extends MapEditorFrame {
     private static final long serialVersionUID = -5633998810385136625L;
 
     // hash map for center points
