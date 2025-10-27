@@ -38,7 +38,7 @@ load several maps to verify that map XML 'attachments' can be mapped to game cod
 problems.
 
 # Submitting a PR and Code Review
-- See [local_build_and_testing.md](local_build_and_testing.md) for how to
+- See the [Compile and Launch section of the Readme](/docs/development/README.md#compile-and-launch-triplea-cli) to see how
 run verification and tests locally.
 - Typically most PRs will not be reviewed until they pass the travis CI build.
  Comment in your PR if you wish for a preview review to be done to get high level feedback.
