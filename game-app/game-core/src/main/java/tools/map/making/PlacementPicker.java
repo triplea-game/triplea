@@ -2,19 +2,14 @@ package tools.map.making;
 
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -27,18 +22,17 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +43,7 @@ import org.triplea.util.Tuple;
 import tools.image.FileHelper;
 import tools.image.FileOpen;
 import tools.image.FileSave;
+import tools.image.MapEditorFrame;
 import tools.util.ToolArguments;
 import tools.util.ToolRunnableTask;
 import tools.util.ToolsUtil;
@@ -121,27 +116,20 @@ public final class PlacementPicker extends ToolRunnableTask {
     }
     if (mapName != null) {
       final PlacementPickerFrame frame = new PlacementPickerFrame(mapName);
-      frame.setSize(800, 600);
-      frame.setLocationRelativeTo(null);
       frame.setVisible(true);
     } else {
       log.info("No Image Map Selected. Shutting down.");
     }
   }
 
-  private final class PlacementPickerFrame extends JFrame {
+  private final class PlacementPickerFrame extends MapEditorFrame {
     private static final long serialVersionUID = 953019978051420881L;
 
-    private final JCheckBoxMenuItem showAllModeItem;
-    private final JCheckBoxMenuItem showOverflowModeItem;
-    private final JCheckBoxMenuItem showIncompleteModeItem;
     private boolean showAllMode = false;
     private boolean showOverflowMode = false;
     private boolean showIncompleteMode = false;
     private int incompleteNum = 1;
     private Point currentSquare;
-    private final Image image;
-    private final JLabel locationLabel = new JLabel();
     private Map<String, List<Polygon>> polygons = new HashMap<>();
     private Map<String, Tuple<List<Point>, Boolean>> placements = new HashMap<>();
     private List<Point> currentPlacements;
@@ -155,90 +143,9 @@ public final class PlacementPicker extends ToolRunnableTask {
      * @param mapFolder The {@link Path} pointing to the map folder.
      */
     PlacementPickerFrame(final Path mapFolder) throws IOException {
-      super("Placement Picker");
-      setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      super("Placement Picker", mapFolder);
       if (!placeDimensionsSet) {
-        try {
-          final Path file =
-              FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "map.properties");
-          if (Files.exists(file)) {
-            double scale = unitZoomPercent;
-            int width = unitWidth;
-            int height = unitHeight;
-            boolean found = false;
-            @NonNls final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
-            @NonNls final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
-            @NonNls final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
-            try (Scanner scanner = new Scanner(file, StandardCharsets.UTF_8.name())) {
-              while (scanner.hasNextLine()) {
-                final String line = scanner.nextLine();
-                if (line.contains(scaleProperty)) {
-                  try {
-                    scale =
-                        Double.parseDouble(
-                            line.substring(line.indexOf(scaleProperty) + scaleProperty.length())
-                                .trim());
-                    found = true;
-                  } catch (final NumberFormatException ex) {
-                    // ignore malformed input
-                  }
-                }
-                if (line.contains(widthProperty)) {
-                  try {
-                    width =
-                        Integer.parseInt(
-                            line.substring(line.indexOf(widthProperty) + widthProperty.length())
-                                .trim());
-                    found = true;
-                  } catch (final NumberFormatException ex) {
-                    // ignore malformed input
-                  }
-                }
-                if (line.contains(heightProperty)) {
-                  try {
-                    height =
-                        Integer.parseInt(
-                            line.substring(line.indexOf(heightProperty) + heightProperty.length())
-                                .trim());
-                    found = true;
-                  } catch (final NumberFormatException ex) {
-                    // ignore malformed input
-                  }
-                }
-              }
-            }
-            if (found) {
-              final int result =
-                  JOptionPane.showConfirmDialog(
-                      new JPanel(),
-                      "A map.properties file was found in the map's folder, "
-                          + "\r\n do you want to use the file to supply the info for "
-                          + "the placement box size? "
-                          + "\r\n Zoom = "
-                          + scale
-                          + ",  Width = "
-                          + width
-                          + ",  Height = "
-                          + height
-                          + ",    Result = ("
-                          + ((int) (scale * width))
-                          + "x"
-                          + ((int) (scale * height))
-                          + ")",
-                      "File Suggestion",
-                      JOptionPane.YES_NO_CANCEL_OPTION);
-
-              if (result == 0) {
-                unitZoomPercent = scale;
-                placeWidth = (int) (unitZoomPercent * width);
-                placeHeight = (int) (unitZoomPercent * height);
-                placeDimensionsSet = true;
-              }
-            }
-          }
-        } catch (final Exception e) {
-          log.error("Failed to initialize from map properties", e);
-        }
+        extractMapPropertiesFromFile(mapFolder);
       }
       if (!placeDimensionsSet
           || JOptionPane.showConfirmDialog(
@@ -253,102 +160,21 @@ public final class PlacementPicker extends ToolRunnableTask {
                   "Placement Box Size",
                   JOptionPane.YES_NO_OPTION)
               == 1) {
-        try {
-          final String result = getUnitsScale();
-          try {
-            unitZoomPercent = Double.parseDouble(result.toLowerCase(Locale.ROOT));
-          } catch (final NumberFormatException ex) {
-            // ignore malformed input
-          }
-          final String width =
-              JOptionPane.showInputDialog(
-                  null,
-                  "Enter the unit's image width in pixels (unscaled / without zoom).\r\n"
-                      + "(e.g. 48)");
-          if (width != null) {
-            try {
-              placeWidth = (int) (unitZoomPercent * Integer.parseInt(width));
-            } catch (final NumberFormatException ex) {
-              // ignore malformed input
-            }
-          }
-          final String height =
-              JOptionPane.showInputDialog(
-                  null,
-                  "Enter the unit's image height in pixels (unscaled / without zoom).\r\n"
-                      + "(e.g. 48)");
-          if (height != null) {
-            try {
-              placeHeight = (int) (unitZoomPercent * Integer.parseInt(height));
-            } catch (final NumberFormatException ex) {
-              // ignore malformed input
-            }
-          }
-          placeDimensionsSet = true;
-        } catch (final Exception e) {
-          log.error("Failed to initialize from user input", e);
-        }
+        initializeMapPropertiesFromUserInput();
       }
-      final Path file = FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "polygons.txt");
-      if (Files.exists(file)
-          && JOptionPane.showConfirmDialog(
-                  new JPanel(),
-                  "A polygons.txt file was found in the map's folder, do you want to "
-                      + "use the file to supply the territories?",
-                  "File Suggestion",
-                  JOptionPane.YES_NO_CANCEL_OPTION)
-              == 0) {
+      final Optional<Path> optionalPolygonsPath = getPolygonsPath(mapFolder);
+      if (optionalPolygonsPath.isPresent()) {
+        final Path polygonsPath = optionalPolygonsPath.get();
         try {
-          log.info("Polygons : {}", file);
-          polygons = PointFileReaderWriter.readOneToManyPolygons(file);
+          log.info("Polygons : {}", polygonsPath);
+          polygons = PointFileReaderWriter.readOneToManyPolygons(polygonsPath);
         } catch (final IOException e) {
-          log.error("Failed to load polygons: {}", file.toAbsolutePath());
+          log.error("Failed to load polygons: {}", polygonsPath.toAbsolutePath());
           throw e;
         }
       } else {
-        log.info("Select the Polygons file");
-        final Path polyPath =
-            new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile();
-        if (polyPath != null) {
-          log.info("Polygons : {}", polyPath);
-          try {
-            polygons = PointFileReaderWriter.readOneToManyPolygons(polyPath);
-          } catch (final IOException e) {
-            log.error("Failed to load polygons: {}", polyPath);
-            throw e;
-          }
-        } else {
-          log.info("Polygons file not given. Will run regardless");
-        }
+        log.info("Polygons file not given. Will run regardless");
       }
-      image = FileHelper.newImage(mapFolder);
-      final JPanel imagePanel = newMainPanel();
-      /*
-       * Add a mouse listener to show X : Y coordinates in the lower left corner of the screen.
-       */
-      imagePanel.addMouseMotionListener(
-          new MouseMotionAdapter() {
-            @Override
-            public void mouseMoved(final MouseEvent e) {
-              locationLabel.setText("x: " + e.getX() + " y: " + e.getY());
-              currentSquare = new Point(e.getPoint());
-              repaint();
-            }
-          });
-      /*
-       * Add a mouse listener to monitor for right mouse button being clicked.
-       */
-      imagePanel.addMouseListener(
-          new MouseAdapter() {
-            @Override
-            public void mouseClicked(final MouseEvent e) {
-              mouseEvent(
-                  e.getPoint(),
-                  e.isControlDown() || e.isShiftDown(),
-                  SwingUtilities.isRightMouseButton(e));
-            }
-          });
-
       this.addKeyListener(
           new KeyAdapter() {
             @Override
@@ -359,15 +185,23 @@ public final class PlacementPicker extends ToolRunnableTask {
               }
             }
           });
+      initializeLayout();
+    }
 
-      // set up the image panel size dimensions ...etc
-      imagePanel.setMinimumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
-      imagePanel.setPreferredSize(new Dimension(image.getWidth(this), image.getHeight(this)));
-      imagePanel.setMaximumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
-      // set up the layout manager
-      this.getContentPane().setLayout(new BorderLayout());
-      this.getContentPane().add(new JScrollPane(imagePanel), BorderLayout.CENTER);
-      this.getContentPane().add(locationLabel, BorderLayout.SOUTH);
+    @Override
+    protected void reactToMouseMoved(MouseEvent e) {
+      currentSquare = new Point(e.getPoint());
+      repaint();
+    }
+
+    @Override
+    protected void reactToMouseClicked(MouseEvent e) {
+      mouseEvent(
+          e.getPoint(), e.isControlDown() || e.isShiftDown(), SwingUtilities.isRightMouseButton(e));
+    }
+
+    @Override
+    protected void initializeLayout() {
       // set up the actions
       final Action openAction = SwingAction.of("Load Placements", e -> loadPlacements());
       openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Placement File");
@@ -381,6 +215,10 @@ public final class PlacementPicker extends ToolRunnableTask {
                 dispose();
               });
       exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
+      setupMenuBar(openAction, saveAction, exitAction);
+    }
+
+    private void setupMenuBar(Action openAction, Action saveAction, Action exitAction) {
       // set up the menu items
       final JMenuItem openItem = new JMenuItem(openAction);
       openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
@@ -396,19 +234,22 @@ public final class PlacementPicker extends ToolRunnableTask {
       fileMenu.add(saveItem);
       fileMenu.addSeparator();
       fileMenu.add(exitItem);
-      showAllModeItem = new JCheckBoxMenuItem("Show All Placements Mode", false);
+      final JCheckBoxMenuItem showAllModeItem =
+          new JCheckBoxMenuItem("Show All Placements Mode", false);
       showAllModeItem.addActionListener(
           event -> {
             showAllMode = showAllModeItem.getState();
             repaint();
           });
-      showOverflowModeItem = new JCheckBoxMenuItem("Show Overflow Mode", false);
+      final JCheckBoxMenuItem showOverflowModeItem =
+          new JCheckBoxMenuItem("Show Overflow Mode", false);
       showOverflowModeItem.addActionListener(
           event -> {
             showOverflowMode = showOverflowModeItem.getState();
             repaint();
           });
-      showIncompleteModeItem = new JCheckBoxMenuItem("Show Incomplete Placements Mode", false);
+      final JCheckBoxMenuItem showIncompleteModeItem =
+          new JCheckBoxMenuItem("Show Incomplete Placements Mode", false);
       showIncompleteModeItem.addActionListener(
           event -> {
             if (showIncompleteModeItem.getState()) {
@@ -435,14 +276,154 @@ public final class PlacementPicker extends ToolRunnableTask {
       menuBar.add(editMenu);
     }
 
+    private Optional<Path> getPolygonsPath(Path mapFolder) {
+      final Path file = FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "polygons.txt");
+      if (Files.exists(file)
+          && JOptionPane.showConfirmDialog(
+                  new JPanel(),
+                  "A polygons.txt file was found in the map's folder, do you want to "
+                      + "use the file to supply the territories?",
+                  "File Suggestion",
+                  JOptionPane.YES_NO_CANCEL_OPTION)
+              == 0) {
+        return Optional.of(file);
+      } else {
+        log.info("Select the Polygons file");
+        return Optional.ofNullable(
+            new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile());
+      }
+    }
+
+    private void initializeMapPropertiesFromUserInput() {
+      try {
+        final String result = getUnitsScale();
+        try {
+          unitZoomPercent = Double.parseDouble(result.toLowerCase(Locale.ROOT));
+        } catch (final NumberFormatException ex) {
+          // ignore malformed input
+        }
+        final String width =
+            JOptionPane.showInputDialog(
+                null,
+                "Enter the unit's image width in pixels (unscaled / without zoom).\r\n"
+                    + "(e.g. 48)");
+        if (width != null) {
+          try {
+            placeWidth = (int) (unitZoomPercent * Integer.parseInt(width));
+          } catch (final NumberFormatException ex) {
+            // ignore malformed input
+          }
+        }
+        final String height =
+            JOptionPane.showInputDialog(
+                null,
+                "Enter the unit's image height in pixels (unscaled / without zoom).\r\n"
+                    + "(e.g. 48)");
+        if (height != null) {
+          try {
+            placeHeight = (int) (unitZoomPercent * Integer.parseInt(height));
+          } catch (final NumberFormatException ex) {
+            // ignore malformed input
+          }
+        }
+        placeDimensionsSet = true;
+      } catch (final Exception e) {
+        log.error("Failed to initialize from user input", e);
+      }
+    }
+
+    private void extractMapPropertiesFromFile(Path mapFolder) {
+      try {
+        final Path file =
+            FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "map.properties");
+        if (Files.exists(file)) {
+          double scale = unitZoomPercent;
+          int width = unitWidth;
+          int height = unitHeight;
+          boolean found = false;
+          @NonNls final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
+          @NonNls final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
+          @NonNls final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
+          try (Scanner scanner = new Scanner(file, StandardCharsets.UTF_8)) {
+            while (scanner.hasNextLine()) {
+              final String line = scanner.nextLine();
+              if (line.contains(scaleProperty)) {
+                try {
+                  scale =
+                      Double.parseDouble(
+                          line.substring(line.indexOf(scaleProperty) + scaleProperty.length())
+                              .trim());
+                  found = true;
+                } catch (final NumberFormatException ex) {
+                  // ignore malformed input
+                }
+              }
+              if (line.contains(widthProperty)) {
+                try {
+                  width =
+                      Integer.parseInt(
+                          line.substring(line.indexOf(widthProperty) + widthProperty.length())
+                              .trim());
+                  found = true;
+                } catch (final NumberFormatException ex) {
+                  // ignore malformed input
+                }
+              }
+              if (line.contains(heightProperty)) {
+                try {
+                  height =
+                      Integer.parseInt(
+                          line.substring(line.indexOf(heightProperty) + heightProperty.length())
+                              .trim());
+                  found = true;
+                } catch (final NumberFormatException ex) {
+                  // ignore malformed input
+                }
+              }
+            }
+          }
+          if (found) {
+            final int result =
+                JOptionPane.showConfirmDialog(
+                    new JPanel(),
+                    "A map.properties file was found in the map's folder, "
+                        + "\r\n do you want to use the file to supply the info for "
+                        + "the placement box size? "
+                        + "\r\n Zoom = "
+                        + scale
+                        + ",  Width = "
+                        + width
+                        + ",  Height = "
+                        + height
+                        + ",    Result = ("
+                        + ((int) (scale * width))
+                        + "x"
+                        + ((int) (scale * height))
+                        + ")",
+                    "File Suggestion",
+                    JOptionPane.YES_NO_CANCEL_OPTION);
+
+            if (result == 0) {
+              unitZoomPercent = scale;
+              placeWidth = (int) (unitZoomPercent * width);
+              placeHeight = (int) (unitZoomPercent * height);
+              placeDimensionsSet = true;
+            }
+          }
+        }
+      } catch (final Exception e) {
+        log.error("Failed to initialize from map properties", e);
+      }
+    }
+
     /** Creates the main panel and returns a JPanel object. */
-    private JPanel newMainPanel() {
+    @Override
+    protected JPanel createMainPanel() {
       return new JPanel() {
         private static final long serialVersionUID = -3941975573431195136L;
 
         @Override
         public void paint(final Graphics g) {
-          // super.paint(g);
           g.drawImage(image, 0, 0, this);
           if (showAllMode) {
             g.setColor(Color.yellow);
@@ -458,7 +439,7 @@ public final class PlacementPicker extends ToolRunnableTask {
                 g.fillRect(item.x, item.y, placeWidth, placeHeight);
                 if (showOverflowMode && !pointIter.hasNext()) {
                   g.setColor(Color.gray);
-                  if (entry.getValue().getSecond()) {
+                  if (Boolean.TRUE.equals(entry.getValue().getSecond())) {
                     g.fillRect(item.x - placeWidth, item.y + placeHeight / 2, placeWidth, 4);
                   } else {
                     g.fillRect(item.x + placeWidth, item.y + placeHeight / 2, placeWidth, 4);
