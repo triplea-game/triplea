@@ -48,7 +48,6 @@ import tools.util.ToolRunnableTask;
  */
 @Slf4j
 public final class PolygonGrabber extends ToolRunnableTask {
-  private Path mapFolderLocation = null;
 
   private PolygonGrabber() {}
 
@@ -58,13 +57,10 @@ public final class PolygonGrabber extends ToolRunnableTask {
 
   @Override
   protected void runInternal() throws IOException {
-    ToolArguments.ifMapFolder(mapFolderProperty -> mapFolderLocation = mapFolderProperty);
     log.info("Select the map");
-    final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
-    final Path mapName = mapSelection.getFile();
-    if (mapFolderLocation == null && mapSelection.getFile() != null) {
-      mapFolderLocation = mapSelection.getFile().getParent();
-    }
+    final Path mapFolderLocation = ToolArguments.getPropertyMapFolderPath().orElse(null);
+    final Path mapName =
+        new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png").getFile();
     if (mapName != null) {
       log.info("Map : {}", mapName);
       final PolygonGrabberFrame frame = new PolygonGrabberFrame(mapName);

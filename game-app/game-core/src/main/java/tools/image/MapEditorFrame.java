@@ -18,6 +18,7 @@ import javax.swing.WindowConstants;
 public abstract class MapEditorFrame extends JFrame {
   protected Image image;
   protected final JPanel imagePanel;
+  protected final Path mapFolderLocation;
 
   /**
    * Map editor frame that sets up the mouse listeners and toolbars and loads the actual image of
@@ -32,6 +33,7 @@ public abstract class MapEditorFrame extends JFrame {
     setLayout(new BorderLayout());
     setLocationRelativeTo(null);
 
+    this.mapFolderLocation = mapFolder;
     this.image = loadImage(mapFolder);
 
     JLabel locationLabel = new JLabel();
