@@ -27,7 +27,6 @@ import java.util.Scanner;
 import java.util.Set;
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -44,8 +43,8 @@ import tools.image.FileHelper;
 import tools.image.FileOpen;
 import tools.image.FileSave;
 import tools.image.MapEditorFrame;
+import tools.util.MapEditorRunnableTask;
 import tools.util.ToolArguments;
-import tools.util.ToolRunnableTask;
 import tools.util.ToolsUtil;
 
 /**
@@ -55,7 +54,7 @@ import tools.util.ToolsUtil;
  * given map. It will generate a {@code places.txt} file containing the unit placement locations.
  */
 @Slf4j
-public final class PlacementPicker extends ToolRunnableTask {
+public final class PlacementPicker extends MapEditorRunnableTask {
   private int placeWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private int placeHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private boolean placeDimensionsSet = false;
@@ -70,54 +69,51 @@ public final class PlacementPicker extends ToolRunnableTask {
   }
 
   @Override
+  public MapEditorFrame getFrame(Path mapPath) throws IOException {
+    return new PlacementPickerFrame(mapPath);
+  }
+
+  @Override
+  public String getWelcomeMessage() {
+    return """
+        <html>\
+        This is the PlacementPicker, it will create a place.txt file for you. \
+        <br>In order to run this, you must already have created a centers.txt file \
+        and a polygons.txt file. \
+        <br><br>The program will ask for unit scale (unit zoom) level [normally \
+        between 0.5 and 1.0], \
+        <br>Then it will ask for the unit image size when not zoomed [normally 48x48]. \
+        <br><br>If you want to have less, or more, room around the edges of your \
+        units, you can change the unit size. \
+        <br><br>After it starts, you may Load an existing place.txt file, that way \
+        you can make changes to it then save it. \
+        <br><br>LEFT CLICK = Select a new territory. \
+        <br><br>Holding CTRL/SHIFT + LEFT CLICK = Create a new placement for that \
+        territory. \
+        <br><br>RIGHT CLICK = Remove last placement for that territory. \
+        <br><br>Holding CTRL/SHIFT + RIGHT CLICK = Save all placements for that \
+        territory. \
+        <br><br>Pressing the 'O' key = Toggle the direction for placement overflow for \
+        that territory. \
+        <br><br>It is a very good idea to check each territory using the \
+        PlacementPicker after running the AutoPlacementFinder \
+        <br>to make sure there are enough placements for each territory. If not, you \
+        can always add more then save it. \
+        <br><br>IF there are not enough placements, by default the units will Overflow \
+        to the RIGHT of the very LAST placement made, \
+        <br>so be sure that the last placement is on the right side of the territory \
+        <br>or that it doesn't overflow directly on top of other placements. Can \
+        instead toggle the overflow direction.\
+        <br><br>To show all placements, or see the overflow direction, or see which \
+        territories you have not yet completed enough, \
+        <br>placements for, turn on the mode options in the 'edit' menu. \
+        </html>""";
+  }
+
+  @Override
   protected void runInternal() throws IOException {
     handleSystemProperties();
-    JOptionPane.showMessageDialog(
-        null,
-        new JLabel(
-            "<html>"
-                + "This is the PlacementPicker, it will create a place.txt file for you. "
-                + "<br>In order to run this, you must already have created a centers.txt file "
-                + "and a polygons.txt file. "
-                + "<br><br>The program will ask for unit scale (unit zoom) level [normally "
-                + "between 0.5 and 1.0], "
-                + "<br>Then it will ask for the unit image size when not zoomed [normally 48x48]. "
-                + "<br><br>If you want to have less, or more, room around the edges of your "
-                + "units, you can change the unit size. "
-                + "<br><br>After it starts, you may Load an existing place.txt file, that way "
-                + "you can make changes to it then save it. "
-                + "<br><br>LEFT CLICK = Select a new territory. "
-                + "<br><br>Holding CTRL/SHIFT + LEFT CLICK = Create a new placement for that "
-                + "territory. "
-                + "<br><br>RIGHT CLICK = Remove last placement for that territory. "
-                + "<br><br>Holding CTRL/SHIFT + RIGHT CLICK = Save all placements for that "
-                + "territory. "
-                + "<br><br>Pressing the 'O' key = Toggle the direction for placement overflow for "
-                + "that territory. "
-                + "<br><br>It is a very good idea to check each territory using the "
-                + "PlacementPicker after running the AutoPlacementFinder "
-                + "<br>to make sure there are enough placements for each territory. If not, you "
-                + "can always add more then save it. "
-                + "<br><br>IF there are not enough placements, by default the units will Overflow "
-                + "to the RIGHT of the very LAST placement made, "
-                + "<br>so be sure that the last placement is on the right side of the territory "
-                + "<br>or that it doesn't overflow directly on top of other placements. Can "
-                + "instead toggle the overflow direction."
-                + "<br><br>To show all placements, or see the overflow direction, or see which "
-                + "territories you have not yet completed enough, "
-                + "<br>placements for, turn on the mode options in the 'edit' menu. "
-                + "</html>"));
-    log.info("Select the map");
-    final Path mapFolderLocation = ToolArguments.getPropertyMapFolderPath().orElse(null);
-    final Path mapName =
-        new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png").getFile();
-
-    if (mapName != null) {
-      final PlacementPickerFrame frame = new PlacementPickerFrame(mapName);
-      frame.setVisible(true);
-    } else {
-      log.info("No Image Map Selected. Shutting down.");
-    }
+    super.runInternal();
   }
 
   private final class PlacementPickerFrame extends MapEditorFrame {
