@@ -62,7 +62,6 @@ public final class PlacementPicker extends ToolRunnableTask {
   private double unitZoomPercent = 1;
   private int unitWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private int unitHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  private Path mapFolderLocation = null;
 
   private PlacementPicker() {}
 
@@ -109,11 +108,10 @@ public final class PlacementPicker extends ToolRunnableTask {
                 + "<br>placements for, turn on the mode options in the 'edit' menu. "
                 + "</html>"));
     log.info("Select the map");
-    final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
-    final Path mapName = mapSelection.getFile();
-    if (mapFolderLocation == null && mapSelection.getFile() != null) {
-      mapFolderLocation = mapSelection.getFile().getParent();
-    }
+    final Path mapFolderLocation = ToolArguments.getPropertyMapFolderPath().orElse(null);
+    final Path mapName =
+        new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png").getFile();
+
     if (mapName != null) {
       final PlacementPickerFrame frame = new PlacementPickerFrame(mapName);
       frame.setVisible(true);
@@ -577,7 +575,6 @@ public final class PlacementPicker extends ToolRunnableTask {
   }
 
   private void handleSystemProperties() {
-    ToolArguments.ifMapFolder(mapFolderProperty -> mapFolderLocation = mapFolderProperty);
     ToolArguments.ifUnitZoom(unitZoomProperty -> unitZoomPercent = unitZoomProperty);
     ToolArguments.ifUnitWidth(
         unitWidthProperty -> {
