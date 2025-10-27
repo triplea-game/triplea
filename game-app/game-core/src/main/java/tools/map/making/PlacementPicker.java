@@ -575,7 +575,6 @@ public final class PlacementPicker extends ToolRunnableTask {
   }
 
   private void handleSystemProperties() {
-    ToolArguments.ifMapFolder(mapFolderProperty -> mapFolderLocation = mapFolderProperty);
     ToolArguments.ifUnitZoom(unitZoomProperty -> unitZoomPercent = unitZoomProperty);
     ToolArguments.ifUnitWidth(
         unitWidthProperty -> {
