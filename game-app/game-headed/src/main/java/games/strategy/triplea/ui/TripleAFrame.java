@@ -184,14 +184,13 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   private final Runnable clientLeftGame;
   private @Nullable ObjectivePanel objectivePanel;
   @Getter private final TerritoryDetailPanel territoryDetailPanel;
-  private final JPanel historyComponent = new JPanel();
-  @Getter private HistoryPanel historyPanel;
+  @Getter private @Nullable HistoryPanel historyPanel;
   private final AtomicBoolean inHistory = new AtomicBoolean(false);
   private final AtomicBoolean inGame = new AtomicBoolean(true);
-  private HistorySynchronizer historySyncher;
+  private @Nullable HistorySynchronizer historySyncher;
   @Getter private UiContext uiContext;
   private final JPanel mapAndChatPanel;
-  private final ChatPanel chatPanel;
+  private final @Nullable ChatPanel chatPanel;
   private final CommentPanel commentPanel;
   private final JSplitPane chatSplit;
   private JSplitPane commentSplit;
@@ -1813,53 +1812,25 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     }
     territoryDetailPanel.setGameData(clonedGameData);
     mapPanel.setGameData(clonedGameData);
-    SwingUtilities.invokeLater(
-        () -> {
-          final HistoryDetailsPanel historyDetailPanel =
-              new HistoryDetailsPanel(clonedGameData, mapPanel);
-          tabsPanel.removeAll();
-          addTabs(historyDetailPanel);
-          actionButtonsPanel.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
-          historyComponent.removeAll();
-          historyComponent.setLayout(new BorderLayout());
-          // create history tree context menu
-          // actions need to clear the history panel popup state when done
-          final JPopupMenu popup = new JPopupMenu();
-          popup.add(
-              new AbstractAction("Show Summary Log") {
-                private static final long serialVersionUID = -6730966512179268157L;
-
-                @Override
-                public void actionPerformed(final ActionEvent ae) {
-                  showHistoryLog(false, clonedGameData);
-                }
-              });
-          popup.add(
-              new AbstractAction("Show Detailed Log") {
-                private static final long serialVersionUID = -8709762764495294671L;
-
-                @Override
-                public void actionPerformed(final ActionEvent ae) {
-                  showHistoryLog(true, clonedGameData);
-                }
-              });
-          popup.add(
-              new AbstractAction("Export Gameboard Picture") {
-                private static final long serialVersionUID = 1222760138263428443L;
-
-                @Override
-                public void actionPerformed(final ActionEvent ae) {
+    final HistoryDetailsPanel historyDetailPanel =
+        new HistoryDetailsPanel(clonedGameData, mapPanel);
+    // actions need to clear the history panel popup state when done
+    final HistoryPanel popupHistoryPanel =
+        new HistoryPanel(clonedGameData, historyDetailPanel, uiContext);
+    final JPopupMenu popup =
+        new HistoryPanelPopupMenuBuilder()
+            .add("Show Summary Log", () -> showHistoryLog(popupHistoryPanel, false, clonedGameData))
+            .add("Show Detailed Log", () -> showHistoryLog(popupHistoryPanel, true, clonedGameData))
+            .add(
+                "Export Gameboard Picture",
+                () -> {
                   ScreenshotExporter.exportScreenshot(
-                      TripleAFrame.this, data, historyPanel.getCurrentPopupNode());
-                  historyPanel.clearCurrentPopupNode();
-                }
-              });
-          popup.add(
-              new AbstractAction("Save Game at this point (BETA)") {
-                private static final long serialVersionUID = 1430512376199927896L;
-
-                @Override
-                public void actionPerformed(final ActionEvent ae) {
+                      TripleAFrame.this, data, popupHistoryPanel.getCurrentPopupNode());
+                  popupHistoryPanel.clearCurrentPopupNode();
+                })
+            .add(
+                "Save Game at this point (BETA)",
+                () -> {
                   JOptionPane.showMessageDialog(
                       TripleAFrame.this,
                       "Please first left click on the spot you want to save from, "
@@ -1889,7 +1860,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                       if (gameDataCopy != null) {
                         gameDataCopy
                             .getHistory()
-                            .removeAllHistoryAfterNode(historyPanel.getCurrentPopupNode());
+                            .removeAllHistoryAfterNode(popupHistoryPanel.getCurrentPopupNode());
                         // TODO: the saved current delegate is still the current delegate,
                         // rather than the delegate at that history popup node
                         // TODO: it still shows the current round number, rather than the round at
@@ -1932,33 +1903,64 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                       log.error("Failed to save game: " + f.get().toAbsolutePath(), e);
                     }
                   }
-
-                  historyPanel.clearCurrentPopupNode();
-                }
-              });
-          final JSplitPane split = new JSplitPane();
-          split.setOneTouchExpandable(true);
-          split.setContinuousLayout(true);
-          split.setDividerSize(8);
-          historyPanel = new HistoryPanel(clonedGameData, historyDetailPanel, popup, uiContext);
-          split.setLeftComponent(historyPanel);
-          split.setRightComponent(gameCenterPanel);
-          split.setDividerLocation(150);
-          historyComponent.add(split, BorderLayout.CENTER);
-          historyComponent.add(bottomBar, BorderLayout.SOUTH);
+                  popupHistoryPanel.clearCurrentPopupNode();
+                })
+            .build();
+    popupHistoryPanel.setPopup(popup);
+    historyPanel = popupHistoryPanel;
+    // create history tree context menu
+    final JSplitPane historyComponentSplitPane = new JSplitPane();
+    historyComponentSplitPane.setOneTouchExpandable(true);
+    historyComponentSplitPane.setContinuousLayout(true);
+    historyComponentSplitPane.setDividerSize(8);
+    historyComponentSplitPane.setLeftComponent(historyPanel);
+    historyComponentSplitPane.setRightComponent(gameCenterPanel);
+    historyComponentSplitPane.setDividerLocation(150);
+    final JPanel historyComponent =
+        new JPanelBuilder()
+            .borderLayout()
+            .addCenter(historyComponentSplitPane)
+            .addSouth(bottomBar)
+            .build();
+    SwingUtilities.invokeLater(
+        () -> {
+          tabsPanel.removeAll();
+          addTabs(historyDetailPanel);
+          actionButtonsPanel.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
           getContentPane().removeAll();
           getContentPane().add(historyComponent, BorderLayout.CENTER);
           validate();
         });
   }
 
-  private void showHistoryLog(boolean verboseLog, GameData clonedGameData) {
+  private static class HistoryPanelPopupMenuBuilder {
+    private final JPopupMenu popup = new JPopupMenu();
+
+    public HistoryPanelPopupMenuBuilder add(String title, Runnable action) {
+      popup.add(
+          new AbstractAction(title) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+              action.run();
+            }
+          });
+      return this;
+    }
+
+    public JPopupMenu build() {
+      return popup;
+    }
+  }
+
+  private void showHistoryLog(
+      final HistoryPanel popupHistoryPanel, boolean verboseLog, GameData clonedGameData) {
     final HistoryLog historyLog = new HistoryLog(this);
+    final HistoryNode currentPopupNodeOrLastNode = popupHistoryPanel.getCurrentPopupNode();
     historyLog.printRemainingTurn(
-        historyPanel.getCurrentPopupNode(), verboseLog, data.getDiceSides(), null);
-    historyLog.printTerritorySummary(historyPanel.getCurrentPopupNode(), clonedGameData);
+        currentPopupNodeOrLastNode, verboseLog, data.getDiceSides(), null);
+    historyLog.printTerritorySummary(currentPopupNodeOrLastNode, clonedGameData);
     historyLog.printProductionSummary(clonedGameData);
-    historyPanel.clearCurrentPopupNode();
+    popupHistoryPanel.clearCurrentPopupNode();
     historyLog.setVisible(true);
   }
 
