@@ -38,8 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.FileChooser;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
-import tools.util.ToolArguments;
-import tools.util.ToolRunnableTask;
+import tools.util.MapEditorRunnableTask;
 
 /**
  * Utility to break a map into polygons. Inputs - a map with 1 pixel wide borders - a list of
@@ -47,7 +46,7 @@ import tools.util.ToolRunnableTask;
  * Outputs - a list of polygons for each country
  */
 @Slf4j
-public final class PolygonGrabber extends ToolRunnableTask {
+public final class PolygonGrabber extends MapEditorRunnableTask {
 
   private PolygonGrabber() {}
 
@@ -56,45 +55,36 @@ public final class PolygonGrabber extends ToolRunnableTask {
   }
 
   @Override
-  protected void runInternal() throws IOException {
-    log.info("Select the map");
-    final Path mapFolderLocation = ToolArguments.getPropertyMapFolderPath().orElse(null);
-    final Path mapName =
-        new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png").getFile();
-    if (mapName != null) {
-      log.info("Map : {}", mapName);
-      final PolygonGrabberFrame frame = new PolygonGrabberFrame(mapName);
-      frame.setVisible(true);
-      JOptionPane.showMessageDialog(
-          frame,
-          new JLabel(
-              "<html>"
-                  + "This is the PolygonGrabber, it will create a polygons.txt file for you. "
-                  + "<br>In order to run this, you must already have created a center.txt file. "
-                  + "<br>Please click near the center of every single territory and sea zone on "
-                  + "your map. "
-                  + "<br>The grabber will then fill in the territory based on the borders it finds."
-                  + "<br><br>If the territory shape or borders do not match what you intend, then"
-                  + "<br>borders might have a gap or differently colored pixel in the border."
-                  + "<br>You can also using the Clean Up Image... function from the Edit menu "
-                  + "first to automatically fix some problems with the original image."
-                  + "<br><br>These borders will define the shape of the territory in TripleA."
-                  + "<br><br>When a territory is inside of another territory, you can turn on "
-                  + "'island mode' to be able to see it."
-                  + "<br><br>You can also load an existing polygons.txt file, then make "
-                  + "modifications to it, then save it again."
-                  + "<br><br>LEFT CLICK = fill in a territory's borders."
-                  + "<br><br>Holding CTRL/SHIFT while LEFT CLICKING = add multiple territories "
-                  + "together (eg: islands)."
-                  + "<br><br>RIGHT CLICK = save or replace those borders for that territory."
-                  + "<br><br>When finished, save the polygons and exit."
-                  + "</html>"));
-    } else {
-      log.info("No Image Map Selected. Shutting down.");
-    }
+  public MapEditorFrame getFrame(Path mapPath) throws IOException {
+    return new PolygonGrabberFrame(mapPath);
   }
 
-  private final class PolygonGrabberFrame extends MapEditorFrame {
+  @Override
+  public String getWelcomeMessage() {
+    return "<html>"
+        + "This is the PolygonGrabber, it will create a polygons.txt file for you. "
+        + "<br>In order to run this, you must already have created a center.txt file. "
+        + "<br>Please click near the center of every single territory and sea zone on "
+        + "your map. "
+        + "<br>The grabber will then fill in the territory based on the borders it finds."
+        + "<br><br>If the territory shape or borders do not match what you intend, then"
+        + "<br>borders might have a gap or differently colored pixel in the border."
+        + "<br>You can also using the Clean Up Image... function from the Edit menu "
+        + "first to automatically fix some problems with the original image."
+        + "<br><br>These borders will define the shape of the territory in TripleA."
+        + "<br><br>When a territory is inside of another territory, you can turn on "
+        + "'island mode' to be able to see it."
+        + "<br><br>You can also load an existing polygons.txt file, then make "
+        + "modifications to it, then save it again."
+        + "<br><br>LEFT CLICK = fill in a territory's borders."
+        + "<br><br>Holding CTRL/SHIFT while LEFT CLICKING = add multiple territories "
+        + "together (eg: islands)."
+        + "<br><br>RIGHT CLICK = save or replace those borders for that territory."
+        + "<br><br>When finished, save the polygons and exit."
+        + "</html>";
+  }
+
+  private static final class PolygonGrabberFrame extends MapEditorFrame {
     private static final long serialVersionUID = 6381498094805120687L;
 
     // holds the map image
