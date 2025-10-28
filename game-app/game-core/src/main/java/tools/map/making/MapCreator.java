@@ -14,6 +14,7 @@ import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
+import tools.map.making.ui.panel.ValidateMapPanel;
 import tools.map.making.ui.properties.MapPropertiesPanel;
 import tools.map.making.ui.skin.MapSkinPanel;
 import tools.map.making.ui.utilities.OptionalUtilitiesPanel;
@@ -37,6 +38,7 @@ public class MapCreator {
     addButtonToSidePanel(sidePanel, "Step 1: Map Properties", mainPanel, mapPropertiesPanel);
     addButtonToSidePanel(sidePanel, "Step 2: Map Utilities", mainPanel, MapSkinPanel.build());
     addButtonToSidePanel(sidePanel, "Step 3: Game XML", mainPanel, XmlUtilitiesPanel.build());
+    addButtonToSidePanel(sidePanel, "Step 4: Validate Map", mainPanel, ValidateMapPanel.build());
     addButtonToSidePanel(
         sidePanel, "Other: Optional Things", mainPanel, OptionalUtilitiesPanel.build());
 
