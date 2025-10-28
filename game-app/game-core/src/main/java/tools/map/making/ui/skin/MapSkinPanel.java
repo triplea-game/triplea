@@ -27,4 +27,11 @@ public class MapSkinPanel {
                 new ButtonSpec("Run the Decoration Placer", DecorationPlacer::run)))
         .build();
   }
+
+  private record ButtonSpec(String labelText, Runnable runnable) {}
+
+  private static void addButtonToPanel(JPanel panel, ButtonSpec buttonSpec) {
+    panel.add(new JButtonBuilder(buttonSpec.labelText).actionListener(buttonSpec.runnable).build());
+    panel.add(Box.createVerticalStrut(SPACING_HEIGHT));
+  }
 }
