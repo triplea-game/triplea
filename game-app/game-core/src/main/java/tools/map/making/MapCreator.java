@@ -1,5 +1,6 @@
 package tools.map.making;
 
+import games.strategy.triplea.EngineImageLoader;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -45,6 +46,7 @@ public class MapCreator {
     final JFrame frame =
         new JFrameBuilder()
             .title("TripleA Map Creator Tools")
+            .iconImage(EngineImageLoader.loadFrameIcon())
             .size(800, 600)
             .locateRelativeTo(null)
             .disposeOnClose()
