@@ -86,7 +86,11 @@ public class MapPropertiesPanel {
                         "Select Map Folder",
                         e -> {
                           final Path mapFolder =
-                              new FileSave("Where is your map's folder?", null, null).getFile();
+                              new FileSave(
+                                      "Where is your map's folder?",
+                                      null,
+                                      ToolArguments.getPropertyMapFolderPath().orElse(null))
+                                  .getFile();
                           if (mapFolder != null && Files.exists(mapFolder)) {
                             ToolArguments.MAP_FOLDER.setSystemProperty(mapFolder.toString());
                           }
