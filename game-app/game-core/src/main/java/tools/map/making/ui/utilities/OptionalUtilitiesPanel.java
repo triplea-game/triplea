@@ -1,33 +1,22 @@
 package tools.map.making.ui.utilities;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
+import java.util.List;
 import javax.swing.JPanel;
 import lombok.experimental.UtilityClass;
-import org.triplea.swing.JButtonBuilder;
 import tools.image.TileImageReconstructor;
 import tools.map.making.ImageShrinker;
+import tools.map.making.ui.MapMakingPanelBuilder;
 
 @UtilityClass
 public class OptionalUtilitiesPanel {
 
   public JPanel build() {
-    final JPanel panel = new JPanel();
-    panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-    panel.add(Box.createVerticalStrut(30));
-    panel.add(new JLabel("Other or Optional Utilities:"));
-    panel.add(Box.createVerticalStrut(30));
-    panel.add(
-        new JButtonBuilder("Run the Image Shrinker") //
-            .actionListener(ImageShrinker::run)
-            .build());
-    panel.add(Box.createVerticalStrut(30));
-    panel.add(
-        new JButtonBuilder("Run the Tile Image Reconstructor") //
-            .actionListener(TileImageReconstructor::run)
-            .build());
-    panel.add(Box.createVerticalStrut(30));
-    return panel;
+    return new MapMakingPanelBuilder("Other or Optional Utilities:")
+        .addButtons(
+            List.of(
+                new MapMakingPanelBuilder.ButtonSpec("Run the Image Shrinker", ImageShrinker::run),
+                new MapMakingPanelBuilder.ButtonSpec(
+                    "Run the Tile Image Reconstructor", TileImageReconstructor::run)))
+        .build();
   }
 }
