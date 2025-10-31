@@ -62,7 +62,7 @@ subprojects {
         guavaVersion = "33.5.0-jre"
         hamcrestOptionalVersion = "2.0.0"
         hamcrestVersion = "2.0.0.0"
-        jacksonDataTypeVersion = "2.20.0"
+        jacksonDataTypeVersion = "2.20.1"
         jakartaMailVersion = "2.0.2"
         javaWebSocketVersion = "1.6.0"
         jaxbImplVersion = "4.0.6"
