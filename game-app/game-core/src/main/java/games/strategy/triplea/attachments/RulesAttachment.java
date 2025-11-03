@@ -3,7 +3,6 @@ package games.strategy.triplea.attachments;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
-import com.sun.jdi.request.InvalidRequestStateException;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.BattleRecordsList;
 import games.strategy.engine.data.GameData;
@@ -825,7 +824,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             getPlayerByName(type[0])
                 .orElseThrow(
                     () ->
-                        new InvalidRequestStateException(
+                        new IllegalStateException(
                             MessageFormat.format(
                                 "Battle {0} invalid; attacker {1} unknown{2}",
                                 entry.getFirst(), type[0], thisErrorMsg())));
@@ -833,7 +832,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             getPlayerByName(type[1])
                 .orElseThrow(
                     () ->
-                        new InvalidRequestStateException(
+                        new IllegalStateException(
                             MessageFormat.format(
                                 "Battle {0} invalid; attacker {1} unknown{2}",
                                 entry.getFirst(), type[1], thisErrorMsg())));
@@ -918,7 +917,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           getPlayerByName(relationCheck[0])
               .orElseThrow(
                   () ->
-                      new InvalidRequestStateException(
+                      new IllegalStateException(
                           MessageFormat.format(
                               "Relationship {0} invalid; first player {1} unknown{2}",
                               encodedRelationCheck, relationCheck[0], thisErrorMsg())));
@@ -926,7 +925,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           getPlayerByName(relationCheck[1])
               .orElseThrow(
                   () ->
-                      new InvalidRequestStateException(
+                      new IllegalStateException(
                           MessageFormat.format(
                               "Relationship {0} invalid; second player {1} unknown{2}",
                               encodedRelationCheck, relationCheck[1], thisErrorMsg())));

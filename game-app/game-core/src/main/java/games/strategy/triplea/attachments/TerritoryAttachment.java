@@ -589,8 +589,8 @@ public class TerritoryAttachment extends DefaultAttachment {
                   () ->
                       new GameParseException(
                           MessageFormat.format(
-                              "TerritoryAttachment: Setting convoyAttached with value {0} not possible; No territory found for {1}",
-                              value, subString)));
+                              "TerritoryAttachment: No territory found for {0}; Setting convoyAttached not possible with value {1}",
+                              subString, value)));
       if (convoyAttached == null) {
         convoyAttached = new HashSet<>();
       }

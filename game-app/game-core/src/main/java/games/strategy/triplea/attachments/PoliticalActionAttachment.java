@@ -150,33 +150,25 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
         .collect(Collectors.toList());
   }
 
-  private RelationshipChange parseRelationshipChange(final String encodedRelationshipChange)
-      throws IllegalStateException {
+  private RelationshipChange parseRelationshipChange(final String encodedRelationshipChange) {
     final String[] tokens = splitOnColon(encodedRelationshipChange);
     assert tokens.length == 3;
-    try {
-      return new RelationshipChange(
-          getPlayerByName(tokens[0])
-              .orElseThrow(
-                  () ->
-                      new GameParseException(
-                          MessageFormat.format(
-                              "Invalid relationshipChange declaration: {0} \n first player: {1} unknown{2}",
-                              encodedRelationshipChange, tokens[0], thisErrorMsg()))),
-          getPlayerByName(tokens[1])
-              .orElseThrow(
-                  () ->
-                      new GameParseException(
-                          MessageFormat.format(
-                              "Invalid relationshipChange declaration: {0} \n second player: {1} unknown{2}",
-                              encodedRelationshipChange, tokens[1], thisErrorMsg()))),
-          getData().getRelationshipTypeList().getRelationshipType(tokens[2]));
-    } catch (GameParseException gameParseException) {
-      // @TODO: relationshipChanges should not be a list of strings that have to be parsed all the
-      // time;
-      // separate object needed in the future to ensure parsing is done only once
-      throw new IllegalStateException(gameParseException);
-    }
+    return new RelationshipChange(
+        getPlayerByName(tokens[0])
+            .orElseThrow(
+                () ->
+                    new IllegalStateException(
+                        MessageFormat.format(
+                            "Invalid relationshipChange declaration: {0} \n first player: {1} unknown{2}",
+                            encodedRelationshipChange, tokens[0], thisErrorMsg()))),
+        getPlayerByName(tokens[1])
+            .orElseThrow(
+                () ->
+                    new IllegalStateException(
+                        MessageFormat.format(
+                            "Invalid relationshipChange declaration: {0} \n second player: {1} unknown{2}",
+                            encodedRelationshipChange, tokens[1], thisErrorMsg()))),
+        getData().getRelationshipTypeList().getRelationshipType(tokens[2]));
   }
 
   /** Returns a set of all other players involved in this PoliticalAction. */
