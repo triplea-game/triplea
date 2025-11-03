@@ -137,7 +137,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     // make the units airborne
     final CompositeChange airborneChange = new CompositeChange();
     for (final Unit u : units) {
-      airborneChange.add(ChangeFactory.unitPropertyChange(u, true, Unit.AIRBORNE));
+      airborneChange.add(ChangeFactory.unitPropertyChange(u, true, Unit.PropertyName.AIRBORNE));
     }
     currentMove.addChange(airborneChange);
     // make the bases start filling up their capacity
@@ -189,7 +189,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       }
       newNumberLaunched -= toAdd;
       launchedChange.add(
-          ChangeFactory.unitPropertyChange(u, (toAdd + numberLaunchedAlready), Unit.LAUNCHED));
+          ChangeFactory.unitPropertyChange(
+              u, (toAdd + numberLaunchedAlready), Unit.PropertyName.LAUNCHED));
     }
     return launchedChange;
   }

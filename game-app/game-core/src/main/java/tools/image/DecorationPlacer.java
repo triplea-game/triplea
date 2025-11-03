@@ -1,13 +1,9 @@
 package tools.image;
 
-import static com.google.common.base.Preconditions.checkState;
-
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.MapImage;
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -15,9 +11,7 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,13 +23,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -43,7 +38,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
@@ -53,6 +47,7 @@ import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
 import org.triplea.util.Triple;
 import org.triplea.util.Tuple;
+import tools.util.MapEditorRunnableTask;
 import tools.util.ToolsUtil;
 
 /**
@@ -65,7 +60,7 @@ import tools.util.ToolsUtil;
  * creating. <br>
  * <br>
  * There are basically 2 different kinds of image point files, and with each of those are 2
- * different sub-types. <br>
+ * different subtypes. <br>
  * The 1st type is a folder full of many different images, that after being placed on the map will
  * never be changed. <br>
  * Examples of this are the decorations.txt file [misc folder] and the name_place.txt file
@@ -83,7 +78,7 @@ import tools.util.ToolsUtil;
  * different name, <br>
  * and is chosen by the engine based on the game data. For things like the pu_place you may want the
  * decoration placer <br>
- * to generate placements for all territories, while others like capitols are more rare and you may
+ * to generate placements for all territories, while others like capitols are rarer, and you may
  * want to individually <br>
  * select which territories you need a placement point for. <br>
  * <br>
@@ -94,7 +89,7 @@ import tools.util.ToolsUtil;
  * <br>
  * Any images that this program cannot find the point for, will start in the upper left corner of
  * the map, <br>
- * and you may click on them to move them to their appropriate place." <br>
+ * and you may click on them to move them to their appropriate place. <br>
  * <br>
  * Do not forget to save the points when finished. To save and continue with another set of images,
  * choose the <br>
@@ -102,226 +97,133 @@ import tools.util.ToolsUtil;
  * 'Load Image Points'.
  */
 @Slf4j
-public final class DecorationPlacer {
-  private Path mapFolderLocation;
+public final class DecorationPlacer extends MapEditorRunnableTask {
 
   private DecorationPlacer() {}
 
-  /**
-   * Runs the decoration placer tool.
-   *
-   * @throws IllegalStateException If not invoked on the EDT.
-   */
   public static void run() {
-    checkState(SwingUtilities.isEventDispatchThread());
-
-    try {
-      new DecorationPlacer().runInternal();
-    } catch (final IOException e) {
-      log.error("failed to run decoration placer", e);
-    }
+    runTask(DecorationPlacer.class);
   }
 
-  private void runInternal() throws IOException {
-    mapFolderLocation = MapFolderLocationSystemProperty.read();
-    final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
-    final Path map = mapSelection.getFile();
-    if (mapFolderLocation == null && mapSelection.getFile() != null) {
-      mapFolderLocation = mapSelection.getFile().getParent();
-    }
-    if (map != null) {
-      final DecorationPlacerFrame frame = new DecorationPlacerFrame(map);
-      frame.setSize(800, 600);
-      frame.setLocationRelativeTo(null);
-      frame.setVisible(true);
-      JOptionPane.showMessageDialog(
-          frame,
-          new JLabel(
-              "<html>"
-                  + "This is the DecorationPlacer, it will create a text file for you containing "
-                  + "the points to place images at. "
-                  + "<br><br>In order to begin this, you must already have the map file, as well "
-                  + "as the centers.txt and polygons.txt finished. "
-                  + "<br>To start, load you map image. Then you will be asked which kind of Image "
-                  + "Point File you are creating. "
-                  + "<br><br>There are basically 2 different kinds of image point files, and with "
-                  + "each of those are 2 different sub-types. "
-                  + "<br>The 1st type is a folder full of many different images, that after being "
-                  + "placed on the map will never be changed. "
-                  + "<br>Examples of this are the decorations.txt file [misc folder] and the "
-                  + "name_place.txt file [territoryNames folder]. "
-                  + "<br>In these files the 'point' string directly corresponds to exact name of "
-                  + "an image file in the folder, with the only "
-                  + "<br>exception being whether the point string needs the .png extension or "
-                  + "not (decorations do, name_place does not). "
-                  + "<br><br>The 2nd type is single image, or small set of images, where the "
-                  + "chosen image is determined by something in the xml file. "
-                  + "<br>Examples of this are the pu_place.txt file [PUs folder] and the "
-                  + "capitols.txt file [flags folder]. "
-                  + "<br>In these files, the 'point' string is the exact name of a territory, "
-                  + "while the image file has a different name, "
-                  + "<br>and is chosen by the engine based on the game data.  For things like the "
-                  + "pu_place you may want the decoration placer "
-                  + "<br>to generate placements for all territories, while others like capitols "
-                  + "are more rare and you may want to individually "
-                  + "<br>select which territories you need a placement point for."
-                  + "<br><br>After selecting the point file type you want to make, the program "
-                  + "will choose the default selections for you, "
-                  + "<br>but it will still confirm with you by asking you the questions. Just hit "
-                  + "'enter' a lot if you do not know the answers. "
-                  + "<br><br>Any images that this program cannot find the point for, will start "
-                  + "in the upper left corner of the map, "
-                  + "<br>and you may click on them to move them to their appropriate place."
-                  + "<br><br>Do not forget to save the points when finished. To save and continue "
-                  + "with another set of images, choose the "
-                  + "<br>option to 'Save Current And Keep On Map And Load New'.  To reset all "
-                  + "currently image points, use 'Load Image Points'."
-                  + "</html>"));
-      frame.loadImagesAndPoints();
-    } else {
-      log.info("No Image Map Selected. Shutting down.");
-    }
+  @Override
+  public MapEditorFrame getFrame(Path mapPath) throws IOException {
+    return new DecorationPlacerFrame(mapPath);
   }
 
-  private final class DecorationPlacerFrame extends JFrame {
+  @Override
+  public String getWelcomeMessage() {
+    return """
+        <html>\
+        This is the DecorationPlacer, it will create a text file for you containing \
+        the points to place images at. \
+        <br><br>In order to begin this, you must already have the map file, as well \
+        as the centers.txt and polygons.txt finished. \
+        <br>To start, load you map image. Then you will be asked which kind of Image \
+        Point File you are creating. \
+        <br><br>There are basically 2 different kinds of image point files, and with \
+        each of those are 2 different sub-types. \
+        <br>The 1st type is a folder full of many different images, that after being \
+        placed on the map will never be changed. \
+        <br>Examples of this are the decorations.txt file [misc folder] and the \
+        name_place.txt file [territoryNames folder]. \
+        <br>In these files the 'point' string directly corresponds to exact name of \
+        an image file in the folder, with the only \
+        <br>exception being whether the point string needs the .png extension or \
+        not (decorations do, name_place does not). \
+        <br><br>The 2nd type is single image, or small set of images, where the \
+        chosen image is determined by something in the xml file. \
+        <br>Examples of this are the pu_place.txt file [PUs folder] and the \
+        capitols.txt file [flags folder]. \
+        <br>In these files, the 'point' string is the exact name of a territory, \
+        while the image file has a different name, \
+        <br>and is chosen by the engine based on the game data.  For things like the \
+        pu_place you may want the decoration placer \
+        <br>to generate placements for all territories, while others like capitols \
+        are more rare and you may want to individually \
+        <br>select which territories you need a placement point for.\
+        <br><br>After selecting the point file type you want to make, the program \
+        will choose the default selections for you, \
+        <br>but it will still confirm with you by asking you the questions. Just hit \
+        'enter' a lot if you do not know the answers. \
+        <br><br>Any images that this program cannot find the point for, will start \
+        in the upper left corner of the map, \
+        <br>and you may click on them to move them to their appropriate place.\
+        <br><br>Do not forget to save the points when finished. To save and continue \
+        with another set of images, choose the \
+        <br>option to 'Save Current And Keep On Map And Load New'.  To reset all \
+        currently image points, use 'Load Image Points'.\
+        </html>""";
+  }
+
+  private static final class DecorationPlacerFrame extends MapEditorFrame {
     private static final long serialVersionUID = 6385408390173085656L;
 
     // The map image will be stored here
-    private Image image;
     // hash map for image points
     private Map<String, List<Point>> currentPoints = new HashMap<>();
     // hash map for center points
     private final Map<String, Point> centers;
     // hash map for polygon points
     private final Map<String, List<Polygon>> polygons;
-    private final JLabel locationLabel = new JLabel();
-    private Path currentImageFolderLocation = null;
+    private @Nullable Path currentImageFolderLocation = null;
     private Path currentImagePointsTextFile = null;
     private Point currentMousePoint = new Point(0, 0);
     private Triple<String, Image, Point> currentSelectedImage = null;
     private Map<String, Tuple<Image, List<Point>>> currentImagePoints = new HashMap<>();
     private boolean highlightAll;
     private boolean createNewImageOnRightClick = false;
-    private Image staticImageForPlacing = null;
+    private @Nullable Image staticImageForPlacing = null;
     private boolean showFromTopLeft = true;
-    private ImagePointType imagePointType = ImagePointType.decorations;
+    private ImagePointType imagePointType = ImagePointType.DECORATIONS;
     private boolean cheapMutex = false;
     private boolean showPointNames = false;
 
     DecorationPlacerFrame(final Path mapFolder) throws IOException {
-      super("Decoration Placer");
-      setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      setLocationRelativeTo(null);
+      super("Decoration Placer", mapFolder);
       highlightAll = false;
-      final Path fileCenters =
-          FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "centers.txt");
-      if (Files.exists(fileCenters)
-          && JOptionPane.showConfirmDialog(
-                  new JPanel(),
-                  "A centers.txt file was found in the map's folder, do you want to use "
-                      + "the file to supply the territories centers?",
-                  "File Suggestion",
-                  JOptionPane.YES_NO_CANCEL_OPTION)
-              == 0) {
-        try {
-          log.info("Centers : " + fileCenters);
-          centers = PointFileReaderWriter.readOneToOne(fileCenters);
-        } catch (final IOException e) {
-          log.error("Something wrong with Centers file");
-          throw e;
-        }
-      } else {
-        try {
-          log.info("Select the Centers file");
-          final Path centerPath =
-              new FileOpen("Select A Center File", mapFolderLocation, ".txt").getFile();
-          if (centerPath != null) {
-            log.info("Centers : " + centerPath);
-            centers = PointFileReaderWriter.readOneToOne(centerPath);
-          } else {
-            log.info("You must specify a centers file.");
-            log.info("Shutting down.");
-            throw new IOException("no centers file specified");
-          }
-        } catch (final IOException e) {
-          log.error("Something wrong with Centers file");
-          throw e;
-        }
+      final Path centersFile = getCentersFile(mapFolder);
+      try {
+        log.info("Centers : {}", centersFile);
+        centers = PointFileReaderWriter.readOneToOne(centersFile);
+      } catch (final IOException e) {
+        log.error("Something wrong with Centers file", e);
+        throw e;
       }
-      final Path filePoly =
-          FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "polygons.txt");
-      if (Files.exists(filePoly)
-          && JOptionPane.showConfirmDialog(
-                  new JPanel(),
-                  "A polygons.txt file was found in the map's folder, "
-                      + "do you want to use the file to supply the territories polygons?",
-                  "File Suggestion",
-                  JOptionPane.YES_NO_CANCEL_OPTION)
-              == 0) {
-        try {
-          log.info("Polygons : " + filePoly);
-          polygons = PointFileReaderWriter.readOneToManyPolygons(filePoly);
-        } catch (final IOException e) {
-          log.error("Something wrong with your Polygons file: " + filePoly.toAbsolutePath());
-          throw e;
-        }
-      } else {
-        log.info("Select the Polygons file");
-        final Path polyPath =
-            new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile();
-        if (polyPath != null) {
-          log.info("Polygons : " + polyPath);
-          try {
-            polygons = PointFileReaderWriter.readOneToManyPolygons(polyPath);
-          } catch (final IOException e) {
-            log.error("Something wrong with your Polygons file: " + polyPath);
-            throw e;
-          }
-        } else {
-          log.info("You must specify a Polgyon file.");
-          log.info("Shutting down.");
-          throw new IOException("no polygons file specified");
-        }
+      final Path polygonsPath = getPolygonsPath(mapFolder);
+      try {
+        log.info("Polygons : {}", polygonsPath);
+        polygons = PointFileReaderWriter.readOneToManyPolygons(polygonsPath);
+      } catch (final IOException e) {
+        log.error("Something wrong with your Polygons file: {}", polygonsPath);
+        throw e;
       }
-      image = FileHelper.newImage(mapFolder);
-      final JPanel imagePanel = newMainPanel();
-      /*
-       * Add a mouse listener to show X : Y coordinates on the lower left corner of the screen.
-       */
-      imagePanel.addMouseMotionListener(
-          new MouseMotionAdapter() {
-            @Override
-            public void mouseMoved(final MouseEvent e) {
-              locationLabel.setText(
-                  (currentSelectedImage == null ? "" : currentSelectedImage.getFirst())
-                      + "    x:"
-                      + e.getX()
-                      + " y:"
-                      + e.getY());
-              currentMousePoint = new Point(e.getPoint());
-              repaint();
-            }
-          });
-      locationLabel.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, 16));
-      /*
-       * Add a mouse listener to monitor for right mouse button being clicked.
-       */
-      imagePanel.addMouseListener(
-          new MouseAdapter() {
-            @Override
-            public void mouseClicked(final MouseEvent e) {
-              mouseEvent(
-                  e.isControlDown() || e.isShiftDown(), SwingUtilities.isRightMouseButton(e));
-            }
-          });
-      // set up the image panel size dimensions ...etc
-      imagePanel.setMinimumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
-      imagePanel.setPreferredSize(new Dimension(image.getWidth(this), image.getHeight(this)));
-      imagePanel.setMaximumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
-      // set up the layout manager
-      this.getContentPane().setLayout(new BorderLayout());
-      this.getContentPane().add(new JScrollPane(imagePanel), BorderLayout.CENTER);
-      this.getContentPane().add(locationLabel, BorderLayout.SOUTH);
+      initializeLayout();
+      loadImagesAndPoints();
+    }
+
+    @Override
+    protected Font getLocationLabelFont(Font defaultFont) {
+      return new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, 16);
+    }
+
+    @Override
+    protected String getLocationLabelPrefix() {
+      return (currentSelectedImage == null ? "" : currentSelectedImage.getFirst()) + "    ";
+    }
+
+    @Override
+    protected void reactToMouseMoved(MouseEvent e) {
+      currentMousePoint = new Point(e.getPoint());
+      repaint();
+    }
+
+    @Override
+    protected void reactToMouseClicked(MouseEvent e) {
+      mouseEvent(e.isControlDown() || e.isShiftDown(), SwingUtilities.isRightMouseButton(e));
+    }
+
+    @Override
+    protected void initializeLayout() {
       // set up the actions
       final Action openAction = SwingAction.of("Load Image Locations", e -> loadImagesAndPoints());
       openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Image Points File");
@@ -347,6 +249,11 @@ public final class DecorationPlacer {
                 dispose();
               });
       exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
+      setupMenuBar(openAction, saveAction, exitAction, keepGoingAction);
+    }
+
+    private void setupMenuBar(
+        Action openAction, Action saveAction, Action exitAction, Action keepGoingAction) {
       // set up the menu items
       final JMenuItem openItem = new JMenuItem(openAction);
       openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
@@ -357,7 +264,7 @@ public final class DecorationPlacer {
       final JMenuBar menuBar = new JMenuBar();
       setJMenuBar(menuBar);
       final JMenu fileMenu = new JMenu("File");
-      fileMenu.setMnemonic('F');
+      fileMenu.setMnemonic(KeyEvent.VK_F);
       fileMenu.add(openItem);
       fileMenu.add(saveItem);
       fileMenu.add(keepGoingAction);
@@ -379,7 +286,7 @@ public final class DecorationPlacer {
           SwingAction.of("Clear All Current Points.", e -> currentImagePoints.clear());
       clearAction.putValue(Action.SHORT_DESCRIPTION, "Delete all points.");
       final JMenu editMenu = new JMenu("Edit");
-      editMenu.setMnemonic('E');
+      editMenu.setMnemonic(KeyEvent.VK_E);
       editMenu.add(highlightAllModeItem);
       editMenu.add(showNamesModeItem);
       editMenu.addSeparator();
@@ -388,7 +295,66 @@ public final class DecorationPlacer {
       menuBar.add(editMenu);
     }
 
-    private JPanel newMainPanel() {
+    @Nonnull
+    private Path getPolygonsPath(Path mapFolder) throws IOException {
+      final Path polygonsPath;
+      final Path filePoly =
+          FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "polygons.txt");
+      if (Files.exists(filePoly)
+          && JOptionPane.showConfirmDialog(
+                  new JPanel(),
+                  "A polygons.txt file was found in the map's folder, "
+                      + "do you want to use the file to supply the territories polygons?",
+                  "File Suggestion",
+                  JOptionPane.YES_NO_CANCEL_OPTION)
+              == 0) {
+        polygonsPath = filePoly;
+      } else {
+        log.info("Select the Polygons file");
+        final Path polyPath =
+            new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile();
+        if (polyPath != null) {
+          polygonsPath = polyPath;
+        } else {
+          log.info("You must specify a Polygon file.");
+          log.info("Shutting down.");
+          throw new IOException("no polygons file specified");
+        }
+      }
+      return polygonsPath;
+    }
+
+    @Nonnull
+    private Path getCentersFile(Path mapFolder) throws IOException {
+      Path centersFile;
+      final Path fileCenters =
+          FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "centers.txt");
+      if (Files.exists(fileCenters)
+          && JOptionPane.showConfirmDialog(
+                  new JPanel(),
+                  "A centers.txt file was found in the map's folder, do you want to use "
+                      + "the file to supply the territories centers?",
+                  "File Suggestion",
+                  JOptionPane.YES_NO_CANCEL_OPTION)
+              == 0) {
+        centersFile = fileCenters;
+      } else {
+        log.info("Select the Centers file");
+        final Path centerPath =
+            new FileOpen("Select A Center File", mapFolderLocation, ".txt").getFile();
+        if (centerPath != null) {
+          centersFile = centerPath;
+        } else {
+          log.info("You must specify a centers file.");
+          log.info("Shutting down.");
+          throw new IOException("no centers file specified");
+        }
+      }
+      return centersFile;
+    }
+
+    @Override
+    protected JPanel createMainPanel() {
       return new JPanel() {
         private static final long serialVersionUID = -7130828419508975924L;
 
@@ -499,9 +465,9 @@ public final class DecorationPlacer {
       }
       try {
         PointFileReaderWriter.writeOneToMany(fileName, currentPoints);
-        log.info("Data written to: " + fileName.normalize().toAbsolutePath());
+        log.info("Data written to: {}", fileName.normalize().toAbsolutePath());
       } catch (final IOException e) {
-        log.error("Failed to save points: " + fileName, e);
+        log.error("Failed to save points: {}", fileName, e);
       }
     }
 
@@ -529,7 +495,7 @@ public final class DecorationPlacer {
       for (final ImagePointType type : ImagePointType.getTypes()) {
         if (type.toString().equals(choice)) {
           imagePointType = type;
-          log.info("Selected Type: " + choice);
+          log.info("Selected Type: {}", choice);
           break;
         }
       }
@@ -541,15 +507,16 @@ public final class DecorationPlacer {
       showFromTopLeft =
           JOptionPane.showOptionDialog(
                   this,
-                  "Are the images shown from the top left, or from the bottom left point? \r\n"
-                      + "All images are shown from the top left, except for 'name_place.txt', "
-                      + "'pu_place.txt', and 'comments.txt'. \r\n"
-                      + "For these 3 files, whether they are top left or bottom left is determined "
-                      + "by the \r\n"
-                      + "'map.properties' property: 'map.drawNamesFromTopLeft', which defaults to "
-                      + "false if not specified [meaning bottom left]. \r\n"
-                      + "Do NOT change this from whatever the default has choosen, unless you know "
-                      + "exactly what you are doing!",
+                  """
+                  Are the images shown from the top left, or from the bottom left point? \r
+                  All images are shown from the top left, except for 'name_place.txt', \
+                  'pu_place.txt', and 'comments.txt'. \r
+                  For these 3 files, whether they are top left or bottom left is determined \
+                  by the \r
+                  'map.properties' property: 'map.drawNamesFromTopLeft', which defaults to \
+                  false if not specified [meaning bottom left]. \r
+                  Do NOT change this from whatever the default has chosen, unless you know \
+                  exactly what you are doing!""",
                   "Show images from top left or bottom left point?",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.QUESTION_MESSAGE,
@@ -622,11 +589,12 @@ public final class DecorationPlacer {
         fillCurrentImagePointsBasedOnTextFile(
             JOptionPane.showOptionDialog(
                     this,
-                    "Are you going to do a point for every single territory (pu_place.txt) \r\n"
-                        + "Or are you going to do just a few territories (capitols.txt, "
-                        + "convoy.txt, vc.txt, etc, most others)?\r\n"
-                        + "(If you choose the later option, you must Right Click on a territory "
-                        + "to create an image for that territory.)",
+                    """
+                    Are you going to do a point for every single territory (pu_place.txt) \r
+                    Or are you going to do just a few territories (capitols.txt, \
+                    convoy.txt, vc.txt, etc, most others)?\r
+                    (If you choose the later option, you must Right Click on a territory \
+                    to create an image for that territory.)""",
                     "Fill in all territories OR let you select them?",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
@@ -667,7 +635,7 @@ public final class DecorationPlacer {
         try {
           currentPoints = PointFileReaderWriter.readOneToMany(centerName.getFile());
         } catch (final IOException e) {
-          log.error("Failed to load image points: " + centerName.getFile(), e);
+          log.error("Failed to load image points: {}", centerName.getFile(), e);
           currentPoints = new HashMap<>();
         }
       } else {
@@ -707,16 +675,16 @@ public final class DecorationPlacer {
       final int width = staticImageForPlacing.getWidth(null);
       final int height = staticImageForPlacing.getHeight(null);
       final int addY =
-          (imagePointType == ImagePointType.comments
+          (imagePointType == ImagePointType.COMMENTS
               ? -ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS
-              : (imagePointType == ImagePointType.pu_place
+              : (imagePointType == ImagePointType.PU_PLACE
                   ? ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS
                   : 0));
       if (fillInAllTerritories) {
         for (final Entry<String, Point> entry : centers.entrySet()) {
           List<Point> points = currentPoints.get(entry.getKey());
           if (points == null) {
-            log.info("Did NOT find point for: " + entry.getKey());
+            log.info("Did NOT find point for: {}", entry.getKey());
             points = new ArrayList<>();
             final Point p =
                 new Point(
@@ -724,7 +692,7 @@ public final class DecorationPlacer {
                     entry.getValue().y + addY + ((showFromTopLeft ? -1 : 1) * (height / 2)));
             points.add(p);
           } else {
-            log.info("Found point for: " + entry.getKey());
+            log.info("Found point for: {}", entry.getKey());
           }
           currentImagePoints.put(entry.getKey(), Tuple.of(staticImageForPlacing, points));
         }
@@ -733,16 +701,15 @@ public final class DecorationPlacer {
           currentImagePoints.put(entry.getKey(), Tuple.of(staticImageForPlacing, entry.getValue()));
         }
       }
-      // !fillInAllTerritories;
       createNewImageOnRightClick = true;
     }
 
     private void fillCurrentImagePointsBasedOnImageFolder(
         final boolean pointsAreExactlyTerritoryNames) {
       final int addY =
-          (imagePointType == ImagePointType.comments
+          (imagePointType == ImagePointType.COMMENTS
               ? -ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS
-              : (imagePointType == ImagePointType.pu_place
+              : (imagePointType == ImagePointType.PU_PLACE
                   ? ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS
                   : 0));
       final List<String> allTerritories = new ArrayList<>(centers.keySet());
@@ -762,7 +729,7 @@ public final class DecorationPlacer {
           points = new ArrayList<>();
           Point p = centers.get(possibleTerritoryName);
           if (p == null) {
-            log.info("Did NOT find point for: " + possibleTerritoryName);
+            log.info("Did NOT find point for: {}", possibleTerritoryName);
             points.add(new Point(50, 50));
           } else {
             p =
@@ -773,7 +740,7 @@ public final class DecorationPlacer {
                         + ((showFromTopLeft ? -1 : 1) * (territoryImage.getHeight(null) / 2)));
             points.add(p);
             allTerritories.remove(possibleTerritoryName);
-            log.info("Found point for: " + possibleTerritoryName);
+            log.info("Found point for: {}", possibleTerritoryName);
           }
         } else {
           allTerritories.remove(possibleTerritoryName);
@@ -782,10 +749,10 @@ public final class DecorationPlacer {
             (pointsAreExactlyTerritoryNames ? possibleTerritoryName : imageName),
             Tuple.of(territoryImage, points));
       }
-      if (!allTerritories.isEmpty() && imagePointType == ImagePointType.name_place) {
+      if (!allTerritories.isEmpty() && imagePointType == ImagePointType.NAME_PLACE) {
         JOptionPane.showMessageDialog(
             this, new JLabel("Territory images not found in folder: " + allTerritories));
-        log.info("Territory images not found in folder: " + allTerritories);
+        log.info("Territory images not found in folder: {}", allTerritories);
       }
     }
 
@@ -794,7 +761,7 @@ public final class DecorationPlacer {
         return;
       }
       if (!rightMouse && !ctrlDown && currentSelectedImage == null) {
-        // find whatever image we are left clicking on
+        // find whatever image we are left-clicking on
         Point testPoint = null;
         for (final Entry<String, Tuple<Image, List<Point>>> entry : currentImagePoints.entrySet()) {
           for (final Point p : entry.getValue().getSecond()) {
@@ -876,7 +843,7 @@ public final class DecorationPlacer {
 
   @Getter
   enum ImagePointType {
-    decorations(
+    DECORATIONS(
         "decorations.txt",
         "misc",
         "decorationExample.png",
@@ -891,7 +858,7 @@ public final class DecorationPlacer {
             + "Right click = create a copy of currently selected image OR closest image <br>"
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-    name_place(
+    NAME_PLACE(
         "name_place.txt",
         "territoryNames",
         "territoryName.png",
@@ -907,7 +874,7 @@ public final class DecorationPlacer {
             + "Right click = nothing <br>"
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-    pu_place(
+    PU_PLACE(
         "pu_place.txt",
         "PUs",
         "2.png",
@@ -923,7 +890,7 @@ public final class DecorationPlacer {
             + "Right click = create an image and point for this territory if none exists yet <br>"
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-    capitols(
+    CAPITOLS(
         "capitols.txt",
         "flags",
         "Neutral_large.png",
@@ -939,7 +906,7 @@ public final class DecorationPlacer {
             + "Right click = create an image and point for this territory if none exists yet <br>"
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-    vc(
+    VICTORY_CITIES(
         "vc.txt",
         "misc",
         "vc.png",
@@ -955,7 +922,7 @@ public final class DecorationPlacer {
             + "Right click = create an image and point for this territory if none exists yet <br>"
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-    blockade(
+    BLOCKADE(
         "blockade.txt",
         "misc",
         "blockade.png",
@@ -971,7 +938,7 @@ public final class DecorationPlacer {
             + "Right click = create an image and point for this territory if none exists yet <br>"
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-    convoy(
+    CONVOY(
         "convoy.txt",
         "flags",
         "Neutral.png",
@@ -987,7 +954,7 @@ public final class DecorationPlacer {
             + "Right click = create an image and point for this territory if none exists yet <br>"
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-    comments(
+    COMMENTS(
         "comments.txt",
         "misc",
         "exampleConvoyText.png",
@@ -1003,7 +970,7 @@ public final class DecorationPlacer {
             + "Right click = create an image and point for this territory if none exists yet <br>"
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-    kamikaze_place(
+    KAMIKAZE_PLACE(
         "kamikaze_place.txt",
         "flags",
         "Neutral_fade.png",
@@ -1019,7 +986,7 @@ public final class DecorationPlacer {
             + "Right click = create an image and point for this territory if none exists yet <br>"
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-    territory_effects(
+    TERRITORY_EFFECTS(
         "territory_effects.txt",
         "territoryEffects",
         "mountain_large.png",
@@ -1074,16 +1041,16 @@ public final class DecorationPlacer {
 
     static ImagePointType[] getTypes() {
       return new ImagePointType[] {
-        decorations,
-        name_place,
-        pu_place,
-        capitols,
-        vc,
-        blockade,
-        convoy,
-        comments,
-        kamikaze_place,
-        territory_effects
+        DECORATIONS,
+        NAME_PLACE,
+        PU_PLACE,
+        CAPITOLS,
+        VICTORY_CITIES,
+        BLOCKADE,
+        CONVOY,
+        COMMENTS,
+        KAMIKAZE_PLACE,
+        TERRITORY_EFFECTS
       };
     }
   }

@@ -1,7 +1,5 @@
 package tools.map.making;
 
-import static com.google.common.base.Preconditions.checkState;
-
 import java.awt.Dimension;
 import java.awt.Polygon;
 import java.awt.Shape;
@@ -27,14 +25,14 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.java.AlphanumComparator;
 import org.triplea.util.PointFileReaderWriter;
 import tools.image.FileOpen;
 import tools.image.FileSave;
-import tools.image.MapFolderLocationSystemProperty;
+import tools.util.ToolArguments;
+import tools.util.ToolRunnableTask;
 import tools.util.ToolsUtil;
 
 /**
@@ -42,7 +40,7 @@ import tools.util.ToolsUtil;
  * polygons.txt file Outputs - a list of connections between the Polygons
  */
 @Slf4j
-public final class ConnectionFinder {
+public final class ConnectionFinder extends ToolRunnableTask {
   @NonNls private static final String LINE_THICKNESS = "triplea.map.lineThickness";
   @NonNls private static final String SCALE_PIXELS = "triplea.map.scalePixels";
   @NonNls private static final String MIN_OVERLAP = "triplea.map.minOverlap";
@@ -59,18 +57,12 @@ public final class ConnectionFinder {
   // default 32, or if LINE_THICKNESS is given 16 x line thickness
   private double minOverlap = 32.0;
 
-  /**
-   * Runs the connection finder tool.
-   *
-   * @throws IllegalStateException If not invoked on the EDT.
-   */
   public static void run() {
-    checkState(SwingUtilities.isEventDispatchThread());
-
-    new ConnectionFinder().runInternal();
+    runTask(ConnectionFinder.class);
   }
 
-  private void runInternal() {
+  @Override
+  protected void runInternal() {
     handleSystemProperties();
     JOptionPane.showMessageDialog(
         null,
@@ -115,7 +107,7 @@ public final class ConnectionFinder {
             entry.getKey(), entry.getValue().stream().map(Area::new).collect(Collectors.toList()));
       }
     } catch (final IOException e) {
-      log.error("Failed to load polygons: " + polyFile.toAbsolutePath(), e);
+      log.error("Failed to load polygons: {}", polyFile.toAbsolutePath(), e);
       return;
     }
     if (!dimensionsSet) {
@@ -235,7 +227,7 @@ public final class ConnectionFinder {
           }
           out.write(String.valueOf(connectionsString).getBytes(StandardCharsets.UTF_8));
         }
-        log.info("Data written to: " + fileName.normalize().toAbsolutePath());
+        log.info("Data written to: {}", fileName.normalize().toAbsolutePath());
       }
     } catch (final Exception e) {
       log.error("Failed to write connections", e);
@@ -424,20 +416,20 @@ public final class ConnectionFinder {
   }
 
   private void handleSystemProperties() {
-    mapFolderLocation = MapFolderLocationSystemProperty.read();
+    ToolArguments.ifMapFolder(mapFolderProperty -> mapFolderLocation = mapFolderProperty);
     String value = System.getProperty(LINE_THICKNESS);
-    if (value != null && value.length() > 0) {
+    if (value != null && !value.isEmpty()) {
       final int lineThickness = Integer.parseInt(value);
       scalePixels = lineThickness * 4;
       minOverlap = scalePixels * 4.0;
       dimensionsSet = true;
     }
     value = System.getProperty(MIN_OVERLAP);
-    if (value != null && value.length() > 0) {
+    if (value != null && !value.isEmpty()) {
       minOverlap = Integer.parseInt(value);
     }
     value = System.getProperty(SCALE_PIXELS);
-    if (value != null && value.length() > 0) {
+    if (value != null && !value.isEmpty()) {
       scalePixels = Integer.parseInt(value);
     }
   }

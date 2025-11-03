@@ -1,7 +1,5 @@
 package tools.map.making;
 
-import static com.google.common.base.Preconditions.checkState;
-
 import games.strategy.engine.data.properties.PropertiesUi;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -45,15 +43,14 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.IntTextField;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 import org.triplea.util.Tuple;
 import tools.image.FileSave;
-import tools.image.MapFolderLocationSystemProperty;
 import tools.util.ToolArguments;
+import tools.util.ToolRunnableTask;
 
 /**
  * This is the MapPropertiesMaker, it will create a map.properties file for you. <br>
@@ -65,24 +62,18 @@ import tools.util.ToolArguments;
  * optional, fields.
  */
 @Slf4j
-public final class MapPropertiesMaker {
+public final class MapPropertiesMaker extends ToolRunnableTask {
   private Path mapFolderLocation = null;
   private final MapProperties mapProperties = new MapProperties();
 
   private MapPropertiesMaker() {}
 
-  /**
-   * Runs the map properties maker tool.
-   *
-   * @throws IllegalStateException If not invoked on the EDT.
-   */
   public static void run() {
-    checkState(SwingUtilities.isEventDispatchThread());
-
-    new MapPropertiesMaker().runInternal();
+    runTask(MapPropertiesMaker.class);
   }
 
-  private void runInternal() {
+  @Override
+  protected void runInternal() {
     handleSystemProperties();
     if (mapFolderLocation == null) {
       log.info("Select the map folder");
@@ -90,7 +81,7 @@ public final class MapPropertiesMaker {
           new FileSave("Where is your map's folder?", null, mapFolderLocation).getFile();
       if (mapFolder != null && Files.exists(mapFolder)) {
         mapFolderLocation = mapFolder;
-        System.setProperty(ToolArguments.MAP_FOLDER, mapFolderLocation.toString());
+        ToolArguments.MAP_FOLDER.setSystemProperty(mapFolderLocation.toString());
       }
     }
     if (mapFolderLocation != null) {
@@ -133,7 +124,7 @@ public final class MapPropertiesMaker {
       final JMenuBar menuBar = new JMenuBar();
       setJMenuBar(menuBar);
       final JMenu fileMenu = new JMenu("File");
-      fileMenu.setMnemonic('F');
+      fileMenu.setMnemonic(KeyEvent.VK_F);
       // fileMenu.add(openItem);
       fileMenu.add(saveItem);
       fileMenu.addSeparator();
@@ -506,7 +497,7 @@ public final class MapPropertiesMaker {
             Writer out = new OutputStreamWriter(sink, StandardCharsets.UTF_8)) {
           out.write(stringToWrite);
         }
-        log.info("Data written to: " + fileName.normalize().toAbsolutePath());
+        log.info("Data written to: {}", fileName.normalize().toAbsolutePath());
         log.info(stringToWrite);
       } catch (final Exception e) {
         log.error("Failed to save map properties", e);
@@ -525,7 +516,7 @@ public final class MapPropertiesMaker {
         } catch (final IllegalArgumentException
             | InvocationTargetException
             | IllegalAccessException e) {
-          log.error("Failed to invoke method reflectively: " + outMethod.getName(), e);
+          log.error("Failed to invoke method reflectively: {}", outMethod.getName(), e);
         }
       }
       return outString.toString();
@@ -533,37 +524,17 @@ public final class MapPropertiesMaker {
   }
 
   private void handleSystemProperties() {
-    mapFolderLocation = MapFolderLocationSystemProperty.read();
-    final String zoomString = System.getProperty(ToolArguments.UNIT_ZOOM);
-    if (zoomString != null && zoomString.length() > 0) {
-      try {
-        mapProperties.setUnitsScale(Double.parseDouble(zoomString));
-        log.info("Unit Zoom Percent to use: " + zoomString);
-      } catch (final Exception e) {
-        log.error("Not a decimal percentage: " + zoomString);
-      }
-    }
-    final String widthString = System.getProperty(ToolArguments.UNIT_WIDTH);
-    if (widthString != null && widthString.length() > 0) {
-      try {
-        final int unitWidth = Integer.parseInt(widthString);
-        mapProperties.setUnitsWidth(unitWidth);
-        mapProperties.setUnitsCounterOffsetWidth(unitWidth / 4);
-        log.info("Unit Width to use: " + unitWidth);
-      } catch (final Exception e) {
-        log.error("Not an integer: " + widthString);
-      }
-    }
-    final String heightString = System.getProperty(ToolArguments.UNIT_HEIGHT);
-    if (heightString != null && heightString.length() > 0) {
-      try {
-        final int unitHeight = Integer.parseInt(heightString);
-        mapProperties.setUnitsHeight(unitHeight);
-        mapProperties.setUnitsCounterOffsetHeight(unitHeight);
-        log.info("Unit Height to use: " + unitHeight);
-      } catch (final Exception e) {
-        log.error("Not an integer: " + heightString);
-      }
-    }
+    ToolArguments.ifMapFolder(mapFolderProperty -> mapFolderLocation = mapFolderProperty);
+    ToolArguments.ifUnitZoom(mapProperties::setUnitsScale);
+    ToolArguments.ifUnitWidth(
+        unitWidthProperty -> {
+          mapProperties.setUnitsWidth(unitWidthProperty);
+          mapProperties.setUnitsCounterOffsetWidth(unitWidthProperty / 4);
+        });
+    ToolArguments.ifUnitHeight(
+        unitHeightProperty -> {
+          mapProperties.setUnitsHeight(unitHeightProperty);
+          mapProperties.setUnitsCounterOffsetHeight(unitHeightProperty);
+        });
   }
 }

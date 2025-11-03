@@ -1,10 +1,6 @@
 package tools.image;
 
-import static com.google.common.base.Preconditions.checkState;
-
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
@@ -12,9 +8,7 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,18 +19,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -44,6 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.FileChooser;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
+import tools.util.MapEditorRunnableTask;
 
 /**
  * Utility to break a map into polygons. Inputs - a map with 1 pixel wide borders - a list of
@@ -51,164 +46,136 @@ import org.triplea.util.PointFileReaderWriter;
  * Outputs - a list of polygons for each country
  */
 @Slf4j
-public final class PolygonGrabber {
-  private Path mapFolderLocation;
+public final class PolygonGrabber extends MapEditorRunnableTask {
 
   private PolygonGrabber() {}
 
-  /**
-   * Runs the polygon grabber tool.
-   *
-   * @throws IllegalStateException If not invoked on the EDT.
-   */
   public static void run() {
-    checkState(SwingUtilities.isEventDispatchThread());
-
-    try {
-      new PolygonGrabber().runInternal();
-    } catch (final IOException e) {
-      log.error("failed to run polygon grabber", e);
-    }
+    runTask(PolygonGrabber.class);
   }
 
-  private void runInternal() throws IOException {
-    mapFolderLocation = MapFolderLocationSystemProperty.read();
-    log.info("Select the map");
-    final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
-    final Path mapName = mapSelection.getFile();
-    if (mapFolderLocation == null && mapSelection.getFile() != null) {
-      mapFolderLocation = mapSelection.getFile().getParent();
-    }
-    if (mapName != null) {
-      log.info("Map : " + mapName);
-      final PolygonGrabberFrame frame = new PolygonGrabberFrame(mapName);
-      frame.setSize(800, 600);
-      frame.setLocationRelativeTo(null);
-      frame.setVisible(true);
-      JOptionPane.showMessageDialog(
-          frame,
-          new JLabel(
-              "<html>"
-                  + "This is the PolygonGrabber, it will create a polygons.txt file for you. "
-                  + "<br>In order to run this, you must already have created a center.txt file. "
-                  + "<br>Please click near the center of every single territory and sea zone on "
-                  + "your map. "
-                  + "<br>The grabber will then fill in the territory based on the borders it finds."
-                  + "<br><br>If the territory shape or borders do not match what you intend, then"
-                  + "<br>borders might have a gap or differently colored pixel in the border."
-                  + "<br>You can also using the Clean Up Image... function from the Edit menu "
-                  + "first to automatically fix some problems with the original image."
-                  + "<br><br>These borders will define the shape of the territory in TripleA."
-                  + "<br><br>When a territory is inside of another territory, you can turn on "
-                  + "'island mode' to be able to see it."
-                  + "<br><br>You can also load an existing polygons.txt file, then make "
-                  + "modifications to it, then save it again."
-                  + "<br><br>LEFT CLICK = fill in a territory's borders."
-                  + "<br><br>Holding CTRL/SHIFT while LEFT CLICKING = add multiple territories "
-                  + "together (eg: islands)."
-                  + "<br><br>RIGHT CLICK = save or replace those borders for that territory."
-                  + "<br><br>When finished, save the polygons and exit."
-                  + "</html>"));
-    } else {
-      log.info("No Image Map Selected. Shutting down.");
-    }
+  @Override
+  public MapEditorFrame getFrame(Path mapPath) throws IOException {
+    return new PolygonGrabberFrame(mapPath);
   }
 
-  private final class PolygonGrabberFrame extends JFrame {
+  @Override
+  public String getWelcomeMessage() {
+    return """
+        <html>\
+        This is the PolygonGrabber, it will create a polygons.txt file for you. \
+        <br>In order to run this, you must already have created a center.txt file. \
+        <br>Please click near the center of every single territory and sea zone on \
+        your map. \
+        <br>The grabber will then fill in the territory based on the borders it finds.\
+        <br><br>If the territory shape or borders do not match what you intend, then\
+        <br>borders might have a gap or differently colored pixel in the border.\
+        <br>You can also using the Clean Up Image... function from the Edit menu \
+        first to automatically fix some problems with the original image.\
+        <br><br>These borders will define the shape of the territory in TripleA.\
+        <br><br>When a territory is inside of another territory, you can turn on \
+        'island mode' to be able to see it.\
+        <br><br>You can also load an existing polygons.txt file, then make \
+        modifications to it, then save it again.\
+        <br><br>LEFT CLICK = fill in a territory's borders.\
+        <br><br>Holding CTRL/SHIFT while LEFT CLICKING = add multiple territories \
+        together (eg: islands).\
+        <br><br>RIGHT CLICK = save or replace those borders for that territory.\
+        <br><br>When finished, save the polygons and exit.\
+        </html>""";
+  }
+
+  private static final class PolygonGrabberFrame extends MapEditorFrame {
     private static final long serialVersionUID = 6381498094805120687L;
 
-    private boolean islandMode;
-    private final JCheckBoxMenuItem modeItem;
-    // the current set of polyongs
-    private List<Polygon> current;
     // holds the map image
-    private final BufferedImage bufferedImage;
-    private final JPanel imagePanel;
-    // maps String -> List of polygons
+    private boolean islandMode = false;
+    // maps territory String -> List of polygons
     private Map<String, List<Polygon>> polygons = new HashMap<>();
-    // holds the centers for the polygons
-    private Map<String, Point> centers;
-    private final JLabel location = new JLabel();
+
+    // the current set of polygons
+    private List<Polygon> current;
+    // maps territory String ->  polygon center of territory
+    private final Map<String, Point> centers;
+
     private final Point testPoint = new Point();
 
     /**
-     * Asks user to specify a file with center points. If not program will exit. We setup the mouse
+     * Asks user to specify a file with center points. If not program will exit. We set up the mouse
      * listeners and toolbars and load the actual image of the map here.
      *
      * @param mapFolder The {@link Path} pointing to the map folder.
      */
     PolygonGrabberFrame(final Path mapFolder) throws IOException {
-      super("Polygon grabber");
-      setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      final Path file = FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "centers.txt");
-      if (Files.exists(file)
-          && JOptionPane.showConfirmDialog(
-                  new JPanel(),
-                  "A centers.txt file was found in the map's folder, do you want to use "
-                      + "the file to supply the territories names?",
-                  "File Suggestion",
-                  JOptionPane.YES_NO_CANCEL_OPTION)
-              == 0) {
-        try {
-          log.info("Centers : " + file);
-          centers = PointFileReaderWriter.readOneToOne(file);
-        } catch (final IOException e) {
-          log.error("Something wrong with Centers file", e);
-        }
-      } else {
-        try {
-          log.info("Select the Centers file");
-          final Path centerPath =
-              new FileOpen("Select A Center File", mapFolderLocation, ".txt").getFile();
-          if (centerPath != null) {
-            log.info("Centers : " + centerPath);
-            centers = PointFileReaderWriter.readOneToOne(centerPath);
-          } else {
-            log.info("You must specify a centers file.");
-            log.info("Shutting down.");
-            throw new IOException("no centers file specified");
-          }
-        } catch (final IOException e) {
-          log.error("Something wrong with Centers file");
-          throw e;
-        }
+      super("Polygon grabber", mapFolder);
+      final Path centersFile = getCentersFile(mapFolder);
+      try {
+        log.info("Centers : {}", centersFile);
+        centers = PointFileReaderWriter.readOneToOne(centersFile);
+      } catch (final IOException e) {
+        log.error("Something wrong with Centers file", e);
+        throw e;
       }
-      bufferedImage = newBufferedImage(mapFolder);
-      imagePanel = newMainPanel();
-      /*
-       * Add a mouse listener to show X : Y coordinates on the lower left corner of the screen.
-       */
-      imagePanel.addMouseMotionListener(
-          new MouseMotionAdapter() {
-            @Override
-            public void mouseMoved(final MouseEvent e) {
-              location.setText("x: " + e.getX() + " y: " + e.getY());
-            }
-          });
-      /*
-       * Add a mouse listener to monitor for right mouse button being clicked.
-       */
-      imagePanel.addMouseListener(
-          new MouseAdapter() {
-            @Override
-            public void mouseClicked(final MouseEvent e) {
-              mouseEvent(
-                  e.getPoint(),
-                  e.isControlDown() || e.isShiftDown(),
-                  SwingUtilities.isRightMouseButton(e));
-            }
-          });
-      // set up the image panel size dimensions ...etc
-      imagePanel.setMinimumSize(
-          new Dimension(bufferedImage.getWidth(this), bufferedImage.getHeight(this)));
-      imagePanel.setPreferredSize(
-          new Dimension(bufferedImage.getWidth(this), bufferedImage.getHeight(this)));
-      imagePanel.setMaximumSize(
-          new Dimension(bufferedImage.getWidth(this), bufferedImage.getHeight(this)));
-      // set up the layout manager
-      this.getContentPane().setLayout(new BorderLayout());
-      this.getContentPane().add(new JScrollPane(imagePanel), BorderLayout.CENTER);
-      this.getContentPane().add(location, BorderLayout.SOUTH);
+    }
+
+    /**
+     * We create the image of the map here and assure that it is loaded properly.
+     *
+     * @param mapFolder The {@link Path} pointing to the map folder.
+     */
+    @Override
+    protected BufferedImage loadImage(final Path mapFolder) {
+      final Image newImage = FileHelper.newImage(mapFolder);
+      final BufferedImage newBufferedImage =
+          new BufferedImage(
+              newImage.getWidth(null), newImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+      final Graphics g = newBufferedImage.getGraphics();
+      g.drawImage(newImage, 0, 0, this);
+      g.dispose();
+      return newBufferedImage;
+    }
+
+    /**
+     * Current problem is that islands inside sea zones are not recognized when filling in the sea
+     * zone with a color, so we just outline in red instead of filling. We fill for selecting
+     * territories only for ease of use. We use var "islandMode" to dictate how to paint the map.
+     */
+    @Override
+    protected JPanel createMainPanel() {
+      return new JPanel() {
+        private static final long serialVersionUID = 4106539186003148628L;
+
+        @Override
+        public void paint(final Graphics g) {
+          g.drawImage(image, 0, 0, this);
+          g.setColor(Color.red);
+          if (islandMode) {
+            polygons
+                .values()
+                .forEach(territoryPolygons -> territoryPolygons.forEach(g::drawPolygon));
+          } else {
+            polygons
+                .values()
+                .forEach(
+                    territoryPolygons ->
+                        territoryPolygons.forEach(
+                            polygon -> {
+                              g.setColor(Color.yellow);
+                              g.fillPolygon(polygon);
+                              g.setColor(Color.black);
+                              g.drawPolygon(polygon);
+                            }));
+          }
+          g.setColor(Color.red);
+          if (current != null) {
+            current.forEach(g::fillPolygon);
+          }
+        } // paint
+      };
+    }
+
+    @Override
+    protected void initializeLayout() {
       // set up the actions
       final Action openAction = SwingAction.of("Load Polygons", e -> loadPolygons());
       openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Polygon Points FIle");
@@ -240,69 +207,98 @@ public final class PolygonGrabber {
                 current = new ArrayList<>();
                 final BufferedImage imageCopy =
                     new BufferedImage(
-                        bufferedImage.getWidth(null),
-                        bufferedImage.getHeight(null),
-                        BufferedImage.TYPE_INT_ARGB);
+                        image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
                 final Graphics g = imageCopy.getGraphics();
-                g.drawImage(bufferedImage, 0, 0, null);
-                for (final String territoryName : centers.keySet()) {
-                  final Point center = centers.get(territoryName);
-                  log.info("Detecting Polygon for: " + territoryName);
-                  final @Nullable Polygon p = findPolygon(center.x, center.y);
-                  // test if the poly contains the center point (this often fails when there is an
-                  // island right above (because findPolygon will grab the island instead)
-                  if (p == null || !p.contains(center)) {
-                    continue;
-                  }
-                  // test if this poly contains any other centers, and if so do not do this one. let
-                  // the user manually do it to make sure it gets done properly
-                  boolean hasIslands = false;
-                  for (final Point otherCenterPoint : centers.values()) {
-                    if (center.equals(otherCenterPoint)) {
-                      continue;
-                    }
-                    if (p.contains(otherCenterPoint)) {
-                      hasIslands = true;
-                      break;
-                    }
-                  }
-                  if (hasIslands) {
-                    continue;
-                  }
-                  // some islands do not have centers on them because they are island chains that
-                  // are also part of an island or
-                  // territory touching a sidewall or outside of this polygon. we should still skip
-                  // them.
-                  if (doesPolygonContainAnyBlackInside(p, imageCopy, g)) {
-                    continue;
-                  }
-                  final List<Polygon> polys = new ArrayList<>();
-                  polys.add(p);
-                  polygons.put(territoryName, polys);
-                }
+                g.drawImage(image, 0, 0, null);
+                detectPolygonsFromCenters(imageCopy, g);
                 g.dispose();
                 imageCopy.flush();
                 repaint();
               });
       autoAction.putValue(Action.SHORT_DESCRIPTION, "Autodetect Polygons around Centers");
+      setupMenuBar(openAction, saveAction, exitAction, autoAction);
+    }
+
+    @Override
+    protected void reactToMouseClicked(MouseEvent e) {
+      mouseEvent(
+          e.getPoint(), e.isControlDown() || e.isShiftDown(), SwingUtilities.isRightMouseButton(e));
+    }
+
+    private void detectPolygonsFromCenters(BufferedImage imageCopy, Graphics g) {
+      for (Entry<String, Point> center : centers.entrySet()) {
+        final String territoryName = center.getKey();
+        final Point centerPoint = center.getValue();
+        log.info("Detecting Polygon for: {}", territoryName);
+        final @Nullable Polygon p = findPolygon(centerPoint.x, centerPoint.y).orElse(null);
+        // Skip found polygon if anything of the following is true:
+        // 1. Poly contains the center point. This often fails when there is an
+        // island right above (because findPolygon will grab the island instead)
+        if (p == null
+            || !p.contains(centerPoint)
+            // 2. Poly contains any other centers.
+            // Let the user manually do it to make sure it gets done properly.
+            || centers.values().stream()
+                .anyMatch(
+                    otherCenterPoint ->
+                        !centerPoint.equals(otherCenterPoint) && p.contains(otherCenterPoint))
+            // 3. Poly contains black inside
+            // Some islands do not have centers on them because they are island chains that
+            // are also part of an island or territory touching a sidewall or outside of this
+            // polygon.
+            || doesPolygonContainAnyBlackInside(p, imageCopy, g)) {
+          continue;
+        }
+        final List<Polygon> polys = new ArrayList<>();
+        polys.add(p);
+        polygons.put(territoryName, polys);
+      }
+    }
+
+    private Path getCentersFile(Path mapFolder) throws IOException {
+      final Path file = FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "centers.txt");
+      if (Files.exists(file)
+          && JOptionPane.showConfirmDialog(
+                  new JPanel(),
+                  "A centers.txt file was found in the map's folder, do you want to use "
+                      + "the file to supply the territories names?",
+                  "File Suggestion",
+                  JOptionPane.YES_NO_CANCEL_OPTION)
+              == 0) {
+        return file;
+      } else {
+        log.info("Select the Centers file");
+        final Path centerPath =
+            new FileOpen("Select A Center File", mapFolderLocation, ".txt").getFile();
+        if (centerPath != null) {
+          return centerPath;
+        } else {
+          log.info("You must specify a centers file.");
+          log.info("Shutting down.");
+          throw new IOException("no centers file specified");
+        }
+      }
+    }
+
+    private void setupMenuBar(
+        Action openAction, Action saveAction, Action exitAction, Action autoAction) {
       // set up the menu items
       final JMenuItem openItem = new JMenuItem(openAction);
       openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
       final JMenuItem saveItem = new JMenuItem(saveAction);
       saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
       final JMenuItem exitItem = new JMenuItem(exitAction);
-      islandMode = false;
-      modeItem = new JCheckBoxMenuItem("Island Mode", false);
-      modeItem.addActionListener(
+      final JCheckBoxMenuItem islandModeItem = new JCheckBoxMenuItem("Island Mode", false);
+      islandModeItem.addActionListener(
           event -> {
-            islandMode = modeItem.getState();
+            islandMode = islandModeItem.getState();
             repaint();
           });
       // set up the menu bar
       final JMenuBar menuBar = new JMenuBar();
       setJMenuBar(menuBar);
       final JMenu fileMenu = new JMenu("File");
-      fileMenu.setMnemonic('F');
+      fileMenu.setMnemonic(KeyEvent.VK_F);
       fileMenu.add(openItem);
       fileMenu.add(saveItem);
       final JMenuItem saveImageItem = new JMenuItem("Save Image...");
@@ -312,8 +308,8 @@ public final class PolygonGrabber {
       fileMenu.add(exitItem);
       final JMenu editMenu = new JMenu("Edit");
       final JMenuItem autoItem = new JMenuItem(autoAction);
-      editMenu.setMnemonic('E');
-      editMenu.add(modeItem);
+      editMenu.setMnemonic(KeyEvent.VK_E);
+      editMenu.add(islandModeItem);
       editMenu.add(autoItem);
       final JMenuItem cleanImageItem = new JMenuItem("Clean Up Image...");
       cleanImageItem.addActionListener(e -> cleanImage());
@@ -329,11 +325,15 @@ public final class PolygonGrabber {
         return;
       }
       try {
-        ImageIO.write(bufferedImage, "PNG", target.toFile());
+        ImageIO.write(getBufferedImage(), "PNG", target.toFile());
         JOptionPane.showMessageDialog(null, "Saved to: " + target);
       } catch (IOException e) {
-        e.printStackTrace();
+        log.error("Writing the image to {} failed", target, e);
       }
+    }
+
+    private BufferedImage getBufferedImage() {
+      return (BufferedImage) image;
     }
 
     private void cleanImage() {
@@ -364,65 +364,8 @@ public final class PolygonGrabber {
         JOptionPane.showMessageDialog(getParent(), "Minimum region size must be a number");
         return;
       }
-      new MapImageCleaner(bufferedImage, minimumRegionSize).cleanUpImage();
+      new MapImageCleaner(getBufferedImage(), minimumRegionSize).cleanUpImage();
       imagePanel.repaint();
-    }
-
-    /**
-     * We create the image of the map here and assure that it is loaded properly.
-     *
-     * @param mapFolder The {@link Path} pointing to the map folder.
-     */
-    private BufferedImage newBufferedImage(final Path mapFolder) {
-      final Image image = FileHelper.newImage(mapFolder);
-      final BufferedImage bufferedImage =
-          new BufferedImage(
-              image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-      final Graphics g = bufferedImage.getGraphics();
-      g.drawImage(image, 0, 0, this);
-      g.dispose();
-      return bufferedImage;
-    }
-
-    /**
-     * Creates a JPanel to be used. Dictates how the map is painted. Current problem is that islands
-     * inside sea zones are not recognized when filling in the sea zone with a color, so we just
-     * outline in red instead of filling. We fill for selecting territories only for ease of use. We
-     * use var "islandMode" to dictate how to paint the map.
-     *
-     * @return The newly created panel.
-     */
-    private JPanel newMainPanel() {
-      return new JPanel() {
-        private static final long serialVersionUID = 4106539186003148628L;
-
-        @Override
-        public void paint(final Graphics g) {
-          // super.paint(g);
-          g.drawImage(bufferedImage, 0, 0, this);
-          g.setColor(Color.red);
-          for (final Entry<String, List<Polygon>> entry : polygons.entrySet()) {
-            if (islandMode) {
-              for (final Polygon item : entry.getValue()) {
-                g.drawPolygon(item.xpoints, item.ypoints, item.npoints);
-              } // while
-            } else {
-              for (final Polygon item : entry.getValue()) {
-                g.setColor(Color.yellow);
-                g.fillPolygon(item.xpoints, item.ypoints, item.npoints);
-                g.setColor(Color.black);
-                g.drawPolygon(item.xpoints, item.ypoints, item.npoints);
-              } // while
-            }
-          } // while
-          g.setColor(Color.red);
-          if (current != null) {
-            for (final Polygon item : current) {
-              g.fillPolygon(item.xpoints, item.ypoints, item.npoints);
-            } // while
-          } // if
-        } // paint
-      };
     }
 
     /** Saves the polygons to disk. */
@@ -434,9 +377,9 @@ public final class PolygonGrabber {
       }
       try {
         PointFileReaderWriter.writeOneToManyPolygons(polyName, polygons);
-        log.info("Data written to: " + polyName.normalize().toAbsolutePath());
+        log.info("Data written to: {}", polyName.normalize().toAbsolutePath());
       } catch (final IOException e) {
-        log.error("Failed to save polygons: " + polyName, e);
+        log.error("Failed to save polygons: {}", polyName, e);
       }
     }
 
@@ -451,29 +394,26 @@ public final class PolygonGrabber {
       try {
         polygons = PointFileReaderWriter.readOneToManyPolygons(polyName);
       } catch (final IOException e) {
-        log.error("Failed to load polygons: " + polyName, e);
+        log.error("Failed to load polygons: {}", polyName, e);
       }
       repaint();
     }
 
     private void mouseEvent(final Point point, final boolean ctrlDown, final boolean rightMouse) {
-      final @Nullable Polygon p = findPolygon(point.x, point.y);
-      if (p == null) {
-        return;
-      }
       if (rightMouse && current != null) { // right click and list of polys is not empty
         doneCurrentGroup();
       } else if (pointInCurrentPolygon(point)) { // point clicked is already highlighted
         log.info("rejecting");
         return;
-      } else if (ctrlDown) {
-        if (current == null) {
+      } else {
+        final Optional<Polygon> foundPolygon = findPolygon(point.x, point.y);
+        if (foundPolygon.isEmpty()) {
+          return;
+        }
+        if (!ctrlDown || current == null) {
           current = new ArrayList<>();
         }
-        current.add(p);
-      } else {
-        current = new ArrayList<>();
-        current.add(p);
+        current.add(foundPolygon.get());
       }
       repaint();
     }
@@ -517,9 +457,9 @@ public final class PolygonGrabber {
 
     /** Guess the country name based on the location of the previous centers. */
     private void guessCountryName(
-        final JTextField text, final Iterable<Entry<String, Point>> centersiter) {
+        final JTextField text, final Iterable<Entry<String, Point>> centersIterator) {
       final List<String> options = new ArrayList<>();
-      for (final Entry<String, Point> item : centersiter) {
+      for (final Entry<String, Point> item : centersIterator) {
         final Point p = new Point(item.getValue());
         for (final Polygon polygon : current) {
           if (polygon.contains(p)) {
@@ -534,12 +474,12 @@ public final class PolygonGrabber {
     }
 
     /** Checks to see if the given point is of color black. */
-    private boolean isBlack(final Point p) {
+    private boolean isBlack(final Point p, final BufferedImage bufferedImage) {
       return isBlack(p.x, p.y, bufferedImage);
     }
 
     private boolean isBlack(final int x, final int y, final BufferedImage bufferedImage) {
-      if (!inBounds(x, y, bufferedImage)) {
+      if (!inBounds(x, y)) {
         // not inbounds, can't be black
         return false;
       }
@@ -549,8 +489,9 @@ public final class PolygonGrabber {
       return (bufferedImage.getRGB(x, y) & 0x00FFFFFF) == 0;
     }
 
-    private boolean inBounds(final int x, final int y, final BufferedImage image) {
-      return x >= 0 && x < image.getWidth() && y >= 0 && y < image.getHeight();
+    private boolean inBounds(final int x, final int y) {
+      BufferedImage bufferedImage = getBufferedImage();
+      return x >= 0 && x < bufferedImage.getWidth() && y >= 0 && y < bufferedImage.getHeight();
     }
 
     /**
@@ -579,9 +520,9 @@ public final class PolygonGrabber {
       move(testPoint, direction);
       return testPoint.x == 0
           || testPoint.y == 0
-          || testPoint.y == bufferedImage.getHeight(this)
-          || testPoint.x == bufferedImage.getWidth(this)
-          || isBlack(testPoint);
+          || testPoint.y == image.getHeight(this)
+          || testPoint.x == image.getWidth(this)
+          || isBlack(testPoint, getBufferedImage());
     }
 
     private boolean doesPolygonContainAnyBlackInside(
@@ -608,14 +549,9 @@ public final class PolygonGrabber {
       return false;
     }
 
-    /** Algorithm to find a polygon given a x/y coordinates and returns the found polygon. */
-    private @Nullable Polygon findPolygon(final int x, final int y) {
-      // walk up, find the first black point
-      final Point startPoint = new Point(x, y);
-      while (inBounds(startPoint.x, startPoint.y - 1, bufferedImage)
-          && !isBlack(startPoint.x, startPoint.y, bufferedImage)) {
-        startPoint.y--;
-      }
+    /** Algorithm to find a polygon given an x/y coordinates and returns the found polygon. */
+    private Optional<Polygon> findPolygon(final int x, final int y) {
+      final Point startPoint = getFirstBlackPoint(x, y);
       final List<Point> points = new ArrayList<>(100);
       points.add(new Point(startPoint));
       int currentDirection = 2;
@@ -633,7 +569,7 @@ public final class PolygonGrabber {
                   + "\r\n"
                   + "Note that this is a common error and can usually be fixed by 'smoothing out' "
                   + "the territory border and removing any anti-aliasing.");
-          return null;
+          return Optional.empty();
         }
         for (int i = 2; i >= -3; i--) {
           final int tempDirection = Math.floorMod(currentDirection + i, 8);
@@ -651,16 +587,31 @@ public final class PolygonGrabber {
           }
         }
       }
-      final int[] xpoints = new int[points.size()];
-      final int[] ypoints = new int[points.size()];
+      return Optional.of(getPolygonFromPoints(points));
+    }
+
+    @Nonnull
+    private Point getFirstBlackPoint(int x, int y) {
+      final Point startPoint = new Point(x, y);
+      while (inBounds(startPoint.x, startPoint.y - 1)
+          && !isBlack(startPoint.x, startPoint.y, getBufferedImage())) {
+        startPoint.y--;
+      }
+      return startPoint;
+    }
+
+    @Nonnull
+    private Polygon getPolygonFromPoints(List<Point> points) {
+      final int[] xPoints = new int[points.size()];
+      final int[] yPoints = new int[points.size()];
       int i = 0;
       for (final Point item : points) {
-        xpoints[i] = item.x;
-        ypoints[i] = item.y;
+        xPoints[i] = item.x;
+        yPoints[i] = item.y;
         i++;
       }
-      log.info("Done finding polygon. total points;" + xpoints.length);
-      return new Polygon(xpoints, ypoints, xpoints.length);
+      log.info("Done finding polygon. total points;{}", xPoints.length);
+      return new Polygon(xPoints, yPoints, xPoints.length);
     }
   }
 }

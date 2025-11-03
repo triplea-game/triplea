@@ -1,7 +1,5 @@
 package tools.image;
 
-import static com.google.common.base.Preconditions.checkState;
-
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.UnitImageFactory;
@@ -26,11 +24,11 @@ import java.util.Set;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.util.PointFileReaderWriter;
 import tools.util.ToolArguments;
+import tools.util.ToolRunnableTask;
 
 /**
  * The auto-placement finder map making tool.
@@ -40,7 +38,7 @@ import tools.util.ToolArguments;
  * placement locations.
  */
 @Slf4j
-public final class AutoPlacementFinder {
+public final class AutoPlacementFinder extends ToolRunnableTask {
   private int placeWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private int placeHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private boolean placeDimensionsSet = false;
@@ -62,18 +60,12 @@ public final class AutoPlacementFinder {
 
   private AutoPlacementFinder() {}
 
-  /**
-   * Runs the auto-placement finder tool.
-   *
-   * @throws IllegalStateException If not invoked on the EDT.
-   */
   public static void run() {
-    checkState(SwingUtilities.isEventDispatchThread());
-
-    new AutoPlacementFinder().runInternal();
+    runTask(AutoPlacementFinder.class);
   }
 
-  private void runInternal() {
+  @Override
+  protected void runInternal() {
     handleSystemProperties();
     JOptionPane.showMessageDialog(
         null,
@@ -197,7 +189,7 @@ public final class AutoPlacementFinder {
           }
         }
       } catch (final Exception e) {
-        log.error("Failed to initialize from map properties: " + file.toAbsolutePath(), e);
+        log.error("Failed to initialize from map properties: {}", file.toAbsolutePath(), e);
       }
     }
     if (!placeDimensionsSet
@@ -281,7 +273,7 @@ public final class AutoPlacementFinder {
       PointFileReaderWriter.writeOneToMany(fileName, placements);
       textOptionPane.appendNewLine("Data written to: " + fileName.normalize().toAbsolutePath());
     } catch (final IOException e) {
-      log.error("Failed to write points file: " + fileName, e);
+      log.error("Failed to write points file: {}", fileName, e);
       textOptionPane.dispose();
       return;
     }
@@ -453,41 +445,29 @@ public final class AutoPlacementFinder {
   }
 
   private void handleSystemProperties() {
-    mapFolderLocation = MapFolderLocationSystemProperty.read();
-    final String zoomString = System.getProperty(ToolArguments.UNIT_ZOOM);
-    if (zoomString != null && zoomString.length() > 0) {
-      try {
-        unitZoomPercent = Double.parseDouble(zoomString);
-        log.info("Unit Zoom Percent to use: " + unitZoomPercent);
-        placeDimensionsSet = true;
-      } catch (final Exception e) {
-        log.error("Not a decimal percentage: " + zoomString);
-      }
-    }
-    final String widthString = System.getProperty(ToolArguments.UNIT_WIDTH);
-    if (widthString != null && widthString.length() > 0) {
-      try {
-        unitWidth = Integer.parseInt(widthString);
-        log.info("Unit Width to use: " + unitWidth);
-        placeDimensionsSet = true;
-      } catch (final Exception e) {
-        log.error("Not an integer: " + widthString);
-      }
-    }
-    final String heightString = System.getProperty(ToolArguments.UNIT_HEIGHT);
-    if (heightString != null && heightString.length() > 0) {
-      try {
-        unitHeight = Integer.parseInt(heightString);
-        log.info("Unit Height to use: " + unitHeight);
-        placeDimensionsSet = true;
-      } catch (final Exception e) {
-        log.error("Not an integer: " + heightString);
-      }
-    }
+    ToolArguments.ifMapFolder(mapFolderProperty -> mapFolderLocation = mapFolderProperty);
+    ToolArguments.ifUnitZoom(
+        unitZoomProperty -> {
+          unitZoomPercent = unitZoomProperty;
+          log.info("Unit Zoom Percent to use: {}", unitZoomPercent);
+          placeDimensionsSet = true;
+        });
+    ToolArguments.ifUnitWidth(
+        unitWidthProperty -> {
+          unitWidth = unitWidthProperty;
+          log.info("Unit Width to use: {}", unitWidth);
+          placeDimensionsSet = true;
+        });
+    ToolArguments.ifUnitHeight(
+        unitHeightProperty -> {
+          unitHeight = unitHeightProperty;
+          log.info("Unit Height to use: {}", unitHeight);
+          placeDimensionsSet = true;
+        });
     if (placeDimensionsSet) {
       placeWidth = (int) (unitZoomPercent * unitWidth);
       placeHeight = (int) (unitZoomPercent * unitHeight);
-      log.info("Place Dimensions to use: " + placeWidth + "x" + placeHeight);
+      log.info("Place Dimensions to use: {}x{}", placeWidth, placeHeight);
     }
   }
 }

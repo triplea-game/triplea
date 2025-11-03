@@ -39,7 +39,7 @@ public class GameProcess {
       commands.add("-D" + SERVER_PASSWORD + "=" + String.valueOf(password));
     }
     final String fileName = System.getProperty(TRIPLEA_GAME, "");
-    if (fileName.length() > 0) {
+    if (!fileName.isEmpty()) {
       commands.add("-D" + TRIPLEA_GAME + "=" + fileName);
     }
     commands.add(getMainClassName());

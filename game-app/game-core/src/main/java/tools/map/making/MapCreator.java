@@ -1,18 +1,21 @@
 package tools.map.making;
 
+import games.strategy.triplea.EngineImageLoader;
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Dimension;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.WindowConstants;
 import lombok.experimental.UtilityClass;
 import org.triplea.swing.JButtonBuilder;
-import org.triplea.swing.JButtonBuilder.AlignmentX;
+import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
+import tools.map.making.ui.panel.ValidateMapPanel;
 import tools.map.making.ui.properties.MapPropertiesPanel;
 import tools.map.making.ui.skin.MapSkinPanel;
 import tools.map.making.ui.utilities.OptionalUtilitiesPanel;
@@ -23,65 +26,57 @@ import tools.map.making.ui.xml.XmlUtilitiesPanel;
 public class MapCreator {
 
   public static void openMapCreatorWindow() {
-    final JFrame frame = new JFrame("TripleA Map Creator Tools");
-
-    frame.setSize(800, 600);
-    frame.setLocationRelativeTo(null);
-    frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-
-    final JPanel panel1 = MapPropertiesPanel.build();
-    final JPanel panel2 = MapSkinPanel.build();
-    final JPanel panel3 = XmlUtilitiesPanel.build();
-    final JPanel panel4 = OptionalUtilitiesPanel.build();
+    final JPanel mapPropertiesPanel = MapPropertiesPanel.build();
 
     final JPanel mainPanel = new JPanel();
-    mainPanel.add(panel1);
+    mainPanel.add(mapPropertiesPanel);
 
     final JPanel sidePanel = new JPanel();
     sidePanel.setLayout(new BoxLayout(sidePanel, BoxLayout.PAGE_AXIS));
     sidePanel.add(Box.createVerticalGlue());
 
-    sidePanel.add(
-        new JButtonBuilder("Step 1: Map Properties")
-            .actionListener(() -> swapContainerContents(mainPanel, panel1))
-            .alignmentX(AlignmentX.CENTER)
-            .build());
-    sidePanel.add(Box.createVerticalGlue());
-
-    sidePanel.add(
-        new JButtonBuilder("Step 2: Map Utilities")
-            .actionListener(() -> swapContainerContents(mainPanel, panel2))
-            .alignmentX(AlignmentX.CENTER)
-            .build());
-    sidePanel.add(Box.createVerticalGlue());
-
-    sidePanel.add(
-        new JButtonBuilder("Step 3: Game XML")
-            .actionListener(() -> swapContainerContents(mainPanel, panel3))
-            .alignmentX(AlignmentX.CENTER)
-            .build());
-    sidePanel.add(Box.createVerticalGlue());
-
-    sidePanel.add(
-        new JButtonBuilder("Other: Optional Things")
-            .actionListener(() -> swapContainerContents(mainPanel, panel4))
-            .alignmentX(AlignmentX.CENTER)
-            .build());
-    sidePanel.add(Box.createVerticalGlue());
-
     // set up the menu actions
-    frame.getContentPane().setLayout(new BorderLayout());
-    frame.getContentPane().add(new JScrollPane(sidePanel), BorderLayout.WEST);
-    frame.getContentPane().add(new JScrollPane(mainPanel), BorderLayout.CENTER);
+    addButtonToSidePanel(sidePanel, "Step 1: Map Properties", mainPanel, mapPropertiesPanel);
+    addButtonToSidePanel(sidePanel, "Step 2: Map Utilities", mainPanel, MapSkinPanel.build());
+    addButtonToSidePanel(sidePanel, "Step 3: Game XML", mainPanel, XmlUtilitiesPanel.build());
+    addButtonToSidePanel(sidePanel, "Step 4: Validate Map", mainPanel, ValidateMapPanel.build());
+    addButtonToSidePanel(
+        sidePanel, "Other: Optional Things", mainPanel, OptionalUtilitiesPanel.build());
 
-    // now set up the main screen
+    final JFrame frame =
+        new JFrameBuilder()
+            .title("TripleA Map Creator Tools")
+            .iconImage(EngineImageLoader.loadFrameIcon())
+            .size(800, 600)
+            .locateRelativeTo(null)
+            .disposeOnClose()
+            .layout(new BorderLayout())
+            .build();
+
+    final Container contentPane = frame.getContentPane();
+    contentPane.add(new JScrollPane(sidePanel), BorderLayout.WEST);
+    contentPane.add(new JScrollPane(mainPanel), BorderLayout.CENTER);
+
     frame.setVisible(true);
+  }
+
+  private static void addButtonToSidePanel(
+      JPanel sidePanel, String labelText, JPanel mainPanel, JPanel panel) {
+    JButton button =
+        new JButtonBuilder(labelText)
+            .actionListener(() -> swapContainerContents(mainPanel, panel))
+            .build();
+    Dimension buttonDimension = new Dimension(175, 20);
+    button.setPreferredSize(buttonDimension);
+    button.setMinimumSize(buttonDimension);
+    button.setMaximumSize(buttonDimension);
+    sidePanel.add(button);
+    sidePanel.add(Box.createVerticalGlue());
   }
 
   private void swapContainerContents(final Container container, final JPanel panel) {
     container.removeAll();
     container.add(panel);
-
     SwingAction.invokeNowOrLater(() -> SwingComponents.redraw(container));
   }
 }

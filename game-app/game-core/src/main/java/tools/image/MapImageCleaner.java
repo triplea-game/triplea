@@ -53,7 +53,7 @@ public class MapImageCleaner {
         }
       }
     }
-    log.info("Changed " + numChanged + " non-white non-black pixels to black");
+    log.info("Changed {} non-white non-black pixels to black", numChanged);
   }
 
   private void identifyRegions() {
@@ -63,7 +63,7 @@ public class MapImageCleaner {
         final Point p = new Point(x, y);
         if (getRegionId(p) == NO_REGION && isColor(p, Color.WHITE)) {
           final int regionSize = markAllPixelsInRegion(p, nextRegionId);
-          log.info("Found region of size " + regionSize + " at " + p.x + "," + p.y);
+          log.info("Found region of size {} at {},{}", regionSize, p.x, p.y);
           if (regionSize < minimumRegionSize) {
             log.info("Eliminating region");
             eliminateRegion(nextRegionId);
@@ -110,7 +110,7 @@ public class MapImageCleaner {
           pixelsChanged++;
         }
       }
-      log.info("Updated " + pixelsChanged + " pixels");
+      log.info("Updated {} pixels", pixelsChanged);
     }
   }
 

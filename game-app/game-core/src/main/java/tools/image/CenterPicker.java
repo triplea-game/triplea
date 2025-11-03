@@ -1,20 +1,14 @@
 package tools.image;
 
-import static com.google.common.base.Preconditions.checkState;
-
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,20 +16,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.annotation.Nullable;
 import javax.swing.Action;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
+import tools.util.MapEditorRunnableTask;
 import tools.util.ToolsUtil;
 
 /**
@@ -46,139 +39,85 @@ import tools.util.ToolsUtil;
  * It will generate a {@code centers.txt} file containing the territory center locations.
  */
 @Slf4j
-public final class CenterPicker {
-  private Path mapFolderLocation;
+public final class CenterPicker extends MapEditorRunnableTask {
 
   private CenterPicker() {}
 
-  /**
-   * Runs the center picker tool.
-   *
-   * @throws IllegalStateException If not invoked on the EDT.
-   */
   public static void run() {
-    checkState(SwingUtilities.isEventDispatchThread());
-
-    try {
-      new CenterPicker().runInternal();
-    } catch (final IOException e) {
-      log.error("failed to run center picker", e);
-    }
+    runTask(TileImageBreaker.class);
   }
 
-  private void runInternal() throws IOException {
-    mapFolderLocation = MapFolderLocationSystemProperty.read();
-    log.info("Select the map");
-    final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
-    final Path map = mapSelection.getFile();
-    if (mapFolderLocation == null && mapSelection.getFile() != null) {
-      mapFolderLocation = mapSelection.getFile().getParent();
-    }
-    if (map != null) {
-      log.info("Map : " + map);
-      final CenterPickerFrame frame = new CenterPickerFrame(map);
-      frame.setSize(800, 600);
-      frame.setLocationRelativeTo(null);
-      frame.setVisible(true);
-      JOptionPane.showMessageDialog(
-          frame,
-          new JLabel(
-              "<html>"
-                  + "This is the CenterPicker, it will create a centers.txt file for you. "
-                  + "<br>Please click on the center of every single territory and sea zone on your "
-                  + "map, and give each a name. "
-                  + "<br>The point you clicked on will tell TripleA where to put things like any "
-                  + "flags, text, unit placements, etc, "
-                  + "<br>so be sure to click in the exact middle, or slight up and left of the "
-                  + "middle, of each territory "
-                  + "<br>(but still within the territory borders)."
-                  + "<br>Do not use special or illegal characters in territory names."
-                  + "<br><br>You can also load an existing centers.txt file, then make "
-                  + "modifications to it, then save it again."
-                  + "<br><br>LEFT CLICK = create a new center point for a territory/zone."
-                  + "<br><br>RIGHT CLICK on an existing center = delete that center point."
-                  + "<br><br>When finished, save the centers and exit."
-                  + "</html>"));
-    } else {
-      log.info("No Image Map Selected. Shutting down.");
-    }
+  @Override
+  public MapEditorFrame getFrame(Path mapPath) throws IOException {
+    return new CenterPickerFrame(mapPath);
   }
 
-  private final class CenterPickerFrame extends JFrame {
+  @Override
+  public String getWelcomeMessage() {
+    return """
+        <html>\
+        This is the CenterPicker, it will create a centers.txt file for you. \
+        <br>Please click on the center of every single territory and sea zone on your \
+        map, and give each a name. \
+        <br>The point you clicked on will tell TripleA where to put things like any \
+        flags, text, unit placements, etc, \
+        <br>so be sure to click in the exact middle, or slight up and left of the \
+        middle, of each territory \
+        <br>(but still within the territory borders).\
+        <br>Do not use special or illegal characters in territory names.\
+        <br><br>You can also load an existing centers.txt file, then make \
+        modifications to it, then save it again.\
+        <br><br>LEFT CLICK = create a new center point for a territory/zone.\
+        <br><br>RIGHT CLICK on an existing center = delete that center point.\
+        <br><br>When finished, save the centers and exit.\
+        </html>""";
+  }
+
+  private static final class CenterPickerFrame extends MapEditorFrame {
     private static final long serialVersionUID = -5633998810385136625L;
 
-    // The map image will be stored here
-    private final Image image;
     // hash map for center points
     private Map<String, Point> centers = new HashMap<>();
     // hash map for polygon points
-    private Map<String, List<Polygon>> polygons = new HashMap<>();
-    private final JLabel locationLabel = new JLabel();
+    private final Map<String, List<Polygon>> polygons;
 
-    /**
-     * Sets up all GUI components, initializes variables with default or needed values, and prepares
-     * the map for user commands.
-     *
-     * @param mapFolder The {@link Path} pointing to the map folder.
-     */
     CenterPickerFrame(final Path mapFolder) throws IOException {
-      super("Center Picker");
-      setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      final Path file = FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "polygons.txt");
-      if (Files.exists(file)
-          && JOptionPane.showConfirmDialog(
-                  new JPanel(),
-                  "A polygons.txt file was found in the map's folder, do you want to use "
-                      + "the file to supply the territories names?",
-                  "File Suggestion",
-                  JOptionPane.YES_NO_CANCEL_OPTION)
-              == 0) {
-        try {
-          polygons = PointFileReaderWriter.readOneToManyPolygons(file);
-        } catch (final IOException e) {
-          log.error("Something wrong with your Polygons file: " + file.toAbsolutePath());
-          throw e;
-        }
-      } else {
-        final Path polyPath =
-            new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile();
-        if (polyPath != null) {
-          try {
-            polygons = PointFileReaderWriter.readOneToManyPolygons(polyPath);
-          } catch (final IOException e) {
-            log.error("Something wrong with your Polygons file: " + polyPath);
-            throw e;
+      super("Center Picker", mapFolder);
+      final Path polygonsPath = getPolygonsPath(mapFolder);
+      try {
+        log.info("Polygons : {}", polygonsPath);
+        polygons = PointFileReaderWriter.readOneToManyPolygons(polygonsPath);
+      } catch (final IOException e) {
+        log.error("Something wrong with your Polygons file: {}", polygonsPath);
+        throw e;
+      }
+    }
+
+    @Override
+    protected JPanel createMainPanel() {
+      return new JPanel() {
+        private static final long serialVersionUID = -7130828419508975924L;
+
+        @Override
+        public void paint(final Graphics g) {
+          g.drawImage(image, 0, 0, this);
+          g.setColor(Color.red);
+          for (final Entry<String, Point> center : centers.entrySet()) {
+            final Point item = center.getValue();
+            g.fillOval(item.x, item.y, 15, 15);
+            g.drawString(center.getKey(), item.x + 17, item.y + 13);
           }
         }
-      }
-      image = FileHelper.newImage(mapFolder);
-      final JPanel imagePanel = newMainPanel();
-      /*
-       * Add a mouse listener to show X : Y coordinates on the lower left corner of the screen.
-       */
-      imagePanel.addMouseMotionListener(
-          new MouseMotionAdapter() {
-            @Override
-            public void mouseMoved(final MouseEvent e) {
-              locationLabel.setText("x: " + e.getX() + " y: " + e.getY());
-            }
-          });
-      // Add a mouse listener to monitor for right mouse button being clicked.
-      imagePanel.addMouseListener(
-          new MouseAdapter() {
-            @Override
-            public void mouseClicked(final MouseEvent e) {
-              mouseEvent(e.getPoint(), SwingUtilities.isRightMouseButton(e));
-            }
-          });
-      // set up the image panel size dimensions ...etc
-      imagePanel.setMinimumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
-      imagePanel.setPreferredSize(new Dimension(image.getWidth(this), image.getHeight(this)));
-      imagePanel.setMaximumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
-      // set up the layout manager
-      this.getContentPane().setLayout(new BorderLayout());
-      this.getContentPane().add(new JScrollPane(imagePanel), BorderLayout.CENTER);
-      this.getContentPane().add(locationLabel, BorderLayout.SOUTH);
+      };
+    }
+
+    @Override
+    protected void reactToMouseClicked(MouseEvent e) {
+      mouseEvent(e.getPoint(), SwingUtilities.isRightMouseButton(e));
+    }
+
+    @Override
+    protected void initializeLayout() {
       // set up the actions
       final Action openAction = SwingAction.of("Load Centers", e -> loadCenters());
       openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Center Points File");
@@ -192,6 +131,10 @@ public final class CenterPicker {
                 dispose();
               });
       exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
+      setupMenuBar(openAction, saveAction, exitAction);
+    }
+
+    private void setupMenuBar(Action openAction, Action saveAction, Action exitAction) {
       // set up the menu items
       final JMenuItem openItem = new JMenuItem(openAction);
       openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
@@ -202,7 +145,7 @@ public final class CenterPicker {
       final JMenuBar menuBar = new JMenuBar();
       setJMenuBar(menuBar);
       final JMenu fileMenu = new JMenu("File");
-      fileMenu.setMnemonic('F');
+      fileMenu.setMnemonic(KeyEvent.VK_F);
       fileMenu.add(openItem);
       fileMenu.add(saveItem);
       fileMenu.addSeparator();
@@ -210,22 +153,23 @@ public final class CenterPicker {
       menuBar.add(fileMenu);
     }
 
-    /** Creates the main panel and returns a JPanel object. */
-    private JPanel newMainPanel() {
-      return new JPanel() {
-        private static final long serialVersionUID = -7130828419508975924L;
-
-        @Override
-        public void paint(final Graphics g) {
-          g.drawImage(image, 0, 0, this);
-          g.setColor(Color.red);
-          for (final String centerName : centers.keySet()) {
-            final Point item = centers.get(centerName);
-            g.fillOval(item.x, item.y, 15, 15);
-            g.drawString(centerName, item.x + 17, item.y + 13);
-          }
-        }
-      };
+    @Nullable
+    private Path getPolygonsPath(Path mapFolder) {
+      final Path file = FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "polygons.txt");
+      Path polygonsPath;
+      if (Files.exists(file)
+          && JOptionPane.showConfirmDialog(
+                  new JPanel(),
+                  "A polygons.txt file was found in the map's folder, do you want to use "
+                      + "the file to supply the territories names?",
+                  "File Suggestion",
+                  JOptionPane.YES_NO_CANCEL_OPTION)
+              == 0) {
+        polygonsPath = file;
+      } else {
+        polygonsPath = new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile();
+      }
+      return polygonsPath;
     }
 
     /** Saves the centers to disk. */
@@ -237,9 +181,9 @@ public final class CenterPicker {
       }
       try {
         PointFileReaderWriter.writeOneToOne(fileName, centers);
-        log.info("Data written to: " + fileName.normalize().toAbsolutePath());
+        log.info("Data written to: {}", fileName.normalize().toAbsolutePath());
       } catch (final IOException e) {
-        log.error("Failed to save centers: " + fileName, e);
+        log.error("Failed to save centers: {}", fileName, e);
       }
     }
 
@@ -254,7 +198,7 @@ public final class CenterPicker {
       try {
         centers = PointFileReaderWriter.readOneToOne(centerName);
       } catch (final IOException e) {
-        log.error("Failed to load centers: " + centerName, e);
+        log.error("Failed to load centers: {}", centerName, e);
       }
       repaint();
     }

@@ -238,7 +238,7 @@ public class BattleTracker implements Serializable {
     // say they weren't in combat
     final CompositeChange change = new CompositeChange();
     for (final Unit unit : units) {
-      change.add(ChangeFactory.unitPropertyChange(unit, false, Unit.WAS_IN_COMBAT));
+      change.add(ChangeFactory.unitPropertyChange(unit, false, Unit.PropertyName.WAS_IN_COMBAT));
     }
     bridge.addChange(change);
   }
@@ -357,7 +357,7 @@ public class BattleTracker implements Serializable {
     }
     final CompositeChange change = new CompositeChange();
     for (final Unit unit : units) {
-      change.add(ChangeFactory.unitPropertyChange(unit, true, Unit.WAS_IN_COMBAT));
+      change.add(ChangeFactory.unitPropertyChange(unit, true, Unit.PropertyName.WAS_IN_COMBAT));
     }
     addChange(bridge, changeTracker, change);
   }
