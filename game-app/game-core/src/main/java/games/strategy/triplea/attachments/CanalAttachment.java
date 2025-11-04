@@ -93,8 +93,8 @@ public class CanalAttachment extends DefaultAttachment {
                   () ->
                       new GameParseException(
                           MessageFormat.format(
-                              "TerritoryAttachment: Setting landTerritories with value {0} not possible; No territory found for {1}",
-                              landTerritories, territoryName)));
+                              "TerritoryAttachment: No territory found for {0}; Setting landTerritories not possible with value {1}",
+                              territoryName, landTerritories)));
       terrs.add(territory);
     }
     this.landTerritories = terrs;
