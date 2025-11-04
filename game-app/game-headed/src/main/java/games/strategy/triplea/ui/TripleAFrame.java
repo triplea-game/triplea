@@ -145,6 +145,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.debug.error.reporting.StackTraceReportModel;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 import org.triplea.java.collections.CollectionUtils;
@@ -585,6 +586,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     }
     bottomBar.setTerritory(null);
     GameShutdownRegistry.runShutdownActions();
+    StackTraceReportModel.setCurrentMapName(null);
   }
 
   /**

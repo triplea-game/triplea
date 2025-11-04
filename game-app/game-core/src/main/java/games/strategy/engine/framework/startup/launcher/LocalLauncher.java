@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.debug.error.reporting.StackTraceReportModel;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 
@@ -56,6 +57,7 @@ public class LocalLauncher implements ILauncher {
 
   @Override
   public void launch() {
+    StackTraceReportModel.setCurrentMapNameFromGameData(gameData);
     final Optional<ServerGame> result = loadGame();
     ThreadRunner.runInNewThread(() -> launchInternal(result.orElse(null)));
   }
