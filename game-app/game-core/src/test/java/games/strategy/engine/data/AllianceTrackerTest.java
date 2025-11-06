@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -59,15 +60,24 @@ class AllianceTrackerTest {
 
   @Nested
   class GetPlayersInAlliance {
+    private GamePlayer player1;
+    private GamePlayer player2;
+    private GamePlayer player3;
+    private GamePlayer player4;
+
+    @BeforeEach
+    void setupGameData() {
+      player1 = new GamePlayer("Player1", gameData);
+      player2 = new GamePlayer("Player2", gameData);
+      player3 = new GamePlayer("Player3", gameData);
+      player4 = new GamePlayer("Player4", gameData);
+    }
+
     @Test
     @DisplayName(
         "Get Players In Alliance Should Differentiate Alliance Names That Are "
             + "Substrings Of Other Alliance Names")
     void differentiatsAllianceNamesThatAreSubstrings() {
-      final GamePlayer player1 = new GamePlayer("Player1", gameData);
-      final GamePlayer player2 = new GamePlayer("Player2", gameData);
-      final GamePlayer player3 = new GamePlayer("Player3", gameData);
-      final GamePlayer player4 = new GamePlayer("Player4", gameData);
       final String alliance1Name = "Alliance";
       final String alliance2Name = "Anti" + alliance1Name;
       final AllianceTracker allianceTracker =
@@ -85,6 +95,37 @@ class AllianceTrackerTest {
       assertThat(
           allianceTracker.getPlayersInAlliance(alliance2Name),
           is(ImmutableSet.of(player3, player4)));
+    }
+
+    @Test
+    void testAllianceTrackerState() {
+      final String allianceName = "Alliance";
+      final AllianceTracker allianceTracker = new AllianceTracker();
+
+      // No alliances exist on creation
+      assertTrue(allianceTracker.getAlliances().isEmpty());
+      allianceTracker.addToAlliance(player1, allianceName);
+      allianceTracker.addToAlliance(player2, allianceName);
+      assertEquals(1, allianceTracker.getAlliances().size());
+      assertTrue(allianceTracker.getAlliances().contains(allianceName));
+      assertEquals(1, allianceTracker.getAlliancesPlayerIsIn(player1).size());
+      assertTrue(allianceTracker.getAlliancesPlayerIsIn(player1).contains(allianceName));
+      assertEquals(2, allianceTracker.getAllies(player1).size());
+      assertTrue(allianceTracker.getAllies(player1).contains(player2));
+      assertTrue(allianceTracker.getAllies(player1).contains(player1));
+      assertEquals(2, allianceTracker.getPlayersInAlliance(allianceName).size());
+      assertTrue(allianceTracker.getPlayersInAlliance(allianceName).contains(player1));
+      assertTrue(allianceTracker.getPlayersInAlliance(allianceName).contains(player2));
+    }
+
+    @Test
+    void testAllianceTrackerNullAlliance() {
+      final AllianceTracker allianceTracker = new AllianceTracker();
+
+      // No alliances exist on creation
+      assertTrue(allianceTracker.getAlliances().isEmpty());
+      allianceTracker.addToAlliance(player1, null);
+      allianceTracker.getPlayersInAlliance("test");
     }
   }
 }
