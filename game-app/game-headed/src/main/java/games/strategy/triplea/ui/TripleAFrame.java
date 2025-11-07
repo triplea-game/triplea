@@ -117,6 +117,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -1793,15 +1794,15 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       if (clonedGameData == null) {
         return;
       }
-      data.removeDataChangeListener(dataChangeListener);
-      if (historySyncher != null) {
-        throw new IllegalStateException("Two history synchers?");
-      }
-      historySyncher = new HistorySynchronizer(clonedGameData, game);
-      clonedGameData.addDataChangeListener(dataChangeListener);
     }
+    clonedGameData.removeDataChangeListener(dataChangeListener);
+    if (historySyncher != null) {
+      throw new IllegalStateException("Two history synchers?");
+    }
+    historySyncher = new HistorySynchronizer(clonedGameData, game);
+    clonedGameData.addDataChangeListener(dataChangeListener);
     statsPanel.setGameData(clonedGameData);
-    if (!TechAdvance.getTechAdvances(data.getTechnologyFrontier(), null).isEmpty()) {
+    if (!TechAdvance.getTechAdvances(clonedGameData.getTechnologyFrontier(), null).isEmpty()) {
       technologyPanel.setGameData(clonedGameData);
     }
     economyPanel.setGameData(clonedGameData);
@@ -1810,6 +1811,34 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     }
     territoryDetailPanel.setGameData(clonedGameData);
     mapPanel.setGameData(clonedGameData);
+    final HistoryDetailsPanel historyDetailPanel = getHistoryDetailsPanel(clonedGameData);
+    // create history tree context menu
+    final JSplitPane historyComponentSplitPane = new JSplitPane();
+    historyComponentSplitPane.setOneTouchExpandable(true);
+    historyComponentSplitPane.setContinuousLayout(true);
+    historyComponentSplitPane.setDividerSize(8);
+    historyComponentSplitPane.setLeftComponent(historyPanel);
+    historyComponentSplitPane.setRightComponent(gameCenterPanel);
+    historyComponentSplitPane.setDividerLocation(150);
+    final JPanel historyComponent =
+        new JPanelBuilder()
+            .borderLayout()
+            .addCenter(historyComponentSplitPane)
+            .addSouth(bottomBar)
+            .build();
+    SwingUtilities.invokeLater(
+        () -> {
+          tabsPanel.removeAll();
+          addTabs(historyDetailPanel);
+          actionButtonsPanel.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
+          getContentPane().removeAll();
+          getContentPane().add(historyComponent, BorderLayout.CENTER);
+          validate();
+        });
+  }
+
+  @Nonnull
+  private HistoryDetailsPanel getHistoryDetailsPanel(GameData clonedGameData) {
     final HistoryDetailsPanel historyDetailPanel =
         new HistoryDetailsPanel(clonedGameData, mapPanel);
     // actions need to clear the history panel popup state when done
@@ -1823,7 +1852,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                 "Export Gameboard Picture",
                 () -> {
                   ScreenshotExporter.exportScreenshot(
-                      TripleAFrame.this, data, popupHistoryPanel.getCurrentPopupNode());
+                      TripleAFrame.this, clonedGameData, popupHistoryPanel.getCurrentPopupNode());
                   popupHistoryPanel.clearCurrentPopupNode();
                 })
             .add(
@@ -1848,55 +1877,49 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                       JOptionPane.INFORMATION_MESSAGE);
 
                   final Optional<Path> f =
-                      GameFileSelector.getSaveGameLocation(TripleAFrame.this, data);
+                      GameFileSelector.getSaveGameLocation(TripleAFrame.this, clonedGameData);
                   if (f.isPresent()) {
                     try (OutputStream fileOutputStream = Files.newOutputStream(f.get())) {
-                      final GameData gameDataCopy =
-                          GameDataUtils.cloneGameData(
-                                  data, GameDataManager.Options.withEverything())
-                              .orElse(null);
-                      if (gameDataCopy != null) {
-                        gameDataCopy
-                            .getHistory()
-                            .removeAllHistoryAfterNode(popupHistoryPanel.getCurrentPopupNode());
-                        // TODO: the saved current delegate is still the current delegate,
-                        // rather than the delegate at that history popup node
-                        // TODO: it still shows the current round number, rather than the round at
-                        // the history popup node
-                        // TODO: this could be solved easily if rounds/steps were changes,
-                        // but that could greatly increase the file size :(
-                        // TODO: this also does not undo the run count of each delegate step
-                        final Enumeration<?> enumeration =
-                            ((DefaultMutableTreeNode) gameDataCopy.getHistory().getRoot())
-                                .preorderEnumeration();
-                        enumeration.nextElement();
-                        int round = 0;
-                        String stepDisplayName =
-                            gameDataCopy.getSequence().getStep(0).getDisplayName();
-                        GamePlayer currentPlayer =
-                            gameDataCopy.getSequence().getStep(0).getPlayerId();
-                        int roundOffset = gameDataCopy.getSequence().getRoundOffset();
-                        while (enumeration.hasMoreElements()) {
-                          final HistoryNode node = (HistoryNode) enumeration.nextElement();
-                          if (node instanceof Round) {
-                            round = Math.max(0, ((Round) node).getRoundNo() - roundOffset);
-                            currentPlayer = null;
-                            stepDisplayName = node.getTitle();
-                          } else if (node instanceof Step) {
-                            currentPlayer = ((Step) node).getPlayerId().orElse(null);
-                            stepDisplayName = node.getTitle();
-                          }
+                      clonedGameData
+                          .getHistory()
+                          .removeAllHistoryAfterNode(popupHistoryPanel.getCurrentPopupNode());
+                      // TODO: the saved current delegate is still the current delegate,
+                      // rather than the delegate at that history popup node
+                      // TODO: it still shows the current round number, rather than the round at
+                      // the history popup node
+                      // TODO: this could be solved easily if rounds/steps were changes,
+                      // but that could greatly increase the file size :(
+                      // TODO: this also does not undo the run count of each delegate step
+                      final Enumeration<?> enumeration =
+                          ((DefaultMutableTreeNode) clonedGameData.getHistory().getRoot())
+                              .preorderEnumeration();
+                      enumeration.nextElement();
+                      int round = 0;
+                      String stepDisplayName =
+                          clonedGameData.getSequence().getStep(0).getDisplayName();
+                      GamePlayer currentPlayer =
+                          clonedGameData.getSequence().getStep(0).getPlayerId();
+                      int roundOffset = clonedGameData.getSequence().getRoundOffset();
+                      while (enumeration.hasMoreElements()) {
+                        final HistoryNode node = (HistoryNode) enumeration.nextElement();
+                        if (node instanceof Round) {
+                          round = Math.max(0, ((Round) node).getRoundNo() - roundOffset);
+                          currentPlayer = null;
+                          stepDisplayName = node.getTitle();
+                        } else if (node instanceof Step) {
+                          currentPlayer = ((Step) node).getPlayerId().orElse(null);
+                          stepDisplayName = node.getTitle();
                         }
-                        gameDataCopy
-                            .getSequence()
-                            .setRoundAndStep(round, stepDisplayName, currentPlayer);
-                        GameDataManager.saveGame(fileOutputStream, gameDataCopy);
-                        JOptionPane.showMessageDialog(
-                            TripleAFrame.this,
-                            "Game Saved",
-                            "Game Saved",
-                            JOptionPane.INFORMATION_MESSAGE);
                       }
+                      clonedGameData
+                          .getSequence()
+                          .setRoundAndStep(round, stepDisplayName, currentPlayer);
+                      GameDataManager.saveGame(fileOutputStream, clonedGameData);
+                      JOptionPane.showMessageDialog(
+                          TripleAFrame.this,
+                          "Game Saved",
+                          "Game Saved",
+                          JOptionPane.INFORMATION_MESSAGE);
                     } catch (final IOException e) {
                       log.error("Failed to save game: " + f.get().toAbsolutePath(), e);
                     }
@@ -1906,29 +1929,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             .build();
     popupHistoryPanel.setPopup(popup);
     historyPanel = popupHistoryPanel;
-    // create history tree context menu
-    final JSplitPane historyComponentSplitPane = new JSplitPane();
-    historyComponentSplitPane.setOneTouchExpandable(true);
-    historyComponentSplitPane.setContinuousLayout(true);
-    historyComponentSplitPane.setDividerSize(8);
-    historyComponentSplitPane.setLeftComponent(historyPanel);
-    historyComponentSplitPane.setRightComponent(gameCenterPanel);
-    historyComponentSplitPane.setDividerLocation(150);
-    final JPanel historyComponent =
-        new JPanelBuilder()
-            .borderLayout()
-            .addCenter(historyComponentSplitPane)
-            .addSouth(bottomBar)
-            .build();
-    SwingUtilities.invokeLater(
-        () -> {
-          tabsPanel.removeAll();
-          addTabs(historyDetailPanel);
-          actionButtonsPanel.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
-          getContentPane().removeAll();
-          getContentPane().add(historyComponent, BorderLayout.CENTER);
-          validate();
-        });
+    return historyDetailPanel;
   }
 
   private static class HistoryPanelPopupMenuBuilder {
