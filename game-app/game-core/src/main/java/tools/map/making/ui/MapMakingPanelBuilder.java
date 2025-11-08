@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import org.triplea.swing.JButtonBuilder;
 
 public class MapMakingPanelBuilder {
-  protected static final int SPACING_HEIGHT = 30;
+  private static final int SPACING_HEIGHT = 30;
 
   final JPanel panel = new JPanel();
 
