@@ -39,21 +39,30 @@ jar {
     }
 }
 
+def assetsUrl = "https://github.com/triplea-game/assets/releases/download/47/game_headed_assets.zip"
+def assetsZipFile = file("$projectDir/.assets/assets.zip")
+def assetsCacheDir = file("$projectDir/.assets")
+def assetsUnpackedDir = file("$projectDir/assets")
+
 clean.doFirst {
-  delete "$projectDir/.assets/"
-  delete "$projectDir/assets/"
+    //delete "$projectDir/.assets/" //so the cached zip survives
+    delete assetsUnpackedDir
 }
+
 
 task downloadAssets {
     doLast {
-        download.run {
-            src "https://github.com/triplea-game/assets/releases/download/47/game_headed_assets.zip"
-            dest "$projectDir/.assets/assets.zip"
-            overwrite false
+        if (!assetsZipFile.exists()) {
+            assetsCacheDir.mkdir()
+            download.run {
+                src assetsUrl
+                dest assetsZipFile
+                overwrite false
+            }
         }
         copy {
-            from zipTree(file("$projectDir/.assets/assets.zip"))
-            into "$projectDir/assets/"
+            from zipTree(assetsZipFile)
+            into assetsUnpackedDir
         }
     }
 }
@@ -68,12 +77,12 @@ runShadow {
 }
 
 task platformInstallers(
-    type: com.install4j.gradle.Install4jTask,
-    group: "release",
-    dependsOn: [shadowJar]) {
+        type: com.install4j.gradle.Install4jTask,
+        group: "release",
+        dependsOn: [shadowJar]) {
     projectFile = file("build.install4j")
     release = releaseVersion
-    license="$System.env.INSTALL4J_LICENSE_KEY"
+    license = "$System.env.INSTALL4J_LICENSE_KEY"
     doLast {
         ant.chmod(dir: releasesDir, perm: "+x", includes: "*.sh")
     }
@@ -96,9 +105,9 @@ task portableInstaller(type: Zip, group: "release", dependsOn: shadowJar) {
 task release(group: "release", dependsOn: [portableInstaller, platformInstallers, downloadAssets]) {
     doLast {
         publishArtifacts(portableInstaller.outputs.files + [
-            file("$releasesDir/TripleA_${releaseVersion}_macos.dmg"),
-            file("$releasesDir/TripleA_${releaseVersion}_unix.sh"),
-            file("$releasesDir/TripleA_${releaseVersion}_windows-64bit.exe")
+                file("$releasesDir/TripleA_${releaseVersion}_macos.dmg"),
+                file("$releasesDir/TripleA_${releaseVersion}_unix.sh"),
+                file("$releasesDir/TripleA_${releaseVersion}_windows-64bit.exe")
         ])
     }
 }
