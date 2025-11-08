@@ -1,4 +1,4 @@
-package tools.map.making;
+package tools.util;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -10,7 +10,6 @@ import games.strategy.engine.data.TestAttachment;
 import java.lang.reflect.Field;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import tools.util.MapPropertyWrapper;
 
 final class MapPropertyWrapperTest {
   @Nested
