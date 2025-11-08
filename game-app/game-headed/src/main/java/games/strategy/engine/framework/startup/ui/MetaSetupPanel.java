@@ -22,7 +22,7 @@ import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
 import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
 import org.triplea.swing.jpanel.GridBagConstraintsFill;
-import tools.map.making.MapCreator;
+import tools.map.making.ui.MapCreator;
 
 /**
  * This is the main welcome panel with 'play online' button. This panel is just the upper right of

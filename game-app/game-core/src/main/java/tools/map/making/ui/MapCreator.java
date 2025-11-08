@@ -1,4 +1,4 @@
-package tools.map.making;
+package tools.map.making.ui;
 
 import games.strategy.triplea.EngineImageLoader;
 import java.awt.BorderLayout;
@@ -16,10 +16,14 @@ import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 import tools.map.making.ui.panel.ValidateMapPanel;
-import tools.map.making.ui.properties.MapPropertiesPanel;
-import tools.map.making.ui.skin.MapSkinPanel;
-import tools.map.making.ui.utilities.OptionalUtilitiesPanel;
-import tools.map.making.ui.xml.XmlUtilitiesPanel;
+import tools.map.making.ui.runnable.AutoPlacementFinderTask;
+import tools.map.making.ui.runnable.CenterPickerTask;
+import tools.map.making.ui.runnable.DecorationPlacerTask;
+import tools.map.making.ui.runnable.TileImageBreakerTask;
+import tools.map.making.ui.runnable.TileImageReconstructorTask;
+import tools.map.making.ui.runnable.ImageShrinkerTask;
+import tools.map.making.ui.runnable.MapPropertiesMakerTask;
+import tools.map.making.ui.runnable.PlacementPickerTask;
 
 /** A frame that will run the different map making utilities we have. */
 @UtilityClass
@@ -37,11 +41,11 @@ public class MapCreator {
 
     // set up the menu actions
     addButtonToSidePanel(sidePanel, "Step 1: Map Properties", mainPanel, mapPropertiesPanel);
-    addButtonToSidePanel(sidePanel, "Step 2: Map Utilities", mainPanel, MapSkinPanel.build());
+    addButtonToSidePanel(sidePanel, "Step 2: Map Utilities", mainPanel, getMapSkinPanel());
     addButtonToSidePanel(sidePanel, "Step 3: Game XML", mainPanel, XmlUtilitiesPanel.build());
     addButtonToSidePanel(sidePanel, "Step 4: Validate Map", mainPanel, ValidateMapPanel.build());
     addButtonToSidePanel(
-        sidePanel, "Other: Optional Things", mainPanel, OptionalUtilitiesPanel.build());
+        sidePanel, "Other: Optional Things", mainPanel, getOptionalUtilitiesPanel());
 
     final JFrame frame =
         new JFrameBuilder()
@@ -58,6 +62,27 @@ public class MapCreator {
     contentPane.add(new JScrollPane(mainPanel), BorderLayout.CENTER);
 
     frame.setVisible(true);
+  }
+
+  private static JPanel getOptionalUtilitiesPanel() {
+    return MapMakingPanelFactory.get(
+        "Other or Optional Utilities:",
+        new MapMakingPanelFactory.ButtonSpec("Run the Image Shrinker", ImageShrinkerTask::run),
+        new MapMakingPanelFactory.ButtonSpec(
+            "Run the Tile Image Reconstructor", TileImageReconstructorTask::run));
+  }
+
+  private static JPanel getMapSkinPanel() {
+    return MapMakingPanelFactory.get(
+        "Map Skin Utilities:",
+        new MapMakingPanelFactory.ButtonSpec(
+            "Run the Map Properties Maker", MapPropertiesMakerTask::run),
+        new MapMakingPanelFactory.ButtonSpec("Run the Center Picker", CenterPickerTask::run),
+        new MapMakingPanelFactory.ButtonSpec(
+            "Run the Automatic Placement Finder", AutoPlacementFinderTask::run),
+        new MapMakingPanelFactory.ButtonSpec("Run the Placement Picker", PlacementPickerTask::run),
+        new MapMakingPanelFactory.ButtonSpec("Run the Tile Image Breaker", TileImageBreakerTask::run),
+        new MapMakingPanelFactory.ButtonSpec("Run the Decoration Placer", DecorationPlacerTask::run));
   }
 
   private static void addButtonToSidePanel(
