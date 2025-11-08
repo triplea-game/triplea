@@ -87,15 +87,14 @@ final class ExportMenu extends JMenu {
                     gameData.getCurrentRound()))
             + ".xml";
 
-    Optional<Path> chosenFilePath =
-        FileChooser.chooseExportFileWithDefaultName(frame, defaultFileName);
-    chosenFilePath.ifPresent(
-        path -> {
-          try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
-            final Game xmlGameModel = GameDataExporter.convertToXmlModel(gameData, gameXmlPath);
-            GameXmlWriter.exportXml(xmlGameModel, path);
-          }
-        });
+    FileChooser.chooseExportFileWithDefaultName(frame, defaultFileName)
+        .ifPresent(
+            path -> {
+              try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
+                final Game xmlGameModel = GameDataExporter.convertToXmlModel(gameData, gameXmlPath);
+                GameXmlWriter.exportXml(xmlGameModel, path);
+              }
+            });
   }
 
   private JMenuItem createSaveScreenshotMenu() {
@@ -154,19 +153,18 @@ final class ExportMenu extends JMenu {
   private void exportUnitCharts() {
     final String defaultFileName =
         FileNameUtils.removeIllegalCharacters(gameData.getGameName()) + "_unit_stats.html";
-    Optional<Path> chosenFilePath =
-        FileChooser.chooseExportFileWithDefaultName(frame, defaultFileName);
-    chosenFilePath.ifPresent(
-        path -> {
-          try (Writer writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-            writer.write(
-                UnitStatsTable.getUnitStatsTable(gameData, uiContext)
-                    .replaceAll("</?p>|</tr>", "$0\r\n")
-                    .replaceAll("(?i)<img[^>]+/>", ""));
-          } catch (final IOException e1) {
-            log.error("Failed to write unit stats: {}", path, e1);
-          }
-        });
+    FileChooser.chooseExportFileWithDefaultName(frame, defaultFileName)
+        .ifPresent(
+            path -> {
+              try (Writer writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+                writer.write(
+                    UnitStatsTable.getUnitStatsTable(gameData, uiContext)
+                        .replaceAll("</?p>|</tr>", "$0\r\n")
+                        .replaceAll("(?i)<img[^>]+/>", ""));
+              } catch (final IOException e1) {
+                log.error("Failed to write unit stats: {}", path, e1);
+              }
+            });
   }
 
   private JMenuItem createExportSetupChartsMenu() {

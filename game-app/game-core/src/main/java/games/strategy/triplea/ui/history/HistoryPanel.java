@@ -47,7 +47,7 @@ public class HistoryPanel extends JPanel {
   private final JTree tree;
   private final HistoryDetailsPanel details;
   @Getter private HistoryNode currentPopupNode;
-  private final JPopupMenu popup;
+  private JPopupMenu popup;
   // remember which paths were expanded
   private final Collection<TreePath> stayExpandedPaths = new ArrayList<>();
   private boolean mouseOverPanel;
@@ -57,10 +57,7 @@ public class HistoryPanel extends JPanel {
   private TreePath lastParent = null;
 
   public HistoryPanel(
-      final GameData data,
-      final HistoryDetailsPanel details,
-      final JPopupMenu popup,
-      final UiContext uiContext) {
+      final GameData data, final HistoryDetailsPanel details, final UiContext uiContext) {
     Preconditions.checkState(data.areChangesOnlyInSwingEventThread());
     this.data = data;
     this.details = details;
@@ -82,21 +79,6 @@ public class HistoryPanel extends JPanel {
     // Register the tree with the tooltip manager to make the tooltips we set work.
     ToolTipManager.sharedInstance().registerComponent(tree);
     tree.expandRow(0);
-    this.popup = popup;
-    tree.add(this.popup);
-    this.popup.addPopupMenuListener(
-        new PopupMenuListener() {
-          @Override
-          public void popupMenuCanceled(final PopupMenuEvent pme) {
-            currentPopupNode = null;
-          }
-
-          @Override
-          public void popupMenuWillBecomeInvisible(final PopupMenuEvent pme) {}
-
-          @Override
-          public void popupMenuWillBecomeVisible(final PopupMenuEvent pme) {}
-        });
     final HistoryTreeCellRenderer renderer = new HistoryTreeCellRenderer(uiContext);
     renderer.setLeafIcon(null);
     renderer.setClosedIcon(null);
@@ -385,6 +367,24 @@ public class HistoryPanel extends JPanel {
     }
     mouseWasOverPanel = mouseOverPanel;
     lastParent = parent;
+  }
+
+  public void setPopup(JPopupMenu popupNew) {
+    this.popup = popupNew;
+    tree.add(this.popup);
+    this.popup.addPopupMenuListener(
+        new PopupMenuListener() {
+          @Override
+          public void popupMenuCanceled(final PopupMenuEvent pme) {
+            currentPopupNode = null;
+          }
+
+          @Override
+          public void popupMenuWillBecomeInvisible(final PopupMenuEvent pme) {}
+
+          @Override
+          public void popupMenuWillBecomeVisible(final PopupMenuEvent pme) {}
+        });
   }
 
   private static final class HistoryTreeCellRenderer extends DefaultTreeCellRenderer {

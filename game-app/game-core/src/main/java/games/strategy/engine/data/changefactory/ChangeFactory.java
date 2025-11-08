@@ -183,6 +183,11 @@ public class ChangeFactory {
     return new ObjectPropertyChange(unit, propertyName, newValue);
   }
 
+  public static Change unitPropertyChange(
+      final Unit unit, final Object newValue, final Unit.PropertyName unitPropertyName) {
+    return unitPropertyChange(unit, newValue, unitPropertyName.toString());
+  }
+
   public static Change addBattleRecords(final BattleRecords records, final GameState data) {
     return new AddBattleRecordsChange(records, data);
   }
@@ -222,6 +227,6 @@ public class ChangeFactory {
 
   public static Change markNoMovementChange(final Unit unit) {
     return unitPropertyChange(
-        unit, new BigDecimal(unit.getMaxMovementAllowed() + 1), Unit.ALREADY_MOVED);
+        unit, new BigDecimal(unit.getMaxMovementAllowed() + 1), Unit.PropertyName.ALREADY_MOVED);
   }
 }

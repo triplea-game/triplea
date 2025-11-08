@@ -711,7 +711,7 @@ public class ServerGame extends AbstractGame {
   }
 
   @Override
-  public IRandomSource getRandomSource() {
+  public @Nullable IRandomSource getRandomSource() {
     return randomSource;
   }
 

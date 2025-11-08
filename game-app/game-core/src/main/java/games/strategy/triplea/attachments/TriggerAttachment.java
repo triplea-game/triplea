@@ -626,38 +626,35 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               + " \n Use: player1:player2:oldRelation:newRelation\n"
               + thisErrorMsg());
     }
-    for (int i = 0; i < 2; i++) {
-      if (getData().getPlayerList().getPlayerId(s[i]) == null) {
-        throw new GameParseException(
-            "Invalid relationshipChange declaration: "
-                + relChange
-                + " \n player: "
-                + s[i]
-                + " unknown "
-                + thisErrorMsg());
-      }
-    }
+    getPlayerByName(s[0])
+        .orElseThrow(
+            () ->
+                new GameParseException(
+                    MessageFormat.format(
+                        "Invalid relationshipChange declaration: {0} \n first player: {1} unknown{2}",
+                        relChange, s[0], thisErrorMsg())));
+    getPlayerByName(s[1])
+        .orElseThrow(
+            () ->
+                new GameParseException(
+                    MessageFormat.format(
+                        "Invalid relationshipChange declaration: {0} \n first player: {1} unknown{2}",
+                        relChange, s[0], thisErrorMsg())));
     if (!(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL)
         || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY)
         || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)
         || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR)
         || Matches.isValidRelationshipName(getData().getRelationshipTypeList()).test(s[2]))) {
       throw new GameParseException(
-          "Invalid relationshipChange declaration: "
-              + relChange
-              + " \n relationshipType: "
-              + s[2]
-              + " unknown "
-              + thisErrorMsg());
+          MessageFormat.format(
+              "Invalid relationshipChange declaration: {0} \n old relationshipType: {1} unknown{2}",
+              relChange, s[2], thisErrorMsg()));
     }
     if (Matches.isValidRelationshipName(getData().getRelationshipTypeList()).negate().test(s[3])) {
       throw new GameParseException(
-          "Invalid relationshipChange declaration: "
-              + relChange
-              + " \n relationshipType: "
-              + s[3]
-              + " unknown "
-              + thisErrorMsg());
+          MessageFormat.format(
+              "Invalid relationshipChange declaration: {0} \n new relationshipType: {1} unknown{2}",
+              relChange, s[3], thisErrorMsg()));
     }
     if (relationshipChange == null) {
       relationshipChange = new ArrayList<>();
@@ -771,7 +768,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (territories == null) {
         territories = new ArrayList<>();
       }
-      territories.add(getTerritoryOrThrow(element));
+      territories.add(
+          getTerritory(element)
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "TriggerAttachment: Setting territories with value {0} not possible; No territory found for {1}",
+                              names, element))));
     }
   }
 
@@ -1165,7 +1169,15 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (s.length == 1 && count != -1) {
       throw new GameParseException("Empty placement list" + thisErrorMsg());
     }
-    final Territory territory = getTerritoryOrThrow(s[i]);
+    final int currentIndex = i;
+    final Territory territory =
+        getTerritory(s[currentIndex])
+            .orElseThrow(
+                () ->
+                    new GameParseException(
+                        MessageFormat.format(
+                            "TriggerAttachment: Setting placement with value {0} not possible; Index {1}: No territory found for {2}",
+                            place, currentIndex, s[currentIndex])));
 
     i++;
     final IntegerMap<UnitType> map = new IntegerMap<>();
@@ -1213,7 +1225,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       throw new GameParseException("Empty removeUnits list" + thisErrorMsg());
     }
     final Collection<Territory> territories = new ArrayList<>();
-    final Territory terr = getData().getMap().getTerritory(s[i]);
+    final Territory terr = getData().getMap().getTerritoryOrNull(s[i]);
     if (terr == null) {
       if (s[i].equalsIgnoreCase("all")) {
         territories.addAll(getData().getMap().getTerritories());
@@ -1313,12 +1325,30 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               + thisErrorMsg());
     }
     if (!s[0].equalsIgnoreCase("all")) {
-      getTerritoryOrThrow(s[0]);
+      getTerritory(s[0])
+          .orElseThrow(
+              () ->
+                  new GameParseException(
+                      MessageFormat.format(
+                          "TriggerAttachment: Setting changeOwnership with value {0} not possible; Index 0: No territory found for {1}",
+                          value, s[0])));
     }
     if (!s[1].equalsIgnoreCase("any")) {
-      getPlayerOrThrow(s[1]);
+      getPlayerByName(s[1])
+          .orElseThrow(
+              () ->
+                  new GameParseException(
+                      MessageFormat.format(
+                          "TriggerAttachment: Setting changeOwnership with value {0} not possible; No source player found for {1}",
+                          s, s[1])));
     }
-    getPlayerOrThrow(s[2]);
+    getPlayerByName(s[2])
+        .orElseThrow(
+            () ->
+                new GameParseException(
+                    MessageFormat.format(
+                        "TriggerAttachment: Setting changeOwnership with value {0} not possible; No target player found for {1}",
+                        s, s[2])));
     getBool(s[3]);
     if (changeOwnership == null) {
       changeOwnership = new ArrayList<>();
@@ -1876,6 +1906,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
       for (final String relationshipChange : t.getRelationshipChange()) {
         final String[] s = splitOnColon(relationshipChange);
+        // @TODO: relationshipChanges should not be a list of strings that have to be
+        // parsed all the time;
+        //  separate object needed in the future to ensure parsing is done only once and here data
+        // is retrieved
         final GamePlayer player1 = data.getPlayerList().getPlayerId(s[0]);
         final GamePlayer player2 = data.getPlayerList().getPlayerId(s[1]);
         final RelationshipType currentRelation =
@@ -2166,10 +2200,15 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         if (s[0].equalsIgnoreCase("all")) {
           territories.addAll(data.getMap().getTerritories());
         } else {
-          final Territory territorySet = data.getMap().getTerritory(s[0]);
+          final Territory territorySet = data.getMap().getTerritoryOrNull(s[0]);
           territories.add(territorySet);
         }
         // if null, then is must be "any", so then any player
+
+        // @TODO: changeOwnership should not be a list of strings that have to be parsed all the
+        // time;
+        // separate object needed in the future to ensure parsing is done only once and here data
+        // is retrieved
         final GamePlayer oldOwner = data.getPlayerList().getPlayerId(s[1]);
         final GamePlayer newOwner = data.getPlayerList().getPlayerId(s[2]);
         final boolean captured = getBool(s[3]);

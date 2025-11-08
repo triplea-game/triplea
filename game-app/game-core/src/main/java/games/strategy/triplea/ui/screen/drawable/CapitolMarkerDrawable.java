@@ -36,7 +36,8 @@ public class CapitolMarkerDrawable extends AbstractDrawable {
     // Changed back to use Large flags
     final Image img =
         uiContext.getFlagImageFactory().getLargeFlag(data.getPlayerList().getPlayerId(player));
-    final Point point = mapData.getCapitolMarkerLocation(data.getMap().getTerritory(location));
+    final Point point =
+        mapData.getCapitolMarkerLocation(data.getMap().getTerritoryOrNull(location));
     graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
   }
 

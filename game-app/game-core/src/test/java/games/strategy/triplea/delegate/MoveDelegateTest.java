@@ -787,7 +787,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     route = new Route(congoSeaZone, westAfricaSea, northAtlantic);
     Collection<Unit> units =
         CollectionUtils.getMatches(
-            gameData.getMap().getTerritory(congoSeaZone.toString()).getUnits(),
+            gameData.getMap().getTerritoryOrNull(congoSeaZone.toString()).getUnits(),
             Matches.unitIsCarrier());
     results = delegate.move(units, route);
     assertValid(results);
@@ -795,7 +795,8 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     route = new Route(redSea, eastMediteranean, blackSea);
     units =
         CollectionUtils.getMatches(
-            gameData.getMap().getTerritory(redSea.toString()).getUnits(), Matches.unitIsCarrier());
+            gameData.getMap().getTerritoryOrNull(redSea.toString()).getUnits(),
+            Matches.unitIsCarrier());
     results = delegate.move(units, route);
     assertValid(results);
     // make sure the place cant use it to land

@@ -289,7 +289,13 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public void setCapital(final String value) throws GameParseException {
-    getPlayerOrThrow(value);
+    getPlayerByName(value)
+        .orElseThrow(
+            () ->
+                new GameParseException(
+                    MessageFormat.format(
+                        "TerritoryAttachment: Setting capital with value {0} not possible; No such player found",
+                        value)));
     capital = value;
   }
 
@@ -394,7 +400,14 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   private void setOriginalOwner(final String player) throws GameParseException {
-    originalOwner = getPlayerOrThrow(player);
+    originalOwner =
+        getPlayerByName(player)
+            .orElseThrow(
+                () ->
+                    new GameParseException(
+                        MessageFormat.format(
+                            "TerritoryAttachment: Setting originalOwner with value {0} not possible; No such player found",
+                            player)));
   }
 
   public Optional<GamePlayer> getOriginalOwner() {
@@ -478,7 +491,13 @@ public class TerritoryAttachment extends DefaultAttachment {
           "whenCapturedByGoesTo must have 2 player names separated by a colon" + thisErrorMsg());
     }
     for (final String name : s) {
-      getPlayerOrThrow(name);
+      getPlayerByName(name)
+          .orElseThrow(
+              () ->
+                  new GameParseException(
+                      MessageFormat.format(
+                          "TerritoryAttachment: Setting whenCapturedByGoesTo with value {0} not possible; No player found for {1}",
+                          value, name)));
     }
     if (whenCapturedByGoesTo == null) {
       whenCapturedByGoesTo = new ArrayList<>();
@@ -508,9 +527,28 @@ public class TerritoryAttachment extends DefaultAttachment {
       final String encodedCaptureOwnershipChange) {
     final String[] tokens = splitOnColon(encodedCaptureOwnershipChange);
     assert tokens.length == 2;
-    return new CaptureOwnershipChange(
-        getData().getPlayerList().getPlayerId(tokens[0]),
-        getData().getPlayerList().getPlayerId(tokens[1]));
+    try {
+      return new CaptureOwnershipChange(
+          getPlayerByName(tokens[0])
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "Invalid captureOwnershipChange with value {0} \n from-player: {1} unknown{2}",
+                              encodedCaptureOwnershipChange, tokens[0], thisErrorMsg()))),
+          getPlayerByName(tokens[1])
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "Invalid captureOwnershipChange with value {0} \n to-player: {1} unknown{2}",
+                              encodedCaptureOwnershipChange, tokens[1], thisErrorMsg()))));
+    } catch (GameParseException gameParseException) {
+      // @TODO: ownershipChanges should not be a list of strings that have to be parsed all the
+      // time;
+      // separate object needed in the future to ensure parsing is done only once
+      throw new IllegalStateException(gameParseException);
+    }
   }
 
   private void setTerritoryEffect(final String value) throws GameParseException {
@@ -541,11 +579,18 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   private void setConvoyAttached(final String value) throws GameParseException {
-    if (value.length() <= 0) {
+    if (value.isEmpty()) {
       return;
     }
     for (final String subString : splitOnColon(value)) {
-      final Territory territory = getTerritoryOrThrow(subString);
+      final Territory territory =
+          getTerritory(subString)
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "TerritoryAttachment: No territory found for {0}; Setting convoyAttached not possible with value {1}",
+                              subString, value)));
       if (convoyAttached == null) {
         convoyAttached = new HashSet<>();
       }

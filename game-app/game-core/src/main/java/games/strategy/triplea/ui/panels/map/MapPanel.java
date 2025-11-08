@@ -544,7 +544,7 @@ public class MapPanel extends ImageScrollerLargeView {
     if (name == null) {
       return null;
     }
-    return gameData.getMap().getTerritory(name);
+    return gameData.getMap().getTerritoryOrNull(name);
   }
 
   private double normalizeX(final double x) {
@@ -917,18 +917,7 @@ public class MapPanel extends ImageScrollerLargeView {
       int i = 0;
       for (final UnitCategory category : categories) {
         final Point place = new Point(i * (iconWidth + horizontalSpace), 0);
-        final UnitsDrawer drawer =
-            new UnitsDrawer(
-                category.getUnits().size(),
-                category.getType().getName(),
-                category.getOwner().getName(),
-                place,
-                category.getDamaged(),
-                category.getBombingDamage(),
-                category.getDisabled(),
-                false,
-                "",
-                uiContext);
+        final UnitsDrawer drawer = new UnitsDrawer(category, null, place, false, uiContext);
         drawer.draw(bounds, gameData, g, uiContext.getMapData());
         i++;
       }

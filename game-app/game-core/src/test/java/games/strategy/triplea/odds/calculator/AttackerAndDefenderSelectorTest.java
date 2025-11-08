@@ -50,12 +50,12 @@ public class AttackerAndDefenderSelectorTest {
     private final GamePlayer british = british(gameData);
     private final GamePlayer japanese = japanese(gameData);
     private final GamePlayer americans = americans(gameData);
-    private final Territory germany = gameData.getMap().getTerritory("Germany");
-    private final Territory japan = gameData.getMap().getTerritory("Japan");
-    private final Territory unitedKingdom = gameData.getMap().getTerritory("United Kingdom");
-    private final Territory seaZone32 = gameData.getMap().getTerritory("32 Sea Zone");
-    private final Territory kenya = gameData.getMap().getTerritory("Kenya");
-    private final Territory russia = gameData.getMap().getTerritory("Russia");
+    private final Territory germany = gameData.getMap().getTerritoryOrNull("Germany");
+    private final Territory japan = gameData.getMap().getTerritoryOrNull("Japan");
+    private final Territory unitedKingdom = gameData.getMap().getTerritoryOrNull("United Kingdom");
+    private final Territory seaZone32 = gameData.getMap().getTerritoryOrNull("32 Sea Zone");
+    private final Territory kenya = gameData.getMap().getTerritoryOrNull("Kenya");
+    private final Territory russia = gameData.getMap().getTerritoryOrNull("Russia");
 
     private final List<GamePlayer> players =
         List.of(
@@ -401,10 +401,10 @@ public class AttackerAndDefenderSelectorTest {
     private final GamePlayer russians = russians(gameData);
     private final GamePlayer british = british(gameData);
     private final GamePlayer french = french(gameData);
-    private final Territory northernItaly = gameData.getMap().getTerritory("Northern Italy");
-    private final Territory balticStates = gameData.getMap().getTerritory("Baltic States");
-    private final Territory sz97 = gameData.getMap().getTerritory("97 Sea Zone");
-    private final Territory uk = gameData.getMap().getTerritory("United Kingdom");
+    private final Territory northernItaly = gameData.getMap().getTerritoryOrNull("Northern Italy");
+    private final Territory balticStates = gameData.getMap().getTerritoryOrNull("Baltic States");
+    private final Territory sz97 = gameData.getMap().getTerritoryOrNull("97 Sea Zone");
+    private final Territory uk = gameData.getMap().getTerritoryOrNull("United Kingdom");
 
     @Test
     void alliedTerritory() {
