@@ -1,4 +1,4 @@
-package tools.map.making.ui.panel;
+package tools.map.making.ui;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.gameparser.GameParser;
@@ -16,7 +16,7 @@ import javax.swing.SwingUtilities;
 import lombok.experimental.UtilityClass;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JTextAreaBuilder;
-import tools.image.FileOpen;
+import tools.util.FileOpen;
 import tools.util.ToolArguments;
 
 @UtilityClass

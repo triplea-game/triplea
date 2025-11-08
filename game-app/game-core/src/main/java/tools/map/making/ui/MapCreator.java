@@ -15,15 +15,14 @@ import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
-import tools.map.making.ui.panel.ValidateMapPanel;
 import tools.map.making.ui.runnable.AutoPlacementFinderTask;
 import tools.map.making.ui.runnable.CenterPickerTask;
 import tools.map.making.ui.runnable.DecorationPlacerTask;
-import tools.map.making.ui.runnable.TileImageBreakerTask;
-import tools.map.making.ui.runnable.TileImageReconstructorTask;
 import tools.map.making.ui.runnable.ImageShrinkerTask;
 import tools.map.making.ui.runnable.MapPropertiesMakerTask;
 import tools.map.making.ui.runnable.PlacementPickerTask;
+import tools.map.making.ui.runnable.TileImageBreakerTask;
+import tools.map.making.ui.runnable.TileImageReconstructorTask;
 
 /** A frame that will run the different map making utilities we have. */
 @UtilityClass
@@ -81,8 +80,10 @@ public class MapCreator {
         new MapMakingPanelFactory.ButtonSpec(
             "Run the Automatic Placement Finder", AutoPlacementFinderTask::run),
         new MapMakingPanelFactory.ButtonSpec("Run the Placement Picker", PlacementPickerTask::run),
-        new MapMakingPanelFactory.ButtonSpec("Run the Tile Image Breaker", TileImageBreakerTask::run),
-        new MapMakingPanelFactory.ButtonSpec("Run the Decoration Placer", DecorationPlacerTask::run));
+        new MapMakingPanelFactory.ButtonSpec(
+            "Run the Tile Image Breaker", TileImageBreakerTask::run),
+        new MapMakingPanelFactory.ButtonSpec(
+            "Run the Decoration Placer", DecorationPlacerTask::run));
   }
 
   private static void addButtonToSidePanel(
