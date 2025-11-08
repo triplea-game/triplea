@@ -1,15 +1,16 @@
-package tools.util;
+package tools.map.making.ui.runnable;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import lombok.extern.slf4j.Slf4j;
-import tools.image.FileOpen;
-import tools.image.MapEditorFrame;
+import tools.map.making.ui.MapEditorFrame;
+import tools.util.FileOpen;
+import tools.util.ToolArguments;
 
 @Slf4j
-public abstract class MapEditorRunnableTask extends ToolRunnableTask {
+abstract class MapEditorRunnableTask extends ToolRunnableTask {
   @Override
   protected void runInternal() throws IOException {
     log.info("Select the map");

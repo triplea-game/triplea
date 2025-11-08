@@ -1,4 +1,4 @@
-package tools.image;
+package tools.util;
 
 import games.strategy.ui.Util;
 import java.awt.Image;

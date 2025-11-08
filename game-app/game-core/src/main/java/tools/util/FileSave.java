@@ -1,4 +1,4 @@
-package tools.image;
+package tools.util;
 
 import com.google.common.base.Strings;
 import games.strategy.engine.framework.system.SystemProperties;

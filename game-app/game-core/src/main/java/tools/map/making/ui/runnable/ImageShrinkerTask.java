@@ -1,4 +1,4 @@
-package tools.map.making;
+package tools.map.making.ui.runnable;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -18,18 +18,17 @@ import javax.imageio.stream.ImageOutputStream;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import lombok.extern.slf4j.Slf4j;
-import tools.image.FileOpen;
+import tools.util.FileOpen;
 import tools.util.ToolArguments;
-import tools.util.ToolRunnableTask;
 
 /** Takes an image and shrinks it. Used for making small images. */
 @Slf4j
-public final class ImageShrinker extends ToolRunnableTask {
+public final class ImageShrinkerTask extends ToolRunnableTask {
 
-  private ImageShrinker() {}
+  private ImageShrinkerTask() {}
 
   public static void run() {
-    runTask(ImageShrinker.class);
+    runTask(ImageShrinkerTask.class);
   }
 
   @Override
@@ -39,7 +38,7 @@ public final class ImageShrinker extends ToolRunnableTask {
         null,
         new JLabel(
             "<html>"
-                + "This is the ImageShrinker, it will create a smallMap.jpeg file for you. "
+                + "This is the ImageShrinkerTask, it will create a smallMap.jpeg file for you. "
                 + "<br>Put in your base map or relief map, and it will spit out a small "
                 + "scaled copy of it."
                 + "<br>Please note that the quality of the image will be worse than if you use a "

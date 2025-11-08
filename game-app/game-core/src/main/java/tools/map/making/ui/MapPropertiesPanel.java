@@ -18,7 +18,7 @@ import javax.swing.JTextField;
 import lombok.experimental.UtilityClass;
 import org.triplea.awt.OpenFileUtility;
 import org.triplea.swing.SwingAction;
-import tools.image.FileSave;
+import tools.util.FileSave;
 import tools.util.ToolArguments;
 
 @UtilityClass

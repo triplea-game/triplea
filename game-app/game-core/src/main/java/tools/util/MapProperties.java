@@ -1,4 +1,4 @@
-package tools.map.making;
+package tools.util;
 
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.triplea.Constants;
@@ -48,7 +48,7 @@ public class MapProperties {
   @Getter public Color screenshotTitleColor = Color.black;
   @Getter public int screenshotTitleFontSize = 20;
 
-  MapProperties() {
+  public MapProperties() {
     // fill the color map
     colorMap.put(Constants.PLAYER_NAME_AMERICANS, new Color(0x666600));
     colorMap.put(Constants.PLAYER_NAME_AUSTRALIANS, new Color(0xCCCC00));

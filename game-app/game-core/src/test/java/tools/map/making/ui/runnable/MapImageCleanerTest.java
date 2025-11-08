@@ -1,4 +1,4 @@
-package tools.image;
+package tools.map.making.ui.runnable;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;

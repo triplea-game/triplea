@@ -6,7 +6,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import lombok.experimental.UtilityClass;
 import org.triplea.swing.JButtonBuilder;
-import tools.map.making.ConnectionFinder;
+import tools.map.making.ui.runnable.ConnectionFinderTask;
 
 @UtilityClass
 public class XmlUtilitiesPanel {
@@ -25,7 +25,7 @@ public class XmlUtilitiesPanel {
     panel.add(Box.createVerticalStrut(SPACING_HEIGHT));
     panel.add(
         new JButtonBuilder("Run the Connection Finder")
-            .actionListener(ConnectionFinder::run)
+            .actionListener(ConnectionFinderTask::run)
             .build());
     panel.add(Box.createVerticalStrut(SPACING_HEIGHT));
     return panel;

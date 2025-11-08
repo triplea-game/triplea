@@ -1,4 +1,4 @@
-package tools.map.making;
+package tools.map.making.ui.runnable;
 
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -39,11 +39,10 @@ import org.jetbrains.annotations.NonNls;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
 import org.triplea.util.Tuple;
-import tools.image.FileHelper;
-import tools.image.FileOpen;
-import tools.image.FileSave;
-import tools.image.MapEditorFrame;
-import tools.util.MapEditorRunnableTask;
+import tools.map.making.ui.MapEditorFrame;
+import tools.util.FileHelper;
+import tools.util.FileOpen;
+import tools.util.FileSave;
 import tools.util.ToolArguments;
 import tools.util.ToolsUtil;
 
@@ -54,7 +53,7 @@ import tools.util.ToolsUtil;
  * given map. It will generate a {@code places.txt} file containing the unit placement locations.
  */
 @Slf4j
-public final class PlacementPicker extends MapEditorRunnableTask {
+public final class PlacementPickerTask extends MapEditorRunnableTask {
   private int placeWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private int placeHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private boolean placeDimensionsSet = false;
@@ -62,10 +61,10 @@ public final class PlacementPicker extends MapEditorRunnableTask {
   private int unitWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private int unitHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
 
-  private PlacementPicker() {}
+  private PlacementPickerTask() {}
 
   public static void run() {
-    runTask(PlacementPicker.class);
+    runTask(PlacementPickerTask.class);
   }
 
   @Override
@@ -77,7 +76,7 @@ public final class PlacementPicker extends MapEditorRunnableTask {
   public String getWelcomeMessage() {
     return """
         <html>\
-        This is the PlacementPicker, it will create a place.txt file for you. \
+        This is the PlacementPickerTask, it will create a place.txt file for you. \
         <br>In order to run this, you must already have created a centers.txt file \
         and a polygons.txt file. \
         <br><br>The program will ask for unit scale (unit zoom) level [normally \
@@ -96,7 +95,7 @@ public final class PlacementPicker extends MapEditorRunnableTask {
         <br><br>Pressing the 'O' key = Toggle the direction for placement overflow for \
         that territory. \
         <br><br>It is a very good idea to check each territory using the \
-        PlacementPicker after running the AutoPlacementFinder \
+        PlacementPickerTask after running the AutoPlacementFinder \
         <br>to make sure there are enough placements for each territory. If not, you \
         can always add more then save it. \
         <br><br>IF there are not enough placements, by default the units will Overflow \

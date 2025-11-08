@@ -1,4 +1,4 @@
-package tools.image;
+package tools.map.making.ui.runnable;
 
 import static games.strategy.triplea.ui.screen.TileManager.TILE_SIZE;
 
@@ -19,8 +19,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import lombok.extern.slf4j.Slf4j;
+import tools.util.FileOpen;
+import tools.util.FileSave;
 import tools.util.ToolArguments;
-import tools.util.ToolRunnableTask;
 
 /**
  * Utility for breaking an image into separate smaller images. User must make a new directory called
@@ -29,26 +30,26 @@ import tools.util.ToolRunnableTask;
  * be renamed to "seazone
  */
 @Slf4j
-public final class TileImageBreaker extends ToolRunnableTask {
+public final class TileImageBreakerTask extends ToolRunnableTask {
   private Path location = null;
   private final JFrame observer = new JFrame();
   private Path mapFolderLocation = null;
   private final JTextAreaOptionPane textOptionPane =
       new JTextAreaOptionPane(
           null,
-          "TileImageBreaker Log\r\n\r\n",
+          "TileImageBreakerTask Log\r\n\r\n",
           "",
-          "TileImageBreaker Log",
+          "TileImageBreakerTask Log",
           null,
           500,
           300,
           1,
           null);
 
-  private TileImageBreaker() {}
+  private TileImageBreakerTask() {}
 
   public static void run() {
-    runTask(TileImageBreaker.class);
+    runTask(TileImageBreakerTask.class);
   }
 
   @Override
@@ -58,7 +59,7 @@ public final class TileImageBreaker extends ToolRunnableTask {
         null,
         new JLabel(
             "<html>"
-                + "This is the TileImageBreaker, it will create the map image tiles file for you. "
+                + "This is the TileImageBreakerTask, it will create the map image tiles file for you. "
                 + "<br>It will take any image, and break it up into 256x256 pixel squares, "
                 + "and put them all in a folder. "
                 + "<br>You can use this to create the base tiles (background) as well as the "

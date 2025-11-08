@@ -1,4 +1,4 @@
-package tools.image;
+package tools.util;
 
 import games.strategy.engine.framework.system.SystemProperties;
 import java.io.File;
@@ -20,7 +20,7 @@ public class FileOpen {
     this(title, currentDirectory, null, extensions);
   }
 
-  FileOpen(
+  public FileOpen(
       final String title,
       final Path currentDirectory,
       final Path selectedFile,

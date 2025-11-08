@@ -1,4 +1,4 @@
-package tools.map.making;
+package tools.util;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.properties.AbstractEditableProperty;

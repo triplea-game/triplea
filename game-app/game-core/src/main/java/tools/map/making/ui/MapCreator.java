@@ -13,14 +13,14 @@ import org.triplea.swing.JButtonBuilder.AlignmentX;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
-import tools.image.AutoPlacementFinder;
-import tools.image.CenterPicker;
-import tools.image.DecorationPlacer;
-import tools.image.TileImageBreaker;
-import tools.image.TileImageReconstructor;
-import tools.map.making.ImageShrinker;
-import tools.map.making.MapPropertiesMaker;
-import tools.map.making.PlacementPicker;
+import tools.map.making.ui.runnable.AutoPlacementFinderTask;
+import tools.map.making.ui.runnable.CenterPickerTask;
+import tools.map.making.ui.runnable.DecorationPlacerTask;
+import tools.map.making.ui.runnable.ImageShrinkerTask;
+import tools.map.making.ui.runnable.MapPropertiesMakerTask;
+import tools.map.making.ui.runnable.PlacementPickerTask;
+import tools.map.making.ui.runnable.TileImageBreakerTask;
+import tools.map.making.ui.runnable.TileImageReconstructorTask;
 
 /** A frame that will run the different map making utilities we have. */
 @UtilityClass
@@ -63,22 +63,24 @@ public class MapCreator {
   private static JPanel getOptionalUtilitiesPanel() {
     return MapMakingPanelFactory.get(
         "Other or Optional Utilities:",
-        new MapMakingPanelFactory.ButtonSpec("Run the Image Shrinker", ImageShrinker::run),
+        new MapMakingPanelFactory.ButtonSpec("Run the Image Shrinker", ImageShrinkerTask::run),
         new MapMakingPanelFactory.ButtonSpec(
-            "Run the Tile Image Reconstructor", TileImageReconstructor::run));
+            "Run the Tile Image Reconstructor", TileImageReconstructorTask::run));
   }
 
   private static JPanel getMapSkinPanel() {
     return MapMakingPanelFactory.get(
         "Map Skin Utilities:",
         new MapMakingPanelFactory.ButtonSpec(
-            "Run the Map Properties Maker", MapPropertiesMaker::run),
-        new MapMakingPanelFactory.ButtonSpec("Run the Center Picker", CenterPicker::run),
+            "Run the Map Properties Maker", MapPropertiesMakerTask::run),
+        new MapMakingPanelFactory.ButtonSpec("Run the Center Picker", CenterPickerTask::run),
         new MapMakingPanelFactory.ButtonSpec(
-            "Run the Automatic Placement Finder", AutoPlacementFinder::run),
-        new MapMakingPanelFactory.ButtonSpec("Run the Placement Picker", PlacementPicker::run),
-        new MapMakingPanelFactory.ButtonSpec("Run the Tile Image Breaker", TileImageBreaker::run),
-        new MapMakingPanelFactory.ButtonSpec("Run the Decoration Placer", DecorationPlacer::run));
+            "Run the Automatic Placement Finder", AutoPlacementFinderTask::run),
+        new MapMakingPanelFactory.ButtonSpec("Run the Placement Picker", PlacementPickerTask::run),
+        new MapMakingPanelFactory.ButtonSpec(
+            "Run the Tile Image Breaker", TileImageBreakerTask::run),
+        new MapMakingPanelFactory.ButtonSpec(
+            "Run the Decoration Placer", DecorationPlacerTask::run));
   }
 
   private static void addButtonToSidePanel(
