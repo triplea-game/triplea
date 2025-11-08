@@ -1,4 +1,4 @@
-package tools.util;
+package tools.map.making.ui.runnable;
 
 import static com.google.common.base.Preconditions.checkState;
 
@@ -7,7 +7,7 @@ import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public abstract class ToolRunnableTask {
+abstract class ToolRunnableTask {
   // Avoid external instantiation by subclasses
   protected ToolRunnableTask() {}
 

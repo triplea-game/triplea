@@ -1,4 +1,4 @@
-package tools.image;
+package tools.map.making.ui.runnable;
 
 import java.awt.Color;
 import java.awt.Point;
@@ -11,18 +11,18 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Algorithm for cleaning up black and white image map images, to improve them for later use with
- * the PolygonGrabber.
+ * the PolygonGrabberTask.
  *
  * <p>Performs the following operations (in order): 1. Normalizes colors by changing pixels that
  * aren't white to black. 2. "Fills in" small regions (below `minimumRegionSize`) with black pixels.
  * 3. Removes "unnecessary" black pixels by turning them to white, making the resulting lines
  * between regions have a thickness of 1 pixel.
  *
- * <p>Note: It's up to the user to double check that the result is as intended. If the input image
+ * <p>Note: It's up to the user to double-check that the result is as intended. If the input image
  * has an incomplete border (that has a gap), the algorithm will completely remove it.
  */
 @Slf4j
-public class MapImageCleaner {
+class MapImageCleaner {
   // Indicates the pixel is not associated with a region.
   private static final int NO_REGION = 0;
 

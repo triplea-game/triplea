@@ -1,4 +1,4 @@
-package tools.image;
+package tools.map.making.ui.runnable;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -28,7 +28,10 @@ import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
-import tools.util.MapEditorRunnableTask;
+import tools.map.making.ui.MapEditorFrame;
+import tools.util.FileHelper;
+import tools.util.FileOpen;
+import tools.util.FileSave;
 import tools.util.ToolsUtil;
 
 /**
@@ -39,12 +42,12 @@ import tools.util.ToolsUtil;
  * It will generate a {@code centers.txt} file containing the territory center locations.
  */
 @Slf4j
-public final class CenterPicker extends MapEditorRunnableTask {
+public final class CenterPickerTask extends MapEditorRunnableTask {
 
-  private CenterPicker() {}
+  private CenterPickerTask() {}
 
   public static void run() {
-    runTask(TileImageBreaker.class);
+    runTask(TileImageBreakerTask.class);
   }
 
   @Override
@@ -56,7 +59,7 @@ public final class CenterPicker extends MapEditorRunnableTask {
   public String getWelcomeMessage() {
     return """
         <html>\
-        This is the CenterPicker, it will create a centers.txt file for you. \
+        This is the CenterPickerTask, it will create a centers.txt file for you. \
         <br>Please click on the center of every single territory and sea zone on your \
         map, and give each a name. \
         <br>The point you clicked on will tell TripleA where to put things like any \

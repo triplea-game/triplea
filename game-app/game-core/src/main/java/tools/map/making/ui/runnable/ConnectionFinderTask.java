@@ -1,4 +1,4 @@
-package tools.map.making;
+package tools.map.making.ui.runnable;
 
 import java.awt.Dimension;
 import java.awt.Polygon;
@@ -29,10 +29,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.java.AlphanumComparator;
 import org.triplea.util.PointFileReaderWriter;
-import tools.image.FileOpen;
-import tools.image.FileSave;
+import tools.util.FileOpen;
+import tools.util.FileSave;
 import tools.util.ToolArguments;
-import tools.util.ToolRunnableTask;
 import tools.util.ToolsUtil;
 
 /**
@@ -40,7 +39,7 @@ import tools.util.ToolsUtil;
  * polygons.txt file Outputs - a list of connections between the Polygons
  */
 @Slf4j
-public final class ConnectionFinder extends ToolRunnableTask {
+public final class ConnectionFinderTask extends ToolRunnableTask {
   @NonNls private static final String LINE_THICKNESS = "triplea.map.lineThickness";
   @NonNls private static final String SCALE_PIXELS = "triplea.map.scalePixels";
   @NonNls private static final String MIN_OVERLAP = "triplea.map.minOverlap";
@@ -58,7 +57,7 @@ public final class ConnectionFinder extends ToolRunnableTask {
   private double minOverlap = 32.0;
 
   public static void run() {
-    runTask(ConnectionFinder.class);
+    runTask(ConnectionFinderTask.class);
   }
 
   @Override
@@ -68,7 +67,7 @@ public final class ConnectionFinder extends ToolRunnableTask {
         null,
         new JLabel(
             "<html>"
-                + "This is the ConnectionFinder. "
+                + "This is the ConnectionFinderTask. "
                 + "<br>It will create a file containing the connections between territories, "
                 + "and optionally the territory definitions as well. "
                 + "<br>Copy and paste everything from this file into your game xml file "

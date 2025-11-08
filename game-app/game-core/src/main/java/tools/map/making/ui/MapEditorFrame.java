@@ -1,4 +1,4 @@
-package tools.image;
+package tools.map.making.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
+import tools.util.FileHelper;
 
 public abstract class MapEditorFrame extends JFrame {
   protected Image image;

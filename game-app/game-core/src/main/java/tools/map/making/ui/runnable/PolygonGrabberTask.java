@@ -1,4 +1,4 @@
-package tools.image;
+package tools.map.making.ui.runnable;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -38,7 +38,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.FileChooser;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
-import tools.util.MapEditorRunnableTask;
+import tools.map.making.ui.MapEditorFrame;
+import tools.util.FileHelper;
+import tools.util.FileOpen;
+import tools.util.FileSave;
 
 /**
  * Utility to break a map into polygons. Inputs - a map with 1 pixel wide borders - a list of
@@ -46,12 +49,12 @@ import tools.util.MapEditorRunnableTask;
  * Outputs - a list of polygons for each country
  */
 @Slf4j
-public final class PolygonGrabber extends MapEditorRunnableTask {
+public final class PolygonGrabberTask extends MapEditorRunnableTask {
 
-  private PolygonGrabber() {}
+  private PolygonGrabberTask() {}
 
   public static void run() {
-    runTask(PolygonGrabber.class);
+    runTask(PolygonGrabberTask.class);
   }
 
   @Override
@@ -63,7 +66,7 @@ public final class PolygonGrabber extends MapEditorRunnableTask {
   public String getWelcomeMessage() {
     return """
         <html>\
-        This is the PolygonGrabber, it will create a polygons.txt file for you. \
+        This is the PolygonGrabberTask, it will create a polygons.txt file for you. \
         <br>In order to run this, you must already have created a center.txt file. \
         <br>Please click near the center of every single territory and sea zone on \
         your map. \

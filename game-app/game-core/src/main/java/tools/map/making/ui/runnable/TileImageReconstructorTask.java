@@ -1,4 +1,4 @@
-package tools.image;
+package tools.map.making.ui.runnable;
 
 import static games.strategy.triplea.ui.screen.TileManager.TILE_SIZE;
 
@@ -30,20 +30,21 @@ import javax.swing.filechooser.FileFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.util.PointFileReaderWriter;
+import tools.util.FileOpen;
+import tools.util.FileSave;
 import tools.util.ToolArguments;
-import tools.util.ToolRunnableTask;
 
-/** For taking a folder of basetiles and putting them back together into an image. */
+/** For taking a folder of base tiles and putting them back together into an image. */
 @Slf4j
-public final class TileImageReconstructor extends ToolRunnableTask {
+public final class TileImageReconstructorTask extends ToolRunnableTask {
   private Path baseTileLocation = null;
   private Path imageSaveLocation = null;
   private final JTextAreaOptionPane textOptionPane =
       new JTextAreaOptionPane(
           null,
-          "TileImageReconstructor Log\r\n\r\n",
+          "TileImageReconstructorTask Log\r\n\r\n",
           "",
-          "TileImageReconstructor Log",
+          "TileImageReconstructorTask Log",
           null,
           500,
           300,
@@ -53,10 +54,10 @@ public final class TileImageReconstructor extends ToolRunnableTask {
   private int sizeY = -1;
   private Map<String, List<Polygon>> polygons = new HashMap<>();
 
-  private TileImageReconstructor() {}
+  private TileImageReconstructorTask() {}
 
   public static void run() {
-    runTask(TileImageReconstructor.class);
+    runTask(TileImageReconstructorTask.class);
   }
 
   @Override
@@ -66,7 +67,7 @@ public final class TileImageReconstructor extends ToolRunnableTask {
         null,
         new JLabel(
             "<html>"
-                + "This is the TileImageReconstructor, it will reconstruct a single "
+                + "This is the TileImageReconstructorTask, it will reconstruct a single "
                 + "map image from a folder full of basetiles. "
                 + "<br>You must know the size of the map image before you begin, this is "
                 + "normally found in the map.properties file. "

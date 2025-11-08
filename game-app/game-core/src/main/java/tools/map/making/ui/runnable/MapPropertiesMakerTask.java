@@ -1,4 +1,4 @@
-package tools.map.making;
+package tools.map.making.ui.runnable;
 
 import games.strategy.engine.data.properties.PropertiesUi;
 import java.awt.BorderLayout;
@@ -48,12 +48,13 @@ import org.triplea.swing.IntTextField;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 import org.triplea.util.Tuple;
-import tools.image.FileSave;
+import tools.util.FileSave;
+import tools.util.MapProperties;
+import tools.util.MapPropertyWrapper;
 import tools.util.ToolArguments;
-import tools.util.ToolRunnableTask;
 
 /**
- * This is the MapPropertiesMaker, it will create a map.properties file for you. <br>
+ * This is the MapPropertiesMakerTask, it will create a map.properties file for you. <br>
  * The map.properties is located in the map's directory, and it will tell TripleA various display
  * related information about your map. <br>
  * Such things as the dimensions of your map, the colors of each of the players, the size of the
@@ -62,14 +63,14 @@ import tools.util.ToolRunnableTask;
  * optional, fields.
  */
 @Slf4j
-public final class MapPropertiesMaker extends ToolRunnableTask {
+public final class MapPropertiesMakerTask extends ToolRunnableTask {
   private Path mapFolderLocation = null;
   private final MapProperties mapProperties = new MapProperties();
 
-  private MapPropertiesMaker() {}
+  private MapPropertiesMakerTask() {}
 
   public static void run() {
-    runTask(MapPropertiesMaker.class);
+    runTask(MapPropertiesMakerTask.class);
   }
 
   @Override
@@ -139,7 +140,7 @@ public final class MapPropertiesMaker extends ToolRunnableTask {
       panel.add(
           new JLabel(
               "<html>"
-                  + "This is the MapPropertiesMaker, it will create a map.properties file for you. "
+                  + "This is the MapPropertiesMakerTask, it will create a map.properties file for you. "
                   + "<br>The map.properties is located in the map's directory, and it will tell "
                   + "TripleA various "
                   + "<br>display related information about your map. "

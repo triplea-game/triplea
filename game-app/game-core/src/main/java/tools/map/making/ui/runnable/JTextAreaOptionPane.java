@@ -1,4 +1,4 @@
-package tools.image;
+package tools.map.making.ui.runnable;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

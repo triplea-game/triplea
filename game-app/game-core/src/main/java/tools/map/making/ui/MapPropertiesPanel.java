@@ -21,7 +21,7 @@ import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JTextAreaBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.jpanel.JPanelBuilder;
-import tools.image.FileSave;
+import tools.util.FileSave;
 import tools.util.ToolArguments;
 
 @UtilityClass

@@ -1,4 +1,4 @@
-package tools.image;
+package tools.map.making.ui.runnable;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.ResourceLoader;
@@ -47,12 +47,15 @@ import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
 import org.triplea.util.Triple;
 import org.triplea.util.Tuple;
-import tools.util.MapEditorRunnableTask;
+import tools.map.making.ui.MapEditorFrame;
+import tools.util.FileHelper;
+import tools.util.FileOpen;
+import tools.util.FileSave;
 import tools.util.ToolsUtil;
 
 /**
- * This is the DecorationPlacer, it will create a text file for you containing the points to place
- * images at. <br>
+ * This is the DecorationPlacerTask, it will create a text file for you containing the points to
+ * place images at. <br>
  * <br>
  * In order to begin this, you must already have the map file, as well as the centers.txt and
  * polygons.txt finished. <br>
@@ -97,12 +100,12 @@ import tools.util.ToolsUtil;
  * 'Load Image Points'.
  */
 @Slf4j
-public final class DecorationPlacer extends MapEditorRunnableTask {
+public final class DecorationPlacerTask extends MapEditorRunnableTask {
 
-  private DecorationPlacer() {}
+  private DecorationPlacerTask() {}
 
   public static void run() {
-    runTask(DecorationPlacer.class);
+    runTask(DecorationPlacerTask.class);
   }
 
   @Override
@@ -114,7 +117,7 @@ public final class DecorationPlacer extends MapEditorRunnableTask {
   public String getWelcomeMessage() {
     return """
         <html>\
-        This is the DecorationPlacer, it will create a text file for you containing \
+        This is the DecorationPlacerTask, it will create a text file for you containing \
         the points to place images at. \
         <br><br>In order to begin this, you must already have the map file, as well \
         as the centers.txt and polygons.txt finished. \

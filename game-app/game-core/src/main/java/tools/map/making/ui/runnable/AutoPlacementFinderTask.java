@@ -1,4 +1,4 @@
-package tools.image;
+package tools.map.making.ui.runnable;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.ResourceLoader;
@@ -27,8 +27,8 @@ import javax.swing.JPanel;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.util.PointFileReaderWriter;
+import tools.util.FileSave;
 import tools.util.ToolArguments;
-import tools.util.ToolRunnableTask;
 
 /**
  * The auto-placement finder map making tool.
@@ -38,7 +38,7 @@ import tools.util.ToolRunnableTask;
  * placement locations.
  */
 @Slf4j
-public final class AutoPlacementFinder extends ToolRunnableTask {
+public final class AutoPlacementFinderTask extends ToolRunnableTask {
   private int placeWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private int placeHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private boolean placeDimensionsSet = false;
@@ -49,19 +49,19 @@ public final class AutoPlacementFinder extends ToolRunnableTask {
   private final JTextAreaOptionPane textOptionPane =
       new JTextAreaOptionPane(
           null,
-          "AutoPlacementFinder Log\r\n\r\n",
+          "AutoPlacementFinderTask Log\r\n\r\n",
           "",
-          "AutoPlacementFinder Log",
+          "AutoPlacementFinderTask Log",
           null,
           500,
           300,
           1,
           null);
 
-  private AutoPlacementFinder() {}
+  private AutoPlacementFinderTask() {}
 
   public static void run() {
-    runTask(AutoPlacementFinder.class);
+    runTask(AutoPlacementFinderTask.class);
   }
 
   @Override
@@ -71,7 +71,7 @@ public final class AutoPlacementFinder extends ToolRunnableTask {
         null,
         new JLabel(
             "<html>"
-                + "This is the AutoPlacementFinder, it will create a place.txt file for you. "
+                + "This is the AutoPlacementFinderTask, it will create a place.txt file for you. "
                 + "<br>In order to run this, you must already have created a centers.txt file and "
                 + "a polygons.txt file, "
                 + "<br>and you must have already created the map directory structure in its "
@@ -91,7 +91,7 @@ public final class AutoPlacementFinder extends ToolRunnableTask {
                 + "territories on your map."
                 + "<br>However, it doesn't do a good job with thin or small territories, or "
                 + "islands, so it is a very good idea"
-                + "<br>to use the PlacementPicker to check all placements and redo some of them "
+                + "<br>to use the PlacementPickerTask to check all placements and redo some of them "
                 + "by hand."
                 + "</html>"));
     calculate();
