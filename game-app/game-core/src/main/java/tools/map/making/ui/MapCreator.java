@@ -1,4 +1,4 @@
-package tools.map.making;
+package tools.map.making.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -13,10 +13,14 @@ import org.triplea.swing.JButtonBuilder.AlignmentX;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
-import tools.map.making.ui.properties.MapPropertiesPanel;
-import tools.map.making.ui.skin.MapSkinPanel;
-import tools.map.making.ui.utilities.OptionalUtilitiesPanel;
-import tools.map.making.ui.xml.XmlUtilitiesPanel;
+import tools.image.AutoPlacementFinder;
+import tools.image.CenterPicker;
+import tools.image.DecorationPlacer;
+import tools.image.TileImageBreaker;
+import tools.image.TileImageReconstructor;
+import tools.map.making.ImageShrinker;
+import tools.map.making.MapPropertiesMaker;
+import tools.map.making.PlacementPicker;
 
 /** A frame that will run the different map making utilities we have. */
 @UtilityClass
@@ -33,10 +37,10 @@ public class MapCreator {
     sidePanel.add(Box.createVerticalGlue());
 
     addButtonToSidePanel(sidePanel, "Step 1: Map Properties", mainPanel, mapPropertiesPanel);
-    addButtonToSidePanel(sidePanel, "Step 2: Map Utilities", mainPanel, MapSkinPanel.build());
+    addButtonToSidePanel(sidePanel, "Step 2: Map Utilities", mainPanel, getMapSkinPanel());
     addButtonToSidePanel(sidePanel, "Step 3: Game XML", mainPanel, XmlUtilitiesPanel.build());
     addButtonToSidePanel(
-        sidePanel, "Other: Optional Things", mainPanel, OptionalUtilitiesPanel.build());
+        sidePanel, "Other: Optional Things", mainPanel, getOptionalUtilitiesPanel());
 
     final JFrame frame =
         new JFrameBuilder()
@@ -54,6 +58,27 @@ public class MapCreator {
 
     // now set up the main screen
     frame.setVisible(true);
+  }
+
+  private static JPanel getOptionalUtilitiesPanel() {
+    return MapMakingPanelFactory.get(
+        "Other or Optional Utilities:",
+        new MapMakingPanelFactory.ButtonSpec("Run the Image Shrinker", ImageShrinker::run),
+        new MapMakingPanelFactory.ButtonSpec(
+            "Run the Tile Image Reconstructor", TileImageReconstructor::run));
+  }
+
+  private static JPanel getMapSkinPanel() {
+    return MapMakingPanelFactory.get(
+        "Map Skin Utilities:",
+        new MapMakingPanelFactory.ButtonSpec(
+            "Run the Map Properties Maker", MapPropertiesMaker::run),
+        new MapMakingPanelFactory.ButtonSpec("Run the Center Picker", CenterPicker::run),
+        new MapMakingPanelFactory.ButtonSpec(
+            "Run the Automatic Placement Finder", AutoPlacementFinder::run),
+        new MapMakingPanelFactory.ButtonSpec("Run the Placement Picker", PlacementPicker::run),
+        new MapMakingPanelFactory.ButtonSpec("Run the Tile Image Breaker", TileImageBreaker::run),
+        new MapMakingPanelFactory.ButtonSpec("Run the Decoration Placer", DecorationPlacer::run));
   }
 
   private static void addButtonToSidePanel(

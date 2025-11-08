@@ -1,4 +1,4 @@
-package tools.map.making.ui.properties;
+package tools.map.making.ui;
 
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;
