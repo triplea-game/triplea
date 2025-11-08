@@ -39,7 +39,6 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import lombok.Getter;
-import lombok.Setter;
 
 /** Shows the history as a tree. */
 public class HistoryPanel extends JPanel {
@@ -48,7 +47,7 @@ public class HistoryPanel extends JPanel {
   private final JTree tree;
   private final HistoryDetailsPanel details;
   @Getter private HistoryNode currentPopupNode;
-  @Setter private JPopupMenu popup;
+  private JPopupMenu popup;
   // remember which paths were expanded
   private final Collection<TreePath> stayExpandedPaths = new ArrayList<>();
   private boolean mouseOverPanel;
@@ -80,20 +79,6 @@ public class HistoryPanel extends JPanel {
     // Register the tree with the tooltip manager to make the tooltips we set work.
     ToolTipManager.sharedInstance().registerComponent(tree);
     tree.expandRow(0);
-    tree.add(this.popup);
-    this.popup.addPopupMenuListener(
-        new PopupMenuListener() {
-          @Override
-          public void popupMenuCanceled(final PopupMenuEvent pme) {
-            currentPopupNode = null;
-          }
-
-          @Override
-          public void popupMenuWillBecomeInvisible(final PopupMenuEvent pme) {}
-
-          @Override
-          public void popupMenuWillBecomeVisible(final PopupMenuEvent pme) {}
-        });
     final HistoryTreeCellRenderer renderer = new HistoryTreeCellRenderer(uiContext);
     renderer.setLeafIcon(null);
     renderer.setClosedIcon(null);
@@ -382,6 +367,24 @@ public class HistoryPanel extends JPanel {
     }
     mouseWasOverPanel = mouseOverPanel;
     lastParent = parent;
+  }
+
+  public void setPopup(JPopupMenu popupNew) {
+    this.popup = popupNew;
+    tree.add(this.popup);
+    this.popup.addPopupMenuListener(
+        new PopupMenuListener() {
+          @Override
+          public void popupMenuCanceled(final PopupMenuEvent pme) {
+            currentPopupNode = null;
+          }
+
+          @Override
+          public void popupMenuWillBecomeInvisible(final PopupMenuEvent pme) {}
+
+          @Override
+          public void popupMenuWillBecomeVisible(final PopupMenuEvent pme) {}
+        });
   }
 
   private static final class HistoryTreeCellRenderer extends DefaultTreeCellRenderer {
