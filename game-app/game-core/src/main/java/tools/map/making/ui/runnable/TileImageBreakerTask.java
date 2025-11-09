@@ -46,7 +46,7 @@ public final class TileImageBreakerTask extends ToolRunnableTask {
           1,
           null);
 
-  private TileImageBreakerTask() {}
+  TileImageBreakerTask() {}
 
   public static void run() {
     runTask(TileImageBreakerTask.class);
