@@ -51,7 +51,7 @@ import tools.util.FileSave;
 @Slf4j
 public final class PolygonGrabberTask extends MapEditorRunnableTask {
 
-  private PolygonGrabberTask() {}
+  PolygonGrabberTask() {}
 
   public static void run() {
     runTask(PolygonGrabberTask.class);

@@ -44,10 +44,10 @@ import tools.util.ToolsUtil;
 @Slf4j
 public final class CenterPickerTask extends MapEditorRunnableTask {
 
-  private CenterPickerTask() {}
+  CenterPickerTask() {}
 
   public static void run() {
-    runTask(TileImageBreakerTask.class);
+    runTask(CenterPickerTask.class);
   }
 
   @Override

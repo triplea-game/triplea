@@ -102,7 +102,7 @@ import tools.util.ToolsUtil;
 @Slf4j
 public final class DecorationPlacerTask extends MapEditorRunnableTask {
 
-  private DecorationPlacerTask() {}
+  DecorationPlacerTask() {}
 
   public static void run() {
     runTask(DecorationPlacerTask.class);
