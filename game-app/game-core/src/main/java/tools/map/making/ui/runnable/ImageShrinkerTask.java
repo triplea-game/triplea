@@ -25,7 +25,7 @@ import tools.util.ToolArguments;
 @Slf4j
 public final class ImageShrinkerTask extends ToolRunnableTask {
 
-  private ImageShrinkerTask() {}
+  ImageShrinkerTask() {}
 
   public static void run() {
     runTask(ImageShrinkerTask.class);

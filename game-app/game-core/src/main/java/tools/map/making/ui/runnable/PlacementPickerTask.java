@@ -61,7 +61,7 @@ public final class PlacementPickerTask extends MapEditorRunnableTask {
   private int unitWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private int unitHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
 
-  private PlacementPickerTask() {}
+  PlacementPickerTask() {}
 
   public static void run() {
     runTask(PlacementPickerTask.class);

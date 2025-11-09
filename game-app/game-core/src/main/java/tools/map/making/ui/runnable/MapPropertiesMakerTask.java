@@ -67,7 +67,7 @@ public final class MapPropertiesMakerTask extends ToolRunnableTask {
   private Path mapFolderLocation = null;
   private final MapProperties mapProperties = new MapProperties();
 
-  private MapPropertiesMakerTask() {}
+  MapPropertiesMakerTask() {}
 
   public static void run() {
     runTask(MapPropertiesMakerTask.class);

@@ -54,7 +54,7 @@ public final class TileImageReconstructorTask extends ToolRunnableTask {
   private int sizeY = -1;
   private Map<String, List<Polygon>> polygons = new HashMap<>();
 
-  private TileImageReconstructorTask() {}
+  TileImageReconstructorTask() {}
 
   public static void run() {
     runTask(TileImageReconstructorTask.class);

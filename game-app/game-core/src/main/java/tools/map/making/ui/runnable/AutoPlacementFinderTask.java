@@ -58,7 +58,7 @@ public final class AutoPlacementFinderTask extends ToolRunnableTask {
           1,
           null);
 
-  private AutoPlacementFinderTask() {}
+  AutoPlacementFinderTask() {}
 
   public static void run() {
     runTask(AutoPlacementFinderTask.class);
