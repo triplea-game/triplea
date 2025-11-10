@@ -9,16 +9,14 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class ImageUtil {
   public static BufferedImage convertToBufferedImage(final Image image) {
-    if ((image instanceof BufferedImage)) {
-      return (BufferedImage) image;
-    } else {
-      final BufferedImage newImage =
-          new BufferedImage(
-              image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-      final Graphics2D g = newImage.createGraphics();
-      g.drawImage(image, 0, 0, null);
-      g.dispose();
-      return newImage;
+    if (image instanceof BufferedImage bufferedImage) {
+      return bufferedImage;
     }
+    final BufferedImage newImage =
+        new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+    final Graphics2D g = newImage.createGraphics();
+    g.drawImage(image, 0, 0, null);
+    g.dispose();
+    return newImage;
   }
 }

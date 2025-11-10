@@ -152,8 +152,8 @@ public class XmlMapper implements Closeable {
       tagParser.parse(xmlStreamReader);
       return instance;
     } catch (final Throwable e) {
-      if (e instanceof XmlParsingException) {
-        throw (XmlParsingException) e;
+      if (e instanceof XmlParsingException xmlParsingException) {
+        throw xmlParsingException;
       } else {
         throw new XmlParsingException(xmlStreamReader, pojo, e);
       }
