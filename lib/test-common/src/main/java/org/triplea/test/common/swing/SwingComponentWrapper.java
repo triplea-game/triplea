@@ -34,8 +34,8 @@ public class SwingComponentWrapper {
       final String childName, final Class<T> classType) {
     return childName.equals(component.getName())
         ? Optional.of(classType.cast(component))
-        : (component instanceof Container)
-            ? Arrays.stream(((Container) component).getComponents())
+        : (component instanceof Container container)
+            ? Arrays.stream(container.getComponents())
                 .map(
                     childComponent ->
                         SwingComponentWrapper.of(childComponent)
