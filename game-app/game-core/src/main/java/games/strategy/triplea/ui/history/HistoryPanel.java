@@ -405,8 +405,8 @@ public class HistoryPanel extends JPanel {
         final boolean leaf,
         final int row,
         final boolean haveFocus) {
-      if (value instanceof Step) {
-        final Optional<GamePlayer> optionalGamePlayer = ((Step) value).getPlayerId();
+      if (value instanceof Step step) {
+        final Optional<GamePlayer> optionalGamePlayer = step.getPlayerId();
         if (optionalGamePlayer.isPresent()) {
           final GamePlayer player = optionalGamePlayer.get();
           final String text = value + " (" + player.getName() + ")";

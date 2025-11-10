@@ -42,8 +42,7 @@ public class GameDataComponent implements Serializable {
 
   private void readObject(final ObjectInputStream stream)
       throws IOException, ClassNotFoundException {
-    if (stream instanceof GameObjectInputStream) {
-      final GameObjectInputStream in = (GameObjectInputStream) stream;
+    if (stream instanceof GameObjectInputStream in) {
       gameData = in.getData();
     } else {
       gameData = (GameData) stream.readObject();

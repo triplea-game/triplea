@@ -163,15 +163,13 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   public final boolean equals(final Object obj) {
     if (this == obj) {
       return true;
-    } else if (!(obj instanceof DefaultAttachment)) {
-      return false;
+    } else if (obj instanceof DefaultAttachment other) {
+      return getClass().equals(other.getClass())
+          && Objects.equals(
+              Objects.toString(attachedTo, null), Objects.toString(other.attachedTo, null))
+          && (Objects.equals(name, other.name) || this.toString().equals(other.toString()));
     }
-
-    final DefaultAttachment other = (DefaultAttachment) obj;
-    return getClass().equals(other.getClass())
-        && Objects.equals(
-            Objects.toString(attachedTo, null), Objects.toString(other.attachedTo, null))
-        && (Objects.equals(name, other.name) || this.toString().equals(other.toString()));
+    return false;
   }
 
   protected Optional<Territory> getTerritory(@Nullable String territoryName) {
@@ -248,14 +246,14 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   public static Object copyPropertyValue(Object value) {
-    if (value instanceof List) {
-      return new ArrayList((List) value);
-    } else if (value instanceof IntegerMap) {
-      return new IntegerMap((IntegerMap) value);
-    } else if (value instanceof Set) {
-      return new HashSet((Set) value);
-    } else if (value instanceof Map) {
-      return new HashMap((Map) value);
+    if (value instanceof List list) {
+      return new ArrayList(list);
+    } else if (value instanceof IntegerMap integerMap) {
+      return new IntegerMap(integerMap);
+    } else if (value instanceof Set set) {
+      return new HashSet(set);
+    } else if (value instanceof Map map) {
+      return new HashMap(map);
     }
     return value;
   }
