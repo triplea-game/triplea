@@ -12,6 +12,7 @@ import java.awt.Polygon;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -220,9 +221,14 @@ public final class PointFileReaderWriter {
 
   private static void readMultiplePolygons(
       final String line, final Map<String, List<Polygon>> mapping) {
-    final String name = line.substring(0, line.indexOf('<')).trim();
+    int openingSignIndex = line.indexOf('<');
+    if (openingSignIndex == -1) {
+      throw new IllegalArgumentException(
+          MessageFormat.format("line misses opening sign ''<'': {0}", line));
+    }
+    final String name = line.substring(0, openingSignIndex).trim();
     if (mapping.containsKey(name)) {
-      throw new IllegalArgumentException("name found twice: " + name);
+      throw new IllegalArgumentException(MessageFormat.format("name found twice: {0}", name));
     }
     final List<Polygon> polygons = new ArrayList<>();
     final Matcher polyMatcher = polygonPattern.matcher(line);
