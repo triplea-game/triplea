@@ -39,6 +39,7 @@ import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.util.TuvUtils;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -115,7 +116,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     if (targets.isEmpty()) {
       defendingUnits = CollectionUtils.getMatches(battleSite.getUnits(), defenders);
     } else {
-      final List<Unit> targets =
+      final List<Unit> targetsForAaFire =
           CollectionUtils.getMatches(
               battleSite.getUnits(),
               Matches.unitIsAaThatCanFire(
@@ -125,8 +126,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                   Matches.unitIsAaForBombingThisUnitOnly(),
                   round,
                   true));
-      targets.addAll(this.targets.keySet());
-      defendingUnits = targets;
+      targetsForAaFire.addAll(this.targets.keySet());
+      defendingUnits = targetsForAaFire;
     }
   }
 
@@ -161,7 +162,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         .orElseThrow(
             () ->
                 new IllegalStateException(
-                    "Unit " + attacker.getType().getName() + " has no target"));
+                    MessageFormat.format("Unit {0} has no target", attacker.getType().getName())));
   }
 
   @Override
@@ -171,10 +172,12 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     if (targets == null) {
       return ChangeFactory.EMPTY_CHANGE;
     }
-    for (final Unit target : targets.keySet()) {
-      final Set<Unit> currentAttackers = this.targets.computeIfAbsent(target, i -> new HashSet<>());
-      currentAttackers.addAll(targets.get(target));
-    }
+    targets.forEach(
+        (target, targetAttackers) -> {
+          final Set<Unit> currentAttackers =
+              this.targets.computeIfAbsent(target, i -> new HashSet<>());
+          currentAttackers.addAll(targetAttackers);
+        });
     return ChangeFactory.EMPTY_CHANGE;
   }
 
@@ -196,7 +199,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     // meaning that targets
     // is empty. We need to update right as battle begins to know we have the full list of targets.
     updateDefendingUnits();
-    bridge.getHistoryWriter().startEvent("Strategic bombing raid in " + battleSite, battleSite);
+    bridge
+        .getHistoryWriter()
+        .startEvent(MessageFormat.format("Strategic bombing raid in {0}", battleSite), battleSite);
     if (attackingUnits.isEmpty()
         || (defendingUnits.isEmpty()
             || defendingUnits.stream().noneMatch(Matches.unitCanBeDamaged()))) {
@@ -205,7 +210,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     }
     CasualtySortingUtil.sortPreBattle(attackingUnits);
     // TODO: determine if the target has the property, not just any unit with the property
-    // isAAforBombingThisUnitOnly
+    // isAaForBombingThisUnitOnly
 
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAa(
@@ -235,10 +240,10 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     }
     steps.add(RAID);
     showBattle(bridge);
-    final List<IExecutable> steps = new ArrayList<>();
+    final List<IExecutable> fightSteps = new ArrayList<>();
     if (hasAa) {
       // global1940 rules - each target type fires an AA shot against the planes bombing it
-      steps.addAll(
+      fightSteps.addAll(
           targets.entrySet().stream()
               .filter(entry -> entry.getKey().getUnitAttachment().isAaForBombingThisUnitOnly())
               .map(Entry::getValue)
@@ -246,12 +251,12 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
               .collect(Collectors.toList()));
 
       // otherwise fire an AA shot at all the planes
-      if (steps.isEmpty()) {
-        steps.add(new FireAa());
+      if (fightSteps.isEmpty()) {
+        fightSteps.add(new FireAa());
       }
     }
-    steps.add(new ConductBombing());
-    steps.add(
+    fightSteps.add(new ConductBombing());
+    fightSteps.add(
         new IExecutable() {
           private static final long serialVersionUID = 4299575008166316488L;
 
@@ -263,24 +268,23 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
               bridge
                   .getHistoryWriter()
                   .addChildToEvent(
-                      "Bombing raid in "
-                          + battleSite.getName()
-                          + " causes "
-                          + bombingRaidTotal
-                          + " damage total. "
-                          + (bombingRaidDamage.size() > 1
-                              ? (" Damaged units is as follows: "
-                                  + MyFormatter.integerUnitMapToString(
-                                      bombingRaidDamage, ", ", " = ", false))
+                      MessageFormat.format(
+                          "Bombing raid in {0} causes {1} damage total. {2}",
+                          battleSite.getName(),
+                          bombingRaidTotal,
+                          bombingRaidDamage.size() > 1
+                              ? (MessageFormat.format(
+                                  " Damaged units is as follows: {0}",
+                                  MyFormatter.integerUnitMapToString(
+                                      bombingRaidDamage, ", ", " = ", false)))
                               : ""));
             } else {
               bridge
                   .getHistoryWriter()
                   .addChildToEvent(
-                      "Bombing raid costs "
-                          + bombingRaidTotal
-                          + " "
-                          + MyFormatter.pluralize("PU", bombingRaidTotal));
+                      MessageFormat.format(
+                          "Bombing raid costs {0} {1}",
+                          bombingRaidTotal, MyFormatter.pluralize("PU", bombingRaidTotal)));
             }
             // TODO remove the reference to the constant.japanese- replace with a rule
             if ((Properties.getPacificTheater(gameData.getProperties())
@@ -295,10 +299,10 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                 bridge
                     .getHistoryWriter()
                     .addChildToEvent(
-                        "Bombing raid costs "
-                            + (bombingRaidTotal / 10)
-                            + " "
-                            + MyFormatter.pluralize("vp", (bombingRaidTotal / 10)));
+                        MessageFormat.format(
+                            "Bombing raid costs {0} {1}",
+                            bombingRaidTotal / 10,
+                            MyFormatter.pluralize("vp", (bombingRaidTotal / 10))));
               }
             }
             // kill any suicide attackers (veqryn)
@@ -323,7 +327,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                   CollectionUtils.getMatches(
                       unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(battleSite)));
               if (!unitsCanDie.isEmpty()) {
-                // targets.removeAll(unitsCanDie);
                 HistoryChangeFactory.removeUnitsFromTerritory(battleSite, unitsCanDie)
                     .perform(bridge);
                 final IntegerMap<UnitType> costs = bridge.getCostsForTuv(defender);
@@ -333,7 +336,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             }
           }
         });
-    steps.add(
+    fightSteps.add(
         new IExecutable() {
           private static final long serialVersionUID = -7649516174883172328L;
 
@@ -342,8 +345,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             end(bridge);
           }
         });
-    Collections.reverse(steps);
-    for (final IExecutable executable : steps) {
+    Collections.reverse(fightSteps);
+    for (final IExecutable executable : fightSteps) {
       stack.push(executable);
     }
     stack.execute(bridge);
@@ -373,23 +376,23 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           .getDisplayChannelBroadcaster()
           .battleEnd(
               battleId,
-              "Raid causes "
-                  + bombingRaidTotal
-                  + " damage total."
-                  + (bombingRaidDamage.size() > 1
-                      ? (" To units: "
-                          + MyFormatter.integerUnitMapToString(
-                              bombingRaidDamage, ", ", " = ", false))
+              MessageFormat.format(
+                  "Raid causes {0} damage total.{1}",
+                  bombingRaidTotal,
+                  bombingRaidDamage.size() > 1
+                      ? (MessageFormat.format(
+                          " To units: {0}",
+                          MyFormatter.integerUnitMapToString(
+                              bombingRaidDamage, ", ", " = ", false)))
                       : ""));
     } else {
       bridge
           .getDisplayChannelBroadcaster()
           .battleEnd(
               battleId,
-              "Bombing raid cost "
-                  + bombingRaidTotal
-                  + " "
-                  + MyFormatter.pluralize("PU", bombingRaidTotal));
+              MessageFormat.format(
+                  "Bombing raid cost {0} {1}",
+                  bombingRaidTotal, MyFormatter.pluralize("PU", bombingRaidTotal)));
     }
     if (bombingRaidTotal > 0) {
       whoWon = WhoWon.ATTACKER;
@@ -413,7 +416,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   }
 
   private void showBattle(final IDelegateBridge bridge) {
-    final String title = "Bombing raid in " + battleSite.getName();
+    final String title = MessageFormat.format("Bombing raid in {0}", battleSite.getName());
     bridge
         .getDisplayChannelBroadcaster()
         .showBattle(
@@ -612,10 +615,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     final int totalExpectingHits = Math.min(dice.getHits(), validAttackingUnitsForThisRoll.size());
     if (casualties.size() != totalExpectingHits) {
       throw new IllegalStateException(
-          "Wrong number of casualties, expecting:"
-              + totalExpectingHits
-              + " but got:"
-              + casualties.size());
+          MessageFormat.format(
+              "Wrong number of casualties, expecting:{0} but got:{1}",
+              totalExpectingHits, casualties.size()));
     }
     return casualties;
   }
@@ -661,7 +663,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       final IntegerMap<UnitType> costs = bridge.getCostsForTuv(attacker);
       final int tuvLostAttacker = TuvUtils.getTuv(killed, attacker, costs, gameData);
       attackerLostTuv += tuvLostAttacker;
-      // attackingUnits.removeAll(casualties);
       removeAttackers(killed, false);
       HistoryChangeFactory.removeUnitsWithAa(battleSite, killed, currentTypeAa).perform(bridge);
     }
@@ -799,7 +800,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       final boolean limitDamage =
           Properties.getWW2V2(gameData.getProperties())
               || Properties.getLimitRocketAndSbrDamageToProduction(gameData.getProperties());
-      final List<Die> dice = new ArrayList<>();
+      final List<Die> bombingDice = new ArrayList<>();
       final Map<Unit, List<Die>> targetToDiceMap = new HashMap<>();
       // limit to maxDamage
       for (final Unit attacker : attackingUnits) {
@@ -822,12 +823,12 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           costThisUnit = max;
           // for show
           final Die best = new Die(this.dice[maxIndex]);
-          dice.add(best);
+          bombingDice.add(best);
           addToTargetDiceMap(attacker, best, targetToDiceMap);
           for (int i = 0; i < rolls; i++) {
             if (startIndex != maxIndex) {
               final Die notBest = new Die(this.dice[startIndex], -1, DieType.IGNORED);
-              dice.add(notBest);
+              bombingDice.add(notBest);
               addToTargetDiceMap(attacker, notBest, targetToDiceMap);
             }
             startIndex++;
@@ -836,7 +837,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           for (int i = 0; i < rolls; i++) {
             costThisUnit += this.dice[index] + 1;
             final Die die = new Die(this.dice[index]);
-            dice.add(die);
+            bombingDice.add(die);
             addToTargetDiceMap(attacker, die, targetToDiceMap);
             index++;
           }
@@ -877,7 +878,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         for (final Unit current : bombingRaidDamage.keySet()) {
           int currentUnitCost = bombingRaidDamage.getInt(current);
           // determine the max allowed damage
-          // UnitAttachment ua = UnitAttachment.get(current.getType());
           damageLimit = current.getHowMuchMoreDamageCanThisUnitTake(battleSite);
           if (bombingRaidDamage.getInt(current) > damageLimit) {
             bombingRaidDamage.put(current, damageLimit);
@@ -887,9 +887,12 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           final int totalDamage = current.getUnitDamage() + currentUnitCost;
           // display the results
           if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
-            bridge.sendMessage(new IDisplay.BombingResultsMessage(battleId, dice, currentUnitCost));
+            bridge.sendMessage(
+                new IDisplay.BombingResultsMessage(battleId, bombingDice, currentUnitCost));
           } else {
-            bridge.getDisplayChannelBroadcaster().bombingResults(battleId, dice, currentUnitCost);
+            bridge
+                .getDisplayChannelBroadcaster()
+                .bombingResults(battleId, bombingDice, currentUnitCost);
           }
 
           if (currentUnitCost > 0) {
@@ -906,37 +909,32 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           bridge
               .getHistoryWriter()
               .addChildToEvent(
-                  "Bombing raid in "
-                      + battleSite.getName()
-                      + " rolls: "
-                      + MyFormatter.asDice(targetToDiceMap.get(current))
-                      + " and causes: "
-                      + currentUnitCost
-                      + " damage to unit: "
-                      + current.getType().getName());
+                  MessageFormat.format(
+                      "Bombing raid in {0} rolls: {1} and causes: {2} damage to unit: {3}",
+                      battleSite.getName(),
+                      MyFormatter.asDice(targetToDiceMap.get(current)),
+                      currentUnitCost,
+                      current.getType().getName()));
           getRemote(bridge)
               .reportMessage(
-                  "Bombing raid in "
-                      + battleSite.getName()
-                      + " rolls: "
-                      + MyFormatter.asDice(targetToDiceMap.get(current))
-                      + " and causes: "
-                      + currentUnitCost
-                      + " damage to unit: "
-                      + current.getType().getName(),
-                  "Bombing raid causes "
-                      + currentUnitCost
-                      + " damage to "
-                      + current.getType().getName());
+                  MessageFormat.format(
+                      "Bombing raid in {0} rolls: {1} and causes: {2} damage to unit: {3}",
+                      battleSite.getName(),
+                      MyFormatter.asDice(targetToDiceMap.get(current)),
+                      currentUnitCost,
+                      current.getType().getName()),
+                  MessageFormat.format(
+                      "Bombing raid causes {0} damage to {1}",
+                      currentUnitCost, current.getType().getName()));
         }
       } else {
         // Record PUs lost
         gameData.getMoveDelegate().pusLost(battleSite, cost);
         cost *= Properties.getPuMultiplier(gameData.getProperties());
         if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
-          bridge.sendMessage(new IDisplay.BombingResultsMessage(battleId, dice, cost));
+          bridge.sendMessage(new IDisplay.BombingResultsMessage(battleId, bombingDice, cost));
         } else {
-          bridge.getDisplayChannelBroadcaster().bombingResults(battleId, dice, cost);
+          bridge.getDisplayChannelBroadcaster().bombingResults(battleId, bombingDice, cost);
         }
         if (cost > 0) {
           bridge
@@ -952,15 +950,12 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         bridge
             .getHistoryWriter()
             .addChildToEvent(
-                "Bombing raid in "
-                    + battleSite.getName()
-                    + " rolls: "
-                    + MyFormatter.asDice(this.dice)
-                    + " and costs: "
-                    + cost
-                    + " "
-                    + MyFormatter.pluralize("PU", cost)
-                    + ".");
+                MessageFormat.format(
+                    "Bombing raid in {0} rolls: {1} and costs: {2} {3}.",
+                    battleSite.getName(),
+                    MyFormatter.asDice(this.dice),
+                    cost,
+                    MyFormatter.pluralize("PU", cost)));
       }
       bombingRaidTotal = cost;
     }
