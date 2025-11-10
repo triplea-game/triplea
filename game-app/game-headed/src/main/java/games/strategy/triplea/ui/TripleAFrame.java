@@ -625,8 +625,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     if (!confirmed) {
       return;
     }
-    if (game instanceof ServerGame) {
-      ((ServerGame) game).stopGame();
+    if (game instanceof ServerGame serverGame) {
+      serverGame.stopGame();
     } else {
       game.getMessengers().shutDown();
       ((ClientGame) game).shutDown();
@@ -1475,9 +1475,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   }
 
   private static JOptionPane getOptionPane(final JComponent parent) {
-    return !(parent instanceof JOptionPane)
-        ? getOptionPane((JComponent) parent.getParent())
-        : (JOptionPane) parent;
+    return (parent instanceof JOptionPane optionPane)
+        ? optionPane
+        : getOptionPane((JComponent) parent.getParent());
   }
 
   /**
@@ -1904,12 +1904,12 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                       int roundOffset = clonedGameData.getSequence().getRoundOffset();
                       while (enumeration.hasMoreElements()) {
                         final HistoryNode node = (HistoryNode) enumeration.nextElement();
-                        if (node instanceof Round) {
-                          round = Math.max(0, ((Round) node).getRoundNo() - roundOffset);
+                        if (node instanceof Round nodeRound) {
+                          round = Math.max(0, nodeRound.getRoundNo() - roundOffset);
                           currentPlayer = null;
-                          stepDisplayName = node.getTitle();
-                        } else if (node instanceof Step) {
-                          currentPlayer = ((Step) node).getPlayerId().orElse(null);
+                          stepDisplayName = nodeRound.getTitle();
+                        } else if (node instanceof Step step) {
+                          currentPlayer = step.getPlayerId().orElse(null);
                           stepDisplayName = node.getTitle();
                         }
                       }

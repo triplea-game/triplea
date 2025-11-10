@@ -75,33 +75,31 @@ public class HistoryDetailsPanel extends JPanel {
     final GridBagConstraints mainConstraints =
         new GridBagConstraints(
             0, 1, 1, 1, 1, 0.9, GridBagConstraints.NORTH, GridBagConstraints.BOTH, insets, 0, 0);
-    if (node instanceof Renderable) {
-      final Object details = ((Renderable) node).getRenderingData();
-      if (details instanceof DiceRoll) {
+    if (node instanceof Renderable renderable) {
+      final Object renderingData = renderable.getRenderingData();
+      if (renderingData instanceof DiceRoll diceRoll) {
         final DicePanel dicePanel = new DicePanel(mapPanel.getUiContext(), data);
-        dicePanel.setDiceRoll((DiceRoll) details);
+        dicePanel.setDiceRoll(diceRoll);
         content.add(dicePanel, mainConstraints);
-      } else if (details instanceof MoveDescription) {
-        final MoveDescription moveMessage = (MoveDescription) details;
+      } else if (renderingData instanceof MoveDescription moveMessage) {
         renderUnits(mainConstraints, moveMessage.getUnits());
         mapPanel.setRoute(moveMessage.getRoute());
         showTerritory(moveMessage.getRoute().getEnd());
-      } else if (details instanceof PlacementDescription) {
-        final PlacementDescription placeMessage = (PlacementDescription) details;
+      } else if (renderingData instanceof PlacementDescription placeMessage) {
         renderUnits(mainConstraints, placeMessage.getUnits());
         showTerritory(placeMessage.getTerritory());
-      } else if (details instanceof Collection) {
-        final Collection<Object> objects = (Collection<Object>) details;
+      } else if (renderingData instanceof Collection) {
+        final Collection<Object> objects = (Collection<Object>) renderingData;
         final Iterator<Object> objIter = objects.iterator();
         if (objIter.hasNext()) {
           final Object obj = objIter.next();
           if (obj instanceof Unit) {
-            final Collection<Unit> units = (Collection<Unit>) details;
+            final Collection<Unit> units = (Collection<Unit>) renderingData;
             renderUnits(mainConstraints, units);
           }
         }
-      } else if (details instanceof Territory) {
-        showTerritory((Territory) details);
+      } else if (renderingData instanceof Territory territory) {
+        showTerritory(territory);
       }
     }
     content.add(Box.createGlue());

@@ -223,12 +223,11 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       serverMessenger.addMessageListener(
           (msg, from) -> {
             // check that message is from a moderator
-            if (msg instanceof ModeratorMessage) {
+            if (msg instanceof ModeratorMessage moderatorMessage) {
               if (!serverMessenger.isModerator(from)) {
                 return;
               }
 
-              ModeratorMessage moderatorMessage = (ModeratorMessage) msg;
               if (moderatorMessage.isBan()) {
                 serverMessenger.banPlayer(moderatorMessage.getPlayerName());
               } else if (moderatorMessage.isDisconnect()) {

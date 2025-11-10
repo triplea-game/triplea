@@ -109,8 +109,8 @@ public class StatisticsAggregator {
     final Enumeration<TreeNode> rootChildren = root.children();
     while (rootChildren.hasMoreElements()) {
       final TreeNode child = rootChildren.nextElement();
-      if (child instanceof Round) {
-        rounds.add((Round) child);
+      if (child instanceof Round childRound) {
+        rounds.add(childRound);
       }
     }
     return rounds;
