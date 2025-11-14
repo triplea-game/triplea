@@ -1,5 +1,6 @@
 package org.triplea.awt;
 
+import java.awt.Component;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
@@ -34,12 +35,13 @@ public final class OpenFileUtility {
    *
    * @param url A URL of a web page (ex: "http://www.google.com/")
    */
-  public static void openUrl(final String url) {
-    openUrl(url, () -> logDesktopApiMessage(url));
+  public static void openUrl(final Component parentComponent, final String url) {
+    openUrl(url, () -> logDesktopApiMessage(parentComponent, url));
   }
 
-  private static void logDesktopApiMessage(final String path) {
+  private static void logDesktopApiMessage(final Component parentComponent, final String path) {
     SwingComponents.showDialog(
+        parentComponent,
         "Desktop API not supported",
         "We're sorry, but it seems that your installed java version doesn't support the "
             + "Desktop API required to open "

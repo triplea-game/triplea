@@ -219,7 +219,7 @@ public class NodeBbForumPoster {
 
   /** Opens a browser and go to the forum post, identified by the forumId. */
   public void viewPosted() {
-    OpenFileUtility.openUrl(forumUrl + "/topic/" + topicId);
+    OpenFileUtility.openUrl(null, forumUrl + "/topic/" + topicId);
   }
 
   private static void addTokenHeader(final HttpRequestBase request, final String token) {
