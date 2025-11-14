@@ -43,7 +43,7 @@ public class BanPlayerModeratorAction {
                   .build());
 
           SwingComponents.showDialog(
-              playerName + " banned", playerName + " was banned for " + timespan);
+              parent, playerName + " banned", playerName + " was banned for " + timespan);
         });
   }
 }

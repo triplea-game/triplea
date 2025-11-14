@@ -151,8 +151,8 @@ public final class SwingComponents {
     }
   }
 
-  public static void newMessageDialog(final String msg) {
-    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, msg));
+  public static void newMessageDialog(final Component parent, final String msg) {
+    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(parent, msg));
   }
 
   /**
@@ -233,9 +233,10 @@ public final class SwingComponents {
     SwingComponents.promptUser("Open external URL?", msg, () -> OpenFileUtility.openUrl(url));
   }
 
-  public static void showDialog(final String title, final String message) {
+  public static void showDialog(final Component parent, final String title, final String message) {
     SwingUtilities.invokeLater(
-        () -> JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE));
+        () ->
+            JOptionPane.showMessageDialog(parent, message, title, JOptionPane.INFORMATION_MESSAGE));
   }
 
   /**
