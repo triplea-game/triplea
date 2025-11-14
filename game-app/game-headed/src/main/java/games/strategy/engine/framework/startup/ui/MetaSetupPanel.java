@@ -85,7 +85,9 @@ public class MetaSetupPanel extends SetupPanel {
     final JButton userGuideButton =
         new JButtonBuilder(bundle.getText("startup.SetupPanelModel.btn.UserGuideHelp.Lbl"))
             .actionListener(
-                () -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.USER_GUIDE))
+                () ->
+                    SwingComponents.newOpenUrlConfirmationDialog(
+                        JOptionPane.getFrameForComponent(this), UrlConstants.USER_GUIDE))
             .build();
     final JButton mapCreator =
         new JButtonBuilder()
