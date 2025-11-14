@@ -4,6 +4,7 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_CLIENT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
+import java.awt.Component;
 import org.triplea.java.ThreadRunner;
 
 /**
@@ -13,17 +14,17 @@ import org.triplea.java.ThreadRunner;
 public final class UpdateChecks {
   private UpdateChecks() {}
 
-  public static void launch() {
-    ThreadRunner.runInNewThread(UpdateChecks::checkForUpdates);
+  public static void launch(final Component parentComponent) {
+    ThreadRunner.runInNewThread(() -> UpdateChecks.checkForUpdates(parentComponent));
   }
 
-  private static void checkForUpdates() {
+  private static void checkForUpdates(final Component parentComponent) {
     if (!shouldRun()) {
       return;
     }
 
     TutorialMapCheck.checkForTutorialMap();
-    EngineVersionCheck.checkForLatestEngineVersionOut();
+    EngineVersionCheck.checkForLatestEngineVersionOut(parentComponent);
     UpdatedMapsCheck.checkDownloadedMapsAreLatest();
   }
 

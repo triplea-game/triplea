@@ -190,7 +190,7 @@ public final class HeadedGameRunner {
               });
         });
 
-    UpdateChecks.launch();
+    UpdateChecks.launch(headedServerSetupModel.getUi());
   }
 
   /**

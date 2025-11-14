@@ -32,7 +32,7 @@ public class DiceServerEditor extends JPanel {
   public static final int ADDRESS_FIELD_MAX_LENGTH = 1019;
   private final JButton registerButton =
       new JButtonBuilder("Register")
-          .actionListener(() -> OpenFileUtility.openUrl(UrlConstants.MARTI_REGISTRATION))
+          .actionListener(() -> OpenFileUtility.openUrl(this, UrlConstants.MARTI_REGISTRATION))
           .toolTip(
               "<html>Opens email registration page to register with MARTI dice-roller.<br>"
                   + "Needs to be done once before MARTI dice server can be used.</html>")
