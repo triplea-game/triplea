@@ -1,4 +1,4 @@
-FROM openjdk:11-jre-slim-buster
+FROM openjdk:11.0.16-jdk
 
 ENV BOT_PORT_NUMBER=4000
 EXPOSE $BOT_PORT_NUMBER
