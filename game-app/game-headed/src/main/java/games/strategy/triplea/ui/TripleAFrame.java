@@ -1074,7 +1074,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             chooser -> {
               do {
                 EventThreadJOptionPane.showMessageDialog(
-                    null,
+                    this,
                     chooser,
                     title,
                     JOptionPane.PLAIN_MESSAGE,

@@ -66,7 +66,7 @@ class MoveHelpMenu {
           editorPane.setText(hints);
           final JScrollPane scroll = new JScrollPane(editorPane);
           JOptionPane.showMessageDialog(
-              null,
+              editorPane,
               scroll,
               "Movement/Selection Help (Keyboard & Mouse)",
               JOptionPane.PLAIN_MESSAGE);

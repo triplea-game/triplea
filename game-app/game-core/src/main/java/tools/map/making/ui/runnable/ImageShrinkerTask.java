@@ -35,7 +35,7 @@ public final class ImageShrinkerTask extends ToolRunnableTask {
   protected void runInternal() throws IOException {
     final Path mapFolderLocation = ToolArguments.getPropertyMapFolderPath().orElse(null);
     JOptionPane.showMessageDialog(
-        null,
+        getParentComponent(),
         new JLabel(
             "<html>"
                 + "This is the ImageShrinkerTask, it will create a smallMap.jpeg file for you. "
@@ -47,11 +47,13 @@ public final class ImageShrinkerTask extends ToolRunnableTask {
                 + "gimp, etc, then clean it up before saving."
                 + "</html>"));
     final @Nullable Path mapFile =
-        new FileOpen("Select The Large Image", mapFolderLocation, ".gif", ".png").getFile();
+        new FileOpen(
+                getParentComponent(), "Select The Large Image", mapFolderLocation, ".gif", ".png")
+            .getFile();
     if (mapFile == null || !Files.exists(mapFile)) {
       throw new IllegalStateException(mapFile + " File does not exist");
     }
-    final String input = JOptionPane.showInputDialog(null, "Select scale");
+    final String input = JOptionPane.showInputDialog(getParentComponent(), "Select scale");
     final float scale = Float.parseFloat(input);
     final Image baseImg = ImageIO.read(mapFile.toFile());
     final int thumbWidth = (int) (baseImg.getWidth(null) * scale);

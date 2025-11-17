@@ -123,7 +123,7 @@ public class LobbyLogin {
     // We use 'null' parentWindow in case there is an async failure connecting to the lobby
     // server. In the async case, we close the parent window while still connecting, the close
     // of the parent window will close the child dialog error message as well.
-    SwingComponents.showError(null, title, message);
+    SwingComponents.showError(parentWindow, title, message);
   }
 
   private Optional<LoginResult> loginToServer(final LoginMode loginMode) {

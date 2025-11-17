@@ -91,6 +91,7 @@ public class MapPropertiesPanel {
                         e -> {
                           final Path mapFolder =
                               new FileSave(
+                                      panel,
                                       "Where is your map's folder?",
                                       null,
                                       ToolArguments.getPropertyMapFolderPath().orElse(null))

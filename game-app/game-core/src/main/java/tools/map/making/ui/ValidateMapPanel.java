@@ -53,6 +53,7 @@ public class ValidateMapPanel {
                 e -> {
                   gameXmlPath =
                       new FileOpen(
+                              panel,
                               "Select game XML file",
                               (gameXmlPath != null
                                   ? gameXmlPath.getParent()

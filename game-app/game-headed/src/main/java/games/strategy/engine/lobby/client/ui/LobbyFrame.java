@@ -51,7 +51,7 @@ public class LobbyFrame extends JFrame implements QuitHandler {
         new PlayerToLobbyConnection(
             ClientSetting.lobbyUri.getValueOrThrow(),
             loginResult.getApiKey(),
-            error -> SwingComponents.showError(null, "Error communicating with lobby", error));
+            error -> SwingComponents.showError(this, "Error communicating with lobby", error));
 
     setJMenuBar(new LobbyMenu(this, loginResult, playerToLobbyConnection));
     playerToLobbyConnection.addConnectionTerminatedListener(

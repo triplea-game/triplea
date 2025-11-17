@@ -317,25 +317,25 @@ public final class BattlePanel extends ActionPanel {
   public boolean getAttackSubs(final Territory terr) {
     getMap().centerOn(terr);
     return EventThreadJOptionPane.showConfirmDialog(
-        null, "Attack submarines in " + terr.toString() + "?", "Attack", ConfirmDialogType.YES_NO);
+        this, "Attack submarines in " + terr.toString() + "?", "Attack", ConfirmDialogType.YES_NO);
   }
 
   public boolean getAttackTransports(final Territory terr) {
     getMap().centerOn(terr);
     return EventThreadJOptionPane.showConfirmDialog(
-        null, "Attack transports in " + terr.toString() + "?", "Attack", ConfirmDialogType.YES_NO);
+        this, "Attack transports in " + terr.toString() + "?", "Attack", ConfirmDialogType.YES_NO);
   }
 
   public boolean getAttackUnits(final Territory terr) {
     getMap().centerOn(terr);
     return EventThreadJOptionPane.showConfirmDialog(
-        null, "Attack units in " + terr.toString() + "?", "Attack", ConfirmDialogType.YES_NO);
+        this, "Attack units in " + terr.toString() + "?", "Attack", ConfirmDialogType.YES_NO);
   }
 
   public boolean getShoreBombard(final Territory terr) {
     getMap().centerOn(terr);
     return EventThreadJOptionPane.showConfirmDialog(
-        null,
+        this,
         "Conduct naval bombard in " + terr.toString() + "?",
         "Bombard",
         ConfirmDialogType.YES_NO);

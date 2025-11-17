@@ -79,7 +79,8 @@ public final class MapPropertiesMakerTask extends ToolRunnableTask {
     if (mapFolderLocation == null) {
       log.info("Select the map folder");
       final Path mapFolder =
-          new FileSave("Where is your map's folder?", null, mapFolderLocation).getFile();
+          new FileSave(getParentComponent(), "Where is your map's folder?", null, mapFolderLocation)
+              .getFile();
       if (mapFolder != null && Files.exists(mapFolder)) {
         mapFolderLocation = mapFolder;
         ToolArguments.MAP_FOLDER.setSystemProperty(mapFolderLocation.toString());
@@ -488,7 +489,11 @@ public final class MapPropertiesMakerTask extends ToolRunnableTask {
     private void saveProperties() {
       try {
         final Path fileName =
-            new FileSave("Where To Save map.properties ?", "map.properties", mapFolderLocation)
+            new FileSave(
+                    getParentComponent(),
+                    "Where To Save map.properties ?",
+                    "map.properties",
+                    mapFolderLocation)
                 .getFile();
         if (fileName == null) {
           return;

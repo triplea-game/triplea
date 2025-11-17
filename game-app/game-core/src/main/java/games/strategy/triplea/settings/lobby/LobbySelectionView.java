@@ -136,7 +136,7 @@ class LobbySelectionView
     final String uri = uriField.getText().trim();
     if (!uri.startsWith("http://") && !uri.startsWith("https://")) {
       SwingComponents.showError(
-          null,
+          uiComponent,
           "Invalid Lobby URI",
           String.format("Invalid URI specified: %s\nMust start with 'https://' or 'http://'", uri));
     } else {
@@ -146,7 +146,7 @@ class LobbySelectionView
         context.setValue(ClientSetting.lobbyUri, newLobbyUri);
       } catch (final URISyntaxException e) {
         SwingComponents.showError(
-            null,
+            uiComponent,
             "Invalid Lobby URI",
             String.format("Invalid URI specified: %s\n%s", uri, e.getMessage()));
       }

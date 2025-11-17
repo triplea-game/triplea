@@ -248,7 +248,7 @@ public final class PlacementPickerTask extends MapEditorRunnableTask {
             if (showIncompleteModeItem.getState()) {
               final String num =
                   JOptionPane.showInputDialog(
-                      null,
+                      this,
                       "Enter the minimum number of placements each territory must have.\r\n"
                           + "(examples: 1, 4, etc.)");
               try {
@@ -283,7 +283,7 @@ public final class PlacementPickerTask extends MapEditorRunnableTask {
       } else {
         log.info("Select the Polygons file");
         return Optional.ofNullable(
-            new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile());
+            new FileOpen(this, "Select A Polygon File", mapFolderLocation, ".txt").getFile());
       }
     }
 
@@ -297,7 +297,7 @@ public final class PlacementPickerTask extends MapEditorRunnableTask {
         }
         final String width =
             JOptionPane.showInputDialog(
-                null,
+                this,
                 "Enter the unit's image width in pixels (unscaled / without zoom).\r\n"
                     + "(e.g. 48)");
         if (width != null) {
@@ -309,7 +309,7 @@ public final class PlacementPickerTask extends MapEditorRunnableTask {
         }
         final String height =
             JOptionPane.showInputDialog(
-                null,
+                this,
                 "Enter the unit's image height in pixels (unscaled / without zoom).\r\n"
                     + "(e.g. 48)");
         if (height != null) {
@@ -491,7 +491,7 @@ public final class PlacementPickerTask extends MapEditorRunnableTask {
     /** Saves the placements to disk. */
     private void savePlacements() {
       final Path fileName =
-          new FileSave("Where To Save place.txt ?", "place.txt", mapFolderLocation).getFile();
+          new FileSave(this, "Where To Save place.txt ?", "place.txt", mapFolderLocation).getFile();
       if (fileName == null) {
         return;
       }
@@ -507,7 +507,7 @@ public final class PlacementPickerTask extends MapEditorRunnableTask {
     private void loadPlacements() {
       log.info("Load a placement file");
       final Path placeName =
-          new FileOpen("Load A Placement File", mapFolderLocation, ".txt").getFile();
+          new FileOpen(this, "Load A Placement File", mapFolderLocation, ".txt").getFile();
       if (placeName == null) {
         return;
       }
@@ -562,7 +562,7 @@ public final class PlacementPickerTask extends MapEditorRunnableTask {
     private String getUnitsScale() {
       final String unitsScale =
           JOptionPane.showInputDialog(
-              null,
+              this,
               "Enter the unit's scale (zoom).\r\n"
                   + "(e.g. 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5)");
       return (unitsScale != null) ? unitsScale : "1";

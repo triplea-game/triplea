@@ -197,7 +197,7 @@ public final class PolygonGrabberTask extends MapEditorRunnableTask {
               "Auto Find Polygons",
               e -> {
                 JOptionPane.showMessageDialog(
-                    null,
+                    getParentComponent(),
                     new JLabel(
                         "<html>"
                             + "You will need to check and go back and do some polygons manually, "
@@ -272,7 +272,7 @@ public final class PolygonGrabberTask extends MapEditorRunnableTask {
       } else {
         log.info("Select the Centers file");
         final Path centerPath =
-            new FileOpen("Select A Center File", mapFolderLocation, ".txt").getFile();
+            new FileOpen(this, "Select A Center File", mapFolderLocation, ".txt").getFile();
         if (centerPath != null) {
           return centerPath;
         } else {
@@ -329,7 +329,7 @@ public final class PolygonGrabberTask extends MapEditorRunnableTask {
       }
       try {
         ImageIO.write(getBufferedImage(), "PNG", target.toFile());
-        JOptionPane.showMessageDialog(null, "Saved to: " + target);
+        JOptionPane.showMessageDialog(this, "Saved to: " + target);
       } catch (IOException e) {
         log.error("Writing the image to {} failed", target, e);
       }
@@ -374,7 +374,8 @@ public final class PolygonGrabberTask extends MapEditorRunnableTask {
     /** Saves the polygons to disk. */
     private void savePolygons() {
       final Path polyName =
-          new FileSave("Where To Save Polygons.txt ?", "polygons.txt", mapFolderLocation).getFile();
+          new FileSave(this, "Where To Save Polygons.txt ?", "polygons.txt", mapFolderLocation)
+              .getFile();
       if (polyName == null) {
         return;
       }
@@ -390,7 +391,7 @@ public final class PolygonGrabberTask extends MapEditorRunnableTask {
     private void loadPolygons() {
       log.info("Load a polygon file");
       final @Nullable Path polyName =
-          new FileOpen("Load A Polygon File", mapFolderLocation, ".txt").getFile();
+          new FileOpen(this, "Load A Polygon File", mapFolderLocation, ".txt").getFile();
       if (polyName == null) {
         return;
       }

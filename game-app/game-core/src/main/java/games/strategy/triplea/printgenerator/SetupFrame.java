@@ -42,7 +42,7 @@ public class SetupFrame extends JPanel {
     outDirButton.setText("Choose the Output Directory");
     outDirButton.addActionListener(
         e -> {
-          final int returnVal = outChooser.showOpenDialog(null);
+          final int returnVal = outChooser.showOpenDialog(this);
           if (returnVal == JFileChooser.APPROVE_OPTION) {
             final Path outDir = outChooser.getSelectedFile().toPath();
             outField.setText(outDir.toAbsolutePath().toString());
@@ -56,10 +56,10 @@ public class SetupFrame extends JPanel {
             final PrintGenerationData printData =
                 PrintGenerationData.builder().outDir(outDir).data(this.data).build();
             new InitialSetup().run(printData, originalState.isSelected());
-            JOptionPane.showMessageDialog(null, "Done!", "Done!", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Done!", "Done!", JOptionPane.INFORMATION_MESSAGE);
           } else {
             JOptionPane.showMessageDialog(
-                null,
+                this,
                 "You need to select an Output Directory.",
                 "Select an Output Directory!",
                 JOptionPane.ERROR_MESSAGE);

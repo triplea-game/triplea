@@ -2,14 +2,19 @@ package tools.map.making.ui.runnable;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import java.awt.Component;
 import java.io.IOException;
 import javax.swing.SwingUtilities;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-abstract class ToolRunnableTask {
+public abstract class ToolRunnableTask {
   // Avoid external instantiation by subclasses
   protected ToolRunnableTask() {}
+
+  @Setter @Getter private static Component parentComponent = null;
 
   /**
    * Allows each subclass to run its {@link #runInternal()} in EDT.
