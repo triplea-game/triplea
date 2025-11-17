@@ -16,7 +16,8 @@ abstract class MapEditorRunnableTask extends ToolRunnableTask {
     log.info("Select the map");
     final Path mapFolderLocation = ToolArguments.getPropertyMapFolderPath().orElse(null);
     final Path mapName =
-        new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png").getFile();
+        new FileOpen(getParentComponent(), "Select The Map", mapFolderLocation, ".gif", ".png")
+            .getFile();
     if (mapName != null) {
       log.info("Map : {}", mapName);
       final MapEditorFrame frame = getFrame(mapName);
