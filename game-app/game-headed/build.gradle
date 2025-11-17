@@ -45,35 +45,36 @@ def assetsCacheDir = file("$projectDir/.assets")
 def assetsUnpackedDir = file("$projectDir/assets")
 
 clean.doFirst {
-    //delete "$projectDir/.assets/" //so the cached zip survives
+    delete assetsCacheDir
     delete assetsUnpackedDir
 }
 
-
-task downloadAssets {
-    doLast {
-        if (!assetsZipFile.exists()) {
-            assetsCacheDir.mkdir()
-            download.run {
-                src assetsUrl
-                dest assetsZipFile
-                overwrite false
-            }
-        }
-        copy {
-            from zipTree(assetsZipFile)
-            into assetsUnpackedDir
-        }
-    }
+ 
+task downloadAssets(type: Download) {
+    src assetsUrl
+    dest assetsZipFile
+    overwrite false
+    // declare outputs for up-to-date checks (Download task normally already behaves well)
+    outputs.file assetsZipFile
 }
 
+task unpackAssets(type: Copy) {
+    dependsOn downloadAssets
+    from { zipTree(assetsZipFile) }
+    into assetsUnpackedDir
+    inputs.file assetsZipFile
+    outputs.dir assetsUnpackedDir
+
+    // Only run the unpack if the download task actually wrote the file:
+    onlyIf { downloadAssets.didWork || !assetsUnpackedDir.exists() }
+}
 
 run {
-    dependsOn downloadAssets
+    dependsOn unpackAssets
 }
 
 runShadow {
-    dependsOn downloadAssets
+    dependsOn unpackAssets
 }
 
 task platformInstallers(
