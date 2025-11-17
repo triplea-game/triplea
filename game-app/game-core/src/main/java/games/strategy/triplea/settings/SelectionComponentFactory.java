@@ -305,8 +305,9 @@ final class SelectionComponentFactory {
           new JButtonBuilder()
               .title("Select")
               .actionListener(
-                  () ->
-                      SwingComponents.showJFileChooser(folderSelectionMode)
+                  buttonSelect ->
+                      SwingComponents.showJFileChooser(
+                              JOptionPane.getFrameForComponent(buttonSelect), folderSelectionMode)
                           .ifPresent(file -> field.setText(file.toAbsolutePath().toString())))
               .build();
 

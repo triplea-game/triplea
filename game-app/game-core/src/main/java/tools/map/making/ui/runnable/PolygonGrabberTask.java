@@ -329,7 +329,7 @@ public final class PolygonGrabberTask extends MapEditorRunnableTask {
       }
       try {
         ImageIO.write(getBufferedImage(), "PNG", target.toFile());
-        JOptionPane.showMessageDialog(null, "Saved to: " + target);
+        JOptionPane.showMessageDialog(this, "Saved to: " + target);
       } catch (IOException e) {
         log.error("Writing the image to {} failed", target, e);
       }

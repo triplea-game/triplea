@@ -56,7 +56,7 @@ public class SetupFrame extends JPanel {
             final PrintGenerationData printData =
                 PrintGenerationData.builder().outDir(outDir).data(this.data).build();
             new InitialSetup().run(printData, originalState.isSelected());
-            JOptionPane.showMessageDialog(null, "Done!", "Done!", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Done!", "Done!", JOptionPane.INFORMATION_MESSAGE);
           } else {
             JOptionPane.showMessageDialog(
                 null,

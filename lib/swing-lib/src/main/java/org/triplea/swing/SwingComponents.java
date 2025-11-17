@@ -151,8 +151,8 @@ public final class SwingComponents {
     }
   }
 
-  public static void newMessageDialog(final Component parent, final String msg) {
-    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(parent, msg));
+  public static void newMessageDialog(final Component parentComponent, final String msg) {
+    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(parentComponent, msg));
   }
 
   /**
@@ -254,9 +254,10 @@ public final class SwingComponents {
    *
    * @param folderSelectionMode Flag controlling whether files or folders are available for
    *     selection.
-   * @return Empty if the user selects nothing, otherwise the users selection.
+   * @return Empty if the user selects nothing, otherwise the user's selection.
    */
-  public static Optional<Path> showJFileChooser(final FolderSelectionMode folderSelectionMode) {
+  public static Optional<Path> showJFileChooser(
+      final Component parent, final FolderSelectionMode folderSelectionMode) {
     final JFileChooser fileChooser = new JFileChooser();
     if (folderSelectionMode == FolderSelectionMode.DIRECTORIES) {
       fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -264,7 +265,7 @@ public final class SwingComponents {
       fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     }
 
-    final int result = fileChooser.showOpenDialog(null);
+    final int result = fileChooser.showOpenDialog(parent);
     return (result == JFileChooser.APPROVE_OPTION)
         ? Optional.of(fileChooser.getSelectedFile().toPath())
         : Optional.empty();

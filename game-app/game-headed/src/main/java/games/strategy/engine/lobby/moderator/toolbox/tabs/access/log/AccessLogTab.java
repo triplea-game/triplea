@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.name.ToolboxUsernameBanClient;
@@ -35,14 +36,12 @@ import org.triplea.swing.jpanel.JPanelBuilder;
 public final class AccessLogTab implements Supplier<Component> {
 
   private final AccessLogTabActions accessLogTabActions;
-  private final JFrame parentFrame;
 
   public AccessLogTab(
       final JFrame parentFrame,
       final ToolboxAccessLogClient toolboxAccessLogClient,
       final ToolboxUserBanClient toolboxUserBanClient,
       final ToolboxUsernameBanClient toolboxUsernameBanClient) {
-    this.parentFrame = parentFrame;
     accessLogTabActions =
         new AccessLogTabActions(
             parentFrame,
@@ -110,9 +109,9 @@ public final class AccessLogTab implements Supplier<Component> {
     final JButton searchTips =
         new JButtonBuilder("(SearchTips)")
             .actionListener(
-                () ->
+                searchTipsButton ->
                     SwingComponents.showDialog(
-                        parentFrame,
+                        JOptionPane.getFrameForComponent(searchTipsButton),
                         "Search Tips",
                         "By default all searches are exact matches.\n"
                             + "\n"
