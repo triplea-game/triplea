@@ -86,6 +86,7 @@ public class HistoryPanel extends JPanel {
     renderer.setBackgroundNonSelectionColor(getBackground());
     tree.setCellRenderer(renderer);
     tree.setBackground(getBackground());
+    tree.setEditable(false);
     final JScrollPane scroll = new JScrollPane(tree);
     scroll.addMouseListener(mouseFocusListener);
     for (final Component comp : scroll.getComponents()) {
@@ -94,10 +95,7 @@ public class HistoryPanel extends JPanel {
     scroll.setBorder(null);
     scroll.setViewportBorder(null);
     add(scroll, BorderLayout.CENTER);
-    HistoryNode node = data.getHistory().enableSeeking(this);
-    tree.setEditable(false);
-    tree.expandPath(new TreePath(node.getPath()));
-    tree.setSelectionPath(new TreePath(node.getPath()));
+
     final JButton previousButton = new JButton("<-Back");
     previousButton.addMouseListener(mouseFocusListener);
     previousButton.addActionListener(e -> previous());
@@ -176,6 +174,14 @@ public class HistoryPanel extends JPanel {
           }
         });
     tree.addTreeSelectionListener(this::treeSelectionChanged);
+
+    SwingUtilities.invokeLater(
+        () -> {
+          // initialize tree by ensured EDT (for History.getLastNode call inside)
+          TreePath nodeTreePath = new TreePath(data.getHistory().enableSeeking(this).getPath());
+          tree.expandPath(nodeTreePath);
+          tree.setSelectionPath(nodeTreePath);
+        });
   }
 
   private void previous() {
