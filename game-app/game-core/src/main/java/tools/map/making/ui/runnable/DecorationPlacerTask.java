@@ -305,7 +305,7 @@ public final class DecorationPlacerTask extends MapEditorRunnableTask {
           FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "polygons.txt");
       if (Files.exists(filePoly)
           && JOptionPane.showConfirmDialog(
-                  new JPanel(),
+                  this,
                   "A polygons.txt file was found in the map's folder, "
                       + "do you want to use the file to supply the territories polygons?",
                   "File Suggestion",
@@ -315,7 +315,7 @@ public final class DecorationPlacerTask extends MapEditorRunnableTask {
       } else {
         log.info("Select the Polygons file");
         final Path polyPath =
-            new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile();
+            new FileOpen(this, "Select A Polygon File", mapFolderLocation, ".txt").getFile();
         if (polyPath != null) {
           polygonsPath = polyPath;
         } else {
@@ -334,7 +334,7 @@ public final class DecorationPlacerTask extends MapEditorRunnableTask {
           FileHelper.getFileInMapRoot(mapFolderLocation, mapFolder, "centers.txt");
       if (Files.exists(fileCenters)
           && JOptionPane.showConfirmDialog(
-                  new JPanel(),
+                  this,
                   "A centers.txt file was found in the map's folder, do you want to use "
                       + "the file to supply the territories centers?",
                   "File Suggestion",
@@ -344,7 +344,7 @@ public final class DecorationPlacerTask extends MapEditorRunnableTask {
       } else {
         log.info("Select the Centers file");
         final Path centerPath =
-            new FileOpen("Select A Center File", mapFolderLocation, ".txt").getFile();
+            new FileOpen(this, "Select A Center File", mapFolderLocation, ".txt").getFile();
         if (centerPath != null) {
           centersFile = centerPath;
         } else {
@@ -458,6 +458,7 @@ public final class DecorationPlacerTask extends MapEditorRunnableTask {
       }
       final Path fileName =
           new FileSave(
+                  this,
                   "Where To Save Image Points Text File?",
                   JFileChooser.FILES_ONLY,
                   currentImagePointsTextFile,
@@ -617,7 +618,7 @@ public final class DecorationPlacerTask extends MapEditorRunnableTask {
       if (!Files.exists(folder)) {
         folder = mapFolderLocation;
       }
-      final FileSave imageFolder = new FileSave("Load an Image Folder", null, folder);
+      final FileSave imageFolder = new FileSave(this, "Load an Image Folder", null, folder);
       if (imageFolder.getFile() == null || !Files.exists(imageFolder.getFile())) {
         currentImageFolderLocation = null;
       } else {
@@ -629,6 +630,7 @@ public final class DecorationPlacerTask extends MapEditorRunnableTask {
       log.info("Load the points text file (eg: decorations.txt or pu_place.txt, etc)");
       final FileOpen centerName =
           new FileOpen(
+              this,
               "Load an Image Points Text File",
               mapFolderLocation,
               mapFolderLocation.resolve(imagePointType.getFileName()),
@@ -665,6 +667,7 @@ public final class DecorationPlacerTask extends MapEditorRunnableTask {
       while (staticImageForPlacing == null) {
         final FileOpen imageSelection =
             new FileOpen(
+                this,
                 "Select Example Image To Use",
                 imagePath == null ? mapFolderLocation : imagePath.getParent(),
                 imagePath,

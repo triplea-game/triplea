@@ -64,7 +64,7 @@ public final class TileImageReconstructorTask extends ToolRunnableTask {
   protected void runInternal() {
     @Nullable Path mapFolderLocation = ToolArguments.getPropertyMapFolderPath().orElse(null);
     JOptionPane.showMessageDialog(
-        null,
+        getParentComponent(),
         new JLabel(
             "<html>"
                 + "This is the TileImageReconstructorTask, it will reconstruct a single "
@@ -73,7 +73,7 @@ public final class TileImageReconstructorTask extends ToolRunnableTask {
                 + "normally found in the map.properties file. "
                 + "</html>"));
     final FileSave baseTileLocationSelection =
-        new FileSave("Where are the Tile Images?", null, mapFolderLocation);
+        new FileSave(getParentComponent(), "Where are the Tile Images?", null, mapFolderLocation);
     baseTileLocation = baseTileLocationSelection.getFile();
     if (mapFolderLocation == null && baseTileLocationSelection.getFile() != null) {
       mapFolderLocation = baseTileLocationSelection.getFile().getParent();
@@ -85,6 +85,7 @@ public final class TileImageReconstructorTask extends ToolRunnableTask {
     }
     final FileSave imageSaveLocationSelection =
         new FileSave(
+            getParentComponent(),
             "Save Map Image As?",
             null,
             mapFolderLocation,
@@ -108,7 +109,8 @@ public final class TileImageReconstructorTask extends ToolRunnableTask {
       return;
     }
     final String width =
-        JOptionPane.showInputDialog(null, "Enter the map image's full width in pixels:");
+        JOptionPane.showInputDialog(
+            getParentComponent(), "Enter the map image's full width in pixels:");
     if (width != null) {
       try {
         sizeX = Integer.parseInt(width);
@@ -117,7 +119,8 @@ public final class TileImageReconstructorTask extends ToolRunnableTask {
       }
     }
     final String height =
-        JOptionPane.showInputDialog(null, "Enter the map image's full height in pixels:");
+        JOptionPane.showInputDialog(
+            getParentComponent(), "Enter the map image's full height in pixels:");
     if (height != null) {
       try {
         sizeY = Integer.parseInt(height);
@@ -131,7 +134,7 @@ public final class TileImageReconstructorTask extends ToolRunnableTask {
       return;
     }
     if (JOptionPane.showConfirmDialog(
-            null,
+            getParentComponent(),
             "Do not draw polygons.txt file onto your image?\r\n(Default = 'yes' = do not draw)",
             "Do Not Also Draw Polygons?",
             JOptionPane.YES_NO_OPTION)
@@ -139,7 +142,8 @@ public final class TileImageReconstructorTask extends ToolRunnableTask {
       try {
         log.info("Load a polygon file");
         final Path polyName =
-            new FileOpen("Load A Polygon File", mapFolderLocation, ".txt").getFile();
+            new FileOpen(getParentComponent(), "Load A Polygon File", mapFolderLocation, ".txt")
+                .getFile();
         if (polyName != null) {
           try {
             polygons = PointFileReaderWriter.readOneToManyPolygons(polyName);
@@ -212,6 +216,6 @@ public final class TileImageReconstructorTask extends ToolRunnableTask {
     textOptionPane.appendNewLine("\r\nAll Finished!");
     textOptionPane.countDown();
     textOptionPane.dispose();
-    JOptionPane.showMessageDialog(null, new JLabel("All Finished"));
+    JOptionPane.showMessageDialog(getParentComponent(), new JLabel("All Finished"));
   }
 }

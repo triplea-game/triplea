@@ -20,7 +20,10 @@ public class SwingTestPostProgressDisplayFactory implements Supplier<TestPostPro
         SwingUtilities.invokeLater(
             () ->
                 JOptionPane.showMessageDialog(
-                    null, message, "Test Turn Summary Post", JOptionPane.INFORMATION_MESSAGE));
+                    progressWindow,
+                    message,
+                    "Test Turn Summary Post",
+                    JOptionPane.INFORMATION_MESSAGE));
       }
 
       @Override
@@ -28,7 +31,7 @@ public class SwingTestPostProgressDisplayFactory implements Supplier<TestPostPro
         SwingUtilities.invokeLater(
             () ->
                 JOptionPane.showMessageDialog(
-                    null,
+                    progressWindow,
                     throwable.getMessage(),
                     "Test Turn Summary Post",
                     JOptionPane.WARNING_MESSAGE));

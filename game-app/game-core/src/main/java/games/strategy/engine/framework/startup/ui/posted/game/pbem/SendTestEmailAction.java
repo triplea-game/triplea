@@ -54,7 +54,7 @@ public class SendTestEmailAction {
             SwingUtilities.invokeLater(
                 () ->
                     JOptionPane.showMessageDialog(
-                        null, finalMessage, "Email Test", finalMessageType));
+                        progressWindow, finalMessage, "Email Test", finalMessageType));
             progressWindow.setVisible(false);
           }
         });

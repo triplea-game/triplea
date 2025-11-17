@@ -64,7 +64,7 @@ public final class ConnectionFinderTask extends ToolRunnableTask {
   protected void runInternal() {
     handleSystemProperties();
     JOptionPane.showMessageDialog(
-        null,
+        getParentComponent(),
         new JLabel(
             "<html>"
                 + "This is the ConnectionFinderTask. "
@@ -83,12 +83,15 @@ public final class ConnectionFinderTask extends ToolRunnableTask {
     if (polyFile == null
         || !Files.exists(polyFile)
         || JOptionPane.showConfirmDialog(
-                null,
+                getParentComponent(),
                 "A polygons.txt file was found in the map's folder, do you want to use it?",
                 "File Suggestion",
                 JOptionPane.YES_NO_CANCEL_OPTION)
             != 0) {
-      polyFile = new FileOpen("Select The polygons.txt file", mapFolderLocation, ".txt").getFile();
+      polyFile =
+          new FileOpen(
+                  getParentComponent(), "Select The polygons.txt file", mapFolderLocation, ".txt")
+              .getFile();
     }
     if (polyFile == null || !Files.exists(polyFile)) {
       log.info("No polygons.txt Selected. Shutting down.");
@@ -112,7 +115,7 @@ public final class ConnectionFinderTask extends ToolRunnableTask {
     if (!dimensionsSet) {
       final String lineWidth =
           JOptionPane.showInputDialog(
-              null,
+              getParentComponent(),
               "Enter the width of territory border lines on your map? \r\n(eg: 1, or 2, etc.)");
       try {
         final int lineThickness = Integer.parseInt(lineWidth);
@@ -124,7 +127,7 @@ public final class ConnectionFinderTask extends ToolRunnableTask {
       }
     }
     if (JOptionPane.showConfirmDialog(
-            null,
+            getParentComponent(),
             "Scale set to "
                 + scalePixels
                 + " pixels larger, and minimum overlap set to "
@@ -137,7 +140,7 @@ public final class ConnectionFinderTask extends ToolRunnableTask {
         == 1) {
       final String scale =
           JOptionPane.showInputDialog(
-              null,
+              getParentComponent(),
               "Enter the number of pixels larger each territory should become? \r\n"
                   + "(Normally 4x bigger than the border line width. eg: 4, or 8, etc)");
       try {
@@ -147,7 +150,7 @@ public final class ConnectionFinderTask extends ToolRunnableTask {
       }
       final String overlap =
           JOptionPane.showInputDialog(
-              null,
+              getParentComponent(),
               "Enter the minimum number of overlapping pixels for a connection? \r\n"
                   + "(Normally 16x bigger than the border line width. eg: 16, or 32, etc.)");
       try {
@@ -192,14 +195,14 @@ public final class ConnectionFinderTask extends ToolRunnableTask {
       }
     }
     if (JOptionPane.showConfirmDialog(
-            null,
+            getParentComponent(),
             "Do you also want to create the Territory Definitions?",
             "Territory Definitions",
             JOptionPane.YES_NO_CANCEL_OPTION)
         == 0) {
       final String waterString =
           JOptionPane.showInputDialog(
-              null,
+              getParentComponent(),
               "Enter a string or regex that determines if the territory is Water? \r\n(e.g.: "
                   + ToolsUtil.TERRITORY_SEA_ZONE_INFIX
                   + ")",
@@ -209,6 +212,7 @@ public final class ConnectionFinderTask extends ToolRunnableTask {
     try {
       final Path fileName =
           new FileSave(
+                  getParentComponent(),
                   "Where To Save connections.txt ? (cancel to print to console)",
                   "connections.txt",
                   mapFolderLocation)

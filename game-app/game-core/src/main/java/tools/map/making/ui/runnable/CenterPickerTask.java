@@ -170,7 +170,8 @@ public final class CenterPickerTask extends MapEditorRunnableTask {
               == 0) {
         polygonsPath = file;
       } else {
-        polygonsPath = new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getFile();
+        polygonsPath =
+            new FileOpen(this, "Select A Polygon File", mapFolderLocation, ".txt").getFile();
       }
       return polygonsPath;
     }
@@ -178,7 +179,8 @@ public final class CenterPickerTask extends MapEditorRunnableTask {
     /** Saves the centers to disk. */
     private void saveCenters() {
       final Path fileName =
-          new FileSave("Where To Save centers.txt ?", "centers.txt", mapFolderLocation).getFile();
+          new FileSave(this, "Where To Save centers.txt ?", "centers.txt", mapFolderLocation)
+              .getFile();
       if (fileName == null) {
         return;
       }
@@ -194,7 +196,7 @@ public final class CenterPickerTask extends MapEditorRunnableTask {
     private void loadCenters() {
       log.info("Load a center file");
       final Path centerName =
-          new FileOpen("Load A Center File", mapFolderLocation, ".txt").getFile();
+          new FileOpen(this, "Load A Center File", mapFolderLocation, ".txt").getFile();
       if (centerName == null) {
         return;
       }

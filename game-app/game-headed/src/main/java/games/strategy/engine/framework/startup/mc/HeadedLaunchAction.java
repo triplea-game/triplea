@@ -184,7 +184,7 @@ public class HeadedLaunchAction implements LaunchAction {
 
   @Override
   public void handleError(String error) {
-    SwingComponents.showError(null, "Connection problem", error);
+    SwingComponents.showError(ui, "Connection problem", error);
   }
 
   @Override
@@ -206,7 +206,7 @@ public class HeadedLaunchAction implements LaunchAction {
       displayMessage = displayMessage + "</br><p>Do you want to continue?</p>";
     }
     return !EventThreadJOptionPane.showConfirmDialog(
-        null,
+        ui,
         "<html>" + displayMessage + "</html>",
         "Continue Game?  (" + title + ")",
         EventThreadJOptionPane.ConfirmDialogType.YES_NO);

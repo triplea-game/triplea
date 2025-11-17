@@ -68,7 +68,7 @@ public final class AutoPlacementFinderTask extends ToolRunnableTask {
   protected void runInternal() {
     handleSystemProperties();
     JOptionPane.showMessageDialog(
-        null,
+        getParentComponent(),
         new JLabel(
             "<html>"
                 + "This is the AutoPlacementFinderTask, it will create a place.txt file for you. "
@@ -214,7 +214,7 @@ public final class AutoPlacementFinderTask extends ToolRunnableTask {
         }
         final String width =
             JOptionPane.showInputDialog(
-                null,
+                getParentComponent(),
                 "Enter the unit's image width in pixels (unscaled / without zoom).\r\n(e.g. 48)");
         if (width != null) {
           try {
@@ -225,7 +225,7 @@ public final class AutoPlacementFinderTask extends ToolRunnableTask {
         }
         final String height =
             JOptionPane.showInputDialog(
-                null,
+                getParentComponent(),
                 "Enter the unit's image height in pixels (unscaled / without zoom).\r\n(e.g. 48)");
         if (height != null) {
           try {
@@ -263,7 +263,9 @@ public final class AutoPlacementFinderTask extends ToolRunnableTask {
     textOptionPane.appendNewLine("\r\nAll Finished!");
     textOptionPane.countDown();
     final Path fileName =
-        new FileSave("Where To Save place.txt ?", "place.txt", mapFolderLocation).getFile();
+        new FileSave(
+                getParentComponent(), "Where To Save place.txt ?", "place.txt", mapFolderLocation)
+            .getFile();
     if (fileName == null) {
       textOptionPane.appendNewLine("You chose not to save, Shutting down");
       textOptionPane.dispose();
@@ -285,7 +287,8 @@ public final class AutoPlacementFinderTask extends ToolRunnableTask {
    * "pact_of_steel" of course, without the quotes.
    */
   private static String getMapDirectory() {
-    return JOptionPane.showInputDialog(null, "Enter the map name (ie. folder name)");
+    return JOptionPane.showInputDialog(
+        getParentComponent(), "Enter the map name (ie. folder name)");
   }
 
   private static Path getMapPropertiesFile(final String mapDir) {
@@ -311,7 +314,7 @@ public final class AutoPlacementFinderTask extends ToolRunnableTask {
   private static String getUnitsScale() {
     final String unitsScale =
         JOptionPane.showInputDialog(
-            null,
+            getParentComponent(),
             "Enter the unit's scale (zoom)."
                 + "\r\n(e.g. 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5)");
     return (unitsScale != null) ? unitsScale : "1";

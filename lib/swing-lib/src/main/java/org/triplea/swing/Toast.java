@@ -23,16 +23,8 @@ public class Toast {
   @Builder.Default private final Duration sleepTime = Duration.ofSeconds(1);
   private final JFrame parent;
 
-  private final int windowHeight = 75;
-  private final int windowWidth = 400;
-
-  public static void showToast(final JFrame parent, final String message) {
-    builder().parent(parent).message(message).build().showToast();
-  }
-
-  public static void showToast(final String message) {
-    showToast(null, message);
-  }
+  private static final int WINDOW_HEIGHT = 75;
+  private static final int WINDOW_WIDTH = 400;
 
   public void showToast() {
     SwingUtilities.invokeLater(this::showInBackground);
@@ -62,7 +54,7 @@ public class Toast {
         };
 
     window.add(panel);
-    window.setSize(windowWidth, windowHeight);
+    window.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
     if (supportsTranslucency(window)) {
       window.setOpacity(1);

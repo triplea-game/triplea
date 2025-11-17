@@ -8,6 +8,7 @@ import games.strategy.triplea.settings.ClientSetting;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.event.MouseEvent;
 import java.util.List;
 import javax.swing.JButton;
@@ -237,9 +238,10 @@ class LobbyGamePanel extends JPanel {
     if (selectedIndex == -1) {
       return;
     }
+    Frame parentFrame = JOptionPane.getFrameForComponent(this);
     final int result =
         JOptionPane.showConfirmDialog(
-            null,
+            parentFrame,
             "Are you sure you want to disconnect the selected game?",
             "Remove Game From Lobby",
             JOptionPane.OK_CANCEL_OPTION);
@@ -249,7 +251,7 @@ class LobbyGamePanel extends JPanel {
 
     gameTableModel.bootGame(gameTable.convertRowIndexToModel(selectedIndex));
     JOptionPane.showMessageDialog(
-        null, "The game you selected has been disconnected from the lobby.");
+        parentFrame, "The game you selected has been disconnected from the lobby.");
   }
 
   private void shutdown() {
@@ -259,7 +261,7 @@ class LobbyGamePanel extends JPanel {
     }
     final int result =
         JOptionPane.showConfirmDialog(
-            null,
+            this,
             "Are you sure you want to shutdown the selected game?",
             "Send Shutdown Signal?",
             JOptionPane.OK_CANCEL_OPTION);

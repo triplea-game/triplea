@@ -465,21 +465,22 @@ final class SelectionComponentFactory {
           try {
             final URI uri = new URI(uriField.getText().trim());
             if (!uri.isAbsolute() || uriField.getText().isBlank()) {
-              showInvalidUriError("Not a valid URI defined", uriField.getText());
+              showInvalidUriError(uriField, "Not a valid URI defined", uriField.getText());
             } else {
               context.setValue(ClientSetting.diceRollerUri, uri);
             }
           } catch (final URISyntaxException e) {
-            showInvalidUriError(e.getMessage(), uriField.getText());
+            showInvalidUriError(uriField, e.getMessage(), uriField.getText());
           }
         } else {
           context.setValue(ClientSetting.diceRollerUri, DiceServerEditor.PRODUCTION_URI);
         }
       }
 
-      private void showInvalidUriError(final String errorMessage, final String fieldValue) {
+      private void showInvalidUriError(
+          final Component parentComponent, final String errorMessage, final String fieldValue) {
         SwingComponents.showError(
-            null, "Invalid URI", "Invalid URI, " + errorMessage + ": " + fieldValue);
+            parentComponent, "Invalid URI", "Invalid URI, " + errorMessage + ": " + fieldValue);
       }
 
       @Override

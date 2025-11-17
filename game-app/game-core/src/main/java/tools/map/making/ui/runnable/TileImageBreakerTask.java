@@ -56,7 +56,7 @@ public final class TileImageBreakerTask extends ToolRunnableTask {
   protected void runInternal() throws IOException {
     ToolArguments.ifMapFolder(mapFolderProperty -> mapFolderLocation = mapFolderProperty);
     JOptionPane.showMessageDialog(
-        null,
+        getParentComponent(),
         new JLabel(
             "<html>"
                 + "This is the TileImageBreakerTask, it will create the map image tiles file for you. "
@@ -69,7 +69,7 @@ public final class TileImageBreakerTask extends ToolRunnableTask {
                 + "<br>For the relief image, please save it to a folder called reliefTiles"
                 + "</html>"));
     final FileSave locationSelection =
-        new FileSave("Where to save Tile Images?", null, mapFolderLocation);
+        new FileSave(getParentComponent(), "Where to save Tile Images?", null, mapFolderLocation);
     location = locationSelection.getFile();
     if (mapFolderLocation == null && locationSelection.getFile() != null) {
       mapFolderLocation = locationSelection.getFile().getParent();
@@ -129,7 +129,7 @@ public final class TileImageBreakerTask extends ToolRunnableTask {
     textOptionPane.appendNewLine("\r\nAll Finished!");
     textOptionPane.countDown();
     textOptionPane.dispose();
-    JOptionPane.showMessageDialog(null, new JLabel("All Finished"));
+    JOptionPane.showMessageDialog(getParentComponent(), new JLabel("All Finished"));
   }
 
   /**
@@ -141,7 +141,8 @@ public final class TileImageBreakerTask extends ToolRunnableTask {
   private @Nullable Image loadImage() {
     log.info("Select the map");
     final Path mapName =
-        new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png").getFile();
+        new FileOpen(getParentComponent(), "Select The Map", mapFolderLocation, ".gif", ".png")
+            .getFile();
     if (mapName != null) {
       final Image img = Toolkit.getDefaultToolkit().createImage(mapName.toString());
       final MediaTracker tracker = new MediaTracker(new Panel());

@@ -2,6 +2,7 @@ package tools.util;
 
 import com.google.common.base.Strings;
 import games.strategy.engine.framework.system.SystemProperties;
+import java.awt.Component;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,8 +16,13 @@ public class FileSave {
   /** -- GETTER -- Returns the directory path as a File object. */
   private final Path file;
 
-  public FileSave(final String title, final String name, final Path currentDirectory) {
+  public FileSave(
+      final Component parentComponent,
+      final String title,
+      final String name,
+      final Path currentDirectory) {
     this(
+        parentComponent,
         title,
         name,
         currentDirectory,
@@ -44,11 +50,12 @@ public class FileSave {
    *     JFileChooser#FILES_AND_DIRECTORIES}.
    */
   public FileSave(
+      final Component parentComponent,
       final String title,
       final int fileSelectionMode,
       final Path selectedFile,
       final Path currentDirectory) {
-    this(title, null, currentDirectory, fileSelectionMode, selectedFile, null);
+    this(parentComponent, title, null, currentDirectory, fileSelectionMode, selectedFile, null);
   }
 
   /**
@@ -60,6 +67,7 @@ public class FileSave {
    *     JFileChooser#FILES_AND_DIRECTORIES}.
    */
   public FileSave(
+      final Component parentComponent,
       final String title,
       final String name,
       final Path currentDirectory,
@@ -82,7 +90,7 @@ public class FileSave {
       chooser.setFileFilter(fileFilter);
     }
     file =
-        chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION
+        chooser.showSaveDialog(parentComponent) == JFileChooser.APPROVE_OPTION
             ? chooser.getSelectedFile().toPath().resolve(Strings.nullToEmpty(name))
             : null;
   }

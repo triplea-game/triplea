@@ -23,6 +23,7 @@ import tools.map.making.ui.runnable.MapPropertiesMakerTask;
 import tools.map.making.ui.runnable.PlacementPickerTask;
 import tools.map.making.ui.runnable.TileImageBreakerTask;
 import tools.map.making.ui.runnable.TileImageReconstructorTask;
+import tools.map.making.ui.runnable.ToolRunnableTask;
 
 /** A frame that will run the different map making utilities we have. */
 @UtilityClass
@@ -59,6 +60,8 @@ public class MapCreator {
     final Container contentPane = frame.getContentPane();
     contentPane.add(new JScrollPane(sidePanel), BorderLayout.WEST);
     contentPane.add(new JScrollPane(mainPanel), BorderLayout.CENTER);
+
+    ToolRunnableTask.setParentComponent(frame);
 
     frame.setVisible(true);
   }

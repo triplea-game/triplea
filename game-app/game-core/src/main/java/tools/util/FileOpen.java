@@ -1,6 +1,7 @@
 package tools.util;
 
 import games.strategy.engine.framework.system.SystemProperties;
+import java.awt.Component;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,11 +17,16 @@ public class FileOpen {
   /** -- GETTER -- Returns the newly selected file. Will return null if no file is selected. */
   private @Nullable Path file;
 
-  public FileOpen(final String title, final Path currentDirectory, final String... extensions) {
-    this(title, currentDirectory, null, extensions);
+  public FileOpen(
+      final Component parentComponent,
+      final String title,
+      final Path currentDirectory,
+      final String... extensions) {
+    this(parentComponent, title, currentDirectory, null, extensions);
   }
 
   public FileOpen(
+      final Component parentComponent,
       final String title,
       final Path currentDirectory,
       final Path selectedFile,
@@ -63,7 +69,7 @@ public class FileOpen {
             return buf.toString();
           }
         });
-    final int result = chooser.showOpenDialog(null);
+    final int result = chooser.showOpenDialog(parentComponent);
     if (result == JFileChooser.CANCEL_OPTION) {
       return;
     }
@@ -72,7 +78,10 @@ public class FileOpen {
       file = chooser.getSelectedFile().toPath();
     } catch (final Exception ex) {
       JOptionPane.showMessageDialog(
-          null, "Warning! Could not load the file!", "Warning!", JOptionPane.WARNING_MESSAGE);
+          parentComponent,
+          "Warning! Could not load the file!",
+          "Warning!",
+          JOptionPane.WARNING_MESSAGE);
       file = null;
     }
   }
