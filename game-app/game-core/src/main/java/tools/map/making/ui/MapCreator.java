@@ -55,13 +55,13 @@ public class MapCreator {
             .locateRelativeTo(null)
             .disposeOnClose()
             .layout(new BorderLayout())
+            .windowClosedAction(() -> ToolRunnableTask.setParentComponent(null))
             .build();
+    ToolRunnableTask.setParentComponent(frame);
 
     final Container contentPane = frame.getContentPane();
     contentPane.add(new JScrollPane(sidePanel), BorderLayout.WEST);
     contentPane.add(new JScrollPane(mainPanel), BorderLayout.CENTER);
-
-    ToolRunnableTask.setParentComponent(frame);
 
     frame.setVisible(true);
   }
