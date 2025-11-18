@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.Enumeration;
 import java.util.Optional;
+import javax.annotation.Nullable;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -86,6 +87,7 @@ public class HistoryPanel extends JPanel {
     renderer.setBackgroundNonSelectionColor(getBackground());
     tree.setCellRenderer(renderer);
     tree.setBackground(getBackground());
+    tree.setEditable(false);
     final JScrollPane scroll = new JScrollPane(tree);
     scroll.addMouseListener(mouseFocusListener);
     for (final Component comp : scroll.getComponents()) {
@@ -94,10 +96,7 @@ public class HistoryPanel extends JPanel {
     scroll.setBorder(null);
     scroll.setViewportBorder(null);
     add(scroll, BorderLayout.CENTER);
-    HistoryNode node = data.getHistory().enableSeeking(this);
-    tree.setEditable(false);
-    tree.expandPath(new TreePath(node.getPath()));
-    tree.setSelectionPath(new TreePath(node.getPath()));
+
     final JButton previousButton = new JButton("<-Back");
     previousButton.addMouseListener(mouseFocusListener);
     previousButton.addActionListener(e -> previous());
@@ -176,6 +175,14 @@ public class HistoryPanel extends JPanel {
           }
         });
     tree.addTreeSelectionListener(this::treeSelectionChanged);
+
+    SwingUtilities.invokeLater(
+        () -> {
+          // initialize tree by ensured EDT (for History.getLastNode call inside)
+          TreePath nodeTreePath = new TreePath(data.getHistory().enableSeeking(this).getPath());
+          tree.expandPath(nodeTreePath);
+          tree.setSelectionPath(nodeTreePath);
+        });
   }
 
   private void previous() {
@@ -347,9 +354,12 @@ public class HistoryPanel extends JPanel {
       tree.setSelectionPath(path);
       collapseExpanded(path);
       collapseUpFromLastParent(parent);
-      final Rectangle rect = tree.getPathBounds(path);
-      rect.x = 0;
-      tree.scrollRectToVisible(rect);
+      // null if any component in the path is hidden
+      @Nullable final Rectangle rect = tree.getPathBounds(path);
+      if (rect != null) { // no scrolling required if path is hidden
+        rect.x = 0;
+        tree.scrollRectToVisible(rect);
+      }
     } else {
       if (!mouseWasOverPanel) {
         // save the lock property so that we can undo it
