@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.Enumeration;
 import java.util.Optional;
+import javax.annotation.Nullable;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -353,9 +354,12 @@ public class HistoryPanel extends JPanel {
       tree.setSelectionPath(path);
       collapseExpanded(path);
       collapseUpFromLastParent(parent);
-      final Rectangle rect = tree.getPathBounds(path);
-      rect.x = 0;
-      tree.scrollRectToVisible(rect);
+      // null if any component in the path is hidden
+      @Nullable final Rectangle rect = tree.getPathBounds(path);
+      if (rect != null) { // no scrolling required if path is hidden
+        rect.x = 0;
+        tree.scrollRectToVisible(rect);
+      }
     } else {
       if (!mouseWasOverPanel) {
         // save the lock property so that we can undo it
