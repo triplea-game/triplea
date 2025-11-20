@@ -93,15 +93,21 @@ public final class LobbyMenu extends JMenuBar {
             .addMenuItem(
                 "User Guide",
                 'U',
-                () -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.USER_GUIDE))
+                () ->
+                    SwingComponents.newOpenUrlConfirmationDialog(
+                        lobbyFrame, UrlConstants.USER_GUIDE))
             .addMenuItem(
                 "View Forums",
                 'F',
-                () -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_FORUM))
+                () ->
+                    SwingComponents.newOpenUrlConfirmationDialog(
+                        lobbyFrame, UrlConstants.TRIPLEA_FORUM))
             .addMenuItem(
                 "Send Bug Report",
                 'B',
-                () -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES))
+                () ->
+                    SwingComponents.newOpenUrlConfirmationDialog(
+                        lobbyFrame, UrlConstants.GITHUB_ISSUES))
             .build());
   }
 }

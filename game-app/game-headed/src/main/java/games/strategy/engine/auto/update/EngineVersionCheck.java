@@ -2,6 +2,7 @@ package games.strategy.engine.auto.update;
 
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.triplea.settings.ClientSetting;
+import java.awt.Component;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import lombok.experimental.UtilityClass;
@@ -14,7 +15,7 @@ final class EngineVersionCheck {
 
   public static final int CHECK_FREQUENCY_IN_DAYS = 2;
 
-  static void checkForLatestEngineVersionOut() {
+  static void checkForLatestEngineVersionOut(final Component parentComponent) {
     if (!isEngineUpdateCheckRequired()) {
       return;
     }
@@ -25,7 +26,9 @@ final class EngineVersionCheck {
             latestVersion ->
                 new Version(latestVersion.getLatestEngineVersion())
                     .isGreaterThan(ProductVersionReader.getCurrentVersion()))
-        .ifPresent(OutOfDateDialog::showOutOfDateComponent);
+        .ifPresent(
+            latestVersionResponse ->
+                OutOfDateDialog.showOutOfDateComponent(parentComponent, latestVersionResponse));
   }
 
   @VisibleForTesting

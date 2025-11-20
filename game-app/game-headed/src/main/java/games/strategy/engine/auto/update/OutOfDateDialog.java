@@ -1,5 +1,6 @@
 package games.strategy.engine.auto.update;
 
+import java.awt.Component;
 import javax.swing.JOptionPane;
 import lombok.experimental.UtilityClass;
 import org.triplea.awt.OpenFileUtility;
@@ -8,10 +9,11 @@ import org.triplea.swing.JEditorPaneWithClickableLinks;
 
 @UtilityClass
 class OutOfDateDialog {
-  static void showOutOfDateComponent(final LatestVersionResponse latestVersion) {
+  static void showOutOfDateComponent(
+      final Component parentComponent, final LatestVersionResponse latestVersion) {
     final int result =
         JOptionPane.showOptionDialog(
-            null,
+            parentComponent,
             new JEditorPaneWithClickableLinks(getOutOfDateMessage(latestVersion)),
             "TripleA is out of date!",
             JOptionPane.YES_NO_OPTION,
@@ -21,7 +23,7 @@ class OutOfDateDialog {
             null);
 
     if (result == JOptionPane.YES_OPTION) {
-      OpenFileUtility.openUrl(latestVersion.getDownloadUrl());
+      OpenFileUtility.openUrl(parentComponent, latestVersion.getDownloadUrl());
     }
   }
 
