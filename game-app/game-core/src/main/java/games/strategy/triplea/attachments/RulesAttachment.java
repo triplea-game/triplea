@@ -185,7 +185,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           "battle must have at least 5 fields, attacker:defender:resultType:round:territory1..."
               + thisErrorMsg());
     }
-    if (!s[0].equalsIgnoreCase("any")) {
+    if (!isAnyValue(s[0])) {
       getPlayerByName(s[0])
           .orElseThrow(
               () ->
@@ -194,7 +194,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
                           "Invalid attacker for battle: {0} \n player: {1} unknown{2}",
                           value, s[0], thisErrorMsg())));
     }
-    if (!s[1].equalsIgnoreCase("any")) {
+    if (!isAnyValue(s[1])) {
       getPlayerByName(s[1])
           .orElseThrow(
               () ->
@@ -203,7 +203,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
                           "Invalid defender for battle: {0} \n player: {1} unknown{2}",
                           value, s[1], thisErrorMsg())));
     }
-    if (!s[2].equalsIgnoreCase("any")) {
+    if (!isAnyValue(s[2])) {
       throw new GameParseException(
           "battle allows the following for resultType: any" + thisErrorMsg());
     }
@@ -483,7 +483,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final String unitTypeToProduce = s[i];
       // validate that this unit exists in the xml
       if (getDataOrThrow().getUnitTypeList().getUnitType(unitTypeToProduce).isEmpty()
-          && !(unitTypeToProduce.equals("any") || unitTypeToProduce.equals("ANY"))) {
+          && !isAnyValue(unitTypeToProduce)) {
         throw new GameParseException("No unit called: " + unitTypeToProduce + thisErrorMsg());
       }
     }
@@ -1040,7 +1040,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private Predicate<Unit> getUnitTypesPredicate(GameState data, String uc) {
-    if (uc == null || uc.equals("ANY") || uc.equals("any")) {
+    if (uc == null || isAnyValue(uc)) {
       return unit -> true;
     }
     return Matches.unitIsOfTypes(data.getUnitTypeList().getUnitTypes(splitOnColon(uc)));
