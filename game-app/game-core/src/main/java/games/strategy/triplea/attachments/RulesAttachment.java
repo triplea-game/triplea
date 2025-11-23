@@ -821,21 +821,25 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         // they could be "any", and if they are "any" then this would be null, which is good!
         // @TODO: Battle should store attacker and defender to avoid reparsing them here
         final GamePlayer attacker =
-            getPlayerByName(type[0])
-                .orElseThrow(
-                    () ->
-                        new IllegalStateException(
-                            MessageFormat.format(
-                                "Battle {0} invalid; attacker {1} unknown{2}",
-                                entry.getFirst(), type[0], thisErrorMsg())));
+            (isAnyValue(type[0])
+                ? null
+                : getPlayerByName(type[0])
+                    .orElseThrow(
+                        () ->
+                            new IllegalStateException(
+                                MessageFormat.format(
+                                    "Battle {0} invalid; attacker {1} unknown{2}",
+                                    entry.getFirst(), type[0], thisErrorMsg()))));
         final GamePlayer defender =
-            getPlayerByName(type[1])
-                .orElseThrow(
-                    () ->
-                        new IllegalStateException(
-                            MessageFormat.format(
-                                "Battle {0} invalid; attacker {1} unknown{2}",
-                                entry.getFirst(), type[1], thisErrorMsg())));
+            (isAnyValue(type[1])
+                ? null
+                : getPlayerByName(type[1])
+                    .orElseThrow(
+                        () ->
+                            new IllegalStateException(
+                                MessageFormat.format(
+                                    "Battle {0} invalid; attacker {1} unknown{2}",
+                                    entry.getFirst(), type[1], thisErrorMsg()))));
         final String resultType = type[2];
         final String roundType = type[3];
         int start = 0;
