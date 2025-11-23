@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 import org.triplea.swing.ScrollableJPanel;
 import org.triplea.swing.SwingComponents;
 
@@ -48,18 +49,22 @@ public class HistoryDetailsPanel extends JPanel {
     this.mapPanel = mapPanel;
 
     content.setLayout(new GridBagLayout());
-    final JScrollPane scroll = new JScrollPane(content);
-    scroll.setBorder(null);
-    scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-    scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-    setLayout(new BorderLayout());
-    add(scroll, BorderLayout.CENTER);
 
     title.setWrapStyleWord(true);
     title.setBackground(this.getBackground());
     title.setLineWrap(true);
     title.setBorder(null);
     title.setEditable(false);
+
+    SwingUtilities.invokeLater(
+        () -> {
+          final JScrollPane scroll = new JScrollPane(content);
+          scroll.setBorder(null);
+          scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+          scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+          setLayout(new BorderLayout());
+          add(scroll, BorderLayout.CENTER);
+        });
   }
 
   @SuppressWarnings("unchecked")

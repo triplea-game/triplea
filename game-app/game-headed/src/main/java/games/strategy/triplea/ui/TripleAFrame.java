@@ -1813,23 +1813,24 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     }
     territoryDetailPanel.setGameData(clonedGameData);
     mapPanel.setGameData(clonedGameData);
-    final HistoryDetailsPanel historyDetailPanel = getHistoryDetailsPanel(clonedGameData);
-    // create history tree context menu
-    final JSplitPane historyComponentSplitPane = new JSplitPane();
-    historyComponentSplitPane.setOneTouchExpandable(true);
-    historyComponentSplitPane.setContinuousLayout(true);
-    historyComponentSplitPane.setDividerSize(8);
-    historyComponentSplitPane.setLeftComponent(historyPanel);
-    historyComponentSplitPane.setRightComponent(gameCenterPanel);
-    historyComponentSplitPane.setDividerLocation(150);
-    final JPanel historyComponent =
-        new JPanelBuilder()
-            .borderLayout()
-            .addCenter(historyComponentSplitPane)
-            .addSouth(bottomBar)
-            .build();
     SwingUtilities.invokeLater(
         () -> {
+          final HistoryDetailsPanel historyDetailPanel = getHistoryDetailsPanel(clonedGameData);
+          // create history tree context menu
+          final JSplitPane historyComponentSplitPane = new JSplitPane();
+          historyComponentSplitPane.setOneTouchExpandable(true);
+          historyComponentSplitPane.setContinuousLayout(true);
+          historyComponentSplitPane.setDividerSize(8);
+          historyComponentSplitPane.setLeftComponent(historyPanel);
+          historyComponentSplitPane.setRightComponent(gameCenterPanel);
+          historyComponentSplitPane.setDividerLocation(150);
+          final JPanel historyComponent =
+              new JPanelBuilder()
+                  .borderLayout()
+                  .addCenter(historyComponentSplitPane)
+                  .addSouth(bottomBar)
+                  .build();
+
           tabsPanel.removeAll();
           addTabs(historyDetailPanel);
           actionButtonsPanel.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
