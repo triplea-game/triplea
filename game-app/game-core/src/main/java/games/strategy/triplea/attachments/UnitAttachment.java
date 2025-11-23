@@ -587,7 +587,7 @@ public class UnitAttachment extends DefaultAttachment {
               + "(you may have additional unitType:howMany:unitType:howMany, etc"
               + thisErrorMsg());
     }
-    if (!isAnyValue(s[0])) {
+    if (!s[0].equalsIgnoreCase("any")) {
       getPlayerByName(s[0])
           .orElseThrow(
               () ->
@@ -596,7 +596,7 @@ public class UnitAttachment extends DefaultAttachment {
                           "Invalid whenCapturedChangesInto with value {0} \n from-player: {1} unknown{2}",
                           value, s[0], thisErrorMsg())));
     }
-    if (!isAnyValue(s[1])) {
+    if (!s[1].equalsIgnoreCase("any")) {
       getPlayerByName(s[1])
           .orElseThrow(
               () ->
