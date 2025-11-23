@@ -1333,7 +1333,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                           "TriggerAttachment: Setting changeOwnership with value {0} not possible; Index 0: No territory found for {1}",
                           value, s[0])));
     }
-    if (!s[1].equalsIgnoreCase("any")) {
+    if (!isAnyValue(s[1])) {
       getPlayerByName(s[1])
           .orElseThrow(
               () ->
