@@ -35,12 +35,14 @@ import org.triplea.swing.jpanel.JPanelBuilder;
 public final class AccessLogTab implements Supplier<Component> {
 
   private final AccessLogTabActions accessLogTabActions;
+  private final JFrame parentFrame;
 
   public AccessLogTab(
       final JFrame parentFrame,
       final ToolboxAccessLogClient toolboxAccessLogClient,
       final ToolboxUserBanClient toolboxUserBanClient,
       final ToolboxUsernameBanClient toolboxUsernameBanClient) {
+    this.parentFrame = parentFrame;
     accessLogTabActions =
         new AccessLogTabActions(
             parentFrame,
@@ -110,6 +112,7 @@ public final class AccessLogTab implements Supplier<Component> {
             .actionListener(
                 () ->
                     SwingComponents.showDialog(
+                        parentFrame,
                         "Search Tips",
                         "By default all searches are exact matches.\n"
                             + "\n"

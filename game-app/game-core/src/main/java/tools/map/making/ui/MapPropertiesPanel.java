@@ -12,6 +12,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -74,7 +75,10 @@ public class MapPropertiesPanel {
         new JButtonBuilder()
             .title("Start Tutorial  /  Show Help Document")
             .toolTip("Open up the readme file on how to make maps")
-            .actionListener(() -> OpenFileUtility.openUrl(UrlConstants.MAP_MAKER_HELP))
+            .actionListener(
+                () ->
+                    OpenFileUtility.openUrl(
+                        JOptionPane.getFrameForComponent(panel), UrlConstants.MAP_MAKER_HELP))
             .build());
     addBlockToPanel(
         panel,
