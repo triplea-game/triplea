@@ -217,7 +217,7 @@ public class UiContext {
       windowsToCloseOnShutdown.clear();
       unitImageFactory.deleteTempFiles();
     }
-    StackTraceReportModel.setCurrentMapName(null);
+    StackTraceReportModel.setCurrentMapName(getMapName());
     resourceLoader.close();
   }
 
