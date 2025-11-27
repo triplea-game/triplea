@@ -187,10 +187,9 @@ public final class HeadedGameRunner {
               () -> {
                 showMainFrame();
                 gameSelectorModel.setReadyForSaveLoad();
+                UpdateChecks.launch(headedServerSetupModel.getUi());
               });
         });
-
-    UpdateChecks.launch(headedServerSetupModel.getUi());
   }
 
   /**
