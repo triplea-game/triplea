@@ -3,7 +3,7 @@ name: Create Http JAR files and upload to github packages
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - '.github/workflows/upload-http-client-jars.yml'
       - 'game-app/domain-data/**'

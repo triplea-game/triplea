@@ -1,10 +1,10 @@
-# Runs all build checks on any pull request or merges to master
+# Runs all build checks on any pull request or merges to main
 name: Verify
 on:
   pull_request:
   push:
     branches:
-      - master
+      - main
 jobs:
   build:
     runs-on: ubuntu-latest
