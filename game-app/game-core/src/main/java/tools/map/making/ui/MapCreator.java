@@ -21,6 +21,7 @@ import tools.map.making.ui.runnable.DecorationPlacerTask;
 import tools.map.making.ui.runnable.ImageShrinkerTask;
 import tools.map.making.ui.runnable.MapPropertiesMakerTask;
 import tools.map.making.ui.runnable.PlacementPickerTask;
+import tools.map.making.ui.runnable.PolygonGrabberTask;
 import tools.map.making.ui.runnable.TileImageBreakerTask;
 import tools.map.making.ui.runnable.TileImageReconstructorTask;
 
@@ -77,6 +78,7 @@ public class MapCreator {
         new MapMakingPanelFactory.ButtonSpec(
             "Run the Map Properties Maker", MapPropertiesMakerTask::run),
         new MapMakingPanelFactory.ButtonSpec("Run the Center Picker", CenterPickerTask::run),
+        new MapMakingPanelFactory.ButtonSpec("Run the Polygon Grabber", PolygonGrabberTask::run),
         new MapMakingPanelFactory.ButtonSpec(
             "Run the Automatic Placement Finder", AutoPlacementFinderTask::run),
         new MapMakingPanelFactory.ButtonSpec("Run the Placement Picker", PlacementPickerTask::run),
