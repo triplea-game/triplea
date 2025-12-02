@@ -2,16 +2,18 @@
 
 ## Before Getting Started
 - Install JDK 21 (project is using this Java version)
-- [Install IDE](./how-to/ide-setup) (IDEA is better supported, YMMV with Eclipse)
-  - Create as a gradle project (file > open project > select the build.gradle file)
+- [Install IDE](./ide-setup) (IDEA is better supported, YMMV with Eclipse)
 
 ## Mac
 
 - Install Docker Desktop: <https://store.docker.com/editions/community/docker-ce-desktop-mac>
+  - we're going to need help on configs that will work for both Mac docker & linux docker. 
+    The existing docker files are likely written with only linux in mind
 
 ## Windows
 
-- Set up WSL (see [WSL installation guide](https://learn.microsoft.com/de-de/windows/wsl/install)), this will give you a command line that can be used to run docker, gradle and the code check scripts
+- Set up WSL (see [WSL installation guide](https://learn.microsoft.com/de-de/windows/wsl/install)), 
+  this will give you a command line that can be used to run docker, gradle and the code check scripts
 - Open git folder, e.g., `C:\Users\<user>\git\triplea`, in WSL via explorer `Shift+Right click` and option `Open Linux shell here`
 - Install/upgrade [GitHub CLI](https://github.com/cli/cli#installation)
 
@@ -54,7 +56,6 @@ nano ~/.bashrc
 ## Getting Started
 
 - Fork & Clone: <https://github.com/triplea-game/triplea>
-- Setup IDE: [/docs/development/how-to/ide-setup](how-to/ide-setup)
 - Use a feature-branch workflow, see: [typical git workflow](typical-git-workflow.md)
 - Submit a pull request see: [pull requests process](../project/pull-requests.md)
 
