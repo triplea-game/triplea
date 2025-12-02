@@ -14,14 +14,14 @@ git remote add upstream git@github.com:triplea-game/triplea.git
 
 ```
 cd triplea/
-git checkout master
+git checkout main
 
 ## Refresh to latest code
-# Update local 'master' with the latest code from the main project
-git pull --rebase upstream master/
+# Update local 'main' with the latest code from the main project
+git pull --rebase upstream main/
 
-# Update 'fork' repository with latest 'master'
-git push origin master/
+# Update 'fork' repository with latest 'main'
+git push origin main/
 
 ## Start feature branch work flow, create a branch
 git checkout -b "my-feature-branch-name"
