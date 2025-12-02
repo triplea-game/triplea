@@ -76,22 +76,8 @@ If you are new to Open Source & GitHub:
 # Run formatting
 ./gradlew spotlessApply
 
-# Launch a Postgres DB, build & launch TripleA Servers
-./gradlew composeUp
-
-# Connect to locally running database
-./docker/connect-to-db.sh
-
-# Runs all tests that do not require the database
-./gradlew test
-
-./gradlew testWithDatabase
-
 # Runs all tests
-./gradlew allTest
-
-# Run game-app tests
-./game-app/run/check
+./gradlew test
 
 # Run tests for a (sub)project
 ./gradlew :game-app:game-core:test
@@ -106,8 +92,7 @@ If you are new to Open Source & GitHub:
 ./gradlew :game-app:game-core:test --tests 'games.strategy.triplea.UnitUtilsTest.*Units*'
 ```
 
-`gradle` uses caches heavily, thus, if nothing has changed, re-running a test will not actually run the test again.
-To really re-execute a test, use the `--rerun-tasks` option:
+To run tests even if there are no changes from the previous build, use the `--rerun-tasks` option:
 ```
 ./gradlew --rerun-tasks :game-app:game-core:test
 ```
@@ -116,54 +101,19 @@ To really re-execute a test, use the `--rerun-tasks` option:
 
 We use 'Google Java Format', be sure to install the plugin in your IDE to properly format from IDE.
 
+To apply formatting via CLI:
+```
+./gradlew spotlessApply
+```
+
 ## Code Conventions (Style Guide)
 
-Full list of coding conventions can be found at: [reference/code-conventions](code-conventions)
+See: [reference/code-conventions](code-conventions)
 
 ## Lobby / Server Development
 
-Run:
-```
-./gradlew composeUp
-./gradlew :game-app:game-headed:run
-```
-Nginx will be running on port 80 following the 'composeUp'.
-All requests are sent to NGINX and then routed to the correct
-docker container.
+Look for the corresponding readmes, check: <https://github.com/triplea-game>
 
-To connect to local lobby, from the game client:
-  - 'settings > testing > local lobby'
-  - click play online button
-  - use 'test:test' to login to local lobby as a moderator
-
-### Working with database
-
-```
-## connect to database to bring up a SQL CLI
-./spitfire-server/database/connect_to_docker_db
-
-## connect to lobby database
-\c lobby_db
-
-## list tables
-\d
-
-## exit SQL CLI
-\q
-
-## erase database and recreate with sampledrop database schema & data and recreate
-./spitfire-server/database/reset_docker_db
-```
-
-## Deployment & Infrastructure Development
-
-The deployment code is inside of the '[infrastructure](../infrastructure)' folder.
-
-We use [ansible](https://www.ansible.com/) to execute deployments.
-
-You can test out deployment code by first launching a virtual machine and then running a deployment
-against that virtual machine. See '[infrastructure/REAMDE.md](../infrastructure/REAMDE.md)'
-for more information.
 
 # Pitfalls and Pain Points to be aware of
 
@@ -195,9 +145,4 @@ back in properly.
 In short:
 - check working directory is 'game-app/game-headed'
 - check that `./gradlew downloadAssets` has been run and there is an 'assets' folder in the working directory
-
-### Google Formatter does not work
-
-IDEA needs a tweak to overcome a JDK9 problem. The Google Java Format plugin should show a warning dialog about
-this if it is a problem.
 
