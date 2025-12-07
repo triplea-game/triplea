@@ -6,8 +6,8 @@ import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
-import games.strategy.engine.data.IPropertyEnum;
 import games.strategy.engine.data.MutableProperty;
+import games.strategy.engine.data.PropertyEnum;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
 import games.strategy.engine.data.gameparser.GameParseException;
@@ -40,7 +40,7 @@ import org.jetbrains.annotations.NonNls;
 public class UnitSupportAttachment extends DefaultAttachment {
   @ToString(onlyExplicitlyIncluded = true)
   @AllArgsConstructor
-  public enum PropertyName implements IPropertyEnum<UnitSupportAttachment> {
+  public enum PropertyName implements PropertyEnum<UnitSupportAttachment> {
     AA_ROLL("aaRoll", a -> MutableProperty.ofReadOnly(a::getAaRoll)),
     AA_STRENGTH("aaStrength", a -> MutableProperty.ofReadOnly(a::getAaStrength)),
     ALLIED("allied", a -> MutableProperty.ofReadOnly(a::getAllied)),
@@ -471,6 +471,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
   @SuppressWarnings("unchecked")
   @Override
   public Optional<MutableProperty<?>> getPropertyOrEmpty(final @NonNls String propertyName) {
-    return IPropertyEnum.getPropertyOrEmpty(PropertyName.class, propertyName, this);
+    return PropertyEnum.getPropertyOrEmpty(PropertyName.class, propertyName, this);
   }
 }
