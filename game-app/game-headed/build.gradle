@@ -43,27 +43,26 @@ clean.doFirst {
   delete "$projectDir/assets/"
 }
 
-task downloadAssets {
-    doLast {
-        download.run {
-            src "https://github.com/triplea-game/assets/releases/download/47/game_headed_assets.zip"
-            dest "$projectDir/.assets/assets.zip"
-            overwrite false
-        }
-        copy {
-            from zipTree(file("$projectDir/.assets/assets.zip"))
-            into "$projectDir/assets/"
-        }
-    }
+def assetsZipFileName = "game_headed_assets.zip"
+def downloadAssets = tasks.register("downloadAssets", de.undercouch.gradle.tasks.download.Download) {
+    src "https://github.com/triplea-game/assets/releases/download/47/$assetsZipFileName"
+    dest project.layout.buildDirectory.dir("downloads/assets-zip")
+    overwrite false
+    onlyIfModified true
+    quiet true
 }
 
+def unzipAssets = tasks.register("unzipAssets", Copy) {
+    from zipTree(downloadAssets.map { it.outputs.files.singleFile })
+    into "$projectDir/assets/"
+}
 
 run {
-    dependsOn downloadAssets
+    dependsOn unzipAssets
 }
 
 runShadow {
-    dependsOn downloadAssets
+    dependsOn unzipAssets
 }
 
 task platformInstallers(
