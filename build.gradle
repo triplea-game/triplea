@@ -3,9 +3,8 @@ plugins {
     id "pmd"
     id "com.github.ben-manes.versions" version "0.53.0"
     id "com.diffplug.spotless" version "8.1.0" apply false
+    id "eclipse"
 }
-
-apply plugin: "eclipse"
 
 ext {
     schemasDir = file("config/triplea/schemas")
@@ -195,7 +194,7 @@ subprojects {
     jacocoTestReport {
         reports {
             xml.required = true
-            xml.destination file("${buildDir}/jacoco.xml")
+            xml.outputLocation = project.layout.buildDir.file("jacoco.xml")
             html.required = true
         }
     }
