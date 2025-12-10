@@ -30,9 +30,9 @@ class TestDataFileLister {
 
     File folder;
     try {
-        folder = new File(url.toURI());
+      folder = new File(url.toURI());
     } catch (URISyntaxException e) {
-        throw new IOException(e);
+      throw new IOException(e);
     }
     File[] files = folder.listFiles();
 
