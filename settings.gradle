@@ -1,4 +1,13 @@
+pluginManagement {
+    includeBuild("gradle/build-logic")
+}
+
+plugins {
+    id("org.triplea.failure-summary-plugin")
+}
+
 rootProject.name='triplea'
+
 include 'game-app:ai'
 include 'game-app:domain-data'
 include 'game-app:game-core'

@@ -149,31 +149,6 @@ subprojects {
         }
     }
 
-    // Add a summary of failed test case to the end of execution
-    //   https://stackoverflow.com/questions/43917709/how-do-i-show-a-list-of-all-the-test-failures-after-completion-of-a-gradle-task
-    // add a collection to track failedTests
-    ext.failedTests = []
-
-    // add a testlistener to all tasks of type Test
-    tasks.withType(Test) {
-        afterTest { TestDescriptor descriptor, TestResult result ->
-            if (result.resultType == TestResult.ResultType.FAILURE) {
-                failedTests << ["${descriptor.className}::${descriptor.name}"]
-            }
-        }
-    }
-
-    // print out tracked failed tests when the build has finished
-    gradle.buildFinished {
-        if (!failedTests.empty) {
-            println "Failed tests for ${project.name}:"
-            failedTests.each { failedTest ->
-                println failedTest
-            }
-            println ""
-        }
-    }
-
     checkstyle {
         toolVersion = "$checkstyleVersion"
         configFile = rootProject.file(".build/checkstyle.xml")
