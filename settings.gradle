@@ -1,9 +1,26 @@
+import org.gradle.api.initialization.resolve.RepositoriesMode
+
 pluginManagement {
     includeBuild("gradle/build-logic")
 }
 
 plugins {
     id("org.triplea.failure-summary-plugin")
+}
+
+dependencyResolutionManagement {
+    repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
+    repositories {
+        mavenCentral()
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/triplea-game/triplea"
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
 }
 
 rootProject.name='triplea'
