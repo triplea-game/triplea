@@ -82,10 +82,6 @@ subprojects {
         xmlUnitMatchers = "2.11.0"
     }
 
-    repositories {
-        mavenCentral()
-    }
-
     dependencies {
         implementation("com.googlecode.soundlibs:jlayer:$jlayerVersion") {
             exclude group: 'junit', module: 'junit'
