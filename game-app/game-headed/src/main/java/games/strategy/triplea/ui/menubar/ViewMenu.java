@@ -43,6 +43,9 @@ import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.ThreadRunner;
 import org.triplea.swing.JMenuItemBuilder;
@@ -60,6 +63,32 @@ final class ViewMenu extends JMenu {
   private final TripleAFrame frame;
   private final UiContext uiContext;
 
+  @AllArgsConstructor(access = AccessLevel.PRIVATE)
+  @Getter
+  public enum Mnemonic {
+    VIEW_MENU(KeyEvent.VK_V),
+    FLAG_SUBMENU(KeyEvent.VK_N),
+    UNIT_SIZE_SUBMENU(KeyEvent.VK_S),
+    UNIT_SIZE_1(KeyEvent.VK_1),
+    UNIT_SIZE_83(KeyEvent.VK_8),
+    UNIT_SIZE_75(KeyEvent.VK_7),
+    UNIT_SIZE_66(KeyEvent.VK_6),
+    UNIT_SIZE_5(KeyEvent.VK_5),
+    MAP_SKINS_SUBMENU(KeyEvent.VK_K),
+    ZOOM(KeyEvent.VK_Z),
+    SHOW_MAP_DETAILS(KeyEvent.VK_D),
+    SHOW_MAP_BLENDS(KeyEvent.VK_B),
+    SHOW_UNIT(KeyEvent.VK_U),
+    MAP_FONT_OPTIONS(KeyEvent.VK_C),
+    SHOW_TERRITORY_EFFECTS(KeyEvent.VK_T),
+    FLAGS_OFF(KeyEvent.VK_S),
+    FLAGS_LARGE(KeyEvent.VK_P),
+    FLAGS_SMALL(KeyEvent.VK_L),
+    FIND_TERRITORY(KeyEvent.VK_F);
+
+    private final int mnemonicCode;
+  }
+
   ViewMenu(final TripleAFrame frame) {
     super("View");
 
@@ -67,7 +96,7 @@ final class ViewMenu extends JMenu {
     this.uiContext = frame.getUiContext();
     gameMapTerritories = frame.getGame().getData().getMap().getTerritories();
 
-    setMnemonic(KeyEvent.VK_V);
+    setMnemonic(Mnemonic.VIEW_MENU.getMnemonicCode());
 
     addZoomMenu();
     addUnitSizeMenu();
@@ -166,7 +195,7 @@ final class ViewMenu extends JMenu {
               final Number value = (Number) model.getValue();
               frame.getMapPanel().setScale(value.doubleValue() / 100);
             });
-    add(mapZoom).setMnemonic(KeyEvent.VK_Z);
+    add(mapZoom).setMnemonic(Mnemonic.ZOOM.getMnemonicCode());
   }
 
   private void setSpinnerValue(SpinnerNumberModel model, double value) {
@@ -196,22 +225,22 @@ final class ViewMenu extends JMenu {
     }
 
     final JMenu unitSizeMenu = new JMenu();
-    unitSizeMenu.setMnemonic(KeyEvent.VK_S);
+    unitSizeMenu.setMnemonic(Mnemonic.UNIT_SIZE_SUBMENU.getMnemonicCode());
     unitSizeMenu.setText("Unit Size");
     final ButtonGroup unitSizeGroup = new ButtonGroup();
     final JRadioButtonMenuItem radioItem125 = new JRadioButtonMenuItem(new UnitSizeAction(1.25));
     final JRadioButtonMenuItem radioItem100 = new JRadioButtonMenuItem(new UnitSizeAction(1.0));
-    radioItem100.setMnemonic(KeyEvent.VK_1);
+    radioItem100.setMnemonic(Mnemonic.UNIT_SIZE_1.getMnemonicCode());
     final JRadioButtonMenuItem radioItem87 = new JRadioButtonMenuItem(new UnitSizeAction(0.875));
     final JRadioButtonMenuItem radioItem83 = new JRadioButtonMenuItem(new UnitSizeAction(0.8333));
-    radioItem83.setMnemonic(KeyEvent.VK_8);
+    radioItem83.setMnemonic(Mnemonic.UNIT_SIZE_83.getMnemonicCode());
     final JRadioButtonMenuItem radioItem75 = new JRadioButtonMenuItem(new UnitSizeAction(0.75));
-    radioItem75.setMnemonic(KeyEvent.VK_7);
+    radioItem75.setMnemonic(Mnemonic.UNIT_SIZE_75.getMnemonicCode());
     final JRadioButtonMenuItem radioItem66 = new JRadioButtonMenuItem(new UnitSizeAction(0.6666));
-    radioItem66.setMnemonic(KeyEvent.VK_6);
+    radioItem66.setMnemonic(Mnemonic.UNIT_SIZE_66.getMnemonicCode());
     final JRadioButtonMenuItem radioItem56 = new JRadioButtonMenuItem(new UnitSizeAction(0.5625));
     final JRadioButtonMenuItem radioItem50 = new JRadioButtonMenuItem(new UnitSizeAction(0.5));
-    radioItem50.setMnemonic(KeyEvent.VK_5);
+    radioItem50.setMnemonic(Mnemonic.UNIT_SIZE_5.getMnemonicCode());
     unitSizeGroup.add(radioItem125);
     unitSizeGroup.add(radioItem100);
     unitSizeGroup.add(radioItem87);
@@ -249,7 +278,7 @@ final class ViewMenu extends JMenu {
 
   private void addMapSkinsMenu() {
     final JMenu mapSubMenu = new JMenu("Map Skins");
-    mapSubMenu.setMnemonic(KeyEvent.VK_K);
+    mapSubMenu.setMnemonic(Mnemonic.MAP_SKINS_SUBMENU.getMnemonicCode());
     add(mapSubMenu);
     final ButtonGroup mapButtonGroup = new ButtonGroup();
     final Collection<UiContext.MapSkin> skins =
@@ -277,7 +306,7 @@ final class ViewMenu extends JMenu {
 
   private void addShowMapDetails() {
     showMapDetails = new JCheckBoxMenuItem("Show Map Details");
-    showMapDetails.setMnemonic(KeyEvent.VK_D);
+    showMapDetails.setMnemonic(Mnemonic.SHOW_MAP_DETAILS.getMnemonicCode());
     showMapDetails.setSelected(TileImageFactory.getShowReliefImages());
     showMapDetails.addActionListener(
         e -> {
@@ -294,7 +323,7 @@ final class ViewMenu extends JMenu {
   private void addShowMapBlends() {
     JCheckBoxMenuItem showMapBlends;
     showMapBlends = new JCheckBoxMenuItem("Show Map Blends");
-    showMapBlends.setMnemonic(KeyEvent.VK_B);
+    showMapBlends.setMnemonic(Mnemonic.SHOW_MAP_BLENDS.getMnemonicCode());
     if (uiContext.getMapData().getHasRelief()
         && showMapDetails.isEnabled()
         && showMapDetails.isSelected()) {
@@ -322,7 +351,7 @@ final class ViewMenu extends JMenu {
 
   private void addShowUnitsMenu() {
     final JCheckBoxMenuItem showUnitsBox = new JCheckBoxMenuItem("Show Units");
-    showUnitsBox.setMnemonic(KeyEvent.VK_U);
+    showUnitsBox.setMnemonic(Mnemonic.SHOW_UNIT.getMnemonicCode());
     showUnitsBox.setSelected(true);
     showUnitsBox.addActionListener(
         e -> {
@@ -445,12 +474,12 @@ final class ViewMenu extends JMenu {
                 frame.getMapPanel().resetMap();
               }
             });
-    add(mapFontOptions).setMnemonic(KeyEvent.VK_C);
+    add(mapFontOptions).setMnemonic(Mnemonic.MAP_FONT_OPTIONS.getMnemonicCode());
   }
 
   private void addShowTerritoryEffects() {
     final JCheckBoxMenuItem territoryEffectsBox = new JCheckBoxMenuItem("Show TerritoryEffects");
-    territoryEffectsBox.setMnemonic(KeyEvent.VK_T);
+    territoryEffectsBox.setMnemonic(Mnemonic.SHOW_TERRITORY_EFFECTS.getMnemonicCode());
     territoryEffectsBox.addActionListener(
         e -> {
           uiContext.setShowTerritoryEffects(territoryEffectsBox.isSelected());
@@ -483,12 +512,12 @@ final class ViewMenu extends JMenu {
     }
 
     final JMenu flagDisplayMenu = new JMenu();
-    flagDisplayMenu.setMnemonic(KeyEvent.VK_N);
+    flagDisplayMenu.setMnemonic(Mnemonic.FLAG_SUBMENU.getMnemonicCode());
     flagDisplayMenu.setText("Flag Display");
     final ButtonGroup flagsDisplayGroup = new ButtonGroup();
 
     final JRadioButtonMenuItem noFlags =
-        new JMenuItemBuilder("Off", KeyCode.O)
+        new JMenuItemBuilder("Off", Mnemonic.FLAGS_OFF.getMnemonicCode())
             .actionListener(
                 () ->
                     FlagDrawMode.toggleDrawMode(
@@ -496,7 +525,7 @@ final class ViewMenu extends JMenu {
             .buildRadio(flagsDisplayGroup);
 
     final JRadioButtonMenuItem smallFlags =
-        new JMenuItemBuilder("Small", KeyCode.S)
+        new JMenuItemBuilder("Small", Mnemonic.FLAGS_SMALL.getMnemonicCode())
             .actionListener(
                 () ->
                     FlagDrawMode.toggleDrawMode(
@@ -504,7 +533,7 @@ final class ViewMenu extends JMenu {
             .buildRadio(flagsDisplayGroup);
 
     final JRadioButtonMenuItem largeFlags =
-        new JMenuItemBuilder("Large", KeyCode.L)
+        new JMenuItemBuilder("Large", Mnemonic.FLAGS_LARGE.getMnemonicCode())
             .actionListener(
                 () ->
                     FlagDrawMode.toggleDrawMode(
@@ -554,6 +583,6 @@ final class ViewMenu extends JMenu {
     menuItem.setAccelerator(
         KeyStroke.getKeyStroke(
             KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
-    menuItem.setMnemonic(KeyEvent.VK_F);
+    menuItem.setMnemonic(Mnemonic.FIND_TERRITORY.getMnemonicCode());
   }
 }

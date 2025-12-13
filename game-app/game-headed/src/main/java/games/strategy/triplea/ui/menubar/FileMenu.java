@@ -19,6 +19,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.triplea.swing.JMenuItemBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.key.binding.KeyCode;
@@ -30,6 +33,18 @@ final class FileMenu extends JMenu {
   private final TripleAFrame frame;
   private final IGame game;
 
+  @AllArgsConstructor(access = AccessLevel.PRIVATE)
+  @Getter
+  public enum Mnemonic {
+    FILE_MENU(KeyEvent.VK_F),
+    SAVE(KeyEvent.VK_S),
+    POST_PBEM(KeyEvent.VK_P),
+    LEAVE(KeyEvent.VK_L),
+    EXIT(KeyEvent.VK_X);
+
+    private final int mnemonicCode;
+  }
+
   FileMenu(final TripleAFrame frame) {
     super("File");
 
@@ -37,7 +52,7 @@ final class FileMenu extends JMenu {
     game = frame.getGame();
     gameData = frame.getGame().getData();
 
-    setMnemonic(KeyEvent.VK_F);
+    setMnemonic(Mnemonic.FILE_MENU.getMnemonicCode());
 
     add(newSaveMenuItem());
     if (PbemMessagePoster.gameDataHasPlayByEmailOrForumMessengers(gameData)) {
@@ -48,7 +63,7 @@ final class FileMenu extends JMenu {
   }
 
   private JMenuItem newSaveMenuItem() {
-    return new JMenuItemBuilder("Save", KeyCode.S)
+    return new JMenuItemBuilder("Save", Mnemonic.SAVE.getMnemonicCode())
         .accelerator(KeyCode.S)
         .actionListener(
             () -> {
@@ -63,7 +78,7 @@ final class FileMenu extends JMenu {
   }
 
   private JMenuItem addPostPbem() {
-    return new JMenuItemBuilder("Post PBEM/PBF Gamesave", KeyCode.P)
+    return new JMenuItemBuilder("Post PBEM/PBF Gamesave", Mnemonic.POST_PBEM.getMnemonicCode())
         .accelerator(KeyCode.M)
         .actionListener(
             () -> {
@@ -95,7 +110,7 @@ final class FileMenu extends JMenu {
     final boolean isMac = SystemProperties.isMac();
     final JMenuItem leaveGameMenuExit =
         new JMenuItem(SwingAction.of("Leave Game", e -> frame.leaveGame()));
-    leaveGameMenuExit.setMnemonic(KeyEvent.VK_L);
+    leaveGameMenuExit.setMnemonic(Mnemonic.LEAVE.getMnemonicCode());
     if (isMac) { // On Mac OS X, the command-Q is reserved for the Quit action,
       // so set the command-W key combo for the Leave Game action
       leaveGameMenuExit.setAccelerator(
@@ -115,7 +130,7 @@ final class FileMenu extends JMenu {
     } else { // On non-Mac operating systems, we need to manually create an Exit menu item
       final JMenuItem menuFileExit =
           new JMenuItem(SwingAction.of("Exit Program", e -> frame.shutdown()));
-      menuFileExit.setMnemonic(KeyEvent.VK_E);
+      menuFileExit.setMnemonic(Mnemonic.EXIT.getMnemonicCode());
       add(menuFileExit);
     }
   }

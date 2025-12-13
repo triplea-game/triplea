@@ -47,13 +47,15 @@ import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.map.data.elements.Game;
 import org.triplea.map.xml.writer.GameXmlWriter;
 import org.triplea.swing.FileChooser;
 import org.triplea.swing.JMenuItemBuilder;
-import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.util.FileNameUtils;
 
 @Slf4j
@@ -65,6 +67,20 @@ final class ExportMenu extends JMenu {
   private final UiContext uiContext;
   private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy_MM_dd");
 
+  @AllArgsConstructor(access = AccessLevel.PRIVATE)
+  @Getter
+  public enum Mnemonic {
+    EXPORT_MENU(KeyEvent.VK_E),
+    EXPORT_PICTURE(KeyEvent.VK_E),
+    EXPORT_STATS_FULL(KeyEvent.VK_F),
+    EXPORT_STATS_SHORT(KeyEvent.VK_S),
+    EXPORT_XML(KeyEvent.VK_X),
+    EXPORT_CHARTS_UNIT(KeyEvent.VK_U),
+    EXPORT_CHARTS_SETUP(KeyEvent.VK_C);
+
+    private final int mnemonicCode;
+  }
+
   ExportMenu(final TripleAFrame frame) {
     super("Export");
 
@@ -72,7 +88,7 @@ final class ExportMenu extends JMenu {
     gameData = frame.getGame().getData();
     uiContext = frame.getUiContext();
 
-    setMnemonic(KeyEvent.VK_E);
+    setMnemonic(Mnemonic.EXPORT_MENU.getMnemonicCode());
 
     add(createExportXmlMenu());
     add(createExportStatsMenu());
@@ -84,7 +100,8 @@ final class ExportMenu extends JMenu {
 
   // TODO: create a second menu option for parsing current attachments
   private JMenuItem createExportXmlMenu() {
-    return new JMenuItemBuilder("Export game.xml File (Beta)", KeyCode.X)
+    return new JMenuItemBuilder(
+            "Export game.xml File (Beta)", Mnemonic.EXPORT_XML.getMnemonicCode())
         .actionListener(this::exportXmlFile)
         .build();
   }
@@ -116,7 +133,8 @@ final class ExportMenu extends JMenu {
   }
 
   private JMenuItem createSaveScreenshotMenu() {
-    return new JMenuItemBuilder("Export Gameboard Picture", KeyCode.E)
+    return new JMenuItemBuilder(
+            "Export Gameboard Picture", Mnemonic.EXPORT_PICTURE.getMnemonicCode())
         .actionListener(this::saveScreenshot)
         .build();
   }
@@ -134,13 +152,15 @@ final class ExportMenu extends JMenu {
   }
 
   private JMenuItem createExportStatsFullMenu() {
-    return new JMenuItemBuilder("Export Full Game Stats", KeyCode.F)
+    return new JMenuItemBuilder(
+            "Export Full Game Stats", Mnemonic.EXPORT_STATS_FULL.getMnemonicCode())
         .actionListener(() -> createAndSaveStats(true))
         .build();
   }
 
   private JMenuItem createExportStatsMenu() {
-    return new JMenuItemBuilder("Export Short Game Stats", KeyCode.S)
+    return new JMenuItemBuilder(
+            "Export Short Game Stats", Mnemonic.EXPORT_STATS_SHORT.getMnemonicCode())
         .actionListener(() -> createAndSaveStats(false))
         .build();
   }
@@ -357,7 +377,7 @@ final class ExportMenu extends JMenu {
   }
 
   private JMenuItem createExportUnitStatsMenu() {
-    return new JMenuItemBuilder("Export Unit Charts", KeyCode.U)
+    return new JMenuItemBuilder("Export Unit Charts", Mnemonic.EXPORT_CHARTS_UNIT.getMnemonicCode())
         .actionListener(this::exportUnitCharts)
         .build();
   }
@@ -380,7 +400,8 @@ final class ExportMenu extends JMenu {
   }
 
   private JMenuItem createExportSetupChartsMenu() {
-    return new JMenuItemBuilder("Export Setup Charts", KeyCode.C)
+    return new JMenuItemBuilder(
+            "Export Setup Charts", Mnemonic.EXPORT_CHARTS_SETUP.getMnemonicCode())
         .actionListener(this::exportSetupCharts)
         .build();
   }

@@ -22,14 +22,13 @@ import org.triplea.swing.key.binding.KeyCode;
  */
 public class JMenuItemBuilder {
   private final String title;
-  private final KeyCode mnemonic;
+  private final int mnemonic;
   private Runnable actionListener;
   private Integer acceleratorKey;
   private boolean selected;
 
-  public JMenuItemBuilder(final String title, final KeyCode mnemonic) {
+  public JMenuItemBuilder(final String title, final int mnemonic) {
     ArgChecker.checkNotEmpty(title);
-    Preconditions.checkNotNull(mnemonic);
     this.title = title;
     this.mnemonic = mnemonic;
   }
@@ -59,7 +58,7 @@ public class JMenuItemBuilder {
   private void buildImpl(final JMenuItem menuItem) {
     Preconditions.checkNotNull(actionListener);
 
-    menuItem.setMnemonic(mnemonic.getInputEventCode());
+    menuItem.setMnemonic(mnemonic);
     menuItem.addActionListener(e -> actionListener.run());
     Optional.ofNullable(acceleratorKey)
         .ifPresent(
