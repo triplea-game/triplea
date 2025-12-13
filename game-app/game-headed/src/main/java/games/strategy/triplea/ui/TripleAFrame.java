@@ -548,7 +548,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     }
     addTab("Players", statsPanel, KeyCode.P);
     if (!TechAdvance.getTechAdvances(data.getTechnologyFrontier(), null).isEmpty()) {
-      addTab("Technology", technologyPanel, KeyCode.E);
+      addTab("Technology", technologyPanel, KeyCode.Y);
     }
     addTab("Resources", economyPanel, KeyCode.R);
     if (objectivePanel != null) {
