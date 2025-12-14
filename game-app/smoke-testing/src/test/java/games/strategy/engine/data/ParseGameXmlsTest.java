@@ -29,7 +29,7 @@ class ParseGameXmlsTest {
 
   @SuppressWarnings("unused")
   static Collection<Path> parseGameFiles() throws IOException {
-    return TestDataFileLister.listFilesInTestClasspathDir("map-xmls").stream()
+    return TestDataFileLister.listFilesInTestResourcesDirectory("map-xmls").stream()
         .sorted(
             Comparator.comparing(file -> file.getFileName().toString().toUpperCase(Locale.ROOT)))
         .collect(Collectors.toList());
