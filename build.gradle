@@ -40,7 +40,6 @@ subprojects {
     apply plugin: "java"
     apply plugin: "pmd"
 
-    apply from: rootProject.file("gradle/scripts/release.gradle")
     apply from: rootProject.file("gradle/scripts/version.gradle")
 
     group = "triplea"
