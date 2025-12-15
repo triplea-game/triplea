@@ -33,31 +33,38 @@ run {
     systemProperty "triplea.server", "true"
 }
 
-task portableInstaller(type: Zip, group: "release", dependsOn: shadowJar) {
+def portableInstaller = tasks.register("portableInstaller", Zip) {
+    group = "release"
+
     from file(".triplea-root")
     from file("scripts/run_bot")
     from(file("scripts/run_bot.bat")) {
         filter ReplaceTokens, tokens: [version: project.version]
         filter FixCrLfFilter, eol: FixCrLfFilter.CrLf.newInstance("crlf") // workaround for https://github.com/gradle/gradle/issues/1151
     }
-    from(shadowJar.outputs) {
+    from(shadowJar) {
         into "bin"
     }
 }
 
-task release(group: "release", dependsOn: portableInstaller) {
-    doLast {
-        publishArtifacts(portableInstaller.outputs.files)
+tasks.register("release", Copy) {
+    group = "release"
+
+    from portableInstaller
+    into file(project.layout.buildDirectory.dir("artifacts"))
+
+    doFirst {
+        inputs.files.forEach {
+            if (!it.exists()) {
+                throw new GradleException("artifact '$it' does not exist")
+            }
+        }
     }
 }
 
-task copyShadow(dependsOn: shadowJar) {
-    doLast {
-        copy {
-            from shadowJar
-            into "../infrastructure/ansible/roles/bot/files/"
-        }
-    }
+tasks.register("copyShadow", Copy) {
+    from shadowJar
+    into "../infrastructure/ansible/roles/bot/files/"
 }
 
 shadowJar {
