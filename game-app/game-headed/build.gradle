@@ -96,7 +96,7 @@ def portableInstaller = tasks.register("portableInstaller", Zip) {
 
 tasks.register("release", Copy) {
     group = "release"
-    dependsOn(platformInstallers) // TODO: is this needed explicitly?
+    dependsOn(downloadAssets, platformInstallers)
 
     from portableInstaller
     from file("$releasesDir/TripleA_${releaseVersion}_macos.dmg")
