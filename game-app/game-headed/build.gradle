@@ -1,3 +1,5 @@
+import com.install4j.gradle.Install4jTask
+
 plugins {
     id "application"
     id "com.install4j.gradle" version "12.0.1"
@@ -13,10 +15,8 @@ application {
     ]
 }
 
-ext {
-    releasesDir = file("$buildDir/releases")
-    releaseVersion = getProductVersion() + "+" + getCommitNumber()
-}
+def releasesDir = file("$buildDir/releases")
+def releaseVersion = getProductVersion() + "+" + getCommitNumber()
 
 dependencies {
     implementation project(":game-app:ai")
@@ -43,7 +43,7 @@ clean.doFirst {
   delete "$projectDir/assets/"
 }
 
-task downloadAssets {
+def downloadAssets = tasks.register("downloadAssets") {
     doLast {
         download.run {
             src "https://github.com/triplea-game/assets/releases/download/47/game_headed_assets.zip"
@@ -66,10 +66,11 @@ runShadow {
     dependsOn downloadAssets
 }
 
-task platformInstallers(
-    type: com.install4j.gradle.Install4jTask,
-    group: "release",
-    dependsOn: [shadowJar]) {
+def platformInstallers = tasks.register("platformInstallers", Install4jTask) {
+    group = "release"
+    description = "creates installer files using install4j (eg: install.exe)"
+    dependsOn(shadowJar)
+
     projectFile = file("build.install4j")
     release = releaseVersion
     license="$System.env.INSTALL4J_LICENSE_KEY"
@@ -78,7 +79,9 @@ task platformInstallers(
     }
 }
 
-task portableInstaller(type: Zip, group: "release", dependsOn: shadowJar) {
+def portableInstaller = tasks.register("portableInstaller", Zip) {
+    group = "release"
+
     from file(".triplea-root")
     from(file("assets")) {
         into "assets"
@@ -86,19 +89,27 @@ task portableInstaller(type: Zip, group: "release", dependsOn: shadowJar) {
     from(file("dice_servers")) {
         into "dice_servers"
     }
-    from(shadowJar.outputs) {
+    from(shadowJar) {
         into "bin"
     }
 }
 
-// creates installer files using install4j (eg: install.exe)
-task release(group: "release", dependsOn: [portableInstaller, platformInstallers, downloadAssets]) {
-    doLast {
-        publishArtifacts(portableInstaller.outputs.files + [
-            file("$releasesDir/TripleA_${releaseVersion}_macos.dmg"),
-            file("$releasesDir/TripleA_${releaseVersion}_unix.sh"),
-            file("$releasesDir/TripleA_${releaseVersion}_windows-64bit.exe")
-        ])
+tasks.register("release", Copy) {
+    group = "release"
+    dependsOn(platformInstallers) // TODO: is this needed explicitly?
+
+    from portableInstaller
+    from file("$releasesDir/TripleA_${releaseVersion}_macos.dmg")
+    from file("$releasesDir/TripleA_${releaseVersion}_unix.sh")
+    from file("$releasesDir/TripleA_${releaseVersion}_windows-64bit.exe")
+    into file(project.layout.buildDirectory.dir("artifacts"))
+
+    doFirst {
+        inputs.files.forEach {
+            if (!it.exists()) {
+                throw new GradleException("artifact '$it' does not exist")
+            }
+        }
     }
 }
 
