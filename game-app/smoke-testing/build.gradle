@@ -15,31 +15,28 @@ test {
     maxHeapSize = "2G"
 }
 
-// Gather all URLs in the same game list file
-def downloadURLs = []
-def saveGamesFile = project.layout.projectDirectory.file("save-game-list.txt").asFile
-saveGamesFile.readLines().eachWithIndex { path, idx ->
-    if (!path.startsWith("#")) {
-        downloadURLs.add(path)
+tasks.test.dependsOn("downloadSaveGames")
+
+task downloadSaveGames {
+    doLast {
+        mkdir "$projectDir/src/test/resources/save-games/"
+
+        def urls = []
+        file("save-game-list.txt").eachLine { path ->
+            if (!path.startsWith("#")) {
+                urls.add(path)
+            }
+        }
+
+        // Use a single download.run invocation to download in parallel.
+        download.run {
+            src(urls)
+            dest "$projectDir/src/test/resources/save-games/"
+            overwrite false
+        }
     }
 }
 
-// Create a download task for the URLs
-def downloadTask = tasks.register("downloadSaveGames", de.undercouch.gradle.tasks.download.Download) {
-    group = LifecycleBasePlugin.VERIFICATION_GROUP
-    description = "Downloads save game files"
-
-    src downloadURLs
-    dest project.layout.buildDirectory.dir("downloads/save-games")
-    overwrite false
-    onlyIfModified true
-    quiet true
-}
-
-// And wire test resource processing as a dependant on the download task
-tasks.named("processTestResources", ProcessResources).configure {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from(downloadTask) {
-        into "save-games"
-    }
+clean.doFirst {
+    delete "$projectDir/src/test/resources/save-games/"
 }
