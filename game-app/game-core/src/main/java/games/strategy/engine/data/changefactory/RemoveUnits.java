@@ -49,15 +49,6 @@ public class RemoveUnits extends Change {
   @Override
   protected void perform(final GameState data) {
     final UnitHolder holder = data.getUnitHolder(name, type);
-    if (!holder.getUnitCollection().containsAll(units)) {
-      throw new IllegalStateException(
-          "Not all units present in:"
-              + name
-              + ".  Trying to remove:"
-              + units
-              + " present:"
-              + holder.getUnits());
-    }
     holder.getUnitCollection().removeAll(units);
   }
 

@@ -115,13 +115,6 @@ public class HistoryWriter implements Serializable {
     if (isCurrentEvent()) {
       closeCurrent();
     }
-    if (!isCurrentStep()) {
-      throw new IllegalStateException(
-          "Not in a step, but trying to add event: "
-              + eventName
-              + ". Current history node is: "
-              + current);
-    }
     final Event event = new Event(eventName, history.getChanges().size());
     addToAndSetCurrent(event);
   }
