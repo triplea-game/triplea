@@ -14,21 +14,6 @@ wrapper {
     distributionType = Wrapper.DistributionType.ALL
 }
 
-allprojects {
-    apply plugin: "com.diffplug.spotless"
-    apply plugin: "java"
-
-    spotless {
-        format "allFiles", {
-            target "*"
-            targetExclude "gradlew.bat"
-            endWithNewline()
-            leadingTabsToSpaces()
-            trimTrailingWhitespace()
-        }
-    }
-}
-
 java {
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
@@ -134,12 +119,5 @@ subprojects {
         ruleSets = []
         incrementalAnalysis = true
         toolVersion = libs.versions.pmd.get()
-    }
-
-    spotless {
-        java {
-            googleJavaFormat()
-            removeUnusedImports()
-        }
     }
 }

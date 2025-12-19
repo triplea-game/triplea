@@ -1,3 +1,7 @@
+plugins {
+    id("triplea-java-library")
+}
+
 dependencies {
     implementation project(":game-app:domain-data")
     implementation project(":game-app:map-data")
