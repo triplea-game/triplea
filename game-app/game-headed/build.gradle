@@ -2,9 +2,9 @@ import com.install4j.gradle.Install4jTask
 
 plugins {
     id "application"
-    id "com.install4j.gradle" version "12.0.1"
-    id "com.gradleup.shadow" version "9.2.2"
-    id "de.undercouch.download" version "5.6.0"
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.install4j)
+    alias(libs.plugins.download)
 }
 
 application {
