@@ -52,6 +52,6 @@ class GameSaveCompatibilityTest {
 
   @SuppressWarnings("unused")
   static Collection<Path> loadSaveGames() throws IOException {
-    return TestDataFileLister.listFilesInTestResourcesDirectory("save-games");
+    return TestDataFileLister.listFilesInTestClasspathDir("save-games");
   }
 }
