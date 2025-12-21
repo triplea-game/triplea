@@ -3,6 +3,8 @@ package org.triplea.swing;
 import com.google.common.base.Preconditions;
 import java.awt.Toolkit;
 import java.util.Optional;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
@@ -22,15 +24,21 @@ import org.triplea.swing.key.binding.KeyCode;
  */
 public class JMenuItemBuilder {
   private final String title;
-  private final int mnemonic;
+  private final KeyCode mnemonic;
   private Runnable actionListener;
   private Integer acceleratorKey;
   private boolean selected;
 
-  public JMenuItemBuilder(final String title, final int mnemonic) {
+  public JMenuItemBuilder(final String title, final KeyCode mnemonic) {
     ArgChecker.checkNotEmpty(title);
+    Preconditions.checkNotNull(mnemonic);
     this.title = title;
     this.mnemonic = mnemonic;
+  }
+
+  public JMenuItemBuilder(final AbstractAction action, final KeyCode mnemonic) {
+    final String title = ((String) action.getValue(Action.NAME));
+    this(title, mnemonic);
   }
 
   /** Constructs a Swing JMenuItem using current builder values. */
@@ -58,7 +66,7 @@ public class JMenuItemBuilder {
   private void buildImpl(final JMenuItem menuItem) {
     Preconditions.checkNotNull(actionListener);
 
-    menuItem.setMnemonic(mnemonic);
+    menuItem.setMnemonic(mnemonic.getInputEventCode());
     menuItem.addActionListener(e -> actionListener.run());
     Optional.ofNullable(acceleratorKey)
         .ifPresent(

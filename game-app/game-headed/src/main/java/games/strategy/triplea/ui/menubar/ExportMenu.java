@@ -23,7 +23,6 @@ import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.export.ScreenshotExporter;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.ui.menubar.help.UnitStatsTable;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
@@ -56,6 +55,7 @@ import org.triplea.map.data.elements.Game;
 import org.triplea.map.xml.writer.GameXmlWriter;
 import org.triplea.swing.FileChooser;
 import org.triplea.swing.JMenuItemBuilder;
+import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.util.FileNameUtils;
 
 @Slf4j
@@ -70,15 +70,19 @@ final class ExportMenu extends JMenu {
   @AllArgsConstructor(access = AccessLevel.PRIVATE)
   @Getter
   public enum Mnemonic {
-    EXPORT_MENU(KeyEvent.VK_E),
-    EXPORT_PICTURE(KeyEvent.VK_E),
-    EXPORT_STATS_FULL(KeyEvent.VK_F),
-    EXPORT_STATS_SHORT(KeyEvent.VK_S),
-    EXPORT_XML(KeyEvent.VK_X),
-    EXPORT_CHARTS_UNIT(KeyEvent.VK_U),
-    EXPORT_CHARTS_SETUP(KeyEvent.VK_C);
+    EXPORT_MENU(KeyCode.E),
+    EXPORT_PICTURE(KeyCode.E),
+    EXPORT_STATS_FULL(KeyCode.F),
+    EXPORT_STATS_SHORT(KeyCode.S),
+    EXPORT_XML(KeyCode.X),
+    EXPORT_CHARTS_UNIT(KeyCode.U),
+    EXPORT_CHARTS_SETUP(KeyCode.C);
 
-    private final int mnemonicCode;
+    private final KeyCode mnemonicCode;
+
+    public int getValue() {
+      return mnemonicCode.getInputEventCode();
+    }
   }
 
   ExportMenu(final TripleAFrame frame) {
@@ -88,7 +92,7 @@ final class ExportMenu extends JMenu {
     gameData = frame.getGame().getData();
     uiContext = frame.getUiContext();
 
-    setMnemonic(Mnemonic.EXPORT_MENU.getMnemonicCode());
+    setMnemonic(Mnemonic.EXPORT_MENU.getValue());
 
     add(createExportXmlMenu());
     add(createExportStatsMenu());
