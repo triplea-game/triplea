@@ -25,7 +25,7 @@ class JMenuBuilderTest {
   @Test
   void verifyMnemonic() {
     final JMenu menu = new JMenuBuilder(TITLE, KeyCode.M).build();
-    assertThat(menu.getMnemonic(), is(KeyCode.M));
+    assertThat(menu.getMnemonic(), is(KeyCode.M.getInputEventCode()));
   }
 
   @Test
@@ -61,6 +61,6 @@ class JMenuBuilderTest {
             .build();
     assertThat(menu.getItemCount(), is(1));
     assertThat(menu.getItem(0).getText(), is(MENU_ITEM_TITLE));
-    assertThat(menu.getItem(0).getMnemonic(), is(KeyCode.A));
+    assertThat(menu.getItem(0).getMnemonic(), is(KeyCode.A.getInputEventCode()));
   }
 }
