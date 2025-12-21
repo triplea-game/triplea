@@ -1,8 +1,10 @@
+import com.install4j.gradle.Install4jTask
+
 plugins {
     id "application"
-    id "com.install4j.gradle" version "12.0.1"
-    id "com.github.johnrengelman.shadow" version "8.1.1"
-    id "de.undercouch.download" version "5.6.0"
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.install4j)
+    alias(libs.plugins.download)
 }
 
 application {
@@ -13,10 +15,8 @@ application {
     ]
 }
 
-ext {
-    releasesDir = file("$buildDir/releases")
-    releaseVersion = getProductVersion() + "+" + getCommitNumber()
-}
+def releasesDir = file("$buildDir/releases")
+def releaseVersion = getProductVersion() + "+" + getCommitNumber()
 
 dependencies {
     implementation project(":game-app:ai")
@@ -38,11 +38,6 @@ jar {
     }
 }
 
-clean.doFirst {
-    delete "$projectDir/.assets/"
-    delete "$projectDir/assets/"
-}
-
 def assetsZipFileName = "game_headed_assets.zip"
 def downloadAssets = tasks.register("downloadAssets", de.undercouch.gradle.tasks.download.Download) {
     src "https://github.com/triplea-game/assets/releases/download/47/$assetsZipFileName"
@@ -54,7 +49,7 @@ def downloadAssets = tasks.register("downloadAssets", de.undercouch.gradle.tasks
 
 def unzipAssets = tasks.register("unzipAssets", Copy) {
     from zipTree(downloadAssets.map { it.outputs.files.singleFile })
-    into "$projectDir/assets/"
+    into project.layout.buildDirectory.dir("assets")
 }
 
 run {
@@ -65,10 +60,11 @@ runShadow {
     dependsOn unzipAssets
 }
 
-task platformInstallers(
-        type: com.install4j.gradle.Install4jTask,
-        group: "release",
-        dependsOn: [shadowJar]) {
+def platformInstallers = tasks.register("platformInstallers", Install4jTask) {
+    group = "release"
+    description = "creates installer files using install4j (eg: install.exe)"
+    dependsOn(shadowJar)
+
     projectFile = file("build.install4j")
     release = releaseVersion
     license = "$System.env.INSTALL4J_LICENSE_KEY"
@@ -77,31 +73,43 @@ task platformInstallers(
     }
 }
 
-task portableInstaller(type: Zip, group: "release", dependsOn: shadowJar) {
+def portableInstaller = tasks.register("portableInstaller", Zip) {
+    group = "release"
+
     from file(".triplea-root")
-    from(file("assets")) {
+    from(unzipAssets) {
         into "assets"
     }
     from(file("dice_servers")) {
         into "dice_servers"
     }
-    from(shadowJar.outputs) {
+    from(shadowJar) {
         into "bin"
     }
 }
 
-// creates installer files using install4j (eg: install.exe)
-task release(group: "release", dependsOn: [portableInstaller, platformInstallers, downloadAssets]) {
-    doLast {
-        publishArtifacts(portableInstaller.outputs.files + [
-                file("$releasesDir/TripleA_${releaseVersion}_macos.dmg"),
-                file("$releasesDir/TripleA_${releaseVersion}_unix.sh"),
-                file("$releasesDir/TripleA_${releaseVersion}_windows-64bit.exe")
-        ])
+tasks.register("release", Copy) {
+    group = "release"
+    dependsOn(platformInstallers)
+
+    from portableInstaller
+    from file("$releasesDir/TripleA_${releaseVersion}_macos.dmg")
+    from file("$releasesDir/TripleA_${releaseVersion}_unix.sh")
+    from file("$releasesDir/TripleA_${releaseVersion}_windows-64bit.exe")
+    into file(project.layout.buildDirectory.dir("artifacts"))
+
+    doFirst {
+        inputs.files.forEach {
+            if (!it.exists()) {
+                throw new GradleException("artifact '$it' does not exist")
+            }
+        }
     }
 }
 
 shadowJar {
+    dependsOn(unzipAssets)
+
     // "archiveVersion" sets the version number on packaged jar files
     // eg: "2.6+105234" in "lobby-server-2.6+50370c.jar"
     archiveVersion = releaseVersion
