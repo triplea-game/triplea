@@ -2,13 +2,13 @@ package org.triplea.sound;
 
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.triplea.settings.ClientSetting;
-import java.awt.event.KeyEvent;
 import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import org.triplea.swing.JMenuItemCheckBoxBuilder;
+import org.triplea.swing.key.binding.KeyCode;
 
 /** Sound option window framework. */
 public final class SoundOptions {
@@ -17,7 +17,7 @@ public final class SoundOptions {
   /** Builds a "Sound Options" menu item. */
   public static JMenuItem buildSoundOptionsMenuItem() {
     final JMenuItem soundOptions = new JMenuItem("Sound Options");
-    soundOptions.setMnemonic(KeyEvent.VK_S);
+    soundOptions.setMnemonic(KeyCode.S.getInputEventCode());
 
     if (ClipPlayer.hasAudio()) {
       soundOptions.addActionListener(e -> showSoundOptions(soundOptions));
@@ -69,7 +69,7 @@ public final class SoundOptions {
   /** Builds a checkbox menu item to turn sounds on or off. */
   public static JMenuItem buildGlobalSoundSwitchMenuItem() {
     final JMenuItem enableSoundMenuItem =
-        new JMenuItemCheckBoxBuilder("Enable Sound", 'N')
+        new JMenuItemCheckBoxBuilder("Enable Sound", KeyCode.N)
             .bindSetting(ClientSetting.soundEnabled)
             .build();
 

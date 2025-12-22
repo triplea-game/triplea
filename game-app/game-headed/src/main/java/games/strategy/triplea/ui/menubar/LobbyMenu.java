@@ -20,6 +20,7 @@ import org.triplea.sound.SoundOptions;
 import org.triplea.swing.JMenuBuilder;
 import org.triplea.swing.JMenuItemCheckBoxBuilder;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.key.binding.KeyCode;
 
 /** The lobby client menu bar. */
 public final class LobbyMenu extends JMenuBar {
@@ -32,21 +33,24 @@ public final class LobbyMenu extends JMenuBar {
     lobbyFrame = frame;
     // file only has one value, and on mac it is in the apple menu
     if (!SystemProperties.isMac()) {
-      add(new JMenuBuilder("File", 'F').addMenuItem("Exit", 'X', lobbyFrame::shutdown).build());
+      add(
+          new JMenuBuilder("File", KeyCode.F)
+              .addMenuItem("Exit", KeyCode.X, lobbyFrame::shutdown)
+              .build());
     } else {
       MacOsIntegration.setQuitHandler(lobbyFrame);
     }
 
     if (!loginResult.isAnonymousLogin()) {
       add(
-          new JMenuBuilder("Account", 'A')
+          new JMenuBuilder("Account", KeyCode.A)
               .addMenuItem(
                   "Update Email",
-                  'E',
+                  KeyCode.E,
                   () -> ChangeEmailPanel.promptUserForNewEmail(frame, playerToLobbyConnection))
               .addMenuItem(
                   "Update Password",
-                  'P',
+                  KeyCode.P,
                   () ->
                       ChangePasswordPanel.doPasswordChange(
                           frame,
@@ -63,10 +67,10 @@ public final class LobbyMenu extends JMenuBar {
               .apiKey(loginResult.getApiKey().getValue())
               .build();
       add(
-          new JMenuBuilder("Admin", 'M')
+          new JMenuBuilder("Admin", KeyCode.M)
               .addMenuItem(
                   "Open Toolbox",
-                  'T',
+                  KeyCode.T,
                   () ->
                       ToolBoxWindow.showWindow(
                           lobbyFrame,
@@ -79,32 +83,32 @@ public final class LobbyMenu extends JMenuBar {
     }
 
     add(
-        new JMenuBuilder("Settings", 'S')
+        new JMenuBuilder("Settings", KeyCode.S)
             .addMenuItem(SoundOptions.buildGlobalSoundSwitchMenuItem())
             .addMenuItem(SoundOptions.buildSoundOptionsMenuItem())
             .addMenuItem(
-                new JMenuItemCheckBoxBuilder("Show Chat Times", 'C')
+                new JMenuItemCheckBoxBuilder("Show Chat Times", KeyCode.C)
                     .bindSetting(ClientSetting.showChatTimeSettings)
                     .build())
             .build());
 
     add(
-        new JMenuBuilder("Help", 'H')
+        new JMenuBuilder("Help", KeyCode.H)
             .addMenuItem(
                 "User Guide",
-                'U',
+                KeyCode.U,
                 () ->
                     SwingComponents.newOpenUrlConfirmationDialog(
                         lobbyFrame, UrlConstants.USER_GUIDE))
             .addMenuItem(
                 "View Forums",
-                'F',
+                KeyCode.F,
                 () ->
                     SwingComponents.newOpenUrlConfirmationDialog(
                         lobbyFrame, UrlConstants.TRIPLEA_FORUM))
             .addMenuItem(
                 "Send Bug Report",
-                'B',
+                KeyCode.B,
                 () ->
                     SwingComponents.newOpenUrlConfirmationDialog(
                         lobbyFrame, UrlConstants.GITHUB_ISSUES))
