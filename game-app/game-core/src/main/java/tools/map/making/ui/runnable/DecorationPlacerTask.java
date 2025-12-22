@@ -44,6 +44,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.FileUtils;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.util.PointFileReaderWriter;
 import org.triplea.util.Triple;
 import org.triplea.util.Tuple;
@@ -267,7 +268,7 @@ public final class DecorationPlacerTask extends MapEditorRunnableTask {
       final JMenuBar menuBar = new JMenuBar();
       setJMenuBar(menuBar);
       final JMenu fileMenu = new JMenu("File");
-      fileMenu.setMnemonic(KeyEvent.VK_F);
+      fileMenu.setMnemonic(KeyCode.F.getInputEventCode());
       fileMenu.add(openItem);
       fileMenu.add(saveItem);
       fileMenu.add(keepGoingAction);
@@ -289,7 +290,7 @@ public final class DecorationPlacerTask extends MapEditorRunnableTask {
           SwingAction.of("Clear All Current Points.", e -> currentImagePoints.clear());
       clearAction.putValue(Action.SHORT_DESCRIPTION, "Delete all points.");
       final JMenu editMenu = new JMenu("Edit");
-      editMenu.setMnemonic(KeyEvent.VK_E);
+      editMenu.setMnemonic(KeyCode.E.getInputEventCode());
       editMenu.add(highlightAllModeItem);
       editMenu.add(showNamesModeItem);
       editMenu.addSeparator();

@@ -27,6 +27,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.util.PointFileReaderWriter;
 import tools.map.making.ui.MapEditorFrame;
 import tools.util.FileHelper;
@@ -148,7 +149,7 @@ public final class CenterPickerTask extends MapEditorRunnableTask {
       final JMenuBar menuBar = new JMenuBar();
       setJMenuBar(menuBar);
       final JMenu fileMenu = new JMenu("File");
-      fileMenu.setMnemonic(KeyEvent.VK_F);
+      fileMenu.setMnemonic(KeyCode.F.getInputEventCode());
       fileMenu.add(openItem);
       fileMenu.add(saveItem);
       fileMenu.addSeparator();
