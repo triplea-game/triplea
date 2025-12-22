@@ -47,6 +47,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.IntTextField;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.util.Tuple;
 import tools.util.FileSave;
 import tools.util.MapProperties;
@@ -125,7 +126,7 @@ public final class MapPropertiesMakerTask extends ToolRunnableTask {
       final JMenuBar menuBar = new JMenuBar();
       setJMenuBar(menuBar);
       final JMenu fileMenu = new JMenu("File");
-      fileMenu.setMnemonic(KeyEvent.VK_F);
+      fileMenu.setMnemonic(KeyCode.F.getInputEventCode());
       // fileMenu.add(openItem);
       fileMenu.add(saveItem);
       fileMenu.addSeparator();

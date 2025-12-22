@@ -7,7 +7,6 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugAction;
 import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugOption;
 import java.awt.event.ItemEvent;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -24,6 +23,7 @@ import javax.swing.JRadioButtonMenuItem;
 import org.triplea.ai.flowfield.FlowFieldAi;
 import org.triplea.ai.flowfield.odds.LanchesterDebugAction;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.key.binding.KeyCode;
 
 public final class DebugMenu extends JMenu {
   private static final long serialVersionUID = -4876915214715298132L;
@@ -34,7 +34,7 @@ public final class DebugMenu extends JMenu {
     super("Debug");
     this.frame = frame;
 
-    setMnemonic(KeyEvent.VK_D);
+    setMnemonic(KeyCode.D.getInputEventCode());
 
     List<JMenu> subMenus = new ArrayList<>();
     boolean addedProAiOption = false;

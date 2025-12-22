@@ -37,6 +37,7 @@ import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.util.PointFileReaderWriter;
 import org.triplea.util.Tuple;
 import tools.map.making.ui.MapEditorFrame;
@@ -222,7 +223,7 @@ public final class PlacementPickerTask extends MapEditorRunnableTask {
       final JMenuBar menuBar = new JMenuBar();
       setJMenuBar(menuBar);
       final JMenu fileMenu = new JMenu("File");
-      fileMenu.setMnemonic(KeyEvent.VK_F);
+      fileMenu.setMnemonic(KeyCode.F.getInputEventCode());
       fileMenu.add(openItem);
       fileMenu.add(saveItem);
       fileMenu.addSeparator();
@@ -261,7 +262,7 @@ public final class PlacementPickerTask extends MapEditorRunnableTask {
             repaint();
           });
       final JMenu editMenu = new JMenu("Edit");
-      editMenu.setMnemonic(KeyEvent.VK_E);
+      editMenu.setMnemonic(KeyCode.E.getInputEventCode());
       editMenu.add(showAllModeItem);
       editMenu.add(showOverflowModeItem);
       editMenu.add(showIncompleteModeItem);

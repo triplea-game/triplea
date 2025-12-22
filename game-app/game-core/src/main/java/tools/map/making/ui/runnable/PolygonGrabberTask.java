@@ -37,6 +37,7 @@ import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.FileChooser;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.util.PointFileReaderWriter;
 import tools.map.making.ui.MapEditorFrame;
 import tools.util.FileHelper;
@@ -301,7 +302,7 @@ public final class PolygonGrabberTask extends MapEditorRunnableTask {
       final JMenuBar menuBar = new JMenuBar();
       setJMenuBar(menuBar);
       final JMenu fileMenu = new JMenu("File");
-      fileMenu.setMnemonic(KeyEvent.VK_F);
+      fileMenu.setMnemonic(KeyCode.F.getInputEventCode());
       fileMenu.add(openItem);
       fileMenu.add(saveItem);
       final JMenuItem saveImageItem = new JMenuItem("Save Image...");
@@ -311,7 +312,7 @@ public final class PolygonGrabberTask extends MapEditorRunnableTask {
       fileMenu.add(exitItem);
       final JMenu editMenu = new JMenu("Edit");
       final JMenuItem autoItem = new JMenuItem(autoAction);
-      editMenu.setMnemonic(KeyEvent.VK_E);
+      editMenu.setMnemonic(KeyCode.E.getInputEventCode());
       editMenu.add(islandModeItem);
       editMenu.add(autoItem);
       final JMenuItem cleanImageItem = new JMenuItem("Clean Up Image...");

@@ -9,10 +9,10 @@ import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.net.IServerMessenger;
 import games.strategy.triplea.ui.PlayersPanel;
 import games.strategy.triplea.ui.TripleAFrame;
-import java.awt.event.KeyEvent;
 import java.util.Optional;
 import javax.swing.JMenu;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.key.binding.KeyCode;
 
 final class NetworkMenu extends JMenu {
   private static final long serialVersionUID = 2947249649948115833L;
@@ -26,7 +26,7 @@ final class NetworkMenu extends JMenu {
     this.frame = frame;
     game = frame.getGame();
 
-    setMnemonic(KeyEvent.VK_N);
+    setMnemonic(KeyCode.N.getInputEventCode());
 
     addBootPlayer();
     addBanPlayer();

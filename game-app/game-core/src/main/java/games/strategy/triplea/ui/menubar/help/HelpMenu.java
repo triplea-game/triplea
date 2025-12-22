@@ -4,12 +4,12 @@ import games.strategy.engine.data.GameData;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.ui.UiContext;
 import java.awt.Component;
-import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import lombok.experimental.UtilityClass;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.key.binding.KeyCode;
 
 @UtilityClass
 public final class HelpMenu {
@@ -18,17 +18,17 @@ public final class HelpMenu {
       final Component parentComponent, final UiContext uiContext, final GameData gameData) {
     final JMenu menu = new JMenu();
     menu.setText("Help");
-    menu.setMnemonic(KeyEvent.VK_H);
+    menu.setMnemonic(KeyCode.H.getInputEventCode());
 
-    menu.add(MoveHelpMenu.buildMenu()).setMnemonic(KeyEvent.VK_M);
+    menu.add(MoveHelpMenu.buildMenu()).setMnemonic(KeyCode.M.getInputEventCode());
 
     final var helpMenu = menu.add(UnitHelpMenu.buildMenu(gameData, uiContext));
-    helpMenu.setMnemonic(KeyEvent.VK_U);
+    helpMenu.setMnemonic(KeyCode.U.getInputEventCode());
 
     final String gameNotes = gameData.loadGameNotes(uiContext.getMapLocation());
     if (!gameNotes.isBlank()) {
       menu.add(GameNotesMenu.buildMenu(gameNotes, uiContext.getMapLocation()))
-          .setMnemonic(KeyEvent.VK_N);
+          .setMnemonic(KeyCode.N.getInputEventCode());
     }
 
     menu.addSeparator();
@@ -39,7 +39,7 @@ public final class HelpMenu {
                 e ->
                     SwingComponents.newOpenUrlConfirmationDialog(
                         parentComponent, UrlConstants.LICENSE_NOTICE)))
-        .setMnemonic(KeyEvent.VK_I);
+        .setMnemonic(KeyCode.I.getInputEventCode());
 
     menu.add(
             SwingAction.of(
@@ -47,19 +47,19 @@ public final class HelpMenu {
                 e ->
                     SwingComponents.newOpenUrlConfirmationDialog(
                         parentComponent, UrlConstants.GITHUB_ISSUES)))
-        .setMnemonic(KeyEvent.VK_B);
+        .setMnemonic(KeyCode.B.getInputEventCode());
 
     menu.addSeparator();
 
     final JMenuItem hostingLink = new JMenuItem("User Guide");
-    hostingLink.setMnemonic(KeyEvent.VK_H);
+    hostingLink.setMnemonic(KeyCode.H.getInputEventCode());
     hostingLink.addActionListener(
         e ->
             SwingComponents.newOpenUrlConfirmationDialog(parentComponent, UrlConstants.USER_GUIDE));
     menu.add(hostingLink);
 
     final JMenuItem warClub = new JMenuItem("TripleA Forum");
-    warClub.setMnemonic(KeyEvent.VK_W);
+    warClub.setMnemonic(KeyCode.W.getInputEventCode());
     warClub.addActionListener(
         e ->
             SwingComponents.newOpenUrlConfirmationDialog(
@@ -67,7 +67,7 @@ public final class HelpMenu {
     menu.add(warClub);
 
     final JMenuItem donateLink = new JMenuItem("Donate");
-    donateLink.setMnemonic(KeyEvent.VK_O);
+    donateLink.setMnemonic(KeyCode.O.getInputEventCode());
     donateLink.addActionListener(
         e ->
             SwingComponents.newOpenUrlConfirmationDialog(
