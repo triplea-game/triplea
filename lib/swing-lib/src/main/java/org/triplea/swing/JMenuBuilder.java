@@ -1,10 +1,12 @@
 package org.triplea.swing;
 
 import com.google.common.base.Preconditions;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import org.triplea.java.ArgChecker;
 import org.triplea.swing.key.binding.KeyCode;
 
@@ -21,7 +23,7 @@ import org.triplea.swing.key.binding.KeyCode;
 public class JMenuBuilder {
   private final String title;
   private final KeyCode mnemonic;
-  private final Collection<JMenuItem> menuItems = new ArrayList<>();
+  private final Collection<Component> menuComponents = new ArrayList<>();
 
   public JMenuBuilder(final String title, final KeyCode mnemonic) {
     ArgChecker.checkNotEmpty(title);
@@ -33,7 +35,7 @@ public class JMenuBuilder {
   public JMenu build() {
     final JMenu menu = new JMenu(title);
     menu.setMnemonic(mnemonic.getInputEventCode());
-    menuItems.forEach(menu::add);
+    menuComponents.forEach(menu::add);
     return menu;
   }
 
@@ -59,8 +61,13 @@ public class JMenuBuilder {
 
   /** Adds a menu item to the menu. */
   public JMenuBuilder addMenuItem(final JMenuItem menuItem) {
-    menuItems.add(menuItem);
+    menuComponents.add(menuItem);
     return this;
+  }
+
+  /** Adds a menu item to the menu. */
+  public JMenuBuilder addMenuItem(final JMenuItemBuilder menuItemBuilder) {
+    return addMenuItem(menuItemBuilder.build());
   }
 
   /**
@@ -81,6 +88,23 @@ public class JMenuBuilder {
     if (condition) {
       addMenuItem(title, mnemonic, menuItemAction);
     }
+    return this;
+  }
+
+  public JMenuBuilder addMenuItemIf(final boolean condition, final JMenuItem menuItem) {
+    if (condition) {
+      addMenuItem(menuItem);
+    }
+    return this;
+  }
+
+  public JMenuBuilder addMenuItemIf(
+      final boolean condition, final JMenuItemBuilder menuItemBuilder) {
+    return addMenuItemIf(condition, menuItemBuilder.build());
+  }
+
+  public JMenuBuilder addSeparator() {
+    menuComponents.add(new JPopupMenu.Separator());
     return this;
   }
 }
