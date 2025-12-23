@@ -3,7 +3,6 @@ package org.triplea.swing;
 import com.google.common.base.Preconditions;
 import java.awt.Toolkit;
 import java.util.Optional;
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
@@ -36,7 +35,7 @@ public class JMenuItemBuilder {
     this.mnemonic = mnemonic;
   }
 
-  public JMenuItemBuilder(final AbstractAction action, final KeyCode mnemonic) {
+  public JMenuItemBuilder(final Action action, final KeyCode mnemonic) {
     this(((String) action.getValue(Action.NAME)), mnemonic);
     actionListener(() -> action.actionPerformed(null));
   }
