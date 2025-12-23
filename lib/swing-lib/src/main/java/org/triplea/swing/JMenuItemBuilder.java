@@ -38,6 +38,7 @@ public class JMenuItemBuilder {
 
   public JMenuItemBuilder(final AbstractAction action, final KeyCode mnemonic) {
     this(((String) action.getValue(Action.NAME)), mnemonic);
+    actionListener(() -> action.actionPerformed(null));
   }
 
   /** Constructs a Swing JMenuItem using current builder values. */

@@ -312,16 +312,16 @@ final class ViewMenu extends JMenu {
         new JMenuItemCheckBoxBuilder(
                 "Show Map Details", Mnemonic.SHOW_MAP_DETAILS.getMnemonicCode())
             .selected(TileImageFactory.getShowReliefImages())
+            .actionListener(
+                isSelected -> {
+                  if (TileImageFactory.getShowReliefImages() == Boolean.TRUE.equals(isSelected)) {
+                    return;
+                  }
+                  TileImageFactory.setShowReliefImages(isSelected);
+                  ThreadRunner.runInNewThread(
+                      () -> frame.getMapPanel().updateCountries(gameMapTerritories));
+                })
             .build();
-    showMapDetails.addActionListener(
-        e -> {
-          if (TileImageFactory.getShowReliefImages() == showMapDetails.isSelected()) {
-            return;
-          }
-          TileImageFactory.setShowReliefImages(showMapDetails.isSelected());
-          ThreadRunner.runInNewThread(
-              () -> frame.getMapPanel().updateCountries(gameMapTerritories));
-        });
     add(showMapDetails);
   }
 
