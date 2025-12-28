@@ -6,8 +6,6 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,16 +16,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nullable;
 import javax.swing.Action;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.SwingAction;
-import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.util.PointFileReaderWriter;
 import tools.map.making.ui.MapEditorFrame;
 import tools.util.FileHelper;
@@ -79,11 +73,10 @@ public final class CenterPickerTask extends MapEditorRunnableTask {
 
   private static final class CenterPickerFrame extends MapEditorFrame {
     private static final long serialVersionUID = -5633998810385136625L;
-
-    // hash map for center points
-    private Map<String, Point> centers = new HashMap<>();
     // hash map for polygon points
     private final Map<String, List<Polygon>> polygons;
+    // hash map for center points
+    private Map<String, Point> centers = new HashMap<>();
 
     CenterPickerFrame(final Path mapFolder) throws IOException {
       super("Center Picker", mapFolder);
@@ -139,22 +132,10 @@ public final class CenterPickerTask extends MapEditorRunnableTask {
     }
 
     private void setupMenuBar(Action openAction, Action saveAction, Action exitAction) {
-      // set up the menu items
-      final JMenuItem openItem = new JMenuItem(openAction);
-      openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
-      final JMenuItem saveItem = new JMenuItem(saveAction);
-      saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
-      final JMenuItem exitItem = new JMenuItem(exitAction);
       // set up the menu bar
       final JMenuBar menuBar = new JMenuBar();
       setJMenuBar(menuBar);
-      final JMenu fileMenu = new JMenu("File");
-      fileMenu.setMnemonic(KeyCode.F.getInputEventCode());
-      fileMenu.add(openItem);
-      fileMenu.add(saveItem);
-      fileMenu.addSeparator();
-      fileMenu.add(exitItem);
-      menuBar.add(fileMenu);
+      menuBar.add(getFileMenu(openAction, saveAction, exitAction));
     }
 
     @Nullable
