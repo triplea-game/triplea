@@ -133,7 +133,8 @@ public final class MapPropertiesMakerTask extends ToolRunnableTask {
       // set up the menu bar
       final JMenuBar menuBar = new JMenuBar();
       setJMenuBar(menuBar);
-      menuBar.add(new JMenuBuilder("File", KeyCode.F)
+      menuBar.add(
+          new JMenuBuilder("File", KeyCode.F)
               .addMenuItem(new JMenuItemBuilder(saveAction, KeyCode.S))
               .addSeparator()
               .addMenuItem(new JMenuItemBuilder(exitAction, KeyCode.E))
