@@ -34,10 +34,12 @@ import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import org.triplea.sound.SoundOptions;
 import org.triplea.swing.IntTextField;
+import org.triplea.swing.JMenuBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
 import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
 import org.triplea.swing.jpanel.GridBagConstraintsFill;
+import org.triplea.swing.key.binding.KeyCode;
 
 final class GameMenu extends JMenu {
   private static final long serialVersionUID = -6273782490069588052L;
@@ -161,9 +163,6 @@ final class GameMenu extends JMenu {
   }
 
   private void addNotificationSettings() {
-    final JMenu notificationMenu = new JMenu();
-    notificationMenu.setMnemonic(KeyEvent.VK_U);
-    notificationMenu.setText("User Notifications");
     final JCheckBoxMenuItem showEndOfTurnReport = new JCheckBoxMenuItem("Show End of Turn Report");
     showEndOfTurnReport.setMnemonic(KeyEvent.VK_R);
     final JCheckBoxMenuItem showTriggeredNotifications =
@@ -175,6 +174,21 @@ final class GameMenu extends JMenu {
     final JCheckBoxMenuItem showTriggerChanceFailure =
         new JCheckBoxMenuItem("Show Trigger/Condition Chance Roll Failure");
     showTriggerChanceFailure.setMnemonic(KeyEvent.VK_F);
+    showEndOfTurnReport.addActionListener(
+        e -> uiContext.setShowEndOfTurnReport(showEndOfTurnReport.isSelected()));
+    showTriggeredNotifications.addActionListener(
+        e -> uiContext.setShowTriggeredNotifications(showTriggeredNotifications.isSelected()));
+    showTriggerChanceSuccessful.addActionListener(
+        e -> uiContext.setShowTriggerChanceSuccessful(showTriggerChanceSuccessful.isSelected()));
+    showTriggerChanceFailure.addActionListener(
+        e -> uiContext.setShowTriggerChanceFailure(showTriggerChanceFailure.isSelected()));
+    final JMenu notificationMenu =
+        new JMenuBuilder("User Notifications", KeyCode.U)
+            .addMenuItem(showEndOfTurnReport)
+            .addMenuItem(showTriggeredNotifications)
+            .addMenuItem(showTriggerChanceSuccessful)
+            .addMenuItem(showTriggerChanceFailure)
+            .build();
     notificationMenu.addMenuListener(
         new MenuListener() {
           @Override
@@ -191,18 +205,6 @@ final class GameMenu extends JMenu {
           @Override
           public void menuCanceled(final MenuEvent e) {}
         });
-    showEndOfTurnReport.addActionListener(
-        e -> uiContext.setShowEndOfTurnReport(showEndOfTurnReport.isSelected()));
-    showTriggeredNotifications.addActionListener(
-        e -> uiContext.setShowTriggeredNotifications(showTriggeredNotifications.isSelected()));
-    showTriggerChanceSuccessful.addActionListener(
-        e -> uiContext.setShowTriggerChanceSuccessful(showTriggerChanceSuccessful.isSelected()));
-    showTriggerChanceFailure.addActionListener(
-        e -> uiContext.setShowTriggerChanceFailure(showTriggerChanceFailure.isSelected()));
-    notificationMenu.add(showEndOfTurnReport);
-    notificationMenu.add(showTriggeredNotifications);
-    notificationMenu.add(showTriggerChanceSuccessful);
-    notificationMenu.add(showTriggerChanceFailure);
     add(notificationMenu);
   }
 
