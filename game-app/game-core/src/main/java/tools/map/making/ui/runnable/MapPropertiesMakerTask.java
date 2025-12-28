@@ -13,8 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.OutputStream;
@@ -33,18 +31,17 @@ import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.IntTextField;
+import org.triplea.swing.JMenuBuilder;
+import org.triplea.swing.JMenuItemBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.key.binding.KeyCode;
@@ -65,8 +62,8 @@ import tools.util.ToolArguments;
  */
 @Slf4j
 public final class MapPropertiesMakerTask extends ToolRunnableTask {
-  private Path mapFolderLocation = null;
   private final MapProperties mapProperties = new MapProperties();
+  private Path mapFolderLocation = null;
 
   MapPropertiesMakerTask() {}
 
@@ -96,6 +93,21 @@ public final class MapPropertiesMakerTask extends ToolRunnableTask {
     }
   }
 
+  private void handleSystemProperties() {
+    ToolArguments.ifMapFolder(mapFolderProperty -> mapFolderLocation = mapFolderProperty);
+    ToolArguments.ifUnitZoom(mapProperties::setUnitsScale);
+    ToolArguments.ifUnitWidth(
+        unitWidthProperty -> {
+          mapProperties.setUnitsWidth(unitWidthProperty);
+          mapProperties.setUnitsCounterOffsetWidth(unitWidthProperty / 4);
+        });
+    ToolArguments.ifUnitHeight(
+        unitHeightProperty -> {
+          mapProperties.setUnitsHeight(unitHeightProperty);
+          mapProperties.setUnitsCounterOffsetHeight(unitHeightProperty);
+        });
+  }
+
   private final class MapPropertiesMakerFrame extends JFrame {
     private static final long serialVersionUID = 8182821091131994702L;
 
@@ -118,20 +130,15 @@ public final class MapPropertiesMakerTask extends ToolRunnableTask {
                 dispose();
               });
       exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
-      // set up the menu items
-      final JMenuItem saveItem = new JMenuItem(saveAction);
-      saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
-      final JMenuItem exitItem = new JMenuItem(exitAction);
       // set up the menu bar
       final JMenuBar menuBar = new JMenuBar();
       setJMenuBar(menuBar);
-      final JMenu fileMenu = new JMenu("File");
-      fileMenu.setMnemonic(KeyCode.F.getInputEventCode());
-      // fileMenu.add(openItem);
-      fileMenu.add(saveItem);
-      fileMenu.addSeparator();
-      fileMenu.add(exitItem);
-      menuBar.add(fileMenu);
+      menuBar.add(
+          new JMenuBuilder("File", KeyCode.F)
+              .addMenuItem(new JMenuItemBuilder(saveAction, KeyCode.S))
+              .addSeparator()
+              .addMenuItem(new JMenuItemBuilder(exitAction, KeyCode.E))
+              .build());
     }
 
     private JPanel newPropertiesPanel() {
@@ -523,20 +530,5 @@ public final class MapPropertiesMakerTask extends ToolRunnableTask {
       }
       return outString.toString();
     }
-  }
-
-  private void handleSystemProperties() {
-    ToolArguments.ifMapFolder(mapFolderProperty -> mapFolderLocation = mapFolderProperty);
-    ToolArguments.ifUnitZoom(mapProperties::setUnitsScale);
-    ToolArguments.ifUnitWidth(
-        unitWidthProperty -> {
-          mapProperties.setUnitsWidth(unitWidthProperty);
-          mapProperties.setUnitsCounterOffsetWidth(unitWidthProperty / 4);
-        });
-    ToolArguments.ifUnitHeight(
-        unitHeightProperty -> {
-          mapProperties.setUnitsHeight(unitHeightProperty);
-          mapProperties.setUnitsCounterOffsetHeight(unitHeightProperty);
-        });
   }
 }
