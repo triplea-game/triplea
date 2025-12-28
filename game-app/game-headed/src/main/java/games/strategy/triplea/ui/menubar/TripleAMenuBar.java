@@ -6,8 +6,9 @@ import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.menubar.help.HelpMenu;
 import java.util.Optional;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import org.triplea.swing.JMenuBuilder;
+import org.triplea.swing.JMenuItemBuilder;
 import org.triplea.swing.key.binding.KeyCode;
 
 /** The game client menu bar. */
@@ -35,10 +36,8 @@ public final class TripleAMenuBar extends JMenuBar {
   }
 
   private void createLobbyMenu(final InGameLobbyWatcherWrapper watcher) {
-    final JMenu lobby = new JMenu("Lobby");
-    lobby.setMnemonic(KeyCode.L.getInputEventCode());
-    add(lobby);
-    lobby.add(new EditGameCommentAction(watcher, frame));
-    lobby.add(new RemoveGameFromLobbyAction(watcher));
+    add(new JMenuBuilder("Lobby", KeyCode.L)
+            .addMenuItem(new JMenuItemBuilder(new EditGameCommentAction(watcher, frame),KeyCode.E))
+            .addMenuItem(new JMenuItemBuilder(new RemoveGameFromLobbyAction(watcher), KeyCode.R)).build());
   }
 }
