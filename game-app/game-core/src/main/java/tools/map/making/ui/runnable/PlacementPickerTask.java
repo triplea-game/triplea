@@ -6,7 +6,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Polygon;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -29,10 +28,8 @@ import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
@@ -114,6 +111,20 @@ public final class PlacementPickerTask extends MapEditorRunnableTask {
   protected void runInternal() throws IOException {
     handleSystemProperties();
     super.runInternal();
+  }
+
+  private void handleSystemProperties() {
+    ToolArguments.ifUnitZoom(unitZoomProperty -> unitZoomPercent = unitZoomProperty);
+    ToolArguments.ifUnitWidth(
+        unitWidthProperty -> {
+          unitWidth = unitWidthProperty;
+          placeWidth = (int) (unitZoomPercent * unitWidth);
+        });
+    ToolArguments.ifUnitHeight(
+        unitHeightProperty -> {
+          unitHeight = unitHeightProperty;
+          placeHeight = (int) (unitZoomPercent * unitHeight);
+        });
   }
 
   private final class PlacementPickerFrame extends MapEditorFrame {
@@ -213,21 +224,6 @@ public final class PlacementPickerTask extends MapEditorRunnableTask {
     }
 
     private void setupMenuBar(Action openAction, Action saveAction, Action exitAction) {
-      // set up the menu items
-      final JMenuItem openItem = new JMenuItem(openAction);
-      openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
-      final JMenuItem saveItem = new JMenuItem(saveAction);
-      saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
-      final JMenuItem exitItem = new JMenuItem(exitAction);
-      // set up the menu bar
-      final JMenuBar menuBar = new JMenuBar();
-      setJMenuBar(menuBar);
-      final JMenu fileMenu = new JMenu("File");
-      fileMenu.setMnemonic(KeyCode.F.getInputEventCode());
-      fileMenu.add(openItem);
-      fileMenu.add(saveItem);
-      fileMenu.addSeparator();
-      fileMenu.add(exitItem);
       final JCheckBoxMenuItem showAllModeItem =
           new JCheckBoxMenuItem("Show All Placements Mode", false);
       showAllModeItem.addActionListener(
@@ -266,7 +262,10 @@ public final class PlacementPickerTask extends MapEditorRunnableTask {
       editMenu.add(showAllModeItem);
       editMenu.add(showOverflowModeItem);
       editMenu.add(showIncompleteModeItem);
-      menuBar.add(fileMenu);
+      // set up the menu bar
+      final JMenuBar menuBar = new JMenuBar();
+      setJMenuBar(menuBar);
+      menuBar.add(getFileMenu(openAction, saveAction, exitAction));
       menuBar.add(editMenu);
     }
 
@@ -568,19 +567,5 @@ public final class PlacementPickerTask extends MapEditorRunnableTask {
                   + "(e.g. 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5)");
       return (unitsScale != null) ? unitsScale : "1";
     }
-  }
-
-  private void handleSystemProperties() {
-    ToolArguments.ifUnitZoom(unitZoomProperty -> unitZoomPercent = unitZoomProperty);
-    ToolArguments.ifUnitWidth(
-        unitWidthProperty -> {
-          unitWidth = unitWidthProperty;
-          placeWidth = (int) (unitZoomPercent * unitWidth);
-        });
-    ToolArguments.ifUnitHeight(
-        unitHeightProperty -> {
-          unitHeight = unitHeightProperty;
-          placeHeight = (int) (unitZoomPercent * unitHeight);
-        });
   }
 }

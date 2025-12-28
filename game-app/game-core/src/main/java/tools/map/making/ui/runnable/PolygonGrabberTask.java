@@ -6,8 +6,6 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -28,14 +26,14 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.FileChooser;
+import org.triplea.swing.JMenuBuilder;
+import org.triplea.swing.JMenuItemBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.util.PointFileReaderWriter;
@@ -91,18 +89,15 @@ public final class PolygonGrabberTask extends MapEditorRunnableTask {
 
   private static final class PolygonGrabberFrame extends MapEditorFrame {
     private static final long serialVersionUID = 6381498094805120687L;
-
+    // maps territory String ->  polygon center of territory
+    private final Map<String, Point> centers;
+    private final Point testPoint = new Point();
     // holds the map image
     private boolean islandMode = false;
     // maps territory String -> List of polygons
     private Map<String, List<Polygon>> polygons = new HashMap<>();
-
     // the current set of polygons
     private List<Polygon> current;
-    // maps territory String ->  polygon center of territory
-    private final Map<String, Point> centers;
-
-    private final Point testPoint = new Point();
 
     /**
      * Asks user to specify a file with center points. If not program will exit. We set up the mouse
@@ -286,39 +281,32 @@ public final class PolygonGrabberTask extends MapEditorRunnableTask {
 
     private void setupMenuBar(
         Action openAction, Action saveAction, Action exitAction, Action autoAction) {
-      // set up the menu items
-      final JMenuItem openItem = new JMenuItem(openAction);
-      openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
-      final JMenuItem saveItem = new JMenuItem(saveAction);
-      saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
-      final JMenuItem exitItem = new JMenuItem(exitAction);
       final JCheckBoxMenuItem islandModeItem = new JCheckBoxMenuItem("Island Mode", false);
       islandModeItem.addActionListener(
           event -> {
             islandMode = islandModeItem.getState();
             repaint();
           });
+      final JMenu editMenu =
+          new JMenuBuilder("Edit", KeyCode.E)
+              .addMenuItem(islandModeItem)
+              .addMenuItem(new JMenuItemBuilder(autoAction, KeyCode.A))
+              .addSeparator()
+              .addMenuItem(
+                  new JMenuItemBuilder("Clean Up Image...", KeyCode.C)
+                      .actionListener(this::cleanImage))
+              .build();
       // set up the menu bar
       final JMenuBar menuBar = new JMenuBar();
       setJMenuBar(menuBar);
-      final JMenu fileMenu = new JMenu("File");
-      fileMenu.setMnemonic(KeyCode.F.getInputEventCode());
-      fileMenu.add(openItem);
-      fileMenu.add(saveItem);
-      final JMenuItem saveImageItem = new JMenuItem("Save Image...");
-      saveImageItem.addActionListener(e -> saveImage());
-      fileMenu.add(saveImageItem);
-      fileMenu.addSeparator();
-      fileMenu.add(exitItem);
-      final JMenu editMenu = new JMenu("Edit");
-      final JMenuItem autoItem = new JMenuItem(autoAction);
-      editMenu.setMnemonic(KeyCode.E.getInputEventCode());
-      editMenu.add(islandModeItem);
-      editMenu.add(autoItem);
-      final JMenuItem cleanImageItem = new JMenuItem("Clean Up Image...");
-      cleanImageItem.addActionListener(e -> cleanImage());
-      editMenu.add(cleanImageItem);
-      menuBar.add(fileMenu);
+      menuBar.add(
+          getFileMenu(
+              openAction,
+              saveAction,
+              exitAction,
+              new JMenuItemBuilder("Save Image...", KeyCode.I)
+                  .actionListener(this::saveImage)
+                  .build()));
       menuBar.add(editMenu);
     }
 

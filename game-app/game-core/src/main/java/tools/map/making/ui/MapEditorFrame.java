@@ -9,17 +9,23 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.nio.file.Path;
+import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
+import org.triplea.swing.JMenuBuilder;
+import org.triplea.swing.JMenuItemBuilder;
+import org.triplea.swing.key.binding.KeyCode;
 import tools.util.FileHelper;
 
 public abstract class MapEditorFrame extends JFrame {
-  protected Image image;
   protected final JPanel imagePanel;
   protected final Path mapFolderLocation;
+  protected Image image;
 
   /**
    * Map editor frame that sets up the mouse listeners and toolbars and loads the actual image of
@@ -46,6 +52,20 @@ public abstract class MapEditorFrame extends JFrame {
     contentPane.add(locationLabel, BorderLayout.SOUTH);
 
     initializeLayout();
+  }
+
+  protected static JMenu getFileMenu(
+      Action openAction, Action saveAction, Action exitAction, JMenuItem... additionalMenuItems) {
+    JMenuBuilder fileMenuBuilder =
+        new JMenuBuilder("File", KeyCode.F)
+            .addMenuItem(new JMenuItemBuilder(openAction, KeyCode.O))
+            .addMenuItem(new JMenuItemBuilder(saveAction, KeyCode.S));
+    for (JMenuItem additionalMenuItem : additionalMenuItems)
+      fileMenuBuilder.addMenuItem(additionalMenuItem);
+    return fileMenuBuilder
+        .addSeparator()
+        .addMenuItem(new JMenuItemBuilder(exitAction, KeyCode.E))
+        .build();
   }
 
   protected Image loadImage(Path mapFolder) {
