@@ -36,8 +36,10 @@ public final class TripleAMenuBar extends JMenuBar {
   }
 
   private void createLobbyMenu(final InGameLobbyWatcherWrapper watcher) {
-    add(new JMenuBuilder("Lobby", KeyCode.L)
-            .addMenuItem(new JMenuItemBuilder(new EditGameCommentAction(watcher, frame),KeyCode.E))
-            .addMenuItem(new JMenuItemBuilder(new RemoveGameFromLobbyAction(watcher), KeyCode.R)).build());
+    add(
+        new JMenuBuilder("Lobby", KeyCode.L)
+            .addMenuItem(new JMenuItemBuilder(new EditGameCommentAction(watcher, frame), KeyCode.E))
+            .addMenuItem(new JMenuItemBuilder(new RemoveGameFromLobbyAction(watcher), KeyCode.R))
+            .build());
   }
 }
