@@ -51,12 +51,8 @@ public class JMenuBuilder {
       final String title, final KeyCode mnemonic, final Runnable menuItemAction) {
     ArgChecker.checkNotEmpty(title);
     Preconditions.checkNotNull(menuItemAction);
-
-    final JMenuItem menuItem = new JMenuItem(title);
-    menuItem.setMnemonic(mnemonic.getInputEventCode());
-    menuItem.addActionListener(e -> menuItemAction.run());
-
-    return addMenuItem(menuItem);
+    return addMenuItem(
+        new JMenuItemBuilder(title, mnemonic).actionListener(menuItemAction).build());
   }
 
   /** Adds a menu item to the menu. */
