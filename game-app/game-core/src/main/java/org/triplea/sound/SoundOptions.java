@@ -7,6 +7,7 @@ import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import org.triplea.swing.JMenuItemBuilder;
 import org.triplea.swing.JMenuItemCheckBoxBuilder;
 import org.triplea.swing.key.binding.KeyCode;
 
@@ -16,8 +17,7 @@ public final class SoundOptions {
 
   /** Builds a "Sound Options" menu item. */
   public static JMenuItem buildSoundOptionsMenuItem() {
-    final JMenuItem soundOptions = new JMenuItem("Sound Options");
-    soundOptions.setMnemonic(KeyCode.S.getInputEventCode());
+    final JMenuItem soundOptions = new JMenuItemBuilder("Sound Options", KeyCode.S).build();
 
     if (ClipPlayer.hasAudio()) {
       soundOptions.addActionListener(e -> showSoundOptions(soundOptions));
@@ -25,7 +25,6 @@ public final class SoundOptions {
       soundOptions.setEnabled(false);
       soundOptions.setToolTipText("No audio device detected on your system");
     }
-
     return soundOptions;
   }
 
