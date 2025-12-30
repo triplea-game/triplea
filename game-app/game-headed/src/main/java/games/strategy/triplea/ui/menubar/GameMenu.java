@@ -35,6 +35,7 @@ import javax.swing.event.MenuListener;
 import org.triplea.sound.SoundOptions;
 import org.triplea.swing.IntTextField;
 import org.triplea.swing.JMenuBuilder;
+import org.triplea.swing.JMenuItemBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
 import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
@@ -226,80 +227,81 @@ final class GameMenu extends JMenu {
   }
 
   private void addRollDice() {
-    final JMenuItem rollDiceBox = new JMenuItem("Roll Dice");
-    rollDiceBox.setMnemonic(KeyEvent.VK_R);
-    rollDiceBox.addActionListener(
-        e -> {
-          final IntTextField numberOfText = new IntTextField(0, 100);
-          final IntTextField diceSidesText = new IntTextField(1, 200);
-          numberOfText.setText(String.valueOf(0));
-          diceSidesText.setText(String.valueOf(gameData.getDiceSides()));
-          final JPanel panel = new JPanel();
-          panel.setLayout(new GridBagLayout());
-          panel.add(
-              new JLabel("Number of Dice to Roll: "),
-              new GridBagConstraintsBuilder(0, 0)
-                  .anchor(GridBagConstraintsAnchor.WEST)
-                  .fill(GridBagConstraintsFill.BOTH)
-                  .insets(0, 0, 0, 20)
-                  .build());
-          panel.add(
-              new JLabel("Sides on the Dice: "),
-              new GridBagConstraintsBuilder(2, 0)
-                  .anchor(GridBagConstraintsAnchor.WEST)
-                  .fill(GridBagConstraintsFill.BOTH)
-                  .insets(0, 20, 0, 10)
-                  .build());
-          panel.add(
-              numberOfText,
-              new GridBagConstraintsBuilder(0, 1)
-                  .anchor(GridBagConstraintsAnchor.WEST)
-                  .fill(GridBagConstraintsFill.BOTH)
-                  .insets(0, 0, 0, 20)
-                  .build());
-          panel.add(
-              diceSidesText,
-              new GridBagConstraintsBuilder(2, 1)
-                  .anchor(GridBagConstraintsAnchor.WEST)
-                  .fill(GridBagConstraintsFill.BOTH)
-                  .insets(0, 20, 0, 10)
-                  .build());
-          JOptionPane.showOptionDialog(
-              JOptionPane.getFrameForComponent(this),
-              panel,
-              "Roll Dice",
-              JOptionPane.YES_NO_OPTION,
-              JOptionPane.INFORMATION_MESSAGE,
-              null,
-              new String[] {"OK"},
-              "OK");
-          try {
-            final int numberOfDice = Integer.parseInt(numberOfText.getText());
-            if (numberOfDice > 0) {
-              final int diceSides = Integer.parseInt(diceSidesText.getText());
-              final int[] dice =
-                  game.getRandomSource()
-                      .getRandom(diceSides, numberOfDice, "Rolling Dice, no effect on game.");
-              final JPanel panelDice = new JPanel();
-              final BoxLayout layout = new BoxLayout(panelDice, BoxLayout.Y_AXIS);
-              panelDice.setLayout(layout);
-              final JLabel label = new JLabel("Rolls (no effect on game): ");
-              panelDice.add(label);
-              final StringBuilder diceString = new StringBuilder();
-              for (int i = 0; i < dice.length; i++) {
-                diceString.append((dice[i] + 1)).append((i == dice.length - 1) ? "" : ", ");
-              }
-              final JTextField diceList = new JTextField(diceString.toString());
-              diceList.setEditable(false);
-              panelDice.add(diceList);
-              JOptionPane.showMessageDialog(
-                  frame, panelDice, "Dice Rolled", JOptionPane.INFORMATION_MESSAGE);
-            }
-          } catch (final Exception ex) {
-            // ignore malformed input
-          }
-        });
-    add(rollDiceBox);
+    add(
+        new JMenuItemBuilder("Roll Dice", KeyCode.R)
+            .actionListener(
+                () -> {
+                  final IntTextField numberOfText = new IntTextField(0, 100);
+                  final IntTextField diceSidesText = new IntTextField(1, 200);
+                  numberOfText.setText(String.valueOf(0));
+                  diceSidesText.setText(String.valueOf(gameData.getDiceSides()));
+                  final JPanel panel = new JPanel();
+                  panel.setLayout(new GridBagLayout());
+                  panel.add(
+                      new JLabel("Number of Dice to Roll: "),
+                      new GridBagConstraintsBuilder(0, 0)
+                          .anchor(GridBagConstraintsAnchor.WEST)
+                          .fill(GridBagConstraintsFill.BOTH)
+                          .insets(0, 0, 0, 20)
+                          .build());
+                  panel.add(
+                      new JLabel("Sides on the Dice: "),
+                      new GridBagConstraintsBuilder(2, 0)
+                          .anchor(GridBagConstraintsAnchor.WEST)
+                          .fill(GridBagConstraintsFill.BOTH)
+                          .insets(0, 20, 0, 10)
+                          .build());
+                  panel.add(
+                      numberOfText,
+                      new GridBagConstraintsBuilder(0, 1)
+                          .anchor(GridBagConstraintsAnchor.WEST)
+                          .fill(GridBagConstraintsFill.BOTH)
+                          .insets(0, 0, 0, 20)
+                          .build());
+                  panel.add(
+                      diceSidesText,
+                      new GridBagConstraintsBuilder(2, 1)
+                          .anchor(GridBagConstraintsAnchor.WEST)
+                          .fill(GridBagConstraintsFill.BOTH)
+                          .insets(0, 20, 0, 10)
+                          .build());
+                  JOptionPane.showOptionDialog(
+                      JOptionPane.getFrameForComponent(this),
+                      panel,
+                      "Roll Dice",
+                      JOptionPane.YES_NO_OPTION,
+                      JOptionPane.INFORMATION_MESSAGE,
+                      null,
+                      new String[] {"OK"},
+                      "OK");
+                  try {
+                    final int numberOfDice = Integer.parseInt(numberOfText.getText());
+                    if (numberOfDice > 0) {
+                      final int diceSides = Integer.parseInt(diceSidesText.getText());
+                      final int[] dice =
+                          game.getRandomSource()
+                              .getRandom(
+                                  diceSides, numberOfDice, "Rolling Dice, no effect on game.");
+                      final JPanel panelDice = new JPanel();
+                      final BoxLayout layout = new BoxLayout(panelDice, BoxLayout.Y_AXIS);
+                      panelDice.setLayout(layout);
+                      final JLabel label = new JLabel("Rolls (no effect on game): ");
+                      panelDice.add(label);
+                      final StringBuilder diceString = new StringBuilder();
+                      for (int i = 0; i < dice.length; i++) {
+                        diceString.append((dice[i] + 1)).append((i == dice.length - 1) ? "" : ", ");
+                      }
+                      final JTextField diceList = new JTextField(diceString.toString());
+                      diceList.setEditable(false);
+                      panelDice.add(diceList);
+                      JOptionPane.showMessageDialog(
+                          frame, panelDice, "Dice Rolled", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                  } catch (final Exception ex) {
+                    // ignore malformed input
+                  }
+                })
+            .build());
   }
 
   private void addStatistics() {
