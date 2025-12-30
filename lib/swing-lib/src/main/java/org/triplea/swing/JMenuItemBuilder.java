@@ -2,7 +2,7 @@ package org.triplea.swing;
 
 import com.google.common.base.Preconditions;
 import java.awt.Toolkit;
-import java.util.Optional;
+import javax.annotation.Nullable;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
@@ -27,6 +27,8 @@ public class JMenuItemBuilder {
   private Runnable actionListener;
   private Integer acceleratorKey;
   private boolean selected;
+  private boolean enabled = true;
+  @Nullable private String tooltip = null;
 
   public JMenuItemBuilder(final String title, final KeyCode mnemonic) {
     ArgChecker.checkNotEmpty(title);
@@ -63,16 +65,19 @@ public class JMenuItemBuilder {
   }
 
   private void buildImpl(final JMenuItem menuItem) {
-    Preconditions.checkNotNull(actionListener);
-
-    menuItem.setMnemonic(mnemonic.getInputEventCode());
-    menuItem.addActionListener(e -> actionListener.run());
-    Optional.ofNullable(acceleratorKey)
-        .ifPresent(
-            accelerator ->
-                menuItem.setAccelerator(
-                    KeyStroke.getKeyStroke(
-                        accelerator, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx())));
+    if (enabled) {
+      Preconditions.checkNotNull(actionListener);
+      menuItem.addActionListener(e -> actionListener.run());
+      menuItem.setMnemonic(mnemonic.getInputEventCode());
+      if (acceleratorKey != null) {
+        menuItem.setAccelerator(
+            KeyStroke.getKeyStroke(
+                acceleratorKey, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
+      }
+    } else {
+      menuItem.setEnabled(false);
+      menuItem.setToolTipText(tooltip);
+    }
   }
 
   /**
@@ -104,6 +109,15 @@ public class JMenuItemBuilder {
    */
   public JMenuItemBuilder selected(final boolean selected) {
     this.selected = selected;
+    return this;
+  }
+
+  /**
+   * @param tooltip Explaining tooltip why the menu item is disabled.
+   */
+  public JMenuItemBuilder disabled(final String tooltip) {
+    this.enabled = false;
+    this.tooltip = tooltip;
     return this;
   }
 }
