@@ -8,7 +8,7 @@ Gradle plugins used by the build are located in `/gradle/build-logic`.
 The TripleA build defines Gradle [Convention Plugins](https://docs.gradle.org/current/userguide/implementing_gradle_plugins_convention.html#header) to avoid cross-project configuration and duplication of configuration.
 There are currently the following types of projects:
 
-### `triplea-java-lib`
+### `triplea-java-library`
 
 This is a standard "vanilla" java library type.
 It applies the `java-library` plugin and applies universal configuration, code conventions, and sets up static analysis. 
