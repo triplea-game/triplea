@@ -1,7 +1,6 @@
 package games.strategy.triplea;
 
 import java.nio.file.Path;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
