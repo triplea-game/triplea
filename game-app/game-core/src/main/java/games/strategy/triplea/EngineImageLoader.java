@@ -15,8 +15,6 @@ import lombok.experimental.UtilityClass;
  */
 @UtilityClass
 public class EngineImageLoader {
-  public static final String ASSETS_FOLDER = "assets";
-
   public Image loadFrameIcon() {
     return loadImage("icons", "ta_icon.png");
   }
@@ -47,7 +45,7 @@ public class EngineImageLoader {
   }
 
   private Path createPathToImage(final String... path) {
-    Path imageFilePath = Path.of(ASSETS_FOLDER);
+    Path imageFilePath = Path.of(ResourceLoader.ASSETS_FOLDER);
     for (final String pathPart : path) {
       imageFilePath = imageFilePath.resolve(pathPart);
     }
