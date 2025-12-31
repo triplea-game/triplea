@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 final class HeadedEngineImageLoaderTest {
   @Test
   void canFindAssets() {
+    // TODO: Extract these image files and dirs to centralized constants
     var image = EngineImageLoader.loadImage("images", "up.gif"); // Arbitrary asset file
     Assertions.assertNotNull(image);
   }
