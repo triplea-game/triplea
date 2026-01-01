@@ -22,6 +22,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import org.triplea.ai.flowfield.FlowFieldAi;
 import org.triplea.ai.flowfield.odds.LanchesterDebugAction;
+import org.triplea.swing.JMenuBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.key.binding.KeyCode;
 
@@ -39,15 +40,15 @@ public final class DebugMenu extends JMenu {
     List<JMenu> subMenus = new ArrayList<>();
     boolean addedProAiOption = false;
     for (Player player : frame.getLocalPlayers().getLocalPlayers()) {
-      if (player instanceof FlowFieldAi) {
-        FlowFieldAi ai = (FlowFieldAi) player;
-        JMenu menu = new JMenu(ai.getName());
-        renderDebugOption(LanchesterDebugAction.buildDebugOptions(ai)).forEach(menu::add);
-        subMenus.add(menu);
+      if (player instanceof FlowFieldAi ai) {
+        JMenuBuilder menuBuilder = new JMenuBuilder(ai.getName(), KeyCode.A);
+        renderDebugOption(LanchesterDebugAction.buildDebugOptions(ai))
+            .forEach(menuBuilder::addMenuItem);
+        subMenus.add(menuBuilder.build());
       } else if (!addedProAiOption && player instanceof AbstractProAi) {
-        JMenu menu = new JMenu("Hard AI");
-        renderDebugOption(ProLogUi.buildDebugOptions(frame)).forEach(menu::add);
-        subMenus.add(menu);
+        JMenuBuilder menuBuilder = new JMenuBuilder("Hard AI", KeyCode.H);
+        renderDebugOption(ProLogUi.buildDebugOptions(frame)).forEach(menuBuilder::addMenuItem);
+        subMenus.add(menuBuilder.build());
         addedProAiOption = true;
       }
     }
@@ -60,9 +61,9 @@ public final class DebugMenu extends JMenu {
   }
 
   private JMenu renderSubMenuDebugOption(final AiPlayerDebugOption option) {
-    final JMenu subMenu = new JMenu(option.getTitle());
-    renderDebugOption(option.getSubOptions()).forEach(subMenu::add);
-    return subMenu;
+    final JMenuBuilder subMenuBuilder = new JMenuBuilder(option.getTitle(), KeyCode.S);
+    renderDebugOption(option.getSubOptions()).forEach(subMenuBuilder::addMenuItem);
+    return subMenuBuilder.build();
   }
 
   private AiPlayerDebugAction buildDebugAction() {
