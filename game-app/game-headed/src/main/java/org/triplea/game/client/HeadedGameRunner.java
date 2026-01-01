@@ -15,6 +15,7 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_START_PBF;
 import static games.strategy.triplea.Constants.PROPERTY_FALSE;
 import static games.strategy.triplea.Constants.PROPERTY_TRUE;
 
+import com.google.common.base.Throwables;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.auto.update.UpdateChecks;
 import games.strategy.engine.framework.GameDataFileUtils;
@@ -63,7 +64,11 @@ public final class HeadedGameRunner {
   private HeadedGameRunner() {}
 
   public static void initializeClientSettingAndLogging() {
-    Thread.setDefaultUncaughtExceptionHandler((t, e) -> log.error(e.getLocalizedMessage(), e));
+    Thread.setDefaultUncaughtExceptionHandler(
+        (t, e) -> {
+          log.error(e.getLocalizedMessage(), e);
+          log.error(Throwables.getStackTraceAsString(e));
+        });
     final Locale defaultLocale = Locale.getDefault();
     if (!I18nResourceBundle.getMapSupportedLocales().contains(defaultLocale)) {
       Locale.setDefault(Locale.US);
