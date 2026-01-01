@@ -135,8 +135,8 @@ save games from loading.
 ### Assets folder not found
 
 This is going to be typically because the working directory is not set properly. The 'run' gradle task
-for game-headed will download game assets into the 'root' directory. When the game starts it expects
-to find the assets folder in that root directory. If launching from IDE, chances are good the working
+for game-headed will download game assets into the 'root' project's `/build` subdirectory. When the game starts it expects
+to find the `assets` folder in that directory. If launching from IDE, chances are good the working
 directory is not set.
 
 Ideally the IDE launcher is checked in and pre-configured. This could be broken and needs to be 're-checked'
@@ -144,5 +144,5 @@ back in properly.
 
 In short:
 - check working directory is 'game-app/game-headed'
-- check that `./gradlew downloadAssets` has been run and there is an 'assets' folder in the working directory
-
+- check that `./gradlew downloadAssets` has been run and there is a 'build/assets' folder present
+(Gradle should handle this automatically as necessary)

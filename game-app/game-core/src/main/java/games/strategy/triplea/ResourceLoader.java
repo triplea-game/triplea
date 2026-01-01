@@ -36,7 +36,7 @@ import org.triplea.java.UrlStreams;
  */
 @Slf4j
 public class ResourceLoader implements Closeable {
-  public static final String ASSETS_FOLDER = "assets";
+  public static final String ASSETS_FOLDER = "build/assets";
 
   private final URLClassLoader loader;
 
@@ -72,9 +72,9 @@ public class ResourceLoader implements Closeable {
   }
 
   /**
-   * Loads an image from the 'assets' folder. Images downloaded as part of the build to be included
-   * with the game are downloaded to this location. Check the gradle build file download images task
-   * for more information on what will be contained in that folder.
+   * Loads an image from the {@link #ASSETS_FOLDER} folder. Images downloaded as part of the build
+   * to be included with the game are downloaded to this location. Check the gradle build file
+   * download images task for more information on what will be contained in that folder.
    */
   public static Image loadImageAsset(Path pathRelativeToAssetsFolder) {
     Path imagePath = Path.of(ASSETS_FOLDER).resolve(pathRelativeToAssetsFolder);
