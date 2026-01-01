@@ -3,6 +3,7 @@ package org.triplea.sound;
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.triplea.settings.ClientSetting;
 import java.util.List;
+import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
