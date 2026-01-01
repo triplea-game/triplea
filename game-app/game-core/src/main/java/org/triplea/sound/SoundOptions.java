@@ -3,10 +3,11 @@ package org.triplea.sound;
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.triplea.settings.ClientSetting;
 import java.util.List;
-import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import org.triplea.swing.JMenuItemBuilder;
 import org.triplea.swing.JMenuItemCheckBoxBuilder;
 import org.triplea.swing.key.binding.KeyCode;
 
@@ -16,20 +17,18 @@ public final class SoundOptions {
 
   /** Builds a "Sound Options" menu item. */
   public static JMenuItem buildSoundOptionsMenuItem() {
-    final JMenuItem soundOptions = new JMenuItem("Sound Options");
-    soundOptions.setMnemonic(KeyCode.S.getInputEventCode());
+    final JMenuItemBuilder itemBuilder = new JMenuItemBuilder("Sound Options", KeyCode.S);
 
     if (ClipPlayer.hasAudio()) {
-      soundOptions.addActionListener(e -> showSoundOptions(soundOptions));
+      itemBuilder.actionListener(SoundOptions::showSoundOptions);
     } else {
-      soundOptions.setEnabled(false);
-      soundOptions.setToolTipText("No audio device detected on your system");
+      itemBuilder.disabled("No audio device detected on your system");
     }
 
-    return soundOptions;
+    return itemBuilder.build();
   }
 
-  private static void showSoundOptions(final JComponent parent) {
+  private static void showSoundOptions() {
     final String ok = "OK";
     final String cancel = "Cancel";
     final String selectAll = "All";
@@ -46,7 +45,9 @@ public final class SoundOptions {
             JOptionPane.DEFAULT_OPTION,
             null,
             new Object[] {ok, selectAll, selectNone, cancel});
-    pane.createDialog(parent, "Sound Options").setVisible(true);
+    // use default frame to avoid button action dependency to itself
+    JFrame defaultFrame = null;
+    pane.createDialog(defaultFrame, "Sound Options").setVisible(true);
     final Object pressedButton = pane.getValue();
     if (pressedButton == null || pressedButton.equals(cancel)) {
       return;
