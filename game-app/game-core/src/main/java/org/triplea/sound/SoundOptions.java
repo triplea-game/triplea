@@ -45,7 +45,8 @@ public final class SoundOptions {
             null,
             new Object[] {ok, selectAll, selectNone, cancel});
     // use default frame to avoid button action dependency to itself
-    pane.createDialog(null, "Sound Options").setVisible(true);
+    JFrame defaultFrame = null;
+    pane.createDialog(defaultFrame, "Sound Options").setVisible(true);
     final Object pressedButton = pane.getValue();
     if (pressedButton == null || pressedButton.equals(cancel)) {
       return;
