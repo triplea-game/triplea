@@ -73,7 +73,7 @@ public class AllianceTracker implements Serializable {
    */
   public Set<GamePlayer> getPlayersInAlliance(final String allianceName) {
     return alliances.entries().stream()
-        .filter(e -> e.getValue().equals(allianceName))
+        .filter(e -> e.getValue() != null && e.getValue().equals(allianceName))
         .map(Map.Entry::getKey)
         .collect(Collectors.toSet());
   }
