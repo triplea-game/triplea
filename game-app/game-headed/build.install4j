@@ -6,12 +6,10 @@
   </application>
   <files>
     <mountPoints>
-      <mountPoint id="28" location="assets" />
       <mountPoint id="23" location="bin" />
       <mountPoint id="22" />
     </mountPoints>
     <entries>
-      <dirEntry mountPoint="28" file="build/assets" />
       <dirEntry mountPoint="23" file="build/libs" />
       <fileEntry mountPoint="22" file=".triplea-root" />
     </entries>

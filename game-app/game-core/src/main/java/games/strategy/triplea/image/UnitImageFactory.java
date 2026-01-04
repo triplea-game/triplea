@@ -4,6 +4,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.EngineImageLoader;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -270,7 +271,7 @@ public class UnitImageFactory {
   }
 
   private Image createNoImageImage(ImageKey imageKey) {
-    BufferedImage image = resourceLoader.getImageOrThrow(FILE_NAME_BASE + "missing_unit_image.png");
+    BufferedImage image = EngineImageLoader.loadImage(FILE_NAME_BASE, "missing_unit_image.png");
     Color playerColor = mapData.getPlayerColor(imageKey.getPlayer().getName());
     ImageTransformer.colorize(playerColor, image);
 
@@ -290,7 +291,12 @@ public class UnitImageFactory {
     @NonNls
     final String fileName = FILE_NAME_BASE + gamePlayer.getName() + "/" + baseImageName + ".png";
     @NonNls final String fileName2 = FILE_NAME_BASE + baseImageName + ".png";
-    final URL url = resourceLoader.getResource(fileName, fileName2);
+    URL url = resourceLoader.getResource(fileName, fileName2);
+    if (null == url) {
+      @NonNls final String assetsfileName = ResourceLoader.ASSETS_FOLDER + "/" + fileName;
+      @NonNls final String assetsfileName2 = ResourceLoader.ASSETS_FOLDER + "/" + fileName2;
+      url = resourceLoader.getResource(assetsfileName, assetsfileName2);
+    }
     return Optional.ofNullable(url);
   }
 

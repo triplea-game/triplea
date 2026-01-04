@@ -1,17 +1,19 @@
 package games.strategy.triplea;
 
-import games.strategy.engine.ClientFileSystemHelper;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.InputStream;
 import javax.imageio.ImageIO;
 import lombok.experimental.UtilityClass;
 
 /**
- * Use this to load images from the game engine 'assets' folder. Do *not* use this to read images
- * from maps.
+ * Utility class that can load image assets.
+ *
+ * <p>This class can *ONLY* load images available as part of the game jar in the {@code assets}
+ * directory, not custom images available as part of downloaded game maps. Do *not* use this to read
+ * images from maps.
  */
 @UtilityClass
 public class EngineImageLoader {
@@ -20,35 +22,45 @@ public class EngineImageLoader {
   }
 
   /**
-   * Reads an image from the assets folder.
+   * Loads an image from the assets folder on the classpath (defined by {@link
+   * ResourceLoader#ASSETS_FOLDER}) using {@link Class#getResourceAsStream(String)}.
    *
-   * @param path Path from assets folder to image, eg: loadImage("folder-in-assets", "image.png");
+   * @param pathComponentsRelativeToAssets segments of the path from the assets folder to an image,
+   *     eg: loadImage("folder-in-assets", "image.png");
+   * @return the loaded image
    */
-  public BufferedImage loadImage(final String... path) {
-    Path imageFilePath = createPathToImage(path);
-
-    if (!Files.exists(imageFilePath)) {
-      imageFilePath = ClientFileSystemHelper.getRootFolder().resolve(createPathToImage(path));
-    }
-
-    if (!Files.exists(imageFilePath)) {
+  public BufferedImage loadImage(final String... pathComponentsRelativeToAssets) {
+    String imageFilePath = createPathToImage(pathComponentsRelativeToAssets);
+    try (InputStream is =
+        EngineImageLoader.class.getClassLoader().getResourceAsStream(imageFilePath)) {
+      if (is == null) {
+        throw new IllegalStateException(
+            "Error loading image at: " + createPathToImage(pathComponentsRelativeToAssets));
+      } else {
+        return ImageIO.read(is);
+      }
+    } catch (IOException e) {
       throw new IllegalStateException(
-          "Error loading image, image does not exist at: " + imageFilePath.toAbsolutePath());
-    }
-
-    try {
-      return ImageIO.read(imageFilePath.toFile());
-    } catch (final IOException e) {
-      throw new IllegalStateException(
-          "Error loading image at: " + imageFilePath.toAbsolutePath() + ", " + e.getMessage(), e);
+          "Error loading image at: " + imageFilePath + ", " + e.getMessage(), e);
     }
   }
 
-  private Path createPathToImage(final String... path) {
-    Path imageFilePath = Path.of(ResourceLoader.ASSETS_FOLDER);
-    for (final String pathPart : path) {
-      imageFilePath = imageFilePath.resolve(pathPart);
-    }
-    return imageFilePath;
+  /**
+   * Assembles the full path to an asset from the root of the classpath using the given path
+   * components.
+   *
+   * <p>Note that classpath resources are always loaded using '/', regardless of the file platform
+   * separator, so ensure that's the separator we're using.
+   *
+   * @param pathComponentsRelativeToAssets segments of the path from the assets folder to an image,
+   *     eg: loadImage("folder-in-assets", "image.png");
+   * @return the full path from the
+   */
+  private String createPathToImage(final String... pathComponentsRelativeToAssets) {
+    String path =
+        ResourceLoader.ASSETS_FOLDER
+            + File.separator
+            + String.join(File.separator, pathComponentsRelativeToAssets);
+    return path.replace(File.separatorChar, '/');
   }
 }

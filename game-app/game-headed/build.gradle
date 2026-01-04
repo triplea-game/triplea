@@ -52,16 +52,10 @@ def unzipAssets = tasks.register("unzipAssets", Copy) {
     into project.layout.buildDirectory.dir("assets")
 }
 
-test {
-    dependsOn unzipAssets
-}
-
-run {
-    dependsOn unzipAssets
-}
-
-runShadow {
-    dependsOn unzipAssets
+tasks.named("processResources", ProcessResources) {
+    from(unzipAssets) {
+        into("assets")
+    }
 }
 
 def platformInstallers = tasks.register("platformInstallers", Install4jTask) {
