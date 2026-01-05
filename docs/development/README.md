@@ -136,13 +136,13 @@ save games from loading.
 
 This can be caused by missing resource files, such as images or icons.
 
-The `run` Gradle task for `game-headed` will download and unzip game assets into the `game-headed` project's `/build/assests` directory.
-This directory will then be processed as a main resource, by the `:game-app:game-headed:processResources` task, in order to be packaged in the resulting project jar.
-When the game starts it expects to find the `assets` folder at the root of the classpath, so that load files in it using `getResourceAsStream()`.
+The Gradle task `run` for `game-headed` will download and unzip game assets into the `game-headed` project's directory `/build/assests`.
+This directory will then be processed as a main resource, by the task `:game-app:game-headed:processResources`, in order to be packaged in the resulting project jar.
+When the game starts, it expects to find the folder `assets` at the root of the classpath, so to load files use the class loader's method `getResourceAsStream()`.
 Since this is a resource file packaged in the library jar produced by this project, the working dir should **not** influence how assets are loaded.
 
 In short:
-- Check that `./gradlew downloadAssets` has been run and there is a 'build/assets' folder present; and that the
+- Check that `./gradlew downloadAssets` has been run and there is a folder `build/assets` present; and that the
 contents have been copied to `build/resources/main/assets` (Gradle should handle this automatically as necessary).
 
 ### How do I view log files after the .exe crashes?
