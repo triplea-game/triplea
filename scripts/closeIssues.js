@@ -59,7 +59,7 @@ async function closeIssues() {
             const checkPrefix2_5 = (issue) => issue.title.startsWith('2.5.');
             if (await checkAndLabelIssue(issue, '2.5', checkPrefix2_5)) {
                 closeNeeded = true;
-                closeMessage = `Closing as issue from version 2.5 are assumed to be fixed in newest release.`
+                closeMessage = `Closing as issues from version 2.5 are assumed to be fixed in newest release.`
             } 
                 
             if (!closeNeeded) {
