@@ -9,4 +9,8 @@ public class ThreadRunner {
   public static void runInNewThread(final Runnable runnable) {
     new Thread(runnable).start();
   }
+
+  public static void runInNewThread(final Runnable runnable, final String name) {
+    new Thread(runnable, name).start();
+  }
 }
