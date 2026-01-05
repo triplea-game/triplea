@@ -20,7 +20,7 @@ public final class TripleAMenuBar extends JMenuBar {
   public TripleAMenuBar(final TripleAFrame frame) {
     this.frame = frame;
 
-    FileMenu.addTo(frame);
+    add(FileMenu.get(frame));
     add(new ViewMenu(frame));
     add(new GameMenu(frame));
     add(new ExportMenu(frame));
