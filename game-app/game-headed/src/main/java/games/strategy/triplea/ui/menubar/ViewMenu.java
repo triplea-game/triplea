@@ -40,6 +40,7 @@ import javax.swing.event.MenuListener;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.ThreadRunner;
 import org.triplea.swing.JMenuBuilder;
@@ -47,6 +48,7 @@ import org.triplea.swing.JMenuItemBuilder;
 import org.triplea.swing.JMenuItemCheckBoxBuilder;
 import org.triplea.swing.key.binding.KeyCode;
 
+@UtilityClass
 @Slf4j
 final class ViewMenu {
   private static JCheckBoxMenuItem showMapDetails;
