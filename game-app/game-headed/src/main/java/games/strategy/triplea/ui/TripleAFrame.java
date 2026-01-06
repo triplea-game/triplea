@@ -906,6 +906,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                 .result
                 .ifPresent(
                     display -> {
+                      SwingUtilities.invokeLater(this.mapPanel::resetMap);
                       EventThreadJOptionPane.showOptionDialog(
                           TripleAFrame.this,
                           display,
@@ -916,7 +917,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                           new String[] {"OK"},
                           "OK",
                           getUiContext().getCountDownLatchHandler());
-                      this.mapPanel.resetMap();
                     }));
   }
 
