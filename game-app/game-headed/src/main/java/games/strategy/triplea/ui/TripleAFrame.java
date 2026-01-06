@@ -905,17 +905,19 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action))
                 .result
                 .ifPresent(
-                    display ->
-                        EventThreadJOptionPane.showOptionDialog(
-                            TripleAFrame.this,
-                            display,
-                            "Tech roll",
-                            JOptionPane.OK_OPTION,
-                            JOptionPane.PLAIN_MESSAGE,
-                            null,
-                            new String[] {"OK"},
-                            "OK",
-                            getUiContext().getCountDownLatchHandler())));
+                    display -> {
+                      SwingUtilities.invokeLater(this.mapPanel::resetMap);
+                      EventThreadJOptionPane.showOptionDialog(
+                          TripleAFrame.this,
+                          display,
+                          "Tech roll",
+                          JOptionPane.OK_OPTION,
+                          JOptionPane.PLAIN_MESSAGE,
+                          null,
+                          new String[] {"OK"},
+                          "OK",
+                          getUiContext().getCountDownLatchHandler());
+                    }));
   }
 
   /**
