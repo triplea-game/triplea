@@ -37,11 +37,11 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -49,23 +49,22 @@ import javax.swing.tree.TreeNode;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.map.data.elements.Game;
 import org.triplea.map.xml.writer.GameXmlWriter;
 import org.triplea.swing.FileChooser;
+import org.triplea.swing.JMenuBuilder;
 import org.triplea.swing.JMenuItemBuilder;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.util.FileNameUtils;
 
+@UtilityClass
 @Slf4j
-final class ExportMenu extends JMenu {
-  private static final long serialVersionUID = 8416990293444575737L;
+final class ExportMenu {
 
-  private final TripleAFrame frame;
-  private final GameData gameData;
-  private final UiContext uiContext;
-  private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy_MM_dd");
+  private static final String DATE_TIME_FORMAT_FILE_NAME = "yyyy_MM_dd";
 
   @AllArgsConstructor(access = AccessLevel.PRIVATE)
   @Getter
@@ -85,34 +84,41 @@ final class ExportMenu extends JMenu {
     }
   }
 
-  ExportMenu(final TripleAFrame frame) {
-    super("Export");
-
-    this.frame = frame;
-    gameData = frame.getGame().getData();
-    uiContext = frame.getUiContext();
-
-    setMnemonic(Mnemonic.EXPORT_MENU.getValue());
-
-    add(createExportXmlMenu());
-    add(createExportStatsMenu());
-    add(createExportStatsFullMenu());
-    add(createExportSetupChartsMenu());
-    add(createExportUnitStatsMenu());
-    add(createSaveScreenshotMenu());
-  }
-
-  // TODO: create a second menu option for parsing current attachments
-  private JMenuItem createExportXmlMenu() {
-    return new JMenuItemBuilder(
-            "Export game.xml File (Beta)", Mnemonic.EXPORT_XML.getMnemonicCode())
-        .actionListener(this::exportXmlFile)
+  public static JMenu get(final TripleAFrame frame) {
+    return new JMenuBuilder("Export", Mnemonic.EXPORT_MENU.getMnemonicCode())
+        .addMenuItem(
+            // TODO: create a second menu option for parsing current attachments
+            new JMenuItemBuilder(
+                    "Export game.xml File (Beta)", Mnemonic.EXPORT_XML.getMnemonicCode())
+                .actionListener(() -> exportXmlFile(frame)))
+        .addMenuItem(
+            new JMenuItemBuilder(
+                    "Export Short Game Stats", Mnemonic.EXPORT_STATS_SHORT.getMnemonicCode())
+                .actionListener(() -> createAndSaveStats(frame, false)))
+        .addMenuItem(
+            new JMenuItemBuilder(
+                    "Export Full Game Stats", Mnemonic.EXPORT_STATS_FULL.getMnemonicCode())
+                .actionListener(() -> createAndSaveStats(frame, true)))
+        .addMenuItem(
+            new JMenuItemBuilder(
+                    "Export Setup Charts", Mnemonic.EXPORT_CHARTS_SETUP.getMnemonicCode())
+                .actionListener(() -> exportSetupCharts(frame)))
+        .addMenuItem(
+            new JMenuItemBuilder(
+                    "Export Unit Charts", Mnemonic.EXPORT_CHARTS_UNIT.getMnemonicCode())
+                .actionListener(() -> exportUnitCharts(frame)))
+        .addMenuItem(
+            new JMenuItemBuilder(
+                    "Export Gameboard Picture", Mnemonic.EXPORT_PICTURE.getMnemonicCode())
+                .actionListener(() -> saveScreenshot(frame)))
         .build();
   }
 
-  private void exportXmlFile() {
+  private static void exportXmlFile(final TripleAFrame frame) {
+    final GameData gameData = frame.getGame().getData();
     // The existing XML file is needed for attachment ordering data.
-    final Path gameXmlPath = gameData.getGameXmlPath(uiContext.getMapLocation()).orElse(null);
+    final Path gameXmlPath =
+        gameData.getGameXmlPath(frame.getUiContext().getMapLocation()).orElse(null);
     if (gameXmlPath == null) {
       JOptionPane.showMessageDialog(frame, "Error: Existing XML file not found.");
       return;
@@ -121,7 +127,7 @@ final class ExportMenu extends JMenu {
         FileNameUtils.removeIllegalCharacters(
                 String.format(
                     "xml_%s_%s_round_%d",
-                    dateTimeFormatter.format(LocalDateTime.now(ZoneId.systemDefault())),
+                    getCurrentDateTimeForFileName(),
                     gameData.getGameName(),
                     gameData.getCurrentRound()))
             + ".xml";
@@ -136,15 +142,15 @@ final class ExportMenu extends JMenu {
             });
   }
 
-  private JMenuItem createSaveScreenshotMenu() {
-    return new JMenuItemBuilder(
-            "Export Gameboard Picture", Mnemonic.EXPORT_PICTURE.getMnemonicCode())
-        .actionListener(this::saveScreenshot)
-        .build();
+  @Nonnull
+  private static String getCurrentDateTimeForFileName() {
+    return DateTimeFormatter.ofPattern(DATE_TIME_FORMAT_FILE_NAME)
+        .format(LocalDateTime.now(ZoneId.systemDefault()));
   }
 
-  private void saveScreenshot() {
+  private static void saveScreenshot(final TripleAFrame frame) {
     // get current history node. if we are in history view, get the selected node.
+    final GameData gameData = frame.getGame().getData();
     final HistoryPanel historyPanel = frame.getHistoryPanel();
     final HistoryNode curNode;
     if (historyPanel == null) {
@@ -155,21 +161,9 @@ final class ExportMenu extends JMenu {
     ScreenshotExporter.exportScreenshot(frame, gameData, curNode);
   }
 
-  private JMenuItem createExportStatsFullMenu() {
-    return new JMenuItemBuilder(
-            "Export Full Game Stats", Mnemonic.EXPORT_STATS_FULL.getMnemonicCode())
-        .actionListener(() -> createAndSaveStats(true))
-        .build();
-  }
-
-  private JMenuItem createExportStatsMenu() {
-    return new JMenuItemBuilder(
-            "Export Short Game Stats", Mnemonic.EXPORT_STATS_SHORT.getMnemonicCode())
-        .actionListener(() -> createAndSaveStats(false))
-        .build();
-  }
-
-  private void createAndSaveStats(final boolean showPhaseStats) {
+  private static void createAndSaveStats(final TripleAFrame frame, final boolean showPhaseStats) {
+    final GameData gameData = frame.getGame().getData();
+    final UiContext uiContext = frame.getUiContext();
     final ExtendedStats statPanel = new ExtendedStats(gameData, uiContext);
     final JFileChooser chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -179,7 +173,7 @@ final class ExportMenu extends JMenu {
         FileNameUtils.removeIllegalCharacters(
                 String.format(
                     "stats_%s_%s_round_%s_%s",
-                    dateTimeFormatter.format(LocalDateTime.now(ZoneId.systemDefault())),
+                    getCurrentDateTimeForFileName(),
                     gameData.getGameName(),
                     currentRound,
                     showPhaseStats ? "full" : "short"))
@@ -310,10 +304,9 @@ final class ExportMenu extends JMenu {
         if (element instanceof Round) {
           round++;
         }
-        if (!(element instanceof Step)) {
+        if (!(element instanceof Step step)) {
           continue;
         }
-        final Step step = (Step) element;
         final Optional<GamePlayer> optionalStepPlayer = step.getPlayerId();
         if (optionalStepPlayer.isEmpty() || optionalStepPlayer.get().isNull()) {
           continue;
@@ -326,35 +319,8 @@ final class ExportMenu extends JMenu {
         optionalCurrentPlayer = step.getPlayerId();
         clone.getHistory().gotoNode(element);
         final String playerName =
-            optionalCurrentPlayer.isEmpty() ? "" : optionalCurrentPlayer.get().getName() + ": ";
-        String stepName = step.getStepName();
-        // copied directly from TripleAPlayer, will probably have to be updated in the future if
-        // more delegates are made
-        if (stepName.endsWith("Bid")) {
-          stepName = "Bid";
-        } else if (stepName.endsWith("Tech")) {
-          stepName = "Tech";
-        } else if (stepName.endsWith("TechActivation")) {
-          stepName = "TechActivation";
-        } else if (stepName.endsWith("Purchase")) {
-          stepName = "Purchase";
-        } else if (stepName.endsWith("NonCombatMove")) {
-          stepName = "NonCombatMove";
-        } else if (stepName.endsWith("Move")) {
-          stepName = "Move";
-        } else if (stepName.endsWith("Battle")) {
-          stepName = "Battle";
-        } else if (stepName.endsWith("BidPlace")) {
-          stepName = "BidPlace";
-        } else if (stepName.endsWith("Place")) {
-          stepName = "Place";
-        } else if (stepName.endsWith("Politics")) {
-          stepName = "Politics";
-        } else if (stepName.endsWith("EndTurn")) {
-          stepName = "EndTurn";
-        } else {
-          stepName = "";
-        }
+            optionalCurrentPlayer.map(gamePlayer -> gamePlayer.getName() + ": ").orElse("");
+        String stepName = getStepName(step);
         writer.print(round);
         writer.append(',').append(playerName).append(',').append(stepName).append(',');
         for (final IStat stat : stats) {
@@ -380,13 +346,41 @@ final class ExportMenu extends JMenu {
     }
   }
 
-  private JMenuItem createExportUnitStatsMenu() {
-    return new JMenuItemBuilder("Export Unit Charts", Mnemonic.EXPORT_CHARTS_UNIT.getMnemonicCode())
-        .actionListener(this::exportUnitCharts)
-        .build();
+  @Nonnull
+  private static String getStepName(Step step) {
+    String stepName = step.getStepName();
+    // copied directly from TripleAPlayer, will probably have to be updated in the future if
+    // more delegates are made
+    if (stepName.endsWith("Bid")) {
+      stepName = "Bid";
+    } else if (stepName.endsWith("Tech")) {
+      stepName = "Tech";
+    } else if (stepName.endsWith("TechActivation")) {
+      stepName = "TechActivation";
+    } else if (stepName.endsWith("Purchase")) {
+      stepName = "Purchase";
+    } else if (stepName.endsWith("NonCombatMove")) {
+      stepName = "NonCombatMove";
+    } else if (stepName.endsWith("Move")) {
+      stepName = "Move";
+    } else if (stepName.endsWith("Battle")) {
+      stepName = "Battle";
+    } else if (stepName.endsWith("BidPlace")) {
+      stepName = "BidPlace";
+    } else if (stepName.endsWith("Place")) {
+      stepName = "Place";
+    } else if (stepName.endsWith("Politics")) {
+      stepName = "Politics";
+    } else if (stepName.endsWith("EndTurn")) {
+      stepName = "EndTurn";
+    } else {
+      stepName = "";
+    }
+    return stepName;
   }
 
-  private void exportUnitCharts() {
+  private static void exportUnitCharts(final TripleAFrame frame) {
+    final GameData gameData = frame.getGame().getData();
     final String defaultFileName =
         FileNameUtils.removeIllegalCharacters(gameData.getGameName()) + "_unit_stats.html";
     FileChooser.chooseExportFileWithDefaultName(frame, defaultFileName)
@@ -394,7 +388,7 @@ final class ExportMenu extends JMenu {
             path -> {
               try (Writer writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
                 writer.write(
-                    UnitStatsTable.getUnitStatsTable(gameData, uiContext)
+                    UnitStatsTable.getUnitStatsTable(gameData, frame.getUiContext())
                         .replaceAll("</?p>|</tr>", "$0\r\n")
                         .replaceAll("(?i)<img[^>]+/>", ""));
               } catch (final IOException e1) {
@@ -403,30 +397,23 @@ final class ExportMenu extends JMenu {
             });
   }
 
-  private JMenuItem createExportSetupChartsMenu() {
-    return new JMenuItemBuilder(
-            "Export Setup Charts", Mnemonic.EXPORT_CHARTS_SETUP.getMnemonicCode())
-        .actionListener(this::exportSetupCharts)
-        .build();
-  }
-
-  private void exportSetupCharts() {
-    final JFrame frame = new JFrame("Export Setup Charts");
-    frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+  private static void exportSetupCharts(final TripleAFrame frame) {
+    final JFrame chartsFrame = new JFrame("Export Setup Charts");
+    chartsFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
     final GameData clonedGameData =
-        GameDataUtils.cloneGameData(gameData, cloneOptions).orElse(null);
+        GameDataUtils.cloneGameData(frame.getGame().getData(), cloneOptions).orElse(null);
     if (clonedGameData == null) {
       return;
     }
     final JComponent newContentPane = new SetupFrame(clonedGameData);
     // content panes must be opaque
     newContentPane.setOpaque(true);
-    frame.setContentPane(newContentPane);
+    chartsFrame.setContentPane(newContentPane);
     // Display the window.
-    frame.pack();
-    frame.setLocationRelativeTo(frame);
-    frame.setVisible(true);
-    uiContext.addShutdownWindow(frame);
+    chartsFrame.pack();
+    chartsFrame.setLocationRelativeTo(chartsFrame);
+    chartsFrame.setVisible(true);
+    frame.getUiContext().addShutdownWindow(chartsFrame);
   }
 }
