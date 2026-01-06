@@ -22,7 +22,7 @@ public final class TripleAMenuBar extends JMenuBar {
 
     add(FileMenu.get(frame));
     add(ViewMenu.get(frame));
-    add(new GameMenu(frame));
+    add(GameMenu.get(frame));
     add(new ExportMenu(frame));
 
     final Optional<InGameLobbyWatcherWrapper> watcher = frame.getInGameLobbyWatcher();
