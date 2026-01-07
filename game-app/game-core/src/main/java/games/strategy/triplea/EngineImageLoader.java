@@ -21,8 +21,8 @@ public class EngineImageLoader {
   }
 
   /**
-   * Loads an image from the assets folder on the classpath (defined by {@link
-   * ResourceLoader#ASSETS_FOLDER}) using {@link Class#getResourceAsStream(String)}.
+   * Loads an image from the assets folder on the classpath using {@link
+   * Class#getResourceAsStream(String)}.
    *
    * @param assetsImageFileString segments of the path from the assets folder to an image, eg:
    *     loadImage("folder-in-assets", "image.png");
