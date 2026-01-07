@@ -20,57 +20,75 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.experimental.UtilityClass;
 import org.triplea.ai.flowfield.FlowFieldAi;
 import org.triplea.ai.flowfield.odds.LanchesterDebugAction;
 import org.triplea.swing.JMenuBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.key.binding.KeyCode;
 
-public final class DebugMenu extends JMenu {
-  private static final long serialVersionUID = -4876915214715298132L;
+@UtilityClass
+public final class DebugMenu {
 
-  private final TripleAFrame frame;
+  @AllArgsConstructor(access = AccessLevel.PRIVATE)
+  @Getter
+  public enum Mnemonic {
+    DEBUG_MENU(KeyCode.D),
+    AI_NORMAL(KeyCode.A),
+    AI_HARD(KeyCode.H);
 
-  DebugMenu(TripleAFrame frame) {
-    super("Debug");
-    this.frame = frame;
+    private final KeyCode mnemonicCode;
 
-    setMnemonic(KeyCode.D.getInputEventCode());
+    public int getValue() {
+      return mnemonicCode.getInputEventCode();
+    }
+  }
 
-    List<JMenu> subMenus = new ArrayList<>();
+  public static JMenu get(final TripleAFrame frame) {
+    final JMenu debugMenu = new JMenuBuilder("Debug", KeyCode.D).build();
+
+    final List<JMenu> subMenus = getSubMenus(frame);
+    if (subMenus.isEmpty()) {
+      debugMenu.setVisible(false);
+    } else {
+      subMenus.stream().sorted(Comparator.comparing(JMenu::getText)).forEach(debugMenu::add);
+    }
+
+    return debugMenu;
+  }
+
+  private static List<JMenu> getSubMenus(TripleAFrame frame) {
+    final List<JMenu> subMenus = new ArrayList<>();
     boolean addedProAiOption = false;
     for (Player player : frame.getLocalPlayers().getLocalPlayers()) {
       if (player instanceof FlowFieldAi ai) {
-        JMenuBuilder menuBuilder = new JMenuBuilder(ai.getName(), KeyCode.A);
-        renderDebugOption(LanchesterDebugAction.buildDebugOptions(ai))
-            .forEach(menuBuilder::addMenuItem);
-        subMenus.add(menuBuilder.build());
+        JMenuBuilder subMenuBuilder =
+            new JMenuBuilder(ai.getName(), Mnemonic.AI_NORMAL.getMnemonicCode());
+        renderDebugOption(frame, LanchesterDebugAction.buildDebugOptions(ai))
+            .forEach(subMenuBuilder::addMenuItem);
+        subMenus.add(subMenuBuilder.build());
       } else if (!addedProAiOption && player instanceof AbstractProAi) {
-        JMenuBuilder menuBuilder = new JMenuBuilder("Hard AI", KeyCode.H);
-        renderDebugOption(ProLogUi.buildDebugOptions(frame)).forEach(menuBuilder::addMenuItem);
+        JMenuBuilder menuBuilder = new JMenuBuilder("Hard AI", Mnemonic.AI_HARD.getMnemonicCode());
+        renderDebugOption(frame, ProLogUi.buildDebugOptions(frame))
+            .forEach(menuBuilder::addMenuItem);
         subMenus.add(menuBuilder.build());
         addedProAiOption = true;
       }
     }
-
-    if (subMenus.isEmpty()) {
-      setVisible(false);
-    } else {
-      subMenus.stream().sorted(Comparator.comparing(JMenu::getText)).forEach(this::add);
-    }
+    return subMenus;
   }
 
-  private JMenu renderSubMenuDebugOption(final AiPlayerDebugOption option) {
+  private static JMenu renderSubMenuDebugOption(
+      final TripleAFrame frame, final AiPlayerDebugOption option) {
     final JMenuBuilder subMenuBuilder = new JMenuBuilder(option.getTitle(), KeyCode.S);
-    renderDebugOption(option.getSubOptions()).forEach(subMenuBuilder::addMenuItem);
+    renderDebugOption(frame, option.getSubOptions()).forEach(subMenuBuilder::addMenuItem);
     return subMenuBuilder.build();
   }
 
-  private AiPlayerDebugAction buildDebugAction() {
-    return new AiPlayerDebugAction(frame.getMapPanel(), frame.getAdditionalTerritoryDetails());
-  }
-
-  private JMenuItem renderItemDebugOption(
+  private static JMenuItem renderItemDebugOption(
       final AiPlayerDebugOption option, final AiPlayerDebugAction action) {
     final Action swingAction =
         SwingAction.of(option.getTitle(), evt -> option.getActionListener().accept(action));
@@ -85,7 +103,8 @@ public final class DebugMenu extends JMenu {
     }
   }
 
-  private Collection<JMenuItem> renderDebugOption(final Collection<AiPlayerDebugOption> options) {
+  private static Collection<JMenuItem> renderDebugOption(
+      final TripleAFrame frame, Collection<AiPlayerDebugOption> options) {
     // keep track of all the radio button menu items and their actions so that when one of the
     // radio buttons is selected, the other radio buttons can be deselected
     final Map<String, Map<JMenuItem, AiPlayerDebugAction>> radioButtonDeselectGroups =
@@ -105,9 +124,11 @@ public final class DebugMenu extends JMenu {
         .map(
             option -> {
               if (!option.getSubOptions().isEmpty()) {
-                return renderSubMenuDebugOption(option);
+                return renderSubMenuDebugOption(frame, option);
               } else {
-                final AiPlayerDebugAction debugAction = buildDebugAction();
+                final AiPlayerDebugAction debugAction =
+                    new AiPlayerDebugAction(
+                        frame.getMapPanel(), frame.getAdditionalTerritoryDetails());
                 final JMenuItem menuItem = renderItemDebugOption(option, debugAction);
 
                 final int mnemonic = option.getMnemonic();
