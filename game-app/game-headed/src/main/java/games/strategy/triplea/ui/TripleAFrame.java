@@ -304,7 +304,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     editModeButtonModel = new JToggleButton.ToggleButtonModel();
     editModeButtonModel.setEnabled(false);
 
-    SwingUtilities.invokeLater(() -> this.setJMenuBar(new TripleAMenuBar(this)));
+    SwingUtilities.invokeLater(() -> this.setJMenuBar(TripleAMenuBar.get(this)));
     final ImageScrollModel model = new ImageScrollModel();
     model.setMaxBounds(
         uiContext.getMapData().getMapDimensions().width,

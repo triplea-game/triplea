@@ -6,40 +6,43 @@ import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.menubar.help.HelpMenu;
 import java.util.Optional;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import lombok.experimental.UtilityClass;
 import org.triplea.swing.JMenuBuilder;
 import org.triplea.swing.JMenuItemBuilder;
 import org.triplea.swing.key.binding.KeyCode;
 
 /** The game client menu bar. */
-public final class TripleAMenuBar extends JMenuBar {
-  private static final long serialVersionUID = -1447295944297939539L;
+@UtilityClass
+public final class TripleAMenuBar {
 
-  private final TripleAFrame frame;
-
-  public TripleAMenuBar(final TripleAFrame frame) {
-    this.frame = frame;
-
-    add(FileMenu.get(frame));
-    add(ViewMenu.get(frame));
-    add(GameMenu.get(frame));
-    add(ExportMenu.get(frame));
+  public static JMenuBar get(final TripleAFrame frame) {
+    final JMenuBar menuBar = new JMenuBar();
+    menuBar.add(FileMenu.get(frame));
+    menuBar.add(ViewMenu.get(frame));
+    menuBar.add(GameMenu.get(frame));
+    menuBar.add(ExportMenu.get(frame));
 
     final Optional<InGameLobbyWatcherWrapper> watcher = frame.getInGameLobbyWatcher();
-    watcher.filter(InGameLobbyWatcherWrapper::isActive).ifPresent(this::createLobbyMenu);
+    watcher
+        .filter(InGameLobbyWatcherWrapper::isActive)
+        .ifPresent(watcherWrapper -> menuBar.add(getLobbyMenu(frame, watcherWrapper)));
     if (frame.getGame().getMessengers().isConnected()) {
-      add(NetworkMenu.get(watcher, frame));
+      menuBar.add(NetworkMenu.get(watcher, frame));
     }
 
-    add(DebugMenu.get(frame));
-    add(HelpMenu.buildMenu(frame, frame.getUiContext(), frame.getGame().getData()));
+    menuBar.add(DebugMenu.get(frame));
+    menuBar.add(HelpMenu.buildMenu(frame, frame.getUiContext(), frame.getGame().getData()));
+
+    return menuBar;
   }
 
-  private void createLobbyMenu(final InGameLobbyWatcherWrapper watcher) {
-    add(
-        new JMenuBuilder("Lobby", KeyCode.L)
-            .addMenuItem(new JMenuItemBuilder(new EditGameCommentAction(watcher, frame), KeyCode.E))
-            .addMenuItem(new JMenuItemBuilder(new RemoveGameFromLobbyAction(watcher), KeyCode.R))
-            .build());
+  private static JMenu getLobbyMenu(
+      final TripleAFrame frame, final InGameLobbyWatcherWrapper watcher) {
+    return new JMenuBuilder("Lobby", KeyCode.L)
+        .addMenuItem(new JMenuItemBuilder(new EditGameCommentAction(watcher, frame), KeyCode.E))
+        .addMenuItem(new JMenuItemBuilder(new RemoveGameFromLobbyAction(watcher), KeyCode.R))
+        .build();
   }
 }
