@@ -23,7 +23,6 @@ final class NetworkMenu {
   @AllArgsConstructor(access = AccessLevel.PRIVATE)
   @Getter
   public enum Mnemonic {
-    NETWORK(KeyCode.N),
     SHOW_WHO_IS_WHO(KeyCode.W),
     REMOVE_PLAYER(KeyCode.R),
     BAN_PLAYER(KeyCode.B),
@@ -40,7 +39,7 @@ final class NetworkMenu {
       final Optional<InGameLobbyWatcherWrapper> watcher, final TripleAFrame frame) {
     final IGame game = frame.getGame();
     final boolean isServer = game.getMessengers().isServer();
-    return new JMenuBuilder("Network", Mnemonic.NETWORK.getMnemonicCode())
+    return new JMenuBuilder("Network", TripleAMenuBar.Mnemonic.NETWORK.getMnemonicCode())
         .addMenuItemIf(
             isServer,
             new JMenuItemBuilder(

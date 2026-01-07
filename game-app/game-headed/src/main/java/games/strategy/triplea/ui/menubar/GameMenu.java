@@ -50,7 +50,6 @@ final class GameMenu {
   @AllArgsConstructor(access = AccessLevel.PRIVATE)
   @Getter
   public enum Mnemonic {
-    GAME_MENU(KeyCode.G),
     ENGINE_SETTINGS(KeyCode.E),
     SHOW_GAME(KeyCode.G),
     SHOW_HISTORY(KeyCode.H),
@@ -74,7 +73,7 @@ final class GameMenu {
 
   static JMenu get(final TripleAFrame frame) {
     final GameData gameData = frame.getGame().getData();
-    return new JMenuBuilder("Game", Mnemonic.GAME_MENU.getMnemonicCode())
+    return new JMenuBuilder("Game", TripleAMenuBar.Mnemonic.GAME.getMnemonicCode())
         .addMenuItem(addEditMode(frame))
         .addSeparator()
         .addMenuItem(

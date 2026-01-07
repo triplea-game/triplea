@@ -69,7 +69,6 @@ final class ExportMenu {
   @AllArgsConstructor(access = AccessLevel.PRIVATE)
   @Getter
   public enum Mnemonic {
-    EXPORT_MENU(KeyCode.E),
     EXPORT_PICTURE(KeyCode.E),
     EXPORT_STATS_FULL(KeyCode.F),
     EXPORT_STATS_SHORT(KeyCode.S),
@@ -85,7 +84,7 @@ final class ExportMenu {
   }
 
   public static JMenu get(final TripleAFrame frame) {
-    return new JMenuBuilder("Export", Mnemonic.EXPORT_MENU.getMnemonicCode())
+    return new JMenuBuilder("Export", TripleAMenuBar.Mnemonic.EXPORT.getMnemonicCode())
         .addMenuItem(
             // TODO: create a second menu option for parsing current attachments
             new JMenuItemBuilder(

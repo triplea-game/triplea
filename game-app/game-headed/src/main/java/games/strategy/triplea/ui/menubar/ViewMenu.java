@@ -55,7 +55,7 @@ final class ViewMenu {
 
   public static JMenu get(final TripleAFrame frame) {
     final MapData mapData = frame.getUiContext().getMapData();
-    return new JMenuBuilder("View", Mnemonic.VIEW_MENU.getMnemonicCode())
+    return new JMenuBuilder("View", TripleAMenuBar.Mnemonic.VIEW.getMnemonicCode())
         .addMenuItem(getZoomMenu(frame))
         .addMenuItem(getUnitSizeMenu(frame))
         .addMenuItem(getLockMap())
@@ -532,7 +532,6 @@ final class ViewMenu {
   @AllArgsConstructor(access = AccessLevel.PRIVATE)
   @Getter
   public enum Mnemonic {
-    VIEW_MENU(KeyCode.V),
     FLAG_SUBMENU(KeyCode.N),
     UNIT_SIZE_SUBMENU(KeyCode.S),
     UNIT_SIZE_1(KeyCode.NR_1),

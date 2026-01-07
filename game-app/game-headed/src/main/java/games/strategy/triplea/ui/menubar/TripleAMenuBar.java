@@ -8,6 +8,9 @@ import games.strategy.triplea.ui.menubar.help.HelpMenu;
 import java.util.Optional;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import org.triplea.swing.JMenuBuilder;
 import org.triplea.swing.JMenuItemBuilder;
@@ -16,6 +19,20 @@ import org.triplea.swing.key.binding.KeyCode;
 /** The game client menu bar. */
 @UtilityClass
 public final class TripleAMenuBar {
+
+  @AllArgsConstructor(access = AccessLevel.PUBLIC)
+  @Getter
+  public enum Mnemonic {
+    FILE(KeyCode.F),
+    VIEW(KeyCode.V),
+    GAME(KeyCode.G),
+    EXPORT(KeyCode.E),
+    LOBBY(KeyCode.L),
+    NETWORK(KeyCode.N),
+    DEBUG(KeyCode.D);
+
+    private final KeyCode mnemonicCode;
+  }
 
   public static JMenuBar get(final TripleAFrame frame) {
     final JMenuBar menuBar = new JMenuBar();
@@ -40,7 +57,7 @@ public final class TripleAMenuBar {
 
   private static JMenu getLobbyMenu(
       final TripleAFrame frame, final InGameLobbyWatcherWrapper watcher) {
-    return new JMenuBuilder("Lobby", KeyCode.L)
+    return new JMenuBuilder("Lobby", Mnemonic.LOBBY.getMnemonicCode())
         .addMenuItem(new JMenuItemBuilder(new EditGameCommentAction(watcher, frame), KeyCode.E))
         .addMenuItem(new JMenuItemBuilder(new RemoveGameFromLobbyAction(watcher), KeyCode.R))
         .build();
