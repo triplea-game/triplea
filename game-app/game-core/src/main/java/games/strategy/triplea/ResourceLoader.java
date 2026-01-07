@@ -5,6 +5,7 @@ import games.strategy.triplea.ui.OrderedProperties;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +36,24 @@ public class ResourceLoader implements Closeable {
   private final URLClassLoader loader;
 
   @Getter private final List<Path> assetPaths;
+
+  /**
+   * Assembles the full path to an asset from the root of the classpath using the given path
+   * components.
+   *
+   * <p>Note that classpath resources are always loaded using '/', regardless of the file platform
+   * separator, so ensure that's the separator we're using.
+   *
+   * @param assetsImageFileString segments of the path from the assets folder to an image, eg:
+   *     {@code getAssetsImageFileLocation("folder-in-assets", "image.png");}
+   * @return the full path from the root of the classpath, eg: {@code
+   *     "/assets/folder-in-assets/image.png"}
+   */
+  public static String getAssetsFileLocation(String... assetsImageFileString) {
+    String path =
+        ASSETS_FOLDER + File.separator + String.join(File.separator, assetsImageFileString);
+    return path.replace(File.separatorChar, '/');
+  }
 
   public ResourceLoader(@Nonnull final Path assetFolder) {
     this(List.of(assetFolder));

@@ -28,7 +28,7 @@ public class ImageFactory {
                 @Override
                 public @Nonnull Optional<Image> load(@Nonnull String key) throws IOException {
                   URL url =
-                      resourceLoader.getResource(key, ResourceLoader.ASSETS_FOLDER + '/' + key);
+                      resourceLoader.getResource(key, ResourceLoader.getAssetsFileLocation(key));
                   if (url == null) {
                     return Optional.empty();
                   }

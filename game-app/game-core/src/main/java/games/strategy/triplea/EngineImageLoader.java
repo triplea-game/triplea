@@ -2,7 +2,6 @@ package games.strategy.triplea;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
@@ -25,17 +24,19 @@ public class EngineImageLoader {
    * Loads an image from the assets folder on the classpath (defined by {@link
    * ResourceLoader#ASSETS_FOLDER}) using {@link Class#getResourceAsStream(String)}.
    *
-   * @param pathComponentsRelativeToAssets segments of the path from the assets folder to an image,
-   *     eg: loadImage("folder-in-assets", "image.png");
+   * @param assetsImageFileString segments of the path from the assets folder to an image, eg:
+   *     loadImage("folder-in-assets", "image.png");
    * @return the loaded image
    */
-  public BufferedImage loadImage(final String... pathComponentsRelativeToAssets) {
-    String imageFilePath = createPathToImage(pathComponentsRelativeToAssets);
+  public BufferedImage loadImage(final String... assetsImageFileString) {
+    String imageFilePath = ResourceLoader.getAssetsFileLocation(assetsImageFileString);
     try (InputStream is =
         EngineImageLoader.class.getClassLoader().getResourceAsStream(imageFilePath)) {
       if (is == null) {
         throw new IllegalStateException(
-            "Error loading image at: " + createPathToImage(pathComponentsRelativeToAssets));
+            "Error loading image at: "
+                + imageFilePath
+                + ", input stream is null (check that the resource exists on the classpath at this location)");
       } else {
         return ImageIO.read(is);
       }
@@ -43,24 +44,5 @@ public class EngineImageLoader {
       throw new IllegalStateException(
           "Error loading image at: " + imageFilePath + ", " + e.getMessage(), e);
     }
-  }
-
-  /**
-   * Assembles the full path to an asset from the root of the classpath using the given path
-   * components.
-   *
-   * <p>Note that classpath resources are always loaded using '/', regardless of the file platform
-   * separator, so ensure that's the separator we're using.
-   *
-   * @param pathComponentsRelativeToAssets segments of the path from the assets folder to an image,
-   *     eg: loadImage("folder-in-assets", "image.png");
-   * @return the full path from the
-   */
-  private String createPathToImage(final String... pathComponentsRelativeToAssets) {
-    String path =
-        ResourceLoader.ASSETS_FOLDER
-            + File.separator
-            + String.join(File.separator, pathComponentsRelativeToAssets);
-    return path.replace(File.separatorChar, '/');
   }
 }

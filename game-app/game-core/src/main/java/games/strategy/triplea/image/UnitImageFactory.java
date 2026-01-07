@@ -293,8 +293,8 @@ public class UnitImageFactory {
     @NonNls final String fileName2 = FILE_NAME_BASE + baseImageName + ".png";
     URL url = resourceLoader.getResource(fileName, fileName2);
     if (null == url) {
-      @NonNls final String assetsfileName = ResourceLoader.ASSETS_FOLDER + "/" + fileName;
-      @NonNls final String assetsfileName2 = ResourceLoader.ASSETS_FOLDER + "/" + fileName2;
+      @NonNls final String assetsfileName = ResourceLoader.getAssetsFileLocation(fileName);
+      @NonNls final String assetsfileName2 = ResourceLoader.getAssetsFileLocation(fileName2);
       url = resourceLoader.getResource(assetsfileName, assetsfileName2);
     }
     return Optional.ofNullable(url);
