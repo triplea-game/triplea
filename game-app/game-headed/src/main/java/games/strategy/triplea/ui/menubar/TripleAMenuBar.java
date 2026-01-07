@@ -31,7 +31,7 @@ public final class TripleAMenuBar extends JMenuBar {
       add(NetworkMenu.get(watcher, frame));
     }
 
-    add(new DebugMenu(frame));
+    add(DebugMenu.get(frame));
     add(HelpMenu.buildMenu(frame, frame.getUiContext(), frame.getGame().getData()));
   }
 
