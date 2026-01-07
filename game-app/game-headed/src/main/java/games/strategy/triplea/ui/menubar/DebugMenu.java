@@ -36,7 +36,6 @@ public final class DebugMenu {
   @AllArgsConstructor(access = AccessLevel.PRIVATE)
   @Getter
   public enum Mnemonic {
-    DEBUG_MENU(KeyCode.D),
     AI_NORMAL(KeyCode.A),
     AI_HARD(KeyCode.H);
 
@@ -48,7 +47,8 @@ public final class DebugMenu {
   }
 
   public static JMenu get(final TripleAFrame frame) {
-    final JMenu debugMenu = new JMenuBuilder("Debug", KeyCode.D).build();
+    final JMenu debugMenu =
+        new JMenuBuilder("Debug", TripleAMenuBar.Mnemonic.DEBUG.getMnemonicCode()).build();
 
     final List<JMenu> subMenus = getSubMenus(frame);
     if (subMenus.isEmpty()) {

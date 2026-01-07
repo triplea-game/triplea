@@ -35,7 +35,7 @@ final class FileMenu {
       MacOsIntegration.setQuitHandler(frame);
     }
 
-    return new JMenuBuilder("File", Mnemonic.FILE_MENU.getMnemonicCode())
+    return new JMenuBuilder("File", TripleAMenuBar.Mnemonic.FILE.getMnemonicCode())
         .addMenuItem(newSaveMenuItem(frame))
         .addMenuItemIf(
             PbemMessagePoster.gameDataHasPlayByEmailOrForumMessengers(frame.getGame().getData()),
@@ -113,7 +113,6 @@ final class FileMenu {
   @AllArgsConstructor(access = AccessLevel.PRIVATE)
   @Getter
   public enum Mnemonic {
-    FILE_MENU(KeyCode.F),
     SAVE(KeyCode.S),
     POST_PBEM(KeyCode.P),
     LEAVE(KeyCode.L),
