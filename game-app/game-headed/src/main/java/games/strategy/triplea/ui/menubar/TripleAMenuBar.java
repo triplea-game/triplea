@@ -28,7 +28,7 @@ public final class TripleAMenuBar extends JMenuBar {
     final Optional<InGameLobbyWatcherWrapper> watcher = frame.getInGameLobbyWatcher();
     watcher.filter(InGameLobbyWatcherWrapper::isActive).ifPresent(this::createLobbyMenu);
     if (frame.getGame().getMessengers().isConnected()) {
-      add(new NetworkMenu(watcher, frame));
+      add(NetworkMenu.get(watcher, frame));
     }
 
     add(new DebugMenu(frame));
