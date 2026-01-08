@@ -44,15 +44,15 @@ public class ResourceLoader implements Closeable {
    * <p>Note that classpath resources are always loaded using '/', regardless of the file platform
    * separator, so ensure that's the separator we're using.
    *
-   * @param assetsImageFileString segments of the path from the assets folder to an image, eg:
+   * @param assetsImageFileStrings segments of the path from the assets folder to an image, eg:
    *     {@code getAssetsImageFileLocation("folder-in-assets", "image.png");}
    * @return the full path from the root of the classpath, eg: {@code
    *     "/assets/folder-in-assets/image.png"}
    */
-  public static String getAssetsFileLocation(String... assetsImageFileString) {
-    String path =
-        ASSETS_FOLDER + File.separator + String.join(File.separator, assetsImageFileString);
-    return path.replace(File.separatorChar, '/');
+  public static String getAssetsFileLocation(String... assetsImageFileStrings) {
+    String assetsFileLocation =
+        ASSETS_FOLDER + File.separator + String.join(File.separator, assetsImageFileStrings);
+    return assetsFileLocation.replace(File.separatorChar, '/');
   }
 
   public ResourceLoader(@Nonnull final Path assetFolder) {

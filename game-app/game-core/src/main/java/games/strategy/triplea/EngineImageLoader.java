@@ -24,25 +24,25 @@ public class EngineImageLoader {
    * Loads an image from the assets folder on the classpath using {@link
    * Class#getResourceAsStream(String)}.
    *
-   * @param assetsImageFileString segments of the path from the assets folder to an image, eg:
+   * @param assetsImageFileStrings segments of the path from the assets folder to an image, eg:
    *     loadImage("folder-in-assets", "image.png");
    * @return the loaded image
    */
-  public BufferedImage loadImage(final String... assetsImageFileString) {
-    String imageFilePath = ResourceLoader.getAssetsFileLocation(assetsImageFileString);
+  public BufferedImage loadImage(final String... assetsImageFileStrings) {
+    String imageFileLocation = ResourceLoader.getAssetsFileLocation(assetsImageFileStrings);
     try (InputStream is =
-        EngineImageLoader.class.getClassLoader().getResourceAsStream(imageFilePath)) {
+        EngineImageLoader.class.getClassLoader().getResourceAsStream(imageFileLocation)) {
       if (is == null) {
         throw new IllegalStateException(
             "Error loading image at: "
-                + imageFilePath
+                + imageFileLocation
                 + ", input stream is null (check that the resource exists on the classpath at this location)");
       } else {
         return ImageIO.read(is);
       }
     } catch (IOException e) {
       throw new IllegalStateException(
-          "Error loading image at: " + imageFilePath + ", " + e.getMessage(), e);
+          "Error loading image at: " + imageFileLocation + ", " + e.getMessage(), e);
     }
   }
 }
