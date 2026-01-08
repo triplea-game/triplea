@@ -35,6 +35,7 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MacOsIntegration;
 import games.strategy.ui.Util;
 import java.awt.Component;
+import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.net.URLDecoder;
@@ -69,6 +70,11 @@ public final class HeadedGameRunner {
           log.error(e.getLocalizedMessage(), e);
           log.error(Throwables.getStackTraceAsString(e));
         });
+    EventQueue.invokeLater(
+        () ->
+            Thread.currentThread()
+                .setUncaughtExceptionHandler(Thread.getDefaultUncaughtExceptionHandler()));
+
     final Locale defaultLocale = Locale.getDefault();
     if (!I18nResourceBundle.getMapSupportedLocales().contains(defaultLocale)) {
       Locale.setDefault(Locale.US);

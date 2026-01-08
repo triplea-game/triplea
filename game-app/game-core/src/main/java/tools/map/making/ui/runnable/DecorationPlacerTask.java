@@ -1,7 +1,5 @@
 package tools.map.making.ui.runnable;
 
-import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.MapImage;
 import java.awt.Color;
 import java.awt.Font;
@@ -857,13 +855,6 @@ public final class DecorationPlacerTask extends MapEditorRunnableTask {
           mapFolderLocation
               .resolve(imagePointType.getFolderName())
               .resolve(imagePointType.getImageName());
-      if (!Files.exists(imagePath)) {
-        imagePath =
-            ClientFileSystemHelper.getRootFolder()
-                .resolve(ResourceLoader.ASSETS_FOLDER)
-                .resolve(imagePointType.getFolderName())
-                .resolve(imagePointType.getImageName());
-      }
       if (!Files.exists(imagePath)) {
         imagePath = null;
       }

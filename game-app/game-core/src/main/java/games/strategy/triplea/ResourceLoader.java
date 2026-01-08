@@ -1,14 +1,11 @@
 package games.strategy.triplea;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import com.google.common.annotations.VisibleForTesting;
-import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.triplea.ui.OrderedProperties;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,13 +17,11 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.game.Exceptions;
 import org.triplea.io.PathUtils;
 import org.triplea.java.UrlStreams;
 
@@ -36,11 +31,29 @@ import org.triplea.java.UrlStreams;
  */
 @Slf4j
 public class ResourceLoader implements Closeable {
-  public static final String ASSETS_FOLDER = "build/assets";
+  private static final String ASSETS_FOLDER = "assets";
 
   private final URLClassLoader loader;
 
   @Getter private final List<Path> assetPaths;
+
+  /**
+   * Assembles the full path to an asset from the root of the classpath using the given path
+   * components.
+   *
+   * <p>Note that classpath resources are always loaded using '/', regardless of the file platform
+   * separator, so ensure that's the separator we're using.
+   *
+   * @param assetsImageFileString segments of the path from the assets folder to an image, eg:
+   *     {@code getAssetsImageFileLocation("folder-in-assets", "image.png");}
+   * @return the full path from the root of the classpath, eg: {@code
+   *     "/assets/folder-in-assets/image.png"}
+   */
+  public static String getAssetsFileLocation(String... assetsImageFileString) {
+    String path =
+        ASSETS_FOLDER + File.separator + String.join(File.separator, assetsImageFileString);
+    return path.replace(File.separatorChar, '/');
+  }
 
   public ResourceLoader(@Nonnull final Path assetFolder) {
     this(List.of(assetFolder));
@@ -48,15 +61,7 @@ public class ResourceLoader implements Closeable {
 
   public ResourceLoader(List<Path> assetPaths) {
     this.assetPaths = assetPaths;
-    List<URL> searchUrls = assetPaths.stream().map(PathUtils::toUrl).collect(Collectors.toList());
-
-    if (!GameRunner.headless()) {
-      Path gameEngineAssets =
-          findDirectory(ClientFileSystemHelper.getRootFolder(), ASSETS_FOLDER)
-              .orElseThrow(GameAssetsNotFoundException::new);
-
-      searchUrls.add(PathUtils.toUrl(gameEngineAssets));
-    }
+    List<URL> searchUrls = assetPaths.stream().map(PathUtils::toUrl).toList();
 
     // Note: URLClassLoader does not always respect the ordering of the search URLs
     // To solve this we will get all matching paths and then filter by what matched
@@ -69,38 +74,6 @@ public class ResourceLoader implements Closeable {
   ResourceLoader(final URLClassLoader loader) {
     this.loader = loader;
     this.assetPaths = List.of();
-  }
-
-  /**
-   * Loads an image from the {@link #ASSETS_FOLDER} folder. Images downloaded as part of the build
-   * to be included with the game are downloaded to this location. Check the gradle build file
-   * download images task for more information on what will be contained in that folder.
-   */
-  public static Image loadImageAsset(Path pathRelativeToAssetsFolder) {
-    Path imagePath = Path.of(ASSETS_FOLDER).resolve(pathRelativeToAssetsFolder);
-
-    checkArgument(
-        Files.exists(imagePath),
-        "File must exist at path: %s, "
-            + "Build with the checked in launcher, or run gradle task 'downloadAssets'.",
-        imagePath.toAbsolutePath());
-    try {
-      return ImageIO.read(imagePath.toFile());
-    } catch (final IOException e) {
-      throw new RuntimeException("Unable to load image at path: " + imagePath.toAbsolutePath(), e);
-    }
-  }
-
-  private static class GameAssetsNotFoundException extends RuntimeException {
-    private static final long serialVersionUID = -8274500540886412040L;
-
-    GameAssetsNotFoundException() {
-      super(
-          "Unable to find game assets folder starting from location: "
-              + ClientFileSystemHelper.getRootFolder().toAbsolutePath()
-              + "\nThere is a problem with the installation, please report this to TripleA "
-              + "and the path where TripleA is installed.");
-    }
   }
 
   /**
@@ -178,15 +151,6 @@ public class ResourceLoader implements Closeable {
 
   public Path requiredResource(final String path) throws IOException {
     return optionalResource(path).orElseThrow(() -> new FileNotFoundException(path));
-  }
-
-  public BufferedImage getImageOrThrow(final String inputPath) {
-    URL url = findResource(inputPath).orElseThrow(() -> new Exceptions.MissingFile(inputPath));
-    try {
-      return ImageIO.read(url);
-    } catch (IOException e) {
-      throw new Exceptions.MissingFile(inputPath, e);
-    }
   }
 
   public Optional<Image> loadImage(final String imageName) {

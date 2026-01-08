@@ -132,17 +132,25 @@ save games from loading.
 
 # FAQ - common problems
 
-### Assets folder not found
+### Game crashes after splash screen displayed
 
-This is going to be typically because the working directory is not set properly. The 'run' gradle task
-for game-headed will download game assets into the 'root' project's `/build` subdirectory. When the game starts it expects
-to find the `assets` folder in that directory. If launching from IDE, chances are good the working
-directory is not set.
+This can be caused by missing resource files, such as images or icons.
 
-Ideally the IDE launcher is checked in and pre-configured. This could be broken and needs to be 're-checked'
-back in properly.
+The Gradle task `run` for `game-headed` will download and unzip game assets into the `game-headed` project's directory `/build/assests`.
+This directory will then be processed as a main resource, by the task `:game-app:game-headed:processResources`, in order to be packaged in the resulting project jar.
+When the game starts, it expects to find the folder `assets` at the root of the classpath, so to load files use the class loader's method `getResourceAsStream()`.
+Since this is a resource file packaged in the library jar produced by this project, the working dir should **not** influence how assets are loaded.
 
 In short:
-- check working directory is 'game-app/game-headed'
-- check that `./gradlew downloadAssets` has been run and there is a 'build/assets' folder present
-(Gradle should handle this automatically as necessary)
+- Check that `./gradlew downloadAssets` has been run and there is a folder `build/assets` present; and that the
+contents have been copied to `build/resources/main/assets` (Gradle should handle this automatically as necessary).
+
+### How do I view log files after the .exe crashes?
+
+Navigate to the TripleA install directory and launch the jar manually using:
+
+```bash
+java -jar bin/game-headed-<SOME_VERSION_NUMBER>.jar
+```
+
+And you should see the log printed to the console.
