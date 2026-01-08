@@ -33,6 +33,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
+import org.triplea.swing.JMenuBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.util.PointFileReaderWriter;
@@ -257,16 +258,17 @@ public final class PlacementPickerTask extends MapEditorRunnableTask {
             showIncompleteMode = showIncompleteModeItem.getState();
             repaint();
           });
-      final JMenu editMenu = new JMenu("Edit");
-      editMenu.setMnemonic(KeyCode.E.getInputEventCode());
-      editMenu.add(showAllModeItem);
-      editMenu.add(showOverflowModeItem);
-      editMenu.add(showIncompleteModeItem);
+      final JMenu editMenu =
+          new JMenuBuilder("Edit", KeyCode.E)
+              .addMenuItem(showAllModeItem)
+              .addMenuItem(showOverflowModeItem)
+              .addMenuItem(showIncompleteModeItem)
+              .build();
       // set up the menu bar
       final JMenuBar menuBar = new JMenuBar();
-      setJMenuBar(menuBar);
       menuBar.add(getFileMenu(openAction, saveAction, exitAction));
       menuBar.add(editMenu);
+      setJMenuBar(menuBar);
     }
 
     private Optional<Path> getPolygonsPath(Path mapFolder) {

@@ -11,58 +11,64 @@ import games.strategy.triplea.ui.PlayersPanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import java.util.Optional;
 import javax.swing.JMenu;
-import org.triplea.swing.SwingAction;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.triplea.swing.JMenuBuilder;
+import org.triplea.swing.JMenuItemBuilder;
 import org.triplea.swing.key.binding.KeyCode;
 
-final class NetworkMenu extends JMenu {
-  private static final long serialVersionUID = 2947249649948115833L;
+final class NetworkMenu {
 
-  private final IGame game;
-  private final TripleAFrame frame;
+  @AllArgsConstructor(access = AccessLevel.PRIVATE)
+  @Getter
+  public enum Mnemonic {
+    SHOW_WHO_IS_WHO(KeyCode.W),
+    REMOVE_PLAYER(KeyCode.R),
+    BAN_PLAYER(KeyCode.B),
+    SET_PASSWORD(KeyCode.P);
 
-  NetworkMenu(final Optional<InGameLobbyWatcherWrapper> watcher, final TripleAFrame frame) {
-    super("Network");
+    private final KeyCode mnemonicCode;
 
-    this.frame = frame;
-    game = frame.getGame();
-
-    setMnemonic(KeyCode.N.getInputEventCode());
-
-    addBootPlayer();
-    addBanPlayer();
-    watcher.ifPresent(this::addSetGamePassword);
-    addShowPlayers();
-  }
-
-  private void addBootPlayer() {
-    if (isServer()) {
-      add(new BootPlayerAction(this, getServerMessenger()));
+    public int getValue() {
+      return mnemonicCode.getInputEventCode();
     }
   }
 
-  private boolean isServer() {
-    return game.getMessengers().isServer();
+  public static JMenu get(
+      final Optional<InGameLobbyWatcherWrapper> watcher, final TripleAFrame frame) {
+    final IGame game = frame.getGame();
+    final boolean isServer = game.getMessengers().isServer();
+    return new JMenuBuilder("Network", TripleAMenuBar.Mnemonic.NETWORK.getMnemonicCode())
+        .addMenuItemIf(
+            isServer,
+            new JMenuItemBuilder(
+                    new BootPlayerAction(frame, getServerMessenger(game)),
+                    Mnemonic.REMOVE_PLAYER.getMnemonicCode())
+                .build())
+        .addMenuItemIf(
+            isServer,
+            new JMenuItemBuilder(
+                    new BanPlayerAction(frame, getServerMessenger(game)),
+                    Mnemonic.BAN_PLAYER.getMnemonicCode())
+                .build())
+        .addMenuItemIf(
+            watcher.isPresent(),
+            new JMenuItemBuilder(
+                    new SetPasswordAction(
+                        frame,
+                        watcher.orElse(null),
+                        (ClientLoginValidator) getServerMessenger(game).getLoginValidator()),
+                    Mnemonic.SET_PASSWORD.getMnemonicCode())
+                .build())
+        .addMenuItemIf(
+            !game.getData().getProperties().getEditableProperties().isEmpty(),
+            new JMenuItemBuilder("Show Who is Who", Mnemonic.SHOW_WHO_IS_WHO.getMnemonicCode())
+                .actionListener(() -> PlayersPanel.showPlayers(game, frame)))
+        .build();
   }
 
-  private IServerMessenger getServerMessenger() {
+  private static IServerMessenger getServerMessenger(final IGame game) {
     return game.getMessengers().getServerMessenger();
-  }
-
-  private void addBanPlayer() {
-    if (isServer()) {
-      add(new BanPlayerAction(this, getServerMessenger()));
-    }
-  }
-
-  private void addSetGamePassword(final InGameLobbyWatcherWrapper watcher) {
-    add(
-        new SetPasswordAction(
-            this, watcher, (ClientLoginValidator) getServerMessenger().getLoginValidator()));
-  }
-
-  private void addShowPlayers() {
-    if (!game.getData().getProperties().getEditableProperties().isEmpty()) {
-      add(SwingAction.of("Show Who is Who", e -> PlayersPanel.showPlayers(game, frame)));
-    }
   }
 }

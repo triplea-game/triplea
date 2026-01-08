@@ -43,21 +43,12 @@ public class ResourceCollection extends GameDataComponent {
    * @param resource referring resource
    * @param quantity quantity of the resource that should be removed
    */
-  public void removeResource(final Resource resource, final int quantity) {
+  public void removeResourceUpTo(final Resource resource, final int quantity) {
     if (quantity < 0) {
       throw new IllegalArgumentException("quantity must be positive");
     }
     final int current = getQuantity(resource);
-    if ((current - quantity) < 0) {
-      throw new IllegalArgumentException(
-          "Can't remove more than player has of resource: "
-              + resource.getName()
-              + ". current:"
-              + current
-              + " toRemove: "
-              + quantity);
-    }
-    change(resource, -quantity);
+    change(resource, -Math.min(current, quantity));
   }
 
   private void change(final Resource resource, final int quantity) {
@@ -104,7 +95,7 @@ public class ResourceCollection extends GameDataComponent {
 
   private void subtract(final IntegerMap<Resource> cost) {
     for (final Resource resource : cost.keySet()) {
-      removeResource(resource, cost.getInt(resource));
+      removeResourceUpTo(resource, cost.getInt(resource));
     }
   }
 
@@ -137,10 +128,10 @@ public class ResourceCollection extends GameDataComponent {
     if (cost.isEmpty() || (cost.totalValues() <= 0 && cost.isPositive())) {
       return 10000;
     }
-    final ResourceCollection resources = new ResourceCollection(getData(), this.resources);
+    final ResourceCollection resourceCollection = new ResourceCollection(getData(), this.resources);
     for (int i = 0; i <= 10000; i++) {
       try {
-        resources.subtract(cost);
+        resourceCollection.subtract(cost);
       } catch (final IllegalArgumentException iae) {
         // when the subtraction isn't possible it will throw an exception,
         // which means we can return i
@@ -211,7 +202,7 @@ public class ResourceCollection extends GameDataComponent {
   /**
    * Adds {@code times - 1} copies of each resource in this collection.
    *
-   * @param times multiply this Collection times times.
+   * @param times multiply this Collection {@code times}.
    */
   public void multiply(final int times) {
     final IntegerMap<Resource> base = new IntegerMap<>(resources);
