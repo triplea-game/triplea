@@ -1,11 +1,13 @@
 package games.strategy.engine.data;
 
 import games.strategy.triplea.Constants;
+import java.text.MessageFormat;
 import org.triplea.java.collections.IntegerMap;
 
 /** A collection of {@link Resource}s. */
 public class ResourceCollection extends GameDataComponent {
   private static final long serialVersionUID = -1247795977888113757L;
+  public static final int MAX_FIT_VALUE = 10000; // how often costs can fit into resource collection
 
   private final IntegerMap<Resource> resources = new IntegerMap<>();
 
@@ -85,17 +87,20 @@ public class ResourceCollection extends GameDataComponent {
   /** Returns new ResourceCollection containing the difference between both collections. */
   public ResourceCollection difference(final ResourceCollection otherCollection) {
     final ResourceCollection returnCollection = new ResourceCollection(getData(), resources);
-    returnCollection.subtract(otherCollection);
+    returnCollection.subtract(otherCollection.resources);
     return returnCollection;
-  }
-
-  private void subtract(final ResourceCollection resourceCollection) {
-    subtract(resourceCollection.resources);
   }
 
   private void subtract(final IntegerMap<Resource> cost) {
     for (final Resource resource : cost.keySet()) {
-      removeResourceUpTo(resource, cost.getInt(resource));
+      int costValue = cost.getInt(resource);
+      if (costValue < 0) {
+        throw new IllegalArgumentException(
+            MessageFormat.format(
+                "Cost must be positive, but was {0} for resource {1}",
+                costValue, resource.getName()));
+      }
+      change(resource, -costValue);
     }
   }
 
@@ -123,22 +128,30 @@ public class ResourceCollection extends GameDataComponent {
     resources.multiplyAllValuesBy(discount);
   }
 
-  /** Returns 10,000 if it can fit more times than 10000 or if cost is zero. */
+  /**
+   * Returns {@link ResourceCollection#MAX_FIT_VALUE} if it can fit more times than {@link
+   * ResourceCollection#MAX_FIT_VALUE} or if cost is zero.
+   */
   public int fitsHowOften(final IntegerMap<Resource> cost) {
-    if (cost.isEmpty() || (cost.totalValues() <= 0 && cost.isPositive())) {
-      return 10000;
-    }
-    final ResourceCollection resourceCollection = new ResourceCollection(getData(), this.resources);
-    for (int i = 0; i <= 10000; i++) {
-      try {
-        resourceCollection.subtract(cost);
-      } catch (final IllegalArgumentException iae) {
-        // when the subtraction isn't possible it will throw an exception,
-        // which means we can return i
-        return i;
-      }
-    }
-    return 10000;
+    return (cost.isEmpty() || (cost.totalValues() <= 0 && cost.isPositive()))
+        ? MAX_FIT_VALUE
+        : cost.entrySet().stream()
+            .mapToInt(
+                costEntry -> {
+                  int resourceCost = costEntry.getValue();
+                  if (resourceCost == 0) {
+                    return MAX_FIT_VALUE;
+                  } else {
+                    return this.resources.getInt(costEntry.getKey()) / resourceCost;
+                  }
+                })
+            .min()
+            .orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        MessageFormat.format(
+                            "Could not calculate how often cost of {0} can be paid with resources {1}",
+                            cost, this.resources)));
   }
 
   @Override
