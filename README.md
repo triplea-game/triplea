@@ -3,7 +3,6 @@
 ![Game Board Screenshot](https://user-images.githubusercontent.com/12397753/36015523-a4e28a24-0d23-11e8-84c0-c4bd0ee19ce0.png)
 
 ## About TripleA
-
 TripleA is a fan-created, open-source strategy and board game engine that brings Axis and Allies-style gameplay to life. Launched in 2002, TripleA offers:
 
 - Community-created maps
