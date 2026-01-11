@@ -639,8 +639,7 @@ public class BattleTracker implements Serializable {
         && territoryAttachment.getCapital().isPresent()
         && TerritoryAttachment.getAllCapitals(optionalTerrOrigOwner.get(), data.getMap())
             .contains(territory)) {
-      addChangesOnTakeOverAlliedCapitol(
-          territory, optionalTerrOrigOwner.get(), bridge, changeTracker);
+      addChangesOnTakeOverAlliedCapitol(optionalTerrOrigOwner.get(), bridge, changeTracker);
     }
     // say they were in combat
     // if the territory being taken over is water, then do not say any land units were in combat
@@ -852,29 +851,27 @@ public class BattleTracker implements Serializable {
   }
 
   private static void addChangesOnTakeOverAlliedCapitol(
-      Territory territory,
-      GamePlayer terrOrigOwner,
-      IDelegateBridge bridge,
-      @Nullable UndoableMove changeTracker) {
+      GamePlayer terrOrigOwner, IDelegateBridge bridge, @Nullable UndoableMove changeTracker) {
     final GameData data = bridge.getData();
-    // if it is give it back to the original owner
+    // give it back to the original owner, if ally
     final Collection<Territory> originallyOwned =
         OriginalOwnerTracker.getOriginallyOwned(data, terrOrigOwner);
-    final List<Territory> friendlyTerritories =
+    final List<Territory> alliedTerritories =
         CollectionUtils.getMatches(originallyOwned, Matches.isTerritoryAllied(terrOrigOwner));
-    // give back the factories as well.
-    for (final Territory item : friendlyTerritories) {
-      if (item.isOwnedBy(terrOrigOwner)) {
+    for (final Territory alliedTerritory : alliedTerritories) {
+      if (alliedTerritory.isOwnedBy(terrOrigOwner)) {
         continue;
       }
-      final Change takeOverFriendlyTerritories = ChangeFactory.changeOwner(item, terrOrigOwner);
+      final Change takeOverFriendlyTerritories =
+          ChangeFactory.changeOwner(alliedTerritory, terrOrigOwner);
       addChange(bridge, changeTracker, takeOverFriendlyTerritories);
       bridge.getHistoryWriter().addChildToEvent(takeOverFriendlyTerritories.toString());
-      final Collection<Unit> units =
-          CollectionUtils.getMatches(item.getUnits(), Matches.unitIsInfrastructure());
-      if (!units.isEmpty()) {
+      // give back the factories as well
+      final Collection<Unit> infrastructureUnits =
+          CollectionUtils.getMatches(alliedTerritory.getUnits(), Matches.unitIsInfrastructure());
+      if (!infrastructureUnits.isEmpty()) {
         final Change takeOverNonComUnits =
-            ChangeFactory.changeOwner(units, terrOrigOwner, territory);
+            ChangeFactory.changeOwner(infrastructureUnits, terrOrigOwner, alliedTerritory);
         addChange(bridge, changeTracker, takeOverNonComUnits);
       }
     }
