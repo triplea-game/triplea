@@ -545,7 +545,6 @@ public class BattleTracker implements Serializable {
     }
     final TerritoryAttachment territoryAttachment = optionalTerritoryAttachment.get();
     final GameData data = bridge.getData();
-    IDelegateHistoryWriter historyWriter = bridge.getHistoryWriter();
     final Collection<Unit> arrivedUnits =
         (arrivingUnits == null ? null : new ArrayList<>(arrivingUnits));
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
@@ -553,175 +552,29 @@ public class BattleTracker implements Serializable {
         relationshipTracker.canTakeOverOwnedTerritory(gamePlayer, territory.getOwner());
     // If this is a convoy (we wouldn't be in this method otherwise)
     // check to make sure attackers have more than just transports. If they don't, exit here.
-    if (territory.isWater() && arrivedUnits != null) {
-      // Total Attacking Sea units = all units - land units - air units - submerged subs
-      // Also subtract transports & subs (if they can't control sea zones)
-      int totalMatches =
-          arrivedUnits.size()
-              - CollectionUtils.countMatches(arrivedUnits, Matches.unitIsLand())
-              - CollectionUtils.countMatches(arrivedUnits, Matches.unitIsAir())
-              - CollectionUtils.countMatches(arrivedUnits, Matches.unitIsSubmerged());
-      // If transports are restricted from controlling sea zones, subtract them
-      final Predicate<Unit> transportsCanNotControl =
-          Matches.unitIsSeaTransportAndNotDestroyer()
-              .and(Matches.unitIsSeaTransportButNotCombatSeaTransport());
-      if (!Properties.getTransportControlSeaZone(data.getProperties())) {
-        totalMatches -= CollectionUtils.countMatches(arrivedUnits, transportsCanNotControl);
-      }
-      // TODO check if istrn and NOT isDD
-      // If subs are restricted from controlling sea zones, subtract them
-      if (Properties.getSubControlSeaZoneRestricted(data.getProperties())) {
-        totalMatches -=
-            CollectionUtils.countMatches(arrivedUnits, Matches.unitCanBeMovedThroughByEnemies());
-      }
-      if (totalMatches == 0) {
-        return;
-      }
+    if (territory.isWater()
+        && arrivedUnits != null
+        && getAllAttachingSeaUnits(arrivedUnits, data) == 0) {
+      return;
     }
     // If it was a Convoy Route - check ownership of the associated neighboring territory and set
     // message
     if (territoryAttachment.getConvoyRoute()) {
-      // we could be part of a convoy route for another territory
-      final Collection<Territory> attachedConvoyTo =
-          TerritoryAttachment.getWhatTerritoriesThisIsUsedInConvoysFor(territory, data);
-      attachedConvoyTo.forEach(
-          convoy -> {
-            final Optional<TerritoryAttachment> optionalConvoyTerritoryAttachment =
-                TerritoryAttachment.get(convoy);
-            if (optionalConvoyTerritoryAttachment.isEmpty()) {
-              return;
-            }
-            final TerritoryAttachment cta = optionalConvoyTerritoryAttachment.get();
-            if (!cta.getConvoyRoute()) {
-              return;
-            }
-            final GamePlayer convoyOwner = convoy.getOwner();
-            if (relationshipTracker.isAllied(gamePlayer, convoyOwner)) {
-              if (cta.getConvoyAttached().stream()
-                  .noneMatch(Matches.isTerritoryAllied(convoyOwner))) {
-                historyWriter.addChildToEvent(
-                    convoyOwner.getName()
-                        + " gains "
-                        + cta.getProduction()
-                        + " production in "
-                        + convoy.getName()
-                        + " for the liberation the convoy route in "
-                        + territory.getName());
-              }
-            } else if (relationshipTracker.isAtWar(gamePlayer, convoyOwner)
-                && CollectionUtils.countMatches(
-                        cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner))
-                    == 1) {
-              historyWriter.addChildToEvent(
-                  convoyOwner.getName()
-                      + " loses "
-                      + cta.getProduction()
-                      + " production in "
-                      + convoy.getName()
-                      + " due to the capture of the convoy route in "
-                      + territory.getName());
-            }
-          });
+      writeHistoryOnTakeOverForConvoyRoute(territory, gamePlayer, bridge);
     }
     // if neutral, we may charge money to enter
     if (territory.getOwner().isNull()
         && !territory.isWater()
         && Properties.getNeutralCharge(data.getProperties()) >= 0) {
-      final Resource pus = data.getResourceList().getResourceOrThrow(Constants.PUS);
-      final int puChargeIdeal = -Properties.getNeutralCharge(data.getProperties());
-      final int puChargeReal =
-          Math.min(0, Math.max(puChargeIdeal, -gamePlayer.getResources().getQuantity(pus)));
-      final Change neutralFee = ChangeFactory.changeResourcesChange(gamePlayer, pus, puChargeReal);
-      addChange(bridge, changeTracker, neutralFee);
-      if (puChargeIdeal == puChargeReal) {
-        historyWriter.addChildToEvent(
-            gamePlayer.getName()
-                + " loses "
-                + -puChargeReal
-                + " "
-                + MyFormatter.pluralize("PU", -puChargeReal)
-                + " for violating "
-                + territory.getName()
-                + "s neutrality.");
-      } else {
-        log.error(
-            "Player, "
-                + gamePlayer.getName()
-                + " attacks a Neutral territory, and should have had to pay "
-                + puChargeIdeal
-                + ", but did not have enough PUs to pay! This is a bug.");
-        historyWriter.addChildToEvent(
-            gamePlayer.getName()
-                + " loses "
-                + -puChargeReal
-                + " "
-                + MyFormatter.pluralize("PU", -puChargeReal)
-                + " for violating "
-                + territory.getName()
-                + "s neutrality.  Correct amount to charge is: "
-                + puChargeIdeal
-                + ".  Player should not have been able to make this attack!");
-      }
+      addChangeChargeForEnteringNeutrals(territory, gamePlayer, bridge, changeTracker);
     }
     // if it's a capital we take the money
     // NOTE: this is not checking to see if it is an enemy.
     // instead it is relying on the fact that the capital should be owned by the person it is
     // attached to
     if (isTerritoryOwnerAnEnemy && territoryAttachment.isCapital()) {
-      // if the capital is owned by the capitols player take the money
-      final GamePlayer whoseCapital =
-          data.getPlayerList().getPlayerId(territoryAttachment.getCapitalOrThrow());
-      final PlayerAttachment pa = PlayerAttachment.get(gamePlayer);
-      final PlayerAttachment paWhoseCapital = PlayerAttachment.get(whoseCapital);
-      final List<Territory> capitalsList =
-          TerritoryAttachment.getAllCurrentlyOwnedCapitals(whoseCapital, data.getMap());
-      // we are losing one right now, so it is < not <=
-      if (paWhoseCapital != null && paWhoseCapital.getRetainCapitalNumber() < capitalsList.size()) {
-        // do nothing, we keep our money since we still control enough capitals
-        historyWriter.addChildToEvent(
-            gamePlayer.getName() + " captures one of " + whoseCapital.getName() + " capitals");
-      } else if (whoseCapital.equals(territory.getOwner())) {
-        final Resource pus = data.getResourceList().getResourceOrThrow(Constants.PUS);
-        final int capturedPuCount = whoseCapital.getResources().getQuantity(pus);
-        if (pa != null && Properties.getPacificTheater(data.getProperties())) {
-          final Change changeVp =
-              ChangeFactory.attachmentPropertyChange(
-                  pa, (capturedPuCount + pa.getCaptureVps()), "captureVps");
-          addChange(bridge, changeTracker, changeVp);
-        }
-        final Change remove =
-            ChangeFactory.changeResourcesChange(whoseCapital, pus, -capturedPuCount);
-        addChange(bridge, changeTracker, remove);
-        if (paWhoseCapital != null && paWhoseCapital.getDestroysPUs()) {
-          historyWriter.addChildToEvent(
-              gamePlayer.getName()
-                  + " destroys "
-                  + capturedPuCount
-                  + MyFormatter.pluralize("PU", capturedPuCount)
-                  + " while taking "
-                  + whoseCapital.getName()
-                  + " capital");
-        } else {
-          historyWriter.addChildToEvent(
-              gamePlayer.getName()
-                  + " captures "
-                  + capturedPuCount
-                  + MyFormatter.pluralize("PU", capturedPuCount)
-                  + " while taking "
-                  + whoseCapital.getName()
-                  + " capital");
-          final Change add = ChangeFactory.changeResourcesChange(gamePlayer, pus, capturedPuCount);
-          addChange(bridge, changeTracker, add);
-        }
-        // remove all the tokens of the captured player if tokens are used
-        if (data.getResourceList().getResourceOptional(Constants.TECH_TOKENS).isPresent()) {
-          final Resource tokens = data.getResourceList().getResourceOrThrow(Constants.TECH_TOKENS);
-          final int currTokens = whoseCapital.getResources().getQuantity(Constants.TECH_TOKENS);
-          final Change removeTokens =
-              ChangeFactory.changeResourcesChange(whoseCapital, tokens, -currTokens);
-          addChange(bridge, changeTracker, removeTokens);
-        }
-      }
+      addChangesOnTakeOverCapitol(
+          territory, territoryAttachment, gamePlayer, bridge, changeTracker);
     }
     // is this an allied territory? Revert to original owner if it is,
     // unless they don't own their capital
@@ -732,28 +585,14 @@ public class BattleTracker implements Serializable {
         optionalTerrOrigOwner
             .filter(player -> relationshipTracker.isAllied(player, gamePlayer))
             .isPresent();
-    GamePlayer newOwner = gamePlayer;
-    // if the original owner is the current owner, and the current owner is our enemy or
-    // canTakeOver, then we do not worry about this.
-    if (isTerritoryOwnerAnEnemy
-        && isTerritoryOrigOwnerAllied
-        && !optionalTerrOrigOwner.get().equals(territory.getOwner())) {
-      final GamePlayer terrOrigOwner = optionalTerrOrigOwner.get();
-      final List<Territory> capitalsListOwned =
-          TerritoryAttachment.getAllCurrentlyOwnedCapitals(terrOrigOwner, data.getMap());
-      if (!capitalsListOwned.isEmpty()) {
-        newOwner = terrOrigOwner;
-      } else { // hence newOwner = gamePlayer;
-        for (final Territory current :
-            TerritoryAttachment.getAllCapitals(terrOrigOwner, data.getMap())) {
-          if (territory.equals(current) || current.getOwner().isNull()) {
-            // if a neutral controls our capital, our territories get liberated (ie: china in ww2v3)
-            newOwner = terrOrigOwner;
-            break;
-          }
-        }
-      }
-    }
+    GamePlayer newOwner =
+        // if the original owner is the current owner, and the current owner is our enemy or
+        // canTakeOver, then we do not worry about this.
+        (isTerritoryOwnerAnEnemy
+                && isTerritoryOrigOwnerAllied
+                && !optionalTerrOrigOwner.get().equals(territory.getOwner()))
+            ? getNewOwnerForTakeOver(territory, gamePlayer, optionalTerrOrigOwner.get(), data)
+            : gamePlayer;
     // if we have specially set this territory to have whenCapturedByGoesTo,
     // then we set that here (except we don't set it if we are liberating allied owned territory)
     if (isTerritoryOwnerAnEnemy
@@ -800,28 +639,8 @@ public class BattleTracker implements Serializable {
         && territoryAttachment.getCapital().isPresent()
         && TerritoryAttachment.getAllCapitals(optionalTerrOrigOwner.get(), data.getMap())
             .contains(territory)) {
-      final GamePlayer terrOrigOwner = optionalTerrOrigOwner.get();
-      // if it is give it back to the original owner
-      final Collection<Territory> originallyOwned =
-          OriginalOwnerTracker.getOriginallyOwned(data, terrOrigOwner);
-      final List<Territory> friendlyTerritories =
-          CollectionUtils.getMatches(originallyOwned, Matches.isTerritoryAllied(terrOrigOwner));
-      // give back the factories as well.
-      for (final Territory item : friendlyTerritories) {
-        if (item.isOwnedBy(terrOrigOwner)) {
-          continue;
-        }
-        final Change takeOverFriendlyTerritories = ChangeFactory.changeOwner(item, terrOrigOwner);
-        addChange(bridge, changeTracker, takeOverFriendlyTerritories);
-        bridge.getHistoryWriter().addChildToEvent(takeOverFriendlyTerritories.toString());
-        final Collection<Unit> units =
-            CollectionUtils.getMatches(item.getUnits(), Matches.unitIsInfrastructure());
-        if (!units.isEmpty()) {
-          final Change takeOverNonComUnits =
-              ChangeFactory.changeOwner(units, terrOrigOwner, territory);
-          addChange(bridge, changeTracker, takeOverNonComUnits);
-        }
-      }
+      addChangesOnTakeOverAlliedCapitol(
+          territory, optionalTerrOrigOwner.get(), bridge, changeTracker);
     }
     // say they were in combat
     // if the territory being taken over is water, then do not say any land units were in combat
@@ -830,6 +649,235 @@ public class BattleTracker implements Serializable {
       arrivedUnits.removeAll(CollectionUtils.getMatches(arrivedUnits, Matches.unitIsLand()));
     }
     markWasInCombat(arrivedUnits, bridge, changeTracker);
+  }
+
+  private static GamePlayer getNewOwnerForTakeOver(
+      Territory territory, GamePlayer gamePlayer, GamePlayer terrOrigOwner, GameData data) {
+    GamePlayer newOwner = gamePlayer;
+    final List<Territory> capitalsListOwned =
+        TerritoryAttachment.getAllCurrentlyOwnedCapitals(terrOrigOwner, data.getMap());
+    if (!capitalsListOwned.isEmpty()) {
+      newOwner = terrOrigOwner;
+    } else { // hence newOwner = gamePlayer;
+      for (final Territory current :
+          TerritoryAttachment.getAllCapitals(terrOrigOwner, data.getMap())) {
+        if (territory.equals(current) || current.getOwner().isNull()) {
+          // if a neutral controls our capital, our territories get liberated (ie: china in ww2v3)
+          newOwner = terrOrigOwner;
+          break;
+        }
+      }
+    }
+    return newOwner;
+  }
+
+  private static void addChangesOnTakeOverCapitol(
+      Territory territory,
+      TerritoryAttachment territoryAttachment,
+      GamePlayer gamePlayer,
+      IDelegateBridge bridge,
+      @Nullable UndoableMove changeTracker) {
+    GameData data = bridge.getData();
+    IDelegateHistoryWriter historyWriter = bridge.getHistoryWriter();
+    // if the capital is owned by the capitols player take the money
+    final GamePlayer whoseCapital =
+        data.getPlayerList().getPlayerId(territoryAttachment.getCapitalOrThrow());
+    final PlayerAttachment pa = PlayerAttachment.get(gamePlayer);
+    final PlayerAttachment paWhoseCapital = PlayerAttachment.get(whoseCapital);
+    final List<Territory> capitalsList =
+        TerritoryAttachment.getAllCurrentlyOwnedCapitals(whoseCapital, data.getMap());
+    // we are losing one right now, so it is < not <=
+    if (paWhoseCapital != null && paWhoseCapital.getRetainCapitalNumber() < capitalsList.size()) {
+      // do nothing, we keep our money since we still control enough capitals
+      historyWriter.addChildToEvent(
+          gamePlayer.getName() + " captures one of " + whoseCapital.getName() + " capitals");
+    } else if (whoseCapital.equals(territory.getOwner())) {
+      final Resource pus = data.getResourceList().getResourceOrThrow(Constants.PUS);
+      final int capturedPuCount = whoseCapital.getResources().getQuantity(pus);
+      if (pa != null && Properties.getPacificTheater(data.getProperties())) {
+        final Change changeVp =
+            ChangeFactory.attachmentPropertyChange(
+                pa, (capturedPuCount + pa.getCaptureVps()), "captureVps");
+        addChange(bridge, changeTracker, changeVp);
+      }
+      final Change remove =
+          ChangeFactory.changeResourcesChange(whoseCapital, pus, -capturedPuCount);
+      addChange(bridge, changeTracker, remove);
+      if (paWhoseCapital != null && paWhoseCapital.getDestroysPUs()) {
+        historyWriter.addChildToEvent(
+            gamePlayer.getName()
+                + " destroys "
+                + capturedPuCount
+                + MyFormatter.pluralize("PU", capturedPuCount)
+                + " while taking "
+                + whoseCapital.getName()
+                + " capital");
+      } else {
+        historyWriter.addChildToEvent(
+            gamePlayer.getName()
+                + " captures "
+                + capturedPuCount
+                + MyFormatter.pluralize("PU", capturedPuCount)
+                + " while taking "
+                + whoseCapital.getName()
+                + " capital");
+        final Change add = ChangeFactory.changeResourcesChange(gamePlayer, pus, capturedPuCount);
+        addChange(bridge, changeTracker, add);
+      }
+      // remove all the tokens of the captured player if tokens are used
+      if (data.getResourceList().getResourceOptional(Constants.TECH_TOKENS).isPresent()) {
+        final Resource tokens = data.getResourceList().getResourceOrThrow(Constants.TECH_TOKENS);
+        final int currTokens = whoseCapital.getResources().getQuantity(Constants.TECH_TOKENS);
+        final Change removeTokens =
+            ChangeFactory.changeResourcesChange(whoseCapital, tokens, -currTokens);
+        addChange(bridge, changeTracker, removeTokens);
+      }
+    }
+  }
+
+  private static void addChangeChargeForEnteringNeutrals(
+      Territory territory,
+      GamePlayer gamePlayer,
+      IDelegateBridge bridge,
+      @Nullable UndoableMove changeTracker) {
+    GameData data = bridge.getData();
+    IDelegateHistoryWriter historyWriter = bridge.getHistoryWriter();
+    final Resource pus = data.getResourceList().getResourceOrThrow(Constants.PUS);
+    final int puChargeIdeal = -Properties.getNeutralCharge(data.getProperties());
+    final int puChargeReal =
+        Math.min(0, Math.max(puChargeIdeal, -gamePlayer.getResources().getQuantity(pus)));
+    final Change neutralFee = ChangeFactory.changeResourcesChange(gamePlayer, pus, puChargeReal);
+    addChange(bridge, changeTracker, neutralFee);
+    if (puChargeIdeal == puChargeReal) {
+      historyWriter.addChildToEvent(
+          gamePlayer.getName()
+              + " loses "
+              + -puChargeReal
+              + " "
+              + MyFormatter.pluralize("PU", -puChargeReal)
+              + " for violating "
+              + territory.getName()
+              + "s neutrality.");
+    } else {
+      log.error(
+          "Player, "
+              + gamePlayer.getName()
+              + " attacks a Neutral territory, and should have had to pay "
+              + puChargeIdeal
+              + ", but did not have enough PUs to pay! This is a bug.");
+      historyWriter.addChildToEvent(
+          gamePlayer.getName()
+              + " loses "
+              + -puChargeReal
+              + " "
+              + MyFormatter.pluralize("PU", -puChargeReal)
+              + " for violating "
+              + territory.getName()
+              + "s neutrality.  Correct amount to charge is: "
+              + puChargeIdeal
+              + ".  Player should not have been able to make this attack!");
+    }
+  }
+
+  private static void writeHistoryOnTakeOverForConvoyRoute(
+      Territory territory, GamePlayer newOwner, final IDelegateBridge bridge) {
+    GameData data = bridge.getData();
+    RelationshipTracker relationshipTracker = bridge.getData().getRelationshipTracker();
+    IDelegateHistoryWriter historyWriter = bridge.getHistoryWriter();
+    // we could be part of a convoy route for another territory
+    final Collection<Territory> attachedConvoyTo =
+        TerritoryAttachment.getWhatTerritoriesThisIsUsedInConvoysFor(territory, data);
+    attachedConvoyTo.forEach(
+        convoy -> {
+          final Optional<TerritoryAttachment> optionalConvoyTerritoryAttachment =
+              TerritoryAttachment.get(convoy);
+          if (optionalConvoyTerritoryAttachment.isEmpty()) {
+            return;
+          }
+          final TerritoryAttachment cta = optionalConvoyTerritoryAttachment.get();
+          if (!cta.getConvoyRoute()) {
+            return;
+          }
+          final GamePlayer convoyOwner = convoy.getOwner();
+          if (relationshipTracker.isAllied(newOwner, convoyOwner)) {
+            if (cta.getConvoyAttached().stream()
+                .noneMatch(Matches.isTerritoryAllied(convoyOwner))) {
+              historyWriter.addChildToEvent(
+                  convoyOwner.getName()
+                      + " gains "
+                      + cta.getProduction()
+                      + " production in "
+                      + convoy.getName()
+                      + " for the liberation the convoy route in "
+                      + territory.getName());
+            }
+          } else if (relationshipTracker.isAtWar(newOwner, convoyOwner)
+              && CollectionUtils.countMatches(
+                      cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner))
+                  == 1) {
+            historyWriter.addChildToEvent(
+                convoyOwner.getName()
+                    + " loses "
+                    + cta.getProduction()
+                    + " production in "
+                    + convoy.getName()
+                    + " due to the capture of the convoy route in "
+                    + territory.getName());
+          }
+        });
+  }
+
+  private static int getAllAttachingSeaUnits(Collection<Unit> arrivedUnits, GameData data) {
+    // Total Attacking Sea units = all units - land units - air units - submerged subs
+    // Also subtract transports & subs (if they can't control sea zones)
+    int totalMatches =
+        arrivedUnits.size()
+            - CollectionUtils.countMatches(arrivedUnits, Matches.unitIsLand())
+            - CollectionUtils.countMatches(arrivedUnits, Matches.unitIsAir())
+            - CollectionUtils.countMatches(arrivedUnits, Matches.unitIsSubmerged());
+    // If transports are restricted from controlling sea zones, subtract them
+    final Predicate<Unit> transportsCanNotControl =
+        Matches.unitIsSeaTransportAndNotDestroyer()
+            .and(Matches.unitIsSeaTransportButNotCombatSeaTransport());
+    if (!Properties.getTransportControlSeaZone(data.getProperties())) {
+      totalMatches -= CollectionUtils.countMatches(arrivedUnits, transportsCanNotControl);
+    }
+    // TODO check if istrn and NOT isDD
+    // If subs are restricted from controlling sea zones, subtract them
+    if (Properties.getSubControlSeaZoneRestricted(data.getProperties())) {
+      totalMatches -=
+          CollectionUtils.countMatches(arrivedUnits, Matches.unitCanBeMovedThroughByEnemies());
+    }
+    return totalMatches;
+  }
+
+  private static void addChangesOnTakeOverAlliedCapitol(
+      Territory territory,
+      GamePlayer terrOrigOwner,
+      IDelegateBridge bridge,
+      @Nullable UndoableMove changeTracker) {
+    final GameData data = bridge.getData();
+    // if it is give it back to the original owner
+    final Collection<Territory> originallyOwned =
+        OriginalOwnerTracker.getOriginallyOwned(data, terrOrigOwner);
+    final List<Territory> friendlyTerritories =
+        CollectionUtils.getMatches(originallyOwned, Matches.isTerritoryAllied(terrOrigOwner));
+    // give back the factories as well.
+    for (final Territory item : friendlyTerritories) {
+      if (item.isOwnedBy(terrOrigOwner)) {
+        continue;
+      }
+      final Change takeOverFriendlyTerritories = ChangeFactory.changeOwner(item, terrOrigOwner);
+      addChange(bridge, changeTracker, takeOverFriendlyTerritories);
+      bridge.getHistoryWriter().addChildToEvent(takeOverFriendlyTerritories.toString());
+      final Collection<Unit> units =
+          CollectionUtils.getMatches(item.getUnits(), Matches.unitIsInfrastructure());
+      if (!units.isEmpty()) {
+        final Change takeOverNonComUnits =
+            ChangeFactory.changeOwner(units, terrOrigOwner, territory);
+        addChange(bridge, changeTracker, takeOverNonComUnits);
+      }
+    }
   }
 
   private void addChangeChangeOwnership(
