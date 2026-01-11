@@ -773,26 +773,14 @@ public class BattleTracker implements Serializable {
               .orElse(newOwner);
     }
     if (isTerritoryOwnerAnEnemy) {
-      final Change takeOver = ChangeFactory.changeOwner(territory, newOwner);
-      bridge.getHistoryWriter().addChildToEvent(takeOver.toString());
-      addChange(bridge, changeTracker, takeOver);
-      if (changeTracker != null) {
-        changeTracker.addToConquered(territory);
-      }
-      // play a sound
-      ISound broadcaster = bridge.getSoundChannelBroadcaster();
-      if (territory.isWater()) {
-        // should probably see if there is something actually happening for water
-        broadcaster.playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_SEA, gamePlayer);
-      } else if (territoryAttachment.getCapital().isPresent()) {
-        broadcaster.playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL, gamePlayer);
-      } else if (blitzed.contains(territory)
-          && arrivedUnits != null
-          && arrivedUnits.stream().anyMatch(Matches.unitCanBlitz())) {
-        broadcaster.playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_BLITZ, gamePlayer);
-      } else {
-        broadcaster.playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_LAND, gamePlayer);
-      }
+      addChangeChangeOwnership(
+          territory,
+          newOwner,
+          territoryAttachment,
+          gamePlayer,
+          bridge,
+          changeTracker,
+          arrivedUnits);
     }
     // Remove any bombing raids against captured territory
     if (territory.anyUnitsMatch(
@@ -842,6 +830,37 @@ public class BattleTracker implements Serializable {
       arrivedUnits.removeAll(CollectionUtils.getMatches(arrivedUnits, Matches.unitIsLand()));
     }
     markWasInCombat(arrivedUnits, bridge, changeTracker);
+  }
+
+  private void addChangeChangeOwnership(
+      Territory territory,
+      GamePlayer newOwner,
+      TerritoryAttachment territoryAttachment,
+      GamePlayer gamePlayer,
+      IDelegateBridge bridge,
+      @Nullable UndoableMove changeTracker,
+      Collection<Unit> arrivedUnits) {
+    final Change takeOver = ChangeFactory.changeOwner(territory, newOwner);
+    bridge.getHistoryWriter().addChildToEvent(takeOver.toString());
+    addChange(bridge, changeTracker, takeOver);
+    territory.notifyChanged();
+    if (changeTracker != null) {
+      changeTracker.addToConquered(territory);
+    }
+    // play a sound
+    ISound broadcaster = bridge.getSoundChannelBroadcaster();
+    if (territory.isWater()) {
+      // should probably see if there is something actually happening for water
+      broadcaster.playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_SEA, gamePlayer);
+    } else if (territoryAttachment.getCapital().isPresent()) {
+      broadcaster.playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL, gamePlayer);
+    } else if (blitzed.contains(territory)
+        && arrivedUnits != null
+        && arrivedUnits.stream().anyMatch(Matches.unitCanBlitz())) {
+      broadcaster.playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_BLITZ, gamePlayer);
+    } else {
+      broadcaster.playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_LAND, gamePlayer);
+    }
   }
 
   /**
