@@ -52,7 +52,7 @@ class PlayerOwnerChange extends Change {
             throw new IllegalStateException(
                 "Wrong "
                     + unit.getType().getName()
-                    + " newOwnerName, expecting "
+                    + " owner, expecting "
                     + oldOwnerNamesByUnitId.get(uuid)
                     + " but got "
                     + unit.getOwner());
