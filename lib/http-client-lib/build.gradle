@@ -1,3 +1,0 @@
-dependencies {
-    implementation project(":game-app:domain-data")
-}

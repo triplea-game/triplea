@@ -2,6 +2,7 @@ import org.apache.tools.ant.filters.FixCrLfFilter
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
+    id("triplea-java-library")
     id "application"
     alias(libs.plugins.shadow)
 }

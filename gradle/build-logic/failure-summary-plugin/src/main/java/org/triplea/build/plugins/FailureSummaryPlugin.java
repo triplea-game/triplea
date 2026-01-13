@@ -24,6 +24,7 @@ import java.util.Map;
  * This plugin sets up listeners to gather test failure information across all projects, and
  * report it at the end of a build.
  */
+@SuppressWarnings("UnstableApiUsage")
 public abstract class FailureSummaryPlugin implements Plugin<Settings> {
   @Inject
   protected abstract FlowScope getFlowScope();
@@ -88,7 +89,7 @@ public abstract class FailureSummaryPlugin implements Plugin<Settings> {
   public static abstract class FailureReporter implements FlowAction<FailureReporter.Params> {
     private static final Logger logger = Logging.getLogger(FailureReporter.class);
 
-    interface Params extends FlowParameters {
+    public interface Params extends FlowParameters {
       @ServiceReference
       Property<FailedTestsService> getFailedTestsService();
     }
@@ -99,10 +100,8 @@ public abstract class FailureSummaryPlugin implements Plugin<Settings> {
 
       if (!failedTestsByProject.isEmpty()) {
         failedTestsByProject.keySet().stream().sorted().forEach(projectName -> {
-          logger.warn("Failed tests for " + projectName + ":");
-          failedTestsByProject.get(projectName).stream().sorted().forEach(failedTest -> {
-            logger.warn(failedTest);
-          });
+          logger.warn("Failed tests for {}:", projectName);
+          failedTestsByProject.get(projectName).stream().sorted().forEach(logger::warn);
           logger.warn("");
         });
       }
