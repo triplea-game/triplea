@@ -167,7 +167,7 @@ public class ResourceLoader implements Closeable {
   }
 
   /**
-   * tries to load images in a priority order, first from the map, then from engine assets
+   * Tries to load images in a priority order, first from the map, then from engine assets.
    *
    * @param firstPathElement the image file name or the first element of the path to the image
    *     relative to the map folder of the game resp. the assets folder of the engine
@@ -176,12 +176,16 @@ public class ResourceLoader implements Closeable {
    */
   public Optional<BufferedImage> loadBufferedImage(
       final String firstPathElement, final String... furtherPath) {
-    final String imageName = createPathToImage(firstPathElement, furtherPath).toString();
-    final URL url = getResource(imageName);
+    final String imagePath = createPathToImage(firstPathElement, furtherPath).toString();
+    URL url = getResource(imagePath);
     if (url == null) {
-      // this is actually pretty common that we try to read images that are not there. Let the
-      // caller decide if this is an error or not.
-      return Optional.empty();
+      // Upon first failure to find resource, try to fallback to /assets
+      url = getResource(createPathToImage(ASSETS_FOLDER, imagePath).toString());
+      if (url == null) {
+        // this is actually pretty common that we try to read images that are not there. Let the
+        // caller decide if this is an error or not.
+        return Optional.empty();
+      }
     }
     try {
       final BufferedImage bufferedImage = ImageIO.read(url);
@@ -190,7 +194,7 @@ public class ResourceLoader implements Closeable {
       }
       return Optional.ofNullable(bufferedImage);
     } catch (final IOException e) {
-      log.error("Image loading failed: " + imageName, e);
+      log.error("Image loading failed: " + imagePath, e);
       return Optional.empty();
     }
   }
