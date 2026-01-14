@@ -1,6 +1,8 @@
 import com.install4j.gradle.Install4jTask
+import de.undercouch.gradle.tasks.download.Download
 
 plugins {
+    id("triplea-java-library")
     id "application"
     alias(libs.plugins.shadow)
     alias(libs.plugins.install4j)
@@ -16,6 +18,16 @@ application {
 }
 
 def releasesDir = file("$buildDir/releases")
+
+ext.getProductVersion = {
+    return project(':game-app').file("../game-app/run/.build/product-version.txt").text.trim();
+}
+
+ext.getCommitNumber = { ->
+    providers.exec {
+        commandLine 'git', 'rev-list', '--count', 'HEAD'
+    }.standardOutput.asText.get().trim()
+}
 def releaseVersion = getProductVersion() + "+" + getCommitNumber()
 
 dependencies {
@@ -39,7 +51,7 @@ jar {
 }
 
 def assetsZipFileName = "game_headed_assets.zip"
-def downloadAssets = tasks.register("downloadAssets", de.undercouch.gradle.tasks.download.Download) {
+def downloadAssets = tasks.register("downloadAssets", Download) {
     src "https://github.com/triplea-game/assets/releases/download/47/$assetsZipFileName"
     dest project.layout.buildDirectory.dir("downloads/assets-zip")
     overwrite false

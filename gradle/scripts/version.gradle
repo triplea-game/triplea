@@ -1,9 +1,0 @@
-ext.getProductVersion = {
-    return project(':game-app').file("../game-app/run/.build/product-version.txt").text.trim();
-}
-
-ext.getCommitNumber = { ->
-    providers.exec {
-        commandLine 'git', 'rev-list', '--count', 'HEAD'
-    }.standardOutput.asText.get().trim()
-}
