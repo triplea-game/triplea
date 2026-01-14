@@ -324,19 +324,21 @@ public final class GameParser {
     }
   }
 
-  /** If mustfind is true and cannot find the unitType an exception will be thrown. */
+  /** If must-find is true and cannot find the unitType an exception will be thrown. */
   private Optional<UnitType> getUnitTypeOptional(final String name) {
     return data.getUnitTypeList().getUnitType(name);
   }
 
   private TechAdvance getTechnology(final String name) throws GameParseException {
-    final TechnologyFrontier frontier = data.getTechnologyFrontier();
-    return Optional.ofNullable(frontier.getAdvanceByName(name))
-        .or(() -> Optional.ofNullable(frontier.getAdvanceByProperty(name)))
+    final TechnologyFrontier technologyFrontier = data.getTechnologyFrontier();
+    return technologyFrontier
+        .getAdvanceByPropertyOrName(name)
         .orElseThrow(
             () ->
                 new GameParseException(
-                    MessageFormat.format("Could not find technology: {0}", name)));
+                    MessageFormat.format(
+                        "getTechnology: Technology {0} not found by property or name {0} in {1}",
+                        name, technologyFrontier.getTechs())));
   }
 
   /** If the Delegate cannot be found an exception will be thrown. */
@@ -822,16 +824,17 @@ public final class GameParser {
   private void parseCategoryTechs(
       final List<Technology.PlayerTech.Category.Tech> elements, final TechnologyFrontier frontier)
       throws GameParseException {
+    final TechnologyFrontier technologyFrontier = data.getTechnologyFrontier();
     for (final Technology.PlayerTech.Category.Tech current : elements) {
-      TechAdvance ta = data.getTechnologyFrontier().getAdvanceByProperty(current.getName());
-      if (ta == null) {
-        ta = data.getTechnologyFrontier().getAdvanceByName(current.getName());
-      }
-      if (ta == null) {
-        throw new GameParseException(
-            MessageFormat.format("Could not find technology: {0}", current.getName()));
-      }
-      frontier.addAdvance(ta);
+      frontier.addAdvance(
+          technologyFrontier
+              .getAdvanceByPropertyOrName(current.getName())
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "parseCategoryTechs: Technology {0} not found by property or name {0} in {1}",
+                              current.getName(), technologyFrontier.getTechs()))));
     }
   }
 
