@@ -11,7 +11,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import java.io.Serial;
 import java.io.Serializable;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -51,7 +50,7 @@ public class OriginalOwnerTracker implements Serializable {
         .orElseThrow(
             () ->
                 new IllegalStateException(
-                    MessageFormat.format("GamePlayer expected for Territory {0}", t.getName())));
+                    String.format("GamePlayer expected for Territory %s", t.getName())));
   }
 
   /** Returns the territories originally owned by the specified player. */

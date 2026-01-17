@@ -14,7 +14,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.ui.mapdata.MapData;
 import java.io.Serial;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -129,7 +128,7 @@ public class ExtendedStats extends StatPanel {
 
     @Override
     public @Nls String getName() {
-      return MessageFormat.format("Resource: {0}", name);
+      return String.format("Resource: %s", name);
     }
 
     @Override
@@ -148,7 +147,7 @@ public class ExtendedStats extends StatPanel {
 
     @Override
     public @Nls String getName() {
-      return MessageFormat.format("TechAdvance: {0}", ta.getName());
+      return String.format("TechAdvance: %s", ta.getName());
     }
 
     @Override
@@ -170,7 +169,7 @@ public class ExtendedStats extends StatPanel {
 
     @Override
     public @Nls String getName() {
-      return MessageFormat.format("UnitType: {0}", ut.getName());
+      return String.format("UnitType: %s", ut.getName());
     }
 
     @Override
