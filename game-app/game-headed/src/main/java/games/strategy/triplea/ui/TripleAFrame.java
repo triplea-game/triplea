@@ -31,6 +31,7 @@ import games.strategy.engine.framework.HistorySynchronizer;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
+import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameFileSelector;
 import games.strategy.engine.history.HistoryNode;
@@ -274,6 +275,10 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     super("TripleA - " + game.getData().getGameName());
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
+    LookAndFeelSwingFrameListener.register(this);
+    setSize(700, 400);
+    setExtendedState(Frame.MAXIMIZED_BOTH);
+
     this.clientLeftGame = clientLeftGame;
 
     localPlayers = players;
@@ -489,7 +494,13 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         Interruptibles.awaitResult(
                 () ->
                     SwingAction.invokeAndWaitResult(
-                        () -> new TripleAFrame(game, players, uiContext, chat, clientLeftGame)))
+                        () -> {
+                          final TripleAFrame newFrame =
+                              new TripleAFrame(game, players, uiContext, chat, clientLeftGame);
+                          newFrame.setVisible(true);
+                          newFrame.toFront();
+                          return newFrame;
+                        }))
             .result
             .orElseThrow(() -> new IllegalStateException("Error while instantiating TripleAFrame"));
     frame.updateStep();
