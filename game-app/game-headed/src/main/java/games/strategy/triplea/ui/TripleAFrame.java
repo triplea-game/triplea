@@ -1849,6 +1849,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
   private void updatePanelsGameData(final GameData newGameData) {
     mapPanel.setGameData(newGameData);
+    bottomBar.setGameDataForCurrentTerritory(newGameData);
     if (!TechAdvance.getTechAdvances(newGameData.getTechnologyFrontier(), null).isEmpty()) {
       technologyPanel.setGameData(newGameData);
     }
