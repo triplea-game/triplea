@@ -158,12 +158,12 @@ public class ResourceLoader implements Closeable {
     return Optional.ofNullable(bufferedImage.orElse(null));
   }
 
-  private Path createPathToImage(final String firstPathElement, final String... furtherPath) {
+  private String createPathToImage(final String firstPathElement, final String... furtherPath) {
     Path imageFilePath = Path.of(firstPathElement);
     for (final String pathPart : furtherPath) {
       imageFilePath = imageFilePath.resolve(pathPart);
     }
-    return imageFilePath;
+    return imageFilePath.toString().replace(File.separatorChar, '/');
   }
 
   /**
@@ -176,11 +176,11 @@ public class ResourceLoader implements Closeable {
    */
   public Optional<BufferedImage> loadBufferedImage(
       final String firstPathElement, final String... furtherPath) {
-    final String imagePath = createPathToImage(firstPathElement, furtherPath).toString();
+    final String imagePath = createPathToImage(firstPathElement, furtherPath);
     URL url = getResource(imagePath);
     if (url == null) {
       // Upon first failure to find resource, try to fallback to /assets
-      url = getResource(createPathToImage(ASSETS_FOLDER, imagePath).toString());
+      url = getResource(createPathToImage(ASSETS_FOLDER, imagePath));
       if (url == null) {
         // this is actually pretty common that we try to read images that are not there. Let the
         // caller decide if this is an error or not.
