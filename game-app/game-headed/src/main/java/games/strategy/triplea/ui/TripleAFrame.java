@@ -1810,22 +1810,11 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         return;
       }
     }
-    clonedGameData.removeDataChangeListener(dataChangeListener);
     if (historySyncher != null) {
       throw new IllegalStateException("Two history synchers?");
     }
     historySyncher = new HistorySynchronizer(clonedGameData, game);
-    clonedGameData.addDataChangeListener(dataChangeListener);
-    statsPanel.setGameData(clonedGameData);
-    if (!TechAdvance.getTechAdvances(clonedGameData.getTechnologyFrontier(), null).isEmpty()) {
-      technologyPanel.setGameData(clonedGameData);
-    }
-    economyPanel.setGameData(clonedGameData);
-    if (objectivePanel != null) {
-      objectivePanel.setGameData(clonedGameData);
-    }
-    territoryDetailPanel.setGameData(clonedGameData);
-    mapPanel.setGameData(clonedGameData);
+    updatePanelsGameData(clonedGameData);
     Interruptibles.await(
         () ->
             SwingAction.invokeAndWait(
@@ -1856,6 +1845,19 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                   getContentPane().add(historyComponent, BorderLayout.CENTER);
                   validate();
                 }));
+  }
+
+  private void updatePanelsGameData(final GameData newGameData) {
+    mapPanel.setGameData(newGameData);
+    if (!TechAdvance.getTechAdvances(newGameData.getTechnologyFrontier(), null).isEmpty()) {
+      technologyPanel.setGameData(newGameData);
+    }
+    statsPanel.setGameData(newGameData);
+    economyPanel.setGameData(newGameData);
+    if (objectivePanel != null) {
+      objectivePanel.setGameData(newGameData);
+    }
+    territoryDetailPanel.setGameData(newGameData);
   }
 
   @Nonnull
@@ -1995,18 +1997,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
               historySyncher = null;
             }
             historyPanel = null;
-            mapPanel.getData().removeDataChangeListener(dataChangeListener);
-            if (!TechAdvance.getTechAdvances(data.getTechnologyFrontier(), null).isEmpty()) {
-              technologyPanel.setGameData(data);
-            }
-            statsPanel.setGameData(data);
-            economyPanel.setGameData(data);
-            if (objectivePanel != null) {
-              objectivePanel.setGameData(data);
-            }
-            territoryDetailPanel.setGameData(data);
-            mapPanel.setGameData(data);
-            data.addDataChangeListener(dataChangeListener);
+            updatePanelsGameData(data);
             tabsPanel.removeAll();
           }
           setWidgetActivation();
