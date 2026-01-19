@@ -11,6 +11,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.engine.data.events.ZoomMapListener;
+import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -357,5 +358,11 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
   @Override
   public void zoomMapChanged(Integer newZoom) {
     zoomLabel.setText(String.format("Zoom: %d%%", newZoom));
+  }
+
+  public void setGameDataForCurrentTerritory(GameData newGameData) {
+    if (currentTerritory != null) {
+      currentTerritory = GameDataUtils.translateIntoOtherGameData(currentTerritory, newGameData);
+    }
   }
 }

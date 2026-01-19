@@ -31,6 +31,7 @@ import games.strategy.engine.framework.HistorySynchronizer;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
+import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameFileSelector;
 import games.strategy.engine.history.HistoryNode;
@@ -274,6 +275,10 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     super("TripleA - " + game.getData().getGameName());
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
+    LookAndFeelSwingFrameListener.register(this);
+    setSize(700, 400);
+    setExtendedState(Frame.MAXIMIZED_BOTH);
+
     this.clientLeftGame = clientLeftGame;
 
     localPlayers = players;
@@ -489,7 +494,13 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         Interruptibles.awaitResult(
                 () ->
                     SwingAction.invokeAndWaitResult(
-                        () -> new TripleAFrame(game, players, uiContext, chat, clientLeftGame)))
+                        () -> {
+                          final TripleAFrame newFrame =
+                              new TripleAFrame(game, players, uiContext, chat, clientLeftGame);
+                          newFrame.setVisible(true);
+                          newFrame.toFront();
+                          return newFrame;
+                        }))
             .result
             .orElseThrow(() -> new IllegalStateException("Error while instantiating TripleAFrame"));
     frame.updateStep();
@@ -1799,22 +1810,11 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         return;
       }
     }
-    clonedGameData.removeDataChangeListener(dataChangeListener);
     if (historySyncher != null) {
       throw new IllegalStateException("Two history synchers?");
     }
     historySyncher = new HistorySynchronizer(clonedGameData, game);
-    clonedGameData.addDataChangeListener(dataChangeListener);
-    statsPanel.setGameData(clonedGameData);
-    if (!TechAdvance.getTechAdvances(clonedGameData.getTechnologyFrontier(), null).isEmpty()) {
-      technologyPanel.setGameData(clonedGameData);
-    }
-    economyPanel.setGameData(clonedGameData);
-    if (objectivePanel != null) {
-      objectivePanel.setGameData(clonedGameData);
-    }
-    territoryDetailPanel.setGameData(clonedGameData);
-    mapPanel.setGameData(clonedGameData);
+    updatePanelsGameData(clonedGameData);
     Interruptibles.await(
         () ->
             SwingAction.invokeAndWait(
@@ -1845,6 +1845,20 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                   getContentPane().add(historyComponent, BorderLayout.CENTER);
                   validate();
                 }));
+  }
+
+  private void updatePanelsGameData(final GameData newGameData) {
+    mapPanel.setGameData(newGameData);
+    bottomBar.setGameDataForCurrentTerritory(newGameData);
+    if (!TechAdvance.getTechAdvances(newGameData.getTechnologyFrontier(), null).isEmpty()) {
+      technologyPanel.setGameData(newGameData);
+    }
+    statsPanel.setGameData(newGameData);
+    economyPanel.setGameData(newGameData);
+    if (objectivePanel != null) {
+      objectivePanel.setGameData(newGameData);
+    }
+    territoryDetailPanel.setGameData(newGameData);
   }
 
   @Nonnull
@@ -1984,18 +1998,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
               historySyncher = null;
             }
             historyPanel = null;
-            mapPanel.getData().removeDataChangeListener(dataChangeListener);
-            if (!TechAdvance.getTechAdvances(data.getTechnologyFrontier(), null).isEmpty()) {
-              technologyPanel.setGameData(data);
-            }
-            statsPanel.setGameData(data);
-            economyPanel.setGameData(data);
-            if (objectivePanel != null) {
-              objectivePanel.setGameData(data);
-            }
-            territoryDetailPanel.setGameData(data);
-            mapPanel.setGameData(data);
-            data.addDataChangeListener(dataChangeListener);
+            updatePanelsGameData(data);
             tabsPanel.removeAll();
           }
           setWidgetActivation();
