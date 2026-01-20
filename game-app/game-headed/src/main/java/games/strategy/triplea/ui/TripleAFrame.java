@@ -1989,16 +1989,19 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
   private void showGame() {
     inGame.set(true);
+    final boolean inHistoryCompareTrueAndSetFalse = inHistory.compareAndSet(true, false);
+    if (inHistoryCompareTrueAndSetFalse) {
+      if (historySyncher != null) {
+        historySyncher.deactivate();
+        historySyncher = null;
+      }
+      historyPanel = null;
+      updatePanelsGameData(data);
+    }
     // Are we coming from showHistory mode or showMapOnly mode?
     SwingUtilities.invokeLater(
         () -> {
-          if (inHistory.compareAndSet(true, false)) {
-            if (historySyncher != null) {
-              historySyncher.deactivate();
-              historySyncher = null;
-            }
-            historyPanel = null;
-            updatePanelsGameData(data);
+          if (inHistoryCompareTrueAndSetFalse) {
             tabsPanel.removeAll();
           }
           setWidgetActivation();
