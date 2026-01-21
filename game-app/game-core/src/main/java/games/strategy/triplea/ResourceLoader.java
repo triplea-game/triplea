@@ -55,8 +55,8 @@ public class ResourceLoader implements Closeable {
     return assetsFileLocation.replace(File.separatorChar, '/');
   }
 
-  public ResourceLoader(@Nonnull final Path assetFolder) {
-    this(List.of(assetFolder));
+  public ResourceLoader(@Nonnull final Path assetFolderPath) {
+    this(List.of(assetFolderPath));
   }
 
   public ResourceLoader(List<Path> assetPaths) {
@@ -80,14 +80,14 @@ public class ResourceLoader implements Closeable {
    * Searches from a starting directory for a given directory. If not found, recursively goes up to
    * parent directories searching for the given directory.
    *
-   * @param startDir The start of the search path.
-   * @param targetDirName The name of the directory to find (must be a directory, not a file)
+   * @param startFolder The start of the search path.
+   * @param targetFolderName The name of the directory to find (must be a directory, not a file)
    * @return Path of the directory as found, otherwise empty.
    */
   @VisibleForTesting
-  static Optional<Path> findDirectory(final Path startDir, final String targetDirName) {
-    for (Path currentDir = startDir; currentDir != null; currentDir = currentDir.getParent()) {
-      final Path targetDir = currentDir.resolve(targetDirName);
+  static Optional<Path> findDirectory(final Path startFolder, final String targetFolderName) {
+    for (Path currentDir = startFolder; currentDir != null; currentDir = currentDir.getParent()) {
+      final Path targetDir = currentDir.resolve(targetFolderName);
       if (Files.isDirectory(targetDir)) {
         return Optional.of(targetDir);
       }
@@ -105,39 +105,40 @@ public class ResourceLoader implements Closeable {
     }
   }
 
-  public boolean hasPath(final String path) {
-    return loader.getResource(path) != null;
+  public boolean hasPathString(final String pathString) {
+    return loader.getResource(pathString) != null;
   }
 
   /**
    * Returns the URL of the resource at the specified path or {@code null} if the resource does not
    * exist.
    *
-   * @param inputPath (The name of a resource is a '/'-separated path name that identifies the
-   *     resource. Do not use '\' or File.separator)
+   * @param inputPathString (The name of a resource is a '/'-separated path name that identifies the
+   *     resource. Do not use '\' or {@code File.separator})
    */
-  public @Nullable URL getResource(final String inputPath) {
-    return findResource(inputPath).orElse(null);
+  public @Nullable URL getResource(final String inputPathString) {
+    return findResource(inputPathString).orElse(null);
   }
 
   /**
    * Returns the URL of the resource at the specified path or {@code null} if the resource does not
    * exist. Tries the given 2 paths in order first in the map resources then engine resources.
    *
-   * @param inputPath (The name of a resource is a '/'-separated path name that identifies the
-   *     resource. Do not use '\' or File.separator)
-   * @param inputPath2 Same as inputPath but this takes second priority when loading
+   * @param inputPathString (The name of a resource is a '/'-separated path name that identifies the
+   *     resource. Do not use '\' or {@code File.separator})
+   * @param inputPathString2 Same as {@code inputPathString} but this takes second priority when
+   *     loading
    */
-  public @Nullable URL getResource(final String inputPath, final String inputPath2) {
-    return findResource(inputPath).or(() -> findResource(inputPath2)).orElse(null);
+  public @Nullable URL getResource(final String inputPathString, final String inputPathString2) {
+    return findResource(inputPathString).or(() -> findResource(inputPathString2)).orElse(null);
   }
 
-  private Optional<URL> findResource(final String searchPath) {
-    return loader.resources(searchPath).findFirst();
+  private Optional<URL> findResource(final String searchPathString) {
+    return loader.resources(searchPathString).findFirst();
   }
 
-  public Optional<Path> optionalResource(final String path) {
-    return findResource(path)
+  public Optional<Path> optionalResource(final String pathString) {
+    return findResource(pathString)
         .map(
             url -> {
               try {
@@ -149,8 +150,8 @@ public class ResourceLoader implements Closeable {
         .map(Path::of);
   }
 
-  public Path requiredResource(final String path) throws IOException {
-    return optionalResource(path).orElseThrow(() -> new FileNotFoundException(path));
+  public Path requiredResource(final String pathString) throws IOException {
+    return optionalResource(pathString).orElseThrow(() -> new FileNotFoundException(pathString));
   }
 
   public Optional<Image> loadImage(final String imageName) {
@@ -158,10 +159,11 @@ public class ResourceLoader implements Closeable {
     return Optional.ofNullable(bufferedImage.orElse(null));
   }
 
-  private String createPathToImage(final String firstPathElement, final String... furtherPath) {
+  private String createPathToImageString(
+      final String firstPathElement, final String... furtherPathStrings) {
     Path imageFilePath = Path.of(firstPathElement);
-    for (final String pathPart : furtherPath) {
-      imageFilePath = imageFilePath.resolve(pathPart);
+    for (final String furtherPathString : furtherPathStrings) {
+      imageFilePath = imageFilePath.resolve(furtherPathString);
     }
     return imageFilePath.toString().replace(File.separatorChar, '/');
   }
@@ -169,18 +171,19 @@ public class ResourceLoader implements Closeable {
   /**
    * Tries to load images in a priority order, first from the map, then from engine assets.
    *
-   * @param firstPathElement the image file name or the first element of the path to the image
+   * @param firstPathElementString the image file name or the first element of the path to the image
    *     relative to the map folder of the game resp. the assets folder of the engine
-   * @param furtherPath zero or more further elements of the path to the image
+   * @param furtherPathString zero or more further elements of the path to the image
    * @return the image or null, if the image could not be found
    */
   public Optional<BufferedImage> loadBufferedImage(
-      final String firstPathElement, final String... furtherPath) {
-    final String imagePath = createPathToImage(firstPathElement, furtherPath);
-    URL url = getResource(imagePath);
+      final String firstPathElementString, final String... furtherPathString) {
+    final String imagePathString =
+        createPathToImageString(firstPathElementString, furtherPathString);
+    URL url = getResource(imagePathString);
     if (url == null) {
       // Upon first failure to find resource, try to fallback to /assets
-      url = getResource(createPathToImage(ASSETS_FOLDER, imagePath));
+      url = getResource(createPathToImageString(ASSETS_FOLDER, imagePathString));
       if (url == null) {
         // this is actually pretty common that we try to read images that are not there. Let the
         // caller decide if this is an error or not.
@@ -194,7 +197,7 @@ public class ResourceLoader implements Closeable {
       }
       return Optional.ofNullable(bufferedImage);
     } catch (final IOException e) {
-      log.error("Image loading failed: " + imagePath, e);
+      log.error("Image loading failed: " + imagePathString, e);
       return Optional.empty();
     }
   }
