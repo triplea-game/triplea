@@ -75,6 +75,7 @@ mockito-subclass = { module = "org.mockito:mockito-subclass", version.ref = "moc
 radiance-substance = { module = "org.pushing-pixels:radiance-substance", version.ref = "substance" }
 snakeyaml-engine = { module = "org.snakeyaml:snakeyaml-engine", version.ref = "snake-yaml" }
 sonatype-goodies-prefs = { module = "org.sonatype.goodies:goodies-prefs", version.ref = "sonatype-goodies-prefs" }
+spotless = { module = "com.diffplug.gradle.spotless:com.diffplug.gradle.spotless.gradle.plugin", version.ref = "spotless" }
 wiremock = { module = "com.github.tomakehurst:wiremock", version.ref = "wiremock" }
 wiremock-junit5 = { module = "ru.lanwen.wiremock:wiremock-junit5", version.ref = "wiremock-junit5" }
 xchart = { module = "org.knowm.xchart:xchart", version.ref = "xchart" }
