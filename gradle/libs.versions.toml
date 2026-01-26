@@ -1,7 +1,7 @@
 [versions]
 # Libraries
 apache-http-components = "4.5.14"
-assertj-core = "3.27.6"
+assertj-core = "3.27.7"
 awaitility = "4.3.0"
 caffeine = "3.2.3"
 checkstyle = "8.45"
