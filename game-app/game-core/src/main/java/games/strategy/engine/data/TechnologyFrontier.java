@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.Getter;
 
 /** A collection of {@link TechAdvance}s available to a single player. */
@@ -56,12 +57,28 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
     getData().getTechTracker().clearCache();
   }
 
-  public TechAdvance getAdvanceByProperty(final String property) {
-    return techs.stream().filter(ta -> ta.getProperty().equals(property)).findAny().orElse(null);
+  /**
+   * Returns {@link TechAdvance} by search first via {@link
+   * TechnologyFrontier#getAdvanceByProperty(String)} and then by {@link
+   * TechnologyFrontier#getAdvanceByName(String)}.
+   *
+   * @param propertyOrName Search string
+   * @return {@link Optional} of {@link TechAdvance}
+   */
+  public Optional<TechAdvance> getAdvanceByPropertyOrName(final String propertyOrName) {
+    final Optional<TechAdvance> techAdvanceByProperty = getAdvanceByProperty(propertyOrName);
+    if (techAdvanceByProperty.isPresent()) {
+      return techAdvanceByProperty;
+    }
+    return getAdvanceByName(propertyOrName);
   }
 
-  public TechAdvance getAdvanceByName(final String name) {
-    return techs.stream().filter(ta -> ta.getName().equals(name)).findAny().orElse(null);
+  private Optional<TechAdvance> getAdvanceByProperty(final String property) {
+    return techs.stream().filter(ta -> ta.getProperty().equals(property)).findAny();
+  }
+
+  private Optional<TechAdvance> getAdvanceByName(final String name) {
+    return techs.stream().filter(ta -> ta.getName().equals(name)).findAny();
   }
 
   public List<TechAdvance> getTechs() {
