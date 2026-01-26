@@ -107,11 +107,11 @@ class BattleCalculatorPanel extends JPanel {
   private final JLabel defenderUnitsTotalHitPoints = new JLabel();
   private final JLabel attackerUnitsTotalPower = new JLabel();
   private final JLabel defenderUnitsTotalPower = new JLabel();
-  private String attackerOrderOfLosses = null;
-  private String defenderOrderOfLosses = null;
   @Nullable private final Territory battleSiteTerritory;
   private final JList<String> territoryEffectsJList;
   private final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
+  private String attackerOrderOfLosses = null;
+  private String defenderOrderOfLosses = null;
   private boolean determineUnitsOnComboSelectionChange = true;
 
   BattleCalculatorPanel(
@@ -463,7 +463,7 @@ class BattleCalculatorPanel extends JPanel {
           final List<Unit> newDefenderUnits =
               CollectionUtils.getMatches(
                   attackingUnitsPanel.getUnits(),
-                  Matches.unitCanBeInBattle(false, isLandBattle(), 1, true));
+                  Matches.unitCanBeInBattle(true, isLandBattle(), 1, true));
           setAttackerWithUnits(newAttacker, newAttackerUnits);
           setDefenderWithUnits(newDefender, newDefenderUnits);
           setWidgetActivation();
@@ -528,6 +528,35 @@ class BattleCalculatorPanel extends JPanel {
             });
     setWidgetActivation();
     revalidate();
+  }
+
+  private static @Nonnull @NonNls String getRelationNumberText(double results, int defendersTotal) {
+    return formatValue(results) + " / " + defendersTotal;
+  }
+
+  private static String formatPercentage(final double percentage) {
+    return new DecimalFormat("#%.##").format(percentage);
+  }
+
+  private static String formatValue(final double value) {
+    return new DecimalFormat("#0.##").format(value);
+  }
+
+  private static @Nonnull String getTotalNumberText(final String label, final int totalNumber) {
+    return label + totalNumber;
+  }
+
+  private static boolean doesPlayerHaveUnitsOnMap(final GamePlayer player, final GameState data) {
+    return data.getMap().getTerritories().stream()
+        .anyMatch(Matches.territoryHasUnitsOwnedBy(player));
+  }
+
+  static boolean hasMaxRounds(final boolean isLand, final GameData data) {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
+      return isLand
+          ? Properties.getLandBattleRounds(data.getProperties()) > 0
+          : Properties.getSeaBattleRounds(data.getProperties()) > 0;
+    }
   }
 
   private void setupAttackerAndDefender() {
@@ -694,10 +723,6 @@ class BattleCalculatorPanel extends JPanel {
     time.setText(formatValue(results.getTime() / 1000.0) + " s");
   }
 
-  private static @Nonnull @NonNls String getRelationNumberText(double results, int defendersTotal) {
-    return formatValue(results) + " / " + defendersTotal;
-  }
-
   private Territory findPotentialBattleSite() {
     Territory newBattleSiteTerritory = null;
     if (this.battleSiteTerritory == null || this.battleSiteTerritory.isWater() == isLandBattle()) {
@@ -715,14 +740,6 @@ class BattleCalculatorPanel extends JPanel {
           format("No territory found that is land: {0}", isLandBattle()));
     }
     return newBattleSiteTerritory;
-  }
-
-  private static String formatPercentage(final double percentage) {
-    return new DecimalFormat("#%.##").format(percentage);
-  }
-
-  private static String formatValue(final double value) {
-    return new DecimalFormat("#0.##").format(value);
   }
 
   /**
@@ -896,10 +913,6 @@ class BattleCalculatorPanel extends JPanel {
     }
   }
 
-  private static @Nonnull String getTotalNumberText(final String label, final int totalNumber) {
-    return label + totalNumber;
-  }
-
   class PlayerRenderer extends DefaultListCellRenderer {
     private static final long serialVersionUID = -7639128794342607309L;
 
@@ -915,19 +928,6 @@ class BattleCalculatorPanel extends JPanel {
       setText(gamePlayer.getName());
       setIcon(new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(gamePlayer)));
       return this;
-    }
-  }
-
-  private static boolean doesPlayerHaveUnitsOnMap(final GamePlayer player, final GameState data) {
-    return data.getMap().getTerritories().stream()
-        .anyMatch(Matches.territoryHasUnitsOwnedBy(player));
-  }
-
-  static boolean hasMaxRounds(final boolean isLand, final GameData data) {
-    try (GameData.Unlocker ignored = data.acquireReadLock()) {
-      return isLand
-          ? Properties.getLandBattleRounds(data.getProperties()) > 0
-          : Properties.getSeaBattleRounds(data.getProperties()) > 0;
     }
   }
 }
