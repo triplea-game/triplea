@@ -309,7 +309,7 @@ public final class GameParser {
   }
 
   private Territory getTerritory(final String name) throws GameParseException {
-    return Optional.ofNullable(data.getMap().getTerritory(name))
+    return Optional.ofNullable(data.getMap().getTerritoryOrNull(name))
         .orElseThrow(
             () ->
                 new GameParseException(
@@ -341,7 +341,7 @@ public final class GameParser {
 
   /** If the Delegate cannot be found an exception will be thrown. */
   private IDelegate getDelegate(final String name) throws GameParseException {
-    return Optional.ofNullable(data.getDelegate(name))
+    return data.getDelegateOptional(name)
         .orElseThrow(
             () ->
                 new GameParseException(MessageFormat.format("Could not find delegate: {0}", name)));

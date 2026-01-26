@@ -3,7 +3,6 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.AllianceTracker;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataEvent;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.events.GameDataChangeListener;
@@ -35,7 +34,6 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
-import lombok.Setter;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
@@ -45,7 +43,7 @@ class StatPanel extends JPanel implements GameDataChangeListener {
 
   transient IStat[] stats;
   private final Map<GamePlayer, ImageIcon> mapPlayerImage = new HashMap<>();
-  @Setter protected GameData gameData;
+  protected GameData gameData;
   private final transient UiContext uiContext;
   private final StatTableModel dataModel;
 
@@ -55,7 +53,14 @@ class StatPanel extends JPanel implements GameDataChangeListener {
     dataModel = new StatTableModel();
     fillPlayerIcons();
     initLayout();
-    addListenerToGameDataChanged();
+    gameData.addDataChangeListener(this);
+  }
+
+  public void setGameData(final GameData data) {
+    gameData.removeDataChangeListener(this);
+    gameData = data;
+    gameData.addDataChangeListener(this);
+    gameDataChanged(null);
   }
 
   protected void initLayout() {
@@ -82,10 +87,6 @@ class StatPanel extends JPanel implements GameDataChangeListener {
     // JTableHeader.
     leftColumn.setHeaderRenderer(new JTableHeader().getDefaultRenderer());
     return statsTable;
-  }
-
-  private void addListenerToGameDataChanged() {
-    gameData.addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, () -> gameDataChanged(null));
   }
 
   @Override

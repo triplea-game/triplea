@@ -2,15 +2,12 @@ package games.strategy.engine.chat;
 
 import games.strategy.engine.framework.startup.mc.messages.ModeratorMessage;
 import games.strategy.engine.framework.startup.mc.messages.ModeratorPromoted;
-import games.strategy.net.IMessageListener;
-import games.strategy.net.INode;
 import games.strategy.triplea.EngineImageLoader;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -62,16 +59,13 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
     setupListeners();
     setChat(chat);
     chat.addMessengersListener(
-        new IMessageListener() {
-          @Override
-          public void messageReceived(Serializable msg, INode from) {
-            if (msg instanceof ModeratorPromoted) {
-              String newModerator = ((ModeratorPromoted) msg).getPlayerName();
-              for (int i = 0; i < listModel.getSize(); i++) {
-                if (listModel.get(i).getUserName().toString().equals(newModerator)) {
-                  listModel.get(i).setModerator(true);
-                  break;
-                }
+        (msg, from) -> {
+          if (msg instanceof ModeratorPromoted msgModetorPromoted) {
+            String newModerator = msgModetorPromoted.getPlayerName();
+            for (int i = 0; i < listModel.getSize(); i++) {
+              if (listModel.get(i).getUserName().toString().equals(newModerator)) {
+                listModel.get(i).setModerator(true);
+                break;
               }
             }
           }
@@ -104,8 +98,8 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
       maxNameLength = Math.max(maxNameLength, fontMetrics.stringWidth(onlinePlayer.getValue()));
     }
     int iconCounter = 0;
-    if (setCellRenderer instanceof PlayerChatRenderer) {
-      iconCounter = ((PlayerChatRenderer) setCellRenderer).getMaxIconCounter();
+    if (setCellRenderer instanceof PlayerChatRenderer playerChatRenderer) {
+      iconCounter = playerChatRenderer.getMaxIconCounter();
     }
     setPreferredSize(new Dimension(maxNameLength + 40 + iconCounter * 14, 80));
   }
@@ -122,7 +116,7 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
           final DefaultListCellRenderer renderer;
           if (setCellRenderer instanceof PlayerChatRenderer) {
             renderer =
-                (DefaultListCellRenderer)
+                (PlayerChatRenderer)
                     setCellRenderer.getListCellRendererComponent(
                         list, node, index, isSelected, cellHasFocus);
           } else {

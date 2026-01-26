@@ -40,7 +40,7 @@ class TerritoryOverLayDrawable extends AbstractDrawable {
       final GameData data,
       final Graphics2D graphics,
       final MapData mapData) {
-    final Territory territory = data.getMap().getTerritory(territoryName);
+    final Territory territory = data.getMap().getTerritoryOrNull(territoryName);
     final List<Polygon> polygons = mapData.getPolygons(territory);
     graphics.setColor(color);
     for (final Polygon polygon : polygons) {

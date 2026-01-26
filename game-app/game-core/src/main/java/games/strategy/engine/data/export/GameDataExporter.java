@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.UtilityClass;
@@ -206,6 +207,7 @@ public class GameDataExporter {
     }
   }
 
+  @Nullable
   private static Initialize.RelationshipInitialize relationshipInitialize(final GameState data) {
     if (data.getRelationshipTypeList().getAllRelationshipTypes().size() <= 4) {
       return null;
@@ -563,6 +565,7 @@ public class GameDataExporter {
         .build();
   }
 
+  @Nullable
   private static RelationshipTypes relationshipTypeList(final GameState data) {
     final Collection<RelationshipType> types =
         data.getRelationshipTypeList().getAllRelationshipTypes();
@@ -585,6 +588,7 @@ public class GameDataExporter {
     return RelationshipTypes.builder().relationshipTypes(relationshipTypes).build();
   }
 
+  @Nullable
   private static TerritoryEffectList territoryEffectList(final GameState data) {
     final Collection<TerritoryEffect> types = data.getTerritoryEffectList().values();
     if (types.isEmpty()) {

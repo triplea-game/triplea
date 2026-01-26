@@ -852,7 +852,7 @@ class BattleCalculatorPanel extends JPanel {
             .forEach(
                 unit -> {
                   final Optional<MutableProperty<?>> property =
-                      unit.getProperty(Unit.UNLOADED_AMPHIBIOUS);
+                      unit.getProperty(Unit.PropertyName.UNLOADED_AMPHIBIOUS);
                   if (property.isPresent()) {
                     try {
                       property.get().setValue(true);

@@ -71,7 +71,7 @@ class BattleCalculator implements IBattleCalculator {
           defender == null
               ? gameData.getPlayerList().getNullPlayer()
               : gameData.getPlayerList().getPlayerId(defender.getName());
-      final Territory location2 = gameData.getMap().getTerritory(location.getName());
+      final Territory location2 = gameData.getMap().getTerritoryOrNull(location.getName());
       final Collection<Unit> attackingUnits =
           translateCollectionIntoOtherGameData(attacking, gameData);
       final Collection<Unit> defendingUnits =

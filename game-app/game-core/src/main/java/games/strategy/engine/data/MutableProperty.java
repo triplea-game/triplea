@@ -81,8 +81,8 @@ public final class MutableProperty<T> {
    * @throws InvalidValueException If the new property value is invalid.
    */
   public void setValue(final @Nullable Object value) throws InvalidValueException {
-    if (value instanceof String) {
-      setStringValue((String) value);
+    if (value instanceof String stringValue) {
+      setStringValue(stringValue);
     } else {
       try {
         setTypedValue(cast(value));

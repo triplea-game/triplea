@@ -7,6 +7,7 @@ import games.strategy.engine.data.GameStep;
 import games.strategy.engine.delegate.IDelegate;
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Optional;
 
 /** A comparator for {@link GamePlayer} that sorts instances in game play order. */
 public class PlayerOrderComparator implements Comparator<GamePlayer>, Serializable {
@@ -31,12 +32,12 @@ public class PlayerOrderComparator implements Comparator<GamePlayer>, Serializab
       if (s.getPlayerId() == null) {
         continue;
       }
-      final IDelegate delegate;
+      final Optional<IDelegate> optionalDelegate;
       try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
-        delegate = s.getDelegate();
+        optionalDelegate = s.getDelegateOptional();
       }
-      if (delegate != null) {
-        final String delegateClassName = delegate.getClass().getName();
+      if (optionalDelegate.isPresent()) {
+        final String delegateClassName = optionalDelegate.get().getClass().getName();
         if (delegateClassName.equals("games.strategy.triplea.delegate.InitializationDelegate")
             || delegateClassName.equals("games.strategy.triplea.delegate.BidPurchaseDelegate")
             || delegateClassName.equals("games.strategy.triplea.delegate.BidPlaceDelegate")

@@ -14,6 +14,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.engine.data.events.ZoomMapListener;
+import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
@@ -544,7 +545,7 @@ public class MapPanel extends ImageScrollerLargeView {
     if (name == null) {
       return null;
     }
-    return gameData.getMap().getTerritory(name);
+    return gameData.getMap().getTerritoryOrNull(name);
   }
 
   private double normalizeX(final double x) {
@@ -637,6 +638,9 @@ public class MapPanel extends ImageScrollerLargeView {
     gameData = data;
     gameData.addTerritoryListener(territoryListener);
     gameData.addDataChangeListener(dataChangeListener);
+    if (currentTerritory != null) {
+      currentTerritory = GameDataUtils.translateIntoOtherGameData(currentTerritory, data);
+    }
     clearPendingDrawOperations();
     // Try to mitigate race condition where game data is set after shutting down the executor
     // technically there's no guarantee because the executor can be shut down after the if check
@@ -917,18 +921,7 @@ public class MapPanel extends ImageScrollerLargeView {
       int i = 0;
       for (final UnitCategory category : categories) {
         final Point place = new Point(i * (iconWidth + horizontalSpace), 0);
-        final UnitsDrawer drawer =
-            new UnitsDrawer(
-                category.getUnits().size(),
-                category.getType().getName(),
-                category.getOwner().getName(),
-                place,
-                category.getDamaged(),
-                category.getBombingDamage(),
-                category.getDisabled(),
-                false,
-                "",
-                uiContext);
+        final UnitsDrawer drawer = new UnitsDrawer(category, null, place, false, uiContext);
         drawer.draw(bounds, gameData, g, uiContext.getMapData());
         i++;
       }

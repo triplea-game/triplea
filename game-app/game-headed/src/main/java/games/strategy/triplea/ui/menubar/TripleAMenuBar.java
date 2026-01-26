@@ -5,40 +5,61 @@ import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.menubar.help.HelpMenu;
-import java.awt.event.KeyEvent;
 import java.util.Optional;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.experimental.UtilityClass;
+import org.triplea.swing.JMenuBuilder;
+import org.triplea.swing.JMenuItemBuilder;
+import org.triplea.swing.key.binding.KeyCode;
 
 /** The game client menu bar. */
-public final class TripleAMenuBar extends JMenuBar {
-  private static final long serialVersionUID = -1447295944297939539L;
+@UtilityClass
+public final class TripleAMenuBar {
 
-  private final TripleAFrame frame;
+  @AllArgsConstructor(access = AccessLevel.PUBLIC)
+  @Getter
+  public enum Mnemonic {
+    FILE(KeyCode.F),
+    VIEW(KeyCode.V),
+    GAME(KeyCode.G),
+    EXPORT(KeyCode.E),
+    LOBBY(KeyCode.L),
+    NETWORK(KeyCode.N),
+    DEBUG(KeyCode.D);
 
-  public TripleAMenuBar(final TripleAFrame frame) {
-    this.frame = frame;
-
-    add(new FileMenu(frame));
-    add(new ViewMenu(frame));
-    add(new GameMenu(frame));
-    add(new ExportMenu(frame));
-
-    final Optional<InGameLobbyWatcherWrapper> watcher = frame.getInGameLobbyWatcher();
-    watcher.filter(InGameLobbyWatcherWrapper::isActive).ifPresent(this::createLobbyMenu);
-    if (frame.getGame().getMessengers().isConnected()) {
-      add(new NetworkMenu(watcher, frame));
-    }
-
-    add(new DebugMenu(frame));
-    add(HelpMenu.buildMenu(frame.getUiContext(), frame.getGame().getData()));
+    private final KeyCode mnemonicCode;
   }
 
-  private void createLobbyMenu(final InGameLobbyWatcherWrapper watcher) {
-    final JMenu lobby = new JMenu("Lobby");
-    lobby.setMnemonic(KeyEvent.VK_L);
-    add(lobby);
-    lobby.add(new EditGameCommentAction(watcher, frame));
-    lobby.add(new RemoveGameFromLobbyAction(watcher));
+  public static JMenuBar get(final TripleAFrame frame) {
+    final JMenuBar menuBar = new JMenuBar();
+    menuBar.add(FileMenu.get(frame));
+    menuBar.add(ViewMenu.get(frame));
+    menuBar.add(GameMenu.get(frame));
+    menuBar.add(ExportMenu.get(frame));
+
+    final Optional<InGameLobbyWatcherWrapper> watcher = frame.getInGameLobbyWatcher();
+    watcher
+        .filter(InGameLobbyWatcherWrapper::isActive)
+        .ifPresent(watcherWrapper -> menuBar.add(getLobbyMenu(frame, watcherWrapper)));
+    if (frame.getGame().getMessengers().isConnected()) {
+      menuBar.add(NetworkMenu.get(watcher, frame));
+    }
+
+    menuBar.add(DebugMenu.get(frame));
+    menuBar.add(HelpMenu.buildMenu(frame, frame.getUiContext(), frame.getGame().getData()));
+
+    return menuBar;
+  }
+
+  private static JMenu getLobbyMenu(
+      final TripleAFrame frame, final InGameLobbyWatcherWrapper watcher) {
+    return new JMenuBuilder("Lobby", Mnemonic.LOBBY.getMnemonicCode())
+        .addMenuItem(new JMenuItemBuilder(new EditGameCommentAction(watcher, frame), KeyCode.E))
+        .addMenuItem(new JMenuItemBuilder(new RemoveGameFromLobbyAction(watcher), KeyCode.R))
+        .build();
   }
 }

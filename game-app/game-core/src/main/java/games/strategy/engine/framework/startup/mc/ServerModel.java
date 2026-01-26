@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.startup.mc;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static games.strategy.engine.framework.CliProperties.LOBBY_URI;
 import static games.strategy.engine.framework.CliProperties.SERVER_PASSWORD;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
@@ -200,8 +201,8 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       GameState.setStarted();
       return Optional.of(
           ServerConnectionProps.builder()
-              .name(System.getProperty(TRIPLEA_NAME))
-              .port(Integer.parseInt(System.getProperty(TRIPLEA_PORT)))
+              .name(checkNotNull(System.getProperty(TRIPLEA_NAME)))
+              .port(Integer.parseInt(checkNotNull(System.getProperty(TRIPLEA_PORT))))
               .password(
                   Optional.ofNullable(System.getProperty(SERVER_PASSWORD))
                       .map(String::toCharArray)
@@ -222,12 +223,11 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       serverMessenger.addMessageListener(
           (msg, from) -> {
             // check that message is from a moderator
-            if (msg instanceof ModeratorMessage) {
+            if (msg instanceof ModeratorMessage moderatorMessage) {
               if (!serverMessenger.isModerator(from)) {
                 return;
               }
 
-              ModeratorMessage moderatorMessage = (ModeratorMessage) msg;
               if (moderatorMessage.isBan()) {
                 serverMessenger.banPlayer(moderatorMessage.getPlayerName());
               } else if (moderatorMessage.isDisconnect()) {

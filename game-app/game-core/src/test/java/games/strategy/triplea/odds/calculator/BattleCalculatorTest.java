@@ -29,7 +29,7 @@ class BattleCalculatorTest extends AbstractClientSettingTestCase {
   @Test
   void testUnbalancedFight() {
     final GameData gameData = TestMapGameData.REVISED.getGameData();
-    final Territory germany = gameData.getMap().getTerritory("Germany");
+    final Territory germany = gameData.getMap().getTerritoryOrNull("Germany");
     final Collection<Unit> defendingUnits = new ArrayList<>(germany.getUnits());
     final GamePlayer russians = russians(gameData);
     final GamePlayer germans = germans(gameData);
@@ -60,7 +60,7 @@ class BattleCalculatorTest extends AbstractClientSettingTestCase {
     // if one attacking inf must live, the odds much worse
     final GamePlayer germans = germans(gameData);
     final GamePlayer british = british(gameData);
-    final Territory eastCanada = gameData.getMap().getTerritory("Eastern Canada");
+    final Territory eastCanada = gameData.getMap().getTerritoryOrNull("Eastern Canada");
     final List<Unit> defendingUnits = fighter(gameData).create(1, british);
     final List<Unit> attackingUnits = infantry(gameData).create(1, germans);
     attackingUnits.addAll(bomber(gameData).create(1, germans));

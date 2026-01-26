@@ -38,7 +38,7 @@ public class HeadedServerSetupModel {
   @Getter protected SetupPanel panel = null;
 
   @Setter private Consumer<SetupPanel> panelChangeListener;
-  @Setter private JFrame ui;
+  @Getter @Setter private JFrame ui;
 
   public void showSelectType() {
     setGameTypePanel(new MetaSetupPanel(this));

@@ -45,22 +45,22 @@ class PlayerOwnerChange extends Change {
 
   @Override
   protected void perform(final GameState data) {
-    for (final UUID id : newOwnerNamesByUnitId.keySet()) {
-      final Unit unit = data.getUnits().get(id);
-      if (!oldOwnerNamesByUnitId.get(id).equals(unit.getOwner().getName())) {
-        throw new IllegalStateException(
-            "Wrong "
-                + unit.getType().getName()
-                + " owner, expecting "
-                + oldOwnerNamesByUnitId.get(id)
-                + " but got "
-                + unit.getOwner());
-      }
-      final String owner = newOwnerNamesByUnitId.get(id);
-      final GamePlayer player = data.getPlayerList().getPlayerId(owner);
-      unit.setOwner(player);
-    }
-    data.getMap().getTerritory(territoryName).notifyChanged();
+    newOwnerNamesByUnitId.forEach(
+        (uuid, newOwnerName) -> {
+          final Unit unit = data.getUnits().get(uuid);
+          if (!oldOwnerNamesByUnitId.get(uuid).equals(unit.getOwner().getName())) {
+            throw new IllegalStateException(
+                "Wrong "
+                    + unit.getType().getName()
+                    + " owner, expecting "
+                    + oldOwnerNamesByUnitId.get(uuid)
+                    + " but got "
+                    + unit.getOwner());
+          }
+          final GamePlayer newOwner = data.getPlayerList().getPlayerId(newOwnerName);
+          unit.setOwner(newOwner);
+        });
+    data.getMap().getTerritoryOrThrow(territoryName).notifyChanged();
   }
 
   @Override

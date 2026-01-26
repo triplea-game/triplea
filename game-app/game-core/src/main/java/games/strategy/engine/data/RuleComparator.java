@@ -14,24 +14,18 @@ public class RuleComparator<T extends Rule> implements Comparator<T> {
     if (o1ResultsSize == 1 && o2ResultsSize == 1) {
       final NamedAttachable n1 = o1.getAnyResultKey();
       final NamedAttachable n2 = o2.getAnyResultKey();
-      if (n1 instanceof UnitType) {
-        final UnitType u1 = (UnitType) n1;
-        if (n2 instanceof UnitType) {
-          final UnitType u2 = (UnitType) n2;
+      if (n1 instanceof UnitType u1) {
+        if (n2 instanceof UnitType u2) {
           return unitTypeComparator.compare(u1, u2);
         } else if (n2 instanceof Resource) {
-          // final Resource r2 = (Resource) n2;
           return -1;
         }
 
         return n1.getName().compareTo(n2.getName());
-      } else if (n1 instanceof Resource) {
-        final Resource r1 = (Resource) n1;
+      } else if (n1 instanceof Resource r1) {
         if (n2 instanceof UnitType) {
-          // final UnitType u2 = (UnitType) n2;
           return 1;
-        } else if (n2 instanceof Resource) {
-          final Resource r2 = (Resource) n2;
+        } else if (n2 instanceof Resource r2) {
           return r1.getName().compareTo(r2.getName());
         } else {
           return n1.getName().compareTo(n2.getName());

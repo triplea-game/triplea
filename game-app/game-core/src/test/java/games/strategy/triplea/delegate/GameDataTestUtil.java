@@ -146,7 +146,7 @@ public final class GameDataTestUtil {
    * @return A Territory matching the given name if present, otherwise throwing an Exception.
    */
   public static Territory territory(final String name, final GameState data) {
-    return checkNotNull(data.getMap().getTerritory(name), "No territory: " + name);
+    return checkNotNull(data.getMap().getTerritoryOrNull(name), "No territory: " + name);
   }
 
   /** Returns an armor UnitType object for the specified GameData object. */
@@ -375,17 +375,17 @@ public final class GameDataTestUtil {
 
   /** Returns a BattleDelegate from the given GameData object. */
   public static BattleDelegate battleDelegate(final GameData data) {
-    return (BattleDelegate) data.getDelegate("battle");
+    return data.getBattleDelegate();
   }
 
   /** Returns a MoveDelegate from the given GameData object. */
   public static MoveDelegate moveDelegate(final GameData data) {
-    return (MoveDelegate) data.getDelegate("move");
+    return (MoveDelegate) data.getMoveDelegate();
   }
 
   /** Returns a TechnologyDelegate from the given GameData object. */
   static TechnologyDelegate techDelegate(final GameData data) {
-    return (TechnologyDelegate) data.getDelegate("tech");
+    return data.getTechDelegate();
   }
 
   /** Returns a PurchaseDelegate from the given GameData object. */

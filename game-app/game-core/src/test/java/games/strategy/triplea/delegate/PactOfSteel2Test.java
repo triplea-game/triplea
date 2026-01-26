@@ -21,11 +21,11 @@ class PactOfSteel2Test {
 
   @Test
   void testDirectOwnershipTerritories() {
-    final Territory norway = gameData.getMap().getTerritory("Norway");
-    final Territory easternEurope = gameData.getMap().getTerritory("Eastern Europe");
-    final Territory eastBalkans = gameData.getMap().getTerritory("East Balkans");
-    final Territory ukraineSsr = gameData.getMap().getTerritory("Ukraine S.S.R.");
-    final Territory belorussia = gameData.getMap().getTerritory("Belorussia");
+    final Territory norway = gameData.getMap().getTerritoryOrNull("Norway");
+    final Territory easternEurope = gameData.getMap().getTerritoryOrNull("Eastern Europe");
+    final Territory eastBalkans = gameData.getMap().getTerritoryOrNull("East Balkans");
+    final Territory ukraineSsr = gameData.getMap().getTerritoryOrNull("Ukraine S.S.R.");
+    final Territory belorussia = gameData.getMap().getTerritoryOrNull("Belorussia");
     final GamePlayer british = GameDataTestUtil.british(gameData);
     final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final GamePlayer russians = GameDataTestUtil.russians(gameData);

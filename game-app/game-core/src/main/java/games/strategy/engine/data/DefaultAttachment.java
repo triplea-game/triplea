@@ -7,6 +7,7 @@ import com.google.common.collect.Iterables;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
 import java.io.Serial;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -162,20 +163,17 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   public final boolean equals(final Object obj) {
     if (this == obj) {
       return true;
-    } else if (!(obj instanceof DefaultAttachment)) {
-      return false;
+    } else if (obj instanceof DefaultAttachment other) {
+      return getClass().equals(other.getClass())
+          && Objects.equals(
+              Objects.toString(attachedTo, null), Objects.toString(other.attachedTo, null))
+          && (Objects.equals(name, other.name) || this.toString().equals(other.toString()));
     }
-
-    final DefaultAttachment other = (DefaultAttachment) obj;
-    return getClass().equals(other.getClass())
-        && Objects.equals(
-            Objects.toString(attachedTo, null), Objects.toString(other.attachedTo, null))
-        && (Objects.equals(name, other.name) || this.toString().equals(other.toString()));
+    return false;
   }
 
-  protected Territory getTerritoryOrThrow(String name) throws GameParseException {
-    return Optional.ofNullable(getData().getMap().getTerritory(name))
-        .orElseThrow(() -> new GameParseException("No territory named: " + name + thisErrorMsg()));
+  protected Optional<Territory> getTerritory(@Nullable String territoryName) {
+    return Optional.ofNullable(getData().getMap().getTerritoryOrNull(territoryName));
   }
 
   protected List<GamePlayer> parsePlayerList(final String value, List<GamePlayer> existingList)
@@ -184,14 +182,20 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
       if (existingList == null) {
         existingList = new ArrayList<>();
       }
-      existingList.add(getPlayerOrThrow(name));
+      existingList.add(
+          getPlayerByName(name)
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "DefaultAttachment: Parsing PlayerList with value {0} not possible; No player found for {1}",
+                              value, name))));
     }
     return existingList;
   }
 
-  protected GamePlayer getPlayerOrThrow(String name) throws GameParseException {
-    return Optional.ofNullable(getData().getPlayerList().getPlayerId(name))
-        .orElseThrow(() -> new GameParseException("No player named: " + name + thisErrorMsg()));
+  protected Optional<GamePlayer> getPlayerByName(String name) {
+    return Optional.ofNullable(getData().getPlayerList().getPlayerId(name));
   }
 
   protected Set<UnitType> parseUnitTypes(String context, String value, Set<UnitType> existingSet)
@@ -242,14 +246,14 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   public static Object copyPropertyValue(Object value) {
-    if (value instanceof List) {
-      return new ArrayList((List) value);
-    } else if (value instanceof IntegerMap) {
-      return new IntegerMap((IntegerMap) value);
-    } else if (value instanceof Set) {
-      return new HashSet((Set) value);
-    } else if (value instanceof Map) {
-      return new HashMap((Map) value);
+    if (value instanceof List list) {
+      return new ArrayList(list);
+    } else if (value instanceof IntegerMap integerMap) {
+      return new IntegerMap(integerMap);
+    } else if (value instanceof Set set) {
+      return new HashSet(set);
+    } else if (value instanceof Map map) {
+      return new HashMap(map);
     }
     return value;
   }
