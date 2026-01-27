@@ -29,6 +29,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.Window;
+import java.awt.event.ItemEvent;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
 import java.time.Duration;
@@ -106,11 +107,12 @@ class BattleCalculatorPanel extends JPanel {
   private final JLabel defenderUnitsTotalHitPoints = new JLabel();
   private final JLabel attackerUnitsTotalPower = new JLabel();
   private final JLabel defenderUnitsTotalPower = new JLabel();
-  private String attackerOrderOfLosses = null;
-  private String defenderOrderOfLosses = null;
   @Nullable private final Territory battleSiteTerritory;
   private final JList<String> territoryEffectsJList;
   private final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
+  private String attackerOrderOfLosses = null;
+  private String defenderOrderOfLosses = null;
+  private boolean determineUnitsOnComboSelectionChange = true;
 
   BattleCalculatorPanel(
       final GameData data,
@@ -154,6 +156,33 @@ class BattleCalculatorPanel extends JPanel {
         }
       }
     }
+    attackerCombo.addItemListener(
+        e -> {
+          if (e.getStateChange() != ItemEvent.SELECTED || !determineUnitsOnComboSelectionChange) {
+            return;
+          }
+          attackerOrderOfLosses = null;
+          final GamePlayer newAttacker = (GamePlayer) attackerCombo.getSelectedItem();
+          final List<Unit> newAttackerUnits =
+              CollectionUtils.getMatches(
+                  newAttacker.getUnits(), Matches.unitCanBeInBattle(true, isLandBattle(), 1, true));
+          setAttackerWithUnits(newAttacker, newAttackerUnits);
+          setWidgetActivation();
+        });
+    defenderCombo.addItemListener(
+        e -> {
+          if (e.getStateChange() != ItemEvent.SELECTED || !determineUnitsOnComboSelectionChange) {
+            return;
+          }
+          defenderOrderOfLosses = null;
+          final GamePlayer newDefender = (GamePlayer) defenderCombo.getSelectedItem();
+          final List<Unit> newDefenderUnits =
+              CollectionUtils.getMatches(
+                  newDefender.getUnits(),
+                  Matches.unitCanBeInBattle(false, isLandBattle(), 1, true));
+          setDefenderWithUnits(newDefender, newDefenderUnits);
+          setWidgetActivation();
+        });
     defenderCombo.setRenderer(new PlayerRenderer());
     attackerCombo.setRenderer(new PlayerRenderer());
     defendingUnitsPanel = new PlayerUnitsPanel(data, uiContext, true);
@@ -501,6 +530,35 @@ class BattleCalculatorPanel extends JPanel {
     revalidate();
   }
 
+  private static @Nonnull @NonNls String getRelationNumberText(double results, int defendersTotal) {
+    return formatValue(results) + " / " + defendersTotal;
+  }
+
+  private static String formatPercentage(final double percentage) {
+    return new DecimalFormat("#%.##").format(percentage);
+  }
+
+  private static String formatValue(final double value) {
+    return new DecimalFormat("#0.##").format(value);
+  }
+
+  private static @Nonnull String getTotalNumberText(final String label, final int totalNumber) {
+    return label + totalNumber;
+  }
+
+  private static boolean doesPlayerHaveUnitsOnMap(final GamePlayer player, final GameState data) {
+    return data.getMap().getTerritories().stream()
+        .anyMatch(Matches.territoryHasUnitsOwnedBy(player));
+  }
+
+  static boolean hasMaxRounds(final boolean isLand, final GameData data) {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
+      return isLand
+          ? Properties.getLandBattleRounds(data.getProperties()) > 0
+          : Properties.getSeaBattleRounds(data.getProperties()) > 0;
+    }
+  }
+
   private void setupAttackerAndDefender() {
     final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
         AttackerAndDefenderSelector.builder()
@@ -510,9 +568,11 @@ class BattleCalculatorPanel extends JPanel {
             .territory(battleSiteTerritory)
             .build()
             .getAttackerAndDefender();
-
+    // units are set later, combo change during setup should not trigger the auto-unit-determination
+    determineUnitsOnComboSelectionChange = false;
     attAndDef.getAttacker().ifPresent(this::setAttacker);
     attAndDef.getDefender().ifPresent(this::setDefender);
+    determineUnitsOnComboSelectionChange = true;
     setAttackingUnits(attAndDef.getAttackingUnits());
     setDefendingUnits(attAndDef.getDefendingUnits());
   }
@@ -663,10 +723,6 @@ class BattleCalculatorPanel extends JPanel {
     time.setText(formatValue(results.getTime() / 1000.0) + " s");
   }
 
-  private static @Nonnull @NonNls String getRelationNumberText(double results, int defendersTotal) {
-    return formatValue(results) + " / " + defendersTotal;
-  }
-
   private Territory findPotentialBattleSite() {
     Territory newBattleSiteTerritory = null;
     if (this.battleSiteTerritory == null || this.battleSiteTerritory.isWater() == isLandBattle()) {
@@ -686,16 +742,18 @@ class BattleCalculatorPanel extends JPanel {
     return newBattleSiteTerritory;
   }
 
-  private static String formatPercentage(final double percentage) {
-    return new DecimalFormat("#%.##").format(percentage);
-  }
-
-  private static String formatValue(final double value) {
-    return new DecimalFormat("#0.##").format(value);
-  }
-
+  /**
+   * Sets a new {@code attacker} including the attacker's units. The flag {@link
+   * #determineUnitsOnComboSelectionChange} is disabled before setting the defender and enabled
+   * again at the end.
+   *
+   * @param attacker {@link GamePlayer} to be set as attacker
+   * @param initialUnits list of units to be set for the attacker
+   */
   public void setAttackerWithUnits(final GamePlayer attacker, final List<Unit> initialUnits) {
+    determineUnitsOnComboSelectionChange = false;
     setAttacker(attacker);
+    determineUnitsOnComboSelectionChange = true;
     setAttackingUnits(initialUnits);
   }
 
@@ -718,8 +776,18 @@ class BattleCalculatorPanel extends JPanel {
         battleSiteTerritory);
   }
 
+  /**
+   * Sets a new {@code defender} including the defender's units. The flag {@link
+   * #determineUnitsOnComboSelectionChange} is disabled before setting the defender and enabled
+   * again at the end.
+   *
+   * @param defender {@link GamePlayer} to be set as defender
+   * @param initialUnits list of units to be set for the defender
+   */
   public void setDefenderWithUnits(final GamePlayer defender, final List<Unit> initialUnits) {
+    determineUnitsOnComboSelectionChange = false;
     setDefender(defender);
+    determineUnitsOnComboSelectionChange = true;
     setDefendingUnits(initialUnits);
   }
 
@@ -845,10 +913,6 @@ class BattleCalculatorPanel extends JPanel {
     }
   }
 
-  private static @Nonnull String getTotalNumberText(final String label, final int totalNumber) {
-    return label + totalNumber;
-  }
-
   class PlayerRenderer extends DefaultListCellRenderer {
     private static final long serialVersionUID = -7639128794342607309L;
 
@@ -864,19 +928,6 @@ class BattleCalculatorPanel extends JPanel {
       setText(gamePlayer.getName());
       setIcon(new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(gamePlayer)));
       return this;
-    }
-  }
-
-  private static boolean doesPlayerHaveUnitsOnMap(final GamePlayer player, final GameState data) {
-    return data.getMap().getTerritories().stream()
-        .anyMatch(Matches.territoryHasUnitsOwnedBy(player));
-  }
-
-  static boolean hasMaxRounds(final boolean isLand, final GameData data) {
-    try (GameData.Unlocker ignored = data.acquireReadLock()) {
-      return isLand
-          ? Properties.getLandBattleRounds(data.getProperties()) > 0
-          : Properties.getSeaBattleRounds(data.getProperties()) > 0;
     }
   }
 }
