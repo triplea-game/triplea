@@ -3,6 +3,7 @@ package games.strategy.triplea.printgenerator;
 import games.strategy.engine.data.GameData;
 import java.awt.BorderLayout;
 import java.nio.file.Path;
+import java.util.concurrent.CompletableFuture;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -19,12 +20,10 @@ public class SetupFrame extends JPanel {
   private final JTextField outField;
   private final JFileChooser outChooser;
   private final JRadioButton originalState;
-  private final GameData data;
   private Path outDir;
 
-  public SetupFrame(final GameData data) {
+  public SetupFrame(final CompletableFuture<GameData> completableCopyGameData) {
     super(new BorderLayout());
-    this.data = data;
     final JButton outDirButton = new JButton();
     final JButton runButton = new JButton();
     outField = new JTextField(15);
@@ -54,7 +53,10 @@ public class SetupFrame extends JPanel {
           if (!outField.getText().isEmpty()) {
             outDir = Path.of(outField.getText());
             final PrintGenerationData printData =
-                PrintGenerationData.builder().outDir(outDir).data(this.data).build();
+                PrintGenerationData.builder()
+                    .outDir(outDir)
+                    .data(completableCopyGameData.join())
+                    .build();
             new InitialSetup().run(printData, originalState.isSelected());
             JOptionPane.showMessageDialog(null, "Done!", "Done!", JOptionPane.INFORMATION_MESSAGE);
           } else {
