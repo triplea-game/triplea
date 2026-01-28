@@ -2,10 +2,10 @@ package games.strategy.triplea.ui.menubar;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.export.GameDataExporter;
-import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.history.History;
 import games.strategy.engine.history.HistoryNode;
+import games.strategy.triplea.EngineImageLoader;
 import games.strategy.triplea.printgenerator.SetupFrame;
 import games.strategy.triplea.printgenerator.StatsInfo;
 import games.strategy.triplea.ui.TripleAFrame;
@@ -23,11 +23,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.Nonnull;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
-import javax.swing.WindowConstants;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,8 +33,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.map.data.elements.Game;
 import org.triplea.map.xml.writer.GameXmlWriter;
 import org.triplea.swing.FileChooser;
+import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.JMenuBuilder;
 import org.triplea.swing.JMenuItemBuilder;
+import org.triplea.swing.jpanel.JPanelBuilder;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.util.FileNameUtils;
 
@@ -177,23 +176,20 @@ final class ExportMenu {
   }
 
   private static void exportSetupCharts(final TripleAFrame frame) {
-    final JFrame chartsFrame = new JFrame("Export Setup Charts");
-    chartsFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
-    final GameData clonedGameData =
-        GameDataUtils.cloneGameData(frame.getGame().getData(), cloneOptions).orElse(null);
-    if (clonedGameData == null) {
-      return;
-    }
-    final JComponent newContentPane = new SetupFrame(clonedGameData);
-    // content panes must be opaque
-    newContentPane.setOpaque(true);
-    chartsFrame.setContentPane(newContentPane);
-    // Display the window.
-    chartsFrame.pack();
-    chartsFrame.setLocationRelativeTo(chartsFrame);
-    chartsFrame.setVisible(true);
-    frame.getUiContext().addShutdownWindow(chartsFrame);
+    JFrameBuilder.builder()
+        .title("Export Setup Charts")
+        .locateRelativeTo(frame)
+        .iconImage(EngineImageLoader.loadFrameIcon())
+        .pack()
+        .disposeOnClose()
+        .alwaysOnTop()
+        .add(
+            exportSetupChartsFrame ->
+                new JPanelBuilder()
+                    .add(new SetupFrame(getGameDataCloneWithHistory(frame.getGame().getData())))
+                    .build())
+        .visible(true)
+        .build();
   }
 
   @AllArgsConstructor(access = AccessLevel.PRIVATE)
