@@ -52,8 +52,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -90,6 +90,19 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   @VisibleForTesting
   public static int getSbrRolls(final Unit unit, final GamePlayer gamePlayer) {
     return unit.getUnitAttachment().getAttackRolls(gamePlayer);
+  }
+
+  private static List<String> buildSteps(boolean hasAa, List<Unit> defendingAa) {
+    final List<String> steps = new ArrayList<>();
+    if (hasAa) {
+      for (final String typeAa : UnitAttachment.getAllOfTypeAas(defendingAa)) {
+        steps.add(typeAa + AA_GUNS_FIRE_SUFFIX);
+        steps.add(SELECT_PREFIX + typeAa + CASUALTIES_SUFFIX);
+        steps.add(NOTIFY_PREFIX + typeAa + CASUALTIES_SUFFIX);
+      }
+    }
+    steps.add(RAID);
+    return steps;
   }
 
   @Override
@@ -240,16 +253,15 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     // reverse since stacks are in reverse order
     Collections.reverse(aaTypes);
     final boolean hasAa = !defendingAa.isEmpty();
-    steps = new ArrayList<>();
-    if (hasAa) {
-      for (final String typeAa : UnitAttachment.getAllOfTypeAas(defendingAa)) {
-        steps.add(typeAa + AA_GUNS_FIRE_SUFFIX);
-        steps.add(SELECT_PREFIX + typeAa + CASUALTIES_SUFFIX);
-        steps.add(NOTIFY_PREFIX + typeAa + CASUALTIES_SUFFIX);
-      }
-    }
-    steps.add(RAID);
+    steps = buildSteps(hasAa, defendingAa);
     showBattle(bridge);
+    for (final IExecutable executable : getFightStepsReversed(hasAa)) {
+      stack.push(executable);
+    }
+    stack.execute(bridge);
+  }
+
+  private @NonNull List<IExecutable> getFightStepsReversed(boolean hasAa) {
     final List<IExecutable> fightSteps = new ArrayList<>();
     if (hasAa) {
       // global1940 rules - each target type fires an AA shot against the planes bombing it
@@ -258,7 +270,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
               .filter(entry -> entry.getKey().getUnitAttachment().isAaForBombingThisUnitOnly())
               .map(Entry::getValue)
               .map(FireAa::new)
-              .collect(Collectors.toList()));
+              .toList());
 
       // otherwise fire an AA shot at all the planes
       if (fightSteps.isEmpty()) {
@@ -269,10 +281,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     fightSteps.add(postBombing());
     fightSteps.add(end());
     Collections.reverse(fightSteps);
-    for (final IExecutable executable : fightSteps) {
-      stack.push(executable);
-    }
-    stack.execute(bridge);
+    return fightSteps;
   }
 
   @Nonnull
