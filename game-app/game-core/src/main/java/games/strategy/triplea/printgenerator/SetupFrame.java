@@ -20,12 +20,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-import lombok.extern.slf4j.Slf4j;
 import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
 /** The top-level UI component for configuring the Setup Chart exporter. */
-@Slf4j
 public class SetupFrame extends JPanel {
   private static final long serialVersionUID = 7308943603423170303L;
   private final JTextField outField;
@@ -139,11 +137,6 @@ public class SetupFrame extends JPanel {
     }
     new PuInfo().saveToFile(printData);
     new PlayerOrder().saveToFile(printData);
-
-    try {
-      new PuChart(printData).saveToFile();
-    } catch (final IOException e) {
-      log.error("Failed to save print generation data", e);
-    }
+    new PuChart().saveToFiles(printData);
   }
 }
