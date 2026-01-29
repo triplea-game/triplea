@@ -186,7 +186,9 @@ final class ExportMenu {
         .add(
             exportSetupChartsFrame ->
                 new JPanelBuilder()
-                    .add(new SetupFrame(getGameDataCloneWithHistory(frame.getGame().getData())))
+                    .add(
+                        new SetupFrame(
+                            frame, getGameDataCloneWithHistory(frame.getGame().getData())))
                     .build())
         .visible(true)
         .build();
