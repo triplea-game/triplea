@@ -65,13 +65,13 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   private static final String RAID = "Strategic bombing raid";
 
   // these would be the factories or other targets. does not include aa.
-  private final Map<Unit, Set<Unit>> targets = new HashMap<>();
+  private final Map<Unit, Set<Unit>> targetsForAiFire = new HashMap<>();
   private final ExecutionStack stack = new ExecutionStack();
+  private final IntegerMap<Unit> bombingRaidDamage = new IntegerMap<>();
   private List<String> steps;
   private List<Unit> defendingAa;
   private List<String> aaTypes;
   private int bombingRaidTotal;
-  private final IntegerMap<Unit> bombingRaidDamage = new IntegerMap<>();
 
   public StrategicBombingRaidBattle(
       final Territory battleSite,
@@ -81,6 +81,19 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     super(battleSite, attacker, battleTracker, BattleType.BOMBING_RAID, data);
     isAmphibious = false;
     updateDefendingUnits();
+  }
+
+  private static int getSbrRolls(final Collection<Unit> units, final GamePlayer gamePlayer) {
+    int count = 0;
+    for (final Unit unit : units) {
+      count += getSbrRolls(unit, gamePlayer);
+    }
+    return count;
+  }
+
+  @VisibleForTesting
+  public static int getSbrRolls(final Unit unit, final GamePlayer gamePlayer) {
+    return unit.getUnitAttachment().getAttackRolls(gamePlayer);
   }
 
   @Override
@@ -93,7 +106,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     // double-check that the stuff still exists here.
     defendingUnits.retainAll(battleSite.getUnits());
     attackingUnits.retainAll(battleSite.getUnits());
-    targets.keySet().removeIf(unit -> !battleSite.getUnits().contains(unit));
+    targetsForAiFire.keySet().removeIf(unit -> !battleSite.getUnits().contains(unit));
   }
 
   protected void updateDefendingUnits() {
@@ -114,7 +127,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                             Matches.unitIsAaForBombingThisUnitOnly(),
                             round,
                             true)));
-    if (targets.isEmpty()) {
+    if (targetsForAiFire.isEmpty()) {
       defendingUnits = CollectionUtils.getMatches(battleSite.getUnits(), defenders);
     } else {
       final List<Unit> targetsForAaFire =
@@ -127,7 +140,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                   Matches.unitIsAaForBombingThisUnitOnly(),
                   round,
                   true));
-      targetsForAaFire.addAll(this.targets.keySet());
+      targetsForAaFire.addAll(this.targetsForAiFire.keySet());
       defendingUnits = targetsForAaFire;
     }
   }
@@ -145,9 +158,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
   private void removeAttackers(final Collection<Unit> units, final boolean removeTarget) {
     attackingUnits.removeAll(units);
-    final Iterator<Unit> targetIter = targets.keySet().iterator();
+    final Iterator<Unit> targetIter = targetsForAiFire.keySet().iterator();
     while (targetIter.hasNext()) {
-      final Set<Unit> currentAttackers = targets.get(targetIter.next());
+      final Set<Unit> currentAttackers = targetsForAiFire.get(targetIter.next());
       currentAttackers.removeAll(units);
       if (currentAttackers.isEmpty() && removeTarget) {
         targetIter.remove();
@@ -156,7 +169,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   }
 
   private Unit getTarget(final Unit attacker) {
-    return targets.entrySet().stream()
+    return targetsForAiFire.entrySet().stream()
         .filter(e -> e.getValue().contains(attacker))
         .map(Entry::getKey)
         .findAny()
@@ -176,7 +189,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     targets.forEach(
         (target, targetAttackers) -> {
           final Set<Unit> currentAttackers =
-              this.targets.computeIfAbsent(target, i -> new HashSet<>());
+              this.targetsForAiFire.computeIfAbsent(target, i -> new HashSet<>());
           currentAttackers.addAll(targetAttackers);
         });
     return ChangeFactory.EMPTY_CHANGE;
@@ -245,7 +258,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     if (hasAa) {
       // global1940 rules - each target type fires an AA shot against the planes bombing it
       fightSteps.addAll(
-          targets.entrySet().stream()
+          targetsForAiFire.entrySet().stream()
               .filter(entry -> entry.getKey().getUnitAttachment().isAaForBombingThisUnitOnly())
               .map(Entry::getValue)
               .map(FireAa::new)
@@ -325,10 +338,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       }
 
       private void killAnyWithMaxDamageReached(IDelegateBridge bridge) {
-        if (targets.keySet().stream().anyMatch(Matches.unitCanDieFromReachingMaxDamage())) {
+        if (targetsForAiFire.keySet().stream()
+            .anyMatch(Matches.unitCanDieFromReachingMaxDamage())) {
           final List<Unit> unitsCanDie =
               CollectionUtils.getMatches(
-                  targets.keySet(), Matches.unitCanDieFromReachingMaxDamage());
+                  targetsForAiFire.keySet(), Matches.unitCanDieFromReachingMaxDamage());
           unitsCanDie.retainAll(
               CollectionUtils.getMatches(
                   unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(battleSite)));
@@ -450,14 +464,110 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     bridge.getDisplayChannelBroadcaster().listBattleSteps(battleId, steps);
   }
 
+  private CasualtyDetails calculateCasualties(
+      final Collection<Unit> validAttackingUnitsForThisRoll,
+      final Collection<Unit> defendingAa,
+      final IDelegateBridge bridge,
+      final DiceRoll dice,
+      final String currentTypeAa) {
+    bridge
+        .getDisplayChannelBroadcaster()
+        .notifyDice(dice, SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX);
+    final CasualtyDetails casualties =
+        AaCasualtySelector.getAaCasualties(
+            validAttackingUnitsForThisRoll,
+            defendingAa,
+            CombatValueBuilder.mainCombatValue()
+                .enemyUnits(defendingUnits)
+                .friendlyUnits(attackingUnits)
+                .side(BattleState.Side.OFFENSE)
+                .gameSequence(bridge.getData().getSequence())
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
+                .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                .gameDiceSides(bridge.getData().getDiceSides())
+                .territoryEffects(territoryEffects)
+                .build(),
+            CombatValueBuilder.aaCombatValue()
+                .enemyUnits(attackingUnits)
+                .friendlyUnits(defendingUnits)
+                .side(BattleState.Side.DEFENSE)
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportAaRules())
+                .build(),
+            "Hits from " + currentTypeAa + ", ",
+            dice,
+            bridge,
+            attacker,
+            battleId,
+            battleSite);
+    final int totalExpectingHits = Math.min(dice.getHits(), validAttackingUnitsForThisRoll.size());
+    if (casualties.size() != totalExpectingHits) {
+      throw new IllegalStateException(
+          MessageFormat.format(
+              "Wrong number of casualties, expecting:{0} but got:{1}",
+              totalExpectingHits, casualties.size()));
+    }
+    return casualties;
+  }
+
+  private void notifyAaHits(
+      final IDelegateBridge bridge,
+      final DiceRoll dice,
+      final CasualtyDetails casualties,
+      final String currentTypeAa) {
+    bridge
+        .getDisplayChannelBroadcaster()
+        .casualtyNotification(
+            battleId,
+            NOTIFY_PREFIX + currentTypeAa + CASUALTIES_SUFFIX,
+            dice,
+            attacker,
+            new ArrayList<>(casualties.getKilled()),
+            new ArrayList<>(casualties.getDamaged()),
+            Map.of());
+    final Thread t =
+        new Thread(
+            () -> {
+              try {
+                final Player defender = bridge.getRemotePlayer(this.defender);
+                defender.confirmEnemyCasualties(battleId, "Press space to continue", attacker);
+              } catch (final Exception e) {
+                // ignore
+              }
+            },
+            "click to continue waiter");
+    t.start();
+    final Player attacker = bridge.getRemotePlayer(this.attacker);
+    attacker.confirmOwnCasualties(battleId, "Press space to continue");
+    bridge.leaveDelegateExecution();
+    Interruptibles.join(t);
+    bridge.enterDelegateExecution();
+  }
+
+  private void removeAaHits(
+      final IDelegateBridge bridge, final CasualtyDetails casualties, final String currentTypeAa) {
+    final List<Unit> killed = casualties.getKilled();
+    if (!killed.isEmpty()) {
+      final IntegerMap<UnitType> costs = bridge.getCostsForTuv(attacker);
+      final int tuvLostAttacker = TuvUtils.getTuv(killed, attacker, costs, gameData);
+      attackerLostTuv += tuvLostAttacker;
+      removeAttackers(killed, false);
+      HistoryChangeFactory.removeUnitsWithAa(battleSite, killed, currentTypeAa).perform(bridge);
+    }
+  }
+
+  @Override
+  public void unitsLostInPrecedingBattle(
+      final Collection<Unit> units, final IDelegateBridge bridge, final boolean withdrawn) {
+    // should never happen
+  }
+
   class FireAa implements IExecutable {
     private static final long serialVersionUID = -4667856856747597406L;
-
+    final Collection<Unit> casualtiesSoFar = new ArrayList<>();
+    final boolean determineAttackers;
     DiceRoll dice;
     CasualtyDetails casualties;
-    final Collection<Unit> casualtiesSoFar = new ArrayList<>();
     Collection<Unit> validAttackingUnitsForThisRoll;
-    final boolean determineAttackers;
 
     FireAa(final Collection<Unit> attackers) {
       validAttackingUnitsForThisRoll = attackers;
@@ -595,97 +705,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     }
   }
 
-  private CasualtyDetails calculateCasualties(
-      final Collection<Unit> validAttackingUnitsForThisRoll,
-      final Collection<Unit> defendingAa,
-      final IDelegateBridge bridge,
-      final DiceRoll dice,
-      final String currentTypeAa) {
-    bridge
-        .getDisplayChannelBroadcaster()
-        .notifyDice(dice, SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX);
-    final CasualtyDetails casualties =
-        AaCasualtySelector.getAaCasualties(
-            validAttackingUnitsForThisRoll,
-            defendingAa,
-            CombatValueBuilder.mainCombatValue()
-                .enemyUnits(defendingUnits)
-                .friendlyUnits(attackingUnits)
-                .side(BattleState.Side.OFFENSE)
-                .gameSequence(bridge.getData().getSequence())
-                .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
-                .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
-                .gameDiceSides(bridge.getData().getDiceSides())
-                .territoryEffects(territoryEffects)
-                .build(),
-            CombatValueBuilder.aaCombatValue()
-                .enemyUnits(attackingUnits)
-                .friendlyUnits(defendingUnits)
-                .side(BattleState.Side.DEFENSE)
-                .supportAttachments(bridge.getData().getUnitTypeList().getSupportAaRules())
-                .build(),
-            "Hits from " + currentTypeAa + ", ",
-            dice,
-            bridge,
-            attacker,
-            battleId,
-            battleSite);
-    final int totalExpectingHits = Math.min(dice.getHits(), validAttackingUnitsForThisRoll.size());
-    if (casualties.size() != totalExpectingHits) {
-      throw new IllegalStateException(
-          MessageFormat.format(
-              "Wrong number of casualties, expecting:{0} but got:{1}",
-              totalExpectingHits, casualties.size()));
-    }
-    return casualties;
-  }
-
-  private void notifyAaHits(
-      final IDelegateBridge bridge,
-      final DiceRoll dice,
-      final CasualtyDetails casualties,
-      final String currentTypeAa) {
-    bridge
-        .getDisplayChannelBroadcaster()
-        .casualtyNotification(
-            battleId,
-            NOTIFY_PREFIX + currentTypeAa + CASUALTIES_SUFFIX,
-            dice,
-            attacker,
-            new ArrayList<>(casualties.getKilled()),
-            new ArrayList<>(casualties.getDamaged()),
-            Map.of());
-    final Thread t =
-        new Thread(
-            () -> {
-              try {
-                final Player defender = bridge.getRemotePlayer(this.defender);
-                defender.confirmEnemyCasualties(battleId, "Press space to continue", attacker);
-              } catch (final Exception e) {
-                // ignore
-              }
-            },
-            "click to continue waiter");
-    t.start();
-    final Player attacker = bridge.getRemotePlayer(this.attacker);
-    attacker.confirmOwnCasualties(battleId, "Press space to continue");
-    bridge.leaveDelegateExecution();
-    Interruptibles.join(t);
-    bridge.enterDelegateExecution();
-  }
-
-  private void removeAaHits(
-      final IDelegateBridge bridge, final CasualtyDetails casualties, final String currentTypeAa) {
-    final List<Unit> killed = casualties.getKilled();
-    if (!killed.isEmpty()) {
-      final IntegerMap<UnitType> costs = bridge.getCostsForTuv(attacker);
-      final int tuvLostAttacker = TuvUtils.getTuv(killed, attacker, costs, gameData);
-      attackerLostTuv += tuvLostAttacker;
-      removeAttackers(killed, false);
-      HistoryChangeFactory.removeUnitsWithAa(battleSite, killed, currentTypeAa).perform(bridge);
-    }
-  }
-
   class ConductBombing implements IExecutable {
     private static final long serialVersionUID = 5579796391988452213L;
 
@@ -807,7 +826,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
     private void addToTargetDiceMap(
         final Unit attackerUnit, final Die roll, final Map<Unit, List<Die>> targetToDiceMap) {
-      if (targets.isEmpty()) {
+      if (targetsForAiFire.isEmpty()) {
         return;
       }
       final Unit target = getTarget(attackerUnit);
@@ -876,7 +895,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           costThisUnit = Math.min(costThisUnit, damageLimit);
         }
         cost += costThisUnit;
-        if (!targets.isEmpty()) {
+        if (!targetsForAiFire.isEmpty()) {
           bombingRaidDamage.add(getTarget(attacker), costThisUnit);
         }
       }
@@ -886,7 +905,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         final int alreadyLost = gameData.getMoveDelegate().pusAlreadyLost(battleSite);
         final int limit = Math.max(0, damageLimit - alreadyLost);
         cost = Math.min(cost, limit);
-        if (!targets.isEmpty()) {
+        if (!targetsForAiFire.isEmpty()) {
           for (final Unit u : bombingRaidDamage.keySet()) {
             if (bombingRaidDamage.getInt(u) > limit) {
               bombingRaidDamage.put(u, limit);
@@ -898,7 +917,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(
           gameData.getProperties())) {
         // at this point, bombingRaidDamage should contain all units that targets contains
-        if (!targets.keySet().containsAll(bombingRaidDamage.keySet())) {
+        if (!targetsForAiFire.keySet().containsAll(bombingRaidDamage.keySet())) {
           throw new IllegalStateException("targets should contain all damaged units");
         }
         for (final Unit current : bombingRaidDamage.keySet()) {
@@ -985,24 +1004,5 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       }
       bombingRaidTotal = cost;
     }
-  }
-
-  private static int getSbrRolls(final Collection<Unit> units, final GamePlayer gamePlayer) {
-    int count = 0;
-    for (final Unit unit : units) {
-      count += getSbrRolls(unit, gamePlayer);
-    }
-    return count;
-  }
-
-  @VisibleForTesting
-  public static int getSbrRolls(final Unit unit, final GamePlayer gamePlayer) {
-    return unit.getUnitAttachment().getAttackRolls(gamePlayer);
-  }
-
-  @Override
-  public void unitsLostInPrecedingBattle(
-      final Collection<Unit> units, final IDelegateBridge bridge, final boolean withdrawn) {
-    // should never happen
   }
 }
