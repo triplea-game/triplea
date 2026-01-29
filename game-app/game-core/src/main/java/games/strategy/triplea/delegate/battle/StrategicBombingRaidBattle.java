@@ -84,11 +84,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   }
 
   private static int getSbrRolls(final Collection<Unit> units, final GamePlayer gamePlayer) {
-    int count = 0;
-    for (final Unit unit : units) {
-      count += getSbrRolls(unit, gamePlayer);
-    }
-    return count;
+    return units.stream().mapToInt(u -> getSbrRolls(u, gamePlayer)).sum();
   }
 
   @VisibleForTesting
@@ -558,7 +554,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   @Override
   public void unitsLostInPrecedingBattle(
       final Collection<Unit> units, final IDelegateBridge bridge, final boolean withdrawn) {
-    // should never happen
+    throw new IllegalStateException("This code should never be reached");
   }
 
   class FireAa implements IExecutable {
