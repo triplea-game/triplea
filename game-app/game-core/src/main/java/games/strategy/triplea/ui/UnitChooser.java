@@ -664,8 +664,6 @@ public final class UnitChooser extends JPanel {
       }
     }
 
-    // false positive
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private Image getImage(final ImageKey imageKey, final boolean nonWithdrawable) {
       final Image undecoratedImage = unitImageFactoryForDecoratedImages.getImage(imageKey);
 

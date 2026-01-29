@@ -6,7 +6,7 @@ import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.lobby.AuthenticationHeaders;
 
 public interface LatestVersionClient {
-  String LATEST_VERSION_PATH = "/latest-version";
+  String LATEST_VERSION_PATH = "/support/latest-version";
 
   static LatestVersionClient newClient(final URI uri) {
     return HttpClient.newClient(

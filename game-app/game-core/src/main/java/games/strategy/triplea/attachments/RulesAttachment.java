@@ -6,7 +6,6 @@ import static com.google.common.base.Preconditions.checkState;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.BattleRecordsList;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.IAttachment;
@@ -26,6 +25,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.formatter.MyFormatter;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -185,15 +185,25 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           "battle must have at least 5 fields, attacker:defender:resultType:round:territory1..."
               + thisErrorMsg());
     }
-    final GamePlayer attacker = getData().getPlayerList().getPlayerId(s[0]);
-    if (attacker == null && !s[0].equalsIgnoreCase("any")) {
-      throw new GameParseException("no player named: " + s[0] + thisErrorMsg());
+    if (!isAnyValue(s[0])) {
+      getPlayerByName(s[0])
+          .orElseThrow(
+              () ->
+                  new GameParseException(
+                      MessageFormat.format(
+                          "Invalid attacker for battle: {0} \n player: {1} unknown{2}",
+                          value, s[0], thisErrorMsg())));
     }
-    final GamePlayer defender = getData().getPlayerList().getPlayerId(s[1]);
-    if (defender == null && !s[1].equalsIgnoreCase("any")) {
-      throw new GameParseException("no player named: " + s[1] + thisErrorMsg());
+    if (!isAnyValue(s[1])) {
+      getPlayerByName(s[1])
+          .orElseThrow(
+              () ->
+                  new GameParseException(
+                      MessageFormat.format(
+                          "Invalid defender for battle: {0} \n player: {1} unknown{2}",
+                          value, s[1], thisErrorMsg())));
     }
-    if (!s[2].equalsIgnoreCase("any")) {
+    if (!isAnyValue(s[2])) {
       throw new GameParseException(
           "battle allows the following for resultType: any" + thisErrorMsg());
     }
@@ -207,13 +217,17 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       }
     }
     final List<Territory> terrs = new ArrayList<>();
-    final GameMap map = getData().getMap();
     // this loop starts on 4, so do not replace with an enhanced for loop
     for (int i = 4; i < s.length; i++) {
-      final Territory t = map.getTerritoryOrNull(s[i]);
-      if (t == null) {
-        throw new GameParseException("no such territory called: " + s[i] + thisErrorMsg());
-      }
+      int currentIndex = i;
+      final Territory t =
+          getTerritory(s[currentIndex])
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "RulesAttachment: Setting Battle with value {0} not possible; Index {1}: No territory found for {2}",
+                              value, currentIndex, s[currentIndex])));
       terrs.add(t);
     }
     if (battle == null) {
@@ -247,22 +261,20 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
               + ":relationshiptype:numberOfRoundsExisting\""
               + thisErrorMsg());
     }
-    if (getData().getPlayerList().getPlayerId(s[0]) == null) {
-      throw new GameParseException(
-          "playername: "
-              + s[0]
-              + " isn't valid in condition with relationship: "
-              + value
-              + thisErrorMsg());
-    }
-    if (getData().getPlayerList().getPlayerId(s[1]) == null) {
-      throw new GameParseException(
-          "playername: "
-              + s[1]
-              + " isn't valid in condition with relationship: "
-              + value
-              + thisErrorMsg());
-    }
+    getPlayerByName(s[0])
+        .orElseThrow(
+            () ->
+                new GameParseException(
+                    MessageFormat.format(
+                        "Setting relationship with value {0} not possible; first player {1} unknown{2}",
+                        value, s[0], thisErrorMsg())));
+    getPlayerByName(s[1])
+        .orElseThrow(
+            () ->
+                new GameParseException(
+                    MessageFormat.format(
+                        "Setting relationship with value {0} not possible; second player {1} unknown{2}",
+                        value, s[1], thisErrorMsg())));
     if (!(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)
         || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL)
         || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR)
@@ -471,7 +483,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final String unitTypeToProduce = s[i];
       // validate that this unit exists in the xml
       if (getDataOrThrow().getUnitTypeList().getUnitType(unitTypeToProduce).isEmpty()
-          && !(unitTypeToProduce.equals("any") || unitTypeToProduce.equals("ANY"))) {
+          && !isAnyValue(unitTypeToProduce)) {
         throw new GameParseException("No unit called: " + unitTypeToProduce + thisErrorMsg());
       }
     }
@@ -531,7 +543,15 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
     atWarPlayers = new HashSet<>();
     for (int i = count == -1 ? 0 : 1; i < s.length; i++) {
-      atWarPlayers.add(getPlayerOrThrow(s[i]));
+      final int currentIndex = i;
+      atWarPlayers.add(
+          getPlayerByName(s[currentIndex])
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "RulesAttachment: Setting atWarPlayers with value {0} not possible; No player found for {1}",
+                              players, s[currentIndex]))));
     }
   }
 
@@ -799,8 +819,27 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       for (final Tuple<String, List<Territory>> entry : battle) {
         final String[] type = splitOnColon(entry.getFirst());
         // they could be "any", and if they are "any" then this would be null, which is good!
-        final GamePlayer attacker = data.getPlayerList().getPlayerId(type[0]);
-        final GamePlayer defender = data.getPlayerList().getPlayerId(type[1]);
+        // @TODO: Battle should store attacker and defender to avoid reparsing them here
+        final GamePlayer attacker =
+            (isAnyValue(type[0])
+                ? null
+                : getPlayerByName(type[0])
+                    .orElseThrow(
+                        () ->
+                            new IllegalStateException(
+                                MessageFormat.format(
+                                    "Battle {0} invalid; attacker {1} unknown{2}",
+                                    entry.getFirst(), type[0], thisErrorMsg()))));
+        final GamePlayer defender =
+            (isAnyValue(type[1])
+                ? null
+                : getPlayerByName(type[1])
+                    .orElseThrow(
+                        () ->
+                            new IllegalStateException(
+                                MessageFormat.format(
+                                    "Battle {0} invalid; attacker {1} unknown{2}",
+                                    entry.getFirst(), type[1], thisErrorMsg()))));
         final String resultType = type[2];
         final String roundType = type[3];
         int start = 0;
@@ -877,8 +916,23 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private boolean checkRelationships() {
     for (final String encodedRelationCheck : getRelationship()) {
       final String[] relationCheck = splitOnColon(encodedRelationCheck);
-      final GamePlayer p1 = getData().getPlayerList().getPlayerId(relationCheck[0]);
-      final GamePlayer p2 = getData().getPlayerList().getPlayerId(relationCheck[1]);
+      // @TODO: Relationship should store players to avoid reparsing them here
+      final GamePlayer p1 =
+          getPlayerByName(relationCheck[0])
+              .orElseThrow(
+                  () ->
+                      new IllegalStateException(
+                          MessageFormat.format(
+                              "Relationship {0} invalid; first player {1} unknown{2}",
+                              encodedRelationCheck, relationCheck[0], thisErrorMsg())));
+      final GamePlayer p2 =
+          getPlayerByName(relationCheck[1])
+              .orElseThrow(
+                  () ->
+                      new IllegalStateException(
+                          MessageFormat.format(
+                              "Relationship {0} invalid; second player {1} unknown{2}",
+                              encodedRelationCheck, relationCheck[1], thisErrorMsg())));
       final int relationshipsExistence = Integer.parseInt(relationCheck[3]);
       final Relationship currentRelationship =
           getData().getRelationshipTracker().getRelationship(p1, p2);
@@ -986,7 +1040,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private Predicate<Unit> getUnitTypesPredicate(GameState data, String uc) {
-    if (uc == null || uc.equals("ANY") || uc.equals("any")) {
+    if (uc == null || isAnyValue(uc)) {
       return unit -> true;
     }
     return Matches.unitIsOfTypes(data.getUnitTypeList().getUnitTypes(splitOnColon(uc)));

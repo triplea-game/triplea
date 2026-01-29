@@ -1,14 +1,11 @@
 package games.strategy.triplea;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import com.google.common.annotations.VisibleForTesting;
-import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.triplea.ui.OrderedProperties;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,13 +17,11 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.game.Exceptions;
 import org.triplea.io.PathUtils;
 import org.triplea.java.UrlStreams;
 
@@ -36,27 +31,37 @@ import org.triplea.java.UrlStreams;
  */
 @Slf4j
 public class ResourceLoader implements Closeable {
-  public static final String ASSETS_FOLDER = "assets";
+  private static final String ASSETS_FOLDER = "assets";
 
   private final URLClassLoader loader;
 
   @Getter private final List<Path> assetPaths;
 
-  public ResourceLoader(@Nonnull final Path assetFolder) {
-    this(List.of(assetFolder));
+  /**
+   * Assembles the full path to an asset from the root of the classpath using the given path
+   * components.
+   *
+   * <p>Note that classpath resources are always loaded using '/', regardless of the file platform
+   * separator, so ensure that's the separator we're using.
+   *
+   * @param assetsImageFileStrings segments of the path from the assets folder to an image, eg:
+   *     {@code getAssetsImageFileLocation("folder-in-assets", "image.png");}
+   * @return the full path from the root of the classpath, eg: {@code
+   *     "/assets/folder-in-assets/image.png"}
+   */
+  public static String getAssetsFileLocation(String... assetsImageFileStrings) {
+    String assetsFileLocation =
+        ASSETS_FOLDER + File.separator + String.join(File.separator, assetsImageFileStrings);
+    return assetsFileLocation.replace(File.separatorChar, '/');
+  }
+
+  public ResourceLoader(@Nonnull final Path assetFolderPath) {
+    this(List.of(assetFolderPath));
   }
 
   public ResourceLoader(List<Path> assetPaths) {
     this.assetPaths = assetPaths;
-    List<URL> searchUrls = assetPaths.stream().map(PathUtils::toUrl).collect(Collectors.toList());
-
-    if (!GameRunner.headless()) {
-      Path gameEngineAssets =
-          findDirectory(ClientFileSystemHelper.getRootFolder(), ASSETS_FOLDER)
-              .orElseThrow(GameAssetsNotFoundException::new);
-
-      searchUrls.add(PathUtils.toUrl(gameEngineAssets));
-    }
+    List<URL> searchUrls = assetPaths.stream().map(PathUtils::toUrl).toList();
 
     // Note: URLClassLoader does not always respect the ordering of the search URLs
     // To solve this we will get all matching paths and then filter by what matched
@@ -72,49 +77,17 @@ public class ResourceLoader implements Closeable {
   }
 
   /**
-   * Loads an image from the 'assets' folder. Images downloaded as part of the build to be included
-   * with the game are downloaded to this location. Check the gradle build file download images task
-   * for more information on what will be contained in that folder.
-   */
-  public static Image loadImageAsset(Path pathRelativeToAssetsFolder) {
-    Path imagePath = Path.of(ASSETS_FOLDER).resolve(pathRelativeToAssetsFolder);
-
-    checkArgument(
-        Files.exists(imagePath),
-        "File must exist at path: %s, "
-            + "Build with the checked in launcher, or run gradle task 'downloadAssets'.",
-        imagePath.toAbsolutePath());
-    try {
-      return ImageIO.read(imagePath.toFile());
-    } catch (final IOException e) {
-      throw new RuntimeException("Unable to load image at path: " + imagePath.toAbsolutePath(), e);
-    }
-  }
-
-  private static class GameAssetsNotFoundException extends RuntimeException {
-    private static final long serialVersionUID = -8274500540886412040L;
-
-    GameAssetsNotFoundException() {
-      super(
-          "Unable to find game assets folder starting from location: "
-              + ClientFileSystemHelper.getRootFolder().toAbsolutePath()
-              + "\nThere is a problem with the installation, please report this to TripleA "
-              + "and the path where TripleA is installed.");
-    }
-  }
-
-  /**
    * Searches from a starting directory for a given directory. If not found, recursively goes up to
    * parent directories searching for the given directory.
    *
-   * @param startDir The start of the search path.
-   * @param targetDirName The name of the directory to find (must be a directory, not a file)
+   * @param startFolder The start of the search path.
+   * @param targetFolderName The name of the directory to find (must be a directory, not a file)
    * @return Path of the directory as found, otherwise empty.
    */
   @VisibleForTesting
-  static Optional<Path> findDirectory(final Path startDir, final String targetDirName) {
-    for (Path currentDir = startDir; currentDir != null; currentDir = currentDir.getParent()) {
-      final Path targetDir = currentDir.resolve(targetDirName);
+  static Optional<Path> findDirectory(final Path startFolder, final String targetFolderName) {
+    for (Path currentDir = startFolder; currentDir != null; currentDir = currentDir.getParent()) {
+      final Path targetDir = currentDir.resolve(targetFolderName);
       if (Files.isDirectory(targetDir)) {
         return Optional.of(targetDir);
       }
@@ -132,39 +105,40 @@ public class ResourceLoader implements Closeable {
     }
   }
 
-  public boolean hasPath(final String path) {
-    return loader.getResource(path) != null;
+  public boolean hasPathString(final String pathString) {
+    return loader.getResource(pathString) != null;
   }
 
   /**
    * Returns the URL of the resource at the specified path or {@code null} if the resource does not
    * exist.
    *
-   * @param inputPath (The name of a resource is a '/'-separated path name that identifies the
-   *     resource. Do not use '\' or File.separator)
+   * @param inputPathString (The name of a resource is a '/'-separated path name that identifies the
+   *     resource. Do not use '\' or {@code File.separator})
    */
-  public @Nullable URL getResource(final String inputPath) {
-    return findResource(inputPath).orElse(null);
+  public @Nullable URL getResource(final String inputPathString) {
+    return findResource(inputPathString).orElse(null);
   }
 
   /**
    * Returns the URL of the resource at the specified path or {@code null} if the resource does not
    * exist. Tries the given 2 paths in order first in the map resources then engine resources.
    *
-   * @param inputPath (The name of a resource is a '/'-separated path name that identifies the
-   *     resource. Do not use '\' or File.separator)
-   * @param inputPath2 Same as inputPath but this takes second priority when loading
+   * @param inputPathString (The name of a resource is a '/'-separated path name that identifies the
+   *     resource. Do not use '\' or {@code File.separator})
+   * @param inputPathString2 Same as {@code inputPathString} but this takes second priority when
+   *     loading
    */
-  public @Nullable URL getResource(final String inputPath, final String inputPath2) {
-    return findResource(inputPath).or(() -> findResource(inputPath2)).orElse(null);
+  public @Nullable URL getResource(final String inputPathString, final String inputPathString2) {
+    return findResource(inputPathString).or(() -> findResource(inputPathString2)).orElse(null);
   }
 
-  private Optional<URL> findResource(final String searchPath) {
-    return loader.resources(searchPath).findFirst();
+  private Optional<URL> findResource(final String searchPathString) {
+    return loader.resources(searchPathString).findFirst();
   }
 
-  public Optional<Path> optionalResource(final String path) {
-    return findResource(path)
+  public Optional<Path> optionalResource(final String pathString) {
+    return findResource(pathString)
         .map(
             url -> {
               try {
@@ -176,17 +150,8 @@ public class ResourceLoader implements Closeable {
         .map(Path::of);
   }
 
-  public Path requiredResource(final String path) throws IOException {
-    return optionalResource(path).orElseThrow(() -> new FileNotFoundException(path));
-  }
-
-  public BufferedImage getImageOrThrow(final String inputPath) {
-    URL url = findResource(inputPath).orElseThrow(() -> new Exceptions.MissingFile(inputPath));
-    try {
-      return ImageIO.read(url);
-    } catch (IOException e) {
-      throw new Exceptions.MissingFile(inputPath, e);
-    }
+  public Path requiredResource(final String pathString) throws IOException {
+    return optionalResource(pathString).orElseThrow(() -> new FileNotFoundException(pathString));
   }
 
   public Optional<Image> loadImage(final String imageName) {
@@ -194,30 +159,36 @@ public class ResourceLoader implements Closeable {
     return Optional.ofNullable(bufferedImage.orElse(null));
   }
 
-  private Path createPathToImage(final String firstPathElement, final String... furtherPath) {
+  private String createPathToImageString(
+      final String firstPathElement, final String... furtherPathStrings) {
     Path imageFilePath = Path.of(firstPathElement);
-    for (final String pathPart : furtherPath) {
-      imageFilePath = imageFilePath.resolve(pathPart);
+    for (final String furtherPathString : furtherPathStrings) {
+      imageFilePath = imageFilePath.resolve(furtherPathString);
     }
-    return imageFilePath;
+    return imageFilePath.toString().replace(File.separatorChar, '/');
   }
 
   /**
-   * tries to load images in a priority order, first from the map, then from engine assets
+   * Tries to load images in a priority order, first from the map, then from engine assets.
    *
-   * @param firstPathElement the image file name or the first element of the path to the image
+   * @param firstPathElementString the image file name or the first element of the path to the image
    *     relative to the map folder of the game resp. the assets folder of the engine
-   * @param furtherPath zero or more further elements of the path to the image
+   * @param furtherPathString zero or more further elements of the path to the image
    * @return the image or null, if the image could not be found
    */
   public Optional<BufferedImage> loadBufferedImage(
-      final String firstPathElement, final String... furtherPath) {
-    final String imageName = createPathToImage(firstPathElement, furtherPath).toString();
-    final URL url = getResource(imageName);
+      final String firstPathElementString, final String... furtherPathString) {
+    final String imagePathString =
+        createPathToImageString(firstPathElementString, furtherPathString);
+    URL url = getResource(imagePathString);
     if (url == null) {
-      // this is actually pretty common that we try to read images that are not there. Let the
-      // caller decide if this is an error or not.
-      return Optional.empty();
+      // Upon first failure to find resource, try to fallback to /assets
+      url = getResource(createPathToImageString(ASSETS_FOLDER, imagePathString));
+      if (url == null) {
+        // this is actually pretty common that we try to read images that are not there. Let the
+        // caller decide if this is an error or not.
+        return Optional.empty();
+      }
     }
     try {
       final BufferedImage bufferedImage = ImageIO.read(url);
@@ -226,7 +197,7 @@ public class ResourceLoader implements Closeable {
       }
       return Optional.ofNullable(bufferedImage);
     } catch (final IOException e) {
-      log.error("Image loading failed: " + imageName, e);
+      log.error("Image loading failed: " + imagePathString, e);
       return Optional.empty();
     }
   }

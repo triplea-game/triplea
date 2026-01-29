@@ -25,11 +25,10 @@ public final class UnitOwner {
   public boolean equals(final Object o) {
     if (o == this) {
       return true;
-    } else if (!(o instanceof UnitOwner)) {
-      return false;
+    } else if (o instanceof UnitOwner other) {
+      return Objects.equals(type, other.type) && Objects.equals(owner, other.owner);
     }
-    final UnitOwner other = (UnitOwner) o;
-    return Objects.equals(type, other.type) && Objects.equals(owner, other.owner);
+    return false;
   }
 
   @Override

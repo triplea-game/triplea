@@ -3,18 +3,18 @@ package org.triplea.swing;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Test;
+import org.triplea.swing.key.binding.KeyCode;
 
 @NonNls
 class JMenuBuilderTest {
 
   private static final String TITLE = "title";
   private static final String MENU_ITEM_TITLE = "menu-item-title";
-  private static final char MENU_MNEMONIC = 'M';
+  private static final KeyCode MENU_MNEMONIC = KeyCode.M;
 
   @Test
   void verifyTitle() {
@@ -24,8 +24,8 @@ class JMenuBuilderTest {
 
   @Test
   void verifyMnemonic() {
-    final JMenu menu = new JMenuBuilder(TITLE, 'M').build();
-    assertThat(menu.getMnemonic(), is(KeyEvent.VK_M));
+    final JMenu menu = new JMenuBuilder(TITLE, KeyCode.M).build();
+    assertThat(menu.getMnemonic(), is(KeyCode.M.getInputEventCode()));
   }
 
   @Test
@@ -41,14 +41,14 @@ class JMenuBuilderTest {
   void addMenuItemIf() {
     JMenu menu =
         new JMenuBuilder(TITLE, MENU_MNEMONIC)
-            .addMenuItemIf(false, MENU_ITEM_TITLE, 'a', () -> {})
+            .addMenuItemIf(false, MENU_ITEM_TITLE, KeyCode.A, () -> {})
             .build();
 
     assertThat(menu.getItemCount(), is(0));
 
     menu =
         new JMenuBuilder(TITLE, MENU_MNEMONIC)
-            .addMenuItemIf(true, MENU_ITEM_TITLE, 'a', () -> {})
+            .addMenuItemIf(true, MENU_ITEM_TITLE, KeyCode.A, () -> {})
             .build();
     assertThat(menu.getItemCount(), is(1));
   }
@@ -56,9 +56,11 @@ class JMenuBuilderTest {
   @Test
   void testAddMenuItem() {
     final JMenu menu =
-        new JMenuBuilder(TITLE, MENU_MNEMONIC).addMenuItem(MENU_ITEM_TITLE, 'a', () -> {}).build();
+        new JMenuBuilder(TITLE, MENU_MNEMONIC)
+            .addMenuItem(MENU_ITEM_TITLE, KeyCode.A, () -> {})
+            .build();
     assertThat(menu.getItemCount(), is(1));
     assertThat(menu.getItem(0).getText(), is(MENU_ITEM_TITLE));
-    assertThat(menu.getItem(0).getMnemonic(), is(KeyEvent.VK_A));
+    assertThat(menu.getItem(0).getMnemonic(), is(KeyCode.A.getInputEventCode()));
   }
 }

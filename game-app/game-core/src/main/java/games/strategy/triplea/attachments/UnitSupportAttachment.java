@@ -7,6 +7,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
+import games.strategy.engine.data.PropertyEnum;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
 import games.strategy.engine.data.gameparser.GameParseException;
@@ -18,11 +19,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import lombok.Value;
 import org.jetbrains.annotations.NonNls;
 
@@ -34,10 +38,60 @@ import org.jetbrains.annotations.NonNls;
  * <p>The set of UnitSupportAttachments do not change during a game.
  */
 public class UnitSupportAttachment extends DefaultAttachment {
-  @NonNls public static final String BONUS = "bonus";
-  @NonNls public static final String BONUS_TYPE = "bonusType";
-  @NonNls public static final String DICE = "dice";
-  @NonNls public static final String UNIT_TYPE = "unitType";
+  @ToString(onlyExplicitlyIncluded = true)
+  @AllArgsConstructor
+  public enum PropertyName implements PropertyEnum<UnitSupportAttachment> {
+    AA_ROLL("aaRoll", a -> MutableProperty.ofReadOnly(a::getAaRoll)),
+    AA_STRENGTH("aaStrength", a -> MutableProperty.ofReadOnly(a::getAaStrength)),
+    ALLIED("allied", a -> MutableProperty.ofReadOnly(a::getAllied)),
+    BONUS("bonus", a -> MutableProperty.of(a::setBonus, a::setBonus, a::getBonus, a::resetBonus)),
+    BONUS_TYPE(
+        "bonusType",
+        a ->
+            MutableProperty.of(
+                a::setBonusType, a::setBonusType, a::getBonusType, a::resetBonusType)),
+    DEFENCE("defence", a -> MutableProperty.ofReadOnly(a::getDefence)),
+    DICE("dice", a -> MutableProperty.ofString(a::setDice, a::getDice, a::resetDice)),
+    ENEMY("enemy", a -> MutableProperty.ofReadOnly(a::getEnemy)),
+    FACTION(
+        "faction", a -> MutableProperty.ofString(a::setFaction, a::getFaction, a::resetFaction)),
+    IMP_ART_TECH(
+        "impArtTech",
+        a ->
+            MutableProperty.of(
+                a::setImpArtTech, a::setImpArtTech, a::getImpArtTech, a::resetImpArtTech)),
+    NUMBER(
+        "number",
+        a -> MutableProperty.of(a::setNumber, a::setNumber, a::getNumber, a::resetNumber)),
+    OFFENCE("offence", a -> MutableProperty.ofReadOnly(a::getOffence)),
+    PLAYERS(
+        "players",
+        a -> MutableProperty.of(a::setPlayers, a::setPlayers, a::getPlayers, a::resetPlayers)),
+    ROLL("roll", a -> MutableProperty.ofReadOnly(a::getRoll)),
+    SIDE("side", a -> MutableProperty.ofString(a::setSide, a::getSide, a::resetSide)),
+    STRENGTH("strength", a -> MutableProperty.ofReadOnly(a::getStrength)),
+    UNIT_TYPE(
+        "unitType",
+        a -> MutableProperty.of(a::setUnitType, a::setUnitType, a::getUnitType, a::resetUnitType)),
+    ;
+
+    @ToString.Include private final String value;
+    private final Function<UnitSupportAttachment, MutableProperty<?>> propertyAccessor;
+
+    public MutableProperty<?> getMutableProperty(UnitSupportAttachment attachment) {
+      return propertyAccessor.apply(attachment);
+    }
+
+    @Override
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public Function<UnitSupportAttachment, MutableProperty<?>> getPropertyAccessor() {
+      return propertyAccessor;
+    }
+  }
 
   private static final long serialVersionUID = -3015679930172496082L;
 
@@ -126,9 +180,9 @@ public class UnitSupportAttachment extends DefaultAttachment {
     allied = false;
     enemy = false;
     for (final String element : splitOnColon(faction)) {
-      if (element.equalsIgnoreCase("allied")) {
+      if (element.equalsIgnoreCase(PropertyName.ALLIED.value)) {
         allied = true;
-      } else if (element.equalsIgnoreCase("enemy")) {
+      } else if (element.equalsIgnoreCase(PropertyName.ENEMY.value)) {
         enemy = true;
       } else {
         throw new GameParseException(
@@ -152,9 +206,9 @@ public class UnitSupportAttachment extends DefaultAttachment {
     defence = false;
     offence = false;
     for (final String element : splitOnColon(side)) {
-      if (element.equalsIgnoreCase("defence")) {
+      if (element.equalsIgnoreCase(PropertyName.DEFENCE.value)) {
         defence = true;
-      } else if (element.equalsIgnoreCase("offence")) {
+      } else if (element.equalsIgnoreCase(PropertyName.OFFENCE.value)) {
         offence = true;
       } else {
         throw new GameParseException(side + " side must be defence or offence" + thisErrorMsg());
@@ -179,13 +233,13 @@ public class UnitSupportAttachment extends DefaultAttachment {
     resetDice();
     this.dice = dice.intern();
     for (final String element : splitOnColon(dice)) {
-      if (element.equalsIgnoreCase("roll")) {
+      if (element.equalsIgnoreCase(PropertyName.ROLL.value)) {
         roll = true;
-      } else if (element.equalsIgnoreCase("strength")) {
+      } else if (element.equalsIgnoreCase(PropertyName.STRENGTH.value)) {
         strength = true;
-      } else if (element.equalsIgnoreCase("AAroll")) {
+      } else if (element.equalsIgnoreCase(PropertyName.AA_ROLL.value)) {
         aaRoll = true;
-      } else if (element.equalsIgnoreCase("AAstrength")) {
+      } else if (element.equalsIgnoreCase(PropertyName.AA_STRENGTH.value)) {
         aaStrength = true;
       } else {
         throw new GameParseException(
@@ -351,11 +405,11 @@ public class UnitSupportAttachment extends DefaultAttachment {
     final UnitSupportAttachment rule = new UnitSupportAttachment(attachmentName, type, data);
     rule.setBonus(1);
     rule.setBonusType(Constants.OLD_ART_RULE_NAME);
-    rule.setDice("strength");
-    rule.setFaction("allied");
+    rule.setDice(PropertyName.STRENGTH.value);
+    rule.setFaction(PropertyName.ALLIED.value);
     rule.setImpArtTech(true);
     rule.setNumber(first ? 0 : 1);
-    rule.setSide("offence");
+    rule.setSide(PropertyName.OFFENCE.value);
     rule.addUnitTypes(first ? Set.of(type) : getTargets(data.getUnitTypeList()));
     if (!first) {
       rule.setPlayers(new ArrayList<>(data.getPlayerList().getPlayers()));
@@ -414,54 +468,9 @@ public class UnitSupportAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameState data) {}
 
+  @SuppressWarnings("unchecked")
   @Override
   public Optional<MutableProperty<?>> getPropertyOrEmpty(final @NonNls String propertyName) {
-    return switch (propertyName) {
-      case UNIT_TYPE ->
-          Optional.of(
-              MutableProperty.of(
-                  this::setUnitType, this::setUnitType, this::getUnitType, this::resetUnitType));
-      case "offence" -> Optional.of(MutableProperty.ofReadOnly(this::getOffence));
-      case "defence" -> Optional.of(MutableProperty.ofReadOnly(this::getDefence));
-      case "roll" -> Optional.of(MutableProperty.ofReadOnly(this::getRoll));
-      case "strength" -> Optional.of(MutableProperty.ofReadOnly(this::getStrength));
-      case "aaRoll" -> Optional.of(MutableProperty.ofReadOnly(this::getAaRoll));
-      case "aaStrength" -> Optional.of(MutableProperty.ofReadOnly(this::getAaStrength));
-      case BONUS ->
-          Optional.of(
-              MutableProperty.of(this::setBonus, this::setBonus, this::getBonus, this::resetBonus));
-      case "number" ->
-          Optional.of(
-              MutableProperty.of(
-                  this::setNumber, this::setNumber, this::getNumber, this::resetNumber));
-      case "allied" -> Optional.of(MutableProperty.ofReadOnly(this::getAllied));
-      case "enemy" -> Optional.of(MutableProperty.ofReadOnly(this::getEnemy));
-      case BONUS_TYPE ->
-          Optional.of(
-              MutableProperty.of(
-                  this::setBonusType,
-                  this::setBonusType,
-                  this::getBonusType,
-                  this::resetBonusType));
-      case "players" ->
-          Optional.of(
-              MutableProperty.of(
-                  this::setPlayers, this::setPlayers, this::getPlayers, this::resetPlayers));
-      case "impArtTech" ->
-          Optional.of(
-              MutableProperty.of(
-                  this::setImpArtTech,
-                  this::setImpArtTech,
-                  this::getImpArtTech,
-                  this::resetImpArtTech));
-      case DICE ->
-          Optional.of(MutableProperty.ofString(this::setDice, this::getDice, this::resetDice));
-      case "side" ->
-          Optional.of(MutableProperty.ofString(this::setSide, this::getSide, this::resetSide));
-      case "faction" ->
-          Optional.of(
-              MutableProperty.ofString(this::setFaction, this::getFaction, this::resetFaction));
-      default -> Optional.empty();
-    };
+    return PropertyEnum.getPropertyOrEmpty(PropertyName.class, propertyName, this);
   }
 }

@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.Enumeration;
 import java.util.Optional;
+import javax.annotation.Nullable;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -47,7 +48,7 @@ public class HistoryPanel extends JPanel {
   private final JTree tree;
   private final HistoryDetailsPanel details;
   @Getter private HistoryNode currentPopupNode;
-  private final JPopupMenu popup;
+  private JPopupMenu popup;
   // remember which paths were expanded
   private final Collection<TreePath> stayExpandedPaths = new ArrayList<>();
   private boolean mouseOverPanel;
@@ -57,10 +58,7 @@ public class HistoryPanel extends JPanel {
   private TreePath lastParent = null;
 
   public HistoryPanel(
-      final GameData data,
-      final HistoryDetailsPanel details,
-      final JPopupMenu popup,
-      final UiContext uiContext) {
+      final GameData data, final HistoryDetailsPanel details, final UiContext uiContext) {
     Preconditions.checkState(data.areChangesOnlyInSwingEventThread());
     this.data = data;
     this.details = details;
@@ -82,21 +80,6 @@ public class HistoryPanel extends JPanel {
     // Register the tree with the tooltip manager to make the tooltips we set work.
     ToolTipManager.sharedInstance().registerComponent(tree);
     tree.expandRow(0);
-    this.popup = popup;
-    tree.add(this.popup);
-    this.popup.addPopupMenuListener(
-        new PopupMenuListener() {
-          @Override
-          public void popupMenuCanceled(final PopupMenuEvent pme) {
-            currentPopupNode = null;
-          }
-
-          @Override
-          public void popupMenuWillBecomeInvisible(final PopupMenuEvent pme) {}
-
-          @Override
-          public void popupMenuWillBecomeVisible(final PopupMenuEvent pme) {}
-        });
     final HistoryTreeCellRenderer renderer = new HistoryTreeCellRenderer(uiContext);
     renderer.setLeafIcon(null);
     renderer.setClosedIcon(null);
@@ -104,6 +87,7 @@ public class HistoryPanel extends JPanel {
     renderer.setBackgroundNonSelectionColor(getBackground());
     tree.setCellRenderer(renderer);
     tree.setBackground(getBackground());
+    tree.setEditable(false);
     final JScrollPane scroll = new JScrollPane(tree);
     scroll.addMouseListener(mouseFocusListener);
     for (final Component comp : scroll.getComponents()) {
@@ -112,10 +96,7 @@ public class HistoryPanel extends JPanel {
     scroll.setBorder(null);
     scroll.setViewportBorder(null);
     add(scroll, BorderLayout.CENTER);
-    HistoryNode node = data.getHistory().enableSeeking(this);
-    tree.setEditable(false);
-    tree.expandPath(new TreePath(node.getPath()));
-    tree.setSelectionPath(new TreePath(node.getPath()));
+
     final JButton previousButton = new JButton("<-Back");
     previousButton.addMouseListener(mouseFocusListener);
     previousButton.addActionListener(e -> previous());
@@ -194,6 +175,14 @@ public class HistoryPanel extends JPanel {
           }
         });
     tree.addTreeSelectionListener(this::treeSelectionChanged);
+
+    SwingUtilities.invokeLater(
+        () -> {
+          // initialize tree by ensured EDT (for History.getLastNode call inside)
+          TreePath nodeTreePath = new TreePath(data.getHistory().enableSeeking(this).getPath());
+          tree.expandPath(nodeTreePath);
+          tree.setSelectionPath(nodeTreePath);
+        });
   }
 
   private void previous() {
@@ -365,9 +354,12 @@ public class HistoryPanel extends JPanel {
       tree.setSelectionPath(path);
       collapseExpanded(path);
       collapseUpFromLastParent(parent);
-      final Rectangle rect = tree.getPathBounds(path);
-      rect.x = 0;
-      tree.scrollRectToVisible(rect);
+      // null if any component in the path is hidden
+      @Nullable final Rectangle rect = tree.getPathBounds(path);
+      if (rect != null) { // no scrolling required if path is hidden
+        rect.x = 0;
+        tree.scrollRectToVisible(rect);
+      }
     } else {
       if (!mouseWasOverPanel) {
         // save the lock property so that we can undo it
@@ -385,6 +377,24 @@ public class HistoryPanel extends JPanel {
     }
     mouseWasOverPanel = mouseOverPanel;
     lastParent = parent;
+  }
+
+  public void setPopup(JPopupMenu popupNew) {
+    this.popup = popupNew;
+    tree.add(this.popup);
+    this.popup.addPopupMenuListener(
+        new PopupMenuListener() {
+          @Override
+          public void popupMenuCanceled(final PopupMenuEvent pme) {
+            currentPopupNode = null;
+          }
+
+          @Override
+          public void popupMenuWillBecomeInvisible(final PopupMenuEvent pme) {}
+
+          @Override
+          public void popupMenuWillBecomeVisible(final PopupMenuEvent pme) {}
+        });
   }
 
   private static final class HistoryTreeCellRenderer extends DefaultTreeCellRenderer {
@@ -405,8 +415,8 @@ public class HistoryPanel extends JPanel {
         final boolean leaf,
         final int row,
         final boolean haveFocus) {
-      if (value instanceof Step) {
-        final Optional<GamePlayer> optionalGamePlayer = ((Step) value).getPlayerId();
+      if (value instanceof Step step) {
+        final Optional<GamePlayer> optionalGamePlayer = step.getPlayerId();
         if (optionalGamePlayer.isPresent()) {
           final GamePlayer player = optionalGamePlayer.get();
           final String text = value + " (" + player.getName() + ")";

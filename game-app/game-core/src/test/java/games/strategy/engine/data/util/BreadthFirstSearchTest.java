@@ -17,7 +17,7 @@ public class BreadthFirstSearchTest {
   private final Territory uk = gameData.getMap().getTerritoryOrNull("United Kingdom");
 
   private int getLandDistance(Territory from, Territory to) {
-    var territoryFinder = new BreadthFirstSearch.TerritoryFinder(to);
+    var territoryFinder = BreadthFirstSearch.createTerritoryFinder(to);
     new BreadthFirstSearch(from, Matches.territoryIsLand()).traverse(territoryFinder);
     return territoryFinder.getDistanceFound();
   }
