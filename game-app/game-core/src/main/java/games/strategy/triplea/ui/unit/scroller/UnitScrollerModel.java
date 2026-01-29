@@ -26,7 +26,19 @@ class UnitScrollerModel {
 
     final Predicate<Unit> moveableUnitOwnedByMe =
         PredicateBuilder.of(Matches.unitIsOwnedBy(player))
-            .and(Matches.unitHasMovementLeft())
+            .and(
+                u ->
+                    // Unit has movement left
+                    Matches.unitHasMovementLeft().test(u)
+                        // Unit is already being transported
+                        // TODO: Check if transporting unit has movement left for sea transports
+                        || Matches.unitIsBeingTransported().test(u)
+                        // Unit has not moved and can be loaded onto an available transport in this
+                        // territory
+                        || (Matches.unitHasNotMoved().test(u)
+                            && Matches.unitCanBeTransported().test(u)
+                            && t.anyUnitsMatch(
+                                Matches.unitCanTransport().and(Matches.unitIsOwnedBy(player)))))
             // if not non combat, cannot move aa units
             .andIf(
                 movePhase == UnitScroller.MovePhase.COMBAT, Matches.unitCanMoveDuringCombatMove())

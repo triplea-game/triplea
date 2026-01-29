@@ -372,7 +372,19 @@ class BattleCalculatorPanel extends JPanel {
     final JButton closeButton = new JButton("Close");
     buttons.add(closeButton);
     add(buttons);
-
+    defenderCombo.addActionListener(
+        e -> {
+          setDefendingUnits(
+              defendingUnitsPanel.getUnits().stream().anyMatch(Matches.unitIsOwnedBy(getDefender()))
+                  ? defendingUnitsPanel.getUnits()
+                  : List.of());
+          setWidgetActivation();
+        });
+    attackerCombo.addActionListener(
+        e -> {
+          setAttackingUnits(List.of());
+          setWidgetActivation();
+        });
     amphibiousCheckBox.addActionListener(e -> setWidgetActivation());
     landBattleCheckBox.addActionListener(
         e -> {
@@ -789,7 +801,7 @@ class BattleCalculatorPanel extends JPanel {
             .forEach(
                 unit -> {
                   final Optional<MutableProperty<?>> property =
-                      unit.getProperty(Unit.UNLOADED_AMPHIBIOUS);
+                      unit.getProperty(Unit.PropertyName.UNLOADED_AMPHIBIOUS);
                   if (property.isPresent()) {
                     try {
                       property.get().setValue(true);

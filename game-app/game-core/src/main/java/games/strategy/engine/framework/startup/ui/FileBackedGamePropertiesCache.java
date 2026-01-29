@@ -35,8 +35,8 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
   public void cacheGameProperties(final GameData gameData) {
     final Map<String, Object> serializableMap = new HashMap<>();
     for (final IEditableProperty<?> property : gameData.getProperties().getEditableProperties()) {
-      if (property.getValue() instanceof Serializable) {
-        serializableMap.put(property.getName(), property.getValue());
+      if (property.getValue() instanceof Serializable propertyValue) {
+        serializableMap.put(property.getName(), propertyValue);
       }
     }
     final Path cache = getCacheFile(gameData);

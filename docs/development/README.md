@@ -2,22 +2,60 @@
 
 ## Before Getting Started
 - Install JDK 21 (project is using this Java version)
-- [Install IDE](./how-to/ide-setup) (IDEA is better supported, YMMV with Eclipse)
-  - Create as a gradle project (file > open project > select the build.gradle file)
+- [Install IDE](./ide-setup) (IDEA is better supported, YMMV with Eclipse)
 
 ## Mac
 
 - Install Docker Desktop: <https://store.docker.com/editions/community/docker-ce-desktop-mac>
+  - we're going to need help on configs that will work for both Mac docker & linux docker. 
+    The existing docker files are likely written with only linux in mind
 
 ## Windows
 
-Set up WSL (see [WSL installation guide](https://learn.microsoft.com/de-de/windows/wsl/install)), this will give you a command line that can be used to run docker, gradle and the code check scripts.
+- Set up WSL (see [WSL installation guide](https://learn.microsoft.com/de-de/windows/wsl/install)), 
+  this will give you a command line that can be used to run docker, gradle and the code check scripts
+- Open git folder, e.g., `C:\Users\<user>\git\triplea`, in WSL via explorer `Shift+Right click` and option `Open Linux shell here`
+- Install/upgrade [GitHub CLI](https://github.com/cli/cli#installation)
 
+Install: 
+```bash
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
+sudo apt-add-repository https://cli.github.com/packages
+sudo apt update
+sudo apt install gh
+```
+ 
+Upgrade:
+```bash
+sudo apt update
+sudo apt upgrade gh
+```
 
+- Login to your GitHub account (e.g. via `HTTPS > Credentials > Login with a web browser`, copy URL to open window in browser and copy one-time code for device connection)
+```bash
+gh auth login
+```
+<img width="716" height="255" alt="image" src="https://github.com/user-attachments/assets/d79a9ada-930f-4eaa-993d-03344159e3d4" />
+
+- Sync changes in your IDE with WSL
+```bash
+git status
+```
+- Declare repository `triplea-game/triplea` as your default to create PR to with WSL
+```bash
+gh repo set-default triplea-game/triplea
+```
+
+- (if wanted) declare start path for WSL by adjusting `.bashrc` or `.zshrc` inside WSL by adding at the end
+`cd ~/projects/my-repo`
+
+```bash
+nano ~/.bashrc
+```
+ 
 ## Getting Started
 
 - Fork & Clone: <https://github.com/triplea-game/triplea>
-- Setup IDE: [/docs/development/how-to/ide-setup](how-to/ide-setup)
 - Use a feature-branch workflow, see: [typical git workflow](typical-git-workflow.md)
 - Submit a pull request see: [pull requests process](../project/pull-requests.md)
 
@@ -38,22 +76,8 @@ If you are new to Open Source & GitHub:
 # Run formatting
 ./gradlew spotlessApply
 
-# Launch a Postgres DB, build & launch TripleA Servers
-./gradlew composeUp
-
-# Connect to locally running database
-./docker/connect-to-db.sh
-
-# Runs all tests that do not require the database
-./gradlew test
-
-./gradlew testWithDatabase
-
 # Runs all tests
-./gradlew allTest
-
-# Run game-app tests
-./game-app/run/check
+./gradlew test
 
 # Run tests for a (sub)project
 ./gradlew :game-app:game-core:test
@@ -68,8 +92,7 @@ If you are new to Open Source & GitHub:
 ./gradlew :game-app:game-core:test --tests 'games.strategy.triplea.UnitUtilsTest.*Units*'
 ```
 
-`gradle` uses caches heavily, thus, if nothing has changed, re-running a test will not actually run the test again.
-To really re-execute a test, use the `--rerun-tasks` option:
+To run tests even if there are no changes from the previous build, use the `--rerun-tasks` option:
 ```
 ./gradlew --rerun-tasks :game-app:game-core:test
 ```
@@ -78,56 +101,19 @@ To really re-execute a test, use the `--rerun-tasks` option:
 
 We use 'Google Java Format', be sure to install the plugin in your IDE to properly format from IDE.
 
+To apply formatting via CLI:
+```
+./gradlew spotlessApply
+```
 
 ## Code Conventions (Style Guide)
 
-Full list of coding conventions can be found at: [reference/code-conventions](code-conventions)
+See: [reference/code-conventions](code-conventions)
 
 ## Lobby / Server Development
 
-Run:
-```
-./gradlew composeUp
-./gradlew :game-app:game-headed:run
-``` 
-Nginx will be running on port 80 following the 'composeUp'.
-All requests are sent to NGINX and then routed to the correct
-docker container.
+Look for the corresponding readmes, check: <https://github.com/triplea-game>
 
-To connect to local lobby, from the game client:
-  - 'settings > testing > local lobby'
-  - click play online button
-  - use 'test:test' to login to local lobby as a moderator
-
-### Working with database
-
-```
-## connect to database to bring up a SQL CLI
-./spitfire-server/database/connect_to_docker_db
-
-## connect to lobby database
-\c lobby_db
-
-## list tables
-\d
-
-## exit SQL CLI
-\q
-
-## erase database and recreate with sampledrop database schema & data and recreate
-./spitfire-server/database/reset_docker_db
-```
-
-
-## Deployment & Infrastructure Development
-
-The deployment code is inside of the '[/infrastructure](./infrastructure)' folder.
-
-We use [ansible](https://www.ansible.com/) to execute deployments.
-
-You can test out deployment code by first launching a virtual machine and then running a deployment
-against that virtual machine. See '[infrastructure/vagrant/REAMDE.md](./infrastructure/vagrant/REAMDE.md)'
-for more information.
 
 # Pitfalls and Pain Points to be aware of
 
@@ -144,27 +130,27 @@ save games from loading.
 
 '@RemoteMethod' indicates methods invoked over network. The API of these methods may not change.
 
-
 # FAQ - common problems
 
+### Game crashes after splash screen displayed
 
-### Assets folder not found
+This can be caused by missing resource files, such as images or icons.
 
-This is going to be typically because the working directory is not set properly. The 'run' gradle task
-for game-headed will download game assets into the 'root' directory. When the game starts it expects
-to find the assets folder in that root directory. If launching from IDE, chances are good the working
-directory is not set.
-
-Ideally the IDE launcher is checked in and pre-configured. This could be broken and needs to be 're-checked'
-back in properly. 
+The Gradle task `run` for `game-headed` will download and unzip game assets into the `game-headed` project's directory `/build/assests`.
+This directory will then be processed as a main resource, by the task `:game-app:game-headed:processResources`, in order to be packaged in the resulting project jar.
+When the game starts, it expects to find the folder `assets` at the root of the classpath, so to load files use the class loader's method `getResourceAsStream()`.
+Since this is a resource file packaged in the library jar produced by this project, the working dir should **not** influence how assets are loaded.
 
 In short:
-- check working directory is 'game-app/game-headed'
-- check that `./gradlew downloadAssets` has been run and there is an 'assets' folder in the working directory
+- Check that `./gradlew downloadAssets` has been run and there is a folder `build/assets` present; and that the
+contents have been copied to `build/resources/main/assets` (Gradle should handle this automatically as necessary).
 
-### Google Formatter does not work
+### How do I view log files after the .exe crashes?
 
-IDEA needs a tweak to overcome a JDK9 problem. The Google Java Format plugin should show a warning dialog about
-this if it is a problem.
+Navigate to the TripleA install directory and launch the jar manually using:
 
+```bash
+java -jar bin/game-headed-<SOME_VERSION_NUMBER>.jar
+```
 
+And you should see the log printed to the console.

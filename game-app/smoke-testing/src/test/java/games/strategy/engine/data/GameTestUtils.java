@@ -113,6 +113,6 @@ public class GameTestUtils {
   }
 
   public static Territory getTerritory(GameData data, String name) {
-    return Optional.ofNullable(data.getMap().getTerritory(name)).orElseThrow();
+    return Optional.ofNullable(data.getMap().getTerritoryOrNull(name)).orElseThrow();
   }
 }

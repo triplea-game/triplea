@@ -12,12 +12,12 @@ import org.triplea.http.client.lobby.AuthenticationHeaders;
  * most actions will be available to a "super-mod" only (super-mod = admin of mods).
  */
 public interface ToolboxModeratorManagementClient {
-  String FETCH_MODERATORS_PATH = "/moderator-toolbox/fetch-moderators";
-  String IS_ADMIN_PATH = "/moderator-toolbox/is-admin";
-  String CHECK_USER_EXISTS_PATH = "/moderator-toolbox/does-user-exist";
-  String REMOVE_MOD_PATH = "/moderator-toolbox/admin/remove-mod";
-  String ADD_ADMIN_PATH = "/moderator-toolbox/admin/add-super-mod";
-  String ADD_MODERATOR_PATH = "/moderator-toolbox/admin/add-moderator";
+  String FETCH_MODERATORS_PATH = "/lobby/moderator-toolbox/fetch-moderators";
+  String IS_ADMIN_PATH = "/lobby/moderator-toolbox/is-admin";
+  String CHECK_USER_EXISTS_PATH = "/lobby/moderator-toolbox/does-user-exist";
+  String REMOVE_MOD_PATH = "/lobby/moderator-toolbox/admin/remove-mod";
+  String ADD_ADMIN_PATH = "/lobby/moderator-toolbox/admin/add-super-mod";
+  String ADD_MODERATOR_PATH = "/lobby/moderator-toolbox/admin/add-moderator";
 
   static ToolboxModeratorManagementClient newClient(final URI serverUri, final ApiKey apiKey) {
     return HttpClient.newClient(

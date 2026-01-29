@@ -226,10 +226,11 @@ public class RelationshipTracker extends GameDataComponent {
 
     @Override
     public boolean equals(final Object object) {
-      if (object instanceof RelatedPlayers) {
-        final RelatedPlayers relatedPlayers2 = (RelatedPlayers) object;
-        return (relatedPlayers2.player1.equals(player1) && relatedPlayers2.player2.equals(player2))
-            || (relatedPlayers2.player2.equals(player1) && relatedPlayers2.player1.equals(player2));
+      if (object instanceof RelatedPlayers otherRelatedPlayer) {
+        return (otherRelatedPlayer.player1.equals(player1)
+                && otherRelatedPlayer.player2.equals(player2))
+            || (otherRelatedPlayer.player2.equals(player1)
+                && otherRelatedPlayer.player1.equals(player2));
       }
       return super.equals(object);
     }

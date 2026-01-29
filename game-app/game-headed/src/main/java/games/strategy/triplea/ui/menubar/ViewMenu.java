@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui.menubar;
 
-import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
@@ -12,23 +11,19 @@ import games.strategy.triplea.ui.FindTerritoryAction;
 import games.strategy.triplea.ui.FlagDrawMode;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
+import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
-import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
@@ -39,81 +34,51 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSpinner;
-import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.ThreadRunner;
+import org.triplea.swing.JMenuBuilder;
 import org.triplea.swing.JMenuItemBuilder;
 import org.triplea.swing.JMenuItemCheckBoxBuilder;
-import org.triplea.swing.SwingAction;
 import org.triplea.swing.key.binding.KeyCode;
 
+@UtilityClass
 @Slf4j
-final class ViewMenu extends JMenu {
-  private static final long serialVersionUID = -4703734404422047487L;
+final class ViewMenu {
+  private static JCheckBoxMenuItem showMapDetails;
 
-  private JCheckBoxMenuItem showMapDetails;
-
-  private final List<Territory> gameMapTerritories;
-  private final TripleAFrame frame;
-  private final UiContext uiContext;
-
-  ViewMenu(final TripleAFrame frame) {
-    super("View");
-
-    this.frame = frame;
-    this.uiContext = frame.getUiContext();
-    gameMapTerritories = frame.getGame().getData().getMap().getTerritories();
-
-    setMnemonic(KeyEvent.VK_V);
-
-    addZoomMenu();
-    addUnitSizeMenu();
-    addLockMap();
-    addShowUnitsMenu();
-    addShowUnitsInStatusBarMenu();
-    addFlagDisplayModeMenu();
-
-    if (uiContext.getMapData().useTerritoryEffectMarkers()) {
-      addShowTerritoryEffects();
-    }
-    if (ClientSetting.showBetaFeatures.getValueOrThrow()) {
-      addMapSkinsMenu();
-    }
-    addShowMapDetails();
-    addShowMapBlends();
-    addShowZoomMenu();
-    addMapFontAndColorEditorMenu();
-    addChatTimeMenu();
-    addShowCommentLog();
-    addSeparator();
-    addFindTerritory();
-
-    showMapDetails.setEnabled(uiContext.getMapData().getHasRelief());
+  public static JMenu get(final TripleAFrame frame) {
+    final MapData mapData = frame.getUiContext().getMapData();
+    return new JMenuBuilder("View", TripleAMenuBar.Mnemonic.VIEW.getMnemonicCode())
+        .addMenuItem(getZoomMenu(frame))
+        .addMenuItem(getUnitSizeMenu(frame))
+        .addMenuItem(getLockMap())
+        .addMenuItem(getShowUnitsMenu(frame))
+        .addMenuItem(getShowUnitsInStatusBarMenu(frame))
+        .addMenuItem(getFlagDisplayModeMenu(frame))
+        .addMenuItemIf(mapData.useTerritoryEffectMarkers(), getShowTerritoryEffects(frame))
+        .addMenuItemIf(ClientSetting.showBetaFeatures.getValueOrThrow(), getMapSkinsMenu(frame))
+        .addMenuItem(getShowMapDetails(frame))
+        .addMenuItem(getShowMapBlends(frame))
+        .addMenuItem(getShowZoomMenu(frame))
+        .addMenuItem(getMapFontAndColorEditorMenu(frame))
+        .addMenuItemIf(frame.hasChat(), getChatTimeMenu())
+        .addMenuItem(getShowCommentLog(frame))
+        .addSeparator()
+        .addMenuItem(getFindTerritory(frame))
+        .build();
   }
 
-  private void addShowCommentLog() {
-    add(
-        new JMenuItemCheckBoxBuilder("Show Comment Log", 'L')
-            .bindSetting(ClientSetting.showCommentLog)
-            .actionListener(
-                value -> {
-                  if (value) {
-                    frame.showCommentLog();
-                  } else {
-                    frame.hideCommentLog();
-                  }
-                })
-            .build());
-  }
-
-  private void addZoomMenu() {
-    final Action mapZoom =
-        SwingAction.of(
-            "Map Zoom",
-            e -> {
+  private static JMenuItem getZoomMenu(final TripleAFrame frame) {
+    return new JMenuItemBuilder("Map Zoom", Mnemonic.ZOOM.getMnemonicCode())
+        .actionListener(
+            () -> {
               final SpinnerNumberModel model = new SpinnerNumberModel();
               model.setMaximum(UiContext.MAP_SCALE_MAX_VALUE * 100);
               model.setMinimum(Math.ceil(frame.getMapPanel().getMinScale() * 100));
@@ -165,18 +130,18 @@ final class ViewMenu extends JMenu {
               }
               final Number value = (Number) model.getValue();
               frame.getMapPanel().setScale(value.doubleValue() / 100);
-            });
-    add(mapZoom).setMnemonic(KeyEvent.VK_Z);
+            })
+        .build();
   }
 
-  private void setSpinnerValue(SpinnerNumberModel model, double value) {
+  private static void setSpinnerValue(SpinnerNumberModel model, double value) {
     // Some L&Fs hit errors when setValue() is called with a non-Double param.
     // This wrapper function ensures that we're always setting it as a double.
     // See: https://github.com/triplea-game/triplea/issues/12126
     model.setValue(value);
   }
 
-  private void addUnitSizeMenu() {
+  private static JMenu getUnitSizeMenu(final TripleAFrame frame) {
     final NumberFormat decimalFormat = new DecimalFormat("00.##");
     // This is the action listener used
     class UnitSizeAction extends AbstractAction {
@@ -190,28 +155,27 @@ final class ViewMenu extends JMenu {
 
       @Override
       public void actionPerformed(final ActionEvent e) {
-        uiContext.setUnitScaleFactor(scaleFactor);
+        frame.getUiContext().setUnitScaleFactor(scaleFactor);
         frame.getMapPanel().resetMap();
       }
     }
 
-    final JMenu unitSizeMenu = new JMenu();
-    unitSizeMenu.setMnemonic(KeyEvent.VK_S);
-    unitSizeMenu.setText("Unit Size");
+    final JMenu unitSizeMenu =
+        new JMenuBuilder("Unit Size", Mnemonic.UNIT_SIZE_SUBMENU.getMnemonicCode()).build();
     final ButtonGroup unitSizeGroup = new ButtonGroup();
     final JRadioButtonMenuItem radioItem125 = new JRadioButtonMenuItem(new UnitSizeAction(1.25));
     final JRadioButtonMenuItem radioItem100 = new JRadioButtonMenuItem(new UnitSizeAction(1.0));
-    radioItem100.setMnemonic(KeyEvent.VK_1);
+    radioItem100.setMnemonic(Mnemonic.UNIT_SIZE_1.getValue());
     final JRadioButtonMenuItem radioItem87 = new JRadioButtonMenuItem(new UnitSizeAction(0.875));
     final JRadioButtonMenuItem radioItem83 = new JRadioButtonMenuItem(new UnitSizeAction(0.8333));
-    radioItem83.setMnemonic(KeyEvent.VK_8);
+    radioItem83.setMnemonic(Mnemonic.UNIT_SIZE_83.getValue());
     final JRadioButtonMenuItem radioItem75 = new JRadioButtonMenuItem(new UnitSizeAction(0.75));
-    radioItem75.setMnemonic(KeyEvent.VK_7);
+    radioItem75.setMnemonic(Mnemonic.UNIT_SIZE_75.getValue());
     final JRadioButtonMenuItem radioItem66 = new JRadioButtonMenuItem(new UnitSizeAction(0.6666));
-    radioItem66.setMnemonic(KeyEvent.VK_6);
+    radioItem66.setMnemonic(Mnemonic.UNIT_SIZE_66.getValue());
     final JRadioButtonMenuItem radioItem56 = new JRadioButtonMenuItem(new UnitSizeAction(0.5625));
     final JRadioButtonMenuItem radioItem50 = new JRadioButtonMenuItem(new UnitSizeAction(0.5));
-    radioItem50.setMnemonic(KeyEvent.VK_5);
+    radioItem50.setMnemonic(Mnemonic.UNIT_SIZE_5.getValue());
     unitSizeGroup.add(radioItem125);
     unitSizeGroup.add(radioItem100);
     unitSizeGroup.add(radioItem87);
@@ -227,7 +191,8 @@ final class ViewMenu extends JMenu {
     while (enum1.hasMoreElements()) {
       final JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) enum1.nextElement();
       final UnitSizeAction action = (UnitSizeAction) menuItem.getAction();
-      if (Math.abs(action.scaleFactor - uiContext.getUnitImageFactory().getScaleFactor()) < 0.01) {
+      if (Math.abs(action.scaleFactor - frame.getUiContext().getUnitImageFactory().getScaleFactor())
+          < 0.01) {
         menuItem.setSelected(true);
         matchFound = true;
         break;
@@ -244,60 +209,15 @@ final class ViewMenu extends JMenu {
     unitSizeMenu.add(radioItem66);
     unitSizeMenu.add(radioItem56);
     unitSizeMenu.add(radioItem50);
-    add(unitSizeMenu);
+    return unitSizeMenu;
   }
 
-  private void addMapSkinsMenu() {
-    final JMenu mapSubMenu = new JMenu("Map Skins");
-    mapSubMenu.setMnemonic(KeyEvent.VK_K);
-    add(mapSubMenu);
-    final ButtonGroup mapButtonGroup = new ButtonGroup();
-    final Collection<UiContext.MapSkin> skins =
-        uiContext.getSkins(frame.getGame().getData().getMapName());
-    mapSubMenu.setEnabled(skins.size() > 1);
-    for (final UiContext.MapSkin mapSkin : skins) {
-      final JMenuItem mapMenuItem = new JRadioButtonMenuItem(mapSkin.getSkinName());
-      mapButtonGroup.add(mapMenuItem);
-      mapSubMenu.add(mapMenuItem);
-      mapMenuItem.setSelected(mapSkin.isCurrentSkin());
-      mapMenuItem.addActionListener(
-          e -> {
-            try {
-              frame.changeMapSkin(mapSkin.getSkinName());
-              if (uiContext.getMapData().getHasRelief()) {
-                showMapDetails.setSelected(true);
-              }
-              showMapDetails.setEnabled(uiContext.getMapData().getHasRelief());
-            } catch (final Exception exception) {
-              log.error("Error Changing Map Skin2", exception);
-            }
-          });
-    }
-  }
-
-  private void addShowMapDetails() {
-    showMapDetails = new JCheckBoxMenuItem("Show Map Details");
-    showMapDetails.setMnemonic(KeyEvent.VK_D);
-    showMapDetails.setSelected(TileImageFactory.getShowReliefImages());
-    showMapDetails.addActionListener(
-        e -> {
-          if (TileImageFactory.getShowReliefImages() == showMapDetails.isSelected()) {
-            return;
-          }
-          TileImageFactory.setShowReliefImages(showMapDetails.isSelected());
-          ThreadRunner.runInNewThread(
-              () -> frame.getMapPanel().updateCountries(gameMapTerritories));
-        });
-    add(showMapDetails);
-  }
-
-  private void addShowMapBlends() {
-    JCheckBoxMenuItem showMapBlends;
-    showMapBlends = new JCheckBoxMenuItem("Show Map Blends");
-    showMapBlends.setMnemonic(KeyEvent.VK_B);
-    if (uiContext.getMapData().getHasRelief()
-        && showMapDetails.isEnabled()
-        && showMapDetails.isSelected()) {
+  private static JCheckBoxMenuItem getShowMapBlends(final TripleAFrame frame) {
+    final String menuButtonText = "Show Map Blends";
+    final JCheckBoxMenuItem showMapBlends = new JCheckBoxMenuItem(menuButtonText);
+    showMapBlends.setMnemonic(Mnemonic.SHOW_MAP_BLENDS.getValue());
+    final MapData mapData = frame.getUiContext().getMapData();
+    if (mapData.getHasRelief() && showMapDetails.isEnabled() && showMapDetails.isSelected()) {
       showMapBlends.setEnabled(true);
       showMapBlends.setSelected(TileImageFactory.getShowMapBlends());
     } else {
@@ -310,56 +230,53 @@ final class ViewMenu extends JMenu {
             return;
           }
           TileImageFactory.setShowMapBlends(showMapBlends.isSelected());
-          TileImageFactory.setShowMapBlendMode(uiContext.getMapData().getMapBlendMode());
-          TileImageFactory.setShowMapBlendAlpha(uiContext.getMapData().getMapBlendAlpha());
-          new Thread(
-                  () -> frame.getMapPanel().updateCountries(gameMapTerritories),
-                  "Show map Blends thread")
-              .start();
+          TileImageFactory.setShowMapBlendMode(mapData.getMapBlendMode());
+          TileImageFactory.setShowMapBlendAlpha(mapData.getMapBlendAlpha());
+          updateCountriesInNewThread(frame, menuButtonText);
         });
-    add(showMapBlends);
+    return showMapBlends;
   }
 
-  private void addShowUnitsMenu() {
+  private static void updateCountriesInNewThread(TripleAFrame frame, String threadName) {
+
+    ThreadRunner.runInNewThread(
+        () ->
+            frame
+                .getMapPanel()
+                .updateCountries(frame.getGame().getData().getMap().getTerritories()),
+        threadName);
+  }
+
+  private static JCheckBoxMenuItem getShowUnitsMenu(final TripleAFrame frame) {
     final JCheckBoxMenuItem showUnitsBox = new JCheckBoxMenuItem("Show Units");
-    showUnitsBox.setMnemonic(KeyEvent.VK_U);
+    showUnitsBox.setMnemonic(Mnemonic.SHOW_UNIT.getValue());
     showUnitsBox.setSelected(true);
     showUnitsBox.addActionListener(
         e -> {
-          uiContext.setShowUnits(showUnitsBox.isSelected());
+          frame.getUiContext().setShowUnits(showUnitsBox.isSelected());
           frame.getMapPanel().resetMap();
         });
-    add(showUnitsBox);
+    return showUnitsBox;
   }
 
-  private void addShowZoomMenu() {
-    final JCheckBoxMenuItem showMapZoomBox = new JCheckBoxMenuItem("Show Zoom Percentage");
-
-    showMapZoomBox.addActionListener(
-        e -> this.frame.getBottomBar().setMapZoomEnabled(showMapZoomBox.isSelected()));
-
-    add(showMapZoomBox);
-  }
-
-  private void addShowUnitsInStatusBarMenu() {
+  private static JCheckBoxMenuItem getShowUnitsInStatusBarMenu(final TripleAFrame frame) {
     JCheckBoxMenuItem checkbox = new JCheckBoxMenuItem("Show Units in Status Bar");
     checkbox.setSelected(true);
     checkbox.addActionListener(
         e -> {
-          uiContext.setShowUnitsInStatusBar(checkbox.isSelected());
+          frame.getUiContext().setShowUnitsInStatusBar(checkbox.isSelected());
           // Trigger a bottom bar update.
           frame.getBottomBar().setTerritory(frame.getMapPanel().getCurrentTerritory());
         });
-    add(checkbox);
+    return checkbox;
   }
 
-  private void addMapFontAndColorEditorMenu() {
-    final Action mapFontOptions =
-        SwingAction.of(
-            "Map Font and Color",
-            e -> {
+  private static JMenuItem getMapFontAndColorEditorMenu(final TripleAFrame frame) {
+    return new JMenuItemBuilder("Map Font and Color", Mnemonic.MAP_FONT_OPTIONS.getMnemonicCode())
+        .actionListener(
+            () -> {
               final List<IEditableProperty<?>> properties = new ArrayList<>();
-              final NumberProperty fontsize =
+              final NumberProperty fontSize =
                   new NumberProperty(
                       "Font Size", null, 60, 0, MapImage.getPropertyMapFont().getSize());
               final ColorProperty territoryNameColor =
@@ -386,7 +303,7 @@ final class ViewMenu extends JMenu {
               final ColorProperty hitDamageOutline =
                   new ColorProperty(
                       "Hit Damage Outline", null, MapImage.getPropertyUnitHitDamageOutline());
-              properties.add(fontsize);
+              properties.add(fontSize);
               properties.add(territoryNameColor);
               properties.add(unitCountColor);
               properties.add(unitCountOutline);
@@ -403,7 +320,7 @@ final class ViewMenu extends JMenu {
                       "<html>Change the font and color of 'text' (not pictures) on the map. "
                           + "<br /><em>(Some people encounter problems with the color picker, "
                           + "and this "
-                          + "<br />is a bug outside of triplea, located in the 'look and feel' "
+                          + "<br />is a bug outside of TripleA, located in the 'look and feel' "
                           + "that "
                           + "<br />you are using. If you have an error come up, try switching to "
                           + "the "
@@ -433,7 +350,7 @@ final class ViewMenu extends JMenu {
                 frame.getMapPanel().resetMap();
               } else if (result == 0) {
                 MapImage.setPropertyMapFont(
-                    new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, fontsize.getValue()));
+                    new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, fontSize.getValue()));
                 MapImage.setPropertyTerritoryNameAndPuAndCommentColor(
                     territoryNameColor.getValue());
                 MapImage.setPropertyUnitCountColor(unitCountColor.getValue());
@@ -444,51 +361,37 @@ final class ViewMenu extends JMenu {
                 MapImage.setPropertyUnitHitDamageOutline(hitDamageOutline.getValue());
                 frame.getMapPanel().resetMap();
               }
-            });
-    add(mapFontOptions).setMnemonic(KeyEvent.VK_C);
+            })
+        .build();
   }
 
-  private void addShowTerritoryEffects() {
+  private static JCheckBoxMenuItem getShowTerritoryEffects(final TripleAFrame frame) {
     final JCheckBoxMenuItem territoryEffectsBox = new JCheckBoxMenuItem("Show TerritoryEffects");
-    territoryEffectsBox.setMnemonic(KeyEvent.VK_T);
+    territoryEffectsBox.setMnemonic(Mnemonic.SHOW_TERRITORY_EFFECTS.getValue());
     territoryEffectsBox.addActionListener(
         e -> {
-          uiContext.setShowTerritoryEffects(territoryEffectsBox.isSelected());
+          frame.getUiContext().setShowTerritoryEffects(territoryEffectsBox.isSelected());
           frame.getMapPanel().resetMap();
         });
-    add(territoryEffectsBox);
     territoryEffectsBox.setSelected(true);
+    return territoryEffectsBox;
   }
 
-  private void addLockMap() {
-    add(
-        new JMenuItemCheckBoxBuilder("Lock Map", 'M')
-            .accelerator(KeyCode.L)
-            .bindSetting(ClientSetting.lockMap)
-            .build());
+  private static JCheckBoxMenuItem getLockMap() {
+    return new JMenuItemCheckBoxBuilder("Lock Map", Mnemonic.LOCK_MAP.getMnemonicCode())
+        .accelerator(KeyCode.L)
+        .bindSetting(ClientSetting.lockMap)
+        .build();
   }
 
-  private void addFlagDisplayModeMenu() {
-    // 2.0 to 1.9 compatibility hack. Can be removed when all players that have played a 2.0
-    // prelease have launched a game containing this patch. When going from 2.0 to 1.9,
-    // 1.9 will crash due to an enum value not found error when loading 'DRAW_MODE'
-    final Preferences prefs = Preferences.userNodeForPackage(getClass());
-    if (prefs.get("DRAW_MODE", null) != null) {
-      prefs.remove("DRAW_MODE");
-      try {
-        prefs.flush();
-      } catch (final BackingStoreException ignored) {
-        // ignore
-      }
-    }
+  private static JMenu getFlagDisplayModeMenu(final TripleAFrame frame) {
+    final JMenu flagDisplayMenu =
+        new JMenuBuilder("Flag Display", Mnemonic.FLAG_SUBMENU.getMnemonicCode()).build();
 
-    final JMenu flagDisplayMenu = new JMenu();
-    flagDisplayMenu.setMnemonic(KeyEvent.VK_N);
-    flagDisplayMenu.setText("Flag Display");
     final ButtonGroup flagsDisplayGroup = new ButtonGroup();
 
     final JRadioButtonMenuItem noFlags =
-        new JMenuItemBuilder("Off", KeyCode.O)
+        new JMenuItemBuilder("Off", Mnemonic.FLAGS_OFF.getMnemonicCode())
             .actionListener(
                 () ->
                     FlagDrawMode.toggleDrawMode(
@@ -496,7 +399,7 @@ final class ViewMenu extends JMenu {
             .buildRadio(flagsDisplayGroup);
 
     final JRadioButtonMenuItem smallFlags =
-        new JMenuItemBuilder("Small", KeyCode.S)
+        new JMenuItemBuilder("Small", Mnemonic.FLAGS_SMALL.getMnemonicCode())
             .actionListener(
                 () ->
                     FlagDrawMode.toggleDrawMode(
@@ -504,7 +407,7 @@ final class ViewMenu extends JMenu {
             .buildRadio(flagsDisplayGroup);
 
     final JRadioButtonMenuItem largeFlags =
-        new JMenuItemBuilder("Large", KeyCode.L)
+        new JMenuItemBuilder("Large", Mnemonic.FLAGS_LARGE.getMnemonicCode())
             .actionListener(
                 () ->
                     FlagDrawMode.toggleDrawMode(
@@ -537,23 +440,124 @@ final class ViewMenu extends JMenu {
             // not needed interface method
           }
         });
-    add(flagDisplayMenu);
+    return flagDisplayMenu;
   }
 
-  private void addChatTimeMenu() {
-    if (frame.hasChat()) {
-      add(
-          new JMenuItemCheckBoxBuilder("Show Chat Times", 'T')
-              .bindSetting(ClientSetting.showChatTimeSettings)
-              .build());
+  private static JCheckBoxMenuItem getShowCommentLog(final TripleAFrame frame) {
+    return new JMenuItemCheckBoxBuilder(
+            "Show Comment Log", Mnemonic.SHOW_COMMENT_LOG.getMnemonicCode())
+        .bindSetting(ClientSetting.showCommentLog)
+        .actionListener(
+            value -> {
+              if (Boolean.TRUE.equals(value)) {
+                frame.showCommentLog();
+              } else {
+                frame.hideCommentLog();
+              }
+            })
+        .build();
+  }
+
+  private static JMenu getMapSkinsMenu(final TripleAFrame frame) {
+    final JMenu mapSubMenu =
+        new JMenuBuilder("Map Skins", Mnemonic.MAP_SKINS_SUBMENU.getMnemonicCode()).build();
+    final ButtonGroup mapButtonGroup = new ButtonGroup();
+    final Collection<UiContext.MapSkin> skins =
+        frame.getUiContext().getSkins(frame.getGame().getData().getMapName());
+    mapSubMenu.setEnabled(skins.size() > 1);
+    for (final UiContext.MapSkin mapSkin : skins) {
+      final JMenuItem mapMenuItem = new JRadioButtonMenuItem(mapSkin.getSkinName());
+      mapButtonGroup.add(mapMenuItem);
+      mapSubMenu.add(mapMenuItem);
+      mapMenuItem.setSelected(mapSkin.isCurrentSkin());
+      mapMenuItem.addActionListener(
+          e -> {
+            try {
+              frame.changeMapSkin(mapSkin.getSkinName());
+              boolean hasRelief = frame.getUiContext().getMapData().getHasRelief();
+              if (hasRelief) {
+                showMapDetails.setSelected(true);
+              }
+              showMapDetails.setEnabled(hasRelief);
+            } catch (final Exception exception) {
+              log.error("Error Changing Map Skin2", exception);
+            }
+          });
     }
+    return mapSubMenu;
   }
 
-  private void addFindTerritory() {
-    final JMenuItem menuItem = add(new FindTerritoryAction(frame));
-    menuItem.setAccelerator(
-        KeyStroke.getKeyStroke(
-            KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
-    menuItem.setMnemonic(KeyEvent.VK_F);
+  private static JCheckBoxMenuItem getShowMapDetails(final TripleAFrame frame) {
+    final String menuItemText = "Show Map Details";
+    showMapDetails =
+        new JMenuItemCheckBoxBuilder(menuItemText, Mnemonic.SHOW_MAP_DETAILS.getMnemonicCode())
+            .selected(TileImageFactory.getShowReliefImages())
+            .actionListener(
+                isSelected -> {
+                  if (TileImageFactory.getShowReliefImages() == Boolean.TRUE.equals(isSelected)) {
+                    return;
+                  }
+                  TileImageFactory.setShowReliefImages(isSelected);
+                  updateCountriesInNewThread(frame, menuItemText);
+                })
+            .build();
+
+    showMapDetails.setEnabled(frame.getUiContext().getMapData().getHasRelief());
+    return showMapDetails;
+  }
+
+  private static JCheckBoxMenuItem getShowZoomMenu(final TripleAFrame frame) {
+    final JCheckBoxMenuItem showMapZoomBox = new JCheckBoxMenuItem("Show Zoom Percentage");
+
+    showMapZoomBox.addActionListener(
+        e -> frame.getBottomBar().setMapZoomEnabled(showMapZoomBox.isSelected()));
+
+    return showMapZoomBox;
+  }
+
+  private static JCheckBoxMenuItem getChatTimeMenu() {
+    return new JMenuItemCheckBoxBuilder(
+            "Show Chat Times", Mnemonic.SHOW_CHAT_TIME.getMnemonicCode())
+        .bindSetting(ClientSetting.showChatTimeSettings)
+        .build();
+  }
+
+  private static JMenuItem getFindTerritory(final TripleAFrame frame) {
+    return new JMenuItemBuilder(
+            new FindTerritoryAction(frame), Mnemonic.FIND_TERRITORY.getMnemonicCode())
+        .accelerator(Mnemonic.FIND_TERRITORY.getMnemonicCode())
+        .build();
+  }
+
+  @AllArgsConstructor(access = AccessLevel.PRIVATE)
+  @Getter
+  public enum Mnemonic {
+    FLAG_SUBMENU(KeyCode.N),
+    UNIT_SIZE_SUBMENU(KeyCode.S),
+    UNIT_SIZE_1(KeyCode.NR_1),
+    UNIT_SIZE_83(KeyCode.NR_8),
+    UNIT_SIZE_75(KeyCode.NR_7),
+    UNIT_SIZE_66(KeyCode.NR_6),
+    UNIT_SIZE_5(KeyCode.NR_5),
+    MAP_SKINS_SUBMENU(KeyCode.K),
+    LOCK_MAP(KeyCode.M),
+    ZOOM(KeyCode.Z),
+    SHOW_CHAT_TIME(KeyCode.T),
+    SHOW_COMMENT_LOG(KeyCode.L),
+    SHOW_MAP_DETAILS(KeyCode.D),
+    SHOW_MAP_BLENDS(KeyCode.B),
+    SHOW_UNIT(KeyCode.U),
+    MAP_FONT_OPTIONS(KeyCode.C),
+    SHOW_TERRITORY_EFFECTS(KeyCode.T),
+    FLAGS_OFF(KeyCode.S),
+    FLAGS_LARGE(KeyCode.P),
+    FLAGS_SMALL(KeyCode.L),
+    FIND_TERRITORY(KeyCode.F);
+
+    private final KeyCode mnemonicCode;
+
+    public int getValue() {
+      return mnemonicCode.getInputEventCode();
+    }
   }
 }

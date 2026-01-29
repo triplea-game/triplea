@@ -106,7 +106,7 @@ public class DownloadMapsWindow extends JFrame {
             .toList());
 
     if (!unknownMapNames.isEmpty()) {
-      SwingComponents.newMessageDialog(formatIgnoredPendingMapsMessage(unknownMapNames));
+      SwingComponents.newMessageDialog(this, formatIgnoredPendingMapsMessage(unknownMapNames));
     }
 
     SwingComponents.addWindowClosingListener(this, progressPanel::cancel);
@@ -618,7 +618,7 @@ public class DownloadMapsWindow extends JFrame {
           maps.stream().filter(map -> selectedValues.contains(map.getMapName())).toList();
       if (!selectedMaps.isEmpty()) {
         FileSystemAccessStrategy.remove(
-            downloadMapsWindowModel::delete, selectedMaps, tableRemoveAction);
+            this, downloadMapsWindowModel::delete, selectedMaps, tableRemoveAction);
       }
     };
   }

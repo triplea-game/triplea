@@ -12,9 +12,9 @@ import org.triplea.http.client.lobby.AuthenticationHeaders;
  * the network identifiers of a user, the user name is for informational purposes only.
  */
 public interface ToolboxUserBanClient {
-  String GET_USER_BANS_PATH = "/moderator-toolbox/get-user-bans";
-  String REMOVE_USER_BAN_PATH = "/moderator-toolbox/remove-user-ban";
-  String BAN_USER_PATH = "/moderator-toolbox/ban-user";
+  String GET_USER_BANS_PATH = "/lobby/moderator-toolbox/get-user-bans";
+  String REMOVE_USER_BAN_PATH = "/lobby/moderator-toolbox/remove-user-ban";
+  String BAN_USER_PATH = "/lobby/moderator-toolbox/ban-user";
 
   static ToolboxUserBanClient newClient(final URI serverUri, final ApiKey apiKey) {
     return HttpClient.newClient(

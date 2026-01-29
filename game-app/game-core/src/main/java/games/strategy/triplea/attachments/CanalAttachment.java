@@ -11,6 +11,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Matches;
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -83,13 +84,17 @@ public class CanalAttachment extends DefaultAttachment {
     canalName = "";
   }
 
-  private void setLandTerritories(final String landTerritories) {
+  private void setLandTerritories(final String landTerritories) throws GameParseException {
     final Set<Territory> terrs = new HashSet<>();
-    for (final String name : splitOnColon(landTerritories)) {
-      final Territory territory = getData().getMap().getTerritory(name);
-      if (territory == null) {
-        throw new IllegalStateException("Canals: No territory called: " + name + thisErrorMsg());
-      }
+    for (final String territoryName : splitOnColon(landTerritories)) {
+      final Territory territory =
+          getTerritory(territoryName)
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "TerritoryAttachment: No territory found for {0}; Setting landTerritories not possible with value {1}",
+                              territoryName, landTerritories)));
       terrs.add(territory);
     }
     this.landTerritories = terrs;
@@ -156,11 +161,19 @@ public class CanalAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameState data) throws GameParseException {
     if (canalName.isEmpty()) {
-      throw new GameParseException("Canals must have a canalName set!" + thisErrorMsg());
+      throw new GameParseException(
+          MessageFormat.format("Canals must have a canalName set!{0}", thisErrorMsg()));
+    }
+    if (getName() == null || !getName().startsWith(Constants.CANAL_ATTACHMENT_PREFIX)) {
+      throw new GameParseException(
+          MessageFormat.format(
+              "Canal attachment name invalid. Must start with ''{0}''!{1}",
+              Constants.CANAL_ATTACHMENT_PREFIX, thisErrorMsg()));
     }
     if (getLandTerritories().isEmpty()) {
       throw new GameParseException(
-          "Canal named " + canalName + " must have landTerritories set!" + thisErrorMsg());
+          MessageFormat.format(
+              "Canal named ''{0}'' must have landTerritories set!{1}", canalName, thisErrorMsg()));
     }
     final Set<Territory> territories = new HashSet<>();
     for (final Territory t : data.getMap()) {
@@ -170,8 +183,9 @@ public class CanalAttachment extends DefaultAttachment {
     }
     if (territories.size() != 2) {
       throw new GameParseException(
-          "Wrong number of sea zones for canal (exactly 2 sea zones may have the same canalName):"
-              + territories);
+          MessageFormat.format(
+              "Wrong number of sea zones {0} for canal named ''{1}'' (exactly 2 sea zones may have the same canalName): {2}",
+              territories.size(), canalName, territories));
     }
   }
 

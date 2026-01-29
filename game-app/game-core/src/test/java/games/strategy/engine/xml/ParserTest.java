@@ -40,16 +40,17 @@ class ParserTest {
 
   @Test
   void testWater() {
-    final Territory atl = gameData.getMap().getTerritory("atlantic");
+    final Territory atl = gameData.getMap().getTerritoryOrNull("atlantic");
     assertTrue(atl.isWater());
-    final Territory can = gameData.getMap().getTerritory("canada");
+    final Territory can = gameData.getMap().getTerritoryOrNull("canada");
     assertFalse(can.isWater());
   }
 
   @Test
   void testTerritoriesConnected() {
     final GameMap map = gameData.getMap();
-    assertEquals(1, map.getDistance(map.getTerritory("canada"), map.getTerritory("us")));
+    assertEquals(
+        1, map.getDistance(map.getTerritoryOrNull("canada"), map.getTerritoryOrNull("us")));
   }
 
   @Test
@@ -126,7 +127,10 @@ class ParserTest {
     assertEquals(1, ua.getTransportCost());
     att =
         (TestAttachment)
-            gameData.getMap().getTerritory("us").getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
+            gameData
+                .getMap()
+                .getTerritoryOrNull("us")
+                .getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
     assertEquals("us of a", att.getValue());
     att =
         (TestAttachment)
@@ -139,11 +143,11 @@ class ParserTest {
 
   @Test
   void testOwnerInitialze() {
-    final Territory can = gameData.getMap().getTerritory("canada");
+    final Territory can = gameData.getMap().getTerritoryOrNull("canada");
     assertNotNull(can, "couldnt find country");
     assertNotNull(can.getOwner(), "owner null");
     assertEquals("chretian", can.getOwner().getName());
-    final Territory us = gameData.getMap().getTerritory("us");
+    final Territory us = gameData.getMap().getTerritoryOrNull("us");
     assertEquals("bush", us.getOwner().getName());
   }
 
@@ -155,7 +159,7 @@ class ParserTest {
 
   @Test
   void testUnitsPlacedInitialized() {
-    final Territory terr = gameData.getMap().getTerritory("canada");
+    final Territory terr = gameData.getMap().getTerritoryOrNull("canada");
     assertEquals(5, terr.getUnitCollection().getUnitCount());
   }
 

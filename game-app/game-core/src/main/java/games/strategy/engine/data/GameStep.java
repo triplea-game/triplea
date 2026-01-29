@@ -98,19 +98,22 @@ public class GameStep extends GameDataComponent {
     return player;
   }
 
+  public Optional<IDelegate> getDelegateOptional() {
+    return getData().getDelegateOptional(delegateName);
+  }
+
   public IDelegate getDelegate() {
     return getData().getDelegate(delegateName);
   }
 
   @Override
   public boolean equals(final Object o) {
-    if (!(o instanceof GameStep)) {
-      return false;
+    if (o instanceof GameStep other) {
+      return other.name.equals(this.name)
+          && other.delegateName.equals(this.delegateName)
+          && other.player.equals(this.player);
     }
-    final GameStep other = (GameStep) o;
-    return other.name.equals(this.name)
-        && other.delegateName.equals(this.delegateName)
-        && other.player.equals(this.player);
+    return false;
   }
 
   public boolean hasReachedMaxRunCount() {
@@ -132,8 +135,8 @@ public class GameStep extends GameDataComponent {
 
   public String getDisplayName() {
     if (displayName == null) {
-      IDelegate delegate = getDelegate();
-      return delegate != null ? delegate.getDisplayName() : delegateName;
+      Optional<IDelegate> optionalDelegate = getDelegateOptional();
+      return optionalDelegate.isPresent() ? optionalDelegate.get().getDisplayName() : delegateName;
     }
     return displayName;
   }

@@ -13,7 +13,7 @@ import org.triplea.http.client.lobby.AuthenticationHeaders;
 @SuppressWarnings("InterfaceNeverImplemented")
 public interface ForgotPasswordClient {
 
-  String FORGOT_PASSWORD_PATH = "/forgot-password";
+  String FORGOT_PASSWORD_PATH = "/lobby/forgot-password";
 
   /**
    * Sends request for a temporary password to be emailed to user.

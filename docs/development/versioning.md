@@ -2,10 +2,10 @@
 
 ## Terminology
 
-**Version, Project Version, ProductVersion**: 
+**Version, Project Version, ProductVersion**:
   Refers to a two digit value, eg: "2.6".
 
-**Build Version**: 
+**Build Version**:
   Refers to the product version plus the current commit count. Because
   we enforce squash-commits & have a linear history, a 'build version'
   uniquely identifies a software version, eg: `2.6.12300`
@@ -33,7 +33,6 @@ For example, let's say 3.0 is current. If the team releases a new version, it wo
 If the next release version is not compatible, it would be '4.0'  (TODO: what exactlky
 does "not compatible" mean? For now that means at least save-game compatibility, where
 for example 3.0 save games could not be read, then the next version would be a 4.0)
-
 
 ## Build Version Semantics
 

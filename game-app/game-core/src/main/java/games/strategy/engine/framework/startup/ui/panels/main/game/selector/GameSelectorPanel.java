@@ -15,7 +15,7 @@ import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.GameChooser;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.framework.ui.background.TaskRunner;
-import games.strategy.triplea.ResourceLoader;
+import games.strategy.triplea.EngineImageLoader;
 import games.strategy.triplea.UrlConstants;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -85,8 +85,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
 
     final JLabel logoLabel =
         new JLabel(
-            new ImageIcon(
-                ResourceLoader.loadImageAsset(Path.of("launch_screens", "triplea-logo.png"))));
+            new ImageIcon(EngineImageLoader.loadImage("launch_screens", "triplea-logo.png")));
 
     int row = 0;
     add(

@@ -11,48 +11,66 @@ import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.ui.MacOsIntegration;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
-import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
 import java.nio.file.Path;
 import java.util.Optional;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.experimental.UtilityClass;
+import org.triplea.swing.JMenuBuilder;
 import org.triplea.swing.JMenuItemBuilder;
-import org.triplea.swing.SwingAction;
 import org.triplea.swing.key.binding.KeyCode;
 
-final class FileMenu extends JMenu {
-  private static final long serialVersionUID = -3855695429784752428L;
+@UtilityClass
+final class FileMenu {
 
-  private final GameData gameData;
-  private final TripleAFrame frame;
-  private final IGame game;
-
-  FileMenu(final TripleAFrame frame) {
-    super("File");
-
-    this.frame = frame;
-    game = frame.getGame();
-    gameData = frame.getGame().getData();
-
-    setMnemonic(KeyEvent.VK_F);
-
-    add(newSaveMenuItem());
-    if (PbemMessagePoster.gameDataHasPlayByEmailOrForumMessengers(gameData)) {
-      add(addPostPbem());
+  public static JMenu get(final TripleAFrame frame) {
+    final boolean isMac = SystemProperties.isMac();
+    // Mac OS X automatically creates a Quit menu item under the TripleA menu,
+    // so all we need to do is register that menu item with triplea's shutdown mechanism
+    if (isMac) {
+      MacOsIntegration.setQuitHandler(frame);
     }
-    addSeparator();
-    addExitMenu();
+
+    return new JMenuBuilder("File", TripleAMenuBar.Mnemonic.FILE.getMnemonicCode())
+        .addMenuItem(newSaveMenuItem(frame))
+        .addMenuItemIf(
+            PbemMessagePoster.gameDataHasPlayByEmailOrForumMessengers(frame.getGame().getData()),
+            addPostPbem(frame))
+        .addSeparator()
+        .addMenuItem(
+            new JMenuItemBuilder("Leave Game", Mnemonic.LEAVE.getMnemonicCode())
+                .accelerator(
+                    (isMac
+                        ?
+                        // On Mac OS X, the command-Q is reserved for the Quit action,
+                        // so set the command-W key combo for the Leave Game action
+                        KeyCode.W
+                        :
+                        // On non-Mac operating systems, set the Ctrl-Q key combo for the Leave
+                        // Game
+                        KeyCode.Q))
+                .actionListener(frame::leaveGame)
+                .build())
+        .addMenuItemIf(
+            !isMac,
+            // On non-Mac operating systems, we need to manually create an Exit menu item
+            new JMenuItemBuilder("Exit Program", Mnemonic.EXIT.getMnemonicCode())
+                .actionListener(frame::shutdown)
+                .build())
+        .build();
   }
 
-  private JMenuItem newSaveMenuItem() {
-    return new JMenuItemBuilder("Save", KeyCode.S)
+  private JMenuItem newSaveMenuItem(final TripleAFrame frame) {
+    return new JMenuItemBuilder("Save", Mnemonic.SAVE.getMnemonicCode())
         .accelerator(KeyCode.S)
         .actionListener(
             () -> {
-              final Optional<Path> f = GameFileSelector.getSaveGameLocation(frame, gameData);
+              IGame game = frame.getGame();
+              final Optional<Path> f = GameFileSelector.getSaveGameLocation(frame, game.getData());
               if (f.isPresent()) {
                 game.saveGame(f.get());
                 JOptionPane.showMessageDialog(
@@ -62,8 +80,9 @@ final class FileMenu extends JMenu {
         .build();
   }
 
-  private JMenuItem addPostPbem() {
-    return new JMenuItemBuilder("Post PBEM/PBF Gamesave", KeyCode.P)
+  private JMenuItem addPostPbem(TripleAFrame frame) {
+    final GameData gameData = frame.getGame().getData();
+    return new JMenuItemBuilder("Post PBEM/PBF Gamesave", Mnemonic.POST_PBEM.getMnemonicCode())
         .accelerator(KeyCode.M)
         .actionListener(
             () -> {
@@ -80,7 +99,7 @@ final class FileMenu extends JMenu {
                             ? gameData.getPlayerList().getNullPlayer()
                             : step.getPlayerId()));
                 final int round = gameData.getSequence().getRound();
-                final HistoryLog historyLog = new HistoryLog();
+                final HistoryLog historyLog = new HistoryLog(frame);
                 historyLog.printFullTurn(
                     gameData, true, GameStepPropertiesHelper.getTurnSummaryPlayers(gameData));
                 final PbemMessagePoster poster =
@@ -91,32 +110,14 @@ final class FileMenu extends JMenu {
         .build();
   }
 
-  private void addExitMenu() {
-    final boolean isMac = SystemProperties.isMac();
-    final JMenuItem leaveGameMenuExit =
-        new JMenuItem(SwingAction.of("Leave Game", e -> frame.leaveGame()));
-    leaveGameMenuExit.setMnemonic(KeyEvent.VK_L);
-    if (isMac) { // On Mac OS X, the command-Q is reserved for the Quit action,
-      // so set the command-W key combo for the Leave Game action
-      leaveGameMenuExit.setAccelerator(
-          KeyStroke.getKeyStroke(
-              KeyEvent.VK_W, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
-    } else { // On non-Mac operating systems, set the Ctrl-Q key combo for the Leave Game action
-      leaveGameMenuExit.setAccelerator(
-          KeyStroke.getKeyStroke(
-              KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
-    }
-    add(leaveGameMenuExit);
+  @AllArgsConstructor(access = AccessLevel.PRIVATE)
+  @Getter
+  public enum Mnemonic {
+    SAVE(KeyCode.S),
+    POST_PBEM(KeyCode.P),
+    LEAVE(KeyCode.L),
+    EXIT(KeyCode.X);
 
-    // Mac OS X automatically creates a Quit menu item under the TripleA menu,
-    // so all we need to do is register that menu item with triplea's shutdown mechanism
-    if (isMac) {
-      MacOsIntegration.setQuitHandler(frame);
-    } else { // On non-Mac operating systems, we need to manually create an Exit menu item
-      final JMenuItem menuFileExit =
-          new JMenuItem(SwingAction.of("Exit Program", e -> frame.shutdown()));
-      menuFileExit.setMnemonic(KeyEvent.VK_E);
-      add(menuFileExit);
-    }
+    private final KeyCode mnemonicCode;
   }
 }

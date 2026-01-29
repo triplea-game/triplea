@@ -51,7 +51,7 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
   private CasualtyOrderOfLosses.Parameters amphibAssault(final Collection<Unit> amphibUnits) {
     amphibUnits.forEach(
         unit ->
-            unit.getProperty(Unit.UNLOADED_AMPHIBIOUS)
+            unit.getProperty(Unit.PropertyName.UNLOADED_AMPHIBIOUS)
                 .ifPresent(
                     property -> {
                       try {
@@ -183,7 +183,7 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
     final List<Unit> amphibMarines = new ArrayList<>(testData.marine(1));
     amphibMarines
         .get(0)
-        .getProperty(Unit.UNLOADED_AMPHIBIOUS)
+        .getProperty(Unit.PropertyName.UNLOADED_AMPHIBIOUS)
         .ifPresent(
             property -> {
               try {
@@ -237,7 +237,7 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
 
     amphibUnits.forEach(
         unit ->
-            unit.getProperty(Unit.UNLOADED_AMPHIBIOUS)
+            unit.getProperty(Unit.PropertyName.UNLOADED_AMPHIBIOUS)
                 .ifPresent(
                     property -> {
                       try {

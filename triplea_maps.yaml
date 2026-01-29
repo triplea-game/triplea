@@ -93,6 +93,7 @@
   url: https://github.com/triplea-maps/new_world_order/archive/refs/heads/master.zip
   mapCategory: BEST
   version: 1
+  img: https://github.com/triplea-maps/new_world_order/blob/master/map/doc/images/nwoi.jpg
   description: |
     <br>Classic european theatre World War II Map
 - mapName: The Pact of Steel
@@ -496,6 +497,7 @@
 - mapName: MiniMap
   mapCategory: GOOD
   url: https://github.com/triplea-maps/minimap/archive/refs/heads/master.zip
+  img: https://github.com/triplea-maps/minimap/blob/master/preview.png
   version: 1
   description: |
     <br>
@@ -2198,7 +2200,7 @@
     <br>A simple symmetrical map made for 4 players.
 - mapName: Over The Top
   mapCategory: GOOD
-  version: 2
+  version: 3
   url: https://github.com/triplea-maps/over_the_top/archive/refs/heads/master.zip
   img: https://raw.githubusercontent.com/triplea-maps/over-the-top/master/preview.png
   description: |
@@ -3115,7 +3117,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/axis_ascension/archive/refs/heads/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/Smalls_1939/master/preview.png
+  img: https://github.com/triplea-maps/axis_ascension/blob/master/preview.png
   description: |
     <br>World War II starting in 1942 on a large map
 - mapName: Operation Unthinkable
@@ -3247,7 +3249,7 @@
 - mapName: Big World - TheHobbesians 1939
   mapCategory: EXPERIMENTAL
   url: https://github.com/ClavintheGreat/thehobbesians_1939/archive/refs/heads/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/ClavintheGreat/thehobbesians_1939/main/thehobbesians_1939-master/preview.png
   description: |
     <br>TheHobbesian's Variation of Smallman's BigWorld 1939.
@@ -3402,3 +3404,60 @@
   img: https://github.com/triplea-maps/emptyhexes/blob/master/preview.png
   description: |
     <br>Modding Resource. Not a playable scenario.
+- mapName: Zombies 1942
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/AAZ42/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/AAZ42/blob/master/preview.png
+  description: |
+    <br>Inspired by Axis & Allies & Zombies using the 1942 map
+- mapName: Settlers - Age of Tribes
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/settlers_age_of_tribes/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/settlers_age_of_tribes/blob/master/preview.png
+  description: |
+    <br>Fantasy races fight over Europe with a randomized start.
+- mapName: World in Conflict
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/World_in_conflict/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/World_in_conflict/blob/master/preview.png
+  description: |
+    <br>Full scale WW2 Fall 1941
+- mapName: AA50-Realistic
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/AA50-realistic/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/AA50-realistic/blob/master/preview.png
+  description: |
+    <br>World War II v3 1942 with an modified setup.
+- mapName: Russian Spring
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/Russian_Spring/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/Russian_Spring/blob/master/preview.png
+  description: |
+    <br>Russia tries to conquer all of Europe
+- mapName: France Goes First
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/France_Goes_First/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/France_Goes_First/blob/master/preview.png
+  description: |
+    <br>Frances goes first in WW2 Global
+- mapName: World War II v3 1941 Deluxe
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/world_war_ii_v3_deluxe/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/world_war_ii_v3_deluxe/blob/master/preview.png
+  description: |
+    <br>A deluxe version of WW2v3 that includes separate nations for Italy and Free France, new territories in the Mediterranean and south Pacific, and revised national objectives focused on Axis oil and Allied lend-lease routes.
+    <br>The game is meant to be similar enough to v3 to allow players who are familiar with its map and units to apply their expertise, yet should have enough new features to keep even the most grizzled veteran interested
+- mapName: 1888A Steam and Steel
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/1888a_steam_and_steel/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/1888a_steam_and_steel/blob/master/preview.png
+  description: |
+    <br>A Steampunk Tech Race FFA map, also good vs AI.

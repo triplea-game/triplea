@@ -50,7 +50,10 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
                     String.format("UnitTypeList has no unit type for %s", name)));
   }
 
-  /** Will return null if even a single name is not on the unit list. */
+  /**
+   * @param names Array of String values for UnitType names
+   * @return Set of UnitType
+   */
   public Set<UnitType> getUnitTypes(final String[] names) {
     final Set<UnitType> types = new HashSet<>();
     for (final String name : names) {

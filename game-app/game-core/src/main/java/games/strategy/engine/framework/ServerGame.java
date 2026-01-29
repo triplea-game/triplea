@@ -197,10 +197,8 @@ public class ServerGame extends AbstractGame {
   }
 
   private void importDiceStats(final HistoryNode node) {
-    if (node instanceof EventChild) {
-      final EventChild childNode = (EventChild) node;
-      if (childNode.getRenderingData() instanceof DiceRoll) {
-        final DiceRoll diceRoll = (DiceRoll) childNode.getRenderingData();
+    if (node instanceof EventChild childNode) {
+      if (childNode.getRenderingData() instanceof DiceRoll diceRoll) {
         final String playerName =
             diceRoll.getPlayerName() == null
                 ? DiceRoll.getPlayerNameFromAnnotation(childNode.getTitle())
@@ -711,7 +709,7 @@ public class ServerGame extends AbstractGame {
   }
 
   @Override
-  public IRandomSource getRandomSource() {
+  public @Nullable IRandomSource getRandomSource() {
     return randomSource;
   }
 

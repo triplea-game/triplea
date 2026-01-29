@@ -24,14 +24,14 @@ import org.triplea.swing.key.binding.KeyCode;
  */
 public class JMenuItemCheckBoxBuilder {
   private final String title;
-  private final Character mnemonic;
+  private final KeyCode mnemonic;
   private Consumer<Boolean> action;
   private boolean selected;
   private SettingPersistence settingPersistence;
   private KeyCode accelerator;
 
   /** Sets the title that appears next to the checkbox. */
-  public JMenuItemCheckBoxBuilder(final String title, final char mnemonic) {
+  public JMenuItemCheckBoxBuilder(final String title, final KeyCode mnemonic) {
     ArgChecker.checkNotEmpty(title);
     this.title = title;
     this.mnemonic = mnemonic;
@@ -49,7 +49,7 @@ public class JMenuItemCheckBoxBuilder {
             + (settingPersistence == null));
 
     final var checkBox = new JCheckBoxMenuItem(title);
-    checkBox.setMnemonic(mnemonic);
+    checkBox.setMnemonic(mnemonic.getInputEventCode());
 
     checkBox.setSelected(
         Optional.ofNullable(settingPersistence)

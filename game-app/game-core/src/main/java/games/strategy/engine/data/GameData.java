@@ -12,6 +12,7 @@ import games.strategy.engine.history.History;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleA;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
+import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.TechnologyDelegate;
@@ -105,9 +106,12 @@ public class GameData implements Serializable, GameState {
   private final UnitsList unitsList = new UnitsList();
   private final TechnologyFrontier technologyFrontier =
       new TechnologyFrontier("allTechsForGame", this);
-  @Getter private transient TechTracker techTracker = new TechTracker(this);
   private final IGameLoader loader = new TripleA();
-  private History gameHistory = new History(this);
+  // Don't ensure the lock is held when getting the history.
+  // History operations often acquire the write lock, and we can't acquire the write lock if we
+  // have the read lock.
+  @Setter @Getter private History gameHistory = new History(this);
+  private GameDataState state = new GameDataState(this);
 
   @Setter @Getter
   private List<Tuple<IAttachment, List<Tuple<String, String>>>> attachmentOrderAndValues =
@@ -123,7 +127,6 @@ public class GameData implements Serializable, GameState {
     readWriteLock = new ReentrantReadWriteLock();
     in.defaultReadObject();
     gameDataEventListeners = new GameDataEventListeners();
-    techTracker = new TechTracker(this);
   }
 
   /**
@@ -203,6 +206,11 @@ public class GameData implements Serializable, GameState {
     return alliances;
   }
 
+  @Override
+  public TechTracker getTechTracker() {
+    return state.getTechTracker();
+  }
+
   /**
    * Returns whether we should throw an error if changes to this game data are made outside of the
    * swing event thread.
@@ -243,8 +251,16 @@ public class GameData implements Serializable, GameState {
     delegates.put(delegate.getName(), delegate);
   }
 
+  public Optional<IDelegate> getDelegateOptional(final String name) {
+    return Optional.ofNullable(delegates.get(name));
+  }
+
   public IDelegate getDelegate(final String name) {
-    return delegates.get(name);
+    return getDelegateOptional(name)
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    name + " delegate not found in list: " + delegates.keySet()));
   }
 
   @Override
@@ -253,7 +269,7 @@ public class GameData implements Serializable, GameState {
       case UnitHolder.PLAYER:
         return playerList.getPlayerId(name);
       case UnitHolder.TERRITORY:
-        return map.getTerritory(name);
+        return map.getTerritoryOrNull(name);
       default:
         throw new IllegalStateException("Invalid type: " + type);
     }
@@ -346,23 +362,20 @@ public class GameData implements Serializable, GameState {
   }
 
   public History getHistory() {
-    // don't ensure the lock is held when getting the history
-    // history operations often acquire the write lock and we can't acquire the write lock if we
-    // have the read lock
-    return gameHistory;
+    return getGameHistory();
   }
 
   public void setHistory(final History history) {
-    gameHistory = history;
+    setGameHistory(history);
   }
 
   public void resetHistory() {
-    gameHistory = new History(this);
+    setGameHistory(new History(this));
     GameStep step = getSequence().getStep();
     // Put the history in a round and step, so that child nodes can be added without errors.
     final boolean oldForceInSwingEventThread = forceInSwingEventThread;
     forceInSwingEventThread = false;
-    gameHistory
+    getGameHistory()
         .getHistoryWriter()
         .startNextStep(
             step.getName(), step.getDelegateName(), step.getPlayerId(), step.getDisplayName());
@@ -371,6 +384,7 @@ public class GameData implements Serializable, GameState {
 
   /** Not to be called by mere mortals. */
   public void postDeSerialize() {
+    state = new GameDataState(this);
     territoryListeners = new CopyOnWriteArrayList<>();
     dataChangeListeners = new CopyOnWriteArrayList<>();
     delegates = new HashMap<>();
@@ -399,10 +413,12 @@ public class GameData implements Serializable, GameState {
 
   @RemoveOnNextMajorRelease
   public void fixUpNullPlayersInDelegates() {
-    BattleDelegate battleDelegate = (BattleDelegate) getDelegate("battle");
-    if (battleDelegate != null) {
-      battleDelegate.getBattleTracker().fixUpNullPlayers(playerList.getNullPlayer());
-    }
+    getDelegateOptional("battle")
+        .ifPresent(
+            delegate ->
+                ((BattleDelegate) delegate)
+                    .getBattleTracker()
+                    .fixUpNullPlayers(playerList.getNullPlayer()));
   }
 
   public interface Unlocker extends Closeable {
@@ -480,30 +496,27 @@ public class GameData implements Serializable, GameState {
 
   @Override
   public PoliticsDelegate getPoliticsDelegate() {
-    return (PoliticsDelegate) findDelegate("politics");
-  }
-
-  private IDelegate findDelegate(final String delegateName) {
-    final IDelegate delegate = this.getDelegate(delegateName);
-    if (delegate == null) {
-      throw new IllegalStateException(delegateName + " delegate not found");
-    }
-    return delegate;
+    return (PoliticsDelegate) getDelegate("politics");
   }
 
   @Override
   public BattleDelegate getBattleDelegate() {
-    return (BattleDelegate) findDelegate("battle");
+    return (BattleDelegate) getDelegate("battle");
   }
 
   @Override
   public AbstractMoveDelegate getMoveDelegate() {
-    return (AbstractMoveDelegate) findDelegate("move");
+    return (AbstractMoveDelegate) getDelegate("move");
   }
 
   @Override
   public TechnologyDelegate getTechDelegate() {
-    return (TechnologyDelegate) findDelegate("tech");
+    return (TechnologyDelegate) getDelegate("tech");
+  }
+
+  @Override
+  public EndRoundDelegate getEndRoundDelegate() {
+    return (EndRoundDelegate) getDelegate("endRound");
   }
 
   /**

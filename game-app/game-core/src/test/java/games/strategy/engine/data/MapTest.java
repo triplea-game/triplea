@@ -110,12 +110,12 @@ class MapTest {
 
   @Test
   void testCantFindByName() {
-    assertNull(map.getTerritory("nowhere"));
+    assertNull(map.getTerritoryOrNull("nowhere"));
   }
 
   @Test
   void testCanFindByName() {
-    assertNotNull(map.getTerritory("aa"));
+    assertNotNull(map.getTerritoryOrNull("aa"));
   }
 
   @Test

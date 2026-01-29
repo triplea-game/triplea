@@ -57,9 +57,9 @@ class SerializationTest {
 
   @Test
   void testWriteTerritory() throws Exception {
-    final Object orig = gameDataSource.getMap().getTerritory("canada");
+    final Object orig = gameDataSource.getMap().getTerritoryOrNull("canada");
     final Object read = serialize(orig);
-    final Object local = gameDataSink.getMap().getTerritory("canada");
+    final Object local = gameDataSink.getMap().getTerritoryOrNull("canada");
     assertThat(local, is(not(sameInstance(read))));
   }
 

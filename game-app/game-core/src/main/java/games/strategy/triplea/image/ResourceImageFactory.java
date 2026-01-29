@@ -26,6 +26,10 @@ public class ResourceImageFactory extends AbstractImageFactory {
     return "resources/";
   }
 
+  public JLabel getLabel(final Resource resource, final ResourceCollection resourceCollection) {
+    return getLabel(resource, String.valueOf(resourceCollection.getQuantity(resource)));
+  }
+
   public JLabel getLabel(final Resource resource, final IntegerMap<Resource> resources) {
     return getLabel(resource, String.valueOf(resources.getInt(resource)));
   }
@@ -65,7 +69,7 @@ public class ResourceImageFactory extends AbstractImageFactory {
           || (!showEmpty && resources.getQuantity(resource) == 0)) {
         continue;
       }
-      final JLabel resourceLabel = getLabel(resource, resources.getResourcesCopy());
+      final JLabel resourceLabel = getLabel(resource, resources);
       resourceLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
       resourcePanel.add(
           resourceLabel,

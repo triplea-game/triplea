@@ -32,6 +32,7 @@ public interface IGame {
   /** Should not be called outside of engine code. */
   void addChange(Change change);
 
+  @Nullable
   IRandomSource getRandomSource();
 
   /** Set a display that will receive broadcasts from the IDelegateBridge.getDisplayBroadcaster. */

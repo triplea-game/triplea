@@ -43,15 +43,15 @@ class LhtrTest extends AbstractClientSettingTestCase {
 
   @Test
   void testFightersCanLandOnNewPlacedCarrier() {
-    final MoveDelegate delegate = (MoveDelegate) gameData.getDelegate("move");
+    final AbstractMoveDelegate delegate = gameData.getMoveDelegate();
     delegate.initialize("MoveDelegate", "MoveDelegate");
     final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "germanNonCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
-    final Territory baltic = gameData.getMap().getTerritory("5 Sea Zone");
-    final Territory easternEurope = gameData.getMap().getTerritory("Eastern Europe");
+    final Territory baltic = gameData.getMap().getTerritoryOrNull("5 Sea Zone");
+    final Territory easternEurope = gameData.getMap().getTerritoryOrNull("Eastern Europe");
     final UnitType carrirType = GameDataTestUtil.carrier(gameData);
     // move a fighter to the baltic
     final Route route = new Route(easternEurope, baltic);
@@ -70,15 +70,15 @@ class LhtrTest extends AbstractClientSettingTestCase {
 
   @Test
   void testFightersDestroyedWhenNoPendingCarriers() {
-    final MoveDelegate delegate = (MoveDelegate) gameData.getDelegate("move");
+    final AbstractMoveDelegate delegate = gameData.getMoveDelegate();
     delegate.initialize("MoveDelegate", "MoveDelegate");
     final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "germanNonCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
-    final Territory baltic = gameData.getMap().getTerritory("5 Sea Zone");
-    final Territory easternEurope = gameData.getMap().getTerritory("Eastern Europe");
+    final Territory baltic = gameData.getMap().getTerritoryOrNull("5 Sea Zone");
+    final Territory easternEurope = gameData.getMap().getTerritoryOrNull("Eastern Europe");
     // move a fighter to the baltic
     final Route route = new Route(easternEurope, baltic);
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);
@@ -93,7 +93,7 @@ class LhtrTest extends AbstractClientSettingTestCase {
 
   @Test
   void testAaGunsDontFireNonCombat() {
-    final MoveDelegate delegate = (MoveDelegate) gameData.getDelegate("move");
+    final AbstractMoveDelegate delegate = gameData.getMoveDelegate();
     delegate.initialize("MoveDelegate", "MoveDelegate");
     final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(germans);
@@ -103,9 +103,9 @@ class LhtrTest extends AbstractClientSettingTestCase {
     // move 1 fighter over the aa gun in caucus
     final Route route =
         new Route(
-            gameData.getMap().getTerritory("Ukraine S.S.R."),
-            gameData.getMap().getTerritory("Caucasus"),
-            gameData.getMap().getTerritory("West Russia"));
+            gameData.getMap().getTerritoryOrNull("Ukraine S.S.R."),
+            gameData.getMap().getTerritoryOrNull("Caucasus"),
+            gameData.getMap().getTerritoryOrNull("West Russia"));
     final List<Unit> fighter = route.getStart().getUnitCollection().getMatches(Matches.unitIsAir());
     delegate.move(fighter, route);
     // if we try to move aa, then the game will ask us if we want to move
@@ -137,8 +137,8 @@ class LhtrTest extends AbstractClientSettingTestCase {
 
   @Test
   void testLhtrBombingRaid() {
-    final Territory germany = gameData.getMap().getTerritory("Germany");
-    final Territory uk = gameData.getMap().getTerritory("United Kingdom");
+    final Territory germany = gameData.getMap().getTerritoryOrNull("Germany");
+    final Territory uk = gameData.getMap().getTerritoryOrNull("United Kingdom");
     final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final GamePlayer british = GameDataTestUtil.british(gameData);
     final BattleTracker tracker = new BattleTracker();
@@ -175,8 +175,8 @@ class LhtrTest extends AbstractClientSettingTestCase {
 
   @Test
   void testLhtrBombingRaid2Bombers() {
-    final Territory germany = gameData.getMap().getTerritory("Germany");
-    final Territory uk = gameData.getMap().getTerritory("United Kingdom");
+    final Territory germany = gameData.getMap().getTerritoryOrNull("Germany");
+    final Territory uk = gameData.getMap().getTerritoryOrNull("United Kingdom");
     final GamePlayer germans = GameDataTestUtil.germans(gameData);
     final GamePlayer british = GameDataTestUtil.british(gameData);
     // add a unit

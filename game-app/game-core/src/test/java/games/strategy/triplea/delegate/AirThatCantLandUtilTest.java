@@ -54,7 +54,7 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
   void testCantLandEnemyTerritory() {
     final GamePlayer player = americansPlayer;
     final IDelegateBridge bridge = newDelegateBridge(player);
-    final Territory balkans = gameData.getMap().getTerritory("Balkans");
+    final Territory balkans = gameData.getMap().getTerritoryOrNull("Balkans");
     final Change addAir = ChangeFactory.addUnits(balkans, fighterType.create(2, player));
     gameData.performChange(addAir);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
@@ -71,7 +71,7 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
   void testCantLandWater() {
     final GamePlayer player = americansPlayer;
     final IDelegateBridge bridge = newDelegateBridge(player);
-    final Territory sz55 = gameData.getMap().getTerritory("55 Sea Zone");
+    final Territory sz55 = gameData.getMap().getTerritoryOrNull("55 Sea Zone");
     final Change addAir = ChangeFactory.addUnits(sz55, fighterType.create(2, player));
     gameData.performChange(addAir);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
@@ -87,7 +87,7 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
   void testSpareNextToFactory() {
     final GamePlayer player = americansPlayer;
     final IDelegateBridge bridge = newDelegateBridge(player);
-    final Territory sz55 = gameData.getMap().getTerritory("55 Sea Zone");
+    final Territory sz55 = gameData.getMap().getTerritoryOrNull("55 Sea Zone");
     final Change addAir = ChangeFactory.addUnits(sz55, fighterType.create(2, player));
     gameData.performChange(addAir);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
@@ -100,7 +100,7 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
     // 1 carrier in the region, but three fighters, make sure we cant land
     final GamePlayer player = americansPlayer;
     final IDelegateBridge bridge = newDelegateBridge(player);
-    final Territory sz52 = gameData.getMap().getTerritory("52 Sea Zone");
+    final Territory sz52 = gameData.getMap().getTerritoryOrNull("52 Sea Zone");
     final Change addAir = ChangeFactory.addUnits(sz52, fighterType.create(2, player));
     gameData.performChange(addAir);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
@@ -125,9 +125,9 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
     initDel.start();
     initDel.end();
     // Get necessary sea zones and unit types for this test
-    final Territory sz44 = gameData.getMap().getTerritory("44 Sea Zone");
-    final Territory sz45 = gameData.getMap().getTerritory("45 Sea Zone");
-    final Territory sz52 = gameData.getMap().getTerritory("52 Sea Zone");
+    final Territory sz44 = gameData.getMap().getTerritoryOrNull("44 Sea Zone");
+    final Territory sz45 = gameData.getMap().getTerritoryOrNull("45 Sea Zone");
+    final Territory sz52 = gameData.getMap().getTerritoryOrNull("52 Sea Zone");
     final UnitType subType = GameDataTestUtil.submarine(gameData);
     final UnitType carrierType = GameDataTestUtil.carrier(gameData);
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);
@@ -139,14 +139,14 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
     final int preCountSz52 = sz52.getUnitCollection().size();
     final int preCountAirSz44 = sz44.getUnitCollection().getMatches(Matches.unitIsAir()).size();
     // now move to attack
-    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
+    final AbstractMoveDelegate moveDelegate = gameData.getMoveDelegate();
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     moveDelegate.move(sz45.getUnits(), new Route(sz45, sz44));
     moveDelegate.end();
     // fight the battle
-    final BattleDelegate battle = (BattleDelegate) gameData.getDelegate("battle");
+    final BattleDelegate battle = gameData.getBattleDelegate();
     battle.setDelegateBridgeAndPlayer(bridge);
     whenGetRandom(bridge)
         .thenAnswer(withValues(0, 0))
@@ -174,10 +174,10 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
     initDel.start();
     initDel.end();
     // Get necessary sea zones and unit types for this test
-    final Territory sz43 = gameData.getMap().getTerritory("43 Sea Zone");
-    final Territory sz44 = gameData.getMap().getTerritory("44 Sea Zone");
-    final Territory sz45 = gameData.getMap().getTerritory("45 Sea Zone");
-    final Territory sz52 = gameData.getMap().getTerritory("52 Sea Zone");
+    final Territory sz43 = gameData.getMap().getTerritoryOrNull("43 Sea Zone");
+    final Territory sz44 = gameData.getMap().getTerritoryOrNull("44 Sea Zone");
+    final Territory sz45 = gameData.getMap().getTerritoryOrNull("45 Sea Zone");
+    final Territory sz52 = gameData.getMap().getTerritoryOrNull("52 Sea Zone");
     final UnitType subType = GameDataTestUtil.submarine(gameData);
     final UnitType carrierType = GameDataTestUtil.carrier(gameData);
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);
@@ -190,14 +190,14 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
     final int preCountSz52 = sz52.getUnitCollection().size();
     final int preCountSz43 = sz43.getUnitCollection().size();
     // now move to attack
-    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
+    final AbstractMoveDelegate moveDelegate = gameData.getMoveDelegate();
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     moveDelegate.move(sz45.getUnits(), new Route(sz45, sz44));
     moveDelegate.end();
     // fight the battle
-    final BattleDelegate battle = (BattleDelegate) gameData.getDelegate("battle");
+    final BattleDelegate battle = gameData.getBattleDelegate();
     battle.setDelegateBridgeAndPlayer(bridge);
     whenGetRandom(bridge).thenAnswer(withValues(0, 0)).thenAnswer(withValues(0, 0, 0));
     battle.start();
@@ -224,9 +224,9 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
     initDel.start();
     initDel.end();
     // Get necessary sea zones and unit types for this test
-    final Territory sz9 = gameData.getMap().getTerritory("9 Sea Zone");
-    final Territory eastCanada = gameData.getMap().getTerritory("Eastern Canada");
-    final Territory sz11 = gameData.getMap().getTerritory("11 Sea Zone");
+    final Territory sz9 = gameData.getMap().getTerritoryOrNull("9 Sea Zone");
+    final Territory eastCanada = gameData.getMap().getTerritoryOrNull("Eastern Canada");
+    final Territory sz11 = gameData.getMap().getTerritoryOrNull("11 Sea Zone");
     final UnitType subType = GameDataTestUtil.submarine(gameData);
     final UnitType carrierType = GameDataTestUtil.carrier(gameData);
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);
@@ -238,14 +238,14 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
     final int preCountCanada = eastCanada.getUnitCollection().size();
     final int preCountAirSz9 = sz9.getUnitCollection().getMatches(Matches.unitIsAir()).size();
     // now move to attack
-    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
+    final AbstractMoveDelegate moveDelegate = gameData.getMoveDelegate();
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     moveDelegate.move(sz11.getUnits(), new Route(sz11, sz9));
     moveDelegate.end();
     // fight the battle
-    final BattleDelegate battle = (BattleDelegate) gameData.getDelegate("battle");
+    final BattleDelegate battle = gameData.getBattleDelegate();
     battle.setDelegateBridgeAndPlayer(bridge);
     whenGetRandom(bridge).thenAnswer(withValues(0));
     battle.start();
@@ -263,9 +263,9 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
     final GamePlayer americans = GameDataTestUtil.americans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(japanese);
     // Get necessary sea zones and unit types for this test
-    final Territory sz9 = gameData.getMap().getTerritory("9 Sea Zone");
-    final Territory eastCanada = gameData.getMap().getTerritory("Eastern Canada");
-    final Territory sz11 = gameData.getMap().getTerritory("11 Sea Zone");
+    final Territory sz9 = gameData.getMap().getTerritoryOrNull("9 Sea Zone");
+    final Territory eastCanada = gameData.getMap().getTerritoryOrNull("Eastern Canada");
+    final Territory sz11 = gameData.getMap().getTerritoryOrNull("11 Sea Zone");
     final UnitType subType = GameDataTestUtil.submarine(gameData);
     final UnitType carrierType = GameDataTestUtil.carrier(gameData);
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);
@@ -287,7 +287,7 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
     final int preCountCanada = eastCanada.getUnitCollection().size();
     final int preCountAirSz9 = sz9.getUnitCollection().getMatches(Matches.unitIsAir()).size();
     // now move to attack
-    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
+    final AbstractMoveDelegate moveDelegate = gameData.getMoveDelegate();
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -296,7 +296,7 @@ class AirThatCantLandUtilTest extends AbstractClientSettingTestCase {
         sz9.getUnitCollection().getUnits(infantryType, 1), new Route(sz9, eastCanada));
     moveDelegate.end();
     // fight the battle
-    final BattleDelegate battle = (BattleDelegate) gameData.getDelegate("battle");
+    final BattleDelegate battle = gameData.getBattleDelegate();
     battle.setDelegateBridgeAndPlayer(bridge);
     battle.start();
     whenGetRandom(bridge).thenAnswer(withValues(0)).thenAnswer(withValues(0, 0));

@@ -18,12 +18,11 @@ public enum GameDataEvent {
     if (hasMoveChange(change)) {
       return Optional.of(UNIT_MOVED);
     }
-    if (change instanceof ChangeAttachmentChange) {
-      ChangeAttachmentChange attachmentChange = (ChangeAttachmentChange) change;
-      if (attachmentChange.getAttachmentName().equals(Constants.TECH_ATTACHMENT_NAME)) {
-        return Optional.of(TECH_ATTACHMENT_CHANGED);
-      }
+    if (change instanceof ChangeAttachmentChange attachmentChange
+        && attachmentChange.getAttachmentName().equals(Constants.TECH_ATTACHMENT_NAME)) {
+      return Optional.of(TECH_ATTACHMENT_CHANGED);
     }
+
     return Optional.empty();
   }
 
@@ -32,14 +31,14 @@ public enum GameDataEvent {
    * a unit has moved.
    */
   static boolean hasMoveChange(final Change change) {
-    if (change instanceof CompositeChange) {
+    if (change instanceof CompositeChange compositeChange) {
       final boolean hasMoveChange =
-          ((CompositeChange) change).getChanges().stream().anyMatch(GameDataEvent::hasMoveChange);
+          compositeChange.getChanges().stream().anyMatch(GameDataEvent::hasMoveChange);
       if (hasMoveChange) {
         return true;
       }
     }
-    return (change instanceof ObjectPropertyChange
-        && ((ObjectPropertyChange) change).getProperty().equals(Unit.ALREADY_MOVED));
+    return (change instanceof ObjectPropertyChange objectPropertyChange
+        && objectPropertyChange.getProperty().equals(Unit.PropertyName.ALREADY_MOVED.toString()));
   }
 }
