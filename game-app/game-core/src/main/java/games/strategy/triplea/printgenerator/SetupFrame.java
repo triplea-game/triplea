@@ -139,11 +139,6 @@ public class SetupFrame extends JPanel {
     }
     new PuInfo().saveToFile(printData);
     new PlayerOrder().saveToFile(printData);
-
-    try {
-      new PuChart(printData).saveToFile();
-    } catch (final IOException e) {
-      log.error("Failed to save print generation data", e);
-    }
+    new PuChart().saveToFiles(printData);
   }
 }
