@@ -14,6 +14,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -23,6 +24,7 @@ import javax.imageio.ImageIO;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.io.PathUtils;
+import org.triplea.java.Postconditions;
 import org.triplea.java.UrlStreams;
 
 /**
@@ -159,13 +161,27 @@ public class ResourceLoader implements Closeable {
     return Optional.ofNullable(bufferedImage.orElse(null));
   }
 
-  private String createPathToImageString(
-      final String firstPathElement, final String... furtherPathStrings) {
-    Path imageFilePath = Path.of(firstPathElement);
-    for (final String furtherPathString : furtherPathStrings) {
-      imageFilePath = imageFilePath.resolve(furtherPathString);
+  @VisibleForTesting
+  String createResourcePathString(
+      @Nonnull final String firstPathElement, @Nonnull final String... furtherPathStrings) {
+    StringBuilder sb = new StringBuilder(firstPathElement);
+    for (String element : furtherPathStrings) {
+      sb.append('/').append(element);
     }
-    return imageFilePath.toString().replace(File.separatorChar, '/');
+
+    String result = sb.toString();
+    Postconditions.assertState(
+        !result.isEmpty(),
+        String.format(
+            "Resource path cannot be empty (first element: %s, further path elements: %s)",
+            firstPathElement, Arrays.toString(furtherPathStrings)));
+    Postconditions.assertState(
+        !result.equals("/"),
+        String.format(
+            "Resource path cannot be \"/\" (first element: %s, further path elements: %s)",
+            firstPathElement, Arrays.toString(furtherPathStrings)));
+
+    return result;
   }
 
   /**
@@ -179,11 +195,11 @@ public class ResourceLoader implements Closeable {
   public Optional<BufferedImage> loadBufferedImage(
       final String firstPathElementString, final String... furtherPathString) {
     final String imagePathString =
-        createPathToImageString(firstPathElementString, furtherPathString);
+        createResourcePathString(firstPathElementString, furtherPathString);
     URL url = getResource(imagePathString);
     if (url == null) {
       // Upon first failure to find resource, try to fallback to /assets
-      url = getResource(createPathToImageString(ASSETS_FOLDER, imagePathString));
+      url = getResource(createResourcePathString(ASSETS_FOLDER, imagePathString));
       if (url == null) {
         // this is actually pretty common that we try to read images that are not there. Let the
         // caller decide if this is an error or not.
