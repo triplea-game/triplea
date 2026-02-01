@@ -41,7 +41,6 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.io.Serial;
 import java.math.BigDecimal;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -1281,7 +1280,7 @@ public class MovePanel extends AbstractMovePanel {
   public boolean notConfirmedUnitChooserDialog(
       final UnitChooser chooser, final Territory territory) {
     return notConfirmedUnitChooserDialog(
-        chooser, MessageFormat.format("Select units to move from {0}", territory.getName()));
+        chooser, String.format("Select units to move from %s", territory.getName()));
   }
 
   public boolean notConfirmedUnitChooserDialog(final UnitChooser chooser, final String title) {

@@ -346,1028 +346,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
-  private void setActivateTrigger(final String value) throws GameParseException {
-    // triggerName:numberOfTimes:useUses:testUses:testConditions:testChance
-    final String[] s = splitOnColon(value);
-    if (s.length != 6) {
-      throw new GameParseException(
-          "activateTrigger must have 6 parts: triggerName:numberOfTimes:useUses:"
-              + "testUses:testConditions:testChance"
-              + thisErrorMsg());
-    }
-    TriggerAttachment trigger = null;
-    for (final GamePlayer player : getData().getPlayerList().getPlayers()) {
-      final TriggerAttachment triggerAttachment = (TriggerAttachment) player.getAttachment(s[0]);
-      if (triggerAttachment != null) {
-        trigger = triggerAttachment;
-        break;
-      }
-    }
-    if (trigger == null) {
-      throw new GameParseException("No TriggerAttachment named: " + s[0] + thisErrorMsg());
-    }
-    if (ObjectUtils.referenceEquals(trigger, this)) {
-      throw new GameParseException("Cannot have a trigger activate itself!" + thisErrorMsg());
-    }
-    String options = value;
-    options = options.replaceFirst((s[0] + ":"), "");
-    final int numberOfTimes = getInt(s[1]);
-    if (numberOfTimes < 0) {
-      throw new GameParseException(
-          "activateTrigger must be positive for the number of times to fire: "
-              + s[1]
-              + thisErrorMsg());
-    }
-    getBool(s[2]);
-    getBool(s[3]);
-    getBool(s[4]);
-    getBool(s[5]);
-    if (activateTrigger == null) {
-      activateTrigger = new ArrayList<>();
-    }
-    activateTrigger.add(Tuple.of(s[0].intern(), options.intern()));
-  }
-
-  private void setActivateTrigger(final List<Tuple<String, String>> value) {
-    activateTrigger = value;
-  }
-
-  private List<Tuple<String, String>> getActivateTrigger() {
-    return getListProperty(activateTrigger);
-  }
-
-  private void resetActivateTrigger() {
-    activateTrigger = null;
-  }
-
-  private void setFrontier(final String s) throws GameParseException {
-    final ProductionFrontier front = getData().getProductionFrontierList().getProductionFrontier(s);
-    if (front == null) {
-      throw new GameParseException("Could not find frontier. name: " + s + thisErrorMsg());
-    }
-    frontier = front;
-  }
-
-  private void setFrontier(final ProductionFrontier value) {
-    frontier = value;
-  }
-
-  private Optional<ProductionFrontier> getFrontier() {
-    return Optional.ofNullable(frontier);
-  }
-
-  private @Nullable ProductionFrontier getFrontierOrNull() {
-    return frontier;
-  }
-
-  private void resetFrontier() {
-    frontier = null;
-  }
-
-  private void setProductionRule(final String prop) throws GameParseException {
-    final String[] s = splitOnColon(prop);
-    if (s.length != 2) {
-      throw new GameParseException("Invalid productionRule declaration: " + prop + thisErrorMsg());
-    }
-    if (getData().getProductionFrontierList().getProductionFrontier(s[0]) == null) {
-      throw new GameParseException("Could not find frontier. name: " + s[0] + thisErrorMsg());
-    }
-    String rule = s[1];
-    if (rule.startsWith("-")) {
-      rule = rule.replaceFirst("-", "");
-    }
-    if (getData().getProductionRuleList().getProductionRule(rule) == null) {
-      throw new GameParseException(
-          "Could not find production rule. name: " + rule + thisErrorMsg());
-    }
-    if (productionRule == null) {
-      productionRule = new ArrayList<>();
-    }
-    productionRule.add(prop.intern());
-  }
-
-  private void setProductionRule(final List<String> value) {
-    productionRule = value;
-  }
-
-  List<String> getProductionRule() {
-    return getListProperty(productionRule);
-  }
-
-  private void resetProductionRule() {
-    productionRule = null;
-  }
-
-  private void setResourceCount(final String s) {
-    resourceCount = getInt(s);
-  }
-
-  private void setResourceCount(final Integer s) {
-    resourceCount = s;
-  }
-
-  private int getResourceCount() {
-    return resourceCount;
-  }
-
-  private void resetResourceCount() {
-    resourceCount = 0;
-  }
-
-  private void setVictory(final String s) {
-    victory = s.intern();
-  }
-
-  private Optional<String> getVictory() {
-    return Optional.ofNullable(victory);
-  }
-
-  private String getVictoryOrThrow() {
-    return getVictory()
-        .orElseThrow(
-            () ->
-                new IllegalStateException(
-                    MessageFormat.format("No expected victory for TriggerAttachment {0}", this)));
-  }
-
-  private String getVictoryOrNull() {
-    return victory;
-  }
-
-  private void resetVictory() {
-    victory = null;
-  }
-
-  private void setTech(final String techs) throws GameParseException {
-    for (final String subString : splitOnColon(techs)) {
-      TechAdvance ta = getData().getTechnologyFrontier().getAdvanceByProperty(subString);
-      if (ta == null) {
-        ta = getData().getTechnologyFrontier().getAdvanceByName(subString);
-      }
-      if (ta == null) {
-        throw new GameParseException("Technology not found : " + subString + thisErrorMsg());
-      }
-      if (tech == null) {
-        tech = new ArrayList<>();
-      }
-      tech.add(ta);
-    }
-  }
-
-  private void setTech(final List<TechAdvance> value) {
-    tech = value;
-  }
-
-  private List<TechAdvance> getTech() {
-    return getListProperty(tech);
-  }
-
-  private void resetTech() {
-    tech = null;
-  }
-
-  private void setAvailableTech(final String techs) throws GameParseException {
-    final String[] s = splitOnColon(techs);
-    if (s.length < 2) {
-      throw new GameParseException(
-          "Invalid tech availability: " + techs + " should be category:techs" + thisErrorMsg());
-    }
-    final String cat = s[0];
-    final LinkedHashMap<TechAdvance, Boolean> tlist = new LinkedHashMap<>();
-    for (int i = 1; i < s.length; i++) {
-      boolean add = true;
-      if (s[i].startsWith("-")) {
-        add = false;
-        s[i] = s[i].substring(1);
-      }
-      TechAdvance ta = getData().getTechnologyFrontier().getAdvanceByProperty(s[i]);
-      if (ta == null) {
-        ta = getData().getTechnologyFrontier().getAdvanceByName(s[i]);
-      }
-      if (ta == null) {
-        throw new GameParseException("Technology not found : " + s[i] + thisErrorMsg());
-      }
-      tlist.put(ta, add);
-    }
-    if (availableTech == null) {
-      availableTech = new HashMap<>();
-    }
-    if (availableTech.containsKey(cat)) {
-      tlist.putAll(availableTech.get(cat));
-    }
-    availableTech.put(cat.intern(), tlist);
-  }
-
-  private void setAvailableTech(final Map<String, Map<TechAdvance, Boolean>> value) {
-    availableTech = value;
-  }
-
-  private Map<String, Map<TechAdvance, Boolean>> getAvailableTech() {
-    return getMapProperty(availableTech);
-  }
-
-  private void resetAvailableTech() {
-    availableTech = null;
-  }
-
-  private void setSupport(final String value) throws GameParseException {
-    for (final String entry : splitOnColon(value)) {
-      final boolean remove = entry.startsWith("-");
-      final String name = remove ? entry.substring(1) : entry;
-      UnitSupportAttachment.get(getData().getUnitTypeList()).stream()
-          .filter(support -> support.getName().equals(name))
-          .findAny()
-          .orElseThrow(
-              () ->
-                  new GameParseException(
-                      "Could not find unitSupportAttachment. name: " + name + thisErrorMsg()));
-      if (support == null) {
-        support = new LinkedHashMap<>();
-      }
-      support.put(name.intern(), !remove);
-    }
-  }
-
-  private void setSupport(final Map<String, Boolean> value) {
-    support = value;
-  }
-
-  private Map<String, Boolean> getSupport() {
-    return getMapProperty(support);
-  }
-
-  private void resetSupport() {
-    support = null;
-  }
-
-  private void setResource(final String s) throws GameParseException {
-    getResourceOrThrowGameParseException(s);
-    resource = s.intern();
-  }
-
-  private Optional<@NonNls String> getResource() {
-    return Optional.ofNullable(resource);
-  }
-
-  private @Nullable @NonNls String getResourceOrNull() {
-    return resource;
-  }
-
-  private void resetResource() {
-    resource = null;
-  }
-
-  private void setRelationshipChange(final String relChange) throws GameParseException {
-    final String[] s = splitOnColon(relChange);
-    if (s.length != 4) {
-      throw new GameParseException(
-          "Invalid relationshipChange declaration: "
-              + relChange
-              + " \n Use: player1:player2:oldRelation:newRelation\n"
-              + thisErrorMsg());
-    }
-    getPlayerByName(s[0])
-        .orElseThrow(
-            () ->
-                new GameParseException(
-                    MessageFormat.format(
-                        "Invalid relationshipChange declaration: {0} \n first player: {1} unknown{2}",
-                        relChange, s[0], thisErrorMsg())));
-    getPlayerByName(s[1])
-        .orElseThrow(
-            () ->
-                new GameParseException(
-                    MessageFormat.format(
-                        "Invalid relationshipChange declaration: {0} \n first player: {1} unknown{2}",
-                        relChange, s[0], thisErrorMsg())));
-    if (!(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL)
-        || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY)
-        || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)
-        || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR)
-        || Matches.isValidRelationshipName(getData().getRelationshipTypeList()).test(s[2]))) {
-      throw new GameParseException(
-          MessageFormat.format(
-              "Invalid relationshipChange declaration: {0} \n old relationshipType: {1} unknown{2}",
-              relChange, s[2], thisErrorMsg()));
-    }
-    if (Matches.isValidRelationshipName(getData().getRelationshipTypeList()).negate().test(s[3])) {
-      throw new GameParseException(
-          MessageFormat.format(
-              "Invalid relationshipChange declaration: {0} \n new relationshipType: {1} unknown{2}",
-              relChange, s[3], thisErrorMsg()));
-    }
-    if (relationshipChange == null) {
-      relationshipChange = new ArrayList<>();
-    }
-    relationshipChange.add(relChange.intern());
-  }
-
-  private void setRelationshipChange(final List<String> value) {
-    relationshipChange = value;
-  }
-
-  private List<String> getRelationshipChange() {
-    return getListProperty(relationshipChange);
-  }
-
-  private void resetRelationshipChange() {
-    relationshipChange = null;
-  }
-
-  private void setUnitType(final String names) throws GameParseException {
-    for (final String element : splitOnColon(names)) {
-      if (unitTypes == null) {
-        unitTypes = new ArrayList<>();
-      }
-      unitTypes.add(getUnitTypeOrThrow(element));
-    }
-  }
-
-  private void setUnitType(final List<UnitType> value) {
-    unitTypes = value;
-  }
-
-  private List<UnitType> getUnitType() {
-    return getListProperty(unitTypes);
-  }
-
-  private void resetUnitType() {
-    unitTypes = null;
-  }
-
-  private void setUnitAttachmentName(final String name) throws GameParseException {
-    final String[] s = splitOnColon(name);
-    if (s.length != 2) {
-      throw new GameParseException(
-          "unitAttachmentName must have 2 entries, the type of attachment and the "
-              + "name of the attachment."
-              + thisErrorMsg());
-    }
-    // covers UnitAttachment, UnitSupportAttachment
-    if (!(s[1].equals("UnitAttachment") || s[1].equals("UnitSupportAttachment"))) {
-      throw new GameParseException(
-          "unitAttachmentName value must be UnitAttachment or UnitSupportAttachment"
-              + thisErrorMsg());
-    }
-    // TODO validate attachment exists?
-    if (s[0].length() < 1) {
-      throw new GameParseException(
-          "unitAttachmentName count must be a valid attachment name" + thisErrorMsg());
-    }
-    if (s[1].equals("UnitAttachment") && !s[0].startsWith(Constants.UNIT_ATTACHMENT_NAME)) {
-      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
-    }
-    if (s[1].equals("UnitSupportAttachment")
-        && !s[0].startsWith(Constants.SUPPORT_ATTACHMENT_PREFIX)) {
-      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
-    }
-    unitAttachmentName = Tuple.of(s[1].intern(), s[0].intern());
-  }
-
-  private void setUnitAttachmentName(final Tuple<String, String> value) {
-    unitAttachmentName = value;
-  }
-
-  private Tuple<String, String> getUnitAttachmentName() {
-    if (unitAttachmentName == null) {
-      return Tuple.of("UnitAttachment", Constants.UNIT_ATTACHMENT_NAME);
-    }
-    return unitAttachmentName;
-  }
-
-  private void resetUnitAttachmentName() {
-    unitAttachmentName = null;
-  }
-
-  private void setUnitProperty(final String prop) {
-    final String[] s = splitOnColon(prop);
-    if (unitProperty == null) {
-      unitProperty = new ArrayList<>();
-    }
-    // the last one is the property we are changing, while the rest is the string we are changing it
-    // to
-    final String property = s[s.length - 1].intern();
-    unitProperty.add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
-  }
-
-  private void setUnitProperty(final List<Tuple<String, String>> value) {
-    unitProperty = value;
-  }
-
-  private List<Tuple<String, String>> getUnitProperty() {
-    return getListProperty(unitProperty);
-  }
-
-  private void resetUnitProperty() {
-    unitProperty = null;
-  }
-
-  private void setTerritories(final String names) throws GameParseException {
-    final String[] s = splitOnColon(names);
-    for (final String element : s) {
-      if (territories == null) {
-        territories = new ArrayList<>();
-      }
-      territories.add(
-          getTerritory(element)
-              .orElseThrow(
-                  () ->
-                      new GameParseException(
-                          MessageFormat.format(
-                              "TriggerAttachment: Setting territories with value {0} not possible; No territory found for {1}",
-                              names, element))));
-    }
-  }
-
-  private void setTerritories(final List<Territory> value) {
-    territories = value;
-  }
-
-  private List<Territory> getTerritories() {
-    return getListProperty(territories);
-  }
-
-  private void resetTerritories() {
-    territories = null;
-  }
-
-  private void setTerritoryAttachmentName(final String name) throws GameParseException {
-    final String[] s = splitOnColon(name);
-    if (s.length != 2) {
-      throw new GameParseException(
-          "territoryAttachmentName must have 2 entries, "
-              + "the type of attachment and the name of the attachment."
-              + thisErrorMsg());
-    }
-    // covers TerritoryAttachment, CanalAttachment
-    if (!(s[1].equals("TerritoryAttachment") || s[1].equals("CanalAttachment"))) {
-      throw new GameParseException(
-          "territoryAttachmentName value must be TerritoryAttachment or CanalAttachment"
-              + thisErrorMsg());
-    }
-    // TODO validate attachment exists?
-    if (s[0].length() < 1) {
-      throw new GameParseException(
-          "territoryAttachmentName count must be a valid attachment name" + thisErrorMsg());
-    }
-    if (s[1].equals("TerritoryAttachment")
-        && !s[0].startsWith(Constants.TERRITORY_ATTACHMENT_NAME)) {
-      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
-    }
-    if (s[1].equals("CanalAttachment") && !s[0].startsWith(Constants.CANAL_ATTACHMENT_PREFIX)) {
-      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
-    }
-    territoryAttachmentName = Tuple.of(s[1].intern(), s[0].intern());
-  }
-
-  private void setTerritoryAttachmentName(final Tuple<String, String> value) {
-    territoryAttachmentName = value;
-  }
-
-  private Tuple<String, String> getTerritoryAttachmentName() {
-    if (territoryAttachmentName == null) {
-      return Tuple.of("TerritoryAttachment", Constants.TERRITORY_ATTACHMENT_NAME);
-    }
-    return territoryAttachmentName;
-  }
-
-  private void resetTerritoryAttachmentName() {
-    territoryAttachmentName = null;
-  }
-
-  private void setTerritoryProperty(final String prop) {
-    final String[] s = splitOnColon(prop);
-    if (territoryProperty == null) {
-      territoryProperty = new ArrayList<>();
-    }
-    // the last one is the property we are changing, while the rest is the string we are changing it
-    // to
-    final String property = s[s.length - 1].intern();
-    territoryProperty.add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
-  }
-
-  private void setTerritoryProperty(final List<Tuple<String, String>> value) {
-    territoryProperty = value;
-  }
-
-  private List<Tuple<String, String>> getTerritoryProperty() {
-    return getListProperty(territoryProperty);
-  }
-
-  private void resetTerritoryProperty() {
-    territoryProperty = null;
-  }
-
-  private void setPlayers(final String names) throws GameParseException {
-    players = parsePlayerList(names, players);
-  }
-
-  private void setPlayers(final List<GamePlayer> value) {
-    players = value;
-  }
-
-  private List<GamePlayer> getPlayers() {
-    List<GamePlayer> result = getListProperty(players);
-    return result.isEmpty() ? List.of((GamePlayer) getAttachedTo()) : result;
-  }
-
-  private void resetPlayers() {
-    players = null;
-  }
-
-  private void setPlayerAttachmentName(final String playerAttachmentName)
-      throws GameParseException {
-    // replace-all to automatically correct legacy (1.8) attachment spelling
-    final String name = playerAttachmentName.replaceAll("ttatch", "ttach");
-    final String[] s = splitOnColon(name);
-    if (s.length != 2) {
-      throw new GameParseException(
-          "playerAttachmentName must have 2 entries, the type of attachment and "
-              + "the name of the attachment."
-              + thisErrorMsg());
-    }
-    // covers PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment
-    if (!(s[1].equals("PlayerAttachment")
-        || s[1].equals("RulesAttachment")
-        || s[1].equals("TriggerAttachment")
-        || s[1].equals("TechAttachment")
-        || s[1].equals("PoliticalActionAttachment")
-        || s[1].equals("UserActionAttachment"))) {
-      throw new GameParseException(
-          "playerAttachmentName value must be PlayerAttachment or RulesAttachment or "
-              + "TriggerAttachment or TechAttachment or PoliticalActionAttachment or "
-              + "UserActionAttachment"
-              + thisErrorMsg());
-    }
-    // TODO validate attachment exists?
-    if (s[0].length() < 1) {
-      throw new GameParseException(
-          "playerAttachmentName count must be a valid attachment name" + thisErrorMsg());
-    }
-    if (s[1].equals("PlayerAttachment") && !s[0].startsWith(Constants.PLAYER_ATTACHMENT_NAME)) {
-      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
-    }
-    if (s[1].equals("RulesAttachment")
-        && !(s[0].startsWith(Constants.RULES_ATTACHMENT_NAME)
-            || s[0].startsWith(Constants.RULES_OBJECTIVE_PREFIX)
-            || s[0].startsWith(Constants.RULES_CONDITION_PREFIX))) {
-      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
-    }
-    if (s[1].equals("TriggerAttachment") && !s[0].startsWith(Constants.TRIGGER_ATTACHMENT_PREFIX)) {
-      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
-    }
-    if (s[1].equals("TechAttachment") && !s[0].startsWith(Constants.TECH_ATTACHMENT_NAME)) {
-      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
-    }
-    if (s[1].equals("PoliticalActionAttachment")
-        && !s[0].startsWith(Constants.POLITICALACTION_ATTACHMENT_PREFIX)) {
-      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
-    }
-    if (s[1].equals("UserActionAttachment")
-        && !s[0].startsWith(Constants.USERACTION_ATTACHMENT_PREFIX)) {
-      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
-    }
-    this.playerAttachmentName = Tuple.of(s[1].intern(), s[0].intern());
-  }
-
-  private void setPlayerAttachmentName(final Tuple<String, String> value) {
-    playerAttachmentName = value;
-  }
-
-  private Tuple<String, String> getPlayerAttachmentName() {
-    if (playerAttachmentName == null) {
-      return Tuple.of("PlayerAttachment", Constants.PLAYER_ATTACHMENT_NAME);
-    }
-    return playerAttachmentName;
-  }
-
-  private void resetPlayerAttachmentName() {
-    playerAttachmentName = null;
-  }
-
-  private void setPlayerProperty(final String prop) {
-    final String[] s = splitOnColon(prop);
-    if (playerProperty == null) {
-      playerProperty = new ArrayList<>();
-    }
-    // the last one is the property we are changing, while the rest is the string we are changing it
-    // to
-    final String property = s[s.length - 1].intern();
-    playerProperty.add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
-  }
-
-  private void setPlayerProperty(final List<Tuple<String, String>> value) {
-    playerProperty = value;
-  }
-
-  private List<Tuple<String, String>> getPlayerProperty() {
-    return getListProperty(playerProperty);
-  }
-
-  private void resetPlayerProperty() {
-    playerProperty = null;
-  }
-
-  private void setRelationshipTypes(final String names) throws GameParseException {
-    for (final String element : splitOnColon(names)) {
-      final RelationshipType relation =
-          getData().getRelationshipTypeList().getRelationshipType(element);
-      if (relation == null) {
-        throw new GameParseException(
-            "Could not find relationshipType. name: " + element + thisErrorMsg());
-      }
-      if (relationshipTypes == null) {
-        relationshipTypes = new ArrayList<>();
-      }
-      relationshipTypes.add(relation);
-    }
-  }
-
-  private void setRelationshipTypes(final List<RelationshipType> value) {
-    relationshipTypes = value;
-  }
-
-  private List<RelationshipType> getRelationshipTypes() {
-    return getListProperty(relationshipTypes);
-  }
-
-  private void resetRelationshipTypes() {
-    relationshipTypes = null;
-  }
-
-  private void setRelationshipTypeAttachmentName(final String name) throws GameParseException {
-    final String[] s = splitOnColon(name);
-    if (s.length != 2) {
-      throw new GameParseException(
-          "relationshipTypeAttachmentName must have 2 entries, the type of attachment and "
-              + "the name of the attachment."
-              + thisErrorMsg());
-    }
-    // covers RelationshipTypeAttachment
-    if (!s[1].equals("RelationshipTypeAttachment")) {
-      throw new GameParseException(
-          "relationshipTypeAttachmentName value must be RelationshipTypeAttachment"
-              + thisErrorMsg());
-    }
-    // TODO validate attachment exists?
-    if (s[0].length() < 1) {
-      throw new GameParseException(
-          "relationshipTypeAttachmentName count must be a valid attachment name" + thisErrorMsg());
-    }
-    if (!s[0].startsWith(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME)) {
-      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
-    }
-    relationshipTypeAttachmentName = Tuple.of(s[1].intern(), s[0].intern());
-  }
-
-  private void setRelationshipTypeAttachmentName(final Tuple<String, String> value) {
-    relationshipTypeAttachmentName = value;
-  }
-
-  private Tuple<String, String> getRelationshipTypeAttachmentName() {
-    if (relationshipTypeAttachmentName == null) {
-      return Tuple.of("RelationshipTypeAttachment", Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME);
-    }
-    return relationshipTypeAttachmentName;
-  }
-
-  private void resetRelationshipTypeAttachmentName() {
-    relationshipTypeAttachmentName = null;
-  }
-
-  private void setRelationshipTypeProperty(final String prop) {
-    final String[] s = splitOnColon(prop);
-    if (relationshipTypeProperty == null) {
-      relationshipTypeProperty = new ArrayList<>();
-    }
-    // the last one is the property we are changing, while the rest is the string we are changing it
-    // to
-    final String property = s[s.length - 1].intern();
-    relationshipTypeProperty.add(
-        Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
-  }
-
-  private void setRelationshipTypeProperty(final List<Tuple<String, String>> value) {
-    relationshipTypeProperty = value;
-  }
-
-  private List<Tuple<String, String>> getRelationshipTypeProperty() {
-    return getListProperty(relationshipTypeProperty);
-  }
-
-  private void resetRelationshipTypeProperty() {
-    relationshipTypeProperty = null;
-  }
-
-  private void setTerritoryEffects(final String effectNames) throws GameParseException {
-    for (final String name : splitOnColon(effectNames)) {
-      final TerritoryEffect effect = getData().getTerritoryEffectList().get(name);
-      if (effect == null) {
-        throw new GameParseException(
-            "Could not find territoryEffect. name: " + name + thisErrorMsg());
-      }
-      if (territoryEffects == null) {
-        territoryEffects = new ArrayList<>();
-      }
-      territoryEffects.add(effect);
-    }
-  }
-
-  private void setTerritoryEffects(final List<TerritoryEffect> value) {
-    territoryEffects = value;
-  }
-
-  private List<TerritoryEffect> getTerritoryEffects() {
-    return getListProperty(territoryEffects);
-  }
-
-  private void resetTerritoryEffects() {
-    territoryEffects = null;
-  }
-
-  private void setTerritoryEffectAttachmentName(final String name) throws GameParseException {
-    final String[] s = splitOnColon(name);
-    if (s.length != 2) {
-      throw new GameParseException(
-          "territoryEffectAttachmentName must have 2 entries, the type of "
-              + "attachment and the name of the attachment."
-              + thisErrorMsg());
-    }
-    // covers TerritoryEffectAttachment
-    if (!s[1].equals("TerritoryEffectAttachment")) {
-      throw new GameParseException(
-          "territoryEffectAttachmentName value must be TerritoryEffectAttachment" + thisErrorMsg());
-    }
-    // TODO validate attachment exists?
-    if (s[0].length() < 1) {
-      throw new GameParseException(
-          "territoryEffectAttachmentName count must be a valid attachment name" + thisErrorMsg());
-    }
-    if (!s[0].startsWith(Constants.TERRITORYEFFECT_ATTACHMENT_NAME)) {
-      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
-    }
-    territoryEffectAttachmentName = Tuple.of(s[1].intern(), s[0].intern());
-  }
-
-  private void setTerritoryEffectAttachmentName(final Tuple<String, String> value) {
-    territoryEffectAttachmentName = value;
-  }
-
-  private Tuple<String, String> getTerritoryEffectAttachmentName() {
-    if (territoryEffectAttachmentName == null) {
-      return Tuple.of("TerritoryEffectAttachment", Constants.TERRITORYEFFECT_ATTACHMENT_NAME);
-    }
-    return territoryEffectAttachmentName;
-  }
-
-  private void resetTerritoryEffectAttachmentName() {
-    territoryEffectAttachmentName = null;
-  }
-
-  private void setTerritoryEffectProperty(final String prop) {
-    final String[] s = splitOnColon(prop);
-    if (territoryEffectProperty == null) {
-      territoryEffectProperty = new ArrayList<>();
-    }
-    // the last one is the property we are changing, while the rest is the string we are changing it
-    // to
-    final String property = s[s.length - 1].intern();
-    territoryEffectProperty.add(
-        Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
-  }
-
-  private void setTerritoryEffectProperty(final List<Tuple<String, String>> value) {
-    territoryEffectProperty = value;
-  }
-
-  private List<Tuple<String, String>> getTerritoryEffectProperty() {
-    return getListProperty(territoryEffectProperty);
-  }
-
-  private void resetTerritoryEffectProperty() {
-    territoryEffectProperty = null;
-  }
-
-  /** Fudging this, it really represents adding placements. */
-  private void setPlacement(final String place) throws GameParseException {
-    if (place == null) {
-      placement = null;
-      return;
-    }
-    final String[] s = splitOnColon(place);
-    if (s.length < 1) {
-      throw new GameParseException("Empty placement list" + thisErrorMsg());
-    }
-    int count;
-    int i = 0;
-    try {
-      count = getInt(s[0]);
-      i++;
-    } catch (final Exception e) {
-      count = 1;
-    }
-    if (s.length == 1 && count != -1) {
-      throw new GameParseException("Empty placement list" + thisErrorMsg());
-    }
-    final int currentIndex = i;
-    final Territory territory =
-        getTerritory(s[currentIndex])
-            .orElseThrow(
-                () ->
-                    new GameParseException(
-                        MessageFormat.format(
-                            "TriggerAttachment: Setting placement with value {0} not possible; Index {1}: No territory found for {2}",
-                            place, currentIndex, s[currentIndex])));
-
-    i++;
-    final IntegerMap<UnitType> map = new IntegerMap<>();
-    for (; i < s.length; i++) {
-      map.add(getUnitTypeOrThrow(s[i]), count);
-    }
-    if (placement == null) {
-      placement = new HashMap<>();
-    }
-    if (placement.containsKey(territory)) {
-      map.add(placement.get(territory));
-    }
-    placement.put(territory, map);
-  }
-
-  private void setPlacement(final Map<Territory, IntegerMap<UnitType>> value) {
-    placement = value;
-  }
-
-  private Map<Territory, IntegerMap<UnitType>> getPlacement() {
-    return getMapProperty(placement);
-  }
-
-  private void resetPlacement() {
-    placement = null;
-  }
-
-  private void setRemoveUnits(final String value) throws GameParseException {
-    if (removeUnits == null) {
-      removeUnits = new HashMap<>();
-    }
-    final String[] s = splitOnColon(value);
-    if (s.length < 1) {
-      throw new GameParseException("Empty removeUnits list" + thisErrorMsg());
-    }
-    int count;
-    int i = 0;
-    try {
-      count = getInt(s[0]);
-      i++;
-    } catch (final Exception e) {
-      count = 1;
-    }
-    if (s.length == 1 && count != -1) {
-      throw new GameParseException("Empty removeUnits list" + thisErrorMsg());
-    }
-    final Collection<Territory> territories = new ArrayList<>();
-    final Territory terr = getData().getMap().getTerritoryOrNull(s[i]);
-    if (terr == null) {
-      if (s[i].equalsIgnoreCase("all")) {
-        territories.addAll(getData().getMap().getTerritories());
-      } else {
-        throw new GameParseException("Territory does not exist " + s[i] + thisErrorMsg());
-      }
-    } else {
-      territories.add(terr);
-    }
-    i++;
-    final IntegerMap<UnitType> map = new IntegerMap<>();
-    for (; i < s.length; i++) {
-      final Collection<UnitType> types = new ArrayList<>();
-      final Optional<UnitType> optionalUnitType =
-          getDataOrThrow().getUnitTypeList().getUnitType(s[i]);
-      if (optionalUnitType.isEmpty()) {
-        if (s[i].equalsIgnoreCase("all")) {
-          types.addAll(getData().getUnitTypeList().getAllUnitTypes());
-        } else {
-          throw new GameParseException("UnitType does not exist " + s[i] + thisErrorMsg());
-        }
-      } else {
-        types.add(optionalUnitType.get());
-      }
-      for (final UnitType type : types) {
-        map.add(type, count);
-      }
-    }
-    for (final Territory t : territories) {
-      if (removeUnits.containsKey(t)) {
-        map.add(removeUnits.get(t));
-      }
-      removeUnits.put(t, map);
-    }
-  }
-
-  private void setRemoveUnits(final Map<Territory, IntegerMap<UnitType>> value) {
-    removeUnits = value;
-  }
-
-  private Map<Territory, IntegerMap<UnitType>> getRemoveUnits() {
-    return getMapProperty(removeUnits);
-  }
-
-  private void resetRemoveUnits() {
-    removeUnits = null;
-  }
-
-  private void setPurchase(final String place) throws GameParseException {
-    if (place == null) {
-      purchase = null;
-      return;
-    }
-    final String[] s = splitOnColon(place);
-    if (s.length < 1) {
-      throw new GameParseException("Empty purchase list" + thisErrorMsg());
-    }
-    int count;
-    int i = 0;
-    try {
-      count = getInt(s[0]);
-      i++;
-    } catch (final Exception e) {
-      count = 1;
-    }
-    if (s.length == 1 && count != -1) {
-      throw new GameParseException("Empty purchase list" + thisErrorMsg());
-    }
-
-    if (purchase == null) {
-      purchase = new IntegerMap<>();
-    }
-    for (; i < s.length; i++) {
-      purchase.add(getUnitTypeOrThrow(s[i]), count);
-    }
-  }
-
-  private void setPurchase(final IntegerMap<UnitType> value) {
-    purchase = value;
-  }
-
-  private IntegerMap<UnitType> getPurchase() {
-    return getIntegerMapProperty(purchase);
-  }
-
-  private void resetPurchase() {
-    purchase = null;
-  }
-
-  private void setChangeOwnership(final String value) throws GameParseException {
-    // territory:oldOwner:newOwner:booleanConquered
-    // can have "all" for territory and "any" for oldOwner
-    final String[] s = splitOnColon(value);
-    if (s.length < 4) {
-      throw new GameParseException(
-          "changeOwnership must have 4 fields: territory:oldOwner:newOwner:booleanConquered"
-              + thisErrorMsg());
-    }
-    if (!s[0].equalsIgnoreCase("all")) {
-      getTerritory(s[0])
-          .orElseThrow(
-              () ->
-                  new GameParseException(
-                      MessageFormat.format(
-                          "TriggerAttachment: Setting changeOwnership with value {0} not possible; Index 0: No territory found for {1}",
-                          value, s[0])));
-    }
-    if (!isAnyValue(s[1])) {
-      getPlayerByName(s[1])
-          .orElseThrow(
-              () ->
-                  new GameParseException(
-                      MessageFormat.format(
-                          "TriggerAttachment: Setting changeOwnership with value {0} not possible; No source player found for {1}",
-                          s, s[1])));
-    }
-    getPlayerByName(s[2])
-        .orElseThrow(
-            () ->
-                new GameParseException(
-                    MessageFormat.format(
-                        "TriggerAttachment: Setting changeOwnership with value {0} not possible; No target player found for {1}",
-                        s, s[2])));
-    getBool(s[3]);
-    if (changeOwnership == null) {
-      changeOwnership = new ArrayList<>();
-    }
-    changeOwnership.add(value.intern());
-  }
-
-  private void setChangeOwnership(final List<String> value) {
-    changeOwnership = value;
-  }
-
-  private List<String> getChangeOwnership() {
-    return getListProperty(changeOwnership);
-  }
-
-  private void resetChangeOwnership() {
-    changeOwnership = null;
-  }
-
   private static void removeUnits(
       final TriggerAttachment t,
       final Territory terr,
@@ -1528,12 +506,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             .build();
     return CollectionUtils.getMatches(satisfiedTriggers, combinedPredicate);
   }
-
-  // And now for the actual triggers, as called throughout the engine.
-  // Each trigger should be called exactly twice, once in BaseDelegate (for use with 'when'), and a
-  // second time as the
-  // default location for when 'when' is not used.
-  // Should be void.
 
   /** Triggers all notifications associated with {@code satisfiedTriggers}. */
   public static void triggerNotifications(
@@ -2618,6 +1590,1034 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   public static Predicate<TriggerAttachment> activateTriggerMatch() {
     return t -> !t.getActivateTrigger().isEmpty();
+  }
+
+  private List<Tuple<String, String>> getActivateTrigger() {
+    return getListProperty(activateTrigger);
+  }
+
+  private void setActivateTrigger(final String value) throws GameParseException {
+    // triggerName:numberOfTimes:useUses:testUses:testConditions:testChance
+    final String[] s = splitOnColon(value);
+    if (s.length != 6) {
+      throw new GameParseException(
+          "activateTrigger must have 6 parts: triggerName:numberOfTimes:useUses:"
+              + "testUses:testConditions:testChance"
+              + thisErrorMsg());
+    }
+    TriggerAttachment trigger = null;
+    for (final GamePlayer player : getData().getPlayerList().getPlayers()) {
+      final TriggerAttachment triggerAttachment = (TriggerAttachment) player.getAttachment(s[0]);
+      if (triggerAttachment != null) {
+        trigger = triggerAttachment;
+        break;
+      }
+    }
+    if (trigger == null) {
+      throw new GameParseException("No TriggerAttachment named: " + s[0] + thisErrorMsg());
+    }
+    if (ObjectUtils.referenceEquals(trigger, this)) {
+      throw new GameParseException("Cannot have a trigger activate itself!" + thisErrorMsg());
+    }
+    String options = value;
+    options = options.replaceFirst((s[0] + ":"), "");
+    final int numberOfTimes = getInt(s[1]);
+    if (numberOfTimes < 0) {
+      throw new GameParseException(
+          "activateTrigger must be positive for the number of times to fire: "
+              + s[1]
+              + thisErrorMsg());
+    }
+    getBool(s[2]);
+    getBool(s[3]);
+    getBool(s[4]);
+    getBool(s[5]);
+    if (activateTrigger == null) {
+      activateTrigger = new ArrayList<>();
+    }
+    activateTrigger.add(Tuple.of(s[0].intern(), options.intern()));
+  }
+
+  private void setActivateTrigger(final List<Tuple<String, String>> value) {
+    activateTrigger = value;
+  }
+
+  private void resetActivateTrigger() {
+    activateTrigger = null;
+  }
+
+  private Optional<ProductionFrontier> getFrontier() {
+    return Optional.ofNullable(frontier);
+  }
+
+  private void setFrontier(final String s) throws GameParseException {
+    final ProductionFrontier front = getData().getProductionFrontierList().getProductionFrontier(s);
+    if (front == null) {
+      throw new GameParseException("Could not find frontier. name: " + s + thisErrorMsg());
+    }
+    frontier = front;
+  }
+
+  private void setFrontier(final ProductionFrontier value) {
+    frontier = value;
+  }
+
+  private @Nullable ProductionFrontier getFrontierOrNull() {
+    return frontier;
+  }
+
+  private void resetFrontier() {
+    frontier = null;
+  }
+
+  List<String> getProductionRule() {
+    return getListProperty(productionRule);
+  }
+
+  private void setProductionRule(final String prop) throws GameParseException {
+    final String[] s = splitOnColon(prop);
+    if (s.length != 2) {
+      throw new GameParseException("Invalid productionRule declaration: " + prop + thisErrorMsg());
+    }
+    if (getData().getProductionFrontierList().getProductionFrontier(s[0]) == null) {
+      throw new GameParseException("Could not find frontier. name: " + s[0] + thisErrorMsg());
+    }
+    String rule = s[1];
+    if (rule.startsWith("-")) {
+      rule = rule.replaceFirst("-", "");
+    }
+    if (getData().getProductionRuleList().getProductionRule(rule) == null) {
+      throw new GameParseException(
+          "Could not find production rule. name: " + rule + thisErrorMsg());
+    }
+    if (productionRule == null) {
+      productionRule = new ArrayList<>();
+    }
+    productionRule.add(prop.intern());
+  }
+
+  private void setProductionRule(final List<String> value) {
+    productionRule = value;
+  }
+
+  private void resetProductionRule() {
+    productionRule = null;
+  }
+
+  private int getResourceCount() {
+    return resourceCount;
+  }
+
+  private void setResourceCount(final String s) {
+    resourceCount = getInt(s);
+  }
+
+  private void setResourceCount(final Integer s) {
+    resourceCount = s;
+  }
+
+  private void resetResourceCount() {
+    resourceCount = 0;
+  }
+
+  private Optional<String> getVictory() {
+    return Optional.ofNullable(victory);
+  }
+
+  private void setVictory(final String s) {
+    victory = s.intern();
+  }
+
+  private String getVictoryOrThrow() {
+    return getVictory()
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    String.format("No expected victory for TriggerAttachment %s", this)));
+  }
+
+  private String getVictoryOrNull() {
+    return victory;
+  }
+
+  private void resetVictory() {
+    victory = null;
+  }
+
+  private List<TechAdvance> getTech() {
+    return getListProperty(tech);
+  }
+
+  private void setTech(final String techs) throws GameParseException {
+    for (final String subString : splitOnColon(techs)) {
+      TechAdvance ta = getData().getTechnologyFrontier().getAdvanceByProperty(subString);
+      if (ta == null) {
+        ta = getData().getTechnologyFrontier().getAdvanceByName(subString);
+      }
+      if (ta == null) {
+        throw new GameParseException("Technology not found : " + subString + thisErrorMsg());
+      }
+      if (tech == null) {
+        tech = new ArrayList<>();
+      }
+      tech.add(ta);
+    }
+  }
+
+  private void setTech(final List<TechAdvance> value) {
+    tech = value;
+  }
+
+  private void resetTech() {
+    tech = null;
+  }
+
+  private Map<String, Map<TechAdvance, Boolean>> getAvailableTech() {
+    return getMapProperty(availableTech);
+  }
+
+  private void setAvailableTech(final String techs) throws GameParseException {
+    final String[] s = splitOnColon(techs);
+    if (s.length < 2) {
+      throw new GameParseException(
+          "Invalid tech availability: " + techs + " should be category:techs" + thisErrorMsg());
+    }
+    final String cat = s[0];
+    final LinkedHashMap<TechAdvance, Boolean> tlist = new LinkedHashMap<>();
+    for (int i = 1; i < s.length; i++) {
+      boolean add = true;
+      if (s[i].startsWith("-")) {
+        add = false;
+        s[i] = s[i].substring(1);
+      }
+      TechAdvance ta = getData().getTechnologyFrontier().getAdvanceByProperty(s[i]);
+      if (ta == null) {
+        ta = getData().getTechnologyFrontier().getAdvanceByName(s[i]);
+      }
+      if (ta == null) {
+        throw new GameParseException("Technology not found : " + s[i] + thisErrorMsg());
+      }
+      tlist.put(ta, add);
+    }
+    if (availableTech == null) {
+      availableTech = new HashMap<>();
+    }
+    if (availableTech.containsKey(cat)) {
+      tlist.putAll(availableTech.get(cat));
+    }
+    availableTech.put(cat.intern(), tlist);
+  }
+
+  private void setAvailableTech(final Map<String, Map<TechAdvance, Boolean>> value) {
+    availableTech = value;
+  }
+
+  private void resetAvailableTech() {
+    availableTech = null;
+  }
+
+  private Map<String, Boolean> getSupport() {
+    return getMapProperty(support);
+  }
+
+  private void setSupport(final String value) throws GameParseException {
+    for (final String entry : splitOnColon(value)) {
+      final boolean remove = entry.startsWith("-");
+      final String name = remove ? entry.substring(1) : entry;
+      UnitSupportAttachment.get(getData().getUnitTypeList()).stream()
+          .filter(support -> support.getName().equals(name))
+          .findAny()
+          .orElseThrow(
+              () ->
+                  new GameParseException(
+                      "Could not find unitSupportAttachment. name: " + name + thisErrorMsg()));
+      if (support == null) {
+        support = new LinkedHashMap<>();
+      }
+      support.put(name.intern(), !remove);
+    }
+  }
+
+  private void setSupport(final Map<String, Boolean> value) {
+    support = value;
+  }
+
+  private void resetSupport() {
+    support = null;
+  }
+
+  private Optional<@NonNls String> getResource() {
+    return Optional.ofNullable(resource);
+  }
+
+  private void setResource(final String s) throws GameParseException {
+    getResourceOrThrowGameParseException(s);
+    resource = s.intern();
+  }
+
+  private @Nullable @NonNls String getResourceOrNull() {
+    return resource;
+  }
+
+  private void resetResource() {
+    resource = null;
+  }
+
+  private List<String> getRelationshipChange() {
+    return getListProperty(relationshipChange);
+  }
+
+  private void setRelationshipChange(final String relChange) throws GameParseException {
+    final String[] s = splitOnColon(relChange);
+    if (s.length != 4) {
+      throw new GameParseException(
+          "Invalid relationshipChange declaration: "
+              + relChange
+              + " \n Use: player1:player2:oldRelation:newRelation\n"
+              + thisErrorMsg());
+    }
+    getPlayerByName(s[0])
+        .orElseThrow(
+            () ->
+                new GameParseException(
+                    MessageFormat.format(
+                        "Invalid relationshipChange declaration: {0} \n first player: {1} unknown{2}",
+                        relChange, s[0], thisErrorMsg())));
+    getPlayerByName(s[1])
+        .orElseThrow(
+            () ->
+                new GameParseException(
+                    MessageFormat.format(
+                        "Invalid relationshipChange declaration: {0} \n first player: {1} unknown{2}",
+                        relChange, s[0], thisErrorMsg())));
+    if (!(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL)
+        || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY)
+        || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)
+        || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR)
+        || Matches.isValidRelationshipName(getData().getRelationshipTypeList()).test(s[2]))) {
+      throw new GameParseException(
+          MessageFormat.format(
+              "Invalid relationshipChange declaration: {0} \n old relationshipType: {1} unknown{2}",
+              relChange, s[2], thisErrorMsg()));
+    }
+    if (Matches.isValidRelationshipName(getData().getRelationshipTypeList()).negate().test(s[3])) {
+      throw new GameParseException(
+          MessageFormat.format(
+              "Invalid relationshipChange declaration: {0} \n new relationshipType: {1} unknown{2}",
+              relChange, s[3], thisErrorMsg()));
+    }
+    if (relationshipChange == null) {
+      relationshipChange = new ArrayList<>();
+    }
+    relationshipChange.add(relChange.intern());
+  }
+
+  private void setRelationshipChange(final List<String> value) {
+    relationshipChange = value;
+  }
+
+  private void resetRelationshipChange() {
+    relationshipChange = null;
+  }
+
+  private List<UnitType> getUnitType() {
+    return getListProperty(unitTypes);
+  }
+
+  private void setUnitType(final String names) throws GameParseException {
+    for (final String element : splitOnColon(names)) {
+      if (unitTypes == null) {
+        unitTypes = new ArrayList<>();
+      }
+      unitTypes.add(getUnitTypeOrThrow(element));
+    }
+  }
+
+  private void setUnitType(final List<UnitType> value) {
+    unitTypes = value;
+  }
+
+  private void resetUnitType() {
+    unitTypes = null;
+  }
+
+  private Tuple<String, String> getUnitAttachmentName() {
+    if (unitAttachmentName == null) {
+      return Tuple.of("UnitAttachment", Constants.UNIT_ATTACHMENT_NAME);
+    }
+    return unitAttachmentName;
+  }
+
+  private void setUnitAttachmentName(final String name) throws GameParseException {
+    final String[] s = splitOnColon(name);
+    if (s.length != 2) {
+      throw new GameParseException(
+          "unitAttachmentName must have 2 entries, the type of attachment and the "
+              + "name of the attachment."
+              + thisErrorMsg());
+    }
+    // covers UnitAttachment, UnitSupportAttachment
+    if (!(s[1].equals("UnitAttachment") || s[1].equals("UnitSupportAttachment"))) {
+      throw new GameParseException(
+          "unitAttachmentName value must be UnitAttachment or UnitSupportAttachment"
+              + thisErrorMsg());
+    }
+    // TODO validate attachment exists?
+    if (s[0].length() < 1) {
+      throw new GameParseException(
+          "unitAttachmentName count must be a valid attachment name" + thisErrorMsg());
+    }
+    if (s[1].equals("UnitAttachment") && !s[0].startsWith(Constants.UNIT_ATTACHMENT_NAME)) {
+      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
+    }
+    if (s[1].equals("UnitSupportAttachment")
+        && !s[0].startsWith(Constants.SUPPORT_ATTACHMENT_PREFIX)) {
+      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
+    }
+    unitAttachmentName = Tuple.of(s[1].intern(), s[0].intern());
+  }
+
+  private void setUnitAttachmentName(final Tuple<String, String> value) {
+    unitAttachmentName = value;
+  }
+
+  private void resetUnitAttachmentName() {
+    unitAttachmentName = null;
+  }
+
+  private List<Tuple<String, String>> getUnitProperty() {
+    return getListProperty(unitProperty);
+  }
+
+  private void setUnitProperty(final String prop) {
+    final String[] s = splitOnColon(prop);
+    if (unitProperty == null) {
+      unitProperty = new ArrayList<>();
+    }
+    // the last one is the property we are changing, while the rest is the string we are changing it
+    // to
+    final String property = s[s.length - 1].intern();
+    unitProperty.add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
+  }
+
+  private void setUnitProperty(final List<Tuple<String, String>> value) {
+    unitProperty = value;
+  }
+
+  private void resetUnitProperty() {
+    unitProperty = null;
+  }
+
+  private List<Territory> getTerritories() {
+    return getListProperty(territories);
+  }
+
+  private void setTerritories(final String names) throws GameParseException {
+    final String[] s = splitOnColon(names);
+    for (final String element : s) {
+      if (territories == null) {
+        territories = new ArrayList<>();
+      }
+      territories.add(
+          getTerritory(element)
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "TriggerAttachment: Setting territories with value {0} not possible; No territory found for {1}",
+                              names, element))));
+    }
+  }
+
+  private void setTerritories(final List<Territory> value) {
+    territories = value;
+  }
+
+  private void resetTerritories() {
+    territories = null;
+  }
+
+  private Tuple<String, String> getTerritoryAttachmentName() {
+    if (territoryAttachmentName == null) {
+      return Tuple.of("TerritoryAttachment", Constants.TERRITORY_ATTACHMENT_NAME);
+    }
+    return territoryAttachmentName;
+  }
+
+  private void setTerritoryAttachmentName(final String name) throws GameParseException {
+    final String[] s = splitOnColon(name);
+    if (s.length != 2) {
+      throw new GameParseException(
+          "territoryAttachmentName must have 2 entries, "
+              + "the type of attachment and the name of the attachment."
+              + thisErrorMsg());
+    }
+    // covers TerritoryAttachment, CanalAttachment
+    if (!(s[1].equals("TerritoryAttachment") || s[1].equals("CanalAttachment"))) {
+      throw new GameParseException(
+          "territoryAttachmentName value must be TerritoryAttachment or CanalAttachment"
+              + thisErrorMsg());
+    }
+    // TODO validate attachment exists?
+    if (s[0].length() < 1) {
+      throw new GameParseException(
+          "territoryAttachmentName count must be a valid attachment name" + thisErrorMsg());
+    }
+    if (s[1].equals("TerritoryAttachment")
+        && !s[0].startsWith(Constants.TERRITORY_ATTACHMENT_NAME)) {
+      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
+    }
+    if (s[1].equals("CanalAttachment") && !s[0].startsWith(Constants.CANAL_ATTACHMENT_PREFIX)) {
+      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
+    }
+    territoryAttachmentName = Tuple.of(s[1].intern(), s[0].intern());
+  }
+
+  private void setTerritoryAttachmentName(final Tuple<String, String> value) {
+    territoryAttachmentName = value;
+  }
+
+  private void resetTerritoryAttachmentName() {
+    territoryAttachmentName = null;
+  }
+
+  private List<Tuple<String, String>> getTerritoryProperty() {
+    return getListProperty(territoryProperty);
+  }
+
+  private void setTerritoryProperty(final String prop) {
+    final String[] s = splitOnColon(prop);
+    if (territoryProperty == null) {
+      territoryProperty = new ArrayList<>();
+    }
+    // the last one is the property we are changing, while the rest is the string we are changing it
+    // to
+    final String property = s[s.length - 1].intern();
+    territoryProperty.add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
+  }
+
+  private void setTerritoryProperty(final List<Tuple<String, String>> value) {
+    territoryProperty = value;
+  }
+
+  private void resetTerritoryProperty() {
+    territoryProperty = null;
+  }
+
+  private List<GamePlayer> getPlayers() {
+    List<GamePlayer> result = getListProperty(players);
+    return result.isEmpty() ? List.of((GamePlayer) getAttachedTo()) : result;
+  }
+
+  private void setPlayers(final String names) throws GameParseException {
+    players = parsePlayerList(names, players);
+  }
+
+  private void setPlayers(final List<GamePlayer> value) {
+    players = value;
+  }
+
+  private void resetPlayers() {
+    players = null;
+  }
+
+  private Tuple<String, String> getPlayerAttachmentName() {
+    if (playerAttachmentName == null) {
+      return Tuple.of("PlayerAttachment", Constants.PLAYER_ATTACHMENT_NAME);
+    }
+    return playerAttachmentName;
+  }
+
+  private void setPlayerAttachmentName(final String playerAttachmentName)
+      throws GameParseException {
+    // replace-all to automatically correct legacy (1.8) attachment spelling
+    final String name = playerAttachmentName.replaceAll("ttatch", "ttach");
+    final String[] s = splitOnColon(name);
+    if (s.length != 2) {
+      throw new GameParseException(
+          "playerAttachmentName must have 2 entries, the type of attachment and "
+              + "the name of the attachment."
+              + thisErrorMsg());
+    }
+    // covers PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment
+    if (!(s[1].equals("PlayerAttachment")
+        || s[1].equals("RulesAttachment")
+        || s[1].equals("TriggerAttachment")
+        || s[1].equals("TechAttachment")
+        || s[1].equals("PoliticalActionAttachment")
+        || s[1].equals("UserActionAttachment"))) {
+      throw new GameParseException(
+          "playerAttachmentName value must be PlayerAttachment or RulesAttachment or "
+              + "TriggerAttachment or TechAttachment or PoliticalActionAttachment or "
+              + "UserActionAttachment"
+              + thisErrorMsg());
+    }
+    // TODO validate attachment exists?
+    if (s[0].length() < 1) {
+      throw new GameParseException(
+          "playerAttachmentName count must be a valid attachment name" + thisErrorMsg());
+    }
+    if (s[1].equals("PlayerAttachment") && !s[0].startsWith(Constants.PLAYER_ATTACHMENT_NAME)) {
+      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
+    }
+    if (s[1].equals("RulesAttachment")
+        && !(s[0].startsWith(Constants.RULES_ATTACHMENT_NAME)
+            || s[0].startsWith(Constants.RULES_OBJECTIVE_PREFIX)
+            || s[0].startsWith(Constants.RULES_CONDITION_PREFIX))) {
+      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
+    }
+    if (s[1].equals("TriggerAttachment") && !s[0].startsWith(Constants.TRIGGER_ATTACHMENT_PREFIX)) {
+      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
+    }
+    if (s[1].equals("TechAttachment") && !s[0].startsWith(Constants.TECH_ATTACHMENT_NAME)) {
+      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
+    }
+    if (s[1].equals("PoliticalActionAttachment")
+        && !s[0].startsWith(Constants.POLITICALACTION_ATTACHMENT_PREFIX)) {
+      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
+    }
+    if (s[1].equals("UserActionAttachment")
+        && !s[0].startsWith(Constants.USERACTION_ATTACHMENT_PREFIX)) {
+      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
+    }
+    this.playerAttachmentName = Tuple.of(s[1].intern(), s[0].intern());
+  }
+
+  private void setPlayerAttachmentName(final Tuple<String, String> value) {
+    playerAttachmentName = value;
+  }
+
+  private void resetPlayerAttachmentName() {
+    playerAttachmentName = null;
+  }
+
+  private List<Tuple<String, String>> getPlayerProperty() {
+    return getListProperty(playerProperty);
+  }
+
+  private void setPlayerProperty(final String prop) {
+    final String[] s = splitOnColon(prop);
+    if (playerProperty == null) {
+      playerProperty = new ArrayList<>();
+    }
+    // the last one is the property we are changing, while the rest is the string we are changing it
+    // to
+    final String property = s[s.length - 1].intern();
+    playerProperty.add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
+  }
+
+  private void setPlayerProperty(final List<Tuple<String, String>> value) {
+    playerProperty = value;
+  }
+
+  // And now for the actual triggers, as called throughout the engine.
+  // Each trigger should be called exactly twice, once in BaseDelegate (for use with 'when'), and a
+  // second time as the
+  // default location for when 'when' is not used.
+  // Should be void.
+
+  private void resetPlayerProperty() {
+    playerProperty = null;
+  }
+
+  private List<RelationshipType> getRelationshipTypes() {
+    return getListProperty(relationshipTypes);
+  }
+
+  private void setRelationshipTypes(final String names) throws GameParseException {
+    for (final String element : splitOnColon(names)) {
+      final RelationshipType relation =
+          getData().getRelationshipTypeList().getRelationshipType(element);
+      if (relation == null) {
+        throw new GameParseException(
+            "Could not find relationshipType. name: " + element + thisErrorMsg());
+      }
+      if (relationshipTypes == null) {
+        relationshipTypes = new ArrayList<>();
+      }
+      relationshipTypes.add(relation);
+    }
+  }
+
+  private void setRelationshipTypes(final List<RelationshipType> value) {
+    relationshipTypes = value;
+  }
+
+  private void resetRelationshipTypes() {
+    relationshipTypes = null;
+  }
+
+  private Tuple<String, String> getRelationshipTypeAttachmentName() {
+    if (relationshipTypeAttachmentName == null) {
+      return Tuple.of("RelationshipTypeAttachment", Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME);
+    }
+    return relationshipTypeAttachmentName;
+  }
+
+  private void setRelationshipTypeAttachmentName(final String name) throws GameParseException {
+    final String[] s = splitOnColon(name);
+    if (s.length != 2) {
+      throw new GameParseException(
+          "relationshipTypeAttachmentName must have 2 entries, the type of attachment and "
+              + "the name of the attachment."
+              + thisErrorMsg());
+    }
+    // covers RelationshipTypeAttachment
+    if (!s[1].equals("RelationshipTypeAttachment")) {
+      throw new GameParseException(
+          "relationshipTypeAttachmentName value must be RelationshipTypeAttachment"
+              + thisErrorMsg());
+    }
+    // TODO validate attachment exists?
+    if (s[0].length() < 1) {
+      throw new GameParseException(
+          "relationshipTypeAttachmentName count must be a valid attachment name" + thisErrorMsg());
+    }
+    if (!s[0].startsWith(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME)) {
+      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
+    }
+    relationshipTypeAttachmentName = Tuple.of(s[1].intern(), s[0].intern());
+  }
+
+  private void setRelationshipTypeAttachmentName(final Tuple<String, String> value) {
+    relationshipTypeAttachmentName = value;
+  }
+
+  private void resetRelationshipTypeAttachmentName() {
+    relationshipTypeAttachmentName = null;
+  }
+
+  private List<Tuple<String, String>> getRelationshipTypeProperty() {
+    return getListProperty(relationshipTypeProperty);
+  }
+
+  private void setRelationshipTypeProperty(final String prop) {
+    final String[] s = splitOnColon(prop);
+    if (relationshipTypeProperty == null) {
+      relationshipTypeProperty = new ArrayList<>();
+    }
+    // the last one is the property we are changing, while the rest is the string we are changing it
+    // to
+    final String property = s[s.length - 1].intern();
+    relationshipTypeProperty.add(
+        Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
+  }
+
+  private void setRelationshipTypeProperty(final List<Tuple<String, String>> value) {
+    relationshipTypeProperty = value;
+  }
+
+  private void resetRelationshipTypeProperty() {
+    relationshipTypeProperty = null;
+  }
+
+  private List<TerritoryEffect> getTerritoryEffects() {
+    return getListProperty(territoryEffects);
+  }
+
+  private void setTerritoryEffects(final String effectNames) throws GameParseException {
+    for (final String name : splitOnColon(effectNames)) {
+      final TerritoryEffect effect = getData().getTerritoryEffectList().get(name);
+      if (effect == null) {
+        throw new GameParseException(
+            "Could not find territoryEffect. name: " + name + thisErrorMsg());
+      }
+      if (territoryEffects == null) {
+        territoryEffects = new ArrayList<>();
+      }
+      territoryEffects.add(effect);
+    }
+  }
+
+  private void setTerritoryEffects(final List<TerritoryEffect> value) {
+    territoryEffects = value;
+  }
+
+  private void resetTerritoryEffects() {
+    territoryEffects = null;
+  }
+
+  private Tuple<String, String> getTerritoryEffectAttachmentName() {
+    if (territoryEffectAttachmentName == null) {
+      return Tuple.of("TerritoryEffectAttachment", Constants.TERRITORYEFFECT_ATTACHMENT_NAME);
+    }
+    return territoryEffectAttachmentName;
+  }
+
+  private void setTerritoryEffectAttachmentName(final String name) throws GameParseException {
+    final String[] s = splitOnColon(name);
+    if (s.length != 2) {
+      throw new GameParseException(
+          "territoryEffectAttachmentName must have 2 entries, the type of "
+              + "attachment and the name of the attachment."
+              + thisErrorMsg());
+    }
+    // covers TerritoryEffectAttachment
+    if (!s[1].equals("TerritoryEffectAttachment")) {
+      throw new GameParseException(
+          "territoryEffectAttachmentName value must be TerritoryEffectAttachment" + thisErrorMsg());
+    }
+    // TODO validate attachment exists?
+    if (s[0].length() < 1) {
+      throw new GameParseException(
+          "territoryEffectAttachmentName count must be a valid attachment name" + thisErrorMsg());
+    }
+    if (!s[0].startsWith(Constants.TERRITORYEFFECT_ATTACHMENT_NAME)) {
+      throw new GameParseException("attachment incorrectly named: " + s[0] + thisErrorMsg());
+    }
+    territoryEffectAttachmentName = Tuple.of(s[1].intern(), s[0].intern());
+  }
+
+  private void setTerritoryEffectAttachmentName(final Tuple<String, String> value) {
+    territoryEffectAttachmentName = value;
+  }
+
+  private void resetTerritoryEffectAttachmentName() {
+    territoryEffectAttachmentName = null;
+  }
+
+  private List<Tuple<String, String>> getTerritoryEffectProperty() {
+    return getListProperty(territoryEffectProperty);
+  }
+
+  private void setTerritoryEffectProperty(final String prop) {
+    final String[] s = splitOnColon(prop);
+    if (territoryEffectProperty == null) {
+      territoryEffectProperty = new ArrayList<>();
+    }
+    // the last one is the property we are changing, while the rest is the string we are changing it
+    // to
+    final String property = s[s.length - 1].intern();
+    territoryEffectProperty.add(
+        Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
+  }
+
+  private void setTerritoryEffectProperty(final List<Tuple<String, String>> value) {
+    territoryEffectProperty = value;
+  }
+
+  private void resetTerritoryEffectProperty() {
+    territoryEffectProperty = null;
+  }
+
+  private Map<Territory, IntegerMap<UnitType>> getPlacement() {
+    return getMapProperty(placement);
+  }
+
+  /** Fudging this, it really represents adding placements. */
+  private void setPlacement(final String place) throws GameParseException {
+    if (place == null) {
+      placement = null;
+      return;
+    }
+    final String[] s = splitOnColon(place);
+    if (s.length < 1) {
+      throw new GameParseException("Empty placement list" + thisErrorMsg());
+    }
+    int count;
+    int i = 0;
+    try {
+      count = getInt(s[0]);
+      i++;
+    } catch (final Exception e) {
+      count = 1;
+    }
+    if (s.length == 1 && count != -1) {
+      throw new GameParseException("Empty placement list" + thisErrorMsg());
+    }
+    final int currentIndex = i;
+    final Territory territory =
+        getTerritory(s[currentIndex])
+            .orElseThrow(
+                () ->
+                    new GameParseException(
+                        MessageFormat.format(
+                            "TriggerAttachment: Setting placement with value {0} not possible; Index {1}: No territory found for {2}",
+                            place, currentIndex, s[currentIndex])));
+
+    i++;
+    final IntegerMap<UnitType> map = new IntegerMap<>();
+    for (; i < s.length; i++) {
+      map.add(getUnitTypeOrThrow(s[i]), count);
+    }
+    if (placement == null) {
+      placement = new HashMap<>();
+    }
+    if (placement.containsKey(territory)) {
+      map.add(placement.get(territory));
+    }
+    placement.put(territory, map);
+  }
+
+  private void setPlacement(final Map<Territory, IntegerMap<UnitType>> value) {
+    placement = value;
+  }
+
+  private void resetPlacement() {
+    placement = null;
+  }
+
+  private Map<Territory, IntegerMap<UnitType>> getRemoveUnits() {
+    return getMapProperty(removeUnits);
+  }
+
+  private void setRemoveUnits(final String value) throws GameParseException {
+    if (removeUnits == null) {
+      removeUnits = new HashMap<>();
+    }
+    final String[] s = splitOnColon(value);
+    if (s.length < 1) {
+      throw new GameParseException("Empty removeUnits list" + thisErrorMsg());
+    }
+    int count;
+    int i = 0;
+    try {
+      count = getInt(s[0]);
+      i++;
+    } catch (final Exception e) {
+      count = 1;
+    }
+    if (s.length == 1 && count != -1) {
+      throw new GameParseException("Empty removeUnits list" + thisErrorMsg());
+    }
+    final Collection<Territory> territories = new ArrayList<>();
+    final Territory terr = getData().getMap().getTerritoryOrNull(s[i]);
+    if (terr == null) {
+      if (s[i].equalsIgnoreCase("all")) {
+        territories.addAll(getData().getMap().getTerritories());
+      } else {
+        throw new GameParseException("Territory does not exist " + s[i] + thisErrorMsg());
+      }
+    } else {
+      territories.add(terr);
+    }
+    i++;
+    final IntegerMap<UnitType> map = new IntegerMap<>();
+    for (; i < s.length; i++) {
+      final Collection<UnitType> types = new ArrayList<>();
+      final Optional<UnitType> optionalUnitType =
+          getDataOrThrow().getUnitTypeList().getUnitType(s[i]);
+      if (optionalUnitType.isEmpty()) {
+        if (s[i].equalsIgnoreCase("all")) {
+          types.addAll(getData().getUnitTypeList().getAllUnitTypes());
+        } else {
+          throw new GameParseException("UnitType does not exist " + s[i] + thisErrorMsg());
+        }
+      } else {
+        types.add(optionalUnitType.get());
+      }
+      for (final UnitType type : types) {
+        map.add(type, count);
+      }
+    }
+    for (final Territory t : territories) {
+      if (removeUnits.containsKey(t)) {
+        map.add(removeUnits.get(t));
+      }
+      removeUnits.put(t, map);
+    }
+  }
+
+  private void setRemoveUnits(final Map<Territory, IntegerMap<UnitType>> value) {
+    removeUnits = value;
+  }
+
+  private void resetRemoveUnits() {
+    removeUnits = null;
+  }
+
+  private IntegerMap<UnitType> getPurchase() {
+    return getIntegerMapProperty(purchase);
+  }
+
+  private void setPurchase(final String place) throws GameParseException {
+    if (place == null) {
+      purchase = null;
+      return;
+    }
+    final String[] s = splitOnColon(place);
+    if (s.length < 1) {
+      throw new GameParseException("Empty purchase list" + thisErrorMsg());
+    }
+    int count;
+    int i = 0;
+    try {
+      count = getInt(s[0]);
+      i++;
+    } catch (final Exception e) {
+      count = 1;
+    }
+    if (s.length == 1 && count != -1) {
+      throw new GameParseException("Empty purchase list" + thisErrorMsg());
+    }
+
+    if (purchase == null) {
+      purchase = new IntegerMap<>();
+    }
+    for (; i < s.length; i++) {
+      purchase.add(getUnitTypeOrThrow(s[i]), count);
+    }
+  }
+
+  private void setPurchase(final IntegerMap<UnitType> value) {
+    purchase = value;
+  }
+
+  private void resetPurchase() {
+    purchase = null;
+  }
+
+  private List<String> getChangeOwnership() {
+    return getListProperty(changeOwnership);
+  }
+
+  private void setChangeOwnership(final String value) throws GameParseException {
+    // territory:oldOwner:newOwner:booleanConquered
+    // can have "all" for territory and "any" for oldOwner
+    final String[] s = splitOnColon(value);
+    if (s.length < 4) {
+      throw new GameParseException(
+          "changeOwnership must have 4 fields: territory:oldOwner:newOwner:booleanConquered"
+              + thisErrorMsg());
+    }
+    if (!s[0].equalsIgnoreCase("all")) {
+      getTerritory(s[0])
+          .orElseThrow(
+              () ->
+                  new GameParseException(
+                      MessageFormat.format(
+                          "TriggerAttachment: Setting changeOwnership with value {0} not possible; Index 0: No territory found for {1}",
+                          value, s[0])));
+    }
+    if (!isAnyValue(s[1])) {
+      getPlayerByName(s[1])
+          .orElseThrow(
+              () ->
+                  new GameParseException(
+                      MessageFormat.format(
+                          "TriggerAttachment: Setting changeOwnership with value {0} not possible; No source player found for {1}",
+                          s, s[1])));
+    }
+    getPlayerByName(s[2])
+        .orElseThrow(
+            () ->
+                new GameParseException(
+                    MessageFormat.format(
+                        "TriggerAttachment: Setting changeOwnership with value {0} not possible; No target player found for {1}",
+                        s, s[2])));
+    getBool(s[3]);
+    if (changeOwnership == null) {
+      changeOwnership = new ArrayList<>();
+    }
+    changeOwnership.add(value.intern());
+  }
+
+  private void setChangeOwnership(final List<String> value) {
+    changeOwnership = value;
+  }
+
+  private void resetChangeOwnership() {
+    changeOwnership = null;
   }
 
   @Override

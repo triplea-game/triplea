@@ -28,7 +28,6 @@ import games.strategy.triplea.delegate.move.validation.UnitStackingLimitFilter;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -610,7 +609,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     final Collection<Territory> producers = getAllProducers(to, player, units, true);
     // the only reason it could be empty is if its water and no territories adjacent have factories
     if (producers.isEmpty()) {
-      return Optional.of(MessageFormat.format("No factory in or adjacent to {0}", to.getName()));
+      return Optional.of(String.format("No factory in or adjacent to %s", to.getName()));
     }
     if (producers.size() == 1) {
       return canProduce(CollectionUtils.getAny(producers), to, units, player);
@@ -630,8 +629,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     }
     if (producers.size() == failingProducers.size()) {
       return Optional.of(
-          MessageFormat.format(
-              "Adjacent territories to {0} cannot produce because:\n\n{1}", to.getName(), error));
+          String.format(
+              "Adjacent territories to %s cannot produce because:\n\n%s", to.getName(), error));
     }
     return Optional.empty();
   }
@@ -679,19 +678,19 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
         }
         if (!ownedNeighbor) {
           return Optional.of(
-              MessageFormat.format(
-                  "{0} is not owned by you, and you have no owned neighbors which can produce",
+              String.format(
+                  "%s is not owned by you, and you have no owned neighbors which can produce",
                   producer.getName()));
         }
       } else {
-        return Optional.of(MessageFormat.format("{0} is not owned by you", producer.getName()));
+        return Optional.of(String.format("%s is not owned by you", producer.getName()));
       }
     }
     // make sure the territory wasn't conquered this turn
     if (!canProduceInConquered && wasConquered(producer)) {
       return Optional.of(
-          MessageFormat.format(
-              "{0} was conquered this turn and cannot produce till next turn", producer.getName()));
+          String.format(
+              "%s was conquered this turn and cannot produce till next turn", producer.getName()));
     }
     if (isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player)
         && Matches.territoryIsLand().test(to)
@@ -727,18 +726,16 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       if (howManyOfEachConstructionCanPlace(to, producer, testUnits, player).totalValues() > 0) {
         return Optional.empty();
       }
-      return Optional.of(
-          MessageFormat.format("No more constructions allowed in {0}", producer.getName()));
+      return Optional.of(String.format("No more constructions allowed in %s", producer.getName()));
     }
     // check we haven't just put a factory there (should we be checking producer?)
     if (getAlreadyProduced(producer).stream().anyMatch(Matches.unitCanProduceUnits())
         || getAlreadyProduced(to).stream().anyMatch(Matches.unitCanProduceUnits())) {
       return Optional.of(
-          MessageFormat.format(
-              "Factory in {0} can''t produce until 1 turn after it is created",
-              producer.getName()));
+          String.format(
+              "Factory in %s can''t produce until 1 turn after it is created", producer.getName()));
     }
-    return Optional.of(MessageFormat.format("No factory in {0}", producer.getName()));
+    return Optional.of(String.format("No factory in %s", producer.getName()));
   }
 
   /**
@@ -790,7 +787,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       final Territory to, final Collection<Unit> units, final GamePlayer player) {
     final List<Territory> producers = getAllProducers(to, player, units);
     if (producers.isEmpty()) {
-      return Optional.of(MessageFormat.format("No factory in or adjacent to {0}", to.getName()));
+      return Optional.of(String.format("No factory in or adjacent to %s", to.getName()));
     }
     // if it's an original factory then unlimited production
     producers.sort(getBestProducerComparator(to, units, player));
@@ -802,7 +799,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     final int maxUnitsToBePlaced = getMaxUnitsToBePlaced(units, to, player);
     if ((maxUnitsToBePlaced != -1) && (maxUnitsToBePlaced < units.size())) {
       return Optional.of(
-          MessageFormat.format("Cannot place {0} more units in {1}", units.size(), to.getName()));
+          String.format("Cannot place %d more units in %s", units.size(), to.getName()));
     }
     return Optional.empty();
   }
@@ -815,7 +812,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       final Territory to, final Collection<Unit> units, final GamePlayer player) {
     final Collection<Unit> allowedUnits = getUnitsToBePlaced(to, units, player);
     if (allowedUnits == null || !allowedUnits.containsAll(units)) {
-      return Optional.of(MessageFormat.format("Cannot place these units in {0}", to.getName()));
+      return Optional.of(String.format("Cannot place these units in %s", to.getName()));
     }
     // Although getUnitsToBePlaced() has checked stacking limits, it did it on a per-unit type
     // basis, which is not sufficient, since units may be mutually exclusive. So we need to also
@@ -824,7 +821,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
         UnitStackingLimitFilter.filterUnits(
             units, PLACEMENT_LIMIT, player, to, produced.getOrDefault(to, List.of()));
     if (units.size() != filteredUnits.size()) {
-      return Optional.of(MessageFormat.format("Cannot place these units in {0}", to.getName()));
+      return Optional.of(String.format("Cannot place these units in %s", to.getName()));
     }
     final IntegerMap<String> constructionMap =
         howManyOfEachConstructionCanPlace(to, to, units, player);
@@ -838,7 +835,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       constructionMap.add(ua.getConstructionType(), -1);
     }
     if (!constructionMap.isPositive()) {
-      return Optional.of(MessageFormat.format("Too many constructions in {0}", to.getName()));
+      return Optional.of(String.format("Too many constructions in %s", to.getName()));
     }
     final List<Territory> capitalsListOwned =
         TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, getData().getMap());
@@ -883,8 +880,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       final int requiredProduction = ua.getCanOnlyBePlacedInTerritoryValuedAtX();
       if (requiredProduction != -1 && requiredProduction > territoryProduction) {
         return Optional.of(
-            MessageFormat.format(
-                "Cannot place these units in {0} due to Unit Placement Restrictions on Territory Value",
+            String.format(
+                "Cannot place these units in %s due to Unit Placement Restrictions on Territory Value",
                 to.getName()));
       }
       if (ua.unitPlacementRestrictionsContain(to)) {
@@ -894,8 +891,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       if (Matches.unitCanOnlyPlaceInOriginalTerritories().test(currentUnit)
           && !Matches.territoryIsOriginallyOwnedBy(player).test(to)) {
         return Optional.of(
-            MessageFormat.format(
-                "Cannot place these units in {0} as territory is not originally owned",
+            String.format(
+                "Cannot place these units in %s as territory is not originally owned",
                 to.getName()));
       }
     }
@@ -1078,8 +1075,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     }
     if (change != null && !change.isEmpty()) {
       String message =
-          MessageFormat.format(
-              "Units in {0} being upgraded or consumed: {1}",
+          String.format(
+              "Units in %s being upgraded or consumed: %s",
               to.getName(), MyFormatter.unitsToTextNoOwner(removedUnits));
       bridge.getHistoryWriter().startEvent(message, removedUnits);
     }

@@ -16,7 +16,6 @@ import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.Serial;
 import java.nio.file.Files;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -192,9 +191,7 @@ public class DownloadMapsWindow extends JFrame {
         String.join(", ", selectedMapItems.stream().map(MapDownloadItem::getMapName).toList());
 
     final StringBuilder sb = new StringBuilder();
-    sb.append("<html>")
-        .append(MessageFormat.format("Selected: {0}", mapsString))
-        .append(doubleSpace);
+    sb.append("<html>").append(String.format("Selected: %s", mapsString)).append(doubleSpace);
 
     if (selectedMapItems.size() == 1) {
       final MapDownloadItem map = selectedMapItems.get(0);
@@ -219,7 +216,7 @@ public class DownloadMapsWindow extends JFrame {
                   }
                   sb.append(")")
                       .append("<br>")
-                      .append(MessageFormat.format("Path: {0}", mapPath.toAbsolutePath()));
+                      .append(String.format("Path: %s", mapPath.toAbsolutePath()));
                 });
       }
     }
@@ -592,8 +589,8 @@ public class DownloadMapsWindow extends JFrame {
           new JButtonBuilder()
               .title("Remove")
               .toolTip(
-                  MessageFormat.format(
-                      "Click this button to remove the maps selected above from your computer. {0}",
+                  String.format(
+                      "Click this button to remove the maps selected above from your computer. %s",
                       MULTIPLE_SELECT_MSG))
               .actionListener(removeAction(mapSelection, maps, tableRemoveAction))
               .build();
@@ -602,8 +599,8 @@ public class DownloadMapsWindow extends JFrame {
           new JButtonBuilder()
               .title((action == MapAction.INSTALL) ? "Install" : "Update")
               .toolTip(
-                  MessageFormat.format(
-                      "Click this button to download and install the maps selected above. {0}",
+                  String.format(
+                      "Click this button to download and install the maps selected above. %s",
                       MULTIPLE_SELECT_MSG))
               .actionListener(installAction(mapSelection, maps, tableRemoveAction))
               .build();
