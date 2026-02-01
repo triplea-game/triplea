@@ -1,6 +1,6 @@
 package games.strategy.triplea;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collections;
 import java.util.stream.Stream;
@@ -19,29 +19,25 @@ final class HeadedResourceLoaderTest {
     // TODO: Extract these image files and dirs to centralized constants
     var fileLocation = ResourceLoader.getAssetsFileLocation("launch_screens", "triplea-logo.png");
     var image = resourceLoader.loadBufferedImage(fileLocation);
-    Assertions.assertTrue(image.isPresent());
+    assertThat(image.isPresent());
   }
 
   @Test
   void createResourcePathString_failsForEmptyPathResult() {
-    try {
-      resourceLoader.createResourcePathString("", new String[] {});
-    } catch (AssertionError e) {
-      // Pass
-      return;
-    }
-    Assertions.fail("Should have thrown an AssertionError!");
+    Assertions.assertThrows(
+        AssertionError.class,
+        () -> {
+          resourceLoader.createResourcePathString("", new String[] {});
+        });
   }
 
   @Test
   void createResourcePathString_failsForSlashPathResult() {
-    try {
-      resourceLoader.createResourcePathString("", new String[] {""});
-    } catch (AssertionError e) {
-      // Pass
-      return;
-    }
-    Assertions.fail("Should have thrown an AssertionError!");
+    Assertions.assertThrows(
+        AssertionError.class,
+        () -> {
+          resourceLoader.createResourcePathString("", new String[] {""});
+        });
   }
 
   /** This tests building various resource paths to images. It should succeed regardless of OS. */
@@ -50,7 +46,7 @@ final class HeadedResourceLoaderTest {
   void createResourcePathString_isPlatformIndependent(
       String first, String[] rest, String expected) {
     String actual = resourceLoader.createResourcePathString(first, rest);
-    assertEquals(expected, actual);
+    assertThat(expected).isEqualTo(actual);
   }
 
   private static Stream<Arguments> getPossibleTestResources() {
