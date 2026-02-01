@@ -24,7 +24,7 @@ import java.util.Map;
  * This plugin sets up listeners to gather test failure information across all projects, and
  * report it at the end of a build.
  */
-@SuppressWarnings("UnstableApiUsage")
+@SuppressWarnings("UnstableApiUsage") // For FlowAction API usage
 public abstract class FailureSummaryPlugin implements Plugin<Settings> {
   @Inject
   protected abstract FlowScope getFlowScope();
