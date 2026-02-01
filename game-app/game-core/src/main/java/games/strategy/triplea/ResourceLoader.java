@@ -162,8 +162,7 @@ public class ResourceLoader implements Closeable {
   }
 
   @VisibleForTesting
-  String createResourcePathString(
-      @Nonnull final String firstPathElement, @Nonnull final String... furtherPathStrings) {
+  String createResourcePathString(String firstPathElement, String... furtherPathStrings) {
     StringBuilder sb = new StringBuilder(firstPathElement);
     for (String element : furtherPathStrings) {
       sb.append('/').append(element);
