@@ -1,7 +1,7 @@
 import org.gradle.api.publish.maven.MavenPublication
 
 plugins {
-    id 'java-library'
+    id("triplea-java-library")
     id("maven-publish")
 }
 
