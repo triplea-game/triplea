@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage") // For repository declarations in settings
+
 import org.gradle.api.initialization.resolve.RepositoriesMode
 import java.net.URI
 
