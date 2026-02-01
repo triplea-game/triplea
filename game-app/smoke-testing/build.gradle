@@ -28,7 +28,7 @@ saveGamesFile.readLines().eachWithIndex { path, idx ->
 }
 
 // Create a download task for the URLs
-def downloadTask = tasks.register("downloadSaveGames", de.undercouch.gradle.tasks.download.Download) {
+def downloadTask = tasks.register("downloadSaveGames", Download) {
     group = LifecycleBasePlugin.VERIFICATION_GROUP
     description = "Downloads save game files"
 
