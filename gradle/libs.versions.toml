@@ -21,6 +21,7 @@ java-websocket = "1.6.0"
 jaxb-impl = "4.0.6"
 jetbrains-annotations = "26.0.2-1"
 jlayer = "1.0.1.4"
+jsr305 = "3.0.2"
 junit-jupiter = "6.0.2"
 junit-platform-launcher = "6.0.2"
 logback-classic = "1.5.26"
@@ -63,6 +64,7 @@ java-websocket = { module = "org.java-websocket:Java-WebSocket", version.ref = "
 jaxb-impl = { module = "com.sun.xml.bind:jaxb-impl", version.ref = "jaxb-impl" }
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
 jlayer = { module = "com.googlecode.soundlibs:jlayer", version.ref = "jlayer" }
+jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "jsr305" }
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter" }
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter" }
