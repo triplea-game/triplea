@@ -58,12 +58,10 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
   }
 
   /**
-   * Returns {@link TechAdvance} by search first via {@link
-   * TechnologyFrontier#getAdvanceByProperty(String)} and then by {@link
-   * TechnologyFrontier#getAdvanceByName(String)}.
+   * Searches first via property and then by name.
    *
-   * @param propertyOrName Search string
-   * @return {@link Optional} of {@link TechAdvance}
+   * @param propertyOrName Search string that is either a property or a name
+   * @return `Optional` of `TechAdvance`
    */
   public Optional<TechAdvance> getAdvanceByPropertyOrName(final String propertyOrName) {
     final Optional<TechAdvance> techAdvanceByProperty = getAdvanceByProperty(propertyOrName);
