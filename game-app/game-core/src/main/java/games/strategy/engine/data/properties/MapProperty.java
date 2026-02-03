@@ -43,20 +43,20 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
     properties.clear();
     map.forEach(
         (key, value) -> {
-          if (value instanceof Boolean) {
-            properties.add(new BooleanProperty(key, description, ((Boolean) value)));
-          } else if (value instanceof Color) {
-            properties.add(new ColorProperty(key, description, ((Color) value)));
-          } else if (value instanceof String) {
-            properties.add(new StringProperty(key, description, ((String) value)));
-          } else if (value instanceof Integer) {
+          if (value instanceof Boolean booleanValue) {
+            properties.add(new BooleanProperty(key, description, booleanValue));
+          } else if (value instanceof Color colorValue) {
+            properties.add(new ColorProperty(key, description, colorValue));
+          } else if (value instanceof String stringValue) {
+            properties.add(new StringProperty(key, description, stringValue));
+          } else if (value instanceof Integer integerValue) {
             properties.add(
                 new NumberProperty(
-                    key, description, Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) value)));
-          } else if (value instanceof Double) {
+                    key, description, Integer.MAX_VALUE, Integer.MIN_VALUE, integerValue));
+          } else if (value instanceof Double doubleValue) {
             properties.add(
                 new DoubleProperty(
-                    key, description, Double.MAX_VALUE, Double.MIN_VALUE, ((Double) value), 5));
+                    key, description, Double.MAX_VALUE, Double.MIN_VALUE, doubleValue, 5));
           } else {
             final String valueTypeName =
                 (value != null) ? value.getClass().getCanonicalName() : "<null>";
@@ -96,27 +96,26 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
 
   @Override
   public boolean validate(final Object value) {
-    if (!(value instanceof Map)) {
-      return false;
-    }
+    if (value instanceof Map otherMap) {
 
-    final Map<?, ?> otherMap = (Map<?, ?>) value;
-    if (containsIncompatibleType(otherMap.keySet(), String.class)
-        || containsIncompatibleType(otherMap.values(), getMapValueType())) {
-      return false;
-    }
+      if (containsIncompatibleType(otherMap.keySet(), String.class)
+          || containsIncompatibleType(otherMap.values(), getMapValueType())) {
+        return false;
+      }
 
-    // verify setting new values will not trigger an error
-    try {
-      @SuppressWarnings("unchecked")
-      final Map<String, ?> typedOtherMap = (Map<String, ?>) otherMap;
-      resetProperties(typedOtherMap, new ArrayList<>(), getDescription());
-    } catch (final IllegalArgumentException e) {
-      log.warn("Validation failed: " + e.getMessage());
-      return false;
-    }
+      // verify setting new values will not trigger an error
+      try {
+        @SuppressWarnings("unchecked")
+        final Map<String, ?> typedOtherMap = otherMap;
+        resetProperties(typedOtherMap, new ArrayList<>(), getDescription());
+      } catch (final IllegalArgumentException e) {
+        log.warn("Validation failed: {}", e.getMessage());
+        return false;
+      }
 
-    return true;
+      return true;
+    }
+    return false;
   }
 
   private static boolean containsIncompatibleType(

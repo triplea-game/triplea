@@ -47,6 +47,16 @@ public enum KeyCode {
   X(KeyEvent.VK_X),
   Y(KeyEvent.VK_Y),
   Z(KeyEvent.VK_Z),
+  NR_0(KeyEvent.VK_0),
+  NR_1(KeyEvent.VK_1),
+  NR_2(KeyEvent.VK_2),
+  NR_3(KeyEvent.VK_3),
+  NR_4(KeyEvent.VK_4),
+  NR_5(KeyEvent.VK_5),
+  NR_6(KeyEvent.VK_6),
+  NR_7(KeyEvent.VK_7),
+  NR_8(KeyEvent.VK_8),
+  NR_9(KeyEvent.VK_9),
   ;
 
   private final int inputEventCode;

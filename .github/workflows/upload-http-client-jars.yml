@@ -3,7 +3,7 @@ name: Create Http JAR files and upload to github packages
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - '.github/workflows/upload-http-client-jars.yml'
       - 'game-app/domain-data/**'
@@ -18,7 +18,7 @@ jobs:
     runs-on: Ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           # Fetch depth of 0 is needed so we checkout the full revision history
           # The current revision count will be used as our build-number

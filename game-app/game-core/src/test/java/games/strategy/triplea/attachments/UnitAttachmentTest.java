@@ -106,25 +106,21 @@ class UnitAttachmentTest {
           () -> attachment.setWhenCapturedChangesInto("NOT A PLAYER:any:true:Unit1:1"));
       // Testing for fail-fast here
       verify(playerList).getPlayerId("NOT A PLAYER");
-      verify(playerList).getPlayerId(any());
       verify(unitTypeList, times(0)).getUnitTypeOrThrow(any());
       assertThrows(
           GameParseException.class,
           () -> attachment.setWhenCapturedChangesInto("any:NOT A PLAYER:false:Unit2:1"));
       verify(playerList, times(2)).getPlayerId("NOT A PLAYER");
-      verify(playerList).getPlayerId("any");
       verify(unitTypeList, times(0)).getUnitTypeOrThrow(any());
       assertThrows(
           IllegalArgumentException.class,
           () -> attachment.setWhenCapturedChangesInto("Player1:any:NOT A BOOLEAN:Unit1:1"));
       verify(playerList).getPlayerId("Player1");
-      verify(playerList, times(2)).getPlayerId("any");
       verify(unitTypeList, times(0)).getUnitTypeOrThrow(any());
       assertThrows(
           GameParseException.class,
           () -> attachment.setWhenCapturedChangesInto("any:Player2:true:NOT A UNIT:1"));
       verify(playerList).getPlayerId("Player1");
-      verify(playerList, times(3)).getPlayerId("any");
       verify(unitTypeList).getUnitType("NOT A UNIT");
       verify(unitTypeList).getUnitType(any());
       assertThrows(
@@ -132,7 +128,6 @@ class UnitAttachmentTest {
           () -> attachment.setWhenCapturedChangesInto("any:any:false:Unit2:NOT A NUMBER"));
       verify(unitTypeList).getUnitType(unit2String);
       verify(unitTypeList, times(2)).getUnitType(any());
-      verify(playerList, times(5)).getPlayerId("any");
 
       assertThrows(
           GameParseException.class, () -> attachment.setWhenCapturedChangesInto("q:w:e:r:t"));

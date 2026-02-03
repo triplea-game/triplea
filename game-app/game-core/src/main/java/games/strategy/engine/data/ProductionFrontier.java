@@ -64,8 +64,8 @@ public class ProductionFrontier extends DefaultNamed implements Iterable<Product
     Collection<UnitType> producibleUnitTypes = new ArrayList<>();
     for (final ProductionRule rule : this) {
       for (final NamedAttachable type : rule.getResults().keySet()) {
-        if (type instanceof UnitType) {
-          producibleUnitTypes.add((UnitType) type);
+        if (type instanceof UnitType unitType) {
+          producibleUnitTypes.add(unitType);
         }
       }
     }

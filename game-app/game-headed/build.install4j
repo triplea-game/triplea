@@ -6,12 +6,10 @@
   </application>
   <files>
     <mountPoints>
-      <mountPoint id="28" location="assets" />
       <mountPoint id="23" location="bin" />
       <mountPoint id="22" />
     </mountPoints>
     <entries>
-      <dirEntry mountPoint="28" file="assets" subDirectory="assets" />
       <dirEntry mountPoint="23" file="build/libs" />
       <fileEntry mountPoint="22" file=".triplea-root" />
     </entries>
@@ -21,7 +19,7 @@
       <executable name="TripleA" iconSet="true" stderrMode="append" executableMode="gui" checkConsoleParameter="true" dpiAware="true">
         <versionInfo internalName="TripleA" productName="TripleA Game" />
       </executable>
-      <splashScreen show="true" width="256" height="256" bitmapFile="assets/icons/triplea_icon_256_256.png" textOverlay="true">
+      <splashScreen show="true" width="256" height="256" bitmapFile="build/assets/icons/triplea_icon_256_256.png" textOverlay="true">
         <text>
           <statusLine x="142" y="5" text="TripleA" />
           <versionLine x="144" y="22" text="version ${compiler:sys.version}" />
@@ -34,12 +32,12 @@
       </java>
       <vmOptionsFile mode="none" overwriteMode="3" />
       <iconImageFiles>
-        <file path="./assets/icons/triplea_icon_16_16.png" />
-        <file path="./assets/icons/triplea_icon_32_32.png" />
-        <file path="./assets/icons/triplea_icon_48_48.png" />
-        <file path="./assets/icons/triplea_icon_64_64.png" />
-        <file path="./assets/icons/triplea_icon_128_128.png" />
-        <file path="./assets/icons/triplea_icon_256_256.png" />
+        <file path="./build/assets/icons/triplea_icon_16_16.png" />
+        <file path="./build/assets/icons/triplea_icon_32_32.png" />
+        <file path="./build/assets/icons/triplea_icon_48_48.png" />
+        <file path="./build/assets/icons/triplea_icon_64_64.png" />
+        <file path="./build/assets/icons/triplea_icon_128_128.png" />
+        <file path="./build/assets/icons/triplea_icon_256_256.png" />
       </iconImageFiles>
       <macStaticAssociations>
         <fileAssociation extension="tsvg" description="TripleA Savegame" />
@@ -54,32 +52,32 @@
           <property name="customIconImageFiles">
             <add>
               <object class="com.install4j.api.beans.ExternalFile">
-                <string>./assets/icons/triplea_icon_16_16.png</string>
+                <string>./build/assets/icons/triplea_icon_16_16.png</string>
               </object>
             </add>
             <add>
               <object class="com.install4j.api.beans.ExternalFile">
-                <string>./assets/icons/triplea_icon_32_32.png</string>
+                <string>./build/assets/icons/triplea_icon_32_32.png</string>
               </object>
             </add>
             <add>
               <object class="com.install4j.api.beans.ExternalFile">
-                <string>./assets/icons/triplea_icon_48_48.png</string>
+                <string>./build/assets/icons/triplea_icon_48_48.png</string>
               </object>
             </add>
             <add>
               <object class="com.install4j.api.beans.ExternalFile">
-                <string>./assets/icons/triplea_icon_64_64.png</string>
+                <string>./build/assets/icons/triplea_icon_64_64.png</string>
               </object>
             </add>
             <add>
               <object class="com.install4j.api.beans.ExternalFile">
-                <string>./assets/icons/triplea_icon_128_128.png</string>
+                <string>./build/assets/icons/triplea_icon_128_128.png</string>
               </object>
             </add>
             <add>
               <object class="com.install4j.api.beans.ExternalFile">
-                <string>./assets/icons/triplea_icon_256_256.png</string>
+                <string>./build/assets/icons/triplea_icon_256_256.png</string>
               </object>
             </add>
           </property>
@@ -110,7 +108,7 @@
                 <property name="imageAnchor" type="enum" class="com.install4j.api.beans.Anchor" value="NORTHEAST" />
                 <property name="imageFile">
                   <object class="com.install4j.api.beans.ExternalFile">
-                    <string>./assets/icons/triplea_icon_48_48.png</string>
+                    <string>./build/assets/icons/triplea_icon_48_48.png</string>
                   </object>
                 </property>
               </serializedBean>
@@ -141,7 +139,7 @@
                     </property>
                     <property name="imageFile">
                       <object class="com.install4j.api.beans.ExternalFile">
-                        <string>./assets/icons/triplea_icon_256_256.png</string>
+                        <string>./build/assets/icons/triplea_icon_256_256.png</string>
                       </object>
                     </property>
                   </serializedBean>
@@ -335,7 +333,7 @@ return console.askOkCancel(message, true);
                     </property>
                     <property name="imageFile">
                       <object class="com.install4j.api.beans.ExternalFile">
-                        <string>./assets/icons/triplea_icon_256_256.png</string>
+                        <string>./build/assets/icons/triplea_icon_256_256.png</string>
                       </object>
                     </property>
                   </serializedBean>
@@ -372,7 +370,7 @@ return console.askOkCancel(message, true);
           <property name="customIconImageFiles">
             <add>
               <object class="com.install4j.api.beans.ExternalFile">
-                <string>./assets/icons/triplea_icon_256_256.png</string>
+                <string>./build/assets/icons/triplea_icon_256_256.png</string>
               </object>
             </add>
           </property>
@@ -403,7 +401,7 @@ return console.askOkCancel(message, true);
                 <property name="imageAnchor" type="enum" class="com.install4j.api.beans.Anchor" value="NORTHEAST" />
                 <property name="imageFile">
                   <object class="com.install4j.api.beans.ExternalFile">
-                    <string>./assets/icons/triplea_icon_48_48.png</string>
+                    <string>./build/assets/icons/triplea_icon_48_48.png</string>
                   </object>
                 </property>
               </serializedBean>
@@ -435,7 +433,7 @@ return console.askOkCancel(message, true);
                     </property>
                     <property name="imageFile">
                       <object class="com.install4j.api.beans.ExternalFile">
-                        <string>./assets/icons/triplea_icon_256_256.png</string>
+                        <string>./build/assets/icons/triplea_icon_256_256.png</string>
                       </object>
                     </property>
                   </serializedBean>
@@ -536,7 +534,7 @@ return true;</property>
                     </property>
                     <property name="imageFile">
                       <object class="com.install4j.api.beans.ExternalFile">
-                        <string>./assets/icons/triplea_icon_256_256.png</string>
+                        <string>./build/assets/icons/triplea_icon_256_256.png</string>
                       </object>
                     </property>
                   </serializedBean>

@@ -354,7 +354,7 @@ public class MovePerformer implements Serializable {
       }
       change.add(
           ChangeFactory.unitPropertyChange(
-              unit, moved.add(unit.getAlreadyMoved()), Unit.ALREADY_MOVED));
+              unit, moved.add(unit.getAlreadyMoved()), Unit.PropertyName.ALREADY_MOVED));
     }
     // if neutrals were taken over mark land units with 0 movement
     // if entered a non-blitzed conquered territory, mark with 0 movement

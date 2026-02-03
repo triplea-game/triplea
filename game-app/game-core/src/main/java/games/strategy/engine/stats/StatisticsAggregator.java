@@ -4,7 +4,6 @@ import com.google.common.collect.HashBasedTable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
-import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
@@ -34,15 +33,8 @@ public class StatisticsAggregator {
   private final MapData mapData;
 
   public StatisticsAggregator(GameData gameData, MapData map) {
-    this.game = cloneGameData(gameData);
+    this.game = GameDataUtils.cloneGameDataWithHistory(gameData, true);
     this.mapData = map;
-  }
-
-  private static GameData cloneGameData(GameData gameData) {
-    final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
-    final GameData clone = GameDataUtils.cloneGameData(gameData, cloneOptions).orElse(null);
-    clone.getHistory().enableSeeking(null);
-    return clone;
   }
 
   private static Map<OverTimeStatisticType, IStat> createOverTimeStatisticsMapping(
@@ -109,8 +101,8 @@ public class StatisticsAggregator {
     final Enumeration<TreeNode> rootChildren = root.children();
     while (rootChildren.hasMoreElements()) {
       final TreeNode child = rootChildren.nextElement();
-      if (child instanceof Round) {
-        rounds.add((Round) child);
+      if (child instanceof Round childRound) {
+        rounds.add(childRound);
       }
     }
     return rounds;

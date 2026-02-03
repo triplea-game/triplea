@@ -109,10 +109,9 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
     if (this == o) {
       return true;
     }
-    if (!(o instanceof TechnologyFrontier)) {
-      return false;
+    if (o instanceof TechnologyFrontier other) {
+      return name.equals(other.getName());
     }
-    final TechnologyFrontier other = (TechnologyFrontier) o;
-    return name.equals(other.getName());
+    return false;
   }
 }

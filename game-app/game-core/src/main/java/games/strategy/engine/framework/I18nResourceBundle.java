@@ -1,7 +1,6 @@
 package games.strategy.engine.framework;
 
 import java.text.Collator;
-import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -105,7 +104,7 @@ public abstract class I18nResourceBundle {
    * @return Language dependent text
    */
   public String getText(final String key, final Object... arguments) {
-    return MessageFormat.format(getText(key), arguments);
+    return String.format(getText(key), arguments);
   }
 
   /**

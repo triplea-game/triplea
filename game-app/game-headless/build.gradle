@@ -2,12 +2,14 @@ import org.apache.tools.ant.filters.FixCrLfFilter
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
+    id("triplea-java-library")
     id "application"
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+    alias(libs.plugins.shadow)
 }
 
-archivesBaseName = "$group-$name"
-mainClassName = "org.triplea.game.server.HeadlessGameRunner"
+application {
+    mainClass = "org.triplea.game.server.HeadlessGameRunner"
+}
 
 dependencies {
     implementation project(":http-clients:lobby-client")
@@ -18,8 +20,9 @@ dependencies {
 }
 
 jar {
+    archiveBaseName = "$group-$name"
     manifest {
-        attributes "Main-Class": mainClassName
+        attributes "Main-Class": application.mainClass
     }
 }
 
@@ -31,31 +34,38 @@ run {
     systemProperty "triplea.server", "true"
 }
 
-task portableInstaller(type: Zip, group: "release", dependsOn: shadowJar) {
+def portableInstaller = tasks.register("portableInstaller", Zip) {
+    group = "release"
+
     from file(".triplea-root")
     from file("scripts/run_bot")
     from(file("scripts/run_bot.bat")) {
         filter ReplaceTokens, tokens: [version: project.version]
         filter FixCrLfFilter, eol: FixCrLfFilter.CrLf.newInstance("crlf") // workaround for https://github.com/gradle/gradle/issues/1151
     }
-    from(shadowJar.outputs) {
+    from(shadowJar) {
         into "bin"
     }
 }
 
-task release(group: "release", dependsOn: portableInstaller) {
-    doLast {
-        publishArtifacts(portableInstaller.outputs.files)
+tasks.register("release", Copy) {
+    group = "release"
+
+    from portableInstaller
+    into file(project.layout.buildDirectory.dir("artifacts"))
+
+    doFirst {
+        inputs.files.forEach {
+            if (!it.exists()) {
+                throw new GradleException("artifact '$it' does not exist")
+            }
+        }
     }
 }
 
-task copyShadow(dependsOn: shadowJar) {
-    doLast {
-        copy {
-            from shadowJar
-            into "../infrastructure/ansible/roles/bot/files/"
-        }
-    }
+tasks.register("copyShadow", Copy) {
+    from shadowJar
+    into "../infrastructure/ansible/roles/bot/files/"
 }
 
 shadowJar {

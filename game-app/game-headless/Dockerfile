@@ -1,4 +1,4 @@
-FROM openjdk:11-jre-slim-buster
+FROM eclipse-temurin:21
 
 ENV BOT_PORT_NUMBER=4000
 EXPOSE $BOT_PORT_NUMBER
@@ -20,7 +20,7 @@ RUN chown -R bot:root /home/bot/
 
 USER bot
 
-ADD build/libs/triplea-game-headless.jar /
+ADD build/libs/game-headless.jar /
 CMD java \
    -Xmx$BOT_MAX_MEMORY \
    -Xss$BOT_XSS \
@@ -28,4 +28,4 @@ CMD java \
    -Dtriplea.port=$BOT_PORT_NUMBER \
    -Dtriplea.lobby.uri=$LOBBY_URI \
    -Dtriplea.exit.on.game.end=$EXIT_ON_GAME_END \
-   -jar triplea-game-headless.jar
+   -jar game-headless.jar

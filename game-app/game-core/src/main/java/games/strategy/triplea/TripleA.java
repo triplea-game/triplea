@@ -54,8 +54,8 @@ public class TripleA implements IGameLoader {
       final EditDelegate delegate = new EditDelegate();
       delegate.initialize("edit", "edit");
       game.getData().addDelegate(delegate);
-      if (game instanceof ServerGame) {
-        ((ServerGame) game).addDelegateMessenger(delegate);
+      if (game instanceof ServerGame serverGame) {
+        serverGame.addDelegateMessenger(delegate);
       }
     }
     final LocalPlayers localPlayers = new LocalPlayers(players);

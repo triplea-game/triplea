@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.startup.mc;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_CLIENT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_HOST;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
@@ -159,7 +160,7 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   public void setRemoteModelListener(@Nonnull final IRemoteModelListener listener) {
-    this.listener = Preconditions.checkNotNull(listener);
+    this.listener = checkNotNull(listener);
     AsyncRunner.runAsync(() -> internalPlayerListingChanged(getServerStartup().getPlayerListing()))
         .exceptionally(e -> log.warn("Network communication error", e));
   }
@@ -168,9 +169,9 @@ public class ClientModel implements IMessengerErrorListener {
     if (System.getProperty(TRIPLEA_CLIENT, "false").equals("true") && GameState.notStarted()) {
       final ClientProps props =
           ClientProps.builder()
-              .host(System.getProperty(TRIPLEA_HOST))
-              .name(System.getProperty(TRIPLEA_NAME))
-              .port(Integer.parseInt(System.getProperty(TRIPLEA_PORT)))
+              .host(checkNotNull(System.getProperty(TRIPLEA_HOST)))
+              .name(checkNotNull(System.getProperty(TRIPLEA_NAME)))
+              .port(Integer.parseInt(checkNotNull(System.getProperty(TRIPLEA_PORT))))
               .build();
       GameState.setStarted();
       return props;

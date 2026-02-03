@@ -1,6 +1,7 @@
 package org.triplea.swing;
 
 import javax.swing.JEditorPane;
+import javax.swing.JOptionPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.HyperlinkEvent;
 import org.triplea.awt.OpenFileUtility;
@@ -21,7 +22,7 @@ public class JEditorPaneWithClickableLinks extends JEditorPane {
     addHyperlinkListener(
         e -> {
           if (e != null && HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
-            OpenFileUtility.openUrl(e.getURL().toString());
+            OpenFileUtility.openUrl(JOptionPane.getFrameForComponent(this), e.getURL().toString());
           }
         });
   }
