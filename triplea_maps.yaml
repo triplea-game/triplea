@@ -3461,3 +3461,11 @@
   img: https://github.com/triplea-maps/1888a_steam_and_steel/blob/master/preview.png
   description: |
     <br>A Steampunk Tech Race FFA map, also good vs AI.
+- mapName: Settlers Fallen Empire
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/settlers_fallen_empire/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/1settlers_fallen_empire/blob/master/preview.png
+  description: |
+    <br>A Fantasy FFA map, 11 Asymeteric Factions, Good vs Evil vs Dragons, also good vs AI.
+  
