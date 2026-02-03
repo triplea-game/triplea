@@ -592,7 +592,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
                   () ->
                       new GameParseException(
                           MessageFormat.format(
-                              "Could not parseCategoryTechs; Technology {0} not found by property or name: {0} in {1}{2}",
+                              "Could not parseCategoryTechs; Technology not found by property or name: {0} in {1}{2}",
                               s[currentIndex], technologyFrontier.getTechs(), thisErrorMsg()))));
     }
   }

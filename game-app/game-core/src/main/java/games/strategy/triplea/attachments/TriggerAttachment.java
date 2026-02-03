@@ -535,76 +535,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       final IDelegateBridge bridge,
       final FireTriggerParams fireTriggerParams,
       final NotificationMessages notificationMessages) {
-
-  private void setTech(final String techs) throws GameParseException {
-    if (tech == null) {
-      tech = new ArrayList<>();
-    }
-    TechnologyFrontier technologyFrontier = getData().getTechnologyFrontier();
-    for (final String subString : splitOnColon(techs)) {
-      tech.add(
-          technologyFrontier
-              .getAdvanceByPropertyOrName(subString)
-              .orElseThrow(
-                  () ->
-                      new GameParseException(
-                          MessageFormat.format(
-                              "setTech failed; Technology not found by property or name: {0} in {1}{2}",
-                              subString, technologyFrontier.getTechs(), thisErrorMsg()))));
-    }
-  }
-
-  private void setTech(final List<TechAdvance> value) {
-    tech = value;
-  }
-
-  private List<TechAdvance> getTech() {
-    return getListProperty(tech);
-  }
-
-  private void resetTech() {
-    tech = null;
-  }
-
-  private void setAvailableTech(final String techs) throws GameParseException {
-    final String[] s = splitOnColon(techs);
-    if (s.length < 2) {
-      throw new GameParseException(
-          "Invalid tech availability: " + techs + " should be category:techs" + thisErrorMsg());
-    }
-    final String cat = s[0];
-    final LinkedHashMap<TechAdvance, Boolean> tlist = new LinkedHashMap<>();
-    TechnologyFrontier technologyFrontier = getData().getTechnologyFrontier();
-    for (int i = 1; i < s.length; i++) {
-      boolean add = true;
-      if (s[i].startsWith("-")) {
-        add = false;
-        s[i] = s[i].substring(1);
-      }
-      final int currentIndex = i;
-      tlist.put(
-          technologyFrontier
-              .getAdvanceByPropertyOrName(s[currentIndex])
-              .orElseThrow(
-                  () ->
-                      new GameParseException(
-                          MessageFormat.format(
-                              "setAvailableTech failed; Technology not found by property or name: {0} in {1}{2}",
-                              s[currentIndex], technologyFrontier.getTechs(), thisErrorMsg()))),
-          add);
-    }
-    if (availableTech == null) {
-      availableTech = new HashMap<>();
-    }
-    if (availableTech.containsKey(cat)) {
-      tlist.putAll(availableTech.get(cat));
-    }
-    availableTech.put(cat.intern(), tlist);
-  }
-
-  private void setAvailableTech(final Map<String, Map<TechAdvance, Boolean>> value) {
-    availableTech = value;
-  }
     final GameState data = bridge.getData();
     final Collection<TriggerAttachment> trigs =
         filterSatisfiedTriggers(satisfiedTriggers, notificationMatch(), fireTriggerParams);
@@ -1818,18 +1748,20 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private void setTech(final String techs) throws GameParseException {
+    if (tech == null) {
+      tech = new ArrayList<>();
+    }
+    TechnologyFrontier technologyFrontier = getData().getTechnologyFrontier();
     for (final String subString : splitOnColon(techs)) {
-      TechAdvance ta = getData().getTechnologyFrontier().getAdvanceByProperty(subString);
-      if (ta == null) {
-        ta = getData().getTechnologyFrontier().getAdvanceByName(subString);
-      }
-      if (ta == null) {
-        throw new GameParseException("Technology not found : " + subString + thisErrorMsg());
-      }
-      if (tech == null) {
-        tech = new ArrayList<>();
-      }
-      tech.add(ta);
+      tech.add(
+          technologyFrontier
+              .getAdvanceByPropertyOrName(subString)
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "setTech failed; Technology not found by property or name: {0} in {1}{2}",
+                              subString, technologyFrontier.getTechs(), thisErrorMsg()))));
     }
   }
 
@@ -1853,20 +1785,24 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
     final String cat = s[0];
     final LinkedHashMap<TechAdvance, Boolean> tlist = new LinkedHashMap<>();
+    TechnologyFrontier technologyFrontier = getData().getTechnologyFrontier();
     for (int i = 1; i < s.length; i++) {
       boolean add = true;
       if (s[i].startsWith("-")) {
         add = false;
         s[i] = s[i].substring(1);
       }
-      TechAdvance ta = getData().getTechnologyFrontier().getAdvanceByProperty(s[i]);
-      if (ta == null) {
-        ta = getData().getTechnologyFrontier().getAdvanceByName(s[i]);
-      }
-      if (ta == null) {
-        throw new GameParseException("Technology not found : " + s[i] + thisErrorMsg());
-      }
-      tlist.put(ta, add);
+      final int currentIndex = i;
+      tlist.put(
+          technologyFrontier
+              .getAdvanceByPropertyOrName(s[currentIndex])
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "setAvailableTech failed; Technology not found by property or name: {0} in {1}{2}",
+                              s[currentIndex], technologyFrontier.getTechs(), thisErrorMsg()))),
+          add);
     }
     if (availableTech == null) {
       availableTech = new HashMap<>();

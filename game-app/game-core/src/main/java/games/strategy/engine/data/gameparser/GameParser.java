@@ -41,6 +41,7 @@ import games.strategy.triplea.delegate.TechAdvance;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -86,9 +87,9 @@ public final class GameParser {
   @Nonnull private final GameData data;
   private final Path xmlUri;
   private final XmlGameElementMapper xmlGameElementMapper;
-  private GameDataVariables variables;
   private final Version engineVersion;
   private final boolean collectAttachmentOrderAndValues;
+  private GameDataVariables variables;
 
   private GameParser(
       final Path xmlUri,
@@ -328,7 +329,7 @@ public final class GameParser {
             () ->
                 new GameParseException(
                     MessageFormat.format(
-                        "getTechnology: Technology {0} not found by property or name {0} in {1}",
+                        "getTechnology: Technology not found by property or name {0} in {1}",
                         name, technologyFrontier.getTechs())));
   }
 
