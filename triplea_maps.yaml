@@ -2715,7 +2715,7 @@
     <br>* All islands are worth at least $1 and most touch at least two sea zones, so they are useful even without a naval base / airbase
     <br>* Initial setup and territory values strongly encourage play in both the Atlantic and Pacific theaters in each game
     <br>* The game is fully playable but may be unbalanced because it needs more human playtesters; I am actively seeking comments on game balance.
-    <br>*  See https://www.axisandallies.org/forums/topic/33233/argo-s-middleweight-map-for-1939-1942?page=1 for development notes.
+    <br>*  See https://www.axisandallies.org/forums/topic/33233/argo-s-middleweight-map-for-1939-1942 for development notes.
 - mapName: World War II Pacific 1940 Variants
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/ww2_pacific_40_variants/archive/refs/heads/master.zip
