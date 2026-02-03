@@ -73,8 +73,8 @@ public class DoubleProperty extends AbstractEditableProperty<Double> {
 
   @Override
   public boolean validate(final Object value) {
-    if (value instanceof Double) {
-      final double d = roundToPlace((Double) value, places);
+    if (value instanceof Double doubleValue) {
+      final double d = roundToPlace(doubleValue, places);
       return d <= max && d >= min;
     }
     return false;

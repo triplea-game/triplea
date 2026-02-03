@@ -106,9 +106,12 @@ public class GameData implements Serializable, GameState {
   private final UnitsList unitsList = new UnitsList();
   private final TechnologyFrontier technologyFrontier =
       new TechnologyFrontier("allTechsForGame", this);
-  @Getter private transient TechTracker techTracker = new TechTracker(this);
   private final IGameLoader loader = new TripleA();
-  private History gameHistory = new History(this);
+  // Don't ensure the lock is held when getting the history.
+  // History operations often acquire the write lock, and we can't acquire the write lock if we
+  // have the read lock.
+  @Setter @Getter private History gameHistory = new History(this);
+  private GameDataState state = new GameDataState(this);
 
   @Setter @Getter
   private List<Tuple<IAttachment, List<Tuple<String, String>>>> attachmentOrderAndValues =
@@ -124,7 +127,6 @@ public class GameData implements Serializable, GameState {
     readWriteLock = new ReentrantReadWriteLock();
     in.defaultReadObject();
     gameDataEventListeners = new GameDataEventListeners();
-    techTracker = new TechTracker(this);
   }
 
   /**
@@ -202,6 +204,11 @@ public class GameData implements Serializable, GameState {
   @Override
   public AllianceTracker getAllianceTracker() {
     return alliances;
+  }
+
+  @Override
+  public TechTracker getTechTracker() {
+    return state.getTechTracker();
   }
 
   /**
@@ -355,23 +362,20 @@ public class GameData implements Serializable, GameState {
   }
 
   public History getHistory() {
-    // don't ensure the lock is held when getting the history
-    // history operations often acquire the write lock and we can't acquire the write lock if we
-    // have the read lock
-    return gameHistory;
+    return getGameHistory();
   }
 
   public void setHistory(final History history) {
-    gameHistory = history;
+    setGameHistory(history);
   }
 
   public void resetHistory() {
-    gameHistory = new History(this);
+    setGameHistory(new History(this));
     GameStep step = getSequence().getStep();
     // Put the history in a round and step, so that child nodes can be added without errors.
     final boolean oldForceInSwingEventThread = forceInSwingEventThread;
     forceInSwingEventThread = false;
-    gameHistory
+    getGameHistory()
         .getHistoryWriter()
         .startNextStep(
             step.getName(), step.getDelegateName(), step.getPlayerId(), step.getDisplayName());
@@ -380,6 +384,7 @@ public class GameData implements Serializable, GameState {
 
   /** Not to be called by mere mortals. */
   public void postDeSerialize() {
+    state = new GameDataState(this);
     territoryListeners = new CopyOnWriteArrayList<>();
     dataChangeListeners = new CopyOnWriteArrayList<>();
     delegates = new HashMap<>();

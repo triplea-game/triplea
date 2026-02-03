@@ -40,7 +40,7 @@ class ChangeResourceChange extends Change {
     if (quantity > 0) {
       resources.addResource(resource, quantity);
     } else if (quantity < 0) {
-      resources.removeResource(resource, -quantity);
+      resources.removeResourceUpTo(resource, -quantity);
     }
   }
 

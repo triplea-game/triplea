@@ -56,8 +56,8 @@ public class UnifiedMessenger {
   public UnifiedMessenger(final IMessenger messenger) {
     this.messenger = messenger;
     this.messenger.addMessageListener(this::messageReceived);
-    if (messenger instanceof IClientMessenger) {
-      ((IClientMessenger) this.messenger).addErrorListener(this::messengerInvalid);
+    if (messenger instanceof IClientMessenger clientMessenger) {
+      clientMessenger.addErrorListener(this::messengerInvalid);
     }
     if (this.messenger.isServer()) {
       hub = new UnifiedMessengerHub(this.messenger, this);
@@ -250,11 +250,10 @@ public class UnifiedMessenger {
    * Invoked when a message is received from a node (either a remote client or the server itself).
    */
   public void messageReceived(final Serializable msg, final INode from) {
-    if (msg instanceof SpokeInvoke) {
+    if (msg instanceof SpokeInvoke invoke) {
       // if this isn't the server, something is wrong
       // maybe an attempt to spoof a message
       assertIsServer(from);
-      final SpokeInvoke invoke = (SpokeInvoke) msg;
       final EndPoint local;
       synchronized (endPointMutex) {
         local = localEndPoints.get(invoke.call.getRemoteName());
@@ -279,11 +278,12 @@ public class UnifiedMessenger {
         return;
       }
       processMessage(local, invoke, from);
-    } else if (msg instanceof SpokeInvocationResults) { // a remote machine is returning results
+    } else if (msg
+        instanceof
+        SpokeInvocationResults spokeInvocationResults) { // a remote machine is returning results
       // if this isn't the server, something is wrong
       // maybe an attempt to spoof a message
       assertIsServer(from);
-      final SpokeInvocationResults spokeInvocationResults = (SpokeInvocationResults) msg;
       final UUID methodId = spokeInvocationResults.methodCallId;
       // both of these should already be populated
       // this list should be a synchronized list so we can do the add all

@@ -27,8 +27,8 @@ class SerializedHistory implements Serializable {
     while (enumeration.hasMoreElements()) {
       final HistoryNode node = (HistoryNode) enumeration.nextElement();
       // write the changes to the start of the node
-      if (node instanceof IndexedHistoryNode) {
-        while (changeIndex < ((IndexedHistoryNode) node).getChangeStartIndex()) {
+      if (node instanceof IndexedHistoryNode indexedHistoryNode) {
+        while (changeIndex < indexedHistoryNode.getChangeStartIndex()) {
           writers.add(new ChangeSerializationWriter(changes.get(changeIndex)));
           changeIndex++;
         }

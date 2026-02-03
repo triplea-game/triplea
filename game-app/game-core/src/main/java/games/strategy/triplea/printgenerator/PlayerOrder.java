@@ -10,10 +10,6 @@ import games.strategy.triplea.delegate.InitializationDelegate;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import java.io.IOException;
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -21,14 +17,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-class PlayerOrder {
+class PlayerOrder extends InfoForFile {
   private final List<GamePlayer> playerSet = new ArrayList<>();
 
   private static <E> Set<E> removeDupes(final Collection<E> c) {
     return new LinkedHashSet<>(c);
   }
 
-  void saveToFile(final PrintGenerationData printData) throws IOException {
+  @Override
+  protected void gatherDataBeforeWriting(PrintGenerationData printData) {
     for (final GameStep currentStep : printData.getData().getSequence()) {
       Optional<IDelegate> optionalDelegate = currentStep.getDelegateOptional();
       if (optionalDelegate.isPresent()) {
@@ -50,20 +47,15 @@ class PlayerOrder {
       }
     }
     playerSet.sort(new PlayerOrderComparator(printData.getData()));
-    Files.createDirectory(printData.getOutDir());
-    final Path outFile = printData.getOutDir().resolve("General Information.csv");
-    try (Writer turnWriter =
-        Files.newBufferedWriter(
-            outFile,
-            StandardCharsets.UTF_8,
-            StandardOpenOption.CREATE,
-            StandardOpenOption.APPEND)) {
-      turnWriter.write("Turn Order\r\n");
-      int count = 1;
-      for (final GamePlayer currentGamePlayer : removeDupes(playerSet)) {
-        turnWriter.write(count + ". " + currentGamePlayer.getName() + "\r\n");
-        count++;
-      }
+  }
+
+  @Override
+  protected void writeIntoFile(Writer writer) throws IOException {
+    writer.write("Turn Order" + LINE_SEPARATOR);
+    int count = 1;
+    for (final GamePlayer currentGamePlayer : removeDupes(playerSet)) {
+      writer.write(count + ". " + currentGamePlayer.getName() + LINE_SEPARATOR);
+      count++;
     }
   }
 }

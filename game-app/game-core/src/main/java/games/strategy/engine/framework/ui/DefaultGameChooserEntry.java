@@ -24,8 +24,7 @@ public class DefaultGameChooserEntry implements Comparable<DefaultGameChooserEnt
 
   @Override
   public boolean equals(final Object rhs) {
-    if (rhs instanceof DefaultGameChooserEntry) {
-      final var chooserEntry = (DefaultGameChooserEntry) rhs;
+    if (rhs instanceof DefaultGameChooserEntry chooserEntry) {
       return chooserEntry.gameName.equals(gameName)
           && installedMap.getMapName().equals(chooserEntry.installedMap.getMapName());
     } else {

@@ -91,8 +91,8 @@ public class TerritoryAttachment extends DefaultAttachment {
         .orElseThrow(
             () ->
                 new IllegalStateException(
-                    MessageFormat.format(
-                        "Player {0} has no owned capital or unowned capital as expected", player)));
+                    String.format(
+                        "Player %s has no owned capital or unowned capital as expected", player)));
   }
 
   /**
@@ -179,8 +179,8 @@ public class TerritoryAttachment extends DefaultAttachment {
         .orElseThrow(
             () ->
                 new IllegalStateException(
-                    MessageFormat.format(
-                        "No territory attachment for {0}, but expected here", t.getName())));
+                    String.format(
+                        "No territory attachment for %s, but expected here", t.getName())));
   }
 
   /** Convenience method. */
@@ -236,6 +236,58 @@ public class TerritoryAttachment extends DefaultAttachment {
     return TerritoryAttachment.get(t).map(TerritoryAttachment::getUnitProduction).orElse(0);
   }
 
+  public static boolean hasNavalBase(final Territory t) {
+    final Optional<TerritoryAttachment> optionalTerritoryAttachment = TerritoryAttachment.get(t);
+    return optionalTerritoryAttachment.isPresent()
+        && optionalTerritoryAttachment.get().getNavalBase();
+  }
+
+  public static boolean hasAirBase(final Territory t) {
+    final Optional<TerritoryAttachment> optionalTerritoryAttachment = TerritoryAttachment.get(t);
+    return optionalTerritoryAttachment.isPresent()
+        && optionalTerritoryAttachment.get().getAirBase();
+  }
+
+  /**
+   * Returns the collection of territories that make up the convoy route containing the specified
+   * territory or returns an empty collection if the specified territory is not part of a convoy
+   * route.
+   */
+  public static Collection<Territory> getWhatTerritoriesThisIsUsedInConvoysFor(
+      final Territory territory, final GameState data) {
+    final Optional<TerritoryAttachment> optionalTerritoryAttachment =
+        TerritoryAttachment.get(territory);
+    if (optionalTerritoryAttachment.isEmpty()
+        || !optionalTerritoryAttachment.get().getConvoyRoute()) {
+      return new HashSet<>();
+    }
+
+    final Collection<Territory> territories = new HashSet<>();
+    // already checked above
+    data.getMap().getTerritories().stream()
+        .filter(current -> !current.equals(territory))
+        .forEach(
+            current -> {
+              final Optional<TerritoryAttachment> optionalCurrentTerritoryAttachment =
+                  TerritoryAttachment.get(current);
+              if (optionalCurrentTerritoryAttachment.isEmpty()
+                  || !optionalCurrentTerritoryAttachment.get().getConvoyRoute()) {
+                return;
+              }
+              if (optionalCurrentTerritoryAttachment
+                  .get()
+                  .getConvoyAttached()
+                  .contains(territory)) {
+                territories.add(current);
+              }
+            });
+    return territories;
+  }
+
+  public Optional<ResourceCollection> getResources() {
+    return Optional.ofNullable(resources);
+  }
+
   private void setResources(final String value) throws GameParseException {
     if (resources == null) {
       resources = new ResourceCollection(getData());
@@ -254,10 +306,6 @@ public class TerritoryAttachment extends DefaultAttachment {
     resources = value;
   }
 
-  public Optional<ResourceCollection> getResources() {
-    return Optional.ofNullable(resources);
-  }
-
   /**
    * Might return {@code null} if the attribute is {@code null}. Avoid usage; instead, see {@link
    * #getResources()}.
@@ -272,6 +320,10 @@ public class TerritoryAttachment extends DefaultAttachment {
     resources = null;
   }
 
+  public boolean getIsImpassable() {
+    return isImpassable;
+  }
+
   private void setIsImpassable(final String value) {
     setIsImpassable(getBool(value));
   }
@@ -280,17 +332,8 @@ public class TerritoryAttachment extends DefaultAttachment {
     isImpassable = value;
   }
 
-  public boolean getIsImpassable() {
-    return isImpassable;
-  }
-
   private void resetIsImpassable() {
     isImpassable = false;
-  }
-
-  public void setCapital(final String value) throws GameParseException {
-    getPlayerOrThrow(value);
-    capital = value;
   }
 
   public boolean isCapital() {
@@ -301,13 +344,23 @@ public class TerritoryAttachment extends DefaultAttachment {
     return Optional.ofNullable(capital);
   }
 
+  public void setCapital(final String value) throws GameParseException {
+    getPlayerByName(value)
+        .orElseThrow(
+            () ->
+                new GameParseException(
+                    MessageFormat.format(
+                        "TerritoryAttachment: Setting capital with value {0} not possible; No such player found",
+                        value)));
+    capital = value;
+  }
+
   public String getCapitalOrThrow() {
     return getCapital()
         .orElseThrow(
             () ->
                 new IllegalStateException(
-                    MessageFormat.format(
-                        "No expected capital found for TerritoryAttachment {0}", this)));
+                    String.format("No expected capital found for TerritoryAttachment %s", this)));
   }
 
   /**
@@ -328,16 +381,16 @@ public class TerritoryAttachment extends DefaultAttachment {
     victoryCity = value;
   }
 
+  public boolean getOriginalFactory() {
+    return originalFactory;
+  }
+
   private void setOriginalFactory(final String value) {
     setOriginalFactory(getBool(value));
   }
 
   private void setOriginalFactory(final boolean value) {
     originalFactory = value;
-  }
-
-  public boolean getOriginalFactory() {
-    return originalFactory;
   }
 
   private void resetOriginalFactory() {
@@ -385,6 +438,10 @@ public class TerritoryAttachment extends DefaultAttachment {
     unitProduction = value;
   }
 
+  public Optional<GamePlayer> getOriginalOwner() {
+    return Optional.ofNullable(originalOwner);
+  }
+
   /**
    * Should not be set by a game xml during attachment parsing, but CAN be set by initialization
    * parsing.
@@ -394,11 +451,14 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   private void setOriginalOwner(final String player) throws GameParseException {
-    originalOwner = getPlayerOrThrow(player);
-  }
-
-  public Optional<GamePlayer> getOriginalOwner() {
-    return Optional.ofNullable(originalOwner);
+    originalOwner =
+        getPlayerByName(player)
+            .orElseThrow(
+                () ->
+                    new GameParseException(
+                        MessageFormat.format(
+                            "TerritoryAttachment: Setting originalOwner with value {0} not possible; No such player found",
+                            player)));
   }
 
   /** Should only be used for @link{MutableProperty}. */
@@ -409,13 +469,15 @@ public class TerritoryAttachment extends DefaultAttachment {
   public GamePlayer getOriginalOwnerOrThrow() {
     return getOriginalOwner()
         .orElseThrow(
-            () ->
-                new IllegalStateException(
-                    MessageFormat.format("Original owner expected for {0}", this)));
+            () -> new IllegalStateException(String.format("Original owner expected for %s", this)));
   }
 
   private void resetOriginalOwner() {
     originalOwner = null;
+  }
+
+  public boolean getConvoyRoute() {
+    return convoyRoute;
   }
 
   private void setConvoyRoute(final String value) {
@@ -426,12 +488,12 @@ public class TerritoryAttachment extends DefaultAttachment {
     convoyRoute = value;
   }
 
-  public boolean getConvoyRoute() {
-    return convoyRoute;
-  }
-
   private void resetConvoyRoute() {
     convoyRoute = false;
+  }
+
+  public List<GamePlayer> getChangeUnitOwners() {
+    return getListProperty(changeUnitOwners);
   }
 
   private void setChangeUnitOwners(final String value) throws GameParseException {
@@ -446,12 +508,12 @@ public class TerritoryAttachment extends DefaultAttachment {
     changeUnitOwners = value;
   }
 
-  public List<GamePlayer> getChangeUnitOwners() {
-    return getListProperty(changeUnitOwners);
-  }
-
   private void resetChangeUnitOwners() {
     changeUnitOwners = null;
+  }
+
+  public List<GamePlayer> getCaptureUnitOnEnteringBy() {
+    return getListProperty(captureUnitOnEnteringBy);
   }
 
   private void setCaptureUnitOnEnteringBy(final String value) throws GameParseException {
@@ -462,12 +524,12 @@ public class TerritoryAttachment extends DefaultAttachment {
     captureUnitOnEnteringBy = value;
   }
 
-  public List<GamePlayer> getCaptureUnitOnEnteringBy() {
-    return getListProperty(captureUnitOnEnteringBy);
-  }
-
   private void resetCaptureUnitOnEnteringBy() {
     captureUnitOnEnteringBy = null;
+  }
+
+  private List<String> getWhenCapturedByGoesTo() {
+    return getListProperty(whenCapturedByGoesTo);
   }
 
   @VisibleForTesting
@@ -478,7 +540,13 @@ public class TerritoryAttachment extends DefaultAttachment {
           "whenCapturedByGoesTo must have 2 player names separated by a colon" + thisErrorMsg());
     }
     for (final String name : s) {
-      getPlayerOrThrow(name);
+      getPlayerByName(name)
+          .orElseThrow(
+              () ->
+                  new GameParseException(
+                      MessageFormat.format(
+                          "TerritoryAttachment: Setting whenCapturedByGoesTo with value {0} not possible; No player found for {1}",
+                          value, name)));
     }
     if (whenCapturedByGoesTo == null) {
       whenCapturedByGoesTo = new ArrayList<>();
@@ -488,10 +556,6 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   private void setWhenCapturedByGoesTo(final List<String> value) {
     whenCapturedByGoesTo = value;
-  }
-
-  private List<String> getWhenCapturedByGoesTo() {
-    return getListProperty(whenCapturedByGoesTo);
   }
 
   private void resetWhenCapturedByGoesTo() {
@@ -508,9 +572,32 @@ public class TerritoryAttachment extends DefaultAttachment {
       final String encodedCaptureOwnershipChange) {
     final String[] tokens = splitOnColon(encodedCaptureOwnershipChange);
     assert tokens.length == 2;
-    return new CaptureOwnershipChange(
-        getData().getPlayerList().getPlayerId(tokens[0]),
-        getData().getPlayerList().getPlayerId(tokens[1]));
+    try {
+      return new CaptureOwnershipChange(
+          getPlayerByName(tokens[0])
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "Invalid captureOwnershipChange with value {0} \n from-player: {1} unknown{2}",
+                              encodedCaptureOwnershipChange, tokens[0], thisErrorMsg()))),
+          getPlayerByName(tokens[1])
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "Invalid captureOwnershipChange with value {0} \n to-player: {1} unknown{2}",
+                              encodedCaptureOwnershipChange, tokens[1], thisErrorMsg()))));
+    } catch (GameParseException gameParseException) {
+      // @TODO: ownershipChanges should not be a list of strings that have to be parsed all the
+      // time;
+      // separate object needed in the future to ensure parsing is done only once
+      throw new IllegalStateException(gameParseException);
+    }
+  }
+
+  public List<TerritoryEffect> getTerritoryEffect() {
+    return getListProperty(territoryEffect);
   }
 
   private void setTerritoryEffect(final String value) throws GameParseException {
@@ -532,20 +619,27 @@ public class TerritoryAttachment extends DefaultAttachment {
     territoryEffect = value;
   }
 
-  public List<TerritoryEffect> getTerritoryEffect() {
-    return getListProperty(territoryEffect);
-  }
-
   private void resetTerritoryEffect() {
     territoryEffect = null;
   }
 
+  public Set<Territory> getConvoyAttached() {
+    return getSetProperty(convoyAttached);
+  }
+
   private void setConvoyAttached(final String value) throws GameParseException {
-    if (value.length() <= 0) {
+    if (value.isEmpty()) {
       return;
     }
     for (final String subString : splitOnColon(value)) {
-      final Territory territory = getTerritoryOrThrow(subString);
+      final Territory territory =
+          getTerritory(subString)
+              .orElseThrow(
+                  () ->
+                      new GameParseException(
+                          MessageFormat.format(
+                              "TerritoryAttachment: No territory found for {0}; Setting convoyAttached not possible with value {1}",
+                              subString, value)));
       if (convoyAttached == null) {
         convoyAttached = new HashSet<>();
       }
@@ -557,18 +651,12 @@ public class TerritoryAttachment extends DefaultAttachment {
     convoyAttached = value;
   }
 
-  public Set<Territory> getConvoyAttached() {
-    return getSetProperty(convoyAttached);
-  }
-
   private void resetConvoyAttached() {
     convoyAttached = null;
   }
 
-  public static boolean hasNavalBase(final Territory t) {
-    final Optional<TerritoryAttachment> optionalTerritoryAttachment = TerritoryAttachment.get(t);
-    return optionalTerritoryAttachment.isPresent()
-        && optionalTerritoryAttachment.get().getNavalBase();
+  public boolean getNavalBase() {
+    return navalBase;
   }
 
   private void setNavalBase(final String value) {
@@ -579,18 +667,12 @@ public class TerritoryAttachment extends DefaultAttachment {
     navalBase = value;
   }
 
-  public boolean getNavalBase() {
-    return navalBase;
-  }
-
   private void resetNavalBase() {
     navalBase = false;
   }
 
-  public static boolean hasAirBase(final Territory t) {
-    final Optional<TerritoryAttachment> optionalTerritoryAttachment = TerritoryAttachment.get(t);
-    return optionalTerritoryAttachment.isPresent()
-        && optionalTerritoryAttachment.get().getAirBase();
+  public boolean getAirBase() {
+    return airBase;
   }
 
   private void setAirBase(final String value) {
@@ -601,12 +683,12 @@ public class TerritoryAttachment extends DefaultAttachment {
     airBase = value;
   }
 
-  public boolean getAirBase() {
-    return airBase;
-  }
-
   private void resetAirBase() {
     airBase = false;
+  }
+
+  public boolean getKamikazeZone() {
+    return kamikazeZone;
   }
 
   private void setKamikazeZone(final String value) {
@@ -617,12 +699,12 @@ public class TerritoryAttachment extends DefaultAttachment {
     kamikazeZone = value;
   }
 
-  public boolean getKamikazeZone() {
-    return kamikazeZone;
-  }
-
   private void resetKamikazeZone() {
     kamikazeZone = false;
+  }
+
+  public boolean getBlockadeZone() {
+    return blockadeZone;
   }
 
   private void setBlockadeZone(final String value) {
@@ -633,48 +715,8 @@ public class TerritoryAttachment extends DefaultAttachment {
     blockadeZone = value;
   }
 
-  public boolean getBlockadeZone() {
-    return blockadeZone;
-  }
-
   private void resetBlockadeZone() {
     blockadeZone = false;
-  }
-
-  /**
-   * Returns the collection of territories that make up the convoy route containing the specified
-   * territory or returns an empty collection if the specified territory is not part of a convoy
-   * route.
-   */
-  public static Collection<Territory> getWhatTerritoriesThisIsUsedInConvoysFor(
-      final Territory territory, final GameState data) {
-    final Optional<TerritoryAttachment> optionalTerritoryAttachment =
-        TerritoryAttachment.get(territory);
-    if (optionalTerritoryAttachment.isEmpty()
-        || !optionalTerritoryAttachment.get().getConvoyRoute()) {
-      return new HashSet<>();
-    }
-
-    final Collection<Territory> territories = new HashSet<>();
-    // already checked above
-    data.getMap().getTerritories().stream()
-        .filter(current -> !current.equals(territory))
-        .forEach(
-            current -> {
-              final Optional<TerritoryAttachment> optionalCurrentTerritoryAttachment =
-                  TerritoryAttachment.get(current);
-              if (optionalCurrentTerritoryAttachment.isEmpty()
-                  || !optionalCurrentTerritoryAttachment.get().getConvoyRoute()) {
-                return;
-              }
-              if (optionalCurrentTerritoryAttachment
-                  .get()
-                  .getConvoyAttached()
-                  .contains(territory)) {
-                territories.add(current);
-              }
-            });
-    return territories;
   }
 
   /**

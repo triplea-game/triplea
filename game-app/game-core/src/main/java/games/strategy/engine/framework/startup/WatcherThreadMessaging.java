@@ -58,7 +58,7 @@ public interface WatcherThreadMessaging {
                     "View Help Website?",
                     JOptionPane.YES_NO_OPTION)
                 == JOptionPane.YES_OPTION) {
-              OpenFileUtility.openUrl(UrlConstants.USER_GUIDE);
+              OpenFileUtility.openUrl(parentComponent, UrlConstants.USER_GUIDE);
             }
             ExitStatus.FAILURE.exit();
           });

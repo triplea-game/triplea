@@ -111,18 +111,18 @@ public class UnitCategory implements Comparable<UnitCategory> {
 
   @Override
   public boolean equals(final Object o) {
-    if (!(o instanceof UnitCategory)) {
-      return false;
+    if (o instanceof UnitCategory other) {
+      // equality of categories does not compare the number of units in the category, so don't
+      // compare
+      // on units
+      final boolean equalsIgnoreDamaged = equalsIgnoreDamagedAndBombingDamageAndDisabled(other);
+      return equalsIgnoreDamaged
+          && other.damaged == this.damaged
+          && other.bombingDamage == this.bombingDamage
+          && other.disabled == this.disabled
+          && other.canRetreat == this.canRetreat;
     }
-    final UnitCategory other = (UnitCategory) o;
-    // equality of categories does not compare the number of units in the category, so don't compare
-    // on units
-    final boolean equalsIgnoreDamaged = equalsIgnoreDamagedAndBombingDamageAndDisabled(other);
-    return equalsIgnoreDamaged
-        && other.damaged == this.damaged
-        && other.bombingDamage == this.bombingDamage
-        && other.disabled == this.disabled
-        && other.canRetreat == this.canRetreat;
+    return false;
   }
 
   private boolean equalsIgnoreDamagedAndBombingDamageAndDisabled(final UnitCategory other) {

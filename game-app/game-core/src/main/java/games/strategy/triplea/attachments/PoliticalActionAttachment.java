@@ -11,6 +11,7 @@ import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -93,31 +94,28 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     final String[] s = splitOnColon(relChange);
     if (s.length != 3) {
       throw new GameParseException(
-          "Invalid relationshipChange declaration: "
-              + relChange
-              + " \n Use: player1:player2:newRelation\n"
-              + thisErrorMsg());
+          MessageFormat.format(
+              "Invalid relationshipChange declaration: {0} \n Use: player1:player2:newRelation\n{1}",
+              relChange, thisErrorMsg()));
     }
-    if (getData().getPlayerList().getPlayerId(s[0]) == null) {
-      throw new GameParseException(
-          "Invalid relationshipChange declaration: "
-              + relChange
-              + " \n player: "
-              + s[0]
-              + " unknown in: "
-              + getName()
-              + thisErrorMsg());
-    }
-    if (getData().getPlayerList().getPlayerId(s[1]) == null) {
-      throw new GameParseException(
-          "Invalid relationshipChange declaration: "
-              + relChange
-              + " \n player: "
-              + s[1]
-              + " unknown in: "
-              + getName()
-              + thisErrorMsg());
-    }
+    getPlayerByName(s[0])
+        .orElseThrow(
+            () ->
+                new GameParseException(
+                    MessageFormat.format(
+                        "Invalid relationshipChange declaration: {0} \n player: {1} unknown in: {2}{3}",
+                        relChange, s[0], getName(), thisErrorMsg())));
+    getPlayerByName(s[1])
+        .orElseThrow(
+            () ->
+                new GameParseException(
+                    "Invalid relationshipChange declaration: "
+                        + relChange
+                        + " \n player: "
+                        + s[1]
+                        + " unknown in: "
+                        + getName()
+                        + thisErrorMsg()));
     if (!Matches.isValidRelationshipName(getData().getRelationshipTypeList()).test(s[2])) {
       throw new GameParseException(
           "Invalid relationshipChange declaration: "
@@ -156,18 +154,50 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     final String[] tokens = splitOnColon(encodedRelationshipChange);
     assert tokens.length == 3;
     return new RelationshipChange(
-        getData().getPlayerList().getPlayerId(tokens[0]),
-        getData().getPlayerList().getPlayerId(tokens[1]),
+        getPlayerByName(tokens[0])
+            .orElseThrow(
+                () ->
+                    new IllegalStateException(
+                        MessageFormat.format(
+                            "Invalid relationshipChange declaration: {0} \n first player: {1} unknown{2}",
+                            encodedRelationshipChange, tokens[0], thisErrorMsg()))),
+        getPlayerByName(tokens[1])
+            .orElseThrow(
+                () ->
+                    new IllegalStateException(
+                        MessageFormat.format(
+                            "Invalid relationshipChange declaration: {0} \n second player: {1} unknown{2}",
+                            encodedRelationshipChange, tokens[1], thisErrorMsg()))),
         getData().getRelationshipTypeList().getRelationshipType(tokens[2]));
   }
 
   /** Returns a set of all other players involved in this PoliticalAction. */
   public Set<GamePlayer> getOtherPlayers() {
     final Set<GamePlayer> otherPlayers = new LinkedHashSet<>();
-    for (final String relationshipChange : getRelationshipChange()) {
-      final String[] s = splitOnColon(relationshipChange);
-      otherPlayers.add(getData().getPlayerList().getPlayerId(s[0]));
-      otherPlayers.add(getData().getPlayerList().getPlayerId(s[1]));
+    for (final String currentRelationshipChange : getRelationshipChange()) {
+      final String[] s = splitOnColon(currentRelationshipChange);
+      try {
+        otherPlayers.add(
+            getPlayerByName(s[0])
+                .orElseThrow(
+                    () ->
+                        new GameParseException(
+                            MessageFormat.format(
+                                "Invalid otherPlayers for relationshipChange: {0} \n first player: {1} unknown{2}",
+                                currentRelationshipChange, s[0], thisErrorMsg()))));
+        otherPlayers.add(
+            getPlayerByName(s[1])
+                .orElseThrow(
+                    () ->
+                        new GameParseException(
+                            MessageFormat.format(
+                                "Invalid otherPlayers for relationshipChange: {0} \n second player: {1} unknown{2}",
+                                currentRelationshipChange, s[1], thisErrorMsg()))));
+      } catch (GameParseException gameParseException) {
+        // @TODO: relationshipChange should not be a string that has to be parsed all the time;
+        // once separate object re-parsing here is not needed anymore
+        throw new IllegalStateException(gameParseException);
+      }
     }
     otherPlayers.remove(getAttachedTo());
     return otherPlayers;

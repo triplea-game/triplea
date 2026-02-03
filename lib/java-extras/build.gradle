@@ -1,7 +1,7 @@
 import org.gradle.api.publish.maven.MavenPublication
 
 plugins {
-    id 'java-library'
+    id("triplea-java-library")
     id("maven-publish")
 }
 
@@ -19,16 +19,6 @@ publishing {
         maven(MavenPublication) {
             artifact(tasks.named(sourceSets.main.jarTaskName)) {
                 extension 'jar'
-            }
-        }
-    }
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = "https://maven.pkg.github.com/triplea-game/triplea"
-            credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
             }
         }
     }

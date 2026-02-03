@@ -7,7 +7,6 @@ import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.util.BreadthFirstSearch;
 import games.strategy.triplea.delegate.Matches;
 import java.math.BigDecimal;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -99,7 +98,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
         .orElseThrow(
             () ->
                 new IllegalArgumentException(
-                    MessageFormat.format("Territory with name {0} could not be found", s)));
+                    String.format("Territory with name %s could not be found", s)));
   }
 
   /**
@@ -408,10 +407,11 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    */
   public int getDistance(
       final Territory t1, final Territory t2, final BiPredicate<Territory, Territory> routeCond) {
+    checkNotNull(t2);
     if (t1.equals(t2)) {
       return 0;
     }
-    var territoryFinder = new BreadthFirstSearch.TerritoryFinder(t2);
+    var territoryFinder = BreadthFirstSearch.createTerritoryFinder(t2);
     new BreadthFirstSearch(List.of(t1), routeCond).traverse(territoryFinder);
     return territoryFinder.getDistanceFound();
   }

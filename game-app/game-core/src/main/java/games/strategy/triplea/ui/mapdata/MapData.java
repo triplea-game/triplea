@@ -231,7 +231,7 @@ public class MapData {
   }
 
   private Map<String, Image> territoryNameImages() {
-    if (!loader.hasPath("territoryNames/")) {
+    if (!loader.hasPathString("territoryNames/")) {
       return new HashMap<>();
     }
 

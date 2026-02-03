@@ -1,7 +1,11 @@
+plugins {
+    id("triplea-java-library")
+}
+
 description = "Test utility library, generic test utilities useful for TripleA projects"
 
 dependencies {
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonDataTypeVersion"
-    implementation "org.hamcrest:java-hamcrest:$hamcrestVersion"
-    implementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+    implementation libs.jackson.datatype.jsr310
+    implementation libs.hamcrest
+    implementation libs.junit.jupiter.api
 }

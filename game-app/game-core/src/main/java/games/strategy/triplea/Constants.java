@@ -1,7 +1,6 @@
 package games.strategy.triplea;
 
 import games.strategy.engine.data.GamePlayer;
-import java.text.MessageFormat;
 import org.jetbrains.annotations.NonNls;
 
 /** Constants used throughout the game. */
@@ -259,10 +258,10 @@ public interface Constants {
   @NonNls String SIGN_TECH_ENABLED = "X";
 
   static String getPropertyNameIncomePercentageFor(final GamePlayer gamePlayer) {
-    return MessageFormat.format("{0} Income Percentage", gamePlayer.getName());
+    return String.format("%s Income Percentage", gamePlayer.getName());
   }
 
   static String getPropertyNamePuIncomeBonusFor(final GamePlayer gamePlayer) {
-    return MessageFormat.format("{0} PU Income Bonus", gamePlayer.getName());
+    return String.format("%s PU Income Bonus", gamePlayer.getName());
   }
 }

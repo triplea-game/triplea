@@ -270,6 +270,6 @@ class LobbyGamePanel extends JPanel {
     final String gameId =
         gameTableModel.getGameIdForRow(gameTable.convertRowIndexToModel(selectedIndex));
     playerToLobbyConnection.sendShutdownRequest(gameId);
-    JOptionPane.showMessageDialog(null, "The game you selected was sent a shutdown signal");
+    JOptionPane.showMessageDialog(parent, "The game you selected was sent a shutdown signal");
   }
 }
