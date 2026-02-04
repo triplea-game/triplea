@@ -124,6 +124,12 @@ public class BattleCalculatorDialog extends JDialog {
     currentDialog.pack();
   }
 
+  /**
+   * Sets the attacker of the {@link BattleCalculatorPanel} based on the Territory {@code t} and the
+   * current defender.
+   *
+   * @param t Reference {@link Territory}
+   */
   public static void addAttackers(final Territory t) {
     adjustBattleCalculatorPanel(
         t,
@@ -152,6 +158,11 @@ public class BattleCalculatorDialog extends JDialog {
         });
   }
 
+  /**
+   * Sets the defender of the {@link BattleCalculatorPanel} based on the Territory {@code t}.
+   *
+   * @param t Reference {@link Territory}
+   */
   public static void addDefenders(final Territory t) {
     adjustBattleCalculatorPanel(
         t,
