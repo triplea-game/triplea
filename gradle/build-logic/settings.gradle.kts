@@ -1,4 +1,4 @@
-@file:Suppress("UnstableApiUsage")
+@file:Suppress("UnstableApiUsage") // For repository declarations in settings
 
 import org.gradle.api.initialization.resolve.RepositoriesMode
 
