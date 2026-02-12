@@ -1,14 +1,6 @@
 package games.strategy.triplea.xml;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.TestAttachment;
-import games.strategy.engine.data.gameparser.GameParser;
-import games.strategy.engine.data.gameparser.XmlGameElementMapper;
-import games.strategy.triplea.delegate.TestDelegate;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.util.Map;
-import org.triplea.util.Version;
 
 /** The available maps for use during testing. */
 public enum TestMapGameData {
@@ -66,20 +58,6 @@ public enum TestMapGameData {
    * @throws RuntimeException If an error occurs while loading the map.
    */
   public GameData getGameData() {
-    final Path mapUri;
-    try {
-      mapUri = Path.of(getClass().getClassLoader().getResource(fileName).toURI());
-    } catch (final URISyntaxException e) {
-      throw new IllegalStateException("Can't find " + fileName, e);
-    }
-
-    return GameParser.parse(
-            mapUri,
-            new XmlGameElementMapper(
-                Map.of("TestDelegate", TestDelegate::new),
-                Map.of("TestAttachment", TestAttachment::new)),
-            new Version("2.0.0"),
-            false)
-        .orElseThrow(() -> new IllegalStateException("Error parsing: " + mapUri));
+    return TestMapGameDataLoader.loadGameData(fileName);
   }
 }

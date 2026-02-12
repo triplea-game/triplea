@@ -11,24 +11,20 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import java.nio.file.Path;
+import games.strategy.triplea.xml.TestMapGameDataLoader;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.triplea.util.Tuple;
-import org.triplea.util.Version;
 
 final class GameParserTest {
 
   @Test
   @DisplayName("Verify backward compatibility can parse 1.8 maps")
   void backwardCompatibilityCheck() throws Exception {
-    final Path mapFile = getTestMap("v1_8_map__270BC.xml");
-    final GameData gameData =
-        GameParser.parse(mapFile, new XmlGameElementMapper(), new Version("2.0.0"), false)
-            .orElseThrow();
+    final GameData gameData = TestMapGameDataLoader.loadGameData("v1_8_map__270BC.xml");
     assertNotNullGameData(gameData);
 
     verifyLegacyPropertiesAreUpdated(gameData);
@@ -152,9 +148,5 @@ final class GameParserTest {
                     is(decapitalizedValue));
               });
     }
-  }
-
-  private Path getTestMap(String name) throws Exception {
-    return Path.of(GameParserTest.class.getClassLoader().getResource(name).toURI());
   }
 }
