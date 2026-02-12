@@ -5,7 +5,7 @@ on:
       - main
     paths:
       - '.github/workflows/upload-game-installers.yml'
-      - 'build.gradle'
+      - 'build.gradle.kts'
       - 'game-app/**'
       - 'http-clients/**'
       - 'lib/**'
