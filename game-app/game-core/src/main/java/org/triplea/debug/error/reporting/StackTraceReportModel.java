@@ -1,5 +1,6 @@
 package org.triplea.debug.error.reporting;
 
+import games.strategy.engine.data.GameData;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
@@ -32,6 +33,10 @@ public class StackTraceReportModel {
     if (uploader.test(readErrorReportFromUi())) {
       view.close();
     }
+  }
+
+  public static void setCurrentMapNameFromGameData(GameData gameData) {
+    setCurrentMapName(gameData.getMapName() + " / " + gameData.getGameName());
   }
 
   private ErrorReportRequest readErrorReportFromUi() {

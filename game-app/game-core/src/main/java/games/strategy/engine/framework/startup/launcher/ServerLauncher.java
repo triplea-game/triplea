@@ -32,6 +32,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.debug.error.reporting.StackTraceReportModel;
 import org.triplea.game.server.GameRelayServer;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
@@ -101,6 +102,7 @@ public class ServerLauncher implements ILauncher {
 
   @Override
   public void launch() {
+    StackTraceReportModel.setCurrentMapNameFromGameData(gameData);
     try {
       loadGame();
     } catch (final Exception e) {
