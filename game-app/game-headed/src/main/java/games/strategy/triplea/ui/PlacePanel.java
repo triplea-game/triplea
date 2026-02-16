@@ -82,7 +82,8 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
             if (units.isEmpty()) {
               return new PlaceableUnits();
             }
-            final PlaceableUnits production = getData().getPlaceDelegate().getPlaceableUnits(units, territory);
+            final PlaceableUnits production =
+                getData().getPlaceDelegate().getPlaceableUnits(units, territory);
             if (production.isError()) {
               JOptionPane.showMessageDialog(
                   getTopLevelAncestor(),
