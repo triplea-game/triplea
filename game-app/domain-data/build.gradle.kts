@@ -7,9 +7,9 @@ version = System.getenv("JAR_VERSION")
 
 publishing {
     publications {
-        maven(MavenPublication) {
-            artifact(tasks.named(sourceSets.main.jarTaskName)) {
-                extension 'jar'
+        create<MavenPublication>("maven") {
+            artifact(tasks.named(sourceSets.main.get().jarTaskName)) {
+                extension = "jar"
             }
         }
     }
