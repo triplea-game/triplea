@@ -8,7 +8,7 @@ plugins {
 version = System.getenv("JAR_VERSION")
 
 dependencies {
-    implementation(project(":lib:java-extras"))
+    implementation(project(":java-extras"))
 }
 
 publishing {

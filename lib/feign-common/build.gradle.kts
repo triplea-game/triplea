@@ -8,9 +8,9 @@ plugins {
 version = System.getenv("JAR_VERSION")
 
 dependencies {
-    implementation(project(":game-app:domain-data"))
-    implementation(project(":lib:java-extras"))
-    testImplementation(project(":lib:test-common"))
+    implementation(project(":domain-data"))
+    implementation(project(":java-extras"))
+    testImplementation(project(":test-common"))
 }
 
 publishing {

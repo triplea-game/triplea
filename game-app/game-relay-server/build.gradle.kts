@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":lib:websocket-client"))
-    implementation(project(":lib:websocket-server"))
-    testImplementation(project(":lib:test-common"))
+    implementation(project(":websocket-client"))
+    implementation(project(":websocket-server"))
+    testImplementation(project(":test-common"))
 }

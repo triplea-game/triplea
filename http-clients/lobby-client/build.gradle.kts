@@ -6,11 +6,11 @@ plugins {
 version = System.getenv("JAR_VERSION")
 
 dependencies {
-    implementation(project(":game-app:domain-data"))
-    implementation(project(":lib:feign-common"))
-    implementation(project(":lib:java-extras"))
-    implementation(project(":lib:websocket-client"))
-    testImplementation(project(":lib:test-common"))
+    implementation(project(":domain-data"))
+    implementation(project(":feign-common"))
+    implementation(project(":java-extras"))
+    implementation(project(":websocket-client"))
+    testImplementation(project(":test-common"))
 }
 
 publishing {

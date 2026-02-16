@@ -6,6 +6,12 @@ Gradle plugins used by the build are located in `/gradle/build-logic`.
 The build uses the Gradle Kotlin DSL. 
 This make the build easier to maintain by increasing the completion and refactoring assistance the IDE is able to provide.
 
+## Build Structure
+
+By explicitly specifying the physical location of nested subprojects in the root `settings.gradle.kts` file, the build is able to avoid [unintentionally creating empty projects](https://docs.gradle.org/current/userguide/best_practices_structuring_builds.html#avoid_empty_projects).
+These empty projects slow the build and make it more difficult to understand the project structure.
+This allows you to reference projects using non-hierarchical names, for example `:game-core` instead of `:game-app:game-core`.
+
 ## Convention Plugins
 
 The TripleA build defines Gradle [Convention Plugins](https://docs.gradle.org/current/userguide/implementing_gradle_plugins_convention.html#header) to avoid cross-project configuration and duplication of configuration.
@@ -18,10 +24,10 @@ It applies the `java-library` plugin and applies universal configuration, code c
 
 ## Test Fixtures
 
-The `:game-app:game-core` project exposes [Test Fixtures](https://docs.gradle.org/current/userguide/java_testing.html#producing_and_using_test_fixtures_within_a_single_project) to share common testing code and resources between projects.
-Other projects (like `:game-app:ai`) can access these fixtures to use during testing by adding a dependency like `testImplementation(testFixtures(project(":game-app:game-core")))`.
+The `:game-core` project exposes [Test Fixtures](https://docs.gradle.org/current/userguide/java_testing.html#producing_and_using_test_fixtures_within_a_single_project) to share common testing code and resources between projects.
+Other projects (like `:ai`) can access these fixtures to use during testing by adding a dependency like `testImplementation(testFixtures(project(":game-core")))`.
 
-The fixture in `:game-app:game-core` includes map data present in `/game-app/game-core/src/testFixtures/resources`, that can be loaded by tests via the `TestMapGameDataLoader` class and the `TestMapGameData` enum.
+The fixture in `:game-core` includes map data present in `/game-app/game-core/src/testFixtures/resources`, that can be loaded by tests via the `TestMapGameDataLoader` class and the `TestMapGameData` enum.
 
 # Future Work
 

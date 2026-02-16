@@ -11,6 +11,6 @@ dependencies {
     implementation(libs.junit.jupiter.params)
     implementation(libs.mockito.core)
     implementation(libs.mockito.junit.jupiter)
-    implementation(project(":lib:swing-lib"))
-    implementation(project(":lib:test-common"))
+    implementation(project(":swing-lib"))
+    implementation(project(":test-common"))
 }
