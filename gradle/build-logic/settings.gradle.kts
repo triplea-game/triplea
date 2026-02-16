@@ -1,4 +1,4 @@
-@file:Suppress("UnstableApiUsage")
+@file:Suppress("UnstableApiUsage") // For repository declarations in settings
 
 import org.gradle.api.initialization.resolve.RepositoriesMode
 
@@ -19,4 +19,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "build-logic"
 
-include("failure-summary-plugin", "triplea-java-library")
+include("failure-summary-plugin", "triplea-java-library", "triplea-published-library")
