@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Browser-like user agent (Chrome on Linux)
-USER_AGENT="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
-
 # URLs that must always be checked even if not in YAML
 WHITELIST_URLS=(
   "https://www.axisandallies.org/forums/topic/33233/argo-s-middleweight-map-for-1939-1942" # PR #14127
@@ -24,10 +21,10 @@ for url in $(grep -Eo 'https://[^") >]+' triplea_maps.yaml | sort -u); do
   fi
   
 
-  # 2) If failed AND whitelisted → retry with browser user agent
+  # 2) If failed, check whitelist
   if is_whitelisted "$url"; then
-    echo "Retrying with browser UA: $url"
-    curl --fail --silent -A "$USER_AGENT" "$url" > /dev/null && continue
+    echo "Whitelisted: $url"
+    continue
   fi
 
   # 3) If still failing → mark as failed
