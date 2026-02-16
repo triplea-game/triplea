@@ -3,5 +3,5 @@ plugins {
 }
 
 dependencies {
-    implementation project(":lib:java-extras")
+    implementation(project(":java-extras"))
 }

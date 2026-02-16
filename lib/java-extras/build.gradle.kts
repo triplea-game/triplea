@@ -7,18 +7,17 @@ plugins {
 
 version = System.getenv("JAR_VERSION")
 
-
 description = "TripleA library for low-level helper APIs, ie: syntactic sugar"
 
 dependencies {
-    testImplementation project(":lib:test-common")
+    testImplementation(project(":test-common"))
 }
 
 publishing {
     publications {
-        maven(MavenPublication) {
-            artifact(tasks.named(sourceSets.main.jarTaskName)) {
-                extension 'jar'
+        create<MavenPublication>("maven") {
+            artifact(tasks.named(sourceSets.main.get().jarTaskName)) {
+                extension = "jar"
             }
         }
     }
