@@ -1,24 +1,9 @@
-import org.gradle.api.publish.maven.MavenPublication
-
 plugins {
-    id("triplea-java-library")
-    id("maven-publish")
+    id("triplea-published-library")
 }
-
-version = System.getenv("JAR_VERSION")
 
 dependencies {
     implementation(project(":domain-data"))
     implementation(project(":java-extras"))
     testImplementation(project(":test-common"))
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            artifact(tasks.named(sourceSets.main.get().jarTaskName)) {
-                extension = "jar"
-            }
-        }
-    }
 }

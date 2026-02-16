@@ -1,9 +1,6 @@
 plugins {
-    id("triplea-java-library")
-    id("maven-publish")
+    id("triplea-published-library")
 }
-
-version = System.getenv("JAR_VERSION")
 
 dependencies {
     implementation(project(":domain-data"))
@@ -11,14 +8,4 @@ dependencies {
     implementation(project(":java-extras"))
     implementation(project(":websocket-client"))
     testImplementation(project(":test-common"))
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            artifact(tasks.named(sourceSets.main.get().jarTaskName)) {
-                extension = "jar"
-            }
-        }
-    }
 }

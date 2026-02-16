@@ -22,6 +22,10 @@ There are currently the following types of projects:
 This is a standard "vanilla" java library type.
 It applies the `java-library` plugin and applies universal configuration, code conventions, and sets up static analysis. 
 
+### `triplea-published-library`
+
+This convention expands on `triplea-java-library` to add tasks to publish a Java library project to Maven.
+
 ## Test Fixtures
 
 The `:game-core` project exposes [Test Fixtures](https://docs.gradle.org/current/userguide/java_testing.html#producing_and_using_test_fixtures_within_a_single_project) to share common testing code and resources between projects.
