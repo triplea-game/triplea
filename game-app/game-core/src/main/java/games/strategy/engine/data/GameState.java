@@ -2,6 +2,7 @@ package games.strategy.engine.data;
 
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
+import games.strategy.triplea.delegate.AbstractPlaceDelegate;
 import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.triplea.delegate.TechTracker;
@@ -69,11 +70,13 @@ public interface GameState {
 
   BattleDelegate getBattleDelegate();
 
-  PoliticsDelegate getPoliticsDelegate();
+  EndRoundDelegate getEndRoundDelegate();
 
   AbstractMoveDelegate getMoveDelegate();
 
-  TechnologyDelegate getTechDelegate();
+  AbstractPlaceDelegate getPlaceDelegate();
 
-  EndRoundDelegate getEndRoundDelegate();
+  PoliticsDelegate getPoliticsDelegate();
+
+  TechnologyDelegate getTechDelegate();
 }
