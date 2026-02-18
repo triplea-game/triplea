@@ -14,7 +14,10 @@ async function closeIssues() {
             repo: 'triplea',
             state: 'open',
             per_page: 100,
-        }) ).filter(issue => !issue.pull_request); // only issues (not PRs)
+        }) ).filter(issue =>
+          !issue.pull_request &&    // only issues (not PRs) with label "Error Report"
+          issue.labels.some(label => label.name === "Error Report")
+        );
         console.log(`Fetched ${openIssues.length} issues in total.`);
 
         // 2. Get recently (=updated in the last year) closed issues (not more than 300 expected → 3 API calls max)
