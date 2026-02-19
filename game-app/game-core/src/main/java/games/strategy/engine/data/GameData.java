@@ -12,6 +12,7 @@ import games.strategy.engine.history.History;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleA;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
+import games.strategy.triplea.delegate.AbstractPlaceDelegate;
 import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.triplea.delegate.TechTracker;
@@ -77,15 +78,6 @@ public class GameData implements Serializable, GameState {
   /** When we load a game from a save file, this property will be the name of that file. */
   @NonNls private static final String SAVE_GAME_FILE_NAME_PROPERTY = "save.game.file.name";
 
-  private transient ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-  private transient volatile boolean forceInSwingEventThread = false;
-  private String gameName;
-  @RemoveOnNextMajorRelease @Deprecated private Version gameVersion;
-  @Getter private int diceSides;
-  private transient List<TerritoryListener> territoryListeners = new CopyOnWriteArrayList<>();
-
-  private transient List<GameDataChangeListener> dataChangeListeners = new CopyOnWriteArrayList<>();
-  private transient Map<String, IDelegate> delegates = new HashMap<>();
   private final AllianceTracker alliances = new AllianceTracker();
   // Tracks current relationships between players, this is empty if relationships aren't used
   private final RelationshipTracker relationships = new RelationshipTracker(this);
@@ -106,17 +98,33 @@ public class GameData implements Serializable, GameState {
   private final UnitsList unitsList = new UnitsList();
   private final TechnologyFrontier technologyFrontier =
       new TechnologyFrontier("allTechsForGame", this);
-  @Getter private transient TechTracker techTracker = new TechTracker(this);
   private final IGameLoader loader = new TripleA();
-  private History gameHistory = new History(this);
+  private final Map<String, TerritoryEffect> territoryEffectList = new HashMap<>();
+  private final BattleRecordsList battleRecordsList = new BattleRecordsList(this);
+  private transient ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+  private transient volatile boolean forceInSwingEventThread = false;
+  private String gameName;
+  @RemoveOnNextMajorRelease @Deprecated private Version gameVersion;
+  @Getter private int diceSides;
+  private transient List<TerritoryListener> territoryListeners = new CopyOnWriteArrayList<>();
+  private transient List<GameDataChangeListener> dataChangeListeners = new CopyOnWriteArrayList<>();
+  private transient Map<String, IDelegate> delegates = new HashMap<>();
+  // Don't ensure the lock is held when getting the history.
+  // History operations often acquire the write lock, and we can't acquire the write lock if we
+  // have the read lock.
+  @Setter @Getter private History gameHistory = new History(this);
+  private GameDataState state = new GameDataState(this);
 
   @Setter @Getter
   private List<Tuple<IAttachment, List<Tuple<String, String>>>> attachmentOrderAndValues =
       new ArrayList<>();
 
-  private final Map<String, TerritoryEffect> territoryEffectList = new HashMap<>();
-  private final BattleRecordsList battleRecordsList = new BattleRecordsList(this);
   private transient GameDataEventListeners gameDataEventListeners = new GameDataEventListeners();
+
+  private static Unlocker acquireLock(Lock lock) {
+    lock.lock();
+    return lock::unlock;
+  }
 
   private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
     // The process of deserializing makes use of this lock,
@@ -124,7 +132,6 @@ public class GameData implements Serializable, GameState {
     readWriteLock = new ReentrantReadWriteLock();
     in.defaultReadObject();
     gameDataEventListeners = new GameDataEventListeners();
-    techTracker = new TechTracker(this);
   }
 
   /**
@@ -202,6 +209,11 @@ public class GameData implements Serializable, GameState {
   @Override
   public AllianceTracker getAllianceTracker() {
     return alliances;
+  }
+
+  @Override
+  public TechTracker getTechTracker() {
+    return state.getTechTracker();
   }
 
   /**
@@ -327,14 +339,14 @@ public class GameData implements Serializable, GameState {
     return loader;
   }
 
-  @VisibleForTesting
-  public void setGameName(final String gameName) {
-    this.gameName = gameName;
-  }
-
   @Override
   public String getGameName() {
     return gameName;
+  }
+
+  @VisibleForTesting
+  public void setGameName(final String gameName) {
+    this.gameName = gameName;
   }
 
   @Override
@@ -355,23 +367,20 @@ public class GameData implements Serializable, GameState {
   }
 
   public History getHistory() {
-    // don't ensure the lock is held when getting the history
-    // history operations often acquire the write lock and we can't acquire the write lock if we
-    // have the read lock
-    return gameHistory;
+    return getGameHistory();
   }
 
   public void setHistory(final History history) {
-    gameHistory = history;
+    setGameHistory(history);
   }
 
   public void resetHistory() {
-    gameHistory = new History(this);
+    setGameHistory(new History(this));
     GameStep step = getSequence().getStep();
     // Put the history in a round and step, so that child nodes can be added without errors.
     final boolean oldForceInSwingEventThread = forceInSwingEventThread;
     forceInSwingEventThread = false;
-    gameHistory
+    getGameHistory()
         .getHistoryWriter()
         .startNextStep(
             step.getName(), step.getDelegateName(), step.getPlayerId(), step.getDisplayName());
@@ -380,6 +389,7 @@ public class GameData implements Serializable, GameState {
 
   /** Not to be called by mere mortals. */
   public void postDeSerialize() {
+    state = new GameDataState(this);
     territoryListeners = new CopyOnWriteArrayList<>();
     dataChangeListeners = new CopyOnWriteArrayList<>();
     delegates = new HashMap<>();
@@ -416,11 +426,6 @@ public class GameData implements Serializable, GameState {
                     .fixUpNullPlayers(playerList.getNullPlayer()));
   }
 
-  public interface Unlocker extends Closeable {
-    @Override
-    void close();
-  }
-
   /**
    * No changes to the game data should be made unless this lock is held. calls to acquire lock will
    * block if the lock is held, and will be held until the release method is called.
@@ -451,11 +456,6 @@ public class GameData implements Serializable, GameState {
    */
   public Unlocker acquireWriteLock() {
     return acquireLock(readWriteLock.writeLock());
-  }
-
-  private static Unlocker acquireLock(Lock lock) {
-    lock.lock();
-    return lock::unlock;
   }
 
   public void addToAttachmentOrderAndValues(
@@ -490,13 +490,13 @@ public class GameData implements Serializable, GameState {
   }
 
   @Override
-  public PoliticsDelegate getPoliticsDelegate() {
-    return (PoliticsDelegate) getDelegate("politics");
+  public BattleDelegate getBattleDelegate() {
+    return (BattleDelegate) getDelegate("battle");
   }
 
   @Override
-  public BattleDelegate getBattleDelegate() {
-    return (BattleDelegate) getDelegate("battle");
+  public EndRoundDelegate getEndRoundDelegate() {
+    return (EndRoundDelegate) getDelegate("endRound");
   }
 
   @Override
@@ -505,13 +505,18 @@ public class GameData implements Serializable, GameState {
   }
 
   @Override
-  public TechnologyDelegate getTechDelegate() {
-    return (TechnologyDelegate) getDelegate("tech");
+  public AbstractPlaceDelegate getPlaceDelegate() {
+    return (AbstractPlaceDelegate) getDelegate("place");
   }
 
   @Override
-  public EndRoundDelegate getEndRoundDelegate() {
-    return (EndRoundDelegate) getDelegate("endRound");
+  public PoliticsDelegate getPoliticsDelegate() {
+    return (PoliticsDelegate) getDelegate("politics");
+  }
+
+  @Override
+  public TechnologyDelegate getTechDelegate() {
+    return (TechnologyDelegate) getDelegate("tech");
   }
 
   /**
@@ -610,5 +615,10 @@ public class GameData implements Serializable, GameState {
   private Optional<MapDescriptionYaml> findMapDescriptionYaml(final Path mapLocation) {
     return FileUtils.findFileInParentFolders(mapLocation, MapDescriptionYaml.MAP_YAML_FILE_NAME)
         .flatMap(MapDescriptionYaml::fromFile);
+  }
+
+  public interface Unlocker extends Closeable {
+    @Override
+    void close();
   }
 }
