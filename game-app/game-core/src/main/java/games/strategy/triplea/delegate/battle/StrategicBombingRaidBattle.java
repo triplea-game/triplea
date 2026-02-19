@@ -82,28 +82,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     updateDefendingUnits();
   }
 
-  private static int getSbrRolls(final Collection<Unit> units, final GamePlayer gamePlayer) {
-    return units.stream().mapToInt(u -> getSbrRolls(u, gamePlayer)).sum();
-  }
-
-  @VisibleForTesting
-  public static int getSbrRolls(final Unit unit, final GamePlayer gamePlayer) {
-    return unit.getUnitAttachment().getAttackRolls(gamePlayer);
-  }
-
-  private static List<String> buildSteps(boolean hasAa, List<Unit> defendingAa) {
-    final List<String> steps = new ArrayList<>();
-    if (hasAa) {
-      for (final String typeAa : UnitAttachment.getAllOfTypeAas(defendingAa)) {
-        steps.add(typeAa + AA_GUNS_FIRE_SUFFIX);
-        steps.add(SELECT_PREFIX + typeAa + CASUALTIES_SUFFIX);
-        steps.add(NOTIFY_PREFIX + typeAa + CASUALTIES_SUFFIX);
-      }
-    }
-    steps.add(RAID);
-    return steps;
-  }
-
   @Override
   protected void removeUnitsThatNoLongerExist() {
     if (headless) {
@@ -1008,5 +986,27 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       }
       bombingRaidTotal = cost;
     }
+  }
+
+  private static int getSbrRolls(final Collection<Unit> units, final GamePlayer gamePlayer) {
+    return units.stream().mapToInt(u -> getSbrRolls(u, gamePlayer)).sum();
+  }
+
+  @VisibleForTesting
+  public static int getSbrRolls(final Unit unit, final GamePlayer gamePlayer) {
+    return unit.getUnitAttachment().getAttackRolls(gamePlayer);
+  }
+
+  private static List<String> buildSteps(boolean hasAa, List<Unit> defendingAa) {
+    final List<String> steps = new ArrayList<>();
+    if (hasAa) {
+      for (final String typeAa : UnitAttachment.getAllOfTypeAas(defendingAa)) {
+        steps.add(typeAa + AA_GUNS_FIRE_SUFFIX);
+        steps.add(SELECT_PREFIX + typeAa + CASUALTIES_SUFFIX);
+        steps.add(NOTIFY_PREFIX + typeAa + CASUALTIES_SUFFIX);
+      }
+    }
+    steps.add(RAID);
+    return steps;
   }
 }
