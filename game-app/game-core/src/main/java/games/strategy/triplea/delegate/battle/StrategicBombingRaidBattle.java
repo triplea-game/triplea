@@ -53,7 +53,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
-import org.jspecify.annotations.NonNull;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -65,7 +64,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   private static final String RAID = "Strategic bombing raid";
 
   // these would be the factories or other targets. does not include aa.
-  private final Map<Unit, Set<Unit>> targetsForAiFire = new HashMap<>();
+  private final Map<Unit, Set<Unit>> targetsForAaFire = new HashMap<>();
   private final ExecutionStack stack = new ExecutionStack();
   private final IntegerMap<Unit> bombingRaidDamage = new IntegerMap<>();
   private List<String> steps;
@@ -115,7 +114,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     // double-check that the stuff still exists here.
     defendingUnits.retainAll(battleSite.getUnits());
     attackingUnits.retainAll(battleSite.getUnits());
-    targetsForAiFire.keySet().removeIf(unit -> !battleSite.getUnits().contains(unit));
+    targetsForAaFire.keySet().removeIf(unit -> !battleSite.getUnits().contains(unit));
   }
 
   protected void updateDefendingUnits() {
@@ -136,7 +135,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                             Matches.unitIsAaForBombingThisUnitOnly(),
                             round,
                             true)));
-    if (targetsForAiFire.isEmpty()) {
+    if (targetsForAaFire.isEmpty()) {
       defendingUnits = CollectionUtils.getMatches(battleSite.getUnits(), defenders);
     } else {
       final List<Unit> targetsForAaFire =
@@ -149,7 +148,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                   Matches.unitIsAaForBombingThisUnitOnly(),
                   round,
                   true));
-      targetsForAaFire.addAll(this.targetsForAiFire.keySet());
+      targetsForAaFire.addAll(this.targetsForAaFire.keySet());
       defendingUnits = targetsForAaFire;
     }
   }
@@ -167,9 +166,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
   private void removeAttackers(final Collection<Unit> units, final boolean removeTarget) {
     attackingUnits.removeAll(units);
-    final Iterator<Unit> targetIter = targetsForAiFire.keySet().iterator();
+    final Iterator<Unit> targetIter = targetsForAaFire.keySet().iterator();
     while (targetIter.hasNext()) {
-      final Set<Unit> currentAttackers = targetsForAiFire.get(targetIter.next());
+      final Set<Unit> currentAttackers = targetsForAaFire.get(targetIter.next());
       currentAttackers.removeAll(units);
       if (currentAttackers.isEmpty() && removeTarget) {
         targetIter.remove();
@@ -178,7 +177,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   }
 
   private Unit getTarget(final Unit attacker) {
-    return targetsForAiFire.entrySet().stream()
+    return targetsForAaFire.entrySet().stream()
         .filter(e -> e.getValue().contains(attacker))
         .map(Entry::getKey)
         .findAny()
@@ -198,7 +197,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     targets.forEach(
         (target, targetAttackers) -> {
           final Set<Unit> currentAttackers =
-              this.targetsForAiFire.computeIfAbsent(target, i -> new HashSet<>());
+              this.targetsForAaFire.computeIfAbsent(target, i -> new HashSet<>());
           currentAttackers.addAll(targetAttackers);
         });
     return ChangeFactory.EMPTY_CHANGE;
@@ -261,12 +260,12 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     stack.execute(bridge);
   }
 
-  private @NonNull List<IExecutable> getFightStepsReversed(boolean hasAa) {
+  private @Nonnull List<IExecutable> getFightStepsReversed(boolean hasAa) {
     final List<IExecutable> fightSteps = new ArrayList<>();
     if (hasAa) {
       // global1940 rules - each target type fires an AA shot against the planes bombing it
       fightSteps.addAll(
-          targetsForAiFire.entrySet().stream()
+          targetsForAaFire.entrySet().stream()
               .filter(entry -> entry.getKey().getUnitAttachment().isAaForBombingThisUnitOnly())
               .map(Entry::getValue)
               .map(FireAa::new)
@@ -343,11 +342,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       }
 
       private void killAnyWithMaxDamageReached(IDelegateBridge bridge) {
-        if (targetsForAiFire.keySet().stream()
+        if (targetsForAaFire.keySet().stream()
             .anyMatch(Matches.unitCanDieFromReachingMaxDamage())) {
           final List<Unit> unitsCanDie =
               CollectionUtils.getMatches(
-                  targetsForAiFire.keySet(), Matches.unitCanDieFromReachingMaxDamage());
+                  targetsForAaFire.keySet(), Matches.unitCanDieFromReachingMaxDamage());
           unitsCanDie.retainAll(
               CollectionUtils.getMatches(
                   unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(battleSite)));
@@ -831,7 +830,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
     private void addToTargetDiceMap(
         final Unit attackerUnit, final Die roll, final Map<Unit, List<Die>> targetToDiceMap) {
-      if (targetsForAiFire.isEmpty()) {
+      if (targetsForAaFire.isEmpty()) {
         return;
       }
       final Unit target = getTarget(attackerUnit);
@@ -900,7 +899,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           costThisUnit = Math.min(costThisUnit, damageLimit);
         }
         cost += costThisUnit;
-        if (!targetsForAiFire.isEmpty()) {
+        if (!targetsForAaFire.isEmpty()) {
           bombingRaidDamage.add(getTarget(attacker), costThisUnit);
         }
       }
@@ -910,7 +909,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         final int alreadyLost = gameData.getMoveDelegate().pusAlreadyLost(battleSite);
         final int limit = Math.max(0, damageLimit - alreadyLost);
         cost = Math.min(cost, limit);
-        if (!targetsForAiFire.isEmpty()) {
+        if (!targetsForAaFire.isEmpty()) {
           for (final Unit u : bombingRaidDamage.keySet()) {
             if (bombingRaidDamage.getInt(u) > limit) {
               bombingRaidDamage.put(u, limit);
@@ -922,7 +921,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(
           gameData.getProperties())) {
         // at this point, bombingRaidDamage should contain all units that targets contains
-        if (!targetsForAiFire.keySet().containsAll(bombingRaidDamage.keySet())) {
+        if (!targetsForAaFire.keySet().containsAll(bombingRaidDamage.keySet())) {
           throw new IllegalStateException("targets should contain all damaged units");
         }
         for (final Unit current : bombingRaidDamage.keySet()) {
