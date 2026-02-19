@@ -446,103 +446,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     bridge.getDisplayChannelBroadcaster().listBattleSteps(battleId, steps);
   }
 
-  private CasualtyDetails calculateCasualties(
-      final Collection<Unit> validAttackingUnitsForThisRoll,
-      final Collection<Unit> defendingAa,
-      final IDelegateBridge bridge,
-      final DiceRoll dice,
-      final String currentTypeAa) {
-    bridge
-        .getDisplayChannelBroadcaster()
-        .notifyDice(dice, SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX);
-    final CasualtyDetails casualties =
-        AaCasualtySelector.getAaCasualties(
-            validAttackingUnitsForThisRoll,
-            defendingAa,
-            CombatValueBuilder.mainCombatValue()
-                .enemyUnits(defendingUnits)
-                .friendlyUnits(attackingUnits)
-                .side(BattleState.Side.OFFENSE)
-                .gameSequence(bridge.getData().getSequence())
-                .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
-                .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
-                .gameDiceSides(bridge.getData().getDiceSides())
-                .territoryEffects(territoryEffects)
-                .build(),
-            CombatValueBuilder.aaCombatValue()
-                .enemyUnits(attackingUnits)
-                .friendlyUnits(defendingUnits)
-                .side(BattleState.Side.DEFENSE)
-                .supportAttachments(bridge.getData().getUnitTypeList().getSupportAaRules())
-                .build(),
-            "Hits from " + currentTypeAa + ", ",
-            dice,
-            bridge,
-            attacker,
-            battleId,
-            battleSite);
-    final int totalExpectingHits = Math.min(dice.getHits(), validAttackingUnitsForThisRoll.size());
-    if (casualties.size() != totalExpectingHits) {
-      throw new IllegalStateException(
-          MessageFormat.format(
-              "Wrong number of casualties, expecting:{0} but got:{1}",
-              totalExpectingHits, casualties.size()));
-    }
-    return casualties;
-  }
-
-  private void notifyAaHits(
-      final IDelegateBridge bridge,
-      final DiceRoll dice,
-      final CasualtyDetails casualties,
-      final String currentTypeAa) {
-    bridge
-        .getDisplayChannelBroadcaster()
-        .casualtyNotification(
-            battleId,
-            NOTIFY_PREFIX + currentTypeAa + CASUALTIES_SUFFIX,
-            dice,
-            attacker,
-            new ArrayList<>(casualties.getKilled()),
-            new ArrayList<>(casualties.getDamaged()),
-            Map.of());
-    final Thread t =
-        new Thread(
-            () -> {
-              try {
-                final Player defender = bridge.getRemotePlayer(this.defender);
-                defender.confirmEnemyCasualties(battleId, "Press space to continue", attacker);
-              } catch (final Exception e) {
-                // ignore
-              }
-            },
-            "click to continue waiter");
-    t.start();
-    final Player attacker = bridge.getRemotePlayer(this.attacker);
-    attacker.confirmOwnCasualties(battleId, "Press space to continue");
-    bridge.leaveDelegateExecution();
-    Interruptibles.join(t);
-    bridge.enterDelegateExecution();
-  }
-
-  private void removeAaHits(
-      final IDelegateBridge bridge, final CasualtyDetails casualties, final String currentTypeAa) {
-    final List<Unit> killed = casualties.getKilled();
-    if (!killed.isEmpty()) {
-      final IntegerMap<UnitType> costs = bridge.getCostsForTuv(attacker);
-      final int tuvLostAttacker = TuvUtils.getTuv(killed, attacker, costs, gameData);
-      attackerLostTuv += tuvLostAttacker;
-      removeAttackers(killed, false);
-      HistoryChangeFactory.removeUnitsWithAa(battleSite, killed, currentTypeAa).perform(bridge);
-    }
-  }
-
-  @Override
-  public void unitsLostInPrecedingBattle(
-      final Collection<Unit> units, final IDelegateBridge bridge, final boolean withdrawn) {
-    throw new IllegalStateException("This code should never be reached");
-  }
-
   class FireAa implements IExecutable {
     private static final long serialVersionUID = -4667856856747597406L;
     final Collection<Unit> casualtiesSoFar = new ArrayList<>();
@@ -684,6 +587,97 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                         Matches.unitIsAirborne()
                             .and(Matches.unitIsOfTypes(airborneTypesTargetedToo))));
       }
+    }
+  }
+
+  private CasualtyDetails calculateCasualties(
+      final Collection<Unit> validAttackingUnitsForThisRoll,
+      final Collection<Unit> defendingAa,
+      final IDelegateBridge bridge,
+      final DiceRoll dice,
+      final String currentTypeAa) {
+    bridge
+        .getDisplayChannelBroadcaster()
+        .notifyDice(dice, SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX);
+    final CasualtyDetails casualties =
+        AaCasualtySelector.getAaCasualties(
+            validAttackingUnitsForThisRoll,
+            defendingAa,
+            CombatValueBuilder.mainCombatValue()
+                .enemyUnits(defendingUnits)
+                .friendlyUnits(attackingUnits)
+                .side(BattleState.Side.OFFENSE)
+                .gameSequence(bridge.getData().getSequence())
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportRules())
+                .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(bridge.getData().getProperties()))
+                .gameDiceSides(bridge.getData().getDiceSides())
+                .territoryEffects(territoryEffects)
+                .build(),
+            CombatValueBuilder.aaCombatValue()
+                .enemyUnits(attackingUnits)
+                .friendlyUnits(defendingUnits)
+                .side(BattleState.Side.DEFENSE)
+                .supportAttachments(bridge.getData().getUnitTypeList().getSupportAaRules())
+                .build(),
+            "Hits from " + currentTypeAa + ", ",
+            dice,
+            bridge,
+            attacker,
+            battleId,
+            battleSite);
+    final int totalExpectingHits = Math.min(dice.getHits(), validAttackingUnitsForThisRoll.size());
+    if (casualties.size() != totalExpectingHits) {
+      throw new IllegalStateException(
+          MessageFormat.format(
+              "Wrong number of casualties, expecting:{0} but got:{1}",
+              totalExpectingHits, casualties.size()));
+    }
+    return casualties;
+  }
+
+  private void notifyAaHits(
+      final IDelegateBridge bridge,
+      final DiceRoll dice,
+      final CasualtyDetails casualties,
+      final String currentTypeAa) {
+    bridge
+        .getDisplayChannelBroadcaster()
+        .casualtyNotification(
+            battleId,
+            NOTIFY_PREFIX + currentTypeAa + CASUALTIES_SUFFIX,
+            dice,
+            attacker,
+            new ArrayList<>(casualties.getKilled()),
+            new ArrayList<>(casualties.getDamaged()),
+            Map.of());
+    final Thread t =
+        new Thread(
+            () -> {
+              try {
+                final Player defender = bridge.getRemotePlayer(this.defender);
+                defender.confirmEnemyCasualties(battleId, "Press space to continue", attacker);
+              } catch (final Exception e) {
+                // ignore
+              }
+            },
+            "click to continue waiter");
+    t.start();
+    final Player attacker = bridge.getRemotePlayer(this.attacker);
+    attacker.confirmOwnCasualties(battleId, "Press space to continue");
+    bridge.leaveDelegateExecution();
+    Interruptibles.join(t);
+    bridge.enterDelegateExecution();
+  }
+
+  private void removeAaHits(
+      final IDelegateBridge bridge, final CasualtyDetails casualties, final String currentTypeAa) {
+    final List<Unit> killed = casualties.getKilled();
+    if (!killed.isEmpty()) {
+      final IntegerMap<UnitType> costs = bridge.getCostsForTuv(attacker);
+      final int tuvLostAttacker = TuvUtils.getTuv(killed, attacker, costs, gameData);
+      attackerLostTuv += tuvLostAttacker;
+      removeAttackers(killed, false);
+      HistoryChangeFactory.removeUnitsWithAa(battleSite, killed, currentTypeAa).perform(bridge);
     }
   }
 
@@ -995,6 +989,12 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   @VisibleForTesting
   public static int getSbrRolls(final Unit unit, final GamePlayer gamePlayer) {
     return unit.getUnitAttachment().getAttackRolls(gamePlayer);
+  }
+
+  @Override
+  public void unitsLostInPrecedingBattle(
+      final Collection<Unit> units, final IDelegateBridge bridge, final boolean withdrawn) {
+    throw new IllegalStateException("This code should never be reached");
   }
 
   private static List<String> buildSteps(boolean hasAa, List<Unit> defendingAa) {
