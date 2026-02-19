@@ -238,6 +238,19 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     stack.execute(bridge);
   }
 
+  private static List<String> buildSteps(boolean hasAa, List<Unit> defendingAa) {
+    final List<String> steps = new ArrayList<>();
+    if (hasAa) {
+      for (final String typeAa : UnitAttachment.getAllOfTypeAas(defendingAa)) {
+        steps.add(typeAa + AA_GUNS_FIRE_SUFFIX);
+        steps.add(SELECT_PREFIX + typeAa + CASUALTIES_SUFFIX);
+        steps.add(NOTIFY_PREFIX + typeAa + CASUALTIES_SUFFIX);
+      }
+    }
+    steps.add(RAID);
+    return steps;
+  }
+
   private @Nonnull List<IExecutable> getFightStepsReversed(boolean hasAa) {
     final List<IExecutable> fightSteps = new ArrayList<>();
     if (hasAa) {
@@ -995,18 +1008,5 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   public void unitsLostInPrecedingBattle(
       final Collection<Unit> units, final IDelegateBridge bridge, final boolean withdrawn) {
     throw new IllegalStateException("This code should never be reached");
-  }
-
-  private static List<String> buildSteps(boolean hasAa, List<Unit> defendingAa) {
-    final List<String> steps = new ArrayList<>();
-    if (hasAa) {
-      for (final String typeAa : UnitAttachment.getAllOfTypeAas(defendingAa)) {
-        steps.add(typeAa + AA_GUNS_FIRE_SUFFIX);
-        steps.add(SELECT_PREFIX + typeAa + CASUALTIES_SUFFIX);
-        steps.add(NOTIFY_PREFIX + typeAa + CASUALTIES_SUFFIX);
-      }
-    }
-    steps.add(RAID);
-    return steps;
   }
 }
