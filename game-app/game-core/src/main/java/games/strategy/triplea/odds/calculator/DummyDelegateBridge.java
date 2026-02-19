@@ -152,8 +152,8 @@ public class DummyDelegateBridge implements IDelegateBridge {
     if (change instanceof UnitDamageReceivedChange) {
       allChanges.add(change);
       gameData.performChange(change);
-    } else if (change instanceof CompositeChange) {
-      ((CompositeChange) change).getChanges().forEach(this::addChange);
+    } else if (change instanceof CompositeChange compositeChange) {
+      compositeChange.getChanges().forEach(this::addChange);
     }
   }
 

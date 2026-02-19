@@ -138,8 +138,8 @@ public final class EventThreadJOptionPane {
         new AncestorListener() {
           private int getScrollWidth() {
             Object scrollWidth = UIManager.get("ScrollBar.width");
-            if (scrollWidth instanceof Integer) {
-              return (Integer) scrollWidth;
+            if (scrollWidth instanceof Integer scrollWidthInteger) {
+              return scrollWidthInteger;
             }
             return 25;
           }

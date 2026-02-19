@@ -25,9 +25,7 @@ public class WrappedInvocationHandler implements InvocationHandler {
       return true;
     }
     if (Proxy.isProxyClass(other.getClass())
-        && Proxy.getInvocationHandler(other) instanceof WrappedInvocationHandler) {
-      final WrappedInvocationHandler otherWrapped =
-          (WrappedInvocationHandler) Proxy.getInvocationHandler(other);
+        && Proxy.getInvocationHandler(other) instanceof WrappedInvocationHandler otherWrapped) {
       return otherWrapped.delegate.equals(delegate);
     }
     return false;

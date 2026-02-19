@@ -50,16 +50,14 @@ public class MoveDescription extends AbstractMoveDescription {
   public final boolean equals(final Object obj) {
     if (this == obj) {
       return true;
-    } else if (!(obj instanceof MoveDescription)) {
-      return false;
+    } else if (obj instanceof MoveDescription other) {
+      return getClass().equals(other.getClass())
+          && route.equals(other.route)
+          && Maps.difference(unitsToSeaTransports, other.unitsToSeaTransports).areEqual()
+          && Maps.difference(airTransportsDependents, other.airTransportsDependents).areEqual()
+          && collectionsAreEqual(getUnits(), other.getUnits());
     }
-
-    final MoveDescription other = (MoveDescription) obj;
-    return getClass().equals(other.getClass())
-        && route.equals(other.route)
-        && Maps.difference(unitsToSeaTransports, other.unitsToSeaTransports).areEqual()
-        && Maps.difference(airTransportsDependents, other.airTransportsDependents).areEqual()
-        && collectionsAreEqual(getUnits(), other.getUnits());
+    return false;
   }
 
   @Override

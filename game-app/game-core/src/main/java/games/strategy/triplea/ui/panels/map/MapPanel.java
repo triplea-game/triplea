@@ -14,6 +14,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.engine.data.events.ZoomMapListener;
+import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
@@ -637,6 +638,9 @@ public class MapPanel extends ImageScrollerLargeView {
     gameData = data;
     gameData.addTerritoryListener(territoryListener);
     gameData.addDataChangeListener(dataChangeListener);
+    if (currentTerritory != null) {
+      currentTerritory = GameDataUtils.translateIntoOtherGameData(currentTerritory, data);
+    }
     clearPendingDrawOperations();
     // Try to mitigate race condition where game data is set after shutting down the executor
     // technically there's no guarantee because the executor can be shut down after the if check

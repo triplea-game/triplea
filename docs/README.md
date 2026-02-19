@@ -27,6 +27,6 @@ Look here when getting started.
 
 **how-to**: cut and dry step-by-step instructions on how to do something
 
-**reference**: description of a topic or a process (EG: encyclopedia entry)
+**reference**: description of a topic or a process (e.g.: encyclopedia entry)
 
-**background**: explanation of how something came to be (EG: design or a decision doc)
+**background**: explanation of how something came to be (e.g.: design or a decision doc)

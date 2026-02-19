@@ -140,9 +140,9 @@ public class ButtonColumn extends AbstractCellEditor
     if (value == null) {
       editButton.setText("");
       editButton.setIcon(null);
-    } else if (value instanceof Icon) {
+    } else if (value instanceof Icon icon) {
       editButton.setText("");
-      editButton.setIcon((Icon) value);
+      editButton.setIcon(icon);
     } else {
       editButton.setText(value.toString());
       editButton.setIcon(null);
@@ -182,9 +182,9 @@ public class ButtonColumn extends AbstractCellEditor
     if (value == null) {
       renderButton.setText("");
       renderButton.setIcon(null);
-    } else if (value instanceof Icon) {
+    } else if (value instanceof Icon icon) {
       renderButton.setText("");
-      renderButton.setIcon((Icon) value);
+      renderButton.setIcon(icon);
     } else {
       renderButton.setText(value.toString());
       renderButton.setIcon(null);

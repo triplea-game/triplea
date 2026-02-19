@@ -164,6 +164,16 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   /**
+   * Checks whether the {@code value} represents any-value.
+   *
+   * @param value String to be tested for any-value
+   * @return Whether value represents any-value
+   */
+  public boolean isAnyValue(final String value) {
+    return value.equalsIgnoreCase("any");
+  }
+
+  /**
    * Anything that implements ICondition (currently RulesAttachment, TriggerAttachment, and
    * PoliticalActionAttachment) can use this to get all the conditions that must be checked for the
    * object to be 'satisfied'. <br>

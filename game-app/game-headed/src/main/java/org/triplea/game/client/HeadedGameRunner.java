@@ -15,6 +15,7 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_START_PBF;
 import static games.strategy.triplea.Constants.PROPERTY_FALSE;
 import static games.strategy.triplea.Constants.PROPERTY_TRUE;
 
+import com.google.common.base.Throwables;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.auto.update.UpdateChecks;
 import games.strategy.engine.framework.GameDataFileUtils;
@@ -34,6 +35,7 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MacOsIntegration;
 import games.strategy.ui.Util;
 import java.awt.Component;
+import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.net.URLDecoder;
@@ -63,7 +65,16 @@ public final class HeadedGameRunner {
   private HeadedGameRunner() {}
 
   public static void initializeClientSettingAndLogging() {
-    Thread.setDefaultUncaughtExceptionHandler((t, e) -> log.error(e.getLocalizedMessage(), e));
+    Thread.setDefaultUncaughtExceptionHandler(
+        (t, e) -> {
+          log.error(e.getLocalizedMessage(), e);
+          log.error(Throwables.getStackTraceAsString(e));
+        });
+    EventQueue.invokeLater(
+        () ->
+            Thread.currentThread()
+                .setUncaughtExceptionHandler(Thread.getDefaultUncaughtExceptionHandler()));
+
     final Locale defaultLocale = Locale.getDefault();
     if (!I18nResourceBundle.getMapSupportedLocales().contains(defaultLocale)) {
       Locale.setDefault(Locale.US);
@@ -187,10 +198,9 @@ public final class HeadedGameRunner {
               () -> {
                 showMainFrame();
                 gameSelectorModel.setReadyForSaveLoad();
+                UpdateChecks.launch(headedServerSetupModel.getUi());
               });
         });
-
-    UpdateChecks.launch();
   }
 
   /**

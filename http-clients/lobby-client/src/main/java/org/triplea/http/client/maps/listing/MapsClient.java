@@ -11,7 +11,7 @@ import org.triplea.http.client.HttpClient;
  * Http client to communicate with the maps server and get a listing of maps available for download.
  */
 public interface MapsClient {
-  String MAPS_LISTING_PATH = "/maps/listing";
+  String MAPS_LISTING_PATH = "/support/maps/listing";
 
   static MapsClient newClient(URI mapsServerUri, ClientIdentifiers clientIdentifiers) {
     return HttpClient.newClient(MapsClient.class, mapsServerUri, clientIdentifiers.createHeaders());

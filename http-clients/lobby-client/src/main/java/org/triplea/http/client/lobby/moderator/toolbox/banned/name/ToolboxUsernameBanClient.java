@@ -9,9 +9,9 @@ import org.triplea.http.client.lobby.AuthenticationHeaders;
 
 /** Http client object for adding, removing and querying server for user name bans. */
 public interface ToolboxUsernameBanClient {
-  String REMOVE_BANNED_USER_NAME_PATH = "/moderator-toolbox/remove-username-ban";
-  String ADD_BANNED_USER_NAME_PATH = "/moderator-toolbox/add-username-ban";
-  String GET_BANNED_USER_NAMES_PATH = "/moderator-toolbox/get-username-bans";
+  String REMOVE_BANNED_USER_NAME_PATH = "/lobby/moderator-toolbox/remove-username-ban";
+  String ADD_BANNED_USER_NAME_PATH = "/lobby/moderator-toolbox/add-username-ban";
+  String GET_BANNED_USER_NAMES_PATH = "/lobby/moderator-toolbox/get-username-bans";
 
   static ToolboxUsernameBanClient newClient(final URI serverUri, final ApiKey apiKey) {
     return HttpClient.newClient(

@@ -1,11 +1,14 @@
 package org.triplea.swing;
 
 import com.google.common.base.Preconditions;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import org.triplea.java.ArgChecker;
+import org.triplea.swing.key.binding.KeyCode;
 
 /**
  * Builder to creates a menu with title and mnemonic key.
@@ -19,10 +22,10 @@ import org.triplea.java.ArgChecker;
  */
 public class JMenuBuilder {
   private final String title;
-  private final char mnemonic;
-  private final Collection<JMenuItem> menuItems = new ArrayList<>();
+  private final KeyCode mnemonic;
+  private final Collection<Component> menuComponents = new ArrayList<>();
 
-  public JMenuBuilder(final String title, final char mnemonic) {
+  public JMenuBuilder(final String title, final KeyCode mnemonic) {
     ArgChecker.checkNotEmpty(title);
     this.title = title;
     this.mnemonic = mnemonic;
@@ -31,8 +34,8 @@ public class JMenuBuilder {
   /** Constructs a Swing JMenu using current builder values. */
   public JMenu build() {
     final JMenu menu = new JMenu(title);
-    menu.setMnemonic(mnemonic);
-    menuItems.forEach(menu::add);
+    menu.setMnemonic(mnemonic.getInputEventCode());
+    menuComponents.forEach(menu::add);
     return menu;
   }
 
@@ -45,27 +48,28 @@ public class JMenuBuilder {
    * @param menuItemAction The action that will be fired when user clicks the menu item.
    */
   public JMenuBuilder addMenuItem(
-      final String title, final char mnemonic, final Runnable menuItemAction) {
+      final String title, final KeyCode mnemonic, final Runnable menuItemAction) {
     ArgChecker.checkNotEmpty(title);
     Preconditions.checkNotNull(menuItemAction);
-
-    final JMenuItem menuItem = new JMenuItem(title);
-    menuItem.setMnemonic(mnemonic);
-    menuItem.addActionListener(e -> menuItemAction.run());
-
-    return addMenuItem(menuItem);
+    return addMenuItem(
+        new JMenuItemBuilder(title, mnemonic).actionListener(menuItemAction).build());
   }
 
   /** Adds a menu item to the menu. */
   public JMenuBuilder addMenuItem(final JMenuItem menuItem) {
-    menuItems.add(menuItem);
+    menuComponents.add(menuItem);
     return this;
+  }
+
+  /** Adds a menu item to the menu. */
+  public JMenuBuilder addMenuItem(final JMenuItemBuilder menuItemBuilder) {
+    return addMenuItem(menuItemBuilder.build());
   }
 
   /**
    * Adds a menu item if a condition is true.
    *
-   * @see #addMenuItem(String, char, Runnable)
+   * @see #addMenuItem(String, KeyCode, Runnable)
    * @param condition The condition to verify, if false the menu item is not added.
    * @param title The menu item title, this is the clickable text that will appear in the menu drop
    *     down.
@@ -75,11 +79,28 @@ public class JMenuBuilder {
   public JMenuBuilder addMenuItemIf(
       final boolean condition,
       final String title,
-      final char mnemonic,
+      final KeyCode mnemonic,
       final Runnable menuItemAction) {
     if (condition) {
       addMenuItem(title, mnemonic, menuItemAction);
     }
+    return this;
+  }
+
+  public JMenuBuilder addMenuItemIf(final boolean condition, final JMenuItem menuItem) {
+    if (condition) {
+      addMenuItem(menuItem);
+    }
+    return this;
+  }
+
+  public JMenuBuilder addMenuItemIf(
+      final boolean condition, final JMenuItemBuilder menuItemBuilder) {
+    return addMenuItemIf(condition, menuItemBuilder.build());
+  }
+
+  public JMenuBuilder addSeparator() {
+    menuComponents.add(new JPopupMenu.Separator());
     return this;
   }
 }

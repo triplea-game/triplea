@@ -192,8 +192,8 @@ class CommentPanel extends JPanel {
             final HistoryNode node = (HistoryNode) nodeEnum.nextElement();
             if (node instanceof Round) {
               round++;
-            } else if (node instanceof Step) {
-              final Optional<GamePlayer> optionalGamePlayeramePlayer = ((Step) node).getPlayerId();
+            } else if (node instanceof Step step) {
+              final Optional<GamePlayer> optionalGamePlayeramePlayer = step.getPlayerId();
               if (optionalGamePlayeramePlayer.isPresent()) {
                 final GamePlayer gamePlayer = optionalGamePlayeramePlayer.get();
                 player = gamePlayer.getName();

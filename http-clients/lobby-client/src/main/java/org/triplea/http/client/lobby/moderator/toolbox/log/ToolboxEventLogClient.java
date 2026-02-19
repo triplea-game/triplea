@@ -13,7 +13,7 @@ import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
  * moderator actions.
  */
 public interface ToolboxEventLogClient {
-  String AUDIT_HISTORY_PATH = "/moderator-toolbox/audit-history/lookup";
+  String AUDIT_HISTORY_PATH = "/lobby/moderator-toolbox/audit-history/lookup";
 
   static ToolboxEventLogClient newClient(final URI serverUri, final ApiKey apiKey) {
     return HttpClient.newClient(

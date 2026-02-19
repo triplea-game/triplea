@@ -9,12 +9,15 @@ async function closeIssues() {
         console.log('Fetching issues...');
         
         // 1. Get all open issues (about 300 → 3 API calls with per_page=100)
-        const openIssues = await octokit.paginate(octokit.rest.issues.listForRepo, {
+        const openIssues = ( await octokit.paginate(octokit.rest.issues.listForRepo, {
             owner: 'triplea-game',
             repo: 'triplea',
             state: 'open',
             per_page: 100,
-        });
+        }) ).filter(issue =>
+          !issue.pull_request &&    // only issues (not PRs) with label "Error Report"
+          issue.labels.some(label => label.name === "Error Report")
+        );
         console.log(`Fetched ${openIssues.length} issues in total.`);
 
         // 2. Get recently (=updated in the last year) closed issues (not more than 300 expected → 3 API calls max)
@@ -59,7 +62,7 @@ async function closeIssues() {
             const checkPrefix2_5 = (issue) => issue.title.startsWith('2.5.');
             if (await checkAndLabelIssue(issue, '2.5', checkPrefix2_5)) {
                 closeNeeded = true;
-                closeMessage = `Closing as issue from version 2.5 are assumed to be fixed in newest release.`
+                closeMessage = `Closing as issues from version 2.5 are assumed to be fixed in newest release.`
             } 
                 
             if (!closeNeeded) {

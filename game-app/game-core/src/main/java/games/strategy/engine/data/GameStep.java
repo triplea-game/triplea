@@ -108,13 +108,12 @@ public class GameStep extends GameDataComponent {
 
   @Override
   public boolean equals(final Object o) {
-    if (!(o instanceof GameStep)) {
-      return false;
+    if (o instanceof GameStep other) {
+      return other.name.equals(this.name)
+          && other.delegateName.equals(this.delegateName)
+          && other.player.equals(this.player);
     }
-    final GameStep other = (GameStep) o;
-    return other.name.equals(this.name)
-        && other.delegateName.equals(this.delegateName)
-        && other.player.equals(this.player);
+    return false;
   }
 
   public boolean hasReachedMaxRunCount() {

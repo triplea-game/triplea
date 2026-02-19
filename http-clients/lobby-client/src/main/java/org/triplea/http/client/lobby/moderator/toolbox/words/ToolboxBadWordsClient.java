@@ -9,9 +9,9 @@ import org.triplea.http.client.lobby.AuthenticationHeaders;
 
 /** Http client class for fetching the list of bad words and adding and removing them. */
 public interface ToolboxBadWordsClient {
-  String BAD_WORD_ADD_PATH = "/moderator-toolbox/bad-words/add";
-  String BAD_WORD_REMOVE_PATH = "/moderator-toolbox/bad-words/remove";
-  String BAD_WORD_GET_PATH = "/moderator-toolbox/bad-words/get";
+  String BAD_WORD_ADD_PATH = "/lobby/moderator-toolbox/bad-words/add";
+  String BAD_WORD_REMOVE_PATH = "/lobby/moderator-toolbox/bad-words/remove";
+  String BAD_WORD_GET_PATH = "/lobby/moderator-toolbox/bad-words/get";
 
   static ToolboxBadWordsClient newClient(final URI serverUri, final ApiKey apiKey) {
     return HttpClient.newClient(

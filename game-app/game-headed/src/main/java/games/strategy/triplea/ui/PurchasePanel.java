@@ -59,8 +59,8 @@ public class PurchasePanel extends ActionPanel {
           // Restore pending production that was loaded from the save game.
           // Use the delegate from the step, since it may not actually be named 'purchase'.
           final IDelegate delegate = data.getSequence().getStep().getDelegate();
-          if (delegate instanceof PurchaseDelegate) {
-            final var savedPurchase = ((PurchaseDelegate) delegate).getPendingProductionRules();
+          if (delegate instanceof PurchaseDelegate purchaseDelegate) {
+            final var savedPurchase = purchaseDelegate.getPendingProductionRules();
             if (savedPurchase != null) {
               purchase = savedPurchase;
             }
@@ -75,9 +75,9 @@ public class PurchasePanel extends ActionPanel {
                   purchase,
                   getMap().getUiContext());
 
-          if (delegate instanceof PurchaseDelegate) {
+          if (delegate instanceof PurchaseDelegate purchaseDelegate) {
             // Set pending production on the PurchaseDelegate for saving the game.
-            ((PurchaseDelegate) delegate).setPendingProductionRules(purchase);
+            purchaseDelegate.setPendingProductionRules(purchase);
           }
 
           purchasedUnits.setUnitsFromProductionRuleMap(purchase, player);
@@ -179,11 +179,9 @@ public class PurchasePanel extends ActionPanel {
       int totalProduced = 0;
       for (final ProductionRule rule : purchase.keySet()) {
         final NamedAttachable resourceOrUnit = rule.getAnyResultKey();
-        if (resourceOrUnit instanceof UnitType) {
-          final UnitType type = (UnitType) resourceOrUnit;
-          if (!Matches.unitTypeIsConstruction().test(type)) {
-            totalProduced += purchase.getInt(rule) * rule.getResults().totalValues();
-          }
+        if (resourceOrUnit instanceof UnitType unitType
+            && !Matches.unitTypeIsConstruction().test(unitType)) {
+          totalProduced += purchase.getInt(rule) * rule.getResults().totalValues();
         }
       }
       final Collection<Unit> unitsNeedingFactory =
@@ -210,8 +208,8 @@ public class PurchasePanel extends ActionPanel {
     }
     // When closing the panel, clear the pending production.
     final IDelegate delegate = data.getSequence().getStep().getDelegate();
-    if (delegate instanceof PurchaseDelegate) {
-      ((PurchaseDelegate) delegate).setPendingProductionRules(null);
+    if (delegate instanceof PurchaseDelegate purchaseDelegate) {
+      purchaseDelegate.setPendingProductionRules(null);
     }
     release();
   }

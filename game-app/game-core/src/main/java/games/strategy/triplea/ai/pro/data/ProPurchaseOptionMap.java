@@ -60,10 +60,9 @@ public class ProPurchaseOptionMap {
 
       // Check if rule is for a unit
       final NamedAttachable resourceOrUnit = rule.getAnyResultKey();
-      if (!(resourceOrUnit instanceof UnitType)) {
+      if (!(resourceOrUnit instanceof UnitType unitType)) {
         continue;
       }
-      final UnitType unitType = (UnitType) resourceOrUnit;
 
       // Add rule to appropriate purchase option list
       if (unitType.getUnitAttachment().isSuicideOnHit() || canUnitTypeSuicide(unitType, player)) {

@@ -15,7 +15,7 @@ public enum ToolArguments {
   MAP_FOLDER("triplea.map.folder", String.class, "", null, null),
   UNIT_HEIGHT("triplea.unit.height", Integer.class, 0, 1.0, 400.0),
   UNIT_WIDTH("triplea.unit.width", Integer.class, 0, 1.0, 400.0),
-  UNIT_ZOOM("triplea.unit.zoom", Double.class, 0, 0.1, 4.0);
+  UNIT_ZOOM("triplea.unit.zoom", Double.class, 0.0, 0.1, 4.0);
 
   private final String value;
   private final Class<?> type;

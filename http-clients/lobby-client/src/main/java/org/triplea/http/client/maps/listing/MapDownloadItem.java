@@ -1,6 +1,7 @@
 package org.triplea.http.client.maps.listing;
 
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,5 +47,9 @@ public class MapDownloadItem {
         .findAny()
         .map(MapTag::getValue)
         .orElse("");
+  }
+
+  public List<MapTag> getMapTags() {
+    return Optional.ofNullable(mapTags).orElse(List.of());
   }
 }

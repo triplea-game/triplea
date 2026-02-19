@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -12,6 +13,7 @@ import org.triplea.swing.SwingComponents;
 class FileSystemAccessStrategy {
 
   void remove(
+      final Component parentFrame,
       final Function<MapDownloadItem, Boolean> mapDeleteAction,
       final List<MapDownloadItem> toRemove,
       final Consumer<String> removeAction) {
@@ -22,10 +24,11 @@ class FileSystemAccessStrategy {
             + " maps, are you sure? <br/>"
             + formatMapList(toRemove, MapDownloadItem::getMapName)
             + "</html>",
-        newRemoveMapAction(mapDeleteAction, toRemove, removeAction));
+        newRemoveMapAction(parentFrame, mapDeleteAction, toRemove, removeAction));
   }
 
   private static Runnable newRemoveMapAction(
+      final Component parentFrame,
       final Function<MapDownloadItem, Boolean> mapDeleteAction,
       final List<MapDownloadItem> maps,
       final Consumer<String> removeActionListeners) {
@@ -42,17 +45,19 @@ class FileSystemAccessStrategy {
       if (!deletes.isEmpty()) {
         deletes.stream().map(MapDownloadItem::getMapName).forEach(removeActionListeners);
         final String message = newDialogMessage("Successfully removed.", deletes);
-        showDialog(message, deletes, MapDownloadItem::getMapName);
+        showDialog(parentFrame, message, deletes, MapDownloadItem::getMapName);
       }
     };
   }
 
   private static void showDialog(
+      final Component parentFrame,
       final String message,
       final List<MapDownloadItem> mapList,
       final Function<MapDownloadItem, String> outputFunction) {
 
     SwingComponents.newMessageDialog(
+        parentFrame,
         "<html>" + message + "<br /> " + formatMapList(mapList, outputFunction) + "</html>");
   }
 

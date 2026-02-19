@@ -8,7 +8,6 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
-import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.startup.WatcherThreadMessaging;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
@@ -22,7 +21,6 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.display.TripleADisplay;
 import java.awt.Component;
-import java.awt.Frame;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -88,19 +86,10 @@ public class HeadedLaunchAction implements LaunchAction {
     final TripleAFrame frame =
         TripleAFrame.create(game, localPlayers, chat, HeadedGameRunner::clientLeftGame);
 
-    SwingUtilities.invokeLater(
-        () -> {
-          LookAndFeelSwingFrameListener.register(frame);
-          frame.setSize(700, 400);
-          frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-          frame.setVisible(true);
-          frame.toFront();
-        });
-
     frame.getUiContext().getClipPlayer().play(SoundPath.CLIP_GAME_START);
     for (final Player player : players) {
-      if (player instanceof TripleAPlayer) {
-        ((TripleAPlayer) player).setFrame(frame);
+      if (player instanceof TripleAPlayer tripleAPlayer) {
+        tripleAPlayer.setFrame(frame);
       }
     }
     game.setDisplay(new TripleADisplay(frame));

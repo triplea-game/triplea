@@ -91,10 +91,10 @@ public class ChangeAttachmentChange extends Change {
               newValue, property, attachmentName, attachedTo),
           e);
     }
-    if (attachment instanceof TechAttachment) {
-      ((TechAttachment) attachment).getData().getTechTracker().clearCache();
-    } else if (attachment instanceof TechAbilityAttachment) {
-      ((TechAbilityAttachment) attachment).getData().getTechTracker().clearCache();
+    if (attachment instanceof TechAttachment techAttachment) {
+      techAttachment.getData().getTechTracker().clearCache();
+    } else if (attachment instanceof TechAbilityAttachment techAbilityAttachment) {
+      techAbilityAttachment.getData().getTechTracker().clearCache();
     }
   }
 

@@ -11,11 +11,11 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.engine.data.events.ZoomMapListener;
+import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import java.awt.Image;
-import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -228,8 +228,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
 
   private JLabel createTerritoryNameLabel(Territory territory) {
     String labelTextPattern = getTerritoryLabelTextPattern(territory);
-    final JLabel nameLabel =
-        new JLabel(MessageFormat.format(labelTextPattern, territory.getName()));
+    final JLabel nameLabel = new JLabel(String.format(labelTextPattern, territory.getName()));
     nameLabel.setFont(nameLabel.getFont().deriveFont(java.awt.Font.BOLD));
     // Ensure the text position is always the same, regardless of other components, by padding to
     // fill available height.
@@ -245,7 +244,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     if (currentPlayer == null)
       currentPlayer = territoryOwner.getData().getPlayerList().getNullPlayer();
     if (territoryOwner.equals(currentPlayer)) {
-      return "<html>{0} (current player)</html>";
+      return "<html>%s (current player)</html>";
     }
     final RelationshipTypeAttachment relationshipTypeAttachment =
         territoryOwner
@@ -261,8 +260,8 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     } else {
       strArchType = relationshipTypeAttachment.getArcheType();
     }
-    return MessageFormat.format(
-        "<html>'{'0'}' (<font color={0}>{1}</font>)</html>",
+    return String.format(
+        "<html>'{'0'}' (<font color=%s}>%s</font>)</html>",
         convertColorToHex(getRelationshipTypeAttachmentColor(relationshipTypeAttachment)),
         strArchType);
   }
@@ -357,5 +356,11 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
   @Override
   public void zoomMapChanged(Integer newZoom) {
     zoomLabel.setText(String.format("Zoom: %d%%", newZoom));
+  }
+
+  public void setGameDataForCurrentTerritory(GameData newGameData) {
+    if (currentTerritory != null) {
+      currentTerritory = GameDataUtils.translateIntoOtherGameData(currentTerritory, newGameData);
+    }
   }
 }

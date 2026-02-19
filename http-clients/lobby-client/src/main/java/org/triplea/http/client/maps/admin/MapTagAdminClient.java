@@ -9,8 +9,8 @@ import org.triplea.http.client.HttpClient;
 
 /** Http client for 'map tag' administrative functionality. EG: updating a maps tag value. */
 public interface MapTagAdminClient {
-  String GET_MAP_TAGS_META_DATA_PATH = "/maps/list-tags";
-  String UPDATE_MAP_TAG_PATH = "/maps/update-tag";
+  String GET_MAP_TAGS_META_DATA_PATH = "/support/maps/list-tags";
+  String UPDATE_MAP_TAG_PATH = "/support/maps/update-tag";
 
   static MapTagAdminClient newClient(
       final URI mapsServerUri, final ClientIdentifiers clientIdentifiers) {

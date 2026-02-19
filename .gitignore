@@ -8,6 +8,8 @@
 .checkstyle
 .DS_Store
 
+game-app/game-headed/triplea*.log
+
 *.iml
 *.backup
 *.swp

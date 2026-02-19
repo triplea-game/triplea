@@ -18,6 +18,13 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+/**
+ * Unit tests for the {@link ResourceLoader} class.
+ *
+ * <p>Note that the {@link ResourceLoader#loadImageAsset(Path)} method should not be tested here, it
+ * should be tested separately in the {@code HeadedResourceLoaderTest} class, to ensure it runs in
+ * the context of a project where the asset directories it expects will be present.
+ */
 @SuppressWarnings("InnerClassMayBeStatic")
 final class ResourceLoaderTest {
   @Nested

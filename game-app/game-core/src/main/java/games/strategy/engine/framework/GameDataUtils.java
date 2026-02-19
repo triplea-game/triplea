@@ -26,6 +26,16 @@ public final class GameDataUtils {
     return Optional.empty();
   }
 
+  public static GameData cloneGameDataWithHistory(GameData gameData, boolean enableSeeking) {
+    final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
+    Optional<GameData> optionalGameDataClone = cloneGameData(gameData, cloneOptions);
+    if (enableSeeking) {
+      optionalGameDataClone.ifPresent(clone -> clone.getHistory().enableSeeking(null));
+    }
+    return optionalGameDataClone.orElseThrow(
+        () -> new IllegalStateException("Game data clone expected."));
+  }
+
   public static Optional<byte[]> gameDataToBytes(GameData data, GameDataManager.Options options) {
     try {
       return Optional.of(

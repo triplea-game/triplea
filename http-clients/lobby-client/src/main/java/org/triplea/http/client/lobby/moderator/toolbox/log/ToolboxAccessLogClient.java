@@ -16,7 +16,7 @@ import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
  * parameters for adding user name or user bans.
  */
 public interface ToolboxAccessLogClient {
-  String FETCH_ACCESS_LOG_PATH = "/moderator-toolbox/access-log";
+  String FETCH_ACCESS_LOG_PATH = "/lobby/moderator-toolbox/access-log";
 
   static ToolboxAccessLogClient newClient(final URI serverUri, final ApiKey apiKey) {
     return HttpClient.newClient(

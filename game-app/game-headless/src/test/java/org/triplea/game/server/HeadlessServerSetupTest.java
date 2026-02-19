@@ -61,6 +61,7 @@ public class HeadlessServerSetupTest {
 
   @Test
   void verifyWaitWaitsUntilConditionIsFulfilled_playerListChanged() throws Exception {
+    fulfillCondition();
     final var countDownLatch = new CountDownLatch(1);
     final var future =
         CompletableFuture.supplyAsync(
@@ -69,13 +70,13 @@ public class HeadlessServerSetupTest {
               return headlessServerSetup.waitUntilStart();
             });
     countDownLatch.await();
-    fulfillCondition();
     headlessServerSetup.playerListChanged();
     assertThat(future.get(1, TimeUnit.SECONDS), is(true));
   }
 
   @Test
   void verifyWaitWaitsUntilConditionIsFulfilled_playersTakenChanged() throws Exception {
+    fulfillCondition();
     final var countDownLatch = new CountDownLatch(1);
     final var future =
         CompletableFuture.supplyAsync(
@@ -84,7 +85,6 @@ public class HeadlessServerSetupTest {
               return headlessServerSetup.waitUntilStart();
             });
     countDownLatch.await();
-    fulfillCondition();
     headlessServerSetup.playersTakenChanged();
     assertThat(future.get(1, TimeUnit.SECONDS), is(true));
   }

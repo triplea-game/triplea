@@ -5,10 +5,10 @@ import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugAction;
 import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugOption;
 import games.strategy.ui.Util;
 import java.awt.Frame;
-import java.awt.event.KeyEvent;
 import java.util.List;
 import javax.swing.SwingUtilities;
 import lombok.experimental.UtilityClass;
+import org.triplea.swing.key.binding.KeyCode;
 
 /** Class to manage log window display. */
 @UtilityClass
@@ -28,7 +28,7 @@ public final class ProLogUi {
         AiPlayerDebugOption.builder()
             .title("Show Logs")
             .actionListener(ProLogUi::showSettingsWindow)
-            .mnemonic(KeyEvent.VK_X)
+            .mnemonic(KeyCode.X.getInputEventCode())
             .build());
   }
 

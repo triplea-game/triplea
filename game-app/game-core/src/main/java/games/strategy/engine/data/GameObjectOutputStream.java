@@ -22,12 +22,10 @@ public class GameObjectOutputStream extends ObjectOutputStream {
 
   @Override
   protected Object replaceObject(final Object obj) {
-    if (obj instanceof Named) {
-      final Named named = (Named) obj;
-      if (GameObjectStreamData.canSerialize(named)) {
-        return new GameObjectStreamData(named);
-      }
+    if (obj instanceof Named named && GameObjectStreamData.canSerialize(named)) {
+      return new GameObjectStreamData(named);
     }
+
     return obj;
   }
 }

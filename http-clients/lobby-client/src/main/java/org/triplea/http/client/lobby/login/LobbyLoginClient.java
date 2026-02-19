@@ -7,8 +7,8 @@ import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.lobby.AuthenticationHeaders;
 
 public interface LobbyLoginClient {
-  String LOGIN_PATH = "/user-login/authenticate";
-  String CREATE_ACCOUNT = "/user-login/create-account";
+  String LOGIN_PATH = "/lobby/user-login/authenticate";
+  String CREATE_ACCOUNT = "/lobby/user-login/create-account";
 
   static LobbyLoginClient newClient(final URI uri) {
     return newClient(uri, AuthenticationHeaders.systemIdHeaders());
