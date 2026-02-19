@@ -103,7 +103,7 @@ public class UiContext {
       throw new IllegalStateException("Map name property not set on game");
     }
     mapName = data.getMapName();
-    StackTraceReportModel.setCurrentMapName(mapName + " / " + data.getGameName());
+    StackTraceReportModel.setCurrentMapNameFromGameData(data);
 
     List<Path> resourceLoadingPaths = new ArrayList<>();
 
@@ -217,7 +217,6 @@ public class UiContext {
       windowsToCloseOnShutdown.clear();
       unitImageFactory.deleteTempFiles();
     }
-    StackTraceReportModel.setCurrentMapName(null);
     resourceLoader.close();
   }
 
