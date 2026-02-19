@@ -1,6 +1,8 @@
 import com.install4j.gradle.Install4jTask
+import de.undercouch.gradle.tasks.download.Download
 
 plugins {
+    id("triplea-java-library")
     id "application"
     alias(libs.plugins.shadow)
     alias(libs.plugins.install4j)
@@ -39,7 +41,7 @@ jar {
 }
 
 def assetsZipFileName = "game_headed_assets.zip"
-def downloadAssets = tasks.register("downloadAssets", de.undercouch.gradle.tasks.download.Download) {
+def downloadAssets = tasks.register("downloadAssets", Download) {
     src "https://github.com/triplea-game/assets/releases/download/47/$assetsZipFileName"
     dest project.layout.buildDirectory.dir("downloads/assets-zip")
     overwrite false

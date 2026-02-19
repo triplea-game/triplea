@@ -17,7 +17,6 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
-import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.ui.panels.map.MapSelectionListener;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -41,16 +40,11 @@ import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.SwingComponents;
 
 class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
-  private static final long serialVersionUID = -4411301492537704785L;
   public static final String LBL_UNITS_LEFT_TO_PLACE = "Units left to place:";
+  private static final long serialVersionUID = -4411301492537704785L;
   private final JLabel leftToPlaceLabel = createIndentedLabel();
-  private transient PlaceData placeData;
-
   private final SimpleUnitPanel unitsToPlacePanel;
-
-  private GamePlayer lastPlayer;
-  private boolean postProductionStep;
-
+  private transient PlaceData placeData;
   private final transient MapSelectionListener placeMapSelectionListener =
       new DefaultMapSelectionListener() {
 
@@ -88,9 +82,8 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
             if (units.isEmpty()) {
               return new PlaceableUnits();
             }
-            final IAbstractPlaceDelegate placeDel =
-                (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
-            final PlaceableUnits production = placeDel.getPlaceableUnits(units, territory);
+            final PlaceableUnits production =
+                getData().getPlaceDelegate().getPlaceableUnits(units, territory);
             if (production.isError()) {
               JOptionPane.showMessageDialog(
                   getTopLevelAncestor(),
@@ -168,6 +161,8 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
               + (scroll.getPreferredSize().height > availHeight ? 20 : 0);
         }
       };
+  private GamePlayer lastPlayer;
+  private boolean postProductionStep;
 
   PlacePanel(final TripleAFrame frame) {
     super(frame);
