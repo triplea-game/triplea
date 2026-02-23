@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -227,8 +226,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
   }
 
   private JLabel createTerritoryNameLabel(Territory territory) {
-    String labelTextPattern = getTerritoryLabelTextPattern(territory);
-    final JLabel nameLabel = new JLabel(String.format(labelTextPattern, territory.getName()));
+    final JLabel nameLabel = new JLabel(getTerritoryNameLabelText(territory));
     nameLabel.setFont(nameLabel.getFont().deriveFont(java.awt.Font.BOLD));
     // Ensure the text position is always the same, regardless of other components, by padding to
     // fill available height.
@@ -237,14 +235,14 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     return nameLabel;
   }
 
-  private @Nonnull String getTerritoryLabelTextPattern(Territory territory) {
+  private String getTerritoryNameLabelText(Territory territory) {
     GamePlayer territoryOwner = territory.getOwner();
     if (territoryOwner == null) return "";
     GamePlayer currentPlayer = uiContext.getCurrentPlayer();
     if (currentPlayer == null)
       currentPlayer = territoryOwner.getData().getPlayerList().getNullPlayer();
     if (territoryOwner.equals(currentPlayer)) {
-      return "<html>%s (current player)</html>";
+      return String.format("<html>%s (current player)</html>", territory.getName());
     }
     final RelationshipTypeAttachment relationshipTypeAttachment =
         territoryOwner
@@ -261,7 +259,8 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
       strArchType = relationshipTypeAttachment.getArcheType();
     }
     return String.format(
-        "<html>'{'0'}' (<font color=%s}>%s</font>)</html>",
+        "<html>%s (<font color=%s}>%s</font>)</html>",
+        territory.getName(),
         convertColorToHex(getRelationshipTypeAttachmentColor(relationshipTypeAttachment)),
         strArchType);
   }
