@@ -1,0 +1,47 @@
+@file:Suppress("UnstableApiUsage") // For repository declarations in settings
+
+import org.gradle.api.initialization.resolve.RepositoriesMode
+import java.net.URI
+
+pluginManagement {
+    includeBuild("gradle/build-logic")
+}
+
+plugins {
+    id("org.triplea.failure-summary-plugin")
+}
+
+dependencyResolutionManagement {
+    repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
+    repositories {
+        mavenCentral()
+        maven {
+            name = "GitHubPackages"
+            url = URI("https://maven.pkg.github.com/triplea-game/triplea")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
+
+rootProject.name = "triplea"
+
+include("game-app:ai")
+include("game-app:domain-data")
+include("game-app:game-core")
+include("game-app:game-headed")
+include("game-app:game-headless")
+include("game-app:game-relay-server")
+include("game-app:map-data")
+include("game-app:smoke-testing")
+include("http-clients:lobby-client")
+include("lib:feign-common")
+include("lib:java-extras")
+include("lib:swing-lib")
+include("lib:swing-lib-test-support")
+include("lib:test-common")
+include("lib:websocket-client")
+include("lib:websocket-server")
+include("lib:xml-reader")
