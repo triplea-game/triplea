@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Map;
+import lombok.experimental.UtilityClass;
 import org.triplea.util.Version;
 
 /**
@@ -25,10 +26,9 @@ import org.triplea.util.Version;
  * classpath, on in jars on the classpath. If a file is packaged in a jar, it will be extracted to a
  * temporary directory first.
  */
+@UtilityClass
 public final class TestMapGameDataLoader {
-  private TestMapGameDataLoader() {
-    throw new IllegalStateException("Utility class is not instantiable");
-  }
+  private static final String JAR_PROTOCOL = "jar";
 
   /**
    * Gets the game data for a map.
@@ -41,7 +41,7 @@ public final class TestMapGameDataLoader {
     final Path dataPath;
     try {
       URI dataURL = TestMapGameDataLoader.class.getClassLoader().getResource(fileName).toURI();
-      if (dataURL.getScheme().equals("jar")) {
+      if (dataURL.getScheme().equals(JAR_PROTOCOL)) {
         dataPath = extractJarResourceToTemp(dataURL.toURL());
       } else {
         dataPath = Path.of(dataURL);
@@ -62,7 +62,8 @@ public final class TestMapGameDataLoader {
 
   private static Path extractJarResourceToTemp(URL jarUrl) throws IOException {
     Preconditions.checkArgument(
-        "jar".equals(jarUrl.getProtocol()), "URL must use \"jar:\" protocol. URL: " + jarUrl);
+        JAR_PROTOCOL.equals(jarUrl.getProtocol()),
+        "URL must use \"" + JAR_PROTOCOL + ":\" protocol. URL: " + jarUrl);
 
     JarURLConnection connection = (JarURLConnection) jarUrl.openConnection();
     String entryName = connection.getEntryName();
