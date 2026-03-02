@@ -103,7 +103,8 @@ public final class SwingComponents {
    * confirmedAction} is run; otherwise no action is performed.
    *
    * @param title The title of the dialog.
-   * @param message The message displayed in the dialog; should be phrased as a question.
+   * @param message The message displayed in the dialog; should be phrased as a question. If line
+   *     breaks are required, use HTML.
    * @param confirmedAction The action that is run if the user answers yes.
    */
   public static void promptUser(
@@ -230,7 +231,7 @@ public final class SwingComponents {
 
   public static void newOpenUrlConfirmationDialog(
       final Component parentComponent, final String url) {
-    final String msg = "Okay to open URL in a web browser?\n" + url;
+    final String msg = "<html>Okay to open URL in a web browser?<br>" + url + "</html";
     SwingComponents.promptUser(
         "Open external URL?", msg, () -> OpenFileUtility.openUrl(parentComponent, url));
   }
