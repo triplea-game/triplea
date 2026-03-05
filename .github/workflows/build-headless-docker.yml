@@ -20,7 +20,7 @@ jobs:
           java-version: 21
       - name: Login to GitHub Container Registry
         if: ${{ env.IS_MAIN_BUILD }}
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
