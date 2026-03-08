@@ -8,6 +8,13 @@ plugins {
     id("com.diffplug.spotless")
 }
 
+group = "triplea"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
 spotless {
     format("allFiles") {
         target("*")

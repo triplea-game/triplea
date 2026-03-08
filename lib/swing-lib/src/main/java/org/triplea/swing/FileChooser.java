@@ -7,6 +7,7 @@ import java.awt.Frame;
 import java.io.FilenameFilter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.Optional;
 import javax.annotation.Nullable;
@@ -91,8 +92,8 @@ public class FileChooser {
     final int result =
         JOptionPane.showConfirmDialog(
             parent,
-            String.format(
-                "A file named \"%s\" already exists. Do you want to replace it?",
+            MessageFormat.format(
+                "A file named \"{0}\" already exists. Do you want to replace it?",
                 path.getFileName()),
             "Confirm Save",
             JOptionPane.YES_NO_OPTION,
