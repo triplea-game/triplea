@@ -3468,4 +3468,12 @@
   img: https://github.com/triplea-maps/settlers_fallen_empire/blob/master/preview.png
   description: |
     <br>A Fantasy FFA map, 11 Asymeteric Factions, Good vs Evil vs Dragons, also good vs AI.
+- mapName: World War 3 - 2025
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/settlers_fallen_empire-08/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/settlers_fallen_empire-08/blob/master/preview.png
+  description: |
+    <br>Time frame: the scenario is set roughly in 2025 (contemporary force structure and economy as inspiration, not a prediction of war). Modern global setup on a custom world map. Two coalitions: Allies (Europe, USA, Global Allies) versus Axis (Russians, China, Global Axis), plus Neutral territories.
+
   
