@@ -3475,5 +3475,10 @@
   img: https://github.com/triplea-maps/worldwar3/blob/master/map_relief.png
   description: |
     <br>Time frame: the scenario is set roughly in 2025 (contemporary force structure and economy as inspiration, not a prediction of war). Modern global setup on a custom world map. Two coalitions: Allies (Europe, USA, Global Allies) versus Axis (Russians, China, Global Axis), plus Neutral territories.
-
-  
+- mapName: Classic League
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/classic_league/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/classic_league/blob/master/preview.png
+  description: |
+    <br>Classic 2nd Edition (1984) for use in the League. 
