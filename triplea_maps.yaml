@@ -3482,3 +3482,10 @@
   img: https://github.com/triplea-maps/classic_league/blob/master/preview.png
   description: |
     <br>Classic 2nd Edition (1984) for use in the League. 
+- mapName: The World at War
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/The_World_at_War/tree/master/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/The_World_at_War/blob/master/preview.png
+  description: |
+    <br>World War 2 with 1939 & 1941 starting years.
