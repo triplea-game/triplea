@@ -40,7 +40,7 @@ xmlunit = "2.11.0"
 gradle-versions = "0.53.0"
 spotless = "8.2.1"
 shadow = "9.4.1"
-install4j = "12.0.3"
+install4j = "12.0.4"
 download = "5.7.0"
 
 [libraries]
