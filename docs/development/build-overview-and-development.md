@@ -4,7 +4,7 @@ Currently, the build uses a mix of Gradle tasks and bash scripts.
 Gradle plugins used by the build are located in `/gradle/build-logic`.
 
 The build uses the Gradle Kotlin DSL. 
-This make the build easier to maintain by increasing the completion and refactoring assistance the IDE is able to provide.
+This makes the build easier to maintain by increasing the completion and refactoring assistance the IDE is able to provide.
 
 ## Convention Plugins
 
