@@ -3,8 +3,8 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":game-app:game-core"))
-    implementation(project(":lib:java-extras"))
+    implementation(project(":game-core"))
+    implementation(project(":java-extras"))
 
-    testImplementation(testFixtures(project(":game-app:game-core")))
+    testImplementation(testFixtures(project(":game-core")))
 }
