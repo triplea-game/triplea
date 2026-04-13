@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.config.product.ProductVersionReader;
+import org.triplea.debug.error.reporting.StackTraceReportModel;
 
 /** Responsible for loading saved games, new games from xml, and saving games. */
 @Slf4j
@@ -82,6 +83,7 @@ public final class GameDataManager {
       // read Version object (unused)
       input.readObject();
       final GameData data = (GameData) input.readObject();
+      StackTraceReportModel.setCurrentMapNameFromGameData(data);
       data.postDeSerialize();
       loadDelegates(input, data);
       data.fixUpNullPlayersInDelegates();
