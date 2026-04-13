@@ -1,8 +1,0 @@
-plugins {
-    id("triplea-java-library")
-}
-
-dependencies {
-    implementation(project(":lib:java-extras"))
-    implementation(project(":lib:xml-reader"))
-}

@@ -1,0 +1,127 @@
+import com.install4j.gradle.Install4jTask
+import de.undercouch.gradle.tasks.download.Download
+
+plugins {
+    id("triplea-java-library")
+    id "application"
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.install4j)
+    alias(libs.plugins.download)
+}
+
+application {
+    mainClass = "org.triplea.game.client.HeadedGameRunner"
+    applicationDefaultJvmArgs = [
+            //This flag fixes touch gestures in Java-21；Technical Reference: https://stackoverflow.com/questions/48535595/what-replaces-gestureutilities-in-java-9
+            "--add-opens=java.desktop/com.apple.eawt.event=ALL-UNNAMED"
+    ]
+}
+
+def releasesDir = file("$buildDir/releases")
+
+ext.getProductVersion = {
+    return project(':game-app').file("../game-app/run/.build/product-version.txt").text.trim();
+}
+
+ext.getCommitNumber = { ->
+    providers.exec {
+        commandLine 'git', 'rev-list', '--count', 'HEAD'
+    }.standardOutput.asText.get().trim()
+}
+def releaseVersion = getProductVersion() + "+" + getCommitNumber()
+
+dependencies {
+    implementation project(":game-app:ai")
+    implementation project(":game-app:domain-data")
+    implementation project(":game-app:game-core")
+    implementation project(":game-app:map-data")
+    implementation project(":http-clients:lobby-client")
+    implementation project(":lib:feign-common")
+    implementation project(":lib:java-extras")
+    implementation project(":lib:swing-lib")
+    implementation project(":lib:websocket-client")
+    testImplementation project(":lib:test-common")
+}
+
+jar {
+    archiveBaseName = "$group-$name"
+    manifest {
+        attributes "Main-Class": application.mainClass
+    }
+}
+
+def assetsZipFileName = "game_headed_assets.zip"
+def downloadAssets = tasks.register("downloadAssets", Download) {
+    src "https://github.com/triplea-game/assets/releases/download/47/$assetsZipFileName"
+    dest project.layout.buildDirectory.dir("downloads/assets-zip")
+    overwrite false
+    onlyIfModified true
+    quiet true
+}
+
+def unzipAssets = tasks.register("unzipAssets", Copy) {
+    from zipTree(downloadAssets.map { it.outputs.files.singleFile })
+    into project.layout.buildDirectory.dir("assets")
+}
+
+tasks.named("processResources", ProcessResources) {
+    from(unzipAssets) {
+        into("assets")
+    }
+}
+
+def platformInstallers = tasks.register("platformInstallers", Install4jTask) {
+    group = "release"
+    description = "creates installer files using install4j (eg: install.exe)"
+    dependsOn(shadowJar)
+
+    projectFile = file("build.install4j")
+    release = releaseVersion
+    license = "$System.env.INSTALL4J_LICENSE_KEY"
+    doLast {
+        ant.chmod(dir: releasesDir, perm: "+x", includes: "*.sh")
+    }
+}
+
+def portableInstaller = tasks.register("portableInstaller", Zip) {
+    group = "release"
+
+    from file(".triplea-root")
+    from(unzipAssets) {
+        into "assets"
+    }
+    from(file("dice_servers")) {
+        into "dice_servers"
+    }
+    from(shadowJar) {
+        into "bin"
+    }
+}
+
+tasks.register("release", Copy) {
+    group = "release"
+    dependsOn(platformInstallers)
+
+    from portableInstaller
+    from file("$releasesDir/TripleA_${releaseVersion}_macos.dmg")
+    from file("$releasesDir/TripleA_${releaseVersion}_unix.sh")
+    from file("$releasesDir/TripleA_${releaseVersion}_windows-64bit.exe")
+    into file(project.layout.buildDirectory.dir("artifacts"))
+
+    doFirst {
+        inputs.files.forEach {
+            if (!it.exists()) {
+                throw new GradleException("artifact '$it' does not exist")
+            }
+        }
+    }
+}
+
+shadowJar {
+    dependsOn(unzipAssets)
+
+    // "archiveVersion" sets the version number on packaged jar files
+    // eg: "2.6+105234" in "lobby-server-2.6+50370c.jar"
+    archiveVersion = releaseVersion
+    archiveClassifier.set ""
+}

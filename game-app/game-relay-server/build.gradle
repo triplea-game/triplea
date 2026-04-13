@@ -1,0 +1,9 @@
+plugins {
+    id("triplea-java-library")
+}
+
+dependencies {
+    implementation project(":lib:websocket-client")
+    implementation project(":lib:websocket-server")
+    testImplementation project(":lib:test-common")
+}
