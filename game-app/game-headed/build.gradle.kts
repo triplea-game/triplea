@@ -79,10 +79,11 @@ val platformInstallers = tasks.register<Install4jTask>("platformInstallers") {
     projectFile = file("build.install4j")
     release = releaseVersion
     license = System.getenv("INSTALL4J_LICENSE_KEY")
+
+    val releasesDirSnapshot = project.layout.buildDirectory.file("releases").get().asFile
     doLast {
-        ant.withGroovyBuilder {
-            "chmod"("dir" to releasesDir, "perm" to "+x", "includes" to "*.sh")
-        }
+        releasesDirSnapshot.listFiles { f -> f.name.endsWith(".sh") }
+            ?.forEach { it.setExecutable(true, false) }
     }
 }
 
