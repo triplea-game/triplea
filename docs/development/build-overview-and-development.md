@@ -3,6 +3,9 @@
 Currently, the build uses a mix of Gradle tasks and bash scripts.
 Gradle plugins used by the build are located in `/gradle/build-logic`.
 
+The build uses the Gradle Kotlin DSL. 
+This makes the build easier to maintain by increasing the completion and refactoring assistance the IDE is able to provide.
+
 ## Convention Plugins
 
 The TripleA build defines Gradle [Convention Plugins](https://docs.gradle.org/current/userguide/implementing_gradle_plugins_convention.html#header) to avoid cross-project configuration and duplication of configuration.
@@ -24,8 +27,6 @@ The fixture in `:game-app:game-core` includes map data present in `/game-app/gam
 
 To continue to improve build speeds and make the build structure more idiomatic, some near future work should:
 
-- Convert all build scripts to Kotlin (IN PROGRESS).
-This will make the build easier to maintain by increasing the completion and refactoring assistance the IDE is able to provide.
 - Remove the use of `subprojects` and `allprojects` and replace these with Gradle [Convention Plugins](https://docs.gradle.org/current/userguide/implementing_gradle_plugins_convention.html#header).
 This will make the build easier to maintain by avoiding the pitfalls of cross-project configuration, it will prevent difficulties updating to future Gradle versions, and it will prepare the build to take advantage of future Gradle features like [Isolated Projects](https://docs.gradle.org/current/userguide/isolated_projects.html#header) that will further increase build speed.
 - Avoid creating empty projects in folders such as `game-app`.
