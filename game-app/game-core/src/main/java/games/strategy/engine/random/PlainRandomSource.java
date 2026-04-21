@@ -29,10 +29,10 @@ public final class PlainRandomSource implements IRandomSource {
 
   @Override
   public int getRandom(final int max, final String annotation) {
-    checkArgument(max > 0, "max must be > 0 (%s)", annotation);
+    checkArgument(max > 0 && max < 4194303, "max must be > 0 and < 4194303 (%s)", annotation);
 
     synchronized (lock) {
-      return random.nextInt(max);
+      return random.nextInt(max * 512) / 512;
     }
   }
 }
