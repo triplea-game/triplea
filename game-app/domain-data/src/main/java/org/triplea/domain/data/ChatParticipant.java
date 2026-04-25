@@ -1,6 +1,5 @@
 package org.triplea.domain.data;
 
-import com.google.common.base.Strings;
 import java.io.Serializable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,7 +31,7 @@ public class ChatParticipant implements Serializable {
   @Setter @Nullable private String status;
 
   public String getStatus() {
-    return Strings.nullToEmpty(status);
+    return status == null ? "" : status;
   }
 
   public UserName getUserName() {

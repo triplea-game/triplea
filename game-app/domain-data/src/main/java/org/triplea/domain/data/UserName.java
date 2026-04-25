@@ -1,6 +1,5 @@
 package org.triplea.domain.data;
 
-import com.google.common.base.Preconditions;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Optional;
@@ -24,7 +23,9 @@ public class UserName implements Serializable {
   private final String value;
 
   public static UserName of(final String name) {
-    Preconditions.checkNotNull(name);
+    if (name == null || name.isBlank()) {
+      throw new IllegalArgumentException("Username cannot be null or blank");
+    }
     return new UserName(name);
   }
 

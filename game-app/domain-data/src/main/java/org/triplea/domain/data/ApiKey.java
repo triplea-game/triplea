@@ -1,6 +1,5 @@
 package org.triplea.domain.data;
 
-import com.google.common.base.Preconditions;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -25,11 +24,11 @@ public class ApiKey {
   }
 
   public static ApiKey of(final String value) {
-    Preconditions.checkArgument(value != null);
-    Preconditions.checkArgument(!value.isEmpty());
-    Preconditions.checkArgument(!value.contains("\n"));
-    Preconditions.checkArgument(value.length() <= MAX_LENGTH);
-
+    if (value == null || value.isBlank() || value.contains("\n") || value.length() >= MAX_LENGTH) {
+      throw new IllegalArgumentException(
+          String.format(
+              "Invalid API key passed with length: {}", value == null ? 0 : value.length()));
+    }
     return new ApiKey(value);
   }
 

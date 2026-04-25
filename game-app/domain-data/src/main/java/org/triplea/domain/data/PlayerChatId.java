@@ -1,6 +1,5 @@
 package org.triplea.domain.data;
 
-import com.google.common.base.Preconditions;
 import java.io.Serializable;
 import java.util.UUID;
 import lombok.AccessLevel;
@@ -26,9 +25,9 @@ public class PlayerChatId implements Serializable {
   }
 
   public static PlayerChatId of(final String value) {
-    Preconditions.checkNotNull(value);
-    Preconditions.checkArgument(!value.isBlank());
-
+    if (value == null || value.isBlank()) {
+      throw new IllegalArgumentException("Invalid player chat id: " + value);
+    }
     return new PlayerChatId(value);
   }
 
