@@ -37,19 +37,17 @@ public class LobbyFrame extends JFrame implements QuitHandler {
 
     setJMenuBar(new LobbyMenu(this, loginResult, connection));
     connection.addConnectionClosedListener(this::shutdown);
+    final var reconnectOverlay = new ReconnectOverlay(this, this::shutdown);
     connection.addReconnectionListener(
         new WebSocket.ReconnectionHandler() {
           @Override
           public void onReconnecting(final int attempt) {
-            // TODO: Show a non-blocking reconnect overlay displaying attempt number.
-            // The overlay's "Disconnect & Exit" button should call LobbyFrame.this::shutdown,
-            // which chains to connection.close() → reconnect thread interrupt.
-            // No separate handle is needed; shutdown() IS the abort.
+            reconnectOverlay.show(attempt);
           }
 
           @Override
           public void onReconnected() {
-            // TODO: handle reconnection success here — dismiss the reconnect overlay
+            reconnectOverlay.dismiss();
           }
         });
 
