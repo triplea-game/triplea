@@ -28,4 +28,17 @@ public interface WebSocket {
   void addConnectionTerminatedListener(Consumer<String> connectionTerminatedListener);
 
   void addConnectionResetListener(Runnable listener);
+
+  void addReconnectionListener(ReconnectionHandler handler);
+
+  interface ReconnectionHandler {
+    /** Called on each reconnect attempt. currentAttempt is 1-based. */
+    void onReconnecting(int currentAttempt);
+
+    /** Called when a reconnect attempt succeeds. */
+    void onReconnected();
+
+    /** Called when all reconnect attempts are exhausted. */
+    void onReconnectFailed();
+  }
 }
