@@ -1,19 +1,13 @@
 package org.triplea.java;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import com.google.common.base.Ascii;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-import com.google.common.primitives.Ints;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
+import java.util.Objects;
 import lombok.experimental.UtilityClass;
 
 /** A collection of useful methods for working with instances of {@link String}. */
-@SuppressWarnings("UnstableApiUsage")
 @UtilityClass
 public final class StringUtils {
 
@@ -22,7 +16,7 @@ public final class StringUtils {
    * unchanged.
    */
   public static String capitalize(final String value) {
-    checkNotNull(value);
+    Objects.requireNonNull(value);
 
     return value.isEmpty()
         ? value
@@ -35,7 +29,15 @@ public final class StringUtils {
    * int}.
    */
   public static boolean isInt(final String value) {
-    return value != null && Ints.tryParse(value.trim()) != null;
+    if (value == null) {
+      return false;
+    }
+    try {
+      Integer.parseInt(value.trim());
+      return true;
+    } catch (final NumberFormatException e) {
+      return false;
+    }
   }
 
   /**
@@ -47,12 +49,15 @@ public final class StringUtils {
     if (value == null) {
       return false;
     }
-    final Integer intValue = Ints.tryParse(value.trim());
-    return intValue != null && intValue > 0;
+    try {
+      return Integer.parseInt(value.trim()) > 0;
+    } catch (final NumberFormatException e) {
+      return false;
+    }
   }
 
   public static boolean isNullOrEmpty(final String value) {
-    return Strings.isNullOrEmpty(value);
+    return value == null || value.isEmpty();
   }
 
   public static boolean isNullOrBlank(final String value) {
@@ -60,7 +65,12 @@ public final class StringUtils {
   }
 
   public static String truncate(final String stringToTruncate, final int maxLength) {
-    return Ascii.truncate(Strings.nullToEmpty(stringToTruncate), maxLength, "...");
+    final String s = stringToTruncate == null ? "" : stringToTruncate;
+    if (s.length() <= maxLength) {
+      return s;
+    }
+    final String ellipsis = "...";
+    return s.substring(0, Math.max(0, maxLength - ellipsis.length())) + ellipsis;
   }
 
   /**
@@ -80,18 +90,20 @@ public final class StringUtils {
    */
   public static String truncateEnding(
       final String stringToTruncate, final String endingToTruncate) {
-    Preconditions.checkArgument(
-        !endingToTruncate.isEmpty(),
-        "Illegal empty ending to truncate requested on string: " + stringToTruncate);
+    if (endingToTruncate.isEmpty()) {
+      throw new IllegalArgumentException(
+          "Illegal empty ending to truncate requested on string: " + stringToTruncate);
+    }
     return stringToTruncate.endsWith(endingToTruncate)
         ? stringToTruncate.substring(0, stringToTruncate.indexOf(endingToTruncate))
         : stringToTruncate;
   }
 
   public static String truncateFrom(final String stringToTruncate, final String truncationToken) {
-    Preconditions.checkArgument(
-        !truncationToken.isEmpty(),
-        "Illegal empty ending to truncate requested on string: " + stringToTruncate);
+    if (truncationToken.isEmpty()) {
+      throw new IllegalArgumentException(
+          "Illegal empty ending to truncate requested on string: " + stringToTruncate);
+    }
     return stringToTruncate.contains(truncationToken)
         ? stringToTruncate.substring(0, stringToTruncate.indexOf(truncationToken))
         : stringToTruncate;

@@ -1,6 +1,5 @@
 package org.triplea.java.timer;
 
-import com.google.common.base.Preconditions;
 import java.util.Optional;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -8,7 +7,6 @@ import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.triplea.java.ArgChecker;
 
 /** Factory class for creating timers to execute recurring tasks or one-off delayed tasks */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -23,7 +21,9 @@ public final class Timers {
    */
   public static void executeAfterDelay(
       final int delay, final TimeUnit delayTimeUnit, final Runnable runnable) {
-    Preconditions.checkArgument(delay >= 0, "Delay must be non-negative, was %s", delay);
+    if (delay < 0) {
+      throw new IllegalArgumentException("Delay must be non-negative, was " + delay);
+    }
     new ScheduledThreadPoolExecutor(1).schedule(runnable, delay, delayTimeUnit);
   }
 
@@ -34,7 +34,9 @@ public final class Timers {
    * @param threadName The name of the timer thread that will be created.
    */
   public static Builders.FixedRateTimerPeriodBuilder fixedRateTimer(final String threadName) {
-    ArgChecker.checkNotEmpty(threadName);
+    if (threadName == null || threadName.isBlank()) {
+      throw new IllegalArgumentException();
+    }
     return new Builders.FixedRateTimerPeriodBuilder(threadName);
   }
 
@@ -45,13 +47,19 @@ public final class Timers {
       private final String threadName;
 
       public FixedRateTimerOptionalDelayBuilder period(final long period, final TimeUnit timeUnit) {
-        Preconditions.checkArgument(period > 0);
-        Preconditions.checkArgument(timeUnit != null);
+        if (period <= 0) {
+          throw new IllegalArgumentException();
+        }
+        if (timeUnit == null) {
+          throw new IllegalArgumentException();
+        }
         return period(timeUnit.toMillis(period));
       }
 
       public FixedRateTimerOptionalDelayBuilder period(final long periodInMillis) {
-        Preconditions.checkArgument(periodInMillis > 0);
+        if (periodInMillis <= 0) {
+          throw new IllegalArgumentException();
+        }
         return new FixedRateTimerOptionalDelayBuilder(threadName, periodInMillis);
       }
     }
@@ -62,18 +70,26 @@ public final class Timers {
       private final long periodMillis;
 
       public FixedRateTimerTaskBuilder delay(final long delay, final TimeUnit timeUnit) {
-        Preconditions.checkArgument(delay >= 0);
-        Preconditions.checkArgument(timeUnit != null);
+        if (delay < 0) {
+          throw new IllegalArgumentException();
+        }
+        if (timeUnit == null) {
+          throw new IllegalArgumentException();
+        }
         return delay(timeUnit.toMillis(delay));
       }
 
       public FixedRateTimerTaskBuilder delay(final long delayMillis) {
-        Preconditions.checkArgument(delayMillis >= 0);
+        if (delayMillis < 0) {
+          throw new IllegalArgumentException();
+        }
         return new FixedRateTimerTaskBuilder(threadName, periodMillis, delayMillis);
       }
 
       public ScheduledTimer task(final Runnable task) {
-        Preconditions.checkArgument(task != null);
+        if (task == null) {
+          throw new IllegalArgumentException();
+        }
         return new FixedRateTimerBuilder(threadName, periodMillis, null, task).build();
       }
     }
@@ -85,7 +101,9 @@ public final class Timers {
       @Nullable private final Long delayMillis;
 
       public ScheduledTimer task(final Runnable task) {
-        Preconditions.checkArgument(task != null);
+        if (task == null) {
+          throw new IllegalArgumentException();
+        }
         return new FixedRateTimerBuilder(threadName, periodMillis, delayMillis, task).build();
       }
     }

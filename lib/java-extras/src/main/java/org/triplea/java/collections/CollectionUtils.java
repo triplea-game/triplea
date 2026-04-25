@@ -1,13 +1,7 @@
 package org.triplea.java.collections;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.function.Predicate.not;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.TreeMultiset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -28,28 +22,18 @@ public class CollectionUtils {
 
   /**
    * Returns the count of elements in the specified collection that match the specified predicate.
-   *
-   * @param collection The collection whose elements are to be matched.
-   * @param predicate The predicate with which to test each element.
-   * @return The count of elements in the specified collection that match the specified predicate.
    */
   public static <T> int countMatches(final Collection<T> collection, final Predicate<T> predicate) {
-    checkNotNull(collection);
-    checkNotNull(predicate);
+    if (collection == null) throw new NullPointerException();
+    if (predicate == null) throw new NullPointerException();
 
     return (int) collection.stream().filter(predicate).count();
   }
 
-  /**
-   * Returns the count of elements in the specified iterable that match the specified predicate.
-   *
-   * @param it The iterable whose elements are to be matched.
-   * @param predicate The predicate with which to test each element.
-   * @return The count of elements in the specified collection that match the specified predicate.
-   */
+  /** Returns the count of elements in the specified iterable that match the specified predicate. */
   public static <T> int countMatches(final Iterable<T> it, final Predicate<T> predicate) {
-    checkNotNull(it);
-    checkNotNull(predicate);
+    if (it == null) throw new NullPointerException();
+    if (predicate == null) throw new NullPointerException();
 
     return (int) StreamSupport.stream(it.spliterator(), false).filter(predicate).count();
   }
@@ -58,15 +42,11 @@ public class CollectionUtils {
    * Returns all elements in the specified collection that match the specified predicate.
    *
    * <p>Returns a mutable list with distinct storage from `collection`.
-   *
-   * @param collection The collection whose elements are to be matched.
-   * @param predicate The predicate with which to test each element.
-   * @return A collection of all elements that match the specified predicate.
    */
   public static <T> List<T> getMatches(
       final Collection<T> collection, final Predicate<T> predicate) {
-    checkNotNull(collection);
-    checkNotNull(predicate);
+    if (collection == null) throw new NullPointerException();
+    if (predicate == null) throw new NullPointerException();
 
     return collection.stream().filter(predicate).collect(toArrayList());
   }
@@ -77,17 +57,13 @@ public class CollectionUtils {
    *
    * <p>Returns a mutable list with distinct storage from `collection`.
    *
-   * @param collection The collection whose elements are to be matched.
-   * @param max The maximum number of elements in the returned collection.
-   * @param predicate The predicate with which to test each element.
-   * @return A collection of elements that match the specified predicate.
    * @throws IllegalArgumentException If {@code max} is negative.
    */
   public static <T> List<T> getNMatches(
       final Collection<T> collection, final int max, final Predicate<T> predicate) {
-    checkNotNull(collection);
-    checkArgument(max >= 0, "max must not be negative");
-    checkNotNull(predicate);
+    if (collection == null) throw new NullPointerException();
+    if (max < 0) throw new IllegalArgumentException("max must not be negative");
+    if (predicate == null) throw new NullPointerException();
 
     return collection.stream().filter(predicate).limit(max).collect(toArrayList());
   }
@@ -105,8 +81,7 @@ public class CollectionUtils {
         || collection2.isEmpty()) {
       return new ArrayList<>();
     }
-    final Collection<T> c2 =
-        (collection2 instanceof Set) ? collection2 : ImmutableSet.copyOf(collection2);
+    final Collection<T> c2 = (collection2 instanceof Set) ? collection2 : Set.copyOf(collection2);
     return collection1.stream().distinct().filter(c2::contains).collect(toArrayList());
   }
 
@@ -124,8 +99,7 @@ public class CollectionUtils {
       return new ArrayList<>(collection1);
     }
 
-    final Collection<T> c2 =
-        (collection2 instanceof Set) ? collection2 : ImmutableSet.copyOf(collection2);
+    final Collection<T> c2 = (collection2 instanceof Set) ? collection2 : Set.copyOf(collection2);
     return collection1.stream().distinct().filter(not(c2::contains)).collect(toArrayList());
   }
 
@@ -135,26 +109,25 @@ public class CollectionUtils {
    */
   public static <T> boolean haveEqualSizeAndEquivalentElements(
       final Collection<T> collection1, final Collection<T> collection2) {
-    checkNotNull(collection1);
-    checkNotNull(collection2);
-    final Collection<T> c1 = ImmutableList.copyOf(collection1);
-    final Collection<T> c2 = ImmutableList.copyOf(collection2);
+    if (collection1 == null) throw new NullPointerException();
+    if (collection2 == null) throw new NullPointerException();
+    final List<T> c1 = List.copyOf(collection1);
+    final List<T> c2 = List.copyOf(collection2);
 
-    return Iterables.elementsEqual(c1, c2)
-        || (c1.size() == c2.size() && c2.containsAll(c1) && c1.containsAll(c2));
+    return c1.equals(c2) || (c1.size() == c2.size() && c2.containsAll(c1) && c1.containsAll(c2));
   }
 
   /**
-   * Creates a sorted, mutable collection containing the specified elements that will maintain its
-   * sort order according to the specified comparator as elements are added or removed.
+   * Creates a sorted, mutable collection containing the specified elements ordered by the given
+   * comparator.
    *
-   * <p>Returns a mutable collection with distinct storage from `elements`.
+   * <p>Returns a mutable list with distinct storage from `elements`.
    */
   public static <T> Collection<T> createSortedCollection(
       final Collection<T> elements, final @Nullable Comparator<T> comparator) {
-    final TreeMultiset<T> sortedCollection = TreeMultiset.create(comparator);
-    sortedCollection.addAll(elements);
-    return sortedCollection;
+    final List<T> sorted = new ArrayList<>(elements);
+    sorted.sort(comparator);
+    return sorted;
   }
 
   public static <T> T getAny(final Iterable<T> elements) {

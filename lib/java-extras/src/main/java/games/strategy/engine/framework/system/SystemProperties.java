@@ -1,8 +1,7 @@
 package games.strategy.engine.framework.system;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -20,32 +19,32 @@ public final class SystemProperties {
   }
 
   public static String getJavaClassPath() {
-    return checkNotNull(System.getProperty("java.class.path"));
+    return Objects.requireNonNull(System.getProperty("java.class.path"));
   }
 
   public static String getJavaHome() {
-    return checkNotNull(System.getProperty("java.home"));
+    return Objects.requireNonNull(System.getProperty("java.home"));
   }
 
   /** Returns current java version with build number. EG: {@code "1.8.0_181-b13"} */
   public static String getJavaVersion() {
-    return checkNotNull(System.getProperty("java.version"));
+    return Objects.requireNonNull(System.getProperty("java.version"));
   }
 
   public static String getOperatingSystem() {
-    return checkNotNull(System.getProperty("os.name"));
+    return Objects.requireNonNull(System.getProperty("os.name"));
   }
 
   public static String getUserDir() {
-    return checkNotNull(System.getProperty("user.dir"));
+    return Objects.requireNonNull(System.getProperty("user.dir"));
   }
 
   public static String getUserHome() {
-    return checkNotNull(System.getProperty("user.home"));
+    return Objects.requireNonNull(System.getProperty("user.home"));
   }
 
   public static String getUserName() {
-    return checkNotNull(System.getProperty("user.name"));
+    return Objects.requireNonNull(System.getProperty("user.name"));
   }
 
   public static boolean isMac() {
@@ -57,6 +56,6 @@ public final class SystemProperties {
   }
 
   public static void setJavaNetUseSystemProxies(final String value) {
-    System.setProperty("java.net.useSystemProxies", checkNotNull(value));
+    System.setProperty("java.net.useSystemProxies", Objects.requireNonNull(value));
   }
 }

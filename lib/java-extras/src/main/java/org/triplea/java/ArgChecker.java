@@ -1,6 +1,5 @@
 package org.triplea.java;
 
-import com.google.common.base.Preconditions;
 import lombok.experimental.UtilityClass;
 
 /** Utility class to validate method arguments. */
@@ -13,7 +12,8 @@ public class ArgChecker {
    * @param arg The value to validate.
    */
   public static void checkNotEmpty(final String arg) {
-    Preconditions.checkNotNull(arg);
-    Preconditions.checkArgument(!arg.isBlank());
+    if (arg == null || arg.isBlank()) {
+      throw new IllegalArgumentException();
+    }
   }
 }

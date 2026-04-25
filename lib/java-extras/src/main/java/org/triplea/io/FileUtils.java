@@ -1,15 +1,11 @@
 package org.triplea.io;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Charsets;
-import com.google.common.base.Preconditions;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.MalformedInputException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
@@ -23,6 +19,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.VisibleForTesting;
 
 /** A collection of useful methods related to files. */
 @UtilityClass
@@ -55,7 +52,9 @@ public final class FileUtils {
    * @see Files#list(Path)
    */
   public static Collection<Path> listFiles(final Path directory) {
-    checkNotNull(directory);
+    if (directory == null) {
+      throw new NullPointerException();
+    }
     try (Stream<Path> stream = Files.list(directory)) {
       return stream.collect(Collectors.toList());
     } catch (final IOException exception) {
@@ -100,10 +99,18 @@ public final class FileUtils {
    * @return A list of files matching the given name or an empty list if not.
    */
   public List<Path> find(final Path searchRoot, final int maxDepth, final String fileName) {
-    Preconditions.checkArgument(Files.isDirectory(searchRoot), searchRoot.toAbsolutePath());
-    Preconditions.checkArgument(Files.exists(searchRoot), searchRoot.toAbsolutePath());
-    Preconditions.checkArgument(maxDepth > -1);
-    Preconditions.checkArgument(!fileName.isBlank());
+    if (!Files.isDirectory(searchRoot)) {
+      throw new IllegalArgumentException(searchRoot.toAbsolutePath().toString());
+    }
+    if (!Files.exists(searchRoot)) {
+      throw new IllegalArgumentException(searchRoot.toAbsolutePath().toString());
+    }
+    if (maxDepth < 0) {
+      throw new IllegalArgumentException();
+    }
+    if (fileName.isBlank()) {
+      throw new IllegalArgumentException();
+    }
     try (Stream<Path> files = Files.walk(searchRoot, maxDepth)) {
       return files
           .filter(f -> f.getFileName().toString().equals(fileName))
@@ -148,8 +155,12 @@ public final class FileUtils {
    */
   public <T> T openInputStream(
       final Path file, final Function<InputStream, T> inputStreamFunction) {
-    Preconditions.checkArgument(Files.exists(file), file.toAbsolutePath());
-    Preconditions.checkArgument(Files.isReadable(file), file.toAbsolutePath());
+    if (!Files.exists(file)) {
+      throw new IllegalArgumentException(file.toAbsolutePath().toString());
+    }
+    if (!Files.isReadable(file)) {
+      throw new IllegalArgumentException(file.toAbsolutePath().toString());
+    }
 
     try (InputStream inputStream = Files.newInputStream(file)) {
       return inputStreamFunction.apply(inputStream);
@@ -207,7 +218,7 @@ public final class FileUtils {
       }
 
       try {
-        return Optional.of(Files.readString(fileToRead, Charsets.ISO_8859_1));
+        return Optional.of(Files.readString(fileToRead, StandardCharsets.ISO_8859_1));
       } catch (final MalformedInputException e) {
         log.warn(
             "Bad file encoding: "
