@@ -44,7 +44,6 @@ class WebSocketConnection {
 
   @VisibleForTesting static final String CLIENT_DISCONNECT_MESSAGE = "Client disconnect.";
 
-  private static final int MAX_RECONNECT_ATTEMPTS = 5;
   private static final long RECONNECT_BACKOFF_MILLIS = 5000;
 
   private WebSocketConnectionListener listener;
@@ -203,50 +202,44 @@ class WebSocketConnection {
   }
 
   /**
-   * Spawns a virtual thread that retries the connection up to {@link #MAX_RECONNECT_ATTEMPTS}
-   * times, notifying the listener on each attempt. On success calls {@link
-   * WebSocketConnectionListener#reconnected()}; on full exhaustion calls {@link
-   * WebSocketConnectionListener#reconnectionFailed()}.
+   * Spawns a virtual thread that retries the connection indefinitely with a fixed back-off between
+   * attempts, notifying the listener on each attempt. The loop exits only when the thread is
+   * interrupted (i.e. {@link #close()} is called, which happens when the lobby frame is closed or
+   * the user clicks "Disconnect & Exit" in the reconnect overlay). On success calls {@link
+   * WebSocketConnectionListener#reconnected()}.
    */
   private void reconnectAsync() {
     reconnectThread =
         Thread.ofVirtual()
             .name("websocket-reconnect-thread")
             .start(
-            () -> {
-              for (int attempt = 1; attempt <= MAX_RECONNECT_ATTEMPTS; attempt++) {
-                listener.onReconnecting(attempt);
-                connectionIsOpen = false;
-                httpClient = HttpClient.newHttpClient();
-                try {
-                  connectAsync().get(DEFAULT_CONNECT_TIMEOUT_MILLIS * 2L, TimeUnit.MILLISECONDS);
-                  log.info("Successfully reconnected on attempt {}", attempt);
-                  listener.reconnected();
-                  return;
-                } catch (final InterruptedException e) {
-                  Thread.currentThread().interrupt();
-                  log.info("Reconnect interrupted on attempt {}", attempt);
-                  break;
-                } catch (final Exception e) {
-                  log.info(
-                      "Reconnect attempt {}/{} failed: {}",
-                      attempt,
-                      MAX_RECONNECT_ATTEMPTS,
-                      e.getMessage());
-                  if (attempt < MAX_RECONNECT_ATTEMPTS) {
+                () -> {
+                  int attempt = 1;
+                  while (!Thread.currentThread().isInterrupted()) {
+                    listener.onReconnecting(attempt++);
+                    connectionIsOpen = false;
+                    httpClient = HttpClient.newHttpClient();
                     try {
-                      Thread.sleep(RECONNECT_BACKOFF_MILLIS);
-                    } catch (final InterruptedException ex) {
-                      Thread.currentThread().interrupt();
+                      connectAsync().get(DEFAULT_CONNECT_TIMEOUT_MILLIS * 2L, TimeUnit.MILLISECONDS);
+                      log.info("Successfully reconnected on attempt {}", attempt - 1);
+                      listener.reconnected();
                       return;
+                    } catch (final InterruptedException e) {
+                      Thread.currentThread().interrupt();
+                      log.info("Reconnect thread interrupted, stopping retries");
+                      return;
+                    } catch (final Exception e) {
+                      log.info("Reconnect attempt {} failed: {}", attempt - 1, e.getMessage());
+                      try {
+                        Thread.sleep(RECONNECT_BACKOFF_MILLIS);
+                      } catch (final InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                        log.info("Reconnect thread interrupted during back-off, stopping retries");
+                        return;
+                      }
                     }
                   }
-                }
-              }
-              log.info("All {} reconnect attempts exhausted", MAX_RECONNECT_ATTEMPTS);
-              pingSender.cancel();
-              listener.reconnectionFailed();
-            });
+                });
   }
 
   /**

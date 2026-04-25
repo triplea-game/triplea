@@ -16,8 +16,6 @@ interface WebSocketConnectionListener {
    */
   void reconnected();
 
-  /** Invoked when all reconnect attempts are exhausted and the connection cannot be restored. */
-  void reconnectionFailed();
 
   void connectionTerminated(String reason);
 

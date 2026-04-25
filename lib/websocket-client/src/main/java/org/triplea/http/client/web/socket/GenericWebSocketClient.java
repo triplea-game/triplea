@@ -114,12 +114,6 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
   }
 
   @Override
-  public void reconnectionFailed() {
-    reconnectionHandlers.forEach(WebSocket.ReconnectionHandler::onReconnectFailed);
-  }
-
-  /** Starts a non-blocking close of the websocket connection. */
-  @Override
   public void close() {
     webSocketConnection.close();
   }

@@ -17,7 +17,6 @@ import lombok.Getter;
 import org.triplea.game.client.HeadedGameRunner;
 import org.triplea.http.client.web.socket.WebSocket;
 import org.triplea.sound.ClipPlayer;
-import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.SwingComponents;
 
 /** The top-level frame window for the lobby client UI. */
@@ -42,23 +41,15 @@ public class LobbyFrame extends JFrame implements QuitHandler {
         new WebSocket.ReconnectionHandler() {
           @Override
           public void onReconnecting(final int attempt) {
-            // TODO: show retrying window here
+            // TODO: Show a non-blocking reconnect overlay displaying attempt number.
+            // The overlay's "Disconnect & Exit" button should call LobbyFrame.this::shutdown,
+            // which chains to connection.close() → reconnect thread interrupt.
+            // No separate handle is needed; shutdown() IS the abort.
           }
 
           @Override
           public void onReconnected() {
-            // TODO: handle reconnection success here
-          }
-
-          @Override
-          public void onReconnectFailed() {
-            // TODO: handle retrying failed here
-            DialogBuilder.builder()
-                .parent(LobbyFrame.this)
-                .title("Connection to Lobby Lost")
-                .errorMessage("Could not reconnect to the lobby after several attempts.")
-                .showDialog();
-            shutdown();
+            // TODO: handle reconnection success here — dismiss the reconnect overlay
           }
         });
 

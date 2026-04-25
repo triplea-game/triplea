@@ -37,8 +37,5 @@ public interface WebSocket {
 
     /** Called when a reconnect attempt succeeds. */
     void onReconnected();
-
-    /** Called when all reconnect attempts are exhausted. */
-    void onReconnectFailed();
   }
 }
