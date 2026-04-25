@@ -1,8 +1,6 @@
 package org.triplea.http.client.web.socket.client.connections;
 
 import java.net.URI;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +27,6 @@ import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatSentMessag
 import org.triplea.http.client.web.socket.messages.envelopes.chat.ConnectToChatMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerSlapSentMessage;
 import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerStatusUpdateSentMessage;
-import org.triplea.java.Retriable;
 
 /**
  * Represents a connection from a player to lobby. A player can do actions like get game listings,
@@ -59,16 +56,6 @@ public class PlayerToLobbyConnection {
                     LobbyHttpClientConfig.getConfig().getSystemId()))
             .build();
     webSocket.connect();
-
-//    webSocket.addConnectionClosedListener(
-//            Retriable.builder()
-//                    .withMaxAttempts()
-//                    .withFixedBackOff(Duration.of(3, ChronoUnit.SECONDS))
-//                    .build(() -> {
-//                      webSocket.connect();
-//                      return null;
-//                    })
-//    );
     gameListingClient = httpLobbyClient.newGameListingClient();
   }
 
@@ -158,5 +145,9 @@ public class PlayerToLobbyConnection {
 
   public void addConnectionResetListener(final Runnable listener) {
     webSocket.addConnectionResetListener(listener);
+  }
+
+  public void addReconnectionListener(final WebSocket.ReconnectionHandler handler) {
+    webSocket.addReconnectionListener(handler);
   }
 }

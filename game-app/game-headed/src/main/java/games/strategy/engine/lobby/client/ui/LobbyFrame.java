@@ -15,6 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import lombok.Getter;
 import org.triplea.game.client.HeadedGameRunner;
+import org.triplea.http.client.web.socket.WebSocket;
 import org.triplea.sound.ClipPlayer;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.SwingComponents;
@@ -36,16 +37,30 @@ public class LobbyFrame extends JFrame implements QuitHandler {
     final var connection = lobbyModel.getConnection();
 
     setJMenuBar(new LobbyMenu(this, loginResult, connection));
-    connection.addConnectionTerminatedListener(
-        reason -> {
-          DialogBuilder.builder()
-              .parent(this)
-              .title("Connection to Lobby Closed")
-              .errorMessage("Connection closed: " + reason)
-              .showDialog();
-          shutdown();
-        });
     connection.addConnectionClosedListener(this::shutdown);
+    connection.addReconnectionListener(
+        new WebSocket.ReconnectionHandler() {
+          @Override
+          public void onReconnecting(final int attempt) {
+            // TODO: show retrying window here
+          }
+
+          @Override
+          public void onReconnected() {
+            // TODO: handle reconnection success here
+          }
+
+          @Override
+          public void onReconnectFailed() {
+            // TODO: handle retrying failed here
+            DialogBuilder.builder()
+                .parent(LobbyFrame.this)
+                .title("Connection to Lobby Lost")
+                .errorMessage("Could not reconnect to the lobby after several attempts.")
+                .showDialog();
+            shutdown();
+          }
+        });
 
     final ChatMessagePanel chatMessagePanel =
         new ChatMessagePanel(lobbyModel.getChat(), ChatSoundProfile.LOBBY, new ClipPlayer());

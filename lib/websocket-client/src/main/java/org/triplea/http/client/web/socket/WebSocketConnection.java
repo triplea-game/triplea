@@ -44,6 +44,9 @@ class WebSocketConnection {
 
   @VisibleForTesting static final String CLIENT_DISCONNECT_MESSAGE = "Client disconnect.";
 
+  private static final int MAX_RECONNECT_ATTEMPTS = 5;
+  private static final long RECONNECT_BACKOFF_MILLIS = 5000;
+
   private WebSocketConnectionListener listener;
 
   /**
@@ -71,6 +74,8 @@ class WebSocketConnection {
   private final URI serverUri;
 
   private boolean closed = false;
+
+  @Nullable private Thread reconnectThread;
 
   private WebSocket client;
 
@@ -134,6 +139,9 @@ class WebSocketConnection {
   /** Does an async close of the current websocket connection. */
   void close() {
     closed = true;
+    if (reconnectThread != null) {
+      reconnectThread.interrupt();
+    }
     // Client can be null if the connection hasn't completely opened yet.
     // This null check prevents a potential NPE, which should rarely ever occur.
     if (client != null && !client.isOutputClosed()) {
@@ -170,16 +178,16 @@ class WebSocketConnection {
             });
   }
 
-  private CompletableFuture<Void> connectAsyncAndStartPingSender() {
+  private CompletableFuture<WebSocket> connectAsync() {
     var clientBuilder = httpClient.newWebSocketBuilder();
-
-    // add all headers
     headers.forEach(clientBuilder::header);
-
     return clientBuilder
         .connectTimeout(Duration.ofMillis(DEFAULT_CONNECT_TIMEOUT_MILLIS))
-        .buildAsync(this.serverUri, internalListener)
-        .thenRun(pingSender::start);
+        .buildAsync(this.serverUri, internalListener);
+  }
+
+  private CompletableFuture<Void> connectAsyncAndStartPingSender() {
+    return connectAsync().thenRun(pingSender::start);
   }
 
   private void retryConnection(final Consumer<String> errorHandler) {
@@ -190,16 +198,54 @@ class WebSocketConnection {
             throwable -> {
               log.info("Failed to connect", throwable);
               errorHandler.accept("Failed to connect: " + throwable.getMessage());
-
-              Interruptibles.sleep(5000);
-              connectAsyncAndStartPingSender()
-                  .exceptionally(
-                      t -> {
-                        log.info("Failed to connect", t);
-                        errorHandler.accept("Failed to connect: " + t.getMessage());
-                        return null;
-                      });
               return null;
+            });
+  }
+
+  /**
+   * Spawns a virtual thread that retries the connection up to {@link #MAX_RECONNECT_ATTEMPTS}
+   * times, notifying the listener on each attempt. On success calls {@link
+   * WebSocketConnectionListener#reconnected()}; on full exhaustion calls {@link
+   * WebSocketConnectionListener#reconnectionFailed()}.
+   */
+  private void reconnectAsync() {
+    reconnectThread =
+        Thread.ofVirtual()
+            .name("websocket-reconnect-thread")
+            .start(
+            () -> {
+              for (int attempt = 1; attempt <= MAX_RECONNECT_ATTEMPTS; attempt++) {
+                listener.onReconnecting(attempt);
+                connectionIsOpen = false;
+                httpClient = HttpClient.newHttpClient();
+                try {
+                  connectAsync().get(DEFAULT_CONNECT_TIMEOUT_MILLIS * 2L, TimeUnit.MILLISECONDS);
+                  log.info("Successfully reconnected on attempt {}", attempt);
+                  listener.reconnected();
+                  return;
+                } catch (final InterruptedException e) {
+                  Thread.currentThread().interrupt();
+                  log.info("Reconnect interrupted on attempt {}", attempt);
+                  break;
+                } catch (final Exception e) {
+                  log.info(
+                      "Reconnect attempt {}/{} failed: {}",
+                      attempt,
+                      MAX_RECONNECT_ATTEMPTS,
+                      e.getMessage());
+                  if (attempt < MAX_RECONNECT_ATTEMPTS) {
+                    try {
+                      Thread.sleep(RECONNECT_BACKOFF_MILLIS);
+                    } catch (final InterruptedException ex) {
+                      Thread.currentThread().interrupt();
+                      return;
+                    }
+                  }
+                }
+              }
+              log.info("All {} reconnect attempts exhausted", MAX_RECONNECT_ATTEMPTS);
+              pingSender.cancel();
+              listener.reconnectionFailed();
             });
   }
 
@@ -271,29 +317,17 @@ class WebSocketConnection {
     @Override
     public @Nullable CompletionStage<?> onClose(
         final WebSocket webSocket, final int statusCode, final String reason) {
+      log.info("Connection closed, reason: '{}'", reason);
 
-      log.info("Connection closed");
-
-      log.info("Attempting to reconnect..");
-      retryConnection(
-          error -> {
-            log.info("Failed to reconnect: {}", error);
-          });
-
-      if (isOpen()) {
-        log.info("Successfully reconnected to server");
-        listener.reconnected();
-        return null;
-      } else {
-        log.info("Reconnect failed..");
+      if (closed || reason.equals(WebSocketConnection.CLIENT_DISCONNECT_MESSAGE)) {
         pingSender.cancel();
-        if (reason.equals(WebSocketConnection.CLIENT_DISCONNECT_MESSAGE)) {
-          listener.connectionClosed();
-        } else {
-          listener.connectionTerminated(reason.isBlank() ? "Server disconnected" : reason);
-        }
+        listener.connectionClosed();
         return null;
       }
+
+      log.info("Unexpected disconnect, attempting to reconnect...");
+      reconnectAsync();
+      return null;
     }
 
     @Override

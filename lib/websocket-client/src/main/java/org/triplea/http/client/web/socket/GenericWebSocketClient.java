@@ -42,6 +42,8 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
 
   private final Collection<Consumer<String>> connectionTerminatedListeners = new ArrayList<>();
 
+  private final Collection<WebSocket.ReconnectionHandler> reconnectionHandlers = new ArrayList<>();
+
   private final URI websocketUri;
   private final Consumer<String> errorHandler;
   private final Function<URI, WebSocketConnection> webSocketConnectionFactory;
@@ -96,8 +98,24 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
   }
 
   @Override
+  public void addReconnectionListener(final WebSocket.ReconnectionHandler handler) {
+    reconnectionHandlers.add(handler);
+  }
+
+  @Override
   public void reconnected() {
     connectionResetListeners.forEach(Runnable::run);
+    reconnectionHandlers.forEach(WebSocket.ReconnectionHandler::onReconnected);
+  }
+
+  @Override
+  public void onReconnecting(final int attempt) {
+    reconnectionHandlers.forEach(h -> h.onReconnecting(attempt));
+  }
+
+  @Override
+  public void reconnectionFailed() {
+    reconnectionHandlers.forEach(WebSocket.ReconnectionHandler::onReconnectFailed);
   }
 
   /** Starts a non-blocking close of the websocket connection. */
