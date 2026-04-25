@@ -9,6 +9,8 @@ public interface WebSocket {
 
   void close();
 
+  boolean isOpen();
+
   <T extends WebSocketMessage> void addListener(
       MessageType<T> messageType, Consumer<T> messageHandler);
 
@@ -24,4 +26,6 @@ public interface WebSocket {
    *     string arg is the close reason reported from server.
    */
   void addConnectionTerminatedListener(Consumer<String> connectionTerminatedListener);
+
+  void addConnectionResetListener(Runnable listener);
 }
