@@ -21,6 +21,7 @@ import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LoginMode;
 import games.strategy.engine.lobby.client.login.LoginResult;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
+import games.strategy.engine.lobby.client.ui.LobbyModel;
 import java.awt.Dimension;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -28,6 +29,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.triplea.swing.SwingComponents;
 import lombok.Setter;
 import org.triplea.game.client.HeadedGameRunner;
 
@@ -132,7 +134,11 @@ public class HeadedServerSetupModel {
   }
 
   private void showLobbyWindow(final LoginResult loginResult) {
-    final LobbyFrame lobbyFrame = new LobbyFrame(loginResult);
+    final var lobbyModel =
+        new LobbyModel(
+            loginResult,
+            error -> SwingComponents.showError(null, "Error communicating with lobby", error));
+    final LobbyFrame lobbyFrame = new LobbyFrame(lobbyModel);
     MainFrame.hide();
     lobbyFrame.setVisible(true);
   }
