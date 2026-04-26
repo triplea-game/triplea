@@ -31,8 +31,12 @@ public class JMenuItemBuilder {
   @Nullable private String tooltip = null;
 
   public JMenuItemBuilder(final String title, final KeyCode mnemonic) {
-    ArgChecker.checkNotEmpty(title);
-    Preconditions.checkNotNull(mnemonic);
+    if(title == null || title.isBlank()) {
+      throw new IllegalArgumentException("Menu item title cannot be null or blank");
+    }
+    if(mnemonic == null) {
+      throw new NullPointerException("Menu item mnemonic cannot be null");
+    }
     this.title = title;
     this.mnemonic = mnemonic;
   }

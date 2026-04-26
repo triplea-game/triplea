@@ -26,7 +26,9 @@ public class JMenuBuilder {
   private final Collection<Component> menuComponents = new ArrayList<>();
 
   public JMenuBuilder(final String title, final KeyCode mnemonic) {
-    ArgChecker.checkNotEmpty(title);
+    if(title == null || title.isBlank()) {
+      throw new IllegalArgumentException("Menu title cannot be null or blank");
+    }
     this.title = title;
     this.mnemonic = mnemonic;
   }
@@ -49,8 +51,12 @@ public class JMenuBuilder {
    */
   public JMenuBuilder addMenuItem(
       final String title, final KeyCode mnemonic, final Runnable menuItemAction) {
-    ArgChecker.checkNotEmpty(title);
-    Preconditions.checkNotNull(menuItemAction);
+    if(title == null) {
+      throw new IllegalArgumentException("Menu item title cannot be null");
+    }
+    if(menuItemAction == null) {
+      throw new NullPointerException("Menu item action cannot be null");
+    }
     return addMenuItem(
         new JMenuItemBuilder(title, mnemonic).actionListener(menuItemAction).build());
   }
