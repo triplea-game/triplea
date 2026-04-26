@@ -1,7 +1,6 @@
 package games.strategy.engine.lobby.client.ui;
 
 import com.google.common.annotations.VisibleForTesting;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.SwingUtilities;
@@ -19,7 +18,7 @@ import org.triplea.lobby.common.LobbyGameUpdateListener;
 class LobbyGameListingModel {
   private final PlayerToLobbyConnection connection;
   private final List<LobbyGameListing> games = new CopyOnWriteArrayList<>();
-  private final List<Runnable> changeListeners = new ArrayList<>();
+  private final List<Runnable> changeListeners = new CopyOnWriteArrayList<>();
 
   private final LobbyGameUpdateListener lobbyGameBroadcaster =
       new LobbyGameUpdateListener() {
