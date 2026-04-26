@@ -6,6 +6,12 @@ Gradle plugins used by the build are located in `/gradle/build-logic`.
 The build uses the Gradle Kotlin DSL. 
 This makes the build easier to maintain by increasing the completion and refactoring assistance the IDE is able to provide.
 
+## Build Structure
+
+By explicitly specifying the physical location of nested subprojects in the root `settings.gradle.kts` file, the build is able to avoid [unintentionally creating empty projects](https://docs.gradle.org/current/userguide/best_practices_structuring_builds.html#avoid_empty_projects).
+These empty projects slow the build and make it more difficult to understand the project structure.
+This allows you to reference projects using non-hierarchical names, for example `:game-core` instead of `:game-app:game-core`.
+
 ## Convention Plugins
 
 The TripleA build defines Gradle [Convention Plugins](https://docs.gradle.org/current/userguide/implementing_gradle_plugins_convention.html#header) to avoid cross-project configuration and duplication of configuration.
@@ -15,6 +21,10 @@ There are currently the following types of projects:
 
 This is a standard "vanilla" java library type.
 It applies the `java-library` plugin and applies universal configuration, code conventions, and sets up static analysis. 
+
+### `triplea-published-library`
+
+This convention expands on `triplea-java-library` to add tasks to publish a Java library project to Maven.
 
 ## Test Fixtures
 
