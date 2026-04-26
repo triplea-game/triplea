@@ -4,6 +4,7 @@ import com.google.common.annotations.VisibleForTesting;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import javax.swing.SwingUtilities;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
 import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameRemovedMessage;
@@ -82,6 +83,24 @@ class LobbyGameListingModel {
 
   void addChangeListener(final Runnable listener) {
     changeListeners.add(listener);
+  }
+
+  /**
+   * Clears the current game list and re-fetches it from the server. Called after a successful
+   * reconnect to remove stale entries.
+   *
+   * <p>The network fetch runs on the calling thread; the list mutation and table notification are
+   * then posted to the EDT so that Swing never observes a cleared list with a stale row count.
+   */
+  void refresh() {
+    final List<LobbyGameListing> freshListing = connection.fetchGameListing();
+    SwingUtilities.invokeLater(
+        () -> {
+          games.clear();
+          freshListing.forEach(this::updateGame);
+          // Notify in case freshListing was empty (updateGame won't fire in that case).
+          notifyListeners();
+        });
   }
 
   private void notifyListeners() {

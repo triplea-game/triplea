@@ -37,6 +37,7 @@ public class LobbyFrame extends JFrame implements QuitHandler {
 
     setJMenuBar(new LobbyMenu(this, loginResult, connection));
     connection.addConnectionClosedListener(this::shutdown);
+    final var gameListingModel = lobbyModel.getGameListingModel();
     final var reconnectOverlay = new ReconnectOverlay(this, this::shutdown);
     connection.addReconnectionListener(
         new WebSocket.ReconnectionHandler() {
@@ -47,6 +48,7 @@ public class LobbyFrame extends JFrame implements QuitHandler {
 
           @Override
           public void onReconnected() {
+            gameListingModel.refresh();
             reconnectOverlay.dismiss();
           }
         });
@@ -62,7 +64,6 @@ public class LobbyFrame extends JFrame implements QuitHandler {
         clickedChatter ->
             LobbyPlayerActions.buildFor(this, loginResult, clickedChatter, connection));
 
-    final var gameListingModel = lobbyModel.getGameListingModel();
     final var tableModel =
         new LobbyGameTableModel(loginResult.isModerator(), gameListingModel);
     final LobbyGamePanel gamePanel =
