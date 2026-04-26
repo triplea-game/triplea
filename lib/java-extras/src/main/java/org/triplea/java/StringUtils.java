@@ -65,6 +65,12 @@ public final class StringUtils {
   }
 
   public static String truncate(final String stringToTruncate, final int maxLength) {
+    if (maxLength < "...".length()) {
+      throw new IllegalArgumentException(
+          String.format(
+              "Illegal max length for truncate requested: %s, must be at least 3, the length of the ellipsis",
+              maxLength));
+    }
     final String s = stringToTruncate == null ? "" : stringToTruncate;
     if (s.length() <= maxLength) {
       return s;

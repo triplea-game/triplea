@@ -1,13 +1,11 @@
 package org.triplea.swing;
 
-import com.google.common.base.Preconditions;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import org.triplea.java.ArgChecker;
 import org.triplea.swing.key.binding.KeyCode;
 
 /**
@@ -26,7 +24,7 @@ public class JMenuBuilder {
   private final Collection<Component> menuComponents = new ArrayList<>();
 
   public JMenuBuilder(final String title, final KeyCode mnemonic) {
-    if(title == null || title.isBlank()) {
+    if (title == null || title.isBlank()) {
       throw new IllegalArgumentException("Menu title cannot be null or blank");
     }
     this.title = title;
@@ -51,10 +49,10 @@ public class JMenuBuilder {
    */
   public JMenuBuilder addMenuItem(
       final String title, final KeyCode mnemonic, final Runnable menuItemAction) {
-    if(title == null) {
+    if (title == null) {
       throw new IllegalArgumentException("Menu item title cannot be null");
     }
-    if(menuItemAction == null) {
+    if (menuItemAction == null) {
       throw new NullPointerException("Menu item action cannot be null");
     }
     return addMenuItem(

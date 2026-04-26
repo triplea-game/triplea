@@ -9,7 +9,6 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
-import org.triplea.java.ArgChecker;
 import org.triplea.swing.key.binding.KeyCode;
 
 /**
@@ -31,10 +30,10 @@ public class JMenuItemBuilder {
   @Nullable private String tooltip = null;
 
   public JMenuItemBuilder(final String title, final KeyCode mnemonic) {
-    if(title == null || title.isBlank()) {
+    if (title == null || title.isBlank()) {
       throw new IllegalArgumentException("Menu item title cannot be null or blank");
     }
-    if(mnemonic == null) {
+    if (mnemonic == null) {
       throw new NullPointerException("Menu item mnemonic cannot be null");
     }
     this.title = title;

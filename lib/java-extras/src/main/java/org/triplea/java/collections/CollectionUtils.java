@@ -2,8 +2,10 @@ package org.triplea.java.collections;
 
 import static java.util.function.Predicate.not;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -125,9 +127,46 @@ public class CollectionUtils {
    */
   public static <T> Collection<T> createSortedCollection(
       final Collection<T> elements, final @Nullable Comparator<T> comparator) {
-    final List<T> sorted = new ArrayList<>(elements);
-    sorted.sort(comparator);
-    return sorted;
+    return new SortedList<>(elements, comparator);
+  }
+
+  /** ArrayList-backed list that maintains sorted insertion order via binary search. */
+  @SuppressWarnings("unchecked")
+  private static final class SortedList<T> extends AbstractList<T> {
+    private final List<T> delegate;
+    private final Comparator<T> comparator;
+
+    SortedList(final Collection<T> elements, final @Nullable Comparator<T> comparator) {
+      this.comparator = comparator != null ? comparator : (Comparator<T>) Comparator.naturalOrder();
+      this.delegate = new ArrayList<>(elements.size());
+      elements.forEach(this::add);
+    }
+
+    @Override
+    public boolean add(final T element) {
+      int i = Collections.binarySearch(delegate, element, comparator);
+      if (i < 0) {
+        delegate.add(-(i + 1), element);
+      } else {
+        delegate.add(i, element);
+      }
+      return true;
+    }
+
+    @Override
+    public T get(final int index) {
+      return delegate.get(index);
+    }
+
+    @Override
+    public int size() {
+      return delegate.size();
+    }
+
+    @Override
+    public T remove(final int index) {
+      return delegate.remove(index);
+    }
   }
 
   public static <T> T getAny(final Iterable<T> elements) {

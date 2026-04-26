@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.KeyStroke;
-import org.triplea.java.ArgChecker;
 import org.triplea.swing.key.binding.KeyCode;
 
 /**
