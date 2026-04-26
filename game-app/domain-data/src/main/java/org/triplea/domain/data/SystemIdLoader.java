@@ -1,6 +1,5 @@
 package org.triplea.domain.data;
 
-import com.google.common.annotations.VisibleForTesting;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.prefs.BackingStoreException;
@@ -11,6 +10,7 @@ import lombok.Setter;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.VisibleForTesting;
 
 /** Loads a SystemId from persistence. */
 @UtilityClass
