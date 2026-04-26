@@ -87,7 +87,7 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
 
   @Override
   public boolean isOpen() {
-    return webSocketConnection.isOpen();
+    return webSocketConnection != null && webSocketConnection.isOpen();
   }
 
   @Override
