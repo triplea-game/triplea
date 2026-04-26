@@ -21,7 +21,8 @@ class ReconnectOverlay {
   private final JLabel messageLabel;
 
   ReconnectOverlay(final Window owner, final Runnable onDisconnect) {
-    messageLabel = new JLabelBuilder().border(BorderFactory.createEmptyBorder(16, 24, 8, 24)).build();
+    messageLabel =
+        new JLabelBuilder().border(BorderFactory.createEmptyBorder(16, 24, 8, 24)).build();
 
     final var buttonPanel =
         new JPanelBuilder()
@@ -30,11 +31,7 @@ class ReconnectOverlay {
             .build();
 
     final var content =
-        new JPanelBuilder()
-            .borderLayout()
-            .addCenter(messageLabel)
-            .addSouth(buttonPanel)
-            .build();
+        new JPanelBuilder().borderLayout().addCenter(messageLabel).addSouth(buttonPanel).build();
 
     dialog =
         new JDialogBuilder()
@@ -50,8 +47,7 @@ class ReconnectOverlay {
   void show(final int attempt) {
     SwingUtilities.invokeLater(
         () -> {
-          messageLabel.setText(
-              "Lost connection to lobby. Reconnecting… (attempt " + attempt + ")");
+          messageLabel.setText("Lost connection to lobby. Reconnecting… (attempt " + attempt + ")");
           dialog.pack();
           if (!dialog.isVisible()) {
             dialog.setVisible(true);

@@ -29,9 +29,9 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.triplea.swing.SwingComponents;
 import lombok.Setter;
 import org.triplea.game.client.HeadedGameRunner;
+import org.triplea.swing.SwingComponents;
 
 /** This class provides a way to switch between different ISetupPanel displays. */
 @RequiredArgsConstructor

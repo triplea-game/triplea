@@ -42,8 +42,7 @@ class LobbyGameListingModel {
         msg -> lobbyGameBroadcaster.gameUpdated(msg.getLobbyGameListing()));
 
     connection.addMessageListener(
-        LobbyGameRemovedMessage.TYPE,
-        msg -> lobbyGameBroadcaster.gameRemoved(msg.getGameId()));
+        LobbyGameRemovedMessage.TYPE, msg -> lobbyGameBroadcaster.gameRemoved(msg.getGameId()));
 
     connection.fetchGameListing().forEach(lobbyGameBroadcaster::gameUpdated);
   }
@@ -130,10 +129,6 @@ class LobbyGameListingModel {
   }
 
   private LobbyGameListing findGame(final String gameId) {
-    return games.stream()
-        .filter(game -> game.getGameId().equals(gameId))
-        .findFirst()
-        .orElse(null);
+    return games.stream().filter(game -> game.getGameId().equals(gameId)).findFirst().orElse(null);
   }
 }
-

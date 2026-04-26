@@ -16,7 +16,6 @@ interface WebSocketConnectionListener {
    */
   void reconnected();
 
-
   void connectionTerminated(String reason);
 
   void handleError(Throwable error);

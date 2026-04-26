@@ -220,7 +220,8 @@ class WebSocketConnection {
                     connectionIsOpen = false;
                     httpClient = HttpClient.newHttpClient();
                     try {
-                      connectAsync().get(DEFAULT_CONNECT_TIMEOUT_MILLIS * 2L, TimeUnit.MILLISECONDS);
+                      connectAsync()
+                          .get(DEFAULT_CONNECT_TIMEOUT_MILLIS * 2L, TimeUnit.MILLISECONDS);
                       log.info("Successfully reconnected on attempt {}", attempt - 1);
                       listener.reconnected();
                       return;

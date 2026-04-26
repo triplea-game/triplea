@@ -58,8 +58,7 @@ class LobbyGamePanel extends JPanel {
               final TableCellRenderer renderer, final int rowIndex, final int colIndex) {
 
             final Component component = super.prepareRenderer(renderer, rowIndex, colIndex);
-            final var gameDescription =
-                lobbyGameTableModel.get(convertRowIndexToModel(rowIndex));
+            final var gameDescription = lobbyGameTableModel.get(convertRowIndexToModel(rowIndex));
             component.setFont(
                 gameDescription.isBot()
                     ? UIManager.getDefaults().getFont("Table.font").deriveFont(Font.ITALIC)
@@ -244,7 +243,8 @@ class LobbyGamePanel extends JPanel {
       return;
     }
 
-    final String gameId = gameTableModel.getGameIdForRow(gameTable.convertRowIndexToModel(selectedIndex));
+    final String gameId =
+        gameTableModel.getGameIdForRow(gameTable.convertRowIndexToModel(selectedIndex));
     gameListingModel.bootGame(gameId);
     JOptionPane.showMessageDialog(
         null, "The game you selected has been disconnected from the lobby.");

@@ -62,4 +62,3 @@ class LobbyPlayerActions {
             .toSwingAction());
   }
 }
-

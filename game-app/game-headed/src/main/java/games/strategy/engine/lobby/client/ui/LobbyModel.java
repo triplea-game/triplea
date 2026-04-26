@@ -26,9 +26,7 @@ public class LobbyModel {
 
     connection =
         new PlayerToLobbyConnection(
-            ClientSetting.lobbyUri.getValueOrThrow(),
-            loginResult.getApiKey(),
-            onConnectionError);
+            ClientSetting.lobbyUri.getValueOrThrow(), loginResult.getApiKey(), onConnectionError);
 
     gameListingModel = new LobbyGameListingModel(connection);
     chatTransmitter = new LobbyChatTransmitter(connection, loginResult.getUsername());
@@ -40,4 +38,3 @@ public class LobbyModel {
     connection.close();
   }
 }
-

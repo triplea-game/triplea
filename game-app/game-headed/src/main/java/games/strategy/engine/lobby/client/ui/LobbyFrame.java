@@ -64,8 +64,7 @@ public class LobbyFrame extends JFrame implements QuitHandler {
         clickedChatter ->
             LobbyPlayerActions.buildFor(this, loginResult, clickedChatter, connection));
 
-    final var tableModel =
-        new LobbyGameTableModel(loginResult.isModerator(), gameListingModel);
+    final var tableModel = new LobbyGameTableModel(loginResult.isModerator(), gameListingModel);
     final LobbyGamePanel gamePanel =
         new LobbyGamePanel(this, loginResult, tableModel, gameListingModel);
 

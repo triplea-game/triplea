@@ -33,8 +33,7 @@ class LobbyGameTableModel extends AbstractTableModel {
   LobbyGameTableModel(final boolean admin, final LobbyGameListingModel listingModel) {
     this.admin = admin;
     this.listingModel = listingModel;
-    listingModel.addChangeListener(
-        () -> SwingUtilities.invokeLater(this::fireTableDataChanged));
+    listingModel.addChangeListener(() -> SwingUtilities.invokeLater(this::fireTableDataChanged));
   }
 
   @VisibleForTesting
