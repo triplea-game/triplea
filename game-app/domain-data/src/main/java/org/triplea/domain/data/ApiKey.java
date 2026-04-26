@@ -24,10 +24,10 @@ public class ApiKey {
   }
 
   public static ApiKey of(final String value) {
-    if (value == null || value.isBlank() || value.contains("\n") || value.length() >= MAX_LENGTH) {
+    if (value == null || value.isBlank() || value.contains("\n") || value.length() > MAX_LENGTH) {
       throw new IllegalArgumentException(
           String.format(
-              "Invalid API key passed with length: {}", value == null ? 0 : value.length()));
+              "Invalid API key passed with length: %d", value == null ? 0 : value.length()));
     }
     return new ApiKey(value);
   }
