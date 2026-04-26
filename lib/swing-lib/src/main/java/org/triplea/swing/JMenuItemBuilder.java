@@ -1,7 +1,7 @@
 package org.triplea.swing;
 
-import com.google.common.base.Preconditions;
 import java.awt.Toolkit;
+import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
@@ -69,7 +69,7 @@ public class JMenuItemBuilder {
 
   private void buildImpl(final JMenuItem menuItem) {
     if (enabled) {
-      Preconditions.checkNotNull(actionListener);
+      Objects.requireNonNull(actionListener, "actionListener cannot be null");
       menuItem.addActionListener(e -> actionListener.run());
       menuItem.setMnemonic(mnemonic.getInputEventCode());
       if (acceleratorKey != null) {

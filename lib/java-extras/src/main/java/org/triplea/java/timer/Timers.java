@@ -1,5 +1,6 @@
 package org.triplea.java.timer;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -34,8 +35,9 @@ public final class Timers {
    * @param threadName The name of the timer thread that will be created.
    */
   public static Builders.FixedRateTimerPeriodBuilder fixedRateTimer(final String threadName) {
-    if (threadName == null || threadName.isBlank()) {
-      throw new IllegalArgumentException();
+    Objects.requireNonNull(threadName, "threadName cannot be null");
+    if (threadName.isBlank()) {
+      throw new IllegalArgumentException("threadName cannot be blank");
     }
     return new Builders.FixedRateTimerPeriodBuilder(threadName);
   }

@@ -102,9 +102,6 @@ public final class FileUtils {
     if (!Files.isDirectory(searchRoot)) {
       throw new IllegalArgumentException(searchRoot.toAbsolutePath().toString());
     }
-    if (!Files.exists(searchRoot)) {
-      throw new IllegalArgumentException(searchRoot.toAbsolutePath().toString());
-    }
     if (maxDepth < 0) {
       throw new IllegalArgumentException();
     }

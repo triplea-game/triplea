@@ -27,6 +27,9 @@ public class JMenuBuilder {
     if (title == null || title.isBlank()) {
       throw new IllegalArgumentException("Menu title cannot be null or blank");
     }
+    if (mnemonic == null) {
+      throw new NullPointerException("Menu mnemonic cannot be null");
+    }
     this.title = title;
     this.mnemonic = mnemonic;
   }
@@ -49,8 +52,8 @@ public class JMenuBuilder {
    */
   public JMenuBuilder addMenuItem(
       final String title, final KeyCode mnemonic, final Runnable menuItemAction) {
-    if (title == null) {
-      throw new IllegalArgumentException("Menu item title cannot be null");
+    if (title == null || title.isBlank()) {
+      throw new IllegalArgumentException("Menu item title cannot be null or blank");
     }
     if (menuItemAction == null) {
       throw new NullPointerException("Menu item action cannot be null");

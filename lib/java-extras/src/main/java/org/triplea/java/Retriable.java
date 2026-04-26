@@ -1,6 +1,7 @@
 package org.triplea.java;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -90,9 +91,7 @@ public class Retriable<T> {
     private final Duration backOff;
 
     public RetriableBuilder<T> withTask(final Supplier<Optional<T>> taskRunner) {
-      if (taskRunner == null) {
-        throw new IllegalArgumentException();
-      }
+      Objects.requireNonNull(taskRunner, "taskRunner cannot be null");
       return new RetriableBuilder<>(threadSleeper, maxAttempts, backOff, taskRunner);
     }
   }
