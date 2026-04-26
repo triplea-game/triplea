@@ -2,6 +2,7 @@ package games.strategy.engine.random;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import java.util.concurrent.ThreadLocalRandom;
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 import org.apache.commons.math3.random.MersenneTwister;
@@ -12,8 +13,12 @@ import org.apache.commons.math3.random.RandomGenerator;
 public final class PlainRandomSource implements IRandomSource {
   private final Object lock = new Object();
 
+  // ThreadLocalRandom provides well-distributed seeds even when many instances are created
+  // concurrently (e.g. AI battle simulators). MersenneTwister's no-arg constructor seeds from
+  // currentTimeMillis + identityHashCode, which can collide within the same millisecond and cause
+  // multiple simulators to produce identical dice sequences.
   @GuardedBy("lock")
-  private final RandomGenerator random = new MersenneTwister();
+  private final RandomGenerator random = new MersenneTwister(ThreadLocalRandom.current().nextLong());
 
   @Override
   public int[] getRandom(final int max, final int count, final String annotation) {
