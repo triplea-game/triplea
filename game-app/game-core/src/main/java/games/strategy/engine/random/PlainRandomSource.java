@@ -2,18 +2,25 @@ package games.strategy.engine.random;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import java.util.SplittableRandom;
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
-import org.apache.commons.math3.random.MersenneTwister;
-import org.apache.commons.math3.random.RandomGenerator;
 
 /** A source of random numbers that uses a pseudorandom number generator. */
 @ThreadSafe
 public final class PlainRandomSource implements IRandomSource {
   private final Object lock = new Object();
 
+  /// SplittableRandom (AKA splitmix64) is selected for reasons:
+  /// - small state (8 bytes)
+  /// - good cache performance undur concurrent simulation
+  /// - passes BigCrush,
+  /// - no LSB quality issues
+  /// Documentation:
+  /// - https://docs.oracle.com/javase/8/docs/api/java/util/SplittableRandom.html
+  ///
   @GuardedBy("lock")
-  private final RandomGenerator random = new MersenneTwister();
+  private final SplittableRandom random = new SplittableRandom();
 
   @Override
   public int[] getRandom(final int max, final int count, final String annotation) {
