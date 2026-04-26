@@ -33,6 +33,9 @@ public class JMenuItemCheckBoxBuilder {
     if (title == null || title.isBlank()) {
       throw new IllegalArgumentException("Menu item title cannot be null or blank");
     }
+    if (mnemonic == null) {
+      throw new IllegalArgumentException("Menu item mnemonic cannot be null");
+    }
     this.title = title;
     this.mnemonic = mnemonic;
   }
