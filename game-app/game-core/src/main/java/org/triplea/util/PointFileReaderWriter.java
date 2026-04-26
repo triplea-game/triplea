@@ -263,7 +263,7 @@ public final class PointFileReaderWriter {
           MessageFormat.format("missing territory name: {0}", line));
     }
     if (mapping.containsKey(name)) {
-      throw new IllegalArgumentException("name found twice: " + name);
+      throw new IllegalArgumentException(MessageFormat.format("name found twice: {0}", name));
     }
     final Matcher matcher = pointPattern.matcher(line);
     final List<Point> points = new ArrayList<>();
