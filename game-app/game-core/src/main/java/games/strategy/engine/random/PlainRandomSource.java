@@ -13,7 +13,7 @@ public final class PlainRandomSource implements IRandomSource {
 
   /// SplittableRandom (AKA splitmix64) is selected for reasons:
   /// - small state (8 bytes)
-  /// - good cache performance undur concurrent simulation
+  /// - good cache performance under concurrent simulation
   /// - passes BigCrush,
   /// - no LSB quality issues
   /// Documentation:
