@@ -19,6 +19,9 @@ public final class PlainRandomSource implements IRandomSource {
   /// Documentation:
   /// - https://docs.oracle.com/javase/8/docs/api/java/util/SplittableRandom.html
   ///
+  /// Note: @GuardedBy("lock") remains for correctness. The cost to acquire
+  /// the lock when not under contention is close to free.
+  ///
   @GuardedBy("lock")
   private final SplittableRandom random = new SplittableRandom();
 
