@@ -1,6 +1,5 @@
 package org.triplea.domain.data;
 
-import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -17,8 +16,9 @@ public class SystemId {
   private final String value;
 
   public static SystemId of(final String systemId) {
-    Preconditions.checkNotNull(systemId);
-    Preconditions.checkArgument(!systemId.isEmpty());
+    if (systemId == null || systemId.isBlank()) {
+      throw new IllegalArgumentException("Invalid system id: " + systemId);
+    }
     return new SystemId(systemId);
   }
 
