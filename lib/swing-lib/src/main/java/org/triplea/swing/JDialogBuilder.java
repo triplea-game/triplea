@@ -3,13 +3,13 @@ package org.triplea.swing;
 import com.google.common.base.Preconditions;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Window;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.swing.key.binding.SwingKeyBinding;
 
@@ -28,7 +28,7 @@ import org.triplea.swing.key.binding.SwingKeyBinding;
  */
 public class JDialogBuilder {
 
-  private JFrame parent;
+  private Window parent;
   private String title;
   private boolean alwaysOnTop;
   private Dimension size;
@@ -59,7 +59,7 @@ public class JDialogBuilder {
     return dialog;
   }
 
-  public JDialogBuilder parent(final JFrame parent) {
+  public JDialogBuilder parent(final Window parent) {
     this.parent = parent;
     return this;
   }

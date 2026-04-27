@@ -7,11 +7,13 @@ import games.strategy.engine.lobby.client.ui.action.ShowPlayersAction;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -21,12 +23,12 @@ import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
-import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
-import org.triplea.lobby.common.GameDescription;
 import org.triplea.swing.MouseListenerBuilder;
 import org.triplea.swing.SwingAction;
 
@@ -35,19 +37,19 @@ class LobbyGamePanel extends JPanel {
   private final JFrame parent;
   private final JButton joinGameButton;
   private final LobbyGameTableModel gameTableModel;
+  private final LobbyGameListingModel gameListingModel;
   private final LoginResult loginResult;
   private final JTable gameTable;
-  private final PlayerToLobbyConnection playerToLobbyConnection;
 
   LobbyGamePanel(
       final JFrame parent,
       final LoginResult loginResult,
       final LobbyGameTableModel lobbyGameTableModel,
-      final PlayerToLobbyConnection playerToLobbyConnection) {
+      final LobbyGameListingModel gameListingModel) {
     this.parent = parent;
     this.loginResult = loginResult;
     this.gameTableModel = lobbyGameTableModel;
-    this.playerToLobbyConnection = playerToLobbyConnection;
+    this.gameListingModel = gameListingModel;
 
     final JButton hostGameButton = new JButton("Host Game");
     joinGameButton = new JButton("Join Game");
@@ -55,20 +57,28 @@ class LobbyGamePanel extends JPanel {
     gameTable =
         new JTable(gameTableModel) {
           @Override
-          // Custom renderer to show 'bot' rows in italic font
+          // Italic font for bot rows; zebra striping for unselected rows.
           public Component prepareRenderer(
               final TableCellRenderer renderer, final int rowIndex, final int colIndex) {
 
             final Component component = super.prepareRenderer(renderer, rowIndex, colIndex);
-            final GameDescription gameDescription =
-                lobbyGameTableModel.get(convertRowIndexToModel(rowIndex));
+            final var gameDescription = lobbyGameTableModel.get(convertRowIndexToModel(rowIndex));
             component.setFont(
                 gameDescription.isBot()
                     ? UIManager.getDefaults().getFont("Table.font").deriveFont(Font.ITALIC)
                     : UIManager.getDefaults().getFont("Table.font"));
+            if (!isRowSelected(rowIndex)) {
+              component.setBackground(
+                  rowIndex % 2 == 0
+                      ? getBackground()
+                      : UIManager.getColor("Table.alternateRowColor"));
+            }
             return component;
           }
         };
+    gameTable.setRowHeight(28);
+    gameTable.setShowGrid(false);
+    gameTable.setIntercellSpacing(new Dimension(0, 0));
     gameTable
         .getSelectionModel()
         .addListSelectionListener(
@@ -130,6 +140,30 @@ class LobbyGamePanel extends JPanel {
         .getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Host))
         .setPreferredWidth(67);
 
+    // Render the password column as a centred lock symbol instead of a raw "*".
+    final var passwordColumn =
+        gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.P));
+    passwordColumn.setHeaderValue("🔒");
+    passwordColumn.setCellRenderer(
+        new DefaultTableCellRenderer() {
+          @Override
+          public Component getTableCellRendererComponent(
+              final JTable table,
+              final Object value,
+              final boolean isSelected,
+              final boolean hasFocus,
+              final int row,
+              final int column) {
+            final JLabel label =
+                (JLabel)
+                    super.getTableCellRendererComponent(
+                        table, value, isSelected, hasFocus, row, column);
+            label.setText("*".equals(value) ? "🔒" : "");
+            label.setHorizontalAlignment(SwingConstants.CENTER);
+            return label;
+          }
+        });
+
     final JScrollPane scroll = new JScrollPane(gameTable);
     setLayout(new BorderLayout());
     add(scroll, BorderLayout.CENTER);
@@ -185,7 +219,7 @@ class LobbyGamePanel extends JPanel {
                     () ->
                         gameTableModel.getGameListingForRow(
                             gameTable.convertRowIndexToModel(gameTable.getSelectedRow())))
-                .playerToLobbyConnection(playerToLobbyConnection)
+                .playerToLobbyConnection(gameListingModel.getConnection())
                 .build()
                 .buildSwingAction())
         .forEach(menu::add);
@@ -194,7 +228,7 @@ class LobbyGamePanel extends JPanel {
       menu.addSeparator();
       List.of(
               SwingAction.of("Boot Game", e -> bootGame()),
-              SwingAction.of("Shutdown", e -> shutdown()))
+              SwingAction.of("Shutdown", e -> shutdownGame()))
           .forEach(menu::add);
     }
 
@@ -209,8 +243,7 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     // we sort the table, so get the correct index
-    final GameDescription description =
-        gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
+    final var description = gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
     GameProcess.joinGame(description, loginResult.getUsername());
   }
 
@@ -247,12 +280,14 @@ class LobbyGamePanel extends JPanel {
       return;
     }
 
-    gameTableModel.bootGame(gameTable.convertRowIndexToModel(selectedIndex));
+    final String gameId =
+        gameTableModel.getGameIdForRow(gameTable.convertRowIndexToModel(selectedIndex));
+    gameListingModel.bootGame(gameId);
     JOptionPane.showMessageDialog(
         null, "The game you selected has been disconnected from the lobby.");
   }
 
-  private void shutdown() {
+  private void shutdownGame() {
     final int selectedIndex = gameTable.getSelectedRow();
     if (selectedIndex == -1) {
       return;
@@ -269,7 +304,7 @@ class LobbyGamePanel extends JPanel {
 
     final String gameId =
         gameTableModel.getGameIdForRow(gameTable.convertRowIndexToModel(selectedIndex));
-    playerToLobbyConnection.sendShutdownRequest(gameId);
+    gameListingModel.sendShutdownRequest(gameId);
     JOptionPane.showMessageDialog(parent, "The game you selected was sent a shutdown signal");
   }
 }

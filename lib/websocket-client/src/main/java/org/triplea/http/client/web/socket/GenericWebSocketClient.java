@@ -38,7 +38,11 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
   /** These are called whenever connection is closed, whether by us or server. */
   private final Collection<Runnable> connectionClosedListeners = new ArrayList<>();
 
+  private final Collection<Runnable> connectionResetListeners = new ArrayList<>();
+
   private final Collection<Consumer<String>> connectionTerminatedListeners = new ArrayList<>();
+
+  private final Collection<WebSocket.ReconnectionHandler> reconnectionHandlers = new ArrayList<>();
 
   private final URI websocketUri;
   private final Consumer<String> errorHandler;
@@ -55,9 +59,9 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
 
   @Builder
   public GenericWebSocketClient(
-      @Nonnull final URI websocketUri,
-      @Nonnull final Consumer<String> errorHandler,
-      @Nonnull final Map<String, String> headers) {
+      @Nonnull URI websocketUri,
+      @Nonnull Consumer<String> errorHandler,
+      @Nonnull Map<String, String> headers) {
     this(
         new WebSocketProtocolSwapper().apply(websocketUri),
         errorHandler,
@@ -76,10 +80,14 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
     Preconditions.checkArgument(
         websocketUri.getScheme().equals("ws") || websocketUri.getScheme().equals("wss"),
         "Websocket URI scheme must be either ws or wss, but was: " + websocketUri);
-
     this.websocketUri = websocketUri;
     this.errorHandler = errorHandler;
     this.webSocketConnectionFactory = webSocketConnectionFactory;
+  }
+
+  @Override
+  public boolean isOpen() {
+    return webSocketConnection != null && webSocketConnection.isOpen();
   }
 
   @Override
@@ -89,7 +97,22 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
     webSocketConnection.connect(this, errorHandler);
   }
 
-  /** Starts a non-blocking close of the websocket connection. */
+  @Override
+  public void addReconnectionListener(final WebSocket.ReconnectionHandler handler) {
+    reconnectionHandlers.add(handler);
+  }
+
+  @Override
+  public void reconnected() {
+    connectionResetListeners.forEach(Runnable::run);
+    reconnectionHandlers.forEach(WebSocket.ReconnectionHandler::onReconnected);
+  }
+
+  @Override
+  public void onReconnecting(final int attempt) {
+    reconnectionHandlers.forEach(h -> h.onReconnecting(attempt));
+  }
+
   @Override
   public void close() {
     webSocketConnection.close();
@@ -125,6 +148,11 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
   }
 
   @Override
+  public void addConnectionResetListener(Runnable listener) {
+    connectionResetListeners.add(listener);
+  }
+
+  @Override
   @Synchronized
   public void messageReceived(final String message) {
     final MessageEnvelope converted = gson.fromJson(message, MessageEnvelope.class);
@@ -135,6 +163,7 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
     }
   }
 
+  /** Invoked when the client disconnects */
   @Override
   public void connectionClosed() {
     connectionClosedListeners.forEach(Runnable::run);
