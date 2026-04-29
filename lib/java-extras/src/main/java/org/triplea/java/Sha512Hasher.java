@@ -1,15 +1,14 @@
 package org.triplea.java;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
-import com.google.common.io.BaseEncoding;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HexFormat;
 import java.util.Locale;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.VisibleForTesting;
 
 /**
  * A class which implements the TripleA-Lobby-Login authentication system using RSA encryption for
@@ -35,7 +34,6 @@ public final class Sha512Hasher {
     if (password.isBlank()) {
       return password;
     }
-    Preconditions.checkNotNull(password);
     return sha512(PSEUDO_SALT + password);
   }
 
@@ -43,8 +41,9 @@ public final class Sha512Hasher {
   @VisibleForTesting
   static String sha512(final String input) {
     try {
-      return BaseEncoding.base16()
-          .encode(MessageDigest.getInstance(SHA_512).digest(input.getBytes(StandardCharsets.UTF_8)))
+      return HexFormat.of()
+          .formatHex(
+              MessageDigest.getInstance(SHA_512).digest(input.getBytes(StandardCharsets.UTF_8)))
           .toLowerCase(Locale.ROOT);
     } catch (final NoSuchAlgorithmException e) {
       throw new IllegalStateException(SHA_512 + " is not supported!", e);

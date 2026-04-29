@@ -1,7 +1,6 @@
 package org.triplea.java;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
+import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
@@ -14,7 +13,7 @@ public class PredicateBuilder<T> {
   private Predicate<T> predicate;
 
   private PredicateBuilder(final Predicate<T> predicate) {
-    this.predicate = checkNotNull(predicate);
+    this.predicate = Objects.requireNonNull(predicate);
   }
 
   /** Creates a new PredicateBuilder starting with the provided Predicate. */

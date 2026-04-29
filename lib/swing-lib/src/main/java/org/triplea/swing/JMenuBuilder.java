@@ -1,13 +1,11 @@
 package org.triplea.swing;
 
-import com.google.common.base.Preconditions;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import org.triplea.java.ArgChecker;
 import org.triplea.swing.key.binding.KeyCode;
 
 /**
@@ -26,7 +24,12 @@ public class JMenuBuilder {
   private final Collection<Component> menuComponents = new ArrayList<>();
 
   public JMenuBuilder(final String title, final KeyCode mnemonic) {
-    ArgChecker.checkNotEmpty(title);
+    if (title == null || title.isBlank()) {
+      throw new IllegalArgumentException("Menu title cannot be null or blank");
+    }
+    if (mnemonic == null) {
+      throw new NullPointerException("Menu mnemonic cannot be null");
+    }
     this.title = title;
     this.mnemonic = mnemonic;
   }
@@ -49,8 +52,12 @@ public class JMenuBuilder {
    */
   public JMenuBuilder addMenuItem(
       final String title, final KeyCode mnemonic, final Runnable menuItemAction) {
-    ArgChecker.checkNotEmpty(title);
-    Preconditions.checkNotNull(menuItemAction);
+    if (title == null || title.isBlank()) {
+      throw new IllegalArgumentException("Menu item title cannot be null or blank");
+    }
+    if (menuItemAction == null) {
+      throw new NullPointerException("Menu item action cannot be null");
+    }
     return addMenuItem(
         new JMenuItemBuilder(title, mnemonic).actionListener(menuItemAction).build());
   }

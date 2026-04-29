@@ -1,6 +1,6 @@
 package org.triplea.java;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
@@ -34,7 +34,7 @@ public final class Interruptibles {
    *     if the current thread was interrupted while waiting for the operation to complete.
    */
   public static boolean await(final ThrowingRunnable<InterruptedException> runnable) {
-    checkNotNull(runnable);
+    requireNonNull(runnable);
 
     return awaitResult(
             () -> {
@@ -53,7 +53,7 @@ public final class Interruptibles {
    *     thread was interrupted before the latch counted down to zero.
    */
   public static boolean await(final CountDownLatch latch) {
-    checkNotNull(latch);
+    requireNonNull(latch);
 
     return await(latch::await);
   }
@@ -72,7 +72,7 @@ public final class Interruptibles {
    */
   public static <T> Result<T> awaitResult(
       final ThrowingSupplier</* @Nullable */ T, InterruptedException> supplier) {
-    checkNotNull(supplier);
+    requireNonNull(supplier);
 
     try {
       return new Result<>(true, Optional.ofNullable(supplier.get()));
@@ -90,7 +90,7 @@ public final class Interruptibles {
    *     interrupted before the thread died.
    */
   public static boolean join(final Thread thread) {
-    checkNotNull(thread);
+    requireNonNull(thread);
 
     return await(thread::join);
   }
