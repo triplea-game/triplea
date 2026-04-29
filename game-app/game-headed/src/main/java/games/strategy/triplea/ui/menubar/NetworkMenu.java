@@ -42,19 +42,19 @@ final class NetworkMenu {
     return new JMenuBuilder("Network", TripleAMenuBar.Mnemonic.NETWORK.getMnemonicCode())
         .addMenuItemIf(
             isServer,
-            new JMenuItemBuilder(
+            () -> new JMenuItemBuilder(
                     new BootPlayerAction(frame, getServerMessenger(game)),
                     Mnemonic.REMOVE_PLAYER.getMnemonicCode())
                 .build())
         .addMenuItemIf(
             isServer,
-            new JMenuItemBuilder(
+            () -> new JMenuItemBuilder(
                     new BanPlayerAction(frame, getServerMessenger(game)),
                     Mnemonic.BAN_PLAYER.getMnemonicCode())
                 .build())
         .addMenuItemIf(
             watcher.isPresent(),
-            new JMenuItemBuilder(
+            () -> new JMenuItemBuilder(
                     new SetPasswordAction(
                         frame,
                         watcher.orElse(null),
@@ -63,8 +63,8 @@ final class NetworkMenu {
                 .build())
         .addMenuItemIf(
             !game.getData().getProperties().getEditableProperties().isEmpty(),
-            new JMenuItemBuilder("Show Who is Who", Mnemonic.SHOW_WHO_IS_WHO.getMnemonicCode())
-                .actionListener(() -> PlayersPanel.showPlayers(game, frame)))
+            () -> new JMenuItemBuilder("Show Who is Who", Mnemonic.SHOW_WHO_IS_WHO.getMnemonicCode())
+                .actionListener(() -> PlayersPanel.showPlayers(game, frame)).build())
         .build();
   }
 

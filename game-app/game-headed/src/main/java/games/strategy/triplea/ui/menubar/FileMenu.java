@@ -39,7 +39,7 @@ final class FileMenu {
         .addMenuItem(newSaveMenuItem(frame))
         .addMenuItemIf(
             PbemMessagePoster.gameDataHasPlayByEmailOrForumMessengers(frame.getGame().getData()),
-            addPostPbem(frame))
+            () -> addPostPbem(frame))
         .addSeparator()
         .addMenuItem(
             new JMenuItemBuilder("Leave Game", Mnemonic.LEAVE.getMnemonicCode())
@@ -58,7 +58,7 @@ final class FileMenu {
         .addMenuItemIf(
             !isMac,
             // On non-Mac operating systems, we need to manually create an Exit menu item
-            new JMenuItemBuilder("Exit Program", Mnemonic.EXIT.getMnemonicCode())
+            () -> new JMenuItemBuilder("Exit Program", Mnemonic.EXIT.getMnemonicCode())
                 .actionListener(frame::shutdown)
                 .build())
         .build();

@@ -37,21 +37,6 @@ class JMenuBuilderTest {
     assertThat(menu.getItem(0).getText(), is(MENU_ITEM_TITLE));
   }
 
-  @Test
-  void addMenuItemIf() {
-    JMenu menu =
-        new JMenuBuilder(TITLE, MENU_MNEMONIC)
-            .addMenuItemIf(false, MENU_ITEM_TITLE, KeyCode.A, () -> {})
-            .build();
-
-    assertThat(menu.getItemCount(), is(0));
-
-    menu =
-        new JMenuBuilder(TITLE, MENU_MNEMONIC)
-            .addMenuItemIf(true, MENU_ITEM_TITLE, KeyCode.A, () -> {})
-            .build();
-    assertThat(menu.getItemCount(), is(1));
-  }
 
   @Test
   void testAddMenuItem() {

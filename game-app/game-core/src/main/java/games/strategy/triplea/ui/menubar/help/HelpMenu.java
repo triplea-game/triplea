@@ -22,8 +22,8 @@ public final class HelpMenu {
         .addMenuItem(new JMenuItemBuilder(UnitHelpMenu.buildMenu(gameData, uiContext), KeyCode.U))
         .addMenuItemIf(
             !gameNotes.isBlank(),
-            new JMenuItemBuilder(
-                GameNotesMenu.buildMenu(gameNotes, uiContext.getMapLocation()), KeyCode.N))
+            () -> new JMenuItemBuilder(
+                GameNotesMenu.buildMenu(gameNotes, uiContext.getMapLocation()), KeyCode.N).build())
         .addSeparator()
         .addMenuItem(
             new JMenuItemBuilder("License", KeyCode.I)
