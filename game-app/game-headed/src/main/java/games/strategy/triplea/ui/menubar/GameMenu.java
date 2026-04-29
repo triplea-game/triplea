@@ -93,20 +93,25 @@ final class GameMenu {
         .addSeparator()
         .addMenuItemIf(
             !gameData.getProperties().getEditableProperties().isEmpty(),
-            () -> new JMenuItemBuilder("Game Options", Mnemonic.GAME_OPTIONS.getMnemonicCode())
-                .actionListener(
-                    () -> {
-                      final PropertiesUi ui =
-                          new PropertiesUi(gameData.getProperties().getEditableProperties(), false);
-                      JOptionPane.showMessageDialog(
-                          frame, ui, "Game Options", JOptionPane.PLAIN_MESSAGE);
-                    }).build())
+            () ->
+                new JMenuItemBuilder("Game Options", Mnemonic.GAME_OPTIONS.getMnemonicCode())
+                    .actionListener(
+                        () -> {
+                          final PropertiesUi ui =
+                              new PropertiesUi(
+                                  gameData.getProperties().getEditableProperties(), false);
+                          JOptionPane.showMessageDialog(
+                              frame, ui, "Game Options", JOptionPane.PLAIN_MESSAGE);
+                        })
+                    .build())
         .addMenuItemIf(
             frame.getGame() instanceof ClientGame,
-            () -> new JMenuItemBuilder(
-                    "Show Verified Dice", Mnemonic.SHOW_VERIFIED_DICE.getMnemonicCode())
-                .actionListener(
-                    () -> new VerifiedRandomNumbersDialog(frame.getRootPane()).setVisible(true)).build())
+            () ->
+                new JMenuItemBuilder(
+                        "Show Verified Dice", Mnemonic.SHOW_VERIFIED_DICE.getMnemonicCode())
+                    .actionListener(
+                        () -> new VerifiedRandomNumbersDialog(frame.getRootPane()).setVisible(true))
+                    .build())
         .addMenuItem(getShowPoliticsPanel(frame))
         .addMenuItem(getNotificationSettings(frame))
         .addMenuItem(addShowDiceStats(frame))

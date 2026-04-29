@@ -37,7 +37,6 @@ class JMenuBuilderTest {
     assertThat(menu.getItem(0).getText(), is(MENU_ITEM_TITLE));
   }
 
-
   @Test
   void testAddMenuItem() {
     final JMenu menu =

@@ -63,7 +63,8 @@ final class ViewMenu {
         .addMenuItem(getShowUnitsInStatusBarMenu(frame))
         .addMenuItem(getFlagDisplayModeMenu(frame))
         .addMenuItemIf(mapData.useTerritoryEffectMarkers(), () -> getShowTerritoryEffects(frame))
-        .addMenuItemIf(ClientSetting.showBetaFeatures.getValueOrThrow(), () -> getMapSkinsMenu(frame))
+        .addMenuItemIf(
+            ClientSetting.showBetaFeatures.getValueOrThrow(), () -> getMapSkinsMenu(frame))
         .addMenuItem(getShowMapDetails(frame))
         .addMenuItem(getShowMapBlends(frame))
         .addMenuItem(getShowZoomMenu(frame))

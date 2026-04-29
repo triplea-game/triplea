@@ -58,9 +58,10 @@ final class FileMenu {
         .addMenuItemIf(
             !isMac,
             // On non-Mac operating systems, we need to manually create an Exit menu item
-            () -> new JMenuItemBuilder("Exit Program", Mnemonic.EXIT.getMnemonicCode())
-                .actionListener(frame::shutdown)
-                .build())
+            () ->
+                new JMenuItemBuilder("Exit Program", Mnemonic.EXIT.getMnemonicCode())
+                    .actionListener(frame::shutdown)
+                    .build())
         .build();
   }
 
