@@ -5,10 +5,11 @@ import games.strategy.triplea.ui.OrderedProperties;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -18,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.jar.JarFile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
@@ -52,9 +54,11 @@ public class ResourceLoader implements Closeable {
    *     "/assets/folder-in-assets/image.png"}
    */
   public static String getAssetsFileLocation(String... assetsImageFileStrings) {
-    String assetsFileLocation =
-        ASSETS_FOLDER + File.separator + String.join(File.separator, assetsImageFileStrings);
-    return assetsFileLocation.replace(File.separatorChar, '/');
+    StringBuilder sb = new StringBuilder(ASSETS_FOLDER);
+    for (String element : assetsImageFileStrings) {
+      sb.append('/').append(element);
+    }
+    return sb.toString();
   }
 
   public ResourceLoader(@Nonnull final Path assetFolderPath) {
@@ -136,7 +140,12 @@ public class ResourceLoader implements Closeable {
   }
 
   private Optional<URL> findResource(final String searchPathString) {
-    return loader.resources(searchPathString).findFirst();
+    // first attempt to find the resource as a per-map override
+    return loader
+        .resources(searchPathString)
+        .findFirst()
+        // otherwise, attempt to load the resource from the generic assets folder
+        .or(() -> loader.resources(ASSETS_FOLDER + '/' + searchPathString).findFirst());
   }
 
   public Optional<Path> optionalResource(final String pathString) {
@@ -213,6 +222,76 @@ public class ResourceLoader implements Closeable {
       return Optional.ofNullable(bufferedImage);
     } catch (final IOException e) {
       log.error("Image loading failed: " + imagePathString, e);
+      return Optional.empty();
+    }
+  }
+
+  /**
+   * Returns all resources found at the given path. If the path resolves to a directory (on disk or
+   * inside a JAR), all direct children are returned. If it resolves to a single file, that file is
+   * returned. Returns an empty list if the path does not exist.
+   *
+   * @param directoryPath '/'-separated resource path
+   */
+  public List<URL> listResources(final String directoryPath) {
+    final URL dirUrl = getResource(directoryPath);
+    if (dirUrl == null) {
+      return List.of();
+    }
+    try {
+      final URI uri = dirUrl.toURI();
+      if ("jar".equals(uri.getScheme())) {
+        return listJarResources(uri);
+      }
+      final Path dir = Path.of(uri);
+      if (Files.isDirectory(dir)) {
+        try (var files = Files.list(dir)) {
+          return files.map(p -> asUrl(p.toUri())).flatMap(Optional::stream).toList();
+        }
+      }
+      return List.of(dirUrl);
+    } catch (final URISyntaxException | IOException e) {
+      log.error("Failed to list resources at: " + directoryPath, e);
+      return List.of();
+    }
+  }
+
+  private static List<URL> listJarResources(final URI jarUri) throws IOException {
+    // jarUri format: jar:file:/path/to/app.jar!/entry/path
+    // e.g. jar:file:/opt/triplea/triplea.jar!/assets/flags
+    final String spec = jarUri.getSchemeSpecificPart();
+    final int bang = spec.indexOf('!');
+    // jarFilePart: the file: URI pointing to the JAR on disk, e.g. file:/opt/triplea/triplea.jar
+    final String jarFilePart = spec.substring(0, bang);
+    // entryPath: the path inside the JAR, e.g. assets/flags or assets/flags/germany.png
+    final String entryPath = spec.substring(bang + 2); // strip leading "!/"
+
+    try (var jar = new JarFile(Path.of(URI.create(jarFilePart)).toFile())) {
+      // If entryPath points directly to a file inside the JAR (not a directory),
+      // return just that single resource, e.g. assets/sounds/hit.wav
+      final var singleEntry = jar.getEntry(entryPath);
+      if (singleEntry != null && !singleEntry.isDirectory()) {
+        return asUrl(URI.create("jar:" + jarFilePart + "!/" + entryPath))
+            .map(List::of)
+            .orElse(List.of());
+      }
+      // Otherwise treat entryPath as a directory prefix and return all files beneath it.
+      // Matches entries like assets/flags/germany.png, assets/flags/usa.png, etc.
+      // Directories themselves are excluded so only loadable resource files are returned.
+      final String prefix = entryPath.endsWith("/") ? entryPath : entryPath + "/";
+      return jar.stream()
+          .filter(e -> e.getName().startsWith(prefix) && !e.isDirectory())
+          .map(e -> asUrl(URI.create("jar:" + jarFilePart + "!/" + e.getName())))
+          .flatMap(Optional::stream)
+          .toList();
+    }
+  }
+
+  private static Optional<URL> asUrl(final URI uri) {
+    try {
+      return Optional.of(uri.toURL());
+    } catch (final MalformedURLException e) {
+      log.error("Failed to convert URI to URL: " + uri, e);
       return Optional.empty();
     }
   }
