@@ -161,25 +161,21 @@ final class ResourceLoaderTest {
     @Test
     @DisplayName("Returns all files under a directory entry inside a JAR")
     void returnsFilesInJarDirectory(@TempDir final Path tempDir) throws Exception {
-      var jarPath = buildJar(
-          tempDir.resolve("test.jar"),
-          "sounds/game_start/",
-          "sounds/game_start/sound1.mp3",
-          "sounds/game_start/sound2.mp3");
+      var jarPath =
+          buildJar(
+              tempDir.resolve("test.jar"),
+              "sounds/game_start/",
+              "sounds/game_start/sound1.mp3",
+              "sounds/game_start/sound2.mp3");
       var loader = new ResourceLoader(jarPath);
 
       var result = loader.listResources("sounds/game_start");
 
-      assertThat(
-          "JAR directory entry should yield both contained files",
-          result,
-          hasSize(2));
+      assertThat("JAR directory entry should yield both contained files", result, hasSize(2));
       assertThat(
           "returned URLs should reference the expected sound files",
           result.stream().map(URL::toString).toList(),
-          containsInAnyOrder(
-              containsString("sound1.mp3"),
-              containsString("sound2.mp3")));
+          containsInAnyOrder(containsString("sound1.mp3"), containsString("sound2.mp3")));
     }
 
     @Test
@@ -190,10 +186,7 @@ final class ResourceLoaderTest {
 
       var result = loader.listResources("sounds/game_start/sound.mp3");
 
-      assertThat(
-          "JAR entry for a single file should return exactly one URL",
-          result,
-          hasSize(1));
+      assertThat("JAR entry for a single file should return exactly one URL", result, hasSize(1));
       assertThat(
           "returned URL should reference the expected sound file",
           result.get(0).toString(),

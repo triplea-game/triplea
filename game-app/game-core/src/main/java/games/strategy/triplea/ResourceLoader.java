@@ -141,7 +141,8 @@ public class ResourceLoader implements Closeable {
 
   private Optional<URL> findResource(final String searchPathString) {
     // first attempt to find the resource as a per-map override
-    return loader.resources(searchPathString)
+    return loader
+        .resources(searchPathString)
         .findFirst()
         // otherwise, attempt to load the resource from the generic assets folder
         .or(() -> loader.resources(ASSETS_FOLDER + '/' + searchPathString).findFirst());
@@ -257,18 +258,26 @@ public class ResourceLoader implements Closeable {
 
   private static List<URL> listJarResources(final URI jarUri) throws IOException {
     // jarUri format: jar:file:/path/to/app.jar!/entry/path
+    // e.g. jar:file:/opt/triplea/triplea.jar!/assets/flags
     final String spec = jarUri.getSchemeSpecificPart();
     final int bang = spec.indexOf('!');
-    final String jarFilePart = spec.substring(0, bang); // file:/path/to/app.jar
+    // jarFilePart: the file: URI pointing to the JAR on disk, e.g. file:/opt/triplea/triplea.jar
+    final String jarFilePart = spec.substring(0, bang);
+    // entryPath: the path inside the JAR, e.g. assets/flags or assets/flags/germany.png
     final String entryPath = spec.substring(bang + 2); // strip leading "!/"
 
     try (var jar = new JarFile(Path.of(URI.create(jarFilePart)).toFile())) {
+      // If entryPath points directly to a file inside the JAR (not a directory),
+      // return just that single resource, e.g. assets/sounds/hit.wav
       final var singleEntry = jar.getEntry(entryPath);
       if (singleEntry != null && !singleEntry.isDirectory()) {
         return asUrl(URI.create("jar:" + jarFilePart + "!/" + entryPath))
             .map(List::of)
             .orElse(List.of());
       }
+      // Otherwise treat entryPath as a directory prefix and return all files beneath it.
+      // Matches entries like assets/flags/germany.png, assets/flags/usa.png, etc.
+      // Directories themselves are excluded so only loadable resource files are returned.
       final String prefix = entryPath.endsWith("/") ? entryPath : entryPath + "/";
       return jar.stream()
           .filter(e -> e.getName().startsWith(prefix) && !e.isDirectory())
