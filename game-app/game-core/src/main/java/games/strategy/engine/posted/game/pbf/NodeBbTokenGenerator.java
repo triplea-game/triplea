@@ -21,6 +21,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.triplea.http.HttpClientHeaders;
 import org.triplea.yaml.YamlReader;
 
 /**
@@ -86,6 +87,7 @@ public class NodeBbTokenGenerator {
     final HttpDelete httpDelete =
         new HttpDelete(forumUrl + "/api/v2/users/" + userId + "/tokens/" + token);
     HttpProxy.addProxy(httpDelete);
+    HttpClientHeaders.apply(httpDelete);
     httpDelete.addHeader("Authorization", "Bearer " + token);
     client.execute(httpDelete).close(); // ignore errors, execute and then close
   }
@@ -115,6 +117,7 @@ public class NodeBbTokenGenerator {
     final String encodedUsername = URLEncoder.encode(username, StandardCharsets.UTF_8);
     final HttpGet get = new HttpGet(forumUrl + "/api/user/username/" + encodedUsername);
     HttpProxy.addProxy(get);
+    HttpClientHeaders.apply(get);
     try (CloseableHttpResponse response = client.execute(get)) {
       return YamlReader.readMap(EntityUtils.toString(response.getEntity()));
     }
@@ -134,6 +137,7 @@ public class NodeBbTokenGenerator {
       post.addHeader("x-two-factor-authentication", otp);
     }
     HttpProxy.addProxy(post);
+    HttpClientHeaders.apply(post);
     try (CloseableHttpResponse response = client.execute(post)) {
       final String rawJson = EntityUtils.toString(response.getEntity());
       final Map<String, Object> jsonObject = YamlReader.readMap(rawJson);

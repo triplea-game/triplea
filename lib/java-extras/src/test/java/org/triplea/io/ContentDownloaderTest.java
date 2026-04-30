@@ -1,6 +1,7 @@
 package org.triplea.io;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,9 +21,11 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.http.HttpClientHeaders;
 
 @ExtendWith(MockitoExtension.class)
 class ContentDownloaderTest {
@@ -107,5 +110,19 @@ class ContentDownloaderTest {
     verify(inputStream).close();
     verify(closeableHttpResponse).close();
     verify(httpClient).close();
+  }
+
+  @Test
+  @DisplayName("Triplea-Version and User-Agent headers are attached to the request")
+  void standardHeadersApplied() throws Exception {
+    givenEntityContent();
+    final ArgumentCaptor<HttpGet> captor = ArgumentCaptor.forClass(HttpGet.class);
+
+    new ContentDownloader(httpClient, FAKE_URI, proxySettings);
+
+    verify(httpClient).execute(captor.capture());
+    final HttpGet sent = captor.getValue();
+    assertThat(sent.getFirstHeader(HttpClientHeaders.VERSION_HEADER), notNullValue());
+    assertThat(sent.getFirstHeader(HttpClientHeaders.USER_AGENT_HEADER), notNullValue());
   }
 }

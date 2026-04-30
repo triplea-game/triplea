@@ -27,6 +27,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.awt.OpenFileUtility;
+import org.triplea.http.HttpClientHeaders;
 import org.triplea.yaml.YamlReader;
 
 /**
@@ -58,7 +59,8 @@ public class NodeBbForumPoster {
     @Nonnull private final String displayName;
   }
 
-  private NodeBbForumPoster(final ForumPostingParameters forumPostingParameters) {
+  @VisibleForTesting
+  NodeBbForumPoster(final ForumPostingParameters forumPostingParameters) {
     this.topicId = forumPostingParameters.topicId;
     this.forumUrl = forumPostingParameters.forumUrl;
     this.token = new String(forumPostingParameters.token);
@@ -120,6 +122,7 @@ public class NodeBbForumPoster {
       @Nullable final SaveGameParameter saveGame)
       throws IOException {
     final HttpPost post = new HttpPost(forumUrl + "/api/v2/topics/" + topicId);
+    HttpClientHeaders.apply(post);
     addTokenHeader(post, token);
 
     if (saveGame != null) {
@@ -157,6 +160,7 @@ public class NodeBbForumPoster {
                 saveGame.displayName)
             .build());
     HttpProxy.addProxy(fileUpload);
+    HttpClientHeaders.apply(fileUpload);
     addTokenHeader(fileUpload, token);
     try (CloseableHttpResponse response = client.execute(fileUpload)) {
       final int status = response.getStatusLine().getStatusCode();

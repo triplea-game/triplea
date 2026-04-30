@@ -18,6 +18,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.triplea.http.HttpClientHeaders;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.StringUtils;
 
@@ -71,6 +72,7 @@ public final class ContentDownloader implements CloseableDownloader {
     this.httpClient = httpClient;
     final HttpGet request = new HttpGet(uri);
     proxySettings.accept(request);
+    HttpClientHeaders.apply(request);
     response = downloadWithSingleRetryOnError(request);
 
     final int statusCode = response.getStatusLine().getStatusCode();
@@ -148,6 +150,7 @@ public final class ContentDownloader implements CloseableDownloader {
             proxyHost ->
                 request.setConfig(
                     RequestConfig.copy(request.getConfig()).setProxy(proxyHost).build()));
+    HttpClientHeaders.apply(request);
 
     try (CloseableHttpClient httpClient = HttpClients.custom().disableCookieManagement().build();
         CloseableHttpResponse response = httpClient.execute(request)) {
