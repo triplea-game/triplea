@@ -3,6 +3,7 @@ package org.triplea.http;
 import java.util.Map;
 import java.util.function.Supplier;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.jetbrains.annotations.VisibleForTesting;
 
 /**
  * Applies a standard set of identifying headers to outbound HTTP requests built with Apache
@@ -46,5 +47,10 @@ public final class HttpClientHeaders {
   /** Adds the standard headers from the registered provider to the given request. */
   public static void apply(final HttpRequestBase request) {
     provider.get().forEach(request::addHeader);
+  }
+
+  @VisibleForTesting
+  public static void resetForTesting() {
+    provider = () -> UNKNOWN_HEADERS;
   }
 }

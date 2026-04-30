@@ -18,11 +18,7 @@ class HttpClientHeadersTest {
 
   @AfterEach
   void resetToDefault() {
-    HttpClientHeaders.setProvider(
-        () ->
-            Map.of(
-                HttpClientHeaders.VERSION_HEADER, "Unknown",
-                HttpClientHeaders.USER_AGENT_HEADER, "triplea/Unknown"));
+    HttpClientHeaders.resetForTesting();
   }
 
   @Nested

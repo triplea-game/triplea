@@ -15,7 +15,6 @@ import games.strategy.engine.posted.game.pbf.NodeBbForumPoster.ForumPostingParam
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,11 +47,7 @@ class NodeBbForumPosterHttpTest extends AbstractClientSettingTestCase {
   @AfterEach
   void stopServer() {
     server.stop();
-    HttpClientHeaders.setProvider(
-        () ->
-            Map.of(
-                HttpClientHeaders.VERSION_HEADER, "Unknown",
-                HttpClientHeaders.USER_AGENT_HEADER, "triplea/Unknown"));
+    HttpClientHeaders.resetForTesting();
   }
 
   @Test
