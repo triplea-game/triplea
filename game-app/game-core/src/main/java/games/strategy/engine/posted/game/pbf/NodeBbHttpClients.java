@@ -2,7 +2,6 @@ package games.strategy.engine.posted.game.pbf;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nullable;
 import org.apache.http.Header;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -19,19 +18,26 @@ import org.triplea.config.product.ProductVersionReader;
 final class NodeBbHttpClients {
   private NodeBbHttpClients() {}
 
+  /** Returns a new HTTP client for unauthenticated NodeBB requests (e.g. login / token mint). */
+  static CloseableHttpClient newPreAuthClient() {
+    final List<Header> headers = createHeaders();
+    return HttpClients.custom().setDefaultHeaders(headers).disableCookieManagement().build();
+  }
+
   /**
-   * Returns a new HTTP client with the standard NodeBB default headers attached.
-   *
-   * @param bearerToken Authorization bearer to attach as a default header. Pass {@code null} for
-   *     pre-auth requests (e.g. login / token generation).
+   * Returns a new HTTP client for authenticated NodeBB requests. The bearer token is attached as a
+   * default {@code Authorization} header.
    */
-  static CloseableHttpClient newClient(@Nullable final String bearerToken) {
+  static CloseableHttpClient newPostAuthClient(final String bearerToken) {
+    final List<Header> headers = createHeaders();
+    headers.add(new BasicHeader("Authorization", "Bearer " + bearerToken));
+    return HttpClients.custom().setDefaultHeaders(headers).disableCookieManagement().build();
+  }
+
+  private static List<Header> createHeaders() {
     final String version = ProductVersionReader.getCurrentVersion().toString();
-    final List<Header> defaultHeaders = new ArrayList<>(2);
-    defaultHeaders.add(new BasicHeader("User-Agent", "triplea/" + version));
-    if (bearerToken != null) {
-      defaultHeaders.add(new BasicHeader("Authorization", "Bearer " + bearerToken));
-    }
-    return HttpClients.custom().setDefaultHeaders(defaultHeaders).disableCookieManagement().build();
+    final List<Header> headers = new ArrayList<>();
+    headers.add(new BasicHeader("User-Agent", "triplea/" + version));
+    return headers;
   }
 }
