@@ -18,7 +18,6 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.triplea.yaml.YamlReader;
@@ -57,8 +56,7 @@ public class NodeBbTokenGenerator {
     Preconditions.checkNotNull(username);
     Preconditions.checkNotNull(password);
 
-    try (CloseableHttpClient client =
-        HttpClients.custom().disableCookieManagement().disableDefaultUserAgent().build()) {
+    try (CloseableHttpClient client = NodeBbHttpClients.builder().build()) {
       final int userId = getUserId(client, username);
       return new TokenInfo(getToken(client, userId, password, otp), userId);
     } catch (final IOException e) {
@@ -73,8 +71,7 @@ public class NodeBbTokenGenerator {
    * @param userId The userId that the token was issued for.
    */
   public void revokeToken(final String token, final int userId) {
-    try (CloseableHttpClient client =
-        HttpClients.custom().disableCookieManagement().disableDefaultUserAgent().build()) {
+    try (CloseableHttpClient client = NodeBbHttpClients.builder().bearerToken(token).build()) {
       deleteToken(client, userId, token);
     } catch (final IOException e) {
       throw new RuntimeException("Failed to revoke login token", e);
@@ -86,7 +83,6 @@ public class NodeBbTokenGenerator {
     final HttpDelete httpDelete =
         new HttpDelete(forumUrl + "/api/v2/users/" + userId + "/tokens/" + token);
     HttpProxy.addProxy(httpDelete);
-    httpDelete.addHeader("Authorization", "Bearer " + token);
     client.execute(httpDelete).close(); // ignore errors, execute and then close
   }
 
