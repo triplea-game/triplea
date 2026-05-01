@@ -56,7 +56,7 @@ public class NodeBbTokenGenerator {
     Preconditions.checkNotNull(username);
     Preconditions.checkNotNull(password);
 
-    try (CloseableHttpClient client = NodeBbHttpClients.newPreAuthClient()) {
+    try (CloseableHttpClient client = NodeBbHttpClients.builder().build()) {
       final int userId = getUserId(client, username);
       return new TokenInfo(getToken(client, userId, password, otp), userId);
     } catch (final IOException e) {
@@ -71,7 +71,7 @@ public class NodeBbTokenGenerator {
    * @param userId The userId that the token was issued for.
    */
   public void revokeToken(final String token, final int userId) {
-    try (CloseableHttpClient client = NodeBbHttpClients.newPostAuthClient(token)) {
+    try (CloseableHttpClient client = NodeBbHttpClients.builder().bearerToken(token).build()) {
       deleteToken(client, userId, token);
     } catch (final IOException e) {
       throw new RuntimeException("Failed to revoke login token", e);

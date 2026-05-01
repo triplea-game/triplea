@@ -14,30 +14,40 @@ import org.triplea.config.product.ProductVersionReader;
  * <p>Each client carries a {@code User-Agent: triplea/<version>} default header identifying TripleA
  * so legitimate forum traffic can be distinguished from anonymous bot traffic by the forum's WAF
  * (e.g. for whitelisting via a Cloudflare rule).
+ *
+ * <p>Usage:
+ *
+ * <pre>
+ *   try (CloseableHttpClient client = NodeBbHttpClients.builder().build()) { ... }
+ *   try (CloseableHttpClient client =
+ *       NodeBbHttpClients.builder().bearerToken(token).build()) { ... }
+ * </pre>
  */
 final class NodeBbHttpClients {
   private NodeBbHttpClients() {}
 
-  /** Returns a new HTTP client for unauthenticated NodeBB requests (e.g. login / token mint). */
-  static CloseableHttpClient newPreAuthClient() {
-    final List<Header> headers = createHeaders();
-    return HttpClients.custom().setDefaultHeaders(headers).disableCookieManagement().build();
+  static Builder builder() {
+    return new Builder();
   }
 
-  /**
-   * Returns a new HTTP client for authenticated NodeBB requests. The bearer token is attached as a
-   * default {@code Authorization} header.
-   */
-  static CloseableHttpClient newPostAuthClient(final String bearerToken) {
-    final List<Header> headers = createHeaders();
-    headers.add(new BasicHeader("Authorization", "Bearer " + bearerToken));
-    return HttpClients.custom().setDefaultHeaders(headers).disableCookieManagement().build();
-  }
+  static final class Builder {
+    private String bearerToken;
 
-  private static List<Header> createHeaders() {
-    final String version = ProductVersionReader.getCurrentVersion().toString();
-    final List<Header> headers = new ArrayList<>();
-    headers.add(new BasicHeader("User-Agent", "triplea/" + version));
-    return headers;
+    private Builder() {}
+
+    Builder bearerToken(final String bearerToken) {
+      this.bearerToken = bearerToken;
+      return this;
+    }
+
+    CloseableHttpClient build() {
+      final List<Header> headers = new ArrayList<>();
+      headers.add(
+          new BasicHeader("User-Agent", "triplea/" + ProductVersionReader.getCurrentVersion()));
+      if (bearerToken != null) {
+        headers.add(new BasicHeader("Authorization", "Bearer " + bearerToken));
+      }
+      return HttpClients.custom().setDefaultHeaders(headers).disableCookieManagement().build();
+    }
   }
 }

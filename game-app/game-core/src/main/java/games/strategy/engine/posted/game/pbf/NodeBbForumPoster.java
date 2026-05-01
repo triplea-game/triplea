@@ -102,7 +102,7 @@ public class NodeBbForumPoster {
    */
   public CompletableFuture<String> postTurnSummary(
       final String summary, final String title, @Nullable final SaveGameParameter saveGame) {
-    try (CloseableHttpClient client = NodeBbHttpClients.newPostAuthClient(token)) {
+    try (CloseableHttpClient client = NodeBbHttpClients.builder().bearerToken(token).build()) {
       post(client, "### " + title + "\n" + summary, saveGame);
       return CompletableFuture.completedFuture("Successfully posted!");
     } catch (final IOException | IllegalStateException e) {

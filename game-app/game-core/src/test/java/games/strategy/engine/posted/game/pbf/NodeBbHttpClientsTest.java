@@ -17,13 +17,13 @@ import org.junit.jupiter.api.Test;
 class NodeBbHttpClientsTest extends AbstractClientSettingTestCase {
 
   @Test
-  void newPreAuthClient_attachesUserAgentNoAuthorization() throws Exception {
+  void builder_default_attachesUserAgentNoAuthorization() throws Exception {
     final WireMockServer server = new WireMockServer(0);
     try {
       server.start();
       server.stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(200)));
 
-      try (CloseableHttpClient client = NodeBbHttpClients.newPreAuthClient()) {
+      try (CloseableHttpClient client = NodeBbHttpClients.builder().build()) {
         client.execute(new HttpGet("http://localhost:" + server.port() + "/")).close();
       }
 
@@ -37,13 +37,14 @@ class NodeBbHttpClientsTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  void newPostAuthClient_attachesUserAgentAndAuthorization() throws Exception {
+  void builder_withBearerToken_attachesUserAgentAndAuthorization() throws Exception {
     final WireMockServer server = new WireMockServer(0);
     try {
       server.start();
       server.stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(200)));
 
-      try (CloseableHttpClient client = NodeBbHttpClients.newPostAuthClient("test-token")) {
+      try (CloseableHttpClient client =
+          NodeBbHttpClients.builder().bearerToken("test-token").build()) {
         client.execute(new HttpGet("http://localhost:" + server.port() + "/")).close();
       }
 
