@@ -1,22 +1,12 @@
 package games.strategy.engine.posted.game.pbf;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.matching;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
-import games.strategy.triplea.settings.AbstractClientSettingTestCase;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.junit.jupiter.api.Test;
 import org.triplea.test.common.TestDataFileReader;
 
-class NodeBbForumPosterTest extends AbstractClientSettingTestCase {
+class NodeBbForumPosterTest {
 
   /** sample response from https://forums.triplea-game.org/ */
   @Test
@@ -35,25 +25,5 @@ class NodeBbForumPosterTest extends AbstractClientSettingTestCase {
     String saveGameUrl = NodeBbForumPoster.parseSaveGameUrlFromJsonResponse(sampleResponse);
     assertThat(
         saveGameUrl, is("/forums/assets/uploads/files/1665368873282-triplea_20781_1car.tsvg"));
-  }
-
-  @Test
-  void buildClient_attachesUserAgentAndAuthorization() throws Exception {
-    final WireMockServer server = new WireMockServer(0);
-    try {
-      server.start();
-      server.stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(200)));
-
-      try (CloseableHttpClient client = NodeBbForumPoster.buildClient("test-token")) {
-        client.execute(new HttpGet("http://localhost:" + server.port() + "/")).close();
-      }
-
-      server.verify(
-          getRequestedFor(urlEqualTo("/"))
-              .withHeader("User-Agent", matching("triplea/.*"))
-              .withHeader("Authorization", equalTo("Bearer test-token")));
-    } finally {
-      server.stop();
-    }
   }
 }

@@ -15,20 +15,16 @@ import java.util.concurrent.CompletableFuture;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.Builder;
-import org.apache.http.Header;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.awt.OpenFileUtility;
-import org.triplea.config.product.ProductVersionReader;
 import org.triplea.yaml.YamlReader;
 
 /**
@@ -106,7 +102,7 @@ public class NodeBbForumPoster {
    */
   public CompletableFuture<String> postTurnSummary(
       final String summary, final String title, @Nullable final SaveGameParameter saveGame) {
-    try (CloseableHttpClient client = buildClient(token)) {
+    try (CloseableHttpClient client = NodeBbHttpClients.newClient(token)) {
       post(client, "### " + title + "\n" + summary, saveGame);
       return CompletableFuture.completedFuture("Successfully posted!");
     } catch (final IOException | IllegalStateException e) {
@@ -114,23 +110,6 @@ public class NodeBbForumPoster {
       result.completeExceptionally(e);
       return result;
     }
-  }
-
-  /**
-   * Builds the HTTP client used by this poster. Default headers (User-Agent and Authorization) are
-   * attached at client construction so every request carries them.
-   *
-   * <p>The User-Agent value identifies TripleA to the receiving forum so legitimate traffic isn't
-   * lumped in with anonymous bot traffic by the forum's WAF.
-   */
-  @VisibleForTesting
-  static CloseableHttpClient buildClient(final String token) {
-    final String version = ProductVersionReader.getCurrentVersion().toString();
-    final List<Header> defaultHeaders =
-        List.of(
-            new BasicHeader("User-Agent", "triplea/" + version),
-            new BasicHeader("Authorization", "Bearer " + token));
-    return HttpClients.custom().setDefaultHeaders(defaultHeaders).disableCookieManagement().build();
   }
 
   private void post(

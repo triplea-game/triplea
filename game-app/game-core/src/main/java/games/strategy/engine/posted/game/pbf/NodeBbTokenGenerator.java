@@ -1,12 +1,10 @@
 package games.strategy.engine.posted.game.pbf;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.framework.system.HttpProxy;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
@@ -14,18 +12,14 @@ import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.apache.http.Header;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.triplea.config.product.ProductVersionReader;
 import org.triplea.yaml.YamlReader;
 
 /**
@@ -62,7 +56,7 @@ public class NodeBbTokenGenerator {
     Preconditions.checkNotNull(username);
     Preconditions.checkNotNull(password);
 
-    try (CloseableHttpClient client = buildClient(null)) {
+    try (CloseableHttpClient client = NodeBbHttpClients.newClient(null)) {
       final int userId = getUserId(client, username);
       return new TokenInfo(getToken(client, userId, password, otp), userId);
     } catch (final IOException e) {
@@ -77,30 +71,11 @@ public class NodeBbTokenGenerator {
    * @param userId The userId that the token was issued for.
    */
   public void revokeToken(final String token, final int userId) {
-    try (CloseableHttpClient client = buildClient(token)) {
+    try (CloseableHttpClient client = NodeBbHttpClients.newClient(token)) {
       deleteToken(client, userId, token);
     } catch (final IOException e) {
       throw new RuntimeException("Failed to revoke login token", e);
     }
-  }
-
-  /**
-   * Builds the HTTP client used to talk to the NodeBB token APIs. The {@code User-Agent} default
-   * header identifies TripleA so that login traffic isn't lumped with anonymous bot traffic by the
-   * forum's WAF.
-   *
-   * @param bearerToken Authorization bearer to attach as a default header. Pass {@code null} for
-   *     pre-auth requests.
-   */
-  @VisibleForTesting
-  static CloseableHttpClient buildClient(@Nullable final String bearerToken) {
-    final String version = ProductVersionReader.getCurrentVersion().toString();
-    final List<Header> defaultHeaders = new ArrayList<>(2);
-    defaultHeaders.add(new BasicHeader("User-Agent", "triplea/" + version));
-    if (bearerToken != null) {
-      defaultHeaders.add(new BasicHeader("Authorization", "Bearer " + bearerToken));
-    }
-    return HttpClients.custom().setDefaultHeaders(defaultHeaders).disableCookieManagement().build();
   }
 
   private void deleteToken(final CloseableHttpClient client, final int userId, final String token)
