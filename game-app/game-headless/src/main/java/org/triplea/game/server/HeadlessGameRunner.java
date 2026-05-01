@@ -18,7 +18,6 @@ import java.util.Locale;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.domain.data.SystemIdLoader;
-import org.triplea.http.HttpClientHeaders;
 import org.triplea.http.client.LobbyHttpClientConfig;
 import org.triplea.util.ExitStatus;
 
@@ -50,7 +49,6 @@ public final class HeadlessGameRunner {
                     + "."
                     + ProductVersionReader.getCurrentVersion().getMinor())
             .build());
-    HttpClientHeaders.setVersion(ProductVersionReader.getCurrentVersion().toString());
 
     Path mapsFolder = Path.of(System.getenv("MAPS_FOLDER"));
     if (!Files.isDirectory(mapsFolder)) {
