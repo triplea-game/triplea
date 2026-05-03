@@ -21,16 +21,34 @@ This allows you to reference projects using non-hierarchical names, for example 
 ## Convention Plugins
 
 The TripleA build defines Gradle [Convention Plugins](https://docs.gradle.org/current/userguide/implementing_gradle_plugins_convention.html#header) to avoid cross-project configuration and duplication of configuration.
-There are currently the following types of projects:
+There are currently the following convention plugins:
+
+### `triplea-test-conventions`
+
+Configures testing for all TripleA projects.
+Applies the `jacoco` plugin and configures all `Test` tasks to use the JUnit platform with full exception formatting.
+Test output (stdout/stderr) is captured per-test and printed only when a test fails, to keep successful build output clean.
+Also configures Jacoco XML and HTML coverage reports.
+
+### `triplea-base-project`
+
+The base convention applied by all TripleA projects.
+Currently applies `triplea-test-conventions`.
 
 ### `triplea-java-library`
 
-This is a standard "vanilla" java library type.
-It applies the `java-library` plugin and applies universal configuration, code conventions, and sets up static analysis. 
+The standard convention for a TripleA Java library project.
+Applies the `java-library` plugin, sets Java 21 source and target compatibility, applies `triplea-base-project`, and configures [Spotless](https://github.com/diffplug/spotless) formatting (Google Java Format, remove unused imports, trailing whitespace removal, tabs to spaces, newline at end of file).
+
+### `triplea-java-application`
+
+The standard convention for a runnable TripleA application project.
+Applies the `application` plugin and `triplea-base-project`.
 
 ### `triplea-published-library`
 
-This convention expands on `triplea-java-library` to add tasks to publish a Java library project to Maven.
+Expands on `triplea-java-library` to add tasks to publish a Java library project to Maven.
+Applies the `maven-publish` plugin and reads the published version from the `JAR_VERSION` environment variable.
 
 ## Test Fixtures
 
@@ -42,7 +60,8 @@ The fixture in `:game-core` includes map data present in `/game-app/game-core/sr
 # Future Work
 
 To continue to improve build speeds and make the build structure more idiomatic, some near future work should:
-- Remove the use of `subprojects` and `allprojects` and replace these with Gradle [Convention Plugins](https://docs.gradle.org/current/userguide/implementing_gradle_plugins_convention.html#header).
+
+- Remove the use of `subprojects` for dependency declarations by migrating these to the appropriate (or new) Gradle [Convention Plugins](https://docs.gradle.org/current/userguide/implementing_gradle_plugins_convention.html#header).
 This will make the build easier to maintain by avoiding the pitfalls of cross-project configuration, it will prevent difficulties updating to future Gradle versions, and it will prepare the build to take advantage of future Gradle features like [Isolated Projects](https://docs.gradle.org/current/userguide/isolated_projects.html#header) that will further increase build speed.
 - Remove the need for bash scripts like those in `/game-app/run/` or `/verify` that exist only to launch Gradle builds with Gradle lifecycle tasks. 
 - Improve Dependency hygiene by enabling Gradle Dependabot alerts on GitHub, pruning unused project dependencies, properly using the `api` and `implementation` configurations to export dependencies only when necessary, etc.
