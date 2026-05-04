@@ -64,6 +64,13 @@ If you are new to Open Source & GitHub:
   - [Create an SSH Key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)
     (usually you will not need to add the SSH key to your keychain, just create it and add it to GitHub)
 
+## Config Git Ignore Commits
+
+Run:
+```
+git config blame.ignoreRevsFile .git-blame-ignore-revs
+```
+
 ## Compile and launch TripleA (CLI)
 
 ```bash
