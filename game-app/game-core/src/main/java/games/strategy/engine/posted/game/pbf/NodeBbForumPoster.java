@@ -18,11 +18,9 @@ import lombok.Builder;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.jetbrains.annotations.NonNls;
@@ -58,7 +56,8 @@ public class NodeBbForumPoster {
     @Nonnull private final String displayName;
   }
 
-  private NodeBbForumPoster(final ForumPostingParameters forumPostingParameters) {
+  @VisibleForTesting
+  NodeBbForumPoster(final ForumPostingParameters forumPostingParameters) {
     this.topicId = forumPostingParameters.topicId;
     this.forumUrl = forumPostingParameters.forumUrl;
     this.token = new String(forumPostingParameters.token);
@@ -103,8 +102,8 @@ public class NodeBbForumPoster {
    */
   public CompletableFuture<String> postTurnSummary(
       final String summary, final String title, @Nullable final SaveGameParameter saveGame) {
-    try (CloseableHttpClient client = HttpClients.custom().disableCookieManagement().build()) {
-      post(client, token, "### " + title + "\n" + summary, saveGame);
+    try (CloseableHttpClient client = NodeBbHttpClients.builder().bearerToken(token).build()) {
+      post(client, "### " + title + "\n" + summary, saveGame);
       return CompletableFuture.completedFuture("Successfully posted!");
     } catch (final IOException | IllegalStateException e) {
       final CompletableFuture<String> result = new CompletableFuture<>();
@@ -115,15 +114,13 @@ public class NodeBbForumPoster {
 
   private void post(
       final CloseableHttpClient client,
-      final String token,
       String turnSummaryText,
       @Nullable final SaveGameParameter saveGame)
       throws IOException {
     final HttpPost post = new HttpPost(forumUrl + "/api/v2/topics/" + topicId);
-    addTokenHeader(post, token);
 
     if (saveGame != null) {
-      final String saveGameUrl = uploadSaveGame(client, token, saveGame);
+      final String saveGameUrl = uploadSaveGame(client, saveGame);
       turnSummaryText += "\n[Savegame](" + saveGameUrl + ")";
     }
 
@@ -144,8 +141,7 @@ public class NodeBbForumPoster {
     }
   }
 
-  private String uploadSaveGame(
-      final CloseableHttpClient client, final String token, final SaveGameParameter saveGame)
+  private String uploadSaveGame(final CloseableHttpClient client, final SaveGameParameter saveGame)
       throws IOException {
     final HttpPost fileUpload = new HttpPost(forumUrl + "/api/v2/util/upload");
     fileUpload.setEntity(
@@ -157,7 +153,6 @@ public class NodeBbForumPoster {
                 saveGame.displayName)
             .build());
     HttpProxy.addProxy(fileUpload);
-    addTokenHeader(fileUpload, token);
     try (CloseableHttpResponse response = client.execute(fileUpload)) {
       final int status = response.getStatusLine().getStatusCode();
       if (status == HttpURLConnection.HTTP_OK) {
@@ -220,9 +215,5 @@ public class NodeBbForumPoster {
   /** Opens a browser and go to the forum post, identified by the forumId. */
   public void viewPosted() {
     OpenFileUtility.openUrl(null, forumUrl + "/topic/" + topicId);
-  }
-
-  private static void addTokenHeader(final HttpRequestBase request, final String token) {
-    request.addHeader("Authorization", "Bearer " + token);
   }
 }

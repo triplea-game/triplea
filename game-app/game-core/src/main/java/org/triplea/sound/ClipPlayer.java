@@ -5,24 +5,17 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.settings.ClientSetting;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.FactoryRegistry;
@@ -303,43 +296,8 @@ public class ClipPlayer {
    * @param resourceAndPathUrl (URL uses '/', not File.separator or '\')
    */
   private List<URL> findClipFiles(final String resourceAndPathUrl) {
-    final URL thisSoundUrl = resourceLoader.getResource(resourceAndPathUrl);
-    if (thisSoundUrl == null) {
-      return List.of();
-    }
-    final Path thisSoundPath;
-    try {
-      thisSoundPath = Path.of(thisSoundUrl.toURI());
-    } catch (final URISyntaxException e) {
-      throw new IllegalStateException("Invalid URL format", e);
-    }
-
-    if (Files.isDirectory(thisSoundPath)) {
-      try (Stream<Path> files = Files.list(thisSoundPath)) {
-        return files
-            .filter(ClipPlayer::hasMp3Extension)
-            .flatMap(
-                soundFile -> {
-                  try {
-                    return Stream.of(soundFile.toUri().toURL());
-                  } catch (final MalformedURLException e) {
-                    log.error("Error " + e.getMessage() + " with sound file: " + soundFile, e);
-                    return Stream.empty();
-                  }
-                })
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
-      } catch (final IOException e) {
-        log.error("Failed to list files in directory " + thisSoundPath, e);
-      }
-    } else if (hasMp3Extension(thisSoundPath) && Files.isReadable(thisSoundPath)) {
-      return List.of(thisSoundUrl);
-    }
-
-    return List.of();
-  }
-
-  private static boolean hasMp3Extension(final Path soundFile) {
-    return soundFile.toString().endsWith(MP3_SUFFIX);
+    return resourceLoader.listResources(resourceAndPathUrl).stream()
+        .filter(url -> url.toString().endsWith(MP3_SUFFIX))
+        .toList();
   }
 }

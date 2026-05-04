@@ -1,13 +1,13 @@
 package org.triplea.java;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import java.time.Duration;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.VisibleForTesting;
 
 /**
  * Module to execute a task with retries. Provides a builder interface to specify number of max
@@ -39,10 +39,11 @@ public class Retriable<T> {
     private final Consumer<Duration> threadSleeper;
 
     public BackOffBuilder<T> withMaxAttempts(final int maxAttempts) {
-      Preconditions.checkArgument(
-          maxAttempts > 1,
-          "Max attempt count must be greater than 1, if max attempt is 1, "
-              + "just invoke your task directly without the retry mechanism");
+      if (maxAttempts <= 1) {
+        throw new IllegalArgumentException(
+            "Max attempt count must be greater than 1, if max attempt is 1, "
+                + "just invoke your task directly without the retry mechanism");
+      }
       return new BackOffBuilder<>(threadSleeper, maxAttempts);
     }
   }
@@ -53,7 +54,9 @@ public class Retriable<T> {
     private final int maxAttempts;
 
     public TaskBuilder<T> withFixedBackOff(final Duration duration) {
-      Preconditions.checkArgument(duration.toMillis() > 0, "Minimum backoff is 1ms");
+      if (duration.toMillis() <= 0) {
+        throw new IllegalArgumentException("Minimum backoff is 1ms");
+      }
       return new TaskBuilder<>(threadSleeper, maxAttempts, duration);
     }
   }
@@ -88,7 +91,7 @@ public class Retriable<T> {
     private final Duration backOff;
 
     public RetriableBuilder<T> withTask(final Supplier<Optional<T>> taskRunner) {
-      Preconditions.checkNotNull(taskRunner);
+      Objects.requireNonNull(taskRunner, "taskRunner cannot be null");
       return new RetriableBuilder<>(threadSleeper, maxAttempts, backOff, taskRunner);
     }
   }

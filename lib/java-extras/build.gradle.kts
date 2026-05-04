@@ -5,5 +5,5 @@ plugins {
 description = "TripleA library for low-level helper APIs, ie: syntactic sugar"
 
 dependencies {
-    testImplementation(project(":lib:test-common"))
+    testImplementation(project(":test-common"))
 }

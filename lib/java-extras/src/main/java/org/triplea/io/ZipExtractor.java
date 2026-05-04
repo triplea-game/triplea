@@ -1,6 +1,5 @@
 package org.triplea.io;
 
-import com.google.common.base.Preconditions;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
@@ -63,13 +62,15 @@ public class ZipExtractor {
    */
   public static void unzipFile(final Path fileZip, final Path destDir)
       throws ZipReadException, FileSystemException {
-    Preconditions.checkArgument(
-        fileZip.toString().endsWith(".zip"),
-        "Illegal arg, must be a zip file: " + fileZip.toAbsolutePath());
+    if (!fileZip.toString().endsWith(".zip")) {
+      throw new IllegalArgumentException(
+          "Illegal arg, must be a zip file: " + fileZip.toAbsolutePath());
+    }
     if (Files.exists(destDir)) {
-      Preconditions.checkArgument(
-          Files.isDirectory(destDir),
-          "Illegal arg, destination directory must be a directory: " + destDir.toAbsolutePath());
+      if (!Files.isDirectory(destDir)) {
+        throw new IllegalArgumentException(
+            "Illegal arg, destination directory must be a directory: " + destDir.toAbsolutePath());
+      }
     } else {
       try {
         Files.createDirectories(destDir);

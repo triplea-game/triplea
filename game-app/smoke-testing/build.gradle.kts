@@ -6,11 +6,11 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":game-app:domain-data"))
-    implementation(project(":game-app:game-core"))
-    testImplementation(project(":game-app:game-headless"))
-    testImplementation(project(":lib:java-extras"))
-    testImplementation(project(":lib:test-common"))
+    implementation(project(":domain-data"))
+    implementation(project(":game-core"))
+    testImplementation(project(":game-headless"))
+    testImplementation(project(":java-extras"))
+    testImplementation(project(":test-common"))
 }
 
 tasks.named<Test>("test") {
