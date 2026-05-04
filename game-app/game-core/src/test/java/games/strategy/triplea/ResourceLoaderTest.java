@@ -27,13 +27,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-/**
- * Unit tests for the {@link ResourceLoader} class.
- *
- * <p>Note that the {@link ResourceLoader#loadImageAsset(Path)} method should not be tested here, it
- * should be tested separately in the {@code HeadedResourceLoaderTest} class, to ensure it runs in
- * the context of a project where the asset directories it expects will be present.
- */
+/** Unit tests for the {@link ResourceLoader} class. */
 @SuppressWarnings("InnerClassMayBeStatic")
 final class ResourceLoaderTest {
   @Nested
@@ -167,30 +161,32 @@ final class ResourceLoaderTest {
               "sounds/game_start/",
               "sounds/game_start/sound1.mp3",
               "sounds/game_start/sound2.mp3");
-      var loader = new ResourceLoader(jarPath);
+      try (var loader = new ResourceLoader(jarPath)) {
 
-      var result = loader.listResources("sounds/game_start");
+        var result = loader.listResources("sounds/game_start");
 
-      assertThat("JAR directory entry should yield both contained files", result, hasSize(2));
-      assertThat(
-          "returned URLs should reference the expected sound files",
-          result.stream().map(URL::toString).toList(),
-          containsInAnyOrder(containsString("sound1.mp3"), containsString("sound2.mp3")));
+        assertThat("JAR directory entry should yield both contained files", result, hasSize(2));
+        assertThat(
+            "returned URLs should reference the expected sound files",
+            result.stream().map(URL::toString).toList(),
+            containsInAnyOrder(containsString("sound1.mp3"), containsString("sound2.mp3")));
+      }
     }
 
     @Test
     @DisplayName("Returns the single file URL when path points to a file inside a JAR")
     void returnsSingleFileInJar(@TempDir final Path tempDir) throws Exception {
       var jarPath = buildJar(tempDir.resolve("test.jar"), "sounds/game_start/sound.mp3");
-      var loader = new ResourceLoader(jarPath);
+      try (var loader = new ResourceLoader(jarPath)) {
 
-      var result = loader.listResources("sounds/game_start/sound.mp3");
+        var result = loader.listResources("sounds/game_start/sound.mp3");
 
-      assertThat("JAR entry for a single file should return exactly one URL", result, hasSize(1));
-      assertThat(
-          "returned URL should reference the expected sound file",
-          result.get(0).toString(),
-          containsString("sounds/game_start/sound.mp3"));
+        assertThat("JAR entry for a single file should return exactly one URL", result, hasSize(1));
+        assertThat(
+            "returned URL should reference the expected sound file",
+            result.get(0).toString(),
+            containsString("sounds/game_start/sound.mp3"));
+      }
     }
 
     /** Creates a JAR at {@code dest} containing entries with the given names. */
