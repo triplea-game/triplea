@@ -213,8 +213,13 @@ class WebSocketConnection {
    * interrupted (i.e. {@link #close()} is called, which happens when the lobby frame is closed or
    * the user clicks "Disconnect & Exit" in the reconnect overlay). On success calls {@link
    * WebSocketConnectionListener#reconnected()}.
+   *
+   * If a reconnect is already in process, then no-ops.
    */
   private void reconnectAsync() {
+    if (reconnectThread != null && reconnectThread.isAlive()) {
+      return;
+    }
     reconnectThread =
         Thread.ofVirtual()
             .name("websocket-reconnect-thread")
