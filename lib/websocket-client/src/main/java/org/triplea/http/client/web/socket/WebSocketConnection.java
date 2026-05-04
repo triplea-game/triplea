@@ -44,6 +44,12 @@ class WebSocketConnection {
 
   @VisibleForTesting static final String CLIENT_DISCONNECT_MESSAGE = "Client disconnect.";
 
+  /**
+   * Close reason sent by the server when a player has been banned. This is a terminal condition; we
+   * do not attempt to reconnect.
+   */
+  @VisibleForTesting static final String SERVER_BAN_DISCONNECT_MESSAGE = "You have been banned";
+
   private static final long RECONNECT_BACKOFF_MILLIS = 5000;
 
   private WebSocketConnectionListener listener;
@@ -316,6 +322,13 @@ class WebSocketConnection {
       if (closed || reason.equals(WebSocketConnection.CLIENT_DISCONNECT_MESSAGE)) {
         pingSender.cancel();
         listener.connectionClosed();
+        return null;
+      }
+
+      if (reason.equals(SERVER_BAN_DISCONNECT_MESSAGE)) {
+        log.info("Connection terminated by server (ban): {}", reason);
+        pingSender.cancel();
+        listener.connectionTerminated(reason);
         return null;
       }
 
