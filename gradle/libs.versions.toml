@@ -3,7 +3,7 @@
 apache-http-components = "4.5.14"
 assertj-core = "3.27.7"
 awaitility = "4.3.0"
-caffeine = "3.2.3"
+caffeine = "3.2.4"
 checkstyle = "8.45"
 commons-io = "2.22.0"
 commons-math = "3.6.1"
