@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
@@ -36,13 +37,13 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
   private static final Gson gson = new Gson();
 
   /** These are called whenever connection is closed, whether by us or server. */
-  private final Collection<Runnable> connectionClosedListeners = new ArrayList<>();
+  private final Collection<Runnable> connectionClosedListeners = new CopyOnWriteArrayList<>();
 
-  private final Collection<Runnable> connectionResetListeners = new ArrayList<>();
+  private final Collection<Runnable> connectionResetListeners = new CopyOnWriteArrayList<>();
 
-  private final Collection<Consumer<String>> connectionTerminatedListeners = new ArrayList<>();
+  private final Collection<Consumer<String>> connectionTerminatedListeners = new CopyOnWriteArrayList<>();
 
-  private final Collection<WebSocket.ReconnectionHandler> reconnectionHandlers = new ArrayList<>();
+  private final Collection<WebSocket.ReconnectionHandler> reconnectionHandlers = new CopyOnWriteArrayList<>();
 
   private final URI websocketUri;
   private final Consumer<String> errorHandler;
