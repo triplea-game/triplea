@@ -20,7 +20,7 @@ application {
 val releasesDir = project.layout.buildDirectory.file("releases").get().asFile
 
 fun getProductVersion(): String {
-    return project(":game-app").file("../game-app/run/.build/product-version.txt").readText().trim()
+    return rootProject.file("game-app/run/.build/product-version.txt").readText().trim()
 }
 
 fun getCommitNumber(): String {
@@ -32,16 +32,16 @@ fun getCommitNumber(): String {
 val releaseVersion = getProductVersion() + "+" + getCommitNumber()
 
 dependencies {
-    implementation(project(":game-app:ai"))
-    implementation(project(":game-app:domain-data"))
-    implementation(project(":game-app:game-core"))
-    implementation(project(":game-app:map-data"))
-    implementation(project(":http-clients:lobby-client"))
-    implementation(project(":lib:feign-common"))
-    implementation(project(":lib:java-extras"))
-    implementation(project(":lib:swing-lib"))
-    implementation(project(":lib:websocket-client"))
-    testImplementation(project(":lib:test-common"))
+    implementation(project(":ai"))
+    implementation(project(":domain-data"))
+    implementation(project(":game-core"))
+    implementation(project(":map-data"))
+    implementation(project(":lobby-client"))
+    implementation(project(":feign-common"))
+    implementation(project(":java-extras"))
+    implementation(project(":swing-lib"))
+    implementation(project(":websocket-client"))
+    testImplementation(project(":test-common"))
 }
 
 tasks.named<Jar>("jar") {

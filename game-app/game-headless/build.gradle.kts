@@ -12,11 +12,11 @@ application {
 }
 
 dependencies {
-    implementation(project(":http-clients:lobby-client"))
-    implementation(project(":game-app:ai"))
-    implementation(project(":game-app:domain-data"))
-    implementation(project(":game-app:game-core"))
-    implementation(project(":lib:java-extras"))
+    implementation(project(":lobby-client"))
+    implementation(project(":ai"))
+    implementation(project(":domain-data"))
+    implementation(project(":game-core"))
+    implementation(project(":java-extras"))
 }
 
 tasks.named<Jar>("jar") {

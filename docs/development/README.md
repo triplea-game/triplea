@@ -75,7 +75,7 @@ git config blame.ignoreRevsFile .git-blame-ignore-revs
 
 ```bash
 # Build & Launch TripleA Game-Client
-./gradlew :game-app:game-headed:run
+./gradlew :game-headed:run
 
 # Run all build checks
 ./verify
@@ -87,21 +87,21 @@ git config blame.ignoreRevsFile .git-blame-ignore-revs
 ./gradlew test
 
 # Run tests for a (sub)project
-./gradlew :game-app:game-core:test
+./gradlew :game-core:test
 
 # Run a specific test
-./gradlew :game-app:game-core:test --tests games.strategy.triplea.UnitUtilsTest
+./gradlew :game-core:test --tests games.strategy.triplea.UnitUtilsTest
 
 # Runs a specific test method
-./gradlew :game-app:game-core:test --tests games.strategy.triplea.UnitUtilsTest.multipleTransportedUnitsAreTransferred
+./gradlew :game-core:test --tests games.strategy.triplea.UnitUtilsTest.multipleTransportedUnitsAreTransferred
 
 # Run specific tests using wildcard (be sure to use quotes around wildcard)
-./gradlew :game-app:game-core:test --tests 'games.strategy.triplea.UnitUtilsTest.*Units*'
+./gradlew :game-core:test --tests 'games.strategy.triplea.UnitUtilsTest.*Units*'
 ```
 
 To run tests even if there are no changes from the previous build, use the `--rerun-tasks` option:
 ```
-./gradlew --rerun-tasks :game-app:game-core:test
+./gradlew --rerun-tasks :game-core:test
 ```
 
 ## Run Formatting
@@ -144,7 +144,7 @@ save games from loading.
 This can be caused by missing resource files, such as images or icons.
 
 The Gradle task `run` for `game-headed` will download and unzip game assets into the `game-headed` project's directory `/build/assests`.
-This directory will then be processed as a main resource, by the task `:game-app:game-headed:processResources`, in order to be packaged in the resulting project jar.
+This directory will then be processed as a main resource, by the task `:game-headed:processResources`, in order to be packaged in the resulting project jar.
 When the game starts, it expects to find the folder `assets` at the root of the classpath, so to load files use the class loader's method `getResourceAsStream()`.
 Since this is a resource file packaged in the library jar produced by this project, the working dir should **not** influence how assets are loaded.
 

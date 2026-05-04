@@ -3,6 +3,6 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":lib:java-extras"))
-    implementation(project(":lib:xml-reader"))
+    implementation(project(":java-extras"))
+    implementation(project(":xml-reader"))
 }

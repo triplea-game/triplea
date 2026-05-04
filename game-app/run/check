@@ -5,7 +5,7 @@ set -e
 
 scriptDir=$(dirname "$0")
 
-SUB_PROJECTS=$(find $scriptDir/../ -name "build.gradle" -type f | xargs dirname | sed 's|.*\.\./|:game-app:|'   | sed 's/$/:check/' | tr '\n' ' ')
+SUB_PROJECTS=$(find $scriptDir/../ -name "build.gradle" -type f | xargs dirname | sed 's|.*\.\./|:|'   | sed 's/$/:check/' | tr '\n' ' ')
 
 "$scriptDir/../../gradlew" --parallel $SUB_PROJECTS
 
