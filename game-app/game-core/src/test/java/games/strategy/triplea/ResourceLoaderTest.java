@@ -158,12 +158,12 @@ final class ResourceLoaderTest {
       var jarPath =
           buildJar(
               tempDir.resolve("test.jar"),
-              "sounds/game_start/",
-              "sounds/game_start/sound1.mp3",
-              "sounds/game_start/sound2.mp3");
+              "sounds/game start/",
+              "sounds/game start/sound1.mp3",
+              "sounds/game start/sound2.mp3");
       try (var loader = new ResourceLoader(jarPath)) {
 
-        var result = loader.listResources("sounds/game_start");
+        var result = loader.listResources("sounds/game start");
 
         assertThat("JAR directory entry should yield both contained files", result, hasSize(2));
         assertThat(

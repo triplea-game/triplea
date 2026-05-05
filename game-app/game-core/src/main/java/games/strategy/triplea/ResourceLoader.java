@@ -13,13 +13,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.jar.JarFile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
@@ -257,33 +258,26 @@ public class ResourceLoader implements Closeable {
   }
 
   private static List<URL> listJarResources(final URI jarUri) throws IOException {
-    // jarUri format: jar:file:/path/to/app.jar!/entry/path
-    // e.g. jar:file:/opt/triplea/triplea.jar!/assets/flags
     final String spec = jarUri.getSchemeSpecificPart();
     final int bang = spec.indexOf('!');
-    // jarFilePart: the file: URI pointing to the JAR on disk, e.g. file:/opt/triplea/triplea.jar
-    final String jarFilePart = spec.substring(0, bang);
-    // entryPath: the path inside the JAR, e.g. assets/flags or assets/flags/germany.png
-    final String entryPath = spec.substring(bang + 2); // strip leading "!/"
+    final Path jarPath = Path.of(URI.create(spec.substring(0, bang)));
+    final String entryPath = "/" + spec.substring(bang + 2);
 
-    try (var jar = new JarFile(Path.of(URI.create(jarFilePart)).toFile())) {
-      // If entryPath points directly to a file inside the JAR (not a directory),
-      // return just that single resource, e.g. assets/sounds/hit.wav
-      final var singleEntry = jar.getEntry(entryPath);
-      if (singleEntry != null && !singleEntry.isDirectory()) {
-        return asUrl(URI.create("jar:" + jarFilePart + "!/" + entryPath))
-            .map(List::of)
-            .orElse(List.of());
+    try (FileSystem fs = FileSystems.newFileSystem(jarPath)) {
+      final Path dir = fs.getPath(entryPath);
+      if (!Files.exists(dir)) {
+        return List.of();
       }
-      // Otherwise treat entryPath as a directory prefix and return all files beneath it.
-      // Matches entries like assets/flags/germany.png, assets/flags/usa.png, etc.
-      // Directories themselves are excluded so only loadable resource files are returned.
-      final String prefix = entryPath.endsWith("/") ? entryPath : entryPath + "/";
-      return jar.stream()
-          .filter(e -> e.getName().startsWith(prefix) && !e.isDirectory())
-          .map(e -> asUrl(URI.create("jar:" + jarFilePart + "!/" + e.getName())))
-          .flatMap(Optional::stream)
-          .toList();
+      if (!Files.isDirectory(dir)) {
+        return asUrl(dir.toUri()).map(List::of).orElse(List.of());
+      }
+      try (var stream = Files.walk(dir, 1)) {
+        return stream
+            .filter(Files::isRegularFile)
+            .map(p -> asUrl(p.toUri()))
+            .flatMap(Optional::stream)
+            .toList();
+      }
     }
   }
 
