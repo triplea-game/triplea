@@ -12,9 +12,12 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.I18nResourceBundle;
 import games.strategy.engine.framework.map.file.system.loader.ZippedMapsExtractor;
 import games.strategy.triplea.settings.ClientSetting;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
+import java.util.Optional;
+import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.domain.data.SystemIdLoader;
@@ -26,6 +29,11 @@ import org.triplea.util.ExitStatus;
 public final class HeadlessGameRunner {
   private HeadlessGameRunner() {}
 
+  private static final String BOT_COMMENT_ENV = "BOT_COMMENT";
+  private static final String BOT_NAME_ENV = "BOT_NAME";
+  private static final String BOT_PORT_ENV = "BOT_PORT";
+  private static final String BOT_LOBBY_URI_ENV = "BOT_LOBBY_URI";
+
   /**
    * Starts a new headless game server. This method will return before the headless game server
    * exits. The headless game server runs until the process is killed or the headless game server is
@@ -36,10 +44,46 @@ public final class HeadlessGameRunner {
     if (!I18nResourceBundle.getMapSupportedLocales().contains(defaultLocale)) {
       Locale.setDefault(Locale.US);
     }
-    ClientSetting.initialize();
-    System.setProperty(LOBBY_GAME_COMMENTS, GameRunner.BOT_GAME_HOST_COMMENT);
+
     System.setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
     System.setProperty(TRIPLEA_SERVER, "true");
+
+    if (!setSystemProperty(
+        LOBBY_GAME_COMMENTS,
+        BOT_COMMENT_ENV, //
+        v -> v.length() >= 0 && v.length() <= 14)) {
+      log.error(
+          "Invalid value for lobby game comments, length must be between 0 and 14 characters");
+      ExitStatus.FAILURE.exit();
+    }
+
+    if (!setSystemProperty(
+        TRIPLEA_NAME,
+        BOT_NAME_ENV, //
+        v ->
+            v.length() >= 7
+                && v.length() <= 21
+                && v.startsWith(GameRunner.BOT_GAME_HOST_NAME_PREFIX))) {
+      log.error(
+          "Invalid value for bot name, must start with the word BOT and be length at least 7, under 22, value: {}");
+      ExitStatus.FAILURE.exit();
+    }
+
+    if (!setSystemProperty(
+        TRIPLEA_PORT,
+        BOT_PORT_ENV, //
+        v -> !isInvalidPortNumber(v))) {
+      log.error("Invalid value for bot port, must be a number, value found: {}");
+      ExitStatus.FAILURE.exit();
+    }
+
+    if (!setSystemProperty(
+        LOBBY_URI,
+        BOT_LOBBY_URI_ENV, //
+        v -> URI.create(v).isAbsolute())) {
+      log.error("Invalid lobby URI");
+      ExitStatus.FAILURE.exit();
+    }
 
     LobbyHttpClientConfig.setConfig(
         LobbyHttpClientConfig.builder()
@@ -50,16 +94,19 @@ public final class HeadlessGameRunner {
                     + ProductVersionReader.getCurrentVersion().getMinor())
             .build());
 
+    ClientSetting.initialize();
+
     Path mapsFolder = Path.of(System.getenv("MAPS_FOLDER"));
+    ClientSetting.mapFolderOverride.setValue(Path.of(System.getenv("MAPS_FOLDER")));
+    log.info(
+        "Using map folder: " + ClientSetting.mapFolderOverride.getValueOrThrow().toAbsolutePath());
     if (!Files.isDirectory(mapsFolder)) {
       throw new RuntimeException(
           "Check env variable: MAPS_FOLDER, value found: "
               + System.getenv("MAPS_FOLDER")
               + ", is not a directory");
     }
-    ClientSetting.mapFolderOverride.setValue(Path.of(System.getenv("MAPS_FOLDER")));
 
-    handleHeadlessGameServerArgs();
     ZippedMapsExtractor.builder()
         .downloadedMapsFolder(ClientSetting.mapFolderOverride.getValueOrThrow())
         .progressIndicator(
@@ -70,8 +117,6 @@ public final class HeadlessGameRunner {
         .build()
         .unzipMapFiles();
 
-    log.info(
-        "Using map folder: " + ClientSetting.mapFolderOverride.getValueOrThrow().toAbsolutePath());
     try {
       HeadlessGameServer.runHeadlessGameServer();
     } catch (final Exception e) {
@@ -80,37 +125,27 @@ public final class HeadlessGameRunner {
     }
   }
 
-  private static void handleHeadlessGameServerArgs() {
-    boolean printUsage = false;
-
-    if (!ClientSetting.mapFolderOverride.isSet()) {
-      ClientSetting.mapFolderOverride.setValue(ClientFileSystemHelper.getUserMapsFolder());
+  private static boolean setSystemProperty(
+      String systemPropName, String envVarFallbackName, Predicate<String> validator) {
+    String value = System.getProperty(systemPropName, System.getenv(envVarFallbackName));
+    if (value == null) {
+      log.warn("Set env variable: {}", envVarFallbackName);
+      return false;
     }
 
-    final String playerName = System.getProperty(TRIPLEA_NAME, "");
-    if ((playerName.length() < 7) || !playerName.startsWith(GameRunner.BOT_GAME_HOST_NAME_PREFIX)) {
-      log.warn(
-          "Invalid or missing argument: "
-              + TRIPLEA_NAME
-              + " must at least 7 characters long "
-              + "and start with "
-              + GameRunner.BOT_GAME_HOST_NAME_PREFIX);
-      printUsage = true;
-    }
-
-    if (isInvalidPortNumber(System.getProperty(TRIPLEA_PORT, "0"))) {
-      log.warn("Invalid or missing argument: " + TRIPLEA_PORT + " must be greater than zero");
-      printUsage = true;
-    }
-
-    if (System.getProperty(LOBBY_URI, "").isEmpty()) {
-      log.warn("Invalid or missing argument: " + LOBBY_URI + " must be set");
-      printUsage = true;
-    }
-
-    if (printUsage) {
-      usage();
-      ExitStatus.FAILURE.exit();
+    if (validator.test(value)) {
+      System.setProperty(systemPropName, value);
+      return true;
+    } else {
+      if (value == null) {
+        log.warn("Set env variable: {}", envVarFallbackName);
+      } else if (System.getProperty(systemPropName) == null) {
+        log.warn("Invalid env variable: {}, env variable name: {}", value, envVarFallbackName);
+      } else {
+        log.warn(
+            "Invalid system property: {}, system property name: {}", value, envVarFallbackName);
+      }
+      return false;
     }
   }
 
@@ -120,24 +155,5 @@ public final class HeadlessGameRunner {
     } catch (final NumberFormatException e) {
       return true;
     }
-  }
-
-  private static void usage() {
-    // TODO replace this method with the generated usage of commons-cli
-    log.info(
-        "\nUsage and Valid Arguments:\n"
-            + "   "
-            + TRIPLEA_GAME
-            + "=<FILE_NAME>\n"
-            + "   "
-            + TRIPLEA_PORT
-            + "=<PORT>\n"
-            + "   "
-            + TRIPLEA_NAME
-            + "=<PLAYER_NAME>\n"
-            + "   "
-            + LOBBY_URI
-            + "=<LOBBY_URI>\n"
-            + "\n");
   }
 }
