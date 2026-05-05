@@ -252,9 +252,18 @@ public final class PointFileReaderWriter {
 
   private static Tuple<String, List<Point>> readMultiple(
       final String line, final Map<String, List<Point>> mapping) {
-    final String name = line.substring(0, line.indexOf("(")).trim();
+    final int openParenIndex = line.indexOf("(");
+    if (openParenIndex == -1) {
+      throw new IllegalArgumentException(
+          MessageFormat.format("line missing opening parenthesis ''('': {0}", line));
+    }
+    final String name = line.substring(0, openParenIndex).trim();
+    if (name.isEmpty()) {
+      throw new IllegalArgumentException(
+          MessageFormat.format("missing territory name: {0}", line));
+    }
     if (mapping.containsKey(name)) {
-      throw new IllegalArgumentException("name found twice: " + name);
+      throw new IllegalArgumentException(MessageFormat.format("name found twice: {0}", name));
     }
     final Matcher matcher = pointPattern.matcher(line);
     final List<Point> points = new ArrayList<>();
