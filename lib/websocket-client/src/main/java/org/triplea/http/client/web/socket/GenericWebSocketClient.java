@@ -4,7 +4,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -41,9 +40,11 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
 
   private final Collection<Runnable> connectionResetListeners = new CopyOnWriteArrayList<>();
 
-  private final Collection<Consumer<String>> connectionTerminatedListeners = new CopyOnWriteArrayList<>();
+  private final Collection<Consumer<String>> connectionTerminatedListeners =
+      new CopyOnWriteArrayList<>();
 
-  private final Collection<WebSocket.ReconnectionHandler> reconnectionHandlers = new CopyOnWriteArrayList<>();
+  private final Collection<WebSocket.ReconnectionHandler> reconnectionHandlers =
+      new CopyOnWriteArrayList<>();
 
   private final URI websocketUri;
   private final Consumer<String> errorHandler;

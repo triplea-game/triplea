@@ -102,8 +102,7 @@ class WebSocketConnectionTest {
     @Test
     @DisplayName("Server ban causes connectionTerminated, not a reconnect attempt")
     void onCloseDueToServerBan() {
-      listener.onClose(
-          mock(WebSocket.class), 0, WebSocketConnection.SERVER_BAN_DISCONNECT_MESSAGE);
+      listener.onClose(mock(WebSocket.class), 0, WebSocketConnection.SERVER_BAN_DISCONNECT_MESSAGE);
       verify(webSocketConnectionListener)
           .connectionTerminated(WebSocketConnection.SERVER_BAN_DISCONNECT_MESSAGE);
       verify(webSocketConnectionListener, never()).onReconnecting(anyInt());

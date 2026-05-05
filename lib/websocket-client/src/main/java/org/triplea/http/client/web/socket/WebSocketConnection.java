@@ -214,7 +214,7 @@ class WebSocketConnection {
    * the user clicks "Disconnect & Exit" in the reconnect overlay). On success calls {@link
    * WebSocketConnectionListener#reconnected()}.
    *
-   * If a reconnect is already in process, then no-ops.
+   * <p>If a reconnect is already in process, then no-ops.
    */
   private void reconnectAsync() {
     if (reconnectThread != null && reconnectThread.isAlive()) {
