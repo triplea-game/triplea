@@ -7,6 +7,7 @@ import games.strategy.net.INode;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicLong;
@@ -135,7 +136,10 @@ class EndPoint {
     MessageContext.setSenderNodeForThread(messageOriginator);
     try {
       final Object methodRVal = method.invoke(implementor, call.getArgs());
-      return new RemoteMethodCallResults(methodRVal);
+      // Optional is not Serializable; unwrap to the contained value or null for network transfer.
+      final Object serializable =
+          methodRVal instanceof Optional ? ((Optional<?>) methodRVal).orElse(null) : methodRVal;
+      return new RemoteMethodCallResults(serializable);
     } catch (final InvocationTargetException e) {
       return new RemoteMethodCallResults(e.getTargetException());
     } catch (final IllegalAccessException | IllegalArgumentException e) {
