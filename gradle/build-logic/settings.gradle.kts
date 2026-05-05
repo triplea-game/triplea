@@ -19,4 +19,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "build-logic"
 
-include("failure-summary-plugin", "triplea-java-library", "triplea-published-library")
+include("failure-summary-plugin", "triplea-test-conventions", "triplea-base-project",
+    "triplea-java-library", "triplea-java-application", "triplea-published-library", )
