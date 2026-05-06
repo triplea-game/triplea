@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'http-clients/lobby-client-data'
+      - '.github/workflows/upload-http-client-jars.yml'
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
