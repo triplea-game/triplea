@@ -2,6 +2,10 @@ package org.triplea.http.client;
 
 import lombok.experimental.UtilityClass;
 
+/**
+ * Shared data class for all server paths, both server and client will use these variables for URI
+ * paths.
+ */
 @UtilityClass
 public class ServerPaths {
   public static final String ERROR_REPORT_PATH = "/support/error-report";
