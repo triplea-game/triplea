@@ -1,3 +1,7 @@
+plugins {
+    id("triplea-java-library")
+}
+
 dependencies {
     implementation(project(":lobby-client-data"))
     implementation(project(":domain-data"))
