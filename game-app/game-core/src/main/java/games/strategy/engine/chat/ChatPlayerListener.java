@@ -1,7 +1,7 @@
 package games.strategy.engine.chat;
 
 import java.util.Collection;
-import org.triplea.domain.data.ChatParticipant;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.ChatParticipant;
 
 /** Callback interface for a components interested in displaying a list of chat participants. */
 public interface ChatPlayerListener {

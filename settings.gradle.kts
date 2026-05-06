@@ -47,6 +47,9 @@ project(":smoke-testing").projectDir = file("game-app/smoke-testing")
 
 include(":lobby-client")
 project(":lobby-client").projectDir = file("http-clients/lobby-client")
+include(":lobby-client-data")
+project(":lobby-client-data").projectDir = file("http-clients/lobby-client-data")
+
 
 include(":feign-common")
 project(":feign-common").projectDir = file("lib/feign-common")

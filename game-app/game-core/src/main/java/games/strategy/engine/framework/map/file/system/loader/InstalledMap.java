@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import org.triplea.http.client.maps.listing.MapDownloadItem;
+import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 import org.triplea.io.FileUtils;
 import org.triplea.map.description.file.MapDescriptionYaml;
 import org.triplea.map.description.file.SkinDescriptionYaml;

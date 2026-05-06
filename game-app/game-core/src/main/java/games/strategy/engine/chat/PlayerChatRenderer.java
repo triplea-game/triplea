@@ -21,8 +21,8 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.SwingConstants;
-import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.ChatParticipant;
 
 /**
  * Renders a chat participant in a {@link JList}.
@@ -63,18 +63,17 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
       final boolean isSelected,
       final boolean cellHasFocus) {
     final ChatParticipant chatParticipant = (ChatParticipant) value;
-    final List<Icon> icons =
-        iconMap.getOrDefault(chatParticipant.getUserName().getValue(), List.of());
+    final List<Icon> icons = iconMap.getOrDefault(chatParticipant.getUserName(), List.of());
     if (icons.isEmpty()) {
       super.getListCellRendererComponent(
           list,
-          getNodeLabelWithPlayers(chatParticipant.getUserName()),
+          getNodeLabelWithPlayers(UserName.of(chatParticipant.getUserName())),
           index,
           isSelected,
           cellHasFocus);
     } else {
       super.getListCellRendererComponent(
-          list, chatParticipant.getUserName().getValue(), index, isSelected, cellHasFocus);
+          list, chatParticipant.getUserName(), index, isSelected, cellHasFocus);
       setHorizontalTextPosition(SwingConstants.LEFT);
       setIcon(new CompositeIcon(icons));
     }

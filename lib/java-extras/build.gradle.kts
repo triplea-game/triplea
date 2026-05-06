@@ -1,5 +1,5 @@
 plugins {
-    id("triplea-published-library")
+    id("triplea-java-library")
 }
 
 description = "TripleA library for low-level helper APIs, ie: syntactic sugar"

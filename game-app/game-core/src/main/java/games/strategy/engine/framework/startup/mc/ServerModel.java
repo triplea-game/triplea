@@ -58,10 +58,11 @@ import org.jetbrains.annotations.NonNls;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingClient;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.remote.actions.PlayerBannedMessage;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.remote.actions.ShutdownServerMessage;
 import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
-import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.PlayerBannedMessage;
-import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.ShutdownServerMessage;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.IpAddressParser;
 import org.triplea.java.ThreadRunner;
 import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.util.ExitStatus;
@@ -259,7 +260,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
             PlayerBannedMessage.TYPE,
             bannedPlayerMessage ->
                 new PlayerDisconnectAction(serverMessenger, this::cancel)
-                    .accept(bannedPlayerMessage.getIpAddress()));
+                    .accept(IpAddressParser.fromString(bannedPlayerMessage.getIpAddress())));
 
         ExitStatus.addExitAction(this::cancel);
         gameToLobbyConnection.addMessageListener(

@@ -2,7 +2,7 @@ package games.strategy.engine.chat;
 
 import java.util.List;
 import javax.swing.Action;
-import org.triplea.domain.data.ChatParticipant;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.ChatParticipant;
 
 /** Factory for creating actions in response to a player (node) event. */
 @FunctionalInterface

@@ -3,16 +3,16 @@ package games.strategy.engine.chat;
 import java.util.Collection;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.ChatEventReceivedMessage;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.ChatParticipant;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.ChatReceivedMessage;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.ChatterListingMessage;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.PlayerJoinedMessage;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.PlayerLeftMessage;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.PlayerSlapReceivedMessage;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.PlayerStatusUpdateReceivedMessage;
 import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
-import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatEventReceivedMessage;
-import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatReceivedMessage;
-import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatterListingMessage;
-import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerJoinedMessage;
-import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerLeftMessage;
-import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerSlapReceivedMessage;
-import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerStatusUpdateReceivedMessage;
 
 /**
  * Chat transmitter designed to work with lobby, sends and receives messages over Websocket. This
@@ -31,10 +31,12 @@ public class LobbyChatTransmitter implements ChatTransmitter {
 
     playerToLobbyConnection.addMessageListener(
         PlayerStatusUpdateReceivedMessage.TYPE,
-        message -> chatClient.statusUpdated(message.getUserName(), message.getStatus()));
+        message ->
+            chatClient.statusUpdated(UserName.of(message.getUserName()), message.getStatus()));
 
     playerToLobbyConnection.addMessageListener(
-        PlayerLeftMessage.TYPE, message -> chatClient.participantRemoved(message.getUserName()));
+        PlayerLeftMessage.TYPE,
+        message -> chatClient.participantRemoved(UserName.of(message.getUserName())));
 
     playerToLobbyConnection.addMessageListener(
         PlayerJoinedMessage.TYPE,
@@ -42,7 +44,8 @@ public class LobbyChatTransmitter implements ChatTransmitter {
 
     playerToLobbyConnection.addMessageListener(
         ChatReceivedMessage.TYPE,
-        message -> chatClient.messageReceived(message.getSender(), message.getMessage()));
+        message ->
+            chatClient.messageReceived(UserName.of(message.getSender()), message.getMessage()));
 
     playerToLobbyConnection.addMessageListener(
         ChatEventReceivedMessage.TYPE, message -> chatClient.eventReceived(message.getMessage()));
@@ -59,7 +62,7 @@ public class LobbyChatTransmitter implements ChatTransmitter {
   private void handleSlapMessage(
       final ChatClient chatClient, final PlayerSlapReceivedMessage message) {
     if (message.getSlappedPlayer().equals(localUserName)) {
-      chatClient.slappedBy(message.getSlappingPlayer());
+      chatClient.slappedBy(UserName.of(message.getSlappingPlayer()));
     } else {
       chatClient.eventReceived(
           message.getSlappingPlayer() + " slapped " + message.getSlappedPlayer());

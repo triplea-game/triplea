@@ -5,7 +5,7 @@ import games.strategy.engine.message.RemoteActionCode;
 import java.util.Collection;
 import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
-import org.triplea.domain.data.ChatParticipant;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.ChatParticipant;
 import org.triplea.http.client.web.socket.MessageEnvelope;
 import org.triplea.http.client.web.socket.messages.MessageType;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;

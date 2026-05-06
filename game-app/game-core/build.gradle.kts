@@ -8,6 +8,7 @@ dependencies {
     implementation(project(":map-data"))
     implementation(project(":game-relay-server"))
     implementation(project(":lobby-client"))
+    implementation(project(":lobby-client-data"))
     implementation(project(":java-extras"))
     implementation(project(":swing-lib"))
     implementation(project(":websocket-client"))

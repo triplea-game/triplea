@@ -9,8 +9,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import org.triplea.http.client.maps.listing.MapDownloadItem;
-import org.triplea.http.client.maps.listing.MapTag;
+import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
+import org.triplea.http.client.lobby.maps.listing.MapTag;
 import org.triplea.swing.JTableBuilder;
 import org.triplea.swing.JTableTypeAheadListener;
 

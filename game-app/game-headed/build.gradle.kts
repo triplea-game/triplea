@@ -37,6 +37,7 @@ dependencies {
     implementation(project(":game-core"))
     implementation(project(":map-data"))
     implementation(project(":lobby-client"))
+    implementation(project(":lobby-client-data"))
     implementation(project(":feign-common"))
     implementation(project(":java-extras"))
     implementation(project(":swing-lib"))

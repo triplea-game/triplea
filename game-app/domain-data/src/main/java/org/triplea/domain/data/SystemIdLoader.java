@@ -39,7 +39,6 @@ public class SystemIdLoader {
       };
 
   public static SystemId load() {
-
     final String systemId =
         Optional.ofNullable(preferencesPersistence.get())
             .orElseGet(

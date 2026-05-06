@@ -8,7 +8,9 @@ import games.strategy.engine.lobby.client.ui.action.player.info.ShowPlayerInform
 import java.util.List;
 import javax.swing.Action;
 import javax.swing.JFrame;
-import org.triplea.domain.data.ChatParticipant;
+import org.triplea.domain.data.PlayerChatId;
+import org.triplea.domain.data.UserName;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.ChatParticipant;
 import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
 
 /** Builds the right-click action list for a player entry in the lobby chat panel. */
@@ -28,8 +30,8 @@ class LobbyPlayerActions {
     final var showPlayerInformationAction =
         ShowPlayerInformationAction.builder()
             .parent(parentWindow)
-            .playerChatId(clickedOn.getPlayerChatId())
-            .playerName(clickedOn.getUserName())
+            .playerChatId(PlayerChatId.of(clickedOn.getPlayerChatId()))
+            .playerName(UserName.of(clickedOn.getUserName()))
             .playerToLobbyConnection(playerToLobbyConnection)
             .build()
             .toSwingAction();
@@ -41,23 +43,23 @@ class LobbyPlayerActions {
         showPlayerInformationAction,
         MutePlayerAction.builder()
             .parent(parentWindow)
-            .playerChatId(clickedOn.getPlayerChatId())
+            .playerChatId(PlayerChatId.of(clickedOn.getPlayerChatId()))
             .playerToLobbyConnection(playerToLobbyConnection)
-            .playerName(clickedOn.getUserName().getValue())
+            .playerName(clickedOn.getUserName())
             .build()
             .toSwingAction(),
         DisconnectPlayerModeratorAction.builder()
             .parent(parentWindow)
             .playerToLobbyConnection(playerToLobbyConnection)
-            .playerChatId(clickedOn.getPlayerChatId())
-            .userName(clickedOn.getUserName())
+            .playerChatId(PlayerChatId.of(clickedOn.getPlayerChatId()))
+            .userName(UserName.of(clickedOn.getUserName()))
             .build()
             .toSwingAction(),
         BanPlayerModeratorAction.builder()
             .parent(parentWindow)
             .playerToLobbyConnection(playerToLobbyConnection)
-            .playerChatIdToBan(clickedOn.getPlayerChatId())
-            .playerName(clickedOn.getUserName().getValue())
+            .playerChatIdToBan(PlayerChatId.of(clickedOn.getPlayerChatId()))
+            .playerName(clickedOn.getUserName())
             .build()
             .toSwingAction());
   }
