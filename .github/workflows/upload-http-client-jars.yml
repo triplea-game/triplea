@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'http-clients/lobby-client-data'
+      - 'http-clients/lobby-client-data/**'
       - '.github/workflows/upload-http-client-jars.yml'
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -29,6 +29,6 @@ jobs:
           BUILD_VERSION=$(game-app/run/.build/get-build-version)
           echo "JAR_VERSION=$BUILD_VERSION" | tee -a $GITHUB_ENV
       - name: Publish lobby client JAR
-        run: ./gradlew :lobby-client-data:publish
+        run: ./gradlew :lobby-client-data:publish --rerun-tasks
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
