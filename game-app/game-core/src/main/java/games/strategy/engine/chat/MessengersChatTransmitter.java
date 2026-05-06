@@ -8,8 +8,8 @@ import games.strategy.triplea.settings.ClientSetting;
 import java.util.Collection;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.ChatParticipant;
 import org.triplea.java.concurrency.AsyncRunner;
 
 /** Chat transmitter that sends and receives messages over Java NIO sockets. */

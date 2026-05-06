@@ -3,7 +3,6 @@ package org.triplea.domain.data;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /**
@@ -12,7 +11,6 @@ import lombok.Getter;
  * authorization.
  */
 @Getter
-@EqualsAndHashCode
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ApiKey {
   public static final int MAX_LENGTH = 36;
@@ -30,6 +28,22 @@ public class ApiKey {
               "Invalid API key passed with length: %d", value == null ? 0 : value.length()));
     }
     return new ApiKey(value);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (this == other) return true;
+    if (!(other instanceof ApiKey)) return false;
+    return value.equals(((ApiKey) other).value);
+  }
+
+  public boolean equals(String other) {
+    return value.equals(other);
+  }
+
+  @Override
+  public int hashCode() {
+    return value.hashCode();
   }
 
   @Override

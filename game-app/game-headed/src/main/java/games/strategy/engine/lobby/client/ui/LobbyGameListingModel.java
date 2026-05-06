@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.SwingUtilities;
 import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.game.listing.LobbyGameRemovedMessage;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.game.listing.LobbyGameUpdatedMessage;
 import org.triplea.http.client.web.socket.client.connections.PlayerToLobbyConnection;
-import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameRemovedMessage;
-import org.triplea.http.client.web.socket.messages.envelopes.game.listing.LobbyGameUpdatedMessage;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.lobby.common.LobbyGameUpdateListener;
 

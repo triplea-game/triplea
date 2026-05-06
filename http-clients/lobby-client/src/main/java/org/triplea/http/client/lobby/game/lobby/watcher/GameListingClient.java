@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.List;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.ServerPaths;
 import org.triplea.http.client.lobby.AuthenticationHeaders;
 
 /**
@@ -14,17 +15,14 @@ import org.triplea.http.client.lobby.AuthenticationHeaders;
 public interface GameListingClient {
   int KEEP_ALIVE_SECONDS = 20;
 
-  String FETCH_GAMES_PATH = "/lobby/games/fetch-games";
-  String BOOT_GAME_PATH = "/lobby/games/boot-game";
-
   static GameListingClient newClient(final URI serverUri, final ApiKey apiKey) {
     return HttpClient.newClient(
         GameListingClient.class, serverUri, new AuthenticationHeaders(apiKey).createHeaders());
   }
 
-  @RequestLine("GET " + GameListingClient.FETCH_GAMES_PATH)
+  @RequestLine("GET " + ServerPaths.FETCH_GAMES_PATH)
   List<LobbyGameListing> fetchGameListing();
 
-  @RequestLine("POST " + GameListingClient.BOOT_GAME_PATH)
+  @RequestLine("POST " + ServerPaths.BOOT_GAME_PATH)
   void bootGame(String gameId);
 }

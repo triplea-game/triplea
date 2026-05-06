@@ -7,6 +7,7 @@ import java.net.URI;
 import java.util.List;
 import org.triplea.domain.data.ApiKey;
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.ServerPaths;
 import org.triplea.http.client.lobby.AuthenticationHeaders;
 import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 
@@ -16,14 +17,13 @@ import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
  * parameters for adding user name or user bans.
  */
 public interface ToolboxAccessLogClient {
-  String FETCH_ACCESS_LOG_PATH = "/lobby/moderator-toolbox/access-log";
 
   static ToolboxAccessLogClient newClient(final URI serverUri, final ApiKey apiKey) {
     return HttpClient.newClient(
         ToolboxAccessLogClient.class, serverUri, new AuthenticationHeaders(apiKey).createHeaders());
   }
 
-  @RequestLine("POST " + ToolboxAccessLogClient.FETCH_ACCESS_LOG_PATH)
+  @RequestLine("POST " + ServerPaths.FETCH_ACCESS_LOG_PATH)
   List<AccessLogData> getAccessLog(AccessLogRequest accessLogRequest);
 
   default List<AccessLogData> getAccessLog(

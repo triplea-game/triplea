@@ -9,7 +9,7 @@ import java.net.InetAddress;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.triplea.domain.data.LobbyGame;
+import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGame;
 import org.triplea.test.TestData;
 
 final class GameDescriptionTest {

@@ -2,7 +2,7 @@ package games.strategy.engine.framework.map.download;
 
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
-import org.triplea.http.client.maps.listing.MapDownloadItem;
+import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 
 /**
  * A listener of map download progress events that updates the associated controls in the UI.

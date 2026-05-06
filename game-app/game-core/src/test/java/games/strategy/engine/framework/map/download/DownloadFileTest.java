@@ -8,7 +8,7 @@ import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.triplea.http.client.maps.listing.MapDownloadItem;
+import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 
 class DownloadFileTest {
   @Test

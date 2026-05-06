@@ -6,7 +6,6 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.jetbrains.annotations.Nls;
 
@@ -16,7 +15,6 @@ import org.jetbrains.annotations.Nls;
  */
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@EqualsAndHashCode
 public class UserName implements Serializable {
 
   @Serial private static final long serialVersionUID = 8356372044000232198L;
@@ -36,6 +34,22 @@ public class UserName implements Serializable {
 
   public static boolean isValid(final @Nullable String username) {
     return validate(username).isEmpty();
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (this == other) return true;
+    if (!(other instanceof UserName)) return false;
+    return value.equals(((UserName) other).value);
+  }
+
+  @Override
+  public int hashCode() {
+    return value.hashCode();
+  }
+
+  public boolean equals(String other) {
+    return value.equals(other);
   }
 
   /**

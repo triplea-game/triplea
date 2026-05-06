@@ -18,15 +18,15 @@ import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGameListing;
 import org.triplea.http.client.lobby.moderator.BanPlayerRequest;
 import org.triplea.http.client.lobby.moderator.PlayerSummary;
 import org.triplea.http.client.lobby.moderator.toolbox.ModeratorToolboxClient;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.ChatSentMessage;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.ConnectToChatMessage;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.PlayerSlapSentMessage;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.PlayerStatusUpdateSentMessage;
 import org.triplea.http.client.web.socket.GenericWebSocketClient;
 import org.triplea.http.client.web.socket.WebSocket;
 import org.triplea.http.client.web.socket.WebsocketPaths;
 import org.triplea.http.client.web.socket.messages.MessageType;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
-import org.triplea.http.client.web.socket.messages.envelopes.chat.ChatSentMessage;
-import org.triplea.http.client.web.socket.messages.envelopes.chat.ConnectToChatMessage;
-import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerSlapSentMessage;
-import org.triplea.http.client.web.socket.messages.envelopes.chat.PlayerStatusUpdateSentMessage;
 
 /**
  * Represents a connection from a player to lobby. A player can do actions like get game listings,
@@ -77,7 +77,7 @@ public class PlayerToLobbyConnection {
   }
 
   public void sendConnectToChatMessage() {
-    webSocket.sendMessage(new ConnectToChatMessage(httpLobbyClient.getApiKey()));
+    webSocket.sendMessage(new ConnectToChatMessage(httpLobbyClient.getApiKey().getValue()));
   }
 
   public void sendChatMessage(final String message) {
@@ -85,7 +85,7 @@ public class PlayerToLobbyConnection {
   }
 
   public void slapPlayer(final UserName userName) {
-    webSocket.sendMessage(new PlayerSlapSentMessage(userName));
+    webSocket.sendMessage(new PlayerSlapSentMessage(userName.getValue()));
   }
 
   public void updateStatus(final String status) {

@@ -15,7 +15,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.triplea.http.client.maps.listing.MapDownloadItem;
+import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 import org.triplea.map.description.file.MapDescriptionYaml;
 
 class InstalledMapsListingTest {

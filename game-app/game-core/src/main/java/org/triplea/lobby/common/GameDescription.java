@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 import lombok.With;
-import org.triplea.domain.data.LobbyGame;
+import org.triplea.http.client.lobby.game.lobby.watcher.LobbyGame;
 
 /**
  * Immutable Data class being used to send information about the current game state to the lobby.
