@@ -23,12 +23,9 @@ public class SystemId {
   @Override
   public boolean equals(Object other) {
     if (this == other) return true;
-    if (!(other instanceof SystemId)) return false;
-    return value.equals(((SystemId) other).value);
-  }
-
-  public boolean equals(String other) {
-    return value.equals(other);
+    if (other instanceof SystemId systemId) return value.equals(systemId.value);
+    if (other instanceof String string) return value.equals(string);
+    return false;
   }
 
   @Override

@@ -39,17 +39,14 @@ public class UserName implements Serializable {
   @Override
   public boolean equals(Object other) {
     if (this == other) return true;
-    if (!(other instanceof UserName)) return false;
-    return value.equals(((UserName) other).value);
+    if (other instanceof UserName userName) return value.equals(userName.value);
+    if (other instanceof String string) return value.equals(string);
+    return false;
   }
 
   @Override
   public int hashCode() {
     return value.hashCode();
-  }
-
-  public boolean equals(String other) {
-    return value.equals(other);
   }
 
   /**

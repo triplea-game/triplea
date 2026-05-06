@@ -33,12 +33,9 @@ public class ApiKey {
   @Override
   public boolean equals(Object other) {
     if (this == other) return true;
-    if (!(other instanceof ApiKey)) return false;
-    return value.equals(((ApiKey) other).value);
-  }
-
-  public boolean equals(String other) {
-    return value.equals(other);
+    if (other instanceof ApiKey apiKey) return value.equals(apiKey.value);
+    if (other instanceof String string) return value.equals(string);
+    return false;
   }
 
   @Override
