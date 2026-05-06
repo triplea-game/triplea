@@ -259,16 +259,18 @@ public class ResourceLoader implements Closeable {
   }
 
   private static List<URL> listJarResources(final URI jarUri) throws IOException {
-    final String spec = jarUri.getSchemeSpecificPart();
-    final String entryPath = "/" + spec.substring(spec.indexOf('!') + 2);
-
     try (FileSystem fs = FileSystems.newFileSystem(jarUri, Map.of())) {
+      // Example of what we expect the jarUri to look like:
+      //   jar:file:/tmp/junit-2538481685073361615/triplea%20test/test.jar!/sounds/game%20start
+      final String spec = jarUri.getSchemeSpecificPart();
+      // Example value for spec:
+      //   file:/tmp/junit-2538481685073361615/triplea%20test/test.jar!/sounds/game%20start
+      final String entryPath = spec.substring(spec.indexOf('!') + 1);
+      // Example value for entry path:
+      //   /sounds/game%20start
       final Path dir = fs.getPath(entryPath);
       if (!Files.exists(dir)) {
         return List.of();
-      }
-      if (!Files.isDirectory(dir)) {
-        return asUrl(dir.toUri()).map(List::of).orElse(List.of());
       }
       try (var stream = Files.walk(dir, 1)) {
         return stream
