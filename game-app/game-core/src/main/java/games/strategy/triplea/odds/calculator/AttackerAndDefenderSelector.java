@@ -6,9 +6,11 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.pro.util.ProUtils;
 import games.strategy.triplea.delegate.Matches;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.AccessLevel;
@@ -112,7 +114,12 @@ public class AttackerAndDefenderSelector {
     assert currentPlayer
         != null; // should not occur checked in calling method getAttackerAndDefender
 
-    final List<GamePlayer> potentialDefenders = ProUtils.getEnemyPlayers(attacker);
+    var playerList = attacker.getData().getPlayerList();
+    var players = new ArrayList<>(playerList.getPlayers());
+    players.add(playerList.getNullPlayer());
+
+    final List<GamePlayer> potentialDefenders =
+        players.stream().filter(Matches.isAllied(attacker).negate()).collect(Collectors.toList());
     if (potentialDefenders.isEmpty()) {
       return null;
     }
@@ -121,7 +128,7 @@ public class AttackerAndDefenderSelector {
         ProUtils.getOtherPlayersInTurnOrder(attacker).stream()
             .filter(potentialDefenders::contains)
             .findFirst()
-            .orElseThrow();
+            .orElseGet(() -> potentialDefenders.get(0));
 
     if (territory == null) {
       // Without territory, we cannot prioritize defender by number of units
@@ -138,7 +145,7 @@ public class AttackerAndDefenderSelector {
     assert territory != null; // should not occur as checked in calling method getBestDefender
 
     final GamePlayer territoryOwner = territory.getOwner();
-    if (!territoryOwner.isNull() && potentialDefenders.contains(territoryOwner)) {
+    if (potentialDefenders.contains(territoryOwner)) {
       // In case the owner is a potential defender and has units in the land it's the defender
       if (territory.getUnits().stream()
           .map(Unit::getOwner)
