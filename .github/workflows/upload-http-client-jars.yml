@@ -1,4 +1,4 @@
-# Jar files uploaded are used as a maven dependency by server (eg: lobby)
+# Jar files uploaded are used as a maven dependency by servers (eg: lobby)
 name: Create Http JAR files and upload to github packages
 on:
   push:
