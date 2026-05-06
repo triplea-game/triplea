@@ -2833,7 +2833,7 @@
 - mapName: Global 40 Expansion UHD Boxes
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/global_40_expansion_uhd_boxes/archive/refs/heads/master.zip
-  version: 4
+  version: 5
   img: https://raw.githubusercontent.com/triplea-maps/global_40_expansion_uhd_boxes/master/preview.png
   description: |
     <br>This is World War II Global 40 Mod using the UHD Mega Map
