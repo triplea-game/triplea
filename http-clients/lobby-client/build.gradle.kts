@@ -1,7 +1,3 @@
-plugins {
-    id("triplea-published-library")
-}
-
 dependencies {
     implementation(project(":lobby-client-data"))
     implementation(project(":domain-data"))

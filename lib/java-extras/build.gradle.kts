@@ -1,7 +1,3 @@
-plugins {
-    id("triplea-published-library")
-}
-
 description = "TripleA library for low-level helper APIs, ie: syntactic sugar"
 
 dependencies {
