@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import javax.annotation.Nonnull;
@@ -259,11 +260,9 @@ public class ResourceLoader implements Closeable {
 
   private static List<URL> listJarResources(final URI jarUri) throws IOException {
     final String spec = jarUri.getSchemeSpecificPart();
-    final int bang = spec.indexOf('!');
-    final Path jarPath = Path.of(URI.create(spec.substring(0, bang)));
-    final String entryPath = "/" + spec.substring(bang + 2);
+    final String entryPath = "/" + spec.substring(spec.indexOf('!') + 2);
 
-    try (FileSystem fs = FileSystems.newFileSystem(jarPath)) {
+    try (FileSystem fs = FileSystems.newFileSystem(jarUri, Map.of())) {
       final Path dir = fs.getPath(entryPath);
       if (!Files.exists(dir)) {
         return List.of();
