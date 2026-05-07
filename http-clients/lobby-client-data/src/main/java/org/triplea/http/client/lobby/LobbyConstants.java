@@ -8,6 +8,8 @@ import lombok.experimental.UtilityClass;
  */
 @UtilityClass
 public class LobbyConstants {
+  public static final int KEEP_ALIVE_SECONDS = 20;
+
   public static final int USERNAME_MIN_LENGTH = 3;
   public static final int USERNAME_MAX_LENGTH = 40;
   // The maximum email address length is 254
