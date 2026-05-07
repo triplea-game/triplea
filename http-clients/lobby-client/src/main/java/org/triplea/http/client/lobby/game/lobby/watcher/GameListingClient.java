@@ -13,8 +13,6 @@ import org.triplea.http.client.lobby.AuthenticationHeaders;
  * updates are asynchronous and are pushed over websocket from the server to client listeners.
  */
 public interface GameListingClient {
-  int KEEP_ALIVE_SECONDS = 20;
-
   static GameListingClient newClient(final URI serverUri, final ApiKey apiKey) {
     return HttpClient.newClient(
         GameListingClient.class, serverUri, new AuthenticationHeaders(apiKey).createHeaders());
