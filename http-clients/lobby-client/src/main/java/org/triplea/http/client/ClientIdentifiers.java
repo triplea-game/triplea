@@ -9,8 +9,6 @@ import lombok.Builder;
 
 @Builder
 public class ClientIdentifiers {
-  public static final String VERSION_HEADER = "Triplea-Version";
-  private static final String SYSTEM_ID_HEADER = "System-Id";
 
   @Nonnull private final String applicationVersion;
   @Nonnull private final String systemId;
@@ -19,8 +17,8 @@ public class ClientIdentifiers {
   /** Creates headers containing 'System-Id' only. */
   public Map<String, String> createHeaders() {
     final Map<String, String> headerMap = new HashMap<>();
-    headerMap.put(VERSION_HEADER, applicationVersion);
-    headerMap.put(SYSTEM_ID_HEADER, systemId);
+    headerMap.put(HttpHeaders.VERSION_HEADER, applicationVersion);
+    headerMap.put(HttpHeaders.SYSTEM_ID_HEADER, systemId);
     Optional.ofNullable(apiKey)
         .ifPresent(apiKey -> headerMap.put("Authorization", "Bearer " + apiKey));
     return headerMap;
