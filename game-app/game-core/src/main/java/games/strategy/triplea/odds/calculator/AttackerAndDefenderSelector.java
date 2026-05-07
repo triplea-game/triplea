@@ -164,8 +164,9 @@ public class AttackerAndDefenderSelector {
 
     // Add the territory owner at the end of the priority list. This way, when attacking an
     // empty territory, the owner gets preferred even though they have no units in their land.
-    sortedPlayersForDefender.add(territoryOwner);
-
+    if(!territory.isWater()) {
+      sortedPlayersForDefender.add(territoryOwner);
+    }
     sortedPlayersForDefender.removeIf(p -> !potentialDefenders.contains(p));
     sortedPlayersForDefender.add(nextPlayerAsDefender);
 
