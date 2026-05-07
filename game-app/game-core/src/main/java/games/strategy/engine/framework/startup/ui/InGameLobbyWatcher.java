@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
-import org.triplea.domain.data.LobbyConstants;
+import org.triplea.http.client.lobby.LobbyConstants;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingResponse;
 import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
