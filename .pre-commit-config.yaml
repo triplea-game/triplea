@@ -1,0 +1,11 @@
+repos:
+  # Runs formatting (./gradlew spotlessApply)
+  - repo: local
+    hooks:
+      - id: format
+        name: Format
+        entry: make format
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+
