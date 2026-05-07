@@ -41,6 +41,9 @@ class ReconnectOverlay {
             .add(content)
             .build();
     dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+    // Switch focus to the overaly, so that a user does not activate the 'disconnect' button
+    // by pressing space (which is easy when chatting).
+    SwingUtilities.invokeLater(() -> dialog.getRootPane().requestFocusInWindow());
   }
 
   /** Shows (or updates) the overlay for the given 1-based reconnect attempt number. */
