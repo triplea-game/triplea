@@ -36,12 +36,14 @@ public class EngineImageLoader {
         path ->
             Optional.ofNullable(EngineImageLoader.class.getClassLoader().getResourceAsStream(path));
 
-    // first attempt to read the resource is with the assets folder in the path, this is the typical case
+    // first attempt to read the resource is with the assets folder in the path, this is the typical
+    // case
     final InputStream imageStream =
         tryStream
             .apply(ResourceLoader.getAssetsFileLocation(assetsImageFileStrings))
             // Dirty hack Fallback for IDES to read the resource directly.
-            // This will work if the classpath to the 'assets' folder has been set explicitly in IDE,
+            // This will work if the classpath to the 'assets' folder has been set explicitly in
+            // IDE,
             // eg: check IDEA headedGameRunner launcher configuration.
             .or(() -> tryStream.apply(String.join("/", assetsImageFileStrings)))
             .orElseThrow(
