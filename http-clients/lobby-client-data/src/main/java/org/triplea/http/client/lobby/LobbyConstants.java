@@ -1,4 +1,4 @@
-package org.triplea.domain.data;
+package org.triplea.http.client.lobby;
 
 import lombok.experimental.UtilityClass;
 

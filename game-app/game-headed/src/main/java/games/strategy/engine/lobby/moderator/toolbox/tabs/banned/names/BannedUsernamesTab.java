@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import org.triplea.domain.data.LobbyConstants;
+import org.triplea.http.client.lobby.LobbyConstants;
 import org.triplea.http.client.lobby.moderator.toolbox.banned.name.ToolboxUsernameBanClient;
 import org.triplea.swing.ButtonColumn;
 import org.triplea.swing.DocumentListenerBuilder;

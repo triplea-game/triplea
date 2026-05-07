@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.jetbrains.annotations.Nls;
+import org.triplea.http.client.lobby.LobbyConstants;
 
 /**
  * AKA username, represents the display name of a player. This is the name used when taking a
