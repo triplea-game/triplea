@@ -35,7 +35,8 @@ public class MapListingFetcher {
                   .applicationVersion(ProductVersionReader.getCurrentVersion().toMajorMinorString())
                   .systemId(SystemIdLoader.load().getValue())
                   .build())
-          .fetchMapListing();
+          .fetchMapListing()
+          .getMaps();
     } catch (FeignException e) {
       log.warn(
           "Failed to download the list of available maps from TripleA servers.\n"
