@@ -229,7 +229,8 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
       if (techAttachment == null) {
         // don't crash, as a map xml may not set the tech attachment for all players, so just create
         // a new tech attachment for them
-        techAttachment = new TechAttachment(Constants.TECH_ATTACHMENT_NAME, this, getData());
+        techAttachment =
+            new TechAttachment(Constants.TECH_ATTACHMENT_NAME, this, GameData.current());
       }
     }
     return techAttachment;

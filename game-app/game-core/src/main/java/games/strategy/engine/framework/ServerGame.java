@@ -360,6 +360,7 @@ public class ServerGame extends AbstractGame {
     }
 
     isGameOver = true;
+    GameData.setCurrent(null);
     delegateExecutionStoppedLatch.countDown();
     // tell the players (especially the AI's) that the game is stopping, so stop doing stuff.
     for (final Player player : gamePlayers.values()) {

@@ -58,6 +58,7 @@ public abstract class AbstractGame implements IGame {
       final Messengers messengers,
       final ClientNetworkBridge clientNetworkBridge) {
     gameData = data;
+    GameData.setCurrent(data);
     this.messengers = messengers;
     this.clientNetworkBridge = clientNetworkBridge;
     vault = new Vault(messengers);
