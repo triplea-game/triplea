@@ -44,7 +44,7 @@ import org.jetbrains.annotations.NonNls;
 @Slf4j
 public class UnitImageFactory {
   public static final int DEFAULT_UNIT_ICON_SIZE = 48;
-  private static final String FILE_NAME_BASE = "units/";
+  private static final String FILE_NAME_BASE = "units";
 
   /**
    * Width of all icons. You probably want getUnitImageWidth(), which takes scale factor into
@@ -289,8 +289,9 @@ public class UnitImageFactory {
     final GamePlayer gamePlayer = imageKey.getPlayer();
     // URL uses '/' not '\'
     @NonNls
-    final String fileName = FILE_NAME_BASE + gamePlayer.getName() + "/" + baseImageName + ".png";
-    @NonNls final String fileName2 = FILE_NAME_BASE + baseImageName + ".png";
+    final String fileName =
+        FILE_NAME_BASE + "/" + gamePlayer.getName() + "/" + baseImageName + ".png";
+    @NonNls final String fileName2 = FILE_NAME_BASE + "/" + baseImageName + ".png";
     URL url = resourceLoader.getResource(fileName, fileName2);
     if (null == url) {
       @NonNls final String assetsfileName = ResourceLoader.getAssetsFileLocation(fileName);
