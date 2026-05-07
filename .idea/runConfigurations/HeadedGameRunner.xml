@@ -1,5 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="HeadedGameRunner" type="Application" factoryName="Application" singleton="false" nameIsGenerated="true">
+    <classpathModifications>
+      <entry path="$PROJECT_DIR$/game-app/game-headed/build/assets" />
+    </classpathModifications>
     <option name="MAIN_CLASS_NAME" value="org.triplea.game.client.HeadedGameRunner" />
     <module name="triplea.game-headed.main" />
     <option name="VM_PARAMETERS" value="-Xss1250K -Dsun.java2d.uiScale.enabled=false --add-opens java.desktop/com.apple.eawt.event=ALL-UNNAMED" />

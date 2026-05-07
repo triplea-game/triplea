@@ -37,7 +37,7 @@ import org.triplea.java.UrlStreams;
  */
 @Slf4j
 public class ResourceLoader implements Closeable {
-  private static final String ASSETS_FOLDER = "assets";
+  public static final String ASSETS_FOLDER = "assets";
 
   private final URLClassLoader loader;
 
