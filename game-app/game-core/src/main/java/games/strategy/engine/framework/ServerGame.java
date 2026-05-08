@@ -240,13 +240,17 @@ public class ServerGame extends AbstractGame {
           () -> {
             try {
               blockingObserver.joinGame(bytes, playerManager.getPlayerMapping());
-              waitOnObserver.countDown();
             } catch (final Exception e) {
               if (e.getCause() instanceof ConnectionLostException) {
                 log.error("Connection lost to observer while joining: " + newNode.getName(), e);
               } else {
                 log.error("Failed to join game", e);
               }
+            } finally {
+              // Always release the awaiter so the host doesn't sit on the delegate
+              // write lock for serverObserverJoinWaitTime (default 180s) when a join
+              // aborts mid-flight.
+              waitOnObserver.countDown();
             }
           });
       try {
