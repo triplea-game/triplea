@@ -57,6 +57,7 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
   private static class MessageListener<T extends WebSocketMessage> {
     @Nonnull MessageType<T> messageType;
     @Nonnull Consumer<Object> listener;
+    @Nonnull Consumer<T> originalHandler;
   }
 
   @Builder
@@ -131,7 +132,16 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
         MessageListener.<T>builder() //
             .messageType(messageType)
             .listener(messageConsumer)
+            .originalHandler(messageHandler)
             .build());
+  }
+
+  @Override
+  @Synchronized
+  public <T extends WebSocketMessage> void removeListener(
+      final MessageType<T> messageType, final Consumer<T> messageHandler) {
+    listeners.removeIf(
+        l -> l.messageType.equals(messageType) && l.originalHandler.equals(messageHandler));
   }
 
   @Override
