@@ -194,6 +194,7 @@ public class ClientGame extends AbstractGame {
       return;
     }
     isGameOver = true;
+    GameData.setCurrent(null);
     try {
       messengers.unregisterChannelSubscriber(gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
       messengers.unregisterRemote(getRemoteStepAdvancerName(messengers.getLocalNode()));

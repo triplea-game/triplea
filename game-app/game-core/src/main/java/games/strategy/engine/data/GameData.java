@@ -119,6 +119,19 @@ public class GameData implements Serializable, GameState {
   private List<Tuple<IAttachment, List<Tuple<String, String>>>> attachmentOrderAndValues =
       new ArrayList<>();
 
+  @Setter private static GameData current;
+
+  /**
+   * A reference to the latest 'live' game data. If you need to grab a live game data reference,
+   * this is a good choice rather than searching from GameDataComponents looking for one (where it
+   * might be null). On the other hand, USE GREAT CAUTION: avoid using 'current()' with
+   * GameDataComponent's themselves. The reason is they can be cloned and then the cloned instances
+   * could have a reference to the live game data, so be careful of that.
+   */
+  public static GameData current() {
+    return current;
+  }
+
   private transient GameDataEventListeners gameDataEventListeners = new GameDataEventListeners();
 
   private static Unlocker acquireLock(Lock lock) {
