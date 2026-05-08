@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
+import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
 import static games.strategy.triplea.delegate.GameDataTestUtil.battleDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.battleship;
 import static games.strategy.triplea.delegate.GameDataTestUtil.carrier;
@@ -16,6 +17,7 @@ import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -79,6 +81,58 @@ class WW2V3Year42Test {
     assertNotNull(battleTracker.getPendingNonBombingBattle(karrelia));
     assertNotNull(battleTracker.getPendingBombingBattle(karrelia));
     // the territory should not be conquered
+    assertEquals(karrelia.getOwner(), russians(gameData));
+  }
+
+  @Test
+  void testBombFactoryAndBlitzThrough() {
+    // Regression for issue #14278: bombing a factory and then blitzing a tank *through* that
+    // territory must not crash with "Bombing Raids should be dealt with first!". The bombing
+    // battle in the middle territory has to be wired as a dependency of the (deferred) takeover.
+    final Territory karrelia = territory("Karelia S.S.R.", gameData);
+    final Territory archangel = territory("Archangel", gameData);
+    final Territory baltic = territory("Baltic States", gameData);
+    final Territory sz5 = territory("5 Sea Zone", gameData);
+    final Territory germany = territory("Germany", gameData);
+    final GamePlayer germans = germans(gameData);
+    final AbstractMoveDelegate moveDelegate = gameData.getMoveDelegate();
+    // simulate v1-style rules where a tank can blitz through a factory territory
+    gameData
+        .getProperties()
+        .set(games.strategy.triplea.Constants.BLITZ_THROUGH_FACTORIES_AND_AA_RESTRICTED, false);
+    final IDelegateBridge bridge = newDelegateBridge(germans);
+    advanceToStep(bridge, "CombatMove");
+    moveDelegate.setDelegateBridgeAndPlayer(bridge);
+    moveDelegate.start();
+    when(bridge.getRemotePlayer().shouldBomberBomb(any())).thenReturn(true);
+    // clear combat units from both territories so the tank can blitz through
+    removeFrom(
+        karrelia, karrelia.getUnitCollection().getMatches(Matches.unitCanBeDamaged().negate()));
+    removeFrom(
+        archangel, archangel.getUnitCollection().getMatches(Matches.unitCanBeDamaged().negate()));
+    // give Germans a tank in Baltic States to blitz with
+    addTo(baltic, armour(gameData).create(1, germans));
+    // bomber attacks the factory in Karelia
+    move(
+        germany.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()),
+        new Route(germany, sz5, karrelia));
+    // tank blitzes Baltic -> Karelia -> Archangel (Karelia is the middle territory)
+    move(
+        baltic.getUnitCollection().getMatches(Matches.unitCanBlitz()),
+        new Route(baltic, karrelia, archangel));
+    final BattleTracker battleTracker = MoveDelegate.getBattleTracker(gameData);
+    // bombing raid still pending against Karelia
+    assertNotNull(battleTracker.getPendingBombingBattle(karrelia));
+    // a non-bombing (non-fighting) battle must exist for the middle territory so the takeover
+    // can be deferred until the bombing raid resolves
+    final IBattle nonFight = battleTracker.getPendingNonBombingBattle(karrelia);
+    assertNotNull(nonFight);
+    // and that battle must depend on the bombing raid
+    assertTrue(
+        battleTracker
+            .getDependentOn(nonFight)
+            .contains(battleTracker.getPendingBombingBattle(karrelia)));
+    // Karelia hasn't been taken over yet
     assertEquals(karrelia.getOwner(), russians(gameData));
   }
 
