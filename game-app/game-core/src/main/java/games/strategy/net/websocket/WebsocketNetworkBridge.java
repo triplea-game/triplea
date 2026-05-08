@@ -46,4 +46,12 @@ public class WebsocketNetworkBridge implements ClientNetworkBridge {
       genericWebSocketClient.addListener(messageType, messageConsumer);
     }
   }
+
+  @Override
+  public <T extends WebSocketMessage> void removeListener(
+      final MessageType<T> messageType, final Consumer<T> messageConsumer) {
+    if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
+      genericWebSocketClient.removeListener(messageType, messageConsumer);
+    }
+  }
 }

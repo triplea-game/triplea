@@ -14,6 +14,9 @@ public interface WebSocket {
   <T extends WebSocketMessage> void addListener(
       MessageType<T> messageType, Consumer<T> messageHandler);
 
+  <T extends WebSocketMessage> void removeListener(
+      MessageType<T> messageType, Consumer<T> messageHandler);
+
   void sendMessage(WebSocketMessage message);
 
   void addConnectionClosedListener(Runnable connectionClosedListener);
