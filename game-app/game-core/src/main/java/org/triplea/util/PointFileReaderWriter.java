@@ -259,8 +259,7 @@ public final class PointFileReaderWriter {
     }
     final String name = line.substring(0, openParenIndex).trim();
     if (name.isEmpty()) {
-      throw new IllegalArgumentException(
-          MessageFormat.format("missing territory name: {0}", line));
+      throw new IllegalArgumentException(MessageFormat.format("missing territory name: {0}", line));
     }
     if (mapping.containsKey(name)) {
       throw new IllegalArgumentException(MessageFormat.format("name found twice: {0}", name));
