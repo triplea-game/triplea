@@ -65,6 +65,23 @@ class CheckGeneralBattleEndTest {
     verify(battleActions).endBattle(IBattle.WhoWon.DEFENDER, delegateBridge);
   }
 
+  /**
+   * Regression test for <a href="https://github.com/triplea-game/triplea/issues/14119">#14119</a>:
+   * a prior step (e.g. {@code EvaderRetreat} when the last attacking sub submerges) may already
+   * have ended the battle. {@code CheckGeneralBattleEnd} must skip in that case, otherwise it fires
+   * {@code defenderWins} a second time and corrupts {@code BattleTracker} state.
+   */
+  @Test
+  void doesNotEndBattleIfAlreadyOver() {
+    final BattleState battleState =
+        givenBattleStateBuilder().attackingUnits(List.of()).over(true).build();
+
+    final CheckGeneralBattleEnd checkGeneralBattleEnd = givenCheckGeneralBattleEnd(battleState);
+    checkGeneralBattleEnd.execute(executionStack, delegateBridge);
+
+    verify(battleActions, never()).endBattle(any(), any());
+  }
+
   @Test
   void defenderWinsIfOnlyOffenseInfrastructureUnits() {
     final BattleState battleState =

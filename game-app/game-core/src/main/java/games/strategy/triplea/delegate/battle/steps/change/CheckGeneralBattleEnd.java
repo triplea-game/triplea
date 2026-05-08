@@ -58,6 +58,12 @@ public class CheckGeneralBattleEnd implements BattleStep {
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+    // A prior step (e.g. EvaderRetreat after subs submerge) may have already ended the battle.
+    // Re-ending it would double-fire defenderWins/attackerWins and corrupt BattleTracker state
+    // (see #14119: duplicate entries in defendingAirThatCanNotLand cause an AddUnits crash).
+    if (battleState.getStatus().isOver()) {
+      return;
+    }
     if (hasSideLost(OFFENSE)) {
       battleActions.endBattle(IBattle.WhoWon.DEFENDER, bridge);
     } else if (hasSideLost(DEFENSE)) {
