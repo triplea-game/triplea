@@ -1,12 +1,12 @@
 package games.strategy.triplea.delegate.battle.casualty;
 
-import com.google.common.base.Objects;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.UnitBattleComparator;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
@@ -29,7 +29,7 @@ import org.triplea.java.collections.IntegerMap;
 
 @UtilityClass
 class CasualtyOrderOfLosses {
-  private final Map<String, List<AmphibType>> oolCache = new ConcurrentHashMap<>();
+  private final Map<OolCacheKey, List<AmphibType>> oolCache = new ConcurrentHashMap<>();
 
   void clearOolCache() {
     oolCache.clear();
@@ -64,7 +64,7 @@ class CasualtyOrderOfLosses {
       targetTypes.add(AmphibType.of(u));
     }
     // Calculate hashes and cache key
-    String key = computeOolCacheKey(parameters, targetTypes);
+    OolCacheKey key = computeOolCacheKey(parameters, targetTypes);
     // Check OOL cache
     final List<AmphibType> stored = oolCache.get(key);
     if (stored != null) {
@@ -261,14 +261,27 @@ class CasualtyOrderOfLosses {
     }
   }
 
-  static String computeOolCacheKey(
+  static OolCacheKey computeOolCacheKey(
       final Parameters parameters, final List<AmphibType> targetTypes) {
-    return parameters.player.getName()
-        + "|"
-        + parameters.battlesite.getName()
-        + "|"
-        + parameters.combatValue.getBattleSide()
-        + "|"
-        + Objects.hashCode(targetTypes);
+    return new OolCacheKey(
+        parameters.player.getName(),
+        parameters.battlesite.getName(),
+        parameters.combatValue.getBattleSide(),
+        targetTypes);
+  }
+
+  /**
+   * Content-based cache key for the order-of-losses cache. The compact constructor copies {@code
+   * targetTypes} so callers may continue to mutate their list after computing the key without
+   * affecting entries already stored in the cache.
+   */
+  record OolCacheKey(
+      String playerName,
+      String battlesiteName,
+      BattleState.Side side,
+      List<AmphibType> targetTypes) {
+    OolCacheKey {
+      targetTypes = List.copyOf(targetTypes);
+    }
   }
 }
