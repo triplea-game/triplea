@@ -261,7 +261,11 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
     try {
       preferences.flush();
     } catch (final BackingStoreException e) {
-      log.error("Failed to persist client settings", e);
+      // Logged at warn (not error) because the most common cause is benign and transient:
+      // another TripleA process holds the JDK preferences file lock. The user-visible impact
+      // is at worst that a setting is not persisted across restarts; logging at error would
+      // trigger the in-game error reporter for a condition we cannot fix.
+      log.warn("Failed to persist client settings", e);
     }
   }
 
