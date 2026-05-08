@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
-import org.triplea.http.client.lobby.game.lobby.watcher.GameListingClient;
+import org.triplea.http.client.lobby.LobbyConstants;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingResponse;
 import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
@@ -138,7 +138,7 @@ public class InGameLobbyWatcher {
     // message is lost or missed, we have time to send another one before reaching the cut-off time.
     keepAliveTimer =
         Timers.fixedRateTimer("lobby-watcher-keep-alive")
-            .period((GameListingClient.KEEP_ALIVE_SECONDS / 2L) - 1, TimeUnit.SECONDS)
+            .period((LobbyConstants.KEEP_ALIVE_SECONDS / 2L) - 1, TimeUnit.SECONDS)
             .task(
                 LobbyWatcherKeepAliveTask.builder()
                     .gameId(gameId)

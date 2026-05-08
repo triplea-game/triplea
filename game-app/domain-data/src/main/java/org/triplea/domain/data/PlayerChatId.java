@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /**
@@ -13,7 +12,6 @@ import lombok.Getter;
  * playerIds. // TODO: should playerId be one to many for players in chat to their chat sessions?
  */
 @Getter
-@EqualsAndHashCode
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class PlayerChatId implements Serializable {
   private static final long serialVersionUID = 8960403951203338400L;
@@ -29,6 +27,22 @@ public class PlayerChatId implements Serializable {
       throw new IllegalArgumentException("Invalid player chat id: " + value);
     }
     return new PlayerChatId(value);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (this == other) return true;
+    if (!(other instanceof PlayerChatId)) return false;
+    return value.equals(((PlayerChatId) other).value);
+  }
+
+  public boolean equals(String other) {
+    return value.equals(other);
+  }
+
+  @Override
+  public int hashCode() {
+    return value.hashCode();
   }
 
   @Override

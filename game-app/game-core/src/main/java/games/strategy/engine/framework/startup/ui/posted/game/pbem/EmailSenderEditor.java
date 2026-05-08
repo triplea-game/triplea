@@ -13,7 +13,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
-import org.triplea.domain.data.LobbyConstants;
+import org.triplea.http.client.lobby.LobbyConstants;
 import org.triplea.java.ViewModelListener;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;

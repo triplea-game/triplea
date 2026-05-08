@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.maps.listing.MapDownloadItem;
+import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 import org.triplea.map.description.file.MapDescriptionYaml;
 
 class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {

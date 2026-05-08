@@ -3,6 +3,7 @@ package org.triplea.http.client.lobby.game.hosting.request;
 import feign.RequestLine;
 import java.net.URI;
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.ServerPaths;
 import org.triplea.http.client.lobby.AuthenticationHeaders;
 
 /**
@@ -11,13 +12,12 @@ import org.triplea.http.client.lobby.AuthenticationHeaders;
  * GameListingClient}.
  */
 public interface GameHostingClient {
-  String GAME_HOSTING_REQUEST_PATH = "/lobby/game-hosting-request";
 
   static GameHostingClient newClient(final URI lobby) {
     return HttpClient.newClient(
         GameHostingClient.class, lobby, AuthenticationHeaders.systemIdHeaders());
   }
 
-  @RequestLine("POST " + GameHostingClient.GAME_HOSTING_REQUEST_PATH)
+  @RequestLine("POST " + ServerPaths.GAME_HOSTING_REQUEST_PATH)
   GameHostingResponse sendGameHostingRequest();
 }

@@ -13,13 +13,15 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.jar.JarFile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
@@ -35,7 +37,7 @@ import org.triplea.java.UrlStreams;
  */
 @Slf4j
 public class ResourceLoader implements Closeable {
-  private static final String ASSETS_FOLDER = "assets";
+  public static final String ASSETS_FOLDER = "assets";
 
   private final URLClassLoader loader;
 
@@ -257,33 +259,26 @@ public class ResourceLoader implements Closeable {
   }
 
   private static List<URL> listJarResources(final URI jarUri) throws IOException {
-    // jarUri format: jar:file:/path/to/app.jar!/entry/path
-    // e.g. jar:file:/opt/triplea/triplea.jar!/assets/flags
-    final String spec = jarUri.getSchemeSpecificPart();
-    final int bang = spec.indexOf('!');
-    // jarFilePart: the file: URI pointing to the JAR on disk, e.g. file:/opt/triplea/triplea.jar
-    final String jarFilePart = spec.substring(0, bang);
-    // entryPath: the path inside the JAR, e.g. assets/flags or assets/flags/germany.png
-    final String entryPath = spec.substring(bang + 2); // strip leading "!/"
-
-    try (var jar = new JarFile(Path.of(URI.create(jarFilePart)).toFile())) {
-      // If entryPath points directly to a file inside the JAR (not a directory),
-      // return just that single resource, e.g. assets/sounds/hit.wav
-      final var singleEntry = jar.getEntry(entryPath);
-      if (singleEntry != null && !singleEntry.isDirectory()) {
-        return asUrl(URI.create("jar:" + jarFilePart + "!/" + entryPath))
-            .map(List::of)
-            .orElse(List.of());
+    try (FileSystem fs = FileSystems.newFileSystem(jarUri, Map.of())) {
+      // Example of what we expect the jarUri to look like:
+      //   jar:file:/tmp/junit-2538481685073361615/triplea%20test/test.jar!/sounds/game%20start
+      final String spec = jarUri.getSchemeSpecificPart();
+      // Example value for spec:
+      //   file:/tmp/junit-2538481685073361615/triplea%20test/test.jar!/sounds/game%20start
+      final String entryPath = spec.substring(spec.indexOf('!') + 1);
+      // Example value for entry path:
+      //   /sounds/game%20start
+      final Path dir = fs.getPath(entryPath);
+      if (!Files.exists(dir)) {
+        return List.of();
       }
-      // Otherwise treat entryPath as a directory prefix and return all files beneath it.
-      // Matches entries like assets/flags/germany.png, assets/flags/usa.png, etc.
-      // Directories themselves are excluded so only loadable resource files are returned.
-      final String prefix = entryPath.endsWith("/") ? entryPath : entryPath + "/";
-      return jar.stream()
-          .filter(e -> e.getName().startsWith(prefix) && !e.isDirectory())
-          .map(e -> asUrl(URI.create("jar:" + jarFilePart + "!/" + e.getName())))
-          .flatMap(Optional::stream)
-          .toList();
+      try (var stream = Files.walk(dir, 1)) {
+        return stream
+            .filter(Files::isRegularFile)
+            .map(p -> asUrl(p.toUri()))
+            .flatMap(Optional::stream)
+            .toList();
+      }
     }
   }
 

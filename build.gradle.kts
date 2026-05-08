@@ -1,6 +1,5 @@
 plugins {
-    id("java")
-    id("pmd")
+    id("java-library")
     id("eclipse")
     alias(libs.plugins.gradle.versions)
     alias(libs.plugins.spotless).apply(false)
@@ -11,10 +10,7 @@ tasks.named<Wrapper>("wrapper") {
 }
 
 subprojects {
-    apply(plugin = "checkstyle")
-    apply(plugin = "jacoco")
-    apply(plugin = "java")
-    apply(plugin = "pmd")
+    apply(plugin = "java-library")
 
     dependencies {
         implementation(rootProject.libs.jlayer) {
@@ -57,73 +53,5 @@ subprojects {
         testImplementation(rootProject.libs.wiremock.junit5)
         testRuntimeOnly(rootProject.libs.junit.jupiter.engine)
         testRuntimeOnly(rootProject.libs.junit.platform.launcher)
-    }
-
-    tasks.withType<JavaCompile>().configureEach {
-        options.compilerArgs.add("-Xlint:none,-processing")
-        options.encoding = "UTF-8"
-        options.setIncremental(true)
-    }
-
-    tasks.withType<Test>().configureEach {
-        useJUnitPlatform() {}
-        testLogging {
-            setExceptionFormat("full")
-            events("skipped", "failed")
-        }
-
-        val outputByTest = mutableMapOf<String, StringBuilder>()
-
-        addTestOutputListener { descriptor, event ->
-            val key = "${descriptor.className}.${descriptor.name}"
-            outputByTest.getOrPut(key) { StringBuilder() }.append(event.message)
-        }
-
-        addTestListener(object : TestListener {
-            override fun beforeSuite(suite: TestDescriptor) {}
-            override fun afterSuite(suite: TestDescriptor, result: TestResult) {}
-            override fun beforeTest(testDescriptor: TestDescriptor) {}
-
-            override fun afterTest(testDescriptor: TestDescriptor, result: TestResult) {
-                val key = "${testDescriptor.className}.${testDescriptor.name}"
-                val output = outputByTest.remove(key)
-                if (result.resultType == TestResult.ResultType.FAILURE && !output.isNullOrEmpty()) {
-                    println("\n-- Output for ${testDescriptor.displayName} --\n$output")
-                }
-            }
-        })
-    }
-
-    extensions.getByType<CheckstyleExtension>().apply {
-        toolVersion = rootProject.libs.versions.checkstyle.get()
-        configFile = rootProject.file(".build/checkstyle.xml")
-        configProperties = mapOf("samedir" to configFile.parent)
-    }
-
-    tasks.named("checkstyleMain", Checkstyle::class.java) {
-        maxWarnings = 0
-        source(sourceSets.main.get().output.resourcesDir)
-    }
-
-    tasks.named("checkstyleTest", Checkstyle::class.java) {
-        maxWarnings = 0
-        source(sourceSets.test.get().output.resourcesDir)
-        exclude("**/map-xmls/*.xml")
-    }
-
-    tasks.named("jacocoTestReport", JacocoReport::class.java) {
-        reports {
-            xml.required = true
-            xml.outputLocation = project.layout.buildDirectory.file("jacoco.xml")
-            html.required = true
-        }
-    }
-
-    pmd {
-        setConsoleOutput(true)
-        ruleSetFiles = files(rootProject.file(".build/pmd.xml"))
-        ruleSets = listOf()
-        incrementalAnalysis = true
-        toolVersion = rootProject.libs.versions.pmd.get()
     }
 }

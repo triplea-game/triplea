@@ -155,15 +155,17 @@ final class ResourceLoaderTest {
     @Test
     @DisplayName("Returns all files under a directory entry inside a JAR")
     void returnsFilesInJarDirectory(@TempDir final Path tempDir) throws Exception {
+      Path baseDir = tempDir.resolve("triplea test");
+      Files.createDirectories(baseDir);
       var jarPath =
           buildJar(
-              tempDir.resolve("test.jar"),
-              "sounds/game_start/",
-              "sounds/game_start/sound1.mp3",
-              "sounds/game_start/sound2.mp3");
+              baseDir.resolve("test.jar"),
+              "sounds/game start/",
+              "sounds/game start/sound1.mp3",
+              "sounds/game start/sound2.mp3");
       try (var loader = new ResourceLoader(jarPath)) {
 
-        var result = loader.listResources("sounds/game_start");
+        var result = loader.listResources("sounds/game start");
 
         assertThat("JAR directory entry should yield both contained files", result, hasSize(2));
         assertThat(

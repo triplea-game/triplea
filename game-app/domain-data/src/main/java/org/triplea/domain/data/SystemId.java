@@ -2,7 +2,6 @@ package org.triplea.domain.data;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /**
@@ -10,7 +9,6 @@ import lombok.Getter;
  * address.
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@EqualsAndHashCode
 @Getter
 public class SystemId {
   private final String value;
@@ -20,6 +18,19 @@ public class SystemId {
       throw new IllegalArgumentException("Invalid system id: " + systemId);
     }
     return new SystemId(systemId);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (this == other) return true;
+    if (other instanceof SystemId systemId) return value.equals(systemId.value);
+    if (other instanceof String string) return value.equals(string);
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return value.hashCode();
   }
 
   @Override

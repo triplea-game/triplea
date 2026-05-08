@@ -58,12 +58,14 @@ final class LobbyGameTableModelTest {
   @Nested
   final class RemoveAndUpdateGameTest {
     private LobbyGameTableModel testObj;
+    private LobbyGameListingModel listingModel;
     @Mock private PlayerToLobbyConnection playerToLobbyConnection;
 
     @BeforeEach
     void setUp() {
-      testObj = new LobbyGameTableModel(true, playerToLobbyConnection);
-      testObj
+      listingModel = new LobbyGameListingModel(playerToLobbyConnection);
+      testObj = new LobbyGameTableModel(true, listingModel);
+      listingModel
           .getLobbyGameBroadcaster()
           .gameUpdated(
               LobbyGameListing.builder()
@@ -88,7 +90,7 @@ final class LobbyGameTableModelTest {
       final int commentColumnIndex = testObj.getColumnIndex(LobbyGameTableModel.Column.Comments);
       assertThat(testObj.getValueAt(0, commentColumnIndex), nullValue());
 
-      testObj
+      listingModel
           .getLobbyGameBroadcaster()
           .gameUpdated(
               LobbyGameListing.builder()
@@ -103,7 +105,7 @@ final class LobbyGameTableModelTest {
 
     @Test
     void updateGameAddsIfDoesNotExist() {
-      testObj
+      listingModel
           .getLobbyGameBroadcaster()
           .gameUpdated(
               LobbyGameListing.builder()
@@ -116,14 +118,14 @@ final class LobbyGameTableModelTest {
 
     @Test
     void removeGame() {
-      testObj.getLobbyGameBroadcaster().gameRemoved(id0);
+      listingModel.getLobbyGameBroadcaster().gameRemoved(id0);
       waitForSwingThreads();
       assertThat(testObj.getRowCount(), is(0));
     }
 
     @Test
     void removeGameThatDoesNotExistIsIgnored() {
-      testObj.getLobbyGameBroadcaster().gameRemoved(id1);
+      listingModel.getLobbyGameBroadcaster().gameRemoved(id1);
       waitForSwingThreads();
       assertThat(testObj.getRowCount(), is(1));
     }

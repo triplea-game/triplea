@@ -27,8 +27,8 @@ import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
 import org.jetbrains.annotations.NonNls;
-import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.ChatParticipant;
 import org.triplea.java.StringUtils;
 import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.SwingAction;
@@ -125,7 +125,7 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
                     setCellRenderer.getListCellRendererComponent(
                         list, getDisplayString(node), index, isSelected, cellHasFocus);
           }
-          if (chat.isIgnored(node.getUserName())) {
+          if (chat.isIgnored(UserName.of(node.getUserName()))) {
             renderer.setIcon(ignoreIcon);
           }
           return renderer;
@@ -162,17 +162,18 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
           if (clickedOn.getUserName().equals(chat.getLocalUserName())) {
             return List.of();
           }
-          final boolean isIgnored = chat.isIgnored(clickedOn.getUserName());
+          final boolean isIgnored = chat.isIgnored(UserName.of(clickedOn.getUserName()));
           final Action ignore =
               SwingAction.of(
                   isIgnored ? "Stop Ignoring" : "Ignore",
                   e -> {
-                    chat.setIgnored(clickedOn.getUserName(), !isIgnored);
+                    chat.setIgnored(UserName.of(clickedOn.getUserName()), !isIgnored);
                     repaint();
                   });
           final Action slap =
               SwingAction.of(
-                  "Slap " + clickedOn.getUserName(), e -> chat.sendSlap(clickedOn.getUserName()));
+                  "Slap " + clickedOn.getUserName(),
+                  e -> chat.sendSlap(UserName.of(clickedOn.getUserName())));
 
           // TODO: add check for if we are moderator
           final Action disconnect =
@@ -185,8 +186,7 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
                         "Confirm Disconnect",
                         EventThreadJOptionPane.ConfirmDialogType.YES_NO)) {
                       chat.getMessengers()
-                          .sendToServer(
-                              ModeratorMessage.newDisconnect(clickedOn.getUserName().getValue()));
+                          .sendToServer(ModeratorMessage.newDisconnect(clickedOn.getUserName()));
                     }
                   });
           // TODO: add check for if we are moderator
@@ -201,8 +201,7 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
                         "Confirm Ban",
                         EventThreadJOptionPane.ConfirmDialogType.YES_NO)) {
                       chat.getMessengers()
-                          .sendToServer(
-                              ModeratorMessage.newBan(clickedOn.getUserName().getValue()));
+                          .sendToServer(ModeratorMessage.newBan(clickedOn.getUserName()));
                     }
                   });
 
@@ -266,8 +265,7 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
           updatedPlayers.stream()
               .sorted(
                   Comparator.comparing(
-                      chatParticipant ->
-                          chatParticipant.getUserName().getValue().toUpperCase(Locale.ENGLISH)))
+                      chatParticipant -> chatParticipant.getUserName().toUpperCase(Locale.ENGLISH)))
               .forEach(listModel::addElement);
         });
   }
@@ -278,7 +276,8 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
     }
 
     final String extra = chatParticipant.isModerator() ? " " + TAG_MODERATOR : "";
-    final String status = StringUtils.truncate(chat.getStatus(chatParticipant.getUserName()), 25);
+    final String status =
+        StringUtils.truncate(chat.getStatus(UserName.of(chatParticipant.getUserName())), 25);
     final String suffix = status.isEmpty() ? "" : " (" + status + ")";
 
     return chatParticipant.getUserName() + extra + suffix;

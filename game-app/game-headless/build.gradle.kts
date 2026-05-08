@@ -13,6 +13,7 @@ application {
 
 dependencies {
     implementation(project(":lobby-client"))
+    implementation(project(":lobby-client-data"))
     implementation(project(":ai"))
     implementation(project(":domain-data"))
     implementation(project(":game-core"))

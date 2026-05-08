@@ -49,7 +49,7 @@ import javax.swing.table.TableRowSorter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NonNls;
-import org.triplea.http.client.maps.listing.MapDownloadItem;
+import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingComponents;

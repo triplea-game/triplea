@@ -6,10 +6,10 @@ import lombok.Builder;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.GenericServerResponse;
+import org.triplea.http.client.lobby.maps.admin.MapTagMetaData;
+import org.triplea.http.client.lobby.maps.admin.UpdateMapTagRequest;
+import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 import org.triplea.http.client.maps.admin.MapTagAdminClient;
-import org.triplea.http.client.maps.admin.MapTagMetaData;
-import org.triplea.http.client.maps.admin.UpdateMapTagRequest;
-import org.triplea.http.client.maps.listing.MapDownloadItem;
 import org.triplea.http.client.maps.listing.MapsClient;
 
 @Slf4j

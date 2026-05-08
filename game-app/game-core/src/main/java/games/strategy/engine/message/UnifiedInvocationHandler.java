@@ -3,6 +3,7 @@ package games.strategy.engine.message;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.Optional;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,6 +56,11 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler {
     final RemoteMethodCallResults response = messenger.invokeAndWait(endPointName, remoteMethodMsg);
     if (response.getException() != null) {
       throw new RuntimeException("Exception on remote", response.getException());
+    }
+    // Wrap into Optional if the method declares Optional as its return type.
+    // Optional is not serializable, so it would come as an unwrapped value over the network.
+    if (method.getReturnType() == Optional.class) {
+      return Optional.ofNullable(response.getRVal());
     }
     return response.getRVal();
   }

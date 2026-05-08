@@ -1,8 +1,14 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="HeadlessGameRunner" type="Application" factoryName="Application" nameIsGenerated="true">
+    <envs>
+      <env name="BOT_COMMENT" value="auto-bot" />
+      <env name="BOT_LOBBY_URI" value="https://prod.triplea-game.org" />
+      <env name="BOT_PORT" value="4000" />
+      <env name="MAPS_FOLDER" value="$USER_HOME$/triplea/downloadedMaps" />
+      <env name="BOT_NAME" value="BotAutoBot" />
+    </envs>
     <option name="MAIN_CLASS_NAME" value="org.triplea.game.server.HeadlessGameRunner" />
-    <module name="triplea.game-app.game-headless.main" />
-    <option name="PROGRAM_PARAMETERS" value="-Ptriplea.name=Bot01-testbot -Ptriplea.port=4000 -Ptriplea.lobby.uri=http://localhost:8080" />
+    <module name="triplea.game-headless.main" />
     <option name="VM_PARAMETERS" value="-Xss1250K" />
     <extension name="coverage">
       <pattern>

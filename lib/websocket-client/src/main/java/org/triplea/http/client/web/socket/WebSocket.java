@@ -9,6 +9,8 @@ public interface WebSocket {
 
   void close();
 
+  boolean isOpen();
+
   <T extends WebSocketMessage> void addListener(
       MessageType<T> messageType, Consumer<T> messageHandler);
 
@@ -24,4 +26,16 @@ public interface WebSocket {
    *     string arg is the close reason reported from server.
    */
   void addConnectionTerminatedListener(Consumer<String> connectionTerminatedListener);
+
+  void addConnectionResetListener(Runnable listener);
+
+  void addReconnectionListener(ReconnectionHandler handler);
+
+  interface ReconnectionHandler {
+    /** Called on each reconnect attempt. currentAttempt is 1-based. */
+    void onReconnecting(int currentAttempt);
+
+    /** Called when a reconnect attempt succeeds. */
+    void onReconnected();
+  }
 }
