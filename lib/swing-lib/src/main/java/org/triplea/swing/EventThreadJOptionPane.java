@@ -4,8 +4,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.GraphicsEnvironment;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;
+import java.awt.Window;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
@@ -14,11 +21,13 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
@@ -27,6 +36,8 @@ import org.triplea.java.concurrency.CountDownLatchHandler;
 
 /** Blocking JOptionPane calls that do their work in the swing event thread (to be thread safe). */
 public final class EventThreadJOptionPane {
+  private static final int KEY_GUARD_WINDOW_MILLIS = 1000;
+
   private EventThreadJOptionPane() {}
 
   /**
@@ -248,10 +259,12 @@ public final class EventThreadJOptionPane {
               message, JOptionPane.QUESTION_MESSAGE, confirmDialogType.optionTypeMagicNumber);
       final JDialog dialog = optionPane.createDialog(parentComponent, title);
       dialog.setAlwaysOnTop(true);
+      final Runnable cancelKeyGuard = installKeyActivationGuard(optionPane, dialog);
 
       optionPane.addPropertyChangeListener(
           JOptionPane.VALUE_PROPERTY,
           ignored -> {
+            cancelKeyGuard.run();
             final Object selectedValue = optionPane.getValue();
             confirmation.set(selectedValue != null && JOptionPane.OK_OPTION == (int) selectedValue);
             latch.countDown();
@@ -271,10 +284,12 @@ public final class EventThreadJOptionPane {
             final JDialog dialog = optionPane.createDialog(parentComponent, title);
             dialog.setAlwaysOnTop(true);
             dialog.setModal(false);
+            final Runnable cancelKeyGuard = installKeyActivationGuard(optionPane, dialog);
 
             optionPane.addPropertyChangeListener(
                 JOptionPane.VALUE_PROPERTY,
                 ignored -> {
+                  cancelKeyGuard.run();
                   final Object selectedValue = optionPane.getValue();
                   confirmation.set(
                       selectedValue != null && JOptionPane.OK_OPTION == (int) selectedValue);
@@ -296,5 +311,116 @@ public final class EventThreadJOptionPane {
     }
 
     return Optional.ofNullable(confirmation.get()).orElse(false);
+  }
+
+  /**
+   * Installs a short-lived guard that prevents stray keystrokes from accidentally confirming or
+   * dismissing a confirmation dialog the moment it appears.
+   *
+   * <p><b>Problem.</b> A confirmation dialog can pop up while the user is typing somewhere else
+   * (most commonly the in-game chat). A space, Enter, or Escape that was already on the way to the
+   * previously-focused window gets routed to the new dialog instead and immediately picks an answer
+   * the user never intended to give.
+   *
+   * <p><b>Why the obvious fixes are not enough.</b> Swing wires button activation through several
+   * independent paths, and disabling any one of them still leaves the others live:
+   *
+   * <ul>
+   *   <li>Even with no default button on the root pane, a {@link JButton} that holds focus
+   *       activates on Space and Enter through its own {@code WHEN_FOCUSED} bindings.
+   *   <li>{@link JOptionPane}'s L&F installs a {@code WHEN_IN_FOCUSED_WINDOW} binding for Escape
+   *       (the "close" action) that fires regardless of which component has focus.
+   *   <li>Overriding {@code selectInitialValue} only stops the initial focus; it doesn't stop any
+   *       of the bindings above.
+   * </ul>
+   *
+   * <p><b>The guard.</b> For {@value #KEY_GUARD_WINDOW_MILLIS}ms after the dialog is shown, three
+   * layers run together so every activation path is closed:
+   *
+   * <ol>
+   *   <li>The root pane's default button is cleared, so Enter has no root-pane action target.
+   *   <li>Every {@link JButton} in the option pane is made non-focusable, so focus traversal skips
+   *       them and Space cannot fire a button (focus has no button to land on).
+   *   <li>A {@link KeyEventDispatcher} on the focus manager swallows Enter and Escape whose source
+   *       belongs to this dialog. This catches the JOptionPane's window-level Escape binding and
+   *       any Enter that would reach a focused button — the two paths layers (1) and (2) don't
+   *       cover.
+   * </ol>
+   *
+   * <p><b>After the window.</b> Buttons become focusable again and the dispatcher is removed, so
+   * Enter/Escape resume their normal L&F behavior. Crucially, no button is auto-focused; a keyboard
+   * user must explicitly Tab to a button before Space/Enter will activate it, so a still-buffered
+   * keystroke from before the window expired cannot land on a button. Mouse clicks work the entire
+   * time.
+   *
+   * <p><b>Cleanup.</b> The returned {@link Runnable} cancels the guard early and must be invoked
+   * when the dialog closes, in case the dialog is dismissed (e.g. by clicking) before the timer
+   * fires — otherwise the dispatcher leaks on the focus manager.
+   */
+  private static Runnable installKeyActivationGuard(
+      final JOptionPane optionPane, final JDialog dialog) {
+    // Layer 1: no default button -> Enter has no root-pane target.
+    dialog.getRootPane().setDefaultButton(null);
+
+    // Layer 2: non-focusable buttons -> focus traversal skips them, Space has nothing to fire.
+    final List<JButton> buttons = findButtons(optionPane);
+    buttons.forEach(button -> button.setFocusable(false));
+
+    // Layer 3: swallow Enter/Escape at the focus-manager level for events sourced inside this
+    // dialog. Catches the JOptionPane's window-level Escape binding and any focused-button Enter
+    // that layers 1 and 2 don't cover.
+    final KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+    final KeyEventDispatcher swallower =
+        event -> {
+          if (event.getID() != KeyEvent.KEY_PRESSED && event.getID() != KeyEvent.KEY_RELEASED) {
+            return false;
+          }
+          final int code = event.getKeyCode();
+          if (code != KeyEvent.VK_ENTER && code != KeyEvent.VK_ESCAPE) {
+            return false;
+          }
+          if (!(event.getSource() instanceof Component component)) {
+            return false;
+          }
+          final Window srcWindow =
+              (component instanceof Window window)
+                  ? window
+                  : SwingUtilities.getWindowAncestor(component);
+          if (srcWindow != dialog) {
+            return false;
+          }
+          event.consume();
+          return true;
+        };
+    focusManager.addKeyEventDispatcher(swallower);
+
+    // After the guard window: drop all three layers. No button is auto-focused, so a keyboard
+    // user must Tab in deliberately before any keystroke can activate a button.
+    final Timer timer =
+        new Timer(
+            KEY_GUARD_WINDOW_MILLIS,
+            e -> {
+              buttons.forEach(button -> button.setFocusable(true));
+              focusManager.removeKeyEventDispatcher(swallower);
+            });
+    timer.setRepeats(false);
+    timer.start();
+
+    return () -> {
+      timer.stop();
+      focusManager.removeKeyEventDispatcher(swallower);
+    };
+  }
+
+  private static List<JButton> findButtons(final Container container) {
+    final List<JButton> buttons = new ArrayList<>();
+    for (final Component child : container.getComponents()) {
+      if (child instanceof JButton button) {
+        buttons.add(button);
+      } else if (child instanceof Container nested) {
+        buttons.addAll(findButtons(nested));
+      }
+    }
+    return buttons;
   }
 }
