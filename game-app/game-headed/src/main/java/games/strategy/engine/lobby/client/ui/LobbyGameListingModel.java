@@ -38,10 +38,15 @@ class LobbyGameListingModel {
 
     connection.addMessageListener(
         LobbyGameUpdatedMessage.TYPE,
-        msg -> lobbyGameBroadcaster.gameUpdated(msg.getLobbyGameListing()));
+        msg ->
+            SwingUtilities.invokeLater(
+                () -> lobbyGameBroadcaster.gameUpdated(msg.getLobbyGameListing())));
 
     connection.addMessageListener(
-        LobbyGameRemovedMessage.TYPE, msg -> lobbyGameBroadcaster.gameRemoved(msg.getGameId()));
+        LobbyGameRemovedMessage.TYPE,
+        msg -> //
+        SwingUtilities.invokeLater( //
+                () -> lobbyGameBroadcaster.gameRemoved(msg.getGameId())));
 
     connection.fetchGameListing().forEach(lobbyGameBroadcaster::gameUpdated);
   }
