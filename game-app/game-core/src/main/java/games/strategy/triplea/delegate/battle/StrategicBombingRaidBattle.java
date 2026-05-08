@@ -562,11 +562,13 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                 }
               }
             };
-        // push in reverse order of execution
-        stack.push(removeHits);
-        stack.push(notifyCasualties);
-        stack.push(calculateCasualties);
+        // In edit mode, AA dice are not rolled, so the rest of the AA-fire chain
+        // is skipped.
         if (!isEditMode) {
+          // push in reverse order of execution
+          stack.push(removeHits);
+          stack.push(notifyCasualties);
+          stack.push(calculateCasualties);
           stack.push(roll);
         }
       }
