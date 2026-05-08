@@ -65,10 +65,7 @@ public final class GameDataManager {
     try (GZIPInputStream input = new GZIPInputStream(is)) {
       return loadGameUncompressed(input);
     } catch (final EOFException e) {
-      log.error(
-          "End of loading file has been reached unexpectedly.\n"
-              + "When reporting to TripleA include steps to produce such a corrupted file.",
-          e);
+      log.warn("Bad save game file (corrupted or truncated) try redownloading the save file.", e);
     } catch (final ZipException e) {
       log.error("Unzipping the file has failed. Check that the correct file was selected.", e);
     } catch (final Exception e) {
