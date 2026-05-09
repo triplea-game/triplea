@@ -77,7 +77,7 @@ public final class BannedUsernamesTab implements Supplier<Component> {
   private JPanel buildAddUsernameBanPanel(final JTable table) {
     final JTextField addField =
         JTextFieldBuilder.builder()
-            .columns(10)
+            .columns(25)
             .maxLength(LobbyConstants.USERNAME_MAX_LENGTH)
             .toolTip(
                 "Username to ban, must be at least "
