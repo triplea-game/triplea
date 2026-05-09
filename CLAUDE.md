@@ -6,4 +6,4 @@ beneath a directory that contains an `AGENTS.md`, read that file as well.
 Guidance from a nested `AGENTS.md` applies to its directory and descendants,
 and takes precedence over higher-level `AGENTS.md` files on conflict.
 
-At the start of every session, read .CLAUDE.local.md if that file exist.
+At the start of every session, read CLAUDE.local.md if that file exist.
