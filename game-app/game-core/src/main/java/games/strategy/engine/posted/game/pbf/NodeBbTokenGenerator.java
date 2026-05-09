@@ -112,7 +112,15 @@ public class NodeBbTokenGenerator {
     final HttpGet get = new HttpGet(forumUrl + "/api/user/username/" + encodedUsername);
     HttpProxy.addProxy(get);
     try (CloseableHttpResponse response = client.execute(get)) {
-      return YamlReader.readMap(EntityUtils.toString(response.getEntity()));
+      final String rawJson = EntityUtils.toString(response.getEntity());
+      if (rawJson == null || rawJson.isBlank()) {
+        throw new IllegalStateException(
+            "Forum returned an empty response when looking up user '"
+                + username
+                + "'. The forum may be unreachable. HTTP status: "
+                + response.getStatusLine());
+      }
+      return YamlReader.readMap(rawJson);
     }
   }
 
@@ -132,6 +140,12 @@ public class NodeBbTokenGenerator {
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
       final String rawJson = EntityUtils.toString(response.getEntity());
+      if (rawJson == null || rawJson.isBlank()) {
+        throw new IllegalStateException(
+            "Forum returned an empty response when requesting a login token. "
+                + "The forum may be unreachable. HTTP status: "
+                + response.getStatusLine());
+      }
       final Map<String, Object> jsonObject = YamlReader.readMap(rawJson);
       if (jsonObject.containsKey("code")) {
         final String code = (String) Preconditions.checkNotNull(jsonObject.get("code"));
