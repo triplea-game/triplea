@@ -44,7 +44,13 @@ public class AddUnits extends Change {
 
   /** Returns an unmodifiable map of unit UUIDs to player names. */
   public static Map<UUID, String> buildUnitOwnerMap(final Collection<Unit> units) {
-    return units.stream().collect(Collectors.toMap(Unit::getId, u -> u.getOwner().getName()));
+    // Tolerate duplicate UUIDs: if a unit appears more than once (e.g. a corrupted save where
+    // two Unit objects share an id), keep the first owner. Without a merge function, toMap
+    // throws IllegalStateException and blocks edit-mode removal of the offending units.
+    return units.stream()
+        .collect(
+            Collectors.toMap(
+                Unit::getId, u -> u.getOwner().getName(), (existing, duplicate) -> existing));
   }
 
   @Override
