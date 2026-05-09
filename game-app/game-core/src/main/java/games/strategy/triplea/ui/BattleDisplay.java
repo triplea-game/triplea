@@ -384,7 +384,7 @@ public class BattleDisplay extends JPanel {
 
   private RetreatResult showSubmergeDialog(final String message) {
     final String ok = "Submerge";
-    final String cancel = "Remain";
+    final String cancel = "Don't Submerge";
     final String wait = "Ask Me Later";
     final String[] options = {ok, cancel, wait};
     final int choice =
