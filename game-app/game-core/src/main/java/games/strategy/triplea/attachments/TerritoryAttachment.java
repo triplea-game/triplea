@@ -126,11 +126,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     if (!noNeighborCapitals.isEmpty()) {
       return Optional.of(CollectionUtils.getAny(noNeighborCapitals));
     }
-    // Added check for optional players- no error thrown for them
-    if (player.getOptional()) {
-      return Optional.empty();
-    }
-    throw new IllegalStateException("Capital not found for: " + player);
+    return Optional.empty();
   }
 
   /** will return empty list if none controlled, never returns null. */
