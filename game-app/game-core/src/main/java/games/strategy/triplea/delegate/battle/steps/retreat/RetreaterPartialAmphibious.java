@@ -31,7 +31,14 @@ class RetreaterPartialAmphibious implements Retreater {
 
   @Override
   public Collection<Territory> getPossibleRetreatSites(final Collection<Unit> retreatUnits) {
-    final Collection<Territory> allRetreatTerritories = battleState.getAttackerRetreatTerritories();
+    // Air units retreat to the battle site, not to retreatTo, so they do not
+    // constrain target selection by territory-effect unit restrictions.
+    final Collection<Unit> groundedRetreatUnits =
+        CollectionUtils.getMatches(retreatUnits, Matches.unitIsAir().negate());
+    final Collection<Territory> allRetreatTerritories =
+        CollectionUtils.getMatches(
+            battleState.getAttackerRetreatTerritories(),
+            Matches.territoryEffectsAllowUnits(groundedRetreatUnits));
     return retreatUnits.stream().anyMatch(Matches.unitIsLand())
         ? CollectionUtils.getMatches(allRetreatTerritories, Matches.territoryIsLand())
         : new ArrayList<>(allRetreatTerritories);
