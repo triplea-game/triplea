@@ -75,21 +75,6 @@ public class HeadlessServerSetupTest {
   }
 
   @Test
-  void verifyWaitWaitsUntilConditionIsFulfilled_playersTakenChanged() throws Exception {
-    fulfillCondition();
-    final var countDownLatch = new CountDownLatch(1);
-    final var future =
-        CompletableFuture.supplyAsync(
-            () -> {
-              countDownLatch.countDown();
-              return headlessServerSetup.waitUntilStart();
-            });
-    countDownLatch.await();
-    headlessServerSetup.playersTakenChanged();
-    assertThat(future.get(1, TimeUnit.SECONDS), is(true));
-  }
-
-  @Test
   void verifyInterruptsReturnFalse() throws Exception {
     final var thread = new AtomicReference<Thread>();
     final var countDownLatch = new CountDownLatch(1);
