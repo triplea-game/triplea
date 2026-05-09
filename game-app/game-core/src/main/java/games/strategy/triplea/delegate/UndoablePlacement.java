@@ -9,8 +9,11 @@ import games.strategy.triplea.delegate.data.PlacementDescription;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import lombok.Getter;
+import org.triplea.java.collections.CollectionUtils;
 
 /** Contains all the data to describe a placement and to undo it. */
 @Getter
@@ -19,6 +22,12 @@ public class UndoablePlacement extends AbstractUndoableMove {
 
   private final Territory placeTerritory;
   private Territory producerTerritory;
+
+  // placements this one depends on (must remain undone-able only after these are undone first;
+  // these can't be undone while we're around)
+  private final Set<UndoablePlacement> dependencies = new HashSet<>();
+  // placements that depend on this one — they must be undone before us
+  private final Set<UndoablePlacement> dependents = new HashSet<>();
 
   public UndoablePlacement(
       final CompositeChange change,
@@ -34,6 +43,25 @@ public class UndoablePlacement extends AbstractUndoableMove {
     this.producerTerritory = producerTerritory;
   }
 
+  /** Adds a placement that depends on this one (must be undone before this can be undone). */
+  public void addDependent(final UndoablePlacement dependent) {
+    dependents.add(dependent);
+    dependent.dependencies.add(this);
+  }
+
+  public boolean getCanUndo() {
+    return dependents.isEmpty();
+  }
+
+  public String getReasonCantUndo() {
+    if (dependents.isEmpty()) {
+      throw new IllegalStateException("no reason");
+    }
+    return "Placement "
+        + (CollectionUtils.getAny(dependents).getIndex() + 1)
+        + " must be undone first";
+  }
+
   @Override
   protected final void undoSpecific(final IDelegateBridge bridge) {
     final GameState data = bridge.getData();
@@ -46,6 +74,10 @@ public class UndoablePlacement extends AbstractUndoableMove {
       produced.remove(producerTerritory);
     }
     currentDelegate.setProduced(new HashMap<>(produced));
+    for (final UndoablePlacement dep : dependencies) {
+      dep.dependents.remove(this);
+    }
+    dependencies.clear();
   }
 
   @Override

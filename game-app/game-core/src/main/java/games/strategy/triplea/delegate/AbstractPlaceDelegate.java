@@ -170,6 +170,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   public @Nullable String undoMove(final int moveIndex) {
     if (moveIndex < placements.size() && moveIndex >= 0) {
       final UndoablePlacement undoPlace = placements.get(moveIndex);
+      if (!undoPlace.getCanUndo()) {
+        return undoPlace.getReasonCantUndo();
+      }
       undoPlace.undo(bridge);
       placements.remove(moveIndex);
       updateUndoablePlacementIndexes();
@@ -327,14 +330,26 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       change.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, player));
     }
     // can we move planes to land there
+    final Collection<Unit> movedFighters = new ArrayList<>();
     final String movedAirTranscriptTextForHistory =
-        moveAirOntoNewCarriers(at, producer, placeableUnits, player, change);
+        moveAirOntoNewCarriers(at, producer, placeableUnits, player, change, movedFighters);
     final Change remove = ChangeFactory.removeUnits(player, placeableUnits);
     final Change place = ChangeFactory.addUnits(at, placeableUnits);
     change.add(remove);
     change.add(place);
     final UndoablePlacement currentPlacement =
         new UndoablePlacement(change, producer, at, placeableUnits);
+    if (!movedFighters.isEmpty()) {
+      // Any prior placement that produced one of the moved fighters now has its placed units
+      // sitting on this carrier. Block undoing those prior placements until this one is undone,
+      // otherwise the inverted change would try to remove a fighter from a territory it has
+      // already left, leaving it duplicated in both the carrier's sea zone and the player's hand.
+      for (final UndoablePlacement prior : placements) {
+        if (!CollectionUtils.intersection(prior.getUnits(), movedFighters).isEmpty()) {
+          prior.addDependent(currentPlacement);
+        }
+      }
+    }
     placements.add(currentPlacement);
     updateUndoablePlacementIndexes();
     final String transcriptText =
@@ -514,7 +529,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       final Territory producer,
       final Collection<Unit> units,
       final GamePlayer player,
-      final CompositeChange placeChange) {
+      final CompositeChange placeChange,
+      final Collection<Unit> movedFightersOut) {
     if (!at.isWater()) {
       return null;
     }
@@ -557,6 +573,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     }
     final Change change = ChangeFactory.moveUnits(producer, at, movedFighters);
     placeChange.add(change);
+    movedFightersOut.addAll(movedFighters);
     return MyFormatter.unitsToTextNoOwner(movedFighters)
         + " moved from "
         + producer.getName()
