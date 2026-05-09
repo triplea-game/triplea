@@ -137,8 +137,6 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new BooleanClientSetting("SHOW_COMMENT_LOG");
   public static final BooleanClientSetting soundEnabled =
       new BooleanClientSetting("SOUND_ENABLED", true);
-  public static final ClientSetting<Boolean> firstTimeThisVersion =
-      new BooleanClientSetting("TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY", true);
   public static final ClientSetting<Long> lastCheckForEngineUpdate =
       new LongClientSetting("LAST_CHECK_FOR_ENGINE_UPDATE_EPOCH_MILLI", 0);
   public static final ClientSetting<Long> lastCheckForMapUpdates =
