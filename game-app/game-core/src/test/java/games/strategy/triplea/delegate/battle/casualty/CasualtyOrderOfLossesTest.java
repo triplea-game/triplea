@@ -47,7 +47,7 @@ class CasualtyOrderOfLossesTest {
     final UnitType typeVeteranFootmen = new UnitType("Veteran-Footmen", gameData);
     typeVeteranFootmen.addAttachment(UNIT_ATTACHMENT_NAME, unitAttachment);
 
-    final String key1 =
+    final CasualtyOrderOfLosses.OolCacheKey key1 =
         CasualtyOrderOfLosses.computeOolCacheKey(
             withFakeParameters(),
             List.of(
@@ -55,7 +55,7 @@ class CasualtyOrderOfLossesTest {
                 CasualtyOrderOfLosses.AmphibType.of(
                     typeVeteranFootmen.createTemp(1, player).get(0))));
 
-    final String key2 =
+    final CasualtyOrderOfLosses.OolCacheKey key2 =
         CasualtyOrderOfLosses.computeOolCacheKey(
             withFakeParameters(),
             List.of(
