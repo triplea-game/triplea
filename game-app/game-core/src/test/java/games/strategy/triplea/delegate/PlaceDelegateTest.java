@@ -1,17 +1,30 @@
 package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.Constants.DAMAGE_FROM_BOMBING_DONE_TO_UNITS_INSTEAD_OF_TERRITORIES;
+import static games.strategy.triplea.Constants.MOVE_EXISTING_FIGHTERS_TO_NEW_CARRIERS;
 import static games.strategy.triplea.Constants.UNIT_PLACEMENT_RESTRICTIONS;
 import static games.strategy.triplea.delegate.GameDataTestUtil.unitType;
+import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate.BidMode.NOT_BID;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -25,6 +38,9 @@ class PlaceDelegateTest extends PlaceDelegateTestCommon {
     delegate.initialize("place");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
+    // Replace the XML-loaded place delegate so undoMove resolves the same instance the test
+    // mutates via delegate.placeUnits.
+    gameData.addDelegate(delegate);
   }
 
   @Test
@@ -94,5 +110,55 @@ class PlaceDelegateTest extends PlaceDelegateTestCommon {
     final PlaceableUnits response =
         delegate.getPlaceableUnits(create(british, infantry, 1), westCanada);
     assertEquals(0, response.getMaxUnits());
+  }
+
+  // Regression test for https://github.com/triplea-game/triplea/issues/8434.
+  // When "Move existing fighters to new carriers" is enabled, placing a carrier may move a
+  // previously-placed fighter onto it. Undoing the fighter placement first would otherwise
+  // duplicate the unit (it would be removed from the producer territory it no longer occupies
+  // while also being added back to the player's hand). The carrier placement now becomes a
+  // dependent of the fighter placement, so the fighter can't be undone until the carrier is.
+  @Test
+  void testCannotUndoFighterPlacementWhileItIsOnANewlyPlacedCarrier() {
+    // Advance to the place step so undoSpecific can resolve the current placement delegate.
+    advanceToStep(delegate.getBridge(), "britishPlace");
+    gameData.getProperties().set(MOVE_EXISTING_FIGHTERS_TO_NEW_CARRIERS, true);
+    final var fighters = create(british, fighter, 1);
+    final var carriers = create(british, carrier, 1);
+    when(delegate.getBridge().getRemotePlayer().getNumberOfFightersToMoveToNewCarrier(any(), any()))
+        .thenAnswer(invocation -> invocation.<Collection<Unit>>getArgument(0));
+
+    assertValid(delegate.placeUnits(fighters, uk, NOT_BID));
+    assertValid(delegate.placeUnits(carriers, northSea, NOT_BID));
+
+    // Sanity check: the fighter has been moved from UK to the North Sea Zone (onto the carrier).
+    assertThat(uk.getMatches(Matches.unitIsOfType(fighter)), is(empty()));
+    assertThat(northSea.getMatches(Matches.unitIsOfType(fighter)), contains(fighters.toArray()));
+
+    final List<UndoablePlacement> placements = delegate.getMovesMade();
+    assertThat(placements, hasSize(2));
+    final UndoablePlacement fighterPlacement = placements.get(0);
+    final UndoablePlacement carrierPlacement = placements.get(1);
+    assertThat(fighterPlacement.getCanUndo(), is(false));
+    assertThat(carrierPlacement.getCanUndo(), is(true));
+
+    // Attempting to undo the fighter placement first must fail with an informative reason rather
+    // than corrupt the unit collection.
+    final String reason = delegate.undoMove(fighterPlacement.getIndex());
+    assertThat(reason, is(notNullValue()));
+    assertThat(reason, containsString("must be undone first"));
+    assertThat(delegate.getMovesMade(), hasSize(2));
+
+    // Undoing the carrier first puts the fighter back in UK and clears the dependency.
+    assertThat(delegate.undoMove(carrierPlacement.getIndex()), is(nullValue()));
+    assertThat(uk.getMatches(Matches.unitIsOfType(fighter)), contains(fighters.toArray()));
+    assertThat(northSea.getMatches(Matches.unitIsOfType(carrier)), is(empty()));
+    assertThat(delegate.getMovesMade(), hasSize(1));
+    assertThat(delegate.getMovesMade().get(0).getCanUndo(), is(true));
+
+    // Now the fighter placement undoes cleanly.
+    assertThat(delegate.undoMove(fighterPlacement.getIndex()), is(nullValue()));
+    assertThat(uk.getMatches(Matches.unitIsOfType(fighter)), is(empty()));
+    assertThat(delegate.getMovesMade(), is(empty()));
   }
 }
