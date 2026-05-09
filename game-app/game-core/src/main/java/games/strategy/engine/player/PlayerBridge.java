@@ -3,7 +3,7 @@ package games.strategy.engine.player;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataEvent;
+import games.strategy.engine.data.GameStep;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IPersistentDelegate;
 import games.strategy.engine.framework.IGame;
@@ -18,7 +18,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Optional;
 import javax.annotation.Nullable;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -29,21 +28,9 @@ import lombok.extern.slf4j.Slf4j;
 public class PlayerBridge {
   private final IGame game;
 
-  /** The name of the current step being executed. */
-  @Getter private String stepName;
-
-  private String currentDelegate;
-
   /** Creates new PlayerBridge. */
   public PlayerBridge(final IGame game) {
     this.game = game;
-    game.getData()
-        .addGameDataEventListener(
-            GameDataEvent.GAME_STEP_CHANGED,
-            () -> {
-              this.stepName = game.getData().getSequence().getStep().getName();
-              this.currentDelegate = game.getData().getSequence().getStep().getDelegate().getName();
-            });
   }
 
   /** Indicates the game is over. */
@@ -56,6 +43,14 @@ public class PlayerBridge {
     return game.getData();
   }
 
+  /** The name of the current step being executed, read live from the game sequence. */
+  public String getStepName() {
+    try (GameData.Unlocker ignored = game.getData().acquireReadLock()) {
+      final GameStep step = game.getData().getSequence().getStep();
+      return step == null ? null : step.getName();
+    }
+  }
+
   /**
    * Get a remote reference to the current delegate, the type of the reference is declared by the
    * delegates getRemoteType() method.
@@ -66,8 +61,14 @@ public class PlayerBridge {
     }
     try {
       try (GameData.Unlocker ignored = game.getData().acquireReadLock()) {
+        final GameStep step = game.getData().getSequence().getStep();
+        final String stepName = step == null ? null : step.getName();
+        final String currentDelegate =
+            (step == null || step.getDelegate() == null) ? null : step.getDelegate().getName();
         final Optional<IDelegate> optionalDelegate =
-            game.getData().getDelegateOptional(currentDelegate);
+            currentDelegate == null
+                ? Optional.empty()
+                : game.getData().getDelegateOptional(currentDelegate);
         // TODO: before converting this Preconditions check to checkNotNull, make sure we do not
         // depend on the illegal state exception type in a catch block.
         Preconditions.checkState(
