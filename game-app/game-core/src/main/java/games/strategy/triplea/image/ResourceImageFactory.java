@@ -61,9 +61,7 @@ public class ResourceImageFactory extends AbstractImageFactory {
       g.setFont(g.getFont().deriveFont(Font.BOLD, size * 0.5f));
       final FontMetrics fm = g.getFontMetrics();
       g.drawString(
-          text,
-          (size - fm.stringWidth(text)) / 2,
-          (size + fm.getAscent() - fm.getDescent()) / 2);
+          text, (size - fm.stringWidth(text)) / 2, (size + fm.getAscent() - fm.getDescent()) / 2);
     } finally {
       g.dispose();
     }
