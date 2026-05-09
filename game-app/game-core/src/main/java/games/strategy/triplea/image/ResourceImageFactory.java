@@ -4,26 +4,70 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
+import java.awt.Image;
 import java.awt.Insets;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
+import java.util.Optional;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import org.jetbrains.annotations.NonNls;
 import org.triplea.java.collections.IntegerMap;
 
 /** Used to manage resource images. */
 public class ResourceImageFactory extends AbstractImageFactory {
 
   public static final int IMAGE_SIZE = 20;
+  private static final int LARGE_IMAGE_SIZE = 48;
+  @NonNls private static final String LARGE_SUFFIX = "_large";
 
   @Override
   protected String getFileNameBase() {
     return "resources/";
+  }
+
+  @Override
+  protected Optional<Image> createMissingImage(final String baseImageName) {
+    final boolean large = baseImageName.endsWith(LARGE_SUFFIX);
+    final int size = large ? LARGE_IMAGE_SIZE : IMAGE_SIZE;
+    final String label =
+        large
+            ? baseImageName.substring(0, baseImageName.length() - LARGE_SUFFIX.length())
+            : baseImageName;
+    return Optional.of(renderPlaceholder(label, size));
+  }
+
+  private static BufferedImage renderPlaceholder(final String name, final int size) {
+    final BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+    final Graphics2D g = image.createGraphics();
+    try {
+      g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      g.setRenderingHint(
+          RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+      g.setColor(new Color(230, 230, 230));
+      g.fillRect(0, 0, size, size);
+      g.setColor(Color.DARK_GRAY);
+      g.drawRect(0, 0, size - 1, size - 1);
+      final String text = name.substring(0, Math.min(2, name.length()));
+      g.setFont(g.getFont().deriveFont(Font.BOLD, size * 0.5f));
+      final FontMetrics fm = g.getFontMetrics();
+      g.drawString(
+          text,
+          (size - fm.stringWidth(text)) / 2,
+          (size + fm.getAscent() - fm.getDescent()) / 2);
+    } finally {
+      g.dispose();
+    }
+    return image;
   }
 
   public JLabel getLabel(final Resource resource, final ResourceCollection resourceCollection) {
@@ -34,16 +78,11 @@ public class ResourceImageFactory extends AbstractImageFactory {
     return getLabel(resource, String.valueOf(resources.getInt(resource)));
   }
 
-  /** Returns label with icon and text. If icon is missing then sets resource name. */
   public JLabel getLabel(final Resource resource, final String text) {
     final JLabel label = new JLabel();
-    try {
-      label.setIcon(getIcon(resource.getName()));
-      label.setText(text);
-      label.setToolTipText(resource.getName());
-    } catch (final IllegalStateException e) {
-      label.setText(resource.getName() + " " + text);
-    }
+    label.setIcon(getIcon(resource.getName()));
+    label.setText(text);
+    label.setToolTipText(resource.getName());
     return label;
   }
 
