@@ -34,49 +34,49 @@ class UnitInformation extends InfoForFile {
 
   @Override
   protected void writeIntoFile(Writer writer) throws IOException {
-    writer.append("Unit Information").append(DELIMITER.repeat(20)).append(LINE_SEPARATOR);
+    writer.append(csvField("Unit Information")).append(DELIMITER.repeat(20)).append(LINE_SEPARATOR);
     writer
-        .append("Unit")
+        .append(csvField("Unit"))
         .append(DELIMITER)
-        .append("Cost")
+        .append(csvField("Cost"))
         .append(DELIMITER)
-        .append("Movement")
+        .append(csvField("Movement"))
         .append(DELIMITER)
-        .append("Attack")
+        .append(csvField("Attack"))
         .append(DELIMITER)
-        .append("Defense")
+        .append(csvField("Defense"))
         .append(DELIMITER)
-        .append("CanBlitz")
+        .append(csvField("CanBlitz"))
         .append(DELIMITER)
-        .append("Artillery?")
+        .append(csvField("Artillery?"))
         .append(DELIMITER)
-        .append("ArtillerySupportable?")
+        .append(csvField("ArtillerySupportable?"))
         .append(DELIMITER)
-        .append("Can Produce Units?")
+        .append(csvField("Can Produce Units?"))
         .append(DELIMITER)
-        .append("Marine?")
+        .append(csvField("Marine?"))
         .append(DELIMITER)
-        .append("Transport Cost")
+        .append(csvField("Transport Cost"))
         .append(DELIMITER)
-        .append("AA Gun?")
+        .append(csvField("AA Gun?"))
         .append(DELIMITER)
-        .append("Air Unit?")
+        .append(csvField("Air Unit?"))
         .append(DELIMITER)
-        .append("Strategic Bomber?")
+        .append(csvField("Strategic Bomber?"))
         .append(DELIMITER)
-        .append("Carrier Cost")
+        .append(csvField("Carrier Cost"))
         .append(DELIMITER)
-        .append("Sea Unit?")
+        .append(csvField("Sea Unit?"))
         .append(DELIMITER)
-        .append("Hit Points?")
+        .append(csvField("Hit Points?"))
         .append(DELIMITER)
-        .append("Transport Capacity")
+        .append(csvField("Transport Capacity"))
         .append(DELIMITER)
-        .append("Carrier Capacity")
+        .append(csvField("Carrier Capacity"))
         .append(DELIMITER)
-        .append("Submarine?")
+        .append(csvField("Submarine?"))
         .append(DELIMITER)
-        .append("Destroyer?")
+        .append(csvField("Destroyer?"))
         .append(LINE_SEPARATOR);
     writeData(writer);
   }
@@ -85,11 +85,11 @@ class UnitInformation extends InfoForFile {
     for (final Entry<UnitType, UnitAttachment> entry : unitInfoMap.entrySet()) {
       final UnitType currentType = entry.getKey();
       final UnitAttachment currentAttachment = entry.getValue();
-      if (currentType.getName().equals(Constants.UNIT_TYPE_AAGUN)) {
-        writer.append(currentType.getName());
-      } else {
-        writer.append(StringUtils.capitalize(currentType.getName()));
-      }
+      final String unitName =
+          currentType.getName().equals(Constants.UNIT_TYPE_AAGUN)
+              ? currentType.getName()
+              : StringUtils.capitalize(currentType.getName());
+      writer.append(csvField(unitName));
       writer
           .append(DELIMITER)
           .append(Integer.toString(getCostInformation(currentType, gameData)))

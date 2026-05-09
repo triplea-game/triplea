@@ -226,6 +226,9 @@ public final class SwingComponents {
     final JEditorPane descriptionPane = new JEditorPane();
     descriptionPane.setEditable(false);
     descriptionPane.setContentType("text/html");
+    // Render CSS lengths per the W3C spec (1px = 1 screen pixel) instead of Swing's
+    // legacy ~1.33x inflation. See issue #6157.
+    descriptionPane.putClientProperty(JEditorPane.W3C_LENGTH_UNITS, Boolean.TRUE);
     return descriptionPane;
   }
 

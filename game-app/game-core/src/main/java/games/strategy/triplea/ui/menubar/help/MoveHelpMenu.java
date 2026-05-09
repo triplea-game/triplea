@@ -18,6 +18,9 @@ class MoveHelpMenu {
           final JEditorPane editorPane = new JEditorPane();
           editorPane.setEditable(false);
           editorPane.setContentType("text/html");
+          // Render CSS lengths per W3C spec instead of Swing's legacy ~1.33x inflation. Issue
+          // #6157.
+          editorPane.putClientProperty(JEditorPane.W3C_LENGTH_UNITS, Boolean.TRUE);
           final String hints =
               "<font size='+1'>Selecting Units</font><br>"
                   + "Clicking on a unit stack adds <u>1 unit</u> of the stack to the selection.<br>"

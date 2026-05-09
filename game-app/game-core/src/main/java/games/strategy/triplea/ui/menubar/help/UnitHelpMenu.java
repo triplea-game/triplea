@@ -33,6 +33,8 @@ class UnitHelpMenu {
     final JEditorPane editorPane = new JEditorPane();
     editorPane.setContentType("text/html");
     editorPane.setEditable(false);
+    // Render CSS lengths per W3C spec instead of Swing's legacy ~1.33x inflation. Issue #6157.
+    editorPane.putClientProperty(JEditorPane.W3C_LENGTH_UNITS, Boolean.TRUE);
     final JScrollPane scroll = new JScrollPane(editorPane);
     scroll.setBorder(BorderFactory.createEmptyBorder());
     editorPane.setText(text);
