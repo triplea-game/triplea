@@ -77,6 +77,8 @@ public final class MapDownloadController {
   @VisibleForTesting
   static void preventPromptToDownloadTutorialMap(
       final TutorialMapPreferences tutorialMapPreferences) {
-    tutorialMapPreferences.preventPromptToDownload();
+    if (tutorialMapPreferences.canPromptToDownload()) {
+      tutorialMapPreferences.preventPromptToDownload();
+    }
   }
 }
