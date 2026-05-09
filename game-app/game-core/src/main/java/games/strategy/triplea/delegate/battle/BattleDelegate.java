@@ -213,6 +213,20 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     resetMaxScrambleCount(bridge);
   }
 
+  /**
+   * Re-runs the battle setup that normally happens at the start of the battle phase. Intended to be
+   * called when a relationship change (e.g. declaring war) leaves the current player's units
+   * sharing a territory with new enemies, or sitting alone in a territory that just became enemy
+   * owned. Without this, those units would not start a battle nor capture the territory until a
+   * subsequent turn.
+   */
+  public static void setUpBattlesForChangedRelationships(
+      final BattleTracker battleTracker, final IDelegateBridge bridge) {
+    setupUnitsInSameTerritoryBattles(battleTracker, bridge);
+    setupTerritoriesAbandonedToTheEnemy(battleTracker, bridge);
+    battleTracker.clearFinishedBattles(bridge);
+  }
+
   private static void clearEmptyAirBattleAttacks(
       final BattleTracker battleTracker, final IDelegateBridge bridge) {
     // these are air battle and air raids where there is no defender, probably because no air is in
