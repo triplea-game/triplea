@@ -1229,6 +1229,17 @@ class ProPurchaseAi {
     if (resourceTracker.isEmpty()) {
       return;
     }
+
+    // Don't buy another factory if one is already sitting in the unplaced-units pool (from a
+    // prior turn carry-over with "Unplaced units live when not placed", or granted by a
+    // trigger). The place phase will place it via the construction pass.
+    if (player.getUnits().stream().anyMatch(Matches.unitCanProduceUnits())) {
+      ProLogger.debug(
+          "Not purchasing a factory since one is already unplaced: "
+              + player.getMatches(Matches.unitCanProduceUnits()));
+      return;
+    }
+
     ProLogger.info(
         "Purchase factory with resources: " + resourceTracker + ", hasExtraPUs=" + hasExtraPUs);
 
