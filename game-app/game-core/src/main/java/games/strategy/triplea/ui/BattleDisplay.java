@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui;
 
-import static games.strategy.triplea.image.UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
 import static games.strategy.triplea.image.UnitImageFactory.ImageKey;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -529,18 +528,19 @@ public class BattleDisplay extends JPanel {
   }
 
   private void initLayout() {
+    final int unitIconHeight = uiContext.getUnitImageFactory().getUnitImageHeight();
     final JPanel attackerUnits = new JPanel();
     attackerUnits.setLayout(new BoxLayout(attackerUnits, BoxLayout.Y_AXIS));
     attackerUnits.add(getPlayerComponent(attacker));
     attackerUnits.add(Box.createGlue());
-    final JTable attackerTable = new BattleTable(attackerModel);
+    final JTable attackerTable = new BattleTable(attackerModel, unitIconHeight);
     attackerUnits.add(attackerTable);
     attackerUnits.add(attackerTable.getTableHeader());
     final JPanel defenderUnits = new JPanel();
     defenderUnits.setLayout(new BoxLayout(defenderUnits, BoxLayout.Y_AXIS));
     defenderUnits.add(getPlayerComponent(defender));
     defenderUnits.add(Box.createGlue());
-    final JTable defenderTable = new BattleTable(defenderModel);
+    final JTable defenderTable = new BattleTable(defenderModel, unitIconHeight);
     defenderUnits.add(defenderTable);
     defenderUnits.add(defenderTable.getTableHeader());
     final JPanel north = new JPanel();
@@ -695,10 +695,10 @@ public class BattleDisplay extends JPanel {
   private static final class BattleTable extends JTable {
     private static final long serialVersionUID = 6737857639382012817L;
 
-    BattleTable(final BattleModel model) {
+    BattleTable(final BattleModel model, final int unitIconHeight) {
       super(model);
       setDefaultRenderer(Object.class, new Renderer());
-      setRowHeight(DEFAULT_UNIT_ICON_SIZE + 5);
+      setRowHeight(unitIconHeight + 5);
       setBackground(new JButton().getBackground());
       setShowHorizontalLines(false);
       getTableHeader().setReorderingAllowed(false);
