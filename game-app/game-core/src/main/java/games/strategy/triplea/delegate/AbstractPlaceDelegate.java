@@ -257,22 +257,14 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
         final int newMaxForThisProducer =
             getMaxUnitsToBePlacedFrom(producer, unitsCanBePlacedByThisProducer, at, player);
         if (newMaxForThisProducer != maxPlaceable && neededExtra > newMaxForThisProducer) {
-          throw new IllegalStateException(
-              "getMaxUnitsToBePlaced originally returned: "
-                  + maxPlaceable
-                  + ", \nWhich is not the same as it is returning after using "
-                  + "freePlacementCapacity: "
-                  + newMaxForThisProducer
-                  + ", \nFor territory: "
-                  + at.getName()
-                  + ", Current Producer: "
-                  + producer.getName()
-                  + ", All Producers: "
-                  + producers
-                  + ", \nUnits Total: "
-                  + MyFormatter.unitsToTextNoOwner(units)
-                  + ", Units Left To Place By This Producer: "
-                  + MyFormatter.unitsToTextNoOwner(unitsCanBePlacedByThisProducer));
+          // Speculative count and freePlacementCapacity disagreed (the two algorithms
+          // for computing placements, that there are two different algorithms for the same
+          // thing is a problem in of itself).
+          // Trust the freshly-measured capacity and let any leftover units hit the
+          // "not enough territories" message.
+          if (newMaxForThisProducer != -1) {
+            maxPlaceable = newMaxForThisProducer;
+          }
         }
       }
       final Collection<Unit> placedUnits =
@@ -492,7 +484,14 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
           continue;
         }
         final Territory newProducer = tuple.getSecond();
-        int leftToPlace = getMaxUnitsToBePlacedFrom(newProducer, unitsLeftToPlace, at, player);
+        // Capacity is for the placement being split, not the current placement at `at`.
+        final Territory splitPlaceTerritory = placement.getPlaceTerritory();
+        int leftToPlace =
+            getMaxUnitsToBePlacedFrom(
+                newProducer,
+                unitsPlacedInTerritorySoFar(splitPlaceTerritory),
+                splitPlaceTerritory,
+                player);
         foundSpaceTotal += leftToPlace;
         // divide set of units that get placed
         final Collection<Unit> unitsForOldProducer = new ArrayList<>(placement.getUnits());
