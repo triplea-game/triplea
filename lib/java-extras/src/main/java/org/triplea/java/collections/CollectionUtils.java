@@ -173,6 +173,22 @@ public class CollectionUtils {
     return elements.iterator().next();
   }
 
+  /**
+   * Returns the element at the given 1-based position in iteration order. Throws {@link
+   * java.util.NoSuchElementException} if the iterable has fewer than {@code position} elements, or
+   * {@link IllegalArgumentException} if {@code position < 1}.
+   */
+  public static <T> T getAt(final Iterable<T> elements, final int position) {
+    if (position < 1) {
+      throw new IllegalArgumentException("position must be >= 1, got " + position);
+    }
+    final java.util.Iterator<T> iterator = elements.iterator();
+    for (int i = 1; i < position; i++) {
+      iterator.next();
+    }
+    return iterator.next();
+  }
+
   /** Like Collectors.toList() but guarantees that the returned object is a mutable ArrayList. */
   public static <T> Collector<T, ?, List<T>> toArrayList() {
     return Collectors.toCollection(ArrayList::new);

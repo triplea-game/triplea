@@ -131,16 +131,19 @@ class AvailableSupports {
           continue;
         }
 
-        final int numSupportAvailableToApply = getSupportAvailable(rule);
-        for (int i = 0; i < numSupportAvailableToApply; i++) {
-          final Unit supporter = getNextAvailableSupporter(rule);
+        final int numSupportersAvailable = getSupportersAvailable(rule);
+        for (int i = 1; i <= numSupportersAvailable; i++) {
+          // Re-query: each pick may have removed an exhausted supporter from the map, so the
+          // requested position must be clamped to the current count.
+          final int position = Math.min(i, getSupportersAvailable(rule));
+          final Unit supporter = getNextAvailableSupporter(rule, position);
           amountOfSupportGiven += rule.getBonus();
           unitsGivingSupport
               .computeIfAbsent(supporter, (newSupport) -> new IntegerMap<>())
               .add(unit, rule.getBonus());
         }
 
-        maxPerBonusType -= numSupportAvailableToApply;
+        maxPerBonusType -= numSupportersAvailable;
         if (maxPerBonusType <= 0) {
           break;
         }
@@ -149,8 +152,17 @@ class AvailableSupports {
     return amountOfSupportGiven;
   }
 
-  private int getSupportAvailable(final UnitSupportAttachment support) {
-    return Math.max(0, Math.min(support.getBonusType().getCount(), getSupportLeft(support)));
+  /**
+   * Returns the number of distinct supporter units (capped by the bonus type's stack count) that
+   * can give support to one target. A single supporter contributes at most one support per target;
+   * stacking on the same target requires multiple distinct supporters.
+   */
+  private int getSupportersAvailable(final UnitSupportAttachment support) {
+    final SupportDetails details = supportUnits.get(support);
+    if (details == null) {
+      return 0;
+    }
+    return Math.max(0, Math.min(support.getBonusType().getCount(), details.supportUnits.size()));
   }
 
   int getSupportLeft(final UnitSupportAttachment support) {
@@ -159,18 +171,17 @@ class AvailableSupports {
   }
 
   /**
-   * Get next unit that can give support.
-   *
-   * <p>This may return the same unit multiple times in a row depending on how much support that
-   * unit can give.
+   * Picks the supporter at the given 1-based position from the rule's supporter map and consumes
+   * one of its support points. A negative remaining value (number = -1, i.e. infinite) is left in
+   * place.
    */
-  private Unit getNextAvailableSupporter(final UnitSupportAttachment support) {
+  private Unit getNextAvailableSupporter(final UnitSupportAttachment support, final int position) {
     final SupportDetails details = supportUnits.get(support);
     final IntegerMap<Unit> intMap = details.supportUnits;
-    final Unit u = CollectionUtils.getAny(intMap.keySet());
+    final Unit u = CollectionUtils.getAt(intMap.keySet(), position);
     intMap.add(u, -1);
     details.totalSupport -= 1;
-    if (intMap.getInt(u) <= 0) {
+    if (intMap.getInt(u) == 0) {
       intMap.removeKey(u);
     }
     return u;
