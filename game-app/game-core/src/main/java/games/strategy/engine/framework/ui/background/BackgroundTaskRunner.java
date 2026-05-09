@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.base.Throwables;
 import java.util.Optional;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -119,7 +120,9 @@ public final class BackgroundTaskRunner {
 
     final AtomicReference<T> resultRef = new AtomicReference<>();
     final AtomicReference<Throwable> exceptionRef = new AtomicReference<>();
-    final WaitDialog waitDialog = new WaitDialog(mainFrame, message);
+    final AtomicReference<SwingWorker<T, Void>> workerRef = new AtomicReference<>();
+    final WaitDialog waitDialog =
+        new WaitDialog(mainFrame, message, () -> workerRef.get().cancel(true));
     final SwingWorker<T, Void> worker =
         new SwingWorker<>() {
           @Override
@@ -133,6 +136,8 @@ public final class BackgroundTaskRunner {
               T t = get();
               resultRef.set(t);
               Optional.ofNullable(runOnEdtBeforeDialogClose).ifPresent(c -> c.accept(t));
+            } catch (final CancellationException e) {
+              exceptionRef.set(new InterruptedException("Task was cancelled by user"));
             } catch (final ExecutionException e) {
               exceptionRef.set(e.getCause());
             } catch (final InterruptedException e) {
@@ -144,6 +149,7 @@ public final class BackgroundTaskRunner {
             }
           }
         };
+    workerRef.set(worker);
     worker.execute();
     waitDialog.setVisible(true);
 
