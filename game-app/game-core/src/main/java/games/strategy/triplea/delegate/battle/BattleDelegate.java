@@ -203,6 +203,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   }
 
   public static void doInitialize(final BattleTracker battleTracker, final IDelegateBridge bridge) {
+    // Drop any pending battle whose units have been relocated since it was set up
+    // (e.g., via edit-mode moves during combat-move phase, see issue #14372).
+    battleTracker.clearStaleBattles();
     setupUnitsInSameTerritoryBattles(battleTracker, bridge);
     setupTerritoriesAbandonedToTheEnemy(battleTracker, bridge);
     // these are "blitzed" and "conquered" territories without a fight, without a pending battle
