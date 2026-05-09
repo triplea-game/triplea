@@ -3,6 +3,7 @@ package games.strategy.triplea.ui.mapdata;
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.framework.startup.launcher.MapMissingResourceException;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.UnitImageFactory;
 import java.awt.Color;
@@ -161,6 +162,8 @@ public class MapData {
 
   public MapData(final ResourceLoader loader) {
     this.loader = loader;
+    verifyRequiredResource(POLYGON_FILE);
+    verifyRequiredResource(CENTERS_FILE);
     try {
       place.putAll(readOptionalPlacementsOneToMany(PLACEMENT_FILE));
       territoryEffects.putAll(readOptionalPointsOneToMany(TERRITORY_EFFECT_FILE));
@@ -196,6 +199,12 @@ public class MapData {
     blockadeImage = loader.loadImage("misc/blockade.png").orElse(null);
     errorImage = loader.loadImage("misc/error.gif").orElse(null);
     warningImage = loader.loadImage("misc/warning.gif").orElse(null);
+  }
+
+  private void verifyRequiredResource(final String fileName) {
+    if (loader.optionalResource(fileName).isEmpty()) {
+      throw new MapMissingResourceException(fileName, loader.getAssetPaths());
+    }
   }
 
   private Map<String, Point> readOptionalPointsOneToOne(final String path) throws IOException {
