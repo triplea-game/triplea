@@ -10,6 +10,9 @@ public class GameNotesView extends JEditorPane {
   public GameNotesView() {
     setEditable(false);
     setContentType("text/html");
+    // Render CSS lengths per the W3C spec (1px = 1 screen pixel). Without this, Swing's legacy
+    // renderer treats CSS px as pt and inflates dimensions by ~33% at 96 DPI. See issue #6157.
+    putClientProperty(JEditorPane.W3C_LENGTH_UNITS, Boolean.TRUE);
     // If the foreground color isn't set, a dark theme may make the text color white, which will be
     // unreadable if the html sets a light background color.
     setForeground(Color.BLACK);
