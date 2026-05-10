@@ -11,6 +11,7 @@ import games.strategy.triplea.delegate.data.BattleListing;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.delegate.data.FightBattleDetails;
+import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.ui.Util;
@@ -66,13 +67,41 @@ public final class BattlePanel extends ActionPanel {
                 () -> Optional.ofNullable(battleDisplay).ifPresent(BattleDisplay::takeFocus));
           }
         });
-    final Dimension screenSize = Util.getScreenSize(battleWindow);
-    if (screenSize.width > 1024 && screenSize.height > 768) {
-      battleWindow.setMinimumSize(new Dimension(1024, 768));
-    } else {
-      battleWindow.setMinimumSize(new Dimension(800, 600));
-    }
     getMap().getUiContext().addShutdownWindow(battleWindow);
+  }
+
+  /**
+   * Sizes the battle window based on the map's dice sides and unit icon size, capped to fit on
+   * screen. Grows the window if it is currently smaller than required, but never shrinks a window
+   * the user has already enlarged.
+   */
+  private void resizeBattleWindowToFitContent() {
+    final UnitImageFactory unitImageFactory = getMap().getUiContext().getUnitImageFactory();
+    final int unitIconWidth = unitImageFactory.getUnitImageWidth();
+    final int unitIconHeight = unitImageFactory.getUnitImageHeight();
+    final int diceSides = getData().getDiceSides();
+
+    // Each cell in the BattleTable shows a unit icon plus an "xN" count label.
+    final int columnWidth = unitIconWidth + 35;
+    // Per side: 1 unit-icon column + (diceSides + 1) dice-strength columns.
+    final int tableWidth = (diceSides + 2) * columnWidth;
+    // Two tables side-by-side, plus the territory image (~100px) and frame insets.
+    final int desiredWidth = 2 * tableWidth + 180;
+
+    // Height needs room for the steps panel (which grows with AA / first-strike / sneak attack
+    // steps), the dice panel, the action button, and several rows of unit icons.
+    final int desiredHeight = Math.max(900, 6 * (unitIconHeight + 5) + 500);
+
+    final Dimension screenSize = Util.getScreenSize(battleWindow);
+    final int targetWidth = Math.min(desiredWidth, (int) (screenSize.width * 0.95));
+    final int targetHeight = Math.min(desiredHeight, (int) (screenSize.height * 0.95));
+
+    battleWindow.setMinimumSize(new Dimension(targetWidth, targetHeight));
+    final Dimension currentSize = battleWindow.getSize();
+    if (currentSize.width < targetWidth || currentSize.height < targetHeight) {
+      battleWindow.setSize(
+          Math.max(currentSize.width, targetWidth), Math.max(currentSize.height, targetHeight));
+    }
   }
 
   void setBattlesAndBombing(final BattleListing battleListing) {
@@ -256,6 +285,7 @@ public final class BattlePanel extends ActionPanel {
                   battleType);
           battleWindow.setTitle(battleDisplay.getDescription());
           battleWindow.getContentPane().add(battleDisplay);
+          resizeBattleWindowToFitContent();
 
           final var localPlayers = getMap().getUiContext().getLocalPlayers();
           if (ClientSetting.showBattlesWhenObserving.getValueOrThrow()
