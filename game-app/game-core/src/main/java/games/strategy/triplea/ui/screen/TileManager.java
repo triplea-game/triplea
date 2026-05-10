@@ -1,5 +1,7 @@
 package games.strategy.triplea.ui.screen;
 
+import static games.strategy.triplea.image.UnitImageFactory.ImageKey;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
@@ -332,7 +334,9 @@ public class TileManager {
       throw new IllegalStateException("No where to place units: " + territory.getName());
     }
 
+    final var unitImageFactory = uiContext.getUnitImageFactory();
     Point lastPlace = null;
+    UnitCategory previousCategory = null;
     for (final UnitCategory category : UnitSeparator.getSortedUnitCategories(territory, mapData)) {
       final boolean overflow;
       if (placementPoints.hasNext()) {
@@ -342,10 +346,13 @@ public class TileManager {
         if (lastPlace == null) return; // should not occur, but better safe than sorry
         lastPlace = new Point(lastPlace);
         overflow = true;
+        // Step by an actual image width so adjacent overflow units sit edge-to-edge regardless
+        // of map.properties units.width. Direction differs because the draw anchor is top-left:
+        // overflow-left needs this unit's width; overflow-right needs the previous unit's.
         if (mapData.getPlacementOverflowToLeft(territory)) {
-          lastPlace.x -= uiContext.getUnitImageFactory().getUnitImageWidth();
+          lastPlace.x -= unitImageFactory.getImage(ImageKey.of(category)).getWidth(null);
         } else {
-          lastPlace.x += uiContext.getUnitImageFactory().getUnitImageWidth();
+          lastPlace.x += unitImageFactory.getImage(ImageKey.of(previousCategory)).getWidth(null);
         }
       }
       final UnitsDrawer drawable =
@@ -356,6 +363,7 @@ public class TileManager {
         tile.addDrawable(drawable);
         drawnOn.add(tile);
       }
+      previousCategory = category;
     }
   }
 
