@@ -9,6 +9,7 @@ import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBrid
 import static games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate.BidMode.NOT_BID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -20,13 +21,17 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 // Note: This inherits from PlaceDelegateTestCommon and the tests defined there are included.
@@ -160,5 +165,47 @@ class PlaceDelegateTest extends PlaceDelegateTestCommon {
     assertThat(delegate.undoMove(fighterPlacement.getIndex()), is(nullValue()));
     assertThat(uk.getMatches(Matches.unitIsOfType(fighter)), is(empty()));
     assertThat(delegate.getMovesMade(), is(empty()));
+  }
+
+  // Regression test for https://github.com/triplea-game/triplea/issues/9165.
+  // Exercises freePlacementCapacity's split-placements pass: a prior sea-zone placement that
+  // exceeds a sibling producer's capacity must be split across producers, freeing up production
+  // for a new placement at the original producer.
+  @Test
+  void testFreePlacementCapacitySplitsPriorPlacementAcrossNeighborProducers() {
+    advanceToStep(delegate.getBridge(), "britishPlace");
+    final Territory eastCanadaSeaZone =
+        gameData.getMap().getTerritoryOrNull("East Canada Sea Zone");
+    assertThat(eastCanadaSeaZone, is(notNullValue()));
+
+    eastCanada.getUnitCollection().addAll(create(british, factory, 1));
+    // Seed East Canada at 1 of 2 capacity so a 2-transport placement won't fit whole and falls
+    // into the split pass. Use a mutable map: subsequent placements update it via put().
+    delegate.setProduced(new HashMap<>(Map.of(eastCanada, create(british, infantry, 1))));
+
+    assertValid(delegate.placeUnits(create(british, transport, 2), eastCanadaSeaZone, NOT_BID));
+    final List<UndoablePlacement> afterTransports = delegate.getMovesMade();
+    assertThat(afterTransports, hasSize(1));
+    assertThat(afterTransports.get(0).getProducerTerritory(), is(westCanada));
+    assertThat(afterTransports.get(0).getUnits(), hasSize(2));
+
+    final PlaceableUnits placeable =
+        delegate.getPlaceableUnits(create(british, infantry, 1), westCanada);
+    assertEquals(1, placeable.getMaxUnits());
+
+    assertValid(delegate.placeUnits(create(british, infantry, 1), westCanada, NOT_BID));
+
+    assertThat(westCanada.getMatches(Matches.unitIsOfType(infantry)), hasSize(1));
+
+    final List<UndoablePlacement> seaPlacementsAfter =
+        delegate.getMovesMade().stream()
+            .filter(p -> p.getPlaceTerritory().equals(eastCanadaSeaZone))
+            .collect(Collectors.toList());
+    assertThat(seaPlacementsAfter, hasSize(2));
+    final Set<Territory> producers =
+        seaPlacementsAfter.stream()
+            .map(UndoablePlacement::getProducerTerritory)
+            .collect(Collectors.toSet());
+    assertThat(producers, containsInAnyOrder(westCanada, eastCanada));
   }
 }
