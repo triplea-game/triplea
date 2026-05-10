@@ -356,23 +356,152 @@ class AvailableSupportsTest {
                   false));
 
       assertThat(
-          "First support unit can fill the entire stack", tracker.giveSupportToUnit(unit), is(2));
+          "First unit gets one support from each of the two distinct supporters",
+          tracker.giveSupportToUnit(unit),
+          is(2));
       assertThat(
-          "Second support unit can give its support", tracker.giveSupportToUnit(unit2), is(2));
+          "Second unit also gets one support from each of the two distinct supporters",
+          tracker.giveSupportToUnit(unit2),
+          is(2));
 
       assertThat("All the support was used for the rule", tracker.getSupportLeft(rule), is(0));
       assertThat(
-          "The first support unit can give 2 supports and the bonus stacks up to two "
-              + "so the first unit gets all of its support. "
-              + "The second support unit can give 2 supports and the bonus stacks up to two "
-              + "so the second unit gets all of its support.",
+          "Support is spread across targets: a single supporter contributes at most one "
+              + "support per target unit, so each supporter gives 1 to unit and 1 to unit2 "
+              + "rather than dumping its full number on one target.",
           tracker.getUnitsGivingSupport(),
           is(
               Map.of(
                   supportUnit,
-                  IntegerMap.of(Map.of(unit, 2)),
+                  IntegerMap.of(Map.of(unit, 1, unit2, 1)),
                   supportUnit2,
-                  IntegerMap.of(Map.of(unit2, 2)))));
+                  IntegerMap.of(Map.of(unit, 1, unit2, 1)))));
+    }
+
+    @Test
+    void singleSupporterCannotStackOnOneUnitWhenOtherTargetsExist() throws GameParseException {
+      // The exact scenario from issue #12593: one artillery (number=3) with two infantry,
+      // and a bonus type that allows up to 3 supports per target. Previously the artillery
+      // dumped all 3 supports on the first infantry; now it spreads one to each.
+      final GameData gameData = givenGameData().build();
+
+      final GamePlayer owner = mock(GamePlayer.class);
+
+      final UnitType unitType = new UnitType("infantry", gameData);
+      final Unit infantry1 = unitType.createTemp(1, owner).get(0);
+      final Unit infantry2 = unitType.createTemp(1, owner).get(0);
+
+      final UnitType supportUnitType = new UnitType("artillery", gameData);
+      final Unit artillery = supportUnitType.createTemp(1, owner).get(0);
+
+      final UnitSupportAttachment rule =
+          new UnitSupportAttachment("rule", supportUnitType, gameData);
+      rule.setSide("offence")
+          .setFaction("enemy")
+          .setPlayers(List.of(owner))
+          // bonus stacks up to 3 on one target
+          .setBonusType("3:bonus")
+          .setUnitType(Set.of(unitType))
+          .setBonus(1)
+          .setNumber(3);
+
+      final AvailableSupports tracker =
+          AvailableSupports.getSupport(
+              new SupportCalculator(
+                  List.of(artillery), List.of(rule), BattleState.Side.OFFENSE, false));
+
+      assertThat(
+          "Artillery gives one support to the first infantry",
+          tracker.giveSupportToUnit(infantry1),
+          is(1));
+      assertThat(
+          "Artillery gives one support to the second infantry",
+          tracker.giveSupportToUnit(infantry2),
+          is(1));
+
+      assertThat(
+          "Artillery cannot stack a second support onto the same infantry, even though stack "
+              + "count and remaining number both allow it.",
+          tracker.getUnitsGivingSupport(),
+          is(Map.of(artillery, IntegerMap.of(Map.of(infantry1, 1, infantry2, 1)))));
+    }
+
+    @Test
+    void singleSupporterGivesOneToLoneTarget() throws GameParseException {
+      // Edge case for the new behavior: one supporter with one target gives exactly one
+      // support, even when its number and the bonus stack would allow more. Stacking on the
+      // same target requires multiple distinct supporters.
+      final GameData gameData = givenGameData().build();
+
+      final GamePlayer owner = mock(GamePlayer.class);
+
+      final UnitType unitType = new UnitType("infantry", gameData);
+      final Unit infantry = unitType.createTemp(1, owner).get(0);
+
+      final UnitType supportUnitType = new UnitType("artillery", gameData);
+      final Unit artillery = supportUnitType.createTemp(1, owner).get(0);
+
+      final UnitSupportAttachment rule =
+          new UnitSupportAttachment("rule", supportUnitType, gameData);
+      rule.setSide("offence")
+          .setFaction("enemy")
+          .setPlayers(List.of(owner))
+          .setBonusType("3:bonus")
+          .setUnitType(Set.of(unitType))
+          .setBonus(1)
+          .setNumber(3);
+
+      final AvailableSupports tracker =
+          AvailableSupports.getSupport(
+              new SupportCalculator(
+                  List.of(artillery), List.of(rule), BattleState.Side.OFFENSE, false));
+
+      assertThat(
+          "Single supporter contributes exactly one support to the lone target",
+          tracker.giveSupportToUnit(infantry),
+          is(1));
+      assertThat(
+          tracker.getUnitsGivingSupport(),
+          is(Map.of(artillery, IntegerMap.of(Map.of(infantry, 1)))));
+    }
+
+    @Test
+    void threeSupportersStackingOnOneUnitRespectsBonusCount() throws GameParseException {
+      // 3 supporters, each number=1, stack count=2. Only 2 of the 3 supporters should
+      // contribute to a single target (capped by the stack count).
+      final GameData gameData = givenGameData().build();
+
+      final GamePlayer owner = mock(GamePlayer.class);
+
+      final UnitType unitType = new UnitType("unit", gameData);
+      final Unit unit = unitType.createTemp(1, owner).get(0);
+
+      final UnitType supportUnitType = new UnitType("support", gameData);
+      final Unit s1 = supportUnitType.createTemp(1, owner).get(0);
+      final Unit s2 = supportUnitType.createTemp(1, owner).get(0);
+      final Unit s3 = supportUnitType.createTemp(1, owner).get(0);
+
+      final UnitSupportAttachment rule =
+          new UnitSupportAttachment("rule", supportUnitType, gameData);
+      rule.setSide("offence")
+          .setFaction("enemy")
+          .setPlayers(List.of(owner))
+          .setBonusType("2:bonus")
+          .setUnitType(Set.of(unitType))
+          .setBonus(1)
+          .setNumber(1);
+
+      final AvailableSupports tracker =
+          AvailableSupports.getSupport(
+              new SupportCalculator(
+                  List.of(s1, s2, s3), List.of(rule), BattleState.Side.OFFENSE, false));
+
+      assertThat("Three supporters, each with 1 support", tracker.getSupportLeft(rule), is(3));
+      assertThat(
+          "Only 2 of 3 supporters contribute (stack count cap)",
+          tracker.giveSupportToUnit(unit),
+          is(2));
+      assertThat("One supporter remains with capacity", tracker.getSupportLeft(rule), is(1));
     }
 
     @Test
