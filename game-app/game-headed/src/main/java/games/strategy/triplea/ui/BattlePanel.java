@@ -45,12 +45,14 @@ import org.triplea.swing.jpanel.JPanelBuilder;
 public final class BattlePanel extends ActionPanel {
   private static final long serialVersionUID = 5304208569738042592L;
 
+  private static final long ENSURE_BATTLE_DISPLAYED_TIMEOUT_MS = 45_000;
+
   private FightBattleDetails fightBattleMessage;
   private volatile BattleDisplay battleDisplay;
-  // if we are showing a battle, then this will be set to the currently displayed battle. This will
-  // only be set after
-  // the display is shown on the screen
-  private volatile UUID currentBattleDisplayed;
+  // Guarded by battleDisplayedLock. Set at the end of showBattle()'s EDT task, after the battle
+  // window content is in place; threads in ensureBattleIsDisplayed() wait until it matches.
+  private UUID currentBattleDisplayed;
+  private final Object battleDisplayedLock = new Object();
   private final JDialog battleWindow;
   private BattleListing battleListing;
 
@@ -174,7 +176,9 @@ public final class BattlePanel extends ActionPanel {
 
   private void cleanUpBattleWindow() {
     if (battleDisplay != null) {
-      currentBattleDisplayed = null;
+      synchronized (battleDisplayedLock) {
+        currentBattleDisplayed = null;
+      }
       battleDisplay.cleanUp();
       battleWindow.getContentPane().removeAll();
       battleDisplay = null;
@@ -183,21 +187,25 @@ public final class BattlePanel extends ActionPanel {
 
   private boolean ensureBattleIsDisplayed(final UUID battleId) {
     Util.ensureNotOnEventDispatchThread();
-    UUID displayed = currentBattleDisplayed;
-    int count = 0;
-    while (!battleId.equals(displayed)) {
-      count++;
-      Interruptibles.sleep(count);
-      // something is wrong, we shouldn't have to wait this long
-      if (count > 200) {
-        log.error(
-            "battle not displayed, looking for: "
-                + battleId
-                + " showing: "
-                + currentBattleDisplayed);
-        return false;
+    final long deadline = System.currentTimeMillis() + ENSURE_BATTLE_DISPLAYED_TIMEOUT_MS;
+    synchronized (battleDisplayedLock) {
+      while (!battleId.equals(currentBattleDisplayed)) {
+        final long remaining = deadline - System.currentTimeMillis();
+        if (remaining <= 0) {
+          log.error(
+              "battle not displayed after {}ms, looking for: {} showing: {}",
+              ENSURE_BATTLE_DISPLAYED_TIMEOUT_MS,
+              battleId,
+              currentBattleDisplayed);
+          return false;
+        }
+        try {
+          battleDisplayedLock.wait(remaining);
+        } catch (final InterruptedException e) {
+          Thread.currentThread().interrupt();
+          return false;
+        }
       }
-      displayed = currentBattleDisplayed;
     }
     return true;
   }
@@ -268,7 +276,10 @@ public final class BattlePanel extends ActionPanel {
           } else {
             battleWindow.setVisible(false);
           }
-          currentBattleDisplayed = battleId;
+          synchronized (battleDisplayedLock) {
+            currentBattleDisplayed = battleId;
+            battleDisplayedLock.notifyAll();
+          }
         });
   }
 
