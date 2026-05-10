@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate.battle.casualty;
 
-import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
@@ -133,13 +132,26 @@ public class CasualtySelector {
     final CasualtyDetails casualtyDetails;
     if (autoChooseCasualties) {
       casualtyDetails = new CasualtyDetails(defaultCasualties, true);
-    } else {
-      Preconditions.checkState(
-          defaultCasualties.size() == hitsRemaining,
+    } else if (defaultCasualties.size() != hitsRemaining) {
+      // Should not happen, but has been seen in the wild (#12844). Rather than aborting the
+      // battle, surface a diagnostic error to the user (so it can be reported) and fall back
+      // to the auto-choose path using whatever defaults we have.
+      final String diagnostic =
           String.format(
               "Select Casualties showing different numbers for number of hits to take (%s) vs "
-                  + "total size of default casualty selections (%s) in %s (player = %s)",
-              hitsRemaining, defaultCasualties.size(), battleSite, player.getName()));
+                  + "total size of default casualty selections (%s) in %s (player = %s); "
+                  + "targets=%s, dice=%s, allowMultipleHitsPerUnit=%s",
+              hitsRemaining,
+              defaultCasualties.size(),
+              battleSite,
+              player.getName(),
+              sortedTargetsToPickFrom,
+              dice,
+              allowMultipleHitsPerUnit);
+      log.error(diagnostic);
+      tripleaPlayer.reportError(diagnostic);
+      casualtyDetails = new CasualtyDetails(defaultCasualties, true);
+    } else {
       casualtyDetails =
           tripleaPlayer.selectCasualties(
               sortedTargetsToPickFrom,
