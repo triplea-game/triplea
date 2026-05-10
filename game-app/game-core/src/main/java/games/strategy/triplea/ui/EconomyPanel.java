@@ -110,7 +110,7 @@ class EconomyPanel extends JPanel implements GameDataChangeListener {
       // copy so that the object doesn't change underneath us
       final GameData gameData = EconomyPanel.this.gameData;
       try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
-        final List<GamePlayer> players = gameData.getPlayerList().getSortedPlayers();
+        final List<GamePlayer> players = gameData.getPlayerList().getPlayers();
         final List<String> alliances = getAlliancesToShow(gameData.getAllianceTracker());
         collectedData = new String[players.size() + alliances.size()][resourceStats.size() + 1];
         int row = 0;
