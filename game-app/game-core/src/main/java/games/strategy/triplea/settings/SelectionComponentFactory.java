@@ -305,9 +305,15 @@ final class SelectionComponentFactory {
           new JButtonBuilder()
               .title("Select")
               .actionListener(
-                  () ->
-                      SwingComponents.showJFileChooser(folderSelectionMode)
-                          .ifPresent(file -> field.setText(file.toAbsolutePath().toString())))
+                  () -> {
+                    final String currentValue = field.getText();
+                    final Optional<Path> selected =
+                        currentValue.isEmpty()
+                            ? SwingComponents.showJFileChooser(folderSelectionMode)
+                            : SwingComponents.showJFileChooser(
+                                folderSelectionMode, Path.of(currentValue));
+                    selected.ifPresent(file -> field.setText(file.toAbsolutePath().toString()));
+                  })
               .build();
 
       @Override
