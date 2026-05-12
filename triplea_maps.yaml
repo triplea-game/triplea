@@ -3477,8 +3477,12 @@
     <br>Time frame: the scenario is set roughly in 2025 (contemporary force structure and economy as inspiration, not a prediction of war). Modern global setup on a custom world map. Two coalitions: Allies (Europe, USA, Global Allies) versus Axis (Russians, China, Global Axis), plus Neutral territories.
 - mapName: Classic League
   mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/classic_league/archive/master.zip
+  url: https://github.com/triplea-maps/classic_league/archive/refs/heads/master.zip
   version: 1
-  img: https://github.com/triplea-maps/classic_league/blob/master/preview.png
+  img: https://raw.githubusercontent.com/triplea-maps/classic_league/master/preview.png
   description: |
-    <br>Classic 2nd Edition (1984) for use in the League. 
+    <br>Based on the boardgame: Axis & Allies - Classic 2nd Edition (1984)
+    <br>
+    <br>This is an upgrade of the "World War II Classic" module. It checks for violation of stack limits, an important but often forgotten rule. It also has a rework of the game options, specifically designed for use in the League on A&A.org. It can also be used for non-League games.
+    <br>
+    <br><i>Made by VictoryFirst</i>
