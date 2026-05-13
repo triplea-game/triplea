@@ -26,6 +26,7 @@ import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
+import org.triplea.swing.SwingComponents;
 
 /** Implementation of {@link ILauncher} for a headed local or network client game. */
 @Slf4j
@@ -79,6 +80,18 @@ public class LocalLauncher implements ILauncher {
       return Optional.of(game);
     } catch (final MapNotFoundException e) {
       // The throwing method of MapNotFoundException notifies and prompts user to download the map.
+      return Optional.empty();
+    } catch (final MapMissingResourceException e) {
+      log.warn("Map cannot be loaded: {}", e.getMessage(), e);
+      SwingComponents.showError(
+          parent,
+          "Cannot load map",
+          "The map cannot be loaded because it is missing the required file '"
+              + e.getResourceName()
+              + "'.\n\n"
+              + "The map may be corrupted, incomplete, or still in development.\n"
+              + "Try re-downloading the map, or contact the map's author if you are testing"
+              + " an unfinished map.");
       return Optional.empty();
     } catch (final Exception ex) {
       log.error("Failed to start game", ex);
