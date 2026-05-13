@@ -63,7 +63,9 @@ public class HeadedServerSetupModel {
    */
   public ServerModel showServer() {
     final ServerModel serverModel = new ServerModel(gameSelectorModel, new HeadedLaunchAction(ui));
-    serverModel.initialize().ifPresent(u -> onServerMessengerCreated(serverModel));
+    if (serverModel.initialize()) {
+      onServerMessengerCreated(serverModel);
+    }
     return serverModel;
   }
 
