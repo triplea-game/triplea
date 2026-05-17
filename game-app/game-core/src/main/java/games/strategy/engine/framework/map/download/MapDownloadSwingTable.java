@@ -1,14 +1,11 @@
 package games.strategy.engine.framework.map.download;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 import org.triplea.http.client.lobby.maps.listing.MapTag;
 import org.triplea.swing.JTableBuilder;
@@ -22,7 +19,7 @@ public class MapDownloadSwingTable {
   private final JTable table;
 
   public MapDownloadSwingTable(final Collection<MapDownloadItem> maps) {
-    // Build a jtable that has n+1 columns, the first column (+1) is the map name,
+    // Build a JTable that has n+1 columns, the first column (+1) is the map name,
     // the 'n' columns are one for each tag.
     // Note, not all maps have all tags (potentially sparse), we will display a blank
     // value if a map does not have a given tag.
@@ -84,12 +81,7 @@ public class MapDownloadSwingTable {
     table
         .getSelectionModel()
         .addListSelectionListener(
-            listener -> {
-              final List<String> selections = getSelectedMapNames();
-              if (!selections.isEmpty()) {
-                mapNameSelectionListener.accept(selections);
-              }
-            });
+            listener -> mapNameSelectionListener.accept(getSelectedMapNames()));
   }
 
   /** Returns list of currently selected maps. */
@@ -104,14 +96,24 @@ public class MapDownloadSwingTable {
         .collect(Collectors.toList());
   }
 
-  /** Removes the table row with the given map name. */
-  void removeMapRow(final String mapName) {
-    for (int i = 0, n = table.getModel().getRowCount(); i < n; i++) {
-      final String mapInTable = String.valueOf(table.getModel().getValueAt(i, 0));
-      if (mapName.equals(mapInTable)) {
-        ((DefaultTableModel) table.getModel()).removeRow(i);
-        return;
+  void removeMapRows(final List<MapDownloadItem> mapDownloadItems) {
+    final Set<String> removeMapNames =
+        mapDownloadItems.stream().map(MapDownloadItem::getMapName).collect(Collectors.toSet());
+
+    final RowSorter<? extends TableModel> sorter = table.getRowSorter();
+    final List<? extends RowSorter.SortKey> sortKeys = sorter.getSortKeys();
+
+    final DefaultTableModel model = (DefaultTableModel) table.getModel();
+
+    // remove iterating backwards to avoid indices shifting
+    for (int row = model.getRowCount() - 1; row >= 0; row--) {
+      final String mapNameInTable = String.valueOf(model.getValueAt(row, 0));
+      if (removeMapNames.contains(mapNameInTable)) {
+        model.removeRow(row);
       }
     }
+
+    sorter.setSortKeys(sortKeys);
+    ((DefaultRowSorter<?, ?>) sorter).sort();
   }
 }

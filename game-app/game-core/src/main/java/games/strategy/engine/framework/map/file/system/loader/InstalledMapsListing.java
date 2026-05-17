@@ -60,6 +60,10 @@ public class InstalledMapsListing {
         .collect(Collectors.toList());
   }
 
+  public void deleteInstalledMapByName(final String mapName) {
+    installedMaps.removeIf(installedMap -> installedMap.getMapName().equals(mapName));
+  }
+
   /** Returns the list of all installed game names. */
   public List<String> getSortedGameList() {
     return installedMaps.stream()
