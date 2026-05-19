@@ -1062,39 +1062,6 @@ public class WeakAi extends AbstractAi {
         placeAllWeCanOn(data, t, placeDelegate, player);
       }
     }
-    // Second pass: place construction units (e.g. factories) at owned territories that don't
-    // already host a producer. The first pass only visits territories that already have a
-    // factory, so a trigger-granted or carried-over factory would otherwise never find a
-    // home and would accumulate in the pool.
-    placeConstructionsWeCanOn(placeDelegate, player, randomTerritories);
-  }
-
-  private static void placeConstructionsWeCanOn(
-      final IAbstractPlaceDelegate placeDelegate,
-      final GamePlayer player,
-      final List<Territory> territories) {
-    for (final Territory t : territories) {
-      if (!t.isOwnedBy(player) || t.anyUnitsMatch(Matches.unitCanProduceUnits())) {
-        continue;
-      }
-      final List<Unit> constructions = player.getMatches(Matches.unitIsConstruction());
-      if (constructions.isEmpty()) {
-        return;
-      }
-      final PlaceableUnits placeable = placeDelegate.getPlaceableUnits(constructions, t);
-      if (placeable.isError() || placeable.getUnits().isEmpty()) {
-        continue;
-      }
-      int max = placeable.getMaxUnits();
-      if (max == -1) {
-        max = Integer.MAX_VALUE;
-      }
-      final List<Unit> units = new ArrayList<>(placeable.getUnits());
-      final int count = Math.min(max, units.size());
-      if (count > 0) {
-        doPlace(t, units.subList(0, count), placeDelegate);
-      }
-    }
   }
 
   private static void placeAllWeCanOn(
