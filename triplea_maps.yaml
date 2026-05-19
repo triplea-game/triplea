@@ -3225,13 +3225,6 @@
   img: https://raw.githubusercontent.com/triplea-maps/Pacific1941/master/preview.png
   description: |
     <br>World War 2 in the Pacific starting in 1941 with many unit types.
-- mapName: WW2v3-1941_v2
-  mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/WW2v3-1941_v2/archive/refs/heads/master.zip
-  version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/WW2v3-1941_v2/master/preview.png
-  description: |
-    <br>Modified version of World II v3 - 1941
 - mapName: No Mans Land Navalland
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/No_Mans_Land_Navalland/archive/refs/heads/master.zip
