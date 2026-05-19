@@ -3479,3 +3479,10 @@
     <br>This is an upgrade of the "World War II Classic" module. It checks for violation of stack limits, an important but often forgotten rule. It also has a rework of the game options, specifically designed for use in the League on A&A.org. It can also be used for non-League games.
     <br>
     <br><i>Made by VictoryFirst</i>
+- mapName: East and West
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/East_and_West/archive/refs/heads/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/East_and_West/master/preview.png
+  description: |
+    <br>World War Three in 1947, inspired by the game East and West
