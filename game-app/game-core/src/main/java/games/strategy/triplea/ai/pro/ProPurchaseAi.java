@@ -276,12 +276,10 @@ class ProPurchaseAi {
     // Find all purchase/place territories
     final Map<Territory, ProPurchaseTerritory> purchaseTerritories =
         ProPurchaseUtils.findPurchaseTerritories(proData, player);
-        ProLogger.trace("purchaseTerritories=" + purchaseTerritories);
     final Set<Territory> placeTerritories =
         new HashSet<>(
             CollectionUtils.getMatches(
                 data.getMap().getTerritoriesOwnedBy(player), Matches.territoryIsLand()));
-                ProLogger.trace("placeTerritories=" + placeTerritories);
     for (final ProPurchaseTerritory t : purchaseTerritories.values()) {
       for (final ProPlaceTerritory ppt : t.getCanPlaceTerritories()) {
         placeTerritories.add(ppt.getTerritory());
@@ -570,15 +568,12 @@ class ProPurchaseAi {
       }
     }
     // Evaluate the best territories for factories
-    evaluateFactoryPlaceTerritories(placeTerritories);
-      final List<Territory> rankedTerritories = evaluateFactoryPlaceTerritories(placeTerritories);
+    final List<Territory> rankedTerritories = evaluateFactoryPlaceTerritories(placeTerritories);
 
     // Place regular units, then construction units, and lastly factories
     placeUnits(prioritizedTerritories, placeDelegate, Matches.unitIsNotConstruction());
     placeUnits(prioritizedTerritories, placeDelegate, Matches.unitIsConstruction());
     placeFactories(rankedTerritories, placeDelegate);
-
-
 
     territoryManager = null;
   }
@@ -2526,7 +2521,7 @@ class ProPurchaseAi {
       }
     }
   }
-//  Matches.unitIsNotConstruction
+
   private void placeUnits(
       final List<ProPlaceTerritory> prioritizedTerritories,
       final IAbstractPlaceDelegate placeDelegate,
@@ -2545,25 +2540,24 @@ class ProPurchaseAi {
         ProLogger.trace(t + " can't place units with error: " + placeableUnits.getErrorMessage());
         continue;
       }
-        // Find remaining unit production
-        int remainingUnitProduction = placeableUnits.getMaxUnits();
-        if (remainingUnitProduction == -1) {
-          remainingUnitProduction = Integer.MAX_VALUE;
-        }
-        ProLogger.trace(t + ", remainingUnitProduction=" + remainingUnitProduction);
 
-        // Place as many units as possible
-        final List<Unit> unitsThatCanBePlaced = new ArrayList<>(placeableUnits.getUnits());
-        final int placeCount = Math.min(remainingUnitProduction, unitsThatCanBePlaced.size());
-        final List<Unit> unitsToPlace = unitsThatCanBePlaced.subList(0, placeCount);
-        ProLogger.trace(t + ", placedUnits=" + unitsToPlace);
-        doPlace(t, unitsToPlace, placeDelegate);
+      // Find remaining unit production
+      int remainingUnitProduction = placeableUnits.getMaxUnits();
+      if (remainingUnitProduction == -1) {
+        remainingUnitProduction = Integer.MAX_VALUE;
+      }
+      ProLogger.trace(t + ", remainingUnitProduction=" + remainingUnitProduction);
+
+      // Place as many units as possible
+      final List<Unit> unitsThatCanBePlaced = new ArrayList<>(placeableUnits.getUnits());
+      final int placeCount = Math.min(remainingUnitProduction, unitsThatCanBePlaced.size());
+      final List<Unit> unitsToPlace = unitsThatCanBePlaced.subList(0, placeCount);
+      ProLogger.trace(t + ", placedUnits=" + unitsToPlace);
+      doPlace(t, unitsToPlace, placeDelegate);
     }
   }
 
- private List<Territory> evaluateFactoryPlaceTerritories(
-      final Set<Territory> placeTerritories) {
-
+  private List<Territory> evaluateFactoryPlaceTerritories(final Set<Territory> placeTerritories) {
     final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
 
     // Find all owned land territories that weren't conquered and don't already have a factory
@@ -2664,41 +2658,41 @@ class ProPurchaseAi {
       }
       valuedTerritories.sort(Comparator.comparingDouble(TerritoryValue::value).reversed());
     }
-   ProLogger.debug("Evaluated territories for factory placement=" + valuedTerritories);
-      final List<Territory> rankedTerritories =
-              valuedTerritories.stream().map(TerritoryValue::territory).toList();
-   ProLogger.trace("Ranking evaluated territories=" + rankedTerritories);
+    ProLogger.debug("Evaluated territories for factory placement=" + valuedTerritories);
+    final List<Territory> rankedTerritories =
+        valuedTerritories.stream().map(TerritoryValue::territory).toList();
+    ProLogger.trace("Ranking evaluated territories=" + rankedTerritories);
     return rankedTerritories;
   }
 
   private void placeFactories(
-          final List<Territory> placeFactoryTerritories,
-          final IAbstractPlaceDelegate placeDelegate) {
-      if (player.getUnits().stream().anyMatch(Matches.unitCanProduceUnits())) {
-        ProLogger.info("Place units=" + player.getMatches(Matches.unitCanProduceUnits()));
+      final List<Territory> placeFactoryTerritories, final IAbstractPlaceDelegate placeDelegate) {
+    if (player.getUnits().stream().anyMatch(Matches.unitCanProduceUnits())) {
+      ProLogger.info("Place units=" + player.getMatches(Matches.unitCanProduceUnits()));
 
-        // Loop through prioritized territories and place units
-        for (final Territory t : placeFactoryTerritories) {
-            ProLogger.debug("Checking place for " + t.getName());
+      // Loop through prioritized territories and place units
+      for (final Territory t : placeFactoryTerritories) {
+        ProLogger.debug("Checking place for " + t.getName());
 
-          // Check if any units can be placed
-          final PlaceableUnits placeableUnits =
-                  placeDelegate.getPlaceableUnits(player.getMatches(Matches.unitCanProduceUnits()), t);
-          if (placeableUnits.isError()) {
-            ProLogger.trace(t + " can't place units with error: " + placeableUnits.getErrorMessage());
-            continue;
-          }
-            final List<Unit> unitsThatCanBePlaced = new ArrayList<>(placeableUnits.getUnits().stream().filter(Matches.unitCanProduceUnits()).toList());
-            final int placeCount = unitsThatCanBePlaced.size();
-            final List<Unit> unitsToPlace = unitsThatCanBePlaced.subList(0, placeCount);
-            ProLogger.trace(t + ", placedUnits=" + unitsToPlace);
-            doPlace(t, unitsToPlace, placeDelegate);
+        // Check if any units can be placed
+        final PlaceableUnits placeableUnits =
+            placeDelegate.getPlaceableUnits(player.getMatches(Matches.unitCanProduceUnits()), t);
+        if (placeableUnits.isError()) {
+          ProLogger.trace(t + " can't place units with error: " + placeableUnits.getErrorMessage());
+          continue;
         }
-      } else {
-          return;
+        final List<Unit> unitsThatCanBePlaced =
+            new ArrayList<>(
+                placeableUnits.getUnits().stream().filter(Matches.unitCanProduceUnits()).toList());
+        final int placeCount = unitsThatCanBePlaced.size();
+        final List<Unit> unitsToPlace = unitsThatCanBePlaced.subList(0, placeCount);
+        ProLogger.trace(t + ", placedUnits=" + unitsToPlace);
+        doPlace(t, unitsToPlace, placeDelegate);
       }
+    } else {
+      return;
+    }
   }
-
 
   private void addUnitsToPlaceTerritory(
       final ProPlaceTerritory placeTerritory,
