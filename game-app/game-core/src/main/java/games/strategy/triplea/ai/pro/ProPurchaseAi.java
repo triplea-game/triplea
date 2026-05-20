@@ -283,7 +283,6 @@ class ProPurchaseAi {
     for (final ProPurchaseTerritory t : purchaseTerritories.values()) {
       for (final ProPlaceTerritory ppt : t.getCanPlaceTerritories()) {
         placeTerritories.add(ppt.getTerritory());
-        ProLogger.trace("placeTerritories=" + placeTerritories);
       }
     }
 
@@ -504,7 +503,7 @@ class ProPurchaseAi {
       }
     }
 
-    // Place remaining units (currently only implemented to handle land units, ex. WW2v3 China)
+    // Place remaining units (currently only implemented to handle land units, ex. WW2v3 China, and factories)
     if (player.getUnits().isEmpty()) {
       return;
     }
@@ -570,10 +569,10 @@ class ProPurchaseAi {
     // Evaluate the best territories for factories
     final List<Territory> rankedTerritories = evaluateFactoryPlaceTerritories(placeTerritories);
 
-    // Place regular units, then construction units, and lastly factories
+    // Place factories first, then regular units, and then other construction units.
+    placeFactories(rankedTerritories, placeDelegate);
     placeUnits(prioritizedTerritories, placeDelegate, Matches.unitIsNotConstruction());
     placeUnits(prioritizedTerritories, placeDelegate, Matches.unitIsConstruction());
-    placeFactories(rankedTerritories, placeDelegate);
 
     territoryManager = null;
   }
@@ -2658,7 +2657,7 @@ class ProPurchaseAi {
       }
       valuedTerritories.sort(Comparator.comparingDouble(TerritoryValue::value).reversed());
     }
-    ProLogger.debug("Evaluated territories for factory placement=" + valuedTerritories);
+    ProLogger.trace("Evaluated territories for factory placement=" + valuedTerritories);
     final List<Territory> rankedTerritories =
         valuedTerritories.stream().map(TerritoryValue::territory).toList();
     ProLogger.trace("Ranking evaluated territories=" + rankedTerritories);
@@ -2668,7 +2667,7 @@ class ProPurchaseAi {
   private void placeFactories(
       final List<Territory> placeFactoryTerritories, final IAbstractPlaceDelegate placeDelegate) {
     if (player.getUnits().stream().anyMatch(Matches.unitCanProduceUnits())) {
-      ProLogger.info("Place units=" + player.getMatches(Matches.unitCanProduceUnits()));
+      ProLogger.info("Place factories=" + player.getMatches(Matches.unitCanProduceUnits()));
 
       // Loop through prioritized territories and place units
       for (final Territory t : placeFactoryTerritories) {
