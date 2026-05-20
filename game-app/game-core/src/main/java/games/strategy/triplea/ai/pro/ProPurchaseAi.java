@@ -503,7 +503,8 @@ class ProPurchaseAi {
       }
     }
 
-    // Place remaining units (currently only implemented to handle land units, ex. WW2v3 China, and factories)
+    // Place remaining units (currently only implemented to handle land units, ex. WW2v3 China, and
+    // factories)
     if (player.getUnits().isEmpty()) {
       return;
     }
