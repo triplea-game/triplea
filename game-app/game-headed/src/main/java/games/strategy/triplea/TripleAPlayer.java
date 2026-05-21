@@ -223,7 +223,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
       return;
     }
     // Perform Start Player Turn actions if it's the first phase of this player's turn
-    ui.invokeStartPlayerTurnIfNeeded(this.getGamePlayer());
+    ui.startPlayerTurn(this.getGamePlayer());
 
     final IPoliticsDelegate politicsDelegate;
     try {
@@ -251,7 +251,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
       return;
     }
     // Perform Start Player Turn actions if it's the first phase of this player's turn
-    ui.invokeStartPlayerTurnIfNeeded(this.getGamePlayer());
+    ui.startPlayerTurn(this.getGamePlayer());
 
     final IUserActionDelegate userActionDelegate;
     try {
@@ -299,7 +299,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
       return;
     }
     // Perform Start Player Turn actions if it's the first phase of this player's turn
-    ui.invokeStartPlayerTurnIfNeeded(this.getGamePlayer());
+    ui.startPlayerTurn(this.getGamePlayer());
 
     final ITechDelegate techDelegate;
     try {
@@ -342,7 +342,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
       return;
     }
     // Perform Start Player Turn actions if it's the first phase of this player's turn
-    ui.invokeStartPlayerTurnIfNeeded(this.getGamePlayer());
+    ui.startPlayerTurn(this.getGamePlayer());
 
     final IMoveDelegate moveDel;
     try {
@@ -436,7 +436,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
       return;
     }
     // Perform Start Player Turn actions if it's the first phase of this player's turn
-    ui.invokeStartPlayerTurnIfNeeded(this.getGamePlayer());
+    ui.startPlayerTurn(this.getGamePlayer());
 
     final GamePlayer gamePlayer = this.getGamePlayer();
 
@@ -521,7 +521,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
       return;
     }
     // Perform Start Player Turn actions if it's the first phase of this player's turn
-    ui.invokeStartPlayerTurnIfNeeded(this.getGamePlayer());
+    ui.startPlayerTurn(this.getGamePlayer());
 
     final IBattleDelegate battleDel;
     try {
@@ -570,7 +570,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
       return;
     }
     // Perform Start Player Turn actions if it's the first phase of this player's turn
-    ui.invokeStartPlayerTurnIfNeeded(this.getGamePlayer());
+    ui.startPlayerTurn(this.getGamePlayer());
 
     final GamePlayer gamePlayer = this.getGamePlayer();
     final IAbstractPlaceDelegate placeDel;

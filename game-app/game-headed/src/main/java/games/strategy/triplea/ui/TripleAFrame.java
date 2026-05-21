@@ -1703,32 +1703,29 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
    * and to center the map on the player's capital.
    */
   public void startPlayerTurn(final GamePlayer player) {
-    if (player == null || !Interruptibles.sleep(300)) {
+    if (!SwingUtilities.isEventDispatchThread()) {
+      try {
+        SwingAction.invokeAndWait(() -> startPlayerTurn(player));
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
       return;
     }
-    uiContext.getClipPlayer().play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player);
-    bottomBar.updateFromCurrentPlayer();
 
-    try (GameData.Unlocker ignored = data.acquireReadLock()) {
-      TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap())
-          .ifPresent(territory -> mapPanel.centerOn(territory));
-      mapPanel.repaint();
-    }
-  }
-
-  public void startPlayerTurnIfNeeded(final GamePlayer player) {
     // Check if a new player has its turn
     if (player != currentPlayer) {
       currentPlayer = player;
-      startPlayerTurn(player);
-    }
-  }
+      if (player == null || !Interruptibles.sleep(300)) {
+        return;
+      }
+      uiContext.getClipPlayer().play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player);
+      bottomBar.updateFromCurrentPlayer();
 
-  public void invokeStartPlayerTurnIfNeeded(final GamePlayer player) {
-    try {
-      SwingAction.invokeAndWait(() -> startPlayerTurnIfNeeded(player));
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
+      try (GameData.Unlocker ignored = data.acquireReadLock()) {
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap())
+            .ifPresent(territory -> mapPanel.centerOn(territory));
+        mapPanel.repaint();
+      }
     }
   }
 
