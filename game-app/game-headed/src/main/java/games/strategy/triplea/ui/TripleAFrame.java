@@ -1715,6 +1715,16 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     }
   }
 
+  private GamePlayer currentPlayer = null;
+
+  public void startPlayerTurnIfNeeded(final GamePlayer player) {
+    // Check if a new player has its turn
+    if (player != currentPlayer) {
+      currentPlayer = player;
+      startPlayerTurn(player);
+    }
+  }
+
   private String getUnitInfo() {
     if (!mapPanel.getMouseHoverUnits().isEmpty()) {
       final Unit unit = mapPanel.getMouseHoverUnits().get(0);

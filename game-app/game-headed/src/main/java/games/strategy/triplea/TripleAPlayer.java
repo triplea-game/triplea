@@ -150,25 +150,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
     // (ISomeDelegate) getPlayerBridge().getRemote()
     // We should never touch the game data directly. All changes to game data are done through the
     // remote, which then changes the game using the DelegateBridge -> change factory
-    final boolean isFirstStepOfTurn;
-    try (GameData.Unlocker ignored = getGameData().acquireReadLock()) {
-      final var sequence = getGameData().getSequence();
-      final int currentIndex = sequence.getStepIndex();
-      if (currentIndex == 0) {
-        isFirstStepOfTurn = true;
-      } else {
-        final GamePlayer previousStepPlayer = sequence.getStep(currentIndex - 1).getPlayerId();
-        isFirstStepOfTurn = !getGamePlayer().equals(previousStepPlayer);
-      }
-    }
 
-    if (isFirstStepOfTurn) {
-      try {
-        SwingAction.invokeAndWait(() -> ui.startPlayerTurn(this.getGamePlayer()));
-      } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
-    }
     enableEditModeMenu();
     boolean badStep = false;
     if (GameStep.isTechStepName(name)) {
@@ -241,6 +223,12 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
+    // Perform Start Player Turn actions if it's the first phase of this player's turn
+    try {
+      SwingAction.invokeAndWait(() -> ui.startPlayerTurnIfNeeded(this.getGamePlayer()));
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
     final IPoliticsDelegate politicsDelegate;
     try {
       politicsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
@@ -265,6 +253,12 @@ public class TripleAPlayer extends AbstractBasePlayer {
   private void userActions(final boolean firstRun) {
     if (getPlayerBridge().isGameOver()) {
       return;
+    }
+    // Perform Start Player Turn actions if it's the first phase of this player's turn
+    try {
+      SwingAction.invokeAndWait(() -> ui.startPlayerTurnIfNeeded(this.getGamePlayer()));
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
     }
     final IUserActionDelegate userActionDelegate;
     try {
@@ -311,6 +305,12 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
+    // Perform Start Player Turn actions if it's the first phase of this player's turn
+    try {
+      SwingAction.invokeAndWait(() -> ui.startPlayerTurnIfNeeded(this.getGamePlayer()));
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
     final ITechDelegate techDelegate;
     try {
       techDelegate = (ITechDelegate) getPlayerBridge().getRemoteDelegate();
@@ -350,6 +350,12 @@ public class TripleAPlayer extends AbstractBasePlayer {
   private void move(final boolean nonCombat, final String stepName) {
     if (getPlayerBridge().isGameOver()) {
       return;
+    }
+    // Perform Start Player Turn actions if it's the first phase of this player's turn
+    try {
+      SwingAction.invokeAndWait(() -> ui.startPlayerTurnIfNeeded(this.getGamePlayer()));
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
     }
     final IMoveDelegate moveDel;
     try {
@@ -442,8 +448,14 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-
+    // Perform Start Player Turn actions if it's the first phase of this player's turn
+    try {
+      SwingAction.invokeAndWait(() -> ui.startPlayerTurnIfNeeded(this.getGamePlayer()));
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
     final GamePlayer gamePlayer = this.getGamePlayer();
+
     // play a sound for this phase
     if (!bid && !soundPlayedAlreadyPurchase) {
       playSound(SoundPath.CLIP_PHASE_PURCHASE);
@@ -524,6 +536,12 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
+    // Perform Start Player Turn actions if it's the first phase of this player's turn
+    try {
+      SwingAction.invokeAndWait(() -> ui.startPlayerTurnIfNeeded(this.getGamePlayer()));
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
     final IBattleDelegate battleDel;
     try {
       battleDel = (IBattleDelegate) getPlayerBridge().getRemoteDelegate();
@@ -569,6 +587,12 @@ public class TripleAPlayer extends AbstractBasePlayer {
     final boolean bid = GameStepPropertiesHelper.isBid(getGameData());
     if (getPlayerBridge().isGameOver()) {
       return;
+    }
+    // Perform Start Player Turn actions if it's the first phase of this player's turn
+    try {
+      SwingAction.invokeAndWait(() -> ui.startPlayerTurnIfNeeded(this.getGamePlayer()));
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
     }
     final GamePlayer gamePlayer = this.getGamePlayer();
     final IAbstractPlaceDelegate placeDel;
