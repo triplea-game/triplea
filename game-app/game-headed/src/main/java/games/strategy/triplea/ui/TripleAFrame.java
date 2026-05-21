@@ -201,6 +201,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   @Getter private IEditDelegate editDelegate;
   private final JSplitPane gameCenterPanel;
   @Getter private final BottomBar bottomBar;
+  private GamePlayer currentPlayer;
   private final Map<GamePlayer, Boolean> requiredTurnSeries = new HashMap<>();
   private final ThreadPool messageAndDialogThreadPool = new ThreadPool(1);
   private final MapUnitTooltipManager tooltipManager;
@@ -1712,6 +1713,22 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap())
           .ifPresent(territory -> mapPanel.centerOn(territory));
       mapPanel.repaint();
+    }
+  }
+
+  public void startPlayerTurnIfNeeded(final GamePlayer player) {
+    // Check if a new player has its turn
+    if (player != currentPlayer) {
+      currentPlayer = player;
+      startPlayerTurn(player);
+    }
+  }
+
+  public void invokeStartPlayerTurnIfNeeded(final GamePlayer player) {
+    try {
+      SwingAction.invokeAndWait(() -> startPlayerTurnIfNeeded(player));
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
     }
   }
 
