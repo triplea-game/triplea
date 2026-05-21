@@ -61,7 +61,6 @@ import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.sound.SoundPath;
-import org.triplea.swing.SwingAction;
 import org.triplea.swing.jpanel.JPanelBuilder;
 import org.triplea.util.Tuple;
 
@@ -224,11 +223,8 @@ public class TripleAPlayer extends AbstractBasePlayer {
       return;
     }
     // Perform Start Player Turn actions if it's the first phase of this player's turn
-    try {
-      SwingAction.invokeAndWait(() -> ui.startPlayerTurnIfNeeded(this.getGamePlayer()));
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
+    ui.invokeStartPlayerTurnIfNeeded(this.getGamePlayer());
+
     final IPoliticsDelegate politicsDelegate;
     try {
       politicsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
@@ -255,11 +251,8 @@ public class TripleAPlayer extends AbstractBasePlayer {
       return;
     }
     // Perform Start Player Turn actions if it's the first phase of this player's turn
-    try {
-      SwingAction.invokeAndWait(() -> ui.startPlayerTurnIfNeeded(this.getGamePlayer()));
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
+    ui.invokeStartPlayerTurnIfNeeded(this.getGamePlayer());
+
     final IUserActionDelegate userActionDelegate;
     try {
       userActionDelegate = (IUserActionDelegate) getPlayerBridge().getRemoteDelegate();
@@ -306,11 +299,8 @@ public class TripleAPlayer extends AbstractBasePlayer {
       return;
     }
     // Perform Start Player Turn actions if it's the first phase of this player's turn
-    try {
-      SwingAction.invokeAndWait(() -> ui.startPlayerTurnIfNeeded(this.getGamePlayer()));
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
+    ui.invokeStartPlayerTurnIfNeeded(this.getGamePlayer());
+
     final ITechDelegate techDelegate;
     try {
       techDelegate = (ITechDelegate) getPlayerBridge().getRemoteDelegate();
@@ -352,11 +342,8 @@ public class TripleAPlayer extends AbstractBasePlayer {
       return;
     }
     // Perform Start Player Turn actions if it's the first phase of this player's turn
-    try {
-      SwingAction.invokeAndWait(() -> ui.startPlayerTurnIfNeeded(this.getGamePlayer()));
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
+    ui.invokeStartPlayerTurnIfNeeded(this.getGamePlayer());
+
     final IMoveDelegate moveDel;
     try {
       moveDel = (IMoveDelegate) getPlayerBridge().getRemoteDelegate();
@@ -449,11 +436,8 @@ public class TripleAPlayer extends AbstractBasePlayer {
       return;
     }
     // Perform Start Player Turn actions if it's the first phase of this player's turn
-    try {
-      SwingAction.invokeAndWait(() -> ui.startPlayerTurnIfNeeded(this.getGamePlayer()));
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
+    ui.invokeStartPlayerTurnIfNeeded(this.getGamePlayer());
+
     final GamePlayer gamePlayer = this.getGamePlayer();
 
     // play a sound for this phase
@@ -537,11 +521,8 @@ public class TripleAPlayer extends AbstractBasePlayer {
       return;
     }
     // Perform Start Player Turn actions if it's the first phase of this player's turn
-    try {
-      SwingAction.invokeAndWait(() -> ui.startPlayerTurnIfNeeded(this.getGamePlayer()));
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
+    ui.invokeStartPlayerTurnIfNeeded(this.getGamePlayer());
+
     final IBattleDelegate battleDel;
     try {
       battleDel = (IBattleDelegate) getPlayerBridge().getRemoteDelegate();
@@ -589,11 +570,8 @@ public class TripleAPlayer extends AbstractBasePlayer {
       return;
     }
     // Perform Start Player Turn actions if it's the first phase of this player's turn
-    try {
-      SwingAction.invokeAndWait(() -> ui.startPlayerTurnIfNeeded(this.getGamePlayer()));
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
+    ui.invokeStartPlayerTurnIfNeeded(this.getGamePlayer());
+
     final GamePlayer gamePlayer = this.getGamePlayer();
     final IAbstractPlaceDelegate placeDel;
     try {
