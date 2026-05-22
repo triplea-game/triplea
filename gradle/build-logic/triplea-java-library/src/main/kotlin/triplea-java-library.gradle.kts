@@ -26,6 +26,7 @@ spotless {
     }
 
     java {
+        expandWildcardImports()
         googleJavaFormat()
         removeUnusedImports()
     }
