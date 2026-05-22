@@ -346,9 +346,6 @@ public class TileManager {
         if (lastPlace == null) return; // should not occur, but better safe than sorry
         lastPlace = new Point(lastPlace);
         overflow = true;
-        // Step by an actual image width so adjacent overflow units sit edge-to-edge regardless
-        // of map.properties units.width. Direction differs because the draw anchor is top-left:
-        // overflow-left needs this unit's width; overflow-right needs the previous unit's.
         if (mapData.getPlacementOverflowToLeft(territory)) {
           lastPlace.x -= unitImageFactory.getImage(ImageKey.of(category)).getWidth(null);
         } else {
