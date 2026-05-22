@@ -138,6 +138,13 @@ public class TripleAPlayer extends AbstractBasePlayer {
       // should be doing the error handling, so just return.
       return;
     }
+
+    // Perform Start Player Turn actions if it's the first phase of this player's turn, except for
+    // EndTurn
+    if (!GameStep.isEndTurnStepName(name)) {
+      ui.performStartPlayerTurnActionsIfNeeded(this.getGamePlayer());
+    }
+
     // TODO: parsing which UI thing we should run based on the string name of a possibly extended
     // delegate
     // class seems like a bad way of doing this whole method. however i can't think of anything
@@ -222,8 +229,6 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    // Perform Start Player Turn actions if it's the first phase of this player's turn
-    ui.startPlayerTurn(this.getGamePlayer());
 
     final IPoliticsDelegate politicsDelegate;
     try {
@@ -250,8 +255,6 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    // Perform Start Player Turn actions if it's the first phase of this player's turn
-    ui.startPlayerTurn(this.getGamePlayer());
 
     final IUserActionDelegate userActionDelegate;
     try {
@@ -298,8 +301,6 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    // Perform Start Player Turn actions if it's the first phase of this player's turn
-    ui.startPlayerTurn(this.getGamePlayer());
 
     final ITechDelegate techDelegate;
     try {
@@ -341,8 +342,6 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    // Perform Start Player Turn actions if it's the first phase of this player's turn
-    ui.startPlayerTurn(this.getGamePlayer());
 
     final IMoveDelegate moveDel;
     try {
@@ -435,8 +434,6 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    // Perform Start Player Turn actions if it's the first phase of this player's turn
-    ui.startPlayerTurn(this.getGamePlayer());
 
     final GamePlayer gamePlayer = this.getGamePlayer();
 
@@ -520,8 +517,6 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    // Perform Start Player Turn actions if it's the first phase of this player's turn
-    ui.startPlayerTurn(this.getGamePlayer());
 
     final IBattleDelegate battleDel;
     try {
@@ -569,8 +564,6 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    // Perform Start Player Turn actions if it's the first phase of this player's turn
-    ui.startPlayerTurn(this.getGamePlayer());
 
     final GamePlayer gamePlayer = this.getGamePlayer();
     final IAbstractPlaceDelegate placeDel;

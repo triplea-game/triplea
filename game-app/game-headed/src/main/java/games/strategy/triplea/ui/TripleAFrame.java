@@ -1702,10 +1702,10 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
    * Invoked at the start of a player's turn to play a sound alerting the player it is their turn
    * and to center the map on the player's capital.
    */
-  public void startPlayerTurn(final GamePlayer player) {
+  public void performStartPlayerTurnActionsIfNeeded(final GamePlayer player) {
     if (!SwingUtilities.isEventDispatchThread()) {
       try {
-        SwingAction.invokeAndWait(() -> startPlayerTurn(player));
+        SwingAction.invokeAndWait(() -> performStartPlayerTurnActionsIfNeeded(player));
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
       }
