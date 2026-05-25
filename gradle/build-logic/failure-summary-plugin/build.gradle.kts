@@ -1,0 +1,16 @@
+plugins {
+    id("java-gradle-plugin")
+}
+
+gradlePlugin {
+    plugins {
+        create("soundPlugin") {
+            id = "org.triplea.failure-summary-plugin"
+            implementationClass = "org.triplea.build.plugins.FailureSummaryPlugin"
+        }
+    }
+}
+
+description = """This project creates a Gradle Settings plugin that lists all test failures in the console at the end of a failed build.  
+The failures are sorted alphabetically by project."""
+

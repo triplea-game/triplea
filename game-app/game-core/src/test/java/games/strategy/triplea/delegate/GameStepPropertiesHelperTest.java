@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate;
 import static games.strategy.triplea.delegate.GameStepPropertiesHelper.getCombinedTurns;
 import static games.strategy.triplea.delegate.GameStepPropertiesHelper.getRepairPlayers;
 import static games.strategy.triplea.delegate.GameStepPropertiesHelper.getTurnSummaryPlayers;
+import static games.strategy.triplea.delegate.GameStepPropertiesHelper.isResetUnitStateAtEnd;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
@@ -124,6 +125,84 @@ final class GameStepPropertiesHelperTest {
           GameStep.PropertyKeys.REPAIR_PLAYERS, joinPlayerNames(unknownPlayer, player2));
 
       assertThat(getRepairPlayers(gameData, player1), contains(player1, player2));
+    }
+  }
+
+  @Nested
+  final class IsResetUnitStateAtEndTest {
+    private final GameData ownGameData = new GameData();
+    private final GamePlayer ownPlayer = new GamePlayer("ownPlayer", ownGameData);
+    private final GamePlayer otherOwnPlayer = new GamePlayer("otherOwnPlayer", ownGameData);
+
+    @BeforeEach
+    void setUp() {
+      ownGameData.getPlayerList().addPlayerId(ownPlayer);
+      ownGameData.getPlayerList().addPlayerId(otherOwnPlayer);
+    }
+
+    private GameStep newStep(final String name, final GamePlayer stepPlayer) {
+      return newStep(name, stepPlayer, new Properties());
+    }
+
+    private GameStep newStep(
+        final String name, final GamePlayer stepPlayer, final Properties stepProperties) {
+      return new GameStep(name, name, stepPlayer, newDelegate(), ownGameData, stepProperties);
+    }
+
+    @Test
+    void resetsAtEndOfNonCombatMoveByDefault() {
+      ownGameData.getSequence().addStep(newStep("playerNonCombatMove", ownPlayer));
+      ownGameData.getSequence().setRoundAndStep(1, "playerNonCombatMove", ownPlayer);
+
+      assertThat(isResetUnitStateAtEnd(ownGameData), is(true));
+    }
+
+    @Test
+    void doesNotResetAtEndOfCombatMoveWhenNonCombatMoveFollowsForSamePlayer() {
+      ownGameData.getSequence().addStep(newStep("playerCombatMove", ownPlayer));
+      ownGameData.getSequence().addStep(newStep("playerNonCombatMove", ownPlayer));
+      ownGameData.getSequence().setRoundAndStep(1, "playerCombatMove", ownPlayer);
+
+      assertThat(isResetUnitStateAtEnd(ownGameData), is(false));
+    }
+
+    @Test
+    void resetsAtEndOfCombatMoveWhenNoFollowingNonCombatMove() {
+      ownGameData.getSequence().addStep(newStep("playerCombatMove", ownPlayer));
+      ownGameData.getSequence().addStep(newStep("playerPurchase", ownPlayer));
+      ownGameData.getSequence().setRoundAndStep(1, "playerCombatMove", ownPlayer);
+
+      assertThat(isResetUnitStateAtEnd(ownGameData), is(true));
+    }
+
+    @Test
+    void resetsAtEndOfCombatMoveWhenFollowingNonCombatMoveIsForOtherPlayer() {
+      ownGameData.getSequence().addStep(newStep("playerCombatMove", ownPlayer));
+      ownGameData.getSequence().addStep(newStep("otherNonCombatMove", otherOwnPlayer));
+      ownGameData.getSequence().setRoundAndStep(1, "playerCombatMove", ownPlayer);
+
+      assertThat(isResetUnitStateAtEnd(ownGameData), is(true));
+    }
+
+    @Test
+    void explicitFalsePropertyOverridesDefault() {
+      final Properties props = new Properties();
+      props.setProperty(GameStep.PropertyKeys.RESET_UNIT_STATE_AT_END, "false");
+      ownGameData.getSequence().addStep(newStep("playerCombatMove", ownPlayer, props));
+      ownGameData.getSequence().setRoundAndStep(1, "playerCombatMove", ownPlayer);
+
+      assertThat(isResetUnitStateAtEnd(ownGameData), is(false));
+    }
+
+    @Test
+    void explicitTruePropertyOverridesDefault() {
+      final Properties props = new Properties();
+      props.setProperty(GameStep.PropertyKeys.RESET_UNIT_STATE_AT_END, "true");
+      ownGameData.getSequence().addStep(newStep("playerCombatMove", ownPlayer, props));
+      ownGameData.getSequence().addStep(newStep("playerNonCombatMove", ownPlayer));
+      ownGameData.getSequence().setRoundAndStep(1, "playerCombatMove", ownPlayer);
+
+      assertThat(isResetUnitStateAtEnd(ownGameData), is(true));
     }
   }
 

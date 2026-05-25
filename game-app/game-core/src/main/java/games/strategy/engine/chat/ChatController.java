@@ -16,9 +16,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
-import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.ChatParticipant;
 
 /** Default implementation of {@link IChatController}. */
 @Slf4j

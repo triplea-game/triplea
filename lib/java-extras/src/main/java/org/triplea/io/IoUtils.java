@@ -1,6 +1,6 @@
 package org.triplea.io;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,8 +26,8 @@ public final class IoUtils {
   public static void consumeFromMemory(
       final byte[] bytes, final ThrowingConsumer<InputStream, IOException> consumer)
       throws IOException {
-    checkNotNull(bytes);
-    checkNotNull(consumer);
+    requireNonNull(bytes);
+    requireNonNull(consumer);
 
     readFromMemory(
         bytes,
@@ -50,8 +50,8 @@ public final class IoUtils {
   public static <T> T readFromMemory(
       final byte[] bytes, final ThrowingFunction<InputStream, T, IOException> function)
       throws IOException {
-    checkNotNull(bytes);
-    checkNotNull(function);
+    requireNonNull(bytes);
+    requireNonNull(function);
 
     // NB: ByteArrayInputStream does not need to be closed
     return function.apply(new ByteArrayInputStream(bytes));
@@ -66,7 +66,7 @@ public final class IoUtils {
    */
   public static byte[] writeToMemory(final ThrowingConsumer<OutputStream, IOException> consumer)
       throws IOException {
-    checkNotNull(consumer);
+    requireNonNull(consumer);
 
     // NB: ByteArrayOutputStream does not need to be closed
     final ByteArrayOutputStream os = new ByteArrayOutputStream();

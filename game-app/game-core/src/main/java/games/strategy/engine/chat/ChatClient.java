@@ -1,8 +1,8 @@
 package games.strategy.engine.chat;
 
 import java.util.List;
-import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.ChatParticipant;
 
 /**
  * ChatClient can also be thought of as a 'ChatListener' (it is not named so to avoid confusion with

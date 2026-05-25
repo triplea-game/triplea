@@ -1,6 +1,5 @@
 package org.triplea.java;
 
-import com.google.common.base.Preconditions;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import lombok.experimental.UtilityClass;
@@ -16,8 +15,12 @@ public class IpAddressParser {
    * @throws IllegalArgumentException thrown if input is empty or not a valid IP address.
    */
   public static InetAddress fromString(final String ipString) {
-    Preconditions.checkNotNull(ipString);
-    Preconditions.checkArgument(!ipString.isEmpty());
+    if (ipString == null) {
+      throw new NullPointerException();
+    }
+    if (ipString.isEmpty()) {
+      throw new IllegalArgumentException();
+    }
     try {
       return InetAddress.getByName(ipString);
     } catch (final UnknownHostException e) {

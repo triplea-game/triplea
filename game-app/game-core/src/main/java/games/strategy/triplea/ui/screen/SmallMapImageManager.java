@@ -6,8 +6,6 @@ import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.LandTerritoryDrawable;
 import games.strategy.ui.ImageScrollerSmallView;
 import games.strategy.ui.Util;
-import java.awt.AlphaComposite;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -60,62 +58,25 @@ public class SmallMapImageManager {
     if (t.isWater()) {
       return;
     }
-    // create a large image for the territory
     final Rectangle bounds = new Rectangle(mapData.getBoundingRect(t.getName()));
-    final Image largeImage = createLargeImage(t, bounds, mapData);
-
-    // scale it down
     final double ratioX = view.getRatioX();
     final double ratioY = view.getRatioY();
-    int thumbWidth = (int) (bounds.width * ratioX);
-    int thumbHeight = (int) (bounds.height * ratioY);
-    // the images won't overlap perfectly after being scaled, make them a little bigger to
-    // re-balance that
-    thumbWidth += 3;
-    thumbHeight += 3;
-    final int thumbsX = (int) (bounds.x * ratioX) - 1;
-    final int thumbsY = (int) (bounds.y * ratioY) - 1;
-    // create the thumb image
-    final Image thumbImage = Util.newImage(thumbWidth, thumbHeight, true);
-    {
-      final Graphics g = thumbImage.getGraphics();
-      g.drawImage(largeImage, 0, 0, thumbWidth, thumbHeight, null);
-      g.dispose();
-    }
-    {
-      final Graphics g = offscreen.getGraphics();
-      // draw it on our offscreen
-      g.drawImage(thumbImage, thumbsX, thumbsY, thumbWidth, thumbHeight, null);
-      g.dispose();
-    }
-  }
-
-  private Image createLargeImage(Territory t, Rectangle bounds, MapData mapData) {
-    // create a large image for the territory
-    final Image largeImage = Util.newImage(bounds.width, bounds.height, true);
-    // make it transparent
-    // http://www-106.ibm.com/developerworks/library/j-begjava/
-    // Once the image is transparent, we will be drawing the territory shape and filling
-    // the territory polygon. Any remaining edges will be transparent.
-    {
-      final Graphics2D g = (Graphics2D) largeImage.getGraphics();
-      g.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
-      g.setColor(Color.BLACK);
-      g.fillRect(0, 0, bounds.width, bounds.height);
-      g.dispose();
-    }
-    // draw the territory
-    {
-      final Graphics2D g = (Graphics2D) largeImage.getGraphics();
+    final Graphics2D g = (Graphics2D) offscreen.getGraphics();
+    try {
       g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
       g.setRenderingHint(
           RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
       g.setRenderingHint(
           RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-      final LandTerritoryDrawable drawable = new LandTerritoryDrawable(t);
-      drawable.draw(bounds, g, mapData, mapData.getSmallMapTerritorySaturation());
+      // Scale polygon coordinates from full-map space down to the small-map offscreen.
+      // LandTerritoryDrawable translates polygons by (-bounds.x, -bounds.y), so pre-translate
+      // the graphics so the territory lands at its scaled position.
+      g.translate(bounds.x * ratioX, bounds.y * ratioY);
+      g.scale(ratioX, ratioY);
+      new LandTerritoryDrawable(t)
+          .draw(bounds, g, mapData, mapData.getSmallMapTerritorySaturation());
+    } finally {
       g.dispose();
     }
-    return largeImage;
   }
 }

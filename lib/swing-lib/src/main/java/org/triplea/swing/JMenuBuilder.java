@@ -1,13 +1,12 @@
 package org.triplea.swing;
 
-import com.google.common.base.Preconditions;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.function.Supplier;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import org.triplea.java.ArgChecker;
 import org.triplea.swing.key.binding.KeyCode;
 
 /**
@@ -26,7 +25,12 @@ public class JMenuBuilder {
   private final Collection<Component> menuComponents = new ArrayList<>();
 
   public JMenuBuilder(final String title, final KeyCode mnemonic) {
-    ArgChecker.checkNotEmpty(title);
+    if (title == null || title.isBlank()) {
+      throw new IllegalArgumentException("Menu title cannot be null or blank");
+    }
+    if (mnemonic == null) {
+      throw new NullPointerException("Menu mnemonic cannot be null");
+    }
     this.title = title;
     this.mnemonic = mnemonic;
   }
@@ -49,8 +53,12 @@ public class JMenuBuilder {
    */
   public JMenuBuilder addMenuItem(
       final String title, final KeyCode mnemonic, final Runnable menuItemAction) {
-    ArgChecker.checkNotEmpty(title);
-    Preconditions.checkNotNull(menuItemAction);
+    if (title == null || title.isBlank()) {
+      throw new IllegalArgumentException("Menu item title cannot be null or blank");
+    }
+    if (menuItemAction == null) {
+      throw new NullPointerException("Menu item action cannot be null");
+    }
     return addMenuItem(
         new JMenuItemBuilder(title, mnemonic).actionListener(menuItemAction).build());
   }
@@ -66,37 +74,12 @@ public class JMenuBuilder {
     return addMenuItem(menuItemBuilder.build());
   }
 
-  /**
-   * Adds a menu item if a condition is true.
-   *
-   * @see #addMenuItem(String, KeyCode, Runnable)
-   * @param condition The condition to verify, if false the menu item is not added.
-   * @param title The menu item title, this is the clickable text that will appear in the menu drop
-   *     down.
-   * @param mnemonic A key that can be pressed to activate the menu item.
-   * @param menuItemAction The action that will be fired when user clicks the menu item.
-   */
-  public JMenuBuilder addMenuItemIf(
-      final boolean condition,
-      final String title,
-      final KeyCode mnemonic,
-      final Runnable menuItemAction) {
+  /** Adds a menu item if a condition is true. */
+  public JMenuBuilder addMenuItemIf(final boolean condition, final Supplier<JMenuItem> menuItem) {
     if (condition) {
-      addMenuItem(title, mnemonic, menuItemAction);
+      addMenuItem(menuItem.get());
     }
     return this;
-  }
-
-  public JMenuBuilder addMenuItemIf(final boolean condition, final JMenuItem menuItem) {
-    if (condition) {
-      addMenuItem(menuItem);
-    }
-    return this;
-  }
-
-  public JMenuBuilder addMenuItemIf(
-      final boolean condition, final JMenuItemBuilder menuItemBuilder) {
-    return addMenuItemIf(condition, menuItemBuilder.build());
   }
 
   public JMenuBuilder addSeparator() {

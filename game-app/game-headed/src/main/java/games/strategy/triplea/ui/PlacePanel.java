@@ -17,6 +17,7 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
+import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.ui.panels.map.MapSelectionListener;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -82,8 +83,14 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
             if (units.isEmpty()) {
               return new PlaceableUnits();
             }
+            // TODO: This is a remote network fetch (bad).
+            // Though, the local place delegate is not a replacment. The server has
+            // the 'player' and 'bridge' attributes set, which is done server side
+            // and not client side. Using the local client bridge causes a NPE when
+            // a game-client (in a networked game) tries to place units.
             final PlaceableUnits production =
-                getData().getPlaceDelegate().getPlaceableUnits(units, territory);
+                ((IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate())
+                    .getPlaceableUnits(units, territory);
             if (production.isError()) {
               JOptionPane.showMessageDialog(
                   getTopLevelAncestor(),

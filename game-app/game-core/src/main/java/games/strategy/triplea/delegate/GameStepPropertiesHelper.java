@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.base.Splitter;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.delegate.IDelegate;
@@ -229,7 +230,9 @@ public final class GameStepPropertiesHelper {
 
   /**
    * Resets unit state, such as movement, submerged, transport unload/load, airborne, etc. Normally
-   * occurs at end of noncombat move phase.
+   * occurs at end of noncombat move phase. When a player's turn has only a combat move step (no
+   * non-combat move step), the reset is performed at the end of the combat move so unit movement
+   * does not accumulate across rounds.
    */
   static boolean isResetUnitStateAtEnd(final GameData data) {
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
@@ -238,8 +241,27 @@ public final class GameStepPropertiesHelper {
               .getStep()
               .getProperties()
               .getProperty(GameStep.PropertyKeys.RESET_UNIT_STATE_AT_END);
-      return prop != null ? Boolean.parseBoolean(prop) : isNonCombatDelegate(data);
+      if (prop != null) {
+        return Boolean.parseBoolean(prop);
+      }
+      return isNonCombatDelegate(data)
+          || (isCombatDelegate(data) && !hasFollowingNonCombatMoveForCurrentPlayer(data));
     }
+  }
+
+  private static boolean hasFollowingNonCombatMoveForCurrentPlayer(final GameState data) {
+    final GameSequence sequence = data.getSequence();
+    final GamePlayer player = sequence.getStep().getPlayerId();
+    if (player == null) {
+      return true;
+    }
+    for (int i = sequence.getStepIndex() + 1; i < sequence.size(); i++) {
+      final GameStep step = sequence.getStep(i);
+      if (player.equals(step.getPlayerId()) && GameStep.isNonCombatMoveStepName(step.getName())) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /** Indicates bid purchase or placement is enabled for the specified game. */

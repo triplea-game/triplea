@@ -13,6 +13,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.annotation.Nullable;
@@ -42,6 +43,17 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   // do not let multiple calculations or setting calc data happen at same time
   private final Object mutexCalcIsRunning = new Object();
 
+  private final Function<byte[], BattleCalculator> battleCalculatorFactory;
+
+  public ConcurrentBattleCalculator() {
+    this(BattleCalculator::new);
+  }
+
+  // Visible for testing; lets tests inject a factory that simulates worker construction failures.
+  ConcurrentBattleCalculator(final Function<byte[], BattleCalculator> battleCalculatorFactory) {
+    this.battleCalculatorFactory = battleCalculatorFactory;
+  }
+
   /** Return value may be ignored. Exceptions are being handled properly. */
   public CompletableFuture<Boolean> setGameData(@Nullable final GameData data) {
     // cancel any current setting of data
@@ -65,7 +77,14 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     synchronized (mutexCalcIsRunning) {
       cancel();
       cancelCurrentOperation.incrementAndGet();
-      isDataSet = createWorkers(data);
+      // Reset eagerly so a thrown createWorkers leaves isDataSet=false rather than a stale true.
+      isDataSet = false;
+      try {
+        isDataSet = createWorkers(data);
+      } catch (final RuntimeException e) {
+        workers.clear();
+        throw e;
+      }
       return isDataSet;
     }
   }
@@ -130,14 +149,14 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       }
       if (cancelCurrentOperation.get() >= 0) {
         // Create the first battle calc on the current thread to measure the end-to-end copy time.
-        workers.add(new BattleCalculator(serializedData));
+        workers.add(battleCalculatorFactory.apply(serializedData));
         int threadsToUse = getThreadsToUse((System.currentTimeMillis() - startTime), startMemory);
         // Now, create the remaining ones in parallel.
         workers.addAll(
             IntStream.range(1, threadsToUse)
                 .parallel()
                 .filter(j -> cancelCurrentOperation.get() >= 0)
-                .mapToObj(j -> new BattleCalculator(serializedData))
+                .mapToObj(j -> battleCalculatorFactory.apply(serializedData))
                 .collect(Collectors.toList()));
       }
     }
@@ -170,7 +189,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     waitForGameDataReady();
     synchronized (mutexCalcIsRunning) {
       final long start = System.currentTimeMillis();
-      if (!isDataSet) {
+      if (!isDataSet || workers.isEmpty()) {
         // we could have attempted to set a new game data, while the old one was still being set,
         // causing it to abort with null data
         return new AggregateResults(0);

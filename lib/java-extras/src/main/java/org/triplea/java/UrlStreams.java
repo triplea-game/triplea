@@ -1,6 +1,5 @@
 package org.triplea.java;
 
-import com.google.common.annotations.VisibleForTesting;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -10,6 +9,7 @@ import java.net.URLConnection;
 import java.util.Optional;
 import java.util.function.Function;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.VisibleForTesting;
 
 /** Utility class for opening input streams from URL and URI objects. */
 @Slf4j

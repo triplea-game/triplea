@@ -1,7 +1,7 @@
 package org.triplea.swing;
 
-import com.google.common.base.Preconditions;
 import java.awt.Toolkit;
+import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
@@ -9,7 +9,6 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
-import org.triplea.java.ArgChecker;
 import org.triplea.swing.key.binding.KeyCode;
 
 /**
@@ -31,8 +30,12 @@ public class JMenuItemBuilder {
   @Nullable private String tooltip = null;
 
   public JMenuItemBuilder(final String title, final KeyCode mnemonic) {
-    ArgChecker.checkNotEmpty(title);
-    Preconditions.checkNotNull(mnemonic);
+    if (title == null || title.isBlank()) {
+      throw new IllegalArgumentException("Menu item title cannot be null or blank");
+    }
+    if (mnemonic == null) {
+      throw new NullPointerException("Menu item mnemonic cannot be null");
+    }
     this.title = title;
     this.mnemonic = mnemonic;
   }
@@ -66,7 +69,7 @@ public class JMenuItemBuilder {
 
   private void buildImpl(final JMenuItem menuItem) {
     if (enabled) {
-      Preconditions.checkNotNull(actionListener);
+      Objects.requireNonNull(actionListener, "actionListener cannot be null");
       menuItem.addActionListener(e -> actionListener.run());
       menuItem.setMnemonic(mnemonic.getInputEventCode());
       if (acceleratorKey != null) {

@@ -58,10 +58,11 @@ import org.jetbrains.annotations.NonNls;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingClient;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.remote.actions.PlayerBannedMessage;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.remote.actions.ShutdownServerMessage;
 import org.triplea.http.client.web.socket.client.connections.GameToLobbyConnection;
-import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.PlayerBannedMessage;
-import org.triplea.http.client.web.socket.messages.envelopes.remote.actions.ShutdownServerMessage;
 import org.triplea.java.Interruptibles;
+import org.triplea.java.IpAddressParser;
 import org.triplea.java.ThreadRunner;
 import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.util.ExitStatus;
@@ -107,9 +108,9 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     this.launchAction = launchAction;
   }
 
-  public Optional<GameHostingResponse> initialize() {
+  public boolean initialize() {
     this.gameSelectorModel.addObserver(gameSelectorObserver);
-    return getServerProps().map(this::createServerMessenger);
+    return getServerProps().map(this::createServerMessenger).orElse(false);
   }
 
   static RemoteName getObserverWaitingToStartName(final INode node) {
@@ -212,8 +213,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     return launchAction.getFallbackConnection(this::cancel);
   }
 
-  @Nullable
-  private GameHostingResponse createServerMessenger(final ServerConnectionProps props) {
+  private boolean createServerMessenger(final ServerConnectionProps props) {
     try {
       this.serverMessenger =
           new ServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
@@ -240,11 +240,10 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       messengers.registerRemote(
           launchAction.getStartupRemote(new DefaultServerModelView()), SERVER_REMOTE_NAME);
 
-      @Nullable final GameHostingResponse gameHostingResponse;
-
       if (System.getProperty(LOBBY_URI) != null) {
         final URI lobbyUri = URI.create(System.getProperty(LOBBY_URI));
-        gameHostingResponse = GameHostingClient.newClient(lobbyUri).sendGameHostingRequest();
+        final GameHostingResponse gameHostingResponse =
+            GameHostingClient.newClient(lobbyUri).sendGameHostingRequest();
 
         lobbyWatcherThread =
             new LobbyWatcherThread(
@@ -259,7 +258,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
             PlayerBannedMessage.TYPE,
             bannedPlayerMessage ->
                 new PlayerDisconnectAction(serverMessenger, this::cancel)
-                    .accept(bannedPlayerMessage.getIpAddress()));
+                    .accept(IpAddressParser.fromString(bannedPlayerMessage.getIpAddress())));
 
         ExitStatus.addExitAction(this::cancel);
         gameToLobbyConnection.addMessageListener(
@@ -274,8 +273,6 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
         lobbyWatcherThread.createLobbyWatcher(
             gameToLobbyConnection, !launchAction.shouldMinimizeExpensiveAiUse());
-      } else {
-        gameHostingResponse = null;
       }
 
       chatController = new ChatController(CHAT_NAME, messengers, serverMessenger);
@@ -286,7 +283,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
       serverMessenger.setAcceptNewConnections(true);
       gameDataChanged();
-      return gameHostingResponse;
+      return true;
     } catch (final BindException e) {
       log.warn(
           "Could not open network port, please close any other TripleA games you are\n"
@@ -302,7 +299,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         ExitStatus.FAILURE.exit();
       }
     }
-    return null;
+    return false;
   }
 
   private PlayerListing getPlayerListingInternal() {

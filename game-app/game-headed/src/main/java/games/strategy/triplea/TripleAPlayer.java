@@ -61,6 +61,7 @@ import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.sound.SoundPath;
+import org.triplea.swing.SwingAction;
 import org.triplea.swing.jpanel.JPanelBuilder;
 import org.triplea.util.Tuple;
 
@@ -149,7 +150,25 @@ public class TripleAPlayer extends AbstractBasePlayer {
     // (ISomeDelegate) getPlayerBridge().getRemote()
     // We should never touch the game data directly. All changes to game data are done through the
     // remote, which then changes the game using the DelegateBridge -> change factory
-    ui.requiredTurnSeries(this.getGamePlayer());
+    final boolean isFirstStepOfTurn;
+    try (GameData.Unlocker ignored = getGameData().acquireReadLock()) {
+      final var sequence = getGameData().getSequence();
+      final int currentIndex = sequence.getStepIndex();
+      if (currentIndex == 0) {
+        isFirstStepOfTurn = true;
+      } else {
+        final GamePlayer previousStepPlayer = sequence.getStep(currentIndex - 1).getPlayerId();
+        isFirstStepOfTurn = !getGamePlayer().equals(previousStepPlayer);
+      }
+    }
+
+    if (isFirstStepOfTurn) {
+      try {
+        SwingAction.invokeAndWait(() -> ui.startPlayerTurn(this.getGamePlayer()));
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
+    }
     enableEditModeMenu();
     boolean badStep = false;
     if (GameStep.isTechStepName(name)) {

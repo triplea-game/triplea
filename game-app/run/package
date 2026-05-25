@@ -20,7 +20,7 @@ function main() {
   collect_artifacts
 }
 
-## Runs gradle command that creates the installer executables, uses intall4j
+## Runs gradle command that creates the installer executables, uses install4j
 function build_installers() {
   ## Set the build number in 'product.properties' before we build the game-headed release
   $scriptDir/.build/set-game-headed-build-number
@@ -28,7 +28,8 @@ function build_installers() {
       --no-daemon \
       --parallel \
       -Pinstall4jHomeDir="$INSTALL4J_HOME" \
-      release
+      release \
+      -S
 }
 
 ## Gathers built artifacts from all sub-projects to a single top-level to

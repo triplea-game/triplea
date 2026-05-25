@@ -1,6 +1,5 @@
 package org.triplea.yaml;
 
-import com.google.common.base.Strings;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -73,7 +72,7 @@ public class YamlReader {
 
   private static InputStream asStream(final String inputString) {
     return new ByteArrayInputStream(
-        Strings.nullToEmpty(inputString).getBytes(StandardCharsets.UTF_8));
+        (inputString == null ? "" : inputString).getBytes(StandardCharsets.UTF_8));
   }
 
   private static Object readYaml(final InputStream inputStream) {

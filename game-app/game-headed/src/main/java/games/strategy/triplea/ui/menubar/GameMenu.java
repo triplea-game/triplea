@@ -6,6 +6,7 @@ import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.random.IRandomStats;
+import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.engine.random.RandomStatsDetails;
 import games.strategy.triplea.odds.calculator.BattleCalculatorDialog;
 import games.strategy.triplea.settings.ClientSetting;
@@ -93,25 +94,30 @@ final class GameMenu {
         .addSeparator()
         .addMenuItemIf(
             !gameData.getProperties().getEditableProperties().isEmpty(),
-            new JMenuItemBuilder("Game Options", Mnemonic.GAME_OPTIONS.getMnemonicCode())
-                .actionListener(
-                    () -> {
-                      final PropertiesUi ui =
-                          new PropertiesUi(gameData.getProperties().getEditableProperties(), false);
-                      JOptionPane.showMessageDialog(
-                          frame, ui, "Game Options", JOptionPane.PLAIN_MESSAGE);
-                    }))
+            () ->
+                new JMenuItemBuilder("Game Options", Mnemonic.GAME_OPTIONS.getMnemonicCode())
+                    .actionListener(
+                        () -> {
+                          final PropertiesUi ui =
+                              new PropertiesUi(
+                                  gameData.getProperties().getEditableProperties(), false);
+                          JOptionPane.showMessageDialog(
+                              frame, ui, "Game Options", JOptionPane.PLAIN_MESSAGE);
+                        })
+                    .build())
         .addMenuItemIf(
             frame.getGame() instanceof ClientGame,
-            new JMenuItemBuilder(
-                    "Show Verified Dice", Mnemonic.SHOW_VERIFIED_DICE.getMnemonicCode())
-                .actionListener(
-                    () -> new VerifiedRandomNumbersDialog(frame.getRootPane()).setVisible(true)))
+            () ->
+                new JMenuItemBuilder(
+                        "Show Verified Dice", Mnemonic.SHOW_VERIFIED_DICE.getMnemonicCode())
+                    .actionListener(
+                        () -> new VerifiedRandomNumbersDialog(frame.getRootPane()).setVisible(true))
+                    .build())
         .addMenuItem(getShowPoliticsPanel(frame))
         .addMenuItem(getNotificationSettings(frame))
         .addMenuItem(addShowDiceStats(frame))
         .addMenuItem(addRollDice(frame))
-        .addMenuItemIf(ClientSetting.showBetaFeatures.getValueOrThrow(), addStatistics(frame))
+        .addMenuItemIf(ClientSetting.showBetaFeatures.getValueOrThrow(), () -> addStatistics(frame))
         .addMenuItem(
             addMenuItemWithHotkey(
                 "Battle Calculator",
@@ -250,6 +256,9 @@ final class GameMenu {
               final IntTextField diceSidesText = new IntTextField(1, 200);
               numberOfText.setText(String.valueOf(0));
               diceSidesText.setText(String.valueOf(game.getData().getDiceSides()));
+              // Use a local PlainRandomSource: this menu's rolls have no effect on the game and
+              // are shown only in a local dialog. Clients (network/bot games) have no
+              // game-level random source, so going through game.getRandomSource() would NPE.
               final JPanel panel = new JPanel();
               panel.setLayout(new GridBagLayout());
               panel.add(
@@ -294,7 +303,7 @@ final class GameMenu {
                 if (numberOfDice > 0) {
                   final int diceSides = Integer.parseInt(diceSidesText.getText());
                   final int[] dice =
-                      game.getRandomSource()
+                      new PlainRandomSource()
                           .getRandom(diceSides, numberOfDice, "Rolling Dice, no effect on game.");
                   final JPanel panelDice = new JPanel();
                   final BoxLayout layout = new BoxLayout(panelDice, BoxLayout.Y_AXIS);
@@ -311,7 +320,7 @@ final class GameMenu {
                   JOptionPane.showMessageDialog(
                       frame, panelDice, "Dice Rolled", JOptionPane.INFORMATION_MESSAGE);
                 }
-              } catch (final Exception ex) {
+              } catch (final NumberFormatException ex) {
                 // ignore malformed input
               }
             })

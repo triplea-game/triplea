@@ -1,6 +1,5 @@
 package org.triplea.io;
 
-import com.google.common.annotations.VisibleForTesting;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -18,6 +17,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.StringUtils;
 

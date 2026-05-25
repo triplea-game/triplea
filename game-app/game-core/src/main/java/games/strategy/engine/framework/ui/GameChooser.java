@@ -69,6 +69,8 @@ public class GameChooser {
     }
 
     final JSplitPane mainSplit = new JSplitPane();
+    mainSplit.setDividerLocation(250);
+    mainSplit.setResizeWeight(0.0);
     dialog.add(mainSplit, BorderLayout.CENTER);
     final JPanel leftPanel = new JPanel();
     leftPanel.setLayout(new GridBagLayout());
@@ -161,12 +163,10 @@ public class GameChooser {
         });
 
     final Dimension screenSize = Util.getScreenSize(dialog);
-    if (screenSize.width > 1024 && screenSize.height > 768) {
-      dialog.setSize(new Dimension(1024, 768));
-    } else {
-      dialog.setSize(800, 600);
-    }
-    dialog.setLocationRelativeTo(owner);
+    final int width = Math.clamp((int) (screenSize.width * 0.6), 800, 1180);
+    final int height = Math.max(600, (int) (screenSize.height * 0.66));
+    dialog.setSize(new Dimension(width, height));
+    dialog.setLocationRelativeTo(null);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     dialog.setVisible(true); // Blocking and waits for user action
   }

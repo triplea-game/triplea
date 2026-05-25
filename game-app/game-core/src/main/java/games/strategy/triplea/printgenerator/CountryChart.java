@@ -53,14 +53,13 @@ class CountryChart extends InfoForFile {
     // later pattern territory, ut1, ut2, ut3, ...)
     final int numUnits = gameData.getUnitTypeList().size();
     writer
-        .append("Setup Chart for the ")
-        .append(player.getName())
+        .append(csvField("Setup Chart for the " + player.getName()))
         .append(DELIMITER.repeat(numUnits))
         .append(LINE_SEPARATOR);
 
     writer.append(DELIMITER);
     for (final UnitType currentType : gameData.getUnitTypeList()) {
-      writer.append(currentType.getName()).append(DELIMITER);
+      writer.append(csvField(currentType.getName())).append(DELIMITER);
     }
     writer.append(LINE_SEPARATOR);
 
@@ -68,7 +67,7 @@ class CountryChart extends InfoForFile {
     for (final Territory currentTerritory :
         CollectionUtils.getMatches(
             gameData.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player))) {
-      writer.append(currentTerritory.getName());
+      writer.append(csvField(currentTerritory.getName()));
       final List<Map<UnitType, Integer>> currentList = infoMap.get(currentTerritory);
       for (final Map<UnitType, Integer> currentMap : currentList) {
         for (final int here : currentMap.values()) {

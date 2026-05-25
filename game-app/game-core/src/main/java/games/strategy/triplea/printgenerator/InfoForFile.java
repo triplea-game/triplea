@@ -16,6 +16,25 @@ abstract class InfoForFile {
   public static final String LINE_SEPARATOR = "\r\n";
   private final Path chosenOutFile;
 
+  /**
+   * Escapes a string for inclusion in a CSV cell per RFC 4180. Wraps the value in double quotes
+   * (and doubles any inner quotes) when it contains characters that could be misinterpreted by a
+   * spreadsheet reader — including a space, since common importers (LibreOffice, Excel) auto-detect
+   * space as a delimiter and would otherwise split a name like "Cestra Regina" across columns.
+   */
+  protected static String csvField(final String value) {
+    if (value == null) {
+      return "";
+    }
+    for (int i = 0; i < value.length(); i++) {
+      final char c = value.charAt(i);
+      if (c == ',' || c == '"' || c == '\r' || c == '\n' || c == ' ') {
+        return "\"" + value.replace("\"", "\"\"") + "\"";
+      }
+    }
+    return value;
+  }
+
   InfoForFile() {
     this.chosenOutFile = null;
   }

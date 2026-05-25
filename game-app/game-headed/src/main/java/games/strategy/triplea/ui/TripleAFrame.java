@@ -1701,38 +1701,18 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
    * Invoked at the start of a player's turn to play a sound alerting the player it is their turn
    * and to center the map on the player's capital.
    */
-  public void requiredTurnSeries(final GamePlayer player) {
+  public void startPlayerTurn(final GamePlayer player) {
     if (player == null || !Interruptibles.sleep(300)) {
       return;
     }
-    Interruptibles.await(
-        () ->
-            SwingAction.invokeAndWait(
-                () -> {
-                  final Boolean play = requiredTurnSeries.get(player);
-                  if (play != null && play) {
-                    uiContext
-                        .getClipPlayer()
-                        .play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player);
-                    requiredTurnSeries.put(player, false);
-                  }
-                  // center on capital of player, if it is a new none-AI player
-                  if (uiContext.setCurrentPlayer(player)) {
-                    bottomBar.updateFromCurrentPlayer();
-                    if (!player.isAi()) {
-                      // assume missing offset means there is a new mapPanel build up for which
-                      // centering is not updating without repaint
-                      final boolean repaintRequired =
-                          (mapPanel.getXOffset() == 0 && mapPanel.getYOffset() == 0);
-                      try (GameData.Unlocker ignored = data.acquireReadLock()) {
-                        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(
-                                player, data.getMap())
-                            .ifPresent(territory -> mapPanel.centerOn(territory));
-                        if (repaintRequired) mapPanel.repaint();
-                      }
-                    }
-                  }
-                }));
+    uiContext.getClipPlayer().play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player);
+    bottomBar.updateFromCurrentPlayer();
+
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
+      TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap())
+          .ifPresent(territory -> mapPanel.centerOn(territory));
+      mapPanel.repaint();
+    }
   }
 
   private String getUnitInfo() {

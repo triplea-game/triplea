@@ -254,6 +254,28 @@ public class BattleTracker implements Serializable {
     }
   }
 
+  /**
+   * Removes any pending {@link MustFightBattle} whose battle site no longer has units from both
+   * sides. This catches battles left stale by edit-mode unit relocation between when the battle was
+   * set up (during combat move) and when it would be fought; without this, the battle's cached
+   * attacker/defender unit lists no longer reflect what's actually in the territory and end up
+   * showing up as a zombie battle. See issue #14372.
+   */
+  public void clearStaleBattles() {
+    for (final IBattle battle : List.copyOf(pendingBattles)) {
+      if (!(battle instanceof MustFightBattle)) {
+        continue;
+      }
+      final Territory site = battle.getTerritory();
+      final GamePlayer attacker = battle.getAttacker();
+      final boolean hasAttackerUnits = !site.getMatches(Matches.unitIsOwnedBy(attacker)).isEmpty();
+      final boolean hasEnemyUnits = !site.getMatches(Matches.enemyUnit(attacker)).isEmpty();
+      if (!hasAttackerUnits || !hasEnemyUnits) {
+        removeBattleForUndo(attacker, battle);
+      }
+    }
+  }
+
   private void addBombingBattle(
       final Route route,
       final Collection<Unit> units,
@@ -452,25 +474,34 @@ public class BattleTracker implements Serializable {
     this.conquered.addAll(
         CollectionUtils.getMatches(conqueredTerritories, Matches.isTerritoryEnemy(gamePlayer)));
     for (final Territory current : conqueredTerritories) {
+      // if a bombing raid is pending here (e.g. blitzing through a bombed factory),
+      // takeOver must wait for the bombing battle to resolve, so use a NonFightingBattle
+      // with a dependency rather than taking the territory over immediately.
+      final IBattle bombing = getPendingBombingBattle(current);
       IBattle nonFight = getPendingBattle(current, BattleType.NORMAL);
-      // TODO: if we ever want to scramble to a blitzed territory, then we need to fix this
       if (nonFight == null) {
         nonFight =
-            new FinishedBattle(
-                current,
-                gamePlayer,
-                this,
-                BattleType.NORMAL,
-                data,
-                BattleRecord.BattleResultDescription.CONQUERED,
-                WhoWon.ATTACKER);
+            bombing != null
+                ? new NonFightingBattle(current, gamePlayer, this, data)
+                : new FinishedBattle(
+                    current,
+                    gamePlayer,
+                    this,
+                    BattleType.NORMAL,
+                    data,
+                    BattleRecord.BattleResultDescription.CONQUERED,
+                    WhoWon.ATTACKER);
         pendingBattles.add(nonFight);
         getBattleRecords()
             .addBattle(gamePlayer, nonFight.getBattleId(), current, nonFight.getBattleType());
       }
       final Change change = nonFight.addAttackChange(route, units, null);
       addChange(bridge, changeTracker, change);
-      takeOver(current, gamePlayer, bridge, changeTracker, units);
+      if (bombing != null) {
+        addDependency(nonFight, bombing);
+      } else {
+        takeOver(current, gamePlayer, bridge, changeTracker, units);
+      }
     }
     // check the last territory
     if (conquerable.test(route.getEnd())) {

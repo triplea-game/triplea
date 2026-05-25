@@ -8,7 +8,9 @@
 .checkstyle
 .DS_Store
 
+.docs/
 game-app/game-headed/triplea*.log
+game-app/smoke-testing/src/test/resources/save-games/
 
 *.iml
 *.backup
@@ -22,6 +24,5 @@ bin/
 build/
 out/
 
-game-app/smoke-testing/src/test/resources/save-games/
+CLAUDE.local.md
 
-game-headed/triplea.log

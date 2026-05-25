@@ -1,4 +1,4 @@
-3,games.strategy.engine.chat.IChatChannel,speakerAdded,org.triplea.domain.data.ChatParticipant
+3,games.strategy.engine.chat.IChatChannel,speakerAdded,org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.ChatParticipant
 1,games.strategy.engine.chat.IChatChannel,ping
 5,games.strategy.engine.chat.IChatChannel,statusChanged,org.triplea.domain.data.UserName,java.lang.String
 4,games.strategy.engine.chat.IChatChannel,speakerRemoved,org.triplea.domain.data.UserName

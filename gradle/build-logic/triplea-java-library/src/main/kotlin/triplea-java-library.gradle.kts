@@ -6,6 +6,7 @@
 plugins {
     `java-library`
     id("com.diffplug.spotless")
+    id("triplea-base-project")
 }
 
 group = "triplea"
@@ -25,6 +26,7 @@ spotless {
     }
 
     java {
+        expandWildcardImports()
         googleJavaFormat()
         removeUnusedImports()
     }

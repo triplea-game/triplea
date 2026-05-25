@@ -1,6 +1,5 @@
 package org.triplea.java;
 
-import com.google.common.base.Preconditions;
 import java.awt.Color;
 import java.util.Random;
 import lombok.experimental.UtilityClass;
@@ -13,9 +12,10 @@ public class ColorUtils {
    * @param colorString EG: 00FF00, FF00FF, 000000
    */
   public Color fromHexString(final String colorString) {
-    Preconditions.checkArgument(
-        colorString.length() == 6,
-        "Colors must be 6 digit hex numbers, eg FF0011, not: " + colorString);
+    if (colorString.length() != 6) {
+      throw new IllegalArgumentException(
+          "Colors must be 6 digit hex numbers, eg FF0011, not: " + colorString);
+    }
     try {
       return new Color(Integer.decode("0x" + colorString));
     } catch (final NumberFormatException nfe) {

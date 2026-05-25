@@ -1,0 +1,10 @@
+plugins {
+    id("triplea-java-library")
+}
+
+description = "TripleA library for utilities and components that depend only on core java, javax.swing, and java.awt"
+
+dependencies {
+    implementation(project(":java-extras"))
+    testImplementation(project(":test-common"))
+}

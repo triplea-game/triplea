@@ -2,6 +2,7 @@ package org.triplea.domain.data;
 
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NonNls;
+import org.triplea.http.client.lobby.LobbyConstants;
 
 /** Utility class to validates user email to check if it looks valid. */
 @UtilityClass

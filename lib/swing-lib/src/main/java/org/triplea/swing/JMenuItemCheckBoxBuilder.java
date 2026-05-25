@@ -1,12 +1,10 @@
 package org.triplea.swing;
 
-import com.google.common.base.Preconditions;
 import java.awt.Toolkit;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.KeyStroke;
-import org.triplea.java.ArgChecker;
 import org.triplea.swing.key.binding.KeyCode;
 
 /**
@@ -32,21 +30,25 @@ public class JMenuItemCheckBoxBuilder {
 
   /** Sets the title that appears next to the checkbox. */
   public JMenuItemCheckBoxBuilder(final String title, final KeyCode mnemonic) {
-    ArgChecker.checkNotEmpty(title);
+    if (title == null || title.isBlank()) {
+      throw new IllegalArgumentException("Menu item title cannot be null or blank");
+    }
+    if (mnemonic == null) {
+      throw new IllegalArgumentException("Menu item mnemonic cannot be null");
+    }
     this.title = title;
     this.mnemonic = mnemonic;
   }
 
   /** Constructs a Swing JMenu using current builder values. */
   public JCheckBoxMenuItem build() {
-    ArgChecker.checkNotEmpty(title);
-    Preconditions.checkNotNull(mnemonic);
-    Preconditions.checkArgument(
-        action != null || settingPersistence != null,
-        "Action was null? "
-            + (action == null)
-            + ", setting persistence null? "
-            + (settingPersistence == null));
+    if (title == null || title.isBlank()) {
+      throw new IllegalArgumentException("Menu item title cannot be null or blank");
+    }
+    if (action == null && settingPersistence == null) {
+      throw new IllegalArgumentException(
+          "Must provide either an action or a setting persistence to save the checkbox value");
+    }
 
     final var checkBox = new JCheckBoxMenuItem(title);
     checkBox.setMnemonic(mnemonic.getInputEventCode());

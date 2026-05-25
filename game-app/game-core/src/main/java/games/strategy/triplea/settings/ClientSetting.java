@@ -137,8 +137,6 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new BooleanClientSetting("SHOW_COMMENT_LOG");
   public static final BooleanClientSetting soundEnabled =
       new BooleanClientSetting("SOUND_ENABLED", true);
-  public static final ClientSetting<Boolean> firstTimeThisVersion =
-      new BooleanClientSetting("TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY", true);
   public static final ClientSetting<Long> lastCheckForEngineUpdate =
       new LongClientSetting("LAST_CHECK_FOR_ENGINE_UPDATE_EPOCH_MILLI", 0);
   public static final ClientSetting<Long> lastCheckForMapUpdates =
@@ -261,7 +259,11 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
     try {
       preferences.flush();
     } catch (final BackingStoreException e) {
-      log.error("Failed to persist client settings", e);
+      // Logged at warn (not error) because the most common cause is benign and transient:
+      // another TripleA process holds the JDK preferences file lock. The user-visible impact
+      // is at worst that a setting is not persisted across restarts; logging at error would
+      // trigger the in-game error reporter for a condition we cannot fix.
+      log.warn("Failed to persist client settings", e);
     }
   }
 

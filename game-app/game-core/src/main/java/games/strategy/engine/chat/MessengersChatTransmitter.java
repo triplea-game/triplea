@@ -5,11 +5,16 @@ import games.strategy.engine.message.RemoteName;
 import games.strategy.net.Messengers;
 import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.settings.ClientSetting;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.domain.data.ChatParticipant;
 import org.triplea.domain.data.UserName;
+import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.ChatParticipant;
+import org.triplea.http.client.web.socket.messages.MessageType;
+import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.java.concurrency.AsyncRunner;
 
 /** Chat transmitter that sends and receives messages over Java NIO sockets. */
@@ -23,6 +28,7 @@ public class MessengersChatTransmitter implements ChatTransmitter {
   private final String chatName;
   private final String chatChannelName;
   private final ClientNetworkBridge clientNetworkBridge;
+  private final List<Runnable> listenerRemovals = new ArrayList<>();
 
   public MessengersChatTransmitter(
       final String chatName,
@@ -38,21 +44,27 @@ public class MessengersChatTransmitter implements ChatTransmitter {
   @Override
   public void setChatClient(final ChatClient chatClient) {
     chatChannelSubscriber = chatChannelSubscriber(chatClient);
-    clientNetworkBridge.addListener(
+    addTrackedListener(
         IChatChannel.ChatMessage.TYPE, message -> message.invokeCallback(chatChannelSubscriber));
-    clientNetworkBridge.addListener(
+    addTrackedListener(
         IChatChannel.PingMessage.TYPE, message -> message.invokeCallback(chatChannelSubscriber));
-    clientNetworkBridge.addListener(
+    addTrackedListener(
         IChatChannel.StatusChangedMessage.TYPE,
         message -> message.invokeCallback(chatChannelSubscriber));
-    clientNetworkBridge.addListener(
+    addTrackedListener(
         IChatChannel.SlapMessage.TYPE, message -> message.invokeCallback(chatChannelSubscriber));
-    clientNetworkBridge.addListener(
+    addTrackedListener(
         IChatChannel.SpeakAddedMessage.TYPE,
         message -> message.invokeCallback(chatChannelSubscriber));
-    clientNetworkBridge.addListener(
+    addTrackedListener(
         IChatChannel.SpeakerRemovedMessage.TYPE,
         message -> message.invokeCallback(chatChannelSubscriber));
+  }
+
+  private <T extends WebSocketMessage> void addTrackedListener(
+      final MessageType<T> messageType, final Consumer<T> listener) {
+    clientNetworkBridge.addListener(messageType, listener);
+    listenerRemovals.add(() -> clientNetworkBridge.removeListener(messageType, listener));
   }
 
   private IChatChannel chatChannelSubscriber(final ChatClient chatClient) {
@@ -96,7 +108,7 @@ public class MessengersChatTransmitter implements ChatTransmitter {
   public Collection<ChatParticipant> connect() {
     final String chatChannelName = ChatController.getChatChannelName(chatName);
     final IChatController controller = messengers.getRemoteChatController(chatName);
-    clientNetworkBridge.addListener(
+    addTrackedListener(
         IChatController.SetChatStatusMessage.TYPE, message -> message.invokeCallback(controller));
     messengers.addChatChannelSubscriber(chatChannelSubscriber, chatChannelName);
     return controller.joinChat();
@@ -113,6 +125,8 @@ public class MessengersChatTransmitter implements ChatTransmitter {
     }
     messengers.unregisterChannelSubscriber(
         chatChannelSubscriber, new RemoteName(chatChannelName, IChatChannel.class));
+    listenerRemovals.forEach(Runnable::run);
+    listenerRemovals.clear();
   }
 
   @Override

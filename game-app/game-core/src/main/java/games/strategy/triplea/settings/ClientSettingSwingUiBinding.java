@@ -293,16 +293,6 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     }
   },
 
-  TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY_BINDING(
-      "Show First Time Prompts",
-      SettingType.GAME,
-      "Setting to true will trigger for any first time prompts to be shown") {
-    @Override
-    public SelectionComponent<JComponent> newSelectionComponent() {
-      return booleanRadioButtons(ClientSetting.firstTimeThisVersion);
-    }
-  },
-
   SAVE_GAMES_FOLDER_PATH_BINDING(
       "Saved Games Folder",
       SettingType.FOLDER_LOCATIONS,

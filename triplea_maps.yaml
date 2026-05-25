@@ -2833,7 +2833,7 @@
 - mapName: Global 40 Expansion UHD Boxes
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/global_40_expansion_uhd_boxes/archive/refs/heads/master.zip
-  version: 4
+  version: 5
   img: https://raw.githubusercontent.com/triplea-maps/global_40_expansion_uhd_boxes/master/preview.png
   description: |
     <br>This is World War II Global 40 Mod using the UHD Mega Map
@@ -3225,13 +3225,6 @@
   img: https://raw.githubusercontent.com/triplea-maps/Pacific1941/master/preview.png
   description: |
     <br>World War 2 in the Pacific starting in 1941 with many unit types.
-- mapName: WW2v3-1941_v2
-  mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/WW2v3-1941_v2/archive/refs/heads/master.zip
-  version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/WW2v3-1941_v2/master/preview.png
-  description: |
-    <br>Modified version of World II v3 - 1941
 - mapName: No Mans Land Navalland
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/No_Mans_Land_Navalland/archive/refs/heads/master.zip
@@ -3468,4 +3461,28 @@
   img: https://github.com/triplea-maps/settlers_fallen_empire/blob/master/preview.png
   description: |
     <br>A Fantasy FFA map, 11 Asymeteric Factions, Good vs Evil vs Dragons, also good vs AI.
-  
+- mapName: World War 3 - 2025
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/worldwar3/archive/master.zip
+  version: 1
+  img: https://github.com/triplea-maps/worldwar3/blob/master/map_relief.png
+  description: |
+    <br>Time frame: the scenario is set roughly in 2025 (contemporary force structure and economy as inspiration, not a prediction of war). Modern global setup on a custom world map. Two coalitions: Allies (Europe, USA, Global Allies) versus Axis (Russians, China, Global Axis), plus Neutral territories.
+- mapName: Classic League
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/classic_league/archive/refs/heads/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/classic_league/master/preview.png
+  description: |
+    <br>Based on the boardgame: Axis & Allies - Classic 2nd Edition (1984)
+    <br>
+    <br>This is an upgrade of the "World War II Classic" module. It checks for violation of stack limits, an important but often forgotten rule. It also has a rework of the game options, specifically designed for use in the League on A&A.org. It can also be used for non-League games.
+    <br>
+    <br><i>Made by VictoryFirst</i>
+- mapName: East and West
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/East_and_West/archive/refs/heads/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/East_and_West/master/preview.png
+  description: |
+    <br>World War Three in 1947, inspired by the game East and West

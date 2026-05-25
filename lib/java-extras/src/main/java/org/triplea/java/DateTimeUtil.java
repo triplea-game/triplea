@@ -1,6 +1,5 @@
 package org.triplea.java;
 
-import com.google.common.annotations.VisibleForTesting;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -11,6 +10,7 @@ import java.time.format.FormatStyle;
 import java.util.Locale;
 import java.util.Locale.Category;
 import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.VisibleForTesting;
 
 /** Provides methods for getting time and date instances. */
 @UtilityClass

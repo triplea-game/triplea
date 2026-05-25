@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
-import org.triplea.http.client.maps.listing.MapDownloadItem;
+import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 import org.triplea.io.FileUtils;
 import org.triplea.java.Interruptibles;
 

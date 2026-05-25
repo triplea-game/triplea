@@ -7,33 +7,34 @@ import org.jetbrains.annotations.NonNls;
 /** A factory for creating various player (nation, power, etc.) flag images. */
 public class FlagIconImageFactory extends ImageFactory {
   @NonNls private static final String PREFIX = "flags/";
+  @NonNls private static final String MISSING_FLAG = PREFIX + "missing_flag.png";
 
   public Image getFlag(final GamePlayer gamePlayer) {
     @NonNls final String key = PREFIX + gamePlayer.getName() + ".gif";
     @NonNls final String key2 = PREFIX + gamePlayer.getName() + ".png";
-    return getImageOrThrow(key, key2);
+    return getImageOrThrow(key, key2, MISSING_FLAG);
   }
 
   public Image getSmallFlag(final GamePlayer gamePlayer) {
     @NonNls final String key = PREFIX + gamePlayer.getName() + "_small.gif";
     @NonNls final String key2 = PREFIX + gamePlayer.getName() + "_small.png";
-    return getImageOrThrow(key, key2);
+    return getImageOrThrow(key, key2, MISSING_FLAG);
   }
 
   public Image getLargeFlag(final GamePlayer gamePlayer) {
     @NonNls final String key = PREFIX + gamePlayer.getName() + "_large.png";
-    return getImageOrThrow(key);
+    return getImageOrThrow(key, MISSING_FLAG);
   }
 
   public Image getFadedFlag(final GamePlayer gamePlayer) {
     @NonNls final String key = PREFIX + gamePlayer.getName() + "_fade.gif";
     @NonNls final String key2 = PREFIX + gamePlayer.getName() + "_fade.png";
-    return getImageOrThrow(key, key2);
+    return getImageOrThrow(key, key2, MISSING_FLAG);
   }
 
   public Image getConvoyFlag(final GamePlayer gamePlayer) {
     @NonNls final String key = PREFIX + gamePlayer.getName() + "_convoy.gif";
     @NonNls final String key2 = PREFIX + gamePlayer.getName() + "_convoy.png";
-    return getImageOrThrow(key, key2);
+    return getImageOrThrow(key, key2, MISSING_FLAG);
   }
 }

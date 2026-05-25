@@ -2,6 +2,7 @@ package games.strategy.engine.framework.map.download;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -20,10 +21,21 @@ final class MapDownloadControllerTest {
     @Mock private TutorialMapPreferences tutorialMapPreferences;
 
     @Test
-    void shouldChangePreventPromptToDownloadPreference() {
+    void shouldChangePreventPromptToDownloadPreferenceWhenCanPromptToDownload() {
+      when(tutorialMapPreferences.canPromptToDownload()).thenReturn(true);
+
       preventPromptToDownloadTutorialMap();
 
       verify(tutorialMapPreferences).preventPromptToDownload();
+    }
+
+    @Test
+    void shouldSkipWriteWhenPromptToDownloadAlreadyPrevented() {
+      when(tutorialMapPreferences.canPromptToDownload()).thenReturn(false);
+
+      preventPromptToDownloadTutorialMap();
+
+      verify(tutorialMapPreferences, never()).preventPromptToDownload();
     }
 
     private void preventPromptToDownloadTutorialMap() {

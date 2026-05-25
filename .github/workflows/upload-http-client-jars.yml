@@ -1,16 +1,12 @@
-# Jar files uploaded are used as a maven dependency by server (eg: lobby)
+# Jar files uploaded are used as a maven dependency by servers (eg: lobby)
 name: Create Http JAR files and upload to github packages
 on:
   push:
     branches:
       - main
     paths:
+      - 'http-clients/lobby-client-data/**'
       - '.github/workflows/upload-http-client-jars.yml'
-      - 'game-app/domain-data/**'
-      - 'http-clients/**'
-      - 'lib/java-extras/**'
-      - 'lib/websocket-client/**'
-      - 'lib/feign-common/**'
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
@@ -33,6 +29,6 @@ jobs:
           BUILD_VERSION=$(game-app/run/.build/get-build-version)
           echo "JAR_VERSION=$BUILD_VERSION" | tee -a $GITHUB_ENV
       - name: Publish lobby client JAR
-        run: ./gradlew :http-clients:lobby-client:publish :game-app:domain-data:publish :lib:java-extras:publish :lib:websocket-client:publish :lib:feign-common:publish
+        run: ./gradlew :lobby-client-data:publish --rerun-tasks
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

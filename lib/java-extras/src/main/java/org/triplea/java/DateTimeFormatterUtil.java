@@ -1,6 +1,5 @@
 package org.triplea.java;
 
-import com.google.common.annotations.VisibleForTesting;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -9,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import lombok.AllArgsConstructor;
 import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.VisibleForTesting;
 
 /** Utility class for date-time formatting operations. */
 @UtilityClass

@@ -3,36 +3,68 @@
 Currently, the build uses a mix of Gradle tasks and bash scripts.
 Gradle plugins used by the build are located in `/gradle/build-logic`.
 
+The build uses the Gradle Kotlin DSL. 
+This makes the build easier to maintain by increasing the completion and refactoring assistance the IDE is able to provide.
+
+## Build Structure
+
+By explicitly specifying the physical location of nested subprojects in the root `settings.gradle.kts` file, the build is able to avoid [unintentionally creating empty projects](https://docs.gradle.org/current/userguide/best_practices_structuring_builds.html#avoid_empty_projects).
+These empty projects slow the build and make it more difficult to understand the project structure.
+This allows you to reference projects using non-hierarchical names, for example `:game-core` instead of `:game-app:game-core`.
+
+## Build Structure
+
+By explicitly specifying the physical location of nested subprojects in the root `settings.gradle.kts` file, the build is able to avoid [unintentionally creating empty projects](https://docs.gradle.org/current/userguide/best_practices_structuring_builds.html#avoid_empty_projects).
+These empty projects slow the build and make it more difficult to understand the project structure.
+This allows you to reference projects using non-hierarchical names, for example `:game-core` instead of `:game-app:game-core`.
+
 ## Convention Plugins
 
 The TripleA build defines Gradle [Convention Plugins](https://docs.gradle.org/current/userguide/implementing_gradle_plugins_convention.html#header) to avoid cross-project configuration and duplication of configuration.
-There are currently the following types of projects:
+There are currently the following convention plugins:
+
+### `triplea-test-conventions`
+
+Configures testing for all TripleA projects.
+Applies the `jacoco` plugin and configures all `Test` tasks to use the JUnit platform with full exception formatting.
+Test output (stdout/stderr) is captured per-test and printed only when a test fails, to keep successful build output clean.
+Also configures Jacoco XML and HTML coverage reports.
+
+### `triplea-base-project`
+
+The base convention applied by all TripleA projects.
+Currently applies `triplea-test-conventions`.
 
 ### `triplea-java-library`
 
-This is a standard "vanilla" java library type.
-It applies the `java-library` plugin and applies universal configuration, code conventions, and sets up static analysis. 
+The standard convention for a TripleA Java library project.
+Applies the `java-library` plugin, sets Java 21 source and target compatibility, applies `triplea-base-project`, and configures [Spotless](https://github.com/diffplug/spotless) formatting (Google Java Format, remove unused imports, trailing whitespace removal, tabs to spaces, newline at end of file).
+
+### `triplea-java-application`
+
+The standard convention for a runnable TripleA application project.
+Applies the `application` plugin and `triplea-base-project`.
+
+### `triplea-published-library`
+
+Expands on `triplea-java-library` to add tasks to publish a Java library project to Maven.
+Applies the `maven-publish` plugin and reads the published version from the `JAR_VERSION` environment variable.
 
 ## Test Fixtures
 
-The `:game-app:game-core` project exposes [Test Fixtures](https://docs.gradle.org/current/userguide/java_testing.html#producing_and_using_test_fixtures_within_a_single_project) to share common testing code and resources between projects.
-Other projects (like `:game-app:ai`) can access these fixtures to use during testing by adding a dependency like `testImplementation(testFixtures(project(":game-app:game-core")))`.
+The `:game-core` project exposes [Test Fixtures](https://docs.gradle.org/current/userguide/java_testing.html#producing_and_using_test_fixtures_within_a_single_project) to share common testing code and resources between projects.
+Other projects (like `:ai`) can access these fixtures to use during testing by adding a dependency like `testImplementation(testFixtures(project(":game-core")))`.
 
-The fixture in `:game-app:game-core` includes map data present in `/game-app/game-core/src/testFixtures/resources`, that can be loaded by tests via the `TestMapGameDataLoader` class and the `TestMapGameData` enum.
+The fixture in `:game-core` includes map data present in `/game-app/game-core/src/testFixtures/resources`, that can be loaded by tests via the `TestMapGameDataLoader` class and the `TestMapGameData` enum.
 
 # Future Work
 
 To continue to improve build speeds and make the build structure more idiomatic, some near future work should:
 
-- Convert all build scripts to Kotlin (IN PROGRESS).
-This will make the build easier to maintain by increasing the completion and refactoring assistance the IDE is able to provide.
-- Remove the use of `subprojects` and `allprojects` and replace these with Gradle [Convention Plugins](https://docs.gradle.org/current/userguide/implementing_gradle_plugins_convention.html#header).
+- Remove the use of `subprojects` for dependency declarations by migrating these to the appropriate (or new) Gradle [Convention Plugins](https://docs.gradle.org/current/userguide/implementing_gradle_plugins_convention.html#header).
 This will make the build easier to maintain by avoiding the pitfalls of cross-project configuration, it will prevent difficulties updating to future Gradle versions, and it will prepare the build to take advantage of future Gradle features like [Isolated Projects](https://docs.gradle.org/current/userguide/isolated_projects.html#header) that will further increase build speed.
-- Avoid creating empty projects in folders such as `game-app`.
-This slows and complicates the build unnecessarily.
 - Remove the need for bash scripts like those in `/game-app/run/` or `/verify` that exist only to launch Gradle builds with Gradle lifecycle tasks. 
-- Improve Dependency hygiene by enabling Gradle Dependabot alerts on GitHub, pruning unused project dependencies, properly using the `api` and `implementation` configurations to export dependencies only when necessary, etc. 
-
+- Improve Dependency hygiene by enabling Gradle Dependabot alerts on GitHub, pruning unused project dependencies, properly using the `api` and `implementation` configurations to export dependencies only when necessary, etc.
 - Remove all/most configuration from the root `build.gradle(.kts)` file.
 - Describe projects using the `description` field, especially any unique components of a project's build.
 - Describe all tasks using the `description` and `group` field, use custom task types rather than ad-hoc tasks.

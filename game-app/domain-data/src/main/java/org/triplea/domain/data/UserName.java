@@ -1,15 +1,14 @@
 package org.triplea.domain.data;
 
-import com.google.common.base.Preconditions;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.jetbrains.annotations.Nls;
+import org.triplea.http.client.lobby.LobbyConstants;
 
 /**
  * AKA username, represents the display name of a player. This is the name used when taking a
@@ -17,14 +16,15 @@ import org.jetbrains.annotations.Nls;
  */
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@EqualsAndHashCode
 public class UserName implements Serializable {
 
   @Serial private static final long serialVersionUID = 8356372044000232198L;
   private final String value;
 
   public static UserName of(final String name) {
-    Preconditions.checkNotNull(name);
+    if (name == null || name.isBlank()) {
+      throw new IllegalArgumentException("Username cannot be null or blank");
+    }
     return new UserName(name);
   }
 
@@ -35,6 +35,19 @@ public class UserName implements Serializable {
 
   public static boolean isValid(final @Nullable String username) {
     return validate(username).isEmpty();
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (this == other) return true;
+    if (other instanceof UserName userName) return value.equals(userName.value);
+    if (other instanceof String string) return value.equals(string);
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return value.hashCode();
   }
 
   /**

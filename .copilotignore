@@ -1,0 +1,58 @@
+# IDE & OS artifacts
+.classpath
+.gradle
+.idea/
+.project
+.settings
+.DS_Store
+.vscode/
+*.iml
+*.backup
+*.swp
+*.attach_pid*
+
+# Security
+**/vault*password
+
+# Binary & media
+*.png
+*.gif
+*.mp3
+*.jar
+
+# Generated output
+bin/
+build/
+.build/
+out/
+
+# Gradle wrapper (not useful as context)
+gradlew
+gradlew.bat
+gradle/wrapper/
+
+# Infra & deployment (not relevant to Java code)
+.docker/
+
+# Docs & meta
+LICENSE
+.docs/
+docs/
+.github/
+
+
+src/test/resources/map-xmls/
+**/run/
+**/*.log
+scripts/
+**/*.tsvg
+**/*.xml
+CODE_OF_CONDUCT.MD
+format
+gradlew
+gradlew.bat
+latest_version.properties
+LICENSE
+lobby_server.yaml
+server.yml
+triplea_maps.yaml

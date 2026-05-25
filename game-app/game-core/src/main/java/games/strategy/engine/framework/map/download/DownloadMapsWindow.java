@@ -49,7 +49,7 @@ import javax.swing.table.TableRowSorter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NonNls;
-import org.triplea.http.client.maps.listing.MapDownloadItem;
+import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingComponents;
@@ -268,17 +268,18 @@ public class DownloadMapsWindow extends JFrame {
 
     final JTabbedPane tabbedPane = new JTabbedPane();
 
+    final List<MapDownloadItem> availableDownloads =
+        mapList.getAvailableExcluding(pendingDownloads);
     final List<MapDownloadItem> outOfDateDownloads =
         mapList.getOutOfDateExcluding(pendingDownloads);
     // For the UX, always show an available maps tab, even if it is empty
-    final JPanel available =
-        newMapSelectionPanel(
-            mapList.getAvailableExcluding(pendingDownloads), MapAction.INSTALL, true);
-    tabbedPane.addTab("New Maps", available);
+    final JPanel available = newMapSelectionPanel(availableDownloads, MapAction.INSTALL, true);
+    tabbedPane.addTab(String.format("New Maps (%d)", availableDownloads.size()), available);
 
     if (!outOfDateDownloads.isEmpty()) {
       final JPanel outOfDate = newMapSelectionPanel(outOfDateDownloads, MapAction.UPDATE, false);
-      tabbedPane.addTab("Updates Available", outOfDate);
+      tabbedPane.addTab(
+          String.format("Updates Available (%d)", outOfDateDownloads.size()), outOfDate);
     }
 
     if (!mapList.getInstalled().isEmpty()) {
@@ -289,7 +290,7 @@ public class DownloadMapsWindow extends JFrame {
                   .toList(),
               MapAction.REMOVE,
               false);
-      tabbedPane.addTab("Installed", installed);
+      tabbedPane.addTab(String.format("Installed (%d)", mapList.getInstalled().size()), installed);
     }
     return tabbedPane;
   }

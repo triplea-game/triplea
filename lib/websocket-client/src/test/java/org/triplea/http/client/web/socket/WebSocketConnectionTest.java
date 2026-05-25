@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -91,9 +92,20 @@ class WebSocketConnectionTest {
     }
 
     @Test
-    void onCloseDueToTermination() {
+    void onCloseDueToUnexpectedDisconnect() {
       listener.onClose(mock(WebSocket.class), 0, REASON);
-      verify(webSocketConnectionListener).connectionTerminated(REASON);
+      // Reconnect is attempted asynchronously on a virtual thread; onReconnecting fires first
+      verify(webSocketConnectionListener, timeout(2000)).onReconnecting(1);
+      verify(webSocketConnectionListener, never()).connectionTerminated(any());
+    }
+
+    @Test
+    @DisplayName("Server ban causes connectionTerminated, not a reconnect attempt")
+    void onCloseDueToServerBan() {
+      listener.onClose(mock(WebSocket.class), 0, WebSocketConnection.SERVER_BAN_DISCONNECT_MESSAGE);
+      verify(webSocketConnectionListener)
+          .connectionTerminated(WebSocketConnection.SERVER_BAN_DISCONNECT_MESSAGE);
+      verify(webSocketConnectionListener, never()).onReconnecting(anyInt());
     }
 
     @Test

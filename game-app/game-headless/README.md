@@ -31,7 +31,7 @@ docker compose-up
 
 Example command to run a new headless game server from Gradle:
 ```
-$ MAPS_FOLDER=/home/$USER/triplea/downloadedMaps ./gradlew :game-app:game-headless:run
+$ MAPS_FOLDER=/home/$USER/triplea/downloadedMaps ./gradlew :game-headless:run
 ```
 See 'build.gradle' file to change things like lobby URI & bot port number.
 
