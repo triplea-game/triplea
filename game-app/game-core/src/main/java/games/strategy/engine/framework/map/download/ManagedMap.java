@@ -1,0 +1,77 @@
+package games.strategy.engine.framework.map.download;
+
+import games.strategy.engine.framework.map.file.system.loader.InstalledMap;
+import java.util.Objects;
+import lombok.Getter;
+import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
+
+enum ManagedMapStatus {
+  AVAILABLE,
+  DOWNLOADING,
+  INSTALLED,
+  UPDATE_AVAILABLE,
+  REMOVING,
+  ERROR
+}
+
+final class ManagedMap {
+  @Getter private ManagedMapStatus mapStatus;
+  @Getter private final MapDownloadItem mapDownloadItem;
+  @Getter private InstalledMap installedMap = null; // already downloaded
+
+  ManagedMap(final MapDownloadItem mapDownloadItem) {
+    this.mapStatus = ManagedMapStatus.AVAILABLE;
+    this.mapDownloadItem = Objects.requireNonNull(mapDownloadItem);
+  }
+
+  public ManagedMap(final MapDownloadItem mapDownloadItem, final InstalledMap installedMap) {
+    this(mapDownloadItem);
+    this.installedMap = Objects.requireNonNull(installedMap);
+    this.mapStatus =
+        installedMap.isOutOfDate(mapDownloadItem)
+            ? ManagedMapStatus.UPDATE_AVAILABLE
+            : ManagedMapStatus.INSTALLED;
+  }
+
+  String getMapName() {
+    return mapDownloadItem.getMapName();
+  }
+
+  void setMapStatus(final ManagedMapStatus newStatus) {
+    this.mapStatus = Objects.requireNonNull(newStatus);
+  }
+
+  boolean isInstalled() {
+    return mapStatus == ManagedMapStatus.INSTALLED;
+  }
+
+  boolean isDownloading() {
+    return mapStatus == ManagedMapStatus.DOWNLOADING;
+  }
+
+  boolean isUpdateAvailable() {
+    return mapStatus == ManagedMapStatus.UPDATE_AVAILABLE;
+  }
+
+  boolean isAvailable() {
+    return mapStatus == ManagedMapStatus.AVAILABLE;
+  }
+
+  @Override
+  public String toString() {
+    return getMapName() + " [" + mapStatus + "]";
+  }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) return true;
+    if (!(o instanceof ManagedMap)) return false;
+    final ManagedMap that = (ManagedMap) o;
+    return mapDownloadItem.getMapName().equals(that.mapDownloadItem.getMapName());
+  }
+
+  @Override
+  public int hashCode() {
+    return mapDownloadItem.getMapName().hashCode();
+  }
+}
