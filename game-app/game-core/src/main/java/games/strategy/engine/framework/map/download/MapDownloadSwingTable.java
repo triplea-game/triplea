@@ -1,9 +1,14 @@
 package games.strategy.engine.framework.map.download;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import javax.swing.*;
+import javax.swing.DefaultRowSorter;
+import javax.swing.JTable;
+import javax.swing.RowSorter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
