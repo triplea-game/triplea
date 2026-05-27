@@ -107,9 +107,6 @@ public class MapDownloadSwingTable {
     final Set<String> removeMapNames =
         mapDownloadItems.stream().map(MapDownloadItem::getMapName).collect(Collectors.toSet());
 
-    final RowSorter<? extends TableModel> sorter = table.getRowSorter();
-    final List<? extends RowSorter.SortKey> sortKeys = sorter.getSortKeys();
-
     final DefaultTableModel model = (DefaultTableModel) table.getModel();
 
     // remove iterating backwards to avoid indices shifting
@@ -120,7 +117,6 @@ public class MapDownloadSwingTable {
       }
     }
 
-    sorter.setSortKeys(sortKeys);
-    ((DefaultRowSorter<?, ?>) sorter).sort();
+    ((DefaultRowSorter<?, ?>) table.getRowSorter()).sort();
   }
 }
