@@ -225,7 +225,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
 
     while (!unitsLeftToPlace.isEmpty() && !producers.isEmpty()) {
       // Get next producer territory
-      final Territory producer = producers.remove(0);
+      final Territory producer = producers.removeFirst();
 
       int maxPlaceable = maxPlaceableMap.getInt(producer);
       if (maxPlaceable == 0) {
@@ -253,7 +253,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       }
       final int neededExtra = unitsCanBePlacedByThisProducer.size() - maxForThisProducer;
       if (maxPlaceable > maxForThisProducer) {
-        freePlacementCapacity(producer, neededExtra, unitsCanBePlacedByThisProducer, at, player);
+        freePlacementCapacity(producer, neededExtra, unitsCanBePlacedByThisProducer, player);
         final int newMaxForThisProducer =
             getMaxUnitsToBePlacedFrom(producer, unitsCanBePlacedByThisProducer, at, player);
         if (newMaxForThisProducer != maxPlaceable && neededExtra > newMaxForThisProducer) {
@@ -385,7 +385,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       final Territory producer,
       final int freeSize,
       final Collection<Unit> unitsLeftToPlace,
-      final Territory at,
       final GamePlayer player) {
     // placements of the producer that could be redone by other territories
     final List<UndoablePlacement> redoPlacements = new ArrayList<>();
@@ -518,7 +517,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       }
     }
     if (foundSpaceTotal < freeSize && unusedSplitPlacements) {
-      freePlacementCapacity(producer, (freeSize - foundSpaceTotal), unitsLeftToPlace, at, player);
+      freePlacementCapacity(producer, (freeSize - foundSpaceTotal), unitsLeftToPlace, player);
     }
   }
 
