@@ -30,8 +30,7 @@ public abstract class AbstractDelegate implements IDelegate {
   @Override
   public void setDelegateBridgeAndPlayer(
       final IDelegateBridge delegateBridge, final ClientNetworkBridge clientNetworkBridge) {
-    bridge = delegateBridge;
-    player = delegateBridge.getGamePlayer();
+    setDelegateBridgeAndPlayer(delegateBridge);
     this.clientNetworkBridge = clientNetworkBridge;
   }
 
@@ -42,7 +41,8 @@ public abstract class AbstractDelegate implements IDelegate {
   }
 
   /**
-   * Called before the delegate will run. All classes should call super.start if they override this.
+   * Called before the delegate will run. All classes should call {@code super.start()} if they
+   * override this method.
    */
   @Override
   public void start() {
@@ -50,8 +50,8 @@ public abstract class AbstractDelegate implements IDelegate {
   }
 
   /**
-   * Called before the delegate will stop running. All classes should call super.end if they
-   * override this.
+   * Called before the delegate will stop running. All classes should call {@code super.end()} if
+   * they override this method.
    */
   @Override
   public void end() {
