@@ -116,7 +116,5 @@ public class MapDownloadSwingTable {
         model.removeRow(row);
       }
     }
-
-    ((DefaultRowSorter<?, ?>) table.getRowSorter()).sort();
   }
 }
