@@ -91,9 +91,6 @@ public class InstalledMap {
    * date of the map-download.
    */
   public boolean isOutOfDate(final MapDownloadItem download) {
-    // Treat a missing/zero commit date as "no signal" rather than NPE-ing on auto-unbox
-    // or treating every map as up-to-date against epoch 0. The GitHub-fallback listing
-    // path sets 0L, and a server response with a null value would unbox to NPE.
     final long lastCommitMilli = download.getLastCommitDateEpochMilli();
     if (lastCommitMilli <= 0L) {
       return false;
