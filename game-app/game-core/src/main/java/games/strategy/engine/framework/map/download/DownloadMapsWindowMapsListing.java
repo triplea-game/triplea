@@ -19,6 +19,9 @@ class DownloadMapsWindowMapsListing {
   private final Collection<MapDownloadItem> available;
   private final Map<MapDownloadItem, InstalledMap> installed;
   private final Map<MapDownloadItem, InstalledMap> outOfDate;
+  // @TODO: Complete redesign to contain model for maps replacing state holdings in UI components
+  // in the future
+  private final ManagedMapStore mapStore;
 
   DownloadMapsWindowMapsListing(final Collection<MapDownloadItem> downloads) {
     this(downloads, InstalledMapsListing.parseMapFiles());
@@ -29,9 +32,20 @@ class DownloadMapsWindowMapsListing {
       final Collection<MapDownloadItem> downloads,
       final InstalledMapsListing installedMapsListing) {
 
-    outOfDate = installedMapsListing.findOutOfDateMaps(downloads);
-    installed = installedMapsListing.findInstalledMapsFromDownloadList(downloads);
-    available = installedMapsListing.findNotInstalledMapsFromDownloadList(downloads);
+    mapStore = new ManagedMapStore();
+    mapStore.initialize(downloads, installedMapsListing);
+
+    available =
+        mapStore.getByStatus(ManagedMapStatus.AVAILABLE).stream()
+            .map(ManagedMap::getMapDownloadItem)
+            .toList();
+    outOfDate =
+        mapStore.getByStatus(ManagedMapStatus.UPDATE_AVAILABLE).stream()
+            .collect(Collectors.toMap(ManagedMap::getMapDownloadItem, ManagedMap::getInstalledMap));
+    installed =
+        mapStore.getByStatus(ManagedMapStatus.INSTALLED).stream()
+            .collect(Collectors.toMap(ManagedMap::getMapDownloadItem, ManagedMap::getInstalledMap));
+    installed.putAll(outOfDate); // currently outOfDate maps are to be shown as installed as well
   }
 
   List<MapDownloadItem> getAvailableExcluding(final Collection<MapDownloadItem> excluded) {
