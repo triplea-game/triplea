@@ -41,22 +41,6 @@ final class ManagedMap {
     this.mapStatus = Objects.requireNonNull(newStatus);
   }
 
-  boolean isInstalled() {
-    return mapStatus == ManagedMapStatus.INSTALLED;
-  }
-
-  boolean isDownloading() {
-    return mapStatus == ManagedMapStatus.DOWNLOADING;
-  }
-
-  boolean isUpdateAvailable() {
-    return mapStatus == ManagedMapStatus.UPDATE_AVAILABLE;
-  }
-
-  boolean isAvailable() {
-    return mapStatus == ManagedMapStatus.AVAILABLE;
-  }
-
   @Override
   public String toString() {
     return getMapName() + " [" + mapStatus + "]";
@@ -65,13 +49,14 @@ final class ManagedMap {
   @Override
   public boolean equals(final Object o) {
     if (this == o) return true;
-    if (!(o instanceof ManagedMap)) return false;
-    final ManagedMap that = (ManagedMap) o;
+    if (!(o instanceof ManagedMap that)) return false;
     return mapDownloadItem.getMapName().equals(that.mapDownloadItem.getMapName());
   }
 
   @Override
   public int hashCode() {
+    // @todo currently the map name is assumed to be unique, solution is required, but the
+    // limitation already exists today
     return mapDownloadItem.getMapName().hashCode();
   }
 }
