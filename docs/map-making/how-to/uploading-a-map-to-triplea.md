@@ -19,7 +19,7 @@ If you have just worked on your map, it is presumably in your downloadedMaps fol
 * Folder called "description", that contains a small png file of the game board (around ~400 px wide). The name of this file should be "TripleA_your_map_name_mini.png" (e.g. "TripleA_my_map_mini.png").
 * Folder called "map" that contains all your relevant game files (baseTiles, flags, games, centers.txt, place.txt, etc.).
 * "description.html" file, that contains a small description about the game. Important things to include here are: scenario, time period, setting, etc. Example, "World War II in Europe, starting in 1942".
-* "preview.png" file, should be the same image that's inside the "description" folder, except that it is called "preview.png"
+* "preview.png" file, should be the same image that's inside the "description" folder, except that it is called "preview.png".
 * "map.yml" file. This file specifies important information about your game. "map_name" should be the name of your map in lower case letters and with underscores. "game_name" is how you want the name of your game to appear in the TripleA game list. "file_name" is the name of the XML file used by your game. If you have a game that has multiple scenarios with multiple XMLs, you can list multiple instances. See screenshot below.
 <img width="414" height="62" alt="image" src="https://github.com/user-attachments/assets/a764f9a5-937c-4282-a642-0984204b5736" />
 <br>
@@ -55,22 +55,21 @@ Install it with all default options if you don’t know what you are doing.
 *	After upload, you can go to your personal GitHub page and inspect the upload. Does the new specific map repository now contain a folder called map? And does this folder contain all your map files? If so, everything is alright.
 <img width="894" height="487" alt="image" src="https://github.com/user-attachments/assets/8475aa86-ec7c-4493-98bb-97269f8f141d" />
 
-## 6. Request your map to be added to the TripleA map-maker organization at GitHub
-This can be done in two ways. 
-1. Create an issue in the TripleA Github.
-   Go to https://github.com/triplea-game/triplea. Click on "Issues", "New Issue" and then choose "Blank Issue". Fill out the fields and wait until someone merges your repository to TripleA maps.
+## 6. Request your map to be added to the official TripleA map repository
+Your map then needs to be included in TripleA's official map repository, called "triplea-maps". You cannot do this on your own. Instead, you need to request if someone with permissions can do this for you. To do this, you need to create an issue in the TripleA Github.
+   Go to https://github.com/triplea-game/triplea. Click on "Issues", "New Issue" and then choose "Blank Issue". Fill out the fields as shown in the screenshot below and wait until someone adds your repository to the TripleA maps repository. 
+   
 <img width="798" height="677" alt="image" src="https://github.com/user-attachments/assets/1848c384-68ee-4275-9e14-cd641093a2de" />
-
-2. Transfer access to TripleA maps.
-   Go to your GitHub repositoy. Click on "Settings", scroll all the way down to the Danger Zone. Click "Transfer ownership". Click on "Specify an organization or username" and type "triplea-maps" (without the quotation marks).
 
 ## 7. Edit the YAML file
 Once your map is added to "triplea-maps", the last step is to make it appear in the TripleA "Download Maps" list. To do this, you will need to edit the triplea_maps.yaml file. This file contains all available TripleA maps and is read live every time a user clicks on "Download Maps". 
 * Go to: https://github.com/triplea-game/triplea/blob/main/triplea_maps.yaml.
 * Click on the pencil on the right of the screen. It should say "Edit the file in your fork of this project" when you hover over.
-* Now, add the required information for your game. Read the top of the document for more information on all the parameters. Here is an example of what you need to add:
+* Now, add the required information for your game. Read the top of the yaml file for more information on all the parameters. Here is an example of what you need to add:
   
   <img width="615" height="163" alt="image" src="https://github.com/user-attachments/assets/daa4b27a-41f7-4bd5-b930-23ba1aefa09c" />
+  
+  Pay special attention to the syntax used, as incorrect syntax will not be highlighted and will cause your map to break or miss important things.
 * Once you are done, click on *Commit changes...*. Give the pull request a descriptive name, like "Adding my_map to triplea-maps.yaml". Now you just need to wait until a developer merges your request with the main branch. After that has happened, your map can now be downloaded via TripleA!
 
 # Updating your map
