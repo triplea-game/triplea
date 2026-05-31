@@ -3484,5 +3484,12 @@
   url: https://github.com/triplea-maps/East_and_West/archive/refs/heads/master.zip
   version: 1
   img: https://raw.githubusercontent.com/triplea-maps/East_and_West/master/preview.png
+- mapName: World War II V6-Balanced
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/world_war_ii_v6_1941_Balanced/archive/refs/heads/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/world_war_ii_v6_1941_Balanced/master/preview.png
+  description: |
+    <br>World War II V6 with some minor changes to improve balance
   description: |
     <br>World War Three in 1947, inspired by the game East and West
