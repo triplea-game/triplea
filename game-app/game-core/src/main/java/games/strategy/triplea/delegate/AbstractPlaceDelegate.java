@@ -858,7 +858,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       return Optional.of("Cannot place these units outside of the capital");
     }
     if (to.isWater()) {
-      final Optional<String> canLand = validateNewAirCanLandOnCarriers(to, units);
+      final Optional<String> canLand = validateNewAirCanLandOnCarriers(to, units, player);
       if (canLand.isPresent()) {
         return canLand;
       }
@@ -1659,12 +1659,37 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
    * The rule is that new fighters can be produced on new carriers. This does not allow for fighters
    * to be produced on old carriers. THIS ISN'T CORRECT.
    */
+  /*
+  TODO: In the code below, the game incorrectly allows you to place fighters on friendly carriers when there is in a
+   sea zone:
+   1) A carrier owned by you
+   2) A friendly carrier
+   3) Air units from the friendly power
+   This is because at the time of writing, TripleA does not know which fighters are on which carriers
+   If the friendly air units are on the friendly carrier, you should be able to place air units on your empty carrier.
+   If the friendly air units are on your OWN carrier, then you should NOT be able to place air units in the sea zone,
+   because you cannot place air units on the friendly carrier
+   Currently in this last situation, the game incorrectly allows you to place aircraft in the sea zone.
+   */
   private static Optional<@Nls String> validateNewAirCanLandOnCarriers(
-      final Territory to, final Collection<Unit> units) {
-    final int cost = AirMovementValidator.carrierCost(units);
-    int capacity = AirMovementValidator.carrierCapacity(units, to);
-    capacity += AirMovementValidator.carrierCapacity(to.getUnits(), to);
-    // TODO: This method considers existing carriers but not existing air units
+      final Territory to, final Collection<Unit> units, final GamePlayer player) {
+    // Find the units in the territory controlled by the current player
+    final Collection<Unit> ownedUnitsInTerritory = new ArrayList<>();
+    for (final Unit unit : to.getUnits()) {
+      if (unit.getOwner().equals(player)) {
+        ownedUnitsInTerritory.add(unit);
+      }
+    }
+    // Finds the total carrierCost of the units
+    int cost = AirMovementValidator.carrierCost(units); // Considers the placeable units
+    cost +=
+        AirMovementValidator.carrierCost(
+            ownedUnitsInTerritory); // Considers the units in the territory
+    // Finds the total carrierCapacity of the units
+    int capacity = AirMovementValidator.carrierCapacity(units, to); // Considers the placeable units
+    capacity +=
+        AirMovementValidator.carrierCapacity(
+            ownedUnitsInTerritory, to); // Considers the units in the territory
     if (cost > capacity) {
       return Optional.of("Not enough new carriers to land all the fighters");
     }
