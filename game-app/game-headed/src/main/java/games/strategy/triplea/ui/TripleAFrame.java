@@ -1791,7 +1791,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       }
     }
     if (historySyncher != null) {
-      throw new IllegalStateException("Two history synchers?");
+      return;
     }
     historySyncher = new HistorySynchronizer(clonedGameData, game);
     updatePanelsGameData(clonedGameData);
