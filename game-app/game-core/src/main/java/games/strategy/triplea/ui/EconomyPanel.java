@@ -116,24 +116,26 @@ class EconomyPanel extends JPanel implements GameDataChangeListener {
           final IntegerMap<Resource> resourceIncomes =
               AbstractEndTurnDelegate.findEstimatedIncome(player, gameData);
           resourceIncomeMap.put(player, resourceIncomes);
-          for (int i = 0; i < resourceStats.size(); i++) {
-            final ResourceStat resourceStat = resourceStats.get(i);
+          int column = 1;
+          for (final ResourceStat resourceStat : resourceStats) {
             final double amount = resourceStat.getValue(player, gameData, uiContext.getMapData());
             final int income = resourceIncomes.getInt(resourceStat.resource);
-            collectedData[row][i + 1] = getResourceAmountAndIncome(amount, income);
+            collectedData[row][column] = getResourceAmountAndIncome(amount, income);
+            column++;
           }
           row++;
         }
         for (final String alliance : alliances) {
           collectedData[row][0] = "<html><b>" + alliance;
-          for (int i = 0; i < resourceStats.size(); i++) {
-            final ResourceStat resourceStat = resourceStats.get(i);
+          int column = 1;
+          for (final ResourceStat resourceStat : resourceStats) {
             final double amount = resourceStat.getValue(alliance, gameData, uiContext.getMapData());
             final int income =
                 gameData.getAllianceTracker().getPlayersInAlliance(alliance).stream()
                     .mapToInt(p -> resourceIncomeMap.get(p).getInt(resourceStat.resource))
                     .sum();
-            collectedData[row][i + 1] = getResourceAmountAndIncome(amount, income);
+            collectedData[row][column] = getResourceAmountAndIncome(amount, income);
+            column++;
           }
           row++;
         }
