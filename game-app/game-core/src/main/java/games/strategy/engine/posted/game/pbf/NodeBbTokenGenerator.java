@@ -95,7 +95,13 @@ public class NodeBbTokenGenerator {
 
   private void checkUser(final Map<?, ?> jsonObject, final String username) {
     if (!jsonObject.containsKey("uid")) {
-      throw new IllegalStateException(String.format("User %s doesn't exist.", username));
+      throw new IllegalStateException(
+          String.format(
+              "Couldn't find an account with the username %s in the selected forum. Please double-check:"
+                  + "\n1) The selected forum"
+                  + "\n2) The spelling of your username"
+                  + "\n3) If your account is correctly registered at the selected forum",
+              username));
     }
     Object banned = jsonObject.get("banned");
     if (banned instanceof Integer ? (Integer) banned == 1 : (Boolean) banned) {
@@ -154,7 +160,8 @@ public class NodeBbTokenGenerator {
               Preconditions.checkNotNull((Map<?, ?>) jsonObject.get("payload")).get("token");
         }
         throw new IllegalStateException(
-            "Incorrect password or server error.\nReturn Code: "
+            "Incorrect password or server error. Please double-check your entered password"
+                + "\nReturn Code: "
                 + code
                 + "\nMessage from server: "
                 + jsonObject.get("message"));

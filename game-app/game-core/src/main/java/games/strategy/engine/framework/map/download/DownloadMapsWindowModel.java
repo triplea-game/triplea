@@ -45,6 +45,7 @@ class DownloadMapsWindowModel {
           e);
       return false;
     }
+    installedMapsListing.deleteInstalledMapByName(mapDownloadItem.getMapName());
 
     // now sleep a short while before we check our work
     Interruptibles.sleep(10);

@@ -16,7 +16,7 @@ class FileSystemAccessStrategy {
       final Component parentFrame,
       final Function<MapDownloadItem, Boolean> mapDeleteAction,
       final List<MapDownloadItem> toRemove,
-      final Consumer<String> removeAction) {
+      final Consumer<List<MapDownloadItem>> removeAction) {
     SwingComponents.promptUser(
         "Remove Maps?",
         "<html>Will remove "
@@ -31,7 +31,7 @@ class FileSystemAccessStrategy {
       final Component parentFrame,
       final Function<MapDownloadItem, Boolean> mapDeleteAction,
       final List<MapDownloadItem> maps,
-      final Consumer<String> removeActionListeners) {
+      final Consumer<List<MapDownloadItem>> removeActionListeners) {
     return () -> {
       final List<MapDownloadItem> deletes = new ArrayList<>();
 
@@ -43,7 +43,7 @@ class FileSystemAccessStrategy {
       }
 
       if (!deletes.isEmpty()) {
-        deletes.stream().map(MapDownloadItem::getMapName).forEach(removeActionListeners);
+        removeActionListeners.accept(deletes);
         final String message = newDialogMessage("Successfully removed.", deletes);
         showDialog(parentFrame, message, deletes, MapDownloadItem::getMapName);
       }
