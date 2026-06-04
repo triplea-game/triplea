@@ -97,7 +97,7 @@ public class NodeBbTokenGenerator {
     if (!jsonObject.containsKey("uid")) {
       throw new IllegalStateException(
           String.format(
-              "Couldn't find an account with the username User %s in the selected forum. Please double-check:"
+              "Couldn't find an account with the username %s in the selected forum. Please double-check:"
                   + "\n1) The selected forum"
                   + "\n2) The spelling of your username"
                   + "\n3) If your account is correctly registered at the selected forum",
