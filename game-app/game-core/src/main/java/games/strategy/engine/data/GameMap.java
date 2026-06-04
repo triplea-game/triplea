@@ -133,7 +133,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * condition. Does NOT include the original/starting territory in the returned Set.
    */
   public Set<Territory> getNeighbors(final Territory territory, final int distance) {
-    return getNeighbors(territory, distance, it -> true);
+    return getNeighbors(territory, distance, (it, neighbor) -> true);
   }
 
   /**
@@ -149,11 +149,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   public Set<Territory> getNeighbors(
       final Territory territory,
       final int distance,
-      @Nullable final Predicate<Territory> territoryCondition) {
-    return getNeighbors(
-        territory,
-        distance,
-        (it, it2) -> territoryCondition == null || territoryCondition.test(it2));
+      final Predicate<Territory> territoryCondition) {
+    return getNeighbors(territory, distance, (it, neighbor) -> territoryCondition.test(neighbor));
   }
 
   /**
