@@ -99,7 +99,7 @@ public abstract class AbstractProAi extends AbstractAi {
     calc.stop();
   }
 
-  private void initializeData() {
+  public void initializeData() {
     proData.initialize(this);
   }
 
