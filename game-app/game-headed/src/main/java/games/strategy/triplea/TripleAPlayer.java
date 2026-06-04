@@ -139,8 +139,8 @@ public class TripleAPlayer extends AbstractBasePlayer {
       return;
     }
 
-    // Perform Start Player Turn actions if it's the first phase of this player's turn, except for
-    // EndTurn
+    // Perform start-player-turn actions if it's the first unskipped phase of this player's turn
+    // that is not End Turn
     if (!GameStep.isEndTurnStepName(name)) {
       ui.performStartPlayerTurnActionsIfNeeded(this.getGamePlayer());
     }
@@ -229,7 +229,6 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-
     final IPoliticsDelegate politicsDelegate;
     try {
       politicsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
@@ -255,7 +254,6 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-
     final IUserActionDelegate userActionDelegate;
     try {
       userActionDelegate = (IUserActionDelegate) getPlayerBridge().getRemoteDelegate();
@@ -301,7 +299,6 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-
     final ITechDelegate techDelegate;
     try {
       techDelegate = (ITechDelegate) getPlayerBridge().getRemoteDelegate();
@@ -342,7 +339,6 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-
     final IMoveDelegate moveDel;
     try {
       moveDel = (IMoveDelegate) getPlayerBridge().getRemoteDelegate();
@@ -436,7 +432,6 @@ public class TripleAPlayer extends AbstractBasePlayer {
     }
 
     final GamePlayer gamePlayer = this.getGamePlayer();
-
     // play a sound for this phase
     if (!bid && !soundPlayedAlreadyPurchase) {
       playSound(SoundPath.CLIP_PHASE_PURCHASE);
@@ -517,7 +512,6 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-
     final IBattleDelegate battleDel;
     try {
       battleDel = (IBattleDelegate) getPlayerBridge().getRemoteDelegate();
@@ -564,7 +558,6 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-
     final GamePlayer gamePlayer = this.getGamePlayer();
     final IAbstractPlaceDelegate placeDel;
     try {

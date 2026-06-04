@@ -201,7 +201,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   @Getter private IEditDelegate editDelegate;
   private final JSplitPane gameCenterPanel;
   @Getter private final BottomBar bottomBar;
-  private GamePlayer currentPlayer;
+  private GamePlayer lastPlayer;
+  private int lastPlayerRound = -1;
   private final Map<GamePlayer, Boolean> requiredTurnSeries = new HashMap<>();
   private final ThreadPool messageAndDialogThreadPool = new ThreadPool(1);
   private final MapUnitTooltipManager tooltipManager;
@@ -1711,16 +1712,24 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       }
       return;
     }
-
-    // Check if a new player has its turn
-    if (player != currentPlayer) {
-      currentPlayer = player;
-      if (player == null || !Interruptibles.sleep(300)) {
-        return;
-      }
+    if (player == null || !Interruptibles.sleep(300)) {
+      return;
+    }
+    // Play start-player-turn sound if the previous player was remote
+    final Boolean play = requiredTurnSeries.get(player);
+    if (play != null && play) {
       uiContext.getClipPlayer().play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player);
+      requiredTurnSeries.put(player, false);
+    }
+    final int round;
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
+      round = data.getSequence().getRound();
+    }
+    // Check if a new player has its turn or if it is the same player but during a different round
+    if (!java.util.Objects.equals(player, lastPlayer) || (round != lastPlayerRound)) {
+      lastPlayer = player;
+      lastPlayerRound = round;
       bottomBar.updateFromCurrentPlayer();
-
       try (GameData.Unlocker ignored = data.acquireReadLock()) {
         TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap())
             .ifPresent(territory -> mapPanel.centerOn(territory));
