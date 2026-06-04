@@ -9,6 +9,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -28,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 public class ProPurchaseUtilsTest {
   final GameData gameData = TestMapGameData.TWW.getGameData();
@@ -86,8 +87,8 @@ public class ProPurchaseUtilsTest {
     PurchaseDelegate purchaseDelegate = (PurchaseDelegate) gameData.getDelegate("Purchase");
     final IDelegateBridge testBridge = newDelegateBridge(italy);
     purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
-    final PlayerBridge playerBridgeMock = Mockito.mock(PlayerBridge.class);
-    Mockito.when(playerBridgeMock.getGameData()).thenReturn(gameData);
+    final PlayerBridge playerBridgeMock = mock(PlayerBridge.class);
+    when(playerBridgeMock.getGameData()).thenReturn(gameData);
     proAi.initialize(playerBridgeMock, italy);
     proAi.initializeData();
 
