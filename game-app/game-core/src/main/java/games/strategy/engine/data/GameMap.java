@@ -119,16 +119,13 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * include the original/starting territory in the returned Set.
    */
   public Set<Territory> getNeighbors(
-      final Territory territory, @Nullable final Predicate<Territory> territoryCondition) {
-    return getNeighbors(
-        territory, (it, it2) -> territoryCondition == null || territoryCondition.test(it2));
+      final Territory territory, final Predicate<Territory> territoryCondition) {
+    return getNeighbors(territory).stream().filter(territoryCondition).collect(Collectors.toSet());
   }
 
   private Set<Territory> getNeighbors(
       final Territory territory, final BiPredicate<Territory, Territory> routeCondition) {
-    return getNeighbors(territory).stream()
-        .filter(n -> routeCondition.test(territory, n))
-        .collect(Collectors.toSet());
+    return getNeighbors(territory, neighbor -> routeCondition.test(territory, neighbor));
   }
 
   /**
