@@ -5,8 +5,10 @@ import static java.util.function.Predicate.not;
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.framework.map.file.system.loader.InstalledMap;
 import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,9 +18,9 @@ import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 @Getter
 class DownloadMapsWindowMapsListing {
 
-  private final Collection<MapDownloadItem> available;
-  private final Map<MapDownloadItem, InstalledMap> installed;
-  private final Map<MapDownloadItem, InstalledMap> outOfDate;
+  private final Collection<MapDownloadItem> available = new ArrayList<>();
+  private final Map<MapDownloadItem, InstalledMap> installed = new HashMap<>();
+  private final Map<MapDownloadItem, InstalledMap> outOfDate = new HashMap<>();
   // @TODO: Complete redesign to contain model for maps replacing state holdings in UI components
   // in the future
   private final ManagedMapStore mapStore;
@@ -35,17 +37,17 @@ class DownloadMapsWindowMapsListing {
     mapStore = new ManagedMapStore();
     mapStore.initialize(downloads, installedMapsListing);
 
-    available =
-        mapStore.getByStatus(ManagedMapStatus.AVAILABLE).stream()
-            .map(ManagedMap::getMapDownloadItem)
-            .toList();
-    outOfDate =
-        mapStore.getByStatus(ManagedMapStatus.UPDATE_AVAILABLE).stream()
-            .collect(Collectors.toMap(ManagedMap::getMapDownloadItem, ManagedMap::getInstalledMap));
-    installed =
-        mapStore.getByStatus(ManagedMapStatus.INSTALLED).stream()
-            .collect(Collectors.toMap(ManagedMap::getMapDownloadItem, ManagedMap::getInstalledMap));
-    installed.putAll(outOfDate); // currently outOfDate maps are to be shown as installed as well
+    for (ManagedMap map : mapStore.getAll()) {
+      switch (map.getMapStatus()) {
+        case AVAILABLE -> available.add(map.getMapDownloadItem());
+        case INSTALLED -> installed.put(map.getMapDownloadItem(), map.getInstalledMap());
+        case UPDATE_AVAILABLE -> {
+          // currently outOfDate maps are to be shown as installed as well
+          installed.put(map.getMapDownloadItem(), map.getInstalledMap());
+          outOfDate.put(map.getMapDownloadItem(), map.getInstalledMap());
+        }
+      }
+    }
   }
 
   List<MapDownloadItem> getAvailableExcluding(final Collection<MapDownloadItem> excluded) {

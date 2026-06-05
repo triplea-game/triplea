@@ -314,7 +314,10 @@ public class DownloadMapsWindow extends JFrame {
             mapStore.getCountByStatus(ManagedMapStatus.UPDATE_AVAILABLE)));
     setTabTitle(
         installedPanel,
-        String.format("Installed (%d)", mapStore.getCountByStatus(ManagedMapStatus.INSTALLED)));
+        String.format(
+            "Installed (%d)",
+            mapStore.getCountByStatus(ManagedMapStatus.INSTALLED)
+                + mapStore.getCountByStatus(ManagedMapStatus.UPDATE_AVAILABLE)));
   }
 
   private void setTabTitle(Component tab, String title) {
