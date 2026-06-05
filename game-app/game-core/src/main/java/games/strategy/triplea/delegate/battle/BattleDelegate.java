@@ -664,11 +664,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       final Set<Unit> enemyUnitsOfAbandonedToUnits =
           abandonedToUnits.stream()
               .map(Unit::getOwner)
-              .map(
-                  p ->
-                      Matches.unitIsEnemyOf(p)
-                          .and(Matches.unitIsNotAir())
-                          .and(Matches.unitIsNotInfrastructure()))
+              .map(p -> Matches.unitIsEnemyOf(p).and(Matches.unitIsNotInfrastructure()))
               .map(territory.getUnitCollection()::getMatches)
               .flatMap(Collection::stream)
               .collect(Collectors.toSet());

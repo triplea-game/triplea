@@ -1,5 +1,7 @@
 package games.strategy.triplea.delegate.dice.calculator;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Queues;
 import com.google.common.primitives.Ints;
@@ -40,6 +42,11 @@ public class RolledDice {
     final int diceSides = totalPowerAndTotalRolls.getDiceSides();
     final int[] random =
         diceGenerator.apply(diceSides, rollCount, player, IRandomStats.DiceType.COMBAT, annotation);
+    checkState(
+        random.length == rollCount,
+        "Random dice source returned %s dice, expected %s",
+        random.length,
+        rollCount);
     final List<Die> dice = getDiceHits(random, totalPowerAndTotalRolls.getActiveUnits());
     final int hitCount =
         (int) dice.stream().filter(die -> die.getType() == Die.DieType.HIT).count();

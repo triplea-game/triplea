@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.CollectionUtils;
@@ -89,7 +90,7 @@ public final class ProPurchaseUtils {
     ProLogger.info("Find max purchase defenders for " + t.getName());
     final GameState data = proData.getData();
 
-    // Determine most cost efficient defender that can be produced in this territory
+    // Determine most cost-efficient defender that can be produced in this territory
     final Resource pus = data.getResourceList().getResourceOrThrow(Constants.PUS);
     final int pusRemaining = player.getResources().getQuantity(pus);
     final List<ProPurchaseOption> purchaseOptionsForTerritory =
@@ -150,9 +151,16 @@ public final class ProPurchaseUtils {
                 player, false, false, false, false, false));
 
     // Create purchase territory holder for each factory territory
+    return getProPurchaseTerritoryMapFromTerritories(
+        potentialTerritories, t -> new ProPurchaseTerritory(t, data, player, 1, true));
+  }
+
+  private static Map<Territory, ProPurchaseTerritory> getProPurchaseTerritoryMapFromTerritories(
+      List<Territory> potentialTerritories,
+      final Function<Territory, ProPurchaseTerritory> proPurchaseTerritoryBuilder) {
     final Map<Territory, ProPurchaseTerritory> purchaseTerritories = new HashMap<>();
     for (final Territory t : potentialTerritories) {
-      final ProPurchaseTerritory ppt = new ProPurchaseTerritory(t, data, player, 1, true);
+      final ProPurchaseTerritory ppt = proPurchaseTerritoryBuilder.apply(t);
       purchaseTerritories.put(t, ppt);
       ProLogger.debug(ppt.toString());
     }
@@ -188,14 +196,12 @@ public final class ProPurchaseUtils {
             ProMatches.territoryCanMoveLandUnits(player, false));
 
     // Create purchase territory holder for each factory territory
-    final Map<Territory, ProPurchaseTerritory> purchaseTerritories = new HashMap<>();
-    for (final Territory t : ownedAndNotConqueredFactoryTerritories) {
-      final int unitProduction = getUnitProduction(t, player);
-      final ProPurchaseTerritory ppt = new ProPurchaseTerritory(t, data, player, unitProduction);
-      purchaseTerritories.put(t, ppt);
-      ProLogger.debug(ppt.toString());
-    }
-    return purchaseTerritories;
+    return getProPurchaseTerritoryMapFromTerritories(
+        ownedAndNotConqueredFactoryTerritories,
+        t -> {
+          final int unitProduction = getUnitProduction(t, player);
+          return new ProPurchaseTerritory(t, data, player, unitProduction);
+        });
   }
 
   private static int getUnitProduction(final Territory territory, final GamePlayer player) {

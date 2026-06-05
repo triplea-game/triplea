@@ -51,12 +51,8 @@ class EconomyPanel extends JPanel implements GameDataChangeListener {
       table.getColumnModel().getColumn(i).setHeaderRenderer(new DefaultTableCellRenderer());
       final JLabel label = (JLabel) table.getColumnModel().getColumn(i).getHeaderRenderer();
       final Resource resource = resourceStats.get(i - 1).resource;
-      try {
-        label.setIcon(uiContext.getResourceImageFactory().getIcon(resource.getName()));
-        label.setToolTipText(resource.getName());
-      } catch (final IllegalStateException e) {
-        // ignore missing resource image
-      }
+      label.setIcon(uiContext.getResourceImageFactory().getIcon(resource.getName()));
+      label.setToolTipText(resource.getName());
     }
     final JScrollPane scroll = new JScrollPane(table);
     add(scroll);
@@ -110,7 +106,7 @@ class EconomyPanel extends JPanel implements GameDataChangeListener {
       // copy so that the object doesn't change underneath us
       final GameData gameData = EconomyPanel.this.gameData;
       try (GameData.Unlocker ignored = gameData.acquireReadLock()) {
-        final List<GamePlayer> players = gameData.getPlayerList().getSortedPlayers();
+        final List<GamePlayer> players = gameData.getPlayerList().getPlayers();
         final List<String> alliances = getAlliancesToShow(gameData.getAllianceTracker());
         collectedData = new String[players.size() + alliances.size()][resourceStats.size() + 1];
         int row = 0;

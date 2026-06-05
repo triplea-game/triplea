@@ -108,9 +108,9 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     this.launchAction = launchAction;
   }
 
-  public Optional<GameHostingResponse> initialize() {
+  public boolean initialize() {
     this.gameSelectorModel.addObserver(gameSelectorObserver);
-    return getServerProps().map(this::createServerMessenger);
+    return getServerProps().map(this::createServerMessenger).orElse(false);
   }
 
   static RemoteName getObserverWaitingToStartName(final INode node) {
@@ -213,8 +213,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     return launchAction.getFallbackConnection(this::cancel);
   }
 
-  @Nullable
-  private GameHostingResponse createServerMessenger(final ServerConnectionProps props) {
+  private boolean createServerMessenger(final ServerConnectionProps props) {
     try {
       this.serverMessenger =
           new ServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
@@ -241,11 +240,10 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       messengers.registerRemote(
           launchAction.getStartupRemote(new DefaultServerModelView()), SERVER_REMOTE_NAME);
 
-      @Nullable final GameHostingResponse gameHostingResponse;
-
       if (System.getProperty(LOBBY_URI) != null) {
         final URI lobbyUri = URI.create(System.getProperty(LOBBY_URI));
-        gameHostingResponse = GameHostingClient.newClient(lobbyUri).sendGameHostingRequest();
+        final GameHostingResponse gameHostingResponse =
+            GameHostingClient.newClient(lobbyUri).sendGameHostingRequest();
 
         lobbyWatcherThread =
             new LobbyWatcherThread(
@@ -275,8 +273,6 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
         lobbyWatcherThread.createLobbyWatcher(
             gameToLobbyConnection, !launchAction.shouldMinimizeExpensiveAiUse());
-      } else {
-        gameHostingResponse = null;
       }
 
       chatController = new ChatController(CHAT_NAME, messengers, serverMessenger);
@@ -287,7 +283,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
       serverMessenger.setAcceptNewConnections(true);
       gameDataChanged();
-      return gameHostingResponse;
+      return true;
     } catch (final BindException e) {
       log.warn(
           "Could not open network port, please close any other TripleA games you are\n"
@@ -303,7 +299,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         ExitStatus.FAILURE.exit();
       }
     }
-    return null;
+    return false;
   }
 
   private PlayerListing getPlayerListingInternal() {

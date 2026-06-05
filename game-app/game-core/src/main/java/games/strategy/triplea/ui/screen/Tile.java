@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import javax.annotation.Nullable;
 import lombok.Getter;
 
 /** Responsible for rendering a single map tile. */
@@ -23,8 +24,11 @@ public class Tile {
   private volatile boolean isDirty = true;
   private final AtomicBoolean isDrawing = new AtomicBoolean(false);
 
-  /** Current de facto immutable state of this tile. */
-  @Getter private Image image;
+  /**
+   * Current de facto immutable state of this tile. Null until {@link #drawImage} has rendered the
+   * tile at least once; callers must skip drawing when null.
+   */
+  @Getter @Nullable private Image image;
 
   @Getter private final Rectangle bounds;
   private final Object mutex = new Object();
@@ -32,7 +36,6 @@ public class Tile {
 
   Tile(final Rectangle bounds) {
     this.bounds = bounds;
-    this.image = Util.newImage(bounds.width, bounds.height, true);
   }
 
   public boolean needsRedraw() {

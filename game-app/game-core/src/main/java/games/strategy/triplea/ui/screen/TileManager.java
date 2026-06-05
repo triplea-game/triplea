@@ -1,5 +1,7 @@
 package games.strategy.triplea.ui.screen;
 
+import static games.strategy.triplea.image.UnitImageFactory.ImageKey;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
@@ -332,7 +334,9 @@ public class TileManager {
       throw new IllegalStateException("No where to place units: " + territory.getName());
     }
 
+    final var unitImageFactory = uiContext.getUnitImageFactory();
     Point lastPlace = null;
+    UnitCategory previousCategory = null;
     for (final UnitCategory category : UnitSeparator.getSortedUnitCategories(territory, mapData)) {
       final boolean overflow;
       if (placementPoints.hasNext()) {
@@ -343,9 +347,9 @@ public class TileManager {
         lastPlace = new Point(lastPlace);
         overflow = true;
         if (mapData.getPlacementOverflowToLeft(territory)) {
-          lastPlace.x -= uiContext.getUnitImageFactory().getUnitImageWidth();
+          lastPlace.x -= unitImageFactory.getImage(ImageKey.of(category)).getWidth(null);
         } else {
-          lastPlace.x += uiContext.getUnitImageFactory().getUnitImageWidth();
+          lastPlace.x += unitImageFactory.getImage(ImageKey.of(previousCategory)).getWidth(null);
         }
       }
       final UnitsDrawer drawable =
@@ -356,6 +360,7 @@ public class TileManager {
         tile.addDrawable(drawable);
         drawnOn.add(tile);
       }
+      previousCategory = category;
     }
   }
 

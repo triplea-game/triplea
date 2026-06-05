@@ -7,6 +7,7 @@ import java.awt.Toolkit;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import javax.swing.ImageIcon;
 import org.jetbrains.annotations.NonNls;
 
@@ -32,11 +33,23 @@ public abstract class AbstractImageFactory {
     @NonNls final String fileName = getFileNameBase() + baseImageName + ".png";
     final URL url = resourceLoader.getResource(fileName);
     if (url == null) {
-      throw new IllegalStateException("Cant load: " + baseImageName + "  looking in: " + fileName);
+      return createMissingImage(baseImageName)
+          .orElseThrow(
+              () ->
+                  new IllegalStateException(
+                      "Cant load: " + baseImageName + "  looking in: " + fileName));
     }
     final Image image = Toolkit.getDefaultToolkit().getImage(url);
     Util.ensureImageLoaded(image);
     return image;
+  }
+
+  /**
+   * Hook for subclasses to render a placeholder when the underlying asset is missing. Default is
+   * empty, which preserves the throw-on-missing behavior.
+   */
+  protected Optional<Image> createMissingImage(final String baseImageName) {
+    return Optional.empty();
   }
 
   /**

@@ -88,7 +88,7 @@ public class StatsInfo extends InfoForFile {
   protected void gatherDataBeforeWriting(PrintGenerationData printData) {
     gameData = printData.getData();
     alliances = gameData.getAllianceTracker().getAlliances();
-    orderedPlayers = gameData.getPlayerList().getSortedPlayers();
+    orderedPlayers = gameData.getPlayerList().getPlayers();
     // extended stats covers stuff that doesn't show up in the game stats menu bar, like custom
     // resources or tech  tokens or # techs, etc.
     final ExtendedStats statPanel = new ExtendedStats(gameData, uiContext);
