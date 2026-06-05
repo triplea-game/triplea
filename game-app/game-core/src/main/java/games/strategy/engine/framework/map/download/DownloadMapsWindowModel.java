@@ -20,16 +20,16 @@ class DownloadMapsWindowModel {
     installedMapsListing = InstalledMapsListing.parseMapFiles();
   }
 
-  public boolean isInstalled(final MapDownloadItem mapDownloadItem) {
+  public boolean isInstalled(final ManagedMap mapDownloadItem) {
     return getInstallLocation(mapDownloadItem).isPresent();
   }
 
   /** File reference for where to install the file, empty if not installed. */
-  Optional<Path> getInstallLocation(final MapDownloadItem mapDownloadItem) {
+  Optional<Path> getInstallLocation(final ManagedMap mapDownloadItem) {
     return installedMapsListing.findMapFolderByName(mapDownloadItem.getMapName());
   }
 
-  boolean delete(final MapDownloadItem mapDownloadItem) {
+  boolean delete(final ManagedMap mapDownloadItem) {
     final Path installLocation = getInstallLocation(mapDownloadItem).orElse(null);
     if (installLocation == null) {
       return true;
@@ -59,8 +59,9 @@ class DownloadMapsWindowModel {
     }
   }
 
-  String toHtmlString(final MapDownloadItem mapDownloadItem) {
-    @NonNls String text = "<h1>" + mapDownloadItem.getMapName() + "</h1>\n";
+  String toHtmlString(final ManagedMap managedMap) {
+    @NonNls String text = "<h1>" + managedMap.getMapName() + "</h1>\n";
+    MapDownloadItem mapDownloadItem = managedMap.getMapDownloadItem();
     if (!mapDownloadItem.getPreviewImageUrl().isEmpty()) {
       text += "<img src='" + mapDownloadItem.getPreviewImageUrl() + "' />\n";
     }
