@@ -58,7 +58,6 @@ import org.triplea.swing.jpanel.JPanelBuilder;
 public class DownloadMapsWindow extends JFrame {
 
   private final JTabbedPane tabbedPane;
-  private ManagedMapStore mapStore;
   private JPanel availablePanel;
   private JPanel outOfDatePanel = null;
   private JPanel installedPanel = null;
@@ -82,9 +81,10 @@ public class DownloadMapsWindow extends JFrame {
   private final transient DownloadMapsWindowModel downloadMapsWindowModel;
 
   private DownloadMapsWindow(
-      final Collection<String> pendingDownloadMapNames, final List<MapDownloadItem> allDownloads) {
+      final Collection<String> pendingDownloadMapNames,
+      DownloadMapsWindowModel downloadMapsWindowModel) {
     super("Download Maps");
-    downloadMapsWindowModel = new DownloadMapsWindowModel();
+    this.downloadMapsWindowModel = downloadMapsWindowModel;
 
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -97,7 +97,8 @@ public class DownloadMapsWindow extends JFrame {
     final Set<MapDownloadItem> pendingDownloads = new HashSet<>();
     final Collection<String> unknownMapNames = new ArrayList<>();
     for (final String mapName : pendingDownloadMapNames) {
-      findMap(mapName, allDownloads)
+      findMap(mapName, getMapStore())
+          .map(ManagedMap::getMapDownloadItem)
           .ifPresentOrElse(pendingDownloads::add, () -> unknownMapNames.add(mapName));
     }
     if (!pendingDownloads.isEmpty()) {
@@ -116,7 +117,7 @@ public class DownloadMapsWindow extends JFrame {
 
     SwingComponents.addWindowClosingListener(this, progressPanel::cancel);
 
-    tabbedPane = newAvailableInstalledTabbedPanel(allDownloads, pendingDownloads);
+    tabbedPane = newAvailableInstalledTabbedPanel();
     updateTabTitles();
 
     final JSplitPane splitPane =
@@ -252,27 +253,21 @@ public class DownloadMapsWindow extends JFrame {
     return sb.toString();
   }
 
-  private static Optional<MapDownloadItem> findMap(
-      final String mapName, final List<MapDownloadItem> games) {
-
-    final String normalizedName = normalizeName(mapName);
-    for (final MapDownloadItem download : games) {
-      if (download.getMapName().equalsIgnoreCase(mapName)
-          || normalizedName.equals(normalizeName(download.getMapName()))) {
-        return Optional.of(download);
-      }
+  private static Optional<ManagedMap> findMap(
+      final String mapName, final ManagedMapStore mapStore) {
+    Optional<ManagedMap> mapByName = mapStore.getMapByName(mapName);
+    if (mapByName.isPresent()) {
+      return mapByName;
     }
-    return Optional.empty();
+    final String normalizedName = normalizeName(mapName);
+    return mapStore.getMapByName(normalizedName);
   }
 
   private static String normalizeName(final String mapName) {
     return mapName.replace(' ', '_').toLowerCase(Locale.ROOT);
   }
 
-  private JTabbedPane newAvailableInstalledTabbedPanel(
-      final List<MapDownloadItem> downloads, final Set<MapDownloadItem> pendingDownloads) {
-    this.mapStore = new ManagedMapStore();
-    new DownloadMapsWindowMapsListing(downloads, mapStore);
+  private JTabbedPane newAvailableInstalledTabbedPanel() {
 
     final JTabbedPane tabbedPane = new JTabbedPane();
 
@@ -280,14 +275,14 @@ public class DownloadMapsWindow extends JFrame {
     availablePanel = newMapSelectionPanel(MapAction.INSTALL, true, ManagedMapStatus.AVAILABLE);
     tabbedPane.addTab("", availablePanel);
 
-    boolean mapStoreHasUpdateAvailable = mapStore.hasAnyMap(ManagedMapStatus.UPDATE_AVAILABLE);
+    boolean mapStoreHasUpdateAvailable = getMapStore().hasAnyMap(ManagedMapStatus.UPDATE_AVAILABLE);
     if (mapStoreHasUpdateAvailable) {
       outOfDatePanel =
           newMapSelectionPanel(MapAction.UPDATE, false, ManagedMapStatus.UPDATE_AVAILABLE);
       tabbedPane.addTab("", outOfDatePanel);
     }
 
-    if (mapStoreHasUpdateAvailable || mapStore.hasAnyMap(ManagedMapStatus.INSTALLED)) {
+    if (mapStoreHasUpdateAvailable || getMapStore().hasAnyMap(ManagedMapStatus.INSTALLED)) {
       installedPanel =
           newMapSelectionPanel(
               MapAction.REMOVE,
@@ -299,21 +294,25 @@ public class DownloadMapsWindow extends JFrame {
     return tabbedPane;
   }
 
+  private ManagedMapStore getMapStore() {
+    return downloadMapsWindowModel.getMapStore();
+  }
+
   private void updateTabTitles() {
     setTabTitle(
         availablePanel,
-        String.format("New Maps (%d)", mapStore.getCountByStatus(ManagedMapStatus.AVAILABLE)));
+        String.format("New Maps (%d)", getMapStore().getCountByStatus(ManagedMapStatus.AVAILABLE)));
     setTabTitle(
         outOfDatePanel,
         String.format(
             "Updates Available (%d)",
-            mapStore.getCountByStatus(ManagedMapStatus.UPDATE_AVAILABLE)));
+            getMapStore().getCountByStatus(ManagedMapStatus.UPDATE_AVAILABLE)));
     setTabTitle(
         installedPanel,
         String.format(
             "Installed (%d)",
-            mapStore.getCountByStatus(ManagedMapStatus.INSTALLED)
-                + mapStore.getCountByStatus(ManagedMapStatus.UPDATE_AVAILABLE)));
+            getMapStore().getCountByStatus(ManagedMapStatus.INSTALLED)
+                + getMapStore().getCountByStatus(ManagedMapStatus.UPDATE_AVAILABLE)));
   }
 
   private void setTabTitle(Component tab, String title) {
@@ -331,15 +330,15 @@ public class DownloadMapsWindow extends JFrame {
 
     final JLabel mapSizeLabel = new JLabel(" ");
 
-    if (mapStore.hasAnyMap(mapStatuses)) {
+    if (getMapStore().hasAnyMap(mapStatuses)) {
 
-      final List<ManagedMap> unsortedMaps = mapStore.getByStatus(mapStatuses);
+      final List<ManagedMap> unsortedMaps = getMapStore().getByStatus(mapStatuses);
       final MapDownloadSwingTable mapDownloadSwingTable = new MapDownloadSwingTable(unsortedMaps);
       final JTable gamesList = mapDownloadSwingTable.getSwingComponent();
       mapDownloadSwingTable.addMapSelectionListener(
           mapSelections ->
               newDescriptionPanelUpdatingSelectionListener(
-                  mapStore.getMapsByName(() -> mapSelections), descriptionPane, mapSizeLabel));
+                  getMapStore().getMapsByName(() -> mapSelections), descriptionPane, mapSizeLabel));
 
       descriptionPane.setText(downloadMapsWindowModel.toHtmlString(unsortedMaps.getFirst()));
       descriptionPane.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
@@ -406,7 +405,7 @@ public class DownloadMapsWindow extends JFrame {
               .add(
                   newButtonsPanel(
                       action,
-                      () -> mapStore.getMapsByName(mapDownloadSwingTable::getSelectedMapNames),
+                      () -> getMapStore().getMapsByName(mapDownloadSwingTable::getSelectedMapNames),
                       mapDownloadSwingTable::removeMapRows))
               .build();
       main.add(southPanel, BorderLayout.SOUTH);
@@ -514,29 +513,33 @@ public class DownloadMapsWindow extends JFrame {
       Interruptibles.awaitResult(SingletonManager::getMapDownloadListInBackground)
           .result
           .ifPresent(
-              downloads -> {
-                if (downloads.isEmpty()) {
+              downloadMapsWindowModel -> {
+                if (downloadMapsWindowModel.getMapStore().isEmpty()) {
                   return; // no maps to show, so we can leave
                 }
                 state = State.INITIALIZING;
-                createAndShow(mapNamesToDownload, downloads);
+
+                createAndShow(mapNamesToDownload, downloadMapsWindowModel);
               });
     }
 
-    private static List<MapDownloadItem> getMapDownloadListInBackground()
+    private static DownloadMapsWindowModel getMapDownloadListInBackground()
         throws InterruptedException {
       return BackgroundTaskRunner.runInBackgroundAndReturn(
-          "Downloading list of available maps...", MapListingFetcher::getMapDownloadList);
+          "Downloading list of available maps...",
+          () -> {
+            return new DownloadMapsWindowModel(MapListingFetcher.getMapDownloadList());
+          });
     }
 
     private void createAndShow(
         final Collection<String> mapNamesToDownload,
-        final List<MapDownloadItem> availableDownloads) {
+        final DownloadMapsWindowModel downloadMapsWindowModel) {
       assert SwingUtilities.isEventDispatchThread();
       assert state == State.INITIALIZING;
       assert window == null;
 
-      window = new DownloadMapsWindow(mapNamesToDownload, availableDownloads);
+      window = new DownloadMapsWindow(mapNamesToDownload, downloadMapsWindowModel);
       SwingComponents.addWindowClosedListener(window, this::uninitialize);
       LookAndFeelSwingFrameListener.register(window);
       state = State.INITIALIZED;

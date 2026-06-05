@@ -54,6 +54,10 @@ final class ManagedMapStore {
     storeState = StoreState.INITIALIZED;
   }
 
+  boolean isEmpty() {
+    return mapsByName.isEmpty();
+  }
+
   Collection<ManagedMap> getAll() {
     return Collections.unmodifiableCollection(mapsByName.values());
   }
@@ -65,7 +69,7 @@ final class ManagedMapStore {
   }
 
   void put(final ManagedMap map) {
-    mapsByName.put(map.getMapName(), map);
+    mapsByName.put(map.getMapName().toLowerCase(), map);
     groupsByStatus.get(map.getMapStatus()).add(map);
   }
 
@@ -101,5 +105,9 @@ final class ManagedMapStore {
 
   public List<ManagedMap> getMapsByName(Supplier<Collection<String>> mapNamesSupplier) {
     return mapNamesSupplier.get().stream().map(mapsByName::get).filter(Objects::nonNull).toList();
+  }
+
+  public Optional<ManagedMap> getMapByName(String mapName) {
+    return Optional.ofNullable(mapsByName.getOrDefault(mapName, null));
   }
 }
