@@ -22,7 +22,7 @@ import org.triplea.swing.JTableTypeAheadListener;
 public class MapDownloadSwingTable {
   private final JTable table;
 
-  public MapDownloadSwingTable(final Collection<MapDownloadItem> maps) {
+  MapDownloadSwingTable(Collection<ManagedMap> managedMaps) {
     // Build a JTable that has n+1 columns, the first column (+1) is the map name,
     // the 'n' columns are one for each tag.
     // Note, not all maps have all tags (potentially sparse), we will display a blank
@@ -33,7 +33,8 @@ public class MapDownloadSwingTable {
 
     // Get the full set of all tag names in display order
     final List<String> tagNames =
-        maps.stream()
+        managedMaps.stream()
+            .map(ManagedMap::getMapDownloadItem)
             .map(MapDownloadItem::getMapTags)
             .flatMap(Collection::stream)
             .sorted(Comparator.comparing(MapTag::getDisplayOrder))
@@ -44,10 +45,10 @@ public class MapDownloadSwingTable {
     columnNames.addAll(tagNames);
 
     table =
-        JTableBuilder.<MapDownloadItem>builder()
+        JTableBuilder.<ManagedMap>builder()
             .columnNames(columnNames)
-            .rowData(maps)
-            .rowMapper(mapDownloadListing -> rowMapper(mapDownloadListing, tagNames))
+            .rowData(managedMaps)
+            .rowMapper(managedMap -> rowMapper(managedMap, tagNames))
             .build();
     table.getRowSorter().toggleSortOrder(0);
     table.addKeyListener(new JTableTypeAheadListener(table, 0));
@@ -57,8 +58,8 @@ public class MapDownloadSwingTable {
    * Given a download item and a set of tags (in correct display order), returns values for a table
    * row, map name and then each of the map's tag values.
    */
-  private List<String> rowMapper(
-      final MapDownloadItem mapDownloadItem, final List<String> mapTags) {
+  private List<String> rowMapper(final ManagedMap managedMap, final List<String> mapTags) {
+    final MapDownloadItem mapDownloadItem = managedMap.getMapDownloadItem();
     final List<String> rowValues = new ArrayList<>();
     rowValues.add(mapDownloadItem.getMapName());
 
@@ -100,9 +101,9 @@ public class MapDownloadSwingTable {
         .collect(Collectors.toList());
   }
 
-  void removeMapRows(final List<MapDownloadItem> mapDownloadItems) {
+  void removeMapRows(final List<ManagedMap> removeMaps) {
     final Set<String> removeMapNames =
-        mapDownloadItems.stream().map(MapDownloadItem::getMapName).collect(Collectors.toSet());
+        removeMaps.stream().map(ManagedMap::getMapName).collect(Collectors.toSet());
 
     final DefaultTableModel model = (DefaultTableModel) table.getModel();
 
