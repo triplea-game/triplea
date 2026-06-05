@@ -13,6 +13,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.player.PlayerBridge;
 import games.strategy.triplea.ai.pro.ProAi;
@@ -24,16 +25,18 @@ import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class ProPurchaseUtilsTest {
-  final GameData gameData = TestMapGameData.TWW.getGameData();
-  final GamePlayer british = checkNotNull(britain(gameData));
-  final UnitType trenchType = checkNotNull(unitType("britishEntrenchment", gameData));
-  final UnitType materialType = checkNotNull(unitType("Material", gameData));
-  final UnitType fortType = checkNotNull(unitType("britishFortification", gameData));
+  final GameData twwGameData = TestMapGameData.TWW.getGameData();
+  final GamePlayer british = checkNotNull(britain(twwGameData));
+  final UnitType trenchType = checkNotNull(unitType("britishEntrenchment", twwGameData));
+  final UnitType materialType = checkNotNull(unitType("Material", twwGameData));
+  final UnitType fortType = checkNotNull(unitType("britishFortification", twwGameData));
   final Unit trench1 = trenchType.create(british);
   final Unit trench2 = trenchType.create(british);
   final Unit material1 = materialType.create(british);
@@ -80,37 +83,30 @@ public class ProPurchaseUtilsTest {
   }
 
   /// Test strategy:
-  /// The map has property "Place in Any Territory" being set and the specific test-case is done for
-  /// player Egypt.
+  /// The map has for Egypt 7 territories with a Flagpole unit inside allowing unit production.
   /// Therefore, the result should:
-  /// 1. Contain 7 entries.
+  /// 1. Contain 7 entries, but not Cairo (even though owned by Egypt it has no Flagpole unit).
   /// 2. Contain one entry for each territory owned by Egypt.
   /// 3. For each territory, the corresponding `canPlace` entries should be
   /// either the territory itself or an adjacent sea zone (51, 53 or 72).
   @Test
-  void testFindPurchaseTerritoriesWithPlaceInAnyTerritory() {
-    final GamePlayer egypt = checkNotNull(gameData.getPlayerList().getPlayerId("Egypt"));
+  void testFindPurchaseTerritoriesWithUnitCanProduceUnits() {
+    final GamePlayer playerEgypt = checkNotNull(twwGameData.getPlayerList().getPlayerId("Egypt"));
     final int countTerritoriesOwnedByEgypt = 7;
-    final Territory seaZone51 = gameData.getMap().getTerritoryOrThrow("51 Sea Zone");
-    final Territory seaZone53 = gameData.getMap().getTerritoryOrThrow("53 Sea Zone");
-    final Territory seaZone72 = gameData.getMap().getTerritoryOrThrow("72 Sea Zone");
-
-    final ProAi proAi = new ProAi("Test Name", "Test Player Label");
-    PurchaseDelegate purchaseDelegate = (PurchaseDelegate) gameData.getDelegate("Purchase");
-    final IDelegateBridge testBridge = newDelegateBridge(egypt);
-    purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
-    final PlayerBridge playerBridgeMock = mock(PlayerBridge.class);
-    when(playerBridgeMock.getGameData()).thenReturn(gameData);
-    proAi.initialize(playerBridgeMock, egypt);
-    proAi.initializeData();
+    final Territory cairo = twwGameData.getMap().getTerritoryOrThrow("Cairo");
+    final Territory seaZone51 = twwGameData.getMap().getTerritoryOrThrow("51 Sea Zone");
+    final Territory seaZone53 = twwGameData.getMap().getTerritoryOrThrow("53 Sea Zone");
+    final Territory seaZone72 = twwGameData.getMap().getTerritoryOrThrow("72 Sea Zone");
+    final ProAi proAi = getProAiForPurchaseStepOfPlayer(playerEgypt, twwGameData);
 
     final Map<Territory, ProPurchaseTerritory> foundTerritoriesToPpt =
-        ProPurchaseUtils.findPurchaseTerritories(proAi.getProData(), egypt);
+        ProPurchaseUtils.findPurchaseTerritories(proAi.getProData(), playerEgypt);
 
+    Assertions.assertEquals(playerEgypt, cairo.getOwner());
     Assertions.assertEquals(countTerritoriesOwnedByEgypt, foundTerritoriesToPpt.size());
     foundTerritoriesToPpt.forEach(
         (territory, proPurchaseTerritory) -> {
-          Assertions.assertTrue(Matches.isTerritoryOwnedBy(egypt).test(territory));
+          Assertions.assertTrue(Matches.isTerritoryOwnedBy(playerEgypt).test(territory));
           List<ProPlaceTerritory> canPlacePlaceTerritories =
               proPurchaseTerritory.getCanPlaceTerritories();
           Assertions.assertFalse(canPlacePlaceTerritories.isEmpty());
@@ -124,5 +120,20 @@ public class ProPurchaseUtilsTest {
                         || territoryProPlace.equals(seaZone72));
               });
         });
+  }
+
+  @Nonnull
+  private ProAi getProAiForPurchaseStepOfPlayer(GamePlayer playerEgypt, GameData gameData) {
+    final ProAi proAi = new ProAi("Test Name", "Test Player Label");
+    Optional<IDelegate> delegateOptional = gameData.getDelegateOptional("Purchase");
+    PurchaseDelegate purchaseDelegate =
+        (PurchaseDelegate) (delegateOptional.orElseGet(() -> gameData.getDelegate("purchase")));
+    final IDelegateBridge testBridge = newDelegateBridge(playerEgypt);
+    purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
+    final PlayerBridge playerBridgeMock = mock(PlayerBridge.class);
+    when(playerBridgeMock.getGameData()).thenReturn(gameData);
+    proAi.initialize(playerBridgeMock, playerEgypt);
+    proAi.initializeData();
+    return proAi;
   }
 }
