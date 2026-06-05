@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 
@@ -21,20 +22,27 @@ class DownloadMapsWindowMapsListing {
   private final Collection<MapDownloadItem> available = new ArrayList<>();
   private final Map<MapDownloadItem, InstalledMap> installed = new HashMap<>();
   private final Map<MapDownloadItem, InstalledMap> outOfDate = new HashMap<>();
-  // @TODO: Complete redesign to contain model for maps replacing state holdings in UI components
-  // in the future
-  private final ManagedMapStore mapStore;
 
-  DownloadMapsWindowMapsListing(final Collection<MapDownloadItem> downloads) {
-    this(downloads, InstalledMapsListing.parseMapFiles());
+  DownloadMapsWindowMapsListing(
+      final Collection<MapDownloadItem> downloads, final ManagedMapStore mapStoreExisting) {
+    this(downloads, InstalledMapsListing.parseMapFiles(), mapStoreExisting);
   }
 
   @VisibleForTesting
   DownloadMapsWindowMapsListing(
       final Collection<MapDownloadItem> downloads,
       final InstalledMapsListing installedMapsListing) {
+    this(downloads, installedMapsListing, null);
+  }
 
-    mapStore = new ManagedMapStore();
+  @VisibleForTesting
+  DownloadMapsWindowMapsListing(
+      final Collection<MapDownloadItem> downloads,
+      final InstalledMapsListing installedMapsListing,
+      @Nullable final ManagedMapStore mapStoreExisting) {
+
+    final ManagedMapStore mapStore =
+        mapStoreExisting != null ? mapStoreExisting : new ManagedMapStore();
     mapStore.initialize(downloads, installedMapsListing);
 
     for (ManagedMap map : mapStore.getAll()) {

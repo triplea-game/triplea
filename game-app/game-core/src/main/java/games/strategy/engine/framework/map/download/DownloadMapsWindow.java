@@ -272,8 +272,9 @@ public class DownloadMapsWindow extends JFrame {
 
   private JTabbedPane newAvailableInstalledTabbedPanel(
       final List<MapDownloadItem> downloads, final Set<MapDownloadItem> pendingDownloads) {
-    final DownloadMapsWindowMapsListing mapList = new DownloadMapsWindowMapsListing(downloads);
-    this.mapStore = mapList.getMapStore();
+    this.mapStore = new ManagedMapStore();
+    final DownloadMapsWindowMapsListing mapList =
+        new DownloadMapsWindowMapsListing(downloads, mapStore);
 
     final JTabbedPane tabbedPane = new JTabbedPane();
 
