@@ -79,7 +79,7 @@ public class InstalledMap {
     if (xmlPath.isEmpty() || mapContentRoot.isEmpty()) {
       return Optional.empty();
     } else {
-      return Optional.of(
+      return Optional.ofNullable(
           LocalizeHtml.localizeImgLinksInHtml(
               GameNotes.loadGameNotes(xmlPath.get()), mapContentRoot.get()));
     }
@@ -90,12 +90,9 @@ public class InstalledMap {
    * comparing the last modified date on the map installation folder compared to the last commit
    * date of the map-download.
    */
-  boolean isOutOfDate(final MapDownloadItem download) {
-    // Treat a missing/zero commit date as "no signal" rather than NPE-ing on auto-unbox
-    // or treating every map as up-to-date against epoch 0. The GitHub-fallback listing
-    // path sets 0L, and a server response with a null value would unbox to NPE.
-    final Long lastCommitMilli = download.getLastCommitDateEpochMilli();
-    if (lastCommitMilli == null || lastCommitMilli <= 0L) {
+  public boolean isOutOfDate(final MapDownloadItem download) {
+    final long lastCommitMilli = download.getLastCommitDateEpochMilli();
+    if (lastCommitMilli <= 0L) {
       return false;
     }
 

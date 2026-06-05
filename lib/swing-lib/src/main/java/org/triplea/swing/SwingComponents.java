@@ -261,13 +261,32 @@ public final class SwingComponents {
    * @return Empty if the user selects nothing, otherwise the users selection.
    */
   public static Optional<Path> showJFileChooser(final FolderSelectionMode folderSelectionMode) {
+    return showJFileChooser(newJFileChooser(folderSelectionMode));
+  }
+
+  /**
+   * Shows a dialog the user can use to select a folder or file, opening with {@code startingPath}
+   * pre-selected so the dialog defaults to the current value.
+   */
+  public static Optional<Path> showJFileChooser(
+      final FolderSelectionMode folderSelectionMode, final Path startingPath) {
+    checkNotNull(startingPath);
+    final JFileChooser fileChooser = newJFileChooser(folderSelectionMode);
+    fileChooser.setSelectedFile(startingPath.toFile());
+    return showJFileChooser(fileChooser);
+  }
+
+  private static JFileChooser newJFileChooser(final FolderSelectionMode folderSelectionMode) {
     final JFileChooser fileChooser = new JFileChooser();
     if (folderSelectionMode == FolderSelectionMode.DIRECTORIES) {
       fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     } else {
       fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     }
+    return fileChooser;
+  }
 
+  private static Optional<Path> showJFileChooser(final JFileChooser fileChooser) {
     final int result = fileChooser.showOpenDialog(null);
     return (result == JFileChooser.APPROVE_OPTION)
         ? Optional.of(fileChooser.getSelectedFile().toPath())

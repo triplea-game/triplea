@@ -396,11 +396,14 @@ public class UnitImageFactory {
   @Synchronized
   public ImageIcon getIcon(final ImageKey imageKey) {
     final String fullName = imageKey.getFullName();
-    return icons.computeIfAbsent(
-        fullName,
-        name ->
-            new ImageIcon(
-                getTransformedImage(imageKey).orElseGet(() -> createNoImageImage(imageKey))));
+    ImageIcon icon = icons.get(fullName);
+    if (icon == null) {
+      icon =
+          new ImageIcon(
+              getTransformedImage(imageKey).orElseGet(() -> createNoImageImage(imageKey)));
+      icons.put(fullName, icon);
+    }
+    return icon;
   }
 
   public Dimension getImageDimensions(final ImageKey imageKey) {

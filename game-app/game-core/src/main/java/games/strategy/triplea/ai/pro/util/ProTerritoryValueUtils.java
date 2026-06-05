@@ -279,12 +279,13 @@ public final class ProTerritoryValueUtils {
     final GameData data = proData.getData();
     final Collection<Territory> nearbyEnemyCapitalsAndFactories =
         findNearbyEnemyCapitalsAndFactories(t, enemyCapitalsAndFactoriesMap.keySet());
-    final BiPredicate<Territory, Territory> routeCond =
+    final BiPredicate<Territory, Territory> territoryToNeighborCondition =
         (t1, t2) ->
             ProMatches.territoryCanPotentiallyMoveLandUnits(player).test(t2)
                 && ProMatches.noCanalsBetweenTerritories(player).test(t1, t2);
     for (final Territory enemyCapitalOrFactory : nearbyEnemyCapitalsAndFactories) {
-      final int distance = data.getMap().getDistance(t, enemyCapitalOrFactory, routeCond);
+      final int distance =
+          data.getMap().getDistance(t, enemyCapitalOrFactory, territoryToNeighborCondition);
       if (distance > 0) {
         values.add(enemyCapitalsAndFactoriesMap.get(enemyCapitalOrFactory) / Math.pow(2, distance));
       }
@@ -298,14 +299,16 @@ public final class ProTerritoryValueUtils {
 
     // Determine value based on nearby territory production
     double nearbyEnemyValue = 0;
-    final Set<Territory> nearbyTerritories = data.getMap().getNeighbors(t, 2, routeCond);
+    final Set<Territory> nearbyTerritories =
+        data.getMap().getNeighbors(t, 2, territoryToNeighborCondition);
     final List<Territory> nearbyEnemyTerritories =
         CollectionUtils.getMatches(
             nearbyTerritories,
             ProMatches.territoryIsEnemyOrCantBeHeld(player, territoriesThatCantBeHeld));
     nearbyEnemyTerritories.removeAll(territoriesToAttack);
     for (final Territory nearbyEnemyTerritory : nearbyEnemyTerritories) {
-      final int distance = data.getMap().getDistance(t, nearbyEnemyTerritory, routeCond);
+      final int distance =
+          data.getMap().getDistance(t, nearbyEnemyTerritory, territoryToNeighborCondition);
       if (distance > 0) {
         double value = TerritoryAttachment.getProduction(nearbyEnemyTerritory);
         if (ProUtils.isNeutralLand(nearbyEnemyTerritory)) {
@@ -320,7 +323,8 @@ public final class ProTerritoryValueUtils {
         }
       }
     }
-    final int landMassSize = 1 + data.getMap().getNeighbors(t, 6, routeCond).size();
+    final int landMassSize =
+        1 + data.getMap().getNeighbors(t, 6, territoryToNeighborCondition).size();
     double value = nearbyEnemyValue * landMassSize / maxLandMassSize + capitalOrFactoryValue;
     if (ProMatches.territoryHasInfraFactoryAndIsLand().test(t)) {
       value *= 1.1; // prefer territories with factories
@@ -452,9 +456,7 @@ public final class ProTerritoryValueUtils {
                 if (distance != currentDistance) {
                   currentDistance = distance;
                   // When we reach a new distance, check if we should end the search.
-                  if (!shouldContinueSearch()) {
-                    return false;
-                  }
+                  return shouldContinueSearch();
                 }
                 return true;
               }

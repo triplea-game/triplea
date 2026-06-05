@@ -151,6 +151,7 @@ public final class BackgroundTaskRunner {
         };
     workerRef.set(worker);
     worker.execute();
+    // Our JDialog is modal, so setVisible is blocking here
     waitDialog.setVisible(true);
 
     final @Nullable Throwable exception = exceptionRef.get();

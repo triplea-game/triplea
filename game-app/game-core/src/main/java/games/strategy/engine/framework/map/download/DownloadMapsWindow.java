@@ -194,7 +194,7 @@ public class DownloadMapsWindow extends JFrame {
     sb.append("<html>").append(String.format("Selected: %s", mapsString)).append(doubleSpace);
 
     if (selectedMapItems.size() == 1) {
-      final MapDownloadItem map = selectedMapItems.get(0);
+      final MapDownloadItem map = selectedMapItems.getFirst();
       if (!downloadMapsWindowModel.isInstalled(map)) {
         if (map.getDownloadSizeInBytes() != -1L) {
           sb.append(doubleSpace)
@@ -313,7 +313,7 @@ public class DownloadMapsWindow extends JFrame {
               newDescriptionPanelUpdatingSelectionListener(
                   mapSelections, descriptionPane, unsortedMaps, mapSizeLabel));
 
-      descriptionPane.setText(downloadMapsWindowModel.toHtmlString(unsortedMaps.get(0)));
+      descriptionPane.setText(downloadMapsWindowModel.toHtmlString(unsortedMaps.getFirst()));
       descriptionPane.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
 
       // Create label and search field
@@ -380,7 +380,7 @@ public class DownloadMapsWindow extends JFrame {
                       action,
                       mapDownloadSwingTable::getSelectedMapNames,
                       unsortedMaps,
-                      mapDownloadSwingTable::removeMapRow))
+                      mapDownloadSwingTable::removeMapRows))
               .build();
       main.add(southPanel, BorderLayout.SOUTH);
     }
@@ -423,7 +423,7 @@ public class DownloadMapsWindow extends JFrame {
     final int countSelectedMapItems = selectedMapItems.size();
     final String descriptionPanelText;
     if (countSelectedMapItems == 1) {
-      descriptionPanelText = downloadMapsWindowModel.toHtmlString(selectedMapItems.get(0));
+      descriptionPanelText = downloadMapsWindowModel.toHtmlString(selectedMapItems.getFirst());
     } else if (countSelectedMapItems > 1) {
       descriptionPanelText = "(multiple maps selected)";
     } else {
@@ -557,7 +557,7 @@ public class DownloadMapsWindow extends JFrame {
       final MapAction action,
       final Supplier<List<String>> mapSelection,
       final List<MapDownloadItem> maps,
-      final Consumer<String> tableRemoveAction) {
+      final Consumer<List<MapDownloadItem>> tableRemoveAction) {
 
     return new JPanelBuilder()
         .border(20)
@@ -582,7 +582,7 @@ public class DownloadMapsWindow extends JFrame {
       final MapAction action,
       final Supplier<List<String>> mapSelection,
       final List<MapDownloadItem> maps,
-      final Consumer<String> tableRemoveAction) {
+      final Consumer<List<MapDownloadItem>> tableRemoveAction) {
     final JButton actionButton;
 
     if (action == MapAction.REMOVE) {
@@ -612,7 +612,7 @@ public class DownloadMapsWindow extends JFrame {
   private Runnable removeAction(
       final Supplier<List<String>> mapSelection,
       final List<MapDownloadItem> maps,
-      final Consumer<String> tableRemoveAction) {
+      final Consumer<List<MapDownloadItem>> tableRemoveAction) {
     return () -> {
       final List<String> selectedValues = mapSelection.get();
       final List<MapDownloadItem> selectedMaps =
@@ -627,7 +627,7 @@ public class DownloadMapsWindow extends JFrame {
   private Runnable installAction(
       final Supplier<List<String>> mapSelection,
       final List<MapDownloadItem> maps,
-      final Consumer<String> tableRemoveAction) {
+      final Consumer<List<MapDownloadItem>> tableRemoveAction) {
     return () -> {
       final List<String> selectedValues = mapSelection.get();
       final List<MapDownloadItem> downloadList =
@@ -635,9 +635,8 @@ public class DownloadMapsWindow extends JFrame {
 
       if (!downloadList.isEmpty()) {
         progressPanel.download(downloadList);
+        tableRemoveAction.accept(downloadList);
       }
-
-      downloadList.stream().map(MapDownloadItem::getMapName).forEach(tableRemoveAction);
     };
   }
 }

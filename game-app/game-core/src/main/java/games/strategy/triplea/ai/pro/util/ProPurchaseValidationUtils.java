@@ -72,7 +72,10 @@ public final class ProPurchaseValidationUtils {
       final boolean isBid) {
     final GameData data = player.getData();
     final var placeDelegate =
-        (AbstractPlaceDelegate) data.getDelegate(isBid ? "placeBid" : "place");
+        (AbstractPlaceDelegate) data.getDelegateOptional(isBid ? "placeBid" : "place").orElse(null);
+    if (placeDelegate == null) {
+      return false;
+    }
     if (!isBid
         && !t.equals(factoryTerritory)
         && !units.stream()
