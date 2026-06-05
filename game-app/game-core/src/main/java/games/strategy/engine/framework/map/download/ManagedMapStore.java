@@ -2,7 +2,6 @@ package games.strategy.engine.framework.map.download;
 
 import games.strategy.engine.framework.map.file.system.loader.InstalledMap;
 import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -60,12 +59,6 @@ final class ManagedMapStore {
 
   Collection<ManagedMap> getAll() {
     return Collections.unmodifiableCollection(mapsByName.values());
-  }
-
-  List<ManagedMap> getAllSortedByName() {
-    final List<ManagedMap> result = new ArrayList<>(mapsByName.values());
-    result.sort(Comparator.comparing(ManagedMap::getMapName));
-    return result;
   }
 
   void put(final ManagedMap map) {
