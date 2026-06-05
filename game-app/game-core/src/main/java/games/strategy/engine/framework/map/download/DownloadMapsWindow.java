@@ -527,9 +527,7 @@ public class DownloadMapsWindow extends JFrame {
         throws InterruptedException {
       return BackgroundTaskRunner.runInBackgroundAndReturn(
           "Downloading list of available maps...",
-          () -> {
-            return new DownloadMapsWindowModel(MapListingFetcher.getMapDownloadList());
-          });
+          () -> new DownloadMapsWindowModel(MapListingFetcher.getMapDownloadList()));
     }
 
     private void createAndShow(

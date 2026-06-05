@@ -23,11 +23,6 @@ class DownloadMapsWindowMapsListing {
   private final Map<MapDownloadItem, InstalledMap> installed = new HashMap<>();
   private final Map<MapDownloadItem, InstalledMap> outOfDate = new HashMap<>();
 
-  DownloadMapsWindowMapsListing(
-      final Collection<MapDownloadItem> downloads, final ManagedMapStore mapStoreExisting) {
-    this(downloads, InstalledMapsListing.parseMapFiles(), mapStoreExisting);
-  }
-
   @VisibleForTesting
   DownloadMapsWindowMapsListing(
       final Collection<MapDownloadItem> downloads,
