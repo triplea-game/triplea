@@ -2044,15 +2044,17 @@ public final class Matches {
       if (!territoryIsLand().test(t)) {
         return false;
       }
-      final BattleTracker bt = AbstractMoveDelegate.getBattleTracker(player.getData());
-      if (bt.wasConquered(t)) {
+      final GameData data = player.getData();
+      // Battle delegate may be absent on cloned/loading game data.
+      if (data.getDelegateOptional("battle").isPresent()
+          && AbstractMoveDelegate.getBattleTracker(data).wasConquered(t)) {
         return false;
       }
       final GamePlayer owner = t.getOwner();
       if (owner.isNull()) {
         return false;
       }
-      final RelationshipTracker rt = player.getData().getRelationshipTracker();
+      final RelationshipTracker rt = data.getRelationshipTracker();
       return !(!rt.canMoveAirUnitsOverOwnedLand(player, owner)
           || !rt.canLandAirUnitsOnOwnedLand(player, owner));
     };

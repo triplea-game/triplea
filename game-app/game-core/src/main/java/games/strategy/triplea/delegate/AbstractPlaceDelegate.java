@@ -170,6 +170,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   public @Nullable String undoMove(final int moveIndex) {
     if (moveIndex < placements.size() && moveIndex >= 0) {
       final UndoablePlacement undoPlace = placements.get(moveIndex);
+      if (!undoPlace.getCanUndo()) {
+        return undoPlace.getReasonCantUndo();
+      }
       undoPlace.undo(bridge);
       placements.remove(moveIndex);
       updateUndoablePlacementIndexes();
@@ -222,7 +225,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
 
     while (!unitsLeftToPlace.isEmpty() && !producers.isEmpty()) {
       // Get next producer territory
-      final Territory producer = producers.remove(0);
+      final Territory producer = producers.removeFirst();
 
       int maxPlaceable = maxPlaceableMap.getInt(producer);
       if (maxPlaceable == 0) {
@@ -250,26 +253,18 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       }
       final int neededExtra = unitsCanBePlacedByThisProducer.size() - maxForThisProducer;
       if (maxPlaceable > maxForThisProducer) {
-        freePlacementCapacity(producer, neededExtra, unitsCanBePlacedByThisProducer, at, player);
+        freePlacementCapacity(producer, neededExtra, unitsCanBePlacedByThisProducer, player);
         final int newMaxForThisProducer =
             getMaxUnitsToBePlacedFrom(producer, unitsCanBePlacedByThisProducer, at, player);
         if (newMaxForThisProducer != maxPlaceable && neededExtra > newMaxForThisProducer) {
-          throw new IllegalStateException(
-              "getMaxUnitsToBePlaced originally returned: "
-                  + maxPlaceable
-                  + ", \nWhich is not the same as it is returning after using "
-                  + "freePlacementCapacity: "
-                  + newMaxForThisProducer
-                  + ", \nFor territory: "
-                  + at.getName()
-                  + ", Current Producer: "
-                  + producer.getName()
-                  + ", All Producers: "
-                  + producers
-                  + ", \nUnits Total: "
-                  + MyFormatter.unitsToTextNoOwner(units)
-                  + ", Units Left To Place By This Producer: "
-                  + MyFormatter.unitsToTextNoOwner(unitsCanBePlacedByThisProducer));
+          // Speculative count and freePlacementCapacity disagreed (the two algorithms
+          // for computing placements, that there are two different algorithms for the same
+          // thing is a problem in of itself).
+          // Trust the freshly-measured capacity and let any leftover units hit the
+          // "not enough territories" message.
+          if (newMaxForThisProducer != -1) {
+            maxPlaceable = newMaxForThisProducer;
+          }
         }
       }
       final Collection<Unit> placedUnits =
@@ -327,14 +322,26 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       change.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, player));
     }
     // can we move planes to land there
+    final Collection<Unit> movedFighters = new ArrayList<>();
     final String movedAirTranscriptTextForHistory =
-        moveAirOntoNewCarriers(at, producer, placeableUnits, player, change);
+        moveAirOntoNewCarriers(at, producer, placeableUnits, player, change, movedFighters);
     final Change remove = ChangeFactory.removeUnits(player, placeableUnits);
     final Change place = ChangeFactory.addUnits(at, placeableUnits);
     change.add(remove);
     change.add(place);
     final UndoablePlacement currentPlacement =
         new UndoablePlacement(change, producer, at, placeableUnits);
+    if (!movedFighters.isEmpty()) {
+      // Any prior placement that produced one of the moved fighters now has its placed units
+      // sitting on this carrier. Block undoing those prior placements until this one is undone,
+      // otherwise the inverted change would try to remove a fighter from a territory it has
+      // already left, leaving it duplicated in both the carrier's sea zone and the player's hand.
+      for (final UndoablePlacement prior : placements) {
+        if (!CollectionUtils.intersection(prior.getUnits(), movedFighters).isEmpty()) {
+          prior.addDependent(currentPlacement);
+        }
+      }
+    }
     placements.add(currentPlacement);
     updateUndoablePlacementIndexes();
     final String transcriptText =
@@ -378,7 +385,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       final Territory producer,
       final int freeSize,
       final Collection<Unit> unitsLeftToPlace,
-      final Territory at,
       final GamePlayer player) {
     // placements of the producer that could be redone by other territories
     final List<UndoablePlacement> redoPlacements = new ArrayList<>();
@@ -477,7 +483,14 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
           continue;
         }
         final Territory newProducer = tuple.getSecond();
-        int leftToPlace = getMaxUnitsToBePlacedFrom(newProducer, unitsLeftToPlace, at, player);
+        // Capacity is for the placement being split, not the current placement at `at`.
+        final Territory splitPlaceTerritory = placement.getPlaceTerritory();
+        int leftToPlace =
+            getMaxUnitsToBePlacedFrom(
+                newProducer,
+                unitsPlacedInTerritorySoFar(splitPlaceTerritory),
+                splitPlaceTerritory,
+                player);
         foundSpaceTotal += leftToPlace;
         // divide set of units that get placed
         final Collection<Unit> unitsForOldProducer = new ArrayList<>(placement.getUnits());
@@ -504,7 +517,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       }
     }
     if (foundSpaceTotal < freeSize && unusedSplitPlacements) {
-      freePlacementCapacity(producer, (freeSize - foundSpaceTotal), unitsLeftToPlace, at, player);
+      freePlacementCapacity(producer, (freeSize - foundSpaceTotal), unitsLeftToPlace, player);
     }
   }
 
@@ -514,7 +527,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       final Territory producer,
       final Collection<Unit> units,
       final GamePlayer player,
-      final CompositeChange placeChange) {
+      final CompositeChange placeChange,
+      final Collection<Unit> movedFightersOut) {
     if (!at.isWater()) {
       return null;
     }
@@ -557,6 +571,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     }
     final Change change = ChangeFactory.moveUnits(producer, at, movedFighters);
     placeChange.add(change);
+    movedFightersOut.addAll(movedFighters);
     return MyFormatter.unitsToTextNoOwner(movedFighters)
         + " moved from "
         + producer.getName()

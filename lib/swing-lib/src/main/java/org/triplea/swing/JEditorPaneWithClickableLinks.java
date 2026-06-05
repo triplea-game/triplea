@@ -16,6 +16,9 @@ public class JEditorPaneWithClickableLinks extends JEditorPane {
 
   public JEditorPaneWithClickableLinks(final String htmlTextContent) {
     super("text/html", htmlTextContent);
+    // Render CSS lengths per the W3C spec (1px = 1 screen pixel) instead of Swing's
+    // legacy ~1.33x inflation. See issue #6157.
+    putClientProperty(JEditorPane.W3C_LENGTH_UNITS, Boolean.TRUE);
     setEditable(false);
     setOpaque(false);
     setBorder(new EmptyBorder(10, 0, 20, 0));

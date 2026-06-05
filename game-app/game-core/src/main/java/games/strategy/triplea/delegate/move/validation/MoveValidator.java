@@ -1785,7 +1785,7 @@ public class MoveValidator {
             unitsWhichAreNotBeingTransportedOrDependent, Matches.unitIsLand());
     final int maxLandMoves = landUnits.isEmpty() ? 0 : getMaxMovement(landUnits).intValue();
     final int maxSteps =
-        GameStepPropertiesHelper.isCombatMove(data)
+        GameStepPropertiesHelper.isCombatMove(data, true)
             ? defaultRoute.numberOfSteps()
             : Math.max(defaultRoute.numberOfSteps(), maxLandMoves);
 

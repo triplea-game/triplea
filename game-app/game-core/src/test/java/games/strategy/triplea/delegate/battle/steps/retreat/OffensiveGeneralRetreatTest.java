@@ -1,5 +1,7 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
+import static games.strategy.triplea.Constants.TERRITORYEFFECT_ATTACHMENT_NAME;
+import static games.strategy.triplea.Constants.TERRITORY_ATTACHMENT_NAME;
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
@@ -15,6 +17,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -23,11 +26,14 @@ import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.IDelegateHistoryWriter;
+import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.attachments.TerritoryEffectAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
@@ -52,6 +58,38 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
   @Mock IDelegateBridge delegateBridge;
   @Mock BattleActions battleActions;
   @Mock Territory battleSite;
+
+  // Production land territories always carry a TerritoryAttachment; mock retreat sites
+  // need one stubbed so territory-effect lookups during retreat don't throw.
+  private static Territory givenLandRetreatSite() {
+    final Territory retreatSite = mock(Territory.class);
+    final UnitCollection collection = mock(UnitCollection.class);
+    when(retreatSite.getUnitCollection()).thenReturn(collection);
+    when(collection.getHolder()).thenReturn(retreatSite);
+    final TerritoryAttachment territoryAttachment = mock(TerritoryAttachment.class);
+    when(territoryAttachment.getTerritoryEffect()).thenReturn(List.of());
+    when(retreatSite.getAttachment(TERRITORY_ATTACHMENT_NAME)).thenReturn(territoryAttachment);
+    return retreatSite;
+  }
+
+  // Land retreat site whose territory effect blocks the given unit's type from entering.
+  // The site is filtered out before retreat executes, so collection stubs are not exercised.
+  private static Territory givenLandRetreatSiteBlockedFor(final Unit unit) {
+    final Territory retreatSite = mock(Territory.class);
+    final TerritoryEffect effect = mock(TerritoryEffect.class);
+    final TerritoryEffectAttachment effectAttachment = mock(TerritoryEffectAttachment.class);
+    lenient().doReturn(List.of(unit.getType())).when(effectAttachment).getUnitsNotAllowed();
+    lenient()
+        .doReturn(effectAttachment)
+        .when(effect)
+        .getAttachment(TERRITORYEFFECT_ATTACHMENT_NAME);
+    final TerritoryAttachment territoryAttachment = mock(TerritoryAttachment.class);
+    lenient().when(territoryAttachment.getTerritoryEffect()).thenReturn(List.of(effect));
+    lenient()
+        .when(retreatSite.getAttachment(TERRITORY_ATTACHMENT_NAME))
+        .thenReturn(territoryAttachment);
+    return retreatSite;
+  }
 
   @Nested
   class GetNames {
@@ -436,10 +474,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
         final Unit nonAmphibiousUnit = givenAnyUnit();
         when(nonAmphibiousUnit.getOwner()).thenReturn(attacker);
         final Collection<Unit> retreatingUnits = Set.of(nonAmphibiousUnit);
-        final Territory retreatSite = mock(Territory.class);
-        final UnitCollection retreatSiteCollection = mock(UnitCollection.class);
-        when(retreatSite.getUnitCollection()).thenReturn(retreatSiteCollection);
-        when(retreatSiteCollection.getHolder()).thenReturn(retreatSite);
+        final Territory retreatSite = givenLandRetreatSite();
         final BattleState battleState =
             spy(
                 givenBattleStateBuilder()
@@ -566,10 +601,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
         final Unit unit = givenAnyUnit();
         when(unit.getOwner()).thenReturn(attacker);
         final Collection<Unit> retreatingUnits = Set.of(unit);
-        final Territory retreatSite = mock(Territory.class);
-        final UnitCollection retreatSiteCollection = mock(UnitCollection.class);
-        when(retreatSite.getUnitCollection()).thenReturn(retreatSiteCollection);
-        when(retreatSiteCollection.getHolder()).thenReturn(retreatSite);
+        final Territory retreatSite = givenLandRetreatSite();
         final BattleState battleState =
             spy(
                 givenBattleStateBuilder()
@@ -595,10 +627,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
         final Unit unit = givenAnyUnit();
         when(unit.getOwner()).thenReturn(attacker);
         final Collection<Unit> retreatingUnits = Set.of(unit);
-        final Territory retreatSite = mock(Territory.class);
-        final UnitCollection retreatSiteCollection = mock(UnitCollection.class);
-        when(retreatSite.getUnitCollection()).thenReturn(retreatSiteCollection);
-        when(retreatSiteCollection.getHolder()).thenReturn(retreatSite);
+        final Territory retreatSite = givenLandRetreatSite();
         final BattleState battleState =
             spy(
                 givenBattleStateBuilder()
@@ -616,6 +645,36 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
         when(battleActions.queryRetreatTerritory(
                 battleState, delegateBridge, attacker, List.of(retreatSite), "attacker retreat?"))
             .thenReturn(Optional.of(retreatSite));
+
+        final OffensiveGeneralRetreat offensiveGeneralRetreat =
+            new OffensiveGeneralRetreat(battleState, battleActions);
+        offensiveGeneralRetreat.execute(executionStack, delegateBridge);
+        verify(battleState).retreatUnits(OFFENSE, retreatingUnits);
+      }
+
+      @Test
+      void territoryEffectBlocksRetreatToRestrictedSite() {
+        // Regression test for https://github.com/triplea-game/triplea/issues/9480.
+        // A retreat target whose territory effect bars the retreating unit's type
+        // must be filtered out of the offered retreat sites.
+        final Unit unit = givenAnyUnit();
+        when(unit.getOwner()).thenReturn(attacker);
+        final Collection<Unit> retreatingUnits = Set.of(unit);
+        final Territory allowedSite = givenLandRetreatSite();
+        final Territory blockedSite = givenLandRetreatSiteBlockedFor(unit);
+        final BattleState battleState =
+            spy(
+                givenBattleStateBuilder()
+                    .battleSite(battleSite)
+                    .attacker(attacker)
+                    .attackingUnits(retreatingUnits)
+                    .attackerRetreatTerritories(List.of(allowedSite, blockedSite))
+                    .gameData(givenGameData().build())
+                    .build());
+
+        when(battleActions.queryRetreatTerritory(
+                battleState, delegateBridge, attacker, List.of(allowedSite), "attacker retreat?"))
+            .thenReturn(Optional.of(allowedSite));
 
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);

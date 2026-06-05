@@ -203,11 +203,28 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   }
 
   public static void doInitialize(final BattleTracker battleTracker, final IDelegateBridge bridge) {
+    // Drop any pending battle whose units have been relocated since it was set up
+    // (e.g., via edit-mode moves during combat-move phase, see issue #14372).
+    battleTracker.clearStaleBattles();
     setupUnitsInSameTerritoryBattles(battleTracker, bridge);
     setupTerritoriesAbandonedToTheEnemy(battleTracker, bridge);
     // these are "blitzed" and "conquered" territories without a fight, without a pending battle
     battleTracker.clearFinishedBattles(bridge);
     resetMaxScrambleCount(bridge);
+  }
+
+  /**
+   * Re-runs the battle setup that normally happens at the start of the battle phase. Intended to be
+   * called when a relationship change (e.g. declaring war) leaves the current player's units
+   * sharing a territory with new enemies, or sitting alone in a territory that just became enemy
+   * owned. Without this, those units would not start a battle nor capture the territory until a
+   * subsequent turn.
+   */
+  public static void setUpBattlesForChangedRelationships(
+      final BattleTracker battleTracker, final IDelegateBridge bridge) {
+    setupUnitsInSameTerritoryBattles(battleTracker, bridge);
+    setupTerritoriesAbandonedToTheEnemy(battleTracker, bridge);
+    battleTracker.clearFinishedBattles(bridge);
   }
 
   private static void clearEmptyAirBattleAttacks(
@@ -647,11 +664,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       final Set<Unit> enemyUnitsOfAbandonedToUnits =
           abandonedToUnits.stream()
               .map(Unit::getOwner)
-              .map(
-                  p ->
-                      Matches.unitIsEnemyOf(p)
-                          .and(Matches.unitIsNotAir())
-                          .and(Matches.unitIsNotInfrastructure()))
+              .map(p -> Matches.unitIsEnemyOf(p).and(Matches.unitIsNotInfrastructure()))
               .map(territory.getUnitCollection()::getMatches)
               .flatMap(Collection::stream)
               .collect(Collectors.toSet());

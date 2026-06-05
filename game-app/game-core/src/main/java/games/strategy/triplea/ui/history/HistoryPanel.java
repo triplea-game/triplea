@@ -369,7 +369,9 @@ public class HistoryPanel extends JPanel {
           root = root.getParentPath();
         }
         final Enumeration<TreePath> expandedDescendants = tree.getExpandedDescendants(root);
-        stayExpandedPaths.addAll(Collections.list(expandedDescendants));
+        if (expandedDescendants != null) {
+          stayExpandedPaths.addAll(Collections.list(expandedDescendants));
+        }
       } else {
         collapseUpFromLastParent(parent);
       }

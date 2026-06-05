@@ -600,27 +600,29 @@ public final class UnitChooser extends JPanel {
             this, category.getType(), category.getOwner(), category.getUnits().size(), uiContext);
       }
 
+      private Image getMainImage() {
+        return NonWithdrawableFactory.getImage(
+            ImageKey.builder()
+                .type(category.getType())
+                .player(category.getOwner())
+                .damaged(damaged || category.hasDamageOrBombingUnitDamage())
+                .disabled(category.getDisabled())
+                .build(),
+            /* nonWithdrawable= */ !category.getCanRetreat());
+      }
+
       @Override
       public void paint(final Graphics g) {
         super.paint(g);
 
-        Image image =
-            NonWithdrawableFactory.getImage(
-                ImageKey.builder()
-                    .type(category.getType())
-                    .player(category.getOwner())
-                    .damaged(damaged || category.hasDamageOrBombingUnitDamage())
-                    .disabled(category.getDisabled())
-                    .build(),
-                /* nonWithdrawable= */ !category.getCanRetreat());
+        final Image image = getMainImage();
         g.drawImage(image, 0, 0, this);
 
-        int index = 1;
+        int x = image.getWidth(null);
         for (final UnitOwner holder : category.getDependents()) {
-          final int x = NonWithdrawableFactory.getUnitImageWidth() * index;
-          Image nonWithdrawableImage = NonWithdrawableFactory.getImage(ImageKey.of(holder), false);
-          g.drawImage(nonWithdrawableImage, x, 0, this);
-          index++;
+          final Image dependentImage = NonWithdrawableFactory.getImage(ImageKey.of(holder), false);
+          g.drawImage(dependentImage, x, 0, this);
+          x += dependentImage.getWidth(null);
         }
       }
 
@@ -631,14 +633,25 @@ public final class UnitChooser extends JPanel {
 
       @Override
       public Dimension getPreferredSize() {
-        int width =
-            NonWithdrawableFactory.getUnitImageWidth() * (1 + category.getDependents().size());
+        // Size the icon area from the actual image dimensions rather than the map's
+        // default unit size, since individual unit PNGs (e.g. ships, planes) can be
+        // wider or taller than the default and would otherwise be clipped.
+        final Image mainImage = getMainImage();
+        int width = mainImage.getWidth(null);
+        int height = mainImage.getHeight(null);
 
-        if (spaceRequiredForNonWithdrawableIcon) {
+        for (final UnitOwner holder : category.getDependents()) {
+          final Image dependentImage = NonWithdrawableFactory.getImage(ImageKey.of(holder), false);
+          width += dependentImage.getWidth(null);
+          height = Math.max(height, dependentImage.getHeight(null));
+        }
+
+        // Reserve trailing space on retreatable units so columns line up with the
+        // wider image used for non-withdrawable units.
+        if (spaceRequiredForNonWithdrawableIcon && category.getCanRetreat()) {
           width += NonWithdrawableFactory.getNonWithdrawableImageWidth() + PADDING;
         }
 
-        final int height = NonWithdrawableFactory.getUnitImageHeight();
         return new Dimension(width, height);
       }
     }
@@ -665,7 +678,7 @@ public final class UnitChooser extends JPanel {
     }
 
     private Image getImage(final ImageKey imageKey, final boolean nonWithdrawable) {
-      final Image undecoratedImage = unitImageFactoryForDecoratedImages.getImage(imageKey);
+      final Image undecoratedImage = getUnitImageFactoryForDecoratedImages().getImage(imageKey);
 
       return nonWithdrawable ? getImage(undecoratedImage) : undecoratedImage;
     }

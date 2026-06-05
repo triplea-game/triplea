@@ -37,7 +37,7 @@ class PuInfo extends InfoForFile {
     for (int i = 0; i < numResources / 2 - 1 + numResources % 2; i++) {
       writer.write(DELIMITER);
     }
-    writer.write("Resource Chart");
+    writer.write(csvField("Resource Chart"));
     for (int i = 0; i < numResources / 2 - numResources % 2; i++) {
       writer.write(DELIMITER);
     }
@@ -45,12 +45,12 @@ class PuInfo extends InfoForFile {
     // Print Resources
     writer.write(DELIMITER);
     for (final Resource currentResource : resourceList.getResources()) {
-      writer.write(currentResource.getName() + DELIMITER);
+      writer.write(csvField(currentResource.getName()) + DELIMITER);
     }
     writer.write(LINE_SEPARATOR);
     // Print Player's and Resource Amount's
     for (final GamePlayer currentPlayer : gamePlayers) {
-      writer.write(currentPlayer.getName());
+      writer.write(csvField(currentPlayer.getName()));
       final Map<Resource, Integer> resourceMap = infoMap.get(currentPlayer);
       for (final int amountResource : resourceMap.values()) {
         writer.write(DELIMITER + amountResource);

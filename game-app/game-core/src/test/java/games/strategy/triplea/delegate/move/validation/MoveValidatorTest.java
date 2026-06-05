@@ -5,6 +5,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.in;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -247,6 +248,20 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
             new MoveDescription(northernGermany.getUnitCollection(), r, unitsToTransports),
             germans);
     assertTrue(results.isMoveValid());
+  }
+
+  @Test
+  void testGetBestRouteDoesNotThrowOnNonMoveStep() {
+    // Regression for #11319: a mouse-hover during a battle step would call
+    // getBestRoute, which in turn called isCombatMove(data) (throwing variant)
+    // and crashed with "Cannot determine combat or not: <stepName>Battle".
+    while (!gameData.getSequence().getStep().getName().equals("britishBattle")) {
+      gameData.getSequence().next();
+    }
+    final Collection<Unit> units = infantry.create(1, british);
+    westCanada.getUnitCollection().addAll(units);
+    assertDoesNotThrow(
+        () -> MoveValidator.getBestRoute(westCanada, eastCanada, gameData, british, units, false));
   }
 
   @Test

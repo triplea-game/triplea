@@ -8,7 +8,7 @@
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- rollover daily -->
-            <fileNamePattern>triplea-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${user.home}/triplea/triplea-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <!-- each file should be at most 1MB, keep 3 days worth of history, but at most 10MB -->
             <maxFileSize>1MB</maxFileSize>
             <maxHistory>3</maxHistory>

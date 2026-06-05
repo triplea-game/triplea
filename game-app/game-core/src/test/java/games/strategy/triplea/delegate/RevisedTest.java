@@ -11,7 +11,9 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.battleship;
 import static games.strategy.triplea.delegate.GameDataTestUtil.bidPlaceDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
 import static games.strategy.triplea.delegate.GameDataTestUtil.british;
+import static games.strategy.triplea.delegate.GameDataTestUtil.carrier;
 import static games.strategy.triplea.delegate.GameDataTestUtil.destroyer;
+import static games.strategy.triplea.delegate.GameDataTestUtil.fighter;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.getIndex;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
@@ -79,6 +81,7 @@ import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -1589,5 +1592,146 @@ class RevisedTest extends AbstractClientSettingTestCase {
   void testTransportIsTransport() {
     assertTrue(Matches.unitIsSeaTransport().test(transport(gameData).create(british(gameData))));
     assertFalse(Matches.unitIsSeaTransport().test(infantry(gameData).create(british(gameData))));
+  }
+
+  /**
+   * Regression test for issue #14372: edit-mode relocating every unit out of a territory that has a
+   * pending battle must not leave the original battle behind. Otherwise, when the battle phase
+   * starts, the stale battle's cached attacker/defender unit lists no longer reflect what's in the
+   * territory and a zombie battle shows up alongside the correct one at the destination.
+   */
+  @Test
+  void testEditModeMovedUnitsDoNotLeaveStaleBattle() {
+    final GamePlayer british = british(gameData);
+    final GamePlayer germans = germans(gameData);
+    final Territory sz7 = territory("7 Sea Zone", gameData);
+    final Territory sz8 = territory("8 Sea Zone", gameData);
+    final Territory sz9 = territory("9 Sea Zone", gameData);
+
+    // British 3 subs in sz7; Germans carrier + fighter in sz8; sz9 cleared.
+    removeFrom(sz7, sz7.getUnits());
+    removeFrom(sz8, sz8.getUnits());
+    removeFrom(sz9, sz9.getUnits());
+    gameData.performChange(ChangeFactory.addUnits(sz7, submarine(gameData).create(3, british)));
+    gameData.performChange(ChangeFactory.addUnits(sz8, carrier(gameData).create(1, germans)));
+    gameData.performChange(ChangeFactory.addUnits(sz8, fighter(gameData).create(1, germans)));
+
+    final IDelegateBridge bridge = newDelegateBridge(british);
+    advanceToStep(bridge, "CombatMove");
+    final MoveDelegate moveDelegate = moveDelegate(gameData);
+    moveDelegate.setDelegateBridgeAndPlayer(bridge);
+    moveDelegate.start();
+
+    // Combat-move the British subs into sz8 — this registers a pending battle there.
+    move(sz7.getUnits(), new Route(sz7, sz8));
+    final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(gameData);
+    assertNotNull(
+        tracker.getPendingBattle(sz8, BattleType.NORMAL),
+        "combat move should set up a pending battle in sz8");
+
+    // Simulate edit-mode: relocate every unit in sz8 to sz9. EditDelegate.removeUnits/addUnits
+    // apply raw ChangeFactory changes that don't touch the BattleTracker, which is the bug
+    // path in #14372.
+    final Collection<Unit> unitsInSz8 = new ArrayList<>(sz8.getUnits());
+    gameData.performChange(ChangeFactory.removeUnits(sz8, unitsInSz8));
+    gameData.performChange(ChangeFactory.addUnits(sz9, unitsInSz8));
+
+    moveDelegate.end();
+
+    // Run the battle-phase initialization. Going through the full BattleDelegate.start() would
+    // auto-fight the (only) battle and pull dice into the picture; we just want to inspect the
+    // battle-tracker state after setup, so call doInitialize directly.
+    BattleDelegate.doInitialize(tracker, bridge);
+
+    // The stale battle at sz8 must be gone.
+    assertNull(
+        tracker.getPendingBattle(sz8, BattleType.NORMAL),
+        "battle at the original (now empty) site must be cleaned up");
+    // A correctly-sided battle must now exist at sz9.
+    final IBattle battleAtSz9 = tracker.getPendingBattle(sz9, BattleType.NORMAL);
+    assertNotNull(battleAtSz9, "a battle should be set up at the destination");
+    assertEquals(british, battleAtSz9.getAttacker());
+    assertEquals(3, battleAtSz9.getAttackingUnits().size(), "3 British subs as attackers");
+    assertEquals(2, battleAtSz9.getDefendingUnits().size(), "1 carrier + 1 fighter as defenders");
+    assertTrue(
+        battleAtSz9.getAttackingUnits().stream().allMatch(u -> u.getOwner().equals(british)),
+        "attackers are British");
+    assertTrue(
+        battleAtSz9.getDefendingUnits().stream().allMatch(u -> u.getOwner().equals(germans)),
+        "defenders are Germans");
+  }
+
+  /**
+   * Variant of #14372 reproducing what the bug reporter saw with "one unit type at a time" edit
+   * moves and a carrier + transport + fighter defender mix. The carrier and transport are sea units
+   * that get moved as separate edit operations from the fighter (air); we want to be sure the
+   * battle's attacker/defender split stays correct after the unit-by-type relocation.
+   */
+  @Test
+  void testEditModeOneUnitTypeAtATime_mixedSeaAndAirDefenders() {
+    final GamePlayer british = british(gameData);
+    final GamePlayer germans = germans(gameData);
+    final Territory sz7 = territory("7 Sea Zone", gameData);
+    final Territory sz8 = territory("8 Sea Zone", gameData);
+    final Territory sz9 = territory("9 Sea Zone", gameData);
+
+    removeFrom(sz7, sz7.getUnits());
+    removeFrom(sz8, sz8.getUnits());
+    removeFrom(sz9, sz9.getUnits());
+    gameData.performChange(ChangeFactory.addUnits(sz7, submarine(gameData).create(3, british)));
+    gameData.performChange(ChangeFactory.addUnits(sz8, carrier(gameData).create(1, germans)));
+    gameData.performChange(ChangeFactory.addUnits(sz8, transport(gameData).create(1, germans)));
+    gameData.performChange(ChangeFactory.addUnits(sz8, fighter(gameData).create(1, germans)));
+
+    final IDelegateBridge bridge = newDelegateBridge(british);
+    advanceToStep(bridge, "CombatMove");
+    final MoveDelegate moveDelegate = moveDelegate(gameData);
+    moveDelegate.setDelegateBridgeAndPlayer(bridge);
+    moveDelegate.start();
+
+    move(sz7.getUnits(), new Route(sz7, sz8));
+    final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(gameData);
+    assertNotNull(tracker.getPendingBattle(sz8, BattleType.NORMAL));
+
+    // Edit-move one unit type at a time, sz8 -> sz9. Each operation is a separate
+    // remove + add (mirroring what EditDelegate would emit).
+    final Collection<Unit> subs =
+        new ArrayList<>(sz8.getUnitCollection().getMatches(Matches.unitIsOwnedBy(british)));
+    gameData.performChange(ChangeFactory.removeUnits(sz8, subs));
+    gameData.performChange(ChangeFactory.addUnits(sz9, subs));
+
+    final Collection<Unit> carriers =
+        new ArrayList<>(sz8.getUnitCollection().getMatches(Matches.unitIsCarrier()));
+    gameData.performChange(ChangeFactory.removeUnits(sz8, carriers));
+    gameData.performChange(ChangeFactory.addUnits(sz9, carriers));
+
+    final Collection<Unit> transports =
+        new ArrayList<>(sz8.getUnitCollection().getMatches(Matches.unitIsSeaTransport()));
+    gameData.performChange(ChangeFactory.removeUnits(sz8, transports));
+    gameData.performChange(ChangeFactory.addUnits(sz9, transports));
+
+    final Collection<Unit> fighters =
+        new ArrayList<>(sz8.getUnitCollection().getMatches(Matches.unitIsAir()));
+    gameData.performChange(ChangeFactory.removeUnits(sz8, fighters));
+    gameData.performChange(ChangeFactory.addUnits(sz9, fighters));
+
+    moveDelegate.end();
+    BattleDelegate.doInitialize(tracker, bridge);
+
+    assertNull(tracker.getPendingBattle(sz8, BattleType.NORMAL));
+    final IBattle battleAtSz9 = tracker.getPendingBattle(sz9, BattleType.NORMAL);
+    assertNotNull(battleAtSz9);
+    assertEquals(british, battleAtSz9.getAttacker());
+    assertEquals(3, battleAtSz9.getAttackingUnits().size(), "3 British subs as attackers");
+    assertEquals(
+        3,
+        battleAtSz9.getDefendingUnits().size(),
+        "carrier + transport + fighter all as defenders");
+    assertTrue(
+        battleAtSz9.getAttackingUnits().stream().allMatch(u -> u.getOwner().equals(british)),
+        "attackers are British");
+    assertTrue(
+        battleAtSz9.getDefendingUnits().stream().allMatch(u -> u.getOwner().equals(germans)),
+        "defenders are Germans");
   }
 }

@@ -22,6 +22,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 import org.triplea.swing.SwingAction;
@@ -32,6 +33,7 @@ import org.triplea.util.ExitStatus;
  * any thread, and have a dialog that doesn't close until the dice roll finishes. If there is an
  * error we wait until we get a good roll before returning.
  */
+@Slf4j
 public class PbemDiceRoller implements IRandomSource {
   private final IRemoteDiceServer remoteDiceServer;
 
@@ -59,7 +61,7 @@ public class PbemDiceRoller implements IRandomSource {
         };
     return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action))
         .result
-        .orElseGet(() -> new int[0]);
+        .orElseThrow(() -> new RuntimeException("Dice roll interrupted before completing"));
   }
 
   @Override
@@ -248,10 +250,15 @@ public class PbemDiceRoller implements IRandomSource {
         appendText("\n");
         notifyError();
       } catch (final RuntimeException e) {
-        // Close screen in case an unexpected error occurs
-        // and rethrow exception for default error handling.
-        closeAndReturn();
-        throw e;
+        // Keep the dialog open so the user can retry or exit; we run on a worker thread,
+        // so a rethrow would be silently dropped and downstream battle logic would receive
+        // no dice.
+        log.error("Unexpected error rolling dice via {}", diceServer.getDisplayName(), e);
+        appendText("Unexpected error:\n");
+        final StringWriter writer = new StringWriter();
+        e.printStackTrace(new PrintWriter(writer));
+        appendText(writer.toString());
+        notifyError();
       }
     }
 
