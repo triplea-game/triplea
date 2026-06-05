@@ -1,8 +1,5 @@
 package games.strategy.engine.framework.map.download;
 
-import static games.strategy.engine.framework.map.download.ManagedMapStatus.AVAILABLE;
-import static games.strategy.engine.framework.map.download.ManagedMapStatus.INSTALLED;
-import static games.strategy.engine.framework.map.download.ManagedMapStatus.UPDATE_AVAILABLE;
 import static java.util.function.Predicate.not;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -22,7 +19,6 @@ import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 class DownloadMapsWindowMapsListing {
 
   private final Collection<MapDownloadItem> available = new ArrayList<>();
-  ;
   private final Map<MapDownloadItem, InstalledMap> installed = new HashMap<>();
   private final Map<MapDownloadItem, InstalledMap> outOfDate = new HashMap<>();
   // @TODO: Complete redesign to contain model for maps replacing state holdings in UI components
