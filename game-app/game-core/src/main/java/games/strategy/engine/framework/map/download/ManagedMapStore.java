@@ -6,10 +6,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import lombok.Getter;
 import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 
@@ -22,6 +25,8 @@ enum StoreState {
 final class ManagedMapStore {
 
   private final Map<String, ManagedMap> mapsByName = new HashMap<>();
+  private final Map<ManagedMapStatus, Set<ManagedMap>> groupsByStatus =
+      new EnumMap<>(ManagedMapStatus.class);
   @Getter private StoreState storeState;
 
   ManagedMapStore() {
@@ -31,6 +36,9 @@ final class ManagedMapStore {
   public void initialize(
       Collection<MapDownloadItem> downloads, InstalledMapsListing installedMapsListing) {
     storeState = StoreState.INITIALIZING;
+    for (ManagedMapStatus mapStatus : ManagedMapStatus.values()) {
+      groupsByStatus.put(mapStatus, new HashSet<>());
+    }
     downloads.forEach(
         downloadItem -> {
           Optional<InstalledMap> installedMapByName =
@@ -63,6 +71,7 @@ final class ManagedMapStore {
 
   void put(final ManagedMap map) {
     mapsByName.put(map.getMapName(), map);
+    groupsByStatus.get(map.getMapStatus()).add(map);
   }
 
   void remove(final String mapName) {
@@ -85,6 +94,10 @@ final class ManagedMapStore {
         .filter(m -> m.getMapStatus() == status)
         .sorted(Comparator.comparing(ManagedMap::getMapName))
         .toList();
+  }
+
+  int getCountByStatus(final ManagedMapStatus status) {
+    return groupsByStatus.get(status).size();
   }
 
   int size() {

@@ -58,6 +58,13 @@ import org.triplea.swing.jpanel.JPanelBuilder;
 /** Window that allows for map downloads and removal. */
 @Slf4j
 public class DownloadMapsWindow extends JFrame {
+
+  private final JTabbedPane tabbedPane;
+  private ManagedMapStore mapStore;
+  private JPanel availablePanel;
+  private JPanel outOfDatePanel = null;
+  private JPanel installedPanel = null;
+
   private enum MapAction {
     INSTALL,
     UPDATE,
@@ -111,11 +118,12 @@ public class DownloadMapsWindow extends JFrame {
 
     SwingComponents.addWindowClosingListener(this, progressPanel::cancel);
 
-    final Component outerTabs = newAvailableInstalledTabbedPanel(allDownloads, pendingDownloads);
+    tabbedPane = newAvailableInstalledTabbedPanel(allDownloads, pendingDownloads);
+    updateTabTitles();
 
     final JSplitPane splitPane =
         new JSplitPane(
-            JSplitPane.VERTICAL_SPLIT, outerTabs, SwingComponents.newJScrollPane(progressPanel));
+            JSplitPane.VERTICAL_SPLIT, tabbedPane, SwingComponents.newJScrollPane(progressPanel));
     splitPane.setDividerLocation(DIVIDER_POSITION);
     add(splitPane);
   }
@@ -265,6 +273,7 @@ public class DownloadMapsWindow extends JFrame {
   private JTabbedPane newAvailableInstalledTabbedPanel(
       final List<MapDownloadItem> downloads, final Set<MapDownloadItem> pendingDownloads) {
     final DownloadMapsWindowMapsListing mapList = new DownloadMapsWindowMapsListing(downloads);
+    this.mapStore = mapList.getMapStore();
 
     final JTabbedPane tabbedPane = new JTabbedPane();
 
@@ -273,26 +282,46 @@ public class DownloadMapsWindow extends JFrame {
     final List<MapDownloadItem> outOfDateDownloads =
         mapList.getOutOfDateExcluding(pendingDownloads);
     // For the UX, always show an available maps tab, even if it is empty
-    final JPanel available = newMapSelectionPanel(availableDownloads, MapAction.INSTALL, true);
-    tabbedPane.addTab(String.format("New Maps (%d)", availableDownloads.size()), available);
+    availablePanel = newMapSelectionPanel(availableDownloads, MapAction.INSTALL, true);
+    tabbedPane.addTab("", availablePanel);
 
     if (!outOfDateDownloads.isEmpty()) {
-      final JPanel outOfDate = newMapSelectionPanel(outOfDateDownloads, MapAction.UPDATE, false);
-      tabbedPane.addTab(
-          String.format("Updates Available (%d)", outOfDateDownloads.size()), outOfDate);
+      outOfDatePanel = newMapSelectionPanel(outOfDateDownloads, MapAction.UPDATE, false);
+      tabbedPane.addTab("", outOfDatePanel);
     }
 
     if (!mapList.getInstalled().isEmpty()) {
-      final JPanel installed =
+      installedPanel =
           newMapSelectionPanel(
               mapList.getInstalled().keySet().stream()
                   .sorted(Comparator.comparing(m -> m.getMapName().toUpperCase(Locale.ENGLISH)))
                   .toList(),
               MapAction.REMOVE,
               false);
-      tabbedPane.addTab(String.format("Installed (%d)", mapList.getInstalled().size()), installed);
+      tabbedPane.addTab("", installedPanel);
     }
     return tabbedPane;
+  }
+
+  private void updateTabTitles() {
+    setTabTitle(
+        availablePanel,
+        String.format("New Maps (%d)", mapStore.getCountByStatus(ManagedMapStatus.AVAILABLE)));
+    setTabTitle(
+        outOfDatePanel,
+        String.format(
+            "Updates Available (%d)",
+            mapStore.getCountByStatus(ManagedMapStatus.UPDATE_AVAILABLE)));
+    setTabTitle(
+        installedPanel,
+        String.format("Installed (%d)", mapStore.getCountByStatus(ManagedMapStatus.INSTALLED)));
+  }
+
+  private void setTabTitle(Component tab, String title) {
+    int index = tabbedPane.indexOfComponent(tab);
+    if (index != -1) {
+      tabbedPane.setTitleAt(index, title);
+    }
   }
 
   private JPanel newMapSelectionPanel(
