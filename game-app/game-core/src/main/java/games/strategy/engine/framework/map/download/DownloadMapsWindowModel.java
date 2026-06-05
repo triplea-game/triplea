@@ -4,7 +4,9 @@ import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListi
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
@@ -14,10 +16,13 @@ import org.triplea.java.Interruptibles;
 /** Various logic methods used by DownloadMapsWindows. */
 @Slf4j
 class DownloadMapsWindowModel {
-  private final InstalledMapsListing installedMapsListing;
+  @Getter private final InstalledMapsListing installedMapsListing;
+  @Getter private final ManagedMapStore mapStore;
 
-  DownloadMapsWindowModel() {
+  DownloadMapsWindowModel(List<MapDownloadItem> availableDownloads) {
     installedMapsListing = InstalledMapsListing.parseMapFiles();
+    mapStore = new ManagedMapStore();
+    new DownloadMapsWindowMapsListing(availableDownloads, installedMapsListing, mapStore);
   }
 
   public boolean isInstalled(final ManagedMap mapDownloadItem) {
