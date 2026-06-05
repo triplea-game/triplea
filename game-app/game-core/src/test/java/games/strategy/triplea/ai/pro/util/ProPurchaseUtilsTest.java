@@ -2,12 +2,8 @@ package games.strategy.triplea.ai.pro.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static games.strategy.triplea.delegate.GameDataTestUtil.britain;
-import static games.strategy.triplea.delegate.GameDataTestUtil.italy;
 import static games.strategy.triplea.delegate.GameDataTestUtil.unitType;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -29,6 +25,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class ProPurchaseUtilsTest {
@@ -47,24 +44,27 @@ public class ProPurchaseUtilsTest {
   @Test
   void getUnitsToConsumeBasic() {
     // Fort requires 1 trench and 1 material.
-    assertThat(
-        getUnitsToConsume(List.of(trench1, material1), List.of(fort1)),
-        containsInAnyOrder(trench1, material1));
+    assertThatContainsInAnyOrder(
+        Set.of(trench1, material1), getUnitsToConsume(List.of(trench1, material1), List.of(fort1)));
+  }
+
+  private void assertThatContainsInAnyOrder(Set<Unit> expectedUnits, Collection<Unit> actual) {
+    Assertions.assertEquals(expectedUnits, Set.copyOf(actual));
   }
 
   @Test
   void getUnitsToConsumeTwoUnits() {
-    assertThat(
-        getUnitsToConsume(List.of(trench1, trench2, material1, material2), List.of(fort1, fort2)),
-        containsInAnyOrder(trench1, trench2, material1, material2));
+    assertThatContainsInAnyOrder(
+        Set.of(trench1, trench2, material1, material2),
+        getUnitsToConsume(List.of(trench1, trench2, material1, material2), List.of(fort1, fort2)));
   }
 
   @Test
   void getUnitsToConsumeMultipleTypes() {
     // Trench requires 1 material + fort requires 1 trench and 1 material.
-    assertThat(
-        getUnitsToConsume(List.of(fort2, material1, material2, trench2), List.of(trench1, fort1)),
-        containsInAnyOrder(material1, material2, trench2));
+    assertThatContainsInAnyOrder(
+        Set.of(material1, material2, trench2),
+        getUnitsToConsume(List.of(fort2, material1, material2, trench2), List.of(trench1, fort1)));
   }
 
   @Test
@@ -79,43 +79,49 @@ public class ProPurchaseUtilsTest {
     return ProPurchaseUtils.getUnitsToConsume(british, existing, toBuild);
   }
 
+  /// Test strategy:
+  /// The map has property "Place in Any Territory" being set and the specific test-case is done for
+  /// player Egypt.
+  /// Therefore, the result should:
+  /// 1. Contain 7 entries.
+  /// 2. Contain one entry for each territory owned by Egypt.
+  /// 3. For each territory, the corresponding `canPlace` entries should be
+  /// either the territory itself or an adjacent sea zone (51, 53 or 72).
   @Test
-  void testFindPurchaseTerritories() {
-    final GamePlayer italy = checkNotNull(italy(gameData));
+  void testFindPurchaseTerritoriesWithPlaceInAnyTerritory() {
+    final GamePlayer egypt = checkNotNull(gameData.getPlayerList().getPlayerId("Egypt"));
+    final int countTerritoriesOwnedByEgypt = 7;
+    final Territory seaZone51 = gameData.getMap().getTerritoryOrThrow("51 Sea Zone");
+    final Territory seaZone53 = gameData.getMap().getTerritoryOrThrow("53 Sea Zone");
+    final Territory seaZone72 = gameData.getMap().getTerritoryOrThrow("72 Sea Zone");
 
     final ProAi proAi = new ProAi("Test Name", "Test Player Label");
     PurchaseDelegate purchaseDelegate = (PurchaseDelegate) gameData.getDelegate("Purchase");
-    final IDelegateBridge testBridge = newDelegateBridge(italy);
+    final IDelegateBridge testBridge = newDelegateBridge(egypt);
     purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
     final PlayerBridge playerBridgeMock = mock(PlayerBridge.class);
     when(playerBridgeMock.getGameData()).thenReturn(gameData);
-    proAi.initialize(playerBridgeMock, italy);
+    proAi.initialize(playerBridgeMock, egypt);
     proAi.initializeData();
 
     final Map<Territory, ProPurchaseTerritory> foundTerritoriesToPpt =
-        ProPurchaseUtils.findPurchaseTerritories(proAi.getProData(), italy);
+        ProPurchaseUtils.findPurchaseTerritories(proAi.getProData(), egypt);
 
-    // specific test-case generically checked: Should return (1) 11 entries,
-    // (2) each having 1 or more canPlace-entries and
-    // (3) each canPlace-entries is the territory itself or an adjacent sea zone
-    assertThat(foundTerritoriesToPpt.size(), equalTo(11));
+    Assertions.assertEquals(countTerritoriesOwnedByEgypt, foundTerritoriesToPpt.size());
     foundTerritoriesToPpt.forEach(
-        (territory, ppt) -> {
-          assertThat(Matches.isTerritoryOwnedBy(italy).test(territory), equalTo(true));
-          List<ProPlaceTerritory> canPlacePpts = ppt.getCanPlaceTerritories();
-          assertThat(canPlacePpts.isEmpty(), equalTo(false));
-          if (!territory.getName().equals("Al Kufrah")) {
-            assertThat(canPlacePpts.size() > 1, equalTo(true));
-          }
-          Set<Territory> adjacentSeaZones =
-              gameData.getMap().getNeighbors(territory, Matches.territoryIsWater());
-          canPlacePpts.forEach(
-              canPlacePpt -> {
-                Territory canPlaceTerritory = canPlacePpt.getTerritory();
-                assertThat(
-                    canPlaceTerritory.equals(territory)
-                        || adjacentSeaZones.contains(canPlaceTerritory),
-                    equalTo(true));
+        (territory, proPurchaseTerritory) -> {
+          Assertions.assertTrue(Matches.isTerritoryOwnedBy(egypt).test(territory));
+          List<ProPlaceTerritory> canPlacePlaceTerritories =
+              proPurchaseTerritory.getCanPlaceTerritories();
+          Assertions.assertFalse(canPlacePlaceTerritories.isEmpty());
+          canPlacePlaceTerritories.forEach(
+              proPlaceTerritory -> {
+                Territory territoryProPlace = proPlaceTerritory.getTerritory();
+                Assertions.assertTrue(
+                    territoryProPlace.equals(territory)
+                        || territoryProPlace.equals(seaZone51)
+                        || territoryProPlace.equals(seaZone53)
+                        || territoryProPlace.equals(seaZone72));
               });
         });
   }
