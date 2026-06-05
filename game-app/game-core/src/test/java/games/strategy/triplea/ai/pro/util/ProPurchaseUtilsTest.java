@@ -2,6 +2,8 @@ package games.strategy.triplea.ai.pro.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static games.strategy.triplea.delegate.GameDataTestUtil.britain;
+import static games.strategy.triplea.delegate.GameDataTestUtil.chinese;
+import static games.strategy.triplea.delegate.GameDataTestUtil.japanese;
 import static games.strategy.triplea.delegate.GameDataTestUtil.unitType;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -135,5 +137,79 @@ public class ProPurchaseUtilsTest {
     proAi.initialize(playerBridgeMock, playerEgypt);
     proAi.initializeData();
     return proAi;
+  }
+
+  /// Test strategy:
+  /// The map has for Chinese an attachment `placementAnyTerritory` with value `true`, hence
+  /// allowing unit production in each land owned by Chinese - except impassible Himilaya.
+  /// Therefore, the result should:
+  /// 1. Contain one entry each of those Chinese-owned each territory.
+  /// 2. The corresponding `canPlace` entries should contain only its territory.
+  @Test
+  void testFindPurchaseTerritoriesWithPlacementAnyTerritoryTrueExceptImpassible() {
+    final GameData pos2GameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
+    final GamePlayer playerChinese = checkNotNull(chinese(pos2GameData));
+    final int countTerritoriesOwnedByChinese = 3;
+    final Territory china = pos2GameData.getMap().getTerritoryOrThrow("China");
+    final Territory centralChina = pos2GameData.getMap().getTerritoryOrThrow("Central China");
+    final Territory sinkiang = pos2GameData.getMap().getTerritoryOrThrow("Sinkiang");
+    final ProAi proAi = getProAiForPurchaseStepOfPlayer(playerChinese, pos2GameData);
+
+    final Map<Territory, ProPurchaseTerritory> foundTerritoriesToPpt =
+        ProPurchaseUtils.findPurchaseTerritories(proAi.getProData(), playerChinese);
+
+    Assertions.assertEquals(countTerritoriesOwnedByChinese, foundTerritoriesToPpt.size());
+
+    foundTerritoriesToPpt.forEach(
+        (territory, proPurchaseTerritory) -> {
+          Assertions.assertTrue(
+              territory.equals(china)
+                  || territory.equals(centralChina)
+                  || territory.equals(sinkiang));
+          List<ProPlaceTerritory> canPlacePlaceTerritories =
+              proPurchaseTerritory.getCanPlaceTerritories();
+          Assertions.assertFalse(canPlacePlaceTerritories.isEmpty());
+          canPlacePlaceTerritories.stream()
+              .map(ProPlaceTerritory::getTerritory)
+              .map(territoryProPlace -> territoryProPlace.equals(territory))
+              .forEach(Assertions::assertTrue);
+        });
+  }
+
+  /// Test strategy:
+  /// The map has for Japanese has only Japan with a factory allowing unit production.
+  /// Therefore, the result should:
+  /// 1. Contain one entry for Japan (no placementAnyTerritory for Japan!).
+  /// 2. The corresponding `canPlace` entries should be either Japan or 60 / 61 Sea Zone.
+  @Test
+  void testFindPurchaseTerritoriesWithPlacementAnyTerritoryFalse() {
+    final GameData pos2GameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
+    final GamePlayer playerJapanese = checkNotNull(japanese(pos2GameData));
+    final int countTerritoriesOwnedByJapaneseWithFactory = 1;
+    final Territory japan = pos2GameData.getMap().getTerritoryOrThrow("Japan");
+    final Territory seaZone60 = pos2GameData.getMap().getTerritoryOrThrow("60 Sea Zone");
+    final Territory seaZone61 = pos2GameData.getMap().getTerritoryOrThrow("61 Sea Zone");
+    final ProAi proAi = getProAiForPurchaseStepOfPlayer(playerJapanese, pos2GameData);
+
+    final Map<Territory, ProPurchaseTerritory> foundTerritoriesToPpt =
+        ProPurchaseUtils.findPurchaseTerritories(proAi.getProData(), playerJapanese);
+
+    Assertions.assertEquals(
+        countTerritoriesOwnedByJapaneseWithFactory, foundTerritoriesToPpt.size());
+
+    Map.Entry<Territory, ProPurchaseTerritory> foundTerritory =
+        foundTerritoriesToPpt.entrySet().iterator().next();
+    Assertions.assertEquals(japan, foundTerritory.getKey());
+    foundTerritory
+        .getValue()
+        .getCanPlaceTerritories()
+        .forEach(
+            proPlaceTerritory -> {
+              Territory territoryProPlace = proPlaceTerritory.getTerritory();
+              Assertions.assertTrue(
+                  territoryProPlace.equals(japan)
+                      || territoryProPlace.equals(seaZone60)
+                      || territoryProPlace.equals(seaZone61));
+            });
   }
 }
