@@ -120,8 +120,7 @@ class EconomyPanel extends JPanel implements GameDataChangeListener {
           for (final ResourceStat resourceStat : resourceStats) {
             final double amount = resourceStat.getValue(player, gameData, uiContext.getMapData());
             final int income = resourceIncomes.getInt(resourceStat.resource);
-            collectedData[row][column] = getResourceAmountAndIncome(amount, income);
-            column++;
+            collectedData[row][column++] = getResourceAmountAndIncome(amount, income);
           }
           row++;
         }
@@ -134,8 +133,7 @@ class EconomyPanel extends JPanel implements GameDataChangeListener {
                 gameData.getAllianceTracker().getPlayersInAlliance(alliance).stream()
                     .mapToInt(p -> resourceIncomeMap.get(p).getInt(resourceStat.resource))
                     .sum();
-            collectedData[row][column] = getResourceAmountAndIncome(amount, income);
-            column++;
+            collectedData[row][column++] = getResourceAmountAndIncome(amount, income);
           }
           row++;
         }
