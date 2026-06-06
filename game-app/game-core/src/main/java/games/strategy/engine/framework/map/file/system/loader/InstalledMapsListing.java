@@ -118,7 +118,7 @@ public class InstalledMapsListing {
         .flatMap(InstalledMap::findContentRoot);
   }
 
-  private static String normalizeName(final String mapName) {
+  public static String normalizeName(final String mapName) {
     return mapName.toLowerCase(Locale.ROOT).replaceAll("[_ -]", "");
   }
 
