@@ -26,7 +26,7 @@ enum StoreState {
 
 final class ManagedMapStore {
 
-  private final Map<String, ManagedMap> mapsByName = new HashMap<>();
+  private final Map<String, ManagedMap> mapsByName = new HashMap<>(); // lower-case map name index
   private final Map<ManagedMapStatus, Set<ManagedMap>> groupsByStatus =
       new EnumMap<>(ManagedMapStatus.class);
   @Getter private StoreState storeState;
@@ -67,7 +67,7 @@ final class ManagedMapStore {
   }
 
   void updateStatus(final String mapName, final ManagedMapStatus status) {
-    final ManagedMap map = mapsByName.get(mapName);
+    final ManagedMap map = mapsByName.get(mapName.toLowerCase());
     if (map != null) {
       map.setMapStatus(status);
     }
@@ -97,10 +97,14 @@ final class ManagedMapStore {
   }
 
   public List<ManagedMap> getMapsByName(Supplier<Collection<String>> mapNamesSupplier) {
-    return mapNamesSupplier.get().stream().map(mapsByName::get).filter(Objects::nonNull).toList();
+    return mapNamesSupplier.get().stream()
+        .map(String::toLowerCase)
+        .map(mapsByName::get)
+        .filter(Objects::nonNull)
+        .toList();
   }
 
   public Optional<ManagedMap> getMapByName(String mapName) {
-    return Optional.ofNullable(mapsByName.getOrDefault(mapName, null));
+    return Optional.ofNullable(mapsByName.getOrDefault(mapName.toLowerCase(), null));
   }
 }
