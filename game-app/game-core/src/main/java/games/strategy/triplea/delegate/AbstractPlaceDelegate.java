@@ -1655,17 +1655,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     return CollectionUtils.getAny(factoryUnits).getOriginalOwner();
   }
 
-  /*
-  TODO: TripleA currently does not track which air units are assigned to which carrier. As a result, carrier capacity
-   can be calculated incorrectly when both friendly and owned carriers are present in the same sea zone.
-   Example:
-   A sea zone contains one owned carrier and one allied carrier.
-   The allied player has air units in the sea zone.
-   If the allied air units occupy the allied carrier, placement on the owned carrier should be allowed.
-   If the allied air units occupy the owned carrier, placement should not be allowed because newly produced aircraft
-   cannot be placed on an allied carrier.
-   TripleA currently allows placement in both situations.
-  */
   private static Optional<@Nls String> validateNewAirCanLandOnCarriers(
       final Territory to, final Collection<Unit> units, final GamePlayer player) {
     int cost = AirMovementValidator.carrierCost(units);
