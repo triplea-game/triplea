@@ -1777,6 +1777,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   }
 
   private void showHistory() {
+    if (historySyncher != null) {
+      return;
+    }
     inHistory.set(true);
     inGame.set(false);
     setWidgetActivation();
@@ -1789,9 +1792,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       if (clonedGameData == null) {
         return;
       }
-    }
-    if (historySyncher != null) {
-      return;
     }
     historySyncher = new HistorySynchronizer(clonedGameData, game);
     updatePanelsGameData(clonedGameData);
