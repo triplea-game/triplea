@@ -242,8 +242,10 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       SwingAction.of(
           "Show history",
           e -> {
-            showHistory();
-            dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
+            if (inHistory.compareAndSet(false, true)) {
+              showHistory();
+              dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
+            }
           });
 
   @Getter
@@ -1777,9 +1779,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   }
 
   private void showHistory() {
-    if (historySyncher != null) {
-      return;
-    }
     inHistory.set(true);
     inGame.set(false);
     setWidgetActivation();
