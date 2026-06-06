@@ -18,6 +18,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.AiUtils;
+import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -1048,6 +1049,8 @@ public class WeakAi extends AbstractAi {
     if (player.getUnitCollection().isEmpty()) {
       return;
     }
+    final RulesAttachment ra = player.getRulesAttachment();
+    final boolean placementAnyTerritory = (ra != null && ra.getPlacementAnyTerritory());
     final Optional<Territory> optionalCapitol =
         TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
     // place in capitol first
@@ -1058,7 +1061,7 @@ public class WeakAi extends AbstractAi {
     for (final Territory t : randomTerritories) {
       if (!t.equals(capitol)
           && t.isOwnedBy(player)
-          && t.anyUnitsMatch(Matches.unitCanProduceUnits())) {
+          && (placementAnyTerritory || t.anyUnitsMatch(Matches.unitCanProduceUnits()))) {
         placeAllWeCanOn(data, t, placeDelegate, player);
       }
     }
