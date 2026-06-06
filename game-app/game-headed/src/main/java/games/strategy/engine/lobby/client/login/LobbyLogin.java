@@ -81,8 +81,9 @@ public class LobbyLogin {
         .parent(parentWindow)
         .title("Password Not Updated")
         .errorMessage(
-            "Password not updated, your temporary password is expired.\n"
-                + "Use the account menu to reset your password."
+"""
+Password not updated, your temporary password is expired.
+Use the account menu to reset your password."""
                 + Optional.ofNullable(exception).map(e -> "\nError: " + e.getMessage()).orElse(""))
         .showDialog();
   }

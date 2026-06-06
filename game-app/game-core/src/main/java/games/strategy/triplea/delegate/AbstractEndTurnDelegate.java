@@ -210,7 +210,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
       }
       // we can't remove more than we have, and we also must flip the sign
       relationshipUpkeepTotalCost = Math.min(currentPUs, relationshipUpkeepTotalCost);
-      relationshipUpkeepTotalCost = -1 * relationshipUpkeepTotalCost;
+      relationshipUpkeepTotalCost *= -1;
       if (relationshipUpkeepTotalCost != 0) {
         final int newTotal = currentPUs + relationshipUpkeepTotalCost;
         final String transcriptText2 =

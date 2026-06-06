@@ -78,9 +78,8 @@ class RouteFinderTest {
     final TerritoryAttachment ta = mock(TerritoryAttachment.class);
     when(ta.getTerritoryEffect()).thenReturn(new ArrayList<>());
     territories.forEach(
-        territory -> {
-          when(territory.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME)).thenReturn(ta);
-        });
+        territory ->
+            when(territory.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME)).thenReturn(ta));
   }
 
   private void configureNeighbors(final Territory territory, final Territory... neighbors) {

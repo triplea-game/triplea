@@ -762,7 +762,7 @@ public class WeakAi extends AbstractAi {
       final IntegerMap<ProductionRule> purchase = new IntegerMap<>();
       int minCost = Integer.MAX_VALUE;
       int i = 0;
-      while ((minCost == Integer.MAX_VALUE || leftToSpend >= minCost) && i < 100000) {
+      while ((minCost == Integer.MAX_VALUE || leftToSpend >= minCost) && i < 100_000) {
         i++;
         for (final ProductionRule rule : rules) {
           final NamedAttachable resourceOrUnit = rule.getAnyResultKey();
@@ -974,7 +974,7 @@ public class WeakAi extends AbstractAi {
     }
     int minCost = Integer.MAX_VALUE;
     int i = 0;
-    while ((minCost == Integer.MAX_VALUE || leftToSpend >= minCost) && i < 100000) {
+    while ((minCost == Integer.MAX_VALUE || leftToSpend >= minCost) && i < 100_000) {
       i++;
       for (final ProductionRule rule : rules) {
         final NamedAttachable resourceOrUnit = rule.getAnyResultKey();

@@ -817,9 +817,7 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryIsVictoryCity() {
-    return t -> {
-      return 0 != TerritoryAttachment.get(t).map(TerritoryAttachment::getVictoryCity).orElse(0);
-    };
+    return t -> 0 != TerritoryAttachment.get(t).map(TerritoryAttachment::getVictoryCity).orElse(0);
   }
 
   public static Predicate<Territory> territoryIsEmpty() {
@@ -1041,7 +1039,7 @@ public final class Matches {
         if (ra != null && ra.getMovementRestrictionTerritories() != null) {
           final Collection<Territory> listedTerritories =
               ra.getListedTerritories(ra.getMovementRestrictionTerritories(), true, true);
-          if (!(ra.isMovementRestrictionTypeAllowed() == listedTerritories.contains(t))) {
+          if (ra.isMovementRestrictionTypeAllowed() != listedTerritories.contains(t)) {
             return false;
           }
         }

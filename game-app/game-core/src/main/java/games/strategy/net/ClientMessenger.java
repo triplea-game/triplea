@@ -62,7 +62,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
       // give up after 10 seconds
       int waitTimeMilliseconds = 0;
       while (true) {
-        if (waitTimeMilliseconds > 10000) {
+        if (waitTimeMilliseconds > 10_000) {
           socketChannel.close();
           throw new IOException("Connection refused");
         }

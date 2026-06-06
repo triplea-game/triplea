@@ -49,8 +49,9 @@ public final class LookAndFeel {
           SettingsWindow.updateLookAndFeel();
           JOptionPane.showMessageDialog(
               null,
-              "Look and feel changes can cause instability.\n"
-                  + "Please restart all running TripleA instances.",
+"""
+Look and feel changes can cause instability.
+Please restart all running TripleA instances.""",
               "Close TripleA and Restart",
               JOptionPane.WARNING_MESSAGE);
         });

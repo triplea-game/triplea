@@ -7,7 +7,8 @@ import org.triplea.java.collections.IntegerMap;
 /** A collection of {@link Resource}s. */
 public class ResourceCollection extends GameDataComponent {
   private static final long serialVersionUID = -1247795977888113757L;
-  public static final int MAX_FIT_VALUE = 10000; // how often costs can fit into resource collection
+  public static final int MAX_FIT_VALUE =
+      10_000; // how often costs can fit into resource collection
 
   private final IntegerMap<Resource> resources = new IntegerMap<>();
 

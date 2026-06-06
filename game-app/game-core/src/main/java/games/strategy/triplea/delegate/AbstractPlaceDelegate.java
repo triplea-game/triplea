@@ -1413,7 +1413,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
             && !constructionType.endsWith(Constants.CONSTRUCTION_TYPE_STRUCTURE)) {
           final boolean more = (wasFactoryThereAtStart ? moreWithFactory : moreWithoutFactory);
           final int production = (more ? territoryProduction : 0);
-          unitMax = Math.max(Math.max(unitMax, production), (unlimitedConstructions ? 10000 : 0));
+          unitMax = Math.max(Math.max(unitMax, production), (unlimitedConstructions ? 10_000 : 0));
         }
         final int existingCount = unitMapTo.getInt(constructionType);
         final int value = Math.min(unitMax - existingCount, unitMapHeld.getInt(constructionType));

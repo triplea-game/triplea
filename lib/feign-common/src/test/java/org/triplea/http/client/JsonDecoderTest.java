@@ -43,6 +43,6 @@ class JsonDecoderTest {
   void verifyEpochSecondAndNanoDecoding() {
     final InstantExample event = JsonDecoder.decoder().fromJson(JSON_STRING, InstantExample.class);
 
-    assertThat(event.instant, is(Instant.ofEpochSecond(1559794806, 329342000)));
+    assertThat(event.instant, is(Instant.ofEpochSecond(1_559_794_806, 329_342_000)));
   }
 }

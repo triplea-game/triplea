@@ -11,5 +11,5 @@ public class HttpClientConstants {
   public static final int TITLE_MAX_LENGTH = 125;
 
   /** Max length for github issue body text. */
-  public static final int REPORT_BODY_MAX_LENGTH = 65536;
+  public static final int REPORT_BODY_MAX_LENGTH = 65_536;
 }

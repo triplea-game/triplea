@@ -39,8 +39,9 @@ public class MapListingFetcher {
           .getMaps();
     } catch (FeignException e) {
       log.warn(
-          "Failed to download the list of available maps from TripleA servers.\n"
-              + "You can download the needed maps manually into your TripleA maps subfolder from <a href='https://github.com/triplea-maps/'>https://github.com/triplea-maps/</a>.",
+"""
+Failed to download the list of available maps from TripleA servers.
+You can download the needed maps manually into your TripleA maps subfolder from <a href='https://github.com/triplea-maps/'>https://github.com/triplea-maps/</a>.""",
           e);
       return List.of();
     }

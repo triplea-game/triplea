@@ -354,7 +354,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     // this list is null, empty, or contains "", so return a blank list of territories
     if (list == null
         || list.length == 0
-        || (list.length == 1 && (list[0] == null || list[0].length() == 0))) {
+        || (list.length == 1 && (list[0] == null || list[0].isEmpty()))) {
       return territories;
     }
     boolean haveSetCount = false;

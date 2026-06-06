@@ -97,7 +97,7 @@ public class PoliticalStateOverview extends JPanel {
       for (final GamePlayer horizontalPlayer : data.getPlayerList()) {
         addCell(getRelationshipLabel(verticalPlayer, horizontalPlayer), insets, x++, y);
       }
-      y = y + 2;
+      y += 2;
       x = 1;
     }
 

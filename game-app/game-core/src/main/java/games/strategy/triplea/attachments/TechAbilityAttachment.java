@@ -262,7 +262,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   private void setMinimumTerritoryValueForProductionBonus(final String value)
       throws GameParseException {
     minimumTerritoryValueForProductionBonus =
-        getIntInRange("minimumTerritoryValueForProductionBonus", value, 10000, true);
+        getIntInRange("minimumTerritoryValueForProductionBonus", value, 10_000, true);
   }
 
   private void setMinimumTerritoryValueForProductionBonus(final Integer value) {

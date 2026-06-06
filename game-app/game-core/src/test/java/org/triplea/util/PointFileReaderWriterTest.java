@@ -116,7 +116,10 @@ final class PointFileReaderWriterTest {
 
     @Test
     void shouldErrorOnDuplicateKey() {
-      final String content1 = "" + "54 Sea Zone  (1011,1021)\n" + "54 Sea Zone  (1011,1021)";
+      final String content1 =
+"""
+54 Sea Zone  (1011,1021)
+54 Sea Zone  (1011,1021)""";
 
       final Exception e1 =
           assertThrows(
@@ -125,7 +128,9 @@ final class PointFileReaderWriterTest {
       assertTrue(e1.getMessage().contains("54 Sea Zone"));
 
       final String content2 =
-          "" + "54 Sea Zone  (1011,1021)\n" + "54 Sea Zone  (      1011  , 1021    )   ";
+"""
+54 Sea Zone  (1011,1021)
+54 Sea Zone  (      1011  , 1021    )   """;
 
       final Exception e2 =
           assertThrows(
@@ -133,7 +138,10 @@ final class PointFileReaderWriterTest {
               () -> PointFileReaderWriter.readOneToOne(pathToVirtualTextFile(content2)));
       assertTrue(e2.getMessage().contains("54 Sea Zone"));
 
-      final String content3 = "" + "54 Sea Zone  (1011,1021)\n" + "54 Sea Zone  (1021,1011)";
+      final String content3 =
+"""
+54 Sea Zone  (1011,1021)
+54 Sea Zone  (1021,1011)""";
 
       final Exception e3 =
           assertThrows(
@@ -145,10 +153,10 @@ final class PointFileReaderWriterTest {
     @Test
     void shouldSupportNegativeValues() throws Exception {
       final String content =
-          ""
-              + "United Kingdom (-1011,1021)\n"
-              + "Germany (1234, -12424)\n"
-              + "Eastern United States (-123, -456)";
+"""
+United Kingdom (-1011,1021)
+Germany (1234, -12424)
+Eastern United States (-123, -456)""";
 
       final Map<String, Point> pointsByName =
           PointFileReaderWriter.readOneToOne(pathToVirtualTextFile(content));
@@ -158,7 +166,7 @@ final class PointFileReaderWriterTest {
           is(
               Map.of(
                   "United Kingdom", new Point(-1011, 1021),
-                  "Germany", new Point(1234, -12424),
+                  "Germany", new Point(1234, -12_424),
                   "Eastern United States", new Point(-123, -456))));
     }
   }
@@ -173,10 +181,11 @@ final class PointFileReaderWriterTest {
     @Test
     void shouldReadMultiplePointsPerName() throws Exception {
       final String content =
-          ""
-              + "Belarus  (1011,1021)  (1012,1022)  (1013,1023)\n"
-              + "54 Sea Zone  (2011,2021)  (2012,2022)\n"
-              + "Philippines (3011,3021)\n";
+"""
+Belarus  (1011,1021)  (1012,1022)  (1013,1023)
+54 Sea Zone  (2011,2021)  (2012,2022)
+Philippines (3011,3021)
+""";
 
       final Map<String, List<Point>> pointListsByName =
           PointFileReaderWriter.readOneToMany(pathToVirtualTextFile(content));
@@ -193,7 +202,10 @@ final class PointFileReaderWriterTest {
 
     @Test
     void shouldErrorOnDuplicateKey() {
-      final String content1 = "" + "54 Sea Zone  (1011,1021)\n" + "54 Sea Zone  (1011,1021)";
+      final String content1 =
+"""
+54 Sea Zone  (1011,1021)
+54 Sea Zone  (1011,1021)""";
 
       final Exception e1 =
           assertThrows(
@@ -202,7 +214,9 @@ final class PointFileReaderWriterTest {
       assertTrue(e1.getMessage().contains("54 Sea Zone"));
 
       final String content2 =
-          "" + "54 Sea Zone  (1011,1021)\n" + "54 Sea Zone  (      1011  , 1021    )   ";
+"""
+54 Sea Zone  (1011,1021)
+54 Sea Zone  (      1011  , 1021    )   """;
 
       final Exception e2 =
           assertThrows(
@@ -211,9 +225,9 @@ final class PointFileReaderWriterTest {
       assertTrue(e2.getMessage().contains("54 Sea Zone"));
 
       final String content3 =
-          ""
-              + "54 Sea Zone  (1011,1021)  (1012,1022)  (1013,1023)\n"
-              + "54 Sea Zone  (2011,2021)  (2012,2022)";
+"""
+54 Sea Zone  (1011,1021)  (1012,1022)  (1013,1023)
+54 Sea Zone  (2011,2021)  (2012,2022)""";
 
       final Exception e3 =
           assertThrows(
@@ -235,7 +249,7 @@ final class PointFileReaderWriterTest {
               Map.of(
                   "United Kingdom",
                   List.of(
-                      new Point(-1011, 1021), new Point(1234, -12424), new Point(-123, -456)))));
+                      new Point(-1011, 1021), new Point(1234, -12_424), new Point(-123, -456)))));
     }
   }
 
@@ -250,12 +264,13 @@ final class PointFileReaderWriterTest {
     @Test
     void shouldReadMultiplePlacementsPerName() throws Exception {
       final String content =
-          ""
-              + "Belarus  (1011,1021)  (1012,1022)  (1013,1023)  | overflowToLeft=false\n"
-              + "54 Sea Zone  (2011,2021)  (2012,2022)     | overflowToLeft=true\n"
-              + "Philippines (3011,3021)     | weird other thing =true \n"
-              + "East America (4011,4021)\n"
-              + "East Africa (5011,5021) | overflowToLeft=not a boolean\n";
+"""
+Belarus  (1011,1021)  (1012,1022)  (1013,1023)  | overflowToLeft=false
+54 Sea Zone  (2011,2021)  (2012,2022)     | overflowToLeft=true
+Philippines (3011,3021)     | weird other thing =true
+East America (4011,4021)
+East Africa (5011,5021) | overflowToLeft=not a boolean
+""";
 
       final Map<String, Tuple<List<Point>, Boolean>> pointListsByName =
           PointFileReaderWriter.readOneToManyPlacements(pathToVirtualTextFile(content));
@@ -282,9 +297,9 @@ final class PointFileReaderWriterTest {
     @Test
     void shouldErrorOnDuplicateKey() {
       final String content1 =
-          ""
-              + "54 Sea Zone  (1011,1021)  | overflowToLeft=false\n"
-              + "54 Sea Zone  (1011,1021)  | overflowToLeft=false";
+"""
+54 Sea Zone  (1011,1021)  | overflowToLeft=false
+54 Sea Zone  (1011,1021)  | overflowToLeft=false""";
 
       final Exception e1 =
           assertThrows(
@@ -293,9 +308,9 @@ final class PointFileReaderWriterTest {
       assertTrue(e1.getMessage().contains("54 Sea Zone"));
 
       final String content2 =
-          ""
-              + "54 Sea Zone  (1011,1021)  | overflowToLeft=true\n"
-              + "54 Sea Zone  (      1011  , 1021    )    | overflowToLeft=true";
+"""
+54 Sea Zone  (1011,1021)  | overflowToLeft=true
+54 Sea Zone  (      1011  , 1021    )    | overflowToLeft=true""";
 
       final Exception e2 =
           assertThrows(
@@ -304,9 +319,9 @@ final class PointFileReaderWriterTest {
       assertTrue(e2.getMessage().contains("54 Sea Zone"));
 
       final String content3 =
-          ""
-              + "54 Sea Zone  (1011,1021)  (1012,1022)  (1013,1023)  | qwertz =false\n"
-              + "54 Sea Zone  (2011,2021)  (2012,2022)  | overflowToLeft=true";
+"""
+54 Sea Zone  (1011,1021)  (1012,1022)  (1013,1023)  | qwertz =false
+54 Sea Zone  (2011,2021)  (2012,2022)  | overflowToLeft=true""";
 
       final Exception e3 =
           assertThrows(
@@ -329,7 +344,7 @@ final class PointFileReaderWriterTest {
                   "United Kingdom",
                   Tuple.of(
                       List.of(
-                          new Point(-1011, 1021), new Point(1234, -12424), new Point(-123, -456)),
+                          new Point(-1011, 1021), new Point(1234, -12_424), new Point(-123, -456)),
                       Boolean.FALSE))));
     }
   }
@@ -345,11 +360,11 @@ final class PointFileReaderWriterTest {
     @Test
     void shouldReadMultiplePolygonsPerName() throws Exception {
       final String content =
-          "Belarus  <  (1011,1021) (1012,1022) (1013,1023) >\n"
-              + "54 Sea Zone  <  (2011,2021) (2012,2022) (2013,2023) >  <  "
-              + "(2111,2121) (2112,2122) (2113,2123) >\n"
-              + "Philippines  <  (3011,3021) (3012,3022) (3013,3023) >  <  "
-              + "(3111,3121) (3112,3122) >  <  (3211,3221) >\n";
+"""
+Belarus  <  (1011,1021) (1012,1022) (1013,1023) >
+54 Sea Zone  <  (2011,2021) (2012,2022) (2013,2023) >  <  (2111,2121) (2112,2122) (2113,2123) >
+Philippines  <  (3011,3021) (3012,3022) (3013,3023) >  <  (3111,3121) (3112,3122) >  <  (3211,3221) >
+""";
 
       final Map<String, List<Polygon>> polygonListsByName =
           PointFileReaderWriter.readOneToManyPolygons(pathToVirtualTextFile(content));
@@ -381,9 +396,9 @@ final class PointFileReaderWriterTest {
     @Test
     void shouldErrorOnDuplicateKey() {
       final String content1 =
-          ""
-              + "54 Sea Zone  <  (1011,1021) (1012,1022) (1013,1023) >\n"
-              + "54 Sea Zone  <  (1011,1021) (1012,1022) (1013,1023) >";
+"""
+54 Sea Zone  <  (1011,1021) (1012,1022) (1013,1023) >
+54 Sea Zone  <  (1011,1021) (1012,1022) (1013,1023) >""";
 
       final Exception e1 =
           assertThrows(
@@ -392,9 +407,9 @@ final class PointFileReaderWriterTest {
       assertTrue(e1.getMessage().contains("54 Sea Zone"));
 
       final String content2 =
-          "54 Sea Zone  <  (1011,1021) (1012,1022) (1013,1023) >\n"
-              + "54 Sea Zone  <  (1011,1021) (1012,1022) (1013,1023) >  <  "
-              + "(2111,2121) (2112,2122) (2113,2123) >";
+"""
+54 Sea Zone  <  (1011,1021) (1012,1022) (1013,1023) >
+54 Sea Zone  <  (1011,1021) (1012,1022) (1013,1023) >  <  (2111,2121) (2112,2122) (2113,2123) >""";
       final Exception e2 =
           assertThrows(
               IOException.class,
@@ -402,9 +417,9 @@ final class PointFileReaderWriterTest {
       assertTrue(e2.getMessage().contains("54 Sea Zone"));
 
       final String content3 =
-          "54 Sea Zone  <  (1011,1021) (1012,1022) (1013,1023) >\n"
-              + "54 Sea Zone  <  (2011 , 2021) (2012 , 2022 ) ( 2013,21023) >  <  "
-              + "(2111,2121) (2112,2122) (2113,2123) >";
+"""
+54 Sea Zone  <  (1011,1021) (1012,1022) (1013,1023) >
+54 Sea Zone  <  (2011 , 2021) (2012 , 2022 ) ( 2013,21023) >  <  (2111,2121) (2112,2122) (2113,2123) >""";
       final Exception e3 =
           assertThrows(
               IOException.class,
@@ -436,7 +451,7 @@ final class PointFileReaderWriterTest {
           is(
               List.of(
                   List.of(
-                      new Point(-1011, 1021), new Point(1234, -12424), new Point(-123, -456)))));
+                      new Point(-1011, 1021), new Point(1234, -12_424), new Point(-123, -456)))));
     }
   }
 

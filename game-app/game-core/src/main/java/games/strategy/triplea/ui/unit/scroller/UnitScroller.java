@@ -197,15 +197,14 @@ public class UnitScroller {
   private void focusCapital() {
     Optional.ofNullable(currentPlayerSupplier.get())
         .ifPresent(
-            player -> {
-              TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(
-                      player, gameData.getMap())
-                  .ifPresent(
-                      territory -> {
-                        drawUnitAvatarPane(territory);
-                        territoryNameLabel.setText(territory.getName());
-                      });
-            });
+            player ->
+                TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(
+                        player, gameData.getMap())
+                    .ifPresent(
+                        territory -> {
+                          drawUnitAvatarPane(territory);
+                          territoryNameLabel.setText(territory.getName());
+                        }));
   }
 
   private void drawUnitAvatarPane(final @Nonnull Territory territory) {
