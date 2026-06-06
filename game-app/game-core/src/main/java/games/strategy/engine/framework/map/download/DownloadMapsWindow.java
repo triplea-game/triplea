@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkState;
 
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
+import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
 import games.strategy.engine.framework.map.listing.MapListingFetcher;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.EngineImageLoader;
@@ -20,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -97,7 +97,7 @@ public class DownloadMapsWindow extends JFrame {
     final Set<MapDownloadItem> pendingDownloads = new HashSet<>();
     final Collection<String> unknownMapNames = new ArrayList<>();
     for (final String mapName : pendingDownloadMapNames) {
-      findMap(mapName, getMapStore())
+      findMapByName(mapName)
           .map(ManagedMap::getMapDownloadItem)
           .ifPresentOrElse(pendingDownloads::add, () -> unknownMapNames.add(mapName));
     }
@@ -253,18 +253,13 @@ public class DownloadMapsWindow extends JFrame {
     return sb.toString();
   }
 
-  private static Optional<ManagedMap> findMap(
-      final String mapName, final ManagedMapStore mapStore) {
-    Optional<ManagedMap> mapByName = mapStore.getMapByName(mapName);
+  private Optional<ManagedMap> findMapByName(final String mapName) {
+    Optional<ManagedMap> mapByName = getMapStore().getMapByName(mapName);
     if (mapByName.isPresent()) {
       return mapByName;
     }
-    final String normalizedName = normalizeName(mapName);
-    return mapStore.getMapByName(normalizedName);
-  }
-
-  private static String normalizeName(final String mapName) {
-    return mapName.replace(' ', '_').toLowerCase(Locale.ROOT);
+    final String normalizedName = InstalledMapsListing.normalizeName(mapName);
+    return getMapStore().getMapByName(normalizedName);
   }
 
   private JTabbedPane newAvailableInstalledTabbedPanel() {
