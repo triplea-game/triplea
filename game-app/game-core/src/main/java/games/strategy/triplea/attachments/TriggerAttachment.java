@@ -1873,7 +1873,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       throw new GameParseException(
           "Invalid relationshipChange declaration: "
               + relChange
-              + " \n Use: player1:player2:oldRelation:newRelation\n"
+              +
+"""
+
+ Use: player1:player2:oldRelation:newRelation
+"""
               + thisErrorMsg());
     }
     getPlayerByName(s[0])
@@ -2131,7 +2135,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   private void setPlayerAttachmentName(final String playerAttachmentName)
       throws GameParseException {
     // replace-all to automatically correct legacy (1.8) attachment spelling
-    final String name = playerAttachmentName.replaceAll("ttatch", "ttach");
+    final String name = playerAttachmentName.replace("ttatch", "ttach");
     final String[] s = splitOnColon(name);
     if (s.length != 2) {
       throw new GameParseException(

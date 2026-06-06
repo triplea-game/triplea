@@ -72,7 +72,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Default battle simulation count in dice games") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.battleCalcSimulationCountDice, 10, 100000);
+      return intValueRange(ClientSetting.battleCalcSimulationCountDice, 10, 100_000);
     }
   },
 
@@ -82,7 +82,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Default battle simulation count in low luck games") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.battleCalcSimulationCountLowLuck, 10, 100000);
+      return intValueRange(ClientSetting.battleCalcSimulationCountLowLuck, 10, 100_000);
     }
   },
 
@@ -117,8 +117,9 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   SPACE_BAR_CONFIRMS_CASUALTIES_BINDING(
       "Space bar confirms casualties",
       SettingType.COMBAT,
-      "When set to true casualty confirmation can be accepted by pressing space bar.\n"
-          + "When set to false, the confirm casualty button has to always be clicked.") {
+"""
+When set to true casualty confirmation can be accepted by pressing space bar.
+When set to false, the confirm casualty button has to always be clicked.""") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return booleanRadioButtons(ClientSetting.spaceBarConfirmsCasualties);
@@ -148,9 +149,9 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   LOOK_AND_FEEL_PREF_BINDING(
       "Look and Feel",
       SettingType.LOOK_AND_FEEL,
-      "Updates UI theme for TripleA.\n"
-          + "WARNING: restart all running TripleA instances after changing this "
-          + "setting to avoid system instability.") {
+"""
+Updates UI theme for TripleA.
+WARNING: restart all running TripleA instances after changing this setting to avoid system instability.""") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       final Collection<UIManager.LookAndFeelInfo> lookAndFeels =
@@ -202,8 +203,9 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   PROXY_CHOICE(
       "Network Proxy",
       SettingType.NETWORK,
-      "Configure TripleA's Network and Proxy Settings\n"
-          + "This only effects Play-By-Forum games, dice servers, and map downloads.") {
+"""
+Configure TripleA's Network and Proxy Settings
+This only effects Play-By-Forum games, dice servers, and map downloads.""") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return proxySettings(
@@ -244,9 +246,9 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   SHOW_BETA_FEATURES_BINDING(
       "Show Beta Features",
       SettingType.TESTING,
-      "Toggles whether to show 'beta' features. These are game features that are still "
-          + "under development and potentially may not be working yet.\n"
-          + "Restart to fully activate") {
+"""
+Toggles whether to show 'beta' features. These are game features that are still under development and potentially may not be working yet.
+Restart to fully activate""") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return booleanRadioButtons(ClientSetting.showBetaFeatures);
@@ -266,10 +268,9 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   SHOW_SERIALIZE_FEATURES_BINDING(
       "Use New Serialization",
       SettingType.TESTING,
-      "Toggles whether to use the new serialization mechanisms. This mechanism is still "
-          + "under development and potentially may break saved games and network games.\n"
-          + "All players in the same game must have it set to the same value. "
-          + "Restart to fully activate") {
+"""
+Toggles whether to use the new serialization mechanisms. This mechanism is still under development and potentially may break saved games and network games.
+All players in the same game must have it set to the same value. Restart to fully activate""") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return booleanRadioButtons(ClientSetting.showSerializeFeatures);

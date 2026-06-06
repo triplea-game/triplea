@@ -105,7 +105,7 @@ public final class ClientLoginValidator implements ILoginValidator {
       if (!Objects.equals(errorMessage, ErrorMessages.NO_ERROR)) {
         // sleep on average 2 seconds
         // try to prevent flooding to guess the password
-        Interruptibles.sleep((long) (4_000 * Math.random()));
+        Interruptibles.sleep((long) (4000 * Math.random()));
         return errorMessage;
       }
     }

@@ -67,7 +67,18 @@ public class ErrorReportBodyFormatter {
             .map(ErrorReportBodyFormatter::formatException)
             .collect(Collectors.joining("\n"));
 
-    return "## Stack Trace\n```\n" + traces + "\n```\n\n";
+    return
+"""
+## Stack Trace
+```
+"""
+        + traces
+        +
+"""
+
+```
+
+""";
   }
 
   private static String formatException(ExceptionDetails e) {

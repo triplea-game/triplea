@@ -160,7 +160,7 @@ class BattleCalculatorPanel extends JPanel {
     attackingUnitsPanel = new PlayerUnitsPanel(data, uiContext, false);
     numRuns.setColumns(4);
     numRuns.setMin(1);
-    numRuns.setMax(20000);
+    numRuns.setMax(20_000);
 
     final int simulationCount =
         Properties.getLowLuck(data.getProperties())

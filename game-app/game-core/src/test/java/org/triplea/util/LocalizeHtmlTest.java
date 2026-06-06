@@ -17,10 +17,9 @@ class LocalizeHtmlTest {
   @Test
   void testLocalizeHtml() {
     final String testHtml =
-        "<audio src='test-audio'> &lt;img src=&quot;test&quot;&gt;"
-            + "<img useless fill src=\"dir/actual-link\" alt='Alternative Text' > "
-            + "<p>  Placeholder </P> <img\n"
-            + " src='another-link.png'/><img src=\"another-link\"/>";
+"""
+<audio src='test-audio'> &lt;img src=&quot;test&quot;&gt;<img useless fill src="dir/actual-link" alt='Alternative Text' > <p>  Placeholder </P> <img
+ src='another-link.png'/><img src="another-link"/>""";
 
     final String result = LocalizeHtml.localizeImgLinksInHtml(testHtml, path);
 

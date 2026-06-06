@@ -85,7 +85,7 @@ class ErrorMessageFormatter implements Function<LoggerRecord, String> {
    */
   private static String formatExceptionClassName(String className) {
     return className.contains(".")
-        ? className.substring(className.lastIndexOf(".") + 1)
+        ? className.substring(className.lastIndexOf('.') + 1)
         : className;
   }
 }

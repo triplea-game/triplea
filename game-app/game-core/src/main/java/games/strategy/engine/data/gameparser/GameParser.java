@@ -853,7 +853,7 @@ public final class GameParser {
     String name = variables.replaceForeachVariables(current.getName(), foreach);
     // Only replace if needed, as replaceAll() can be slow.
     if (name.contains("ttatchment")) {
-      name = name.replaceAll("ttatchment", "ttachment");
+      name = name.replace("ttatchment", "ttachment");
     }
     final IAttachment attachment =
         xmlGameElementMapper

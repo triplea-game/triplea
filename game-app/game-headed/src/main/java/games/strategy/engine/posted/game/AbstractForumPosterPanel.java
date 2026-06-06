@@ -40,11 +40,7 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
   @Override
   public void display(final GamePlayer gamePlayer) {
     super.display(gamePlayer);
-    SwingUtilities.invokeLater(
-        () -> {
-          actionLabel.setText(gamePlayer.getName() + " " + getTitle());
-          // defer component layout until waitForEndTurn()
-        });
+    SwingUtilities.invokeLater(() -> actionLabel.setText(gamePlayer.getName() + " " + getTitle()));
   }
 
   protected abstract boolean includeDetailsAndSummary();

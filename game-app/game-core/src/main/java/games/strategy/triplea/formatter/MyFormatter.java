@@ -196,8 +196,8 @@ public class MyFormatter {
           attachmentGetName.replaceFirst(
               Constants.TECH_ABILITY_ATTACHMENT_NAME, "Tech Properties ");
     }
-    toText = toText.replaceAll("_", " ");
-    toText = toText.replaceAll("  ", " ");
+    toText = toText.replace("_", " ");
+    toText = toText.replace("  ", " ");
     toText = toText.trim();
     return toText;
   }
@@ -428,7 +428,7 @@ public class MyFormatter {
     int currentMaxLength = firstLineMaxLength;
     while (end != BreakIterator.DONE) {
       final String word = target.substring(start, end);
-      lineLength = lineLength + word.length();
+      lineLength += word.length();
       if (lineLength >= currentMaxLength) {
         sb.append("<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
         lineLength = word.length() + 5; // Add 5 for the indent

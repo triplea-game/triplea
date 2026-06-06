@@ -25,19 +25,13 @@ final class HeadedResourceLoaderTest {
   @Test
   void createResourcePathString_failsForEmptyPathResult() {
     Assertions.assertThrows(
-        AssertionError.class,
-        () -> {
-          resourceLoader.createResourcePathString("", new String[] {});
-        });
+        AssertionError.class, () -> resourceLoader.createResourcePathString("", new String[] {}));
   }
 
   @Test
   void createResourcePathString_failsForSlashPathResult() {
     Assertions.assertThrows(
-        AssertionError.class,
-        () -> {
-          resourceLoader.createResourcePathString("", new String[] {""});
-        });
+        AssertionError.class, () -> resourceLoader.createResourcePathString("", new String[] {""}));
   }
 
   /** This tests building various resource paths to images. It should succeed regardless of OS. */

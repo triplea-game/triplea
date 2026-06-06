@@ -114,26 +114,32 @@ public final class AccessLogTab implements Supplier<Component> {
                     SwingComponents.showDialog(
                         parentFrame,
                         "Search Tips",
-                        "By default all searches are exact matches.\n"
-                            + "\n"
-                            + "Using '%' is called wildcard matching and matches anything,\n"
-                            + "all fields support it.\n\n"
-                            + "  Examples:\n\n"
-                            + "  user"
-                            + "      Finds all usernames exactly matching 'user'\n\n"
-                            + "  user%\n"
-                            + "      Finds all usernames starting with 'user'\n\n"
-                            + "  %user%\n"
-                            + "      Finds all usernames containing 'user'\n\n"
-                            + "  %user\n"
-                            + "      Finds all usernames ending with 'user'\n\n"
-                            + "  user%hat\n"
-                            + "      Find all usernames starting with 'user'\n"
-                            + "      and ending with 'hat'\n"
-                            + "\n"
-                            + "Entire access log table is searched, no time limit.\n"
-                            + "Exact searches and starts-with searches are the least "
-                            + "taxing on the database.\n"))
+"""
+By default all searches are exact matches.
+
+Using '%' is called wildcard matching and matches anything,
+all fields support it.
+
+  Examples:
+
+  user      Finds all usernames exactly matching 'user'
+
+  user%
+      Finds all usernames starting with 'user'
+
+  %user%
+      Finds all usernames containing 'user'
+
+  %user
+      Finds all usernames ending with 'user'
+
+  user%hat
+      Find all usernames starting with 'user'
+      and ending with 'hat'
+
+Entire access log table is searched, no time limit.
+Exact searches and starts-with searches are the least taxing on the database.
+"""))
             .build();
 
     return new JPanelBuilder()

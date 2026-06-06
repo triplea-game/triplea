@@ -100,7 +100,7 @@ class OrderOfLossesInputPanel extends JPanel {
         unitTypes = data.getUnitTypeList();
       }
       for (final String section : splitOrderOfLoss(orderOfLoss)) {
-        if (section.length() == 0) {
+        if (section.isEmpty()) {
           continue;
         }
         final String[] amountThenType = splitOrderOfLossSection(section);
@@ -142,7 +142,7 @@ class OrderOfLossesInputPanel extends JPanel {
     }
     final List<Tuple<Integer, UnitType>> map = new ArrayList<>();
     for (final String section : splitOrderOfLoss(ool)) {
-      if (section.length() == 0) {
+      if (section.isEmpty()) {
         continue;
       }
       final String[] amountThenType = splitOrderOfLossSection(section);

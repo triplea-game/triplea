@@ -213,7 +213,7 @@ public class GameProperties extends GameDataComponent {
    */
   @SuppressWarnings("unchecked")
   public static List<IEditableProperty<?>> readEditableProperties(final byte[] bytes)
-      throws IOException, ClassCastException {
+      throws IOException {
     return IoUtils.readFromMemory(
         bytes,
         is -> {
