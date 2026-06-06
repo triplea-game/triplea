@@ -244,8 +244,10 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       SwingAction.of(
           "Show history",
           e -> {
-            showHistory();
-            dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
+            if (inHistory.compareAndSet(false, true)) {
+              showHistory();
+              dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
+            }
           });
 
   @Getter
@@ -1812,9 +1814,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       if (clonedGameData == null) {
         return;
       }
-    }
-    if (historySyncher != null) {
-      throw new IllegalStateException("Two history synchers?");
     }
     historySyncher = new HistorySynchronizer(clonedGameData, game);
     updatePanelsGameData(clonedGameData);
