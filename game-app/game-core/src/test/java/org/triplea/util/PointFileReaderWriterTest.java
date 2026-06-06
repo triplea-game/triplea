@@ -267,7 +267,7 @@ Philippines (3011,3021)
 """
 Belarus  (1011,1021)  (1012,1022)  (1013,1023)  | overflowToLeft=false
 54 Sea Zone  (2011,2021)  (2012,2022)     | overflowToLeft=true
-Philippines (3011,3021)     | weird other thing =true
+Philippines (3011,3021)     | weird other thing =true\s
 East America (4011,4021)
 East Africa (5011,5021) | overflowToLeft=not a boolean
 """;
