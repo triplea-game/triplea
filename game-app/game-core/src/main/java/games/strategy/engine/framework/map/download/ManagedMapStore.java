@@ -2,6 +2,7 @@ package games.strategy.engine.framework.map.download;
 
 import games.strategy.engine.framework.map.file.system.loader.InstalledMap;
 import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,24 +16,36 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
+import javax.swing.SwingUtilities;
 import lombok.Getter;
 import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 
 enum StoreState {
   UNINITIALIZED,
   INITIALIZING,
-  INITIALIZED
+  CHANGED,
+  UP_TO_DATE
 }
 
-final class ManagedMapStore {
+interface MapStatusListener {
+  void mapStatusChanged(ManagedMapStatus oldStatus, ManagedMapStatus newStatus);
+}
+
+final class ManagedMapStore implements DownloadListener {
 
   private final Map<String, ManagedMap> mapsByName = new HashMap<>(); // lower-case map name index
   private final Map<ManagedMapStatus, Set<ManagedMap>> groupsByStatus =
       new EnumMap<>(ManagedMapStatus.class);
   @Getter private StoreState storeState;
+  private final List<MapStatusListener> mapStatusListeners = new ArrayList<>();
+
+  void addMapStatusListener(MapStatusListener listener) {
+    mapStatusListeners.add(listener);
+  }
 
   ManagedMapStore() {
     storeState = StoreState.UNINITIALIZED;
+    DownloadCoordinator.instance.addDownloadListener(this);
   }
 
   public void initialize(
@@ -50,7 +63,7 @@ final class ManagedMapStore {
                   .map(installedMap -> new ManagedMap(downloadItem, installedMap))
                   .orElseGet(() -> new ManagedMap(downloadItem)));
         });
-    storeState = StoreState.INITIALIZED;
+    storeState = StoreState.UP_TO_DATE;
   }
 
   boolean isEmpty() {
@@ -66,11 +79,26 @@ final class ManagedMapStore {
     groupsByStatus.get(map.getMapStatus()).add(map);
   }
 
-  void updateStatus(final String mapName, final ManagedMapStatus status) {
-    final ManagedMap map = mapsByName.get(mapName.toLowerCase());
-    if (map != null) {
-      map.setMapStatus(status);
-    }
+  void updateStatus(final List<ManagedMap> mapsToUpdate, final ManagedMapStatus newMapStatus) {
+    storeState = StoreState.CHANGED;
+    final Set<ManagedMapStatus> oldStatuses = new HashSet<>();
+    mapsToUpdate.stream()
+        .map(ManagedMap::getMapName)
+        .map(String::toLowerCase)
+        .map(mapsByName::get)
+        .forEach(
+            managedMap -> {
+              ManagedMapStatus oldMapStatus = managedMap.getMapStatus();
+              groupsByStatus.get(oldMapStatus).remove(managedMap);
+              managedMap.setMapStatus(newMapStatus);
+              groupsByStatus.get(newMapStatus).add(managedMap);
+              oldStatuses.add(oldMapStatus);
+            });
+    oldStatuses.forEach(
+        oldMapStatus ->
+            mapStatusListeners.forEach(
+                mapStatusListener ->
+                    mapStatusListener.mapStatusChanged(oldMapStatus, newMapStatus)));
   }
 
   List<ManagedMap> getByStatus(final ManagedMapStatus... mapStatuses) {
@@ -106,5 +134,20 @@ final class ManagedMapStore {
 
   public Optional<ManagedMap> getMapByName(String mapName) {
     return Optional.ofNullable(mapsByName.getOrDefault(mapName.toLowerCase(), null));
+  }
+
+  @Override
+  public void downloadUpdated(MapDownloadItem download, long bytesReceived) {
+    // currently nothing to do, but needed due to interface
+  }
+
+  @Override
+  public void downloadComplete(MapDownloadItem download) {
+    SwingUtilities.invokeLater(
+        () -> updateStatus(List.of(getMapByMapDownloadItem(download)), ManagedMapStatus.INSTALLED));
+  }
+
+  ManagedMap getMapByMapDownloadItem(MapDownloadItem mapDownloadItem) {
+    return mapsByName.get(mapDownloadItem.getMapName().toLowerCase());
   }
 }

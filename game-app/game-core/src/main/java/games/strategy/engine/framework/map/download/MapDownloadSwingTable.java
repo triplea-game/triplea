@@ -21,6 +21,7 @@ import org.triplea.swing.JTableTypeAheadListener;
  */
 public class MapDownloadSwingTable {
   private final JTable table;
+  private final List<String> tagNames;
 
   MapDownloadSwingTable(Collection<ManagedMap> managedMaps) {
     // Build a JTable that has n+1 columns, the first column (+1) is the map name,
@@ -32,7 +33,7 @@ public class MapDownloadSwingTable {
     columnNames.add("Map");
 
     // Get the full set of all tag names in display order
-    final List<String> tagNames =
+    this.tagNames =
         managedMaps.stream()
             .map(ManagedMap::getMapDownloadItem)
             .map(MapDownloadItem::getMapTags)
@@ -114,5 +115,15 @@ public class MapDownloadSwingTable {
         model.removeRow(row);
       }
     }
+  }
+
+  void setMaps(final List<ManagedMap> newMapsList) {
+    final DefaultTableModel model = (DefaultTableModel) table.getModel();
+    model.setRowCount(0);
+
+    newMapsList.stream()
+        .map(map -> rowMapper(map, tagNames))
+        .forEach(row -> model.addRow(row.toArray()));
+    table.repaint();
   }
 }
