@@ -60,6 +60,7 @@ class DownloadMapsWindowModel {
           installLocation.toAbsolutePath());
       return false;
     } else {
+      mapStore.updateStatus(List.of(mapDownloadItem), ManagedMapStatus.AVAILABLE);
       return true;
     }
   }

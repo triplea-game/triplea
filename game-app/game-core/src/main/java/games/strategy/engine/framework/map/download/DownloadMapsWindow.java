@@ -44,6 +44,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NonNls;
@@ -58,15 +59,9 @@ import org.triplea.swing.jpanel.JPanelBuilder;
 public class DownloadMapsWindow extends JFrame {
 
   private final JTabbedPane tabbedPane;
-  private JPanel availablePanel;
-  private JPanel outOfDatePanel = null;
-  private JPanel installedPanel = null;
-
-  private enum MapAction {
-    INSTALL,
-    UPDATE,
-    REMOVE
-  }
+  private MapTab availableMapTab;
+  private MapTab outOfDateMapTab = null;
+  private MapTab installedMapTab;
 
   @Serial private static final long serialVersionUID = -1542210716764178580L;
   private static final int WINDOW_WIDTH = 1200;
@@ -85,6 +80,7 @@ public class DownloadMapsWindow extends JFrame {
       DownloadMapsWindowModel downloadMapsWindowModel) {
     super("Download Maps");
     this.downloadMapsWindowModel = downloadMapsWindowModel;
+    getMapStore().addMapStatusListener(this::handleMapStatusChange);
 
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -125,6 +121,28 @@ public class DownloadMapsWindow extends JFrame {
             JSplitPane.VERTICAL_SPLIT, tabbedPane, SwingComponents.newJScrollPane(progressPanel));
     splitPane.setDividerLocation(DIVIDER_POSITION);
     add(splitPane);
+  }
+
+  private void handleMapStatusChange(ManagedMapStatus oldStatus, ManagedMapStatus newStatus) {
+    switch (newStatus) {
+      case ManagedMapStatus.AVAILABLE -> {
+        updateTabTitleNewMaps();
+        availableMapTab.setDirty();
+      }
+      case ManagedMapStatus.INSTALLED, ManagedMapStatus.REMOVING -> {
+        updateTabTitleInstalled();
+        if (newStatus == ManagedMapStatus.INSTALLED) {
+          installedMapTab.setDirty();
+        }
+      }
+      case ManagedMapStatus.DOWNLOADING -> {
+        if (oldStatus == ManagedMapStatus.UPDATE_AVAILABLE) {
+          updateTabTitleUpdatesAvailable();
+        } else {
+          updateTabTitleNewMaps();
+        }
+      }
+    }
   }
 
   /**
@@ -267,26 +285,44 @@ public class DownloadMapsWindow extends JFrame {
     final JTabbedPane tabbedPane = new JTabbedPane();
 
     // For the UX, always show an available maps tab, even if it is empty
-    availablePanel = newMapSelectionPanel(MapAction.INSTALL, true, ManagedMapStatus.AVAILABLE);
-    tabbedPane.addTab("", availablePanel);
+    availableMapTab = new MapTab(true, MapAction.INSTALL, ManagedMapStatus.AVAILABLE);
+    tabbedPane.addTab("", availableMapTab.getContentPanel());
 
     boolean mapStoreHasUpdateAvailable = getMapStore().hasAnyMap(ManagedMapStatus.UPDATE_AVAILABLE);
     if (mapStoreHasUpdateAvailable) {
-      outOfDatePanel =
-          newMapSelectionPanel(MapAction.UPDATE, false, ManagedMapStatus.UPDATE_AVAILABLE);
-      tabbedPane.addTab("", outOfDatePanel);
+      outOfDateMapTab = new MapTab(false, MapAction.UPDATE, ManagedMapStatus.UPDATE_AVAILABLE);
+      tabbedPane.addTab("", outOfDateMapTab.getContentPanel());
     }
 
-    if (mapStoreHasUpdateAvailable || getMapStore().hasAnyMap(ManagedMapStatus.INSTALLED)) {
-      installedPanel =
-          newMapSelectionPanel(
-              MapAction.REMOVE,
-              false,
-              ManagedMapStatus.INSTALLED,
-              ManagedMapStatus.UPDATE_AVAILABLE);
-      tabbedPane.addTab("", installedPanel);
-    }
+    installedMapTab =
+        new MapTab(
+            false, MapAction.REMOVE, ManagedMapStatus.INSTALLED, ManagedMapStatus.UPDATE_AVAILABLE);
+    tabbedPane.addTab("", installedMapTab.getContentPanel());
+
+    tabbedPane.addChangeListener(
+        e -> {
+          MapTab selectedTab = getSelectedMapTab();
+          if (selectedTab.isUpToDate()) {
+            return;
+          }
+          selectedTab.refreshFromStore();
+        });
+
     return tabbedPane;
+  }
+
+  private MapTab getSelectedMapTab() {
+    Component selectedTabComponent = tabbedPane.getSelectedComponent();
+    if (selectedTabComponent.equals(availableMapTab.getContentPanel())) {
+      return availableMapTab;
+    }
+    if (installedMapTab != null && selectedTabComponent.equals(installedMapTab.getContentPanel())) {
+      return installedMapTab;
+    }
+    if (outOfDateMapTab != null && selectedTabComponent.equals(outOfDateMapTab.getContentPanel())) {
+      return outOfDateMapTab;
+    }
+    throw new IllegalStateException("No map tab is recognized as being selected.");
   }
 
   private ManagedMapStore getMapStore() {
@@ -294,16 +330,31 @@ public class DownloadMapsWindow extends JFrame {
   }
 
   private void updateTabTitles() {
+    updateTabTitleNewMaps();
+    updateTabTitleUpdatesAvailable();
+    updateTabTitleInstalled();
+  }
+
+  private void updateTabTitleNewMaps() {
     setTabTitle(
-        availablePanel,
+        availableMapTab.getContentPanel(),
         String.format("New Maps (%d)", getMapStore().getCountByStatus(ManagedMapStatus.AVAILABLE)));
+  }
+
+  private void updateTabTitleUpdatesAvailable() {
+    if (outOfDateMapTab == null) {
+      return; // no tab available to update its title
+    }
     setTabTitle(
-        outOfDatePanel,
+        outOfDateMapTab.getContentPanel(),
         String.format(
             "Updates Available (%d)",
             getMapStore().getCountByStatus(ManagedMapStatus.UPDATE_AVAILABLE)));
+  }
+
+  private void updateTabTitleInstalled() {
     setTabTitle(
-        installedPanel,
+        installedMapTab.getContentPanel(),
         String.format(
             "Installed (%d)",
             getMapStore().getCountByStatus(ManagedMapStatus.INSTALLED)
@@ -315,98 +366,6 @@ public class DownloadMapsWindow extends JFrame {
     if (index != -1) {
       tabbedPane.setTitleAt(index, title);
     }
-  }
-
-  private JPanel newMapSelectionPanel(
-      final MapAction action, final boolean requestFocus, final ManagedMapStatus... mapStatuses) {
-    final JPanel main = new JPanelBuilder().border(30).borderLayout().build();
-    final JEditorPane descriptionPane = SwingComponents.newHtmlJEditorPane();
-    main.add(SwingComponents.newJScrollPane(descriptionPane), BorderLayout.CENTER);
-
-    final JLabel mapSizeLabel = new JLabel(" ");
-
-    if (getMapStore().hasAnyMap(mapStatuses)) {
-
-      final List<ManagedMap> unsortedMaps = getMapStore().getByStatus(mapStatuses);
-      final MapDownloadSwingTable mapDownloadSwingTable = new MapDownloadSwingTable(unsortedMaps);
-      final JTable gamesList = mapDownloadSwingTable.getSwingComponent();
-      mapDownloadSwingTable.addMapSelectionListener(
-          mapSelections ->
-              newDescriptionPanelUpdatingSelectionListener(
-                  getMapStore().getMapsByName(() -> mapSelections), descriptionPane, mapSizeLabel));
-
-      descriptionPane.setText(downloadMapsWindowModel.toHtmlString(unsortedMaps.getFirst()));
-      descriptionPane.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-
-      // Create label and search field
-      final JLabel searchLabel = new JLabel("Search:");
-      final JTextField searchField = new JTextField(15);
-      searchField.setToolTipText("Search maps...");
-      if (requestFocus) {
-        SwingUtilities.invokeLater(searchField::requestFocus);
-      }
-
-      // Panel for label + field
-      JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-      searchPanel.add(searchLabel);
-      searchPanel.add(searchField);
-
-      // Row sorter for filtering
-      TableRowSorter<TableModel> rowSorter = new TableRowSorter<>(gamesList.getModel());
-      gamesList.setRowSorter(rowSorter);
-      searchField
-          .getDocument()
-          .addDocumentListener(
-              new DocumentListener() {
-                private void updateFilter() {
-                  String text = searchField.getText();
-                  if (text.trim().isEmpty()) {
-                    rowSorter.setRowFilter(null);
-                  } else {
-                    rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + Pattern.quote(text)));
-                  }
-                }
-
-                public void insertUpdate(DocumentEvent e) {
-                  updateFilter();
-                }
-
-                public void removeUpdate(DocumentEvent e) {
-                  updateFilter();
-                }
-
-                public void changedUpdate(DocumentEvent e) {
-                  updateFilter();
-                }
-              });
-
-      // Layout: put search box above games list
-      JPanel leftPanel = new JPanel(new BorderLayout());
-      leftPanel.add(searchPanel, BorderLayout.NORTH);
-      leftPanel.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.CENTER);
-      main.add(leftPanel, BorderLayout.WEST);
-
-      // sort initially and select first entry by default
-      if (gamesList.getRowCount() > 0) {
-        rowSorter.setSortKeys(java.util.List.of(new RowSorter.SortKey(0, SortOrder.ASCENDING)));
-        rowSorter.sort();
-        gamesList.setRowSelectionInterval(0, 0);
-      }
-
-      final JPanel southPanel =
-          new JPanelBuilder()
-              .gridLayout(2, 1)
-              .add(mapSizeLabel)
-              .add(
-                  newButtonsPanel(
-                      action,
-                      () -> getMapStore().getMapsByName(mapDownloadSwingTable::getSelectedMapNames),
-                      mapDownloadSwingTable::removeMapRows))
-              .build();
-      main.add(southPanel, BorderLayout.SOUTH);
-    }
-
-    return main;
   }
 
   private void newDescriptionPanelUpdatingSelectionListener(
@@ -448,6 +407,161 @@ public class DownloadMapsWindow extends JFrame {
       descriptionPanelText = "";
     }
     return descriptionPanelText;
+  }
+
+  enum MapAction {
+    INSTALL,
+    UPDATE,
+    REMOVE
+  }
+
+  enum MapTabStatus {
+    NOT_INITIALIZED,
+    DIRTY,
+    UP_TO_DATE
+  }
+
+  /// Represents a single tab in the map download window.
+  ///
+  /// A `MapTab` is responsible for displaying maps that match one or more
+  /// {@link ManagedMapStatus} values and exposing the action that can be performed
+  /// on those maps (for example install, update, or remove).
+  ///
+  /// <p>The tab maintains its UI state independently of the underlying
+  /// {@link ManagedMapStore}. When map status changes occur for currently hidden tabs, it can be
+  /// marked as dirty (i.e. requiring refresh) and will rebuild its table contents from the current
+  /// store state when becoming visible again.
+  class MapTab {
+    private final ManagedMapStatus[] mapStatuses;
+    private final MapAction mapAction;
+    private MapDownloadSwingTable mapDownloadTable = null;
+    @Getter private final JPanel contentPanel;
+    private MapTabStatus mapTabStatus;
+
+    MapTab(boolean buildImmediately, MapAction mapAction, ManagedMapStatus... mapStatuses) {
+      this.mapStatuses = mapStatuses;
+      this.mapAction = mapAction;
+      this.contentPanel = new JPanelBuilder().border(30).borderLayout().build();
+      if (buildImmediately) {
+        initializeTabContentPanel();
+      } else {
+        mapTabStatus = MapTabStatus.NOT_INITIALIZED;
+      }
+    }
+
+    void initializeTabContentPanel() {
+      final JEditorPane descriptionPane = SwingComponents.newHtmlJEditorPane();
+      contentPanel.add(SwingComponents.newJScrollPane(descriptionPane), BorderLayout.CENTER);
+
+      final JLabel mapSizeLabel = new JLabel(" ");
+
+      if (getMapStore().hasAnyMap(mapStatuses)) {
+
+        final List<ManagedMap> unsortedMaps = getMapsListFromStore();
+        mapDownloadTable = new MapDownloadSwingTable(unsortedMaps);
+        final JTable gamesList = mapDownloadTable.getSwingComponent();
+        mapDownloadTable.addMapSelectionListener(
+            mapSelections ->
+                newDescriptionPanelUpdatingSelectionListener(
+                    getMapStore().getMapsByName(() -> mapSelections),
+                    descriptionPane,
+                    mapSizeLabel));
+
+        descriptionPane.setText(downloadMapsWindowModel.toHtmlString(unsortedMaps.getFirst()));
+        descriptionPane.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
+
+        // Create label and search field
+        final JLabel searchLabel = new JLabel("Search:");
+        final JTextField searchField = new JTextField(15);
+        searchField.setToolTipText("Search maps...");
+        SwingUtilities.invokeLater(searchField::requestFocus);
+
+        // Panel for label + field
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        searchPanel.add(searchLabel);
+        searchPanel.add(searchField);
+
+        // Row sorter for filtering
+        TableRowSorter<TableModel> rowSorter = new TableRowSorter<>(gamesList.getModel());
+        gamesList.setRowSorter(rowSorter);
+        searchField
+            .getDocument()
+            .addDocumentListener(
+                new DocumentListener() {
+                  private void updateFilter() {
+                    String text = searchField.getText();
+                    if (text.trim().isEmpty()) {
+                      rowSorter.setRowFilter(null);
+                    } else {
+                      rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + Pattern.quote(text)));
+                    }
+                  }
+
+                  public void insertUpdate(DocumentEvent e) {
+                    updateFilter();
+                  }
+
+                  public void removeUpdate(DocumentEvent e) {
+                    updateFilter();
+                  }
+
+                  public void changedUpdate(DocumentEvent e) {
+                    updateFilter();
+                  }
+                });
+
+        // Layout: put search box above games list
+        JPanel leftPanel = new JPanel(new BorderLayout());
+        leftPanel.add(searchPanel, BorderLayout.NORTH);
+        leftPanel.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.CENTER);
+        contentPanel.add(leftPanel, BorderLayout.WEST);
+
+        // sort initially and select first entry by default
+        if (gamesList.getRowCount() > 0) {
+          rowSorter.setSortKeys(java.util.List.of(new RowSorter.SortKey(0, SortOrder.ASCENDING)));
+          rowSorter.sort();
+          gamesList.setRowSelectionInterval(0, 0);
+        }
+
+        final JPanel southPanel =
+            new JPanelBuilder()
+                .gridLayout(2, 1)
+                .add(mapSizeLabel)
+                .add(
+                    newButtonsPanel(
+                        mapAction,
+                        () -> getMapStore().getMapsByName(mapDownloadTable::getSelectedMapNames),
+                        mapDownloadTable::removeMapRows))
+                .build();
+        contentPanel.add(southPanel, BorderLayout.SOUTH);
+
+        mapTabStatus = MapTabStatus.UP_TO_DATE;
+      }
+    }
+
+    private List<ManagedMap> getMapsListFromStore() {
+      return getMapStore().getByStatus(mapStatuses);
+    }
+
+    boolean isUpToDate() {
+      return this.mapTabStatus == MapTabStatus.UP_TO_DATE;
+    }
+
+    void setDirty() {
+      if (mapTabStatus == MapTabStatus.NOT_INITIALIZED) {
+        return; // leave not-initialized until show first
+      }
+      this.mapTabStatus = MapTabStatus.DIRTY;
+    }
+
+    void refreshFromStore() {
+      if (mapTabStatus == MapTabStatus.NOT_INITIALIZED) {
+        initializeTabContentPanel();
+      } else {
+        mapDownloadTable.setMaps(getMapsListFromStore());
+        this.mapTabStatus = MapTabStatus.UP_TO_DATE;
+      }
+    }
   }
 
   private static final class SingletonManager {
@@ -611,6 +725,7 @@ public class DownloadMapsWindow extends JFrame {
     return () -> {
       final List<ManagedMap> selectedMaps = mapSelection.get();
       if (!selectedMaps.isEmpty()) {
+        getMapStore().updateStatus(selectedMaps, ManagedMapStatus.REMOVING);
         FileSystemAccessStrategy.remove(
             this, downloadMapsWindowModel::delete, selectedMaps, tableRemoveAction);
       }
@@ -623,6 +738,7 @@ public class DownloadMapsWindow extends JFrame {
     return () -> {
       final List<ManagedMap> selectedMaps = mapSelection.get();
       if (!selectedMaps.isEmpty()) {
+        getMapStore().updateStatus(selectedMaps, ManagedMapStatus.DOWNLOADING);
         progressPanel.download(selectedMaps.stream().map(ManagedMap::getMapDownloadItem).toList());
         tableRemoveAction.accept(selectedMaps);
       }
