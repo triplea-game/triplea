@@ -22,6 +22,7 @@ import org.triplea.swing.JTableTypeAheadListener;
 public class MapDownloadSwingTable {
   private final JTable table;
   private final List<String> tagNames;
+  private boolean blockMapSelectionListeners;
 
   MapDownloadSwingTable(Collection<ManagedMap> managedMaps) {
     // Build a JTable that has n+1 columns, the first column (+1) is the map name,
@@ -87,7 +88,11 @@ public class MapDownloadSwingTable {
     table
         .getSelectionModel()
         .addListSelectionListener(
-            listener -> mapNameSelectionListener.accept(getSelectedMapNames()));
+            listener -> {
+              if (!blockMapSelectionListeners) {
+                mapNameSelectionListener.accept(getSelectedMapNames());
+              }
+            });
   }
 
   /** Returns list of currently selected maps. */
@@ -109,12 +114,14 @@ public class MapDownloadSwingTable {
     final DefaultTableModel model = (DefaultTableModel) table.getModel();
 
     // remove iterating backwards to avoid indices shifting
+    blockMapSelectionListeners = true;
     for (int row = model.getRowCount() - 1; row >= 0; row--) {
       final String mapNameInTable = String.valueOf(model.getValueAt(row, 0));
       if (removeMapNames.contains(mapNameInTable)) {
         model.removeRow(row);
       }
     }
+    blockMapSelectionListeners = false;
   }
 
   void setMaps(final List<ManagedMap> newMapsList) {
