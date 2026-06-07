@@ -28,6 +28,13 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
+  BETA_VERSION_CHECK("BETA_VERSION_CHECK", SettingType.TESTING, "Use new engine version check") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return booleanRadioButtons(ClientSetting.betaVersionCheck);
+    }
+  },
+
   AI_MOVE_PAUSE_DURATION_BINDING(
       "AI Move Pause Duration", SettingType.AI, "Time (in milliseconds) between AI moves") {
     @Override
