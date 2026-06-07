@@ -50,6 +50,9 @@ import org.triplea.java.ThreadRunner;
 @SuppressWarnings("StaticInitializerReferencesSubClass")
 @Slf4j
 public abstract class ClientSetting<T> implements GameSetting<T> {
+  public static final ClientSetting<Boolean> betaVersionCheck =
+      new BooleanClientSetting("BETA_VERSION_CHECK", false);
+
   public static final ClientSetting<Integer> aiMovePauseDuration =
       new IntegerClientSetting("AI_PAUSE_DURATION", 300);
   public static final ClientSetting<Integer> aiCombatStepPauseDuration =
