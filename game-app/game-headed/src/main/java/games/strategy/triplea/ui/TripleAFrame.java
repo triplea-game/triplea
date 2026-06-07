@@ -244,7 +244,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       SwingAction.of(
           "Show history",
           e -> {
-            if (inHistory.compareAndSet(false, true)) {
+            if (!inHistory.get()) {
               showHistory();
               dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
             }
@@ -1694,7 +1694,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
           showGame();
         }
       } else {
-        if (inHistory.compareAndSet(false, true)) {
+        if (!inHistory.get()) {
           showHistory();
         }
       }
