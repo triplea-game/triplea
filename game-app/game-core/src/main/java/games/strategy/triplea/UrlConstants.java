@@ -1,5 +1,6 @@
 package games.strategy.triplea;
 
+import java.net.URI;
 import lombok.experimental.UtilityClass;
 
 /** Grouping of hardcoded URL constants. */
@@ -10,6 +11,8 @@ public final class UrlConstants {
   public static final String GITHUB_ISSUES = "https://github.com/triplea-game/triplea/issues/new";
   public static final String LICENSE_NOTICE =
       "https://github.com/triplea-game/triplea/blob/master/README.md#license";
+  public static final URI LIVE_SERVERS_URI =
+      URI.create("https://raw.githubusercontent.com/triplea-game/triplea/master/servers.yml");
   public static final String MAP_MAKER_HELP =
       "https://github.com/triplea-game/triplea/wiki/How-to-create-custom-maps";
   public static final String PAYPAL_DONATE =
