@@ -16,6 +16,7 @@ import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
 import org.triplea.http.client.lobby.login.CreateAccountResponse;
 import org.triplea.http.client.lobby.login.LobbyLoginClient;
 import org.triplea.http.client.lobby.login.LobbyLoginResponse;
+import org.triplea.live.servers.LiveServersFetcher;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.SwingComponents;
 
@@ -96,6 +97,7 @@ Use the account menu to reset your password."""
               () -> lobbyLoginClient.login(panel.getUserName(), panel.getPassword()));
 
       if (loginResponse.getFailReason() == null) {
+        String lobbyWelcomeMessage = LiveServersFetcher.getLobbyMessage().orElse("");
         return Optional.of(
             LoginResult.builder()
                 .anonymousLogin(Strings.isNullOrEmpty(panel.getPassword()))
@@ -103,7 +105,7 @@ Use the account menu to reset your password."""
                 .apiKey(ApiKey.of(loginResponse.getApiKey()))
                 .moderator(loginResponse.isModerator())
                 .passwordChangeRequired(loginResponse.isPasswordChangeRequired())
-                .loginMessage(loginResponse.getLobbyMessage())
+                .loginMessage(lobbyWelcomeMessage)
                 .build());
       } else {
         showMessage("Login Failed", loginResponse.getFailReason());
@@ -148,6 +150,7 @@ Use the account menu to reset your password."""
     final CreateAccountPanel.ReturnValue returnValue = createAccountPanel.show(parentWindow);
     switch (returnValue) {
       case OK:
+        String lobbyWelcomeMessage = LiveServersFetcher.getLobbyMessage().orElse("");
         return createAccount(createAccountPanel)
             .map(
                 lobbyLoginResponse ->
@@ -155,7 +158,7 @@ Use the account menu to reset your password."""
                         .username(UserName.of(createAccountPanel.getUsername()))
                         .apiKey(ApiKey.of(lobbyLoginResponse.getApiKey()))
                         .passwordChangeRequired(lobbyLoginResponse.isPasswordChangeRequired())
-                        .loginMessage(lobbyLoginResponse.getLobbyMessage())
+                        .loginMessage(lobbyWelcomeMessage)
                         .build());
       case CANCEL:
         return Optional.empty();
