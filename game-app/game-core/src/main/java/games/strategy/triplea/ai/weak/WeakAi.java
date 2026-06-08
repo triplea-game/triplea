@@ -1053,8 +1053,12 @@ public class WeakAi extends AbstractAi {
     final boolean placementAnyTerritory = (ra != null && ra.getPlacementAnyTerritory());
     final Optional<Territory> optionalCapitol =
         TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
-    // place in capitol first
-    optionalCapitol.ifPresent(capitol -> placeAllWeCanOn(data, capitol, placeDelegate, player));
+    // place in capitol first, but not if it's impassable
+    optionalCapitol.ifPresent(capitol -> {
+      if (!Matches.territoryIsImpassable().test(capitol)) {
+        placeAllWeCanOn(data, capitol, placeDelegate, player);
+      }
+    });
     final List<Territory> randomTerritories = new ArrayList<>(data.getMap().getTerritories());
     Collections.shuffle(randomTerritories);
     final @Nullable Territory capitol = optionalCapitol.orElse(null);
