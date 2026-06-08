@@ -33,7 +33,7 @@ sonatype-goodies-prefs = "2.3.9"
 substance = "4.5.0"
 wiremock-junit5 = "1.3.1"
 wiremock = "3.0.1"
-xchart = "4.0.0"
+xchart = "4.0.1"
 xmlunit = "2.12.0"
 
 # Plugins
