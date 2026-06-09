@@ -89,8 +89,7 @@ public class TransportTracker {
     return units;
   }
 
-  static Change unloadTransportChange(
-      final Unit unit, final Territory territory, final boolean dependentBattle) {
+  static Change unloadTransportChange(final Unit unit, final Territory territory) {
     final CompositeChange change = new CompositeChange();
     final Unit transport = unit.getTransportedBy();
     if (transport == null) {
@@ -115,12 +114,7 @@ public class TransportTracker {
       change.add(
           ChangeFactory.unitPropertyChange(transport, true, Unit.PropertyName.UNLOADED_AMPHIBIOUS));
     }
-    if (!dependentBattle) {
-      // TODO: this is causing issues with Scrambling. if the units were unloaded, then scrambling
-      // creates a battle,
-      // there is no longer any way to have the units removed if those transports die.
-      change.add(ChangeFactory.unitPropertyChange(unit, null, Unit.PropertyName.TRANSPORTED_BY));
-    }
+    change.add(ChangeFactory.unitPropertyChange(unit, null, Unit.PropertyName.TRANSPORTED_BY));
     change.add(
         ChangeFactory.unitPropertyChange(transport, newUnloaded, Unit.PropertyName.UNLOADED));
     return change;
