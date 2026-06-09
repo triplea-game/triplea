@@ -1416,7 +1416,34 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
           unitMax = Math.max(Math.max(unitMax, production), (unlimitedConstructions ? 10_000 : 0));
         }
         final int existingCount = unitMapTo.getInt(constructionType);
-        final int value = Math.min(unitMax - existingCount, unitMapHeld.getInt(constructionType));
+
+        // Check if a placed unit consumes an existing unit of the same constructionType,
+        // which should allow placement even when the territory limit is reached.
+        final boolean consumesSameType =
+            units.stream()
+                .filter(Matches.unitIsConstruction())
+                .filter(u -> u.getUnitAttachment().getConstructionType().equals(constructionType))
+                .anyMatch(
+                    u -> {
+                      final IntegerMap<UnitType> consumesUnits =
+                          u.getUnitAttachment().getConsumesUnits();
+                      return consumesUnits.keySet().stream()
+                          .anyMatch(
+                              consumedType ->
+                                  unitsAtStartOfTurnInTo.stream()
+                                      .filter(existing -> existing.getType().equals(consumedType))
+                                      .anyMatch(
+                                          existing ->
+                                              existing
+                                                  .getUnitAttachment()
+                                                  .getConstructionType()
+                                                  .equals(constructionType)));
+                    });
+
+        final int consumptionBonus = consumesSameType ? 1 : 0;
+        final int value =
+            Math.min(
+                unitMax - existingCount + consumptionBonus, unitMapHeld.getInt(constructionType));
         unitMapHeld.put(constructionType, Math.max(0, value));
       }
     }
