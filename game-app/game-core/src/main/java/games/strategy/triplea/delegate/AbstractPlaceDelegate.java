@@ -1440,7 +1440,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
                                                   .equals(constructionType)));
                     });
 
-        final int consumptionBonus = consumesSameType ? 1 : 0;
+        final int consumptionBonus = consumesSameType ? existingCount : 0;
         final int value =
             Math.min(
                 unitMax - existingCount + consumptionBonus, unitMapHeld.getInt(constructionType));
