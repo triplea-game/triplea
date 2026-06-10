@@ -4,6 +4,7 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_CLIENT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
+import games.strategy.triplea.settings.ClientSetting;
 import java.awt.Component;
 import org.triplea.java.ThreadRunner;
 
@@ -24,7 +25,10 @@ public final class UpdateChecks {
     }
 
     TutorialMapCheck.checkForTutorialMap();
-    EngineVersionCheck.checkForLatestEngineVersionOut(parentComponent);
+
+    if (ClientSetting.betaVersionCheck.isSet()) {
+      EngineVersionCheck.checkForLatestEngineVersionOut(parentComponent);
+    }
     UpdatedMapsCheck.checkDownloadedMapsAreLatest();
   }
 
