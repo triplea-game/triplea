@@ -17,20 +17,6 @@ application {
     )
 }
 
-val releasesDir = project.layout.buildDirectory.file("releases").get().asFile
-
-fun getProductVersion(): String {
-    return rootProject.file("game-app/run/.build/product-version.txt").readText().trim()
-}
-
-fun getCommitNumber(): String {
-    return providers.exec {
-        commandLine("git", "rev-list", "--count", "HEAD")
-    }.standardOutput.asText.get().trim()
-}
-
-val releaseVersion = getProductVersion() + "+" + getCommitNumber()
-
 dependencies {
     implementation(project(":ai"))
     implementation(project(":domain-data"))
@@ -72,6 +58,12 @@ tasks.named<ProcessResources>("processResources") {
     }
 }
 
+
+val releaseVersion = providers.exec {
+    commandLine("game-app/run/.build/get-build-version")
+}.standardOutput.asText.get().trim()
+
+
 val platformInstallers = tasks.register<Install4jTask>("platformInstallers") {
     group = "release"
     description = "creates installer files using install4j (eg: install.exe)"
@@ -102,6 +94,8 @@ val portableInstaller = tasks.register<Zip>("portableInstaller") {
         into("bin")
     }
 }
+
+val releasesDir = project.layout.buildDirectory.file("releases").get().asFile
 
 tasks.register<Copy>("release") {
     group = "release"

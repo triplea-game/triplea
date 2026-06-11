@@ -16,9 +16,6 @@ import java.nio.file.Path;
 import java.util.Locale;
 import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.config.product.ProductVersionReader;
-import org.triplea.domain.data.SystemIdLoader;
-import org.triplea.http.client.LobbyHttpClientConfig;
 import org.triplea.util.ExitStatus;
 
 /** Runs a headless game server. */
@@ -89,15 +86,6 @@ public final class HeadlessGameRunner {
       log.error("MAPS_FOLDER env variable is not set");
       ExitStatus.FAILURE.exit();
     }
-
-    LobbyHttpClientConfig.setConfig(
-        LobbyHttpClientConfig.builder()
-            .systemId(SystemIdLoader.load().getValue())
-            .clientVersion(
-                ProductVersionReader.getCurrentVersion().getMajor()
-                    + "."
-                    + ProductVersionReader.getCurrentVersion().getMinor())
-            .build());
 
     ClientSetting.initialize();
 

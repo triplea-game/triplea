@@ -28,6 +28,13 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
+  BETA_VERSION_CHECK("BETA_VERSION_CHECK", SettingType.TESTING, "Use new engine version check") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return booleanRadioButtons(ClientSetting.betaVersionCheck);
+    }
+  },
+
   AI_MOVE_PAUSE_DURATION_BINDING(
       "AI Move Pause Duration", SettingType.AI, "Time (in milliseconds) between AI moves") {
     @Override
@@ -252,16 +259,6 @@ Restart to fully activate""") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return booleanRadioButtons(ClientSetting.showBetaFeatures);
-    }
-  },
-
-  USE_MAPS_SERVER_BETA_FEATURE(
-      "Use Maps Server (Beta)",
-      SettingType.TESTING,
-      "Toggles whether to use the in 'beta' map server") {
-    @Override
-    public SelectionComponent<JComponent> newSelectionComponent() {
-      return booleanRadioButtons(ClientSetting.useMapsServerBetaFeature);
     }
   },
 

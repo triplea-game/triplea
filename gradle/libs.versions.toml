@@ -27,6 +27,7 @@ junit-platform-launcher = "6.1.0"
 logback-classic = "1.5.34"
 lombok = "1.18.46"
 mockito = "5.23.0"
+okhttp = "5.4.0"
 pmd = "7.0.0"
 snake-yaml = "3.0.1"
 sonatype-goodies-prefs = "2.3.9"
@@ -74,6 +75,7 @@ lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
 mockito-subclass = { module = "org.mockito:mockito-subclass", version.ref = "mockito" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 radiance-substance = { module = "org.pushing-pixels:radiance-substance", version.ref = "substance" }
 snakeyaml-engine = { module = "org.snakeyaml:snakeyaml-engine", version.ref = "snake-yaml" }
 sonatype-goodies-prefs = { module = "org.sonatype.goodies:goodies-prefs", version.ref = "sonatype-goodies-prefs" }

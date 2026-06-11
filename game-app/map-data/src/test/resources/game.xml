@@ -2,7 +2,6 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
     <info/>
-    <triplea/>
     <attachmentList/>
     <diceSides/>
     <gamePlay/>

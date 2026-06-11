@@ -48,8 +48,6 @@ import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.config.product.ProductVersionReader;
 import org.triplea.debug.ErrorMessage;
-import org.triplea.domain.data.SystemIdLoader;
-import org.triplea.http.client.LobbyHttpClientConfig;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 import org.triplea.map.description.file.MapDescriptionYamlGeneratorRunner;
@@ -150,12 +148,6 @@ public final class HeadedGameRunner {
 
     initializeClientSettingAndLogging();
     initializeLookAndFeel();
-
-    LobbyHttpClientConfig.setConfig(
-        LobbyHttpClientConfig.builder()
-            .clientVersion(ProductVersionReader.getCurrentVersion().toMajorMinorString())
-            .systemId(SystemIdLoader.load().getValue())
-            .build());
 
     initializeDesktopIntegrations(args);
     SwingUtilities.invokeLater(ErrorMessage::initialize);

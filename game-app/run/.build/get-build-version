@@ -1,18 +1,14 @@
 #!/bin/bash
 
 # Prints the current build version, this is the product version plus current commit number
-# Example output: 2.6.23400
+# Example output: 2026.06.15.23400
 
 set -eu
 
 scriptDir=$(dirname "$0")
 
-## Prints the 'major.minor' and a trailing period, eg: '2.6.'
-echo -n "$($scriptDir/get-product-version)."
+cal_date=$(date -u +%Y.%m)
+release_number=$(cat "$scriptDir/product-version.txt")
+build_number=$(git rev-list --count HEAD)
 
-# Print the 'build' number, this is the commit number.
-# This will complete the 'major.minor.build' output, eg: '2.6.1001'
-(
-  cd $scriptDir || exit 1
-  git rev-list --count HEAD
-)
+echo "${cal_date}.${release_number}.${build_number}"

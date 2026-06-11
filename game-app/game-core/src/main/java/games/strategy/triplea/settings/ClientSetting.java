@@ -50,6 +50,9 @@ import org.triplea.java.ThreadRunner;
 @SuppressWarnings("StaticInitializerReferencesSubClass")
 @Slf4j
 public abstract class ClientSetting<T> implements GameSetting<T> {
+  public static final ClientSetting<Boolean> betaVersionCheck =
+      new BooleanClientSetting("BETA_VERSION_CHECK", false);
+
   public static final ClientSetting<Integer> aiMovePauseDuration =
       new IntegerClientSetting("AI_PAUSE_DURATION", 300);
   public static final ClientSetting<Integer> aiCombatStepPauseDuration =
@@ -125,8 +128,6 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new BooleanClientSetting("SHOW_BATTLES_WHEN_OBSERVING", true);
   public static final ClientSetting<Boolean> showBetaFeatures =
       new BooleanClientSetting("SHOW_BETA_FEATURES");
-  public static final ClientSetting<Boolean> useMapsServerBetaFeature =
-      new BooleanClientSetting("USE_MAPS_SERVER_BETA_FEATURES");
   public static final ClientSetting<Boolean> useWebsocketNetwork =
       new BooleanClientSetting("USE_WEBSOCKET_NETWORK");
   public static final ClientSetting<Boolean> showSerializeFeatures =
