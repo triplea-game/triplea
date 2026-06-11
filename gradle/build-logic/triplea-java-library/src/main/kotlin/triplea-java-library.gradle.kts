@@ -26,8 +26,8 @@ spotless {
     }
 
     java {
-        expandWildcardImports()
         googleJavaFormat()
+        expandWildcardImports()
         removeUnusedImports()
         cleanthat()
             .sourceCompatibility("21")
