@@ -2,7 +2,7 @@
 <install4j version="13.0" transformSequenceNumber="13">
   <directoryPresets config=".triplea-root" />
   <application name="TripleA" applicationId="5251-3669-9623-1649" mediaDir="build/releases" mediaFilePattern="${compiler:sys.fullName}_${compiler:sys.version}_${compiler:sys.platform}" compression="9" lzmaCompression="true" pack200Compression="true" createChecksums="false" shortName="TripleA" publisher="TripleA Developer Team" publisherWeb="https://triplea-game.org" version="${compiler:sys.version}" allPathsRelative="true" autoSave="true" convertDotsToUnderscores="false" macVolumeId="af9346379363d40e" javaMinVersion="17" jdkMode="jdk">
-    <jreBundles jdkProviderId="AdoptOpenJDK" release="25/jdk-25.0.3+9" />
+    <jreBundles jdkProviderId="Adoptium" release="25/jdk-25.0.3+9" />
   </application>
   <files>
     <mountPoints>
