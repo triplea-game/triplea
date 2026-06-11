@@ -36,6 +36,7 @@ subprojects {
         implementation(rootProject.libs.apache.httpmime)
         implementation(rootProject.libs.java.websocket)
         implementation(rootProject.libs.jetbrains.annotations)
+        implementation(rootProject.libs.okhttp)
         implementation(rootProject.libs.xchart)
         implementation(rootProject.libs.radiance.substance)
         implementation(rootProject.libs.snakeyaml.engine)
