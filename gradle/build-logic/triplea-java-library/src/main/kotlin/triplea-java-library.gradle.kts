@@ -12,8 +12,11 @@ plugins {
 group = "triplea"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(25))
+    }
 }
 
 spotless {
@@ -30,7 +33,7 @@ spotless {
         expandWildcardImports()
         removeUnusedImports()
         cleanthat()
-            .sourceCompatibility("21")
+            .sourceCompatibility("25")
             // https://jsparrow.github.io/rules/#tags
             // https://github.com/solven-eu/cleanthat/tree/master/java/src/main/java/eu/solven/cleanthat/engine/java/refactorer/mutators
             .addMutator("ArithmethicAssignment")
