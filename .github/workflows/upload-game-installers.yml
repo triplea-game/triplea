@@ -22,11 +22,11 @@ jobs:
           # Fetch depth of 0 is needed so we checkout the full revision history
           # The current revision count will be used as our build-number
           fetch-depth: '0'
-      - name: Set up JDK 21
+      - name: Set up JDK 25
         uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: 21
+          java-version: 25
       - name: set env variables
         run: |
           BUILD_VERSION=$(game-app/run/.build/get-build-version)
@@ -39,7 +39,7 @@ jobs:
         run: ./game-app/run/package
       - name: Create Github Release
         uses: ncipollo/release-action@v1
-        with:        
+        with:
           artifacts: build/artifacts/*
           tag: ${{ env.build_version }}
           name: ${{ env.release_name }}
