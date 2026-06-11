@@ -32,5 +32,5 @@ jobs:
 
           docker build game-app/game-headless \
             --tag ghcr.io/triplea-game/bot:latest \
-            --label gitSha="$(git rev-parse --short HEAD)" \
+            --label gitSha="$(git rev-parse --short HEAD)"
           docker push ghcr.io/triplea-game/bot:latest
