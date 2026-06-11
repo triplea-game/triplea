@@ -1,5 +1,8 @@
 import com.install4j.gradle.Install4jTask
 import de.undercouch.gradle.tasks.download.Download
+import java.time.YearMonth
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 plugins {
     id("triplea-java-library")
@@ -58,11 +61,28 @@ tasks.named<ProcessResources>("processResources") {
     }
 }
 
+// Constructs release version in the form: YYYY.MM.[release number].[commit number]
+// EG: 2026.08.30.12345
+val releaseVersion = run {
+    val calDate = YearMonth.now(ZoneOffset.UTC)
+        .format(DateTimeFormatter.ofPattern("yyyy.MM"))
+    val productVersion = rootProject.file("game-app/run/.build/product-version.txt")
+        .readText().trim()
+    val buildNumber = providers.exec {
+        workingDir = rootDir
+        commandLine("git", "rev-list", "--count", "HEAD")
+    }.standardOutput.asText.get().trim()
+    "$calDate.$productVersion.$buildNumber"
+}
 
-val releaseVersion = providers.exec {
-    commandLine("game-app/run/.build/get-build-version")
-}.standardOutput.asText.get().trim()
-
+tasks.register("printReleaseVersion") {
+    description = "Prints the build version"
+    group = "release"
+    val version = releaseVersion
+    doLast {
+        println(version)
+    }
+}
 
 val platformInstallers = tasks.register<Install4jTask>("platformInstallers") {
     group = "release"

@@ -4,7 +4,13 @@
 
 set -e
 scriptDir=$(dirname "$0")
-buildVersion=$("$scriptDir"/get-build-version)
-productPropertiesFile=$(find "$scriptDir/../../" -path "*src/main/resources/META-INF/*" -name "product.properties" -type f)
 
-echo "version = $buildVersion" | tee "$productPropertiesFile"
+(
+  cd "$scriptDir" || exit 1
+  rootDir=$(git rev-parse --show-toplevel)
+  cd "$rootDir" || exit 1
+
+  buildVersion=$(./gradlew -q printReleaseVersion)
+  productPropertiesFile=$(find "$scriptDir/../../" -path "*src/main/resources/META-INF/*" -name "product.properties" -type f)
+  echo "version = $buildVersion" | tee "$productPropertiesFile"
+)

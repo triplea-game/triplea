@@ -29,7 +29,7 @@ jobs:
           java-version: 25
       - name: set env variables
         run: |
-          BUILD_VERSION=$(game-app/run/.build/get-build-version)
+          BUILD_VERSION=$(./gradlew -q printReleaseVersion)
           echo "build_version=$BUILD_VERSION" | tee -a $GITHUB_ENV
           echo "release_name=$(date +%Y-%B-%d) - $BUILD_VERSION" | tee -a $GITHUB_ENV
           echo "INSTALL4J_LICENSE_KEY=$INSTALL4J_LICENSE_KEY" | tee -a $GITHUB_ENV
