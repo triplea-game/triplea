@@ -7,8 +7,9 @@ import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.ApiKey;
+import org.triplea.domain.data.SystemIdLoader;
 import org.triplea.domain.data.UserName;
-import org.triplea.http.client.LobbyHttpClientConfig;
+import org.triplea.http.client.ClientIdentifiers;
 import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
 import org.triplea.http.client.lobby.game.lobby.watcher.GamePostingRequest;
@@ -49,10 +50,10 @@ public class GameToLobbyConnection {
             .websocketUri(URI.create(lobbyUri.toString() + WebsocketPaths.GAME_CONNECTIONS))
             .headers(
                 Map.of(
-                    LobbyHttpClientConfig.VERSION_HEADER,
-                    LobbyHttpClientConfig.getConfig().getClientVersion(),
-                    LobbyHttpClientConfig.SYSTEM_ID_HEADER,
-                    LobbyHttpClientConfig.getConfig().getSystemId()))
+                    ClientIdentifiers.VERSION_HEADER,
+                    ClientIdentifiers.CLIENT_VERSION,
+                    ClientIdentifiers.SYSTEM_ID_HEADER,
+                    SystemIdLoader.load().getValue()))
             .build();
     webSocket.connect();
     lobbyWatcherClient =

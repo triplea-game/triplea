@@ -14,16 +14,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.triplea.config.product.ProductVersionReader;
 
 class ParseGameXmlsTest {
 
   @ParameterizedTest
   @MethodSource
   void parseGameFiles(final Path xmlFile) {
-    final Optional<GameData> result =
-        GameParser.parse(
-            xmlFile, new XmlGameElementMapper(), ProductVersionReader.getCurrentVersion(), false);
+    final Optional<GameData> result = GameParser.parse(xmlFile, new XmlGameElementMapper(), false);
     assertThat(result, OptionalMatchers.isPresent());
   }
 
