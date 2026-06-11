@@ -14,8 +14,7 @@ final class EngineVersionCheck {
     ClientSetting.lastCheckForEngineUpdate.setValueAndFlush(Instant.now().toEpochMilli());
 
     LatestVersionClient.fetchLatestVersion(
-            ClientSetting.lobbyUri.getValueOrThrow(),
-            ProductVersionReader.getCurrentVersion().toString())
+            ClientSetting.lobbyUri.getValueOrThrow(), ProductVersionReader.getCurrentVersion())
         .filter(
             response ->
                 !LatestVersionResponse.RecommendedAction.NO_UPDATE

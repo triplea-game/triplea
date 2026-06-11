@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
-import org.triplea.util.Version;
 
 /**
  * The client side of the peer-to-peer network game authentication protocol.
@@ -25,7 +24,6 @@ public class ClientLogin implements IConnectionLogin {
   @NonNls static final String ENGINE_VERSION_PROPERTY = "Engine.Version";
 
   private final Component parentComponent;
-  private final Version engineVersion;
 
   @Override
   public Map<String, String> getProperties(final Map<String, String> challenge) {
@@ -36,8 +34,6 @@ public class ClientLogin implements IConnectionLogin {
         .equals(challenge.get(ClientLoginValidator.PASSWORD_REQUIRED_PROPERTY))) {
       addAuthenticationResponseProperties(promptForPassword(), challenge, response);
     }
-
-    response.put(ENGINE_VERSION_PROPERTY, engineVersion.toString());
 
     return response;
   }

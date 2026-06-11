@@ -11,10 +11,8 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.Builder;
-import org.triplea.config.product.ProductVersionReader;
 import org.triplea.java.ChangeOnNextMajorRelease;
 import org.triplea.java.Interruptibles;
-import org.triplea.util.Version;
 
 /**
  * The server side of the peer-to-peer network game authentication protocol.
@@ -26,14 +24,12 @@ import org.triplea.util.Version;
 public final class ClientLoginValidator implements ILoginValidator {
   static final String PASSWORD_REQUIRED_PROPERTY = "Password Required";
 
-  private final Version engineVersion;
   private final IServerMessenger serverMessenger;
   @Nullable private String password;
 
   @Builder
   public ClientLoginValidator(
       @Nonnull IServerMessenger serverMessenger, @Nullable String password) {
-    engineVersion = ProductVersionReader.getCurrentVersion();
     this.serverMessenger = serverMessenger;
     this.password = password;
   }
@@ -57,8 +53,6 @@ public final class ClientLoginValidator implements ILoginValidator {
   public Map<String, String> getChallengeProperties(final String username) {
     final Map<String, String> challenge = new HashMap<>();
 
-    challenge.put("Sever Version", engineVersion.toString());
-
     if (!Strings.isNullOrEmpty(password)) {
       challenge.put(PASSWORD_REQUIRED_PROPERTY, Boolean.TRUE.toString());
       challenge.putAll(HmacSha512Authenticator.newChallenge());
@@ -77,18 +71,6 @@ public final class ClientLoginValidator implements ILoginValidator {
       final String clientName,
       final String hashedMac,
       final InetSocketAddress remoteAddress) {
-    final String versionString = propertiesReadFromClient.get(ClientLogin.ENGINE_VERSION_PROPERTY);
-    if (versionString == null || versionString.length() > 20 || versionString.isBlank()) {
-      return "Invalid version " + versionString;
-    }
-
-    // check for version
-    final Version clientVersion = new Version(versionString);
-    if (engineVersion.getMajor() != clientVersion.getMajor()) {
-      return String.format(
-          "Client is using %s but the server requires a version compatible with version %s",
-          clientVersion, engineVersion);
-    }
 
     final String remoteIp = remoteAddress.getAddress().getHostAddress();
     if (serverMessenger.isPlayerBanned(remoteIp, hashedMac)) {

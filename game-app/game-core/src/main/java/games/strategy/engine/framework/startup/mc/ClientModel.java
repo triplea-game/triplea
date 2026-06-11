@@ -57,7 +57,6 @@ import javax.swing.SwingUtilities;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.config.product.ProductVersionReader;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 import org.triplea.java.concurrency.AsyncRunner;
@@ -227,9 +226,7 @@ public class ClientModel implements IMessengerErrorListener {
     try {
       messenger =
           ClientMessengerFactory.newClientMessenger(
-              props,
-              objectStreamFactory,
-              new ClientLogin(this.ui, ProductVersionReader.getCurrentVersion()));
+              props, objectStreamFactory, new ClientLogin(this.ui));
 
       if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
         final URI serverURI =

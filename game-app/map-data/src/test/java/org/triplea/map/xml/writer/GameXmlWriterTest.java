@@ -39,7 +39,6 @@ class GameXmlWriterTest {
         "resource-list.xml",
         "technology.xml",
         "territory-effect-list.xml",
-        "triplea.xml",
         "unit-list.xml",
         "variable-list.xml"
       })

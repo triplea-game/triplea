@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.config.product.ProductVersionReader;
 import org.triplea.domain.data.SystemIdLoader;
 import org.triplea.http.client.ClientIdentifiers;
 import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
@@ -31,10 +30,7 @@ public class MapListingFetcher {
     try {
       return MapsClient.newClient(
               serverUri,
-              ClientIdentifiers.builder()
-                  .applicationVersion(ProductVersionReader.getCurrentVersion().toMajorMinorString())
-                  .systemId(SystemIdLoader.load().getValue())
-                  .build())
+              ClientIdentifiers.builder().systemId(SystemIdLoader.load().getValue()).build())
           .fetchMapListing()
           .getMaps();
     } catch (FeignException e) {

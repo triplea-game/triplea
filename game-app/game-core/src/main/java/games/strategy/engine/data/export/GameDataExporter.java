@@ -36,7 +36,6 @@ import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.UtilityClass;
-import org.triplea.config.product.ProductVersionReader;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.map.data.elements.AttachmentList;
 import org.triplea.map.data.elements.DiceSides;
@@ -51,7 +50,6 @@ import org.triplea.map.data.elements.RelationshipTypes;
 import org.triplea.map.data.elements.ResourceList;
 import org.triplea.map.data.elements.Technology;
 import org.triplea.map.data.elements.TerritoryEffectList;
-import org.triplea.map.data.elements.Triplea;
 import org.triplea.map.data.elements.UnitList;
 import org.triplea.util.Tuple;
 
@@ -66,10 +64,6 @@ public class GameDataExporter {
   public static Game convertToXmlModel(final GameData data, final Path existingMapXmlPath) {
     return Game.builder()
         .info(info(data))
-        .triplea(
-            Triplea.builder()
-                .minimumVersion(ProductVersionReader.getCurrentVersion().toString())
-                .build())
         .diceSides(DiceSides.builder().value(data.getDiceSides()).build())
         .map(map(data))
         .resourceList(resourceList(data))
