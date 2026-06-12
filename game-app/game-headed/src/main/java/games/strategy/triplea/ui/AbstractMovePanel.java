@@ -1,11 +1,13 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.player.PlayerBridge;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.remote.IAbstractMoveDelegate;
+import games.strategy.triplea.ui.panels.map.MapPanel;
 import java.awt.Component;
 import java.io.Serial;
 import java.util.ArrayList;
@@ -51,6 +53,13 @@ public abstract class AbstractMovePanel extends ActionPanel {
   protected AbstractMovePanel(final TripleAFrame frame) {
     super(frame);
     this.frame = frame;
+    disableCancelButton();
+    undoableMoves = List.of();
+  }
+
+  AbstractMovePanel(final GameData data, final MapPanel map) {
+    super(data, map);
+    frame = null;
     disableCancelButton();
     undoableMoves = List.of();
   }

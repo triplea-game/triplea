@@ -17,20 +17,25 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import games.strategy.engine.data.GameDataEvent;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
@@ -67,6 +72,63 @@ class PlaceDelegateTest extends PlaceDelegateTestCommon {
     final PlaceableUnits response =
         delegate.getPlaceableUnits(create(british, infantry, 3), westCanada);
     assertEquals(2, response.getMaxUnits());
+  }
+
+  @Test
+  void getPlaceableUnitsThrowsWhenNoPlayerIsActive() {
+    // Models the current failure mode: a remote placement query reaches the
+    // delegate before ServerGame has assigned the runtime player field.
+    final IDelegateBridge bridge = mock(IDelegateBridge.class);
+    delegate = new PlaceDelegate();
+    delegate.initialize("place");
+    delegate.setDelegateBridgeAndPlayer(bridge);
+
+    assertThrows(
+        NullPointerException.class,
+        () -> delegate.getPlaceableUnits(create(british, infantry, 1), westCanada));
+  }
+
+  @Test
+  void stepChangeListenerCanObservePlaceDelegateBeforePlayerIsAssigned() {
+    // Models the server start-step ordering: GAME_STEP_CHANGED is fired before
+    // ServerGame calls setDelegateBridgeAndPlayer on the current delegate.
+    // This does not model the client click; it pins down the server-side
+    // window where a place delegate can still have no active player.
+    final PlaceDelegate placeDelegate = new PlaceDelegate();
+    placeDelegate.initialize("place");
+    final AtomicReference<GamePlayer> playerAtStepChange = new AtomicReference<>();
+    gameData.addGameDataEventListener(
+        GameDataEvent.GAME_STEP_CHANGED, () -> playerAtStepChange.set(placeDelegate.player));
+
+    gameData.fireGameDataEvent(GameDataEvent.GAME_STEP_CHANGED);
+    placeDelegate.setDelegateBridgeAndPlayer(newDelegateBridge(british));
+
+    assertThat(playerAtStepChange.get(), nullValue());
+    assertThat(placeDelegate.player, is(british));
+  }
+
+  @Test
+  void restoredPlaceDelegateHasNoPlayerUntilBridgeIsAssigned() {
+    // Models a save/load boundary: saveState/loadState restores persisted
+    // placement state, but runtime fields such as bridge/player are reattached
+    // later by ServerGame. A remote call during that interval observes no player.
+    final PlaceDelegate runningDelegate = new PlaceDelegate();
+    runningDelegate.initialize("place");
+    runningDelegate.setDelegateBridgeAndPlayer(newDelegateBridge(british));
+    final Serializable savedState = runningDelegate.saveState();
+
+    final PlaceDelegate restoredDelegate = new PlaceDelegate();
+    restoredDelegate.initialize("place");
+    restoredDelegate.loadState(savedState);
+
+    assertThat(restoredDelegate.player, nullValue());
+    assertThrows(
+        NullPointerException.class,
+        () -> restoredDelegate.getPlaceableUnits(create(british, infantry, 1), westCanada));
+
+    restoredDelegate.setDelegateBridgeAndPlayer(newDelegateBridge(british));
+
+    assertThat(restoredDelegate.player, is(british));
   }
 
   @Test
