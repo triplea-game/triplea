@@ -10,10 +10,8 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 
-/**
- * Class that accepts and queues download requests. Download requests are started in background
- * thread, this class ensures N are in progress until all are done.
- */
+/// Class that accepts and queues download requests. Download requests are started in background
+/// thread, this class ensures N are in progress until all are done.
 public final class DownloadCoordinator {
   public static final DownloadCoordinator instance = new DownloadCoordinator();
 
@@ -56,7 +54,7 @@ public final class DownloadCoordinator {
     return downloadFiles.stream().map(DownloadFile::getDownload).anyMatch(download::equals);
   }
 
-  /** Starts any downloads that can be started. */
+  /// Starts any downloads that can be started.
   private void updateQueue() {
     assert Thread.holdsLock(lock);
 

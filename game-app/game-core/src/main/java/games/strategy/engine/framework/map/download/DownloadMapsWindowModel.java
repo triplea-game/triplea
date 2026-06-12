@@ -13,7 +13,8 @@ import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 import org.triplea.io.FileUtils;
 import org.triplea.java.Interruptibles;
 
-/** Various logic methods used by DownloadMapsWindows. */
+/// Data model for DownloadMapsWindows especially to centrally store
+/// maps information used for each UI component.
 @Slf4j
 class DownloadMapsWindowModel {
   @Getter private final InstalledMapsListing installedMapsListing;
@@ -29,7 +30,7 @@ class DownloadMapsWindowModel {
     return getInstallLocation(mapDownloadItem).isPresent();
   }
 
-  /** File reference for where to install the file, empty if not installed. */
+  /// File reference for where to install the file, empty if not installed.
   Optional<Path> getInstallLocation(final ManagedMap mapDownloadItem) {
     return installedMapsListing.findMapFolderByName(mapDownloadItem.getMapName());
   }

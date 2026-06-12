@@ -4,7 +4,7 @@ import games.strategy.engine.framework.system.HttpProxy;
 import lombok.experimental.UtilityClass;
 import org.triplea.io.ContentDownloader;
 
-/** Provides methods to download files via HTTP. */
+/// Provides methods to download files via HTTP.
 @UtilityClass
 public final class DownloadConfiguration {
   private static final ContentReader contentReader =

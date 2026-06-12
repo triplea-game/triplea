@@ -4,16 +4,13 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 
-/**
- * A listener of map download progress events that updates the associated controls in the UI.
- *
- * <p>Instances of this class are thread safe.
- */
+/// A listener of map download progress events that updates the associated controls in the UI.
+/// <p>Instances of this class are thread safe.
 final class MapDownloadProgressListener {
   private final MapDownloadItem download;
   private final JProgressBar progressBar;
 
-  /** The amount total that we will be downloading. */
+  /// The amount total that we will be downloading.
   private final long downloadLength;
 
   MapDownloadProgressListener(final MapDownloadItem download, final JProgressBar progressBar) {
