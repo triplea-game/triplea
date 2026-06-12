@@ -15,10 +15,8 @@ import org.triplea.http.client.lobby.maps.listing.MapTag;
 import org.triplea.swing.JTableBuilder;
 import org.triplea.swing.JTableTypeAheadListener;
 
-/**
- * UI component representing a list of maps to download. The table is sortable and displays
- * additional columns with map metadata.
- */
+/// UI component representing a list of maps to download. The table is sortable and displays
+/// additional columns with map metadata.
 public class MapDownloadSwingTable {
   private final JTable table;
   private final List<String> tagNames;
@@ -56,10 +54,8 @@ public class MapDownloadSwingTable {
     table.addKeyListener(new JTableTypeAheadListener(table, 0));
   }
 
-  /**
-   * Given a download item and a set of tags (in correct display order), returns values for a table
-   * row, map name and then each of the map's tag values.
-   */
+  /// Given a download item and a set of tags (in correct display order), returns values for a table
+  /// row, map name and then each of the map's tag values.
   private List<String> rowMapper(final ManagedMap managedMap, final List<String> mapTags) {
     final MapDownloadItem mapDownloadItem = managedMap.getMapDownloadItem();
     final List<String> rowValues = new ArrayList<>();
@@ -78,12 +74,9 @@ public class MapDownloadSwingTable {
     return table;
   }
 
-  /**
-   * Adds a listener that is called when a table selection occurs.
-   *
-   * @param mapNameSelectionListener Consumer handling map selection name, input to the consumer is
-   *     the list of selected maps.
-   */
+  /// Adds a listener that is called when a table selection occurs.
+  /// @param mapNameSelectionListener Consumer handling map selection name, input to the consumer is
+  /// the list of selected maps.
   public void addMapSelectionListener(final Consumer<List<String>> mapNameSelectionListener) {
     table
         .getSelectionModel()
@@ -95,7 +88,7 @@ public class MapDownloadSwingTable {
             });
   }
 
-  /** Returns list of currently selected maps. */
+  /// Returns list of currently selected maps.
   public List<String> getSelectedMapNames() {
     if (table.getSelectedRows() == null || table.getSelectedRows().length == 0) {
       return List.of();

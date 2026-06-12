@@ -54,7 +54,8 @@ import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
-/** Window that allows for map downloads and removal. */
+/// Window that allows for map downloads and removal.
+/// It shows the maps in lists separated into tabs to install/update/remove
 @Slf4j
 public class DownloadMapsWindow extends JFrame {
 
@@ -145,26 +146,19 @@ public class DownloadMapsWindow extends JFrame {
     }
   }
 
-  /**
-   * Shows the Download Maps window.
-   *
-   * @throws IllegalStateException If this method is not called from the EDT.
-   */
+  /// Shows the Download Maps window.
+  /// @throws IllegalStateException If this method is not called from the EDT.
   public static void showDownloadMapsWindow() {
     checkState(SwingUtilities.isEventDispatchThread());
 
     showDownloadMapsWindowAndDownload(List.of());
   }
 
-  /**
-   * Shows the Download Maps window and immediately begins downloading the specified map in the
-   * background.
-   *
-   * <p>The user will be notified if the specified map is unknown.
-   *
-   * @param mapName The name of the map to download; must not be {@code null}.
-   * @throws IllegalStateException If this method is not called from the EDT.
-   */
+  /// Shows the Download Maps window and immediately begins downloading the specified map in
+  /// background.
+  /// <p>The user will be notified if the specified map is unknown.
+  /// @param mapName The name of the map to download.
+  /// @throws IllegalStateException If this method is not called from the EDT.
   public static void showDownloadMapsWindowAndDownload(final String mapName) {
     checkState(SwingUtilities.isEventDispatchThread());
     checkNotNull(mapName);
@@ -172,16 +166,11 @@ public class DownloadMapsWindow extends JFrame {
     showDownloadMapsWindowAndDownload(List.of(mapName));
   }
 
-  /**
-   * Shows the Download Maps window and immediately begins downloading the specified maps in the
-   * background.
-   *
-   * <p>The user will be notified if any of the specified maps are unknown.
-   *
-   * @param mapNamesToDownload The collection containing the names of the maps to download; must not
-   *     be {@code null}.
-   * @throws IllegalStateException If this method is not called from the EDT.
-   */
+  /// Shows the Download Maps window and immediately begins downloading the specified maps in
+  /// background.
+  /// <p>The user will be notified if any of the specified maps are unknown.
+  /// @param mapNamesToDownload The collection containing the names of the maps to download
+  /// @throws IllegalStateException If this method is not called from the EDT.
   public static void showDownloadMapsWindowAndDownload(
       final Collection<String> mapNamesToDownload) {
     if (!SwingUtilities.isEventDispatchThread()) {
@@ -192,20 +181,15 @@ public class DownloadMapsWindow extends JFrame {
     SINGLETON_MANAGER.showAndDownload(mapNamesToDownload);
   }
 
-  /**
-   * Returns an HTML-formatted label text based on the current map selection.
-   *
-   * <p>Return values based on the selection:
-   *
-   * <ul>
-   *   <li><b>One map:</b> the map name
-   *   <li><b>Multiple maps:</b> a comma separated list of the names of the selected maps
-   *   <li><b>No map:</b> a string indicating there is no selection
-   * </ul>
-   *
-   * @param selectedMapItems List of selected maps
-   * @return a descriptive HTML string depending on the selection
-   */
+  /// Returns an HTML-formatted label text based on the current map selection.
+  /// <p>Return values based on the selection:
+  /// <ul>
+  ///   <li><b>One map:</b> the map name
+  ///  <li><b>Multiple maps:</b> a comma separated list of the names of the selected maps
+  ///  <li><b>No map:</b> a string indicating there is no selection
+  /// </ul>
+  /// @param selectedMapItems List of selected maps
+  /// @return a descriptive HTML string depending on the selection
   private String newMapUrlAndSizeLabelText(final List<ManagedMap> selectedMapItems) {
     if (selectedMapItems.isEmpty()) {
       return "<html>None selected</html>";
@@ -381,21 +365,16 @@ public class DownloadMapsWindow extends JFrame {
     descriptionPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
   }
 
-  /**
-   * Returns an HTML-formatted label for the description panel based on the current map selection.
-   *
-   * <p>Return values:
-   *
-   * <ul>
-   *   <li><b>Single map selected:</b> the result of {@link
-   *       DownloadMapsWindowModel#toHtmlString(ManagedMap)}
-   *   <li><b>Multiple maps selected:</b> a generic message indicating multiple maps are selected
-   *   <li><b>No selection:</b> an empty string
-   * </ul>
-   *
-   * @param selectedMapItems List of selected maps
-   * @return a descriptive HTML string depending on the selection
-   */
+  /// Returns an HTML-formatted label for the description panel based on the current map selection.
+  /// <p>Return values:
+  /// <ul>
+  ///   <li><b>Single map selected:</b> the result of {@link
+  ///       DownloadMapsWindowModel#toHtmlString(ManagedMap)}
+  ///   <li><b>Multiple maps selected:</b> a generic message indicating multiple maps are selected
+  ///   <li><b>No selection:</b> an empty string
+  /// </ul>
+  /// @param selectedMapItems List of selected maps
+  /// @return a descriptive HTML string depending on the selection
   private String newDescriptionPanelText(List<ManagedMap> selectedMapItems) {
     final int countSelectedMapItems = selectedMapItems.size();
     final String descriptionPanelText;
@@ -564,6 +543,7 @@ public class DownloadMapsWindow extends JFrame {
     }
   }
 
+  /// Ensures the Download Maps windows is instantiated only once
   private static final class SingletonManager {
     private enum State {
       UNINITIALIZED,

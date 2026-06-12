@@ -14,6 +14,7 @@ enum ManagedMapStatus {
   ERROR
 }
 
+/// Data model entity for individual map information
 final class ManagedMap {
   @Getter private ManagedMapStatus mapStatus;
   @Getter private final MapDownloadItem mapDownloadItem;

@@ -6,10 +6,8 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-/**
- * This class represents the essential data for downloading a TripleA map. Where to get it, where to
- * install it, version, etc..
- */
+/// This class represents the essential data for downloading a TripleA map. Where to get it, where
+/// to install it, version, etc.
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Getter
 @Builder
