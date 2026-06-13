@@ -61,11 +61,11 @@ tasks.named<ProcessResources>("processResources") {
     }
 }
 
-// Constructs release version in the form: YYYY.MM.[release number].[commit number]
-// EG: 2026.08.30.12345
+// Constructs release version in the form: YYYY-MM.[release number].[commit number]
+// EG: 2026-08.30.12345
 val releaseVersion = run {
     val calDate = YearMonth.now(ZoneOffset.UTC)
-        .format(DateTimeFormatter.ofPattern("yyyy.MM"))
+        .format(DateTimeFormatter.ofPattern("yyyy-MM"))
     val productVersion = rootProject.file("game-app/run/.build/product-version.txt")
         .readText().trim()
     val buildNumber = providers.exec {
