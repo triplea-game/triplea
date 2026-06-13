@@ -64,13 +64,9 @@ Please restart all running TripleA instances.""",
 
   public static Collection<UIManager.LookAndFeelInfo> getAvailableLookAndFeels() {
     final Collection<UIManager.LookAndFeelInfo> lookAndFeels = new ArrayList<>();
-    lookAndFeels.addAll(getSystemLookAndFeels());
+    lookAndFeels.addAll(List.of(UIManager.getInstalledLookAndFeels()));
     lookAndFeels.addAll(getSubstanceLookAndFeels());
     return lookAndFeels;
-  }
-
-  private static Collection<UIManager.LookAndFeelInfo> getSystemLookAndFeels() {
-    return List.of(UIManager.getInstalledLookAndFeels());
   }
 
   private static Collection<UIManager.LookAndFeelInfo> getSubstanceLookAndFeels() {
@@ -127,6 +123,14 @@ Please restart all running TripleA instances.""",
           log.error("Failed to set system look and feel", e);
         }
       }
+    }
+
+    if (!SystemProperties.isMac() && !SystemProperties.isWindows()) {
+      // FlatLaf paints popup drop shadows by wrapping popups in heavyweight translucent windows.
+      // Under X11/Wayland those windows are unreliable, leaving combo box and menu popups
+      // invisible.
+      // Disabling the painted shadow on Linux falls back to standard lightweight Swing popups.
+      UIManager.put("Popup.dropShadowPainted", Boolean.FALSE);
     }
   }
 

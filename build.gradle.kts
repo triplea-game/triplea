@@ -38,7 +38,7 @@ subprojects {
         implementation(rootProject.libs.jetbrains.annotations)
         implementation(rootProject.libs.okhttp)
         implementation(rootProject.libs.xchart)
-        implementation(rootProject.libs.radiance.substance)
+        implementation(rootProject.libs.flatlaf)
         implementation(rootProject.libs.snakeyaml.engine)
         testImplementation(rootProject.libs.jackson.datatype.jsr310)
         testImplementation(rootProject.libs.hamcrest.optional)
