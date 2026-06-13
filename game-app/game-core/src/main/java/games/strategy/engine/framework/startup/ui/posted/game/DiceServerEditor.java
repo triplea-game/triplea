@@ -29,7 +29,7 @@ public class DiceServerEditor extends JPanel {
   public static final URI PRODUCTION_URI = URI.create("https://dice.triplea-game.org");
 
   private static final long serialVersionUID = -451810815037661114L;
-  public static final int ADDRESS_FIELD_MAX_LENGTH = 1019;
+  public static final int ADDRESS_FIELD_MAX_LENGTH = 512;
   private final JButton registerButton =
       new JButtonBuilder("Register")
           .actionListener(() -> OpenFileUtility.openUrl(this, UrlConstants.MARTI_REGISTRATION))
@@ -45,9 +45,8 @@ public class DiceServerEditor extends JPanel {
                       this,
                       new JLabel(
                           "<html><p style='width: 400px;'>"
-                              + "Enter your your email address in the \"To\" field, and you "
-                              + "opponents in the \"CC\" field, you may enter multiple "
-                              + "addresses each separated by a space. Click the register "
+                              + "Enter your email address in the \"To\" field, and your "
+                              + "opponent's in the \"CC\" field. Click the register "
                               + "button to register your email addresses, this must be done "
                               + "to receive dice emails."
                               + "</p></html>"),
@@ -60,7 +59,6 @@ public class DiceServerEditor extends JPanel {
       JTextFieldBuilder.builder().maxLength(ADDRESS_FIELD_MAX_LENGTH).build();
   private final JTextField ccAddress =
       JTextFieldBuilder.builder().maxLength(ADDRESS_FIELD_MAX_LENGTH).build();
-  private final JTextField gameId = new JTextField();
   private final JLabel toLabel = new JLabel("To:");
   private final JLabel ccLabel = new JLabel("Cc:");
   private final Runnable readyCallback;
@@ -169,36 +167,6 @@ public class DiceServerEditor extends JPanel {
             0,
             0));
     row++;
-    final JLabel gameIdLabel = new JLabel("Game Name:");
-    diceRollerOptions.add(
-        gameIdLabel,
-        new GridBagConstraints(
-            0,
-            row,
-            1,
-            1,
-            0,
-            0,
-            GridBagConstraints.WEST,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, bottomSpace, labelSpace),
-            0,
-            0));
-    diceRollerOptions.add(
-        gameId,
-        new GridBagConstraints(
-            1,
-            row,
-            3,
-            1,
-            1.0,
-            0,
-            GridBagConstraints.EAST,
-            GridBagConstraints.HORIZONTAL,
-            new Insets(0, 0, bottomSpace, 0),
-            0,
-            0));
-    row++;
     diceRollerOptions.add(
         registerButton,
         new GridBagConstraints(
@@ -250,7 +218,7 @@ public class DiceServerEditor extends JPanel {
             0,
             0));
 
-    new DocumentListenerBuilder(this::checkFieldsAndNotify).attachTo(toAddress, ccAddress, gameId);
+    new DocumentListenerBuilder(this::checkFieldsAndNotify).attachTo(toAddress, ccAddress);
   }
 
   private void checkFieldsAndNotify() {
@@ -260,9 +228,9 @@ public class DiceServerEditor extends JPanel {
 
   public boolean areFieldsValid() {
     final boolean toValid =
-        !toAddress.getText().isEmpty() && PlayerEmailValidation.areValid(toAddress.getText());
+        !toAddress.getText().isEmpty() && PlayerEmailValidation.isValid(toAddress.getText());
     final boolean ccValid =
-        !ccAddress.getText().isEmpty() && PlayerEmailValidation.areValid(ccAddress.getText());
+        !ccAddress.getText().isEmpty() && PlayerEmailValidation.isValid(ccAddress.getText());
 
     final boolean allValid = toValid && ccValid;
     testDiceButton.setEnabled(allValid);
@@ -280,13 +248,11 @@ public class DiceServerEditor extends JPanel {
   }
 
   public void applyToGameProperties(final GameProperties properties) {
-    properties.set(IRemoteDiceServer.GAME_NAME, gameId.getText());
     properties.set(IRemoteDiceServer.EMAIL_1, toAddress.getText());
     properties.set(IRemoteDiceServer.EMAIL_2, ccAddress.getText());
   }
 
   public void populateFromGameProperties(final GameProperties properties) {
-    gameId.setText(properties.get(IRemoteDiceServer.GAME_NAME, ""));
     toAddress.setText(properties.get(IRemoteDiceServer.EMAIL_1, ""));
     ccAddress.setText(properties.get(IRemoteDiceServer.EMAIL_2, ""));
   }
@@ -294,7 +260,6 @@ public class DiceServerEditor extends JPanel {
   public IRemoteDiceServer newDiceServer() {
     return MartiDiceRoller.builder()
         .diceRollerUri(ClientSetting.diceRollerUri.getValueOrThrow())
-        .gameId(gameId.getText())
         .toAddress(toAddress.getText())
         .ccAddress(ccAddress.getText())
         .build();
