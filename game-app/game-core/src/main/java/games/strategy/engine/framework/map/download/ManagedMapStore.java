@@ -31,6 +31,7 @@ interface MapStatusListener {
   void mapStatusChanged(ManagedMapStatus oldStatus, ManagedMapStatus newStatus);
 }
 
+/// Central data model part to store for map information
 final class ManagedMapStore implements DownloadListener {
 
   private final Map<String, ManagedMap> mapsByName = new HashMap<>(); // lower-case map name index

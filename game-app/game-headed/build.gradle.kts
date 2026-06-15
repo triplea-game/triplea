@@ -1,5 +1,8 @@
 import com.install4j.gradle.Install4jTask
 import de.undercouch.gradle.tasks.download.Download
+import java.time.YearMonth
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 plugins {
     id("triplea-java-library")
@@ -16,20 +19,6 @@ application {
         "--add-opens=java.desktop/com.apple.eawt.event=ALL-UNNAMED"
     )
 }
-
-val releasesDir = project.layout.buildDirectory.file("releases").get().asFile
-
-fun getProductVersion(): String {
-    return rootProject.file("game-app/run/.build/product-version.txt").readText().trim()
-}
-
-fun getCommitNumber(): String {
-    return providers.exec {
-        commandLine("git", "rev-list", "--count", "HEAD")
-    }.standardOutput.asText.get().trim()
-}
-
-val releaseVersion = getProductVersion() + "+" + getCommitNumber()
 
 dependencies {
     implementation(project(":ai"))
@@ -72,6 +61,29 @@ tasks.named<ProcessResources>("processResources") {
     }
 }
 
+// Constructs release version in the form: YYYY-MM.[release number].[commit number]
+// EG: 2026-08.30.12345
+val releaseVersion = run {
+    val calDate = YearMonth.now(ZoneOffset.UTC)
+        .format(DateTimeFormatter.ofPattern("yyyy-MM"))
+    val productVersion = rootProject.file("game-app/run/.build/product-version.txt")
+        .readText().trim()
+    val buildNumber = providers.exec {
+        workingDir = rootDir
+        commandLine("git", "rev-list", "--count", "HEAD")
+    }.standardOutput.asText.get().trim()
+    "$calDate.$productVersion.$buildNumber"
+}
+
+tasks.register("printReleaseVersion") {
+    description = "Prints the build version"
+    group = "release"
+    val version = releaseVersion
+    doLast {
+        println(version)
+    }
+}
+
 val platformInstallers = tasks.register<Install4jTask>("platformInstallers") {
     group = "release"
     description = "creates installer files using install4j (eg: install.exe)"
@@ -102,6 +114,8 @@ val portableInstaller = tasks.register<Zip>("portableInstaller") {
         into("bin")
     }
 }
+
+val releasesDir = project.layout.buildDirectory.file("releases").get().asFile
 
 tasks.register<Copy>("release") {
     group = "release"

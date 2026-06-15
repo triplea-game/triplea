@@ -16,7 +16,6 @@ class SetupModelTest {
     SetupModel.clearPbfPbemInformation(properties);
 
     verify(properties).set(IRemoteDiceServer.NAME, null);
-    verify(properties).set(IRemoteDiceServer.GAME_NAME, null);
     verify(properties).set(IRemoteDiceServer.EMAIL_1, null);
     verify(properties).set(IRemoteDiceServer.EMAIL_2, null);
     verify(properties).set(IForumPoster.NAME, null);

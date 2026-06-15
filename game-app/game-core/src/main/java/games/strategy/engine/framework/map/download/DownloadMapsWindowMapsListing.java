@@ -16,6 +16,8 @@ import javax.annotation.Nullable;
 import lombok.Getter;
 import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 
+/// @Todo Left over class for maps storage now modeled in ManagedMapStore
+/// without storing separate lists. Test will have to be reworked though.
 @Getter
 class DownloadMapsWindowMapsListing {
 

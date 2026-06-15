@@ -17,7 +17,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.SystemId;
-import org.triplea.util.Version;
 
 final class ClientLoginIntegrationTest {
   @NonNls private static final String PASSWORD = "password";
@@ -59,7 +58,7 @@ final class ClientLoginIntegrationTest {
     }
 
     TestConnectionLogin(final String password) {
-      super(null, new Version("2.0.0"));
+      super(null);
 
       this.password = password;
     }

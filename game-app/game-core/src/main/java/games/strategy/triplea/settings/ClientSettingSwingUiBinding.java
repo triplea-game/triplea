@@ -255,16 +255,6 @@ Restart to fully activate""") {
     }
   },
 
-  USE_MAPS_SERVER_BETA_FEATURE(
-      "Use Maps Server (Beta)",
-      SettingType.TESTING,
-      "Toggles whether to use the in 'beta' map server") {
-    @Override
-    public SelectionComponent<JComponent> newSelectionComponent() {
-      return booleanRadioButtons(ClientSetting.useMapsServerBetaFeature);
-    }
-  },
-
   SHOW_SERIALIZE_FEATURES_BINDING(
       "Use New Serialization",
       SettingType.TESTING,

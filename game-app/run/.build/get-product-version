@@ -1,7 +1,0 @@
-#!/bin/bash
-
-# Reads and then prints the current product version ('major.minor') from file.
-# Example output: 2.6
-
-scriptDir=$(dirname "$0")
-cat "$scriptDir/product-version.txt"

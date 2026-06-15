@@ -3,18 +3,11 @@ package org.triplea.http.client.web.socket;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.WebSocket;
-import java.net.http.WebSocket.Listener;
-import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.ArrayDeque;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
@@ -22,10 +15,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
 import org.triplea.java.Interruptibles;
-import org.triplea.java.Retriable;
-import org.triplea.java.timer.ScheduledTimer;
-import org.triplea.java.timer.Timers;
 
 /**
  * Component to manage a websocket connection. Responsible for:
@@ -50,9 +45,18 @@ class WebSocketConnection {
    */
   @VisibleForTesting static final String SERVER_BAN_DISCONNECT_MESSAGE = "You have been banned";
 
+  /** Normal closure status code per RFC 6455. */
+  @VisibleForTesting static final int NORMAL_CLOSURE = 1000;
+
+  /** How often OkHttp sends keep-alive pings; the connection fails if no pong is received. */
+  private static final Duration PING_INTERVAL = Duration.ofSeconds(30);
+
   private static final long RECONNECT_BACKOFF_MILLIS = 5000;
 
   private WebSocketConnectionListener listener;
+
+  /** Invoked if the initial connection (including the single retry) fails. */
+  private Consumer<String> errorHandler;
 
   /**
    * If sending messages before a connection is opened, they will be queued. When the connection is
@@ -74,7 +78,7 @@ class WebSocketConnection {
   @Setter(
       value = AccessLevel.PACKAGE,
       onMethod_ = {@VisibleForTesting})
-  private HttpClient httpClient = HttpClient.newHttpClient();
+  private OkHttpClient httpClient = defaultHttpClient();
 
   private final URI serverUri;
 
@@ -82,63 +86,33 @@ class WebSocketConnection {
 
   @Nullable private Thread reconnectThread;
 
-  private WebSocket client;
+  private volatile WebSocket client;
+
+  /**
+   * Completed when the in-progress connect attempt opens, or completed exceptionally when it fails.
+   * Bridges OkHttp's async callbacks to the imperative connect/reconnect flow.
+   */
+  private volatile CompletableFuture<WebSocket> connectFuture;
 
   @Getter(
       value = AccessLevel.PACKAGE,
       onMethod_ = {@VisibleForTesting})
-  private final Listener internalListener = new InternalWebSocketListener();
-
-  @Getter(
-      value = AccessLevel.PACKAGE,
-      onMethod_ = {@VisibleForTesting})
-  private final ScheduledTimer pingSender;
+  private final WebSocketListener internalListener = new InternalWebSocketListener();
 
   WebSocketConnection(URI serverUri, Map<String, String> headers) {
     this.serverUri = serverUri;
-    pingSender =
-        Timers.fixedRateTimer("websocket-ping-sender")
-            .period(10, TimeUnit.SECONDS)
-            .delay(10, TimeUnit.SECONDS)
-            .task(this::sendPingTask);
     this.headers = headers;
   }
 
-  public boolean isOpen() {
-    return !(client.isInputClosed() && client.isOutputClosed());
+  private static OkHttpClient defaultHttpClient() {
+    return new OkHttpClient.Builder()
+        .connectTimeout(Duration.ofMillis(DEFAULT_CONNECT_TIMEOUT_MILLIS))
+        .pingInterval(PING_INTERVAL)
+        .build();
   }
 
-  /**
-   * Sends pings with retries. Retry threshold is set up to account for disconnect at 60 seconds. We
-   * send a ping every 45s, if that fails we'll try again at the 48s mark, again at 51s, again at
-   * 54s, and one last time at 57s.
-   */
-  private void sendPingTask() {
-    if (!client.isOutputClosed()) {
-
-      final Optional<Boolean> pingSuccess =
-          Retriable.<Boolean>builder()
-              .withMaxAttempts(5)
-              .withFixedBackOff(Duration.ofSeconds(3))
-              .withTask(
-                  () -> {
-                    try {
-                      client.sendPing(ByteBuffer.allocate(0)).get();
-                      return Optional.of(true);
-                    } catch (final ExecutionException | InterruptedException e) {
-                      return Optional.of(false);
-                    }
-                  })
-              .buildAndExecute();
-
-      if (pingSuccess.isEmpty()) {
-        log.warn(
-            "Failed to send pings to server, retries exhausted. "
-                + "If the server does not receive pings then the connection to "
-                + "the server will be disconnected. Expecting to be disconnected "
-                + "from the server soon");
-      }
-    }
+  public boolean isOpen() {
+    return client != null && connectionIsOpen;
   }
 
   /** Does an async close of the current websocket connection. */
@@ -149,14 +123,9 @@ class WebSocketConnection {
     }
     // Client can be null if the connection hasn't completely opened yet.
     // This null check prevents a potential NPE, which should rarely ever occur.
-    if (client != null && !client.isOutputClosed()) {
-      client
-          .sendClose(WebSocket.NORMAL_CLOSURE, CLIENT_DISCONNECT_MESSAGE)
-          .exceptionally(
-              e -> {
-                log.info("Failed to close websocket", e);
-                return null;
-              });
+    final WebSocket currentClient = client;
+    if (currentClient != null) {
+      currentClient.close(NORMAL_CLOSURE, CLIENT_DISCONNECT_MESSAGE);
     }
   }
 
@@ -169,42 +138,50 @@ class WebSocketConnection {
    */
   void connect(final WebSocketConnectionListener listener, final Consumer<String> errorHandler) {
     this.listener = Preconditions.checkNotNull(listener);
+    this.errorHandler = errorHandler;
     Preconditions.checkState(client == null);
     Preconditions.checkState(!closed);
 
-    connectAsyncAndStartPingSender()
+    attemptConnect()
         .exceptionally(
             throwable -> {
               // Do a single retry with fixed back-off
               log.info("Failed to connect, will retry", throwable);
               Interruptibles.sleep(1000);
-              retryConnection(errorHandler);
+              retryConnection();
               return null;
             });
   }
 
-  private CompletableFuture<WebSocket> connectAsync() {
-    var clientBuilder = httpClient.newWebSocketBuilder();
-    headers.forEach(clientBuilder::header);
-    return clientBuilder
-        .connectTimeout(Duration.ofMillis(DEFAULT_CONNECT_TIMEOUT_MILLIS))
-        .buildAsync(this.serverUri, internalListener);
-  }
-
-  private CompletableFuture<Void> connectAsyncAndStartPingSender() {
-    return connectAsync().thenRun(pingSender::start);
-  }
-
-  private void retryConnection(final Consumer<String> errorHandler) {
+  private void retryConnection() {
     connectionIsOpen = false;
-    httpClient = HttpClient.newHttpClient();
-    connectAsyncAndStartPingSender()
+    attemptConnect()
         .exceptionally(
             throwable -> {
               log.info("Failed to connect", throwable);
               errorHandler.accept("Failed to connect: " + throwable.getMessage());
               return null;
             });
+  }
+
+  /**
+   * Opens a new websocket. OkHttp's {@code newWebSocket} returns immediately; success or failure is
+   * delivered via {@link InternalWebSocketListener}, which completes the returned future.
+   */
+  private CompletableFuture<WebSocket> attemptConnect() {
+    final CompletableFuture<WebSocket> future = new CompletableFuture<>();
+    connectFuture = future;
+    httpClient.newWebSocket(buildConnectRequest(), internalListener);
+    return future;
+  }
+
+  private Request buildConnectRequest() {
+    // OkHttp connects over an http/https URL; serverUri uses ws/wss (set by
+    // WebSocketProtocolSwapper), so swap the scheme back: ws -> http, wss -> https.
+    final String httpUrl = serverUri.toString().replaceFirst("^ws", "http");
+    final Request.Builder requestBuilder = new Request.Builder().url(httpUrl);
+    headers.forEach(requestBuilder::addHeader);
+    return requestBuilder.build();
   }
 
   /**
@@ -229,9 +206,8 @@ class WebSocketConnection {
                   while (!Thread.currentThread().isInterrupted()) {
                     listener.onReconnecting(attempt++);
                     connectionIsOpen = false;
-                    httpClient = HttpClient.newHttpClient();
                     try {
-                      connectAsync()
+                      attemptConnect()
                           .get(DEFAULT_CONNECT_TIMEOUT_MILLIS * 2L, TimeUnit.MILLISECONDS);
                       log.info("Successfully reconnected on attempt {}", attempt - 1);
                       listener.reconnected();
@@ -268,83 +244,76 @@ class WebSocketConnection {
     synchronized (queuedMessages) {
       if (!connectionIsOpen) {
         queuedMessages.add(message);
-      } else {
-        client
-            .sendText(message, true)
-            .exceptionally(
-                e -> {
-                  log.error("Failed to send text", e);
-                  return null;
-                });
+      } else if (!client.send(message)) {
+        log.error("Failed to send text, message dropped (connection closing or send buffer full)");
       }
     }
   }
 
   @VisibleForTesting
-  class InternalWebSocketListener implements Listener {
-    private final StringBuilder textAccumulator = new StringBuilder();
+  class InternalWebSocketListener extends WebSocketListener {
 
     @Override
-    public void onOpen(final WebSocket webSocket) {
+    public void onOpen(final WebSocket webSocket, final Response response) {
       synchronized (queuedMessages) {
         client = webSocket;
         connectionIsOpen = true;
-        queuedMessages.forEach(
-            message ->
-                client
-                    .sendText(message, true)
-                    .exceptionally(
-                        e -> {
-                          log.error("Failed to send queued text.", e);
-                          return null;
-                        }));
+        queuedMessages.forEach(webSocket::send);
         queuedMessages.clear();
       }
-      // Allow onText to be called at least once, WebSocketConnection is initialized
-      webSocket.request(1);
-    }
-
-    @Override
-    public @Nullable CompletionStage<?> onText(
-        final WebSocket webSocket, final CharSequence data, final boolean last) {
-      // No need to synchronize access, this listener is never called concurrently
-      // and always called in-order by the API
-      textAccumulator.append(data);
-      if (last) {
-        listener.messageReceived(textAccumulator.toString());
-        textAccumulator.setLength(0);
+      final CompletableFuture<WebSocket> future = connectFuture;
+      if (future != null) {
+        future.complete(webSocket);
       }
-      // We're done processing, allow listener to be called again at least once
-      webSocket.request(1);
-      return null;
     }
 
     @Override
-    public @Nullable CompletionStage<?> onClose(
-        final WebSocket webSocket, final int statusCode, final String reason) {
+    public void onMessage(final WebSocket webSocket, final String text) {
+      // OkHttp reassembles fragments and delivers each complete message once, in order, on a
+      // single reader thread, so no accumulation or synchronization is needed here.
+      listener.messageReceived(text);
+    }
+
+    @Override
+    public void onClosing(final WebSocket webSocket, final int code, final String reason) {
+      // The server initiated the close handshake; complete it so the socket shuts down cleanly.
+      // The reason-based handling happens in onClosed.
+      webSocket.close(NORMAL_CLOSURE, null);
+    }
+
+    @Override
+    public void onClosed(final WebSocket webSocket, final int code, final String reason) {
+      connectionIsOpen = false;
       log.info("Connection closed, reason: '{}'", reason);
 
-      if (closed || reason.equals(WebSocketConnection.CLIENT_DISCONNECT_MESSAGE)) {
-        pingSender.cancel();
+      if (closed || reason.equals(CLIENT_DISCONNECT_MESSAGE)) {
         listener.connectionClosed();
-        return null;
+        return;
       }
 
       if (reason.equals(SERVER_BAN_DISCONNECT_MESSAGE)) {
         log.info("Connection terminated by server (ban): {}", reason);
-        pingSender.cancel();
         listener.connectionTerminated(reason);
-        return null;
+        return;
       }
 
       log.info("Unexpected disconnect, attempting to reconnect...");
       reconnectAsync();
-      return null;
     }
 
     @Override
-    public void onError(final WebSocket webSocket, final Throwable error) {
-      listener.handleError(error);
+    public void onFailure(
+        final WebSocket webSocket, final Throwable t, @Nullable final Response response) {
+      connectionIsOpen = false;
+      final CompletableFuture<WebSocket> future = connectFuture;
+      if (future != null && !future.isDone()) {
+        // A connect/reconnect attempt failed; whoever awaits this future decides whether to retry.
+        future.completeExceptionally(t);
+      } else if (!closed) {
+        // An established connection dropped unexpectedly.
+        log.info("Websocket connection failed, attempting to reconnect...", t);
+        reconnectAsync();
+      }
     }
   }
 }

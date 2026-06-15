@@ -1,9 +1,8 @@
 # lib/websocket-client
 
-WebSocket client library built on Java 11+ `java.net.http.WebSocket` (stdlib, not
-`org.java_websocket`). Provides `GenericWebSocketClient` for connecting to
-WebSocket servers with JSON message serialization via Gson and type-safe
-listener dispatch.
+WebSocket client library built on OkHttp (`okhttp3.WebSocket`). Provides
+`GenericWebSocketClient` for connecting to WebSocket servers with JSON message
+serialization via Gson and type-safe listener dispatch.
 
 ## Source Files
 
@@ -11,7 +10,7 @@ listener dispatch.
 |------|---------|
 | `GenericWebSocketClient` | Public facade implementing `WebSocket` and `WebSocketConnectionListener`. Routes messages to typed listeners, manages error propagation |
 | `WebSocket` | Public interface defining the client contract: connect, close, send, add listeners |
-| `WebSocketConnection` | Internal connection manager. Handles `java.net.http.HttpClient` WebSocket lifecycle, message queuing, keep-alive pings |
+| `WebSocketConnection` | Internal connection manager. Handles the OkHttp `WebSocket` lifecycle, message queuing, reconnect; relies on OkHttp's native ping interval for keep-alive |
 | `WebSocketConnectionListener` | Internal callback interface between `WebSocketConnection` and `GenericWebSocketClient` |
 | `MessageEnvelope` | Generic JSON envelope wrapping payload with a type ID for routing |
 | `WebSocketMessage` | Marker interface for transmissible message types. Single method: `toEnvelope()` |
@@ -35,15 +34,15 @@ client versions.
 ## Connection Lifecycle
 
 1. **Connect** — `GenericWebSocketClient.connect()` delegates to
-   `WebSocketConnection`, which creates an `HttpClient` WebSocket with 5-second
+   `WebSocketConnection`, which opens an OkHttp `WebSocket` with a 5-second
    connect timeout. On failure, retries once after 1-second sleep.
 
 2. **Message queuing** — Messages sent before `onOpen()` are queued in a
    synchronized list and flushed in order when the connection opens.
 
-3. **Keep-alive** — Ping sender starts on connection open. Sends pings every
-   10 seconds using a `ScheduledTimer`. Each ping retries up to 5 times with
-   3-second backoff via `Retriable`.
+3. **Keep-alive** — Handled natively by OkHttp via `pingInterval` (30s). If a
+   pong is not received the connection fails, which triggers a reconnect
+   loop.
 
 4. **Close (client-initiated)** — `close()` sends `NORMAL_CLOSURE` with reason
    `"Client disconnect."`. Triggers `connectionClosedListeners`.
@@ -61,36 +60,33 @@ client versions.
   thread-safe listener dispatch and registration.
 - `sendMessage()` and `onOpen()` synchronize on the `queuedMessages` list to
   prevent race conditions during connection setup.
-- Message callbacks arrive on the HTTP client's internal thread.
-- Ping sender runs on a separate scheduled timer thread.
+- Message callbacks arrive on OkHttp's internal reader thread.
+- Reconnect runs on a dedicated virtual thread (`websocket-reconnect-thread`).
 
 ## Conventions
 
 - **Lombok throughout** — `@Builder` on `GenericWebSocketClient` constructor,
   `@Synchronized` for concurrency, `@Slf4j` for logging, `@Value` on
   `MessageType`.
-- **Message fragments accumulated** — `onText()` collects `CharSequence`
-  fragments in a `StringBuilder` until `last=true`, then dispatches the
-  complete message.
+- **Whole-message delivery** — OkHttp reassembles frames and delivers each
+  complete text message once via `onMessage(String)`.
 - **Client vs. terminated distinction** — `connectionClosed` (client asked to
   disconnect) and `connectionTerminated` (server dropped connection) are
   separate listener lists with different signatures.
 
 ## Gotchas
 
-- Only one automatic retry on initial connection failure — no exponential
-  backoff or configurable retry policy.
-- Ping failure after 5 retries only logs a warning; disconnection is left to
-  the server's idle timeout.
-- `sendMessage()` silently catches and logs exceptions on `sendText()` — callers
-  won't see send failures.
-- The `errorHandler` receives both transport errors (WebSocket `onError`) and
-  application-level errors (`ServerErrorMessage`). There is no way to
-  distinguish them.
+- Only one automatic retry on *initial* connection failure (then `errorHandler`
+  fires). After an established connection drops, the reconnect loop retries
+  indefinitely with a fixed 5s back-off.
+- `sendMessage()` logs (does not throw) if OkHttp refuses to enqueue a message —
+  callers won't see send failures.
+- An unexpected transport failure (`onFailure`) drives the reconnect loop rather
+  than calling `handleError`; the `errorHandler` is reserved for initial-connect
+  failure and application-level errors (`ServerErrorMessage`).
 
 ## Build
 
 Published as a Maven artifact via `maven-publish`. Version from `JAR_VERSION`
-env var. Only local dependency: `:lib:java-extras` (provides `Interruptibles`,
-`Retriable`, `Timers`). Uses Java stdlib `java.net.http` for WebSocket — no
-external WebSocket library.
+env var. Local dependency: `:lib:java-extras` (provides `Interruptibles`).
+External dependency: OkHttp (`libs.okhttp`) for the WebSocket transport.

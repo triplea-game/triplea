@@ -7,7 +7,6 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import games.strategy.engine.data.AllianceTracker;
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameStep;
@@ -55,7 +54,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
-import org.triplea.config.product.ProductVersionReader;
 import org.triplea.generic.xml.reader.XmlMapper;
 import org.triplea.generic.xml.reader.exceptions.XmlParsingException;
 import org.triplea.io.FileUtils;
@@ -72,11 +70,9 @@ import org.triplea.map.data.elements.PropertyList;
 import org.triplea.map.data.elements.RelationshipTypes;
 import org.triplea.map.data.elements.Technology;
 import org.triplea.map.data.elements.TerritoryEffectList;
-import org.triplea.map.data.elements.Triplea;
 import org.triplea.map.data.elements.UnitList;
 import org.triplea.map.description.file.MapDescriptionYaml;
 import org.triplea.util.Tuple;
-import org.triplea.util.Version;
 
 /** Parses a game XML file into a {@link GameData} domain object. */
 @Slf4j
@@ -87,18 +83,15 @@ public final class GameParser {
   private final Path xmlUri;
   private final XmlGameElementMapper xmlGameElementMapper;
   private GameDataVariables variables;
-  private final Version engineVersion;
   private final boolean collectAttachmentOrderAndValues;
 
   private GameParser(
       final Path xmlUri,
       final XmlGameElementMapper xmlGameElementMapper,
-      final Version engineVersion,
       final boolean collectAttachmentOrderAndValues) {
     data = new GameData();
     this.xmlUri = xmlUri;
     this.xmlGameElementMapper = xmlGameElementMapper;
-    this.engineVersion = engineVersion;
     this.collectAttachmentOrderAndValues = collectAttachmentOrderAndValues;
   }
 
@@ -113,11 +106,7 @@ public final class GameParser {
       final Path xmlFile, boolean collectAttachmentOrderAndValues) {
     log.debug("Parsing game XML: {}", xmlFile.toAbsolutePath());
     final Optional<GameData> gameData =
-        GameParser.parse(
-            xmlFile,
-            new XmlGameElementMapper(),
-            ProductVersionReader.getCurrentVersion(),
-            collectAttachmentOrderAndValues);
+        GameParser.parse(xmlFile, new XmlGameElementMapper(), collectAttachmentOrderAndValues);
 
     // if parsed, find the 'map.yml' from a parent folder and set the 'mapName' property
     // using the 'map name' from 'map.yml'
@@ -138,20 +127,20 @@ public final class GameParser {
   public static Optional<GameData> parse(
       final Path xmlFile,
       final XmlGameElementMapper xmlGameElementMapper,
-      final Version engineVersion,
       final boolean collectAttachmentOrderAndValues) {
     return UrlStreams.openStream(
         xmlFile.toUri(),
         inputStream -> {
           try {
-            return new GameParser(
-                    xmlFile, xmlGameElementMapper, engineVersion, collectAttachmentOrderAndValues)
+            return new GameParser(xmlFile, xmlGameElementMapper, collectAttachmentOrderAndValues)
                 .parse(xmlFile, inputStream);
-          } catch (final EngineVersionException e) {
-            log.warn("Game engine not compatible with: " + xmlFile, e);
-            return null;
           } catch (final Exception e) {
-            log.error("Could not parse:" + xmlFile + ", " + e.getMessage(), e);
+            log.warn(
+                "Failed to load map. Be sure to use the latest TripleA. Failed parsing:"
+                    + xmlFile
+                    + ", "
+                    + e.getMessage(),
+                e);
             return null;
           }
         });
@@ -159,13 +148,8 @@ public final class GameParser {
 
   @Nonnull
   private GameData parse(final Path xmlFile, final InputStream stream)
-      throws XmlParsingException, GameParseException, EngineVersionException {
+      throws XmlParsingException, GameParseException {
     final Game game = new XmlMapper(stream).mapXmlToObject(Game.class);
-
-    // test minimum engine version first
-    if (!isEngineCompatibleWithMap(game.getTriplea())) {
-      throw new EngineVersionException(game.getTriplea().getMinimumVersion(), xmlFile);
-    }
 
     // For backward compatibility with maps that do not have a map.yml file,
     // set game name using data found in XML. Note, similar will be done for map
@@ -251,14 +235,6 @@ public final class GameParser {
 
   private void parseDiceSides(final DiceSides diceSides) {
     data.setDiceSides(diceSides == null ? 6 : diceSides.getValue());
-  }
-
-  private boolean isEngineCompatibleWithMap(final Triplea tripleA) {
-
-    return tripleA == null
-        || tripleA.getMinimumVersion().isBlank()
-        || engineVersion.isCompatibleWithMapMinimumEngineVersion(
-            new Version(tripleA.getMinimumVersion()));
   }
 
   private GamePlayer getPlayerId(final String name) throws GameParseException {

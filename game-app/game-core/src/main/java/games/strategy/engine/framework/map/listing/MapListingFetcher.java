@@ -1,15 +1,10 @@
 package games.strategy.engine.framework.map.listing;
 
 import feign.FeignException;
-import games.strategy.engine.framework.map.download.DownloadConfiguration;
-import games.strategy.engine.framework.map.download.DownloadFileDescription;
-import games.strategy.engine.framework.map.download.DownloadFileParser;
 import games.strategy.triplea.settings.ClientSetting;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.config.product.ProductVersionReader;
 import org.triplea.domain.data.SystemIdLoader;
 import org.triplea.http.client.ClientIdentifiers;
 import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
@@ -18,23 +13,13 @@ import org.triplea.http.client.maps.listing.MapsClient;
 @UtilityClass
 @Slf4j
 public class MapListingFetcher {
-  private static String GITHUB_MAP_DOWNLOAD_LIST =
-      "https://raw.githubusercontent.com/triplea-game/triplea/master/triplea_maps.yaml";
-
   /** Fetches the full listing of maps that are available for download. */
   public static List<MapDownloadItem> getMapDownloadList() {
-    if (!ClientSetting.useMapsServerBetaFeature.getValue().orElse(false)) {
-      return getMapDownloadListFromGithub();
-    }
-
     final var serverUri = ClientSetting.lobbyUri.getValueOrThrow();
     try {
       return MapsClient.newClient(
               serverUri,
-              ClientIdentifiers.builder()
-                  .applicationVersion(ProductVersionReader.getCurrentVersion().toMajorMinorString())
-                  .systemId(SystemIdLoader.load().getValue())
-                  .build())
+              ClientIdentifiers.builder().systemId(SystemIdLoader.load().getValue()).build())
           .fetchMapListing()
           .getMaps();
     } catch (FeignException e) {
@@ -45,28 +30,5 @@ You can download the needed maps manually into your TripleA maps subfolder from 
           e);
       return List.of();
     }
-  }
-
-  private static List<MapDownloadItem> getMapDownloadListFromGithub() {
-    var result = new ArrayList<MapDownloadItem>();
-    for (var entry : download(GITHUB_MAP_DOWNLOAD_LIST)) {
-      result.add(
-          MapDownloadItem.builder()
-              .mapName(entry.getMapName())
-              .downloadUrl(entry.getUrl())
-              .description(entry.getDescription())
-              .previewImageUrl(entry.getImg())
-              .downloadSizeInBytes(-1L)
-              .lastCommitDateEpochMilli(0L)
-              .mapTags(List.of())
-              .build());
-    }
-    return result;
-  }
-
-  private static List<DownloadFileDescription> download(final String url) {
-    return DownloadConfiguration.contentReader()
-        .download(url, DownloadFileParser::parse)
-        .orElseGet(List::of);
   }
 }
