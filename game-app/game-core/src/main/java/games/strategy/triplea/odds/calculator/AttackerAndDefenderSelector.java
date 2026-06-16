@@ -95,9 +95,7 @@ public class AttackerAndDefenderSelector {
       final Collection<Unit> units = territory.getUnits();
       if (!units.isEmpty()
           && units.stream().map(Unit::getOwner).allMatch(Matches.isAllied(currentPlayer))) {
-        return ProUtils.getEnemyPlayersInTurnOrder(currentPlayer).stream()
-            .findFirst()
-            .orElseThrow();
+        return ProUtils.getEnemyPlayersInTurnOrder(currentPlayer).stream().findFirst().orElse(null);
       }
     }
     return currentPlayer;
