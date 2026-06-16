@@ -147,11 +147,7 @@ public class MapPanel extends ImageScrollerLargeView {
                   .getUnitIconProperties()
                   .testIfConditionsHaveChanged(gameData)) {
             tileManager.resetTiles(gameData, uiContext.getMapData());
-            SwingUtilities.invokeLater(
-                () -> {
-                  recreateTiles(gameData, uiContext);
-                  repaint();
-                });
+            SwingUtilities.invokeLater(() -> repaint());
           }
         }
 
