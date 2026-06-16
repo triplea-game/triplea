@@ -252,7 +252,7 @@ public final class PointFileReaderWriter {
 
   private static Tuple<String, List<Point>> readMultiple(
       final String line, final Map<String, List<Point>> mapping) {
-    final int openParenIndex = line.indexOf("(");
+    final int openParenIndex = line.indexOf('(');
     if (openParenIndex == -1) {
       throw new IllegalArgumentException(
           MessageFormat.format("line missing opening parenthesis ''('': {0}", line));

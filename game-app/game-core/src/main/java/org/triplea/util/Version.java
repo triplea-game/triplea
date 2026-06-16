@@ -5,7 +5,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.base.Preconditions;
 import java.io.Serializable;
 import java.util.Comparator;
-import java.util.Optional;
 import javax.annotation.Nonnull;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -56,49 +55,5 @@ public final class Version implements Serializable, Comparable<Version> {
     return Comparator.comparingInt(Version::getMajor)
         .thenComparingInt(Version::getMinor)
         .compare(this, other);
-  }
-
-  /**
-   * Indicates this version (major.minor) is greater than the specified version. Ignores build
-   * number in comparison.
-   *
-   * @param other The version to compare.
-   * @return {@code true} if this version is greater than the specified version; otherwise {@code
-   *     false}.
-   */
-  public boolean isGreaterThan(final Version other) {
-    checkNotNull(other);
-
-    return compareTo(other) > 0;
-  }
-
-  /** Creates a complete version string with '.' as separator. */
-  @Override
-  public String toString() {
-    // if we saved a serialized version of 'Version.java' some time in the past, versionString
-    // might be null and 'major' and 'minor' are not.
-    return Optional.ofNullable(versionString)
-        .orElseGet(() -> String.join(".", String.valueOf(major), String.valueOf(minor)));
-  }
-
-  /**
-   * Indicates this engine version is compatible with the specified map minimum engine version.
-   *
-   * @param mapMinimumEngineVersion The minimum engine version required by the map.
-   * @return {@code true} if this engine version is compatible with the specified map minimum engine
-   *     version; otherwise {@code false}.
-   */
-  public boolean isCompatibleWithMapMinimumEngineVersion(final Version mapMinimumEngineVersion) {
-    checkNotNull(mapMinimumEngineVersion);
-
-    return major > mapMinimumEngineVersion.major
-        || (major == mapMinimumEngineVersion.major && minor >= mapMinimumEngineVersion.minor);
-  }
-
-  /**
-   * @return String with 'major.minor' format.
-   */
-  public String toMajorMinorString() {
-    return major + "." + minor;
   }
 }

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import lombok.experimental.UtilityClass;
-import org.triplea.util.Version;
 import org.triplea.yaml.YamlReader;
 
 /**
@@ -41,8 +40,6 @@ public final class DownloadFileParser {
                   (String) checkNotNull(yaml.get(Tags.description.toString()));
               final String mapName = (String) checkNotNull(yaml.get(Tags.mapName.toString()));
 
-              final Version version =
-                  new Version(checkNotNull((Integer) yaml.get(Tags.version.toString())).toString());
               final DownloadFileDescription.DownloadType downloadType =
                   optEnum(
                       yaml,
@@ -60,7 +57,7 @@ public final class DownloadFileParser {
               final String img = Strings.nullToEmpty((String) yaml.get(Tags.img.toString()));
               final DownloadFileDescription dl =
                   new DownloadFileDescription(
-                      url, description, mapName, version, downloadType, mapCategory, img);
+                      url, description, mapName, downloadType, mapCategory, img);
               downloads.add(dl);
             });
     return downloads;

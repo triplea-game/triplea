@@ -14,9 +14,7 @@ import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
-/**
- * A small non-modal window that holds the progress bars for the current and pending map downloads.
- */
+/// A small non-modal window that holds the progress bars for the current and pending map downloads.
 final class MapDownloadProgressPanel extends JPanel implements DownloadListener {
 
   private static final long serialVersionUID = -7288639737337542689L;
@@ -79,7 +77,7 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
     // add new downloads to the head of the list, this will allow the user to see newly added items
     // directly,
     // rather than having to scroll down to see new items.
-    downloadList.add(0, download);
+    downloadList.addFirst(download);
 
     // space at the end of the label so the text does not end right at the progress bar
     labels.put(download, new JLabel(download.getMapName() + "  "));

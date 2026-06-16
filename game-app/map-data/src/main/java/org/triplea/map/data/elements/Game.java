@@ -26,8 +26,6 @@ public class Game {
    */
   @Deprecated @XmlElement @Tag private Info info;
 
-  @XmlElement @Tag private Triplea triplea;
-
   @XmlElement(name = "attachmentList")
   @Tag(names = {"attachmentList", "attatchmentList"})
   private AttachmentList attachmentList;

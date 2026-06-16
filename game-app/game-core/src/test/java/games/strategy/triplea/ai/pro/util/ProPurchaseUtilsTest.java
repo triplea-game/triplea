@@ -2,26 +2,43 @@ package games.strategy.triplea.ai.pro.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static games.strategy.triplea.delegate.GameDataTestUtil.britain;
+import static games.strategy.triplea.delegate.GameDataTestUtil.chinese;
+import static games.strategy.triplea.delegate.GameDataTestUtil.japanese;
 import static games.strategy.triplea.delegate.GameDataTestUtil.unitType;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
+import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.GameState;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.delegate.IDelegate;
+import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.player.PlayerBridge;
+import games.strategy.triplea.ai.pro.ProAi;
+import games.strategy.triplea.ai.pro.data.ProPlaceTerritory;
+import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.PurchaseDelegate;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import javax.annotation.Nonnull;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class ProPurchaseUtilsTest {
-  final GameState gameData = TestMapGameData.TWW.getGameData();
-  final GamePlayer british = checkNotNull(britain(gameData));
-  final UnitType trenchType = checkNotNull(unitType("britishEntrenchment", gameData));
-  final UnitType materialType = checkNotNull(unitType("Material", gameData));
-  final UnitType fortType = checkNotNull(unitType("britishFortification", gameData));
+  final GameData twwGameData = TestMapGameData.TWW.getGameData();
+  final GamePlayer british = checkNotNull(britain(twwGameData));
+  final UnitType trenchType = checkNotNull(unitType("britishEntrenchment", twwGameData));
+  final UnitType materialType = checkNotNull(unitType("Material", twwGameData));
+  final UnitType fortType = checkNotNull(unitType("britishFortification", twwGameData));
   final Unit trench1 = trenchType.create(british);
   final Unit trench2 = trenchType.create(british);
   final Unit material1 = materialType.create(british);
@@ -32,24 +49,27 @@ public class ProPurchaseUtilsTest {
   @Test
   void getUnitsToConsumeBasic() {
     // Fort requires 1 trench and 1 material.
-    assertThat(
-        getUnitsToConsume(List.of(trench1, material1), List.of(fort1)),
-        containsInAnyOrder(trench1, material1));
+    assertThatContainsInAnyOrder(
+        Set.of(trench1, material1), getUnitsToConsume(List.of(trench1, material1), List.of(fort1)));
+  }
+
+  private void assertThatContainsInAnyOrder(Set<Unit> expectedUnits, Collection<Unit> actual) {
+    Assertions.assertEquals(expectedUnits, Set.copyOf(actual));
   }
 
   @Test
   void getUnitsToConsumeTwoUnits() {
-    assertThat(
-        getUnitsToConsume(List.of(trench1, trench2, material1, material2), List.of(fort1, fort2)),
-        containsInAnyOrder(trench1, trench2, material1, material2));
+    assertThatContainsInAnyOrder(
+        Set.of(trench1, trench2, material1, material2),
+        getUnitsToConsume(List.of(trench1, trench2, material1, material2), List.of(fort1, fort2)));
   }
 
   @Test
   void getUnitsToConsumeMultipleTypes() {
     // Trench requires 1 material + fort requires 1 trench and 1 material.
-    assertThat(
-        getUnitsToConsume(List.of(fort2, material1, material2, trench2), List.of(trench1, fort1)),
-        containsInAnyOrder(material1, material2, trench2));
+    assertThatContainsInAnyOrder(
+        Set.of(material1, material2, trench2),
+        getUnitsToConsume(List.of(fort2, material1, material2, trench2), List.of(trench1, fort1)));
   }
 
   @Test
@@ -62,5 +82,134 @@ public class ProPurchaseUtilsTest {
 
   private Collection<Unit> getUnitsToConsume(Collection<Unit> existing, Collection<Unit> toBuild) {
     return ProPurchaseUtils.getUnitsToConsume(british, existing, toBuild);
+  }
+
+  /// Test strategy:
+  /// The map has for Egypt 7 territories with a Flagpole unit inside allowing unit production.
+  /// Therefore, the result should:
+  /// 1. Contain 7 entries, but not Cairo (even though owned by Egypt it has no Flagpole unit).
+  /// 2. Contain one entry for each territory owned by Egypt.
+  /// 3. For each territory, the corresponding `canPlace` entries should be
+  /// either the territory itself or an adjacent sea zone (51, 53 or 72).
+  @Test
+  void testFindPurchaseTerritoriesWithUnitCanProduceUnits() {
+    final GamePlayer playerEgypt = checkNotNull(twwGameData.getPlayerList().getPlayerId("Egypt"));
+    final int countTerritoriesOwnedByEgypt = 7;
+    final Territory cairo = twwGameData.getMap().getTerritoryOrThrow("Cairo");
+    final Territory seaZone51 = twwGameData.getMap().getTerritoryOrThrow("51 Sea Zone");
+    final Territory seaZone53 = twwGameData.getMap().getTerritoryOrThrow("53 Sea Zone");
+    final Territory seaZone72 = twwGameData.getMap().getTerritoryOrThrow("72 Sea Zone");
+    final ProAi proAi = getProAiForPurchaseStepOfPlayer(playerEgypt, twwGameData);
+
+    final Map<Territory, ProPurchaseTerritory> foundTerritoriesToPpt =
+        ProPurchaseUtils.findPurchaseTerritories(proAi.getProData(), playerEgypt);
+
+    Assertions.assertEquals(playerEgypt, cairo.getOwner());
+    Assertions.assertEquals(countTerritoriesOwnedByEgypt, foundTerritoriesToPpt.size());
+    foundTerritoriesToPpt.forEach(
+        (territory, proPurchaseTerritory) -> {
+          Assertions.assertTrue(Matches.isTerritoryOwnedBy(playerEgypt).test(territory));
+          List<ProPlaceTerritory> canPlacePlaceTerritories =
+              proPurchaseTerritory.getCanPlaceTerritories();
+          Assertions.assertFalse(canPlacePlaceTerritories.isEmpty());
+          canPlacePlaceTerritories.forEach(
+              proPlaceTerritory -> {
+                Territory territoryProPlace = proPlaceTerritory.getTerritory();
+                Assertions.assertTrue(
+                    territoryProPlace.equals(territory)
+                        || territoryProPlace.equals(seaZone51)
+                        || territoryProPlace.equals(seaZone53)
+                        || territoryProPlace.equals(seaZone72));
+              });
+        });
+  }
+
+  @Nonnull
+  private ProAi getProAiForPurchaseStepOfPlayer(GamePlayer playerEgypt, GameData gameData) {
+    final ProAi proAi = new ProAi("Test Name", "Test Player Label");
+    Optional<IDelegate> delegateOptional = gameData.getDelegateOptional("Purchase");
+    PurchaseDelegate purchaseDelegate =
+        (PurchaseDelegate) (delegateOptional.orElseGet(() -> gameData.getDelegate("purchase")));
+    final IDelegateBridge testBridge = newDelegateBridge(playerEgypt);
+    purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
+    final PlayerBridge playerBridgeMock = mock(PlayerBridge.class);
+    when(playerBridgeMock.getGameData()).thenReturn(gameData);
+    proAi.initialize(playerBridgeMock, playerEgypt);
+    proAi.initializeData();
+    return proAi;
+  }
+
+  /// Test strategy:
+  /// The map has for Chinese an attachment `placementAnyTerritory` with value `true`, hence
+  /// allowing unit production in each land owned by Chinese - except impassible Himilaya.
+  /// Therefore, the result should:
+  /// 1. Contain one entry each of those Chinese-owned each territory.
+  /// 2. The corresponding `canPlace` entries should contain only its territory.
+  @Test
+  void testFindPurchaseTerritoriesWithPlacementAnyTerritoryTrueExceptImpassible() {
+    final GameData pos2GameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
+    final GamePlayer playerChinese = checkNotNull(chinese(pos2GameData));
+    final int countTerritoriesOwnedByChinese = 3;
+    final Territory china = pos2GameData.getMap().getTerritoryOrThrow("China");
+    final Territory centralChina = pos2GameData.getMap().getTerritoryOrThrow("Central China");
+    final Territory sinkiang = pos2GameData.getMap().getTerritoryOrThrow("Sinkiang");
+    final ProAi proAi = getProAiForPurchaseStepOfPlayer(playerChinese, pos2GameData);
+
+    final Map<Territory, ProPurchaseTerritory> foundTerritoriesToPpt =
+        ProPurchaseUtils.findPurchaseTerritories(proAi.getProData(), playerChinese);
+
+    Assertions.assertEquals(countTerritoriesOwnedByChinese, foundTerritoriesToPpt.size());
+
+    foundTerritoriesToPpt.forEach(
+        (territory, proPurchaseTerritory) -> {
+          Assertions.assertTrue(
+              territory.equals(china)
+                  || territory.equals(centralChina)
+                  || territory.equals(sinkiang));
+          List<ProPlaceTerritory> canPlacePlaceTerritories =
+              proPurchaseTerritory.getCanPlaceTerritories();
+          Assertions.assertFalse(canPlacePlaceTerritories.isEmpty());
+          canPlacePlaceTerritories.stream()
+              .map(ProPlaceTerritory::getTerritory)
+              .map(territoryProPlace -> territoryProPlace.equals(territory))
+              .forEach(Assertions::assertTrue);
+        });
+  }
+
+  /// Test strategy:
+  /// The map has for Japanese has only Japan with a factory allowing unit production.
+  /// Therefore, the result should:
+  /// 1. Contain one entry for Japan (no placementAnyTerritory for Japan!).
+  /// 2. The corresponding `canPlace` entries should be either Japan or 60 / 61 Sea Zone.
+  @Test
+  void testFindPurchaseTerritoriesWithPlacementAnyTerritoryFalse() {
+    final GameData pos2GameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
+    final GamePlayer playerJapanese = checkNotNull(japanese(pos2GameData));
+    final int countTerritoriesOwnedByJapaneseWithFactory = 1;
+    final Territory japan = pos2GameData.getMap().getTerritoryOrThrow("Japan");
+    final Territory seaZone60 = pos2GameData.getMap().getTerritoryOrThrow("60 Sea Zone");
+    final Territory seaZone61 = pos2GameData.getMap().getTerritoryOrThrow("61 Sea Zone");
+    final ProAi proAi = getProAiForPurchaseStepOfPlayer(playerJapanese, pos2GameData);
+
+    final Map<Territory, ProPurchaseTerritory> foundTerritoriesToPpt =
+        ProPurchaseUtils.findPurchaseTerritories(proAi.getProData(), playerJapanese);
+
+    Assertions.assertEquals(
+        countTerritoriesOwnedByJapaneseWithFactory, foundTerritoriesToPpt.size());
+
+    Map.Entry<Territory, ProPurchaseTerritory> foundTerritory =
+        foundTerritoriesToPpt.entrySet().iterator().next();
+    Assertions.assertEquals(japan, foundTerritory.getKey());
+    foundTerritory
+        .getValue()
+        .getCanPlaceTerritories()
+        .forEach(
+            proPlaceTerritory -> {
+              Territory territoryProPlace = proPlaceTerritory.getTerritory();
+              Assertions.assertTrue(
+                  territoryProPlace.equals(japan)
+                      || territoryProPlace.equals(seaZone60)
+                      || territoryProPlace.equals(seaZone61));
+            });
   }
 }

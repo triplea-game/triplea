@@ -1,22 +1,13 @@
-# This file is read by game clients 2.2 through 2.5
-latest: 2.5.22294
+# This file is read by game clients 2.2 through 2.6
+latest: 2.7.15622
 message: |
-  Welcome to the TripleA lobby!
-  Please no politics, stay respectful, be welcoming, have fun.
-
-  Donation Drive
-  https://forums.triplea-game.org/category/41/donation-drive-2025-26
-
+  Update to the latest TripleA @ https://triplea-game.org/download/
 
 servers:
+  - version: "2.7.15622"
+    inactive: true
   - version: "2.5.22294"
-    lobby_uri: https://prod.triplea-game.org
-    message: |
-      Welcome to the TripleA lobby!
-      Please no politics, stay respectful, be welcoming, have fun.
-
-      Donation Drive
-      https://forums.triplea-game.org/category/41/donation-drive-2025-26
+    inactive: true
   - version: "2.0.20057"
     inactive: true
   - version: "0.0"

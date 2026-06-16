@@ -441,18 +441,17 @@ public final class ProMoveUtils {
       moveDel
           .performMove(move)
           .ifPresent(
-              result -> {
-                ProLogger.warn(
-                    data.getSequence().getRound()
-                        + "-"
-                        + data.getSequence().getStep().getName()
-                        + ": could not move "
-                        + move.getUnits()
-                        + " over "
-                        + move.getRoute()
-                        + " because: "
-                        + result);
-              });
+              result ->
+                  ProLogger.warn(
+                      data.getSequence().getRound()
+                          + "-"
+                          + data.getSequence().getStep().getName()
+                          + ": could not move "
+                          + move.getUnits()
+                          + " over "
+                          + move.getRoute()
+                          + " because: "
+                          + result));
       if (!proData.isSimulation()) {
         AbstractAi.movePause();
       }

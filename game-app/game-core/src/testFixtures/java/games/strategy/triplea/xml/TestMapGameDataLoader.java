@@ -17,7 +17,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Map;
 import lombok.experimental.UtilityClass;
-import org.triplea.util.Version;
 
 /**
  * Utility class containing methods for loading XML map data from disk.
@@ -55,7 +54,6 @@ public final class TestMapGameDataLoader {
             new XmlGameElementMapper(
                 Map.of("TestDelegate", TestDelegate::new),
                 Map.of("TestAttachment", TestAttachment::new)),
-            new Version("2.0.0"),
             false)
         .orElseThrow(() -> new IllegalStateException("Error parsing: " + dataPath));
   }

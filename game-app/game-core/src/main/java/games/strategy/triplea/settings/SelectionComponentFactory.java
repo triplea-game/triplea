@@ -526,7 +526,7 @@ final class SelectionComponentFactory {
 
       private final JSpinner portSpinner =
           new JSpinner(
-              new SpinnerNumberModel((int) portSetting.getValue().orElse(465), 0, 65535, 1));
+              new SpinnerNumberModel((int) portSetting.getValue().orElse(465), 0, 65_535, 1));
 
       private final JCheckBox tlsCheckBox =
           new JCheckBox("SSL/TLS", tlsSetting.getValue().orElse(true));

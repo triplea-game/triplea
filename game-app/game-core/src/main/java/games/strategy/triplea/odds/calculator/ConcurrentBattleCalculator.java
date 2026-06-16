@@ -106,7 +106,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
   // use both time and memory left to determine how many copies to make
   private static int getThreadsToUse(
       final long timeToCopyInMillis, final long memoryUsedBeforeCopy) {
-    if (timeToCopyInMillis > 20000 || MAX_THREADS == 1) {
+    if (timeToCopyInMillis > 20_000 || MAX_THREADS == 1) {
       // just use 1 thread if we took more than 20 seconds to copy
       return 1;
     }
@@ -116,7 +116,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     final long memoryLeftBeforeMax =
         runtime.maxMemory() - Math.max(usedMemoryAfterCopy, memoryUsedBeforeCopy);
     // make sure it is a decent size
-    final long memoryUsedByCopy = Math.max(100000, (usedMemoryAfterCopy - memoryUsedBeforeCopy));
+    final long memoryUsedByCopy = Math.max(100_000, (usedMemoryAfterCopy - memoryUsedBeforeCopy));
     // regardless of how stupid the gc is we leave some memory left over just in case
     final int numberOfTimesWeCanCopyMax =
         Math.max(1, (int) Math.min(Integer.MAX_VALUE, (memoryLeftBeforeMax / memoryUsedByCopy)));
@@ -184,8 +184,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       final Collection<Unit> bombarding,
       final Collection<TerritoryEffect> territoryEffects,
       final boolean retreatWhenOnlyAirLeft,
-      final int runCount)
-      throws IllegalStateException {
+      final int runCount) {
     waitForGameDataReady();
     synchronized (mutexCalcIsRunning) {
       final long start = System.currentTimeMillis();

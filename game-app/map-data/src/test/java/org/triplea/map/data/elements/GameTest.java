@@ -14,7 +14,6 @@ public class GameTest {
     final Game game = parseMapXml("game.xml");
 
     assertThat(game.getInfo(), is(notNullValue()));
-    assertThat(game.getTriplea(), is(notNullValue()));
     assertThat(game.getDiceSides(), is(notNullValue()));
     assertThat(game.getVariableList(), is(notNullValue()));
     assertThat(game.getMap(), is(notNullValue()));

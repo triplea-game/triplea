@@ -1399,9 +1399,10 @@ public class BattleTracker implements Serializable {
 
   @Override
   public String toString() {
-    return "BattleTracker:"
-        + "\n"
-        + "Conquered:"
+    return
+"""
+BattleTracker:
+Conquered:"""
         + conquered
         + "\n"
         + "Blitzed:"

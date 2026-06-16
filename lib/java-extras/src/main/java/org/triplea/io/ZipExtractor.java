@@ -60,8 +60,7 @@ public class ZipExtractor {
    * @throws ZipReadException Thrown if the target zip file is invalid and could not be read.
    * @throws FileSystemException Thrown if there is an error during extraction.
    */
-  public static void unzipFile(final Path fileZip, final Path destDir)
-      throws ZipReadException, FileSystemException {
+  public static void unzipFile(final Path fileZip, final Path destDir) {
     if (!fileZip.toString().endsWith(".zip")) {
       throw new IllegalArgumentException(
           "Illegal arg, must be a zip file: " + fileZip.toAbsolutePath());

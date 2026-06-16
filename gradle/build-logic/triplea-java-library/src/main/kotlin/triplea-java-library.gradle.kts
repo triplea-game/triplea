@@ -12,8 +12,11 @@ plugins {
 group = "triplea"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(25))
+    }
 }
 
 spotless {
@@ -26,8 +29,51 @@ spotless {
     }
 
     java {
-        expandWildcardImports()
         googleJavaFormat()
+        expandWildcardImports()
         removeUnusedImports()
+        cleanthat()
+            .sourceCompatibility("25")
+            // https://jsparrow.github.io/rules/#tags
+            // https://github.com/solven-eu/cleanthat/tree/master/java/src/main/java/eu/solven/cleanthat/engine/java/refactorer/mutators
+            .addMutator("ArithmethicAssignment")
+            .addMutator("ArraysDotStream")
+            .addMutator("AvoidFileStream")
+            .addMutator("AvoidMultipleUnaryOperators")
+            .addMutator("AvoidUncheckedExceptionsInSignatures")
+            .addMutator("CollectionIndexOfToContains")
+            .addMutator("ComparisonWithNaN")
+            .addMutator("CreateTempFilesUsingNio")
+            .addMutator("EmptyControlStatement")
+            .addMutator("EnumsWithoutEquals")
+            .addMutator("GuavaInlineStringsRepeat")
+            .addMutator("LambdaIsMethodReference")
+            .addMutator("LambdaReturnsSingleStatement")
+            .addMutator("ModifierOrder")
+            .addMutator("ObjectEqualsForPrimitives")
+            .addMutator("ObjectsHashCodePrimitive")
+            .addMutator("OptionalNotEmpty")
+            .addMutator("PrimitiveWrapperInstantiation")
+            .addMutator("RedundantLogicalComplementsInStream")
+            .addMutator("RemoveAllToClearCollection")
+            .addMutator("RemoveExplicitCallToSuper")
+            .addMutator("SimplifyBooleanExpression")
+            .addMutator("SimplifyBooleanInitialization")
+            .addMutator("SimplifyStartsWith")
+            .addMutator("StreamAnyMatch")
+            .addMutator("StreamWrappedIfToFilter")
+            .addMutator("StringIndexOfToContains")
+            .addMutator("StringReplaceAllWithQuotableInput")
+            .addMutator("StringToString")
+            .addMutator("ThreadRunToThreadStart")
+            .addMutator("UnnecessaryBoxing")
+            .addMutator("UnnecessaryFullyQualifiedName")
+            .addMutator("UnnecessaryLambdaEnclosingParameters")
+            .addMutator("UnnecessaryModifier")
+            .addMutator("UseCollectionIsEmpty")
+            .addMutator("UseIndexOfChar")
+            .addMutator("UseStringIsEmpty")
+            .addMutator("UseTextBlocks")
+            .addMutator("UseUnderscoresInNumericLiterals")
     }
 }

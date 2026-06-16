@@ -153,7 +153,7 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
           @Override
           public void mouseReleased(final MouseEvent e) {
             final String markedText = text.getSelectedText();
-            if (markedText == null || markedText.length() == 0) {
+            if (markedText == null || markedText.isEmpty()) {
               nextMessage.requestFocusInWindow();
             }
           }
@@ -346,7 +346,7 @@ public class ChatMessagePanel extends JPanel implements ChatMessageListener {
   }
 
   private void sendMessage() {
-    if (nextMessage.getText().trim().length() == 0) {
+    if (nextMessage.getText().trim().isEmpty()) {
       return;
     }
     chat.sendMessage(nextMessage.getText());

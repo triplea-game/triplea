@@ -57,7 +57,6 @@ import javax.swing.SwingUtilities;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.triplea.config.product.ProductVersionReader;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 import org.triplea.java.concurrency.AsyncRunner;
@@ -219,7 +218,7 @@ public class ClientModel implements IMessengerErrorListener {
     }
     ClientSetting.playerName.setValueAndFlush(props.getName());
     final int port = props.getPort();
-    if (port >= 65536 || port <= 0) {
+    if (port >= 65_536 || port <= 0) {
       EventThreadJOptionPane.showMessageDialog(
           this.ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
       return false;
@@ -227,9 +226,7 @@ public class ClientModel implements IMessengerErrorListener {
     try {
       messenger =
           ClientMessengerFactory.newClientMessenger(
-              props,
-              objectStreamFactory,
-              new ClientLogin(this.ui, ProductVersionReader.getCurrentVersion()));
+              props, objectStreamFactory, new ClientLogin(this.ui));
 
       if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
         final URI serverURI =
@@ -248,7 +245,12 @@ public class ClientModel implements IMessengerErrorListener {
           "Error Connecting to Host",
           "Error: "
               + ioe.getMessage()
-              + "\n\nCheck:\n"
+              +
+"""
+
+
+Check:
+"""
               + "- The host is running\n"
               + "- You have the right port and IP address\n"
               + "- The host should use and can check their public IP address by "

@@ -100,7 +100,7 @@ public final class ProBattleUtils {
     }
     if (defendingUnits.stream().allMatch(Matches.unitIsInfrastructure())
         || estimatePower(t, defendingUnits, attackingUnits, false) <= 0) {
-      return 99999;
+      return 99_999;
     }
     final double attackerStrength = estimateStrength(t, attackingUnits, defendingUnits, true);
     final double defenderStrength = estimateStrength(t, defendingUnits, attackingUnits, false);

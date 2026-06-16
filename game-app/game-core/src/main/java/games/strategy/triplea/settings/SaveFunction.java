@@ -1,7 +1,6 @@
 package games.strategy.triplea.settings;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
 import games.strategy.triplea.settings.SelectionComponent.SaveContext.ValueSensitivity;
 import java.util.Objects;
 import javax.annotation.Nullable;
@@ -79,7 +78,19 @@ final class SaveFunction {
     }
     if (!success.isEmpty() && !fail.isEmpty()) {
       return new SaveResult(
-          "Some changes were not saved!:\n\nSaved:\n" + success + "\n\nFailed to save:\n" + fail,
+"""
+Some changes were not saved!:
+
+Saved:
+"""
+              + success
+              +
+"""
+
+
+Failed to save:
+"""
+              + fail,
           JOptionPane.WARNING_MESSAGE);
     }
 
@@ -125,7 +136,7 @@ final class SaveFunction {
   }
 
   private static String mask(final int length) {
-    return Strings.repeat("*", length);
+    return "*".repeat(length);
   }
 
   @AllArgsConstructor
