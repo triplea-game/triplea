@@ -148,8 +148,6 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
 
     // Get all the needed data while holding a lock, then invoke UI updates on the EDT.
     try (GameData.Unlocker ignored = territory.getData().acquireReadLock()) {
-      final Collection<Unit> units =
-          uiContext.isShowUnitsInStatusBar() ? territory.getUnits() : List.of();
       final IntegerMap<Resource> resources = new IntegerMap<>();
       final List<String> territoryEffectNames;
       final Optional<TerritoryAttachment> optionalTerritoryAttachment =
@@ -168,14 +166,13 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
       }
 
       SwingUtilities.invokeLater(
-          () -> updateTerritoryInfo(territory, territoryEffectNames, units, resources));
+          () -> updateTerritoryInfo(territory, territoryEffectNames, resources));
     }
   }
 
   private void updateTerritoryInfo(
       Territory territory,
       List<String> territoryEffectNames,
-      Collection<Unit> units,
       IntegerMap<Resource> resources) {
     // Box layout with horizontal glue on both sides achieves the following desirable properties:
     //   1. If the content is narrower than the available space, it will be centered.
@@ -213,6 +210,8 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
       territoryInfo.add(uiContext.getResourceImageFactory().getLabel(resource, resources));
     }
 
+    final Collection<Unit> units =
+            uiContext.isShowUnitsInStatusBar() ? territory.getUnits() : List.of();
     if (!units.isEmpty()) {
       JSeparator separator = new JSeparator(JSeparator.VERTICAL);
       separator.setMaximumSize(new java.awt.Dimension(40, getHeight()));
