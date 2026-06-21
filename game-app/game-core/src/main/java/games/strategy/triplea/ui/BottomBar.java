@@ -171,9 +171,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
   }
 
   private void updateTerritoryInfo(
-      Territory territory,
-      List<String> territoryEffectNames,
-      IntegerMap<Resource> resources) {
+      Territory territory, List<String> territoryEffectNames, IntegerMap<Resource> resources) {
     // Box layout with horizontal glue on both sides achieves the following desirable properties:
     //   1. If the content is narrower than the available space, it will be centered.
     //   2. If the content is wider than the available space, then the beginning will be shown,
@@ -211,7 +209,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     }
 
     final Collection<Unit> units =
-            uiContext.isShowUnitsInStatusBar() ? territory.getUnits() : List.of();
+        uiContext.isShowUnitsInStatusBar() ? territory.getUnits() : List.of();
     if (!units.isEmpty()) {
       JSeparator separator = new JSeparator(JSeparator.VERTICAL);
       separator.setMaximumSize(new java.awt.Dimension(40, getHeight()));
