@@ -585,10 +585,6 @@ public final class Properties implements Constants {
     return properties.get(CAN_SCRAMBLE_INTO_AIR_BATTLES, false);
   }
 
-  public static boolean getLandBattleDefendersCanRetreat(final GameProperties properties) {
-    return properties.get(GENERAL_DEFENDERS_CAN_RETREAT, false);
-  }
-
   public static boolean getTerritoriesAreAssignedRandomly(final GameProperties properties) {
     return properties.get(TERRITORIES_ARE_ASSIGNED_RANDOMLY, false);
   }
