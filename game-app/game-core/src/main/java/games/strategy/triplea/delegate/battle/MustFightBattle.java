@@ -56,6 +56,7 @@ import games.strategy.triplea.delegate.battle.steps.fire.general.OffensiveGenera
 import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveGeneralRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveSubsRetreat;
+import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveGeneralRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.sub.SubmergeSubsVsOnlyAirStep;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.move.validation.AirMovementValidator;
@@ -866,6 +867,60 @@ public class MustFightBattle extends DependentBattle
     return possible;
   }
 
+  public Collection<Territory> getDefenderRetreatTerritories(){
+
+    // If attacker is all planes, just return collection of current territory
+    if (headless
+            || (!defendingUnits.isEmpty() && defendingUnits.stream().allMatch(Matches.unitIsAir()))
+            || Properties.getRetreatingUnitsRemainInPlace(gameData.getProperties())) {
+      return Set.of(battleSite);
+    }
+    // it's possible that a sub retreated to a territory we came from, if so we can no longer
+    // retreat there or if we are moving out of a territory containing enemy units, we cannot
+    // retreat back there
+    final Predicate<Unit> enemyUnitsThatPreventRetreat =
+            PredicateBuilder.of(Matches.enemyUnit(defender))
+                    .and(Matches.unitIsNotInfrastructure())
+                    .and(Matches.unitIsBeingTransported().negate())
+                    .and(Matches.unitIsSubmerged().negate())
+                    .and(Matches.unitCanBeMovedThroughByEnemies().negate())
+                    .andIf(
+                            Properties.getIgnoreTransportInMovement(gameData.getProperties()),
+                            Matches.unitIsNotSeaTransportButCouldBeCombatSeaTransport())
+                    .build();
+
+    Collection<Territory> possible =
+            CollectionUtils.getMatches(
+                    getGameData().getMap().getNeighbors(getBattleSite()),
+                    Matches.territoryHasUnitsThatMatch(enemyUnitsThatPreventRetreat).negate());
+
+    // the air unit may have come from a conquered or enemy territory, don't allow retreating
+    final Predicate<Territory> conqueredOrEnemy =
+            Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(defender)
+                    .or(Matches.territoryIsWater().and(Matches.territoryWasFoughtOver(battleTracker)));
+    possible.removeAll(CollectionUtils.getMatches(possible, conqueredOrEnemy));
+
+    if (defendingUnits.stream().anyMatch(Matches.unitIsLand()) && !battleSite.isWater()) {
+      possible = CollectionUtils.getMatches(possible, Matches.territoryIsLand());
+    }
+    if (defendingUnits.stream().anyMatch(Matches.unitIsSea())) {
+      // make sure we can move through any canals
+      final Predicate<Territory> canalMatch =
+              t -> {
+                final Route r = new Route(getBattleSite(), t);
+                return new MoveValidator(getGameData(), false)
+                        .validateCanal(r, defendingUnits, getPlayer(DEFENSE))
+                        == null;
+              };
+      final Predicate<Territory> match =
+              Matches.territoryIsWater()
+                      .and(Matches.territoryHasNoEnemyUnits(getPlayer(DEFENSE)))
+                      .and(canalMatch);
+      possible = CollectionUtils.getMatches(possible, match);
+    }
+    return possible;
+  }
+
   private void pushFightLoopOnStack() {
     if (isOver) {
       return;
@@ -1230,6 +1285,17 @@ public class MustFightBattle extends DependentBattle
         if (defensiveSubsRetreat.getOrder() == SUB_DEFENSIVE_RETREAT_AFTER_BATTLE) {
           defensiveSubsRetreat.execute(stack, bridge);
         }
+      }
+    };
+
+    new IExecutable() {
+      private static final long serialVersionUID = 5944101312197744640L;
+
+      @Override
+      @RemoveOnNextMajorRelease
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        new DefensiveGeneralRetreat(MustFightBattle.this, MustFightBattle.this)
+                .execute(stack, bridge);
       }
     };
   }

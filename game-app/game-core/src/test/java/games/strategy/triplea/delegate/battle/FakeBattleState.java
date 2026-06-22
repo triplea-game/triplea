@@ -71,6 +71,9 @@ public class FakeBattleState implements BattleState {
   @Getter(onMethod = @__({@Override}))
   final Collection<Territory> attackerRetreatTerritories;
 
+  @Getter(onMethod = @__({@Override}))
+  final Collection<Territory> defenderRetreatTerritories;
+
   final Collection<Unit> dependentUnits;
 
   @Getter(onMethod = @__({@Override}))

@@ -26,6 +26,7 @@ import games.strategy.triplea.delegate.battle.steps.fire.general.OffensiveGenera
 import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveGeneralRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveSubsRetreat;
+import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveGeneralRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.sub.SubmergeSubsVsOnlyAirStep;
 import java.util.List;
 import lombok.Value;
@@ -75,6 +76,7 @@ public interface BattleStep extends IExecutable {
     OFFENSIVE_GENERAL_RETREAT,
     STALEMATE_BATTLE_END_CHECK,
     SUB_DEFENSIVE_RETREAT_AFTER_BATTLE,
+    DEFENSIVE_GENERAL_RETREAT,
 
     FIRE_ROUND_ROLL_DICE,
     FIRE_ROUND_SELECT_CASUALTIES,
@@ -119,6 +121,7 @@ public interface BattleStep extends IExecutable {
         new RemoveFirstStrikeSuicide(battleState, battleActions),
         new RemoveGeneralSuicide(battleState, battleActions),
         new OffensiveGeneralRetreat(battleState, battleActions),
+        new DefensiveGeneralRetreat(battleState, battleActions),
         new ClearGeneralCasualties(battleState, battleActions),
         new RemoveUnprotectedUnitsGeneral(battleState, battleActions),
         new CheckGeneralBattleEnd(battleState, battleActions),

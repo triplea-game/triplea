@@ -28,9 +28,11 @@ class RetreaterGeneral implements Retreater {
 
   private final BattleState battleState;
 
+  private final BattleState.Side retreatingSide;
+
   @Override
   public Collection<Unit> getRetreatUnits() {
-    final Collection<Unit> retreatUnits = new HashSet<>(battleState.filterUnits(ALIVE, OFFENSE));
+    final Collection<Unit> retreatUnits = new HashSet<>(battleState.filterUnits(ALIVE, retreatingSide));
     // some units might have been removed from the battle (such as infra) so grab all units at the
     // battle site
     retreatUnits.addAll(
@@ -38,7 +40,7 @@ class RetreaterGeneral implements Retreater {
             .getBattleSite()
             .getUnitCollection()
             .getMatches(
-                Matches.unitIsOwnedBy(battleState.getPlayer(OFFENSE))
+                Matches.unitIsOwnedBy(battleState.getPlayer(retreatingSide))
                     .and(Matches.unitIsSubmerged().negate())));
     retreatUnits.removeAll(battleState.filterUnits(REMOVED_CASUALTY));
     return retreatUnits;
@@ -76,10 +78,10 @@ class RetreaterGeneral implements Retreater {
     final Collection<Unit> airRetreating =
         CollectionUtils.getMatches(
             retreatUnits,
-            Matches.unitIsAir().and(Matches.unitIsOwnedBy(battleState.getPlayer(OFFENSE))));
+            Matches.unitIsAir().and(Matches.unitIsOwnedBy(battleState.getPlayer(retreatingSide))));
 
     if (!airRetreating.isEmpty()) {
-      battleState.retreatUnits(OFFENSE, airRetreating);
+      battleState.retreatUnits(retreatingSide, airRetreating);
       final String transcriptText = MyFormatter.unitsToText(airRetreating) + " retreated";
       historyChildren.add(RetreatHistoryChild.of(transcriptText, new ArrayList<>(airRetreating)));
     }
@@ -89,7 +91,7 @@ class RetreaterGeneral implements Retreater {
     nonAirRetreating.addAll(battleState.getDependentUnits(nonAirRetreating));
 
     if (!nonAirRetreating.isEmpty()) {
-      battleState.retreatUnits(OFFENSE, nonAirRetreating);
+      battleState.retreatUnits(retreatingSide, nonAirRetreating);
       historyChildren.add(
           RetreatHistoryChild.of(
               MyFormatter.unitsToText(nonAirRetreating) + " retreated to " + retreatTo.getName(),

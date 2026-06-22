@@ -27,6 +27,16 @@ public class RetreatChecks {
     return !getAttackerRetreatTerritories.get().isEmpty();
   }
 
+  public static boolean canDefenderRetreat(
+          final @Nonnull Collection<Unit> attackingUnits,
+          final @Nonnull GameState gameData,
+          final @Nonnull Supplier<Collection<Territory>> getDefenderRetreatTerritories) {
+    if (onlyDefenselessTransportsLeft(attackingUnits, gameData)) {
+      return false;
+    }
+    return !getDefenderRetreatTerritories.get().isEmpty();
+  }
+
   public static boolean onlyDefenselessTransportsLeft(
       final @Nonnull Collection<Unit> units, final @Nonnull GameState gameData) {
     return Properties.getTransportCasualtiesRestricted(gameData.getProperties())

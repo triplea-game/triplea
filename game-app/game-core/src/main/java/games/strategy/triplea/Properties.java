@@ -343,6 +343,10 @@ public final class Properties implements Constants {
     return properties.get(USE_SHIPYARDS, false);
   }
 
+  public static boolean getGeneralDefendersCanRetreat(final GameProperties properties) {
+    return properties.get(GENERAL_DEFENDERS_CAN_RETREAT, false);
+  }
+
   public static boolean getLowLuck(final GameProperties properties) {
     return properties.get(LOW_LUCK, false);
   }
@@ -579,6 +583,10 @@ public final class Properties implements Constants {
 
   public static boolean getCanScrambleIntoAirBattles(final GameProperties properties) {
     return properties.get(CAN_SCRAMBLE_INTO_AIR_BATTLES, false);
+  }
+
+  public static boolean getLandBattleDefendersCanRetreat(final GameProperties properties) {
+    return properties.get(GENERAL_DEFENDERS_CAN_RETREAT, false);
   }
 
   public static boolean getTerritoriesAreAssignedRandomly(final GameProperties properties) {
