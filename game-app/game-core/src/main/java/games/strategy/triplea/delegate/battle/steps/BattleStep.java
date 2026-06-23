@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate.battle.steps;
 
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
@@ -100,31 +101,37 @@ public interface BattleStep extends IExecutable {
   Order getOrder();
 
   static List<BattleStep> getAll(final BattleState battleState, final BattleActions battleActions) {
-    return List.of(
-        new OffensiveAaFire(battleState, battleActions),
-        new DefensiveAaFire(battleState, battleActions),
-        new SubmergeSubsVsOnlyAirStep(battleState, battleActions),
-        new RemoveUnprotectedUnits(battleState, battleActions),
-        new NavalBombardment(battleState, battleActions),
-        new ClearBombardmentCasualties(battleState, battleActions),
-        new LandParatroopers(battleState, battleActions),
-        new OffensiveSubsRetreat(battleState, battleActions),
-        new DefensiveSubsRetreat(battleState, battleActions),
-        new OffensiveFirstStrike(battleState, battleActions),
-        new DefensiveFirstStrike(battleState, battleActions),
-        new ClearFirstStrikeCasualties(battleState, battleActions),
-        new OffensiveGeneral(battleState, battleActions),
-        new DefensiveGeneral(battleState, battleActions),
-        new ClearAaCasualties(battleState, battleActions),
-        new RemoveNonCombatants(battleState, battleActions),
-        new MarkNoMovementLeft(battleState, battleActions),
-        new RemoveFirstStrikeSuicide(battleState, battleActions),
-        new RemoveGeneralSuicide(battleState, battleActions),
-        new OffensiveGeneralRetreat(battleState, battleActions),
-        new DefensiveGeneralRetreat(battleState, battleActions),
-        new ClearGeneralCasualties(battleState, battleActions),
-        new RemoveUnprotectedUnitsGeneral(battleState, battleActions),
-        new CheckGeneralBattleEnd(battleState, battleActions),
-        new CheckStalemateBattleEnd(battleState, battleActions));
+    List<BattleStep> battleSteps = List.of(
+            new OffensiveAaFire(battleState, battleActions),
+            new DefensiveAaFire(battleState, battleActions),
+            new SubmergeSubsVsOnlyAirStep(battleState, battleActions),
+            new RemoveUnprotectedUnits(battleState, battleActions),
+            new NavalBombardment(battleState, battleActions),
+            new ClearBombardmentCasualties(battleState, battleActions),
+            new LandParatroopers(battleState, battleActions),
+            new OffensiveSubsRetreat(battleState, battleActions),
+            new DefensiveSubsRetreat(battleState, battleActions),
+            new OffensiveFirstStrike(battleState, battleActions),
+            new DefensiveFirstStrike(battleState, battleActions),
+            new ClearFirstStrikeCasualties(battleState, battleActions),
+            new OffensiveGeneral(battleState, battleActions),
+            new DefensiveGeneral(battleState, battleActions),
+            new ClearAaCasualties(battleState, battleActions),
+            new RemoveNonCombatants(battleState, battleActions),
+            new MarkNoMovementLeft(battleState, battleActions),
+            new RemoveFirstStrikeSuicide(battleState, battleActions),
+            new RemoveGeneralSuicide(battleState, battleActions),
+            new OffensiveGeneralRetreat(battleState, battleActions),
+            new ClearGeneralCasualties(battleState, battleActions),
+            new RemoveUnprotectedUnitsGeneral(battleState, battleActions),
+            new CheckGeneralBattleEnd(battleState, battleActions),
+            new CheckStalemateBattleEnd(battleState, battleActions));
+
+    if (Properties.getGeneralDefendersCanRetreat(battleState.getGameData().getProperties()))
+    {
+      battleSteps.add(20, new DefensiveGeneralRetreat(battleState, battleActions));
+    }
+
+    return battleSteps;
   }
 }
