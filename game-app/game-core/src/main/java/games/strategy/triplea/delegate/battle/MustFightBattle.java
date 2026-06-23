@@ -1262,9 +1262,8 @@ public class MustFightBattle extends DependentBattle
       @Override
       @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        // Intentionally left blank
-        // Old saves will fall through to the IExecutable that instantiates
-        // OffensiveGeneralRetreat which does the work that previously was here
+        new DefensiveGeneralRetreat(MustFightBattle.this, MustFightBattle.this)
+            .execute(stack, bridge);
       }
     };
     new IExecutable() {
@@ -1288,17 +1287,6 @@ public class MustFightBattle extends DependentBattle
         if (defensiveSubsRetreat.getOrder() == SUB_DEFENSIVE_RETREAT_AFTER_BATTLE) {
           defensiveSubsRetreat.execute(stack, bridge);
         }
-      }
-    };
-
-    new IExecutable() {
-      private static final long serialVersionUID = 5944101312197744640L;
-
-      @Override
-      @RemoveOnNextMajorRelease
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        new DefensiveGeneralRetreat(MustFightBattle.this, MustFightBattle.this)
-                .execute(stack, bridge);
       }
     };
   }

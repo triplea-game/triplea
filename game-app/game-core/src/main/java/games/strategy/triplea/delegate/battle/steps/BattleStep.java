@@ -122,15 +122,11 @@ public interface BattleStep extends IExecutable {
             new RemoveFirstStrikeSuicide(battleState, battleActions),
             new RemoveGeneralSuicide(battleState, battleActions),
             new OffensiveGeneralRetreat(battleState, battleActions),
+            new DefensiveGeneralRetreat(battleState, battleActions),
             new ClearGeneralCasualties(battleState, battleActions),
             new RemoveUnprotectedUnitsGeneral(battleState, battleActions),
             new CheckGeneralBattleEnd(battleState, battleActions),
             new CheckStalemateBattleEnd(battleState, battleActions));
-
-    if (Properties.getGeneralDefendersCanRetreat(battleState.getGameData().getProperties()))
-    {
-      battleSteps.add(20, new DefensiveGeneralRetreat(battleState, battleActions));
-    }
 
     return battleSteps;
   }
