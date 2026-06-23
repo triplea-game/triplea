@@ -28,9 +28,9 @@ public class RetreatChecks {
   }
 
   public static boolean canDefenderRetreat(
-          final @Nonnull Collection<Unit> attackingUnits,
-          final @Nonnull GameState gameData,
-          final @Nonnull Supplier<Collection<Territory>> getDefenderRetreatTerritories) {
+      final @Nonnull Collection<Unit> attackingUnits,
+      final @Nonnull GameState gameData,
+      final @Nonnull Supplier<Collection<Territory>> getDefenderRetreatTerritories) {
     if (onlyDefenselessTransportsLeft(attackingUnits, gameData)) {
       return false;
     }

@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
-import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.REMOVED_CASUALTY;
 
@@ -32,7 +31,8 @@ class RetreaterGeneral implements Retreater {
 
   @Override
   public Collection<Unit> getRetreatUnits() {
-    final Collection<Unit> retreatUnits = new HashSet<>(battleState.filterUnits(ALIVE, retreatingSide));
+    final Collection<Unit> retreatUnits =
+        new HashSet<>(battleState.filterUnits(ALIVE, retreatingSide));
     // some units might have been removed from the battle (such as infra) so grab all units at the
     // battle site
     retreatUnits.addAll(

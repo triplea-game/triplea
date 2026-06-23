@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate.battle.steps;
 
-import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.IExecutable;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
@@ -24,10 +23,10 @@ import games.strategy.triplea.delegate.battle.steps.fire.firststrike.DefensiveFi
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.OffensiveFirstStrike;
 import games.strategy.triplea.delegate.battle.steps.fire.general.DefensiveGeneral;
 import games.strategy.triplea.delegate.battle.steps.fire.general.OffensiveGeneral;
+import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveGeneralRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveGeneralRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveSubsRetreat;
-import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveGeneralRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.sub.SubmergeSubsVsOnlyAirStep;
 import java.util.List;
 import lombok.Value;
@@ -101,7 +100,8 @@ public interface BattleStep extends IExecutable {
   Order getOrder();
 
   static List<BattleStep> getAll(final BattleState battleState, final BattleActions battleActions) {
-    List<BattleStep> battleSteps = List.of(
+    List<BattleStep> battleSteps =
+        List.of(
             new OffensiveAaFire(battleState, battleActions),
             new DefensiveAaFire(battleState, battleActions),
             new SubmergeSubsVsOnlyAirStep(battleState, battleActions),
