@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -43,6 +44,11 @@ class RetreaterGeneral implements Retreater {
                 Matches.unitIsOwnedBy(battleState.getPlayer(retreatingSide))
                     .and(Matches.unitIsSubmerged().negate())));
     retreatUnits.removeAll(battleState.filterUnits(REMOVED_CASUALTY));
+    if (retreatingSide == BattleState.Side.DEFENSE) {
+      // We only want units that can move (no buildings retreating)
+      final Predicate<Unit> cannotMove = Predicate.not(Matches.unitCanMove());
+      retreatUnits.removeIf(cannotMove);
+    }
     return retreatUnits;
   }
 

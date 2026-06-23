@@ -6,6 +6,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import java.util.Collection;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import lombok.experimental.UtilityClass;
@@ -29,9 +30,16 @@ public class RetreatChecks {
 
   public static boolean canDefenderRetreat(
       final @Nonnull Collection<Unit> attackingUnits,
+      final @Nonnull Collection<Unit> defendingUnits,
       final @Nonnull GameState gameData,
       final @Nonnull Supplier<Collection<Territory>> getDefenderRetreatTerritories) {
     if (onlyDefenselessTransportsLeft(attackingUnits, gameData)) {
+      return false;
+    }
+    // We only want units that can move (no buildings retreating)
+    final Predicate<Unit> cannotMove = Predicate.not(Matches.unitCanMove());
+    defendingUnits.removeIf(cannotMove);
+    if (defendingUnits.isEmpty()) {
       return false;
     }
     return !getDefenderRetreatTerritories.get().isEmpty();

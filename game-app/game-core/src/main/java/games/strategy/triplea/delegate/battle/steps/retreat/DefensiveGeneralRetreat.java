@@ -22,6 +22,7 @@ import games.strategy.triplea.settings.ClientSetting;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
 import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.sound.SoundUtils;
@@ -48,6 +49,7 @@ public class DefensiveGeneralRetreat implements BattleStep {
   private boolean canDefenderRetreat() {
     return RetreatChecks.canDefenderRetreat(
         battleState.filterUnits(ALIVE, OFFENSE),
+        battleState.filterUnits(ALIVE, DEFENSE),
         battleState.getGameData(),
         battleState::getDefenderRetreatTerritories);
   }
@@ -125,7 +127,11 @@ public class DefensiveGeneralRetreat implements BattleStep {
 
   private void retreat(
       final IDelegateBridge bridge, final Retreater retreater, final Territory retreatTo) {
-    final Collection<Unit> retreatUnits = retreater.getRetreatUnits();
+    Collection<Unit> retreatUnits = retreater.getRetreatUnits();
+
+    // We only want units that can move (no buildings retreating)
+    final Predicate<Unit> cannotMove = Predicate.not(Matches.unitCanMove());
+    retreatUnits.removeIf(cannotMove);
 
     SoundUtils.playRetreatType(
         battleState.getPlayer(DEFENSE), retreatUnits, retreater.getRetreatType(), bridge);
