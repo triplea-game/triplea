@@ -4,6 +4,8 @@ import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.DEFENDER_WITHDRAW;
+import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.DEFENSIVE_GENERAL_RETREAT_AFTER_BATTLE;
+import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.DEFENSIVE_GENERAL_RETREAT_BEFORE_BATTLE;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -43,7 +45,8 @@ public class DefensiveGeneralRetreat implements BattleStep {
   }
 
   private boolean isRetreatPossible() {
-    return Properties.getGeneralDefendersCanRetreat(battleState.getGameData().getProperties())
+    return Properties.getDefendersCanRetreatBattleRound(battleState.getGameData().getProperties())
+            >= 0
         && (canDefenderRetreat() || canDefenderRetreatSeaPlanes());
   }
 
@@ -67,7 +70,12 @@ public class DefensiveGeneralRetreat implements BattleStep {
 
   @Override
   public Order getOrder() {
-    return Order.DEFENSIVE_GENERAL_RETREAT;
+    if (Properties.getDefendersCanRetreatBattleRound(battleState.getGameData().getProperties())
+        == 0) {
+      return DEFENSIVE_GENERAL_RETREAT_BEFORE_BATTLE;
+    } else {
+      return DEFENSIVE_GENERAL_RETREAT_AFTER_BATTLE;
+    }
   }
 
   @Override
@@ -77,7 +85,10 @@ public class DefensiveGeneralRetreat implements BattleStep {
 
   @RemoveOnNextMajorRelease("This doesn't need to be public in the next major release")
   public void retreatUnits(final IDelegateBridge bridge) {
-    if (battleState.getStatus().isOver()) {
+    // If the battle round is less than the earliest retreat round, return
+    final int retreatRound =
+        Properties.getDefendersCanRetreatBattleRound(battleState.getGameData().getProperties());
+    if (battleState.getStatus().isOver() || battleState.getStatus().getRound() < retreatRound) {
       return;
     }
 
