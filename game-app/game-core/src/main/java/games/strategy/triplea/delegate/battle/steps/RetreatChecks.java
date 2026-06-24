@@ -10,6 +10,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import lombok.experimental.UtilityClass;
+import org.triplea.java.PredicateBuilder;
 
 @UtilityClass
 public class RetreatChecks {
@@ -32,13 +33,33 @@ public class RetreatChecks {
       final @Nonnull Collection<Unit> attackingUnits,
       final @Nonnull Collection<Unit> defendingUnits,
       final @Nonnull GameState gameData,
-      final @Nonnull Supplier<Collection<Territory>> getDefenderRetreatTerritories) {
+      final @Nonnull Supplier<Collection<Territory>> getDefenderRetreatTerritories,
+      final @Nonnull Supplier<Territory> getBattleSite) {
     if (onlyDefenselessTransportsLeft(attackingUnits, gameData)) {
       return false;
     }
-    // We only want units that can move (no buildings retreating)
-    final Predicate<Unit> cannotMove = Predicate.not(Matches.unitCanMove());
-    defendingUnits.removeIf(cannotMove);
+    // We only want units that can move, be transported, or given bonus movement (no buildings
+    // retreating)
+    final Territory battleSite = getBattleSite.get();
+    final Predicate<Unit> canMoveOrBeMoved =
+        PredicateBuilder.of(Matches.unitCanMove())
+            .or(
+                u ->
+                    // Unit can be given bonus movement by another unit in this territory
+                    Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
+                                battleSite, u.getOwner())
+                            .test(u)
+                        // Unit is already being transported
+                        // TODO: Check if transporting unit has movement left for sea transports
+                        || Matches.unitIsBeingTransported().test(u)
+                        // Unit can be loaded onto an available transport in this
+                        // territory
+                        || (Matches.unitCanBeTransported().test(u)
+                            && battleSite.anyUnitsMatch(Matches.unitCanTransport())))
+            // cannot move aa units
+            .and(Matches.unitCanMoveDuringCombatMove())
+            .build();
+    defendingUnits.removeIf(Predicate.not(canMoveOrBeMoved));
     if (defendingUnits.isEmpty()) {
       return false;
     }

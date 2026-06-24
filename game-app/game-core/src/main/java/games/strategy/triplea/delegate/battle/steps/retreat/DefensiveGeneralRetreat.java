@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
+import org.triplea.java.PredicateBuilder;
 import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.sound.SoundUtils;
 
@@ -51,7 +52,8 @@ public class DefensiveGeneralRetreat implements BattleStep {
         battleState.filterUnits(ALIVE, OFFENSE),
         battleState.filterUnits(ALIVE, DEFENSE),
         battleState.getGameData(),
-        battleState::getDefenderRetreatTerritories);
+        battleState::getDefenderRetreatTerritories,
+        battleState::getBattleSite);
   }
 
   private boolean canDefenderRetreatSeaPlanes() {
@@ -101,6 +103,29 @@ public class DefensiveGeneralRetreat implements BattleStep {
         }
       }
 
+      // We only want units that can move, be transported, or given bonus movement (no buildings
+      // retreating)
+      final Territory battleSite = battleState.getBattleSite();
+      final Predicate<Unit> canMoveOrBeMoved =
+          PredicateBuilder.of(Matches.unitCanMove())
+              .or(
+                  u ->
+                      // Unit can be given bonus movement by another unit in this territory
+                      Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
+                                  battleSite, u.getOwner())
+                              .test(u)
+                          // Unit is already being transported
+                          // TODO: Check if transporting unit has movement left for sea transports
+                          || Matches.unitIsBeingTransported().test(u)
+                          // Unit can be loaded onto an available transport in this
+                          // territory
+                          || (Matches.unitCanBeTransported().test(u)
+                              && battleSite.anyUnitsMatch(Matches.unitCanTransport())))
+              // cannot move aa units
+              .and(Matches.unitCanMoveDuringCombatMove())
+              .build();
+      retreater.getRetreatUnits().removeIf(Predicate.not(canMoveOrBeMoved));
+
       final Collection<Territory> possibleRetreatSites =
           battleState.getDefenderRetreatTerritories();
 
@@ -128,10 +153,6 @@ public class DefensiveGeneralRetreat implements BattleStep {
   private void retreat(
       final IDelegateBridge bridge, final Retreater retreater, final Territory retreatTo) {
     Collection<Unit> retreatUnits = retreater.getRetreatUnits();
-
-    // We only want units that can move (no buildings retreating)
-    final Predicate<Unit> cannotMove = Predicate.not(Matches.unitCanMove());
-    retreatUnits.removeIf(cannotMove);
 
     SoundUtils.playRetreatType(
         battleState.getPlayer(DEFENSE), retreatUnits, retreater.getRetreatType(), bridge);
