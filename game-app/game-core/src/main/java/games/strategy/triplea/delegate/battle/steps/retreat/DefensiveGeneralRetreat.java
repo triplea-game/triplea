@@ -5,7 +5,6 @@ import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.DEFENDER_WITHDRAW;
 import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.DEFENSIVE_GENERAL_RETREAT_AFTER_BATTLE;
-import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.DEFENSIVE_GENERAL_RETREAT_BEFORE_BATTLE;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
