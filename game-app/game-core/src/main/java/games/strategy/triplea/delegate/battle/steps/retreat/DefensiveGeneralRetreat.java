@@ -45,8 +45,7 @@ public class DefensiveGeneralRetreat implements BattleStep {
   }
 
   private boolean isRetreatPossible() {
-    return Properties.getDefendersCanRetreatBattleRound(battleState.getGameData().getProperties())
-            >= 0
+    return Properties.getDefendersCanRetreat(battleState.getGameData().getProperties())
         && (canDefenderRetreat() || canDefenderRetreatSeaPlanes());
   }
 
@@ -70,9 +69,8 @@ public class DefensiveGeneralRetreat implements BattleStep {
 
   @Override
   public Order getOrder() {
-    if (Properties.getDefendersCanRetreatBattleRound(battleState.getGameData().getProperties())
-        == 0) {
-      return DEFENSIVE_GENERAL_RETREAT_BEFORE_BATTLE;
+    if (Properties.getDefendersCanRetreatBeforeBattle(battleState.getGameData().getProperties())) {
+      return Order.DEFENSIVE_GENERAL_RETREAT_BEFORE_BATTLE;
     } else {
       return DEFENSIVE_GENERAL_RETREAT_AFTER_BATTLE;
     }
@@ -85,10 +83,7 @@ public class DefensiveGeneralRetreat implements BattleStep {
 
   @RemoveOnNextMajorRelease("This doesn't need to be public in the next major release")
   public void retreatUnits(final IDelegateBridge bridge) {
-    // If the battle round is less than the earliest retreat round, return
-    final int retreatRound =
-        Properties.getDefendersCanRetreatBattleRound(battleState.getGameData().getProperties());
-    if (battleState.getStatus().isOver() || battleState.getStatus().getRound() < retreatRound) {
+    if (battleState.getStatus().isOver()) {
       return;
     }
 

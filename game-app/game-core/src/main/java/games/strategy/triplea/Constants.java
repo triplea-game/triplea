@@ -205,7 +205,8 @@ public interface Constants {
   String USE_POLITICS = "Use Politics";
   String USE_FUEL_COST = "Use Fuel Cost";
   String USE_SHIPYARDS = "Use Shipyards";
-  String DEFENDERS_CAN_RETREAT_BATTLE_ROUND = "Defenders Can Retreat Battle Round";
+  String DEFENDERS_CAN_RETREAT = "Defenders Can Retreat";
+  String DEFENDERS_CAN_RETREAT_BEFORE_BATTLE = "Defenders Can Retreat Before Battle";
 
   @NonNls String OLD_ART_RULE_NAME = "ArtyOld";
   String SUPPORT_RULE_NAME_OLD = SUPPORT_ATTACHMENT_PREFIX + OLD_ART_RULE_NAME;

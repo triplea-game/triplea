@@ -870,7 +870,7 @@ public class MustFightBattle extends DependentBattle
   public Collection<Territory> getDefenderRetreatTerritories() {
 
     // If defender retreat isn't enabled, return none
-    if (Properties.getDefendersCanRetreatBattleRound(getGameData().getProperties()) < 0)
+    if (Properties.getDefendersCanRetreat(getGameData().getProperties()))
       return Set.of();
     // If defender is all planes, just return collection of current territory
     if (headless
