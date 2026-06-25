@@ -34,8 +34,13 @@ public class RetreatChecks {
       final @Nonnull Collection<Unit> defendingUnits,
       final @Nonnull GameState gameData,
       final @Nonnull Supplier<Collection<Territory>> getDefenderRetreatTerritories,
-      final @Nonnull Supplier<Territory> getBattleSite) {
-    if (onlyDefenselessTransportsLeft(attackingUnits, gameData)) {
+      final @Nonnull Supplier<Integer> getDefenderRetreatRound,
+      final @Nonnull Supplier<Territory> getBattleSite,
+      final int battleRound) {
+    final int defenderRetreatRound = getDefenderRetreatRound.get();
+    if (onlyDefenselessTransportsLeft(attackingUnits, gameData)
+        || defenderRetreatRound < 0
+        || battleRound < defenderRetreatRound) {
       return false;
     }
     // We only want units that can move, be transported, or given bonus movement (no buildings
@@ -46,9 +51,10 @@ public class RetreatChecks {
             .or(
                 u ->
                     // Unit can be given bonus movement by another unit in this territory
-                    Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
-                                battleSite, u.getOwner())
-                            .test(u)
+                    (u.getOwner() != null
+                            && Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
+                                    battleSite, u.getOwner())
+                                .test(u))
                         // Unit is already being transported
                         // TODO: Check if transporting unit has movement left for sea transports
                         || Matches.unitIsBeingTransported().test(u)
@@ -64,6 +70,11 @@ public class RetreatChecks {
       return false;
     }
     return !getDefenderRetreatTerritories.get().isEmpty();
+  }
+
+  public static boolean getDefenderRetreatBeforeBattle(
+      final @Nonnull Supplier<Integer> getDefenderRetreatRound) {
+    return getDefenderRetreatRound.get() == 0;
   }
 
   public static boolean onlyDefenselessTransportsLeft(

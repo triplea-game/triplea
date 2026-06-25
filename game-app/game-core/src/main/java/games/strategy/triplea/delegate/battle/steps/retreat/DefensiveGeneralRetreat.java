@@ -4,13 +4,11 @@ import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.DEFENDER_WITHDRAW;
-import static games.strategy.triplea.delegate.battle.steps.BattleStep.Order.DEFENSIVE_GENERAL_RETREAT_AFTER_BATTLE;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
-import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
@@ -44,8 +42,7 @@ public class DefensiveGeneralRetreat implements BattleStep {
   }
 
   private boolean isRetreatPossible() {
-    return Properties.getDefendersCanRetreat(battleState.getGameData().getProperties())
-        && (canDefenderRetreat() || canDefenderRetreatSeaPlanes());
+    return canDefenderRetreat();
   }
 
   private boolean canDefenderRetreat() {
@@ -54,12 +51,9 @@ public class DefensiveGeneralRetreat implements BattleStep {
         battleState.filterUnits(ALIVE, DEFENSE),
         battleState.getGameData(),
         battleState::getDefenderRetreatTerritories,
-        battleState::getBattleSite);
-  }
-
-  private boolean canDefenderRetreatSeaPlanes() {
-    return battleState.getBattleSite().isWater()
-        && battleState.filterUnits(ALIVE, DEFENSE).stream().anyMatch(Matches.unitIsAir());
+        battleState::getDefenderRetreatRound,
+        battleState::getBattleSite,
+        battleState.getStatus().getRound());
   }
 
   private String getName() {
@@ -68,11 +62,9 @@ public class DefensiveGeneralRetreat implements BattleStep {
 
   @Override
   public Order getOrder() {
-    if (Properties.getDefendersCanRetreatBeforeBattle(battleState.getGameData().getProperties())) {
+    if (RetreatChecks.getDefenderRetreatBeforeBattle(battleState::getDefenderRetreatRound))
       return Order.DEFENSIVE_GENERAL_RETREAT_BEFORE_BATTLE;
-    } else {
-      return DEFENSIVE_GENERAL_RETREAT_AFTER_BATTLE;
-    }
+    else return Order.DEFENSIVE_GENERAL_RETREAT_AFTER_BATTLE;
   }
 
   @Override

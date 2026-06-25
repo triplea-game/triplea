@@ -867,10 +867,12 @@ public class MustFightBattle extends DependentBattle
     return possible;
   }
 
+  @Override
   public Collection<Territory> getDefenderRetreatTerritories() {
 
     // If defender retreat isn't enabled, return none
-    if (Properties.getDefendersCanRetreat(getGameData().getProperties())) return Set.of();
+    if (Properties.getDefendersCanRetreatBattleRound(getGameData().getProperties()) < 0)
+      return Set.of();
     // If defender is all planes, just return collection of current territory
     if (headless
         || (!defendingUnits.isEmpty() && defendingUnits.stream().allMatch(Matches.unitIsAir()))
@@ -921,6 +923,11 @@ public class MustFightBattle extends DependentBattle
       possible = CollectionUtils.getMatches(possible, match);
     }
     return possible;
+  }
+
+  @Override
+  public int getDefenderRetreatRound() {
+    return Properties.getDefendersCanRetreatBattleRound(getGameData().getProperties());
   }
 
   private void pushFightLoopOnStack() {

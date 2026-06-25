@@ -74,6 +74,9 @@ public class FakeBattleState implements BattleState {
   @Getter(onMethod = @__({@Override}))
   final Collection<Territory> defenderRetreatTerritories;
 
+  @Getter(onMethod = @__({@Override}))
+  final int defenderRetreatRound;
+
   final Collection<Unit> dependentUnits;
 
   @Getter(onMethod = @__({@Override}))
@@ -207,7 +210,9 @@ public class FakeBattleState implements BattleState {
         .gameData(attacker.getData())
         .amphibious(false)
         .over(false)
-        .attackerRetreatTerritories(List.of());
+        .attackerRetreatTerritories(List.of())
+        .defenderRetreatTerritories(List.of())
+        .defenderRetreatRound(-1);
   }
 
   public static FakeBattleState.FakeBattleStateBuilder givenBattleStateBuilder() {
