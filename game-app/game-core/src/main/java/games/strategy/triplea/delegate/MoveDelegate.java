@@ -706,6 +706,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
         break;
       }
     }
+
     final AirThatCantLandUtil util = new AirThatCantLandUtil(bridge);
     util.removeAirThatCantLand(player, lhtrCarrierProd && hasProducedCarriers);
 
