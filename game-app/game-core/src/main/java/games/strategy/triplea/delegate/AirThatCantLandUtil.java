@@ -49,10 +49,13 @@ public class AirThatCantLandUtil {
       final Collection<Unit> air = current.getMatches(ownedAir);
       final boolean hasNeighboringFriendlyFactory =
           !map.getNeighbors(current, hasNeighboringFriendlyFactoryMatch).isEmpty();
-      final boolean defenderRetreat = Properties.getDefendersCanRetreatBattleRound(data.getProperties()) >= 0;
+      final boolean defenderRetreat =
+          Properties.getDefendersCanRetreatBattleRound(data.getProperties()) >= 0;
       final boolean skip =
           spareAirInSeaZonesBesideFactories && current.isWater() && hasNeighboringFriendlyFactory
-          || (defenderRetreat && !GameStepPropertiesHelper.getTurnSummaryPlayers(bridge.getData()).contains(player));
+              || (defenderRetreat
+                  && !GameStepPropertiesHelper.getTurnSummaryPlayers(bridge.getData())
+                      .contains(player));
       if (!skip) {
         removeAirThatCantLand(player, current, air);
       }
