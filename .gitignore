@@ -12,6 +12,8 @@
 game-app/game-headed/triplea*.log
 game-app/smoke-testing/src/test/resources/save-games/
 
+gradle/build-logic/.kotlin/errors/**
+
 *.iml
 *.backup
 *.swp
