@@ -603,11 +603,7 @@ public class DownloadMapsWindow extends JFrame {
           .result
           .ifPresent(
               downloadMapsWindowModel -> {
-                if (downloadMapsWindowModel.getMapStore().isEmpty()) {
-                  return; // no maps to show, so we can leave
-                }
                 state = State.INITIALIZING;
-
                 createAndShow(mapNamesToDownload, downloadMapsWindowModel);
               });
     }
