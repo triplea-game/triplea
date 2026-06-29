@@ -9,7 +9,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.move.validation.AirMovementValidator;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -50,8 +49,7 @@ public class AirThatCantLandUtil {
       final boolean hasNeighboringFriendlyFactory =
           !map.getNeighbors(current, hasNeighboringFriendlyFactoryMatch).isEmpty();
       final boolean defenderRetreat =
-        air.stream().anyMatch(unit ->
-          unit.getUnitAttachment().getCanDefensiveRetreat());
+          air.stream().anyMatch(unit -> unit.getUnitAttachment().getCanDefensiveRetreat());
       final boolean skip =
           spareAirInSeaZonesBesideFactories && current.isWater() && hasNeighboringFriendlyFactory
               || (defenderRetreat

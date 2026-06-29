@@ -10,7 +10,6 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
