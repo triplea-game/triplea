@@ -23,6 +23,7 @@ import games.strategy.triplea.delegate.battle.steps.fire.firststrike.DefensiveFi
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.OffensiveFirstStrike;
 import games.strategy.triplea.delegate.battle.steps.fire.general.DefensiveGeneral;
 import games.strategy.triplea.delegate.battle.steps.fire.general.OffensiveGeneral;
+import games.strategy.triplea.delegate.battle.steps.retreat.DefenderFightOrRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveGeneralRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveGeneralRetreat;
@@ -46,6 +47,7 @@ import lombok.Value;
 public interface BattleStep extends IExecutable {
 
   enum Order {
+    DEFENDER_FIGHT_OR_RETREAT,
     AA_OFFENSIVE,
     AA_DEFENSIVE,
     AA_REMOVE_CASUALTIES,
@@ -56,7 +58,6 @@ public interface BattleStep extends IExecutable {
     MARK_NO_MOVEMENT_LEFT,
     SUB_OFFENSIVE_RETREAT_BEFORE_BATTLE,
     SUB_DEFENSIVE_RETREAT_BEFORE_BATTLE,
-    DEFENSIVE_GENERAL_RETREAT_BEFORE_BATTLE,
     REMOVE_UNPROTECTED_UNITS,
     SUBMERGE_SUBS_VS_ONLY_AIR,
     FIRST_STRIKE_OFFENSIVE,
@@ -73,11 +74,11 @@ public interface BattleStep extends IExecutable {
     SUICIDE_REMOVE_CASUALTIES,
     REMOVE_UNPROTECTED_UNITS_GENERAL,
     GENERAL_BATTLE_END_CHECK,
+    DEFENSIVE_GENERAL_RETREAT,
     SUB_OFFENSIVE_RETREAT_AFTER_BATTLE,
     OFFENSIVE_GENERAL_RETREAT,
     STALEMATE_BATTLE_END_CHECK,
     SUB_DEFENSIVE_RETREAT_AFTER_BATTLE,
-    DEFENSIVE_GENERAL_RETREAT_AFTER_BATTLE,
 
     FIRE_ROUND_ROLL_DICE,
     FIRE_ROUND_SELECT_CASUALTIES,
@@ -127,7 +128,8 @@ public interface BattleStep extends IExecutable {
             new ClearGeneralCasualties(battleState, battleActions),
             new RemoveUnprotectedUnitsGeneral(battleState, battleActions),
             new CheckGeneralBattleEnd(battleState, battleActions),
-            new CheckStalemateBattleEnd(battleState, battleActions));
+            new CheckStalemateBattleEnd(battleState, battleActions),
+            new DefenderFightOrRetreat(battleState, battleActions));
 
     return battleSteps;
   }

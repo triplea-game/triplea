@@ -1,7 +1,6 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.DEFENDER_WITHDRAW;
 
@@ -9,7 +8,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
-import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
@@ -17,9 +15,7 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
-import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
 import games.strategy.triplea.settings.ClientSetting;
-import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -40,22 +36,9 @@ public class DefensiveGeneralRetreat implements BattleStep {
 
   @Override
   public List<StepDetails> getAllStepDetails() {
-    return isRetreatPossible() ? List.of(new StepDetails(getName(), this)) : List.of();
-  }
-
-  private boolean isRetreatPossible() {
-    return canDefenderRetreat();
-  }
-
-  private boolean canDefenderRetreat() {
-    return RetreatChecks.canDefenderRetreat(
-        battleState.filterUnits(ALIVE, OFFENSE),
-        battleState.filterUnits(ALIVE, DEFENSE),
-        battleState.getGameData(),
-        battleState::getDefenderRetreatTerritories,
-        battleState::getDefenderRetreatRound,
-        battleState::getBattleSite,
-        battleState.getStatus().getRound());
+    return (battleState.getDefendersRetreatTo() != null)
+        ? List.of(new StepDetails(getName(), this))
+        : List.of();
   }
 
   private String getName() {
@@ -64,9 +47,7 @@ public class DefensiveGeneralRetreat implements BattleStep {
 
   @Override
   public Order getOrder() {
-    if (RetreatChecks.getDefenderRetreatBeforeBattle(battleState::getDefenderRetreatRound))
-      return Order.DEFENSIVE_GENERAL_RETREAT_BEFORE_BATTLE;
-    else return Order.DEFENSIVE_GENERAL_RETREAT_AFTER_BATTLE;
+    return Order.DEFENSIVE_GENERAL_RETREAT;
   }
 
   @Override
@@ -81,8 +62,9 @@ public class DefensiveGeneralRetreat implements BattleStep {
     }
 
     final Retreater retreater;
+    final Territory retreatTo = battleState.getDefendersRetreatTo();
 
-    if (canDefenderRetreat()) {
+    if (retreatTo != null) {
       retreater = new RetreaterGeneral(battleState, DEFENSE);
     } else {
       retreater = null;
@@ -123,29 +105,18 @@ public class DefensiveGeneralRetreat implements BattleStep {
               // cannot move aa units
               .and(Matches.unitCanMoveDuringCombatMove())
               .build();
-      retreater.getRetreatUnits().removeIf(Predicate.not(canMoveOrBeMoved));
+      retreater.getRetreatUnits().removeIf(canMoveOrBeMoved.negate());
 
-      final Collection<Territory> possibleRetreatSites =
-          battleState.getDefenderRetreatTerritories();
+      // Remove units that can't defensive retreat this round
+      for (Unit unit : retreater.getRetreatUnits())
+      {
+        final int defensiveRetreatBattleRound = unit.getUnitAttachment().getDefensiveRetreatBattleRound();
+        if (defensiveRetreatBattleRound != 0 && defensiveRetreatBattleRound < battleState.getStatus().getRound())
+          retreater.getRetreatUnits().remove(unit);
+      }
 
-      battleActions
-          .queryRetreatTerritory(
-              battleState,
-              bridge,
-              battleState.getPlayer(DEFENSE),
-              possibleRetreatSites,
-              getQueryText(retreater.getRetreatType()))
-          .ifPresent(retreatTo -> retreat(bridge, retreater, retreatTo));
-    }
-  }
-
-  private String getQueryText(final MustFightBattle.RetreatType retreatType) {
-    switch (retreatType) {
-      case DEFAULT:
-      default:
-        return battleState.getPlayer(DEFENSE).getName() + " retreat?";
-      case PLANES:
-        return battleState.getPlayer(DEFENSE).getName() + " retreat planes?";
+      if (!retreater.getRetreatUnits().isEmpty())
+        retreat(bridge, retreater, retreatTo);
     }
   }
 
@@ -155,16 +126,6 @@ public class DefensiveGeneralRetreat implements BattleStep {
 
     SoundUtils.playRetreatType(
         battleState.getPlayer(DEFENSE), retreatUnits, retreater.getRetreatType(), bridge);
-
-    // If units moved during the retreat, mark them as having moved
-    if (!Properties.getRetreatingUnitsRemainInPlace(battleState.getGameData().getProperties())) {
-      Collection<Unit> landAndSeaUnits =
-          retreatUnits.stream().filter(Matches.unitIsAir().negate()).toList();
-      BigDecimal movedOne = new BigDecimal(1.0);
-      for (Unit unit : landAndSeaUnits) {
-        unit.setAlreadyMoved(movedOne);
-      }
-    }
 
     final Retreater.RetreatChanges retreatChanges = retreater.computeChanges(retreatTo);
     bridge.addChange(retreatChanges.getChange());

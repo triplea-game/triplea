@@ -351,6 +351,9 @@ public class UnitAttachment extends DefaultAttachment {
   private boolean isSub = false;
   private boolean isSuicide = false;
 
+  // defensive retreat properties
+  @Getter private int defensiveRetreatBattleRound = -1;
+
   public UnitAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
@@ -2475,6 +2478,8 @@ public class UnitAttachment extends DefaultAttachment {
     canRetreatOnStalemate = getBool(value);
   }
 
+  public void setDefensiveRetreatBattleRound(final int battleRound) { defensiveRetreatBattleRound = battleRound; }
+
   public Optional<Boolean> getCanRetreatOnStalemate() {
     return Optional.ofNullable(canRetreatOnStalemate);
   }
@@ -2953,7 +2958,9 @@ public class UnitAttachment extends DefaultAttachment {
         + "  placementLimit:"
         + (placementLimit != null ? placementLimit.toString() : "null")
         + "  tuv:"
-        + tuv;
+        + tuv
+        + "defensiveRetreatBattleRound:"
+        + defensiveRetreatBattleRound;
   }
 
   /**
@@ -4147,6 +4154,11 @@ public class UnitAttachment extends DefaultAttachment {
               MutableProperty.of(
                   this::setCanRetreatOnStalemate, this::setCanRetreatOnStalemate,
                   this::getCanRetreatOnStalemateOrNull, this::resetCanRetreatOnStalemate));
+      case "defensiveRetreatBattleRound" ->
+          Optional.of(
+              MutableProperty.ofMapper(
+                  DefaultAttachment::getInt, this::setDefensiveRetreatBattleRound,
+                  this::getDefensiveRetreatBattleRound, () -> -1));
       default -> Optional.empty();
     };
   }

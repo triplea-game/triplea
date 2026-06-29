@@ -50,7 +50,8 @@ public class AirThatCantLandUtil {
       final boolean hasNeighboringFriendlyFactory =
           !map.getNeighbors(current, hasNeighboringFriendlyFactoryMatch).isEmpty();
       final boolean defenderRetreat =
-          Properties.getDefendersCanRetreatBattleRound(data.getProperties()) >= 0;
+        !air.stream().anyMatch(unit ->
+          unit.getUnitAttachment().getDefensiveRetreatBattleRound() >= 0);
       final boolean skip =
           spareAirInSeaZonesBesideFactories && current.isWater() && hasNeighboringFriendlyFactory
               || (defenderRetreat

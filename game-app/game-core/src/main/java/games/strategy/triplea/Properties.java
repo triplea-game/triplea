@@ -343,10 +343,6 @@ public final class Properties implements Constants {
     return properties.get(USE_SHIPYARDS, false);
   }
 
-  public static int getDefendersCanRetreatBattleRound(final GameProperties properties) {
-    return properties.get(DEFENDERS_CAN_RETREAT_BATTLE_ROUND, -1);
-  }
-
   public static boolean getLowLuck(final GameProperties properties) {
     return properties.get(LOW_LUCK, false);
   }

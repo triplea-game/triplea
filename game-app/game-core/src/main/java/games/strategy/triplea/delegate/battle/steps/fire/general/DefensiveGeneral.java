@@ -47,6 +47,9 @@ public class DefensiveGeneral implements BattleStep {
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+    // If defenders are retreating this round, they don't return fire
+    if (battleState.getDefendersRetreatTo() != null) return;
+
     final List<BattleStep> steps = getSteps();
 
     // steps go in reverse order on the stack

@@ -53,6 +53,7 @@ import games.strategy.triplea.delegate.battle.steps.fire.firststrike.DefensiveFi
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.OffensiveFirstStrike;
 import games.strategy.triplea.delegate.battle.steps.fire.general.DefensiveGeneral;
 import games.strategy.triplea.delegate.battle.steps.fire.general.OffensiveGeneral;
+import games.strategy.triplea.delegate.battle.steps.retreat.DefenderFightOrRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveGeneralRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveGeneralRetreat;
@@ -151,6 +152,8 @@ public class MustFightBattle extends DependentBattle
   // -1 would mean forever until one side is eliminated (the default is infinite)
   private final int maxRounds;
 
+  private Territory defendersRetreatTo;
+
   public MustFightBattle(
       final Territory battleSite,
       final GamePlayer attacker,
@@ -162,6 +165,7 @@ public class MustFightBattle extends DependentBattle
         battleSite.isWater()
             ? Properties.getSeaBattleRounds(data.getProperties())
             : Properties.getLandBattleRounds(data.getProperties());
+    defendersRetreatTo = null;
   }
 
   void resetDefendingUnits(final GamePlayer attacker) {
@@ -870,9 +874,6 @@ public class MustFightBattle extends DependentBattle
   @Override
   public Collection<Territory> getDefenderRetreatTerritories() {
 
-    // If defender retreat isn't enabled, return none
-    if (Properties.getDefendersCanRetreatBattleRound(getGameData().getProperties()) < 0)
-      return Set.of();
     // If defender is all planes, just return collection of current territory
     if (headless
         || (!defendingUnits.isEmpty() && defendingUnits.stream().allMatch(Matches.unitIsAir()))
@@ -923,11 +924,6 @@ public class MustFightBattle extends DependentBattle
       possible = CollectionUtils.getMatches(possible, match);
     }
     return possible;
-  }
-
-  @Override
-  public int getDefenderRetreatRound() {
-    return Properties.getDefendersCanRetreatBattleRound(getGameData().getProperties());
   }
 
   private void pushFightLoopOnStack() {
@@ -1257,9 +1253,8 @@ public class MustFightBattle extends DependentBattle
       @Override
       @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        // Intentionally left blank
-        // Old saves will fall through to the IExecutable that instantiates
-        // OffensiveGeneralRetreat which does the work that previously was here
+        new DefenderFightOrRetreat(MustFightBattle.this, MustFightBattle.this)
+            .execute(stack, bridge);
       }
     };
     new IExecutable() {
@@ -1597,5 +1592,15 @@ Round 10,000 reached in a battle. Something must be wrong. Please report this to
         + attackingFromMap.keySet()
         + " attacking with: "
         + attackingUnits;
+  }
+
+  @Override
+  public Territory getDefendersRetreatTo() {
+    return defendersRetreatTo;
+  }
+
+  @Override
+  public void setDefendersRetreatTo(final Territory retreatTo) {
+    defendersRetreatTo = retreatTo;
   }
 }

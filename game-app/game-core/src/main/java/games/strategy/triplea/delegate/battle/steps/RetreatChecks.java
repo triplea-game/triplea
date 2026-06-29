@@ -34,18 +34,15 @@ public class RetreatChecks {
       final @Nonnull Collection<Unit> defendingUnits,
       final @Nonnull GameState gameData,
       final @Nonnull Supplier<Collection<Territory>> getDefenderRetreatTerritories,
-      final @Nonnull Supplier<Integer> getDefenderRetreatRound,
       final @Nonnull Supplier<Territory> getBattleSite,
       final int battleRound) {
-    final int defenderRetreatRound = getDefenderRetreatRound.get();
-    if (onlyDefenselessTransportsLeft(attackingUnits, gameData)
-        || defenderRetreatRound < 0
-        || battleRound < defenderRetreatRound) {
+    if (onlyDefenselessTransportsLeft(attackingUnits, gameData)) {
       return false;
     }
     // We only want units that can move, be transported, or given bonus movement (no buildings
     // retreating)
     final Territory battleSite = getBattleSite.get();
+
     final Predicate<Unit> canMoveOrBeMoved =
         PredicateBuilder.of(Matches.unitCanMove())
             .or(
@@ -65,7 +62,16 @@ public class RetreatChecks {
             // cannot move aa units
             .and(Matches.unitCanMoveDuringCombatMove())
             .build();
-    defendingUnits.removeIf(Predicate.not(canMoveOrBeMoved));
+    defendingUnits.removeIf(canMoveOrBeMoved.negate());
+
+    // Remove units that can't defensive retreat this round
+    for (Unit unit : defendingUnits)
+    {
+      final int defensiveRetreatBattleRound = unit.getUnitAttachment().getDefensiveRetreatBattleRound();
+      if (defensiveRetreatBattleRound != 0 && defensiveRetreatBattleRound < battleRound)
+        defendingUnits.remove(unit);
+    }
+
     if (defendingUnits.isEmpty()) {
       return false;
     }

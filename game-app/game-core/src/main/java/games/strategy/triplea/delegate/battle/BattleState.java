@@ -114,7 +114,9 @@ public interface BattleState {
 
   Collection<Territory> getDefenderRetreatTerritories();
 
-  int getDefenderRetreatRound();
+  Territory getDefendersRetreatTo();
+
+  void setDefendersRetreatTo(Territory retreatTo);
 
   Collection<Unit> getDependentUnits(Collection<Unit> units);
 
