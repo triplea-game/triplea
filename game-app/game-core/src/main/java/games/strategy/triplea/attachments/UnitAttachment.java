@@ -352,7 +352,7 @@ public class UnitAttachment extends DefaultAttachment {
   private boolean isSuicide = false;
 
   // defensive retreat properties
-  @Getter private int defensiveRetreatBattleRound = -1;
+  private boolean canDefensiveRetreat = false;
 
   public UnitAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -2478,8 +2478,6 @@ public class UnitAttachment extends DefaultAttachment {
     canRetreatOnStalemate = getBool(value);
   }
 
-  public void setDefensiveRetreatBattleRound(final int battleRound) { defensiveRetreatBattleRound = battleRound; }
-
   public Optional<Boolean> getCanRetreatOnStalemate() {
     return Optional.ofNullable(canRetreatOnStalemate);
   }
@@ -2496,6 +2494,24 @@ public class UnitAttachment extends DefaultAttachment {
 
   public void resetCanRetreatOnStalemate() {
     canRetreatOnStalemate = null;
+  }
+
+  private void setCanDefensiveRetreat(final String s) {
+    canDefensiveRetreat = getBool(s);
+  }
+
+  @VisibleForTesting
+  public UnitAttachment setCanDefensiveRetreat(final Boolean value) {
+    canDefensiveRetreat = value;
+    return this;
+  }
+
+  public boolean getCanDefensiveRetreat() {
+    return canDefensiveRetreat;
+  }
+
+  private void resetCanDefensiveRetreat() {
+    canDefensiveRetreat = false;
   }
 
   @Override
@@ -2959,8 +2975,8 @@ public class UnitAttachment extends DefaultAttachment {
         + (placementLimit != null ? placementLimit.toString() : "null")
         + "  tuv:"
         + tuv
-        + "defensiveRetreatBattleRound:"
-        + defensiveRetreatBattleRound;
+        + "canDefensiveRetreat:"
+        + canDefensiveRetreat;
   }
 
   /**
@@ -4154,11 +4170,11 @@ public class UnitAttachment extends DefaultAttachment {
               MutableProperty.of(
                   this::setCanRetreatOnStalemate, this::setCanRetreatOnStalemate,
                   this::getCanRetreatOnStalemateOrNull, this::resetCanRetreatOnStalemate));
-      case "defensiveRetreatBattleRound" ->
+      case "canDefensiveRetreat" ->
           Optional.of(
-              MutableProperty.ofMapper(
-                  DefaultAttachment::getInt, this::setDefensiveRetreatBattleRound,
-                  this::getDefensiveRetreatBattleRound, () -> -1));
+              MutableProperty.of(
+                  this::setCanDefensiveRetreat, this::setCanDefensiveRetreat,
+                  this::getCanDefensiveRetreat, this::resetCanDefensiveRetreat));
       default -> Optional.empty();
     };
   }

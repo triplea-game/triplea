@@ -107,13 +107,8 @@ public class DefensiveGeneralRetreat implements BattleStep {
               .build();
       retreater.getRetreatUnits().removeIf(canMoveOrBeMoved.negate());
 
-      // Remove units that can't defensive retreat this round
-      for (Unit unit : retreater.getRetreatUnits())
-      {
-        final int defensiveRetreatBattleRound = unit.getUnitAttachment().getDefensiveRetreatBattleRound();
-        if (defensiveRetreatBattleRound != 0 && defensiveRetreatBattleRound < battleState.getStatus().getRound())
-          retreater.getRetreatUnits().remove(unit);
-      }
+      // Remove units that can't defensive retreat
+      retreater.getRetreatUnits().removeIf(unit -> !unit.getUnitAttachment().getCanDefensiveRetreat());
 
       if (!retreater.getRetreatUnits().isEmpty())
         retreat(bridge, retreater, retreatTo);

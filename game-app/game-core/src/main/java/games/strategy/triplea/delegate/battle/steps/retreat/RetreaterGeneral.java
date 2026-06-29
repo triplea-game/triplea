@@ -48,6 +48,7 @@ class RetreaterGeneral implements Retreater {
       // We only want units that can move (no buildings retreating)
       final Predicate<Unit> cannotMove = Predicate.not(Matches.unitCanMove());
       retreatUnits.removeIf(cannotMove);
+      retreatUnits.removeIf(unit -> !unit.getUnitAttachment().getCanDefensiveRetreat());
     }
     return retreatUnits;
   }
