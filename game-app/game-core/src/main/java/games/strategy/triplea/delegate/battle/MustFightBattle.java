@@ -880,15 +880,15 @@ public class MustFightBattle extends DependentBattle
         || Properties.getRetreatingUnitsRemainInPlace(gameData.getProperties())) {
       return Set.of(battleSite);
     }
-    // it's possible that a sub retreated to a territory we came from, if so we can no longer
-    // retreat there or if we are moving out of a territory containing enemy units, we cannot
-    // retreat back there
+    // If we are moving into a territory containing enemy units, we cannot
+    // retreat back there, but air units do not block retreat
     final Predicate<Unit> enemyUnitsThatPreventRetreat =
         PredicateBuilder.of(Matches.enemyUnit(defender))
             .and(Matches.unitIsNotInfrastructure())
             .and(Matches.unitIsBeingTransported().negate())
             .and(Matches.unitIsSubmerged().negate())
             .and(Matches.unitCanBeMovedThroughByEnemies().negate())
+            .and(Matches.unitIsAir().negate())
             .andIf(
                 Properties.getIgnoreTransportInMovement(gameData.getProperties()),
                 Matches.unitIsNotSeaTransportButCouldBeCombatSeaTransport())
@@ -899,10 +899,9 @@ public class MustFightBattle extends DependentBattle
             getGameData().getMap().getNeighbors(getBattleSite()),
             Matches.territoryHasUnitsThatMatch(enemyUnitsThatPreventRetreat).negate());
 
-    // the air unit may have come from a conquered or enemy territory, don't allow retreating
+    // Cannot retreat into enemy territory, or into another battle with non-air units
     final Predicate<Territory> conqueredOrEnemy =
-        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(defender)
-            .or(Matches.territoryIsWater().and(Matches.territoryWasFoughtOver(battleTracker)));
+        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(defender);
     possible.removeAll(CollectionUtils.getMatches(possible, conqueredOrEnemy));
 
     if (defendingUnits.stream().anyMatch(Matches.unitIsLand()) && !battleSite.isWater()) {
