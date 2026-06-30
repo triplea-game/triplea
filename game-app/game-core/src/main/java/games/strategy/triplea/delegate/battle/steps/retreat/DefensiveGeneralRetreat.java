@@ -108,9 +108,7 @@ public class DefensiveGeneralRetreat implements BattleStep {
       retreater.getRetreatUnits().removeIf(canMoveOrBeMoved.negate());
 
       // Remove units that can't defensive retreat
-      retreater
-          .getRetreatUnits()
-          .removeIf(Matches.unitCanDefensiveRetreat().negate());
+      retreater.getRetreatUnits().removeIf(Matches.unitCanDefensiveRetreat().negate());
 
       if (!retreater.getRetreatUnits().isEmpty()) retreat(bridge, retreater, retreatTo);
     }
