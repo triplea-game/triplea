@@ -57,7 +57,7 @@ public class RollDiceStep implements BattleStep {
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
     // retreating units don't fire
     Collection<Unit> firingUnits = firingGroup.getFiringUnits();
-    if (battleState.getDefendersRetreatTo() != null)
+    if ((side == BattleState.Side.DEFENSE) && (battleState.getDefendersRetreatTo() != null))
       firingUnits.removeIf(unit -> unit.getUnitAttachment().getCanDefensiveRetreat());
 
     // retain the targets that are still alive since the targets might have been shot
