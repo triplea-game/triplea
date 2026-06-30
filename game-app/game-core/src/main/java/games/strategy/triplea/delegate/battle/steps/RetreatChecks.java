@@ -65,7 +65,7 @@ public class RetreatChecks {
     defendingUnits.removeIf(canMoveOrBeMoved.negate());
 
     // Remove units that can't defensive retreat
-    defendingUnits.removeIf(unit -> !unit.getUnitAttachment().getCanDefensiveRetreat());
+    defendingUnits.removeIf(Matches.unitCanDefensiveRetreat().negate());
 
     if (defendingUnits.isEmpty()) {
       return false;

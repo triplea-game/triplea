@@ -8,6 +8,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.ExecutionStack;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import java.util.Collection;
@@ -58,7 +59,7 @@ public class RollDiceStep implements BattleStep {
     // retreating units don't fire
     Collection<Unit> firingUnits = firingGroup.getFiringUnits();
     if ((side == BattleState.Side.DEFENSE) && (battleState.getDefendersRetreatTo() != null))
-      firingUnits.removeIf(unit -> unit.getUnitAttachment().getCanDefensiveRetreat());
+      firingUnits.removeIf(Matches.unitCanDefensiveRetreat());
 
     // retain the targets that are still alive since the targets might have been shot
     // in an earlier firing round
