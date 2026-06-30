@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Fake implementation of BattleState for tests to use
@@ -71,10 +72,17 @@ public class FakeBattleState implements BattleState {
   @Getter(onMethod = @__({@Override}))
   final Collection<Territory> attackerRetreatTerritories;
 
+  @Getter(onMethod = @__({@Override}))
+  final Collection<Territory> defenderRetreatTerritories;
+
   final Collection<Unit> dependentUnits;
 
   @Getter(onMethod = @__({@Override}))
   final @Nonnull Collection<Unit> bombardingUnits;
+
+  @Setter(onMethod = @__({@Override}))
+  @Getter(onMethod = @__({@Override}))
+  Territory defendersRetreatTo;
 
   public FakeBattleState init() {
     lenient().when(attacker.getData()).thenReturn(gameData);
@@ -204,7 +212,9 @@ public class FakeBattleState implements BattleState {
         .gameData(attacker.getData())
         .amphibious(false)
         .over(false)
-        .attackerRetreatTerritories(List.of());
+        .attackerRetreatTerritories(List.of())
+        .defenderRetreatTerritories(List.of())
+        .defendersRetreatTo(null);
   }
 
   public static FakeBattleState.FakeBattleStateBuilder givenBattleStateBuilder() {

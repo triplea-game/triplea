@@ -1,16 +1,13 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
-import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
-import static games.strategy.triplea.delegate.battle.BattleStepStrings.ATTACKER_WITHDRAW;
+import static games.strategy.triplea.delegate.battle.BattleStepStrings.DEFENDER_WITHDRAW;
 
-import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
-import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
@@ -18,74 +15,39 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
-import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
 import games.strategy.triplea.settings.ClientSetting;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
+import org.triplea.java.PredicateBuilder;
 import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.sound.SoundUtils;
 
 @AllArgsConstructor
-public class OffensiveGeneralRetreat implements BattleStep {
+public class DefensiveGeneralRetreat implements BattleStep {
 
-  private static final long serialVersionUID = -9192684621899682418L;
+  private static final long serialVersionUID = 7604976769071072256L;
 
-  private final BattleState battleState;
+  protected final BattleState battleState;
 
-  private final BattleActions battleActions;
+  protected final BattleActions battleActions;
 
   @Override
   public List<StepDetails> getAllStepDetails() {
-    return isRetreatPossible() ? List.of(new StepDetails(getName(), this)) : List.of();
-  }
-
-  private boolean isRetreatPossible() {
-    return canAttackerRetreat()
-        || canAttackerRetreatSeaPlanes()
-        || (battleState.getStatus().isAmphibious()
-            && (canAttackerRetreatPartialAmphib() || canAttackerRetreatAmphibPlanes()));
-  }
-
-  private boolean canAttackerRetreat() {
-    return RetreatChecks.canAttackerRetreat(
-        battleState.filterUnits(ALIVE, DEFENSE),
-        battleState.getGameData(),
-        battleState::getAttackerRetreatTerritories,
-        battleState.getStatus().isAmphibious());
-  }
-
-  private boolean canAttackerRetreatSeaPlanes() {
-    return battleState.getBattleSite().isWater()
-        && battleState.filterUnits(ALIVE, OFFENSE).stream().anyMatch(Matches.unitIsAir());
-  }
-
-  private boolean canAttackerRetreatPartialAmphib() {
-    if (!Properties.getPartialAmphibiousRetreat(battleState.getGameData().getProperties())) {
-      return false;
-    }
-    // Only include land units when checking for allow amphibious retreat
-    return battleState.filterUnits(ALIVE, OFFENSE).stream()
-        .filter(Matches.unitIsLand())
-        .anyMatch(Matches.unitWasNotAmphibious());
-  }
-
-  private boolean canAttackerRetreatAmphibPlanes() {
-    final GameState gameData = battleState.getGameData();
-    return (Properties.getWW2V2(gameData.getProperties())
-            || Properties.getAttackerRetreatPlanes(gameData.getProperties())
-            || Properties.getPartialAmphibiousRetreat(gameData.getProperties()))
-        && battleState.filterUnits(ALIVE, OFFENSE).stream().anyMatch(Matches.unitIsAir());
+    return (battleState.getDefendersRetreatTo() != null)
+        ? List.of(new StepDetails(getName(), this))
+        : List.of();
   }
 
   private String getName() {
-    return battleState.getPlayer(OFFENSE).getName() + ATTACKER_WITHDRAW;
+    return battleState.getPlayer(DEFENSE).getName() + DEFENDER_WITHDRAW;
   }
 
   @Override
   public Order getOrder() {
-    return Order.OFFENSIVE_GENERAL_RETREAT;
+    return Order.DEFENSIVE_GENERAL_RETREAT;
   }
 
   @Override
@@ -100,11 +62,10 @@ public class OffensiveGeneralRetreat implements BattleStep {
     }
 
     final Retreater retreater;
+    final Territory retreatTo = battleState.getDefendersRetreatTo();
 
-    if (battleState.getStatus().isAmphibious()) {
-      retreater = getAmphibiousRetreater();
-    } else if (canAttackerRetreat()) {
-      retreater = new RetreaterGeneral(battleState, OFFENSE);
+    if (retreatTo != null) {
+      retreater = new RetreaterGeneral(battleState, DEFENSE);
     } else {
       retreater = null;
     }
@@ -123,47 +84,42 @@ public class OffensiveGeneralRetreat implements BattleStep {
         }
       }
 
-      final Collection<Unit> retreatUnits = retreater.getRetreatUnits();
-      final Collection<Territory> possibleRetreatSites =
-          retreater.getPossibleRetreatSites(retreatUnits);
-      battleActions
-          .queryRetreatTerritory(
-              battleState,
-              bridge,
-              battleState.getPlayer(OFFENSE),
-              possibleRetreatSites,
-              getQueryText(retreater.getRetreatType()))
-          .ifPresent(retreatTo -> retreat(bridge, retreater, retreatTo));
-    }
-  }
+      // We only want units that can move, be transported, or given bonus movement (no buildings
+      // retreating)
+      final Territory battleSite = battleState.getBattleSite();
+      final Predicate<Unit> canMoveOrBeMoved =
+          PredicateBuilder.of(Matches.unitCanMove())
+              .or(
+                  u ->
+                      // Unit can be given bonus movement by another unit in this territory
+                      Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
+                                  battleSite, u.getOwner())
+                              .test(u)
+                          // Unit is already being transported
+                          // TODO: Check if transporting unit has movement left for sea transports
+                          || Matches.unitIsBeingTransported().test(u)
+                          // Unit can be loaded onto an available transport in this
+                          // territory
+                          || (Matches.unitCanBeTransported().test(u)
+                              && battleSite.anyUnitsMatch(Matches.unitCanTransport())))
+              // cannot move aa units
+              .and(Matches.unitCanMoveDuringCombatMove())
+              .build();
+      retreater.getRetreatUnits().removeIf(canMoveOrBeMoved.negate());
 
-  private Retreater getAmphibiousRetreater() {
-    if (canAttackerRetreatPartialAmphib()) {
-      return new RetreaterPartialAmphibious(battleState);
-    } else if (canAttackerRetreatAmphibPlanes()) {
-      return new RetreaterAirAmphibious(battleState);
-    }
-    return null;
-  }
+      // Remove units that can't defensive retreat
+      retreater.getRetreatUnits().removeIf(Matches.unitCanDefensiveRetreat().negate());
 
-  private String getQueryText(final MustFightBattle.RetreatType retreatType) {
-    switch (retreatType) {
-      case DEFAULT:
-      default:
-        return battleState.getPlayer(OFFENSE).getName() + " retreat?";
-      case PARTIAL_AMPHIB:
-        return battleState.getPlayer(OFFENSE).getName() + " retreat non-amphibious units?";
-      case PLANES:
-        return battleState.getPlayer(OFFENSE).getName() + " retreat planes?";
+      if (!retreater.getRetreatUnits().isEmpty()) retreat(bridge, retreater, retreatTo);
     }
   }
 
   private void retreat(
       final IDelegateBridge bridge, final Retreater retreater, final Territory retreatTo) {
-    final Collection<Unit> retreatUnits = retreater.getRetreatUnits();
+    Collection<Unit> retreatUnits = retreater.getRetreatUnits();
 
     SoundUtils.playRetreatType(
-        battleState.getPlayer(OFFENSE), retreatUnits, retreater.getRetreatType(), bridge);
+        battleState.getPlayer(DEFENSE), retreatUnits, retreater.getRetreatType(), bridge);
 
     final Retreater.RetreatChanges retreatChanges = retreater.computeChanges(retreatTo);
     bridge.addChange(retreatChanges.getChange());
@@ -176,8 +132,8 @@ public class OffensiveGeneralRetreat implements BattleStep {
                     .getHistoryWriter()
                     .addChildToEvent(historyChild.getText(), historyChild.getUnits()));
 
-    if (battleState.filterUnits(ALIVE, OFFENSE).isEmpty()) {
-      battleActions.endBattle(IBattle.WhoWon.DEFENDER, bridge);
+    if (battleState.filterUnits(ALIVE, DEFENSE).isEmpty()) {
+      battleActions.endBattle(IBattle.WhoWon.ATTACKER, bridge);
     } else {
       if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
         bridge.sendMessage(
@@ -190,11 +146,11 @@ public class OffensiveGeneralRetreat implements BattleStep {
     }
 
     final String shortMessage =
-        battleState.getPlayer(OFFENSE).getName()
+        battleState.getPlayer(DEFENSE).getName()
             + getShortBroadcastSuffix(retreater.getRetreatType());
 
     final String longMessage =
-        battleState.getPlayer(OFFENSE).getName()
+        battleState.getPlayer(DEFENSE).getName()
             + getLongBroadcastSuffix(retreater.getRetreatType(), retreatTo);
 
     if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
@@ -203,12 +159,12 @@ public class OffensiveGeneralRetreat implements BattleStep {
               .shortMessage(shortMessage)
               .message(longMessage)
               .step(getName())
-              .retreatingPlayerName(battleState.getPlayer(OFFENSE).getName())
+              .retreatingPlayerName(battleState.getPlayer(DEFENSE).getName())
               .build());
     } else {
       bridge
           .getDisplayChannelBroadcaster()
-          .notifyRetreat(shortMessage, longMessage, getName(), battleState.getPlayer(OFFENSE));
+          .notifyRetreat(shortMessage, longMessage, getName(), battleState.getPlayer(DEFENSE));
     }
   }
 
@@ -217,8 +173,6 @@ public class OffensiveGeneralRetreat implements BattleStep {
       case DEFAULT:
       default:
         return " retreats";
-      case PARTIAL_AMPHIB:
-        return " retreats non-amphibious units";
       case PLANES:
         return " retreats planes";
     }
@@ -230,8 +184,6 @@ public class OffensiveGeneralRetreat implements BattleStep {
       case DEFAULT:
       default:
         return " retreats all units to " + retreatTo.getName();
-      case PARTIAL_AMPHIB:
-        return " retreats non-amphibious units";
       case PLANES:
         return " retreats planes";
     }

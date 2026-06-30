@@ -2182,4 +2182,8 @@ public final class Matches {
                 ? Matches.unitIsSea().negate()
                 : Matches.unitIsLand().negate());
   }
+
+  public static Predicate<Unit> unitCanDefensiveRetreat() {
+    return u -> u.getUnitAttachment().getCanDefensiveRetreat();
+  }
 }
