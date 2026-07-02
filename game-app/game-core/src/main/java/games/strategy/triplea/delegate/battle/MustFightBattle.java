@@ -899,6 +899,11 @@ public class MustFightBattle extends DependentBattle
             getGameData().getMap().getNeighbors(getBattleSite()),
             Matches.territoryHasUnitsThatMatch(enemyUnitsThatPreventRetreat).negate());
 
+    // Remove territories we can't retreat to due to territory effects
+    final Predicate<Territory> unitsNotAllowed =
+        Matches.territoryEffectsAllowUnits(defendingUnits).negate();
+    possible.removeAll(CollectionUtils.getMatches(possible, unitsNotAllowed));
+
     // Cannot retreat into enemy territory, or into another battle with non-air units
     final Predicate<Territory> conqueredOrEnemy =
         Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(defender);

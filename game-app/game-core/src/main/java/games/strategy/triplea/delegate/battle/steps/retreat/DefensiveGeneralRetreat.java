@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
+import static games.strategy.triplea.Constants.TERRITORYEFFECT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.DEFENDER_WITHDRAW;
@@ -8,6 +9,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
+import games.strategy.triplea.attachments.TerritoryEffectAttachment;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
@@ -109,6 +111,14 @@ public class DefensiveGeneralRetreat implements BattleStep {
 
       // Remove units that can't defensive retreat
       retreater.getRetreatUnits().removeIf(Matches.unitCanDefensiveRetreat().negate());
+
+      // Remove units that can't retreat due to territory effect
+      TerritoryEffectAttachment territoryEffect =
+          (TerritoryEffectAttachment) retreatTo.getAttachment(TERRITORYEFFECT_ATTACHMENT_NAME);
+      if (territoryEffect != null)
+        retreater
+            .getRetreatUnits()
+            .removeIf(unit -> territoryEffect.getUnitsNotAllowed().contains(unit));
 
       if (!retreater.getRetreatUnits().isEmpty()) retreat(bridge, retreater, retreatTo);
     }
