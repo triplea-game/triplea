@@ -1,7 +1,6 @@
 package games.strategy.engine.data;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import games.strategy.triplea.Constants;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,18 +51,18 @@ class ResourceCollectionTest {
       final int expectedResource2Count,
       final int expectedResource3Count,
       final ResourceCollection resourceCollectionToVerify) {
-    assertThat(
-        "Resource " + resourcePu + " should have expected result value.",
+    assertEquals(
+        expectedPuCount,
         resourceCollectionToVerify.getQuantity(resourcePu),
-        is(expectedPuCount));
-    assertThat(
-        "Resource " + resource2 + " should have expected result value.",
+        "Resource " + resourcePu + " should have expected result value.");
+    assertEquals(
+        expectedResource2Count,
         resourceCollectionToVerify.getQuantity(resource2),
-        is(expectedResource2Count));
-    assertThat(
-        "Resource " + resource3 + " should have expected result value.",
+        "Resource " + resource2 + " should have expected result value.");
+    assertEquals(
+        expectedResource3Count,
         resourceCollectionToVerify.getQuantity(resource3),
-        is(expectedResource3Count));
+        "Resource " + resource3 + " should have expected result value.");
   }
 
   @Test
@@ -93,14 +92,14 @@ class ResourceCollectionTest {
   void fitsHowOften() {
     final ResourceCollection resourceCollectionFit = buildResourceCollectionWith(2, 2, 2);
     int fitCount = resourceCollection.fitsHowOften(resourceCollectionFit.getResourcesCopy());
-    assertThat(fitCount, is(2));
+    assertEquals(2, fitCount);
   }
 
   @Test
   void fitsHowOftenMaxByEmptyCosts() {
     final ResourceCollection resourceCollectionFit = buildResourceCollectionWith(0, 0, 0);
     int fitCount = resourceCollection.fitsHowOften(resourceCollectionFit.getResourcesCopy());
-    assertThat(fitCount, is(ResourceCollection.MAX_FIT_VALUE));
+    assertEquals(ResourceCollection.MAX_FIT_VALUE, fitCount);
   }
 
   @Test
@@ -108,7 +107,7 @@ class ResourceCollectionTest {
     final ResourceCollection resourceCollectionFit = buildResourceCollectionWith(1, 0, 0);
     resourceCollection.putResource(resourcePu, ResourceCollection.MAX_FIT_VALUE);
     int fitCount = resourceCollection.fitsHowOften(resourceCollectionFit.getResourcesCopy());
-    assertThat(fitCount, is(ResourceCollection.MAX_FIT_VALUE));
+    assertEquals(ResourceCollection.MAX_FIT_VALUE, fitCount);
   }
 
   @Test
