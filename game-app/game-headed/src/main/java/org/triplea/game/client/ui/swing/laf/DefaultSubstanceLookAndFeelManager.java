@@ -1,36 +1,31 @@
 package org.triplea.game.client.ui.swing.laf;
 
+import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.List;
 import javax.swing.UIManager;
-import org.pushingpixels.substance.api.SubstanceCortex;
-import org.pushingpixels.substance.api.skin.SkinInfo;
-import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
 
-/** Default implementation of the {@link SubstanceLookAndFeelManager} service. */
+/** Look-and-feel manager providing FlatLaf themes as available options. */
 public final class DefaultSubstanceLookAndFeelManager implements SubstanceLookAndFeelManager {
   @Override
   public String getDefaultLookAndFeelClassName() {
-    return SubstanceGraphiteLookAndFeel.class.getName();
+    return FlatDarkLaf.class.getName();
   }
 
   @Override
   public Collection<UIManager.LookAndFeelInfo> getInstalledLookAndFeels() {
-    return SubstanceCortex.GlobalScope.getAllSkins().values().stream()
-        .map(DefaultSubstanceLookAndFeelManager::newLookAndFeelInfoForSkin)
-        .collect(Collectors.toList());
-  }
-
-  private static UIManager.LookAndFeelInfo newLookAndFeelInfoForSkin(final SkinInfo skinInfo) {
-    return new UIManager.LookAndFeelInfo(
-        "Substance " + skinInfo.getDisplayName(),
-        skinInfo.getClassName().replaceFirst("(?<=\\.)(\\w+)Skin$", "Substance$1LookAndFeel"));
+    return List.of(
+        new UIManager.LookAndFeelInfo("FlatLaf Light", FlatLightLaf.class.getName()),
+        new UIManager.LookAndFeelInfo("FlatLaf Dark", FlatDarkLaf.class.getName()),
+        new UIManager.LookAndFeelInfo("FlatLaf IntelliJ", FlatIntelliJLaf.class.getName()),
+        new UIManager.LookAndFeelInfo("FlatLaf Darcula", FlatDarculaLaf.class.getName()));
   }
 
   @Override
   public void initialize() {
-    // workaround for https://github.com/kirill-grouchnikov/radiance/issues/102; remove when
-    // upgrading to Substance 1.5+
-    SubstanceCortex.GlobalScope.setUseDefaultColorChooser();
+    // FlatLaf requires no pre-initialization before UIManager.setLookAndFeel()
   }
 }

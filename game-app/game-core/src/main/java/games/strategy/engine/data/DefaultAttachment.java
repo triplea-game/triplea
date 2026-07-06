@@ -137,7 +137,7 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
     this.name =
         Optional.ofNullable(name)
             // replace-all to automatically correct legacy (1.8) attachment spelling
-            .map(attachmentName -> attachmentName.replaceAll("ttatch", "ttach"))
+            .map(attachmentName -> attachmentName.replace("ttatch", "ttach"))
             .orElse(null);
   }
 

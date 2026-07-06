@@ -286,9 +286,10 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       return true;
     } catch (final BindException e) {
       log.warn(
-          "Could not open network port, please close any other TripleA games you are\n"
-              + "hosting or choose a different network port. If that is not the problem\n"
-              + "then check your firewall rules.",
+"""
+Could not open network port, please close any other TripleA games you are
+hosting or choose a different network port. If that is not the problem
+then check your firewall rules.""",
           e);
       cancel();
     } catch (final IOException e) {

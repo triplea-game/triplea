@@ -13,13 +13,11 @@ import org.triplea.util.ExitStatus;
 /** Interface to communicate lobby watcher events to user. */
 public interface WatcherThreadMessaging {
   String COMPUTER_NOT_REACHABLE_ERROR_MESSAGE =
-      "Your computer is not reachable from the internet.\n"
-          + "Please make sure your Firewall allows incoming connections (hosting) "
-          + "for TripleA.\n"
-          + "(The firewall exception must be updated every time a new version of "
-          + "TripleA comes out.)\n"
-          + "And that your Router is configured to send TCP traffic the correct port "
-          + " to your local ip address.";
+"""
+Your computer is not reachable from the internet.
+Please make sure your Firewall allows incoming connections (hosting) for TripleA.
+(The firewall exception must be updated every time a new version of TripleA comes out.)
+And that your Router is configured to send TCP traffic the correct port  to your local ip address.""";
 
   /**
    * When a host posts a game to the lobby, the lobby will verify connectivity to the host via a

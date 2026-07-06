@@ -10,12 +10,11 @@ import java.io.IOException;
 public interface IRemoteDiceServer {
 
   String NAME = "DICE_SERVER_NAME";
-  String GAME_NAME = "DICE_SERVER_GAME_NAME";
   String EMAIL_1 = "DICE_SERVER_EMAIL_1";
   String EMAIL_2 = "DICE_SERVER_EMAIL_2";
 
-  /** Post a request to the dice server, and return the resulting html page as a string. */
-  String postRequest(int max, int numDice, String subjectMessage, String gameId) throws IOException;
+  /** Post a request to the dice server, and return the resulting response body as a string. */
+  String postRequest(int max, int numDice) throws IOException;
 
   /**
    * Given the html page returned from postRequest, return the dice [] throw an
@@ -38,13 +37,6 @@ public interface IRemoteDiceServer {
    * @return the address or null if not configured
    */
   String getCcAddress();
-
-  /**
-   * Get the configured game id.
-   *
-   * @return the game id or null if not configured
-   */
-  String getGameId();
 
   String getDisplayName();
 

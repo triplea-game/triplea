@@ -18,6 +18,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.AiUtils;
+import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -762,7 +763,7 @@ public class WeakAi extends AbstractAi {
       final IntegerMap<ProductionRule> purchase = new IntegerMap<>();
       int minCost = Integer.MAX_VALUE;
       int i = 0;
-      while ((minCost == Integer.MAX_VALUE || leftToSpend >= minCost) && i < 100000) {
+      while ((minCost == Integer.MAX_VALUE || leftToSpend >= minCost) && i < 100_000) {
         i++;
         for (final ProductionRule rule : rules) {
           final NamedAttachable resourceOrUnit = rule.getAnyResultKey();
@@ -974,7 +975,7 @@ public class WeakAi extends AbstractAi {
     }
     int minCost = Integer.MAX_VALUE;
     int i = 0;
-    while ((minCost == Integer.MAX_VALUE || leftToSpend >= minCost) && i < 100000) {
+    while ((minCost == Integer.MAX_VALUE || leftToSpend >= minCost) && i < 100_000) {
       i++;
       for (final ProductionRule rule : rules) {
         final NamedAttachable resourceOrUnit = rule.getAnyResultKey();
@@ -1048,17 +1049,21 @@ public class WeakAi extends AbstractAi {
     if (player.getUnitCollection().isEmpty()) {
       return;
     }
+    final RulesAttachment ra = player.getRulesAttachment();
+    final boolean placementAnyTerritory = (ra != null && ra.getPlacementAnyTerritory());
     final Optional<Territory> optionalCapitol =
         TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
-    // place in capitol first
-    optionalCapitol.ifPresent(capitol -> placeAllWeCanOn(data, capitol, placeDelegate, player));
+    // place in capitol first, but not if it's impassable
+    optionalCapitol
+        .filter(Matches.territoryIsImpassable().negate())
+        .ifPresent(capitol -> placeAllWeCanOn(data, capitol, placeDelegate, player));
     final List<Territory> randomTerritories = new ArrayList<>(data.getMap().getTerritories());
     Collections.shuffle(randomTerritories);
     final @Nullable Territory capitol = optionalCapitol.orElse(null);
     for (final Territory t : randomTerritories) {
       if (!t.equals(capitol)
           && t.isOwnedBy(player)
-          && t.anyUnitsMatch(Matches.unitCanProduceUnits())) {
+          && (placementAnyTerritory || t.anyUnitsMatch(Matches.unitCanProduceUnits()))) {
         placeAllWeCanOn(data, t, placeDelegate, player);
       }
     }

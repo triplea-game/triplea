@@ -39,6 +39,8 @@ import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.util.TuvUtils;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,7 +66,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   private static final String RAID = "Strategic bombing raid";
 
   // these would be the factories or other targets. does not include aa.
-  private final Map<Unit, Set<Unit>> targetsForAaFire = new HashMap<>();
+  // 2026: renaming from targets > targetsForAaFire required dropping the final property for now
+  @Deprecated private Map<Unit, Set<Unit>> targets = new HashMap<>();
+  private Map<Unit, Set<Unit>> targetsForAaFire = new HashMap<>();
   private final ExecutionStack stack = new ExecutionStack();
   private final IntegerMap<Unit> bombingRaidDamage = new IntegerMap<>();
   private List<String> steps;
@@ -80,6 +84,14 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     super(battleSite, attacker, battleTracker, BattleType.BOMBING_RAID, data);
     isAmphibious = false;
     updateDefendingUnits();
+  }
+
+  private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    in.defaultReadObject();
+    if (targetsForAaFire == null) { // for renaming targets > targetsForAaFire
+      targetsForAaFire = targets != null ? targets : new HashMap<>();
+    }
+    targets = null;
   }
 
   @Override

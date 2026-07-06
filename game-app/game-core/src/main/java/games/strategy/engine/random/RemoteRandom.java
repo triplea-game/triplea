@@ -36,8 +36,7 @@ public class RemoteRandom implements IRemoteRandom {
 
   @Override
   public int[] generate(
-      final int max, final int count, final String annotation, final VaultId remoteVaultId)
-      throws IllegalStateException {
+      final int max, final int count, final String annotation, final VaultId remoteVaultId) {
     if (waitingForUnlock) {
       throw new IllegalStateException(
           "Being asked to generate random numbers, but we haven't finished last generation. "
@@ -60,7 +59,7 @@ public class RemoteRandom implements IRemoteRandom {
     this.annotation = annotation;
     this.max = max;
     localNumbers = plainRandom.getRandom(max, count, annotation);
-    game.getVault().waitForId(remoteVaultId, 15000);
+    game.getVault().waitForId(remoteVaultId, 15_000);
     if (!game.getVault().knowsAbout(remoteVaultId)) {
       throw new IllegalStateException(
           "Vault id not known, have:"
@@ -72,9 +71,9 @@ public class RemoteRandom implements IRemoteRandom {
   }
 
   @Override
-  public void verifyNumbers() throws IllegalStateException {
+  public void verifyNumbers() {
     final Vault vault = game.getVault();
-    vault.waitForIdToUnlock(remoteVaultId, 15000);
+    vault.waitForIdToUnlock(remoteVaultId, 15_000);
     if (!vault.isUnlocked(remoteVaultId)) {
       throw new IllegalStateException(
           "Server did not unlock random numbers, cheating is suspected");

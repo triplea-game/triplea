@@ -162,7 +162,11 @@ public class NodeBbForumPoster {
       throw new IllegalStateException(
           "Failed to upload save game, server returned Error Code "
               + status
-              + "\nMessage:\n"
+              +
+"""
+
+Message:
+"""
               + EntityUtils.toString(response.getEntity()));
     }
   }
@@ -202,11 +206,12 @@ public class NodeBbForumPoster {
 
     UnableToParseResponseException(String json, Exception cause) {
       super(
-          "Unexpected forum response when uploading save game.\n"
-              + "Please report this to TripleA.\n"
-              + "Unable to properly attach save-game to forum post.\n"
-              + "You will need to manually attach a save-game to the latest forum post.\n"
-              + "Forums response was: "
+"""
+Unexpected forum response when uploading save game.
+Please report this to TripleA.
+Unable to properly attach save-game to forum post.
+You will need to manually attach a save-game to the latest forum post.
+Forums response was: """
               + json,
           cause);
     }

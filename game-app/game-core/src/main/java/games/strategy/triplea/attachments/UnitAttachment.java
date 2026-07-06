@@ -3408,7 +3408,7 @@ public class UnitAttachment extends DefaultAttachment {
       final Formatter formatter) {
     if (stackingLimit != null) {
       int max = getStackingLimitMax(stackingLimit);
-      if (max < 10000) {
+      if (max < 10_000) {
         formatter.append(
             "Max " + stackingLimit.getSecond() + " Units " + description + " per Territory",
             String.valueOf(max));

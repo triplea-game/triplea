@@ -177,7 +177,7 @@ class ForumPosterEditorViewModel {
    * should only be used to set the UI text value and never used as the actual users password.
    */
   String getForumPassword() {
-    return forumTokenExists ? Strings.repeat("*", DUMMY_PASSWORD_LENGTH) : "";
+    return forumTokenExists ? "*".repeat(DUMMY_PASSWORD_LENGTH) : "";
   }
 
   public String getForumSelection() {

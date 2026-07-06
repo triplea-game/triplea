@@ -48,9 +48,10 @@ public final class ToolboxTabModelTestUtil {
     for (int i = 0; i < data.size(); i++) {
       assertThat(
           String.format(
-              "Row: %s expected to have length %s, had length %s.\n"
-                  + "Row data = %s\n"
-                  + "Expected to match column headers: %s",
+"""
+Row: %s expected to have length %s, had length %s.
+Row data = %s
+Expected to match column headers: %s""",
               i, headers.size(), data.get(i).size(), data.get(i), headers),
           data.get(i).size(),
           is(headers.size()));

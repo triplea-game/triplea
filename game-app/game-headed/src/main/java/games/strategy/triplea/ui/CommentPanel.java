@@ -60,7 +60,7 @@ class CommentPanel extends JPanel {
       SwingAction.of(
           "Add Comment",
           e -> {
-            if (nextMessage.getText().trim().length() == 0) {
+            if (nextMessage.getText().trim().isEmpty()) {
               return;
             }
             addMessage(nextMessage.getText());

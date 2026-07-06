@@ -5,7 +5,6 @@ import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import com.google.common.base.Strings;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,8 +18,8 @@ class UserNameTest {
     return List.of(
         "",
         "a",
-        "ab", // still too short
-        Strings.repeat("a", LobbyConstants.USERNAME_MAX_LENGTH + 1),
+        "ab",
+        "a".repeat(LobbyConstants.USERNAME_MAX_LENGTH + 1),
         "ab*", // no special characters other than '-' and '_'
         "ab$",
         ".ab",
@@ -51,7 +50,7 @@ class UserNameTest {
 
   @SuppressWarnings("unused")
   private static List<String> usernameValidationWithValidNames() {
-    return List.of("abc", Strings.repeat("a", LobbyConstants.USERNAME_MAX_LENGTH), "a12", "a--");
+    return List.of("abc", "a".repeat(LobbyConstants.USERNAME_MAX_LENGTH), "a12", "a--");
   }
 
   @ParameterizedTest

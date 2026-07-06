@@ -41,7 +41,7 @@ public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
    * The time a connection should allow for completely receiving a message. Expressed in
    * milliseconds. Default 20 seconds.
    */
-  private static final int DEFAULT_READ_TIME_OUT_MS = 20000;
+  private static final int DEFAULT_READ_TIME_OUT_MS = 20_000;
 
   private static final Integer maxAttempts = 3;
 

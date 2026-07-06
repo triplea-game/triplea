@@ -5,12 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.triplea.util.Version;
 
-/**
- * This class represents the essential data for downloading a TripleA map. Where to get it, where to
- * install it, version, etc..
- */
+/// This class represents the essential data for downloading a TripleA map. Where to get it, where
+/// to install it, version, etc.
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Getter
 @Builder
@@ -19,7 +16,6 @@ public final class DownloadFileDescription {
   @EqualsAndHashCode.Include private final String url;
   private final String description;
   private final String mapName;
-  private final Version version;
   private final DownloadType downloadType;
   private final MapCategory mapCategory;
   private final String img;
@@ -53,10 +49,6 @@ public final class DownloadFileDescription {
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .addValue(url)
-        .addValue(mapName)
-        .addValue(version)
-        .toString();
+    return MoreObjects.toStringHelper(this).addValue(url).addValue(mapName).toString();
   }
 }

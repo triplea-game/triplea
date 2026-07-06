@@ -551,7 +551,7 @@ public final class PolygonGrabberTask extends MapEditorRunnableTask {
       int iterCount = 0;
       while (!currentPoint.equals(startPoint) || points.size() == 1) {
         iterCount++;
-        if (iterCount > 100000) {
+        if (iterCount > 100_000) {
           JOptionPane.showMessageDialog(
               this,
               "Failed to grab the polygon. Failed at point: "

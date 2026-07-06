@@ -107,7 +107,7 @@ public class MustFightBattle extends DependentBattle
 
   private static final long serialVersionUID = 5879502298361231540L;
 
-  private static final long MAX_ROUNDS = 10000;
+  private static final long MAX_ROUNDS = 10_000;
 
   private final Collection<Unit> attackingWaitingToDie = new ArrayList<>();
 
@@ -1304,9 +1304,9 @@ public class MustFightBattle extends DependentBattle
               if (round > MAX_ROUNDS) {
                 // the battle appears to be in an infinite loop
                 throw new IllegalStateException(
-                    "Round 10,000 reached in a battle. Something must be wrong."
-                        + " Please report this to TripleA.\n"
-                        + " Territory: "
+"""
+Round 10,000 reached in a battle. Something must be wrong. Please report this to TripleA.
+ Territory: """
                         + battleSite
                         + " Attacker: "
                         + attacker.getName()

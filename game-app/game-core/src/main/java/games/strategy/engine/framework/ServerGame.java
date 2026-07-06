@@ -374,10 +374,10 @@ public class ServerGame extends AbstractGame {
     }
     // block delegate execution to prevent outbound messages to the players while we shut down.
     try {
-      if (!delegateExecutionManager.blockDelegateExecution(16000)) {
+      if (!delegateExecutionManager.blockDelegateExecution(16_000)) {
         log.warn("Could not stop delegate execution.");
         // Try one more time
-        if (!delegateExecutionManager.blockDelegateExecution(16000)) {
+        if (!delegateExecutionManager.blockDelegateExecution(16_000)) {
           log.error("Exiting...");
           ExitStatus.FAILURE.exit();
         }

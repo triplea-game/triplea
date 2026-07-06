@@ -4,32 +4,38 @@ import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListi
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 import org.triplea.io.FileUtils;
 import org.triplea.java.Interruptibles;
 
-/** Various logic methods used by DownloadMapsWindows. */
+/// Data model for DownloadMapsWindows especially to centrally store
+/// maps information used for each UI component.
 @Slf4j
 class DownloadMapsWindowModel {
-  private final InstalledMapsListing installedMapsListing;
+  @Getter private final InstalledMapsListing installedMapsListing;
+  @Getter private final ManagedMapStore mapStore;
 
-  DownloadMapsWindowModel() {
+  DownloadMapsWindowModel(List<MapDownloadItem> availableDownloads) {
     installedMapsListing = InstalledMapsListing.parseMapFiles();
+    mapStore = new ManagedMapStore();
+    new DownloadMapsWindowMapsListing(availableDownloads, installedMapsListing, mapStore);
   }
 
-  public boolean isInstalled(final MapDownloadItem mapDownloadItem) {
+  public boolean isInstalled(final ManagedMap mapDownloadItem) {
     return getInstallLocation(mapDownloadItem).isPresent();
   }
 
-  /** File reference for where to install the file, empty if not installed. */
-  Optional<Path> getInstallLocation(final MapDownloadItem mapDownloadItem) {
+  /// File reference for where to install the file, empty if not installed.
+  Optional<Path> getInstallLocation(final ManagedMap mapDownloadItem) {
     return installedMapsListing.findMapFolderByName(mapDownloadItem.getMapName());
   }
 
-  boolean delete(final MapDownloadItem mapDownloadItem) {
+  boolean delete(final ManagedMap mapDownloadItem) {
     final Path installLocation = getInstallLocation(mapDownloadItem).orElse(null);
     if (installLocation == null) {
       return true;
@@ -55,12 +61,14 @@ class DownloadMapsWindowModel {
           installLocation.toAbsolutePath());
       return false;
     } else {
+      mapStore.updateStatus(List.of(mapDownloadItem), ManagedMapStatus.AVAILABLE);
       return true;
     }
   }
 
-  String toHtmlString(final MapDownloadItem mapDownloadItem) {
-    @NonNls String text = "<h1>" + mapDownloadItem.getMapName() + "</h1>\n";
+  String toHtmlString(final ManagedMap managedMap) {
+    @NonNls String text = "<h1>" + managedMap.getMapName() + "</h1>\n";
+    MapDownloadItem mapDownloadItem = managedMap.getMapDownloadItem();
     if (!mapDownloadItem.getPreviewImageUrl().isEmpty()) {
       text += "<img src='" + mapDownloadItem.getPreviewImageUrl() + "' />\n";
     }
