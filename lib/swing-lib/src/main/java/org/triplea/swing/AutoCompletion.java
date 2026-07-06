@@ -167,7 +167,7 @@ final class AutoCompletion<E> extends PlainDocument {
       item = comboBox.getSelectedItem();
       // imitate no insert (later on offs will be incremented by str.length(): selection won't move
       // forward)
-      offs = offs - str.length();
+      offs -= str.length();
       // provide feedback to the user that his input has been received but can not be accepted
       UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
     }

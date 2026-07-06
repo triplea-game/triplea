@@ -8,14 +8,14 @@ The project has been active since 2002.
 
 This is a multi-module Gradle (Kotlin DSL) project. Key top-level directories:
 
-| Directory | Purpose |
-|-----------|---------|
-| `game-app/` | Main application modules (game engine, UI, AI, server) |
-| `http-clients/` | HTTP client libraries for server communication |
-| `lib/` | Shared utility libraries (Swing helpers, websockets, XML parsing) |
-| `docs/` | Project documentation (development, map-making, infrastructure) |
-| `.build/` | Checkstyle, PMD configs, and code convention checks |
-| `gradle/build-logic/` | Custom Gradle convention plugins |
+| Directory             | Purpose                                                           |
+|-----------------------|-------------------------------------------------------------------|
+| `game-app/`           | Main application modules (game engine, UI, AI, server)            |
+| `http-clients/`       | HTTP client libraries for server communication                    |
+| `lib/`                | Shared utility libraries (Swing helpers, websockets, XML parsing) |
+| `docs/`               | Project documentation (development, map-making, infrastructure)   |
+| `.build/`             | Checkstyle, PMD configs, and code convention checks               |
+| `gradle/build-logic/` | Custom Gradle convention plugins                                  |
 
 ### Module Dependency Overview
 
@@ -30,7 +30,7 @@ http-clients/lobby-client → domain-data, lib/feign-common, lib/java-extras, li
 
 ## Build & Development
 
-- **Java version**: JDK 21
+- **Java version**: JDK 25
 - **Build tool**: Gradle with Kotlin DSL, configuration cache enabled
 - **Formatting**: Google Java Format via Spotless (`./gradlew spotlessApply`)
 - **Static analysis**: Checkstyle (`.build/checkstyle.xml`) + PMD (`.build/pmd.xml`)
@@ -78,22 +78,29 @@ http-clients/lobby-client → domain-data, lib/feign-common, lib/java-extras, li
 - Mockito for mocking
 - JUnit assertions and Hamcrest matchers are the primary assertion styles; AssertJ is available but rarely used
 - WireMock for HTTP stubbing
-- Test fixtures shared from `:game-app:game-core` via `testFixtures` — use `TestMapGameData` enum and `TestMapGameDataLoader` to load test map data
+- Test fixtures shared from `:game-app:game-core` via `testFixtures` — use `TestMapGameData` enum and
+  `TestMapGameDataLoader` to load test map data
 
 ## Architecture Concepts
 
 The engine is built around these core abstractions (see `docs/development/engine-code-overview.md`):
 
-- **GameData**: Central game state object, parsed from XML map files. Contains territories, players, units, resources, production rules, and relationships.
-- **Delegates**: Encapsulate logic for one step of a game turn (e.g., movement, combat, purchasing, placement). Delegates communicate through `DelegateBridge` and use `ChangeFactory` to create state changes.
+- **GameData**: Central game state object, parsed from XML map files. Contains territories, players, units, resources,
+  production rules, and relationships.
+- **Delegates**: Encapsulate logic for one step of a game turn (e.g., movement, combat, purchasing, placement).
+  Delegates communicate through `DelegateBridge` and use `ChangeFactory` to create state changes.
 - **GamePlayer**: Handles user interaction — can be a human GUI, AI, or network player.
-- **Changes**: All game state mutations go through `Change` objects created by `ChangeFactory`, applied via `DelegateBridge.addChange()`. This enables network synchronization.
-- **Attachments**: Extensible name-value pairs attached to game entities (units, territories, players) that allow maps to customize game rules.
+- **Changes**: All game state mutations go through `Change` objects created by `ChangeFactory`, applied via
+  `DelegateBridge.addChange()`. This enables network synchronization.
+- **Attachments**: Extensible name-value pairs attached to game entities (units, territories, players) that allow maps
+  to customize game rules.
 
 ### Important Compatibility Constraints
 
-- **Save-game compatibility**: Do NOT rename or delete private fields of classes extending `GameDataComponent`, and do NOT change their packages. Game saves use Java serialization.
-- **Network compatibility**: Methods annotated `@RemoteActionCode` (in remote delegate interfaces like `IBattleDelegate`, `IMoveDelegate`, etc.) are invoked over the network. Their API signatures must not change.
+- **Save-game compatibility**: Do NOT rename or delete private fields of classes extending `GameDataComponent`, and do
+  NOT change their packages. Game saves use Java serialization.
+- **Network compatibility**: Methods annotated `@RemoteActionCode` (in remote delegate interfaces like
+  `IBattleDelegate`, `IMoveDelegate`, etc.) are invoked over the network. Their API signatures must not change.
 
 ## Key Domain Terms
 

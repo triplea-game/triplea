@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.debug.ExceptionDetails;
 import org.triplea.debug.LoggerRecord;
-import org.triplea.util.Version;
 
 @ExtendWith(MockitoExtension.class)
 class ErrorReportBodyFormatterTest {
@@ -32,8 +31,7 @@ class ErrorReportBodyFormatterTest {
   @Test
   void containsUseSuppliedData() {
     final String body =
-        ErrorReportBodyFormatter.buildBody(
-            SAMPLE_USER_DESCRIPTION, "mapName", logRecord, new Version("2.0.0"));
+        ErrorReportBodyFormatter.buildBody(SAMPLE_USER_DESCRIPTION, "mapName", logRecord, "2.0.0");
 
     assertThat(body, containsString(SAMPLE_USER_DESCRIPTION));
   }
@@ -41,8 +39,7 @@ class ErrorReportBodyFormatterTest {
   @Test
   void containsMapName() {
     final String body =
-        ErrorReportBodyFormatter.buildBody(
-            SAMPLE_USER_DESCRIPTION, "mapName", logRecord, new Version("2.0.0"));
+        ErrorReportBodyFormatter.buildBody(SAMPLE_USER_DESCRIPTION, "mapName", logRecord, "2.0.0");
 
     assertThat(body, containsString("mapName"));
   }
@@ -50,13 +47,12 @@ class ErrorReportBodyFormatterTest {
   @Test
   void containsSystemData() {
     final String body =
-        ErrorReportBodyFormatter.buildBody(
-            SAMPLE_USER_DESCRIPTION, "mapName", logRecord, new Version("2.0.0"));
+        ErrorReportBodyFormatter.buildBody(SAMPLE_USER_DESCRIPTION, "mapName", logRecord, "2.0.0");
 
     assertThat(body, containsString(SAMPLE_USER_DESCRIPTION));
     assertThat(body, containsString(SystemProperties.getOperatingSystem()));
     assertThat(body, containsString(SystemProperties.getJavaVersion()));
-    assertThat(body, containsString(new Version("2.0.0").toString()));
+    assertThat(body, containsString("2.0.0"));
   }
 
   @Test
@@ -77,8 +73,7 @@ class ErrorReportBodyFormatterTest {
                     .build()));
 
     final String body =
-        ErrorReportBodyFormatter.buildBody(
-            SAMPLE_USER_DESCRIPTION, "mapName", logRecord, new Version("2.0.0"));
+        ErrorReportBodyFormatter.buildBody(SAMPLE_USER_DESCRIPTION, "mapName", logRecord, "2.0.0");
 
     Stream.of(EXCEPTION_WITH_CAUSE, EXCEPTION_WITH_MESSAGE)
         .map(Throwable::getStackTrace)
@@ -108,8 +103,7 @@ class ErrorReportBodyFormatterTest {
                     .build()));
 
     final String body =
-        ErrorReportBodyFormatter.buildBody(
-            SAMPLE_USER_DESCRIPTION, "mapName", logRecord, new Version("2.0.0"));
+        ErrorReportBodyFormatter.buildBody(SAMPLE_USER_DESCRIPTION, "mapName", logRecord, "2.0.0");
 
     assertThat(body, containsString(EXCEPTION_WITH_MESSAGE.getClass().getName()));
     assertThat(body, containsString(LOG_MESSAGE));
@@ -123,8 +117,7 @@ class ErrorReportBodyFormatterTest {
             List.of(ExceptionDetails.builder().exceptionClassName("NullPointerException").build()));
 
     final String body =
-        ErrorReportBodyFormatter.buildBody(
-            SAMPLE_USER_DESCRIPTION, "mapName", logRecord, new Version("2.0.0"));
+        ErrorReportBodyFormatter.buildBody(SAMPLE_USER_DESCRIPTION, "mapName", logRecord, "2.0.0");
 
     assertThat(body, containsString("NullPointerException"));
   }

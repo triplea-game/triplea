@@ -9,12 +9,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - name: Set up JDK 21
+      - uses: actions/checkout@v7
+      - name: Set up JDK 25
         uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: 21
+          java-version: 25
       - name: Run Build Checks
         # We skip 'spotlessApply' such that only 'spotlessCheck' will run to validate formatting.
         # This is a good setup for a CI server, meanwhile if a developer runs 'verify', they

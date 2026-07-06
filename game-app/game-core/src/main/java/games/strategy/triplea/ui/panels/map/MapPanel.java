@@ -147,11 +147,15 @@ public class MapPanel extends ImageScrollerLargeView {
                   .getUnitIconProperties()
                   .testIfConditionsHaveChanged(gameData)) {
             tileManager.resetTiles(gameData, uiContext.getMapData());
-            SwingUtilities.invokeLater(
-                () -> {
-                  recreateTiles(gameData, uiContext);
-                  repaint();
-                });
+            if (ClientSetting.doNotRedrawMap.getValue().orElse(false)) {
+              SwingUtilities.invokeLater(MapPanel.this::repaint);
+            } else {
+              SwingUtilities.invokeLater(
+                  () -> {
+                    recreateTiles(gameData, uiContext);
+                    repaint();
+                  });
+            }
           }
         }
 
@@ -942,7 +946,7 @@ public class MapPanel extends ImageScrollerLargeView {
    * specified collection of units.
    */
   private static Range<BigDecimal> getMinAndMaxMovementLeft(final Collection<Unit> units) {
-    BigDecimal min = new BigDecimal(100000);
+    BigDecimal min = new BigDecimal(100_000);
     BigDecimal max = BigDecimal.ZERO;
     for (final Unit unit : units) {
       final BigDecimal left = unit.getMovementLeft();

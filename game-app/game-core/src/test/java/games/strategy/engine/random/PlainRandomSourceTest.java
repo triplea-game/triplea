@@ -25,7 +25,7 @@ final class PlainRandomSourceTest {
 
   @Test
   void getRandomSingle_ShouldReturnValueBetweenZeroInclusiveAndMaxExclusive() {
-    IntStream.range(0, 5_000)
+    IntStream.range(0, 5000)
         .forEach(
             i ->
                 assertValueBetweenZeroInclusiveAndMaxExclusive(

@@ -13,6 +13,7 @@ dependencies {
     implementation(project(":swing-lib"))
     implementation(project(":websocket-client"))
     implementation(project(":xml-reader"))
+    implementation(libs.gson)
     testImplementation(project(":swing-lib-test-support"))
     testImplementation(project(":test-common"))
     // Configures mockito to use the legacy "subclass mock maker"

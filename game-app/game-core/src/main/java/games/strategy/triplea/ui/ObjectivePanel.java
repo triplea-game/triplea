@@ -466,7 +466,7 @@ class ObjectivePanel extends JPanel implements GameDataChangeListener {
       setText(adaptee.getText());
       // This line was very important to get it working with JDK1.4
       final TableColumnModel columnModel = table.getColumnModel();
-      setSize(columnModel.getColumn(column).getWidth(), 100000);
+      setSize(columnModel.getColumn(column).getWidth(), 100_000);
       int heightWanted = (int) getPreferredSize().getHeight();
       addSize(table, row, column, heightWanted);
       heightWanted = findTotalMaximumRowSize(table, row);

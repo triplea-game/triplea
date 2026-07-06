@@ -61,7 +61,6 @@ import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.java.concurrency.AsyncRunner;
 import org.triplea.sound.SoundPath;
-import org.triplea.swing.SwingAction;
 import org.triplea.swing.jpanel.JPanelBuilder;
 import org.triplea.util.Tuple;
 
@@ -139,6 +138,13 @@ public class TripleAPlayer extends AbstractBasePlayer {
       // should be doing the error handling, so just return.
       return;
     }
+
+    // Perform start-player-turn actions if it's the first unskipped phase of this player's turn
+    // that is not End Turn
+    if (!GameStep.isEndTurnStepName(name)) {
+      ui.performStartPlayerTurnActionsIfNeeded(this.getGamePlayer());
+    }
+
     // TODO: parsing which UI thing we should run based on the string name of a possibly extended
     // delegate
     // class seems like a bad way of doing this whole method. however i can't think of anything
@@ -150,25 +156,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
     // (ISomeDelegate) getPlayerBridge().getRemote()
     // We should never touch the game data directly. All changes to game data are done through the
     // remote, which then changes the game using the DelegateBridge -> change factory
-    final boolean isFirstStepOfTurn;
-    try (GameData.Unlocker ignored = getGameData().acquireReadLock()) {
-      final var sequence = getGameData().getSequence();
-      final int currentIndex = sequence.getStepIndex();
-      if (currentIndex == 0) {
-        isFirstStepOfTurn = true;
-      } else {
-        final GamePlayer previousStepPlayer = sequence.getStep(currentIndex - 1).getPlayerId();
-        isFirstStepOfTurn = !getGamePlayer().equals(previousStepPlayer);
-      }
-    }
 
-    if (isFirstStepOfTurn) {
-      try {
-        SwingAction.invokeAndWait(() -> ui.startPlayerTurn(this.getGamePlayer()));
-      } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
-    }
     enableEditModeMenu();
     boolean badStep = false;
     if (GameStep.isTechStepName(name)) {

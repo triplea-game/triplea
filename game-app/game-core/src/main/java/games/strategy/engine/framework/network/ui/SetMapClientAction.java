@@ -5,9 +5,11 @@ import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import java.awt.Component;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import org.triplea.java.ThreadRunner;
 
@@ -33,18 +35,19 @@ public class SetMapClientAction {
           parent, "No available games", "No available games", JOptionPane.ERROR_MESSAGE);
       return;
     }
-    final DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-    final JComboBox<String> combo = new JComboBox<>(model);
-    model.addElement("");
+    final DefaultListModel<String> model = new DefaultListModel<>();
     model.addAll(availableGames);
+    final JList<String> gameList = new JList<>(model);
+    gameList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    gameList.setVisibleRowCount(15);
     final int selectedOption =
         JOptionPane.showConfirmDialog(
-            parent, combo, "Change Game To: ", JOptionPane.OK_CANCEL_OPTION);
+            parent, new JScrollPane(gameList), "Change Game To: ", JOptionPane.OK_CANCEL_OPTION);
     if (selectedOption != JOptionPane.OK_OPTION) {
       return;
     }
-    final String name = (String) combo.getSelectedItem();
-    if (name == null || name.length() <= 1) {
+    final String name = gameList.getSelectedValue();
+    if (name == null) {
       return;
     }
     // don't block UI thread

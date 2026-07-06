@@ -120,8 +120,9 @@ public final class ClientFileSystemHelper {
     if (path.isPresent() && (!Files.exists(path.get()) || !Files.isWritable(path.get()))) {
       ClientSetting.mapFolderOverride.resetValue();
       log.warn(
-          "Invalid map override setting folder does not exist or cannot be written: {}\n"
-              + "Reverting to use default map folder location: {}",
+"""
+Invalid map override setting folder does not exist or cannot be written: {}
+Reverting to use default map folder location: {}""",
           path.get().toAbsolutePath(),
           defaultDownloadedMapsFolder.toAbsolutePath());
     }

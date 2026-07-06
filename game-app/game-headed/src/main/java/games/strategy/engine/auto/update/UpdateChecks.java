@@ -24,6 +24,7 @@ public final class UpdateChecks {
     }
 
     TutorialMapCheck.checkForTutorialMap();
+
     EngineVersionCheck.checkForLatestEngineVersionOut(parentComponent);
     UpdatedMapsCheck.checkDownloadedMapsAreLatest();
   }

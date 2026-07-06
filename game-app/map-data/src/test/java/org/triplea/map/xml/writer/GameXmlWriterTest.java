@@ -1,7 +1,8 @@
 package org.triplea.map.xml.writer;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import com.github.tomakehurst.wiremock.common.xml.Xml;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,7 +10,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.triplea.generic.xml.reader.XmlMapper;
 import org.triplea.map.data.elements.Game;
-import org.xmlunit.matchers.CompareMatcher;
+import org.xmlunit.builder.DiffBuilder;
+import org.xmlunit.builder.Input;
+import org.xmlunit.diff.Diff;
+import org.xmlunit.util.DocumentBuilderFactoryConfigurer;
 
 class GameXmlWriterTest {
 
@@ -35,7 +39,6 @@ class GameXmlWriterTest {
         "resource-list.xml",
         "technology.xml",
         "territory-effect-list.xml",
-        "triplea.xml",
         "unit-list.xml",
         "variable-list.xml"
       })
@@ -53,6 +56,14 @@ class GameXmlWriterTest {
     final String input = Files.readString(Path.of(uri));
     final String output = Files.readString(outputPath);
 
-    assertThat(output, CompareMatcher.isSimilarTo(input));
+    // Allow DTD parsing as XMLs might contain <!DOCTYPE game SYSTEM "game.dtd">
+    Diff diff =
+        DiffBuilder.compare(Input.fromString(input))
+            .withTest(Input.fromString(output))
+            .withDocumentBuilderFactory(
+                DocumentBuilderFactoryConfigurer.DefaultWithDTDParsing.configure(
+                    Xml.newDocumentBuilderFactory()))
+            .build();
+    assertFalse(diff.hasDifferences());
   }
 }

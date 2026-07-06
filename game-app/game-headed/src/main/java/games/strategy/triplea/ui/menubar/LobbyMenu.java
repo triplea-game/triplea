@@ -10,7 +10,6 @@ import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MacOsIntegration;
 import javax.swing.JMenuBar;
-import org.triplea.config.product.ProductVersionReader;
 import org.triplea.domain.data.SystemIdLoader;
 import org.triplea.http.client.ClientIdentifiers;
 import org.triplea.http.client.maps.admin.MapTagAdminClient;
@@ -62,7 +61,6 @@ public final class LobbyMenu extends JMenuBar {
     if (loginResult.isModerator()) {
       ClientIdentifiers clientIdentifiers =
           ClientIdentifiers.builder()
-              .applicationVersion(ProductVersionReader.getCurrentVersion().toMajorMinorString())
               .systemId(SystemIdLoader.load().getValue())
               .apiKey(loginResult.getApiKey().getValue())
               .build();

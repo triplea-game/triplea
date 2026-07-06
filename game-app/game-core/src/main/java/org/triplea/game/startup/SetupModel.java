@@ -37,7 +37,6 @@ public interface SetupModel {
    */
   static void clearPbfPbemInformation(final GameProperties properties) {
     properties.set(IRemoteDiceServer.NAME, null);
-    properties.set(IRemoteDiceServer.GAME_NAME, null);
     properties.set(IRemoteDiceServer.EMAIL_1, null);
     properties.set(IRemoteDiceServer.EMAIL_2, null);
     properties.set(IForumPoster.NAME, null);

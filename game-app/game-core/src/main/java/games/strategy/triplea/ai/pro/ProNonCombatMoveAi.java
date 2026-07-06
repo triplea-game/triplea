@@ -542,7 +542,7 @@ class ProNonCombatMoveAi {
         for (final Territory neighbor : landNeighbors) {
           double neighborProduction = TerritoryAttachment.getProduction(neighbor);
           if (Matches.isTerritoryAllied(player).test(neighbor)) {
-            neighborProduction = 0.1 * neighborProduction;
+            neighborProduction *= 0.1;
           }
           neighborValue += neighborProduction;
         }
@@ -1690,7 +1690,7 @@ class ProNonCombatMoveAi {
                     proTerritory.getAllDefenders(), ProMatches.unitIsOwnedTransport(player));
             final double value =
                 (1 + transports) * proTerritory.getSeaValue()
-                    + (1 + transports * 100.0) * proTerritory.getValue() / 10000;
+                    + (1 + transports * 100.0) * proTerritory.getValue() / 10_000;
             ProLogger.trace(
                 String.format(
                     "%s, value=%s, seaValue=%s, tValue=%s, transports=%s",

@@ -149,7 +149,7 @@ public class HeadedLaunchAction implements LaunchAction {
                       ClientSetting.playerName.setValue(name);
                       ClientSetting.flush();
                       final int port = options.getPort();
-                      if (port >= 65536 || port == 0) {
+                      if (port >= 65_536 || port == 0) {
                         JOptionPane.showMessageDialog(
                             ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
                         return null;
@@ -192,7 +192,7 @@ public class HeadedLaunchAction implements LaunchAction {
           displayMessage.substring(0, displayMessage.length() - "</body>".length())
               + "</br><p>Do you want to continue?</p></body>";
     } else {
-      displayMessage = displayMessage + "</br><p>Do you want to continue?</p>";
+      displayMessage += "</br><p>Do you want to continue?</p>";
     }
     return !EventThreadJOptionPane.showConfirmDialog(
         null,

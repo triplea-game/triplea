@@ -64,11 +64,12 @@ class MapDescriptionYamlReader {
 
       if (!mapDescriptionYaml.isValid(ymlFile)) {
         log.info(
-            "Warning: Invalid map description YML (map.yml) file detected: {}\n"
-                + "Check the file carefully and correct any mistakes.\n"
-                + "If this is a map you downloaded, please contact TripleA.\n"
-                + "Data parsed:\n"
-                + "{}",
+"""
+Warning: Invalid map description YML (map.yml) file detected: {}
+Check the file carefully and correct any mistakes.
+If this is a map you downloaded, please contact TripleA.
+Data parsed:
+{}""",
             ymlFile.toAbsolutePath(),
             mapDescriptionYaml);
         return Optional.empty();
@@ -76,9 +77,10 @@ class MapDescriptionYamlReader {
       return Optional.of(mapDescriptionYaml);
     } catch (final ClassCastException | InvalidYamlFormatException e) {
       log.info(
-          "Warning: Invalid map description YML (map.yml) file detected: {}.\n"
-              + "If this is a map you downloaded, please contact TripleA.\n"
-              + "{}",
+"""
+Warning: Invalid map description YML (map.yml) file detected: {}.
+If this is a map you downloaded, please contact TripleA.
+{}""",
           ymlFile.toAbsolutePath(),
           e.getMessage(),
           e);

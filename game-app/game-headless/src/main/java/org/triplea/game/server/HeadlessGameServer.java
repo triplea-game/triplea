@@ -23,7 +23,6 @@ import org.triplea.java.ThreadRunner;
 /** A way of hosting a game, but headless. */
 @Slf4j
 public class HeadlessGameServer {
-  private final InstalledMapsListing availableGames = InstalledMapsListing.parseMapFiles();
   private final GameSelectorModel gameSelectorModel = new GameSelectorModel();
   @Nonnull private final HeadlessServerSetup headlessServerSetup;
   @Nullable private ServerGame game = null;
@@ -54,7 +53,7 @@ public class HeadlessGameServer {
   }
 
   public Collection<String> getAvailableGames() {
-    return availableGames.getSortedGameList();
+    return InstalledMapsListing.parseMapFiles().getSortedGameList();
   }
 
   public synchronized void setGameMapTo(final String gameName) {
@@ -66,6 +65,7 @@ public class HeadlessGameServer {
       return;
     }
 
+    final InstalledMapsListing availableGames = InstalledMapsListing.parseMapFiles();
     if (availableGames.hasGame(gameName)) {
       // change map
       gameSelectorModel.loadMap(availableGames.findGameXmlPathByGameName(gameName).orElseThrow());
@@ -112,7 +112,7 @@ public class HeadlessGameServer {
   }
 
   private boolean checkGameIsAvailableOnServer(final GameData gameData) {
-    if (availableGames.hasGame(gameData.getGameName())) {
+    if (InstalledMapsListing.parseMapFiles().hasGame(gameData.getGameName())) {
       return true;
     } else {
       log.warn("Game is not installed on this server: " + gameData.getGameName());

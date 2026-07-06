@@ -17,7 +17,7 @@ public class DefaultNamed extends GameDataComponent implements Named {
     super(data);
 
     checkNotNull(name);
-    if (name.length() == 0) {
+    if (name.isEmpty()) {
       throw new IllegalArgumentException("Name must not be empty");
     }
 

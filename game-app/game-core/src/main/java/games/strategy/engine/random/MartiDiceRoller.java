@@ -1,15 +1,18 @@
 package games.strategy.engine.random;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import games.strategy.engine.framework.system.HttpProxy;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,17 +41,8 @@ import org.triplea.config.product.ProductVersionReader;
 /** A pbem dice roller that reads its configuration from a properties file. */
 @Builder
 public final class MartiDiceRoller implements IRemoteDiceServer {
-  private static final int MESSAGE_MAX_LENGTH = 200;
-  @NonNls private static final String DICE_ROLLER_PATH = "/MARTI.php";
-
-  private final Pattern errorPattern = Pattern.compile("fatal error:(.*)!");
-
-  /**
-   * Matches a comma separated list of integers like this: {@literal your dice are: 1,2,3 <p>} or
-   * this: {@literal your dice are: 12,34,56 <p>}
-   */
-  private final Pattern dicePattern =
-      Pattern.compile("your dice are:\\s*((?:\\d+(?:,\\d+)*)?)\\s*<p>");
+  @NonNls private static final String DICE_ROLLER_PATH = "/api/roll";
+  private static final Gson GSON = new Gson();
 
   @Nonnull private final URI diceRollerUri;
 
@@ -60,34 +54,22 @@ public final class MartiDiceRoller implements IRemoteDiceServer {
   @Nonnull
   private final String ccAddress;
 
-  @Getter(onMethod_ = @Override)
-  @Nonnull
-  private final String gameId;
-
   @Override
   public String getDisplayName() {
     return diceRollerUri.toString();
   }
 
   @Override
-  public String postRequest(
-      final int max, final int numDice, final String subjectMessage, final String gameId)
-      throws IOException {
-    @NonNls final String normalizedGameId = gameId.isBlank() ? "TripleA" : gameId;
-    @NonNls String message = normalizedGameId + ":" + subjectMessage;
-    if (message.length() > MESSAGE_MAX_LENGTH) {
-      message = message.substring(0, MESSAGE_MAX_LENGTH - 1);
-    }
+  public String postRequest(final int max, final int numDice) throws IOException {
     try (CloseableHttpClient httpClient =
         HttpClientBuilder.create().setRedirectStrategy(new AdvancedRedirectStrategy()).build()) {
       final HttpPost httpPost = new HttpPost(DICE_ROLLER_PATH);
       final List<NameValuePair> params =
           ImmutableList.of(
-              new BasicNameValuePair("numdice", String.valueOf(numDice)),
-              new BasicNameValuePair("numsides", String.valueOf(max)),
-              new BasicNameValuePair("subject", message),
-              new BasicNameValuePair("roller", getToAddress()),
-              new BasicNameValuePair("gm", getCcAddress()));
+              new BasicNameValuePair("times", String.valueOf(numDice)),
+              new BasicNameValuePair("max", String.valueOf(max)),
+              new BasicNameValuePair("email1", getToAddress()),
+              new BasicNameValuePair("email2", getCcAddress()));
       httpPost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
       httpPost.addHeader("User-Agent", "triplea/" + ProductVersionReader.getCurrentVersion());
       final HttpHost hostConfig =
@@ -101,21 +83,40 @@ public final class MartiDiceRoller implements IRemoteDiceServer {
 
   @Override
   public int[] getDice(final String string, final int count) throws DiceServerException {
-    final Matcher errorMatcher = errorPattern.matcher(string);
-    if (errorMatcher.find()) {
-      throw new DiceServerException(errorMatcher.group(1));
+    final JsonObject response;
+    try {
+      response = GSON.fromJson(string, JsonObject.class);
+    } catch (final JsonSyntaxException e) {
+      throw new IllegalStateException("String '" + string + "' has an invalid format.", e);
     }
-
-    final Matcher diceMatcher = dicePattern.matcher(string);
-    if (!diceMatcher.find()) {
+    if (response == null || !response.has("status")) {
       throw new IllegalStateException("String '" + string + "' has an invalid format.");
     }
-    return Splitter.on(',').omitEmptyStrings().splitToList(diceMatcher.group(1)).stream()
-        .mapToInt(Integer::parseInt)
-        .peek(i -> Preconditions.checkState(i != 0, "Die can't be zero: '" + string + "'"))
-        // -1 since we are 0 based
-        .map(i -> i - 1)
-        .toArray();
+    if (!"OK".equals(response.get("status").getAsString())) {
+      throw new DiceServerException(formatErrors(response));
+    }
+
+    final JsonArray dice = response.getAsJsonObject("result").getAsJsonArray("dice");
+    final int[] result = new int[dice.size()];
+    for (int i = 0; i < dice.size(); i++) {
+      final int value = dice.get(i).getAsInt();
+      Preconditions.checkState(value != 0, "Die can't be zero: '" + string + "'");
+      // -1 since we are 0 based
+      result[i] = value - 1;
+    }
+    return result;
+  }
+
+  private static String formatErrors(final JsonObject response) {
+    final JsonArray errors = response.getAsJsonArray("errors");
+    if (errors == null || errors.isEmpty()) {
+      return "Unknown dice server error";
+    }
+    final List<String> messages = new ArrayList<>();
+    for (final JsonElement error : errors) {
+      messages.add(error.getAsString());
+    }
+    return String.join("; ", messages);
   }
 
   private static class AdvancedRedirectStrategy extends LaxRedirectStrategy {

@@ -92,7 +92,6 @@ public class PbemDiceRoller implements IRandomSource {
     private final int count;
     private final int sides;
     private final String subjectMessage;
-    private final String gameId;
     private final IRemoteDiceServer diceServer;
     private boolean test = false;
     private final JPanel buttons = new JPanel();
@@ -119,7 +118,6 @@ public class PbemDiceRoller implements IRandomSource {
       this.sides = sides;
       this.count = count;
       this.subjectMessage = subjectMessage;
-      gameId = diceServer.getGameId() == null ? "" : diceServer.getGameId();
       this.diceServer = diceServer;
       setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
       exitButton.addActionListener(e -> ExitStatus.FAILURE.exit());
@@ -221,7 +219,7 @@ public class PbemDiceRoller implements IRandomSource {
       appendText(subjectMessage + "\n");
       appendText("Contacting " + diceServer.getDisplayName() + "\n");
       try {
-        final String text = diceServer.postRequest(sides, count, subjectMessage, gameId);
+        final String text = diceServer.postRequest(sides, count);
         if (text.isEmpty()) {
           appendText("Nothing could be read from dice server\n");
           appendText("Please check your firewall settings");
