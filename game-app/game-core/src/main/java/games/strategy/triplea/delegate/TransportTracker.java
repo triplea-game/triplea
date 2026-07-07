@@ -47,16 +47,6 @@ public class TransportTracker {
     }
   }
 
-  /**
-   * @return Unmodifiable map of transport -> collection of transported units.
-   * @deprecated This is a very slow method because it calls a method that checks all territories on
-   *     the map.
-   */
-  @Deprecated
-  public static Map<Unit, Collection<Unit>> transporting(final Collection<Unit> units) {
-    return transporting(units, Unit::getTransporting);
-  }
-
   private static Map<Unit, Collection<Unit>> transporting(
       final Collection<Unit> units,
       final Function<Unit, Collection<Unit>> getUnitsTransportedByTransport) {
@@ -75,9 +65,9 @@ public class TransportTracker {
   }
 
   /**
-   * Returns a map of transport -> collection of transported units. This method is identical to
-   * {@link #transporting(Collection)} except that it considers only items in {@code units} as the
-   * possible units to transport
+   * It considers only items in {@code units} as the possible units to transport.
+   *
+   * @return map of transport -> collection of transported units
    */
   public static Map<Unit, Collection<Unit>> transportingWithAllPossibleUnits(
       final Collection<Unit> units) {
@@ -85,13 +75,29 @@ public class TransportTracker {
   }
 
   /**
-   * Returns a map of transport -> collection of transported units. This method is identical to
-   * {@link #transporting(Collection)} except that it considers only units in {@code territory} as
-   * the possible units to transport
+   * It considers only units in {@code territory} as the possible units to transport.
+   *
+   * @return map of transport -> collection of transported units
    */
   public static Map<Unit, Collection<Unit>> transportingInTerritory(
       final Collection<Unit> units, final Territory territory) {
     return transporting(units, transport -> transport.getTransporting(territory));
+  }
+
+  public static Map<Unit, Collection<Unit>> getTransportingInTerritory(final Territory territory) {
+    final Map<Unit, Collection<Unit>> returnVal = new HashMap<>();
+    final Collection<Unit> territoryUnits = territory.getUnits();
+    territoryUnits.stream()
+        .filter(Matches.unitIsTransportCapacityOrCarrier())
+        .forEach(
+            transportCapacityOrCarrier -> {
+              final List<Unit> transportingUnits =
+                  transportCapacityOrCarrier.getTransporting(territoryUnits);
+              returnVal
+                  .computeIfAbsent(transportCapacityOrCarrier, u -> new ArrayList<>())
+                  .addAll(transportingUnits);
+            });
+    return returnVal;
   }
 
   public static Collection<Unit> transportingAndUnloaded(final Unit transport) {
