@@ -286,22 +286,22 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * This only checks if start is water and end is not water.
+   * Water to no-water routes are considered unloadings from sea transport units.
    *
-   * @return whether this route is an unloading route (unloading from transport to land)
+   * @return whether this route's start is water and end is not water.
    */
-  public boolean isUnload() {
+  public boolean isSeaUnload() {
     // we should not check if there is only 1 step, because otherwise movement validation will let
     // users move their tanks over water, so long as they end on land
     return hasSteps() && getStart().isWater() && !getEnd().isWater();
   }
 
   /**
-   * This only checks if start is not water, and end is water.
+   * No-water to water routes are considered loadings from land into a transport unit at sea.
    *
-   * @return whether this route is a loading route (loading from land into a transport @ sea)
+   * @return whether this route's start is not water and end is water.
    */
-  public boolean isLoad() {
+  public boolean isSeaLoad() {
     return hasSteps() && !getStart().isWater() && getEnd().isWater();
   }
 
