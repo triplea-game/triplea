@@ -30,10 +30,10 @@ public final class TransportUtils {
   /** Returns a map of unit -> transport. */
   public static Map<Unit, Unit> mapTransports(
       final Route route, final Collection<Unit> units, final Collection<Unit> transportsToLoad) {
-    if (route.isLoad()) {
+    if (route.isSeaLoad()) {
       return mapTransportsToLoad(units, transportsToLoad);
     }
-    if (route.isUnload()) {
+    if (route.isSeaUnload()) {
       return mapTransportsAlreadyLoaded(units, route.getStart().getUnits());
     }
     return mapTransportsAlreadyLoaded(units, units);
@@ -353,7 +353,7 @@ public final class TransportUtils {
    */
   public static Collection<Unit> chooseEquivalentUnitsToUnload(
       final Route route, final Collection<Unit> units) {
-    if (!route.isUnload() || units.stream().noneMatch(Matches.unitIsLand())) {
+    if (!route.isSeaUnload() || units.stream().noneMatch(Matches.unitIsLand())) {
       return new ArrayList<>(units);
     }
     final List<Unit> updatedUnits = new ArrayList<>(units);

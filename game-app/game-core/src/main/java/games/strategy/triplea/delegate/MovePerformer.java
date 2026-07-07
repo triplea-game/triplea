@@ -159,7 +159,7 @@ public class MovePerformer implements Serializable {
             arrivingUnits = new ArrayList<>();
             final Collection<Unit> arrivedCopyForBattles = new ArrayList<>(arrived);
             final Map<Unit, Unit> transporting =
-                route.isLoad()
+                route.isSeaLoad()
                     ? unitsToTransports
                     : TransportUtils.mapTransports(route, arrived, null);
             // If we have paratrooper land units being carried by air units, they should be dropped
@@ -409,7 +409,7 @@ public class MovePerformer implements Serializable {
     }
 
     // load the transports
-    if (route.isLoad() || paratroopsLanding) {
+    if (route.isSeaLoad() || paratroopsLanding) {
       // mark transports as having transported
       for (final Map.Entry<Unit, Unit> loadToTransport : transporting.entrySet()) {
         final Unit loadUnit = loadToTransport.getKey();
@@ -435,7 +435,7 @@ public class MovePerformer implements Serializable {
         }
       }
     }
-    if (route.isUnload() || paratroopsLanding) {
+    if (route.isSeaUnload() || paratroopsLanding) {
       final Set<Unit> units = new HashSet<>();
       units.addAll(transporting.values());
       units.addAll(transporting.keySet());

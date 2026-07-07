@@ -163,7 +163,7 @@ public class MoveValidator {
         }
       }
       if (!unitsStartedInTerritory) {
-        final boolean unload = route.isUnload();
+        final boolean unload = route.isSeaUnload();
         final GamePlayer endOwner = route.getEnd().getOwner();
         final boolean attack =
             !endOwner.isAllied(player)
@@ -552,7 +552,7 @@ public class MoveValidator {
     }
     // See if we are doing invasions in combat phase, with units or transports that can't do
     // invasion.
-    if (route.isUnload() && Matches.isTerritoryEnemy(player).test(route.getEnd())) {
+    if (route.isSeaUnload() && Matches.isTerritoryEnemy(player).test(route.getEnd())) {
       for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitCanInvade().negate())) {
         result.addDisallowedUnit(
             unit.getType().getName()
@@ -791,7 +791,7 @@ public class MoveValidator {
       }
       // Check requiresUnitsToMove conditions
       Collection<Unit> requiresUnitsToMoveList = unitsWithoutDependents;
-      if (route.isUnload()) {
+      if (route.isSeaUnload()) {
         requiresUnitsToMoveList = units;
       }
       for (final Territory t : route.getAllTerritories()) {
@@ -1165,7 +1165,7 @@ public class MoveValidator {
     final Territory routeStart = route.getStart();
     // if unloading make sure length of route is only 1
     final boolean isEditMode = getEditMode(data.getProperties());
-    if (!isEditMode && route.isUnload()) {
+    if (!isEditMode && route.isSeaUnload()) {
       if (route.hasMoreThanOneStep()) {
         return result.setErrorReturnResult("Unloading units must stop where they are unloaded");
       }
@@ -1295,7 +1295,7 @@ public class MoveValidator {
         }
       }
     }
-    if (route.isLoad()) {
+    if (route.isSeaLoad()) {
       if (!isEditMode && !route.hasExactlyOneStep() && nonParatroopersPresent(player, landAndAir)) {
         return result.setErrorReturnResult("Units cannot move before loading onto transports");
       }
