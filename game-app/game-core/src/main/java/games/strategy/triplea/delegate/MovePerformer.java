@@ -35,6 +35,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import javax.annotation.Nonnull;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -383,19 +384,113 @@ public class MovePerformer implements Serializable {
   /** Marks transports and units involved in unloading with no movement left. */
   private void markTransportsMovement(
       final Collection<Unit> arrived, final Map<Unit, Unit> transporting, final Route route) {
-    final GameData data = bridge.getData();
     final Predicate<Unit> paratroopNAirTransports =
         Matches.unitIsAirTransport().or(Matches.unitIsAirTransportable());
     final boolean paratroopsLanding =
         arrived.stream().anyMatch(paratroopNAirTransports)
             && MoveValidator.allLandUnitsHaveAirTransport(arrived);
-    final Map<Unit, Collection<Unit>> dependentAirTransportableUnits = new HashMap<>();
-    for (final Unit unit : arrived) {
-      Unit transport = unit.getTransportedBy();
-      if (transport != null) {
-        dependentAirTransportableUnits.computeIfAbsent(transport, u -> new ArrayList<>()).add(unit);
+    final Map<Unit, Collection<Unit>> dependentAirTransportableUnits =
+        getDependentAirTransportableUnits(arrived);
+
+    if (route.isSeaLoad() || paratroopsLanding) {
+      // load the transports
+      markTransportsAsHavingLoaded(transporting, dependentAirTransportableUnits);
+    }
+    if (route.isSeaUnload() || paratroopsLanding) {
+      final Set<Unit> units =
+          getTransportsAndTransportableUnits(transporting, dependentAirTransportableUnits);
+      // any pending battles in the unloading zone?
+      final BattleTracker tracker = getBattleTracker();
+      final boolean pendingBattleAtStart =
+          tracker.getPendingBattle(route.getStart(), BattleType.NORMAL) != null;
+      CollectionUtils.getMatches(units, Matches.unitIsAir().negate())
+          .forEach(
+              unit -> {
+                final Unit transportedBy = unit.getTransportedBy();
+                if (paratroopsLanding
+                    && transportedBy != null
+                    && Matches.unitIsAirTransport().test(transportedBy)
+                    && GameStepPropertiesHelper.isCombatMove(bridge.getData())
+                    && Matches.territoryHasNonSubmergedEnemyUnits(player).test(route.getEnd())) {
+                  return; // we will unload our paratroopers after they land in battle (after aa
+                  // guns fire)
+                }
+                // unload the transports
+                markTransportsAsHavingUnloaded(unit, pendingBattleAtStart);
+              });
+    }
+  }
+
+  private void markTransportsAsHavingUnloaded(Unit unit, boolean pendingBattleAtStart) {
+    final Change change1 =
+        TransportTracker.unloadTransportChange(
+            unit, currentMove.getRoute().getEnd(), pendingBattleAtStart);
+    currentMove.addChange(change1);
+    currentMove.unload(unit);
+    bridge.addChange(change1);
+    // set noMovement
+    final Change change2 = ChangeFactory.markNoMovementChange(Set.of(unit));
+    currentMove.addChange(change2);
+    bridge.addChange(change2);
+  }
+
+  @Nonnull
+  private static Set<Unit> getTransportsAndTransportableUnits(
+      Map<Unit, Unit> transporting, Map<Unit, Collection<Unit>> dependentAirTransportableUnits) {
+    final Set<Unit> units = new HashSet<>();
+    units.addAll(transporting.values());
+    units.addAll(transporting.keySet());
+    // if there are multiple units on a single transport, the transport will be in units list
+    // multiple times
+    if (transporting.isEmpty()) {
+      units.addAll(dependentAirTransportableUnits.keySet());
+      for (final Collection<Unit> airTransport : dependentAirTransportableUnits.values()) {
+        units.addAll(airTransport);
       }
     }
+    return units;
+  }
+
+  private void markTransportsAsHavingLoaded(
+      Map<Unit, Unit> transporting, Map<Unit, Collection<Unit>> dependentAirTransportableUnits) {
+    for (final Entry<Unit, Unit> loadToTransport : transporting.entrySet()) {
+      final Unit loadUnit = loadToTransport.getKey();
+      final Unit transporter = loadToTransport.getValue();
+      if (!loadToTransport.equals(loadUnit.getTransportedBy())) {
+        final Change change = TransportTracker.loadTransportChange(transporter, loadUnit);
+        currentMove.addChange(change);
+        currentMove.load(transporter);
+        bridge.addChange(change);
+      }
+    }
+    if (transporting.isEmpty()) {
+      for (final Entry<Unit, Collection<Unit>> airTransportToTransportableUnit :
+          dependentAirTransportableUnits.entrySet()) {
+        final Unit airTransport = airTransportToTransportableUnit.getKey();
+        for (final Unit transportableUnit : airTransportToTransportableUnit.getValue()) {
+          final Change change =
+              TransportTracker.loadTransportChange(airTransport, transportableUnit);
+          currentMove.addChange(change);
+          currentMove.load(airTransport);
+          bridge.addChange(change);
+        }
+      }
+    }
+  }
+
+  private Map<Unit, Collection<Unit>> getDependentAirTransportableUnits(Collection<Unit> arrived) {
+    final Map<Unit, Collection<Unit>> dependentAirTransportableUnits = new HashMap<>();
+    arrived.stream()
+        .filter(Matches.unitIsAirTransportable())
+        .forEach(
+            unit -> {
+              Unit transport = unit.getTransportedBy();
+              if (transport != null) {
+                dependentAirTransportableUnits
+                    .computeIfAbsent(transport, u -> new ArrayList<>())
+                    .add(unit);
+              }
+            });
     // add newly created dependents
     for (final Entry<Unit, Collection<Unit>> entry : airTransportDependents.entrySet()) {
       Collection<Unit> dependents = dependentAirTransportableUnits.get(entry.getKey());
@@ -407,73 +502,7 @@ public class MovePerformer implements Serializable {
       }
       dependentAirTransportableUnits.put(entry.getKey(), dependents);
     }
-
-    // load the transports
-    if (route.isSeaLoad() || paratroopsLanding) {
-      // mark transports as having transported
-      for (final Map.Entry<Unit, Unit> loadToTransport : transporting.entrySet()) {
-        final Unit loadUnit = loadToTransport.getKey();
-        final Unit transporter = loadToTransport.getValue();
-        if (!loadToTransport.equals(loadUnit.getTransportedBy())) {
-          final Change change = TransportTracker.loadTransportChange(transporter, loadUnit);
-          currentMove.addChange(change);
-          currentMove.load(transporter);
-          bridge.addChange(change);
-        }
-      }
-      if (transporting.isEmpty()) {
-        for (final Map.Entry<Unit, Collection<Unit>> airTransportToTransportableUnit :
-            dependentAirTransportableUnits.entrySet()) {
-          final Unit airTransport = airTransportToTransportableUnit.getKey();
-          for (final Unit transportableUnit : airTransportToTransportableUnit.getValue()) {
-            final Change change =
-                TransportTracker.loadTransportChange(airTransport, transportableUnit);
-            currentMove.addChange(change);
-            currentMove.load(airTransport);
-            bridge.addChange(change);
-          }
-        }
-      }
-    }
-    if (route.isSeaUnload() || paratroopsLanding) {
-      final Set<Unit> units = new HashSet<>();
-      units.addAll(transporting.values());
-      units.addAll(transporting.keySet());
-      // if there are multiple units on a single transport, the transport will be in units list
-      // multiple times
-      if (transporting.isEmpty()) {
-        units.addAll(dependentAirTransportableUnits.keySet());
-        for (final Collection<Unit> airTransport : dependentAirTransportableUnits.values()) {
-          units.addAll(airTransport);
-        }
-      }
-      // any pending battles in the unloading zone?
-      final BattleTracker tracker = getBattleTracker();
-      final boolean pendingBattles =
-          tracker.getPendingBattle(route.getStart(), BattleType.NORMAL) != null;
-      for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitIsAir().negate())) {
-        final Unit transportedBy = unit.getTransportedBy();
-        // we will unload our paratroopers after they land in battle (after aa guns fire)
-        if (paratroopsLanding
-            && transportedBy != null
-            && Matches.unitIsAirTransport().test(transportedBy)
-            && GameStepPropertiesHelper.isCombatMove(data)
-            && Matches.territoryHasNonSubmergedEnemyUnits(player).test(route.getEnd())) {
-          continue;
-        }
-        // unload the transports
-        final Change change1 =
-            TransportTracker.unloadTransportChange(
-                unit, currentMove.getRoute().getEnd(), pendingBattles);
-        currentMove.addChange(change1);
-        currentMove.unload(unit);
-        bridge.addChange(change1);
-        // set noMovement
-        final Change change2 = ChangeFactory.markNoMovementChange(Set.of(unit));
-        currentMove.addChange(change2);
-        bridge.addChange(change2);
-      }
-    }
+    return dependentAirTransportableUnits;
   }
 
   private boolean hasConqueredNonBlitzed(final Route route) {
