@@ -552,6 +552,14 @@ public final class Matches {
     return unit -> unit.getUnitAttachment().getCarrierCapacity() != -1;
   }
 
+  public static Predicate<Unit> unitIsTransportCapacity() {
+    return unit -> unit.getUnitAttachment().isTransportCapacity();
+  }
+
+  public static Predicate<Unit> unitIsTransportCapacityOrCarrier() {
+    return Matches.unitIsTransportCapacity().or(unitIsCarrier());
+  }
+
   public static Predicate<Territory> territoryHasOwnedCarrier(final GamePlayer player) {
     return t -> t.anyUnitsMatch(unitIsOwnedBy(player).and(unitIsCarrier()));
   }
