@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui.chooser;
 
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.ui.Util;
@@ -10,9 +11,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.function.Function;
 import javax.annotation.Nullable;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -22,10 +26,7 @@ import org.triplea.swing.SwingComponents;
 public class PlayerChooser extends JOptionPane {
   private static final long serialVersionUID = -7272867474891641839L;
   private JList<GamePlayer> list;
-  private final PlayerList players;
-  private final GamePlayer defaultPlayer;
   private final UiContext uiContext;
-  private final boolean allowNeutral;
 
   public PlayerChooser(
       final PlayerList players, final UiContext uiContext, final boolean allowNeutral) {
@@ -37,26 +38,35 @@ public class PlayerChooser extends JOptionPane {
       final GamePlayer defaultPlayer,
       final UiContext uiContext,
       final boolean allowNeutral) {
+    this(createDataList(players, allowNeutral), defaultPlayer, uiContext);
+  }
+
+  private static Collection<GamePlayer> createDataList(PlayerList players, boolean allowNeutral) {
+    Collection<GamePlayer> dataList = new ArrayList<>(players.getPlayers());
+    if (allowNeutral) {
+      dataList.add(players.getNullPlayer());
+    }
+    return dataList;
+  }
+
+  PlayerChooser(
+      final Collection<GamePlayer> collection,
+      final GamePlayer initialSelectedValue,
+      final UiContext uiContext) {
     setMessageType(JOptionPane.PLAIN_MESSAGE);
     setOptionType(JOptionPane.OK_CANCEL_OPTION);
     setIcon(null);
-    this.players = players;
-    this.defaultPlayer = defaultPlayer;
     this.uiContext = uiContext;
-    this.allowNeutral = allowNeutral;
-    createComponents();
+    createComponents(collection, initialSelectedValue);
   }
 
-  private void createComponents() {
-    final Collection<GamePlayer> players = new ArrayList<>(this.players.getPlayers());
-    if (allowNeutral) {
-      players.add(this.players.getNullPlayer());
-    }
-    list = new JList<>(players.toArray(new GamePlayer[0]));
+  private void createComponents(
+      final Collection<GamePlayer> dataList, final GamePlayer initialSelectedValue) {
+    list = new JList<>(dataList.toArray(new GamePlayer[0]));
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    list.setSelectedValue(defaultPlayer, true);
+    list.setSelectedValue(initialSelectedValue, true);
     list.setFocusable(false);
-    list.setCellRenderer(new PlayerChooserRenderer(uiContext));
+    list.setCellRenderer(new Renderer(getValueToIconFunction()));
     list.addMouseListener(
         new MouseAdapter() {
           @Override
@@ -77,10 +87,17 @@ public class PlayerChooser extends JOptionPane {
     setMessage(scrollPane);
   }
 
+  private Function<Object, Icon> getValueToIconFunction() {
+    return value ->
+        (uiContext == null || ((GamePlayer) value).isNull()
+            ? new ImageIcon(Util.newImage(32, 32, true))
+            : new ImageIcon(uiContext.getFlagImageFactory().getFlag((GamePlayer) value)));
+  }
+
   /**
-   * Returns the selected player or null, or null if the dialog was closed.
+   * Returns the selected entry or null, or null if the dialog was closed.
    *
-   * @return the player or null
+   * @return the entry or null
    */
   @Nullable
   public GamePlayer getSelected() {
@@ -90,12 +107,18 @@ public class PlayerChooser extends JOptionPane {
     return null;
   }
 
-  private static final class PlayerChooserRenderer extends DefaultListCellRenderer {
-    private static final long serialVersionUID = -2185921124436293304L;
-    private final UiContext uiContext;
+  public GamePlayer showDialog(final Component parent, final String title) {
+    final JDialog dialog = createDialog(parent, title);
+    dialog.setVisible(true);
+    return getSelected();
+  }
 
-    PlayerChooserRenderer(final UiContext uiContext) {
-      this.uiContext = uiContext;
+  protected static final class Renderer extends DefaultListCellRenderer {
+    private static final long serialVersionUID = -2185921124436293304L;
+    private final Function<Object, Icon> iconProvider;
+
+    Renderer(final Function<Object, Icon> iconProvider) {
+      this.iconProvider = iconProvider;
     }
 
     @Override
@@ -105,13 +128,9 @@ public class PlayerChooser extends JOptionPane {
         final int index,
         final boolean isSelected,
         final boolean cellHasFocus) {
-      GamePlayer player = (GamePlayer) value;
-      super.getListCellRendererComponent(list, player.getName(), index, isSelected, cellHasFocus);
-      if (uiContext == null || player.isNull()) {
-        setIcon(new ImageIcon(Util.newImage(32, 32, true)));
-      } else {
-        setIcon(new ImageIcon(uiContext.getFlagImageFactory().getFlag((GamePlayer) value)));
-      }
+      super.getListCellRendererComponent(
+          list, ((NamedAttachable) value).getName(), index, isSelected, cellHasFocus);
+      setIcon(iconProvider.apply(value));
       return this;
     }
   }

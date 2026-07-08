@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui.chooser;
 
+import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.Resource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ui.UiContext;
@@ -7,9 +8,12 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import javax.annotation.Nullable;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -23,21 +27,30 @@ public class ResourceChooser extends JOptionPane {
   private final UiContext uiContext;
 
   public ResourceChooser(final List<Resource> resources, final UiContext uiContext) {
+    this(
+        resources,
+        resources.stream().filter(r -> r.getName().equals(Constants.PUS)).findFirst().orElseThrow(),
+        uiContext);
+  }
+
+  ResourceChooser(
+      final Collection<Resource> collection,
+      final Resource initialSelectedValue,
+      final UiContext uiContext) {
     setMessageType(JOptionPane.PLAIN_MESSAGE);
     setOptionType(JOptionPane.OK_CANCEL_OPTION);
     setIcon(null);
     this.uiContext = uiContext;
-    createComponents(resources);
+    createComponents(collection, initialSelectedValue);
   }
 
-  private void createComponents(final List<Resource> resources) {
-    list = new JList<>(resources.toArray(new Resource[0]));
+  private void createComponents(
+      final Collection<Resource> dataList, final Resource initialSelectedValue) {
+    list = new JList<>(dataList.toArray(new Resource[0]));
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    list.setSelectedValue(
-        resources.stream().filter(r -> r.getName().equals(Constants.PUS)).findFirst().orElseThrow(),
-        true);
+    list.setSelectedValue(initialSelectedValue, true);
     list.setFocusable(false);
-    list.setCellRenderer(new Renderer(uiContext));
+    list.setCellRenderer(new Renderer(getValueToIconFunction()));
     list.addMouseListener(
         new MouseAdapter() {
           @Override
@@ -60,13 +73,17 @@ public class ResourceChooser extends JOptionPane {
     setMessage(scrollPane);
   }
 
+  private Function<Object, Icon> getValueToIconFunction() {
+    return value -> uiContext.getResourceImageFactory().getIcon(((Resource) value).getName());
+  }
+
   /**
-   * Returns the selected resource or null, or null if the dialog was closed.
+   * Returns the selected entry or null, or null if the dialog was closed.
    *
-   * @return the resource or null
+   * @return the entry or null
    */
   @Nullable
-  Resource getSelected() {
+  public Resource getSelected() {
     if (getValue() != null && getValue().equals(JOptionPane.OK_OPTION)) {
       return list.getSelectedValue();
     }
@@ -79,12 +96,12 @@ public class ResourceChooser extends JOptionPane {
     return getSelected();
   }
 
-  private static final class Renderer extends DefaultListCellRenderer {
+  protected static final class Renderer extends DefaultListCellRenderer {
     private static final long serialVersionUID = -2185921124436293304L;
-    private final UiContext uiContext;
+    private final Function<Object, Icon> iconProvider;
 
-    Renderer(final UiContext uiContext) {
-      this.uiContext = uiContext;
+    Renderer(final Function<Object, Icon> iconProvider) {
+      this.iconProvider = iconProvider;
     }
 
     @Override
@@ -95,8 +112,8 @@ public class ResourceChooser extends JOptionPane {
         final boolean isSelected,
         final boolean cellHasFocus) {
       super.getListCellRendererComponent(
-          list, ((Resource) value).getName(), index, isSelected, cellHasFocus);
-      setIcon(uiContext.getResourceImageFactory().getIcon(((Resource) value).getName()));
+          list, ((NamedAttachable) value).getName(), index, isSelected, cellHasFocus);
+      setIcon(iconProvider.apply(value));
       return this;
     }
   }

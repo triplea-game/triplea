@@ -571,10 +571,7 @@ class EditPanel extends ActionPanel {
             setWidgetActivation();
             final PlayerChooser playerChooser =
                 new PlayerChooser(getData().getPlayerList(), getMap().getUiContext(), false);
-            final JDialog dialog =
-                playerChooser.createDialog(
-                    getTopLevelAncestor(), "Select player to get technology");
-            dialog.setVisible(true);
+            playerChooser.showDialog(getTopLevelAncestor(), "Select player to get technology");
             final GamePlayer player = playerChooser.getSelected();
             if (player == null) {
               cancelEditAction.actionPerformed(null);
