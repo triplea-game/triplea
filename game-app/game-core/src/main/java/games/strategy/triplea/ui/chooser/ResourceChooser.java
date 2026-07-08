@@ -1,7 +1,8 @@
-package games.strategy.triplea.ui;
+package games.strategy.triplea.ui.chooser;
 
 import games.strategy.engine.data.Resource;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.ui.UiContext;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
@@ -16,12 +17,12 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import org.triplea.swing.SwingComponents;
 
-class ResourceChooser extends JOptionPane {
+public class ResourceChooser extends JOptionPane {
   private static final long serialVersionUID = -7272867474891641839L;
   private JList<Resource> list;
   private final UiContext uiContext;
 
-  ResourceChooser(final List<Resource> resources, final UiContext uiContext) {
+  public ResourceChooser(final List<Resource> resources, final UiContext uiContext) {
     setMessageType(JOptionPane.PLAIN_MESSAGE);
     setOptionType(JOptionPane.OK_CANCEL_OPTION);
     setIcon(null);

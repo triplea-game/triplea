@@ -1,7 +1,8 @@
-package games.strategy.triplea.ui;
+package games.strategy.triplea.ui.chooser;
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.PlayerList;
+import games.strategy.triplea.ui.UiContext;
 import games.strategy.ui.Util;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -18,7 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import org.triplea.swing.SwingComponents;
 
-class PlayerChooser extends JOptionPane {
+public class PlayerChooser extends JOptionPane {
   private static final long serialVersionUID = -7272867474891641839L;
   private JList<GamePlayer> list;
   private final PlayerList players;
@@ -26,11 +27,12 @@ class PlayerChooser extends JOptionPane {
   private final UiContext uiContext;
   private final boolean allowNeutral;
 
-  PlayerChooser(final PlayerList players, final UiContext uiContext, final boolean allowNeutral) {
+  public PlayerChooser(
+      final PlayerList players, final UiContext uiContext, final boolean allowNeutral) {
     this(players, null, uiContext, allowNeutral);
   }
 
-  PlayerChooser(
+  public PlayerChooser(
       final PlayerList players,
       final GamePlayer defaultPlayer,
       final UiContext uiContext,
@@ -81,7 +83,7 @@ class PlayerChooser extends JOptionPane {
    * @return the player or null
    */
   @Nullable
-  GamePlayer getSelected() {
+  public GamePlayer getSelected() {
     if (getValue() != null && getValue().equals(JOptionPane.OK_OPTION)) {
       return list.getSelectedValue();
     }
