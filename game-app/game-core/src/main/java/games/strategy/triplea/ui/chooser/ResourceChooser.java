@@ -10,8 +10,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
-import javax.annotation.Nullable;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
 import javax.swing.JDialog;
@@ -41,16 +41,21 @@ public class ResourceChooser extends JOptionPane {
     setOptionType(JOptionPane.OK_CANCEL_OPTION);
     setIcon(null);
     this.uiContext = uiContext;
-    createComponents(collection, initialSelectedValue);
+    createComponents(
+        collection,
+        initialSelectedValue,
+        value -> uiContext.getResourceImageFactory().getIcon(((Resource) value).getName()));
   }
 
   private void createComponents(
-      final Collection<Resource> dataList, final Resource initialSelectedValue) {
+      final Collection<Resource> dataList,
+      final Resource initialSelectedValue,
+      final Function<Object, Icon> valueToIconFunction) {
     list = new JList<>(dataList.toArray(new Resource[0]));
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     list.setSelectedValue(initialSelectedValue, true);
     list.setFocusable(false);
-    list.setCellRenderer(new Renderer(getValueToIconFunction()));
+    list.setCellRenderer(new Renderer(valueToIconFunction));
     list.addMouseListener(
         new MouseAdapter() {
           @Override
@@ -73,24 +78,19 @@ public class ResourceChooser extends JOptionPane {
     setMessage(scrollPane);
   }
 
-  private Function<Object, Icon> getValueToIconFunction() {
-    return value -> uiContext.getResourceImageFactory().getIcon(((Resource) value).getName());
-  }
-
   /**
    * Returns the selected entry or null, or null if the dialog was closed.
    *
    * @return the entry or null
    */
-  @Nullable
-  public Resource getSelected() {
+  public Optional<Resource> getSelected() {
     if (getValue() != null && getValue().equals(JOptionPane.OK_OPTION)) {
-      return list.getSelectedValue();
+      return Optional.of(list.getSelectedValue());
     }
-    return null;
+    return Optional.empty();
   }
 
-  public Resource showDialog(final Component parent, final String title) {
+  public Optional<Resource> showDialog(final Component parent, final String title) {
     final JDialog dialog = createDialog(parent, title);
     dialog.setVisible(true);
     return getSelected();

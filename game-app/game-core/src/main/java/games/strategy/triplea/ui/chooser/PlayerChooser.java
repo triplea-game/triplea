@@ -11,8 +11,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Function;
-import javax.annotation.Nullable;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -57,16 +57,24 @@ public class PlayerChooser extends JOptionPane {
     setOptionType(JOptionPane.OK_CANCEL_OPTION);
     setIcon(null);
     this.uiContext = uiContext;
-    createComponents(collection, initialSelectedValue);
+    createComponents(
+        collection,
+        initialSelectedValue,
+        value ->
+            (uiContext == null || ((GamePlayer) value).isNull()
+                ? new ImageIcon(Util.newImage(32, 32, true))
+                : new ImageIcon(uiContext.getFlagImageFactory().getFlag((GamePlayer) value))));
   }
 
   private void createComponents(
-      final Collection<GamePlayer> dataList, final GamePlayer initialSelectedValue) {
+      final Collection<GamePlayer> dataList,
+      final GamePlayer initialSelectedValue,
+      final Function<Object, Icon> valueToIconFunction) {
     list = new JList<>(dataList.toArray(new GamePlayer[0]));
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     list.setSelectedValue(initialSelectedValue, true);
     list.setFocusable(false);
-    list.setCellRenderer(new Renderer(getValueToIconFunction()));
+    list.setCellRenderer(new Renderer(valueToIconFunction));
     list.addMouseListener(
         new MouseAdapter() {
           @Override
@@ -87,27 +95,19 @@ public class PlayerChooser extends JOptionPane {
     setMessage(scrollPane);
   }
 
-  private Function<Object, Icon> getValueToIconFunction() {
-    return value ->
-        (uiContext == null || ((GamePlayer) value).isNull()
-            ? new ImageIcon(Util.newImage(32, 32, true))
-            : new ImageIcon(uiContext.getFlagImageFactory().getFlag((GamePlayer) value)));
-  }
-
   /**
    * Returns the selected entry or null, or null if the dialog was closed.
    *
    * @return the entry or null
    */
-  @Nullable
-  public GamePlayer getSelected() {
+  public Optional<GamePlayer> getSelected() {
     if (getValue() != null && getValue().equals(JOptionPane.OK_OPTION)) {
-      return list.getSelectedValue();
+      return Optional.of(list.getSelectedValue());
     }
-    return null;
+    return Optional.empty();
   }
 
-  public GamePlayer showDialog(final Component parent, final String title) {
+  public Optional<GamePlayer> showDialog(final Component parent, final String title) {
     final JDialog dialog = createDialog(parent, title);
     dialog.setVisible(true);
     return getSelected();
