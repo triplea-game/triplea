@@ -28,11 +28,6 @@ public class PlayerChooser extends JOptionPane {
   private JList<GamePlayer> list;
 
   public PlayerChooser(
-      final PlayerList players, final UiContext uiContext, final boolean allowNeutral) {
-    this(players, null, uiContext, allowNeutral);
-  }
-
-  public PlayerChooser(
       final PlayerList players,
       final GamePlayer defaultPlayer,
       final UiContext uiContext,

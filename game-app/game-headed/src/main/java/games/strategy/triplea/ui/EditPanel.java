@@ -60,7 +60,6 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -264,13 +263,8 @@ class EditPanel extends ActionPanel {
             final Optional<GamePlayer> optionalDefaultPlayer =
                 optionalTerritoryAttachment.get().getOriginalOwner();
             final GamePlayer player =
-                new PlayerChooser(
-                        getData().getPlayerList(),
-                        optionalDefaultPlayer.orElse(null),
-                        getMap().getUiContext(),
-                        true)
-                    .showDialog(getTopLevelAncestor(), "Select new owner for territory")
-                    .orElse(null);
+                choosePlayerOrNull(
+                    "Select new owner for territory", optionalDefaultPlayer.orElse(null), true);
             if (player != null) {
               final String result = frame.getEditDelegate().changeTerritoryOwner(territory, player);
               if (result != null) {
@@ -285,13 +279,8 @@ class EditPanel extends ActionPanel {
           } else if (currentAction == addUnitsAction) {
             final boolean allowNeutral = doesNeutralHaveUnitsOnMap(getData());
             final GamePlayer player =
-                new PlayerChooser(
-                        getData().getPlayerList(),
-                        territory.getOwner(),
-                        getMap().getUiContext(),
-                        allowNeutral)
-                    .showDialog(getTopLevelAncestor(), "Select owner for new units")
-                    .orElse(null);
+                choosePlayerOrNull(
+                    "Select owner for new units", territory.getOwner(), allowNeutral);
             if (player != null) {
               // open production panel for adding new units
               final IntegerMap<ProductionRule> production =
@@ -481,7 +470,7 @@ class EditPanel extends ActionPanel {
             currentAction = this;
             setWidgetActivation();
 
-            final GamePlayer player = choosePlayer().orElse(null);
+            final GamePlayer player = choosePlayerOrNull(ACTION_LABEL_CHANGE_RESOURCES);
             if (player == null) {
               cancelEditAction.actionPerformed(null);
               return;
@@ -509,15 +498,6 @@ class EditPanel extends ActionPanel {
                   JOptionPane.ERROR_MESSAGE);
             }
             cancelEditAction.actionPerformed(null);
-          }
-
-          private Optional<GamePlayer> choosePlayer() {
-            final PlayerChooser playerChooser =
-                new PlayerChooser(getData().getPlayerList(), getMap().getUiContext(), false);
-            final JDialog dialog =
-                playerChooser.createDialog(getTopLevelAncestor(), ACTION_LABEL_CHANGE_RESOURCES);
-            dialog.setVisible(true);
-            return playerChooser.getSelected();
           }
 
           private Optional<Resource> chooseResource() {
@@ -564,10 +544,7 @@ class EditPanel extends ActionPanel {
           public void actionPerformed(final ActionEvent event) {
             currentAction = this;
             setWidgetActivation();
-            final GamePlayer player =
-                new PlayerChooser(getData().getPlayerList(), getMap().getUiContext(), false)
-                    .showDialog(getTopLevelAncestor(), "Select player to get technology")
-                    .orElse(null);
+            final GamePlayer player = choosePlayerOrNull("Select player to get technology");
             if (player == null) {
               cancelEditAction.actionPerformed(null);
               return;
@@ -621,10 +598,7 @@ class EditPanel extends ActionPanel {
           public void actionPerformed(final ActionEvent event) {
             currentAction = this;
             setWidgetActivation();
-            final GamePlayer player =
-                new PlayerChooser(getData().getPlayerList(), getMap().getUiContext(), false)
-                    .showDialog(getTopLevelAncestor(), "Select player to remove technology")
-                    .orElse(null);
+            final GamePlayer player = choosePlayerOrNull("Select player to remove technology");
             if (player == null) {
               cancelEditAction.actionPerformed(null);
               return;
@@ -935,6 +909,18 @@ class EditPanel extends ActionPanel {
     add(new JButton(changePoliticalRelationships));
     add(Box.createVerticalStrut(15));
     setWidgetActivation();
+  }
+
+  private @Nullable GamePlayer choosePlayerOrNull(final String title) {
+    return choosePlayerOrNull(title, null, false);
+  }
+
+  private @Nullable GamePlayer choosePlayerOrNull(
+      final String title, final GamePlayer initialSelect, final boolean allowNeutral) {
+    return new PlayerChooser(
+            getData().getPlayerList(), initialSelect, getMap().getUiContext(), allowNeutral)
+        .showDialog(getTopLevelAncestor(), title)
+        .orElse(null);
   }
 
   private void sortUnits(GamePlayer player, List<Unit> units) {
