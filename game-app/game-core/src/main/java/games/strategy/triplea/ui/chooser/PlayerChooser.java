@@ -3,8 +3,6 @@ package games.strategy.triplea.ui.chooser;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerList;
-import games.strategy.triplea.ui.UiContext;
-import games.strategy.ui.Util;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
@@ -15,7 +13,6 @@ import java.util.Optional;
 import java.util.function.Function;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -30,9 +27,9 @@ public class PlayerChooser extends JOptionPane {
   public PlayerChooser(
       final PlayerList players,
       final GamePlayer defaultPlayer,
-      final UiContext uiContext,
-      final boolean allowNeutral) {
-    this(createDataList(players, allowNeutral), defaultPlayer, uiContext);
+      final boolean allowNeutral,
+      final Function<Object, Icon> valueToIconFunction) {
+    this(createDataList(players, allowNeutral), defaultPlayer, valueToIconFunction);
   }
 
   private static Collection<GamePlayer> createDataList(PlayerList players, boolean allowNeutral) {
@@ -46,17 +43,11 @@ public class PlayerChooser extends JOptionPane {
   PlayerChooser(
       final Collection<GamePlayer> collection,
       final GamePlayer initialSelectedValue,
-      final UiContext uiContext) {
+      final Function<Object, Icon> valueToIconFunction) {
     setMessageType(JOptionPane.PLAIN_MESSAGE);
     setOptionType(JOptionPane.OK_CANCEL_OPTION);
     setIcon(null);
-    createComponents(
-        collection,
-        initialSelectedValue,
-        value ->
-            (uiContext == null || ((GamePlayer) value).isNull()
-                ? new ImageIcon(Util.newImage(32, 32, true))
-                : new ImageIcon(uiContext.getFlagImageFactory().getFlag((GamePlayer) value))));
+    createComponents(collection, initialSelectedValue, valueToIconFunction);
   }
 
   private void createComponents(
@@ -93,7 +84,7 @@ public class PlayerChooser extends JOptionPane {
    *
    * @return the entry or null
    */
-  public Optional<GamePlayer> getSelected() {
+  private Optional<GamePlayer> getSelected() {
     if (getValue() != null && getValue().equals(JOptionPane.OK_OPTION)) {
       return Optional.of(list.getSelectedValue());
     }

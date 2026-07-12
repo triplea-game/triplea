@@ -32,6 +32,7 @@ import games.strategy.triplea.ui.panels.map.UnitSelectionListener;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.TuvCostsCalculator;
 import games.strategy.triplea.util.UnitSeparator;
+import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -59,6 +60,7 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -510,7 +512,13 @@ class EditPanel extends ActionPanel {
               return Optional.of(resources.get(0));
             }
 
-            return new ResourceChooser(resources, getMap().getUiContext())
+            return new ResourceChooser(
+                    resources,
+                    value ->
+                        getMap()
+                            .getUiContext()
+                            .getResourceImageFactory()
+                            .getIcon(((Resource) value).getName()))
                 .showDialog(getTopLevelAncestor(), ACTION_LABEL_CHANGE_RESOURCES);
           }
 
@@ -917,8 +925,15 @@ class EditPanel extends ActionPanel {
 
   private @Nullable GamePlayer choosePlayerOrNull(
       final String title, final GamePlayer initialSelect, final boolean allowNeutral) {
+    final UiContext uiContext = getMap().getUiContext();
     return new PlayerChooser(
-            getData().getPlayerList(), initialSelect, getMap().getUiContext(), allowNeutral)
+            getData().getPlayerList(),
+            initialSelect,
+            allowNeutral,
+            value ->
+                (uiContext == null || ((GamePlayer) value).isNull()
+                    ? new ImageIcon(Util.newImage(32, 32, true))
+                    : new ImageIcon(uiContext.getFlagImageFactory().getFlag((GamePlayer) value))))
         .showDialog(getTopLevelAncestor(), title)
         .orElse(null);
   }

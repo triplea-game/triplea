@@ -3,7 +3,6 @@ package games.strategy.triplea.ui.chooser;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.Resource;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.ui.UiContext;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
@@ -25,24 +24,22 @@ public class ResourceChooser extends JOptionPane {
   private static final long serialVersionUID = -7272867474891641839L;
   private JList<Resource> list;
 
-  public ResourceChooser(final List<Resource> resources, final UiContext uiContext) {
+  public ResourceChooser(
+      final List<Resource> resources, final Function<Object, Icon> valueToIconFunction) {
     this(
         resources,
         resources.stream().filter(r -> r.getName().equals(Constants.PUS)).findFirst().orElseThrow(),
-        uiContext);
+        valueToIconFunction);
   }
 
   ResourceChooser(
       final Collection<Resource> collection,
       final Resource initialSelectedValue,
-      final UiContext uiContext) {
+      final Function<Object, Icon> valueToIconFunction) {
     setMessageType(JOptionPane.PLAIN_MESSAGE);
     setOptionType(JOptionPane.OK_CANCEL_OPTION);
     setIcon(null);
-    createComponents(
-        collection,
-        initialSelectedValue,
-        value -> uiContext.getResourceImageFactory().getIcon(((Resource) value).getName()));
+    createComponents(collection, initialSelectedValue, valueToIconFunction);
   }
 
   private void createComponents(
@@ -81,7 +78,7 @@ public class ResourceChooser extends JOptionPane {
    *
    * @return the entry or null
    */
-  public Optional<Resource> getSelected() {
+  private Optional<Resource> getSelected() {
     if (getValue() != null && getValue().equals(JOptionPane.OK_OPTION)) {
       return Optional.of(list.getSelectedValue());
     }
