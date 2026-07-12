@@ -35,17 +35,25 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
   }
 
   public void addAdvance(final TechAdvance t) {
-    techs.add(t);
-    reorderTechsToMatchGameTechsOrder();
-    getData().getTechTracker().clearCache();
+    if (!techs.contains(t)) {
+      techs.add(t);
+      reorderTechsToMatchGameTechsOrder();
+      getData().getTechTracker().clearCache();
+    }
   }
 
   public void addAdvance(final List<TechAdvance> list) {
+    boolean changed = false;
     for (final TechAdvance t : list) {
-      techs.add(t);
+      if (!techs.contains(t)) {
+        techs.add(t);
+        changed = true;
+      }
     }
-    reorderTechsToMatchGameTechsOrder();
-    getData().getTechTracker().clearCache();
+    if (changed) {
+      reorderTechsToMatchGameTechsOrder();
+      getData().getTechTracker().clearCache();
+    }
   }
 
   public void removeAdvance(final TechAdvance t) {
