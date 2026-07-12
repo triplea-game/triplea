@@ -11,16 +11,15 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Function;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
-import lombok.Builder;
 import org.triplea.swing.SwingComponents;
 
-@Builder
 public class DataChooserBuilder<T extends NamedAttachable> {
   final JOptionPane optionPane = new JOptionPane();
   private JList<T> list;
@@ -39,7 +38,9 @@ public class DataChooserBuilder<T extends NamedAttachable> {
       final Collection<T> dataList,
       final T initialSelectedValue,
       final Function<Object, Icon> valueToIconFunction) {
-    list = new JList<>(dataList.toArray(size -> (T[]) new NamedAttachable[size]));
+    final DefaultListModel<T> model = new DefaultListModel<>();
+    dataList.forEach(model::addElement);
+    list = new JList<>(model);
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     list.setSelectedValue(initialSelectedValue, true);
     list.setFocusable(false);
