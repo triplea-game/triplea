@@ -26,7 +26,6 @@ import org.triplea.swing.SwingComponents;
 public class PlayerChooser extends JOptionPane {
   private static final long serialVersionUID = -7272867474891641839L;
   private JList<GamePlayer> list;
-  private final UiContext uiContext;
 
   public PlayerChooser(
       final PlayerList players, final UiContext uiContext, final boolean allowNeutral) {
@@ -56,7 +55,6 @@ public class PlayerChooser extends JOptionPane {
     setMessageType(JOptionPane.PLAIN_MESSAGE);
     setOptionType(JOptionPane.OK_CANCEL_OPTION);
     setIcon(null);
-    this.uiContext = uiContext;
     createComponents(
         collection,
         initialSelectedValue,

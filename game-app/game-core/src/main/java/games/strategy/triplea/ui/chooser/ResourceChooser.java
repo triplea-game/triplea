@@ -24,7 +24,6 @@ import org.triplea.swing.SwingComponents;
 public class ResourceChooser extends JOptionPane {
   private static final long serialVersionUID = -7272867474891641839L;
   private JList<Resource> list;
-  private final UiContext uiContext;
 
   public ResourceChooser(final List<Resource> resources, final UiContext uiContext) {
     this(
@@ -40,7 +39,6 @@ public class ResourceChooser extends JOptionPane {
     setMessageType(JOptionPane.PLAIN_MESSAGE);
     setOptionType(JOptionPane.OK_CANCEL_OPTION);
     setIcon(null);
-    this.uiContext = uiContext;
     createComponents(
         collection,
         initialSelectedValue,
