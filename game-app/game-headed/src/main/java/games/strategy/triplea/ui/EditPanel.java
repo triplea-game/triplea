@@ -4,6 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.NamedAttachable;
+import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Resource;
@@ -26,7 +27,6 @@ import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.chooser.DataChooserBuilder;
-import games.strategy.triplea.ui.chooser.PlayerChooser;
 import games.strategy.triplea.ui.panels.map.MapSelectionListener;
 import games.strategy.triplea.ui.panels.map.UnitSelectionListener;
 import games.strategy.triplea.util.TransportUtils;
@@ -930,16 +930,23 @@ class EditPanel extends ActionPanel {
   private @Nullable GamePlayer choosePlayerOrNull(
       final String title, final GamePlayer initialSelect, final boolean allowNeutral) {
     final UiContext uiContext = getMap().getUiContext();
-    return new PlayerChooser(
-            getData().getPlayerList(),
+    return new DataChooserBuilder<>(
+            createDataList(getData().getPlayerList(), allowNeutral),
             initialSelect,
-            allowNeutral,
             value ->
                 (uiContext == null || ((GamePlayer) value).isNull()
                     ? new ImageIcon(Util.newImage(32, 32, true))
                     : new ImageIcon(uiContext.getFlagImageFactory().getFlag((GamePlayer) value))))
         .showDialog(getTopLevelAncestor(), title)
         .orElse(null);
+  }
+
+  private static Collection<GamePlayer> createDataList(PlayerList players, boolean allowNeutral) {
+    Collection<GamePlayer> dataList = new ArrayList<>(players.getPlayers());
+    if (allowNeutral) {
+      dataList.add(players.getNullPlayer());
+    }
+    return dataList;
   }
 
   private void sortUnits(GamePlayer player, List<Unit> units) {
