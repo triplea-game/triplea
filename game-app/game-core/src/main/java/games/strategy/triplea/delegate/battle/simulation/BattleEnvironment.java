@@ -9,4 +9,16 @@ public interface BattleEnvironment {
   List<BattleAction> legalActions();
 
   BattleStepResult step(BattleAction action);
+
+  default BattleEpisodeLog episodeLog() {
+    throw new UnsupportedOperationException("episode logging is not supported by this environment");
+  }
+
+  default BattleReplayResult replay(final BattleEpisodeLog episode) {
+    throw new UnsupportedOperationException("replay is not supported by this environment");
+  }
+
+  default BattleBatchResult batch(final BattleBatchRequest request) {
+    throw new UnsupportedOperationException("batch replay is not supported by this environment");
+  }
 }

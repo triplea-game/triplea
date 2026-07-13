@@ -47,18 +47,23 @@ Exit condition: a headless agent can complete one existing TripleA battle withou
 
 ## 3. Deterministic replay, reward, and batch execution
 
-Status: next.
+Status: complete in PR #4.
 
-- transition log with seed, observation, action, reward, and result
-- replay command
-- configurable reward function
-- deterministic regression fixtures
-- multiple worker processes and batch episode command
-- throughput and memory benchmarks
+- immutable transition log with seed, observations, legal masks, action, reward, and result
+- versioned serializable episode logs
+- replay command with first-mismatch reporting
+- configurable material and terminal reward function
+- deterministic replay and mismatch regression fixtures
+- ordered parallel-worker batch replay command
+- throughput and JVM-memory metrics in batch results
 
-Exit condition: the same seed and actions reproduce the same battle result, and thousands of battles can be run automatically.
+Process-level vectorization is deferred to the Python client, which can launch multiple NDJSON server processes while each process uses the built-in batch workers.
+
+Exit condition: the same seed and actions reproduce the same battle result, and large replay batches can be run automatically.
 
 ## 4. Python Gymnasium client
+
+Status: next.
 
 - typed Python protocol client
 - Gymnasium environment wrapper

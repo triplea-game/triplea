@@ -1,8 +1,12 @@
 package org.triplea.game.server.battle;
 
 import games.strategy.triplea.delegate.battle.simulation.BattleAction;
+import games.strategy.triplea.delegate.battle.simulation.BattleBatchRequest;
+import games.strategy.triplea.delegate.battle.simulation.BattleBatchResult;
 import games.strategy.triplea.delegate.battle.simulation.BattleEnvironment;
+import games.strategy.triplea.delegate.battle.simulation.BattleEpisodeLog;
 import games.strategy.triplea.delegate.battle.simulation.BattleObservation;
+import games.strategy.triplea.delegate.battle.simulation.BattleReplayResult;
 import games.strategy.triplea.delegate.battle.simulation.BattleResetRequest;
 import games.strategy.triplea.delegate.battle.simulation.BattleStepResult;
 import games.strategy.triplea.delegate.battle.simulation.SavedGameBattleScenarioLoader;
@@ -27,5 +31,20 @@ public final class SavedGameBattleEnvironment implements BattleEnvironment {
   @Override
   public BattleStepResult step(final BattleAction action) {
     return delegate.step(action);
+  }
+
+  @Override
+  public BattleEpisodeLog episodeLog() {
+    return delegate.episodeLog();
+  }
+
+  @Override
+  public BattleReplayResult replay(final BattleEpisodeLog episode) {
+    return delegate.replay(episode);
+  }
+
+  @Override
+  public BattleBatchResult batch(final BattleBatchRequest request) {
+    return delegate.batch(request);
   }
 }

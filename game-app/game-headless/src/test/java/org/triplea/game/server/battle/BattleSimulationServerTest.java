@@ -6,7 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import games.strategy.triplea.delegate.battle.simulation.BattleEnvironment;
+import games.strategy.triplea.delegate.battle.simulation.BattleEpisodeLog;
 import games.strategy.triplea.delegate.battle.simulation.BattleObservation;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
@@ -23,6 +25,19 @@ class BattleSimulationServerTest {
     assertEquals(
         Map.of("schemaVersion", BattleObservation.CURRENT_SCHEMA_VERSION), response.data());
     assertNull(response.error());
+  }
+
+  @Test
+  void schemaListsEpisodeReplayAndBatchCommands() {
+    final BattleSimulationServer.Response response =
+        BattleSimulationServer.handle("{\"command\":\"schema\",\"data\":{}}", Optional.empty());
+
+    assertTrue(response.ok());
+    assertEquals("schema", response.type());
+    final Map<?, ?> data = (Map<?, ?>) response.data();
+    assertEquals(BattleEpisodeLog.CURRENT_LOG_SCHEMA_VERSION, data.get("episodeLogSchemaVersion"));
+    final List<?> commands = (List<?>) data.get("commands");
+    assertTrue(commands.containsAll(List.of("episodeLog", "replay", "batch")));
   }
 
   @Test

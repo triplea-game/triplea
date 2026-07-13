@@ -20,6 +20,7 @@ class StatefulBattleEnvironmentTest {
         new StatefulBattleEnvironment(request -> new FakeBattleScenario());
 
     assertThrows(IllegalStateException.class, environment::legalActions);
+    assertThrows(IllegalStateException.class, environment::episodeLog);
     assertThrows(IllegalStateException.class, () -> environment.step(WAIT));
   }
 
@@ -45,6 +46,78 @@ class StatefulBattleEnvironmentTest {
     assertEquals("resolved", result.info().get("result"));
     assertEquals(List.of(), environment.legalActions());
     assertThrows(IllegalStateException.class, () -> environment.step(WAIT));
+
+    final BattleEpisodeLog log = environment.episodeLog();
+    assertEquals(BattleEpisodeLog.CURRENT_LOG_SCHEMA_VERSION, log.logSchemaVersion());
+    assertEquals(initial, log.initialObservation());
+    assertEquals(1, log.transitions().size());
+    assertEquals(List.of(RETREAT, WAIT), log.transitions().getFirst().legalActions());
+    assertEquals(WAIT, log.transitions().getFirst().action());
+    assertEquals(0.75, log.cumulativeReward());
+    assertTrue(log.terminated());
+    assertFalse(log.truncated());
+  }
+
+  @Test
+  void replaysRecordedEpisodeAndBatchDeterministically() {
+    final StatefulBattleEnvironment environment =
+        new StatefulBattleEnvironment(request -> new FakeBattleScenario());
+    environment.reset(new BattleResetRequest("fixture.xml", 19));
+    environment.step(WAIT);
+    final BattleEpisodeLog recorded = environment.episodeLog();
+
+    final BattleReplayResult replay = environment.replay(recorded);
+
+    assertTrue(replay.matched());
+    assertEquals(1, replay.verifiedTransitions());
+    assertEquals("", replay.mismatch());
+    assertEquals(recorded.finalObservation(), replay.actualEpisode().finalObservation());
+
+    final BattleBatchResult batch =
+        environment.batch(new BattleBatchRequest(List.of(recorded, recorded), 2));
+
+    assertEquals(2, batch.results().size());
+    assertEquals(2, batch.matchedEpisodes());
+    assertEquals(0, batch.mismatchedEpisodes());
+    assertTrue(batch.results().stream().allMatch(BattleReplayResult::matched));
+  }
+
+  @Test
+  void reportsFirstReplayMismatch() {
+    final StatefulBattleEnvironment environment =
+        new StatefulBattleEnvironment(request -> new FakeBattleScenario());
+    environment.reset(new BattleResetRequest("fixture.xml", 23));
+    environment.step(WAIT);
+    final BattleEpisodeLog recorded = environment.episodeLog();
+    final BattleTransition original = recorded.transitions().getFirst();
+    final BattleStepResult changedResult =
+        new BattleStepResult(
+            original.result().observation(),
+            99,
+            original.result().terminated(),
+            original.result().truncated(),
+            original.result().info());
+    final BattleEpisodeLog changed =
+        new BattleEpisodeLog(
+            recorded.logSchemaVersion(),
+            recorded.resetRequest(),
+            recorded.initialObservation(),
+            List.of(
+                new BattleTransition(
+                    original.stepId(),
+                    original.observationBefore(),
+                    original.legalActions(),
+                    original.action(),
+                    changedResult)),
+            99,
+            recorded.terminated(),
+            recorded.truncated());
+
+    final BattleReplayResult replay = environment.replay(changed);
+
+    assertFalse(replay.matched());
+    assertEquals(0, replay.verifiedTransitions());
+    assertTrue(replay.mismatch().contains("reward differs"));
   }
 
   @Test

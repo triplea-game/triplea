@@ -5,7 +5,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import games.strategy.triplea.delegate.battle.simulation.BattleAction;
+import games.strategy.triplea.delegate.battle.simulation.BattleBatchRequest;
 import games.strategy.triplea.delegate.battle.simulation.BattleEnvironment;
+import games.strategy.triplea.delegate.battle.simulation.BattleEpisodeLog;
 import games.strategy.triplea.delegate.battle.simulation.BattleObservation;
 import games.strategy.triplea.delegate.battle.simulation.BattleResetRequest;
 import java.io.BufferedReader;
@@ -22,7 +24,7 @@ import java.util.ServiceLoader;
 public final class BattleSimulationServer {
   private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
   private static final List<String> COMMANDS =
-      List.of("ping", "schema", "reset", "legalActions", "step");
+      List.of("ping", "schema", "reset", "legalActions", "step", "episodeLog", "replay", "batch");
 
   private BattleSimulationServer() {}
 
@@ -58,6 +60,8 @@ public final class BattleSimulationServer {
                 Map.of(
                     "schemaVersion",
                     BattleObservation.CURRENT_SCHEMA_VERSION,
+                    "episodeLogSchemaVersion",
+                    BattleEpisodeLog.CURRENT_LOG_SCHEMA_VERSION,
                     "commands",
                     COMMANDS,
                     "environmentAvailable",
@@ -79,6 +83,21 @@ public final class BattleSimulationServer {
                 environment,
                 value ->
                     Response.success("step", value.step(GSON.fromJson(data, BattleAction.class))));
+        case "episodeLog" ->
+            withEnvironment(
+                environment, value -> Response.success("episodeLog", value.episodeLog()));
+        case "replay" ->
+            withEnvironment(
+                environment,
+                value ->
+                    Response.success(
+                        "replay", value.replay(GSON.fromJson(data, BattleEpisodeLog.class))));
+        case "batch" ->
+            withEnvironment(
+                environment,
+                value ->
+                    Response.success(
+                        "batch", value.batch(GSON.fromJson(data, BattleBatchRequest.class))));
         default -> Response.error("unknown command: " + command);
       };
     } catch (final RuntimeException e) {
