@@ -18,6 +18,7 @@ dependencies {
     implementation(project(":domain-data"))
     implementation(project(":game-core"))
     implementation(project(":java-extras"))
+    implementation(libs.gson)
 }
 
 tasks.named<Jar>("jar") {
@@ -71,4 +72,12 @@ tasks.register<Copy>("copyShadow") {
 
 tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
     archiveClassifier.set("")
+}
+
+tasks.register<JavaExec>("runBattleSimulationServer") {
+    group = "application"
+    description = "Runs the NDJSON battle-simulation protocol server"
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("org.triplea.game.server.battle.BattleSimulationServer")
+    standardInput = System.`in`
 }
