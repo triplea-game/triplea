@@ -157,10 +157,7 @@ public class MustFightBattle extends DependentBattle
       final BattleTracker battleTracker) {
     super(battleSite, attacker, battleTracker, data);
     defendingUnits.addAll(this.battleSite.getMatches(Matches.enemyUnit(attacker)));
-    maxRounds =
-        battleSite.isWater()
-            ? Properties.getSeaBattleRounds(data.getProperties())
-            : Properties.getLandBattleRounds(data.getProperties());
+    maxRounds = BattleRoundResolver.resolveGroundBattleRounds(battleSite, territoryEffects, data);
   }
 
   void resetDefendingUnits(final GamePlayer attacker) {

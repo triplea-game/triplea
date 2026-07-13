@@ -78,17 +78,22 @@ Exit condition: an unmodified baseline agent can train and evaluate against exis
 
 ## 5. Terrain-specific battle rounds
 
-Status: next.
+Status: complete in PR #6.
 
-- `maxGroundBattleRounds` on territory effects
-- optional `maxAirBattleRounds`
-- `BattleRoundResolver`
-- fallback to existing global land/sea round settings
-- stalemate regression tests
+- `maxGroundBattleRounds` and `maxAirBattleRounds` territory-effect properties
+- positive finite limits and `-1` unlimited validation
+- common `BattleRoundResolver`
+- fallback to existing global land, sea, and air round settings
+- shortest-finite-limit resolution for overlapping terrain effects
+- normal land-battle and air-battle integration
+- attachment, fallback, overlap, constructor, and stalemate regression coverage
+- map XML and compatibility documentation
 
-Exit condition: mountain, city, and open terrain can end combat after different numbers of rounds.
+Exit condition: mountain, city, fortress, and open terrain can end combat after different numbers of rounds.
 
 ## 6. Territory stack capacity
+
+Status: next.
 
 - `stackCapacity` on territory effects
 - `stackCost` on unit attachments

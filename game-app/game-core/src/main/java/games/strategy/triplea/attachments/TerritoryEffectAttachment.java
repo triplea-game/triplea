@@ -16,7 +16,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
 import javax.annotation.Nullable;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.java.collections.IntegerMap;
@@ -29,6 +31,8 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
 
   @NonNls public static final String COMBAT_OFFENSE_EFFECT = "combatOffenseEffect";
   @NonNls public static final String COMBAT_DEFENSE_EFFECT = "combatDefenseEffect";
+  @NonNls public static final String MAX_GROUND_BATTLE_ROUNDS = "maxGroundBattleRounds";
+  @NonNls public static final String MAX_AIR_BATTLE_ROUNDS = "maxAirBattleRounds";
 
   private static final long serialVersionUID = 6379810228136325991L;
 
@@ -37,6 +41,8 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   private @Nullable Map<UnitType, BigDecimal> movementCostModifier = null;
   private @Nullable List<UnitType> noBlitz = null;
   private @Nullable List<UnitType> unitsNotAllowed = null;
+  private @Nullable Integer maxGroundBattleRounds = null;
+  private @Nullable Integer maxAirBattleRounds = null;
 
   public TerritoryEffectAttachment(
       final String name, final Attachable attachable, final GameData gameData) {
@@ -117,6 +123,60 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     return defending
         ? getCombatDefenseEffect().getInt(type)
         : getCombatOffenseEffect().getInt(type);
+  }
+
+  private void setMaxGroundBattleRounds(final String value) {
+    setMaxGroundBattleRounds(getInt(value));
+  }
+
+  @VisibleForTesting
+  public TerritoryEffectAttachment setMaxGroundBattleRounds(final Integer value) {
+    maxGroundBattleRounds = validateBattleRounds(value, MAX_GROUND_BATTLE_ROUNDS);
+    return this;
+  }
+
+  public OptionalInt getMaxGroundBattleRounds() {
+    return maxGroundBattleRounds == null
+        ? OptionalInt.empty()
+        : OptionalInt.of(maxGroundBattleRounds);
+  }
+
+  private @Nullable Integer getMaxGroundBattleRoundsProperty() {
+    return maxGroundBattleRounds;
+  }
+
+  private void resetMaxGroundBattleRounds() {
+    maxGroundBattleRounds = null;
+  }
+
+  private void setMaxAirBattleRounds(final String value) {
+    setMaxAirBattleRounds(getInt(value));
+  }
+
+  @VisibleForTesting
+  public TerritoryEffectAttachment setMaxAirBattleRounds(final Integer value) {
+    maxAirBattleRounds = validateBattleRounds(value, MAX_AIR_BATTLE_ROUNDS);
+    return this;
+  }
+
+  public OptionalInt getMaxAirBattleRounds() {
+    return maxAirBattleRounds == null ? OptionalInt.empty() : OptionalInt.of(maxAirBattleRounds);
+  }
+
+  private @Nullable Integer getMaxAirBattleRoundsProperty() {
+    return maxAirBattleRounds;
+  }
+
+  private void resetMaxAirBattleRounds() {
+    maxAirBattleRounds = null;
+  }
+
+  private static int validateBattleRounds(final Integer value, final String propertyName) {
+    final int rounds = Objects.requireNonNull(value);
+    if (rounds == 0 || rounds < -1) {
+      throw new IllegalArgumentException(propertyName + " must be -1 or a positive integer");
+    }
+    return rounds;
   }
 
   private void setMovementCostModifier(final String value) throws GameParseException {
@@ -224,6 +284,20 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
                   this::setCombatOffenseEffect,
                   this::getCombatOffenseEffect,
                   this::resetCombatOffenseEffect));
+      case MAX_GROUND_BATTLE_ROUNDS ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setMaxGroundBattleRounds,
+                  this::setMaxGroundBattleRounds,
+                  this::getMaxGroundBattleRoundsProperty,
+                  this::resetMaxGroundBattleRounds));
+      case MAX_AIR_BATTLE_ROUNDS ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setMaxAirBattleRounds,
+                  this::setMaxAirBattleRounds,
+                  this::getMaxAirBattleRoundsProperty,
+                  this::resetMaxAirBattleRounds));
       case "movementCostModifier" ->
           Optional.of(
               MutableProperty.of(

@@ -77,7 +77,7 @@ public class AirBattle extends AbstractBattle {
       final BattleTracker battleTracker) {
     super(battleSite, attacker, battleTracker, battleType, data);
     isAmphibious = false;
-    maxRounds = Properties.getAirBattleRounds(data.getProperties());
+    maxRounds = BattleRoundResolver.resolveAirBattleRounds(territoryEffects, data);
     updateDefendingUnits();
   }
 
