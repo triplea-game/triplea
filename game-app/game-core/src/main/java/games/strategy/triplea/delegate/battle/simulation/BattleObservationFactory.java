@@ -20,10 +20,15 @@ public final class BattleObservationFactory {
   private BattleObservationFactory() {}
 
   public static BattleObservation create(final BattleState battleState) {
-    return create(battleState, 0);
+    return create(battleState, 0, BattleDecisionObservation.none());
   }
 
   public static BattleObservation create(final BattleState battleState, final long seed) {
+    return create(battleState, seed, BattleDecisionObservation.none());
+  }
+
+  public static BattleObservation create(
+      final BattleState battleState, final long seed, final BattleDecisionObservation decision) {
     final BattleState.BattleStatus status = battleState.getStatus();
     return new BattleObservation(
         BattleObservation.CURRENT_SCHEMA_VERSION,
@@ -44,7 +49,8 @@ public final class BattleObservationFactory {
         battleState.getAttackerRetreatTerritories().stream()
             .map(territory -> territory.getName())
             .sorted()
-            .toList());
+            .toList(),
+        decision);
   }
 
   private static List<UnitGroupObservation> summarize(final Collection<Unit> units) {

@@ -8,5 +8,9 @@ public interface BattleScenario {
 
   List<BattleAction> legalActions();
 
+  default boolean isLegalAction(final BattleAction action) {
+    return legalActions().contains(action);
+  }
+
   BattleScenarioStep step(BattleAction action);
 }

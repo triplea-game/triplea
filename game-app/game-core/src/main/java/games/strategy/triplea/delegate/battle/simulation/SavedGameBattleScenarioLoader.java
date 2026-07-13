@@ -49,7 +49,7 @@ public final class SavedGameBattleScenarioLoader implements BattleScenarioLoader
     final BattleTracker battleTracker = findBattleTracker(gameData);
     final List<IBattle> battles = observablePendingBattles(battleTracker);
     final IBattle selected = selectBattle(battles, request);
-    return new LoadedBattleScenario(gameData, (BattleState) selected, request.seed());
+    return new LoadedBattleScenario(gameData, selected, request.seed());
   }
 
   private static Path toExistingFile(final String scenarioPath) {

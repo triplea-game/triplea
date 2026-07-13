@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import games.strategy.triplea.delegate.battle.simulation.BattleEnvironment;
+import games.strategy.triplea.delegate.battle.simulation.BattleObservation;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
@@ -19,7 +20,8 @@ class BattleSimulationServerTest {
 
     assertTrue(response.ok());
     assertEquals("pong", response.type());
-    assertEquals(Map.of("schemaVersion", 2), response.data());
+    assertEquals(
+        Map.of("schemaVersion", BattleObservation.CURRENT_SCHEMA_VERSION), response.data());
     assertNull(response.error());
   }
 

@@ -31,18 +31,23 @@ Exit condition: a Python process can reset a real TripleA battle and receive its
 
 ## 2. Battle decision hooks and legal-action masks
 
-Status: next.
+Status: complete in PR #3.
 
 - casualty-selection action
 - retreat and retreat-destination action
 - submerge action
-- target-selection action where the engine exposes targeting
 - explicit decision-point type in observations
-- stable legal-action ordering and validation
+- stable legal-action ordering and scenario-specific validation
+- resumable `ExecutionStack` integration through engine player callbacks
+- real saved battle completion without UI callbacks
+
+Specialized target-selection callbacks that do not use casualty or retreat player methods are deferred to a later combat-extension milestone.
 
 Exit condition: a headless agent can complete one existing TripleA battle without UI callbacks.
 
 ## 3. Deterministic replay, reward, and batch execution
+
+Status: next.
 
 - transition log with seed, observation, action, reward, and result
 - replay command
