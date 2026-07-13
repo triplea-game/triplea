@@ -1,6 +1,6 @@
 # Battle simulation protocol
 
-The foundation milestone adds an API boundary without changing battle rules.
+The simulation API exposes TripleA battles without depending on Swing UI objects.
 
 The full implementation order is tracked in [`small-front-roadmap.md`](small-front-roadmap.md).
 
@@ -16,7 +16,24 @@ The process reads one JSON object per stdin line and writes one response object 
 {"command":"ping","data":{}}
 ```
 
-A real simulation provider implements `BattleEnvironment` and registers it through Java `ServiceLoader`. Until a provider is installed, `ping` and `schema` work while state-changing commands return a structured error.
+`SavedGameBattleEnvironment` is registered through Java `ServiceLoader`. It loads a TripleA save game, selects one pending battle that implements `BattleState`, and returns a serializable observation.
+
+## Reset a saved battle
+
+```json
+{
+  "command": "reset",
+  "data": {
+    "scenarioPath": "/absolute/path/to/game.tsvg",
+    "seed": 12345,
+    "territory": "Eastern Ukraine"
+  }
+}
+```
+
+`battleId` and `territory` are optional selectors. When neither is supplied, the provider chooses the first observable pending battle using a stable ordering by territory, battle type, and battle ID. When both are supplied, both must match.
+
+The response uses observation schema version 2 and includes the requested seed. The seed is retained with the loaded scenario so later decision hooks can use the same episode seed.
 
 ## Environment lifecycle
 
@@ -29,5 +46,7 @@ A real simulation provider implements `BattleEnvironment` and registers it throu
 5. terminated or truncated episodes expose no further legal actions.
 
 Calling stateful methods before `reset`, or calling `step` after the episode finishes, is an error.
+
+The saved-game provider is intentionally read-only in this milestone: `reset` and observation work, while `legalActions` is empty and `step` reports that battle decision hooks are not installed yet. Casualty and retreat actions are the next milestone.
 
 `BattleObservationFactory` produces stable unit groups sorted by owner, type, hits, and movement used. The DTO intentionally excludes UI objects and direct engine references so it can be serialized, replayed, and converted into an RL tensor later.

@@ -18,18 +18,20 @@ Exit condition: the protocol boundary is stable and fully testable without loadi
 
 ## 1. TripleA battle environment provider
 
-Status: next.
+Status: complete in PR #2.
 
 - load a saved-game or scenario fixture from a path
 - select one pending battle by battle ID or territory
 - bind the selected `BattleState` to the environment session
-- apply a configured random seed
+- retain a configured episode seed in the observation
 - return a first real observation through `reset`
 - register the provider through `ServiceLoader`
 
 Exit condition: a Python process can reset a real TripleA battle and receive its observation.
 
 ## 2. Battle decision hooks and legal-action masks
+
+Status: next.
 
 - casualty-selection action
 - retreat and retreat-destination action

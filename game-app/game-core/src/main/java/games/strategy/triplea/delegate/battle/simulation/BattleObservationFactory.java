@@ -20,9 +20,14 @@ public final class BattleObservationFactory {
   private BattleObservationFactory() {}
 
   public static BattleObservation create(final BattleState battleState) {
+    return create(battleState, 0);
+  }
+
+  public static BattleObservation create(final BattleState battleState, final long seed) {
     final BattleState.BattleStatus status = battleState.getStatus();
     return new BattleObservation(
         BattleObservation.CURRENT_SCHEMA_VERSION,
+        seed,
         battleState.getBattleId().toString(),
         battleState.getBattleSite().getName(),
         status.getRound(),

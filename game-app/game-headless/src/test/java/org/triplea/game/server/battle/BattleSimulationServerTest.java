@@ -5,8 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import games.strategy.triplea.delegate.battle.simulation.BattleEnvironment;
 import java.util.Map;
 import java.util.Optional;
+import java.util.ServiceLoader;
 import org.junit.jupiter.api.Test;
 
 class BattleSimulationServerTest {
@@ -17,7 +19,7 @@ class BattleSimulationServerTest {
 
     assertTrue(response.ok());
     assertEquals("pong", response.type());
-    assertEquals(Map.of("schemaVersion", 1), response.data());
+    assertEquals(Map.of("schemaVersion", 2), response.data());
     assertNull(response.error());
   }
 
@@ -32,5 +34,15 @@ class BattleSimulationServerTest {
     assertEquals("error", response.type());
     assertNull(response.data());
     assertTrue(response.error().contains("no BattleEnvironment service is installed"));
+  }
+
+  @Test
+  void savedGameEnvironmentIsRegisteredThroughServiceLoader() {
+    final boolean registered =
+        ServiceLoader.load(BattleEnvironment.class).stream()
+            .map(ServiceLoader.Provider::type)
+            .anyMatch(SavedGameBattleEnvironment.class::equals);
+
+    assertTrue(registered);
   }
 }

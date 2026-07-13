@@ -6,6 +6,7 @@ import java.util.Objects;
 /** Stable, UI-independent snapshot of one battle decision context. */
 public record BattleObservation(
     int schemaVersion,
+    long seed,
     String battleId,
     String territory,
     int round,
@@ -19,7 +20,38 @@ public record BattleObservation(
     List<UnitGroupObservation> defense,
     List<String> attackerRetreatTerritories) {
 
-  public static final int CURRENT_SCHEMA_VERSION = 1;
+  public static final int CURRENT_SCHEMA_VERSION = 2;
+
+  public BattleObservation(
+      final int schemaVersion,
+      final String battleId,
+      final String territory,
+      final int round,
+      final int maxRounds,
+      final boolean over,
+      final boolean amphibious,
+      final boolean headless,
+      final String offensePlayer,
+      final String defensePlayer,
+      final List<UnitGroupObservation> offense,
+      final List<UnitGroupObservation> defense,
+      final List<String> attackerRetreatTerritories) {
+    this(
+        schemaVersion,
+        0,
+        battleId,
+        territory,
+        round,
+        maxRounds,
+        over,
+        amphibious,
+        headless,
+        offensePlayer,
+        defensePlayer,
+        offense,
+        defense,
+        attackerRetreatTerritories);
+  }
 
   public BattleObservation {
     Objects.requireNonNull(battleId);
