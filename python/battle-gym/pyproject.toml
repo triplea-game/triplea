@@ -1,0 +1,61 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "triplea-battle-gym"
+version = "0.1.0"
+description = "Typed Gymnasium client for TripleA headless battle simulation"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "GPL-3.0-or-later" }
+authors = [{ name = "TripleA Small Front contributors" }]
+dependencies = [
+  "gymnasium>=1.1,<2",
+  "numpy>=1.26,<3",
+]
+
+[project.optional-dependencies]
+dev = [
+  "mypy>=1.13,<2",
+  "pytest>=8,<10",
+  "pytest-cov>=5,<8",
+  "ruff>=0.8,<1",
+]
+train = [
+  "sb3-contrib>=2.4,<3",
+  "stable-baselines3>=2.4,<3",
+]
+
+[project.scripts]
+triplea-battle-evaluate = "triplea_battle_gym.evaluate:main"
+triplea-battle-train = "triplea_battle_gym.train:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/triplea_battle_gym"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["B", "E", "F", "I", "SIM", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
+
+[tool.mypy]
+python_version = "3.11"
+check_untyped_defs = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = ["sb3_contrib", "sb3_contrib.*"]
+ignore_missing_imports = true

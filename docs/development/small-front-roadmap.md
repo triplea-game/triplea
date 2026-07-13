@@ -63,18 +63,22 @@ Exit condition: the same seed and actions reproduce the same battle result, and 
 
 ## 4. Python Gymnasium client
 
-Status: next.
+Status: complete in PR #5.
 
-- typed Python protocol client
-- Gymnasium environment wrapper
-- legal-action mask support
-- vectorized worker launcher
+- typed Python models and NDJSON process client
+- fixed-size Gymnasium observation and discrete action spaces
+- deterministic legal-action masks
+- complete casualty-combination expansion with overflow detection
+- process-level vector worker launcher
 - baseline random and scripted policies
-- training and evaluation scripts
+- evaluation command and optional Maskable PPO training command
+- Python 3.11 and 3.12 tests, lint, and type checks
 
 Exit condition: an unmodified baseline agent can train and evaluate against existing TripleA battle rules.
 
 ## 5. Terrain-specific battle rounds
+
+Status: next.
 
 - `maxGroundBattleRounds` on territory effects
 - optional `maxAirBattleRounds`
