@@ -1,10 +1,14 @@
 package games.strategy.triplea.delegate.battle.steps.change;
 
+import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.ExecutionStack;
+import games.strategy.triplea.delegate.battle.AirGroundBattlePolicy;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
+import games.strategy.triplea.delegate.battle.IBattle.BattleDomain;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -39,8 +43,32 @@ public class RemoveNonCombatants implements BattleStep {
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+    markAirDomainUnits(bridge);
     removeNonCombatants(BattleState.Side.OFFENSE, bridge);
     removeNonCombatants(BattleState.Side.DEFENSE, bridge);
+  }
+
+  private void markAirDomainUnits(final IDelegateBridge bridge) {
+    final var gameData = bridge.getData();
+    if (!AirGroundBattlePolicy.isSeparatedCombatEnabled(gameData)) {
+      return;
+    }
+
+    final Collection<Unit> activeUnits =
+        battleState.filterUnits(
+            BattleState.UnitBattleFilter.ACTIVE,
+            BattleState.Side.OFFENSE,
+            BattleState.Side.DEFENSE);
+    final CompositeChange change = new CompositeChange();
+    AirGroundBattlePolicy.unitsForDomain(activeUnits, BattleDomain.AIR)
+        .forEach(
+            unit ->
+                change.add(
+                    ChangeFactory.unitPropertyChange(
+                        unit, true, Unit.PropertyName.WAS_IN_AIR_BATTLE)));
+    if (!change.isEmpty()) {
+      bridge.addChange(change);
+    }
   }
 
   private void removeNonCombatants(final BattleState.Side side, final IDelegateBridge bridge) {
