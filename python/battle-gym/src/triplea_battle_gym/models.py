@@ -174,6 +174,8 @@ class BattleObservation:
     defense: tuple[UnitGroupObservation, ...]
     attacker_retreat_territories: tuple[str, ...]
     decision: BattleDecisionObservation
+    air_control_player: str = ""
+    offense_ground_attack_bonus: int = 0
 
     @classmethod
     def from_dict(cls, value: Mapping[str, Any]) -> BattleObservation:
@@ -205,6 +207,8 @@ class BattleObservation:
                 )
             ),
             decision=BattleDecisionObservation.from_dict(decision),
+            air_control_player=_string(value.get("airControlPlayer", ""), "airControlPlayer"),
+            offense_ground_attack_bonus=int(value.get("offenseGroundAttackBonus", 0)),
         )
 
 

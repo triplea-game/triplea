@@ -9,6 +9,8 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.battle.AirControlTracker;
+import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
@@ -24,7 +26,7 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 import org.triplea.java.collections.CollectionUtils;
 
-/** Selects casualties for normal (basically, anything that isn't AA) hits */
+/** Selects casualties for normal (basically, anything that isn't AA) hits. */
 @NoArgsConstructor
 public class SelectMainBattleCasualties
     implements BiFunction<IDelegateBridge, SelectCasualties, CasualtyDetails>, Serializable {
@@ -153,29 +155,35 @@ public class SelectMainBattleCasualties
         final SelectCasualties step,
         final Collection<Unit> targetsToPickFrom,
         final int diceHitOverride) {
+      final BattleState battleState = step.getBattleState();
+      final var gameData = battleState.getGameData();
+      final int offenseGroundStrengthModifier =
+          AirControlTracker.get(gameData)
+              .getGroundAttackBonus(
+                  battleState.getBattleSite(),
+                  battleState.getPlayer(BattleState.Side.OFFENSE),
+                  gameData);
 
       return CasualtySelector.selectCasualties(
-          step.getBattleState().getPlayer(step.getSide().getOpposite()),
+          battleState.getPlayer(step.getSide().getOpposite()),
           targetsToPickFrom,
           CombatValueBuilder.mainCombatValue()
-              .enemyUnits(step.getBattleState().filterUnits(ALIVE, step.getSide()))
-              .friendlyUnits(step.getBattleState().filterUnits(ALIVE, step.getSide().getOpposite()))
+              .enemyUnits(battleState.filterUnits(ALIVE, step.getSide()))
+              .friendlyUnits(battleState.filterUnits(ALIVE, step.getSide().getOpposite()))
               .side(step.getSide().getOpposite())
-              .gameSequence(step.getBattleState().getGameData().getSequence())
-              .supportAttachments(
-                  step.getBattleState().getGameData().getUnitTypeList().getSupportRules())
-              .lhtrHeavyBombers(
-                  Properties.getLhtrHeavyBombers(
-                      step.getBattleState().getGameData().getProperties()))
-              .gameDiceSides(step.getBattleState().getGameData().getDiceSides())
-              .territoryEffects(step.getBattleState().getTerritoryEffects())
+              .gameSequence(gameData.getSequence())
+              .supportAttachments(gameData.getUnitTypeList().getSupportRules())
+              .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(gameData.getProperties()))
+              .gameDiceSides(gameData.getDiceSides())
+              .territoryEffects(battleState.getTerritoryEffects())
+              .offenseGroundStrengthModifier(offenseGroundStrengthModifier)
               .build(),
-          step.getBattleState().getBattleSite(),
+          battleState.getBattleSite(),
           bridge,
           "Hits from " + step.getFiringGroup().getDisplayName() + ", ",
           step.getFireRoundState().getDice(),
-          step.getBattleState().getBattleId(),
-          step.getBattleState().getStatus().isHeadless(),
+          battleState.getBattleId(),
+          battleState.getStatus().isHeadless(),
           diceHitOverride,
           true);
     }

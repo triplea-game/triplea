@@ -19,7 +19,7 @@ _DECISION_CODES = {
 class ObservationEncoder:
     """Encodes grouped battle state and a padded legal-action mask."""
 
-    GLOBAL_FEATURES = 12
+    GLOBAL_FEATURES = 14
     GROUP_FEATURES = 6
 
     def __init__(self, *, max_unit_groups_per_side: int, max_actions: int) -> None:
@@ -49,6 +49,11 @@ class ObservationEncoder:
         state = np.zeros(self.state_size, dtype=np.float32)
         offense_count = sum(group.count for group in observation.offense)
         defense_count = sum(group.count for group in observation.defense)
+        air_control_player = (
+            _stable_fraction(observation.air_control_player)
+            if observation.air_control_player
+            else 0.0
+        )
         state[: self.GLOBAL_FEATURES] = np.asarray(
             [
                 observation.round,
@@ -63,6 +68,8 @@ class ObservationEncoder:
                 _DECISION_CODES.get(observation.decision.type, -1.0),
                 _stable_fraction(observation.territory),
                 len(observation.decision.candidates),
+                air_control_player,
+                observation.offense_ground_attack_bonus,
             ],
             dtype=np.float32,
         )

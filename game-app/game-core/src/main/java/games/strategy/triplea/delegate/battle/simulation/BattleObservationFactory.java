@@ -1,6 +1,8 @@
 package games.strategy.triplea.delegate.battle.simulation;
 
+import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.delegate.battle.AirControlTracker;
 import games.strategy.triplea.delegate.battle.BattleState;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -30,6 +32,18 @@ public final class BattleObservationFactory {
   public static BattleObservation create(
       final BattleState battleState, final long seed, final BattleDecisionObservation decision) {
     final BattleState.BattleStatus status = battleState.getStatus();
+    final var gameData = battleState.getGameData();
+    final GamePlayer offensePlayer = battleState.getPlayer(BattleState.Side.OFFENSE);
+    final AirControlTracker airControlTracker = AirControlTracker.get(gameData);
+    final String airControlPlayer =
+        airControlTracker
+            .getController(battleState.getBattleSite(), gameData)
+            .map(GamePlayer::getName)
+            .orElse("");
+    final int offenseGroundAttackBonus =
+        airControlTracker.getGroundAttackBonus(
+            battleState.getBattleSite(), offensePlayer, gameData);
+
     return new BattleObservation(
         BattleObservation.CURRENT_SCHEMA_VERSION,
         seed,
@@ -40,7 +54,7 @@ public final class BattleObservationFactory {
         status.isOver(),
         status.isAmphibious(),
         status.isHeadless(),
-        battleState.getPlayer(BattleState.Side.OFFENSE).getName(),
+        offensePlayer.getName(),
         battleState.getPlayer(BattleState.Side.DEFENSE).getName(),
         summarize(
             battleState.filterUnits(BattleState.UnitBattleFilter.ALIVE, BattleState.Side.OFFENSE)),
@@ -50,6 +64,8 @@ public final class BattleObservationFactory {
             .map(territory -> territory.getName())
             .sorted()
             .toList(),
+        airControlPlayer,
+        offenseGroundAttackBonus,
         decision);
   }
 

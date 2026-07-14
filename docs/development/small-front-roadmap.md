@@ -139,27 +139,39 @@ Exit condition: the map plays as a narrow-front reinforcement game without IC in
 
 ## 9. Separate air and ground combat
 
-Status: next.
+Status: complete in PR #12.
 
-- distinct air-battle and ground-battle scheduling
-- dependency ordering: air battle before ground battle
+- explicit ground, air, and raid combat domains
+- deterministic dependency ordering: raid, then air, then ground
+- opt-in compatibility property for existing maps
+- aircraft removed from normal combat through the existing air-battle state path
+- surviving aircraft remain on the board without receiving a second firing pass
+- aircraft withdrawal and destruction reuse existing battle behavior
 - aircraft cannot capture ground territory
-- aircraft withdrawal and destruction rules
-- separate air and ground round limits
+- separate air and ground round limits remain authoritative
 
 Exit condition: air units resolve combat independently and never change ground ownership directly.
 
 ## 10. Air control
 
-- `AirControlTracker` separate from `Territory.owner`
-- serializable and network-safe air-control changes
-- persistent or turn-limited control option
-- ground combat modifier for allied air control
-- observation and history support
+Status: complete in PR #13.
+
+- serializable `AirControlTracker` separate from `Territory.owner`
+- invertible and network-safe air-control changes
+- persistent or current-round control option
+- control resolved from surviving, non-withdrawn aircraft before dependent ground combat
+- contested airspace clears control while raid battles remain excluded
+- configurable allied land attack-strength bonus
+- actual dice and casualty valuation use the same modified combat value
+- battle observation schema 4 and Python fixed-size encoding support
+- human-readable history, expiration, serialization, and compatibility tests
+- XML configuration and rule documentation
 
 Exit condition: each territory can have independent ground ownership and air control.
 
 ## 11. Supply network
+
+Status: next.
 
 - supply-source territory properties
 - road/supply connection graph

@@ -11,7 +11,7 @@ OVER = False
 
 def observation(*, over: bool) -> dict[str, Any]:
     return {
-        "schemaVersion": 3,
+        "schemaVersion": 4,
         "seed": 7,
         "battleId": "battle-1",
         "territory": "Test Territory",
@@ -43,6 +43,8 @@ def observation(*, over: bool) -> dict[str, Any]:
             }
         ],
         "attackerRetreatTerritories": ["Rear"],
+        "airControlPlayer": "attacker",
+        "offenseGroundAttackBonus": 1,
         "decision": {
             "type": "NONE" if over else "RETREAT",
             "player": "" if over else "attacker",
@@ -64,12 +66,12 @@ def success(kind: str, data: Any) -> dict[str, Any]:
 def handle(command: str, data: dict[str, Any]) -> dict[str, Any]:
     global OVER
     if command == "ping":
-        return success("pong", {"schemaVersion": 3})
+        return success("pong", {"schemaVersion": 4})
     if command == "schema":
         return success(
             "schema",
             {
-                "schemaVersion": 3,
+                "schemaVersion": 4,
                 "episodeLogSchemaVersion": 1,
                 "commands": [
                     "ping",

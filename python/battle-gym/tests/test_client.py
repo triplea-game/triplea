@@ -5,9 +5,11 @@ from triplea_battle_gym.models import BattleAction, BattleResetRequest
 
 
 def test_typed_reset_step_and_replay_commands(client: BattleClient) -> None:
-    assert client.ping()["schemaVersion"] == 3
+    assert client.ping()["schemaVersion"] == 4
     observation = client.reset(BattleResetRequest("fixture.tsvg", 7))
     assert observation.territory == "Test Territory"
+    assert observation.air_control_player == "attacker"
+    assert observation.offense_ground_attack_bonus == 1
     actions = client.legal_actions()
     assert [action.type for action in actions] == ["continue", "retreat"]
 
