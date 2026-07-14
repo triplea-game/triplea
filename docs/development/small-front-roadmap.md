@@ -171,19 +171,26 @@ Exit condition: each territory can have independent ground ownership and air con
 
 ## 11. Supply network
 
-Status: next.
+Status: complete in PR #14.
 
-- supply-source territory properties
-- road/supply connection graph
-- deterministic reachability calculation
-- immediate movement prohibition when cut off
-- owner-turn out-of-supply counter
-- removal after two owner turns
-- observation and AI hooks
+- opt-in supply-source and road-link territory attachments
+- undirected road graph with deterministic territory-name ordering
+- allied land-control reachability from friendly supply sources
+- enemy and neutral road-node interdiction
+- supply-aware movement delegate with immediate server-side rejection
+- serializable owner-turn isolation counters with same-round idempotence
+- configurable removal threshold with a two-turn default
+- normal network-synchronized unit removal and resupply recovery
+- versioned topology and unit-counter observation for strategic agents
+- public resolver hooks for future AI move generation
+- XML sequence, compatibility, save/load, and rule documentation
+- attachment, reachability, movement, attrition, delegate-state, and observation tests
 
 Exit condition: cutting a road isolates units consistently across save/load and network play.
 
 ## 12. Fog of war
+
+Status: next.
 
 - player-specific visibility service
 - one-territory default vision radius
