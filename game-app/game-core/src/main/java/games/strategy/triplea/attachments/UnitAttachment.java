@@ -106,6 +106,7 @@ public class UnitAttachment extends DefaultAttachment {
   private boolean canNotMoveDuringCombatMove = false;
 
   private @Nullable Tuple<Integer, String> movementLimit = null;
+  @Getter private int stackCost = 1;
 
   // combat related
   private int attack = 0;
@@ -3386,6 +3387,24 @@ public class UnitAttachment extends DefaultAttachment {
     }
   }
 
+  private void setStackCost(final String value) {
+    setStackCost(getInt(value));
+  }
+
+  @VisibleForTesting
+  public UnitAttachment setStackCost(final Integer value) {
+    final int cost = value;
+    if (cost < 0) {
+      throw new IllegalArgumentException("stackCost must be a non-negative integer");
+    }
+    stackCost = cost;
+    return this;
+  }
+
+  private void resetStackCost() {
+    stackCost = 1;
+  }
+
   public int getStackingLimitMax(final Tuple<Integer, String> stackingLimit) {
     int max = stackingLimit.getFirst();
     if (max != Integer.MAX_VALUE) {
@@ -3497,6 +3516,13 @@ public class UnitAttachment extends DefaultAttachment {
                   this::setMovementLimit,
                   this::getMovementLimitOrNull,
                   this::resetMovementLimit));
+      case "stackCost" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setStackCost,
+                  this::setStackCost,
+                  this::getStackCost,
+                  this::resetStackCost));
       case ATTACK_STRENGTH ->
           Optional.of(
               MutableProperty.of(

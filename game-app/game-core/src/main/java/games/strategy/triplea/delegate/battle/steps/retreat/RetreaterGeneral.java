@@ -11,6 +11,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.StackCapacityResolver;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.IBattle;
@@ -53,7 +54,14 @@ class RetreaterGeneral implements Retreater {
     final Collection<Territory> allRetreatTerritories =
         CollectionUtils.getMatches(
             battleState.getAttackerRetreatTerritories(),
-            Matches.territoryEffectsAllowUnits(groundedRetreatUnits));
+            Matches.territoryEffectsAllowUnits(groundedRetreatUnits)
+                .and(
+                    territory ->
+                        StackCapacityResolver.canFit(
+                            groundedRetreatUnits,
+                            battleState.getPlayer(OFFENSE),
+                            territory,
+                            List.of())));
     return retreatUnits.stream().anyMatch(Matches.unitIsSea())
         ? CollectionUtils.getMatches(allRetreatTerritories, Matches.territoryIsWater())
         : new ArrayList<>(allRetreatTerritories);

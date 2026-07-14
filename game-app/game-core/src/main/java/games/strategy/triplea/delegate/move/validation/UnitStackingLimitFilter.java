@@ -8,6 +8,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.StackCapacityResolver;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -74,7 +75,9 @@ public class UnitStackingLimitFilter {
     // correctly handle stacking limits that apply to multiple unit types.
     final var unitsAllowedSoFar = new ArrayList<>(existingUnitsToBePlaced);
     final var forbiddenTypes = TerritoryEffectHelper.getUnitTypesForUnitsNotAllowedIntoTerritory(t);
-    for (final Unit unit : units) {
+    final var unitsWithinCapacity =
+        StackCapacityResolver.filterUnitsToFit(units, owner, t, existingUnitsToBePlaced);
+    for (final Unit unit : unitsWithinCapacity) {
       UnitType ut = unit.getType();
       if (forbiddenTypes.contains(ut)) {
         continue;

@@ -33,6 +33,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   @NonNls public static final String COMBAT_DEFENSE_EFFECT = "combatDefenseEffect";
   @NonNls public static final String MAX_GROUND_BATTLE_ROUNDS = "maxGroundBattleRounds";
   @NonNls public static final String MAX_AIR_BATTLE_ROUNDS = "maxAirBattleRounds";
+  @NonNls public static final String STACK_CAPACITY = "stackCapacity";
 
   private static final long serialVersionUID = 6379810228136325991L;
 
@@ -43,6 +44,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   private @Nullable List<UnitType> unitsNotAllowed = null;
   private @Nullable Integer maxGroundBattleRounds = null;
   private @Nullable Integer maxAirBattleRounds = null;
+  private @Nullable Integer stackCapacity = null;
 
   public TerritoryEffectAttachment(
       final String name, final Attachable attachable, final GameData gameData) {
@@ -169,6 +171,32 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
 
   private void resetMaxAirBattleRounds() {
     maxAirBattleRounds = null;
+  }
+
+  private void setStackCapacity(final String value) {
+    setStackCapacity(getInt(value));
+  }
+
+  @VisibleForTesting
+  public TerritoryEffectAttachment setStackCapacity(final Integer value) {
+    final int capacity = value;
+    if (capacity < -1) {
+      throw new IllegalArgumentException(STACK_CAPACITY + " must be -1 or a non-negative integer");
+    }
+    stackCapacity = capacity;
+    return this;
+  }
+
+  public OptionalInt getStackCapacity() {
+    return stackCapacity == null ? OptionalInt.empty() : OptionalInt.of(stackCapacity);
+  }
+
+  private @Nullable Integer getStackCapacityProperty() {
+    return stackCapacity;
+  }
+
+  private void resetStackCapacity() {
+    stackCapacity = null;
   }
 
   private static int validateBattleRounds(final Integer value, final String propertyName) {
@@ -298,6 +326,13 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
                   this::setMaxAirBattleRounds,
                   this::getMaxAirBattleRoundsProperty,
                   this::resetMaxAirBattleRounds));
+      case STACK_CAPACITY ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setStackCapacity,
+                  this::setStackCapacity,
+                  this::getStackCapacityProperty,
+                  this::resetStackCapacity));
       case "movementCostModifier" ->
           Optional.of(
               MutableProperty.of(

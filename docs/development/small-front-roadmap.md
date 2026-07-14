@@ -93,17 +93,22 @@ Exit condition: mountain, city, fortress, and open terrain can end combat after 
 
 ## 6. Territory stack capacity
 
-Status: next.
+Status: complete in PR #8.
 
 - `stackCapacity` on territory effects
 - `stackCost` on unit attachments
 - common `StackCapacityResolver`
-- validation for combat movement, redeployment, placement, reinforcement, and retreat
-- defined handling of pre-existing over-capacity stacks
+- per-allied-force capacity accounting
+- movement, attack, placement, pending reinforcement, and general retreat integration
+- stable candidate ordering and shortest-finite-capacity resolution
+- pre-existing over-capacity stacks remain intact but reject positive-cost entries
+- zero-cost unit support and XML configuration documentation
 
-Exit condition: every unit-entry path enforces the same terrain capacity rule.
+Exit condition: every current unit-entry path enforces the same terrain capacity rule, and future reinforcement batches can use the same pending-unit API.
 
 ## 7. Combat and redeployment movement
+
+Status: next.
 
 - separate combat and after-combat movement values
 - `MovementAllowanceResolver`
