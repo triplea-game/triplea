@@ -19,6 +19,7 @@ import games.strategy.triplea.ui.screen.drawable.BlockadeZoneDrawable;
 import games.strategy.triplea.ui.screen.drawable.CapitolMarkerDrawable;
 import games.strategy.triplea.ui.screen.drawable.ConvoyZoneDrawable;
 import games.strategy.triplea.ui.screen.drawable.DecoratorDrawable;
+import games.strategy.triplea.ui.screen.drawable.FogOfWarDrawable;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
 import games.strategy.triplea.ui.screen.drawable.KamikazeZoneDrawable;
 import games.strategy.triplea.ui.screen.drawable.LandTerritoryDrawable;
@@ -27,6 +28,7 @@ import games.strategy.triplea.ui.screen.drawable.SeaZoneOutlineDrawable;
 import games.strategy.triplea.ui.screen.drawable.TerritoryEffectDrawable;
 import games.strategy.triplea.ui.screen.drawable.TerritoryNameDrawable;
 import games.strategy.triplea.ui.screen.drawable.VcDrawable;
+import games.strategy.triplea.ui.visibility.LocalPlayerVisibility;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.Util;
@@ -50,6 +52,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.triplea.util.Tuple;
@@ -66,10 +69,35 @@ public class TileManager {
   private final Map<String, Set<IDrawable>> territoryDrawables = new HashMap<>();
   private final Map<String, Set<Tile>> territoryTiles = new HashMap<>();
   private final Collection<UnitsDrawer> allUnitDrawables = new ArrayList<>();
+  private volatile Set<String> visibleTerritoryNames = Set.of();
+  private volatile boolean fogOfWarMasking;
   private final UiContext uiContext;
 
   public TileManager(final UiContext uiContext) {
     this.uiContext = uiContext;
+  }
+
+  public boolean isTerritoryVisible(final Territory territory) {
+    return !fogOfWarMasking || visibleTerritoryNames.contains(territory.getName());
+  }
+
+  public boolean isFogOfWarMasking() {
+    return fogOfWarMasking;
+  }
+
+  private boolean refreshVisibility(final GameState data) {
+    final boolean updatedMasking = LocalPlayerVisibility.isMaskingEnabled(uiContext, data);
+    final Set<String> updatedNames =
+        updatedMasking
+            ? LocalPlayerVisibility.getVisibleTerritories(uiContext, data).stream()
+                .map(Territory::getName)
+                .collect(Collectors.toUnmodifiableSet())
+            : Set.of();
+    final boolean changed =
+        updatedMasking != fogOfWarMasking || !updatedNames.equals(visibleTerritoryNames);
+    fogOfWarMasking = updatedMasking;
+    visibleTerritoryNames = updatedNames;
+    return changed;
   }
 
   /**
@@ -188,6 +216,7 @@ public class TileManager {
 
   /** Re-renders all tiles. */
   public void resetTiles(final GameData data, final MapData mapData) {
+    refreshVisibility(data);
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
       synchronized (mutex) {
         for (final Tile tile : tiles) {
@@ -221,9 +250,12 @@ public class TileManager {
   /** Re-renders all tiles that intersect any of the specified territories. */
   public void updateTerritories(
       final Collection<Territory> territories, final GameData data, final MapData mapData) {
+    final boolean visibilityChanged = refreshVisibility(data);
+    final Collection<Territory> territoriesToUpdate =
+        visibilityChanged ? data.getMap().getTerritories() : territories;
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
       synchronized (mutex) {
-        for (final Territory territory : territories) {
+        for (final Territory territory : territoriesToUpdate) {
           updateTerritory(territory, data, mapData);
         }
       }
@@ -258,54 +290,55 @@ public class TileManager {
       @Nonnull final Territory territory, final GameState data, final MapData mapData) {
     final Set<Tile> drawnOn = new HashSet<>();
     final Set<IDrawable> drawing = new HashSet<>();
-    if (territoryOverlays.get(territory.getName()) != null) {
+    final boolean visible = isTerritoryVisible(territory);
+    if (visible && territoryOverlays.get(territory.getName()) != null) {
       drawing.add(territoryOverlays.get(territory.getName()));
     }
-    if (uiContext.getShowTerritoryEffects()) {
+    if (visible && uiContext.getShowTerritoryEffects()) {
       drawTerritoryEffects(territory, mapData, drawing);
     }
-    if (uiContext.getShowUnits()) {
+    if (visible && uiContext.getShowUnits()) {
       drawUnits(territory, mapData, drawnOn, drawing);
     }
-    drawing.add(new BattleDrawable(territory.getName()));
+    if (visible) {
+      drawing.add(new BattleDrawable(territory.getName()));
+    }
     final Optional<TerritoryAttachment> optionalTerritoryAttachment =
         TerritoryAttachment.get(territory);
     if (!territory.isWater()) {
-      drawing.add(new LandTerritoryDrawable(territory));
+      if (visible) {
+        drawing.add(new LandTerritoryDrawable(territory));
+      }
     } else {
-      if (optionalTerritoryAttachment.isPresent()) {
+      if (visible && optionalTerritoryAttachment.isPresent()) {
         final TerritoryAttachment ta = optionalTerritoryAttachment.get();
-        // Kamikaze Zones
         if (ta.getKamikazeZone()) {
           drawing.add(new KamikazeZoneDrawable(territory, uiContext));
         }
-        // Blockades
         if (ta.getBlockadeZone()) {
           drawing.add(new BlockadeZoneDrawable(territory));
         }
-        // Convoy Routes
-        if (ta.getConvoyRoute()) {
-          drawing.add(new ConvoyZoneDrawable(territory.getOwner(), territory, uiContext));
-        }
-        // Convoy Centers
-        if (ta.getProduction() > 0) {
+        if (ta.getConvoyRoute() || ta.getProduction() > 0) {
           drawing.add(new ConvoyZoneDrawable(territory.getOwner(), territory, uiContext));
         }
       }
       drawing.add(new SeaZoneOutlineDrawable(territory.getName()));
     }
+    if (!visible) {
+      drawing.add(new FogOfWarDrawable(territory));
+    }
     drawing.add(new TerritoryNameDrawable(territory.getName(), uiContext));
-    if (optionalTerritoryAttachment.map(TerritoryAttachment::isCapital).orElse(false)
+    if (visible
+        && optionalTerritoryAttachment.map(TerritoryAttachment::isCapital).orElse(false)
         && mapData.drawCapitolMarkers()) {
-
       final GamePlayer capitalOf =
           data.getPlayerList().getPlayerId(optionalTerritoryAttachment.get().getCapitalOrThrow());
       drawing.add(new CapitolMarkerDrawable(capitalOf, territory, uiContext));
     }
-    if (optionalTerritoryAttachment.map(TerritoryAttachment::getVictoryCity).orElse(0) != 0) {
+    if (visible
+        && optionalTerritoryAttachment.map(TerritoryAttachment::getVictoryCity).orElse(0) != 0) {
       drawing.add(new VcDrawable(territory));
     }
-    // add to the relevant tiles
     for (final Tile tile : getTiles(mapData.getBoundingRect(territory.getName()))) {
       drawnOn.add(tile);
       tile.addDrawables(drawing);

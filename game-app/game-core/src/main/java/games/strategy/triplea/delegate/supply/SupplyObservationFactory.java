@@ -5,9 +5,11 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.SupplyTerritoryAttachment;
+import games.strategy.triplea.delegate.visibility.VisibilityService;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 /** Converts mutable supply state into a deterministic observation DTO. */
 public final class SupplyObservationFactory {
@@ -16,13 +18,14 @@ public final class SupplyObservationFactory {
   public static SupplyObservation create(
       final GameState data, final GamePlayer player, final SupplyTracker tracker) {
     final int removalTurns = SupplyNetworkResolver.getRemovalTurns(data);
+    final Set<Territory> visible = VisibilityService.getVisibleTerritories(player, data);
     final List<Territory> territories = new ArrayList<>(data.getMap().getTerritories());
     territories.sort(Comparator.comparing(Territory::getName));
 
     final List<SupplyObservation.TerritoryState> territoryStates = new ArrayList<>();
     final List<SupplyObservation.UnitState> unitStates = new ArrayList<>();
     for (final Territory territory : territories) {
-      if (territory.isWater()) {
+      if (territory.isWater() || !visible.contains(territory)) {
         continue;
       }
       final boolean friendly = isFriendly(territory, player, data);

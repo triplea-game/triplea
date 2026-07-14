@@ -190,18 +190,25 @@ Exit condition: cutting a road isolates units consistently across save/load and 
 
 ## 12. Fog of war
 
-Status: next.
+Status: complete in PR #15.
 
-- player-specific visibility service
-- one-territory default vision radius
-- filtered observations for RL agents
-- single-player map masking
-- audit history, odds calculators, and logs for information leaks
-- later server-authoritative multiplayer filtering
+- opt-in player-specific visibility service with configurable radius
+- friendly-controlled territories and friendly units as vision sources
+- deterministic territory-name-ordered visibility calculation
+- strategic observation schema 1 with hidden owners and units removed
+- visibility-filtered supply observation schema 2
+- combined local-human-player perspective for single-player and hot-seat UI
+- hidden ownership colors, units, battles, effects, and dynamic map markers
+- hidden hover and unit-selection disclosure prevention
+- central visibility audit hook for future history, odds-calculator, and log surfaces
+- explicit legacy compatibility and server-authoritative multiplayer boundary
+- XML configuration, UI behavior, disclosure policy, and regression tests
 
-Exit condition: an agent or player receives only information permitted by the visibility rules.
+Exit condition: an agent or local player receives only information permitted by the visibility rules.
 
 ## 13. Strategic-agent environment
+
+Status: next.
 
 - local-front observation graph
 - legal move candidate generator

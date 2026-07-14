@@ -10,6 +10,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.SupplyTerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.visibility.VisibilityService;
 import org.junit.jupiter.api.Test;
 
 class SupplyObservationFactoryTest {
@@ -42,7 +43,7 @@ class SupplyObservationFactoryTest {
 
     final SupplyObservation observation = SupplyObservationFactory.create(data, player, tracker);
 
-    assertThat(observation.schemaVersion()).isEqualTo(1);
+    assertThat(observation.schemaVersion()).isEqualTo(2);
     assertThat(observation.lastProcessedRound()).isEqualTo(1);
     assertThat(observation.territories())
         .extracting(SupplyObservation.TerritoryState::territory)
@@ -53,5 +54,38 @@ class SupplyObservationFactoryTest {
         .containsExactly(
             new SupplyObservation.UnitState(
                 unit.getId().toString(), "Isolated", "infantry", false, 1, 1));
+  }
+
+  @Test
+  void omitsSupplyStatusForTerritoriesOutsideCurrentVision() throws Exception {
+    final GameData data = new GameData();
+    final GamePlayer blue = new GamePlayer("Blue", data);
+    final GamePlayer red = new GamePlayer("Red", data);
+    data.getPlayerList().addPlayerId(blue);
+    data.getPlayerList().addPlayerId(red);
+    final Territory home = new Territory("Home", data);
+    final Territory border = new Territory("Border", data);
+    final Territory hiddenDepot = new Territory("Hidden Depot", data);
+    data.getMap().addTerritory(home);
+    data.getMap().addTerritory(border);
+    data.getMap().addTerritory(hiddenDepot);
+    data.getMap().addConnection(home, border);
+    data.getMap().addConnection(border, hiddenDepot);
+    home.setOwner(blue);
+    border.setOwner(red);
+    hiddenDepot.setOwner(red);
+    final SupplyTerritoryAttachment hiddenSupply =
+        new SupplyTerritoryAttachment("supplyAttachment", hiddenDepot, data);
+    hiddenDepot.addAttachment("supplyAttachment", hiddenSupply);
+    hiddenSupply.setSupplySource("true");
+    data.getProperties().set(SupplyNetworkResolver.SUPPLY_NETWORK_ENABLED, true);
+    data.getProperties().set(VisibilityService.FOG_OF_WAR_ENABLED, true);
+
+    final SupplyObservation observation =
+        SupplyObservationFactory.create(data, blue, new SupplyTracker());
+
+    assertThat(observation.territories())
+        .extracting(SupplyObservation.TerritoryState::territory)
+        .containsExactly("Border", "Home");
   }
 }

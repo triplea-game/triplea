@@ -13,7 +13,7 @@ public record SupplyObservation(
     List<TerritoryState> territories,
     List<UnitState> units) {
 
-  public static final int CURRENT_SCHEMA_VERSION = 1;
+  public static final int CURRENT_SCHEMA_VERSION = 2;
 
   public SupplyObservation {
     Objects.requireNonNull(player);
