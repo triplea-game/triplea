@@ -9,6 +9,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.MovementAllowanceResolver;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
@@ -490,15 +491,13 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     this.bonusMovement = bonusMovement;
   }
 
-  /** Does not account for any movement already made. Generally equal to UnitType movement */
+  /** Does not account for any movement already made. */
   public int getMaxMovementAllowed() {
-    return Math.max(0, bonusMovement + getType().getUnitAttachment().getMovement(getOwner()));
+    return MovementAllowanceResolver.resolveMaximumMovement(this);
   }
 
   public BigDecimal getMovementLeft() {
-    return new BigDecimal(getType().getUnitAttachment().getMovement(getOwner()))
-        .add(new BigDecimal(bonusMovement))
-        .subtract(alreadyMoved);
+    return BigDecimal.valueOf(getMaxMovementAllowed()).subtract(alreadyMoved);
   }
 
   public boolean hasMovementLeft() {

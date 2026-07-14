@@ -108,16 +108,22 @@ Exit condition: every current unit-entry path enforces the same terrain capacity
 
 ## 7. Combat and redeployment movement
 
-Status: next.
+Status: complete in PR #9.
 
-- separate combat and after-combat movement values
-- `MovementAllowanceResolver`
-- validator, pathfinder, UI, AI, transport, and aircraft integration
-- non-air units used in combat cannot redeploy afterward
+- optional `combatMovement` and `redeploymentMovement` unit-attachment properties
+- legacy `movement` fallback for both phases
+- common `MovementAllowanceResolver` driven by the current game step
+- technology and local bonus movement applied after phase allowance selection
+- `Unit.getMaxMovementAllowed()` and `Unit.getMovementLeft()` integration shared by validators, pathfinding, UI, AI, transports, and aircraft checks
+- air units retain combat movement expenditure and may use remaining redeployment movement
+- moved non-air units are exhausted against the redeployment allowance at Combat Move end
+- focused fallback, property, validation, and resolver tests plus XML documentation
 
 Exit condition: reserve movement is faster than combat movement without rule discrepancies between engine components.
 
 ## 8. Fixed reinforcement scenario system
+
+Status: next.
 
 - remove economic purchase flow from the scenario
 - reinforcement schedules by player and turn

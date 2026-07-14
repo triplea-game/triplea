@@ -35,7 +35,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -89,6 +91,8 @@ public class UnitAttachment extends DefaultAttachment {
   private boolean isSea = false;
 
   private int movement = 0;
+  private @Nullable Integer combatMovement = null;
+  private @Nullable Integer redeploymentMovement = null;
   private boolean canBlitz = false;
 
   @Accessors(fluent = true)
@@ -1502,12 +1506,79 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getMovement(final GamePlayer player) {
-    final int bonus = getTechTracker().getMovementBonus(player, getUnitType());
-    return Math.max(0, movement + bonus);
+    return getMovementWithBonus(movement, player);
   }
 
   private void resetMovement() {
     movement = 0;
+  }
+
+  private void setCombatMovement(final String value) {
+    setCombatMovement(getInt(value));
+  }
+
+  @VisibleForTesting
+  public UnitAttachment setCombatMovement(final Integer value) {
+    combatMovement = validateMovementOverride(value, "combatMovement");
+    return this;
+  }
+
+  public OptionalInt getCombatMovement() {
+    return combatMovement == null ? OptionalInt.empty() : OptionalInt.of(combatMovement);
+  }
+
+  public int getCombatMovement(final GamePlayer player) {
+    return getMovementWithBonus(combatMovement == null ? movement : combatMovement, player);
+  }
+
+  private @Nullable Integer getCombatMovementProperty() {
+    return combatMovement;
+  }
+
+  private void resetCombatMovement() {
+    combatMovement = null;
+  }
+
+  private void setRedeploymentMovement(final String value) {
+    setRedeploymentMovement(getInt(value));
+  }
+
+  @VisibleForTesting
+  public UnitAttachment setRedeploymentMovement(final Integer value) {
+    redeploymentMovement = validateMovementOverride(value, "redeploymentMovement");
+    return this;
+  }
+
+  public OptionalInt getRedeploymentMovement() {
+    return redeploymentMovement == null
+        ? OptionalInt.empty()
+        : OptionalInt.of(redeploymentMovement);
+  }
+
+  public int getRedeploymentMovement(final GamePlayer player) {
+    return getMovementWithBonus(
+        redeploymentMovement == null ? movement : redeploymentMovement, player);
+  }
+
+  private @Nullable Integer getRedeploymentMovementProperty() {
+    return redeploymentMovement;
+  }
+
+  private void resetRedeploymentMovement() {
+    redeploymentMovement = null;
+  }
+
+  private int getMovementWithBonus(final int baseMovement, final GamePlayer player) {
+    final int bonus = getTechTracker().getMovementBonus(player, getUnitType());
+    return Math.max(0, baseMovement + bonus);
+  }
+
+  private static int validateMovementOverride(final Integer value, final String propertyName) {
+    final int movementValue = Objects.requireNonNull(value);
+    if (movementValue < 0) {
+      throw new IllegalArgumentException(propertyName + " must be a non-negative integer");
+    }
+    return movementValue;
   }
 
   private void setAttack(final String s) {
@@ -3473,6 +3544,20 @@ public class UnitAttachment extends DefaultAttachment {
           Optional.of(
               MutableProperty.of(
                   this::setMovement, this::setMovement, this::getMovement, this::resetMovement));
+      case "combatMovement" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setCombatMovement,
+                  this::setCombatMovement,
+                  this::getCombatMovementProperty,
+                  this::resetCombatMovement));
+      case "redeploymentMovement" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setRedeploymentMovement,
+                  this::setRedeploymentMovement,
+                  this::getRedeploymentMovementProperty,
+                  this::resetRedeploymentMovement));
       case "canBlitz" ->
           Optional.of(
               MutableProperty.of(
