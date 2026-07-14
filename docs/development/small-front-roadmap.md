@@ -123,17 +123,23 @@ Exit condition: reserve movement is faster than combat movement without rule dis
 
 ## 8. Fixed reinforcement scenario system
 
-Status: next.
+Status: complete in PR #10.
 
-- remove economic purchase flow from the scenario
-- reinforcement schedules by player and turn
-- capacity-aware reinforcement placement
-- reinforcement queue observation for strategic agents
-- scenario victory conditions
+- player attachment with repeated round, territory, unit-type, and quantity schedule entries
+- explicit reinforcement delegate for placement before supply checking and Combat Move
+- purchase-free and placement-free scenario sequence support
+- shared `StackCapacityResolver` integration with deterministic partial placement
+- serializable queue for blocked and non-friendly destinations
+- owner-round idempotence across repeated step entry and save/load
+- versioned queued and future reinforcement observation for strategic agents
+- existing EndRound, rules attachment, victory-city, and trigger victory integration
+- XML configuration, compatibility documentation, and focused regression tests
 
 Exit condition: the map plays as a narrow-front reinforcement game without IC income.
 
 ## 9. Separate air and ground combat
+
+Status: next.
 
 - distinct air-battle and ground-battle scheduling
 - dependency ordering: air battle before ground battle
