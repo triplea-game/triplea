@@ -144,8 +144,11 @@ final class ManagedMapStore implements DownloadListener {
 
   @Override
   public void downloadComplete(MapDownloadItem download) {
-    SwingUtilities.invokeLater(
-        () -> updateStatus(List.of(getMapByMapDownloadItem(download)), ManagedMapStatus.INSTALLED));
+    final ManagedMap managedMap = getMapByMapDownloadItem(download);
+    if (managedMap == null) {
+      throw new IllegalStateException("No managed map found for MapDownloadItem: " + download);
+    }
+    SwingUtilities.invokeLater(() -> updateStatus(List.of(managedMap), ManagedMapStatus.INSTALLED));
   }
 
   ManagedMap getMapByMapDownloadItem(MapDownloadItem mapDownloadItem) {
