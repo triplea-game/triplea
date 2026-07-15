@@ -9,10 +9,12 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.attachments.CanalAttachment;
+import games.strategy.triplea.attachments.FixedReinforcementAttachment;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 import games.strategy.triplea.attachments.RulesAttachment;
+import games.strategy.triplea.attachments.SupplyTerritoryAttachment;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -39,6 +41,9 @@ import games.strategy.triplea.delegate.TechActivationDelegate;
 import games.strategy.triplea.delegate.TechnologyDelegate;
 import games.strategy.triplea.delegate.UserActionDelegate;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
+import games.strategy.triplea.delegate.reinforcement.FixedReinforcementDelegate;
+import games.strategy.triplea.delegate.supply.SupplyAwareMoveDelegate;
+import games.strategy.triplea.delegate.supply.SupplyDelegate;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -87,6 +92,7 @@ public final class XmlGameElementMapper {
         .put("BidPurchaseDelegate", BidPurchaseDelegate::new)
         .put("EndRoundDelegate", EndRoundDelegate::new)
         .put("EndTurnDelegate", EndTurnDelegate::new)
+        .put("FixedReinforcementDelegate", FixedReinforcementDelegate::new)
         .put("InitializationDelegate", InitializationDelegate::new)
         .put("MoveDelegate", MoveDelegate::new)
         .put("NoAirCheckPlaceDelegate", NoAirCheckPlaceDelegate::new)
@@ -97,6 +103,8 @@ public final class XmlGameElementMapper {
         .put("PurchaseDelegate", PurchaseDelegate::new)
         .put("RandomStartDelegate", RandomStartDelegate::new)
         .put("SpecialMoveDelegate", SpecialMoveDelegate::new)
+        .put("SupplyAwareMoveDelegate", SupplyAwareMoveDelegate::new)
+        .put("SupplyDelegate", SupplyDelegate::new)
         .put("TechActivationDelegate", TechActivationDelegate::new)
         .put("TechnologyDelegate", TechnologyDelegate::new)
         .put("UserActionDelegate", UserActionDelegate::new)
@@ -121,10 +129,12 @@ public final class XmlGameElementMapper {
       final Map<String, AttachmentFactory> auxiliaryAttachmentFactoriesByTypeName) {
     return ImmutableMap.<String, AttachmentFactory>builder()
         .put("CanalAttachment", CanalAttachment::new)
+        .put("FixedReinforcementAttachment", FixedReinforcementAttachment::new)
         .put("PlayerAttachment", PlayerAttachment::new)
         .put("PoliticalActionAttachment", PoliticalActionAttachment::new)
         .put("RelationshipTypeAttachment", RelationshipTypeAttachment::new)
         .put("RulesAttachment", RulesAttachment::new)
+        .put("SupplyTerritoryAttachment", SupplyTerritoryAttachment::new)
         .put("TechAbilityAttachment", TechAbilityAttachment::new)
         .put("TechAttachment", TechAttachment::new)
         .put("TerritoryAttachment", TerritoryAttachment::new)

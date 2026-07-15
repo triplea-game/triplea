@@ -10,8 +10,13 @@ import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.TestAttachment;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.attachments.CanalAttachment;
+import games.strategy.triplea.attachments.FixedReinforcementAttachment;
+import games.strategy.triplea.attachments.SupplyTerritoryAttachment;
 import games.strategy.triplea.delegate.TestDelegate;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
+import games.strategy.triplea.delegate.reinforcement.FixedReinforcementDelegate;
+import games.strategy.triplea.delegate.supply.SupplyAwareMoveDelegate;
+import games.strategy.triplea.delegate.supply.SupplyDelegate;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Nested;
@@ -94,6 +99,59 @@ final class XmlGameElementMapperTest {
     @Test
     void shouldReturnEmptyWhenNameAbsent() {
       assertThat(xmlGameElementMapper.newAttachment("__unknown__", "", null, null), isEmpty());
+    }
+  }
+
+  /** Type names are spelled exactly as the Small Front map XML declares them. */
+  @Nested
+  final class SmallFrontTest {
+    @Test
+    void shouldReturnFixedReinforcementDelegate() {
+      final Optional<IDelegate> result =
+          xmlGameElementMapper.newDelegate(
+              "games.strategy.triplea.delegate.FixedReinforcementDelegate");
+
+      assertThat(result, isPresent());
+      assertThat(result.get(), is(instanceOf(FixedReinforcementDelegate.class)));
+    }
+
+    @Test
+    void shouldReturnSupplyDelegate() {
+      final Optional<IDelegate> result =
+          xmlGameElementMapper.newDelegate("games.strategy.triplea.delegate.SupplyDelegate");
+
+      assertThat(result, isPresent());
+      assertThat(result.get(), is(instanceOf(SupplyDelegate.class)));
+    }
+
+    @Test
+    void shouldReturnSupplyAwareMoveDelegate() {
+      final Optional<IDelegate> result =
+          xmlGameElementMapper.newDelegate(
+              "games.strategy.triplea.delegate.SupplyAwareMoveDelegate");
+
+      assertThat(result, isPresent());
+      assertThat(result.get(), is(instanceOf(SupplyAwareMoveDelegate.class)));
+    }
+
+    @Test
+    void shouldReturnSupplyTerritoryAttachment() {
+      final Optional<IAttachment> result =
+          xmlGameElementMapper.newAttachment(
+              "games.strategy.triplea.attachments.SupplyTerritoryAttachment", "", null, null);
+
+      assertThat(result, isPresent());
+      assertThat(result.get(), is(instanceOf(SupplyTerritoryAttachment.class)));
+    }
+
+    @Test
+    void shouldReturnFixedReinforcementAttachment() {
+      final Optional<IAttachment> result =
+          xmlGameElementMapper.newAttachment(
+              "games.strategy.triplea.attachments.FixedReinforcementAttachment", "", null, null);
+
+      assertThat(result, isPresent());
+      assertThat(result.get(), is(instanceOf(FixedReinforcementAttachment.class)));
     }
   }
 }
