@@ -19,8 +19,8 @@ import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.sound.HeadlessSoundChannel;
 import org.triplea.sound.ISound;
 
-/** Minimal deterministic delegate bridge for executing one restored battle without a UI. */
-final class SimulationDelegateBridge implements IDelegateBridge {
+/** Minimal deterministic delegate bridge for executing restored game phases without a UI. */
+public final class SimulationDelegateBridge implements IDelegateBridge {
   private final GameData gameData;
   private final GamePlayer currentPlayer;
   private final BattleDecisionController decisionController;
@@ -31,7 +31,7 @@ final class SimulationDelegateBridge implements IDelegateBridge {
   private final IDelegateHistoryWriter historyWriter =
       DelegateHistoryWriter.createNoOpImplementation();
 
-  SimulationDelegateBridge(
+  public SimulationDelegateBridge(
       final GameData gameData,
       final GamePlayer currentPlayer,
       final BattleDecisionController decisionController,

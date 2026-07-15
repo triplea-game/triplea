@@ -19,7 +19,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /** Owns the single player decision that may block a simulated battle execution stack. */
-final class BattleDecisionController {
+public final class BattleDecisionController {
   private static final String SELECT_CASUALTIES = "select_casualties";
   private static final String CONTINUE = "continue";
   private static final String RETREAT = "retreat";
@@ -27,6 +27,8 @@ final class BattleDecisionController {
 
   private PendingDecision pendingDecision;
   private BattleAction submittedAction;
+
+  public BattleDecisionController() {}
 
   BattleDecisionObservation observation() {
     return pendingDecision == null

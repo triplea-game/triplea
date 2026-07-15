@@ -208,18 +208,28 @@ Exit condition: an agent or local player receives only information permitted by 
 
 ## 13. Strategic-agent environment
 
-Status: next.
+Status: complete in PR #16.
 
-- local-front observation graph
-- legal move candidate generator
-- reinforcement allocation actions
-- air-assignment actions
-- supply-aware and visibility-aware observation
-- hierarchical policy split between strategic and battle decisions
+- deterministic reset, legal-action, and step lifecycle for one selected player turn
+- saved-game loading and service registration beside the existing battle environment
+- strategic observation schema 1 with local-front topology, supply, air control, reinforcement, movement, and pending-battle state
+- visibility-filtered ownership, unit, supply-source, supply-status, air-control, and battle information
+- deterministic combat-move, air-assignment, and redeployment candidate generation
+- normal `MoveValidator`, `MoveDelegate`, supply, stack-capacity, and movement-allowance integration
+- uncertainty-preserving attempts into hidden adjacent territories without action-mask information leaks
+- delivered-unit reinforcement-allocation actions over visible supplied destinations
+- nested existing battle observations and casualty, retreat, and submerge decisions
+- hierarchical strategic, battle, and complete decision domains
+- explicit legal-action overflow failure instead of silent mask truncation
+- `strategicReset`, `strategicLegalActions`, and `strategicStep` NDJSON commands
+- lifecycle, visibility, supply, move-generation, delegate-movement, saved-game battle-handoff, service-loader, and protocol tests
+- strategic protocol, determinism, compatibility, and scope documentation
 
 Exit condition: an agent can play complete turns rather than isolated battles.
 
 ## 14. Scenario content and balance
+
+Status: next.
 
 - 10–20 territory prototype map
 - NATO unit assets

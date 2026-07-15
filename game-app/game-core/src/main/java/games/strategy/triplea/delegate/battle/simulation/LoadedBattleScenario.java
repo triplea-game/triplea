@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /** Interactive adapter over one battle restored from a TripleA save game. */
-final class LoadedBattleScenario implements BattleScenario {
+public final class LoadedBattleScenario implements BattleScenario {
   private final GameData gameData;
   private final IBattle battle;
   private final BattleState battleState;
@@ -17,7 +17,7 @@ final class LoadedBattleScenario implements BattleScenario {
   private final BattleDecisionController decisionController = new BattleDecisionController();
   private final SimulationDelegateBridge bridge;
 
-  LoadedBattleScenario(final GameData gameData, final IBattle battle, final long seed) {
+  public LoadedBattleScenario(final GameData gameData, final IBattle battle, final long seed) {
     this.gameData = Objects.requireNonNull(gameData);
     this.battle = Objects.requireNonNull(battle);
     if (!(battle instanceof BattleState state)) {
