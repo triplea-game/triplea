@@ -17,6 +17,12 @@ import javax.annotation.Nullable;
 public final class AirControlTracker implements Serializable {
   private static final long serialVersionUID = 7442198467916127089L;
 
+  public enum Status {
+    UNCONTROLLED,
+    CONTESTED,
+    CONTROLLED
+  }
+
   public static final String AIR_CONTROL_ENABLED = "Air Control Enabled";
   public static final String AIR_CONTROL_PERSISTENT = "Air Control Persistent";
   public static final String AIR_CONTROL_GROUND_ATTACK_BONUS = "Air Control Ground Attack Bonus";
@@ -53,13 +59,27 @@ public final class AirControlTracker implements Serializable {
     return tracker;
   }
 
+  public Status getStatus(final Territory territory, final GameState data) {
+    if (!isEnabled(data)) {
+      return Status.UNCONTROLLED;
+    }
+    return activeEntry(territory, data)
+        .map(entry -> entry.contested() ? Status.CONTESTED : Status.CONTROLLED)
+        .orElse(Status.UNCONTROLLED);
+  }
+
   public Optional<GamePlayer> getController(final Territory territory, final GameState data) {
     if (!isEnabled(data)) {
       return Optional.empty();
     }
     return activeEntry(territory, data)
+        .filter(entry -> !entry.contested())
         .map(ControlEntry::playerName)
         .map(data.getPlayerList()::getPlayerId);
+  }
+
+  public int getEstablishedRound(final Territory territory, final GameState data) {
+    return activeEntry(territory, data).map(ControlEntry::establishedRound).orElse(0);
   }
 
   public int getGroundAttackBonus(
@@ -86,7 +106,11 @@ public final class AirControlTracker implements Serializable {
         .forEach(
             territory ->
                 activeEntry(territory, data)
-                    .ifPresent(entry -> result.put(territory.getName(), entry.playerName())));
+                    .ifPresent(
+                        entry ->
+                            result.put(
+                                territory.getName(),
+                                entry.contested() ? Status.CONTESTED.name() : entry.playerName())));
     return Map.copyOf(result);
   }
 
@@ -96,6 +120,7 @@ public final class AirControlTracker implements Serializable {
     final ControlEntry oldEntry = tracker.controlByTerritory.get(territory.getName());
     if (isPersistent(data)
         && oldEntry != null
+        && !oldEntry.contested()
         && newController != null
         && oldEntry.playerName().equals(newController.getName())) {
       return ChangeFactory.EMPTY_CHANGE;
@@ -103,7 +128,17 @@ public final class AirControlTracker implements Serializable {
     final ControlEntry newEntry =
         newController == null
             ? null
-            : new ControlEntry(newController.getName(), data.getSequence().getRound());
+            : ControlEntry.controlled(newController.getName(), data.getSequence().getRound());
+    if (Objects.equals(oldEntry, newEntry)) {
+      return ChangeFactory.EMPTY_CHANGE;
+    }
+    return new AirControlChange(territory.getName(), oldEntry, newEntry);
+  }
+
+  public static Change changeContested(final Territory territory, final GameState data) {
+    final AirControlTracker tracker = get(data);
+    final ControlEntry oldEntry = tracker.controlByTerritory.get(territory.getName());
+    final ControlEntry newEntry = ControlEntry.contested(data.getSequence().getRound());
     if (Objects.equals(oldEntry, newEntry)) {
       return ChangeFactory.EMPTY_CHANGE;
     }
@@ -129,11 +164,25 @@ public final class AirControlTracker implements Serializable {
     }
   }
 
-  record ControlEntry(String playerName, int establishedRound) implements Serializable {
+  record ControlEntry(@Nullable String playerName, boolean contested, int establishedRound)
+      implements Serializable {
     private static final long serialVersionUID = 6848528345141320284L;
 
     ControlEntry {
-      Objects.requireNonNull(playerName);
+      if (contested && playerName != null) {
+        throw new IllegalArgumentException("contested air control cannot have a controller");
+      }
+      if (!contested) {
+        Objects.requireNonNull(playerName);
+      }
+    }
+
+    static ControlEntry controlled(final String playerName, final int establishedRound) {
+      return new ControlEntry(playerName, false, establishedRound);
+    }
+
+    static ControlEntry contested(final int establishedRound) {
+      return new ControlEntry(null, true, establishedRound);
     }
   }
 }

@@ -4,10 +4,12 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.delegate.supply.SupplyNetworkResolver;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
+import games.strategy.triplea.ui.visibility.LocalPlayerVisibility;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -18,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
 
-/** Draws the name, comments, and production value for the associated territory. */
+/** Draws the name, comments, production value, and operational status for a territory. */
 public class TerritoryNameDrawable extends AbstractDrawable {
   private final String territoryName;
   private final UiContext uiContext;
@@ -36,6 +38,11 @@ public class TerritoryNameDrawable extends AbstractDrawable {
       final Graphics2D graphics,
       final MapData mapData) {
     final Territory territory = data.getMap().getTerritoryOrNull(territoryName);
+    if (territory == null) {
+      return;
+    }
+    drawSupplyRoads(bounds, data, graphics, mapData, territory);
+
     final Optional<TerritoryAttachment> optionalTerritoryAttachment =
         TerritoryAttachment.get(territory);
     final boolean drawFromTopLeft = mapData.drawNamesFromTopLeft();
@@ -47,7 +54,7 @@ public class TerritoryNameDrawable extends AbstractDrawable {
       // this is for special comments, like convoy zones, etc.
       if (optionalTerritoryAttachment.isPresent() && showComments) {
         final TerritoryAttachment ta = optionalTerritoryAttachment.get();
-        Optional<GamePlayer> optionalOriginalOwner = ta.getOriginalOwner();
+        final Optional<GamePlayer> optionalOriginalOwner = ta.getOriginalOwner();
         if (ta.getConvoyRoute() && ta.getProduction() > 0 && optionalOriginalOwner.isPresent()) {
           drawComments = true;
           if (ta.getConvoyAttached().isEmpty()) {
@@ -82,71 +89,92 @@ public class TerritoryNameDrawable extends AbstractDrawable {
           commentText = optionalOriginalOwner.get().getName() + " Convoy Center";
         }
       }
-      if (!drawComments && !showSeaNames) {
-        return;
-      }
     }
 
-    graphics.setFont(MapImage.getPropertyMapFont());
-    graphics.setColor(MapImage.getPropertyTerritoryNameAndPuAndCommentColor());
-    final FontMetrics fm = graphics.getFontMetrics();
+    if (!territory.isWater() || drawComments || showSeaNames) {
+      graphics.setFont(MapImage.getPropertyMapFont());
+      graphics.setColor(MapImage.getPropertyTerritoryNameAndPuAndCommentColor());
+      final FontMetrics fm = graphics.getFontMetrics();
 
-    // if we specify a placement point, use it otherwise try to center it
-    final int x;
-    final int y;
-    final Optional<Point> namePlace = mapData.getNamePlacementPoint(territory);
-    if (namePlace.isPresent()) {
-      x = namePlace.get().x;
-      y = namePlace.get().y;
-    } else {
-      if (territoryBounds == null) {
-        // Cache the bounds since re-computing it is expensive.
-        territoryBounds = getBestTerritoryNameRect(mapData, territory, fm);
-      }
-      x =
-          territoryBounds.x
-              + (int) territoryBounds.getWidth() / 2
-              - fm.stringWidth(territory.getName()) / 2;
-      y = territoryBounds.y + (int) territoryBounds.getHeight() / 2 + fm.getAscent() / 2;
-    }
-
-    // draw comments above names
-    if (showComments && drawComments) {
-      final Optional<Point> place = mapData.getCommentMarkerLocation(territory);
-      if (place.isPresent()) {
-        draw(bounds, graphics, place.get().x, place.get().y, null, commentText, drawFromTopLeft);
+      // if we specify a placement point, use it otherwise try to center it
+      final int x;
+      final int y;
+      final Optional<Point> namePlace = mapData.getNamePlacementPoint(territory);
+      if (namePlace.isPresent()) {
+        x = namePlace.get().x;
+        y = namePlace.get().y;
       } else {
-        draw(bounds, graphics, x, y - fm.getHeight(), null, commentText, drawFromTopLeft);
+        if (territoryBounds == null) {
+          // Cache the bounds since re-computing it is expensive.
+          territoryBounds = getBestTerritoryNameRect(mapData, territory, fm);
+        }
+        x =
+            territoryBounds.x
+                + (int) territoryBounds.getWidth() / 2
+                - fm.stringWidth(territory.getName()) / 2;
+        y = territoryBounds.y + (int) territoryBounds.getHeight() / 2 + fm.getAscent() / 2;
+      }
+
+      // draw comments above names
+      if (showComments && drawComments) {
+        final Optional<Point> place = mapData.getCommentMarkerLocation(territory);
+        if (place.isPresent()) {
+          draw(bounds, graphics, place.get().x, place.get().y, null, commentText, drawFromTopLeft);
+        } else {
+          draw(bounds, graphics, x, y - fm.getHeight(), null, commentText, drawFromTopLeft);
+        }
+      }
+      // draw territory names
+      if (mapData.drawTerritoryNames()
+          && mapData.shouldDrawTerritoryName(territoryName)
+          && (!territory.isWater() || showSeaNames)) {
+        final Image nameImage = mapData.getTerritoryNameImages().get(territory.getName());
+        draw(bounds, graphics, x, y, nameImage, territory.getName(), drawFromTopLeft);
+      }
+      // draw the PUs.
+      final int production =
+          optionalTerritoryAttachment.map(TerritoryAttachment::getProduction).orElse(0);
+      if (production > 0 && mapData.drawResources()) {
+        final Image img = uiContext.getPuImageFactory().getPuImage(production).orElse(null);
+        final String prod = Integer.toString(production);
+        final Optional<Point> place = mapData.getPuPlacementPoint(territory);
+        // if pu_place.txt is specified draw there
+        if (place.isPresent()) {
+          draw(bounds, graphics, place.get().x, place.get().y, img, prod, drawFromTopLeft);
+        } else {
+          // otherwise, draw under the territory name
+          draw(
+              bounds,
+              graphics,
+              x + (fm.stringWidth(territoryName) >> 1) - (fm.stringWidth(prod) >> 1),
+              y + fm.getLeading() + fm.getAscent(),
+              img,
+              prod,
+              drawFromTopLeft);
+        }
       }
     }
-    // draw territory names
-    if (mapData.drawTerritoryNames()
-        && mapData.shouldDrawTerritoryName(territoryName)
-        && (!territory.isWater() || showSeaNames)) {
-      final Image nameImage = mapData.getTerritoryNameImages().get(territory.getName());
-      draw(bounds, graphics, x, y, nameImage, territory.getName(), drawFromTopLeft);
+
+    final boolean visible =
+        !LocalPlayerVisibility.isMaskingEnabled(uiContext, data)
+            || LocalPlayerVisibility.getVisibleTerritories(uiContext, data).contains(territory);
+    if (visible) {
+      new OperationalStatusDrawable(territoryName, uiContext).draw(bounds, data, graphics, mapData);
     }
-    // draw the PUs.
-    final int production =
-        optionalTerritoryAttachment.map(TerritoryAttachment::getProduction).orElse(0);
-    if (production > 0 && mapData.drawResources()) {
-      final Image img = uiContext.getPuImageFactory().getPuImage(production).orElse(null);
-      final String prod = Integer.toString(production);
-      final Optional<Point> place = mapData.getPuPlacementPoint(territory);
-      // if pu_place.txt is specified draw there
-      if (place.isPresent()) {
-        draw(bounds, graphics, place.get().x, place.get().y, img, prod, drawFromTopLeft);
-      } else {
-        // otherwise, draw under the territory name
-        draw(
-            bounds,
-            graphics,
-            x + (fm.stringWidth(territoryName) >> 1) - (fm.stringWidth(prod) >> 1),
-            y + fm.getLeading() + fm.getAscent(),
-            img,
-            prod,
-            drawFromTopLeft);
-      }
+  }
+
+  private void drawSupplyRoads(
+      final Rectangle bounds,
+      final GameData data,
+      final Graphics2D graphics,
+      final MapData mapData,
+      final Territory territory) {
+    if (!SupplyNetworkResolver.isEnabled(data)) {
+      return;
+    }
+    for (final Territory neighbor : SupplyNetworkResolver.getRoadNeighbors(territory, data)) {
+      new SupplyRouteDrawable(territoryName, neighbor.getName(), uiContext)
+          .draw(bounds, data, graphics, mapData);
     }
   }
 

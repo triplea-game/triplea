@@ -9,6 +9,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.supply.SupplyNetworkResolver;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
@@ -17,6 +18,7 @@ import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.AbstractDrawable;
 import games.strategy.triplea.util.UnitCategory;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
@@ -36,6 +38,8 @@ import lombok.Getter;
  * territory's default placement point, will be drawn under all units in this case.
  */
 public class UnitsDrawer extends AbstractDrawable {
+  private static final Color OUT_OF_SUPPLY_COLOR = new Color(185, 45, 45, 235);
+
   @Getter private final Point placementPoint;
   private final boolean overflow;
   private final UiContext uiContext;
@@ -64,7 +68,7 @@ public class UnitsDrawer extends AbstractDrawable {
   }
 
   public Rectangle getPlacementRectangle() {
-    UnitImageFactory factory = uiContext.getUnitImageFactory();
+    final UnitImageFactory factory = uiContext.getUnitImageFactory();
     return new Rectangle(
         placementPoint.x,
         placementPoint.y,
@@ -112,7 +116,7 @@ public class UnitsDrawer extends AbstractDrawable {
     drawUnitByDrawMode(bounds, graphics, maxRange, owner, img);
 
     // more than 1 unit of this category
-    int unitsCount = unitCategory.getUnits().size();
+    final int unitsCount = unitCategory.getUnits().size();
     if (unitsCount != 1) {
       drawMultipleUnits(bounds, graphics, mapData, unitsCount, img, factory);
     }
@@ -122,10 +126,15 @@ public class UnitsDrawer extends AbstractDrawable {
         && Matches.unitTypeCanBeDamaged().test(unitType)) {
       displayFactoryDamage(bounds, graphics);
     }
+    displaySupplyIsolation(bounds, graphics, data);
   }
 
   private void drawUnitByDrawMode(
-      Rectangle bounds, Graphics2D graphics, int maxRange, GamePlayer owner, Image img) {
+      final Rectangle bounds,
+      final Graphics2D graphics,
+      final int maxRange,
+      final GamePlayer owner,
+      final Image img) {
     final UnitFlagDrawMode drawMode =
         ClientSetting.unitFlagDrawMode.getValue().orElse(UnitFlagDrawMode.NONE);
 
@@ -164,12 +173,12 @@ public class UnitsDrawer extends AbstractDrawable {
   }
 
   private void drawMultipleUnits(
-      Rectangle bounds,
-      Graphics2D graphics,
-      MapData mapData,
-      int unitsCount,
-      Image img,
-      UnitImageFactory factory) {
+      final Rectangle bounds,
+      final Graphics2D graphics,
+      final MapData mapData,
+      final int unitsCount,
+      final Image img,
+      final UnitImageFactory factory) {
     final int stackSize = mapData.getDefaultUnitsStackSize();
     if (stackSize > 0) { // Display more units as a stack
       for (int i = 1; i < unitsCount && i < stackSize; i++) {
@@ -231,7 +240,7 @@ public class UnitsDrawer extends AbstractDrawable {
   }
 
   private void displayFactoryDamage(final Rectangle bounds, final Graphics2D graphics) {
-    int bombingDamage = unitCategory.getBombingDamage();
+    final int bombingDamage = unitCategory.getBombingDamage();
     if (bombingDamage > 0) {
       final String s = String.valueOf(bombingDamage);
       final var factory = uiContext.getUnitImageFactory();
@@ -243,6 +252,38 @@ public class UnitsDrawer extends AbstractDrawable {
           MapImage.getPropertyUnitFactoryDamageColor(),
           MapImage.getPropertyUnitFactoryDamageOutline());
     }
+  }
+
+  private void displaySupplyIsolation(
+      final Rectangle bounds, final Graphics2D graphics, final GameData data) {
+    if (!SupplyNetworkResolver.isEnabled(data) || territory == null) {
+      return;
+    }
+    final int isolationTurns =
+        unitCategory.getUnits().stream()
+            .mapToInt(unit -> SupplyNetworkResolver.getOutOfSupplyTurns(unit, data))
+            .max()
+            .orElse(0);
+    if (isolationTurns <= 0) {
+      return;
+    }
+
+    final String label = "O" + isolationTurns + "/" + SupplyNetworkResolver.getRemovalTurns(data);
+    final int x = placementPoint.x - bounds.x + 1;
+    final int y =
+        placementPoint.y - bounds.y + uiContext.getUnitImageFactory().getUnitImageHeight() - 15;
+    final int width = Math.max(28, label.length() * 7);
+    final Color previousColor = graphics.getColor();
+    final Font previousFont = graphics.getFont();
+    graphics.setColor(new Color(0, 0, 0, 185));
+    graphics.fillRoundRect(x - 1, y - 1, width + 2, 15, 6, 6);
+    graphics.setColor(OUT_OF_SUPPLY_COLOR);
+    graphics.fillRoundRect(x, y, width, 13, 5, 5);
+    graphics.setFont(previousFont.deriveFont(Font.BOLD, 9.0f));
+    graphics.setColor(Color.WHITE);
+    graphics.drawString(label, x + 3, y + 10);
+    graphics.setFont(previousFont);
+    graphics.setColor(previousColor);
   }
 
   public static void drawOutlinedText(

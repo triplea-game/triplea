@@ -3,13 +3,13 @@ name: Battle Gym CI
 on:
   pull_request:
     branches:
-      - variant-dev
+      - main
     paths:
       - 'python/battle-gym/**'
       - '.github/workflows/python-battle-gym.yml'
   push:
     branches:
-      - variant-dev
+      - main
       - 'agent/**'
     paths:
       - 'python/battle-gym/**'

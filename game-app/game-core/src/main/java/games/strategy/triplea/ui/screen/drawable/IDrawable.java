@@ -37,7 +37,11 @@ public interface IDrawable extends Comparable<IDrawable> {
 
     BATTLE_HIGHLIGHT_LEVEL,
 
+    SUPPLY_ROUTE_LEVEL,
+
     UNITS_LEVEL,
+
+    OPERATIONAL_STATUS_LEVEL,
 
     TERRITORY_OVERLAY_LEVEL,
   }

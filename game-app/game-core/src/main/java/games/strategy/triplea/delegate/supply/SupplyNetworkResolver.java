@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate.supply;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
@@ -12,8 +13,10 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import javax.annotation.Nullable;
 
 /** Resolves road-based supply reachability for a player. */
 public final class SupplyNetworkResolver {
@@ -35,16 +38,47 @@ public final class SupplyNetworkResolver {
         1, data.getProperties().get(OUT_OF_SUPPLY_REMOVAL_TURNS, DEFAULT_REMOVAL_TURNS));
   }
 
+  public static Optional<SupplyTracker> getTracker(final GameState data) {
+    if (!(data instanceof GameData gameData)) {
+      return Optional.empty();
+    }
+    return gameData.getDelegates().stream()
+        .filter(SupplyDelegate.class::isInstance)
+        .map(SupplyDelegate.class::cast)
+        .map(SupplyDelegate::getTracker)
+        .findFirst();
+  }
+
+  public static int getOutOfSupplyTurns(final Unit unit, final GameState data) {
+    return getTracker(data).map(tracker -> tracker.getOutOfSupplyTurns(unit)).orElse(0);
+  }
+
+  public static int getTurnsUntilRemoval(final Unit unit, final GameState data) {
+    final int isolationTurns = getOutOfSupplyTurns(unit, data);
+    return isolationTurns == 0 ? 0 : Math.max(0, getRemovalTurns(data) - isolationTurns);
+  }
+
   public static boolean requiresSupply(final Unit unit) {
     return Matches.unitIsLand().test(unit);
   }
 
   public static boolean canMove(
       final Unit unit, final Territory start, final GamePlayer player, final GameState data) {
-    return !isEnabled(data)
-        || start.isWater()
-        || !requiresSupply(unit)
-        || isSupplied(start, player, data);
+    return canMove(unit, start, player, data, getTracker(data).orElse(null));
+  }
+
+  static boolean canMove(
+      final Unit unit,
+      final Territory start,
+      final GamePlayer player,
+      final GameState data,
+      final @Nullable SupplyTracker tracker) {
+    if (!isEnabled(data) || start.isWater() || !requiresSupply(unit)) {
+      return true;
+    }
+    return tracker == null
+        ? isSupplied(start, player, data)
+        : tracker.getOutOfSupplyTurns(unit) == 0;
   }
 
   public static boolean isSupplied(
@@ -115,12 +149,10 @@ public final class SupplyNetworkResolver {
       final Territory territory,
       final GamePlayer player,
       final GameState data) {
-    if (isSupplied(territory, player, data)) {
-      return List.of();
-    }
     return units.stream()
         .filter(unit -> unit.isOwnedBy(player))
         .filter(SupplyNetworkResolver::requiresSupply)
+        .filter(unit -> !canMove(unit, territory, player, data))
         .sorted(Comparator.comparing(unit -> unit.getId().toString()))
         .toList();
   }

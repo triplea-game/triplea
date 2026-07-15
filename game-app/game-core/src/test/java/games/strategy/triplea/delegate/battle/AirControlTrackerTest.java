@@ -36,12 +36,37 @@ class AirControlTrackerTest {
     gameData.performChange(change);
 
     assertThat(AirControlTracker.get(gameData).getController(territory, gameData)).contains(player);
+    assertThat(AirControlTracker.get(gameData).getStatus(territory, gameData))
+        .isEqualTo(AirControlTracker.Status.CONTROLLED);
     assertThat(territory.getOwner()).isSameAs(groundOwner);
 
     gameData.performChange(change.invert());
 
     assertThat(AirControlTracker.get(gameData).getController(territory, gameData)).isEmpty();
+    assertThat(AirControlTracker.get(gameData).getStatus(territory, gameData))
+        .isEqualTo(AirControlTracker.Status.UNCONTROLLED);
     assertThat(territory.getOwner()).isSameAs(groundOwner);
+  }
+
+  @Test
+  void contestedStateIsDistinctFromUncontrolledAndInvertible() {
+    final Change controlled = AirControlTracker.changeControl(territory, player, gameData);
+    gameData.performChange(controlled);
+    final Change contested = AirControlTracker.changeContested(territory, gameData);
+
+    gameData.performChange(contested);
+
+    assertThat(AirControlTracker.get(gameData).getStatus(territory, gameData))
+        .isEqualTo(AirControlTracker.Status.CONTESTED);
+    assertThat(AirControlTracker.get(gameData).getController(territory, gameData)).isEmpty();
+    assertThat(AirControlTracker.get(gameData).snapshot(gameData))
+        .containsEntry("Front", "CONTESTED");
+
+    gameData.performChange(contested.invert());
+
+    assertThat(AirControlTracker.get(gameData).getStatus(territory, gameData))
+        .isEqualTo(AirControlTracker.Status.CONTROLLED);
+    assertThat(AirControlTracker.get(gameData).getController(territory, gameData)).contains(player);
   }
 
   @Test

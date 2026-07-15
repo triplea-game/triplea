@@ -3,10 +3,10 @@ name: Small Front CI
 on:
   pull_request:
     branches:
-      - variant-dev
+      - main
   push:
     branches:
-      - variant-dev
+      - main
       - 'agent/**'
   workflow_dispatch:
 

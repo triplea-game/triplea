@@ -68,16 +68,19 @@ public class RemoveNonCombatants implements BattleStep {
       return;
     }
 
+    final boolean contested = !offenseAircraft.isEmpty() && !defenseAircraft.isEmpty();
     final GamePlayer controller = resolveController(offenseAircraft, defenseAircraft);
     final Change change =
-        AirControlTracker.changeControl(battleState.getBattleSite(), controller, gameData);
+        contested
+            ? AirControlTracker.changeContested(battleState.getBattleSite(), gameData)
+            : AirControlTracker.changeControl(battleState.getBattleSite(), controller, gameData);
     if (change.isEmpty()) {
       return;
     }
 
     bridge.addChange(change);
     final String historyText =
-        controller == null
+        contested
             ? "Air control over " + battleState.getBattleSite().getName() + " is contested"
             : controller.getName()
                 + " gains air control over "
@@ -141,7 +144,6 @@ public class RemoveNonCombatants implements BattleStep {
     in.defaultReadObject();
 
     if (battleState == null && battleActions instanceof BattleState) {
-      // this works because the only BattleActions implementor also implements BattleState
       battleState = (BattleState) battleActions;
     }
   }

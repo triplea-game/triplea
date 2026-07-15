@@ -49,6 +49,9 @@ final class AirControlChange extends Change {
   }
 
   private static String controllerName(final @Nullable ControlEntry entry) {
-    return entry == null ? "none" : entry.playerName();
+    if (entry == null) {
+      return "none";
+    }
+    return entry.contested() ? "contested" : entry.playerName();
   }
 }

@@ -21,7 +21,7 @@ public record StrategicObservation(
     @Nullable BattleObservation battle,
     boolean over) {
 
-  public static final int CURRENT_SCHEMA_VERSION = 1;
+  public static final int CURRENT_SCHEMA_VERSION = 2;
 
   public StrategicObservation {
     Objects.requireNonNull(player);
@@ -41,11 +41,15 @@ public record StrategicObservation(
       @Nullable Boolean supplied,
       boolean supplySource,
       @Nullable String airControlPlayer,
+      @Nullable String airControlStatus,
+      @Nullable Boolean airControlPersistent,
       List<String> neighbors,
+      List<String> roadConnections,
       List<UnitGroup> units) {
     public TerritoryState {
       Objects.requireNonNull(territory);
       neighbors = List.copyOf(neighbors);
+      roadConnections = List.copyOf(roadConnections);
       units = List.copyOf(units);
     }
   }
@@ -57,7 +61,10 @@ public record StrategicObservation(
       boolean land,
       boolean air,
       boolean sea,
-      String minimumMovementLeft) {
+      String minimumMovementLeft,
+      @Nullable Boolean supplied,
+      @Nullable Integer outOfSupplyTurns,
+      @Nullable Integer turnsUntilRemoval) {
     public UnitGroup {
       Objects.requireNonNull(owner);
       Objects.requireNonNull(unitType);

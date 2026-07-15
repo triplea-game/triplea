@@ -51,6 +51,10 @@ public final class StrategicObservationFactory {
     final List<StrategicObservation.TerritoryState> territoryStates = new ArrayList<>();
     for (final Territory territory : territories) {
       final boolean territoryVisible = visible.contains(territory);
+      final AirControlTracker.Status airControlStatus =
+          territoryVisible
+              ? airControl.getStatus(territory, data)
+              : AirControlTracker.Status.UNCONTROLLED;
       territoryStates.add(
           new StrategicObservation.TerritoryState(
               territory.getName(),
@@ -62,14 +66,24 @@ public final class StrategicObservationFactory {
                   && SupplyTerritoryAttachment.get(territory)
                       .map(SupplyTerritoryAttachment::getSupplySource)
                       .orElse(false),
-              territoryVisible
+              territoryVisible && airControlStatus == AirControlTracker.Status.CONTROLLED
                   ? airControl.getController(territory, data).map(GamePlayer::getName).orElse(null)
+                  : null,
+              territoryVisible ? airControlStatus.name() : null,
+              territoryVisible && airControlStatus != AirControlTracker.Status.UNCONTROLLED
+                  ? AirControlTracker.isPersistent(data)
                   : null,
               data.getMap().getNeighbors(territory).stream()
                   .map(Territory::getName)
                   .sorted()
                   .toList(),
-              territoryVisible ? groupUnits(territory) : List.of()));
+              SupplyNetworkResolver.isEnabled(data)
+                  ? SupplyNetworkResolver.getRoadNeighbors(territory, data).stream()
+                      .map(Territory::getName)
+                      .sorted()
+                      .toList()
+                  : List.of(),
+              territoryVisible ? groupUnits(territory, player, data) : List.of()));
     }
 
     final FixedReinforcementObservation reinforcements =
@@ -134,16 +148,37 @@ public final class StrategicObservationFactory {
         .orElseGet(FixedReinforcementTracker::new);
   }
 
-  private static List<StrategicObservation.UnitGroup> groupUnits(final Territory territory) {
+  private static List<StrategicObservation.UnitGroup> groupUnits(
+      final Territory territory, final GamePlayer perspective, final GameData data) {
     final Map<UnitKey, List<Unit>> groups = new TreeMap<>();
+    final int removalTurns = SupplyNetworkResolver.getRemovalTurns(data);
     for (final Unit unit : territory.getUnitCollection().getUnits()) {
+      final boolean land = Matches.unitIsLand().test(unit);
+      final boolean friendly =
+          unit.isOwnedBy(perspective)
+              || data.getRelationshipTracker().isAllied(perspective, unit.getOwner());
+      final boolean supplyRelevant =
+          land && friendly && SupplyNetworkResolver.isEnabled(data) && !territory.isWater();
+      final Boolean supplied =
+          supplyRelevant
+              ? SupplyNetworkResolver.isSupplied(territory, unit.getOwner(), data)
+              : null;
+      final Integer isolationTurns =
+          supplyRelevant ? SupplyNetworkResolver.getOutOfSupplyTurns(unit, data) : null;
+      final Integer turnsUntilRemoval =
+          supplyRelevant && Boolean.FALSE.equals(supplied)
+              ? Math.max(0, removalTurns - isolationTurns)
+              : null;
       final UnitKey key =
           new UnitKey(
               unit.getOwner().getName(),
               unit.getType().getName(),
-              Matches.unitIsLand().test(unit),
+              land,
               Matches.unitIsAir().test(unit),
-              Matches.unitIsSea().test(unit));
+              Matches.unitIsSea().test(unit),
+              supplied,
+              isolationTurns,
+              turnsUntilRemoval);
       groups.computeIfAbsent(key, ignored -> new ArrayList<>()).add(unit);
     }
     return groups.entrySet().stream()
@@ -160,11 +195,22 @@ public final class StrategicObservationFactory {
                         .map(Unit::getMovementLeft)
                         .min(BigDecimal::compareTo)
                         .orElse(BigDecimal.ZERO)
-                        .toPlainString()))
+                        .toPlainString(),
+                    entry.getKey().supplied(),
+                    entry.getKey().outOfSupplyTurns(),
+                    entry.getKey().turnsUntilRemoval()))
         .toList();
   }
 
-  private record UnitKey(String owner, String unitType, boolean land, boolean air, boolean sea)
+  private record UnitKey(
+      String owner,
+      String unitType,
+      boolean land,
+      boolean air,
+      boolean sea,
+      @Nullable Boolean supplied,
+      @Nullable Integer outOfSupplyTurns,
+      @Nullable Integer turnsUntilRemoval)
       implements Comparable<UnitKey> {
     private UnitKey {
       Objects.requireNonNull(owner);
@@ -178,6 +224,11 @@ public final class StrategicObservationFactory {
           .thenComparing(UnitKey::land)
           .thenComparing(UnitKey::air)
           .thenComparing(UnitKey::sea)
+          .thenComparing(UnitKey::supplied, Comparator.nullsFirst(Comparator.naturalOrder()))
+          .thenComparing(
+              UnitKey::outOfSupplyTurns, Comparator.nullsFirst(Comparator.naturalOrder()))
+          .thenComparing(
+              UnitKey::turnsUntilRemoval, Comparator.nullsFirst(Comparator.naturalOrder()))
           .compare(this, other);
     }
   }

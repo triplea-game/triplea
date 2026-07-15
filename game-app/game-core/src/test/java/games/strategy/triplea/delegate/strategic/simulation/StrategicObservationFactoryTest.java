@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 
 class StrategicObservationFactoryTest {
   @Test
-  void filtersHiddenSupplyAirControlOwnershipAndUnits() throws Exception {
+  void filtersHiddenSupplyAirControlOwnershipAndUnitsButKeepsPublicRoads() throws Exception {
     final GameData data = new GameData();
     final GamePlayer blue = new GamePlayer("Blue", data);
     final GamePlayer red = new GamePlayer("Red", data);
@@ -43,6 +43,7 @@ class StrategicObservationFactoryTest {
         new SupplyTerritoryAttachment("supplyAttachment", hiddenDepot, data);
     hiddenDepot.addAttachment("supplyAttachment", supply);
     supply.setSupplySource("true");
+    supply.setRoadConnection("Border");
 
     final UnitType infantry = new UnitType("infantry", data);
     infantry.addAttachment(
@@ -59,7 +60,7 @@ class StrategicObservationFactoryTest {
     final StrategicObservation observation =
         StrategicObservationFactory.create(data, blue, 29, StrategicPhase.COMBAT_MOVE, null);
 
-    assertThat(observation.schemaVersion()).isEqualTo(1);
+    assertThat(observation.schemaVersion()).isEqualTo(2);
     assertThat(observation.seed()).isEqualTo(29);
     assertThat(observation.decisionDomain()).isEqualTo(StrategicDecisionDomain.STRATEGIC);
     assertThat(observation.territories())
@@ -72,7 +73,10 @@ class StrategicObservationFactoryTest {
     assertThat(hidden.supplied()).isNull();
     assertThat(hidden.supplySource()).isFalse();
     assertThat(hidden.airControlPlayer()).isNull();
+    assertThat(hidden.airControlStatus()).isNull();
+    assertThat(hidden.airControlPersistent()).isNull();
     assertThat(hidden.units()).isEmpty();
     assertThat(hidden.neighbors()).containsExactly("Border");
+    assertThat(hidden.roadConnections()).containsExactly("Border");
   }
 }
