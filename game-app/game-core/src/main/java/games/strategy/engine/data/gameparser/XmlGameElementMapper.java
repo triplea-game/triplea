@@ -14,6 +14,7 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 import games.strategy.triplea.attachments.RulesAttachment;
+import games.strategy.triplea.attachments.SmallFrontScoringAttachment;
 import games.strategy.triplea.attachments.SupplyTerritoryAttachment;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TechAttachment;
@@ -42,6 +43,7 @@ import games.strategy.triplea.delegate.TechnologyDelegate;
 import games.strategy.triplea.delegate.UserActionDelegate;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.reinforcement.FixedReinforcementDelegate;
+import games.strategy.triplea.delegate.scoring.SmallFrontEndRoundDelegate;
 import games.strategy.triplea.delegate.supply.SupplyAwareMoveDelegate;
 import games.strategy.triplea.delegate.supply.SupplyDelegate;
 import java.util.Map;
@@ -102,6 +104,7 @@ public final class XmlGameElementMapper {
         .put("PoliticsDelegate", PoliticsDelegate::new)
         .put("PurchaseDelegate", PurchaseDelegate::new)
         .put("RandomStartDelegate", RandomStartDelegate::new)
+        .put("SmallFrontEndRoundDelegate", SmallFrontEndRoundDelegate::new)
         .put("SpecialMoveDelegate", SpecialMoveDelegate::new)
         .put("SupplyAwareMoveDelegate", SupplyAwareMoveDelegate::new)
         .put("SupplyDelegate", SupplyDelegate::new)
@@ -134,6 +137,7 @@ public final class XmlGameElementMapper {
         .put("PoliticalActionAttachment", PoliticalActionAttachment::new)
         .put("RelationshipTypeAttachment", RelationshipTypeAttachment::new)
         .put("RulesAttachment", RulesAttachment::new)
+        .put("SmallFrontScoringAttachment", SmallFrontScoringAttachment::new)
         .put("SupplyTerritoryAttachment", SupplyTerritoryAttachment::new)
         .put("TechAbilityAttachment", TechAbilityAttachment::new)
         .put("TechAttachment", TechAttachment::new)

@@ -11,10 +11,12 @@ import games.strategy.engine.data.TestAttachment;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.attachments.CanalAttachment;
 import games.strategy.triplea.attachments.FixedReinforcementAttachment;
+import games.strategy.triplea.attachments.SmallFrontScoringAttachment;
 import games.strategy.triplea.attachments.SupplyTerritoryAttachment;
 import games.strategy.triplea.delegate.TestDelegate;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.reinforcement.FixedReinforcementDelegate;
+import games.strategy.triplea.delegate.scoring.SmallFrontEndRoundDelegate;
 import games.strategy.triplea.delegate.supply.SupplyAwareMoveDelegate;
 import games.strategy.triplea.delegate.supply.SupplyDelegate;
 import java.util.Map;
@@ -152,6 +154,26 @@ final class XmlGameElementMapperTest {
 
       assertThat(result, isPresent());
       assertThat(result.get(), is(instanceOf(FixedReinforcementAttachment.class)));
+    }
+
+    @Test
+    void shouldReturnSmallFrontEndRoundDelegate() {
+      final Optional<IDelegate> result =
+          xmlGameElementMapper.newDelegate(
+              "games.strategy.triplea.delegate.SmallFrontEndRoundDelegate");
+
+      assertThat(result, isPresent());
+      assertThat(result.get(), is(instanceOf(SmallFrontEndRoundDelegate.class)));
+    }
+
+    @Test
+    void shouldReturnSmallFrontScoringAttachment() {
+      final Optional<IAttachment> result =
+          xmlGameElementMapper.newAttachment(
+              "games.strategy.triplea.attachments.SmallFrontScoringAttachment", "", null, null);
+
+      assertThat(result, isPresent());
+      assertThat(result.get(), is(instanceOf(SmallFrontScoringAttachment.class)));
     }
   }
 }
