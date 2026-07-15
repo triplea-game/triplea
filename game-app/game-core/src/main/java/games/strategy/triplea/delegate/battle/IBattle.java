@@ -29,18 +29,26 @@ public interface IBattle extends Serializable {
     DEFENDER
   }
 
+  /** The combat domain resolved by a battle. */
+  enum BattleDomain {
+    GROUND,
+    AIR,
+    RAID
+  }
+
   /** The type of battle. */
   @AllArgsConstructor
   @ToString(of = "type")
   enum BattleType {
-    NORMAL("Battle", false, false),
-    AIR_BATTLE("Air Battle", false, true),
-    AIR_RAID("Air Raid", true, true),
-    BOMBING_RAID("Bombing Raid", true, false);
+    NORMAL("Battle", false, false, BattleDomain.GROUND),
+    AIR_BATTLE("Air Battle", false, true, BattleDomain.AIR),
+    AIR_RAID("Air Raid", true, true, BattleDomain.RAID),
+    BOMBING_RAID("Bombing Raid", true, false, BattleDomain.RAID);
 
     private final String type;
     @Getter private final boolean bombingRun;
     @Getter private final boolean airBattle;
+    @Getter private final BattleDomain domain;
 
     public static Collection<BattleType> nonBombingBattleTypes() {
       return Arrays.stream(values())
@@ -50,6 +58,14 @@ public interface IBattle extends Serializable {
 
     public static Collection<BattleType> bombingBattleTypes() {
       return Arrays.stream(values()).filter(BattleType::isBombingRun).collect(Collectors.toSet());
+    }
+
+    public boolean isGroundBattle() {
+      return domain == BattleDomain.GROUND;
+    }
+
+    public boolean isAirDomainBattle() {
+      return domain == BattleDomain.AIR;
     }
 
     public String toDisplayText() {
@@ -89,11 +105,7 @@ public interface IBattle extends Serializable {
   void unitsLostInPrecedingBattle(
       Collection<Unit> units, IDelegateBridge bridge, boolean withdrawn);
 
-  /**
-   * Add a bombardment unit.
-   *
-   * @param u - unit to add
-   */
+  /** Add a bombardment unit. */
   void addBombardingUnit(Unit u);
 
   /** Indicates whether battle is amphibious. */
@@ -111,46 +123,28 @@ public interface IBattle extends Serializable {
   /** If we need to cancel the battle, we may need to perform some cleanup. */
   void cancelBattle(IDelegateBridge bridge);
 
-  /**
-   * Test-method after an attack has been removed.
-   *
-   * @return whether there are still units left to fight
-   */
+  /** Test-method after an attack has been removed. */
   boolean isEmpty();
 
-  /**
-   * @return Unmodifiable collection of units that are dependent on the given units.
-   */
+  /** Returns an unmodifiable collection of units that are dependent on the given units. */
   Collection<Unit> getDependentUnits(Collection<Unit> units);
 
-  /**
-   * @return Unmodifiable collection of units that are bombarding.
-   */
+  /** Returns an unmodifiable collection of units that are bombarding. */
   Collection<Unit> getBombardingUnits();
 
-  /**
-   * @return What round this battle is in. Read-only.
-   */
+  /** Returns what round this battle is in. */
   int getBattleRound();
 
-  /**
-   * @return Unmodifiable collection of the attacking units.
-   */
+  /** Returns an unmodifiable collection of the attacking units. */
   Collection<Unit> getAttackingUnits();
 
-  /**
-   * @return Unmodifiable collection of the defending units.
-   */
+  /** Returns an unmodifiable collection of the defending units. */
   Collection<Unit> getDefendingUnits();
 
-  /**
-   * @return Unmodifiable collection of the remaining attacking units.
-   */
+  /** Returns an unmodifiable collection of the remaining attacking units. */
   Collection<Unit> getRemainingAttackingUnits();
 
-  /**
-   * @return Unmodifiable collection of the remaining defending units.
-   */
+  /** Returns an unmodifiable collection of the remaining defending units. */
   Collection<Unit> getRemainingDefendingUnits();
 
   WhoWon getWhoWon();

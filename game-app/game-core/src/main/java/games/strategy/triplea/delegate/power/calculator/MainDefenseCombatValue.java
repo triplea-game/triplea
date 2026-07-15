@@ -5,6 +5,7 @@ import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.RulesAttachment;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.BattleState;
 import java.util.Collection;
@@ -20,7 +21,8 @@ import org.triplea.java.collections.IntegerMap;
 /**
  * Calculates defense strength and roll for non-AA dice
  *
- * <p>This takes into account territory effects, friendly support, and enemy support
+ * <p>This takes into account territory effects, friendly support, enemy support, and
+ * ground-strength modifiers.
  */
 @Builder
 @Value
@@ -39,6 +41,9 @@ class MainDefenseCombatValue implements CombatValue {
   @Nonnull AvailableSupports rollSupportFromEnemies;
 
   @Nonnull Collection<TerritoryEffect> territoryEffects;
+
+  int offenseGroundStrengthModifier;
+  int defenseGroundStrengthModifier;
 
   @Getter(onMethod_ = @Override)
   @Nonnull
@@ -61,6 +66,7 @@ class MainDefenseCombatValue implements CombatValue {
         gameSequence,
         gameDiceSides,
         territoryEffects,
+        defenseGroundStrengthModifier,
         strengthSupportFromFriends.copy(),
         strengthSupportFromEnemies.copy());
   }
@@ -93,6 +99,8 @@ class MainDefenseCombatValue implements CombatValue {
         .friendUnits(List.of())
         .enemyUnits(List.of())
         .territoryEffects(territoryEffects)
+        .offenseGroundStrengthModifier(offenseGroundStrengthModifier)
+        .defenseGroundStrengthModifier(defenseGroundStrengthModifier)
         .build();
   }
 
@@ -109,6 +117,8 @@ class MainDefenseCombatValue implements CombatValue {
         .friendUnits(enemyUnits)
         .enemyUnits(friendUnits)
         .territoryEffects(territoryEffects)
+        .offenseGroundStrengthModifier(offenseGroundStrengthModifier)
+        .defenseGroundStrengthModifier(defenseGroundStrengthModifier)
         .build();
   }
 
@@ -137,12 +147,41 @@ class MainDefenseCombatValue implements CombatValue {
     GameSequence gameSequence;
     int gameDiceSides;
     @Nonnull Collection<TerritoryEffect> territoryEffects;
+    int groundStrengthModifier;
     AvailableSupports supportFromFriends;
     AvailableSupports supportFromEnemies;
+
+    MainDefenseStrength(
+        final GameSequence gameSequence,
+        final int gameDiceSides,
+        final Collection<TerritoryEffect> territoryEffects,
+        final AvailableSupports supportFromFriends,
+        final AvailableSupports supportFromEnemies) {
+      this(
+          gameSequence, gameDiceSides, territoryEffects, 0, supportFromFriends, supportFromEnemies);
+    }
+
+    MainDefenseStrength(
+        final GameSequence gameSequence,
+        final int gameDiceSides,
+        final Collection<TerritoryEffect> territoryEffects,
+        final int groundStrengthModifier,
+        final AvailableSupports supportFromFriends,
+        final AvailableSupports supportFromEnemies) {
+      this.gameSequence = gameSequence;
+      this.gameDiceSides = gameDiceSides;
+      this.territoryEffects = territoryEffects;
+      this.groundStrengthModifier = groundStrengthModifier;
+      this.supportFromFriends = supportFromFriends;
+      this.supportFromEnemies = supportFromEnemies;
+    }
 
     @Override
     public StrengthValue getStrength(final Unit unit) {
       int strength = unit.getUnitAttachment().getDefense(unit.getOwner());
+      if (Matches.unitIsLand().test(unit)) {
+        strength += groundStrengthModifier;
+      }
       boolean allowFriendly = true;
       if (isFirstTurnLimitedRoll(unit.getOwner())) {
         // if first turn is limited, the strength is a max of 1 and no friendly support

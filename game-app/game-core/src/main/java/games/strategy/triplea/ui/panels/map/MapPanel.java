@@ -18,6 +18,7 @@ import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.visibility.VisibilityAudit;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MouseDetails;
@@ -27,6 +28,7 @@ import games.strategy.triplea.ui.screen.SmallMapImageManager;
 import games.strategy.triplea.ui.screen.Tile;
 import games.strategy.triplea.ui.screen.TileManager;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
+import games.strategy.triplea.ui.visibility.LocalPlayerVisibility;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.ImageScrollModel;
@@ -124,7 +126,6 @@ public class MapPanel extends ImageScrollerLargeView {
 
         @Override
         public void ownerChanged(final Territory territory) {
-          smallMapImageManager.updateTerritoryOwner(territory, gameData, uiContext.getMapData());
           updateCountries(Set.of(territory));
         }
 
@@ -225,6 +226,13 @@ public class MapPanel extends ImageScrollerLargeView {
             final double y = normalizeY(scaledMouseY + getYOffset());
             final @Nullable Territory terr = getTerritory(x, y);
             if (terr != null) {
+              if (!tileManager.isTerritoryVisible(terr)) {
+                VisibilityAudit.canReveal(
+                    "map-territory-selection",
+                    terr,
+                    LocalPlayerVisibility.getViewers(uiContext, gameData),
+                    gameData);
+              }
               notifyTerritorySelected(terr, md);
             }
             if (e.getButton() == 4 || e.getButton() == 5) {
@@ -321,19 +329,22 @@ public class MapPanel extends ImageScrollerLargeView {
     final double scaledMouseY = mouseY / scale;
     final double x = normalizeX(scaledMouseX + getXOffset());
     final double y = normalizeY(scaledMouseY + getYOffset());
-    final Territory terr = getTerritory(x, y);
-    if (!Objects.equals(terr, currentTerritory)) {
-      currentTerritory = terr;
-      notifyMouseEntered(terr);
+    final Territory territory = getTerritory(x, y);
+    final boolean visible = territory == null || tileManager.isTerritoryVisible(territory);
+    final Territory displayTerritory = visible ? territory : null;
+    if (!Objects.equals(displayTerritory, currentTerritory)) {
+      currentTerritory = displayTerritory;
+      notifyMouseEntered(displayTerritory);
     }
     if (md != null) {
-      notifyMouseMoved(terr, md);
+      notifyMouseMoved(displayTerritory, md);
     }
-    final Tuple<Territory, List<Unit>> tuple = tileManager.getUnitsAtPoint(x, y, gameData);
+    final Tuple<Territory, List<Unit>> tuple =
+        visible ? tileManager.getUnitsAtPoint(x, y, gameData) : null;
     if (unitsChanged(tuple)) {
       currentUnits = tuple;
       if (tuple == null) {
-        notifyMouseEnterUnit(List.of(), getTerritory(x, y));
+        notifyMouseEnterUnit(List.of(), displayTerritory);
       } else {
         notifyMouseEnterUnit(tuple.getSecond(), tuple.getFirst());
       }
@@ -622,7 +633,14 @@ public class MapPanel extends ImageScrollerLargeView {
                 toUpdate = countriesToUpdate;
                 countriesToUpdate = new HashSet<>();
               }
+              if (LocalPlayerVisibility.isMaskingEnabled(uiContext, gameData)) {
+                toUpdate = new ArrayList<>(gameData.getMap().getTerritories());
+              }
               tileManager.updateTerritories(toUpdate, gameData, uiContext.getMapData());
+              for (final Territory territory : toUpdate) {
+                smallMapImageManager.updateTerritoryOwner(
+                    territory, gameData, uiContext.getMapData());
+              }
               smallMapImageManager.update(uiContext.getMapData());
               SwingUtilities.invokeLater(
                   () -> {
@@ -650,7 +668,11 @@ public class MapPanel extends ImageScrollerLargeView {
     // technically there's no guarantee because the executor can be shut down after the if check
     // and before the call to execute, but it should be good enough!
     if (!executor.isTerminated()) {
-      executor.execute(() -> tileManager.resetTiles(gameData, uiContext.getMapData()));
+      executor.execute(
+          () -> {
+            tileManager.resetTiles(gameData, uiContext.getMapData());
+            initSmallMap();
+          });
     }
   }
 

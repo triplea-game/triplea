@@ -222,12 +222,26 @@ public class MoveDelegate extends AbstractMoveDelegate {
       resetUnitStateAndDelegateState();
     } else {
 
-      // Only air units can move during both CM and NCM in the same turn so moved units are set to
-      // no moves left
+      // Only air units can move during both combat and redeployment in the same turn. Mark
+      // moved non-air units against the redeployment allowance, which may be larger than combat
+      // movement.
       final List<Unit> alreadyMovedNonAirUnits =
           CollectionUtils.getMatches(
               data.getUnits().getUnits(), Matches.unitHasMoved().and(Matches.unitIsNotAir()));
-      bridge.addChange(ChangeFactory.markNoMovementChange(alreadyMovedNonAirUnits));
+      final CompositeChange noRedeploymentMovement = new CompositeChange();
+      for (final Unit unit : alreadyMovedNonAirUnits) {
+        final BigDecimal exhaustedMovement =
+            BigDecimal.valueOf(
+                MovementAllowanceResolver.resolveMaximumMovement(
+                        unit, MovementAllowanceResolver.MovementPhase.REDEPLOYMENT)
+                    + 1L);
+        noRedeploymentMovement.add(
+            ChangeFactory.unitPropertyChange(
+                unit,
+                unit.getAlreadyMoved().max(exhaustedMovement),
+                Unit.PropertyName.ALREADY_MOVED));
+      }
+      bridge.addChange(noRedeploymentMovement);
     }
     needToInitialize = true;
     needToDoRockets = true;

@@ -21,7 +21,9 @@ public class CombatValueBuilder {
       final Collection<UnitSupportAttachment> supportAttachments,
       final boolean lhtrHeavyBombers,
       final int gameDiceSides,
-      final Collection<TerritoryEffect> territoryEffects) {
+      final Collection<TerritoryEffect> territoryEffects,
+      final int offenseGroundStrengthModifier,
+      final int defenseGroundStrengthModifier) {
 
     // Get all friendly supports
     final AvailableSupports supportFromFriends =
@@ -47,6 +49,8 @@ public class CombatValueBuilder {
             .friendUnits(friendlyUnits)
             .enemyUnits(enemyUnits)
             .territoryEffects(territoryEffects)
+            .offenseGroundStrengthModifier(offenseGroundStrengthModifier)
+            .defenseGroundStrengthModifier(defenseGroundStrengthModifier)
             .build()
         : MainOffenseCombatValue.builder()
             .gameSequence(gameSequence)
@@ -61,6 +65,8 @@ public class CombatValueBuilder {
             .friendUnits(friendlyUnits)
             .enemyUnits(enemyUnits)
             .territoryEffects(territoryEffects)
+            .offenseGroundStrengthModifier(offenseGroundStrengthModifier)
+            .defenseGroundStrengthModifier(defenseGroundStrengthModifier)
             .build();
   }
 

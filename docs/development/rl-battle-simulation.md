@@ -1,0 +1,164 @@
+# Battle simulation protocol
+
+The simulation API exposes TripleA battles without depending on Swing UI objects.
+
+The full implementation order is tracked in [`small-front-roadmap.md`](small-front-roadmap.md).
+
+## Run
+
+```bash
+./gradlew :game-headless:runBattleSimulationServer
+```
+
+The process reads one JSON object per stdin line and writes one response object per stdout line.
+
+```json
+{"command":"ping","data":{}}
+```
+
+`SavedGameBattleEnvironment` is registered through Java `ServiceLoader`. It loads a TripleA save game, selects one pending battle that implements `BattleState`, and advances it until the battle ends or a supported player decision is required.
+
+## Reset a saved battle
+
+```json
+{
+  "command": "reset",
+  "data": {
+    "scenarioPath": "/absolute/path/to/game.tsvg",
+    "seed": 12345,
+    "territory": "Eastern Ukraine"
+  }
+}
+```
+
+`battleId` and `territory` are optional selectors. When neither is supplied, the provider chooses the first observable pending battle using a stable ordering by territory, battle type, and battle ID. When both are supplied, both must match.
+
+The response uses observation schema version 3. It includes the requested seed and a `decision` object. `decision.type` is one of `NONE`, `SELECT_CASUALTIES`, `RETREAT`, or `SUBMERGE`.
+
+## Casualty selection
+
+For a casualty decision, `legalActions` returns one `select_casualties` mask descriptor containing:
+
+- `candidateUnitIds`
+- `requiredHits`
+- `allowMultipleHitsPerUnit`
+- the engine's default killed and damaged unit IDs
+
+Submit the selected unit IDs through `step`:
+
+```json
+{
+  "command": "step",
+  "data": {
+    "type": "select_casualties",
+    "parameters": {
+      "killedUnitIds": "0f3b4e0b-6de4-4cdf-a03e-973e954a5a2e",
+      "damagedUnitIds": ""
+    }
+  }
+}
+```
+
+`damagedUnitIds` may contain the same UUID more than once when multiple non-lethal hits are permitted. The submitted killed and damaged entries must assign exactly `requiredHits` hits.
+
+## Retreat and submerge
+
+A retreat decision returns a `continue` action and one `retreat` action for each legal destination. A submerge decision uses `submerge` instead of `retreat`.
+
+```json
+{
+  "command": "step",
+  "data": {
+    "type": "retreat",
+    "parameters": {
+      "territory": "Rear Area"
+    }
+  }
+}
+```
+
+The engine resumes from the interrupted execution-stack step after each accepted action and advances automatically to the next decision or terminal battle result.
+
+## Episode logs
+
+`StatefulBattleEnvironment` records every accepted action. The `episodeLog` command returns log schema version 1 with:
+
+- the reset request and seed
+- the initial observation
+- every pre-action observation and legal-action mask
+- the submitted action
+- the resulting observation, reward, terminal flags, and deterministic info
+- cumulative reward and final episode status
+
+```json
+{"command":"episodeLog","data":{}}
+```
+
+The log is suitable for regression fixtures and can be stored as JSON without engine object references.
+
+## Reward
+
+The default reward is computed from the attacking side's perspective. It adds the engine-supplied scenario reward to configurable weights for:
+
+- enemy units destroyed
+- friendly units lost
+- attacker victory
+- attacker defeat
+- draw or stalemate
+
+The default weights are `+1`, `-1`, `+10`, `-10`, and `0`. A caller embedding `StatefulBattleEnvironment` can supply another `BattleRewardFunction` and `BattleRewardConfig` without changing the protocol.
+
+## Deterministic replay
+
+Pass a previously returned episode log directly as the `data` object for `replay`:
+
+```json
+{
+  "command": "replay",
+  "data": {
+    "logSchemaVersion": 1,
+    "resetRequest": {},
+    "initialObservation": {},
+    "transitions": [],
+    "cumulativeReward": 0,
+    "terminated": false,
+    "truncated": false
+  }
+}
+```
+
+Replay loads a fresh battle, applies the recorded actions, and verifies the initial observation, legal-action masks, step observations, rewards, terminal flags, and deterministic transition metadata. The session-local `episodeId` is excluded from comparison. The result reports the first mismatch and the number of transitions verified before it.
+
+## Batch replay
+
+`batch` verifies multiple episode logs in stable input order. `parallelism` selects one to 64 worker threads.
+
+```json
+{
+  "command": "batch",
+  "data": {
+    "episodes": [],
+    "parallelism": 4
+  }
+}
+```
+
+The response contains each replay result, matched and mismatched counts, worker count, elapsed nanoseconds, approximate used JVM memory, and episodes per second. Process-level vectorization can launch multiple NDJSON servers on top of this in the Python client milestone.
+
+## Environment lifecycle
+
+`StatefulBattleEnvironment` supplies the common episode lifecycle used by concrete providers:
+
+1. `reset` loads a fresh `BattleScenario` and advances it to the first decision.
+2. `legalActions` returns a deterministic, sorted action mask.
+3. `step` validates the submitted action before changing engine state.
+4. each transition records an episode ID, step ID, action type, reward, resolved decision, and next decision.
+5. `episodeLog` snapshots the complete episode without exposing mutable engine state.
+6. `replay` and `batch` use fresh scenario instances and do not mutate the active session.
+7. terminated or truncated episodes expose no further legal actions.
+
+Calling stateful methods before `reset`, or calling `step` after the episode finishes, is an error.
+
+Standard `MustFightBattle` casualty, general retreat, and submerge callbacks are supported. Specialized target-selection callbacks remain outside the current provider scope.
+
+`BattleObservationFactory` produces stable unit groups sorted by owner, type, hits, and movement used. Decision candidates additionally expose UUIDs because exact engine units must be selected. The DTO excludes UI objects and direct engine references so it can be serialized, replayed, and converted into an RL tensor later.

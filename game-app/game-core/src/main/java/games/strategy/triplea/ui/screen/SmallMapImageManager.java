@@ -3,6 +3,7 @@ package games.strategy.triplea.ui.screen;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.mapdata.MapData;
+import games.strategy.triplea.ui.screen.drawable.FogOfWarDrawable;
 import games.strategy.triplea.ui.screen.drawable.LandTerritoryDrawable;
 import games.strategy.ui.ImageScrollerSmallView;
 import games.strategy.ui.Util;
@@ -73,8 +74,12 @@ public class SmallMapImageManager {
       // the graphics so the territory lands at its scaled position.
       g.translate(bounds.x * ratioX, bounds.y * ratioY);
       g.scale(ratioX, ratioY);
-      new LandTerritoryDrawable(t)
-          .draw(bounds, g, mapData, mapData.getSmallMapTerritorySaturation());
+      if (tileManager.isTerritoryVisible(t)) {
+        new LandTerritoryDrawable(t)
+            .draw(bounds, g, mapData, mapData.getSmallMapTerritorySaturation());
+      } else {
+        new FogOfWarDrawable(t).draw(bounds, g, mapData);
+      }
     } finally {
       g.dispose();
     }

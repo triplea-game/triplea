@@ -1,0 +1,63 @@
+name: Battle Gym CI
+
+on:
+  pull_request:
+    branches:
+      - variant-dev
+    paths:
+      - 'python/battle-gym/**'
+      - '.github/workflows/python-battle-gym.yml'
+  push:
+    branches:
+      - variant-dev
+      - 'agent/**'
+    paths:
+      - 'python/battle-gym/**'
+      - '.github/workflows/python-battle-gym.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: battle-gym-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: python/battle-gym/pyproject.toml
+
+      - name: Install package
+        working-directory: python/battle-gym
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[dev]'
+
+      - name: Ruff
+        working-directory: python/battle-gym
+        run: |
+          ruff check .
+          ruff format --check .
+
+      - name: Mypy
+        if: matrix.python-version == '3.11'
+        working-directory: python/battle-gym
+        run: mypy src
+
+      - name: Run tests
+        working-directory: python/battle-gym
+        run: pytest
