@@ -108,6 +108,7 @@ public class History extends DefaultTreeModel {
   }
 
   private Change getDeltaTo(int changeIndex) {
+    Preconditions.checkState(changeIndex >= 0 && changeIndex < changes.size());
     final List<Change> deltaChanges =
         changes.subList(
             Math.min(nextChangeIndex, changeIndex), Math.max(nextChangeIndex, changeIndex));
