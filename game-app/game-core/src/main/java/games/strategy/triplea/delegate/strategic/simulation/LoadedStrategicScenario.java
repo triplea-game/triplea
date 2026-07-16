@@ -221,7 +221,7 @@ public final class LoadedStrategicScenario implements StrategicScenario {
     final Map<String, String> parameters = new TreeMap<>(action.parameters());
     final String battleActionType = parameters.remove("battleActionType");
     parameters.remove("battleId");
-    parameters.remove("territory");
+    parameters.remove("battleTerritory");
     final BattleScenarioStep result = battle.step(new BattleAction(battleActionType, parameters));
     if (battle.observation().over()) {
       activeBattle = null;
@@ -286,7 +286,8 @@ public final class LoadedStrategicScenario implements StrategicScenario {
               final Map<String, String> parameters = new TreeMap<>(battleAction.parameters());
               parameters.put("battleActionType", battleAction.type());
               parameters.put("battleId", observation.battleId());
-              parameters.put("territory", observation.territory());
+              // Not "territory": a retreat already carries one, naming its destination.
+              parameters.put("battleTerritory", observation.territory());
               return new StrategicAction("battle_decision", parameters);
             })
         .toList();

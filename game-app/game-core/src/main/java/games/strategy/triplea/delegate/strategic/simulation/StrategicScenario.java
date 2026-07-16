@@ -34,8 +34,8 @@ public interface StrategicScenario {
                     && Objects.equals(
                         candidate.parameters().get("battleId"), action.parameters().get("battleId"))
                     && Objects.equals(
-                        candidate.parameters().get("territory"),
-                        action.parameters().get("territory")));
+                        candidate.parameters().get("battleTerritory"),
+                        action.parameters().get("battleTerritory")));
   }
 
   StrategicScenarioStep step(StrategicAction action);

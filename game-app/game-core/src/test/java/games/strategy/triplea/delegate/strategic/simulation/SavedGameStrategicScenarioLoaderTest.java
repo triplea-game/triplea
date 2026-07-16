@@ -66,6 +66,29 @@ class SavedGameStrategicScenarioLoaderTest {
     assertThat(environment.legalActions()).isEmpty();
   }
 
+  /**
+   * A retreat action already carries a "territory" parameter naming where it retreats to, so the
+   * battle wrapper must not reuse that key for the battle's own location.
+   */
+  @Test
+  void battleDecisionWrapperKeepsARetreatDestination() throws Exception {
+    final Fixture fixture = createFixture();
+    final Path saveGame = save(fixture.gameData());
+    final StatefulStrategicEnvironment environment =
+        new StatefulStrategicEnvironment(new SavedGameStrategicScenarioLoader());
+    environment.reset(
+        new StrategicResetRequest(saveGame.toString(), 73, fixture.attacker().getName()));
+
+    for (final StrategicAction action : environment.legalActions()) {
+      assertThat(action.parameters()).containsKey("battleTerritory");
+      // Any "territory" left on the action belongs to the wrapped battle action, not the wrapper.
+      if (action.parameters().containsKey("territory")) {
+        assertThat(action.parameters().get("territory"))
+            .isNotEqualTo(action.parameters().get("battleTerritory"));
+      }
+    }
+  }
+
   @Test
   void rejectsUnknownPlayerWithAvailableNames() throws Exception {
     final Fixture fixture = createFixture();
@@ -88,7 +111,7 @@ class SavedGameStrategicScenarioLoaderTest {
     }
     final Map<String, String> parameters = new java.util.TreeMap<>();
     parameters.put("battleId", battle.battleId());
-    parameters.put("territory", battle.territory());
+    parameters.put("battleTerritory", battle.territory());
     switch (battle.decision().type()) {
       case SELECT_CASUALTIES -> {
         parameters.put("battleActionType", "select_casualties");
