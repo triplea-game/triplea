@@ -411,36 +411,11 @@ public final class LoadedStrategicScenario implements StrategicScenario {
   }
 
   private Route resolveRoute(final String encodedRoute) {
-    if (encodedRoute == null || encodedRoute.isBlank()) {
-      throw new IllegalArgumentException("route must not be blank");
-    }
-    final List<Territory> territories =
-        List.of(encodedRoute.split(">", -1)).stream()
-            .map(data.getMap()::getTerritoryOrThrow)
-            .toList();
-    if (territories.size() < 2) {
-      throw new IllegalArgumentException("route must contain at least two territories");
-    }
-    return new Route(territories);
+    return StrategicActionResolver.resolveRoute(data, encodedRoute);
   }
 
   private List<Unit> resolveUnits(final String encodedUnitIds, final Territory origin) {
-    if (encodedUnitIds == null || encodedUnitIds.isBlank()) {
-      throw new IllegalArgumentException("unitIds must not be blank");
-    }
-    final Map<UUID, Unit> available = new HashMap<>();
-    origin.getUnitCollection().getUnits().forEach(unit -> available.put(unit.getId(), unit));
-    final List<Unit> result = new ArrayList<>();
-    for (final String encodedId : encodedUnitIds.split(",", -1)) {
-      final UUID id = UUID.fromString(encodedId);
-      final Unit unit = available.get(id);
-      if (unit == null) {
-        throw new IllegalArgumentException(
-            "unit " + id + " is not present in origin " + origin.getName());
-      }
-      result.add(unit);
-    }
-    return List.copyOf(result);
+    return StrategicActionResolver.resolveUnits(encodedUnitIds, origin);
   }
 
   private boolean isFriendly(final Territory territory, final GamePlayer viewer) {

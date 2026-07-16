@@ -4,6 +4,7 @@ import games.strategy.engine.framework.I18nEngineFramework;
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.ai.fast.FastAi;
 import games.strategy.triplea.ai.pro.ProAi;
+import games.strategy.triplea.ai.smallfront.SmallFrontAi;
 import games.strategy.triplea.ai.weak.WeakAi;
 import java.util.Collection;
 import java.util.List;
@@ -38,6 +39,18 @@ public class PlayerTypes {
           return new ProAi(name, getLabel());
         }
       };
+  /**
+   * Only plays the Small Front maps. It drives their strategic move generator, which the other AIs
+   * know nothing about, and does nothing useful anywhere else.
+   */
+  public static final Type SMALL_FRONT_AI =
+      new Type("Small Front (AI)") {
+        @Override
+        public Player newPlayerWithName(final String name) {
+          return new SmallFrontAi(name, getLabel());
+        }
+      };
+
   public static final String PLAYER_TYPE_DEFAULT_LABEL =
       I18nEngineFramework.get().getText("startup.PlayerTypes.PLAYER_TYPE_DEFAULT_LABEL");
   public static final String PLAYER_TYPE_HUMAN_LABEL =
@@ -50,7 +63,8 @@ public class PlayerTypes {
   }
 
   public static Collection<Type> getBuiltInPlayerTypes() {
-    return List.of(PlayerTypes.WEAK_AI, PlayerTypes.FAST_AI, PlayerTypes.PRO_AI);
+    return List.of(
+        PlayerTypes.WEAK_AI, PlayerTypes.FAST_AI, PlayerTypes.PRO_AI, PlayerTypes.SMALL_FRONT_AI);
   }
 
   /**
