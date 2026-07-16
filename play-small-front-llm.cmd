@@ -10,6 +10,8 @@ set "MAX_ROUNDS=%~3"
 if not defined MAX_ROUNDS set "MAX_ROUNDS=12"
 set "ROLLOUTS=%~4"
 if not defined ROLLOUTS set "ROLLOUTS=1"
+set "MAX_DECISIONS=%~5"
+if not defined MAX_DECISIONS set "MAX_DECISIONS=2000"
 
 set "SCENARIO=%CD%\game-app\smoke-testing\src\test\resources\map-xmls\Small_Front_Meuse.xml"
 set "VENV_PYTHON=%CD%\.venv\Scripts\python.exe"
@@ -77,6 +79,7 @@ if defined COMMIT echo Source commit: %COMMIT%
 echo Seed: %SEED%
 echo Max rounds: %MAX_ROUNDS%
 echo Default shadow rollouts: %ROLLOUTS%
+echo Max decisions: %MAX_DECISIONS%
 echo Log: %LOG%
 echo.
 
@@ -91,7 +94,7 @@ echo.
   --simulation-rollouts %ROLLOUTS% ^
   --max-simulation-rollouts 8 ^
   --max-tool-rounds 8 ^
-  --max-decisions 2000 ^
+  --max-decisions %MAX_DECISIONS% ^
   --log "%LOG%"
 set "EXIT_CODE=%ERRORLEVEL%"
 popd
