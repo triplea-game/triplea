@@ -19,7 +19,8 @@ public final class BattleRoundResolver {
    *
    * <p>Water battles retain the existing global sea-battle setting. When several territory effects
    * configure a land battle limit, the shortest finite limit wins. If every configured effect uses
-   * {@code -1}, the battle is unlimited.
+   * {@code -1}, the battle is unlimited. Small Front shortens every finite multi-round limit by one,
+   * while preserving one-round and unlimited battles.
    */
   public static int resolveGroundBattleRounds(
       final Territory battleSite,
@@ -30,12 +31,13 @@ public final class BattleRoundResolver {
     Objects.requireNonNull(gameData);
 
     if (battleSite.isWater()) {
-      return Properties.getSeaBattleRounds(gameData.getProperties());
+      return reduceByOne(Properties.getSeaBattleRounds(gameData.getProperties()));
     }
-    return resolveOverride(
-        territoryEffects,
-        TerritoryEffectAttachment::getMaxGroundBattleRounds,
-        Properties.getLandBattleRounds(gameData.getProperties()));
+    return reduceByOne(
+        resolveOverride(
+            territoryEffects,
+            TerritoryEffectAttachment::getMaxGroundBattleRounds,
+            Properties.getLandBattleRounds(gameData.getProperties())));
   }
 
   /** Resolves the round limit for an air battle at any territory. */
@@ -44,10 +46,15 @@ public final class BattleRoundResolver {
     Objects.requireNonNull(territoryEffects);
     Objects.requireNonNull(gameData);
 
-    return resolveOverride(
-        territoryEffects,
-        TerritoryEffectAttachment::getMaxAirBattleRounds,
-        Properties.getAirBattleRounds(gameData.getProperties()));
+    return reduceByOne(
+        resolveOverride(
+            territoryEffects,
+            TerritoryEffectAttachment::getMaxAirBattleRounds,
+            Properties.getAirBattleRounds(gameData.getProperties())));
+  }
+
+  private static int reduceByOne(final int rounds) {
+    return rounds > 1 ? rounds - 1 : rounds;
   }
 
   private static int resolveOverride(
