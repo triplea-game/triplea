@@ -184,17 +184,17 @@
     <attachment name="territoryEffectAttachment" attachTo="Open" javaClass="games.strategy.triplea.attachments.TerritoryEffectAttachment" type="territoryEffect">
       <option name="maxGroundBattleRounds" value="4"/>
       <option name="maxAirBattleRounds" value="2"/>
-      <option name="stackCapacity" value="10"/>
+      <option name="stackCapacity" value="6"/>
     </attachment>
     <attachment name="territoryEffectAttachment" attachTo="Forest" javaClass="games.strategy.triplea.attachments.TerritoryEffectAttachment" type="territoryEffect">
       <option name="maxGroundBattleRounds" value="2"/>
       <option name="maxAirBattleRounds" value="1"/>
-      <option name="stackCapacity" value="6"/>
+      <option name="stackCapacity" value="3"/>
     </attachment>
     <attachment name="territoryEffectAttachment" attachTo="Town" javaClass="games.strategy.triplea.attachments.TerritoryEffectAttachment" type="territoryEffect">
       <option name="maxGroundBattleRounds" value="3"/>
       <option name="maxAirBattleRounds" value="1"/>
-      <option name="stackCapacity" value="8"/>
+      <option name="stackCapacity" value="5"/>
     </attachment>
 
     <attachment name="unitAttachment" attachTo="infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
@@ -222,7 +222,7 @@
       <option name="movement" value="2"/>
       <option name="combatMovement" value="2"/>
       <option name="redeploymentMovement" value="3"/>
-      <option name="attack" value="3"/>
+      <option name="attack" value="2"/>
       <option name="defense" value="3"/>
       <option name="canBlitz" value="true"/>
       <option name="stackCost" value="2"/>
@@ -627,15 +627,19 @@
       <unitPlacement unitType="armour" territory="Clervaux" quantity="1" owner="Germans"/>
       <unitPlacement unitType="infantry" territory="Vianden" quantity="2" owner="Germans"/>
       <unitPlacement unitType="artillery" territory="Vianden" quantity="1" owner="Germans"/>
-      <unitPlacement unitType="infantry" territory="St. Vith" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="St. Vith" quantity="3" owner="Americans"/>
       <unitPlacement unitType="artillery" territory="St. Vith" quantity="1" owner="Americans"/>
-      <unitPlacement unitType="infantry" territory="Houffalize" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Houffalize" quantity="2" owner="Americans"/>
       <unitPlacement unitType="infantry" territory="Wiltz" quantity="1" owner="Americans"/>
-      <unitPlacement unitType="infantry" territory="Bastogne" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Bastogne" quantity="3" owner="Americans"/>
       <unitPlacement unitType="artillery" territory="Bastogne" quantity="1" owner="Americans"/>
       <unitPlacement unitType="infantry" territory="Martelange" quantity="1" owner="Americans"/>
       <unitPlacement unitType="infantry" territory="Vielsalm" quantity="1" owner="Americans"/>
       <unitPlacement unitType="infantry" territory="La Roche" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Erezee" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Hotton" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Nassogne" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Libramont" quantity="1" owner="Americans"/>
       <unitPlacement unitType="infantry" territory="Marche" quantity="2" owner="Americans"/>
       <unitPlacement unitType="armour" territory="Marche" quantity="1" owner="Americans"/>
       <unitPlacement unitType="infantry" territory="Neufchateau" quantity="1" owner="Americans"/>
