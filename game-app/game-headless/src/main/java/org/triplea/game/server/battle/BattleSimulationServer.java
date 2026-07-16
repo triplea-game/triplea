@@ -160,11 +160,20 @@ public final class BattleSimulationServer {
         data.has("maxActions")
             ? data.get("maxActions").getAsInt()
             : StrategicResetRequest.DEFAULT_MAX_ACTIONS;
+    final boolean selfPlay = data.has("selfPlay") && data.get("selfPlay").getAsBoolean();
+    final int maxRounds = data.has("maxRounds") ? data.get("maxRounds").getAsInt() : 0;
+    // player is optional in self-play, where the game's turn order decides who acts.
+    final String player =
+        data.has("player") && !data.get("player").isJsonNull()
+            ? data.get("player").getAsString()
+            : "";
     return new StrategicResetRequest(
         data.get("scenarioPath").getAsString(),
         data.get("seed").getAsLong(),
-        data.get("player").getAsString(),
-        maxActions);
+        player,
+        maxActions,
+        selfPlay,
+        maxRounds);
   }
 
   private static Response withBattleEnvironment(

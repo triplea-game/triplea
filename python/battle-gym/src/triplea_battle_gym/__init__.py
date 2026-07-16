@@ -10,6 +10,7 @@ from .models import (
     BattleResetRequest,
     BattleStepResult,
 )
+from .strategic_actions import expand_strategic_actions
 from .strategic_encoding import StrategicObservationEncoder
 from .strategic_env import TripleAStrategicEnv
 from .strategic_models import (
@@ -42,4 +43,5 @@ __all__ = [
     "TripleABattleEnv",
     "TripleAStrategicEnv",
     "expand_legal_actions",
+    "expand_strategic_actions",
 ]

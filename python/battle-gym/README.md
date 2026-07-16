@@ -94,9 +94,38 @@ acting player may not be able to see, so putting it in the observation would lea
 exactly what the fog hides. The reward is computed server-side from the true
 state and only ever reaches the agent as a scalar.
 
-Unlike the battle environment, the action space needs no expansion: the server
-already returns concrete actions, so `env.step(i)` indexes directly into the
-current legal mask. Raise `max_actions` if the server's mask outgrows it.
+Moves and phase ends arrive concrete, but a battle decision does not: casualty
+selection arrives as a descriptor naming the candidates and the hit count. The
+environment expands those through the same routine the battle environment uses,
+so `env.step(i)` always indexes a mask the server will accept. Raise
+`max_actions` if the expanded mask outgrows it.
+
+## Self-play
+
+Pass `self_play=True` and an episode becomes a whole game instead of one turn.
+Every player's turn is chained over one game state — nothing is written to disk
+between turns — and `info["player"]` says who is acting now, so a shared policy
+sees both sides.
+
+```python
+request = StrategicResetRequest(
+    scenario_path="/absolute/path/to/game.tsvg",
+    seed=12345,
+    self_play=True,
+    max_rounds=12,   # a backstop; the map's own scoring round normally ends it first
+)
+```
+
+Each step's reward is the acting player's margin swing **since that player last
+acted**, not since the action started. The difference matters: measuring only
+within an action would pay a player for ground it took and never charge it for
+ground the opponent took back on the turn in between, which trains a policy to
+attack and never cover. Anchoring on the player's previous decision folds the
+opponent's whole turn into the next reward that player sees, and makes each
+player's rewards sum to its margin change across the episode.
+
+Because that reward carries per-episode state, one reward function belongs to one
+environment. `reset()` clears it.
 
 ## Baselines
 

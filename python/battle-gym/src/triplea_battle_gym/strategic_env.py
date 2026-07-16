@@ -12,6 +12,7 @@ import numpy as np
 from gymnasium import spaces
 
 from .client import BattleClient
+from .strategic_actions import expand_strategic_actions
 from .strategic_encoding import StrategicObservationEncoder
 from .strategic_models import StrategicAction, StrategicObservation, StrategicResetRequest
 
@@ -145,7 +146,11 @@ class TripleAStrategicEnv(gym.Env[dict[str, np.ndarray], int]):
         if self.raw_observation.over:
             self._clear_actions()
             return
-        self._actions = self._client.strategic_legal_actions()
+        self._actions = expand_strategic_actions(
+            self.raw_observation,
+            self._client.strategic_legal_actions(),
+            max_actions=self._max_actions,
+        )
 
     def _clear_actions(self) -> None:
         self._actions = ()

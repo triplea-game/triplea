@@ -10,25 +10,35 @@ from collections.abc import Mapping
 from dataclasses import dataclass, field
 from typing import Any
 
-from .models import JsonObject, _mapping, _sequence, _string
+from .models import BattleObservation, JsonObject, _mapping, _sequence, _string
 
 
 @dataclass(frozen=True, slots=True)
 class StrategicResetRequest:
-    """Restores one player's turn from a TripleA save and fixes its RNG seed."""
+    """Selects a strategic episode from a TripleA save and fixes its RNG seed.
+
+    By default an episode is the one turn belonging to `player`. With `self_play` it is instead a
+    whole game: every turn is chained over one game state, `player` is ignored because the game's
+    own sequence decides who acts, and `max_rounds` caps the episode for a map that would otherwise
+    never stop (0 leaves the map's own end-round step in charge).
+    """
 
     scenario_path: str
     seed: int
-    player: str
+    player: str = ""
     max_actions: int = 512
+    self_play: bool = False
+    max_rounds: int = 0
 
     def __post_init__(self) -> None:
         if not self.scenario_path:
             raise ValueError("scenario_path must not be empty")
-        if not self.player:
-            raise ValueError("player must not be empty")
+        if not self.self_play and not self.player:
+            raise ValueError("player must not be empty outside self-play")
         if self.max_actions < 1:
             raise ValueError("max_actions must be positive")
+        if self.max_rounds < 0:
+            raise ValueError("max_rounds must not be negative")
 
     def to_dict(self) -> JsonObject:
         return {
@@ -36,6 +46,8 @@ class StrategicResetRequest:
             "seed": self.seed,
             "player": self.player,
             "maxActions": self.max_actions,
+            "selfPlay": self.self_play,
+            "maxRounds": self.max_rounds,
         }
 
 
@@ -217,7 +229,7 @@ class StrategicObservation:
     territories: tuple[TerritoryState, ...]
     reinforcements: ReinforcementObservation
     pending_battles: tuple[PendingBattle, ...]
-    battle: Mapping[str, Any] | None
+    battle: BattleObservation | None
     over: bool
 
     @classmethod
@@ -242,7 +254,9 @@ class StrategicObservation:
                 PendingBattle.from_dict(_mapping(item, "pendingBattles[]"))
                 for item in _sequence(value.get("pendingBattles", []), "pendingBattles")
             ),
-            battle=None if battle is None else _mapping(battle, "battle"),
+            battle=(
+                None if battle is None else BattleObservation.from_dict(_mapping(battle, "battle"))
+            ),
             over=bool(value.get("over", False)),
         )
 

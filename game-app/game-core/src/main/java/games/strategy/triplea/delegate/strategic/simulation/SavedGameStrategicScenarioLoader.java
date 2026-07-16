@@ -31,6 +31,10 @@ public final class SavedGameStrategicScenarioLoader implements StrategicScenario
             .apply(path)
             .orElseThrow(
                 () -> new IllegalArgumentException("could not load TripleA save game: " + path));
+    if (request.selfPlay()) {
+      return new SelfPlayStrategicScenario(
+          data, request.seed(), request.maxActions(), request.maxRounds());
+    }
     final GamePlayer player = data.getPlayerList().getPlayerId(request.player());
     if (player == null || player.isNull()) {
       throw new IllegalArgumentException(

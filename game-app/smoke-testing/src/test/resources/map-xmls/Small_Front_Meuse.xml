@@ -1,0 +1,663 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE game SYSTEM "game.dtd">
+<game>
+  <info name="Small Front: Meuse Corridor" version="0.1"/>
+  <loader javaClass="games.strategy.triplea.TripleA"/>
+  <triplea minimumVersion="2.7.0"/>
+  <diceSides value="6"/>
+
+  <map>
+    <territory name="Andenne"/>
+    <territory name="Bastogne"/>
+    <territory name="Beauraing"/>
+    <territory name="Bertrix"/>
+    <territory name="Bitburg"/>
+    <territory name="Blankenheim"/>
+    <territory name="Ciney"/>
+    <territory name="Clervaux"/>
+    <territory name="Dinant"/>
+    <territory name="Durbuy"/>
+    <territory name="Echternach"/>
+    <territory name="Erezee"/>
+    <territory name="Givet"/>
+    <territory name="Havelange"/>
+    <territory name="Hotton"/>
+    <territory name="Houffalize"/>
+    <territory name="Huy"/>
+    <territory name="La Roche"/>
+    <territory name="Libramont"/>
+    <territory name="Losheim Gap"/>
+    <territory name="Marche"/>
+    <territory name="Martelange"/>
+    <territory name="Namur"/>
+    <territory name="Nassogne"/>
+    <territory name="Neufchateau"/>
+    <territory name="Prum"/>
+    <territory name="Rochefort"/>
+    <territory name="Saint-Hubert"/>
+    <territory name="St. Vith"/>
+    <territory name="Vianden"/>
+    <territory name="Vielsalm"/>
+    <territory name="Wellin"/>
+    <territory name="Wiltz"/>
+    <connection t1="Andenne" t2="Havelange"/>
+    <connection t1="Andenne" t2="Huy"/>
+    <connection t1="Andenne" t2="Namur"/>
+    <connection t1="Bastogne" t2="Hotton"/>
+    <connection t1="Bastogne" t2="Martelange"/>
+    <connection t1="Bastogne" t2="Saint-Hubert"/>
+    <connection t1="Bastogne" t2="Vianden"/>
+    <connection t1="Bastogne" t2="Wiltz"/>
+    <connection t1="Beauraing" t2="Bertrix"/>
+    <connection t1="Beauraing" t2="Givet"/>
+    <connection t1="Beauraing" t2="Neufchateau"/>
+    <connection t1="Beauraing" t2="Rochefort"/>
+    <connection t1="Beauraing" t2="Wellin"/>
+    <connection t1="Bertrix" t2="Neufchateau"/>
+    <connection t1="Bitburg" t2="Clervaux"/>
+    <connection t1="Bitburg" t2="Echternach"/>
+    <connection t1="Bitburg" t2="Prum"/>
+    <connection t1="Bitburg" t2="Vianden"/>
+    <connection t1="Blankenheim" t2="Losheim Gap"/>
+    <connection t1="Blankenheim" t2="Prum"/>
+    <connection t1="Ciney" t2="Durbuy"/>
+    <connection t1="Ciney" t2="Havelange"/>
+    <connection t1="Ciney" t2="Marche"/>
+    <connection t1="Ciney" t2="Namur"/>
+    <connection t1="Ciney" t2="Rochefort"/>
+    <connection t1="Ciney" t2="Wellin"/>
+    <connection t1="Clervaux" t2="Houffalize"/>
+    <connection t1="Clervaux" t2="Prum"/>
+    <connection t1="Clervaux" t2="Wiltz"/>
+    <connection t1="Dinant" t2="Givet"/>
+    <connection t1="Dinant" t2="Namur"/>
+    <connection t1="Dinant" t2="Wellin"/>
+    <connection t1="Durbuy" t2="Erezee"/>
+    <connection t1="Durbuy" t2="Havelange"/>
+    <connection t1="Durbuy" t2="Huy"/>
+    <connection t1="Durbuy" t2="La Roche"/>
+    <connection t1="Durbuy" t2="Vielsalm"/>
+    <connection t1="Echternach" t2="Vianden"/>
+    <connection t1="Erezee" t2="Houffalize"/>
+    <connection t1="Erezee" t2="La Roche"/>
+    <connection t1="Erezee" t2="St. Vith"/>
+    <connection t1="Erezee" t2="Vielsalm"/>
+    <connection t1="Hotton" t2="Houffalize"/>
+    <connection t1="Hotton" t2="La Roche"/>
+    <connection t1="Hotton" t2="Marche"/>
+    <connection t1="Hotton" t2="Nassogne"/>
+    <connection t1="Hotton" t2="Saint-Hubert"/>
+    <connection t1="Hotton" t2="Wiltz"/>
+    <connection t1="Houffalize" t2="Losheim Gap"/>
+    <connection t1="Houffalize" t2="St. Vith"/>
+    <connection t1="Houffalize" t2="Wiltz"/>
+    <connection t1="La Roche" t2="Marche"/>
+    <connection t1="Libramont" t2="Martelange"/>
+    <connection t1="Libramont" t2="Neufchateau"/>
+    <connection t1="Libramont" t2="Saint-Hubert"/>
+    <connection t1="Losheim Gap" t2="Prum"/>
+    <connection t1="Losheim Gap" t2="St. Vith"/>
+    <connection t1="Marche" t2="Nassogne"/>
+    <connection t1="Marche" t2="Rochefort"/>
+    <connection t1="Martelange" t2="Vianden"/>
+    <connection t1="Nassogne" t2="Neufchateau"/>
+    <connection t1="Nassogne" t2="Rochefort"/>
+    <connection t1="Nassogne" t2="Saint-Hubert"/>
+    <connection t1="Neufchateau" t2="Saint-Hubert"/>
+    <connection t1="Rochefort" t2="Wellin"/>
+    <connection t1="St. Vith" t2="Vielsalm"/>
+    <connection t1="Vianden" t2="Wiltz"/>
+  </map>
+
+  <resourceList>
+    <resource name="PUs"/>
+  </resourceList>
+
+  <playerList>
+    <player name="Germans" optional="false" defaultType="Human"/>
+    <player name="Americans" optional="false" defaultType="Human"/>
+    <alliance player="Germans" alliance="Axis"/>
+    <alliance player="Americans" alliance="Allies"/>
+  </playerList>
+
+  <unitList>
+    <unit name="infantry"/>
+    <unit name="artillery"/>
+    <unit name="armour"/>
+    <unit name="mechanized"/>
+    <unit name="fighter"/>
+  </unitList>
+
+  <relationshipTypes>
+    <relationshipType name="War"/>
+    <relationshipType name="Allied"/>
+  </relationshipTypes>
+
+  <territoryEffectList>
+    <territoryEffect name="Open"/>
+    <territoryEffect name="Forest"/>
+    <territoryEffect name="Town"/>
+  </territoryEffectList>
+
+  <gamePlay>
+    <delegate name="initialization" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initialize"/>
+    <delegate name="reinforcement" javaClass="games.strategy.triplea.delegate.FixedReinforcementDelegate" display="Fixed Reinforcements"/>
+    <delegate name="supply" javaClass="games.strategy.triplea.delegate.SupplyDelegate" display="Supply"/>
+    <delegate name="move" javaClass="games.strategy.triplea.delegate.SupplyAwareMoveDelegate" display="Move"/>
+    <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Battle"/>
+    <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.NoPUEndTurnDelegate" display="End Turn"/>
+    <delegate name="endRound" javaClass="games.strategy.triplea.delegate.SmallFrontEndRoundDelegate" display="End Round"/>
+
+    <sequence>
+      <step name="initializationStep" delegate="initialization" maxRunCount="1"/>
+
+      <step name="germanReinforcement" delegate="reinforcement" player="Germans"/>
+      <step name="germanSupply" delegate="supply" player="Germans"/>
+      <step name="germanCombatMove" delegate="move" player="Germans" display="Combat Move"/>
+      <step name="germanBattle" delegate="battle" player="Germans"/>
+      <step name="germanNonCombatMove" delegate="move" player="Germans" display="Redeployment">
+        <stepProperty name="nonCombatMove" value="true"/>
+      </step>
+      <step name="germanEndTurn" delegate="endTurn" player="Germans"/>
+
+      <step name="americanReinforcement" delegate="reinforcement" player="Americans"/>
+      <step name="americanSupply" delegate="supply" player="Americans"/>
+      <step name="americanCombatMove" delegate="move" player="Americans" display="Combat Move"/>
+      <step name="americanBattle" delegate="battle" player="Americans"/>
+      <step name="americanNonCombatMove" delegate="move" player="Americans" display="Redeployment">
+        <stepProperty name="nonCombatMove" value="true"/>
+      </step>
+      <step name="americanEndTurn" delegate="endTurn" player="Americans"/>
+
+      <step name="endRoundStep" delegate="endRound"/>
+    </sequence>
+  </gamePlay>
+
+  <attachmentList>
+    <attachment name="relationshipTypeAttachment" attachTo="War" javaClass="games.strategy.triplea.attachments.RelationshipTypeAttachment" type="relationship">
+      <option name="archeType" value="war"/>
+    </attachment>
+    <attachment name="relationshipTypeAttachment" attachTo="Allied" javaClass="games.strategy.triplea.attachments.RelationshipTypeAttachment" type="relationship">
+      <option name="archeType" value="allied"/>
+    </attachment>
+
+    <attachment name="territoryEffectAttachment" attachTo="Open" javaClass="games.strategy.triplea.attachments.TerritoryEffectAttachment" type="territoryEffect">
+      <option name="maxGroundBattleRounds" value="4"/>
+      <option name="maxAirBattleRounds" value="2"/>
+      <option name="stackCapacity" value="10"/>
+    </attachment>
+    <attachment name="territoryEffectAttachment" attachTo="Forest" javaClass="games.strategy.triplea.attachments.TerritoryEffectAttachment" type="territoryEffect">
+      <option name="maxGroundBattleRounds" value="2"/>
+      <option name="maxAirBattleRounds" value="1"/>
+      <option name="stackCapacity" value="6"/>
+    </attachment>
+    <attachment name="territoryEffectAttachment" attachTo="Town" javaClass="games.strategy.triplea.attachments.TerritoryEffectAttachment" type="territoryEffect">
+      <option name="maxGroundBattleRounds" value="3"/>
+      <option name="maxAirBattleRounds" value="1"/>
+      <option name="stackCapacity" value="8"/>
+    </attachment>
+
+    <attachment name="unitAttachment" attachTo="infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="combatMovement" value="1"/>
+      <option name="redeploymentMovement" value="1"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="isInfantry" value="true"/>
+      <option name="artillerySupportable" value="true"/>
+      <option name="stackCost" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="artillery" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="combatMovement" value="1"/>
+      <option name="redeploymentMovement" value="1"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="artillery" value="true"/>
+      <option name="stackCost" value="1"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="armour" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="combatMovement" value="2"/>
+      <option name="redeploymentMovement" value="3"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="canBlitz" value="true"/>
+      <option name="stackCost" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="mechanized" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="combatMovement" value="2"/>
+      <option name="redeploymentMovement" value="3"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="isInfantry" value="true"/>
+      <option name="stackCost" value="2"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="fighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="4"/>
+      <option name="combatMovement" value="4"/>
+      <option name="redeploymentMovement" value="4"/>
+      <option name="attack" value="3"/>
+      <option name="defense" value="3"/>
+      <option name="isAir" value="true"/>
+      <option name="canAirBattle" value="true"/>
+      <option name="canIntercept" value="true"/>
+      <option name="canEscort" value="true"/>
+      <option name="airAttack" value="2"/>
+      <option name="airDefense" value="2"/>
+      <option name="stackCost" value="0"/>
+    </attachment>
+
+    <attachment name="territoryAttachment" attachTo="Andenne" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Town"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Andenne" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="supplySource" value="true"/>
+      <option name="roadConnection" value="Namur"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bastogne" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="1"/>
+      <option name="territoryEffect" value="Town"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Bastogne" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="Martelange"/>
+      <option name="roadConnection" value="Saint-Hubert"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Beauraing" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Open"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Beauraing" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="Wellin"/>
+      <option name="roadConnection" value="Bertrix"/>
+      <option name="roadConnection" value="Givet"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bertrix" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Open"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Bitburg" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Open"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Bitburg" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="supplySource" value="true"/>
+      <option name="roadConnection" value="Echternach"/>
+      <option name="roadConnection" value="Vianden"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Blankenheim" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Open"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Blankenheim" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="supplySource" value="true"/>
+      <option name="roadConnection" value="Losheim Gap"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Ciney" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Open"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Ciney" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="Havelange"/>
+      <option name="roadConnection" value="Namur"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Clervaux" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Forest"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Clervaux" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="Houffalize"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Dinant" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="1"/>
+      <option name="territoryEffect" value="Town"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Dinant" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="supplySource" value="true"/>
+      <option name="roadConnection" value="Givet"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Durbuy" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Open"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Durbuy" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="Havelange"/>
+      <option name="roadConnection" value="Huy"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Echternach" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Open"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Echternach" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="supplySource" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Erezee" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Open"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Erezee" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="La Roche"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Givet" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Town"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Givet" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="supplySource" value="true"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Havelange" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Open"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Havelange" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="Andenne"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Hotton" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Open"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Hotton" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="Marche"/>
+      <option name="roadConnection" value="Nassogne"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Houffalize" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Town"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Houffalize" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="Wiltz"/>
+      <option name="roadConnection" value="Erezee"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Huy" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Town"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Huy" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="supplySource" value="true"/>
+      <option name="roadConnection" value="Andenne"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="La Roche" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Open"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="La Roche" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="Hotton"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Libramont" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Open"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Libramont" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="Neufchateau"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Losheim Gap" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Forest"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Losheim Gap" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="St. Vith"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Marche" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="1"/>
+      <option name="territoryEffect" value="Open"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Marche" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="Ciney"/>
+      <option name="roadConnection" value="Rochefort"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Martelange" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Town"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Martelange" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="Libramont"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Namur" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="1"/>
+      <option name="capital" value="Americans"/>
+      <option name="territoryEffect" value="Town"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Namur" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="supplySource" value="true"/>
+      <option name="roadConnection" value="Dinant"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Nassogne" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Open"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Nassogne" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="Neufchateau"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Neufchateau" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="1"/>
+      <option name="territoryEffect" value="Open"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Neufchateau" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="Beauraing"/>
+      <option name="roadConnection" value="Bertrix"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Prum" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="capital" value="Germans"/>
+      <option name="territoryEffect" value="Open"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Prum" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="supplySource" value="true"/>
+      <option name="roadConnection" value="Blankenheim"/>
+      <option name="roadConnection" value="Bitburg"/>
+      <option name="roadConnection" value="Clervaux"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Rochefort" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Open"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Rochefort" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="Ciney"/>
+      <option name="roadConnection" value="Wellin"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Saint-Hubert" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Open"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Saint-Hubert" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="Libramont"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="St. Vith" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="1"/>
+      <option name="territoryEffect" value="Town"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="St. Vith" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="Houffalize"/>
+      <option name="roadConnection" value="Vielsalm"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vianden" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Forest"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Vianden" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="Bastogne"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Vielsalm" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Open"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Vielsalm" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="Erezee"/>
+      <option name="roadConnection" value="Durbuy"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Wellin" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Open"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Wellin" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="Dinant"/>
+    </attachment>
+    <attachment name="territoryAttachment" attachTo="Wiltz" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+      <option name="production" value="0"/>
+      <option name="victoryCity" value="0"/>
+      <option name="territoryEffect" value="Town"/>
+    </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Wiltz" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="Bastogne"/>
+      <option name="roadConnection" value="Hotton"/>
+    </attachment>
+
+    <attachment name="fixedReinforcementAttachment" attachTo="Germans" javaClass="games.strategy.triplea.attachments.FixedReinforcementAttachment" type="player">
+      <option name="reinforcement" value="1:Prum:armour:2"/>
+      <option name="reinforcement" value="1:Bitburg:mechanized:1"/>
+      <option name="reinforcement" value="2:Prum:artillery:1"/>
+      <option name="reinforcement" value="2:Blankenheim:armour:1"/>
+      <option name="reinforcement" value="3:Bitburg:infantry:2"/>
+      <option name="reinforcement" value="3:Prum:mechanized:1"/>
+      <option name="reinforcement" value="4:Echternach:infantry:2"/>
+      <option name="reinforcement" value="5:Prum:infantry:2"/>
+    </attachment>
+    <attachment name="fixedReinforcementAttachment" attachTo="Americans" javaClass="games.strategy.triplea.attachments.FixedReinforcementAttachment" type="player">
+      <option name="reinforcement" value="2:Marche:infantry:2"/>
+      <option name="reinforcement" value="3:Namur:armour:1"/>
+      <option name="reinforcement" value="3:Ciney:fighter:1"/>
+      <option name="reinforcement" value="4:Namur:infantry:2"/>
+      <option name="reinforcement" value="4:Dinant:artillery:1"/>
+      <option name="reinforcement" value="5:Namur:armour:2"/>
+      <option name="reinforcement" value="6:Huy:infantry:2"/>
+      <option name="reinforcement" value="6:Givet:infantry:2"/>
+      <option name="reinforcement" value="7:Namur:armour:1"/>
+    </attachment>
+
+    <attachment name="scoringAttachment" attachTo="Germans" javaClass="games.strategy.triplea.attachments.SmallFrontScoringAttachment" type="player">
+      <option name="pointsPerObjective" value="1"/>
+      <option name="suppliedOccupationBonus" value="2:Huy:Andenne:Namur:Dinant:Givet"/>
+      <option name="suppliedOccupationBonus" value="1:Bastogne:Marche"/>
+    </attachment>
+    <attachment name="scoringAttachment" attachTo="Americans" javaClass="games.strategy.triplea.attachments.SmallFrontScoringAttachment" type="player">
+      <option name="pointsPerObjective" value="1"/>
+      <option name="enemyAbsentBonus" value="2:Huy:Andenne:Namur:Dinant:Givet"/>
+      <option name="winsTies" value="true"/>
+    </attachment>
+
+  </attachmentList>
+
+  <initialize>
+    <ownerInitialize>
+      <territoryOwner territory="Andenne" owner="Americans"/>
+      <territoryOwner territory="Bastogne" owner="Americans"/>
+      <territoryOwner territory="Beauraing" owner="Americans"/>
+      <territoryOwner territory="Bertrix" owner="Americans"/>
+      <territoryOwner territory="Bitburg" owner="Germans"/>
+      <territoryOwner territory="Blankenheim" owner="Germans"/>
+      <territoryOwner territory="Ciney" owner="Americans"/>
+      <territoryOwner territory="Clervaux" owner="Germans"/>
+      <territoryOwner territory="Dinant" owner="Americans"/>
+      <territoryOwner territory="Durbuy" owner="Americans"/>
+      <territoryOwner territory="Echternach" owner="Germans"/>
+      <territoryOwner territory="Erezee" owner="Americans"/>
+      <territoryOwner territory="Givet" owner="Americans"/>
+      <territoryOwner territory="Havelange" owner="Americans"/>
+      <territoryOwner territory="Hotton" owner="Americans"/>
+      <territoryOwner territory="Houffalize" owner="Americans"/>
+      <territoryOwner territory="Huy" owner="Americans"/>
+      <territoryOwner territory="La Roche" owner="Americans"/>
+      <territoryOwner territory="Libramont" owner="Americans"/>
+      <territoryOwner territory="Losheim Gap" owner="Germans"/>
+      <territoryOwner territory="Marche" owner="Americans"/>
+      <territoryOwner territory="Martelange" owner="Americans"/>
+      <territoryOwner territory="Namur" owner="Americans"/>
+      <territoryOwner territory="Nassogne" owner="Americans"/>
+      <territoryOwner territory="Neufchateau" owner="Americans"/>
+      <territoryOwner territory="Prum" owner="Germans"/>
+      <territoryOwner territory="Rochefort" owner="Americans"/>
+      <territoryOwner territory="Saint-Hubert" owner="Americans"/>
+      <territoryOwner territory="St. Vith" owner="Americans"/>
+      <territoryOwner territory="Vianden" owner="Germans"/>
+      <territoryOwner territory="Vielsalm" owner="Americans"/>
+      <territoryOwner territory="Wellin" owner="Americans"/>
+      <territoryOwner territory="Wiltz" owner="Americans"/>
+    </ownerInitialize>
+    <unitInitialize>
+      <unitPlacement unitType="infantry" territory="Prum" quantity="2" owner="Germans"/>
+      <unitPlacement unitType="artillery" territory="Prum" quantity="1" owner="Germans"/>
+      <unitPlacement unitType="fighter" territory="Prum" quantity="1" owner="Germans"/>
+      <unitPlacement unitType="infantry" territory="Blankenheim" quantity="2" owner="Germans"/>
+      <unitPlacement unitType="armour" territory="Blankenheim" quantity="1" owner="Germans"/>
+      <unitPlacement unitType="infantry" territory="Bitburg" quantity="2" owner="Germans"/>
+      <unitPlacement unitType="mechanized" territory="Bitburg" quantity="1" owner="Germans"/>
+      <unitPlacement unitType="infantry" territory="Echternach" quantity="2" owner="Germans"/>
+      <unitPlacement unitType="infantry" territory="Losheim Gap" quantity="2" owner="Germans"/>
+      <unitPlacement unitType="mechanized" territory="Losheim Gap" quantity="1" owner="Germans"/>
+      <unitPlacement unitType="infantry" territory="Clervaux" quantity="2" owner="Germans"/>
+      <unitPlacement unitType="armour" territory="Clervaux" quantity="1" owner="Germans"/>
+      <unitPlacement unitType="infantry" territory="Vianden" quantity="2" owner="Germans"/>
+      <unitPlacement unitType="artillery" territory="Vianden" quantity="1" owner="Germans"/>
+      <unitPlacement unitType="infantry" territory="St. Vith" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="St. Vith" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Houffalize" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Wiltz" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Bastogne" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="artillery" territory="Bastogne" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Martelange" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Vielsalm" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="La Roche" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Marche" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="armour" territory="Marche" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Neufchateau" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Saint-Hubert" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Ciney" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="fighter" territory="Ciney" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Namur" quantity="2" owner="Americans"/>
+      <unitPlacement unitType="infantry" territory="Dinant" quantity="1" owner="Americans"/>
+    </unitInitialize>
+    <relationshipInitialize>
+      <relationship player1="Germans" player2="Americans" type="War" roundValue="0"/>
+    </relationshipInitialize>
+  </initialize>
+
+  <propertyList>
+    <property name="Supply Network Enabled" value="true" editable="false"/>
+    <property name="Out Of Supply Removal Turns" value="2" editable="false"/>
+    <property name="Separate Air And Ground Combat" value="true" editable="false"/>
+    <property name="Air Control Enabled" value="true" editable="false"/>
+    <property name="Air Control Persistent" value="false" editable="false"/>
+    <property name="Air Control Ground Attack Bonus" value="1" editable="false"/>
+    <property name="Fog Of War Enabled" value="true" editable="false"/>
+    <property name="Fog Of War Vision Radius" value="1" editable="false"/>
+    <property name="Auto Termination" value="true" editable="true"/>
+    <property name="Scoring Round" value="8" editable="false"/>
+    <property name="Land Battle Rounds" value="3" editable="false"/>
+    <property name="Air Battle Rounds" value="1" editable="false"/>
+    <property name="Sea Battle Rounds" value="3" editable="false"/>
+  </propertyList>
+</game>
