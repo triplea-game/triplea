@@ -18,6 +18,12 @@ public interface StrategicRewardFunction {
       StrategicObservation after,
       Map<String, Integer> afterScores);
 
+  /**
+   * Clears any per-episode state. The environment calls this on reset, and one function therefore
+   * belongs to one environment rather than being shared across concurrent episodes.
+   */
+  default void reset() {}
+
   static StrategicRewardFunction standard() {
     return new StandardStrategicRewardFunction(StrategicRewardConfig.defaults());
   }

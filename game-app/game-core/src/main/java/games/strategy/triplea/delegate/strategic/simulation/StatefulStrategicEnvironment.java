@@ -33,6 +33,7 @@ public final class StatefulStrategicEnvironment implements StrategicEnvironment 
   @Override
   public synchronized StrategicObservation reset(final StrategicResetRequest request) {
     activeScenario = Objects.requireNonNull(scenarioLoader.load(Objects.requireNonNull(request)));
+    rewardFunction.reset();
     episodeId++;
     stepId = 0;
     final StrategicObservation observation = Objects.requireNonNull(activeScenario.observation());
