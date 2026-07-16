@@ -147,8 +147,8 @@ public final class StrategicMoveCandidateGenerator {
         .anyMatch(unit -> !SupplyNetworkResolver.canMove(unit, origin, player, data))) {
       return false;
     }
-    if (route.getSteps().stream()
-        .anyMatch(territory -> !StackCapacityResolver.canFit(units, player, territory, List.of()))) {
+    // Capacity represents where a force can stop, not the territories it passes through.
+    if (!StackCapacityResolver.canFit(units, player, route.getEnd(), List.of())) {
       return false;
     }
     final MoveValidationResult result =
