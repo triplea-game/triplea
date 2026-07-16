@@ -19,39 +19,49 @@ import org.junit.jupiter.api.Test;
 
 class BattleRoundResolverTest {
   @Test
-  void groundBattleFallsBackToGlobalLandRounds() {
+  void groundBattleReducesGlobalLandRoundsByOne() {
     final GameData gameData = new GameData();
     gameData.getProperties().set(Constants.LAND_BATTLE_ROUNDS, 6);
 
     assertEquals(
-        6,
+        5,
         BattleRoundResolver.resolveGroundBattleRounds(
             new Territory("Plain", gameData), List.of(), gameData));
   }
 
   @Test
-  void waterBattleRetainsGlobalSeaRounds() {
+  void waterBattleReducesGlobalSeaRoundsByOne() {
     final GameData gameData = new GameData();
     gameData.getProperties().set(Constants.SEA_BATTLE_ROUNDS, 5);
     final TerritoryEffect terrain = effect(gameData, 2, null);
 
     assertEquals(
-        5,
+        4,
         BattleRoundResolver.resolveGroundBattleRounds(
             new Territory("Sea", true, gameData), List.of(terrain), gameData));
   }
 
   @Test
-  void shortestFiniteGroundLimitWinsAcrossTerrainEffects() {
+  void shortestFiniteGroundLimitWinsThenIsReducedByOne() {
     final GameData gameData = new GameData();
 
     assertEquals(
-        2,
+        1,
         BattleRoundResolver.resolveGroundBattleRounds(
             new Territory("Mountain City", gameData),
             List.of(
                 effect(gameData, -1, null), effect(gameData, 4, null), effect(gameData, 2, null)),
             gameData));
+  }
+
+  @Test
+  void oneRoundLimitIsNotReducedBelowOne() {
+    final GameData gameData = new GameData();
+
+    assertEquals(
+        1,
+        BattleRoundResolver.resolveGroundBattleRounds(
+            new Territory("Forest", gameData), List.of(effect(gameData, 1, null)), gameData));
   }
 
   @Test
@@ -67,12 +77,12 @@ class BattleRoundResolverTest {
   }
 
   @Test
-  void airBattleUsesIndependentTerrainLimit() {
+  void airBattleUsesReducedIndependentTerrainLimit() {
     final GameData gameData = new GameData();
     gameData.getProperties().set(Constants.AIR_BATTLE_ROUNDS, 1);
 
     assertEquals(
-        3, BattleRoundResolver.resolveAirBattleRounds(List.of(effect(gameData, 1, 3)), gameData));
+        2, BattleRoundResolver.resolveAirBattleRounds(List.of(effect(gameData, 1, 3)), gameData));
   }
 
   @Test
@@ -111,7 +121,7 @@ class BattleRoundResolverTest {
   }
 
   @Test
-  void mustFightBattleUsesTerrainGroundLimit() {
+  void mustFightBattleUsesReducedTerrainGroundLimit() {
     final GameData gameData = TestMapGameData.TWW.getGameData();
     final Territory sicily = GameDataTestUtil.territory("Sicily", gameData);
     final TerritoryEffect terrain = TerritoryEffectHelper.getEffects(sicily).iterator().next();
@@ -120,12 +130,12 @@ class BattleRoundResolverTest {
     final MustFightBattle battle =
         new MustFightBattle(sicily, GameDataTestUtil.usa(gameData), gameData, new BattleTracker());
 
-    assertEquals(2, battle.getStatus().getMaxRounds());
+    assertEquals(1, battle.getStatus().getMaxRounds());
     assertFalse(battle.getStatus().isLastRound());
   }
 
   @Test
-  void airBattleUsesTerrainAirLimit() {
+  void airBattleUsesReducedTerrainAirLimit() {
     final GameData gameData = TestMapGameData.TWW.getGameData();
     final Territory sicily = GameDataTestUtil.territory("Sicily", gameData);
     final TerritoryEffect terrain = TerritoryEffectHelper.getEffects(sicily).iterator().next();
@@ -139,9 +149,9 @@ class BattleRoundResolverTest {
             GameDataTestUtil.usa(gameData),
             new BattleTracker());
 
-    battle.round = 2;
+    battle.round = 1;
     assertFalse(battle.shouldEndBattleDueToMaxRounds());
-    battle.round = 3;
+    battle.round = 2;
     assertTrue(battle.shouldEndBattleDueToMaxRounds());
   }
 
