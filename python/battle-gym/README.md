@@ -127,6 +127,33 @@ player's rewards sum to its margin change across the episode.
 Because that reward carries per-episode state, one reward function belongs to one
 environment. `reset()` clears it.
 
+### One-command Small Front training on Windows
+
+From the repository root, this command creates `.venv`, installs the optional
+training dependencies, starts the Java simulation server and begins Maskable PPO
+self-play on the Meuse map:
+
+```bat
+train-small-front.cmd
+```
+
+The defaults are 200,000 timesteps and one environment. Positional arguments are
+`timesteps`, `parallel environments`, `output model`, and `checkpoint interval`:
+
+```bat
+REM Quick pipeline check
+train-small-front.cmd 5000 1 runs\small-front-smoke.zip 1000
+
+REM Four parallel self-play games
+train-small-front.cmd 200000 4 runs\small-front-ppo.zip 20000
+```
+
+The final model is written to `runs\small-front-ppo.zip` by default. Checkpoints
+are written under `runs\checkpoints` by Stable-Baselines3.
+
+After installing the package manually, the equivalent console command is
+`triplea-strategic-train`.
+
 ## Baselines
 
 ```bash
@@ -157,6 +184,16 @@ triplea-battle-train \
   --scenario /absolute/path/to/game.tsvg \
   --timesteps 100000 \
   --output battle-policy.zip
+```
+
+For whole-game strategic self-play, use:
+
+```bash
+triplea-strategic-train \
+  --server-command './gradlew -q :game-headless:runBattleSimulationServer' \
+  --scenario /absolute/path/to/Small_Front_Meuse.xml \
+  --timesteps 200000 \
+  --output strategic-policy.zip
 ```
 
 ## Process workers
