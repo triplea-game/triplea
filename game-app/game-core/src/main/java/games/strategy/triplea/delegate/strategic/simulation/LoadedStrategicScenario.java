@@ -22,6 +22,7 @@ import games.strategy.triplea.delegate.battle.simulation.BattleScenarioStep;
 import games.strategy.triplea.delegate.battle.simulation.LoadedBattleScenario;
 import games.strategy.triplea.delegate.battle.simulation.SimulationDelegateBridge;
 import games.strategy.triplea.delegate.reinforcement.FixedReinforcementDelegate;
+import games.strategy.triplea.delegate.scoring.SmallFrontScoringService;
 import games.strategy.triplea.delegate.supply.SupplyDelegate;
 import games.strategy.triplea.delegate.supply.SupplyNetworkResolver;
 import games.strategy.triplea.delegate.visibility.VisibilityService;
@@ -78,6 +79,15 @@ public final class LoadedStrategicScenario implements StrategicScenario {
         activeBattle == null ? null : activeBattle.observation();
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
       return StrategicObservationFactory.create(data, player, seed, phase, battleObservation);
+    }
+  }
+
+  @Override
+  public Map<String, Integer> scores() {
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
+      return SmallFrontScoringService.score(data).entrySet().stream()
+          .collect(
+              Collectors.toMap(entry -> entry.getKey().getName(), Map.Entry::getValue));
     }
   }
 

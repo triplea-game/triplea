@@ -1,11 +1,18 @@
 package games.strategy.triplea.delegate.strategic.simulation;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /** Mutable adapter over one restored player turn. */
 public interface StrategicScenario {
   StrategicObservation observation();
+
+  /**
+   * True operational score per player name, ignoring fog of war. This feeds the reward function, so
+   * it must not be surfaced to the agent through an observation.
+   */
+  Map<String, Integer> scores();
 
   List<StrategicAction> legalActions();
 

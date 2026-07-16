@@ -60,6 +60,45 @@ class StatefulStrategicEnvironmentTest {
     assertTrue(error.getMessage().contains("mask"));
   }
 
+  @Test
+  void rewardsTheSwingInScoreMarginTheActionProduced() {
+    final FakeScenario scenario = new FakeScenario(1);
+    // Blue trails by one; the action takes an objective off Red, swinging the margin from -1 to +1.
+    scenario.scores = Map.of("Blue", 1, "Red", 2);
+    scenario.scoresAfterStep = Map.of("Blue", 2, "Red", 1);
+    final StatefulStrategicEnvironment environment =
+        new StatefulStrategicEnvironment(request -> scenario);
+    environment.reset(new StrategicResetRequest("fixture.tsvg", 1, "Blue"));
+
+    final StrategicStepResult result = environment.step(new StrategicAction("a", Map.of("z", "2")));
+
+    assertEquals(2.0, result.reward());
+  }
+
+  @Test
+  void aTurnThatChangesNothingIsWorthNothing() {
+    final FakeScenario scenario = new FakeScenario(1);
+    scenario.scores = Map.of("Blue", 1, "Red", 2);
+    scenario.scoresAfterStep = Map.of("Blue", 1, "Red", 2);
+    final StatefulStrategicEnvironment environment =
+        new StatefulStrategicEnvironment(request -> scenario);
+    environment.reset(new StrategicResetRequest("fixture.tsvg", 1, "Blue"));
+
+    assertEquals(0.0, environment.step(new StrategicAction("a", Map.of("z", "2"))).reward());
+  }
+
+  @Test
+  void losingGroundIsPenalised() {
+    final FakeScenario scenario = new FakeScenario(1);
+    scenario.scores = Map.of("Blue", 2, "Red", 1);
+    scenario.scoresAfterStep = Map.of("Blue", 1, "Red", 2);
+    final StatefulStrategicEnvironment environment =
+        new StatefulStrategicEnvironment(request -> scenario);
+    environment.reset(new StrategicResetRequest("fixture.tsvg", 1, "Blue"));
+
+    assertEquals(-2.0, environment.step(new StrategicAction("a", Map.of("z", "2"))).reward());
+  }
+
   private static final class FakeScenario implements StrategicScenario {
     private final long seed;
     private final List<StrategicAction> actions =
@@ -68,9 +107,16 @@ class StatefulStrategicEnvironmentTest {
                 new StrategicAction("b", Map.of("a", "1")),
                 new StrategicAction("a", Map.of("z", "2"))));
     private boolean over;
+    private Map<String, Integer> scores = Map.of();
+    private Map<String, Integer> scoresAfterStep = Map.of();
 
     private FakeScenario(final long seed) {
       this.seed = seed;
+    }
+
+    @Override
+    public Map<String, Integer> scores() {
+      return over ? scoresAfterStep : scores;
     }
 
     @Override

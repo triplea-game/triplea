@@ -14,13 +14,20 @@ public final class StatefulStrategicEnvironment implements StrategicEnvironment 
           .thenComparing(StatefulStrategicEnvironment::canonicalParameters);
 
   private final StrategicScenarioLoader scenarioLoader;
+  private final StrategicRewardFunction rewardFunction;
   private StrategicScenario activeScenario;
   private long episodeId;
   private long stepId;
   private boolean finished = true;
 
   public StatefulStrategicEnvironment(final StrategicScenarioLoader scenarioLoader) {
+    this(scenarioLoader, StrategicRewardFunction.standard());
+  }
+
+  public StatefulStrategicEnvironment(
+      final StrategicScenarioLoader scenarioLoader, final StrategicRewardFunction rewardFunction) {
     this.scenarioLoader = Objects.requireNonNull(scenarioLoader);
+    this.rewardFunction = Objects.requireNonNull(rewardFunction);
   }
 
   @Override
@@ -58,6 +65,8 @@ public final class StatefulStrategicEnvironment implements StrategicEnvironment 
           "action is not legal in the current strategic state: " + action + "; mask: " + mask);
     }
 
+    final StrategicObservation before = Objects.requireNonNull(scenario.observation());
+    final Map<String, Integer> beforeScores = Objects.requireNonNull(scenario.scores());
     final StrategicScenarioStep scenarioStep = Objects.requireNonNull(scenario.step(action));
     stepId++;
     final StrategicObservation observation = Objects.requireNonNull(scenario.observation());
@@ -68,7 +77,9 @@ public final class StatefulStrategicEnvironment implements StrategicEnvironment 
     info.put("stepId", Long.toString(stepId));
     info.put("actionType", action.type());
     info.put("decisionDomain", observation.decisionDomain().name());
-    return new StrategicStepResult(observation, 0, terminated, scenarioStep.truncated(), info);
+    final double reward =
+        rewardFunction.reward(before, beforeScores, observation, scenario.scores());
+    return new StrategicStepResult(observation, reward, terminated, scenarioStep.truncated(), info);
   }
 
   private StrategicScenario requireScenario() {
