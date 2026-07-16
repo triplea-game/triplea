@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -78,15 +79,14 @@ class SmallFrontAiGameTest {
     final Territory blankenheim = data.getMap().getTerritoryOrThrow("Blankenheim");
     final Territory losheimGap = data.getMap().getTerritoryOrThrow("Losheim Gap");
     final Unit germanInfantry = infantryIn(blankenheim, "Germans");
-    assertThat(
-            SupplyAwareMoveDelegate.validateStackCapacity(
-                new MoveDescription(List.of(germanInfantry), new Route(blankenheim, losheimGap)),
-                germanInfantry.getOwner()))
-        .hasValueSatisfying(
-            message ->
-                assertThat(message)
-                    .contains(SupplyAwareMoveDelegate.STACK_CAPACITY_EXCEEDED)
-                    .contains("Losheim Gap"));
+    final Optional<String> overflow =
+        SupplyAwareMoveDelegate.validateStackCapacity(
+            new MoveDescription(List.of(germanInfantry), new Route(blankenheim, losheimGap)),
+            germanInfantry.getOwner());
+    assertThat(overflow).isPresent();
+    assertThat(overflow.orElseThrow())
+        .contains(SupplyAwareMoveDelegate.STACK_CAPACITY_EXCEEDED)
+        .contains("Losheim Gap");
   }
 
   private static GameData loadMap() {
