@@ -6,10 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.attachments.TerritoryEffectAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.supply.SupplyNetworkResolver;
 import games.strategy.triplea.delegate.visibility.VisibilityService;
@@ -47,6 +49,56 @@ class StrategicMoveCandidateGeneratorTest {
     assertThat(actions)
         .containsExactly(
             new StrategicAction("end_phase", java.util.Map.of("phase", "COMBAT_MOVE")));
+  }
+
+  @Test
+  void allowsRouteThroughFullTerritoryWhenDestinationHasCapacity() throws Exception {
+    final GameData data = new GameData();
+    final GamePlayer blue = new GamePlayer("Blue", data);
+    data.getPlayerList().addPlayerId(blue);
+    data.getRelationshipTracker().setSelfRelations();
+    data.getRelationshipTracker().setNullPlayerRelations();
+
+    final TerritoryEffect capacityOne = new TerritoryEffect("CapacityOne", data);
+    final TerritoryEffectAttachment effectAttachment =
+        new TerritoryEffectAttachment(
+            Constants.TERRITORYEFFECT_ATTACHMENT_NAME, capacityOne, data);
+    effectAttachment.setStackCapacity(1);
+    capacityOne.addAttachment(Constants.TERRITORYEFFECT_ATTACHMENT_NAME, effectAttachment);
+
+    final Territory home = territory(data, blue, "Home", List.of());
+    final Territory transit = territory(data, blue, "Transit", List.of(capacityOne));
+    final Territory target = territory(data, blue, "Target", List.of(capacityOne));
+    data.getMap().addConnection(home, transit);
+    data.getMap().addConnection(transit, target);
+
+    final UnitType infantry = new UnitType("infantry", data);
+    final UnitAttachment attachment =
+        new UnitAttachment(Constants.UNIT_ATTACHMENT_NAME, infantry, data);
+    setIntField(attachment, "movement", 2);
+    infantry.addAttachment(Constants.UNIT_ATTACHMENT_NAME, attachment);
+    data.getUnitTypeList().addUnitType(infantry);
+
+    home.getUnitCollection().add(infantry.create(blue));
+    transit.getUnitCollection().addAll(infantry.create(2, blue));
+
+    final List<StrategicAction> actions =
+        StrategicMoveCandidateGenerator.generate(
+            data, blue, StrategicPhase.REDEPLOYMENT, 16);
+
+    assertThat(actions)
+        .anySatisfy(
+            action -> {
+              assertThat(action.type()).isEqualTo("move");
+              assertThat(action.parameters().get("destination")).isEqualTo("Target");
+              assertThat(action.parameters().get("route")).isEqualTo("Home>Transit>Target");
+            });
+    assertThat(actions)
+        .noneSatisfy(
+            action -> {
+              assertThat(action.type()).isEqualTo("move");
+              assertThat(action.parameters().get("destination")).isEqualTo("Transit");
+            });
   }
 
   @Test
@@ -97,6 +149,26 @@ class StrategicMoveCandidateGeneratorTest {
     data.getProperties().set(VisibilityService.FOG_OF_WAR_ENABLED, true);
     data.getProperties().set(VisibilityService.FOG_OF_WAR_VISION_RADIUS, 0);
     return new Fixture(data, blue);
+  }
+
+  private static Territory territory(
+      final GameData data,
+      final GamePlayer owner,
+      final String name,
+      final List<TerritoryEffect> effects)
+      throws Exception {
+    final Territory territory = new Territory(name, data);
+    territory.setOwner(owner);
+    final TerritoryAttachment attachment =
+        new TerritoryAttachment(Constants.TERRITORY_ATTACHMENT_NAME, territory, data);
+    if (!effects.isEmpty()) {
+      final Field effectField = TerritoryAttachment.class.getDeclaredField("territoryEffect");
+      effectField.setAccessible(true);
+      effectField.set(attachment, effects);
+    }
+    territory.addAttachment(Constants.TERRITORY_ATTACHMENT_NAME, attachment);
+    data.getMap().addTerritory(territory);
+    return territory;
   }
 
   private static void setIntField(final Object target, final String fieldName, final int value)
