@@ -12,6 +12,10 @@
 game-app/game-headed/triplea*.log
 game-app/smoke-testing/src/test/resources/save-games/
 
+# Local reinforcement-learning runs and model checkpoints.
+runs/
+checkpoints/
+
 gradle/build-logic/.kotlin/errors/**
 
 *.iml
@@ -35,4 +39,3 @@ build/
 out/
 
 CLAUDE.local.md
-
