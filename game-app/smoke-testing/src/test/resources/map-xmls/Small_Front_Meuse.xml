@@ -206,6 +206,7 @@
       <option name="isInfantry" value="true"/>
       <option name="artillerySupportable" value="true"/>
       <option name="stackCost" value="1"/>
+      <option name="tuv" value="3"/>
     </attachment>
     <attachment name="unitAttachment" attachTo="artillery" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
       <option name="movement" value="1"/>
@@ -215,6 +216,7 @@
       <option name="defense" value="2"/>
       <option name="artillery" value="true"/>
       <option name="stackCost" value="1"/>
+      <option name="tuv" value="4"/>
     </attachment>
     <attachment name="unitAttachment" attachTo="armour" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
       <option name="movement" value="2"/>
@@ -224,6 +226,7 @@
       <option name="defense" value="3"/>
       <option name="canBlitz" value="true"/>
       <option name="stackCost" value="2"/>
+      <option name="tuv" value="6"/>
     </attachment>
     <attachment name="unitAttachment" attachTo="mechanized" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
       <option name="movement" value="2"/>
@@ -233,6 +236,7 @@
       <option name="defense" value="2"/>
       <option name="isInfantry" value="true"/>
       <option name="stackCost" value="2"/>
+      <option name="tuv" value="4"/>
     </attachment>
     <attachment name="unitAttachment" attachTo="fighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
       <option name="movement" value="4"/>
@@ -247,6 +251,7 @@
       <option name="airAttack" value="2"/>
       <option name="airDefense" value="2"/>
       <option name="stackCost" value="0"/>
+      <option name="tuv" value="10"/>
     </attachment>
 
     <attachment name="territoryAttachment" attachTo="Andenne" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
