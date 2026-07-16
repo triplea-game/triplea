@@ -30,6 +30,7 @@ train = [
 [project.scripts]
 triplea-battle-evaluate = "triplea_battle_gym.evaluate:main"
 triplea-battle-train = "triplea_battle_gym.train:main"
+triplea-strategic-train = "triplea_battle_gym.strategic_train:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/triplea_battle_gym"]
