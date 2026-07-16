@@ -73,17 +73,18 @@ if not exist "runs\local-llm" mkdir "runs\local-llm"
 
 for /f "delims=" %%G in ('git rev-parse --short HEAD 2^>nul') do set "COMMIT=%%G"
 echo.
-echo Starting Small Front local LLM self-play
+echo Starting reliable Small Front local LLM self-play
 echo Model: %MODEL%
 if defined COMMIT echo Source commit: %COMMIT%
 echo Seed: %SEED%
 echo Max rounds: %MAX_ROUNDS%
 echo Default shadow rollouts: %ROLLOUTS%
 echo Max decisions: %MAX_DECISIONS%
+echo Decision repair: enabled
 echo Log: %LOG%
 echo.
 
-"%VENV_PYTHON%" -m triplea_battle_gym.local_llm_agent ^
+"%VENV_PYTHON%" -m triplea_battle_gym.local_llm_agent_reliable ^
   --server-command "cmd /d /c gradlew.bat -q :game-headless:runBattleSimulationServer" ^
   --scenario "%SCENARIO%" ^
   --model "%MODEL%" ^
@@ -93,7 +94,7 @@ echo.
   --max-rounds %MAX_ROUNDS% ^
   --simulation-rollouts %ROLLOUTS% ^
   --max-simulation-rollouts 8 ^
-  --max-tool-rounds 8 ^
+  --max-tool-rounds 10 ^
   --max-decisions %MAX_DECISIONS% ^
   --log "%LOG%"
 set "EXIT_CODE=%ERRORLEVEL%"
