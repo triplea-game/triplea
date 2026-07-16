@@ -7,6 +7,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.StackCapacityResolver;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
@@ -127,7 +128,8 @@ public final class StrategicMoveCandidateGenerator {
             .toList()) {
       final Route route = new Route(origin, destination);
       if (units.stream()
-          .allMatch(unit -> route.getMovementCost(unit).compareTo(unit.getMovementLeft()) <= 0)) {
+              .allMatch(unit -> route.getMovementCost(unit).compareTo(unit.getMovementLeft()) <= 0)
+          && StackCapacityResolver.canFit(units, player, destination, List.of())) {
         actions.add(moveAction(phase, units, route, true));
       }
     }
@@ -143,6 +145,10 @@ public final class StrategicMoveCandidateGenerator {
       final List<UndoableMove> undoableMoves) {
     if (units.stream()
         .anyMatch(unit -> !SupplyNetworkResolver.canMove(unit, origin, player, data))) {
+      return false;
+    }
+    if (route.getSteps().stream()
+        .anyMatch(territory -> !StackCapacityResolver.canFit(units, player, territory, List.of()))) {
       return false;
     }
     final MoveValidationResult result =
