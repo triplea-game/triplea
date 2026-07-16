@@ -48,7 +48,11 @@ if errorlevel 1 (
   if errorlevel 1 goto :install_failed
 )
 
-if not exist "runs" mkdir "runs"
+REM Refresh the editable source link even when this virtual environment already existed.
+"%VENV_PYTHON%" -m pip install -e "python\battle-gym" --no-deps >nul
+if errorlevel 1 goto :install_failed
+
+for %%D in ("%OUTPUT%") do if not exist "%%~dpD" mkdir "%%~dpD"
 
 for /f "delims=" %%G in ('git rev-parse --short HEAD 2^>nul') do set "COMMIT=%%G"
 echo.
