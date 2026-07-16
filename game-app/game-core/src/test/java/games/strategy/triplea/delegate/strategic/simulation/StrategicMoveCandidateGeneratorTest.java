@@ -31,6 +31,9 @@ class StrategicMoveCandidateGeneratorTest {
         actions.stream().filter(action -> action.type().equals("move")).findFirst().orElseThrow();
     assertThat(move.parameters().get("origin")).isEqualTo("Home");
     assertThat(move.parameters().get("destination")).isEqualTo("Unknown");
+    assertThat(move.parameters().get("unitType")).isEqualTo("infantry");
+    assertThat(move.parameters().get("unitCount")).isEqualTo("1");
+    assertThat(move.parameters().get("movementLeft")).isEqualTo("1");
     assertThat(move.parameters().get("uncertain")).isEqualTo("true");
     assertThat(move.parameters()).doesNotContainKeys("owner", "enemyUnits", "battleType");
   }
