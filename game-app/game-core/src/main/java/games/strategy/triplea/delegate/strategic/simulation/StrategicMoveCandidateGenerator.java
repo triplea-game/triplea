@@ -7,6 +7,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.delegate.supply.SupplyNetworkResolver;
@@ -34,6 +35,21 @@ public final class StrategicMoveCandidateGenerator {
       final GamePlayer player,
       final StrategicPhase phase,
       final int maxActions) {
+    return generate(data, player, phase, maxActions, List.of());
+  }
+
+  /**
+   * @param undoableMoves the moves already made this phase, from {@link
+   *     games.strategy.triplea.delegate.remote.IMoveDelegate#getMovesMade()}. MoveValidator reads
+   *     them, so a caller that omits them gets a more permissive answer than the move delegate will
+   *     give, and generates actions the delegate then rejects.
+   */
+  public static List<StrategicAction> generate(
+      final GameData data,
+      final GamePlayer player,
+      final StrategicPhase phase,
+      final int maxActions,
+      final List<UndoableMove> undoableMoves) {
     if (phase != StrategicPhase.COMBAT_MOVE
         && phase != StrategicPhase.AIR_ASSIGNMENT
         && phase != StrategicPhase.REDEPLOYMENT) {
@@ -50,7 +66,8 @@ public final class StrategicMoveCandidateGenerator {
       for (final List<Unit> group : groups(origin, player, phase)) {
         final List<List<Unit>> selections = selections(group);
         for (final List<Unit> selection : selections) {
-          addVisibleDestinations(data, player, phase, visible, origin, selection, actions);
+          addVisibleDestinations(
+              data, player, phase, visible, origin, selection, actions, undoableMoves);
           addHiddenAdjacentAttempts(data, player, phase, visible, origin, selection, actions);
         }
       }
@@ -76,7 +93,8 @@ public final class StrategicMoveCandidateGenerator {
       final Set<Territory> visible,
       final Territory origin,
       final List<Unit> units,
-      final List<StrategicAction> actions) {
+      final List<StrategicAction> actions,
+      final List<UndoableMove> undoableMoves) {
     final BigDecimal movementLeft = minimumMovementLeft(units);
     final List<Territory> destinations =
         data.getMap().getNeighborsByMovementCost(origin, movementLeft, visible::contains).stream()
@@ -85,7 +103,7 @@ public final class StrategicMoveCandidateGenerator {
     for (final Territory destination : destinations) {
       data.getMap()
           .getRouteForUnits(origin, destination, visible::contains, units, player)
-          .filter(route -> isLegal(data, player, phase, origin, units, route))
+          .filter(route -> isLegal(data, player, phase, origin, units, route, undoableMoves))
           .ifPresent(route -> actions.add(moveAction(phase, units, route, false)));
     }
   }
@@ -121,14 +139,15 @@ public final class StrategicMoveCandidateGenerator {
       final StrategicPhase phase,
       final Territory origin,
       final List<Unit> units,
-      final Route route) {
+      final Route route,
+      final List<UndoableMove> undoableMoves) {
     if (units.stream()
         .anyMatch(unit -> !SupplyNetworkResolver.canMove(unit, origin, player, data))) {
       return false;
     }
     final MoveValidationResult result =
         new MoveValidator(data, phase == StrategicPhase.REDEPLOYMENT)
-            .validateMove(new MoveDescription(units, route), player);
+            .validateMove(new MoveDescription(units, route), player, undoableMoves);
     return !result.hasError() && !result.hasDisallowedUnits() && !result.hasUnresolvedUnits();
   }
 

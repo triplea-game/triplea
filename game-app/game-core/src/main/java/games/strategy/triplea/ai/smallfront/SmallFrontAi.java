@@ -58,7 +58,7 @@ public class SmallFrontAi extends AbstractAi {
     final StrategicPhase phase =
         nonCombat ? StrategicPhase.REDEPLOYMENT : StrategicPhase.COMBAT_MOVE;
     for (int i = 0; i < MAX_MOVES_PER_PHASE; i++) {
-      final List<StrategicAction> actions = legalActions(data, player, phase);
+      final List<StrategicAction> actions = legalActions(data, player, phase, moveDel);
       if (actions.isEmpty()) {
         return;
       }
@@ -73,9 +73,15 @@ public class SmallFrontAi extends AbstractAi {
   }
 
   private List<StrategicAction> legalActions(
-      final GameData data, final GamePlayer player, final StrategicPhase phase) {
+      final GameData data,
+      final GamePlayer player,
+      final StrategicPhase phase,
+      final IMoveDelegate moveDel) {
     try {
-      return StrategicMoveCandidateGenerator.generate(data, player, phase, MAX_ACTIONS);
+      // MoveValidator reads the moves already made, so pass them or the generator answers more
+      // permissively than the delegate will and offers moves it then rejects.
+      return StrategicMoveCandidateGenerator.generate(
+          data, player, phase, MAX_ACTIONS, moveDel.getMovesMade());
     } catch (final StrategicActionSpaceOverflow e) {
       log.warn("Small Front AI: too many candidate moves to consider, standing pat", e);
       return List.of();

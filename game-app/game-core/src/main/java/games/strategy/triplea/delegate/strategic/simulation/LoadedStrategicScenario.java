@@ -97,7 +97,14 @@ public final class LoadedStrategicScenario implements StrategicScenario {
     return switch (phase) {
       case REINFORCEMENT_ALLOCATION -> reinforcementActions();
       case COMBAT_MOVE, AIR_ASSIGNMENT, REDEPLOYMENT ->
-          StrategicMoveCandidateGenerator.generate(data, player, phase, maxActions);
+          StrategicMoveCandidateGenerator.generate(
+              data,
+              player,
+              phase,
+              maxActions,
+              // MoveValidator reads the moves already made; without them the generator would offer
+              // moves that performMove then throws on.
+              activeMoveDelegate == null ? List.of() : activeMoveDelegate.getMovesMade());
       case BATTLE -> battleActions();
       case COMPLETE -> List.of();
     };
