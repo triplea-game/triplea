@@ -66,12 +66,12 @@ class SmallFrontAiGameTest {
   void terrainStackCapacityAllowsExactFitAndRejectsOverflow() {
     final GameData data = loadMap();
 
-    final Territory vیشalm = data.getMap().getTerritoryOrThrow("Vielsalm");
+    final Territory vielsalm = data.getMap().getTerritoryOrThrow("Vielsalm");
     final Territory stVith = data.getMap().getTerritoryOrThrow("St. Vith");
-    final Unit americanInfantry = infantryIn(vیشalm, "Americans");
+    final Unit americanInfantry = infantryIn(vielsalm, "Americans");
     assertThat(
             SupplyAwareMoveDelegate.validateStackCapacity(
-                new MoveDescription(List.of(americanInfantry), new Route(vیشalm, stVith)),
+                new MoveDescription(List.of(americanInfantry), new Route(vielsalm, stVith)),
                 americanInfantry.getOwner()))
         .isEmpty();
 
