@@ -11,6 +11,7 @@ import games.strategy.net.LocalNoOpMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.delegate.scoring.SmallFrontScoringService;
+import games.strategy.triplea.delegate.supply.SupplyAwareMoveDelegate;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -40,8 +41,7 @@ class SmallFrontAiGameTest {
    */
   @Test
   void bothSidesFightRatherThanStandingStill() {
-    final GameData data =
-        GameParser.parse(MAP_XML, false).orElseThrow(() -> new AssertionError("map did not parse"));
+    final GameData data = loadMap();
     final Map<String, String> ownersAtStart = owners(data);
 
     final ServerGame game = allSmallFrontAi(data);
@@ -60,6 +60,46 @@ class SmallFrontAiGameTest {
     assertThat(changedHands).as("no territory changed hands in a whole game").isNotEmpty();
     assertThat(named(SmallFrontScoringService.score(data)))
         .containsOnlyKeys("Germans", "Americans");
+  }
+
+  @Test
+  void terrainStackCapacityAllowsExactFitAndRejectsOverflow() {
+    final GameData data = loadMap();
+
+    final Territory vیشalm = data.getMap().getTerritoryOrThrow("Vielsalm");
+    final Territory stVith = data.getMap().getTerritoryOrThrow("St. Vith");
+    final Unit americanInfantry = infantryIn(vیشalm, "Americans");
+    assertThat(
+            SupplyAwareMoveDelegate.validateStackCapacity(
+                new MoveDescription(List.of(americanInfantry), new Route(vیشalm, stVith)),
+                americanInfantry.getOwner()))
+        .isEmpty();
+
+    final Territory blankenheim = data.getMap().getTerritoryOrThrow("Blankenheim");
+    final Territory losheimGap = data.getMap().getTerritoryOrThrow("Losheim Gap");
+    final Unit germanInfantry = infantryIn(blankenheim, "Germans");
+    assertThat(
+            SupplyAwareMoveDelegate.validateStackCapacity(
+                new MoveDescription(List.of(germanInfantry), new Route(blankenheim, losheimGap)),
+                germanInfantry.getOwner()))
+        .hasValueSatisfying(
+            message ->
+                assertThat(message)
+                    .contains(SupplyAwareMoveDelegate.STACK_CAPACITY_EXCEEDED)
+                    .contains("Losheim Gap"));
+  }
+
+  private static GameData loadMap() {
+    return GameParser.parse(MAP_XML, false)
+        .orElseThrow(() -> new AssertionError("map did not parse"));
+  }
+
+  private static Unit infantryIn(final Territory territory, final String owner) {
+    return territory.getUnitCollection().getUnits().stream()
+        .filter(unit -> unit.getType().getName().equals("infantry"))
+        .filter(unit -> unit.getOwner().getName().equals(owner))
+        .findFirst()
+        .orElseThrow();
   }
 
   private static Map<String, String> owners(final GameData data) {
@@ -88,7 +128,6 @@ class SmallFrontAiGameTest {
     data.getGameLoader().startGame(game, gamePlayers, launchAction, null);
     return game;
   }
-
 
   private static Map<String, Integer> named(final Map<GamePlayer, Integer> scores) {
     final Map<String, Integer> byName = new HashMap<>();
