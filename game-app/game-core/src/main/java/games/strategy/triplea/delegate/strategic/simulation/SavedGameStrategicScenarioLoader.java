@@ -2,10 +2,12 @@ package games.strategy.triplea.delegate.strategic.simulation;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.gameparser.GameParser;
 import games.strategy.engine.framework.GameDataManager;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -27,10 +29,9 @@ public final class SavedGameStrategicScenarioLoader implements StrategicScenario
     Objects.requireNonNull(request);
     final Path path = toExistingFile(request.scenarioPath());
     final GameData data =
-        gameDataLoader
-            .apply(path)
+        load(path)
             .orElseThrow(
-                () -> new IllegalArgumentException("could not load TripleA save game: " + path));
+                () -> new IllegalArgumentException("could not load TripleA scenario: " + path));
     if (request.selfPlay()) {
       return new SelfPlayStrategicScenario(
           data, request.seed(), request.maxActions(), request.maxRounds());
@@ -48,6 +49,16 @@ public final class SavedGameStrategicScenarioLoader implements StrategicScenario
                   .toList());
     }
     return new LoadedStrategicScenario(data, player, request.seed(), request.maxActions());
+  }
+
+  /**
+   * A save game resumes a position; a map XML starts a fresh one. Self-play training wants the
+   * latter, and requiring a save first would mean producing one just to throw it away.
+   */
+  private Optional<GameData> load(final Path path) {
+    return path.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(".xml")
+        ? GameParser.parse(path, false)
+        : gameDataLoader.apply(path);
   }
 
   private static Path toExistingFile(final String scenarioPath) {
