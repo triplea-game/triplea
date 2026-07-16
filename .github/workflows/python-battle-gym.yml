@@ -10,6 +10,7 @@ on:
   push:
     branches:
       - main
+      - small-front-scoring
       - 'agent/**'
     paths:
       - 'python/battle-gym/**'
