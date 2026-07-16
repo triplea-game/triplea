@@ -173,6 +173,12 @@ public final class StrategicMoveCandidateGenerator {
             route.getAllTerritories().stream()
                 .map(Territory::getName)
                 .collect(Collectors.joining(">")),
+            "unitType",
+            units.getFirst().getType().getName(),
+            "unitCount",
+            Integer.toString(units.size()),
+            "movementLeft",
+            minimumMovementLeft(units).toPlainString(),
             "unitIds",
             units.stream()
                 .map(unit -> unit.getId().toString())
