@@ -12,6 +12,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TerritoryEffectAttachment;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.delegate.supply.SupplyNetworkResolver;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.List;
 import java.util.OptionalInt;
@@ -19,8 +20,19 @@ import org.junit.jupiter.api.Test;
 
 class BattleRoundResolverTest {
   @Test
-  void groundBattleReducesGlobalLandRoundsByOne() {
+  void groundBattleFallsBackToGlobalLandRoundsOutsideSmallFront() {
     final GameData gameData = new GameData();
+    gameData.getProperties().set(Constants.LAND_BATTLE_ROUNDS, 6);
+
+    assertEquals(
+        6,
+        BattleRoundResolver.resolveGroundBattleRounds(
+            new Territory("Plain", gameData), List.of(), gameData));
+  }
+
+  @Test
+  void smallFrontGroundBattleReducesGlobalLandRoundsByOne() {
+    final GameData gameData = smallFrontGameData();
     gameData.getProperties().set(Constants.LAND_BATTLE_ROUNDS, 6);
 
     assertEquals(
@@ -30,20 +42,31 @@ class BattleRoundResolverTest {
   }
 
   @Test
-  void waterBattleReducesGlobalSeaRoundsByOne() {
+  void waterBattleRetainsGlobalSeaRoundsOutsideSmallFront() {
     final GameData gameData = new GameData();
     gameData.getProperties().set(Constants.SEA_BATTLE_ROUNDS, 5);
     final TerritoryEffect terrain = effect(gameData, 2, null);
 
     assertEquals(
-        4,
+        5,
         BattleRoundResolver.resolveGroundBattleRounds(
             new Territory("Sea", true, gameData), List.of(terrain), gameData));
   }
 
   @Test
-  void shortestFiniteGroundLimitWinsThenIsReducedByOne() {
-    final GameData gameData = new GameData();
+  void smallFrontWaterBattleReducesGlobalSeaRoundsByOne() {
+    final GameData gameData = smallFrontGameData();
+    gameData.getProperties().set(Constants.SEA_BATTLE_ROUNDS, 5);
+
+    assertEquals(
+        4,
+        BattleRoundResolver.resolveGroundBattleRounds(
+            new Territory("Sea", true, gameData), List.of(), gameData));
+  }
+
+  @Test
+  void smallFrontUsesShortestFiniteGroundLimitThenReducesItByOne() {
+    final GameData gameData = smallFrontGameData();
 
     assertEquals(
         1,
@@ -55,8 +78,8 @@ class BattleRoundResolverTest {
   }
 
   @Test
-  void oneRoundLimitIsNotReducedBelowOne() {
-    final GameData gameData = new GameData();
+  void smallFrontOneRoundLimitIsNotReducedBelowOne() {
+    final GameData gameData = smallFrontGameData();
 
     assertEquals(
         1,
@@ -65,8 +88,8 @@ class BattleRoundResolverTest {
   }
 
   @Test
-  void allUnlimitedGroundEffectsProduceUnlimitedBattle() {
-    final GameData gameData = new GameData();
+  void smallFrontUnlimitedGroundEffectsRemainUnlimited() {
+    final GameData gameData = smallFrontGameData();
 
     assertEquals(
         -1,
@@ -77,8 +100,8 @@ class BattleRoundResolverTest {
   }
 
   @Test
-  void airBattleUsesReducedIndependentTerrainLimit() {
-    final GameData gameData = new GameData();
+  void smallFrontAirBattleUsesReducedIndependentTerrainLimit() {
+    final GameData gameData = smallFrontGameData();
     gameData.getProperties().set(Constants.AIR_BATTLE_ROUNDS, 1);
 
     assertEquals(
@@ -121,7 +144,7 @@ class BattleRoundResolverTest {
   }
 
   @Test
-  void mustFightBattleUsesReducedTerrainGroundLimit() {
+  void mustFightBattleKeepsTerrainGroundLimitOutsideSmallFront() {
     final GameData gameData = TestMapGameData.TWW.getGameData();
     final Territory sicily = GameDataTestUtil.territory("Sicily", gameData);
     final TerritoryEffect terrain = TerritoryEffectHelper.getEffects(sicily).iterator().next();
@@ -130,12 +153,12 @@ class BattleRoundResolverTest {
     final MustFightBattle battle =
         new MustFightBattle(sicily, GameDataTestUtil.usa(gameData), gameData, new BattleTracker());
 
-    assertEquals(1, battle.getStatus().getMaxRounds());
+    assertEquals(2, battle.getStatus().getMaxRounds());
     assertFalse(battle.getStatus().isLastRound());
   }
 
   @Test
-  void airBattleUsesReducedTerrainAirLimit() {
+  void airBattleKeepsTerrainAirLimitOutsideSmallFront() {
     final GameData gameData = TestMapGameData.TWW.getGameData();
     final Territory sicily = GameDataTestUtil.territory("Sicily", gameData);
     final TerritoryEffect terrain = TerritoryEffectHelper.getEffects(sicily).iterator().next();
@@ -149,10 +172,16 @@ class BattleRoundResolverTest {
             GameDataTestUtil.usa(gameData),
             new BattleTracker());
 
-    battle.round = 1;
-    assertFalse(battle.shouldEndBattleDueToMaxRounds());
     battle.round = 2;
+    assertFalse(battle.shouldEndBattleDueToMaxRounds());
+    battle.round = 3;
     assertTrue(battle.shouldEndBattleDueToMaxRounds());
+  }
+
+  private static GameData smallFrontGameData() {
+    final GameData gameData = new GameData();
+    gameData.getProperties().set(SupplyNetworkResolver.SUPPLY_NETWORK_ENABLED, true);
+    return gameData;
   }
 
   private static TerritoryEffect effect(
