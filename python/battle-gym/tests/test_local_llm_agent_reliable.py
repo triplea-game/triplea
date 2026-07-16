@@ -23,10 +23,7 @@ class FakeCatalog:
 
 
 def test_execution_repair_exposes_only_terminal_decision_tools() -> None:
-    names = {
-        str(tool["function"]["name"])
-        for tool in EXECUTION_TOOLS
-    }
+    names = {str(tool["function"]["name"]) for tool in EXECUTION_TOOLS}
 
     assert names == {"execute_action", "end_phase"}
 
