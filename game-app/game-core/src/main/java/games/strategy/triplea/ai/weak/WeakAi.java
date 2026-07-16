@@ -30,6 +30,7 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
+import games.strategy.triplea.delegate.supply.SupplyNetworkResolver;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -133,7 +134,7 @@ public class WeakAi extends AbstractAi {
     // they may be able to move farther
     doMove(calculateTransportLoad(data, player), moveDel);
     // do the rest of the moves
-    doMove(calculateNonCombat(data, player), moveDel);
+    doMove(inSupplyReach(calculateNonCombat(data, player), data, player), moveDel);
     doMove(calculateNonCombatSea(true, data, player), moveDel);
     // load the transports again if we can
     // they may be able to move farther
@@ -150,8 +151,29 @@ public class WeakAi extends AbstractAi {
     doMove(calculateCombatSea(data, player), moveDel);
 
     // fight
-    doMove(calculateCombatMove(data, player), moveDel);
+    doMove(inSupplyReach(calculateCombatMove(data, player), data, player), moveDel);
     doMove(calculateCombatMoveSea(data, player), moveDel);
+  }
+
+  /**
+   * Drops land moves that would strand their units beyond the supply network.
+   *
+   * <p>This AI plans movement without any notion of supply, so on a map that has one it walks units
+   * off the roads, they go out of supply, and two turns later they are removed without a fight. A
+   * no-op wherever the supply network is switched off, which is every map that does not use it.
+   */
+  private static List<MoveDescription> inSupplyReach(
+      final List<MoveDescription> moves, final GameData data, final GamePlayer player) {
+    if (!SupplyNetworkResolver.isEnabled(data)) {
+      return moves;
+    }
+    return moves.stream()
+        .filter(
+            move ->
+                move.getUnits().stream().noneMatch(SupplyNetworkResolver::requiresSupply)
+                    || SupplyNetworkResolver.wouldBeSupplied(
+                        move.getRoute().getEnd(), player, data))
+        .toList();
   }
 
   private List<MoveDescription> calculateTransportLoad(

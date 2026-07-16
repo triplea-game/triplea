@@ -92,8 +92,10 @@ public final class PressTheObjectivesPolicy implements SmallFrontPolicy {
         score -= 60;
       }
     }
-    if (!SupplyNetworkResolver.isSupplied(destination, player, data)) {
-      score -= 15;
+    // wouldBeSupplied, not isSupplied: an attack target is never friendly land, so isSupplied says
+    // no for every enemy territory and would penalise every attack this policy exists to make.
+    if (!SupplyNetworkResolver.wouldBeSupplied(destination, player, data)) {
+      score -= 25;
     }
     if (Boolean.parseBoolean(action.parameters().get("uncertain"))) {
       // A probe into fog may simply bounce, so prefer a known move of equal value.

@@ -55,6 +55,42 @@ class SupplyNetworkResolverTest {
     assertThat(SupplyNetworkResolver.isSupplied(front, blue, data)).isFalse();
   }
 
+  @Test
+  void isSuppliedAlwaysSaysNoForGroundTheAskerDoesNotHold() {
+    // Supply only spreads over friendly land, so an attack target is never in the supplied set.
+    // Scoring an attack with isSupplied therefore penalises every attack there is.
+    front.setOwner(red);
+
+    assertThat(SupplyNetworkResolver.isSupplied(front, blue, data)).isFalse();
+  }
+
+  @Test
+  void wouldBeSuppliedAnswersForGroundTheAskerIsAboutToTake() {
+    front.setOwner(red);
+
+    // Road runs Depot -> Road -> Front, and Blue still holds Road, so taking Front keeps it in
+    // supply even though Blue does not hold it yet.
+    assertThat(SupplyNetworkResolver.wouldBeSupplied(front, blue, data)).isTrue();
+  }
+
+  @Test
+  void wouldBeSuppliedIsFalseWhenNoRoadReachesTheGround() {
+    front.setOwner(red);
+    road.setOwner(red);
+
+    // With the road node lost, taking Front strands whatever takes it.
+    assertThat(SupplyNetworkResolver.wouldBeSupplied(front, blue, data)).isFalse();
+  }
+
+  @Test
+  void everywhereWouldBeSuppliedWhenTheNetworkIsOff() {
+    data.getProperties().set(SupplyNetworkResolver.SUPPLY_NETWORK_ENABLED, false);
+    front.setOwner(red);
+    road.setOwner(red);
+
+    assertThat(SupplyNetworkResolver.wouldBeSupplied(front, blue, data)).isTrue();
+  }
+
   private SupplyTerritoryAttachment attach(final Territory territory) {
     final SupplyTerritoryAttachment attachment =
         new SupplyTerritoryAttachment("supplyAttachment", territory, data);
