@@ -41,25 +41,26 @@ public final class SupplyAwareMoveDelegate extends MoveDelegate {
     return super.performMove(move);
   }
 
-  /** Returns an error when any route step cannot accept the complete moving force. */
+  /** Returns an error when the final destination cannot accept the complete moving force. */
   public static Optional<String> validateStackCapacity(
       final MoveDescription move, final GamePlayer movingPlayer) {
-    for (final Territory territory : move.getRoute().getSteps()) {
-      final List<Unit> allowed =
-          StackCapacityResolver.filterUnitsToFit(
-              move.getUnits(), movingPlayer, territory, List.of());
-      if (allowed.size() == move.getUnits().size()) {
-        continue;
-      }
-      final List<Unit> blocked = new ArrayList<>(move.getUnits());
-      blocked.removeAll(allowed);
-      return Optional.of(
-          STACK_CAPACITY_EXCEEDED
-              + " in "
-              + territory.getName()
-              + ": "
-              + MyFormatter.unitsToTextNoOwner(blocked));
+    if (move.getRoute().hasNoSteps()) {
+      return Optional.empty();
     }
-    return Optional.empty();
+    final Territory destination = move.getRoute().getEnd();
+    final List<Unit> allowed =
+        StackCapacityResolver.filterUnitsToFit(
+            move.getUnits(), movingPlayer, destination, List.of());
+    if (allowed.size() == move.getUnits().size()) {
+      return Optional.empty();
+    }
+    final List<Unit> blocked = new ArrayList<>(move.getUnits());
+    blocked.removeAll(allowed);
+    return Optional.of(
+        STACK_CAPACITY_EXCEEDED
+            + " in "
+            + destination.getName()
+            + ": "
+            + MyFormatter.unitsToTextNoOwner(blocked));
   }
 }
