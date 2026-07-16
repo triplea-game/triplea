@@ -64,7 +64,7 @@ class SmallFrontAiGameTest {
   }
 
   @Test
-  void terrainStackCapacityAllowsExactFitAndRejectsOverflow() {
+  void terrainStackCapacityChecksDestinationButAllowsFullTransitTerritories() {
     final GameData data = loadMap();
 
     final Territory vielsalm = data.getMap().getTerritoryOrThrow("Vielsalm");
@@ -78,7 +78,17 @@ class SmallFrontAiGameTest {
 
     final Territory blankenheim = data.getMap().getTerritoryOrThrow("Blankenheim");
     final Territory losheimGap = data.getMap().getTerritoryOrThrow("Losheim Gap");
+    final Territory prum = data.getMap().getTerritoryOrThrow("Prum");
     final Unit germanInfantry = infantryIn(blankenheim, "Germans");
+
+    assertThat(
+            SupplyAwareMoveDelegate.validateStackCapacity(
+                new MoveDescription(
+                    List.of(germanInfantry), new Route(blankenheim, losheimGap, prum)),
+                germanInfantry.getOwner()))
+        .as("a full intermediate territory must not block transit")
+        .isEmpty();
+
     final Optional<String> overflow =
         SupplyAwareMoveDelegate.validateStackCapacity(
             new MoveDescription(List.of(germanInfantry), new Route(blankenheim, losheimGap)),
