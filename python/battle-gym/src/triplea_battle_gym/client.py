@@ -19,6 +19,12 @@ from .models import (
     BattleStepResult,
     JsonObject,
 )
+from .strategic_models import (
+    StrategicAction,
+    StrategicObservation,
+    StrategicResetRequest,
+    StrategicStepResult,
+)
 
 
 class BattleProtocolError(RuntimeError):
@@ -104,6 +110,24 @@ class BattleClient:
         payload = self._request("step", action.to_dict(), "step")
         return BattleStepResult.from_dict(payload)
 
+    def strategic_reset(self, request: StrategicResetRequest) -> StrategicObservation:
+        payload = self._request("strategicReset", request.to_dict(), "strategicObservation")
+        observation = _require_mapping(payload.get("observation"), "strategicReset observation")
+        return StrategicObservation.from_dict(observation)
+
+    def strategic_legal_actions(self) -> tuple[StrategicAction, ...]:
+        payload = self._request("strategicLegalActions", {}, "strategicLegalActions")
+        if not isinstance(payload, list):
+            raise BattleProtocolError("strategicLegalActions response data must be an array")
+        return tuple(
+            StrategicAction.from_dict(_require_mapping(item, "strategic legal action"))
+            for item in payload
+        )
+
+    def strategic_step(self, action: StrategicAction) -> StrategicStepResult:
+        payload = self._request("strategicStep", action.to_dict(), "strategicStep")
+        return StrategicStepResult.from_dict(payload)
+
     def episode_log(self) -> JsonObject:
         return self._request("episodeLog", {}, "episodeLog")
 
@@ -171,7 +195,9 @@ class BattleClient:
                     )
                 value = response.get("data")
                 if not isinstance(value, dict):
-                    if expected_type == "legalActions" and isinstance(value, list):
+                    if expected_type in ("legalActions", "strategicLegalActions") and isinstance(
+                        value, list
+                    ):
                         return value  # type: ignore[return-value]
                     raise BattleProtocolError("response data must be an object")
                 return value
