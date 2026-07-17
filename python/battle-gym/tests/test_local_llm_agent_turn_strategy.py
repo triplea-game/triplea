@@ -6,14 +6,13 @@ from typing import Any
 
 import pytest
 
-from triplea_battle_gym.local_llm_agent import ReplayStep
+from triplea_battle_gym.local_llm_agent import OllamaError, ReplayStep
 from triplea_battle_gym.local_llm_agent_turn_strategy import (
     _fallback_turn_strategy,
     _normalize_turn_strategy,
     _strategy_context_message,
     _turn_strategy_schema,
 )
-from triplea_battle_gym.local_llm_agent import OllamaError
 
 
 def _observation() -> SimpleNamespace:
