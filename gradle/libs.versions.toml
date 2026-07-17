@@ -41,7 +41,7 @@ xmlunit = "2.12.0"
 # Plugins
 gradle-versions = "0.54.0"
 spotless = "8.2.1"
-shadow = "9.4.3"
+shadow = "9.6.0"
 install4j = "13.0.1"
 download = "5.7.0"
 
