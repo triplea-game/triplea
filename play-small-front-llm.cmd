@@ -73,20 +73,22 @@ if not exist "runs\local-llm" mkdir "runs\local-llm"
 
 for /f "delims=" %%G in ('git rev-parse --short HEAD 2^>nul') do set "COMMIT=%%G"
 echo.
-echo Starting purpose-explanation Small Front local LLM self-play
+echo Starting turn-strategy Small Front local LLM self-play
 echo Model: %MODEL%
 if defined COMMIT echo Source commit: %COMMIT%
 echo Seed: %SEED%
 echo Max rounds: %MAX_ROUNDS%
 echo Default shadow rollouts: %ROLLOUTS%
 echo Max decisions: %MAX_DECISIONS%
+echo Turn grand strategy: generated once per player turn
+echo Action context: current state + legal actions + strategy + completed actions
 echo Action facts: exact engine data
 echo Commander explanations: operational purpose only
 echo Decision limit: graceful stop
 echo Log: %LOG%
 echo.
 
-"%VENV_PYTHON%" -m triplea_battle_gym.local_llm_agent_purpose ^
+"%VENV_PYTHON%" -m triplea_battle_gym.local_llm_agent_turn_strategy ^
   --server-command "cmd /d /c gradlew.bat -q :game-headless:runBattleSimulationServer" ^
   --scenario "%SCENARIO%" ^
   --model "%MODEL%" ^
