@@ -69,11 +69,13 @@ class TurnStrategyLocalLlmGame(verified.VerifiedLocalLlmGame):
 
         def strategy_builder(current_decision: int, current_catalog: ActionCatalog) -> str:
             completed = self._history[self._active_turn_history_start :]
-            return original_builder(current_decision, current_catalog) + "\n" + _strategy_context_message(
+            base_message = original_builder(current_decision, current_catalog)
+            strategy_context = _strategy_context_message(
                 catalog=current_catalog,
                 strategy=self._active_strategy,
                 completed_steps=completed,
             )
+            return base_message + "\n" + strategy_context
 
         verified._initial_verified_decision_message = strategy_builder
         try:
@@ -168,8 +170,9 @@ def _strategy_context_message(
     return (
         "CURRENT TURN COMMAND CONTEXT follows. CURRENT SITUATION is the only authoritative board "
         "state; all older action ids and state snapshots are expired. Follow CURRENT TURN GRAND "
-        "STRATEGY unless the latest legal state makes it impossible or clearly harmful. Avoid reversing "
-        "COMPLETED ACTIONS THIS TURN without a concrete new reason. Choose only a current legal action.\n"
+        "STRATEGY unless the latest legal state makes it impossible or clearly harmful. "
+        "Avoid reversing COMPLETED ACTIONS THIS TURN without a concrete new reason. "
+        "Choose only a current legal action.\n"
         + json.dumps(payload, ensure_ascii=False)
     )
 
@@ -196,21 +199,22 @@ def _generate_turn_strategy(
             {
                 "role": "system",
                 "content": (
-                    "You are the turn-level operational commander for one Small Front side. Create a "
-                    "single coherent grand strategy for the entire current turn. Compare the current "
-                    "fog-filtered situation with the same side's previous-turn opening situation and "
-                    "previous grand strategy. Previous information is historical and may be stale; never "
-                    "treat it as current hidden information. Preserve supply, obey destination stack "
-                    "capacity, concentrate force, retain necessary reserves, avoid pointless reversals, "
-                    "and identify when movement should stop. Write concise Korean strategy text."
+                    "You are the turn-level operational commander for one Small Front side. "
+                    "Create a single coherent grand strategy for the entire current turn. "
+                    "Compare the current fog-filtered situation with the same side's previous-turn "
+                    "opening situation and previous grand strategy. Previous information is "
+                    "historical and may be stale; never treat it as current hidden information. "
+                    "Preserve supply, obey destination stack capacity, concentrate force, retain "
+                    "necessary reserves, avoid pointless reversals, and identify when movement "
+                    "should stop. Write concise Korean strategy text."
                 ),
             },
             {
                 "role": "user",
                 "content": (
-                    "Analyze these JSON inputs and issue this turn's grand strategy. The strategy will be "
-                    "inserted into every individual action decision for the rest of the turn. Return only "
-                    "the schema-constrained JSON object.\n"
+                    "Analyze these JSON inputs and issue this turn's grand strategy. "
+                    "The strategy will be inserted into every individual action decision for "
+                    "the rest of the turn. Return only the schema-constrained JSON object.\n"
                     + json.dumps(planning_input, ensure_ascii=False)
                 ),
             },
