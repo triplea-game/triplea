@@ -49,6 +49,7 @@ select = ["B", "E", "F", "I", "SIM", "UP"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S101"]
+"src/triplea_battle_gym/local_llm_agent_verified.py" = ["F401"]
 
 [tool.mypy]
 python_version = "3.11"
