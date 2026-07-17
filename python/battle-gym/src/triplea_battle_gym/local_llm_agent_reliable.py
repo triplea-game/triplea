@@ -1,8 +1,8 @@
 """Reliable decision wrapper for the Small Front Ollama tool agent.
 
-This module keeps the original bounded tool surface, adds a repair pass when a local model returns
-prose without executing an action, and requires every terminal decision tool to carry a concise
-public explanation that is printed to the command prompt.
+The model may use bounded inspection and simulation tools. If it finishes with prose instead of an
+execution tool call, a second Ollama request uses a JSON Schema to require one legal action id and a
+concise public Korean explanation. Only a failed structured choice reaches the heuristic fallback.
 """
 
 from __future__ import annotations
@@ -11,6 +11,8 @@ import json
 import os
 import shlex
 import sys
+import urllib.error
+import urllib.request
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
@@ -78,12 +80,13 @@ RELIABLE_SYSTEM_PROMPT = (
     + "prefer simulate_action before executing it. Every execute_action or end_phase call must include "
     + "a concise Korean reason of 1-3 sentences. The reason is printed to the human command prompt, so "
     + "state the visible situation, immediate objective, and why the selected action is preferable. "
-    + "Give only a public decision summary, not hidden chain-of-thought."
+    + "Give only a public decision summary, not hidden chain-of-thought. If you return no terminal tool "
+    + "call, a final JSON decision request will require an action id and Korean reason."
 )
 
 
 class ReliableLocalLlmGame(LocalLlmGame):
-    """Local LLM game loop with bounded repair and console-visible decision explanations."""
+    """Local LLM game loop with structured final choices and console explanations."""
 
     def _run_model_decision(self, decision_number: int) -> None:
         catalog = ActionCatalog(self._env.raw_observation, self._env.legal_actions)
@@ -111,11 +114,9 @@ class ReliableLocalLlmGame(LocalLlmGame):
             },
         )
 
-        no_tool_responses = 0
         try:
             for _ in range(self._max_tool_rounds):
-                tools = EXECUTION_TOOLS if no_tool_responses else COMMENTED_TOOLS
-                response = self._ollama.chat(messages, tools)
+                response = self._ollama.chat(messages, COMMENTED_TOOLS)
                 raw_message = response["message"]
                 if not isinstance(raw_message, dict):
                     raise OllamaError("Ollama message was not an object")
@@ -127,18 +128,6 @@ class ReliableLocalLlmGame(LocalLlmGame):
                 messages.append(assistant_message)
                 tool_calls = raw_message.get("tool_calls", [])
                 if not isinstance(tool_calls, list) or not tool_calls:
-                    no_tool_responses += 1
-                    if no_tool_responses <= 2:
-                        repair = _repair_decision_message(catalog, no_tool_responses)
-                        messages.append({"role": "user", "content": repair})
-                        self._logger.write(
-                            "decision_repair",
-                            {
-                                "attempt": no_tool_responses,
-                                "reason": "model returned no tool call",
-                            },
-                        )
-                        continue
                     break
 
                 for tool_call in tool_calls:
@@ -146,13 +135,12 @@ class ReliableLocalLlmGame(LocalLlmGame):
                     print(f"[{observation.player} {observation.phase}] tool: {name}")
                     if name in _EXECUTION_TOOL_NAMES:
                         reason = _public_reason(arguments)
-                        print(f"[{observation.player} {observation.phase}] commander: {reason}")
-                        self._logger.write(
-                            "decision_explanation",
-                            {
-                                "tool": name,
-                                "reason": reason,
-                            },
+                        _print_and_log_reason(
+                            player=observation.player,
+                            phase=observation.phase,
+                            tool=name,
+                            reason=reason,
+                            logger=self._logger,
                         )
                     result = session.call(name, arguments)
                     messages.append(
@@ -170,32 +158,65 @@ class ReliableLocalLlmGame(LocalLlmGame):
                         break
                 if session.executed:
                     break
+
+            if not session.executed:
+                action_id, reason = _structured_final_choice(
+                    ollama=self._ollama,
+                    messages=messages,
+                    catalog=catalog,
+                    decision_number=decision_number,
+                )
+                print(
+                    f"[{observation.player} {observation.phase}] structured-choice: action {action_id}"
+                )
+                _print_and_log_reason(
+                    player=observation.player,
+                    phase=observation.phase,
+                    tool="structured_choice",
+                    reason=reason,
+                    logger=self._logger,
+                )
+                result = session.call(
+                    "execute_action", {"action_id": action_id, "reason": reason}
+                )
+                if "error" in result:
+                    raise OllamaError(f"structured action could not be executed: {result['error']}")
         except OllamaError as error:
             self._logger.write("ollama_error", {"error": str(error)})
-            print(f"Ollama error: {error}; using fallback action.", file=sys.stderr)
+            print(f"Ollama decision error: {error}; using fallback action.", file=sys.stderr)
 
         if not session.executed:
             fallback = _fallback_action(catalog)
             fallback_reason = (
-                "모델이 제한된 재시도 안에 실행 행동을 확정하지 못해 안전장치가 합법 행동을 "
+                "모델의 도구 탐색과 구조화된 최종 선택이 모두 실패해 안전장치가 합법 행동을 "
                 "선택했습니다. 이 설명은 모델의 판단이 아니라 휴리스틱 fallback입니다."
             )
-            print(f"[{observation.player} {observation.phase}] commander: {fallback_reason}")
+            _print_and_log_reason(
+                player=observation.player,
+                phase=observation.phase,
+                tool="fallback",
+                reason=fallback_reason,
+                logger=self._logger,
+            )
             print(
                 f"[{observation.player} {observation.phase}] fallback action {fallback}: "
                 f"{catalog.get(fallback).type}"
             )
-            self._logger.write(
-                "decision_explanation",
-                {"tool": "fallback", "reason": fallback_reason},
-            )
             session.call("execute_action", {"action_id": fallback, "reason": fallback_reason})
-        elif session.selected_action is not None:
+
+        if session.selected_action is not None:
             action = session.selected_action
             print(
                 f"[{observation.player} {observation.phase}] executed "
                 f"{action.type} {dict(action.parameters)}"
             )
+
+
+def _print_and_log_reason(
+    *, player: str, phase: str, tool: str, reason: str, logger: JsonlLogger
+) -> None:
+    print(f"[{player} {phase}] commander: {reason}")
+    logger.write("decision_explanation", {"tool": tool, "reason": reason})
 
 
 def _public_reason(arguments: Mapping[str, Any]) -> str:
@@ -205,9 +226,157 @@ def _public_reason(arguments: Mapping[str, Any]) -> str:
     return "모델이 공개 설명을 제공하지 않았습니다. 선택한 행동만 엔진에서 검증해 실행합니다."
 
 
+def _balanced_shortlist(catalog: ActionCatalog, limit: int) -> list[JsonObject]:
+    """Return a deterministic shortlist spread across action types and origins."""
+    if limit < 1:
+        raise ValueError("shortlist limit must be positive")
+
+    result: list[JsonObject] = []
+    groups: dict[tuple[str, str], list[int]] = {}
+    end_phase_ids: list[int] = []
+    for action_id, action in enumerate(catalog.actions):
+        if action.type == "end_phase":
+            end_phase_ids.append(action_id)
+            continue
+        key = (action.type, action.parameters.get("origin", ""))
+        groups.setdefault(key, []).append(action_id)
+
+    for action_id in end_phase_ids:
+        if len(result) >= limit:
+            return result
+        result.append(catalog.describe(action_id))
+
+    active_keys = list(groups)
+    while active_keys and len(result) < limit:
+        next_keys: list[tuple[str, str]] = []
+        for key in active_keys:
+            action_ids = groups[key]
+            if action_ids and len(result) < limit:
+                result.append(catalog.describe(action_ids.pop(0)))
+            if action_ids:
+                next_keys.append(key)
+        active_keys = next_keys
+    return result
+
+
+def _final_decision_schema(action_ids: Sequence[int]) -> JsonObject:
+    if not action_ids:
+        raise ValueError("structured decision requires at least one legal action")
+    return {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["action_id", "reason"],
+        "properties": {
+            "action_id": {
+                "type": "integer",
+                "enum": list(action_ids),
+                "description": "One actionId from the supplied legal shortlist.",
+            },
+            "reason": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 400,
+                "description": (
+                    "한국어 1~3문장. 현재 보이는 상황, 즉시 목표, 이 행동을 선택한 이유를 "
+                    "CMD 사용자에게 설명한다. 숨겨진 사고과정은 쓰지 않는다."
+                ),
+            },
+        },
+    }
+
+
+def _structured_final_choice(
+    *,
+    ollama: OllamaHttpClient,
+    messages: Sequence[JsonObject],
+    catalog: ActionCatalog,
+    decision_number: int,
+) -> tuple[int, str]:
+    shortlist = _balanced_shortlist(catalog, min(48, len(catalog.actions)))
+    action_ids = [int(item["actionId"]) for item in shortlist]
+    request_messages = [
+        *messages,
+        {
+            "role": "user",
+            "content": (
+                "Final decision stage. Return only the JSON object required by the schema. Choose "
+                "exactly one action_id from the legal shortlist and provide a concise Korean public "
+                "commander explanation. Do not invent an action. Decision "
+                f"{decision_number} legal shortlist:\n"
+                + json.dumps(shortlist, ensure_ascii=False)
+            ),
+        },
+    ]
+    payload = _structured_chat(
+        ollama=ollama,
+        messages=request_messages,
+        schema=_final_decision_schema(action_ids),
+    )
+    message = payload.get("message")
+    if not isinstance(message, Mapping):
+        raise OllamaError("structured response did not contain a message object")
+    content = message.get("content", "")
+    if isinstance(content, Mapping):
+        decision: object = content
+    elif isinstance(content, str):
+        try:
+            decision = json.loads(content)
+        except json.JSONDecodeError as error:
+            raise OllamaError(f"structured decision was not valid JSON: {content}") from error
+    else:
+        raise OllamaError("structured decision content had an unsupported type")
+    if not isinstance(decision, Mapping):
+        raise OllamaError("structured decision was not an object")
+
+    action_id = decision.get("action_id")
+    if isinstance(action_id, bool) or not isinstance(action_id, int):
+        raise OllamaError("structured decision action_id was not an integer")
+    if action_id not in action_ids:
+        raise OllamaError(f"structured decision selected non-shortlisted action {action_id}")
+    reason = str(decision.get("reason", "")).strip()
+    if not reason:
+        raise OllamaError("structured decision reason was empty")
+    return action_id, reason[:400]
+
+
+def _structured_chat(
+    *, ollama: OllamaHttpClient, messages: Sequence[JsonObject], schema: JsonObject
+) -> JsonObject:
+    """Call Ollama's JSON-Schema response mode for a mandatory final decision."""
+    body = json.dumps(
+        {
+            "model": ollama._model,
+            "messages": list(messages),
+            "stream": False,
+            "format": schema,
+            "options": {"temperature": 0},
+        },
+        ensure_ascii=False,
+    ).encode("utf-8")
+    request = urllib.request.Request(
+        f"{ollama._base_url}/api/chat",
+        data=body,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(  # noqa: S310
+            request, timeout=ollama._timeout_seconds
+        ) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as error:
+        detail = error.read().decode("utf-8", errors="replace")
+        raise OllamaError(f"Ollama structured choice returned HTTP {error.code}: {detail}") from error
+    except (OSError, urllib.error.URLError, json.JSONDecodeError) as error:
+        raise OllamaError(f"Ollama structured choice failed: {error}") from error
+    if not isinstance(payload, dict):
+        raise OllamaError("Ollama structured choice response was not an object")
+    return payload
+
+
 def _initial_decision_message(decision_number: int, catalog: ActionCatalog) -> str:
     observation = catalog.observation
-    shortlist = catalog.list_actions(limit=min(24, len(catalog.actions)))
+    shortlist = _balanced_shortlist(catalog, min(24, len(catalog.actions)))
     payload = {
         "decision": decision_number,
         "round": observation.round,
@@ -217,21 +386,20 @@ def _initial_decision_message(decision_number: int, catalog: ActionCatalog) -> s
         "legalActionShortlist": shortlist,
     }
     return (
-        "Choose and execute exactly one legal action. You may inspect or simulate first. "
-        "Do not stop with an explanation. In the terminal execute_action or end_phase tool call, "
-        "include a concise Korean reason explaining the visible situation, immediate objective, and "
-        "why the action is preferred; this reason will be printed in CMD. Current decision:\n"
+        "Inspect the visible situation and choose exactly one legal action. You may use tools to inspect "
+        "or simulate promising candidates. Prefer simulate_action before a visible attack. Finish with "
+        "execute_action or end_phase and include a concise Korean public reason. If you instead return "
+        "prose, the controller will request a schema-constrained final JSON choice. Current decision:\n"
         + json.dumps(payload, ensure_ascii=False)
     )
 
 
 def _repair_decision_message(catalog: ActionCatalog, attempt: int) -> str:
-    shortlist = catalog.list_actions(limit=min(40, len(catalog.actions)))
+    shortlist = _balanced_shortlist(catalog, min(40, len(catalog.actions)))
     return (
-        f"Repair attempt {attempt}: no action was executed. "
-        "You must now call execute_action with one action_id from the shortlist, or call end_phase. "
-        "The tool call must include a concise Korean reason for the CMD user. Return no prose-only "
-        "answer. Legal shortlist:\n"
+        f"Repair attempt {attempt}: no action was executed. Choose one actionId from this balanced "
+        "legal shortlist and provide a concise Korean reason. Return no prose-only answer. Legal "
+        "shortlist:\n"
         + json.dumps(shortlist, ensure_ascii=False)
     )
 
@@ -276,9 +444,10 @@ def main() -> None:
         base_seed=args.seed,
         max_rollouts=args.max_simulation_rollouts,
     )
-    print(f"Starting reliable Small Front local LLM self-play with {args.model}")
+    print(f"Starting structured-choice Small Front local LLM self-play with {args.model}")
     print(f"Scenario: {scenario}")
     print("Commander explanations: enabled")
+    print("Structured final choice: enabled")
     if args.log is not None:
         print(f"Log: {Path(args.log).resolve()}")
     try:
