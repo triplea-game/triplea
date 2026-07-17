@@ -31,7 +31,7 @@ train = [
 triplea-battle-evaluate = "triplea_battle_gym.evaluate:main"
 triplea-battle-train = "triplea_battle_gym.train:main"
 triplea-strategic-train = "triplea_battle_gym.strategic_train:main"
-triplea-local-llm = "triplea_battle_gym.local_llm_agent_reliable:main"
+triplea-local-llm = "triplea_battle_gym.local_llm_agent_verified:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/triplea_battle_gym"]
