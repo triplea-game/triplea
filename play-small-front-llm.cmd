@@ -73,14 +73,15 @@ if not exist "runs\local-llm" mkdir "runs\local-llm"
 
 for /f "delims=" %%G in ('git rev-parse --short HEAD 2^>nul') do set "COMMIT=%%G"
 echo.
-echo Starting reliable Small Front local LLM self-play
+echo Starting structured-choice Small Front local LLM self-play
 echo Model: %MODEL%
 if defined COMMIT echo Source commit: %COMMIT%
 echo Seed: %SEED%
 echo Max rounds: %MAX_ROUNDS%
 echo Default shadow rollouts: %ROLLOUTS%
 echo Max decisions: %MAX_DECISIONS%
-echo Decision repair: enabled
+echo Commander explanations: enabled
+echo Structured final choice: enabled
 echo Log: %LOG%
 echo.
 
