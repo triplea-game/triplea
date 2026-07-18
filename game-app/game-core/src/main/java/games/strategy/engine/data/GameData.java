@@ -577,7 +577,7 @@ public class GameData implements Serializable, GameState {
       change.perform(this);
     }
     dataChangeListeners.forEach(listener -> listener.gameDataChanged(change));
-    GameDataEvent.lookupEvents(change).forEach(this::fireGameDataEvent);
+    GameDataEvent.lookupGameDataChangeEvents(change).forEach(this::fireGameDataEvent);
   }
 
   @Override

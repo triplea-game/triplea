@@ -20,7 +20,8 @@ class GameDataEventTest {
         new CompositeChange(new CompositeChange(new CompositeChange(attachmentChange)));
 
     assertThat(
-        GameDataEvent.lookupEvents(change), is(Set.of(GameDataEvent.TECH_ATTACHMENT_CHANGED)));
+        GameDataEvent.lookupGameDataChangeEvents(change),
+        is(Set.of(GameDataEvent.TECH_ATTACHMENT_CHANGED)));
   }
 
   @Test
@@ -28,18 +29,20 @@ class GameDataEventTest {
     final ChangeAttachmentChange attachmentChange = mock(ChangeAttachmentChange.class);
     when(attachmentChange.getAttachmentName()).thenReturn("otherAttachment");
 
-    assertThat(GameDataEvent.lookupEvents(new CompositeChange(attachmentChange)), is(Set.of()));
+    assertThat(
+        GameDataEvent.lookupGameDataChangeEvents(new CompositeChange(attachmentChange)),
+        is(Set.of()));
   }
 
   @Test
-  void findsAllEventsInsideCompositeChange() {
+  void findsAllGameDataChangeEventsInsideCompositeChange() {
     final ChangeAttachmentChange attachmentChange = mock(ChangeAttachmentChange.class);
     when(attachmentChange.getAttachmentName()).thenReturn(Constants.TECH_ATTACHMENT_NAME);
     final ObjectPropertyChange moveChange = mock(ObjectPropertyChange.class);
     when(moveChange.getProperty()).thenReturn(Unit.PropertyName.ALREADY_MOVED.toString());
 
     assertThat(
-        GameDataEvent.lookupEvents(new CompositeChange(moveChange, attachmentChange)),
+        GameDataEvent.lookupGameDataChangeEvents(new CompositeChange(moveChange, attachmentChange)),
         is(Set.of(GameDataEvent.UNIT_MOVED, GameDataEvent.TECH_ATTACHMENT_CHANGED)));
   }
 }

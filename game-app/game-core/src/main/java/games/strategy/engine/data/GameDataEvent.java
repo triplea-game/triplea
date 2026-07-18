@@ -12,7 +12,7 @@ public enum GameDataEvent {
   TECH_ATTACHMENT_CHANGED;
 
   /** Returns all game data events represented by a change, including nested composite changes. */
-  static Set<GameDataEvent> lookupEvents(final Change change) {
+  static Set<GameDataEvent> lookupGameDataChangeEvents(final Change change) {
     final Set<GameDataEvent> events = EnumSet.noneOf(GameDataEvent.class);
     if (hasMoveChange(change)) {
       events.add(UNIT_MOVED);
@@ -27,7 +27,7 @@ public enum GameDataEvent {
    * Recursively checks if the change is or contains a 'ALREADY_MOVED' change action. This indicates
    * a unit has moved.
    */
-  static boolean hasMoveChange(final Change change) {
+  private static boolean hasMoveChange(final Change change) {
     if (change instanceof CompositeChange compositeChange) {
       final boolean hasMoveChange =
           compositeChange.getChanges().stream().anyMatch(GameDataEvent::hasMoveChange);
