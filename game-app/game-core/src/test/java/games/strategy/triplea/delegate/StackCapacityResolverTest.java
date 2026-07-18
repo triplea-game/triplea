@@ -19,6 +19,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 
 class StackCapacityResolverTest {
+  private static final String SMALL_FRONT_MEUSE_GAME = "Small Front: Meuse Corridor";
+
   private final GameData gameData = new GameData();
   private final AtomicInteger names = new AtomicInteger();
 
@@ -47,6 +49,34 @@ class StackCapacityResolverTest {
         Constants.TERRITORYEFFECT_ATTACHMENT_NAME,
         new TerritoryEffectAttachment(Constants.TERRITORYEFFECT_ATTACHMENT_NAME, effect, gameData));
     assertFalse(StackCapacityResolver.resolveCapacity(List.of(effect)).isPresent());
+  }
+
+  @Test
+  void smallFrontMeuseUsesRelaxedTerrainCapacities() {
+    assertEquals(
+        7,
+        StackCapacityResolver.resolveCapacity(
+                List.of(namedEffect("Open", 6)), SMALL_FRONT_MEUSE_GAME)
+            .orElseThrow());
+    assertEquals(
+        6,
+        StackCapacityResolver.resolveCapacity(
+                List.of(namedEffect("Town", 5)), SMALL_FRONT_MEUSE_GAME)
+            .orElseThrow());
+    assertEquals(
+        5,
+        StackCapacityResolver.resolveCapacity(
+                List.of(namedEffect("Forest", 3)), SMALL_FRONT_MEUSE_GAME)
+            .orElseThrow());
+  }
+
+  @Test
+  void otherGamesKeepConfiguredTerrainCapacity() {
+    assertEquals(
+        3,
+        StackCapacityResolver.resolveCapacity(
+                List.of(namedEffect("Forest", 3)), "Another Game")
+            .orElseThrow());
   }
 
   @Test
@@ -97,8 +127,11 @@ class StackCapacityResolverTest {
   }
 
   private TerritoryEffect effect(final int capacity) {
-    final TerritoryEffect effect =
-        new TerritoryEffect("effect-" + names.incrementAndGet(), gameData);
+    return namedEffect("effect-" + names.incrementAndGet(), capacity);
+  }
+
+  private TerritoryEffect namedEffect(final String name, final int capacity) {
+    final TerritoryEffect effect = new TerritoryEffect(name, gameData);
     final TerritoryEffectAttachment attachment =
         new TerritoryEffectAttachment(Constants.TERRITORYEFFECT_ATTACHMENT_NAME, effect, gameData)
             .setStackCapacity(capacity);
