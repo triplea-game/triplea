@@ -3,143 +3,72 @@ package games.strategy.triplea.ui;
 import static games.strategy.triplea.image.UnitImageFactory.ImageKey;
 
 import com.google.common.base.Preconditions;
-import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
-import games.strategy.engine.chat.ChatPanel;
-import games.strategy.engine.chat.PlayerChatRenderer;
-import games.strategy.engine.data.*;
-import games.strategy.engine.data.changefactory.ChangeFactory;
-import games.strategy.engine.data.events.GameDataChangeListener;
-import games.strategy.engine.framework.*;
-import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
-import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
-import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameFileSelector;
-import games.strategy.engine.history.HistoryNode;
-import games.strategy.engine.history.Round;
+import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.RepairRule;
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.ResourceCollection;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.history.Step;
-import games.strategy.engine.player.PlayerBridge;
-import games.strategy.engine.random.PbemDiceRoller;
-import games.strategy.triplea.EngineImageLoader;
-import games.strategy.triplea.Properties;
-import games.strategy.triplea.attachments.*;
-import games.strategy.triplea.delegate.*;
-import games.strategy.triplea.delegate.battle.AirBattle;
-import games.strategy.triplea.delegate.battle.BattleState;
-import games.strategy.triplea.delegate.battle.ScrambleLogic;
-import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
-import games.strategy.triplea.delegate.data.BattleListing;
-import games.strategy.triplea.delegate.data.FightBattleDetails;
-import games.strategy.triplea.delegate.data.TechResults;
-import games.strategy.triplea.delegate.data.TechRoll;
-import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
-import games.strategy.triplea.delegate.remote.IEditDelegate;
-import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
-import games.strategy.triplea.delegate.remote.IUserActionDelegate;
-import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.image.MapImage;
-import games.strategy.triplea.image.TileImageFactory;
-import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.triplea.ui.export.ScreenshotExporter;
-import games.strategy.triplea.ui.history.HistoryDetailsPanel;
-import games.strategy.triplea.ui.history.HistoryLog;
-import games.strategy.triplea.ui.history.HistoryPanel;
-import games.strategy.triplea.ui.menubar.TripleAMenuBar;
-import games.strategy.triplea.ui.panel.move.MovePanel;
-import games.strategy.triplea.ui.panels.map.MapPanel;
-import games.strategy.triplea.util.TuvCostsCalculator;
-import games.strategy.ui.ImageScrollModel;
-import games.strategy.ui.ImageScrollerSmallView;
-import games.strategy.ui.Util;
 import java.awt.*;
-import java.awt.event.*;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serial;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.tree.DefaultMutableTreeNode;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.triplea.java.Interruptibles;
-import org.triplea.java.ThreadRunner;
-import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
-import org.triplea.sound.SoundPath;
-import org.triplea.swing.CollapsiblePanel;
-import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.EventThreadJOptionPane.ConfirmDialogType;
-import org.triplea.swing.SwingAction;
-import org.triplea.swing.SwingComponents;
-import org.triplea.swing.jpanel.JPanelBuilder;
-import org.triplea.swing.key.binding.KeyCode;
-import org.triplea.swing.key.binding.SwingKeyBinding;
 import org.triplea.thread.ThreadPool;
-import org.triplea.util.ExitStatus;
-import org.triplea.util.LocalizeHtml;
 import org.triplea.util.Tuple;
 
 /** Main frame for the triple a game. */
-@Slf4j
-public final class TripleAFrame extends JFrame implements QuitHandler {
+@lombok.extern.slf4j.Slf4j
+public final class TripleAFrame extends javax.swing.JFrame implements QuitHandler {
   private static final long serialVersionUID = 7640069668264418976L;
 
-  @Getter private final LocalPlayers localPlayers;
-  private final GameData data;
-  @Getter private final IGame game;
-  @Getter private final MapPanel mapPanel;
-  private final ImageScrollerSmallView smallView;
+  @lombok.Getter private final games.strategy.engine.framework.LocalPlayers localPlayers;
+  private final games.strategy.engine.data.GameData data;
+  @lombok.Getter private final games.strategy.engine.framework.IGame game;
+  @lombok.Getter private final games.strategy.triplea.ui.panels.map.MapPanel mapPanel;
+  private final games.strategy.ui.ImageScrollerSmallView smallView;
 
   private final ActionButtonsPanel actionButtonsPanel;
-  private final JPanel gameMainPanel = new JPanel();
-  private final JPanel rightHandSidePanel = new JPanel();
-  private final JTabbedPane tabsPanel = new JTabbedPane();
+  private final javax.swing.JPanel gameMainPanel = new javax.swing.JPanel();
+  private final javax.swing.JPanel rightHandSidePanel = new javax.swing.JPanel();
+  private final javax.swing.JTabbedPane tabsPanel = new javax.swing.JTabbedPane();
   private final StatPanel statsPanel;
   private final TechnologyPanel technologyPanel;
   private final EconomyPanel economyPanel;
   private final Runnable clientLeftGame;
   private @Nullable ObjectivePanel objectivePanel;
-  @Getter private final TerritoryDetailPanel territoryDetailPanel;
-  @Getter private @Nullable HistoryPanel historyPanel;
-  private final AtomicBoolean inHistory = new AtomicBoolean(false);
-  private final AtomicBoolean inGame = new AtomicBoolean(true);
-  private @Nullable HistorySynchronizer historySyncher;
-  @Getter private UiContext uiContext;
-  private final JPanel mapAndChatPanel;
-  private final @Nullable ChatPanel chatPanel;
+  @lombok.Getter private final TerritoryDetailPanel territoryDetailPanel;
+  private final java.util.concurrent.atomic.AtomicBoolean inHistory =
+      new java.util.concurrent.atomic.AtomicBoolean(false);
+  private final java.util.concurrent.atomic.AtomicBoolean inGame =
+      new java.util.concurrent.atomic.AtomicBoolean(true);
+  private final javax.swing.JPanel mapAndChatPanel;
+  private final @Nullable games.strategy.engine.chat.ChatPanel chatPanel;
+  private final javax.swing.JSplitPane chatSplit;
+  @lombok.Getter private final javax.swing.ButtonModel editModeButtonModel;
+  private final javax.swing.JSplitPane gameCenterPanel;
   private final CommentPanel commentPanel;
-  private final JSplitPane chatSplit;
-  private JSplitPane commentSplit;
+  @lombok.Getter private final BottomBar bottomBar;
+  private final java.util.Map<games.strategy.engine.data.GamePlayer, Boolean> requiredTurnSeries =
+      new java.util.HashMap<>();
   private final EditPanel editPanel;
-  @Getter private final ButtonModel editModeButtonModel;
-  @Getter private IEditDelegate editDelegate;
-  private final JSplitPane gameCenterPanel;
-  @Getter private final BottomBar bottomBar;
-  private GamePlayer lastPlayer;
-  private int lastPlayerRound = -1;
-  private final Map<GamePlayer, Boolean> requiredTurnSeries = new HashMap<>();
-  private final ThreadPool messageAndDialogThreadPool = new ThreadPool(1);
-  private final MapUnitTooltipManager tooltipManager;
-  private boolean isCtrlPressed = false;
-
-  private final GameDataChangeListener dataChangeListener =
-      new GameDataChangeListener() {
+  private final games.strategy.engine.data.events.GameDataChangeListener dataChangeListener =
+      new games.strategy.engine.data.events.GameDataChangeListener() {
         @Override
-        public void gameDataChanged(final Change change) {
+        public void gameDataChanged(final games.strategy.engine.data.Change change) {
           // Update the bottomBar, since resources may have changed, e.g. by triggers.
           bottomBar.gameDataChanged();
-          SwingUtilities.invokeLater(
+          javax.swing.SwingUtilities.invokeLater(
               () -> {
                 if (mapPanel.getEditMode()) {
                   if (tabsPanel.indexOfComponent(editPanel) == -1) {
@@ -164,143 +93,163 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         }
       };
 
-  @Getter
-  private final Action showHistoryAction =
-      SwingAction.of(
+  @lombok.Getter
+  private final javax.swing.Action showHistoryAction =
+      org.triplea.swing.SwingAction.of(
           "Show history",
           e -> {
             if (!inHistory.get()) {
               showHistory();
-              dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
+              dataChangeListener.gameDataChanged(
+                  games.strategy.engine.data.changefactory.ChangeFactory.EMPTY_CHANGE);
             }
           });
 
-  @Getter
-  private final Action showGameAction =
-      new AbstractAction("Show current game") {
-        @Serial private static final long serialVersionUID = -7551760679570164254L;
+  @lombok.Getter
+  private final javax.swing.Action showGameAction =
+      new javax.swing.AbstractAction("Show current game") {
+        @java.io.Serial private static final long serialVersionUID = -7551760679570164254L;
 
         {
           setEnabled(false);
         }
 
         @Override
-        public void actionPerformed(final ActionEvent e) {
+        public void actionPerformed(final java.awt.event.ActionEvent e) {
           showGame();
-          dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
+          dataChangeListener.gameDataChanged(
+              games.strategy.engine.data.changefactory.ChangeFactory.EMPTY_CHANGE);
         }
       };
 
-  @Getter
+  @lombok.Getter
   private final AdditionalTerritoryDetails additionalTerritoryDetails =
       new AdditionalTerritoryDetails();
 
+  private final ThreadPool messageAndDialogThreadPool = new ThreadPool(1);
+  private final MapUnitTooltipManager tooltipManager;
+  @lombok.Getter private @Nullable games.strategy.triplea.ui.history.HistoryPanel historyPanel;
+  private int lastPlayerRound = -1;
+  private @Nullable games.strategy.engine.framework.HistorySynchronizer historySyncher;
+  private boolean isCtrlPressed = false;
+  @lombok.Getter private UiContext uiContext;
+  private javax.swing.JSplitPane commentSplit;
+  @lombok.Getter private games.strategy.triplea.delegate.remote.IEditDelegate editDelegate;
+  private games.strategy.engine.data.GamePlayer lastPlayer;
+
   private TripleAFrame(
-      final IGame game,
-      final LocalPlayers players,
+      final games.strategy.engine.framework.IGame game,
+      final games.strategy.engine.framework.LocalPlayers players,
       final UiContext uiContext,
-      @Nullable final Chat chat,
+      @Nullable final games.strategy.engine.chat.Chat chat,
       final Runnable clientLeftGame) {
     super("TripleA - " + game.getData().getGameName());
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-    LookAndFeelSwingFrameListener.register(this);
+    games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener.register(this);
     setSize(700, 400);
-    setExtendedState(Frame.MAXIMIZED_BOTH);
+    setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
 
     this.clientLeftGame = clientLeftGame;
 
     localPlayers = players;
-    setIconImage(EngineImageLoader.loadFrameIcon());
+    setIconImage(games.strategy.triplea.EngineImageLoader.loadFrameIcon());
     // 200 size is pretty arbitrary, goal is to not allow users to shrink window down to nothing.
-    setMinimumSize(new Dimension(200, 200));
+    setMinimumSize(new java.awt.Dimension(200, 200));
 
     this.game = game;
     data = game.getData();
     addZoomKeyboardShortcuts();
-    setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+    setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
     addWindowListener(
-        new WindowAdapter() {
+        new java.awt.event.WindowAdapter() {
           @Override
-          public void windowClosing(final WindowEvent e) {
+          public void windowClosing(final java.awt.event.WindowEvent e) {
             leaveGame();
           }
         });
     addWindowFocusListener(
-        new WindowAdapter() {
+        new java.awt.event.WindowAdapter() {
           @Override
-          public void windowGainedFocus(final WindowEvent e) {
+          public void windowGainedFocus(final java.awt.event.WindowEvent e) {
             mapPanel.requestFocusInWindow();
           }
         });
     this.uiContext = uiContext;
     this.setCursor(uiContext.getCursor());
-    editModeButtonModel = new JToggleButton.ToggleButtonModel();
+    editModeButtonModel = new javax.swing.JToggleButton.ToggleButtonModel();
     editModeButtonModel.setEnabled(false);
 
-    SwingUtilities.invokeLater(() -> this.setJMenuBar(TripleAMenuBar.get(this)));
-    final ImageScrollModel model = new ImageScrollModel();
+    javax.swing.SwingUtilities.invokeLater(
+        () -> this.setJMenuBar(games.strategy.triplea.ui.menubar.TripleAMenuBar.get(this)));
+    final games.strategy.ui.ImageScrollModel model = new games.strategy.ui.ImageScrollModel();
     model.setMaxBounds(
         uiContext.getMapData().getMapDimensions().width,
         uiContext.getMapData().getMapDimensions().height);
     model.setScrollX(uiContext.getMapData().scrollWrapX());
     model.setScrollY(uiContext.getMapData().scrollWrapY());
-    final Image small = uiContext.getMapImage().getSmallMapImage();
-    smallView = new ImageScrollerSmallView(small, model, uiContext.getMapData());
-    mapPanel = new MapPanel(data, smallView, uiContext, model, this::computeScrollSpeed);
+    final java.awt.Image small = uiContext.getMapImage().getSmallMapImage();
+    smallView = new games.strategy.ui.ImageScrollerSmallView(small, model, uiContext.getMapData());
+    mapPanel =
+        new games.strategy.triplea.ui.panels.map.MapPanel(
+            data, smallView, uiContext, model, this::computeScrollSpeed);
     tooltipManager = new MapUnitTooltipManager(mapPanel);
     mapPanel.addMapSelectionListener(
         new DefaultMapSelectionListener() {
           @Override
-          public void mouseEntered(final Territory territory) {
+          public void mouseEntered(final games.strategy.engine.data.Territory territory) {
             bottomBar.setTerritory(territory);
           }
         });
     mapPanel.addMouseOverUnitListener(
         (units, territory) -> tooltipManager.updateTooltip(getUnitInfo()));
     // link the small and large images
-    SwingUtilities.invokeLater(mapPanel::initSmallMap);
-    mapAndChatPanel = new JPanel();
-    mapAndChatPanel.setLayout(new BorderLayout());
+    javax.swing.SwingUtilities.invokeLater(mapPanel::initSmallMap);
+    mapAndChatPanel = new javax.swing.JPanel();
+    mapAndChatPanel.setLayout(new java.awt.BorderLayout());
     commentPanel = new CommentPanel(this, data);
-    chatSplit = new JSplitPane();
-    chatSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
+    chatSplit = new javax.swing.JSplitPane();
+    chatSplit.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
     chatSplit.setOneTouchExpandable(true);
     chatSplit.setDividerSize(8);
     chatSplit.setResizeWeight(0.95);
     if (chat != null) {
-      commentSplit = new JSplitPane();
-      commentSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
+      commentSplit = new javax.swing.JSplitPane();
+      commentSplit.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
       commentSplit.setOneTouchExpandable(true);
       commentSplit.setDividerSize(8);
       commentSplit.setResizeWeight(0.5);
       commentSplit.setTopComponent(commentPanel);
       commentSplit.setBottomComponent(null);
-      chatPanel = new ChatPanel(chat, ChatSoundProfile.GAME, getUiContext().getClipPlayer());
-      chatPanel.setPlayerRenderer(new PlayerChatRenderer(this.game, uiContext));
-      final Dimension chatPrefSize =
-          new Dimension((int) chatPanel.getPreferredSize().getWidth(), 95);
+      chatPanel =
+          new games.strategy.engine.chat.ChatPanel(
+              chat, ChatSoundProfile.GAME, getUiContext().getClipPlayer());
+      chatPanel.setPlayerRenderer(
+          new games.strategy.engine.chat.PlayerChatRenderer(this.game, uiContext));
+      final java.awt.Dimension chatPrefSize =
+          new java.awt.Dimension((int) chatPanel.getPreferredSize().getWidth(), 95);
       chatPanel.setPreferredSize(chatPrefSize);
       chatSplit.setTopComponent(mapPanel);
       chatSplit.setBottomComponent(chatPanel);
-      mapAndChatPanel.add(chatSplit, BorderLayout.CENTER);
+      mapAndChatPanel.add(chatSplit, java.awt.BorderLayout.CENTER);
     } else {
-      mapAndChatPanel.add(mapPanel, BorderLayout.CENTER);
+      mapAndChatPanel.add(mapPanel, java.awt.BorderLayout.CENTER);
       chatPanel = null;
     }
-    gameMainPanel.setLayout(new BorderLayout());
-    this.getContentPane().setLayout(new BorderLayout());
-    this.getContentPane().add(gameMainPanel, BorderLayout.CENTER);
+    gameMainPanel.setLayout(new java.awt.BorderLayout());
+    this.getContentPane().setLayout(new java.awt.BorderLayout());
+    this.getContentPane().add(gameMainPanel, java.awt.BorderLayout.CENTER);
 
-    final boolean usingDiceServer = (game.getRandomSource() instanceof PbemDiceRoller);
+    final boolean usingDiceServer =
+        (game.getRandomSource() instanceof games.strategy.engine.random.PbemDiceRoller);
     bottomBar = new BottomBar(uiContext, data, usingDiceServer);
 
-    gameMainPanel.add(bottomBar, BorderLayout.SOUTH);
-    rightHandSidePanel.setLayout(new BorderLayout());
-    final FocusAdapter focusToMapPanelFocusListener =
-        new FocusAdapter() {
+    gameMainPanel.add(bottomBar, java.awt.BorderLayout.SOUTH);
+    rightHandSidePanel.setLayout(new java.awt.BorderLayout());
+    final java.awt.event.FocusAdapter focusToMapPanelFocusListener =
+        new java.awt.event.FocusAdapter() {
           @Override
-          public void focusGained(final FocusEvent e) {
+          public void focusGained(final java.awt.event.FocusEvent e) {
             // give the focus back to the map panel
             mapPanel.requestFocus();
           }
@@ -308,24 +257,25 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     rightHandSidePanel.addFocusListener(focusToMapPanelFocusListener);
     smallView.addFocusListener(focusToMapPanelFocusListener);
     tabsPanel.addFocusListener(focusToMapPanelFocusListener);
-    rightHandSidePanel.add(smallView, BorderLayout.NORTH);
+    rightHandSidePanel.add(smallView, java.awt.BorderLayout.NORTH);
     tabsPanel.setBorder(null);
-    rightHandSidePanel.add(tabsPanel, BorderLayout.CENTER);
+    rightHandSidePanel.add(tabsPanel, java.awt.BorderLayout.CENTER);
 
-    final MovePanel movePanel = new MovePanel(this);
+    final games.strategy.triplea.ui.panel.move.MovePanel movePanel =
+        new games.strategy.triplea.ui.panel.move.MovePanel(this);
     actionButtonsPanel = new ActionButtonsPanel(movePanel, this);
 
-    final CollapsiblePanel placementsPanel =
+    final org.triplea.swing.CollapsiblePanel placementsPanel =
         new PlacementUnitsCollapsiblePanel(data, uiContext).getPanel();
     rightHandSidePanel.add(
-        new JPanelBuilder()
+        new org.triplea.swing.jpanel.JPanelBuilder()
             .borderLayout()
             .addNorth(placementsPanel)
             .addSouth(movePanel.getUnitScrollerPanel())
             .build(),
-        BorderLayout.SOUTH);
+        java.awt.BorderLayout.SOUTH);
 
-    SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(getArrowKeyListener()));
+    javax.swing.SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(getArrowKeyListener()));
 
     actionButtonsPanel.setBorder(null);
     statsPanel = new StatPanel(data, uiContext);
@@ -342,15 +292,15 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     // Register a change listener
     tabsPanel.addChangeListener(
         evt -> {
-          final JTabbedPane pane = (JTabbedPane) evt.getSource();
+          final javax.swing.JTabbedPane pane = (javax.swing.JTabbedPane) evt.getSource();
           // Get current tab
           final int sel = pane.getSelectedIndex();
           if (sel == -1) {
             return;
           }
           if (pane.getComponentAt(sel).equals(editPanel)) {
-            final GamePlayer player1;
-            try (GameData.Unlocker ignored = data.acquireReadLock()) {
+            final games.strategy.engine.data.GamePlayer player1;
+            try (games.strategy.engine.data.GameData.Unlocker ignored = data.acquireReadLock()) {
               player1 = data.getSequence().getStep().getPlayerId();
             }
             actionButtonsPanel.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
@@ -361,27 +311,32 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
           }
         });
     rightHandSidePanel.setPreferredSize(
-        new Dimension(
+        new java.awt.Dimension(
             (int) smallView.getPreferredSize().getWidth(),
             (int) mapPanel.getPreferredSize().getHeight()));
     gameCenterPanel =
-        new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mapAndChatPanel, rightHandSidePanel);
+        new javax.swing.JSplitPane(
+            javax.swing.JSplitPane.HORIZONTAL_SPLIT, mapAndChatPanel, rightHandSidePanel);
     gameCenterPanel.setOneTouchExpandable(true);
     gameCenterPanel.setContinuousLayout(true);
     gameCenterPanel.setDividerSize(8);
     gameCenterPanel.setResizeWeight(1.0);
-    gameMainPanel.add(gameCenterPanel, BorderLayout.CENTER);
+    gameMainPanel.add(gameCenterPanel, java.awt.BorderLayout.CENTER);
     gameCenterPanel.resetToPreferredSizes();
     // set up the edit mode overlay text
     this.setGlassPane(
-        new JComponent() {
+        new javax.swing.JComponent() {
           private static final long serialVersionUID = 6724687534214427291L;
 
           @Override
-          protected void paintComponent(final Graphics g) {
-            g.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, 50));
-            g.setColor(new Color(255, 255, 255, 175));
-            final Dimension size = mapPanel.getSize();
+          protected void paintComponent(final java.awt.Graphics g) {
+            g.setFont(
+                new java.awt.Font(
+                    games.strategy.triplea.image.MapImage.FONT_FAMILY_DEFAULT,
+                    java.awt.Font.BOLD,
+                    50));
+            g.setColor(new java.awt.Color(255, 255, 255, 175));
+            final java.awt.Dimension size = mapPanel.getSize();
             g.drawString(
                 "Edit Mode",
                 (int) ((size.getWidth() - 200) / 2),
@@ -389,12 +344,15 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
           }
         });
     // force a data change event to update the UI for edit mode
-    dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
+    dataChangeListener.gameDataChanged(
+        games.strategy.engine.data.changefactory.ChangeFactory.EMPTY_CHANGE);
     data.addDataChangeListener(dataChangeListener);
-    data.addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, this::updateStep);
+    data.addGameDataEventListener(
+        games.strategy.engine.data.GameDataEvent.GAME_STEP_CHANGED, this::updateStep);
     // Clear cached unit images when getting standard tech like jet power.
     data.addGameDataEventListener(
-        GameDataEvent.TECH_ATTACHMENT_CHANGED, this::clearCachedUnitImages);
+        games.strategy.engine.data.GameDataEvent.TECH_ATTACHMENT_CHANGED,
+        this::clearCachedUnitImages);
     uiContext.addShutdownWindow(this);
     mapPanel.addZoomMapListener(bottomBar);
   }
@@ -407,12 +365,13 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
    * Constructs a new instance of a TripleAFrame, but executes required IO-Operations off the EDT.
    */
   public static TripleAFrame create(
-      final IGame game,
-      final LocalPlayers players,
-      @Nullable final Chat chat,
+      final games.strategy.engine.framework.IGame game,
+      final games.strategy.engine.framework.LocalPlayers players,
+      @Nullable final games.strategy.engine.chat.Chat chat,
       final Runnable clientLeftGame) {
     Preconditions.checkState(
-        !SwingUtilities.isEventDispatchThread(), "This method must not be called on the EDT");
+        !javax.swing.SwingUtilities.isEventDispatchThread(),
+        "This method must not be called on the EDT");
 
     final UiContext uiContext = new UiContext(game.getData());
     game.setResourceLoader(uiContext.getResourceLoader());
@@ -420,9 +379,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     uiContext.setLocalPlayers(players);
 
     final TripleAFrame frame =
-        Interruptibles.awaitResult(
+        org.triplea.java.Interruptibles.awaitResult(
                 () ->
-                    SwingAction.invokeAndWaitResult(
+                    org.triplea.swing.SwingAction.invokeAndWaitResult(
                         () -> {
                           final TripleAFrame newFrame =
                               new TripleAFrame(game, players, uiContext, chat, clientLeftGame);
@@ -436,6 +395,12 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     return frame;
   }
 
+  private static javax.swing.JOptionPane getOptionPane(final javax.swing.JComponent parent) {
+    return (parent instanceof javax.swing.JOptionPane optionPane)
+        ? optionPane
+        : getOptionPane((javax.swing.JComponent) parent.getParent());
+  }
+
   public void hideCommentLog() {
     if (chatPanel != null) {
       commentSplit.setBottomComponent(null);
@@ -445,7 +410,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       mapAndChatPanel.removeAll();
       chatSplit.setTopComponent(null);
       chatSplit.setBottomComponent(null);
-      mapAndChatPanel.add(mapPanel, BorderLayout.CENTER);
+      mapAndChatPanel.add(mapPanel, java.awt.BorderLayout.CENTER);
       mapAndChatPanel.validate();
     }
   }
@@ -459,54 +424,53 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       mapAndChatPanel.removeAll();
       chatSplit.setTopComponent(mapPanel);
       chatSplit.setBottomComponent(commentPanel);
-      mapAndChatPanel.add(chatSplit, BorderLayout.CENTER);
+      mapAndChatPanel.add(chatSplit, java.awt.BorderLayout.CENTER);
       mapAndChatPanel.validate();
     }
   }
 
   private void addZoomKeyboardShortcuts() {
-    SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
+    org.triplea.swing.key.binding.SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
         this,
-        KeyCode.EQUALS,
+        org.triplea.swing.key.binding.KeyCode.EQUALS,
         () ->
             mapPanel.setScale(
-                mapPanel.getScale() + (ClientSetting.mapZoomFactor.getValueOrThrow() / 100f)));
+                mapPanel.getScale()
+                    + (games.strategy.triplea.settings.ClientSetting.mapZoomFactor.getValueOrThrow()
+                        / 100f)));
 
-    SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
+    org.triplea.swing.key.binding.SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
         this,
-        KeyCode.MINUS,
+        org.triplea.swing.key.binding.KeyCode.MINUS,
         () ->
             mapPanel.setScale(
-                mapPanel.getScale() - (ClientSetting.mapZoomFactor.getValueOrThrow() / 100f)));
+                mapPanel.getScale()
+                    - (games.strategy.triplea.settings.ClientSetting.mapZoomFactor.getValueOrThrow()
+                        / 100f)));
   }
 
-  private void addTabs(HistoryDetailsPanel historyDetailPanel) {
-    if (historyDetailPanel != null) {
-      tabsPanel.add("History", historyDetailPanel);
-    } else {
-      addTab("Actions", actionButtonsPanel, KeyCode.C);
-    }
-    addTab("Players", statsPanel, KeyCode.P);
-    if (!TechAdvance.getTechAdvances(data.getTechnologyFrontier(), null).isEmpty()) {
-      addTab("Technology", technologyPanel, KeyCode.Y);
-    }
-    addTab("Resources", economyPanel, KeyCode.R);
-    if (objectivePanel != null) {
-      String objectivePanelName = new ObjectiveProperties(uiContext.getResourceLoader()).getName();
-      addTab(objectivePanelName, objectivePanel, KeyCode.O);
-    }
-    addTab("Territory", territoryDetailPanel, KeyCode.T);
-    if (mapPanel.getEditMode()) {
-      showEditMode();
-    }
-  }
+  /**
+   * If the frame is visible, prompts the user if they wish to exit the application. If they answer
+   * yes or the frame is not visible, the game will be stopped, and the process will be terminated.
+   */
+  @Override
+  public boolean shutdown() {
+    if (isVisible()) {
 
-  private void addTab(final String title, final Component component, final KeyCode hotkey) {
-    tabsPanel.addTab(title, null, component, "Hotkey: CTRL+" + hotkey);
-    SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
-        this,
-        hotkey,
-        () -> tabsPanel.setSelectedIndex(List.of(tabsPanel.getComponents()).indexOf(component)));
+      final boolean confirmed =
+          org.triplea.swing.EventThreadJOptionPane.showConfirmDialog(
+              this,
+              "Are you sure you want to exit TripleA?\nUnsaved game data will be lost.",
+              "Exit Program",
+              ConfirmDialogType.YES_NO);
+      if (!confirmed) {
+        return false;
+      }
+    }
+
+    stopGame();
+    org.triplea.util.ExitStatus.SUCCESS.exit();
+    return true;
   }
 
   /** Stops the game and closes this frame window. */
@@ -525,31 +489,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       historySyncher = null;
     }
     bottomBar.setTerritory(null);
-    GameShutdownRegistry.runShutdownActions();
-  }
-
-  /**
-   * If the frame is visible, prompts the user if they wish to exit the application. If they answer
-   * yes or the frame is not visible, the game will be stopped, and the process will be terminated.
-   */
-  @Override
-  public boolean shutdown() {
-    if (isVisible()) {
-
-      final boolean confirmed =
-          EventThreadJOptionPane.showConfirmDialog(
-              this,
-              "Are you sure you want to exit TripleA?\nUnsaved game data will be lost.",
-              "Exit Program",
-              ConfirmDialogType.YES_NO);
-      if (!confirmed) {
-        return false;
-      }
-    }
-
-    stopGame();
-    ExitStatus.SUCCESS.exit();
-    return true;
+    games.strategy.engine.framework.GameShutdownRegistry.runShutdownActions();
   }
 
   /**
@@ -558,7 +498,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
    */
   public void leaveGame() {
     final boolean confirmed =
-        EventThreadJOptionPane.showConfirmDialog(
+        org.triplea.swing.EventThreadJOptionPane.showConfirmDialog(
             this,
             "Are you sure you want to leave the current game?\nUnsaved game data will be lost.",
             "Leave Game",
@@ -566,51 +506,53 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     if (!confirmed) {
       return;
     }
-    if (game instanceof ServerGame serverGame) {
+    if (game instanceof games.strategy.engine.framework.ServerGame serverGame) {
       serverGame.stopGame();
     } else {
       game.getMessengers().shutDown();
-      ((ClientGame) game).shutDown();
+      ((games.strategy.engine.framework.ClientGame) game).shutDown();
       // an ugly hack, we need a better way to get the main frame
       new Thread(clientLeftGame).start();
     }
+  }
+
+  public void setStatusErrorMessage(final String msg) {
+    final java.util.Optional<java.awt.Image> errorImage = mapPanel.getErrorImage();
+    if (errorImage.isPresent()) bottomBar.setStatus(msg, errorImage.get());
+    else bottomBar.setStatusAndClearIcon(msg);
   }
 
   void clearStatusMessage() {
     bottomBar.setStatusAndClearIcon("");
   }
 
-  public void setStatusErrorMessage(final String msg) {
-    final Optional<Image> errorImage = mapPanel.getErrorImage();
-    if (errorImage.isPresent()) bottomBar.setStatus(msg, errorImage.get());
-    else bottomBar.setStatusAndClearIcon(msg);
-  }
-
   public void setStatusWarningMessage(final String msg) {
-    final Optional<Image> warningImage = mapPanel.getWarningImage();
+    final java.util.Optional<java.awt.Image> warningImage = mapPanel.getWarningImage();
     if (warningImage.isPresent()) bottomBar.setStatus(msg, warningImage.get());
     else bottomBar.setStatusAndClearIcon(msg);
   }
 
   public IntegerMap<ProductionRule> getProduction(
-      final GamePlayer player, final boolean bid, final boolean keepCurrentPurchase) {
+      final games.strategy.engine.data.GamePlayer player,
+      final boolean bid,
+      final boolean keepCurrentPurchase) {
     messageAndDialogThreadPool.waitForAll();
     actionButtonsPanel.changeToProduce(player, keepCurrentPurchase);
     return actionButtonsPanel.waitForPurchase(bid);
   }
 
   public Map<Unit, IntegerMap<RepairRule>> getRepair(
-      final GamePlayer player,
+      final games.strategy.engine.data.GamePlayer player,
       final boolean bid,
-      final Collection<GamePlayer> allowedPlayersToRepair) {
+      final java.util.Collection<games.strategy.engine.data.GamePlayer> allowedPlayersToRepair) {
     messageAndDialogThreadPool.waitForAll();
     actionButtonsPanel.changeToRepair(player);
     return actionButtonsPanel.waitForRepair(bid, allowedPlayersToRepair);
   }
 
-  public MoveDescription getMove(
-      final GamePlayer player,
-      final PlayerBridge bridge,
+  public games.strategy.engine.data.MoveDescription getMove(
+      final games.strategy.engine.data.GamePlayer player,
+      final games.strategy.engine.player.PlayerBridge bridge,
       final boolean nonCombat,
       final String stepName) {
     messageAndDialogThreadPool.waitForAll();
@@ -622,10 +564,14 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     return actionButtonsPanel.waitForMove(bridge);
   }
 
+  public BattlePanel getBattlePanel() {
+    return actionButtonsPanel.getBattlePanel();
+  }
+
   private void requestWindowFocus() {
-    Interruptibles.await(
+    org.triplea.java.Interruptibles.await(
         () ->
-            SwingAction.invokeAndWait(
+            org.triplea.swing.SwingAction.invokeAndWait(
                 () -> {
                   requestFocusInWindow();
                   transferFocus();
@@ -633,13 +579,17 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   }
 
   public PlaceData waitForPlace(
-      final GamePlayer player, final boolean bid, final PlayerBridge bridge) {
+      final games.strategy.engine.data.GamePlayer player,
+      final boolean bid,
+      final games.strategy.engine.player.PlayerBridge bridge) {
     messageAndDialogThreadPool.waitForAll();
     actionButtonsPanel.changeToPlace(player);
     return actionButtonsPanel.waitForPlace(bid, bridge);
   }
 
-  public void waitForMoveForumPoster(final GamePlayer player, final PlayerBridge bridge) {
+  public void waitForMoveForumPoster(
+      final games.strategy.engine.data.GamePlayer player,
+      final games.strategy.engine.player.PlayerBridge bridge) {
     if (actionButtonsPanel == null) {
       return;
     }
@@ -647,7 +597,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     actionButtonsPanel.waitForMoveForumPosterPanel(this, bridge);
   }
 
-  public void waitForEndTurn(final GamePlayer player, final PlayerBridge bridge) {
+  public void waitForEndTurn(
+      final games.strategy.engine.data.GamePlayer player,
+      final games.strategy.engine.player.PlayerBridge bridge) {
     if (actionButtonsPanel == null) {
       return;
     }
@@ -655,7 +607,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     actionButtonsPanel.waitForEndTurn(this, bridge);
   }
 
-  public FightBattleDetails getBattle(final GamePlayer player, final BattleListing battles) {
+  public games.strategy.triplea.delegate.data.FightBattleDetails getBattle(
+      final games.strategy.engine.data.GamePlayer player,
+      final games.strategy.triplea.delegate.data.BattleListing battles) {
     messageAndDialogThreadPool.waitForAll();
     actionButtonsPanel.changeToBattle(player, battles);
     return actionButtonsPanel.waitForBattleSelection();
@@ -664,8 +618,23 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   /** We do NOT want to block the next player from beginning their turn. */
   public void notifyError(final String message) {
     final String displayMessage =
-        LocalizeHtml.localizeImgLinksInHtml(message, uiContext.getMapLocation());
-    showMessageDialog(displayMessage, "Error", JOptionPane.ERROR_MESSAGE);
+        org.triplea.util.LocalizeHtml.localizeImgLinksInHtml(message, uiContext.getMapLocation());
+    showMessageDialog(displayMessage, "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+  }
+
+  private void showMessageDialog(String displayMessage, String title, int type) {
+    try {
+      messageAndDialogThreadPool.submit(
+          () ->
+              org.triplea.swing.EventThreadJOptionPane.showMessageDialogWithScrollPane(
+                  TripleAFrame.this,
+                  displayMessage,
+                  title,
+                  type,
+                  getUiContext().getCountDownLatchHandler()));
+    } catch (java.util.concurrent.RejectedExecutionException e) {
+      // The thread pool may have been shutdown. Nothing to do.
+    }
   }
 
   /** We do NOT want to block the next player from beginning their turn. */
@@ -673,43 +642,36 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     if (message == null || title == null) {
       return;
     }
-    if (title.contains(AbstractConditionsAttachment.TRIGGER_CHANCE_FAILURE)
-        && message.contains(AbstractConditionsAttachment.TRIGGER_CHANCE_FAILURE)
+    if (title.contains(
+            games.strategy.triplea.attachments.AbstractConditionsAttachment.TRIGGER_CHANCE_FAILURE)
+        && message.contains(
+            games.strategy.triplea.attachments.AbstractConditionsAttachment.TRIGGER_CHANCE_FAILURE)
         && !getUiContext().getShowTriggerChanceFailure()) {
       return;
     }
-    if (title.contains(AbstractConditionsAttachment.TRIGGER_CHANCE_SUCCESSFUL)
-        && message.contains(AbstractConditionsAttachment.TRIGGER_CHANCE_SUCCESSFUL)
+    if (title.contains(
+            games.strategy.triplea.attachments.AbstractConditionsAttachment
+                .TRIGGER_CHANCE_SUCCESSFUL)
+        && message.contains(
+            games.strategy.triplea.attachments.AbstractConditionsAttachment
+                .TRIGGER_CHANCE_SUCCESSFUL)
         && !getUiContext().getShowTriggerChanceSuccessful()) {
       return;
     }
-    if (title.equals(AbstractTriggerAttachment.NOTIFICATION)
+    if (title.equals(games.strategy.triplea.attachments.AbstractTriggerAttachment.NOTIFICATION)
         && !getUiContext().getShowTriggeredNotifications()) {
       return;
     }
-    if (title.contains(AbstractEndTurnDelegate.END_TURN_REPORT_STRING)
-        && message.contains(AbstractEndTurnDelegate.END_TURN_REPORT_STRING)
+    if (title.contains(
+            games.strategy.triplea.delegate.AbstractEndTurnDelegate.END_TURN_REPORT_STRING)
+        && message.contains(
+            games.strategy.triplea.delegate.AbstractEndTurnDelegate.END_TURN_REPORT_STRING)
         && !getUiContext().getShowEndOfTurnReport()) {
       return;
     }
     final String displayMessage =
-        LocalizeHtml.localizeImgLinksInHtml(message, uiContext.getMapLocation());
-    showMessageDialog(displayMessage, title, JOptionPane.INFORMATION_MESSAGE);
-  }
-
-  private void showMessageDialog(String displayMessage, String title, int type) {
-    try {
-      messageAndDialogThreadPool.submit(
-          () ->
-              EventThreadJOptionPane.showMessageDialogWithScrollPane(
-                  TripleAFrame.this,
-                  displayMessage,
-                  title,
-                  type,
-                  getUiContext().getCountDownLatchHandler()));
-    } catch (RejectedExecutionException e) {
-      // The thread pool may have been shutdown. Nothing to do.
-    }
+        org.triplea.util.LocalizeHtml.localizeImgLinksInHtml(message, uiContext.getMapLocation());
+    showMessageDialog(displayMessage, title, javax.swing.JOptionPane.INFORMATION_MESSAGE);
   }
 
   /**
@@ -729,7 +691,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
    *     current movement/placement action.
    */
   public boolean getOkToLetAirDie(
-      final GamePlayer gamePlayer,
+      final games.strategy.engine.data.GamePlayer gamePlayer,
       final Collection<Territory> airCantLand,
       final boolean movePhase) {
     if (airCantLand == null || airCantLand.isEmpty()) {
@@ -742,12 +704,14 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     }
     sb.append("</ul></html>");
     final boolean lhtrProd =
-        Properties.getLhtrCarrierProductionRules(data.getProperties())
-            || Properties.getLandExistingFightersOnNewCarriers(data.getProperties());
+        games.strategy.triplea.Properties.getLhtrCarrierProductionRules(data.getProperties())
+            || games.strategy.triplea.Properties.getLandExistingFightersOnNewCarriers(
+                data.getProperties());
     final int carrierCount =
-        GameStepPropertiesHelper.getCombinedTurns(data, gamePlayer).stream()
-            .map(GamePlayer::getUnitCollection)
-            .map(units -> units.getMatches(Matches.unitIsCarrier()))
+        games.strategy.triplea.delegate.GameStepPropertiesHelper.getCombinedTurns(data, gamePlayer)
+            .stream()
+            .map(games.strategy.engine.data.GamePlayer::getUnitCollection)
+            .map(units -> units.getMatches(games.strategy.triplea.delegate.Matches.unitIsCarrier()))
             .mapToInt(List::size)
             .sum();
     final boolean canProduceCarriersUnderFighter = lhtrProd && carrierCount != 0;
@@ -755,25 +719,25 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       sb.append("\nYou have ")
           .append(carrierCount)
           .append(" ")
-          .append(MyFormatter.pluralize("carrier", carrierCount))
+          .append(games.strategy.triplea.formatter.MyFormatter.pluralize("carrier", carrierCount))
           .append(" on which planes can land");
     }
     final String ok = movePhase ? "End Move Phase" : "Kill Planes";
     final String cancel = movePhase ? "Keep Moving" : "Change Placement";
     final String[] options = {cancel, ok};
-    mapPanel.centerOn(CollectionUtils.getAny(airCantLand));
+    mapPanel.centerOn(org.triplea.java.collections.CollectionUtils.getAny(airCantLand));
     final int choice =
-        EventThreadJOptionPane.showOptionDialog(
+        org.triplea.swing.EventThreadJOptionPane.showOptionDialog(
             this,
             sb.toString(),
             "Air cannot land",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE,
+            javax.swing.JOptionPane.YES_NO_OPTION,
+            javax.swing.JOptionPane.WARNING_MESSAGE,
             null,
             options,
             cancel,
             getUiContext().getCountDownLatchHandler());
-    return choice == JOptionPane.NO_OPTION;
+    return choice == javax.swing.JOptionPane.NO_OPTION;
   }
 
   /**
@@ -794,34 +758,36 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     messageAndDialogThreadPool.waitForAll();
     final String message =
         unitsCantFight.stream()
-            .map(DefaultNamed::getName)
-            .collect(Collectors.joining(" ", "Units in the following territories will die: ", ""));
+            .map(games.strategy.engine.data.DefaultNamed::getName)
+            .collect(
+                java.util.stream.Collectors.joining(
+                    " ", "Units in the following territories will die: ", ""));
     final String ok = "Done Moving";
     final String cancel = "Keep Moving";
     final String[] options = {cancel, ok};
-    this.mapPanel.centerOn(CollectionUtils.getAny(unitsCantFight));
+    this.mapPanel.centerOn(org.triplea.java.collections.CollectionUtils.getAny(unitsCantFight));
     final int choice =
-        EventThreadJOptionPane.showOptionDialog(
+        org.triplea.swing.EventThreadJOptionPane.showOptionDialog(
             this,
             message,
             "Units cannot fight",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE,
+            javax.swing.JOptionPane.YES_NO_OPTION,
+            javax.swing.JOptionPane.WARNING_MESSAGE,
             null,
             options,
             cancel,
             getUiContext().getCountDownLatchHandler());
-    return choice == JOptionPane.NO_OPTION;
+    return choice == javax.swing.JOptionPane.NO_OPTION;
   }
 
   /** Asks a given player if they wish confirm a given political action. */
   public boolean acceptAction(
-      final GamePlayer playerSendingProposal,
+      final games.strategy.engine.data.GamePlayer playerSendingProposal,
       final String acceptanceQuestion,
       final boolean politics) {
     messageAndDialogThreadPool.waitForAll();
 
-    return EventThreadJOptionPane.showConfirmDialog(
+    return org.triplea.swing.EventThreadJOptionPane.showConfirmDialog(
         this,
         acceptanceQuestion,
         "Accept "
@@ -834,26 +800,27 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
   public boolean getOk(final Object message, final String title) {
     messageAndDialogThreadPool.waitForAll();
-    return EventThreadJOptionPane.showConfirmDialog(
+    return org.triplea.swing.EventThreadJOptionPane.showConfirmDialog(
         this, message, title, ConfirmDialogType.OK_CANCEL);
   }
 
   /** Displays a message to the user informing them of the results of rolling for technologies. */
-  public void notifyTechResults(final TechResults msg) {
+  public void notifyTechResults(final games.strategy.triplea.delegate.data.TechResults msg) {
     final Supplier<TechResultsDisplay> action = () -> new TechResultsDisplay(msg, uiContext, data);
     messageAndDialogThreadPool.submit(
         () ->
-            Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action))
+            org.triplea.java.Interruptibles.awaitResult(
+                    () -> org.triplea.swing.SwingAction.invokeAndWaitResult(action))
                 .result
                 .ifPresent(
                     display -> {
-                      SwingUtilities.invokeLater(this.mapPanel::resetMap);
-                      EventThreadJOptionPane.showOptionDialog(
+                      javax.swing.SwingUtilities.invokeLater(this.mapPanel::resetMap);
+                      org.triplea.swing.EventThreadJOptionPane.showOptionDialog(
                           TripleAFrame.this,
                           display,
                           "Tech roll",
-                          JOptionPane.OK_OPTION,
-                          JOptionPane.PLAIN_MESSAGE,
+                          javax.swing.JOptionPane.OK_OPTION,
+                          javax.swing.JOptionPane.PLAIN_MESSAGE,
                           null,
                           new String[] {"OK"},
                           "OK",
@@ -872,13 +839,13 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   public boolean getStrategicBombingRaid(final Territory location) {
     messageAndDialogThreadPool.waitForAll();
     final String message =
-        (Properties.getRaidsMayBePreceededByAirBattles(data.getProperties())
+        (games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data.getProperties())
                 ? "Bomb/Escort"
                 : "Bomb")
             + " in "
             + location.getName();
     final String bomb =
-        (Properties.getRaidsMayBePreceededByAirBattles(data.getProperties())
+        (games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data.getProperties())
             ? "Bomb/Escort"
             : "Bomb");
     final String normal = "Attack";
@@ -886,18 +853,18 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     int choice = -1;
     while (choice < 0 || choice > 1) {
       choice =
-          EventThreadJOptionPane.showOptionDialog(
+          org.triplea.swing.EventThreadJOptionPane.showOptionDialog(
               this,
               message,
               "Bomb?",
-              JOptionPane.OK_CANCEL_OPTION,
-              JOptionPane.INFORMATION_MESSAGE,
+              javax.swing.JOptionPane.OK_CANCEL_OPTION,
+              javax.swing.JOptionPane.INFORMATION_MESSAGE,
               null,
               choices,
               bomb,
               getUiContext().getCountDownLatchHandler());
     }
-    return choice == JOptionPane.OK_OPTION;
+    return choice == javax.swing.JOptionPane.OK_OPTION;
   }
 
   /**
@@ -913,42 +880,47 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       final Collection<Unit> potentialTargets,
       final Collection<Unit> bombers) {
     if (potentialTargets.size() == 1) {
-      return CollectionUtils.getAny(potentialTargets);
+      return org.triplea.java.collections.CollectionUtils.getAny(potentialTargets);
     }
     messageAndDialogThreadPool.waitForAll();
-    final AtomicReference<Unit> selected = new AtomicReference<>();
+    final AtomicReference<Unit> selected = new java.util.concurrent.atomic.AtomicReference<>();
     final String message = "Select bombing target in " + territory.getName();
-    final Supplier<Tuple<JPanel, JList<Unit>>> action =
+    final Supplier<Tuple<javax.swing.JPanel, JList<Unit>>> action =
         () -> {
-          final JList<Unit> list = new JList<>(SwingComponents.newListModel(potentialTargets));
-          list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+          final JList<Unit> list =
+              new javax.swing.JList<>(
+                  org.triplea.swing.SwingComponents.newListModel(potentialTargets));
+          list.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
           list.setSelectedIndex(0);
           list.setCellRenderer(new UnitRenderer());
-          final JPanel panel = new JPanel();
-          panel.setLayout(new BorderLayout());
+          final javax.swing.JPanel panel = new javax.swing.JPanel();
+          panel.setLayout(new java.awt.BorderLayout());
           if (bombers != null) {
             panel.add(
-                new JLabel("For Units: " + MyFormatter.unitsToTextNoOwner(bombers)),
-                BorderLayout.NORTH);
+                new javax.swing.JLabel(
+                    "For Units: "
+                        + games.strategy.triplea.formatter.MyFormatter.unitsToTextNoOwner(bombers)),
+                java.awt.BorderLayout.NORTH);
           }
-          final JScrollPane scroll = new JScrollPane(list);
-          panel.add(scroll, BorderLayout.CENTER);
-          return Tuple.of(panel, list);
+          final javax.swing.JScrollPane scroll = new javax.swing.JScrollPane(list);
+          panel.add(scroll, java.awt.BorderLayout.CENTER);
+          return org.triplea.util.Tuple.of(panel, list);
         };
-    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action))
+    return org.triplea.java.Interruptibles.awaitResult(
+            () -> org.triplea.swing.SwingAction.invokeAndWaitResult(action))
         .result
         .map(
             comps -> {
-              final JPanel panel = comps.getFirst();
-              final JList<?> list = comps.getSecond();
+              final javax.swing.JPanel panel = comps.getFirst();
+              final javax.swing.JList<?> list = comps.getSecond();
               final String[] options = {"OK", "Cancel"};
               final int selection =
-                  EventThreadJOptionPane.showOptionDialog(
+                  org.triplea.swing.EventThreadJOptionPane.showOptionDialog(
                       this,
                       panel,
                       message,
-                      JOptionPane.OK_CANCEL_OPTION,
-                      JOptionPane.PLAIN_MESSAGE,
+                      javax.swing.JOptionPane.OK_CANCEL_OPTION,
+                      javax.swing.JOptionPane.PLAIN_MESSAGE,
                       null,
                       options,
                       null,
@@ -959,39 +931,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
               return selected.get();
             })
         .orElse(null);
-  }
-
-  /** Create a unit option with icon and description. */
-  private class UnitRenderer extends JLabel implements ListCellRenderer<Unit> {
-
-    private static final long serialVersionUID = 1749164256040268579L;
-
-    UnitRenderer() {
-      setOpaque(true);
-    }
-
-    @Override
-    public Component getListCellRendererComponent(
-        final JList<? extends Unit> list,
-        final Unit unit,
-        final int index,
-        final boolean isSelected,
-        final boolean cellHasFocus) {
-      setText(unit.toString() + ", damage=" + unit.getUnitDamage());
-      setIcon(uiContext.getUnitImageFactory().getIcon(ImageKey.of(unit)));
-      setBorder(new EmptyBorder(0, 0, 0, 10));
-
-      // Set selected option to highlighted color
-      if (isSelected) {
-        setBackground(list.getSelectionBackground());
-        setForeground(list.getSelectionForeground());
-      } else {
-        setBackground(list.getBackground());
-        setForeground(list.getForeground());
-      }
-
-      return this;
-    }
   }
 
   /**
@@ -1008,19 +947,19 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   public int[] selectFixedDice(
       final int numDice, final int hitAt, final String title, final int diceSides) {
     messageAndDialogThreadPool.waitForAll();
-    return Interruptibles.awaitResult(
+    return org.triplea.java.Interruptibles.awaitResult(
             () ->
-                SwingAction.invokeAndWaitResult(
+                org.triplea.swing.SwingAction.invokeAndWaitResult(
                     () -> new DiceChooser(getUiContext(), numDice, hitAt, diceSides)))
         .result
         .map(
             chooser -> {
               do {
-                EventThreadJOptionPane.showMessageDialog(
+                org.triplea.swing.EventThreadJOptionPane.showMessageDialog(
                     null,
                     chooser,
                     title,
-                    JOptionPane.PLAIN_MESSAGE,
+                    javax.swing.JOptionPane.PLAIN_MESSAGE,
                     getUiContext().getCountDownLatchHandler());
               } while (chooser.getDice() == null);
               return chooser.getDice();
@@ -1044,7 +983,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       return null;
     }
     if (candidates.size() == 1) {
-      return CollectionUtils.getAny(candidates);
+      return org.triplea.java.collections.CollectionUtils.getAny(candidates);
     }
     messageAndDialogThreadPool.waitForAll();
     final Supplier<SelectTerritoryComponent> action =
@@ -1053,7 +992,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
           panel.setLabelText(unitMessage);
           return panel;
         };
-    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action))
+    return org.triplea.java.Interruptibles.awaitResult(
+            () -> org.triplea.swing.SwingAction.invokeAndWaitResult(action))
         .result
         .map(
             panel -> {
@@ -1061,12 +1001,12 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
               final String title =
                   "Select territory for air units to land, current territory is "
                       + currentTerritory.getName();
-              EventThreadJOptionPane.showOptionDialog(
+              org.triplea.swing.EventThreadJOptionPane.showOptionDialog(
                   this,
                   panel,
                   title,
-                  JOptionPane.OK_CANCEL_OPTION,
-                  JOptionPane.PLAIN_MESSAGE,
+                  javax.swing.JOptionPane.OK_CANCEL_OPTION,
+                  javax.swing.JOptionPane.PLAIN_MESSAGE,
                   null,
                   options,
                   null,
@@ -1087,15 +1027,15 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
    *     collection of selected units.
    */
   public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(
-      final GamePlayer player,
+      final games.strategy.engine.data.GamePlayer player,
       final List<Territory> territoryChoices,
       final List<Unit> unitChoices,
       final int unitsPerPick) {
     // total hacks
     messageAndDialogThreadPool.waitForAll();
-    Interruptibles.await(
+    org.triplea.java.Interruptibles.await(
         () ->
-            SwingAction.invokeAndWait(
+            org.triplea.swing.SwingAction.invokeAndWait(
                 () -> {
                   uiContext.setCurrentPlayer(player);
                   bottomBar.updateFromCurrentPlayer();
@@ -1115,10 +1055,115 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     final int index = tabsPanel.indexOfTab("Actions");
     if (index != -1 && inHistory.get()) {
       // remove actions tab
-      Interruptibles.await(() -> SwingAction.invokeAndWait(() -> tabsPanel.remove(index)));
+      org.triplea.java.Interruptibles.await(
+          () -> org.triplea.swing.SwingAction.invokeAndWait(() -> tabsPanel.remove(index)));
     }
     actionButtonsPanel.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
     return territoryAndUnits;
+  }
+
+  private void showGame() {
+    inGame.set(true);
+    final boolean inHistoryCompareTrueAndSetFalse = inHistory.compareAndSet(true, false);
+    if (inHistoryCompareTrueAndSetFalse) {
+      if (historySyncher != null) {
+        historySyncher.deactivate();
+        historySyncher = null;
+      }
+      historyPanel = null;
+      updatePanelsGameData(data);
+    }
+    // Are we coming from showHistory mode or showMapOnly mode?
+    javax.swing.SwingUtilities.invokeLater(
+        () -> {
+          if (inHistoryCompareTrueAndSetFalse) {
+            tabsPanel.removeAll();
+          }
+          setWidgetActivation();
+          addTabs(null);
+          actionButtonsPanel.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(true));
+          gameMainPanel.removeAll();
+          gameMainPanel.setLayout(new java.awt.BorderLayout());
+          gameMainPanel.add(gameCenterPanel, java.awt.BorderLayout.CENTER);
+          gameMainPanel.add(bottomBar, java.awt.BorderLayout.SOUTH);
+          getContentPane().removeAll();
+          getContentPane().add(gameMainPanel, java.awt.BorderLayout.CENTER);
+          validate();
+          requestWindowFocus();
+        });
+    mapPanel.setRoute(null);
+  }
+
+  private void updatePanelsGameData(final games.strategy.engine.data.GameData newGameData) {
+    mapPanel.setGameData(newGameData);
+    bottomBar.setGameDataForCurrentTerritory(newGameData);
+    if (!games.strategy.triplea.delegate.TechAdvance.getTechAdvances(
+            newGameData.getTechnologyFrontier(), null)
+        .isEmpty()) {
+      technologyPanel.setGameData(newGameData);
+    }
+    statsPanel.setGameData(newGameData);
+    economyPanel.setGameData(newGameData);
+    if (objectivePanel != null) {
+      objectivePanel.setGameData(newGameData);
+    }
+    territoryDetailPanel.setGameData(newGameData);
+  }
+
+  private void setWidgetActivation() {
+    org.triplea.swing.SwingAction.invokeNowOrLater(
+        () -> {
+          showHistoryAction.setEnabled(!inHistory.get());
+          showGameAction.setEnabled(!inGame.get());
+          if (editModeButtonModel != null) {
+            editModeButtonModel.setEnabled(editDelegate != null);
+          }
+        });
+  }
+
+  private void addTabs(games.strategy.triplea.ui.history.HistoryDetailsPanel historyDetailPanel) {
+    if (historyDetailPanel != null) {
+      tabsPanel.add("History", historyDetailPanel);
+    } else {
+      addTab("Actions", actionButtonsPanel, org.triplea.swing.key.binding.KeyCode.C);
+    }
+    addTab("Players", statsPanel, org.triplea.swing.key.binding.KeyCode.P);
+    if (!games.strategy.triplea.delegate.TechAdvance.getTechAdvances(
+            data.getTechnologyFrontier(), null)
+        .isEmpty()) {
+      addTab("Technology", technologyPanel, org.triplea.swing.key.binding.KeyCode.Y);
+    }
+    addTab("Resources", economyPanel, org.triplea.swing.key.binding.KeyCode.R);
+    if (objectivePanel != null) {
+      String objectivePanelName = new ObjectiveProperties(uiContext.getResourceLoader()).getName();
+      addTab(objectivePanelName, objectivePanel, org.triplea.swing.key.binding.KeyCode.O);
+    }
+    addTab("Territory", territoryDetailPanel, org.triplea.swing.key.binding.KeyCode.T);
+    if (mapPanel.getEditMode()) {
+      showEditMode();
+    }
+  }
+
+  private void addTab(
+      final String title,
+      final java.awt.Component component,
+      final org.triplea.swing.key.binding.KeyCode hotkey) {
+    tabsPanel.addTab(title, null, component, "Hotkey: CTRL+" + hotkey);
+    org.triplea.swing.key.binding.SwingKeyBinding.addKeyBindingWithMetaAndCtrlMasks(
+        this,
+        hotkey,
+        () ->
+            tabsPanel.setSelectedIndex(
+                java.util.List.of(tabsPanel.getComponents()).indexOf(component)));
+  }
+
+  private void showEditMode() {
+    tabsPanel.addTab("Edit", editPanel);
+    if (editDelegate != null) {
+      tabsPanel.setSelectedComponent(editPanel);
+    }
+    editModeButtonModel.setSelected(true);
+    getGlassPane().setVisible(true);
   }
 
   /**
@@ -1135,8 +1180,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       final Map<Territory, Collection<Unit>> possibleUnitsToAttack,
       final Resource attackResourceToken,
       final int maxNumberOfAttacksAllowed) {
-    Util.ensureNotOnEventDispatchThread();
-    final Map<Territory, IntegerMap<Unit>> selection = new HashMap<>();
+    games.strategy.ui.Util.ensureNotOnEventDispatchThread();
+    final Map<Territory, IntegerMap<Unit>> selection = new java.util.HashMap<>();
     if (possibleUnitsToAttack == null
         || possibleUnitsToAttack.isEmpty()
         || attackResourceToken == null
@@ -1144,41 +1189,51 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       return selection;
     }
     messageAndDialogThreadPool.waitForAll();
-    final CountDownLatch continueLatch = new CountDownLatch(1);
-    final Collection<IndividualUnitPanelGrouped> unitPanels = new ArrayList<>();
-    SwingUtilities.invokeLater(
+    final java.util.concurrent.CountDownLatch continueLatch =
+        new java.util.concurrent.CountDownLatch(1);
+    final java.util.Collection<IndividualUnitPanelGrouped> unitPanels = new java.util.ArrayList<>();
+    javax.swing.SwingUtilities.invokeLater(
         () -> {
-          final Map<String, Collection<Unit>> possibleUnitsToAttackStringForm = new HashMap<>();
-          final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
-          for (final Map.Entry<Territory, Collection<Unit>> entry :
+          final Map<String, Collection<Unit>> possibleUnitsToAttackStringForm =
+              new java.util.HashMap<>();
+          final games.strategy.triplea.util.TuvCostsCalculator tuvCalculator =
+              new games.strategy.triplea.util.TuvCostsCalculator();
+          for (final java.util.Map.Entry<Territory, Collection<Unit>> entry :
               possibleUnitsToAttack.entrySet()) {
-            final List<Unit> units = new ArrayList<>(entry.getValue());
+            final List<Unit> units = new java.util.ArrayList<>(entry.getValue());
             final List<Unit> sortedUnits =
-                CasualtySelector.getCasualtyOrderOfLoss(
-                    units,
-                    units.get(0).getOwner(),
-                    CombatValueBuilder.mainCombatValue()
-                        .enemyUnits(List.of())
-                        .friendlyUnits(List.of())
-                        .side(BattleState.Side.OFFENSE)
-                        .gameSequence(data.getSequence())
-                        .supportAttachments(data.getUnitTypeList().getSupportRules())
-                        .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
-                        .gameDiceSides(data.getDiceSides())
-                        .territoryEffects(TerritoryEffectHelper.getEffects(entry.getKey()))
-                        .build(),
-                    entry.getKey(),
-                    tuvCalculator.getCostsForTuv(units.get(0).getOwner()),
-                    data);
+                games.strategy.triplea.delegate.battle.casualty.CasualtySelector
+                    .getCasualtyOrderOfLoss(
+                        units,
+                        units.get(0).getOwner(),
+                        games.strategy.triplea.delegate.power.calculator.CombatValueBuilder
+                            .mainCombatValue()
+                            .enemyUnits(java.util.List.of())
+                            .friendlyUnits(java.util.List.of())
+                            .side(games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE)
+                            .gameSequence(data.getSequence())
+                            .supportAttachments(data.getUnitTypeList().getSupportRules())
+                            .lhtrHeavyBombers(
+                                games.strategy.triplea.Properties.getLhtrHeavyBombers(
+                                    data.getProperties()))
+                            .gameDiceSides(data.getDiceSides())
+                            .territoryEffects(
+                                games.strategy.triplea.delegate.TerritoryEffectHelper.getEffects(
+                                    entry.getKey()))
+                            .build(),
+                        entry.getKey(),
+                        tuvCalculator.getCostsForTuv(units.get(0).getOwner()),
+                        data);
             // OOL is ordered with the first unit the owner would want to remove but in a kamikaze
             // the player who picks is the attacker, so flip the order
-            Collections.reverse(sortedUnits);
+            java.util.Collections.reverse(sortedUnits);
             possibleUnitsToAttackStringForm.put(entry.getKey().getName(), sortedUnits);
           }
           mapPanel.centerOn(
               data.getMap()
                   .getTerritoryOrNull(
-                      CollectionUtils.getAny(possibleUnitsToAttackStringForm.keySet())));
+                      org.triplea.java.collections.CollectionUtils.getAny(
+                          possibleUnitsToAttackStringForm.keySet())));
           final IndividualUnitPanelGrouped unitPanel =
               new IndividualUnitPanelGrouped(
                   possibleUnitsToAttackStringForm,
@@ -1191,20 +1246,20 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
           final String optionAttack = "Attack";
           final String optionNone = "None";
           final Object[] options = {optionAttack, optionNone};
-          final JOptionPane optionPane =
-              new JOptionPane(
+          final javax.swing.JOptionPane optionPane =
+              new javax.swing.JOptionPane(
                   unitPanel,
-                  JOptionPane.PLAIN_MESSAGE,
-                  JOptionPane.YES_NO_CANCEL_OPTION,
+                  javax.swing.JOptionPane.PLAIN_MESSAGE,
+                  javax.swing.JOptionPane.YES_NO_CANCEL_OPTION,
                   null,
                   options,
                   options[1]);
-          final JDialog dialog =
-              new JDialog(
+          final javax.swing.JDialog dialog =
+              new javax.swing.JDialog(
                   (Frame) getParent(),
                   "Select units to Suicide Attack using " + attackResourceToken.getName());
           dialog.setContentPane(optionPane);
-          dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+          dialog.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
           dialog.setLocationRelativeTo(getParent());
           dialog.setAlwaysOnTop(true);
           dialog.pack();
@@ -1229,7 +1284,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                     throw new IllegalStateException("unitPanels should only contain 1 entry");
                   }
                   for (final IndividualUnitPanelGrouped terrChooser : unitPanels) {
-                    for (final Map.Entry<String, IntegerMap<Unit>> entry :
+                    for (final java.util.Map.Entry<String, IntegerMap<Unit>> entry :
                         terrChooser.getSelected().entrySet()) {
                       selection.put(
                           data.getMap().getTerritoryOrNull(entry.getKey()), entry.getValue());
@@ -1243,7 +1298,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
               });
         });
     mapPanel.getUiContext().addShutdownLatch(continueLatch);
-    Interruptibles.await(continueLatch);
+    org.triplea.java.Interruptibles.await(continueLatch);
     mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     return selection;
   }
@@ -1262,68 +1317,84 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
     messageAndDialogThreadPool.waitForAll();
-    Util.ensureNotOnEventDispatchThread();
-    final CountDownLatch continueLatch = new CountDownLatch(1);
-    final Map<Territory, Collection<Unit>> selection = new HashMap<>();
-    final Collection<Tuple<Territory, UnitChooser>> choosers = new ArrayList<>();
-    SwingUtilities.invokeLater(
+    games.strategy.ui.Util.ensureNotOnEventDispatchThread();
+    final java.util.concurrent.CountDownLatch continueLatch =
+        new java.util.concurrent.CountDownLatch(1);
+    final Map<Territory, Collection<Unit>> selection = new java.util.HashMap<>();
+    final Collection<Tuple<Territory, UnitChooser>> choosers = new java.util.ArrayList<>();
+    javax.swing.SwingUtilities.invokeLater(
         () -> {
           mapPanel.centerOn(scrambleTo);
-          final JDialog dialog =
-              new JDialog(this, "Select units to scramble to " + scrambleTo.getName());
-          final JPanel panel = new JPanel();
-          panel.setLayout(new BorderLayout());
-          final JButton scrambleButton = new JButton("Scramble");
+          final javax.swing.JDialog dialog =
+              new javax.swing.JDialog(this, "Select units to scramble to " + scrambleTo.getName());
+          final javax.swing.JPanel panel = new javax.swing.JPanel();
+          panel.setLayout(new java.awt.BorderLayout());
+          final javax.swing.JButton scrambleButton = new javax.swing.JButton("Scramble");
           scrambleButton.addActionListener(
-              e -> getOptionPane((JComponent) e.getSource()).setValue(scrambleButton));
-          final JButton noneButton = new JButton("None");
+              e -> getOptionPane((javax.swing.JComponent) e.getSource()).setValue(scrambleButton));
+          final javax.swing.JButton noneButton = new javax.swing.JButton("None");
           noneButton.addActionListener(
-              e -> getOptionPane((JComponent) e.getSource()).setValue(noneButton));
+              e -> getOptionPane((javax.swing.JComponent) e.getSource()).setValue(noneButton));
           final Object[] options = {scrambleButton, noneButton};
-          final JOptionPane optionPane =
-              new JOptionPane(
+          final javax.swing.JOptionPane optionPane =
+              new javax.swing.JOptionPane(
                   panel,
-                  JOptionPane.PLAIN_MESSAGE,
-                  JOptionPane.YES_NO_CANCEL_OPTION,
+                  javax.swing.JOptionPane.PLAIN_MESSAGE,
+                  javax.swing.JOptionPane.YES_NO_CANCEL_OPTION,
                   null,
                   options,
                   options[1]);
-          final JLabel whereTo = new JLabel("Scramble To: " + scrambleTo.getName());
-          whereTo.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.ITALIC, 12));
-          panel.add(whereTo, BorderLayout.NORTH);
-          final JPanel panel2 = new JPanel();
-          panel2.setBorder(BorderFactory.createEmptyBorder());
-          panel2.setLayout(new FlowLayout());
-          final JPanel fuelCostPanel = new JPanel(new GridBagLayout());
-          panel.add(fuelCostPanel, BorderLayout.SOUTH);
+          final javax.swing.JLabel whereTo =
+              new javax.swing.JLabel("Scramble To: " + scrambleTo.getName());
+          whereTo.setFont(
+              new java.awt.Font(
+                  games.strategy.triplea.image.MapImage.FONT_FAMILY_DEFAULT,
+                  java.awt.Font.ITALIC,
+                  12));
+          panel.add(whereTo, java.awt.BorderLayout.NORTH);
+          final javax.swing.JPanel panel2 = new javax.swing.JPanel();
+          panel2.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+          panel2.setLayout(new java.awt.FlowLayout());
+          final javax.swing.JPanel fuelCostPanel =
+              new javax.swing.JPanel(new java.awt.GridBagLayout());
+          panel.add(fuelCostPanel, java.awt.BorderLayout.SOUTH);
           for (final Territory from : possibleScramblers.keySet()) {
-            final JPanel panelChooser = new JPanel();
-            panelChooser.setLayout(new BoxLayout(panelChooser, BoxLayout.Y_AXIS));
-            panelChooser.setBorder(BorderFactory.createLineBorder(getBackground()));
-            final JLabel whereFrom = new JLabel("From: " + from.getName());
-            whereFrom.setHorizontalAlignment(SwingConstants.LEFT);
-            whereFrom.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, 12));
+            final javax.swing.JPanel panelChooser = new javax.swing.JPanel();
+            panelChooser.setLayout(
+                new javax.swing.BoxLayout(panelChooser, javax.swing.BoxLayout.Y_AXIS));
+            panelChooser.setBorder(javax.swing.BorderFactory.createLineBorder(getBackground()));
+            final javax.swing.JLabel whereFrom = new javax.swing.JLabel("From: " + from.getName());
+            whereFrom.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+            whereFrom.setFont(
+                new java.awt.Font(
+                    games.strategy.triplea.image.MapImage.FONT_FAMILY_DEFAULT,
+                    java.awt.Font.BOLD,
+                    12));
             panelChooser.add(whereFrom);
-            panelChooser.add(new JLabel(" "));
+            panelChooser.add(new javax.swing.JLabel(" "));
             final Collection<Unit> possible = possibleScramblers.get(from).getSecond();
             final int maxAllowed =
                 Math.min(
-                    ScrambleLogic.getMaxScrambleCount(possibleScramblers.get(from).getFirst()),
+                    games.strategy.triplea.delegate.battle.ScrambleLogic.getMaxScrambleCount(
+                        possibleScramblers.get(from).getFirst()),
                     possible.size());
-            final UnitChooser chooser = new UnitChooser(possible, Map.of(), false, uiContext);
+            final UnitChooser chooser =
+                new UnitChooser(possible, java.util.Map.of(), false, uiContext);
             chooser.setMaxAndShowMaxButton(maxAllowed);
             chooser.addChangeListener(
                 field -> {
-                  final Map<GamePlayer, ResourceCollection> playerFuelCost = new HashMap<>();
+                  final Map<games.strategy.engine.data.GamePlayer, ResourceCollection>
+                      playerFuelCost = new java.util.HashMap<>();
                   for (final Tuple<Territory, UnitChooser> tuple : choosers) {
-                    final Map<GamePlayer, ResourceCollection> map =
-                        Route.getScrambleFuelCostCharge(
+                    final Map<games.strategy.engine.data.GamePlayer, ResourceCollection> map =
+                        games.strategy.engine.data.Route.getScrambleFuelCostCharge(
                             tuple.getSecond().getSelected(false),
                             tuple.getFirst(),
                             scrambleTo,
                             data);
-                    for (final Map.Entry<GamePlayer, ResourceCollection> playerAndCost :
-                        map.entrySet()) {
+                    for (final java.util.Map.Entry<
+                            games.strategy.engine.data.GamePlayer, ResourceCollection>
+                        playerAndCost : map.entrySet()) {
                       if (playerFuelCost.containsKey(playerAndCost.getKey())) {
                         playerFuelCost.get(playerAndCost.getKey()).add(playerAndCost.getValue());
                       } else {
@@ -1334,53 +1405,56 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                   fuelCostPanel.removeAll();
                   boolean hasEnoughFuel = true;
                   int count = 0;
-                  for (final Map.Entry<GamePlayer, ResourceCollection> entry :
-                      playerFuelCost.entrySet()) {
-                    final JLabel label = new JLabel(entry.getKey().getName() + ": ");
+                  for (final java.util.Map.Entry<
+                          games.strategy.engine.data.GamePlayer, ResourceCollection>
+                      entry : playerFuelCost.entrySet()) {
+                    final javax.swing.JLabel label =
+                        new javax.swing.JLabel(entry.getKey().getName() + ": ");
                     fuelCostPanel.add(
                         label,
-                        new GridBagConstraints(
+                        new java.awt.GridBagConstraints(
                             0,
                             count,
                             1,
                             1,
                             0,
                             0,
-                            GridBagConstraints.WEST,
-                            GridBagConstraints.NONE,
-                            new Insets(0, 0, 0, 0),
+                            java.awt.GridBagConstraints.WEST,
+                            java.awt.GridBagConstraints.NONE,
+                            new java.awt.Insets(0, 0, 0, 0),
                             0,
                             0));
                     fuelCostPanel.add(
                         uiContext.getResourceImageFactory().getResourcesPanel(entry.getValue()),
-                        new GridBagConstraints(
+                        new java.awt.GridBagConstraints(
                             1,
                             count++,
                             1,
                             1,
                             0,
                             0,
-                            GridBagConstraints.WEST,
-                            GridBagConstraints.NONE,
-                            new Insets(0, 0, 0, 0),
+                            java.awt.GridBagConstraints.WEST,
+                            java.awt.GridBagConstraints.NONE,
+                            new java.awt.Insets(0, 0, 0, 0),
                             0,
                             0));
                     if (!entry.getKey().getResources().has(entry.getValue().getResourcesCopy())) {
                       hasEnoughFuel = false;
-                      label.setForeground(Color.RED);
+                      label.setForeground(java.awt.Color.RED);
                     }
                   }
                   scrambleButton.setEnabled(hasEnoughFuel);
                   dialog.pack();
                 });
-            choosers.add(Tuple.of(from, chooser));
+            choosers.add(org.triplea.util.Tuple.of(from, chooser));
             panelChooser.add(chooser);
-            final JScrollPane chooserScrollPane = new JScrollPane(panelChooser);
+            final javax.swing.JScrollPane chooserScrollPane =
+                new javax.swing.JScrollPane(panelChooser);
             panel2.add(chooserScrollPane);
           }
-          panel.add(panel2, BorderLayout.CENTER);
+          panel.add(panel2, java.awt.BorderLayout.CENTER);
           dialog.setContentPane(optionPane);
-          dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+          dialog.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
           dialog.setLocationRelativeTo(getParent());
           dialog.setAlwaysOnTop(true);
           dialog.pack();
@@ -1412,15 +1486,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
               });
         });
     mapPanel.getUiContext().addShutdownLatch(continueLatch);
-    Interruptibles.await(continueLatch);
+    org.triplea.java.Interruptibles.await(continueLatch);
     mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     return selection;
-  }
-
-  private static JOptionPane getOptionPane(final JComponent parent) {
-    return (parent instanceof JOptionPane optionPane)
-        ? optionPane
-        : getOptionPane((JComponent) parent.getParent());
   }
 
   /**
@@ -1434,46 +1502,61 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   public Collection<Unit> selectUnitsQuery(
       final Territory current, final Collection<Unit> possible, final String message) {
     messageAndDialogThreadPool.waitForAll();
-    Util.ensureNotOnEventDispatchThread();
-    final CountDownLatch continueLatch = new CountDownLatch(1);
-    final Collection<Unit> selection = new ArrayList<>();
-    SwingUtilities.invokeLater(
+    games.strategy.ui.Util.ensureNotOnEventDispatchThread();
+    final java.util.concurrent.CountDownLatch continueLatch =
+        new java.util.concurrent.CountDownLatch(1);
+    final Collection<Unit> selection = new java.util.ArrayList<>();
+    javax.swing.SwingUtilities.invokeLater(
         () -> {
           mapPanel.centerOn(current);
-          final JPanel panel = new JPanel();
-          panel.setLayout(new BorderLayout());
-          final JLabel messageLabel = new JLabel(message);
-          messageLabel.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.ITALIC, 12));
-          panel.add(messageLabel, BorderLayout.NORTH);
-          final JPanel panelChooser = new JPanel();
-          panelChooser.setLayout(new BoxLayout(panelChooser, BoxLayout.Y_AXIS));
-          panelChooser.setBorder(BorderFactory.createLineBorder(getBackground()));
-          final JLabel whereFrom = new JLabel("From: " + current.getName());
-          whereFrom.setHorizontalAlignment(SwingConstants.LEFT);
-          whereFrom.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, 12));
+          final javax.swing.JPanel panel = new javax.swing.JPanel();
+          panel.setLayout(new java.awt.BorderLayout());
+          final javax.swing.JLabel messageLabel = new javax.swing.JLabel(message);
+          messageLabel.setFont(
+              new java.awt.Font(
+                  games.strategy.triplea.image.MapImage.FONT_FAMILY_DEFAULT,
+                  java.awt.Font.ITALIC,
+                  12));
+          panel.add(messageLabel, java.awt.BorderLayout.NORTH);
+          final javax.swing.JPanel panelChooser = new javax.swing.JPanel();
+          panelChooser.setLayout(
+              new javax.swing.BoxLayout(panelChooser, javax.swing.BoxLayout.Y_AXIS));
+          panelChooser.setBorder(javax.swing.BorderFactory.createLineBorder(getBackground()));
+          final javax.swing.JLabel whereFrom = new javax.swing.JLabel("From: " + current.getName());
+          whereFrom.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+          whereFrom.setFont(
+              new java.awt.Font(
+                  games.strategy.triplea.image.MapImage.FONT_FAMILY_DEFAULT,
+                  java.awt.Font.BOLD,
+                  12));
           panelChooser.add(whereFrom);
-          panelChooser.add(new JLabel(" "));
+          panelChooser.add(new javax.swing.JLabel(" "));
           final int maxAllowed =
-              Math.min(AirBattle.getMaxInterceptionCount(current, possible), possible.size());
-          final UnitChooser chooser = new UnitChooser(possible, Map.of(), false, uiContext);
+              Math.min(
+                  games.strategy.triplea.delegate.battle.AirBattle.getMaxInterceptionCount(
+                      current, possible),
+                  possible.size());
+          final UnitChooser chooser =
+              new UnitChooser(possible, java.util.Map.of(), false, uiContext);
           chooser.setMaxAndShowMaxButton(maxAllowed);
           panelChooser.add(chooser);
-          final JScrollPane chooserScrollPane = new JScrollPane(panelChooser);
-          panel.add(chooserScrollPane, BorderLayout.CENTER);
+          final javax.swing.JScrollPane chooserScrollPane =
+              new javax.swing.JScrollPane(panelChooser);
+          panel.add(chooserScrollPane, java.awt.BorderLayout.CENTER);
           final String optionSelect = "Select";
           final String optionNone = "None";
           final Object[] options = {optionSelect, optionNone};
-          final JOptionPane optionPane =
-              new JOptionPane(
+          final javax.swing.JOptionPane optionPane =
+              new javax.swing.JOptionPane(
                   panel,
-                  JOptionPane.PLAIN_MESSAGE,
-                  JOptionPane.YES_NO_CANCEL_OPTION,
+                  javax.swing.JOptionPane.PLAIN_MESSAGE,
+                  javax.swing.JOptionPane.YES_NO_CANCEL_OPTION,
                   null,
                   options,
                   options[1]);
-          final JDialog dialog = new JDialog((Frame) getParent(), message);
+          final javax.swing.JDialog dialog = new javax.swing.JDialog((Frame) getParent(), message);
           dialog.setContentPane(optionPane);
-          dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+          dialog.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
           dialog.setLocationRelativeTo(getParent());
           dialog.setAlwaysOnTop(true);
           dialog.pack();
@@ -1502,30 +1585,33 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
               });
         });
     mapPanel.getUiContext().addShutdownLatch(continueLatch);
-    Interruptibles.await(continueLatch);
+    org.triplea.java.Interruptibles.await(continueLatch);
     mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     return selection;
   }
 
-  public PoliticalActionAttachment getPoliticalActionChoice(
-      final GamePlayer player, final boolean firstRun, final IPoliticsDelegate politicsDelegate) {
+  public games.strategy.triplea.attachments.PoliticalActionAttachment getPoliticalActionChoice(
+      final games.strategy.engine.data.GamePlayer player,
+      final boolean firstRun,
+      final games.strategy.triplea.delegate.remote.IPoliticsDelegate politicsDelegate) {
     messageAndDialogThreadPool.waitForAll();
     actionButtonsPanel.changeToPolitics(player);
     requestWindowFocus();
     return actionButtonsPanel.waitForPoliticalAction(firstRun, politicsDelegate);
   }
 
-  public UserActionAttachment getUserActionChoice(
-      final GamePlayer player,
+  public games.strategy.triplea.attachments.UserActionAttachment getUserActionChoice(
+      final games.strategy.engine.data.GamePlayer player,
       final boolean firstRun,
-      final IUserActionDelegate userActionDelegate) {
+      final games.strategy.triplea.delegate.remote.IUserActionDelegate userActionDelegate) {
     messageAndDialogThreadPool.waitForAll();
     actionButtonsPanel.changeToUserActions(player);
     requestWindowFocus();
     return actionButtonsPanel.waitForUserActionAction(firstRun, userActionDelegate);
   }
 
-  public TechRoll getTechRolls(final GamePlayer gamePlayer) {
+  public games.strategy.triplea.delegate.data.TechRoll getTechRolls(
+      final games.strategy.engine.data.GamePlayer gamePlayer) {
     messageAndDialogThreadPool.waitForAll();
     actionButtonsPanel.changeToTech(gamePlayer);
     // workaround for panel not receiving focus at beginning of tech phase
@@ -1546,38 +1632,42 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
     final Supplier<Territory> action =
         () -> {
-          final JList<Territory> list = new JList<>(SwingComponents.newListModel(candidates));
-          list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+          final JList<Territory> list =
+              new javax.swing.JList<>(org.triplea.swing.SwingComponents.newListModel(candidates));
+          list.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
           list.setSelectedIndex(0);
-          final JPanel panel = new JPanel();
-          panel.setLayout(new BorderLayout());
-          final JScrollPane scroll = new JScrollPane(list);
-          panel.add(scroll, BorderLayout.CENTER);
+          final javax.swing.JPanel panel = new javax.swing.JPanel();
+          panel.setLayout(new java.awt.BorderLayout());
+          final javax.swing.JScrollPane scroll = new javax.swing.JScrollPane(list);
+          panel.add(scroll, java.awt.BorderLayout.CENTER);
           if (from != null) {
-            panel.add(BorderLayout.NORTH, new JLabel("Targets for rocket in " + from.getName()));
+            panel.add(
+                java.awt.BorderLayout.NORTH,
+                new javax.swing.JLabel("Targets for rocket in " + from.getName()));
           }
           final String[] options = {"OK", "Don't attack"};
           final String message = "Select Rocket Target";
           final int selection =
-              JOptionPane.showOptionDialog(
+              javax.swing.JOptionPane.showOptionDialog(
                   TripleAFrame.this,
                   panel,
                   message,
-                  JOptionPane.OK_CANCEL_OPTION,
-                  JOptionPane.PLAIN_MESSAGE,
+                  javax.swing.JOptionPane.OK_CANCEL_OPTION,
+                  javax.swing.JOptionPane.PLAIN_MESSAGE,
                   null,
                   options,
                   null);
           return (selection == 0) ? list.getSelectedValue() : null;
         };
-    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action))
+    return org.triplea.java.Interruptibles.awaitResult(
+            () -> org.triplea.swing.SwingAction.invokeAndWaitResult(action))
         .result
         .orElse(null);
   }
 
   private void updateStep() {
-    if (SwingUtilities.isEventDispatchThread()) {
-      ThreadRunner.runInNewThread(this::updateStepFromEdt);
+    if (javax.swing.SwingUtilities.isEventDispatchThread()) {
+      org.triplea.java.ThreadRunner.runInNewThread(this::updateStepFromEdt);
     } else {
       updateStepFromEdt();
     }
@@ -1585,16 +1675,17 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
   private void updateStepFromEdt() {
     Preconditions.checkState(
-        !SwingUtilities.isEventDispatchThread(), "This method must not be invoked on the EDT!");
+        !javax.swing.SwingUtilities.isEventDispatchThread(),
+        "This method must not be invoked on the EDT!");
     if (uiContext.isShutDown()) {
       return;
     }
     final int round;
     final String stepDisplayName;
-    final GamePlayer player;
-    try (GameData.Unlocker ignored = data.acquireReadLock()) {
+    final games.strategy.engine.data.GamePlayer player;
+    try (games.strategy.engine.data.GameData.Unlocker ignored = data.acquireReadLock()) {
       round = data.getSequence().getRound();
-      final GameStep step = data.getSequence().getStep();
+      final games.strategy.engine.data.GameStep step = data.getSequence().getStep();
       if (step == null) {
         return;
       }
@@ -1604,7 +1695,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
     uiContext.setCurrentPlayer(player);
 
-    SwingUtilities.invokeLater(
+    javax.swing.SwingUtilities.invokeLater(
         () -> {
           bottomBar.setStepInfo(round, stepDisplayName);
           bottomBar.updateFromCurrentPlayer();
@@ -1631,26 +1722,30 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
    * Invoked at the start of a player's turn to play a sound alerting the player it is their turn
    * and to center the map on the player's capital.
    */
-  public void performStartPlayerTurnActionsIfNeeded(final GamePlayer player) {
-    if (!SwingUtilities.isEventDispatchThread()) {
+  public void performStartPlayerTurnActionsIfNeeded(
+      final games.strategy.engine.data.GamePlayer player) {
+    if (!javax.swing.SwingUtilities.isEventDispatchThread()) {
       try {
-        SwingAction.invokeAndWait(() -> performStartPlayerTurnActionsIfNeeded(player));
+        org.triplea.swing.SwingAction.invokeAndWait(
+            () -> performStartPlayerTurnActionsIfNeeded(player));
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
       }
       return;
     }
-    if (player == null || !Interruptibles.sleep(300)) {
+    if (player == null || !org.triplea.java.Interruptibles.sleep(300)) {
       return;
     }
     // Play start-player-turn sound if the previous player was remote
     final Boolean play = requiredTurnSeries.get(player);
     if (play != null && play) {
-      uiContext.getClipPlayer().play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player);
+      uiContext
+          .getClipPlayer()
+          .play(org.triplea.sound.SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player);
       requiredTurnSeries.put(player, false);
     }
     final int round;
-    try (GameData.Unlocker ignored = data.acquireReadLock()) {
+    try (games.strategy.engine.data.GameData.Unlocker ignored = data.acquireReadLock()) {
       round = data.getSequence().getRound();
     }
     // Check if a new player has its turn or if it is the same player but during a different round
@@ -1658,8 +1753,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       lastPlayer = player;
       lastPlayerRound = round;
       bottomBar.updateFromCurrentPlayer();
-      try (GameData.Unlocker ignored = data.acquireReadLock()) {
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap())
+      try (games.strategy.engine.data.GameData.Unlocker ignored = data.acquireReadLock()) {
+        games.strategy.triplea.attachments.TerritoryAttachment
+            .getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap())
             .ifPresent(territory -> mapPanel.centerOn(territory));
         mapPanel.repaint();
       }
@@ -1668,17 +1764,26 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
   private String getUnitInfo() {
     if (!mapPanel.getMouseHoverUnits().isEmpty()) {
-      final Unit unit = mapPanel.getMouseHoverUnits().get(0);
+      final games.strategy.engine.data.Unit unit = mapPanel.getMouseHoverUnits().get(0);
       return MapUnitTooltipManager.getTooltipTextForUnit(
           unit.getType(), unit.getOwner(), mapPanel.getMouseHoverUnits().size(), uiContext);
     }
     return "";
   }
 
-  private KeyListener getArrowKeyListener() {
-    return new KeyListener() {
+  public void showActionPanelTab() {
+    tabsPanel.setSelectedIndex(0);
+  }
+
+  private java.awt.event.KeyListener getArrowKeyListener() {
+    return new java.awt.event.KeyListener() {
       @Override
-      public void keyPressed(final KeyEvent e) {
+      public void keyTyped(final java.awt.event.KeyEvent e) {
+        // not needed interface method
+      }
+
+      @Override
+      public void keyPressed(final java.awt.event.KeyEvent e) {
         isCtrlPressed = e.isControlDown();
         // scroll map according to wasd/arrow keys
         final int diffPixel = computeScrollSpeed();
@@ -1686,79 +1791,70 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         final int y = mapPanel.getYOffset();
         final int keyCode = e.getKeyCode();
 
-        if (keyCode == KeyEvent.VK_RIGHT) {
+        if (keyCode == java.awt.event.KeyEvent.VK_RIGHT) {
           getMapPanel().setTopLeft(x + diffPixel, y);
-        } else if (keyCode == KeyEvent.VK_LEFT) {
+        } else if (keyCode == java.awt.event.KeyEvent.VK_LEFT) {
           getMapPanel().setTopLeft(x - diffPixel, y);
-        } else if (keyCode == KeyEvent.VK_DOWN) {
+        } else if (keyCode == java.awt.event.KeyEvent.VK_DOWN) {
           getMapPanel().setTopLeft(x, y + diffPixel);
-        } else if (keyCode == KeyEvent.VK_UP) {
+        } else if (keyCode == java.awt.event.KeyEvent.VK_UP) {
           getMapPanel().setTopLeft(x, y - diffPixel);
         }
       }
 
       @Override
-      public void keyTyped(final KeyEvent e) {
-        // not needed interface method
-      }
-
-      @Override
-      public void keyReleased(final KeyEvent e) {
+      public void keyReleased(final java.awt.event.KeyEvent e) {
         isCtrlPressed = e.isControlDown();
       }
     };
   }
 
   private int computeScrollSpeed() {
-    return ClientSetting.arrowKeyScrollSpeed.getValueOrThrow()
-        * (isCtrlPressed ? ClientSetting.fasterArrowKeyScrollMultiplier.getValueOrThrow() : 1);
-  }
-
-  private void showEditMode() {
-    tabsPanel.addTab("Edit", editPanel);
-    if (editDelegate != null) {
-      tabsPanel.setSelectedComponent(editPanel);
-    }
-    editModeButtonModel.setSelected(true);
-    getGlassPane().setVisible(true);
-  }
-
-  public void showActionPanelTab() {
-    tabsPanel.setSelectedIndex(0);
+    return games.strategy.triplea.settings.ClientSetting.arrowKeyScrollSpeed.getValueOrThrow()
+        * (isCtrlPressed
+            ? games.strategy.triplea.settings.ClientSetting.fasterArrowKeyScrollMultiplier
+                .getValueOrThrow()
+            : 1);
   }
 
   private void showHistory() {
     inHistory.set(true);
     inGame.set(false);
     setWidgetActivation();
-    final GameData clonedGameData;
-    try (GameData.Unlocker ignored = data.acquireWriteLock()) {
+    final games.strategy.engine.data.GameData clonedGameData;
+    try (games.strategy.engine.data.GameData.Unlocker ignored = data.acquireWriteLock()) {
       // we want to use a clone of the data, so we can make changes to it as we walk up and down the
       // history
-      final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
-      clonedGameData = GameDataUtils.cloneGameData(data, cloneOptions).orElse(null);
+      final var cloneOptions =
+          games.strategy.engine.framework.GameDataManager.Options.builder()
+              .withHistory(true)
+              .build();
+      clonedGameData =
+          games.strategy.engine.framework.GameDataUtils.cloneGameData(data, cloneOptions)
+              .orElse(null);
       if (clonedGameData == null) {
         return;
       }
     }
-    historySyncher = new HistorySynchronizer(clonedGameData, game);
+    historySyncher = new games.strategy.engine.framework.HistorySynchronizer(clonedGameData, game);
     updatePanelsGameData(clonedGameData);
-    Interruptibles.await(
+    org.triplea.java.Interruptibles.await(
         () ->
-            SwingAction.invokeAndWait(
+            org.triplea.swing.SwingAction.invokeAndWait(
                 () -> {
-                  final HistoryDetailsPanel historyDetailPanel =
+                  final games.strategy.triplea.ui.history.HistoryDetailsPanel historyDetailPanel =
                       getHistoryDetailsPanel(clonedGameData);
                   // create history tree context menu
-                  final JSplitPane historyComponentSplitPane = new JSplitPane();
+                  final javax.swing.JSplitPane historyComponentSplitPane =
+                      new javax.swing.JSplitPane();
                   historyComponentSplitPane.setOneTouchExpandable(true);
                   historyComponentSplitPane.setContinuousLayout(true);
                   historyComponentSplitPane.setDividerSize(8);
                   historyComponentSplitPane.setLeftComponent(historyPanel);
                   historyComponentSplitPane.setRightComponent(gameCenterPanel);
                   historyComponentSplitPane.setDividerLocation(150);
-                  final JPanel historyComponent =
-                      new JPanelBuilder()
+                  final javax.swing.JPanel historyComponent =
+                      new org.triplea.swing.jpanel.JPanelBuilder()
                           .borderLayout()
                           .addCenter(historyComponentSplitPane)
                           .addSouth(bottomBar)
@@ -1770,47 +1866,35 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                       .getCurrent()
                       .ifPresent(actionPanel -> actionPanel.setActive(false));
                   getContentPane().removeAll();
-                  getContentPane().add(historyComponent, BorderLayout.CENTER);
+                  getContentPane().add(historyComponent, java.awt.BorderLayout.CENTER);
                   validate();
                 }));
   }
 
-  private void updatePanelsGameData(final GameData newGameData) {
-    mapPanel.setGameData(newGameData);
-    bottomBar.setGameDataForCurrentTerritory(newGameData);
-    if (!TechAdvance.getTechAdvances(newGameData.getTechnologyFrontier(), null).isEmpty()) {
-      technologyPanel.setGameData(newGameData);
-    }
-    statsPanel.setGameData(newGameData);
-    economyPanel.setGameData(newGameData);
-    if (objectivePanel != null) {
-      objectivePanel.setGameData(newGameData);
-    }
-    territoryDetailPanel.setGameData(newGameData);
-  }
-
-  @Nonnull
-  private HistoryDetailsPanel getHistoryDetailsPanel(GameData clonedGameData) {
-    final HistoryDetailsPanel historyDetailPanel =
-        new HistoryDetailsPanel(clonedGameData, mapPanel);
+  @javax.annotation.Nonnull
+  private games.strategy.triplea.ui.history.HistoryDetailsPanel getHistoryDetailsPanel(
+      games.strategy.engine.data.GameData clonedGameData) {
+    final games.strategy.triplea.ui.history.HistoryDetailsPanel historyDetailPanel =
+        new games.strategy.triplea.ui.history.HistoryDetailsPanel(clonedGameData, mapPanel);
     // actions need to clear the history panel popup state when done
-    final HistoryPanel popupHistoryPanel =
-        new HistoryPanel(clonedGameData, historyDetailPanel, uiContext);
-    final JPopupMenu popup =
+    final games.strategy.triplea.ui.history.HistoryPanel popupHistoryPanel =
+        new games.strategy.triplea.ui.history.HistoryPanel(
+            clonedGameData, historyDetailPanel, uiContext);
+    final javax.swing.JPopupMenu popup =
         new HistoryPanelPopupMenuBuilder()
             .add("Show Summary Log", () -> showHistoryLog(popupHistoryPanel, false, clonedGameData))
             .add("Show Detailed Log", () -> showHistoryLog(popupHistoryPanel, true, clonedGameData))
             .add(
                 "Export Gameboard Picture",
                 () -> {
-                  ScreenshotExporter.exportScreenshot(
+                  games.strategy.triplea.ui.export.ScreenshotExporter.exportScreenshot(
                       TripleAFrame.this, clonedGameData, popupHistoryPanel.getCurrentPopupNode());
                   popupHistoryPanel.clearCurrentPopupNode();
                 })
             .add(
                 "Save Game at this point (BETA)",
                 () -> {
-                  JOptionPane.showMessageDialog(
+                  javax.swing.JOptionPane.showMessageDialog(
                       TripleAFrame.this,
                       "Please first left click on the spot you want to save from, "
                           + "Then right click and select 'Save Game From History'"
@@ -1826,12 +1910,14 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                           + "\nAnd you will also get errors in the save game if you try to create a "
                           + "save at a point in history such as a move or battle phase.",
                       "Save Game from History",
-                      JOptionPane.INFORMATION_MESSAGE);
+                      javax.swing.JOptionPane.INFORMATION_MESSAGE);
 
                   final Optional<Path> f =
-                      GameFileSelector.getSaveGameLocation(TripleAFrame.this, clonedGameData);
+                      games.strategy.engine.framework.startup.ui.panels.main.game.selector
+                          .GameFileSelector.getSaveGameLocation(TripleAFrame.this, clonedGameData);
                   if (f.isPresent()) {
-                    try (OutputStream fileOutputStream = Files.newOutputStream(f.get())) {
+                    try (java.io.OutputStream fileOutputStream =
+                        java.nio.file.Files.newOutputStream(f.get())) {
                       clonedGameData
                           .getHistory()
                           .removeAllHistoryAfterNode(popupHistoryPanel.getCurrentPopupNode());
@@ -1842,19 +1928,21 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                       // TODO: this could be solved easily if rounds/steps were changes,
                       // but that could greatly increase the file size :(
                       // TODO: this also does not undo the run count of each delegate step
-                      final Enumeration<?> enumeration =
-                          ((DefaultMutableTreeNode) clonedGameData.getHistory().getRoot())
+                      final java.util.Enumeration<?> enumeration =
+                          ((javax.swing.tree.DefaultMutableTreeNode)
+                                  clonedGameData.getHistory().getRoot())
                               .preorderEnumeration();
                       enumeration.nextElement();
                       int round = 0;
                       String stepDisplayName =
                           clonedGameData.getSequence().getStep(0).getDisplayName();
-                      GamePlayer currentPlayer =
+                      games.strategy.engine.data.GamePlayer currentPlayer =
                           clonedGameData.getSequence().getStep(0).getPlayerId();
                       int roundOffset = clonedGameData.getSequence().getRoundOffset();
                       while (enumeration.hasMoreElements()) {
-                        final HistoryNode node = (HistoryNode) enumeration.nextElement();
-                        if (node instanceof Round nodeRound) {
+                        final games.strategy.engine.history.HistoryNode node =
+                            (games.strategy.engine.history.HistoryNode) enumeration.nextElement();
+                        if (node instanceof games.strategy.engine.history.Round nodeRound) {
                           round = Math.max(0, nodeRound.getRoundNo() - roundOffset);
                           currentPlayer = null;
                           stepDisplayName = nodeRound.getTitle();
@@ -1866,13 +1954,14 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                       clonedGameData
                           .getSequence()
                           .setRoundAndStep(round, stepDisplayName, currentPlayer);
-                      GameDataManager.saveGame(fileOutputStream, clonedGameData);
-                      JOptionPane.showMessageDialog(
+                      games.strategy.engine.framework.GameDataManager.saveGame(
+                          fileOutputStream, clonedGameData);
+                      javax.swing.JOptionPane.showMessageDialog(
                           TripleAFrame.this,
                           "Game Saved",
                           "Game Saved",
-                          JOptionPane.INFORMATION_MESSAGE);
-                    } catch (final IOException e) {
+                          javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                    } catch (final java.io.IOException e) {
                       log.error("Failed to save game: " + f.get().toAbsolutePath(), e);
                     }
                   }
@@ -1884,29 +1973,14 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     return historyDetailPanel;
   }
 
-  private static class HistoryPanelPopupMenuBuilder {
-    private final JPopupMenu popup = new JPopupMenu();
-
-    public HistoryPanelPopupMenuBuilder add(String title, Runnable action) {
-      popup.add(
-          new AbstractAction(title) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              action.run();
-            }
-          });
-      return this;
-    }
-
-    public JPopupMenu build() {
-      return popup;
-    }
-  }
-
   private void showHistoryLog(
-      final HistoryPanel popupHistoryPanel, boolean verboseLog, GameData clonedGameData) {
-    final HistoryLog historyLog = new HistoryLog(this);
-    final HistoryNode currentPopupNodeOrLastNode = popupHistoryPanel.getCurrentPopupNode();
+      final games.strategy.triplea.ui.history.HistoryPanel popupHistoryPanel,
+      boolean verboseLog,
+      games.strategy.engine.data.GameData clonedGameData) {
+    final games.strategy.triplea.ui.history.HistoryLog historyLog =
+        new games.strategy.triplea.ui.history.HistoryLog(this);
+    final games.strategy.engine.history.HistoryNode currentPopupNodeOrLastNode =
+        popupHistoryPanel.getCurrentPopupNode();
     historyLog.printRemainingTurn(
         currentPopupNodeOrLastNode, verboseLog, data.getDiceSides(), null);
     historyLog.printTerritorySummary(currentPopupNodeOrLastNode, clonedGameData);
@@ -1915,54 +1989,13 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     historyLog.setVisible(true);
   }
 
-  private void showGame() {
-    inGame.set(true);
-    final boolean inHistoryCompareTrueAndSetFalse = inHistory.compareAndSet(true, false);
-    if (inHistoryCompareTrueAndSetFalse) {
-      if (historySyncher != null) {
-        historySyncher.deactivate();
-        historySyncher = null;
-      }
-      historyPanel = null;
-      updatePanelsGameData(data);
-    }
-    // Are we coming from showHistory mode or showMapOnly mode?
-    SwingUtilities.invokeLater(
-        () -> {
-          if (inHistoryCompareTrueAndSetFalse) {
-            tabsPanel.removeAll();
-          }
-          setWidgetActivation();
-          addTabs(null);
-          actionButtonsPanel.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(true));
-          gameMainPanel.removeAll();
-          gameMainPanel.setLayout(new BorderLayout());
-          gameMainPanel.add(gameCenterPanel, BorderLayout.CENTER);
-          gameMainPanel.add(bottomBar, BorderLayout.SOUTH);
-          getContentPane().removeAll();
-          getContentPane().add(gameMainPanel, BorderLayout.CENTER);
-          validate();
-          requestWindowFocus();
-        });
-    mapPanel.setRoute(null);
-  }
-
-  private void setWidgetActivation() {
-    SwingAction.invokeNowOrLater(
-        () -> {
-          showHistoryAction.setEnabled(!inHistory.get());
-          showGameAction.setEnabled(!inGame.get());
-          if (editModeButtonModel != null) {
-            editModeButtonModel.setEnabled(editDelegate != null);
-          }
-        });
-  }
-
   // setEditDelegate is called by TripleAPlayer at the start and end of a turn
-  public void setEditDelegate(final IEditDelegate editDelegate) {
+  public void setEditDelegate(
+      final games.strategy.triplea.delegate.remote.IEditDelegate editDelegate) {
     this.editDelegate = editDelegate;
     // force a data change event to update the UI for edit mode
-    dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
+    dataChangeListener.gameDataChanged(
+        games.strategy.engine.data.changefactory.ChangeFactory.EMPTY_CHANGE);
     setWidgetActivation();
   }
 
@@ -1978,20 +2011,24 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       final Collection<Unit> fighters, final Territory where) {
     messageAndDialogThreadPool.waitForAll();
     mapPanel.centerOn(where);
-    final AtomicReference<JScrollPane> panelRef = new AtomicReference<>();
-    final AtomicReference<UnitChooser> chooserRef = new AtomicReference<>();
-    Interruptibles.await(
+    final java.util.concurrent.atomic.AtomicReference<javax.swing.JScrollPane> panelRef =
+        new java.util.concurrent.atomic.AtomicReference<>();
+    final java.util.concurrent.atomic.AtomicReference<UnitChooser> chooserRef =
+        new java.util.concurrent.atomic.AtomicReference<>();
+    org.triplea.java.Interruptibles.await(
         () ->
-            SwingAction.invokeAndWait(
+            org.triplea.swing.SwingAction.invokeAndWait(
                 () -> {
-                  final UnitChooser chooser = new UnitChooser(fighters, Map.of(), false, uiContext);
-                  final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+                  final UnitChooser chooser =
+                      new UnitChooser(fighters, java.util.Map.of(), false, uiContext);
+                  final java.awt.Dimension screenResolution =
+                      java.awt.Toolkit.getDefaultToolkit().getScreenSize();
                   final int availHeight = screenResolution.height - 120;
                   final int availWidth = screenResolution.width - 40;
-                  final JScrollPane scroll = new JScrollPane(chooser);
-                  scroll.setBorder(BorderFactory.createEmptyBorder());
+                  final javax.swing.JScrollPane scroll = new javax.swing.JScrollPane(chooser);
+                  scroll.setBorder(javax.swing.BorderFactory.createEmptyBorder());
                   scroll.setPreferredSize(
-                      new Dimension(
+                      new java.awt.Dimension(
                           (scroll.getPreferredSize().width > availWidth
                               ? availWidth
                               : (scroll.getPreferredSize().width
@@ -2004,24 +2041,20 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                   chooserRef.set(chooser);
                 }));
     final int option =
-        EventThreadJOptionPane.showOptionDialog(
+        org.triplea.swing.EventThreadJOptionPane.showOptionDialog(
             this,
             panelRef.get(),
             "Move air units to carrier",
-            JOptionPane.PLAIN_MESSAGE,
-            JOptionPane.OK_CANCEL_OPTION,
+            javax.swing.JOptionPane.PLAIN_MESSAGE,
+            javax.swing.JOptionPane.OK_CANCEL_OPTION,
             null,
             new String[] {"OK", "Cancel"},
             "OK",
             getUiContext().getCountDownLatchHandler());
-    if (option == JOptionPane.OK_OPTION) {
+    if (option == javax.swing.JOptionPane.OK_OPTION) {
       return chooserRef.get().getSelected();
     }
-    return new ArrayList<>();
-  }
-
-  public BattlePanel getBattlePanel() {
-    return actionButtonsPanel.getBattlePanel();
+    return new java.util.ArrayList<>();
   }
 
   /** Displays the map located in the directory/archive {@code mapdir}. */
@@ -2030,23 +2063,77 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     game.setResourceLoader(uiContext.getResourceLoader());
     // when changing skins, always show relief images
     if (uiContext.getMapData().getHasRelief()) {
-      TileImageFactory.setShowReliefImages(true);
+      games.strategy.triplea.image.TileImageFactory.setShowReliefImages(true);
     }
 
     mapPanel.setGameData(data);
     // update map panels to use new image
     mapPanel.changeImage(uiContext.getMapData().getMapDimensions());
-    final Image small = uiContext.getMapImage().getSmallMapImage();
+    final java.awt.Image small = uiContext.getMapImage().getSmallMapImage();
     smallView.changeImage(small);
     mapPanel.changeSmallMapOffscreenMap();
     // redraw territories
     mapPanel.resetMap();
   }
 
-  public Optional<InGameLobbyWatcherWrapper> getInGameLobbyWatcher() {
-    return ServerGame.class.isAssignableFrom(getGame().getClass())
-        ? Optional.ofNullable(((ServerGame) getGame()).getInGameLobbyWatcher())
-        : Optional.empty();
+  public Optional<games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper>
+      getInGameLobbyWatcher() {
+    return games.strategy.engine.framework.ServerGame.class.isAssignableFrom(getGame().getClass())
+        ? java.util.Optional.ofNullable(
+            ((games.strategy.engine.framework.ServerGame) getGame()).getInGameLobbyWatcher())
+        : java.util.Optional.empty();
+  }
+
+  private static class HistoryPanelPopupMenuBuilder {
+    private final javax.swing.JPopupMenu popup = new javax.swing.JPopupMenu();
+
+    public HistoryPanelPopupMenuBuilder add(String title, Runnable action) {
+      popup.add(
+          new javax.swing.AbstractAction(title) {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+              action.run();
+            }
+          });
+      return this;
+    }
+
+    public javax.swing.JPopupMenu build() {
+      return popup;
+    }
+  }
+
+  /** Create a unit option with icon and description. */
+  private class UnitRenderer extends javax.swing.JLabel implements ListCellRenderer<Unit> {
+
+    private static final long serialVersionUID = 1749164256040268579L;
+
+    UnitRenderer() {
+      setOpaque(true);
+    }
+
+    @Override
+    public java.awt.Component getListCellRendererComponent(
+        final JList<? extends Unit> list,
+        final Unit unit,
+        final int index,
+        final boolean isSelected,
+        final boolean cellHasFocus) {
+      setText(unit.toString() + ", damage=" + unit.getUnitDamage());
+      setIcon(uiContext.getUnitImageFactory().getIcon(ImageKey.of(unit)));
+      setBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 10));
+
+      // Set selected option to highlighted color
+      if (isSelected) {
+        setBackground(list.getSelectionBackground());
+        setForeground(list.getSelectionForeground());
+      } else {
+        setBackground(list.getBackground());
+        setForeground(list.getForeground());
+      }
+
+      return this;
+    }
   }
 
   public boolean hasChat() {
