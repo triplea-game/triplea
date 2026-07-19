@@ -16,9 +16,10 @@ import java.util.Optional;
  * Walks toward whichever objectives the enemy still holds, and takes one when the odds allow.
  *
  * <p>Deliberately simple. Earlier versions also served as a workaround for economy-free maps whose
- * units lacked TUV values, causing the Pro AI to reject every attack as unprofitable and stand still.
- * Explicit unit TUV values now prevent that failure mode. This policy remains a deterministic,
- * objective-seeking sparring partner and a practical baseline for measuring trained policies.
+ * units lacked TUV values, causing the Pro AI to reject every attack as unprofitable and stand
+ * still. Explicit unit TUV values now prevent that failure mode. This policy remains a
+ * deterministic, objective-seeking sparring partner and a practical baseline for measuring trained
+ * policies.
  */
 public final class PressTheObjectivesPolicy implements SmallFrontPolicy {
   private static final int NO_PATH = 99;

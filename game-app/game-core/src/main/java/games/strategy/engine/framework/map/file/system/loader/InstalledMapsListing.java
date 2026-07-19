@@ -61,9 +61,7 @@ public class InstalledMapsListing {
   private static Optional<Path> findEngineMapsFolder() {
     try {
       final Path engineMapsFolder = ClientFileSystemHelper.getRootFolder().resolve("maps");
-      return Files.isDirectory(engineMapsFolder)
-          ? Optional.of(engineMapsFolder)
-          : Optional.empty();
+      return Files.isDirectory(engineMapsFolder) ? Optional.of(engineMapsFolder) : Optional.empty();
     } catch (final IllegalStateException e) {
       return Optional.empty();
     }
