@@ -259,12 +259,22 @@
       <option name="movement" value="2"/>
       <option name="combatMovement" value="2"/>
       <option name="redeploymentMovement" value="3"/>
-      <option name="attack" value="2"/>
+      <option name="attack" value="1"/>
       <option name="defense" value="2"/>
       <option name="isInfantry" value="true"/>
       <option name="artillerySupportable" value="true"/>
       <option name="stackCost" value="1"/>
       <option name="tuv" value="4"/>
+    </attachment>
+    <attachment name="supportAttachmentMechanizedArmour" attachTo="mechanized" javaClass="games.strategy.triplea.attachments.UnitSupportAttachment" type="unitType">
+    <option name="unitType" value="armour"/>
+    <option name="faction" value="allied"/>
+    <option name="side" value="offence"/>
+    <option name="dice" value="strength"/>
+    <option name="bonus" value="1"/>
+    <option name="number" value="1"/>
+    <option name="bonusType" value="mechanizedArmour"/>
+    <option name="players" value="Germans"/>
     </attachment>
     <attachment name="unitAttachment" attachTo="fighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
       <option name="movement" value="4"/>
