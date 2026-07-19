@@ -7,12 +7,15 @@ import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.triplea.test.common.matchers.CollectionMatchers.containsMappedItem;
 import static org.triplea.test.common.matchers.CollectionMatchers.doesNotContainMappedItem;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
@@ -61,6 +64,33 @@ class InstalledMapsListingTest {
 
     assertThat(sortedGameNames, hasSize(3));
     assertThat(sortedGameNames, hasItems("aGame0", "gameName0", "gameName1"));
+  }
+
+  @Test
+  void combinesMapFoldersAndPrefersTheEarlierFolderForDuplicateMapNames(@TempDir Path tempDir)
+      throws IOException {
+    final Path userMaps = tempDir.resolve("downloadedMaps");
+    final Path engineMaps = tempDir.resolve("engineMaps");
+    writeMap(userMaps.resolve("user-copy"), "duplicate-map", "User Copy");
+    writeMap(engineMaps.resolve("engine-copy"), "duplicate_map", "Engine Copy");
+    writeMap(engineMaps.resolve("engine-only"), "engine-only", "Engine Only");
+
+    final InstalledMapsListing listing =
+        InstalledMapsListing.parseMapFiles(List.of(userMaps, engineMaps));
+
+    assertThat(listing.getSortedGameList(), is(List.of("Engine Only", "User Copy")));
+  }
+
+  private static void writeMap(final Path mapFolder, final String mapName, final String gameName)
+      throws IOException {
+    Files.createDirectories(mapFolder);
+    Files.writeString(
+        mapFolder.resolve("map.yml"),
+        "map_name: "
+            + mapName
+            + "\ngames:\n- {game_name: \""
+            + gameName
+            + "\", file_name: \"game.xml\"}\n");
   }
 
   @ParameterizedTest
