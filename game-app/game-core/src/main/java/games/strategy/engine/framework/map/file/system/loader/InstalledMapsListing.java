@@ -4,9 +4,11 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.ui.DefaultGameChooserEntry;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -37,11 +39,34 @@ public class InstalledMapsListing {
    * returns the list of available games found.
    */
   public static synchronized InstalledMapsListing parseMapFiles() {
-    return parseMapFiles(ClientFileSystemHelper.getUserMapsFolder());
+    final List<Path> mapFolders = new ArrayList<>();
+    mapFolders.add(ClientFileSystemHelper.getUserMapsFolder());
+    findEngineMapsFolder().ifPresent(mapFolders::add);
+    return parseMapFiles(mapFolders);
   }
 
   public static synchronized InstalledMapsListing parseMapFiles(Path folder) {
-    return new InstalledMapsListing(folder);
+    return parseMapFiles(List.of(folder));
+  }
+
+  static synchronized InstalledMapsListing parseMapFiles(Collection<Path> folders) {
+    final Map<String, InstalledMap> mapsByName = new LinkedHashMap<>();
+    folders.stream()
+        .filter(Files::isDirectory)
+        .flatMap(folder -> readMapYamlsAndGenerateMissingMapYamls(folder).stream())
+        .forEach(map -> mapsByName.putIfAbsent(normalizeName(map.getMapName()), map));
+    return new InstalledMapsListing(List.copyOf(mapsByName.values()));
+  }
+
+  private static Optional<Path> findEngineMapsFolder() {
+    try {
+      final Path engineMapsFolder = ClientFileSystemHelper.getRootFolder().resolve("maps");
+      return Files.isDirectory(engineMapsFolder)
+          ? Optional.of(engineMapsFolder)
+          : Optional.empty();
+    } catch (final IllegalStateException e) {
+      return Optional.empty();
+    }
   }
 
   public static Optional<Path> searchAllMapsForMapName(String mapName) {
