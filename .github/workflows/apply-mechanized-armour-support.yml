@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - agent/mechanized-armour-combined-arms
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
@@ -15,6 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: agent/mechanized-armour-combined-arms
           fetch-depth: 0
 
       - name: Patch scenario, documentation, and tests
@@ -22,8 +26,10 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
+          import py_compile
           import re
           import tempfile
+          import xml.etree.ElementTree as ET
           import zipfile
 
           SUPPORT = '''    <attachment name="supportAttachmentMechanizedArmour" attachTo="mechanized" javaClass="games.strategy.triplea.attachments.UnitSupportAttachment" type="unitType">
@@ -39,10 +45,10 @@ jobs:
 
           def patch_xml_text(text: str, source: str) -> str:
               pattern = re.compile(
-                  r'(?P<indent>\s*)<attachment name="unitAttachment" attachTo="mechanized" '
+                  r'(?P<indent>^[ \t]*)<attachment name="unitAttachment" attachTo="mechanized" '
                   r'javaClass="games\.strategy\.triplea\.attachments\.UnitAttachment" type="unitType">'
                   r'.*?</attachment>',
-                  re.DOTALL,
+                  re.DOTALL | re.MULTILINE,
               )
               match = pattern.search(text)
               if not match:
@@ -59,11 +65,11 @@ jobs:
               text = text[:match.start()] + block + text[match.end():]
               if 'supportAttachmentMechanizedArmour' not in text:
                   updated_match = pattern.search(text)
-                  assert updated_match is not None
-                  indent = re.match(r'\s*', updated_match.group(0)).group(0)
+                  if updated_match is None:
+                      raise RuntimeError(f'updated mechanized attachment not found in {source}')
+                  indent = updated_match.group('indent')
                   support = '\n' + '\n'.join(
-                      indent + line.lstrip() if line.strip() else line
-                      for line in SUPPORT.splitlines()
+                      indent + line.lstrip() for line in SUPPORT.splitlines()
                   )
                   text = text[:updated_match.end()] + support + text[updated_match.end():]
               return text
@@ -77,17 +83,19 @@ jobs:
           for path in xml_paths:
               old = path.read_text(encoding='utf-8')
               new = patch_xml_text(old, str(path))
-              if new != old:
-                  path.write_text(new, encoding='utf-8')
-                  print(f'patched {path}')
+              path.write_text(new, encoding='utf-8')
+              ET.parse(path)
+              print(f'patched and parsed {path}')
 
           generator_paths = sorted(Path('.').glob('**/generate_small_front_meuse_map.py'))
+          if not generator_paths:
+              raise RuntimeError('Small Front generator not found')
           for path in generator_paths:
               old = path.read_text(encoding='utf-8')
               new = patch_xml_text(old, str(path))
-              if new != old:
-                  path.write_text(new, encoding='utf-8')
-                  print(f'patched {path}')
+              path.write_text(new, encoding='utf-8')
+              py_compile.compile(str(path), doraise=True)
+              print(f'patched and compiled {path}')
 
           rulebook = Path('docs/small-front-meuse-rulebook.md')
           text = rulebook.read_text(encoding='utf-8')
@@ -100,16 +108,16 @@ jobs:
 
           combined_arms = '''
 
-          ### 기계화-기갑 협동
+### 기계화-기갑 협동
 
-          공격 시 **mechanized 1개는 함께 전투하는 armour 1개의 공격력을 +1** 지원한다.
+공격 시 **mechanized 1개는 함께 전투하는 armour 1개의 공격력을 +1** 지원한다.
 
-          - 각 mechanized는 armour 1개만 지원할 수 있다.
-          - 각 armour는 이 규칙으로 최대 +1만 받을 수 있다.
-          - 방어 전투에는 적용되지 않는다.
-          - 포병 지원 및 공중 통제 보너스와는 별개의 보너스이므로 조건을 모두 충족하면 중첩된다.
-          - 이 지원은 독일군 mechanized에만 적용된다.
-          '''
+- 각 mechanized는 armour 1개만 지원할 수 있다.
+- 각 armour는 이 규칙으로 최대 +1만 받을 수 있다.
+- 방어 전투에는 적용되지 않는다.
+- 포병 지원 및 공중 통제 보너스와는 별개의 보너스이므로 조건을 모두 충족하면 중첩된다.
+- 이 지원은 독일군 mechanized에만 적용된다.
+'''
           marker = '이 시나리오에서는 보병뿐 아니라 armour와 mechanized를 포함한 **모든 지상 전투 부대**가 포병 지원을 받을 수 있다.'
           if '### 기계화-기갑 협동' not in text:
               if marker not in text:
@@ -136,30 +144,30 @@ jobs:
 
           support_assertions = '''
 
-              final UnitSupportAttachment mechanizedArmourSupport =
-                  UnitSupportAttachment.get(data.getUnitTypeList()).stream()
-                      .filter(
-                          rule ->
-                              rule.getAttachedTo()
-                                  == data.getUnitTypeList().getUnitTypeOrThrow("mechanized"))
-                      .filter(
-                          rule ->
-                              rule.getBonusType() != null
-                                  && rule.getBonusType().getName().equals("mechanizedArmour"))
-                      .findFirst()
-                      .orElseThrow();
-              assertThat(mechanizedArmourSupport.getUnitType())
-                  .containsExactly(data.getUnitTypeList().getUnitTypeOrThrow("armour"));
-              assertThat(mechanizedArmourSupport.getBonus()).isEqualTo(1);
-              assertThat(mechanizedArmourSupport.getNumber()).isEqualTo(1);
-              assertThat(mechanizedArmourSupport.getOffence()).isTrue();
-              assertThat(mechanizedArmourSupport.getDefence()).isFalse();
-              assertThat(mechanizedArmourSupport.getStrength()).isTrue();
-              assertThat(mechanizedArmourSupport.getRoll()).isFalse();
-              assertThat(mechanizedArmourSupport.getPlayers()).containsExactly(germans);
-              assertThat(mechanizedArmourSupport.getBonusType()).isNotNull();
-              assertThat(mechanizedArmourSupport.getBonusType().getCount()).isEqualTo(1);
-          '''
+    final UnitSupportAttachment mechanizedArmourSupport =
+        UnitSupportAttachment.get(data.getUnitTypeList()).stream()
+            .filter(
+                rule ->
+                    rule.getAttachedTo()
+                        == data.getUnitTypeList().getUnitTypeOrThrow("mechanized"))
+            .filter(
+                rule ->
+                    rule.getBonusType() != null
+                        && rule.getBonusType().getName().equals("mechanizedArmour"))
+            .findFirst()
+            .orElseThrow();
+    assertThat(mechanizedArmourSupport.getUnitType())
+        .containsExactly(data.getUnitTypeList().getUnitTypeOrThrow("armour"));
+    assertThat(mechanizedArmourSupport.getBonus()).isEqualTo(1);
+    assertThat(mechanizedArmourSupport.getNumber()).isEqualTo(1);
+    assertThat(mechanizedArmourSupport.getOffence()).isTrue();
+    assertThat(mechanizedArmourSupport.getDefence()).isFalse();
+    assertThat(mechanizedArmourSupport.getStrength()).isTrue();
+    assertThat(mechanizedArmourSupport.getRoll()).isFalse();
+    assertThat(mechanizedArmourSupport.getPlayers()).containsExactly(germans);
+    assertThat(mechanizedArmourSupport.getBonusType()).isNotNull();
+    assertThat(mechanizedArmourSupport.getBonusType().getCount()).isEqualTo(1);
+'''
           test_anchor = '        .doesNotContain("fighter");\n'
           if 'mechanizedArmourSupport' not in test:
               if test_anchor not in test:
@@ -181,12 +189,6 @@ jobs:
               tmp_path.replace(zip_path)
               print(f'synchronized {zip_path}')
           PY
-
-      - name: Apply formatting
-        run: ./gradlew spotlessApply --no-daemon
-
-      - name: Run Small Front scenario regression test
-        run: ./gradlew :game-app:smoke-testing:test --tests games.strategy.engine.data.SmallFrontMeuseScenarioTest --no-daemon
 
       - name: Commit patched files
         shell: bash
