@@ -299,7 +299,7 @@ public class ClientSetupPanel extends SetupPanel {
         allianceComponent = alliance;
       } else {
         playerLabel.setText(userName.getValue());
-        if (userName.equals(clientModel.getClientMessenger().getLocalNode().getPlayerName())) {
+        if (userName.equals(clientModel.getClientMessenger().getLocalNode().getPlayerUserName())) {
           final JButton button = new JButton(takeNoAction);
           button.setMargin(buttonInsets);
           playerComponent = button;

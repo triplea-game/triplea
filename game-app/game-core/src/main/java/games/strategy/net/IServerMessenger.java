@@ -24,7 +24,7 @@ public interface IServerMessenger extends IMessenger {
 
   default Collection<String> getPlayerNames() {
     return getNodes().stream()
-        .map(INode::getPlayerName)
+        .map(INode::getPlayerUserName)
         .map(UserName::getValue)
         .collect(Collectors.toList());
   }
