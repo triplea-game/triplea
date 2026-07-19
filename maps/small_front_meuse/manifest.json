@@ -13,7 +13,7 @@
   },
   {
     "path": "map/baseTiles/0_0.png",
-    "bytes": 4829
+    "bytes": 4578
   },
   {
     "path": "map/baseTiles/0_1.png",
@@ -29,7 +29,7 @@
   },
   {
     "path": "map/baseTiles/1_0.png",
-    "bytes": 4626
+    "bytes": 4505
   },
   {
     "path": "map/baseTiles/1_1.png",
@@ -45,7 +45,7 @@
   },
   {
     "path": "map/baseTiles/2_0.png",
-    "bytes": 4261
+    "bytes": 3988
   },
   {
     "path": "map/baseTiles/2_1.png",
@@ -61,7 +61,7 @@
   },
   {
     "path": "map/baseTiles/3_0.png",
-    "bytes": 2142
+    "bytes": 2609
   },
   {
     "path": "map/baseTiles/3_1.png",
@@ -133,7 +133,7 @@
   },
   {
     "path": "map/games/Small_Front_Meuse.xml",
-    "bytes": 42327
+    "bytes": 42328
   },
   {
     "path": "map/games/game.dtd",
@@ -213,7 +213,7 @@
   },
   {
     "path": "map/reliefTiles/3_1.png",
-    "bytes": 11417
+    "bytes": 11752
   },
   {
     "path": "map/reliefTiles/3_2.png",
@@ -273,7 +273,7 @@
   },
   {
     "path": "map/smallMap.png",
-    "bytes": 1909
+    "bytes": 1891
   },
   {
     "path": "map/units/Americans/airfield.png",
@@ -345,7 +345,7 @@
   },
   {
     "path": "preview/meuse_map_preview.png",
-    "bytes": 391061
+    "bytes": 391499
   },
   {
     "path": "tools/MapGen.java",
@@ -361,7 +361,7 @@
   },
   {
     "path": "tools/genxml.py",
-    "bytes": 21760
+    "bytes": 21761
   },
   {
     "path": "tools/manifest.py",

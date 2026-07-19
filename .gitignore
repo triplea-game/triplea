@@ -39,3 +39,6 @@ build/
 out/
 
 CLAUDE.local.md
+
+# Packaged map runtime assets
+!maps/**/*.png
