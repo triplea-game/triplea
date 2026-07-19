@@ -236,5 +236,4 @@ class RemoveNonCombatantsTest {
                 offenseAircraft, defenseAircraft, attacker, defender))
         .isEqualTo(defender);
   }
-
 }
