@@ -60,8 +60,7 @@ class HybridOperationalPolicyTest {
 
     final StrategicAction leaveReserve =
         action("move", new Route(echternach, vianden), List.of(infantry.getFirst()));
-    final StrategicAction emptySource =
-        action("move", new Route(echternach, vianden), infantry);
+    final StrategicAction emptySource = action("move", new Route(echternach, vianden), infantry);
 
     assertThat(policy.score(leaveReserve, data, germans, List.of()))
         .isGreaterThan(policy.score(emptySource, data, germans, List.of()));
@@ -96,8 +95,7 @@ class HybridOperationalPolicyTest {
         .orElseThrow(() -> new AssertionError("map did not parse"));
   }
 
-  private static Unit unitIn(
-      final Territory territory, final String unitType, final String owner) {
+  private static Unit unitIn(final Territory territory, final String unitType, final String owner) {
     return unitsIn(territory, unitType, owner).getFirst();
   }
 
