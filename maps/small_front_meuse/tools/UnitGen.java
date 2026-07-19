@@ -28,7 +28,8 @@ public final class UnitGen {
     SELF_PROPELLED_ARTILLERY,
     ARMOUR,
     MECHANIZED,
-    FIGHTER
+    FIGHTER,
+    AIRFIELD
   }
 
   private record UnitIcon(String fileName, Symbol symbol) {}
@@ -41,7 +42,8 @@ public final class UnitGen {
           new UnitIcon("selfPropelledArtillery.png", Symbol.SELF_PROPELLED_ARTILLERY),
           new UnitIcon("armour.png", Symbol.ARMOUR),
           new UnitIcon("mechanized.png", Symbol.MECHANIZED),
-          new UnitIcon("fighter.png", Symbol.FIGHTER));
+          new UnitIcon("fighter.png", Symbol.FIGHTER),
+          new UnitIcon("airfield.png", Symbol.AIRFIELD));
 
   private UnitGen() {}
 
@@ -88,6 +90,7 @@ public final class UnitGen {
       case ARMOUR -> armour(g);
       case MECHANIZED -> mechanized(g);
       case FIGHTER -> fighter(g);
+      case AIRFIELD -> airfield(g);
     }
     g.dispose();
     return image;
@@ -119,6 +122,14 @@ public final class UnitGen {
     g.drawLine(9, 15, 38, 32);
     g.drawLine(38, 15, 9, 32);
     g.draw(new Ellipse2D.Double(13, 29, 22, 7));
+  }
+
+  private static void airfield(Graphics2D g) {
+    // A runway with centreline markings distinguishes the infrastructure counter from aircraft.
+    g.drawRect(19, 15, 10, 22);
+    g.drawLine(24, 17, 24, 21);
+    g.drawLine(24, 24, 24, 28);
+    g.drawLine(24, 31, 24, 35);
   }
 
   private static void fighter(Graphics2D g) {

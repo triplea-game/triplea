@@ -10,6 +10,8 @@ import games.strategy.engine.player.Player;
 import games.strategy.net.LocalNoOpMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.websocket.ClientNetworkBridge;
+import games.strategy.triplea.delegate.battle.AirControlTracker;
+import games.strategy.triplea.delegate.battle.ScrambleLogic;
 import games.strategy.triplea.delegate.scoring.SmallFrontScoringService;
 import games.strategy.triplea.delegate.supply.SupplyAwareMoveDelegate;
 import games.strategy.triplea.delegate.supply.SupplyNetworkResolver;
@@ -116,6 +118,27 @@ class SmallFrontAiGameTest {
     assertThat(SupplyNetworkResolver.getRoadNeighbors(hotton, data)).doesNotContain(marche);
     assertThat(SupplyNetworkResolver.getRoadNeighbors(vielsalm, data)).doesNotContain(durbuy);
     assertThat(SupplyNetworkResolver.getRoadNeighbors(libramont, data)).doesNotContain(neufchateau);
+  }
+
+  @Test
+  void nativeAirbasesProvideRearAreaScrambleAndAirControlPersists() {
+    final GameData data = loadMap();
+    final GamePlayer germans = data.getPlayerList().getPlayerId("Germans");
+    final GamePlayer americans = data.getPlayerList().getPlayerId("Americans");
+
+    final Territory hotton = data.getMap().getTerritoryOrThrow("Hotton");
+    final Territory ciney = data.getMap().getTerritoryOrThrow("Ciney");
+    final Unit americanFighter = unitIn(ciney, "fighter", "Americans");
+    assertThat(new ScrambleLogic(data, germans, hotton).getUnitsThatCanScramble())
+        .contains(americanFighter);
+
+    final Territory stVith = data.getMap().getTerritoryOrThrow("St. Vith");
+    final Territory prum = data.getMap().getTerritoryOrThrow("Prum");
+    final Unit germanFighter = unitIn(prum, "fighter", "Germans");
+    assertThat(new ScrambleLogic(data, americans, stVith).getUnitsThatCanScramble())
+        .contains(germanFighter);
+
+    assertThat(AirControlTracker.isPersistent(data)).isTrue();
   }
 
   private static GameData loadMap() {

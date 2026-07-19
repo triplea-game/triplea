@@ -58,6 +58,19 @@ Neufchateau alone cannot divide the entire road network. A spearhead can still m
 and coordinated control of several road hubs can isolate a meaningful pocket without making one
 central territory an automatic half-map cutoff.
 
+## Air operations and armour
+
+Fighters use TripleA's native airbase and scramble system rather than a scenario-specific interceptor
+search. Prum, Bitburg, Ciney and Namur each contain a two-aircraft airfield; fighters may scramble up
+to two movement edges into a pending battle and return to their originating base after combat. This
+lets aircraft remain behind the front while still contesting nearby battles. Air control persists
+until a later battle changes it, and surviving numerical superiority establishes control while equal
+survivors leave it contested.
+
+Armour rolls two attack dice at attack 2, retains one defense die at defense 3, costs two stack
+capacity, and has TUV 7. The change concentrates its value in offensive shock without increasing its
+defensive output.
+
 ## Victory scoring
 
 Scored at the end of round 8, by `SmallFrontScoringAttachment` on each player.

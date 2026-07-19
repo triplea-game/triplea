@@ -103,7 +103,7 @@ def main():
     add('')
     add('  <unitList>')
     for unit in ['infantry', 'americanInfantry', 'artillery', 'selfPropelledArtillery',
-                 'armour', 'mechanized', 'fighter']:
+                 'armour', 'mechanized', 'fighter', 'airfield']:
         add(f'    <unit name="{unit}"/>')
     add('  </unitList>')
     add('')
@@ -275,11 +275,12 @@ STATIC_ATTACHMENTS = '''    <attachment name="relationshipTypeAttachment" attach
       <option name="combatMovement" value="2"/>
       <option name="redeploymentMovement" value="3"/>
       <option name="attack" value="2"/>
+      <option name="attackRolls" value="2"/>
       <option name="defense" value="3"/>
       <option name="canBlitz" value="true"/>
       <option name="artillerySupportable" value="true"/>
       <option name="stackCost" value="2"/>
-      <option name="tuv" value="6"/>
+      <option name="tuv" value="7"/>
     </attachment>
     <attachment name="unitAttachment" attachTo="mechanized" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
       <option name="movement" value="2"/>
@@ -302,10 +303,22 @@ STATIC_ATTACHMENTS = '''    <attachment name="relationshipTypeAttachment" attach
       <option name="canAirBattle" value="true"/>
       <option name="canIntercept" value="true"/>
       <option name="canEscort" value="true"/>
+      <option name="canScramble" value="true"/>
+      <option name="maxScrambleDistance" value="2"/>
       <option name="airAttack" value="2"/>
       <option name="airDefense" value="2"/>
       <option name="stackCost" value="0"/>
       <option name="tuv" value="10"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="airfield" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="0"/>
+      <option name="attack" value="0"/>
+      <option name="defense" value="0"/>
+      <option name="isInfrastructure" value="true"/>
+      <option name="isAirBase" value="true"/>
+      <option name="maxScrambleCount" value="2"/>
+      <option name="stackCost" value="0"/>
+      <option name="tuv" value="0"/>
     </attachment>
 '''
 
@@ -351,8 +364,14 @@ PROPERTIES = '''  <propertyList>
     <property name="Out Of Supply Removal Turns" value="2" editable="false"/>
     <property name="Separate Air And Ground Combat" value="true" editable="false"/>
     <property name="Air Control Enabled" value="true" editable="false"/>
-    <property name="Air Control Persistent" value="false" editable="false"/>
+    <property name="Air Control Persistent" value="true" editable="false"/>
     <property name="Air Control Ground Attack Bonus" value="1" editable="false"/>
+    <property name="Scramble Rules In Effect" value="true" editable="false"/>
+    <property name="Scrambled Units Return To Base" value="true" editable="false"/>
+    <property name="Scramble To Sea Only" value="false" editable="false"/>
+    <property name="Scramble From Island Only" value="false" editable="false"/>
+    <property name="Battles May Be Preceeded By Air Battles" value="true" editable="false"/>
+    <property name="Can Scramble Into Air Battles" value="true" editable="false"/>
     <property name="Fog Of War Enabled" value="true" editable="false"/>
     <property name="Fog Of War Vision Radius" value="1" editable="false"/>
     <property name="Auto Termination" value="true" editable="true"/>
@@ -363,9 +382,9 @@ PROPERTIES = '''  <propertyList>
   </propertyList>'''
 
 UNITS = [
-    ('Prum', [('infantry', 2, 'Germans'), ('artillery', 1, 'Germans'), ('fighter', 1, 'Germans')]),
+    ('Prum', [('infantry', 2, 'Germans'), ('artillery', 1, 'Germans'), ('fighter', 1, 'Germans'), ('airfield', 1, 'Germans')]),
     ('Blankenheim', [('infantry', 2, 'Germans'), ('armour', 1, 'Germans')]),
-    ('Bitburg', [('infantry', 2, 'Germans'), ('mechanized', 1, 'Germans'), ('fighter', 1, 'Germans')]),
+    ('Bitburg', [('infantry', 2, 'Germans'), ('mechanized', 1, 'Germans'), ('fighter', 1, 'Germans'), ('airfield', 1, 'Germans')]),
     ('Echternach', [('infantry', 2, 'Germans')]),
     ('Losheim Gap', [('infantry', 2, 'Germans'), ('mechanized', 1, 'Germans')]),
     ('Clervaux', [('infantry', 2, 'Germans'), ('armour', 1, 'Germans')]),
@@ -383,8 +402,8 @@ UNITS = [
     ('Marche', [('americanInfantry', 2, 'Americans'), ('armour', 1, 'Americans')]),
     ('Neufchateau', [('americanInfantry', 1, 'Americans')]),
     ('Saint-Hubert', [('americanInfantry', 1, 'Americans')]),
-    ('Ciney', [('americanInfantry', 1, 'Americans'), ('fighter', 1, 'Americans')]),
-    ('Namur', [('americanInfantry', 2, 'Americans'), ('fighter', 1, 'Americans')]),
+    ('Ciney', [('americanInfantry', 1, 'Americans'), ('fighter', 1, 'Americans'), ('airfield', 1, 'Americans')]),
+    ('Namur', [('americanInfantry', 2, 'Americans'), ('fighter', 1, 'Americans'), ('airfield', 1, 'Americans')]),
     ('Dinant', [('americanInfantry', 1, 'Americans')]),
 ]
 

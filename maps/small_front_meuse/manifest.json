@@ -5,7 +5,7 @@
   },
   {
     "path": "README.md",
-    "bytes": 4444
+    "bytes": 5330
   },
   {
     "path": "map.yml",
@@ -133,7 +133,7 @@
   },
   {
     "path": "map/games/Small_Front_Meuse.xml",
-    "bytes": 40736
+    "bytes": 42327
   },
   {
     "path": "map/games/game.dtd",
@@ -276,6 +276,10 @@
     "bytes": 1909
   },
   {
+    "path": "map/units/Americans/airfield.png",
+    "bytes": 429
+  },
+  {
     "path": "map/units/Americans/americanInfantry.png",
     "bytes": 734
   },
@@ -302,6 +306,10 @@
   {
     "path": "map/units/Americans/selfPropelledArtillery.png",
     "bytes": 615
+  },
+  {
+    "path": "map/units/Germans/airfield.png",
+    "bytes": 410
   },
   {
     "path": "map/units/Germans/americanInfantry.png",
@@ -345,15 +353,15 @@
   },
   {
     "path": "tools/README.md",
-    "bytes": 3443
+    "bytes": 3715
   },
   {
     "path": "tools/UnitGen.java",
-    "bytes": 4955
+    "bytes": 5339
   },
   {
     "path": "tools/genxml.py",
-    "bytes": 20448
+    "bytes": 21760
   },
   {
     "path": "tools/manifest.py",
@@ -361,6 +369,6 @@
   },
   {
     "path": "tools/validate_map.py",
-    "bytes": 2549
+    "bytes": 6060
   }
 ]

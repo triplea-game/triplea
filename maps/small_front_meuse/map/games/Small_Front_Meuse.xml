@@ -128,6 +128,7 @@
     <unit name="armour"/>
     <unit name="mechanized"/>
     <unit name="fighter"/>
+    <unit name="airfield"/>
   </unitList>
 
   <relationshipTypes>
@@ -247,11 +248,12 @@
       <option name="combatMovement" value="2"/>
       <option name="redeploymentMovement" value="3"/>
       <option name="attack" value="2"/>
+      <option name="attackRolls" value="2"/>
       <option name="defense" value="3"/>
       <option name="canBlitz" value="true"/>
       <option name="artillerySupportable" value="true"/>
       <option name="stackCost" value="2"/>
-      <option name="tuv" value="6"/>
+      <option name="tuv" value="7"/>
     </attachment>
     <attachment name="unitAttachment" attachTo="mechanized" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
       <option name="movement" value="2"/>
@@ -274,10 +276,22 @@
       <option name="canAirBattle" value="true"/>
       <option name="canIntercept" value="true"/>
       <option name="canEscort" value="true"/>
+      <option name="canScramble" value="true"/>
+      <option name="maxScrambleDistance" value="2"/>
       <option name="airAttack" value="2"/>
       <option name="airDefense" value="2"/>
       <option name="stackCost" value="0"/>
       <option name="tuv" value="10"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="airfield" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="0"/>
+      <option name="attack" value="0"/>
+      <option name="defense" value="0"/>
+      <option name="isInfrastructure" value="true"/>
+      <option name="isAirBase" value="true"/>
+      <option name="maxScrambleCount" value="2"/>
+      <option name="stackCost" value="0"/>
+      <option name="tuv" value="0"/>
     </attachment>
     <attachment name="territoryAttachment" attachTo="Andenne" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
       <option name="production" value="0"/>
@@ -638,11 +652,13 @@
       <unitPlacement unitType="infantry" territory="Prum" quantity="2" owner="Germans"/>
       <unitPlacement unitType="artillery" territory="Prum" quantity="1" owner="Germans"/>
       <unitPlacement unitType="fighter" territory="Prum" quantity="1" owner="Germans"/>
+      <unitPlacement unitType="airfield" territory="Prum" quantity="1" owner="Germans"/>
       <unitPlacement unitType="infantry" territory="Blankenheim" quantity="2" owner="Germans"/>
       <unitPlacement unitType="armour" territory="Blankenheim" quantity="1" owner="Germans"/>
       <unitPlacement unitType="infantry" territory="Bitburg" quantity="2" owner="Germans"/>
       <unitPlacement unitType="mechanized" territory="Bitburg" quantity="1" owner="Germans"/>
       <unitPlacement unitType="fighter" territory="Bitburg" quantity="1" owner="Germans"/>
+      <unitPlacement unitType="airfield" territory="Bitburg" quantity="1" owner="Germans"/>
       <unitPlacement unitType="infantry" territory="Echternach" quantity="2" owner="Germans"/>
       <unitPlacement unitType="infantry" territory="Losheim Gap" quantity="2" owner="Germans"/>
       <unitPlacement unitType="mechanized" territory="Losheim Gap" quantity="1" owner="Germans"/>
@@ -668,8 +684,10 @@
       <unitPlacement unitType="americanInfantry" territory="Saint-Hubert" quantity="1" owner="Americans"/>
       <unitPlacement unitType="americanInfantry" territory="Ciney" quantity="1" owner="Americans"/>
       <unitPlacement unitType="fighter" territory="Ciney" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="airfield" territory="Ciney" quantity="1" owner="Americans"/>
       <unitPlacement unitType="americanInfantry" territory="Namur" quantity="2" owner="Americans"/>
       <unitPlacement unitType="fighter" territory="Namur" quantity="1" owner="Americans"/>
+      <unitPlacement unitType="airfield" territory="Namur" quantity="1" owner="Americans"/>
       <unitPlacement unitType="americanInfantry" territory="Dinant" quantity="1" owner="Americans"/>
     </unitInitialize>
     <relationshipInitialize>
@@ -682,8 +700,14 @@
     <property name="Out Of Supply Removal Turns" value="2" editable="false"/>
     <property name="Separate Air And Ground Combat" value="true" editable="false"/>
     <property name="Air Control Enabled" value="true" editable="false"/>
-    <property name="Air Control Persistent" value="false" editable="false"/>
+    <property name="Air Control Persistent" value="true" editable="false"/>
     <property name="Air Control Ground Attack Bonus" value="1" editable="false"/>
+    <property name="Scramble Rules In Effect" value="true" editable="false"/>
+    <property name="Scrambled Units Return To Base" value="true" editable="false"/>
+    <property name="Scramble To Sea Only" value="false" editable="false"/>
+    <property name="Scramble From Island Only" value="false" editable="false"/>
+    <property name="Battles May Be Preceeded By Air Battles" value="true" editable="false"/>
+    <property name="Can Scramble Into Air Battles" value="true" editable="false"/>
     <property name="Fog Of War Enabled" value="true" editable="false"/>
     <property name="Fog Of War Vision Radius" value="1" editable="false"/>
     <property name="Auto Termination" value="true" editable="true"/>

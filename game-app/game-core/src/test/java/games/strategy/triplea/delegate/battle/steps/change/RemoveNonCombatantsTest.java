@@ -203,4 +203,37 @@ class RemoveNonCombatantsTest {
         .contains(offense);
     verify(historyWriter).addChildToEvent("Blue gains air control over Front");
   }
+
+  @Test
+  void survivingNumericalAirSuperiorityControlsTheTerritory() {
+    final List<Unit> offenseAircraft = List.of(mock(Unit.class), mock(Unit.class));
+    final List<Unit> defenseAircraft = List.of(mock(Unit.class));
+
+    assertThat(
+            RemoveNonCombatants.resolveController(
+                offenseAircraft, defenseAircraft, attacker, defender))
+        .isEqualTo(attacker);
+  }
+
+  @Test
+  void equalSurvivingAirForcesRemainContested() {
+    final List<Unit> offenseAircraft = List.of(mock(Unit.class));
+    final List<Unit> defenseAircraft = List.of(mock(Unit.class));
+
+    assertThat(
+            RemoveNonCombatants.resolveController(
+                offenseAircraft, defenseAircraft, attacker, defender))
+        .isNull();
+  }
+
+  @Test
+  void defendingNumericalAirSuperiorityControlsTheTerritory() {
+    final List<Unit> offenseAircraft = List.of(mock(Unit.class));
+    final List<Unit> defenseAircraft = List.of(mock(Unit.class), mock(Unit.class));
+
+    assertThat(
+            RemoveNonCombatants.resolveController(
+                offenseAircraft, defenseAircraft, attacker, defender))
+        .isEqualTo(defender);
+  }
 }
