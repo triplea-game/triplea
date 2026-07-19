@@ -587,6 +587,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   /** Stops the game and closes this frame window. */
   public void stopGame() {
     this.setVisible(false);
+    TripleAFrame.this.getUiContext().getClipPlayer().stopAllSounds();
     TripleAFrame.this.dispose();
     messageAndDialogThreadPool.shutdown();
     uiContext.shutDown();
