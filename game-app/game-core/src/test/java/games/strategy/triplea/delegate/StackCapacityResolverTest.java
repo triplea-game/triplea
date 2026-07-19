@@ -19,8 +19,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 
 class StackCapacityResolverTest {
-  private static final String SMALL_FRONT_MEUSE_GAME = "Small Front: Meuse Corridor";
-
   private final GameData gameData = new GameData();
   private final AtomicInteger names = new AtomicInteger();
 
@@ -52,30 +50,13 @@ class StackCapacityResolverTest {
   }
 
   @Test
-  void smallFrontMeuseUsesRelaxedTerrainCapacities() {
+  void configuredTerrainCapacityIsAuthoritative() {
     assertEquals(
-        7,
-        StackCapacityResolver.resolveCapacity(
-                List.of(namedEffect("Open", 6)), SMALL_FRONT_MEUSE_GAME)
-            .orElseThrow());
+        7, StackCapacityResolver.resolveCapacity(List.of(namedEffect("Open", 7))).orElseThrow());
     assertEquals(
-        6,
-        StackCapacityResolver.resolveCapacity(
-                List.of(namedEffect("Town", 5)), SMALL_FRONT_MEUSE_GAME)
-            .orElseThrow());
+        6, StackCapacityResolver.resolveCapacity(List.of(namedEffect("Town", 6))).orElseThrow());
     assertEquals(
-        5,
-        StackCapacityResolver.resolveCapacity(
-                List.of(namedEffect("Forest", 3)), SMALL_FRONT_MEUSE_GAME)
-            .orElseThrow());
-  }
-
-  @Test
-  void otherGamesKeepConfiguredTerrainCapacity() {
-    assertEquals(
-        3,
-        StackCapacityResolver.resolveCapacity(List.of(namedEffect("Forest", 3)), "Another Game")
-            .orElseThrow());
+        5, StackCapacityResolver.resolveCapacity(List.of(namedEffect("Forest", 5))).orElseThrow());
   }
 
   @Test
