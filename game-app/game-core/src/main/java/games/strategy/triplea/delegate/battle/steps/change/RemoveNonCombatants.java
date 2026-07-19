@@ -77,9 +77,7 @@ public class RemoveNonCombatants implements BattleStep {
     } else {
       change = AirControlTracker.changeControl(battleState.getBattleSite(), controller, gameData);
       historyText =
-          controller.getName()
-              + " gains air control over "
-              + battleState.getBattleSite().getName();
+          controller.getName() + " gains air control over " + battleState.getBattleSite().getName();
     }
     if (change.isEmpty()) {
       return;
