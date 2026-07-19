@@ -30,7 +30,8 @@ restoring the removed Hotton-Marche shortcut.
 `UnitGen` writes 48x48 transparent PNG counters for both players. Every counter uses a rectangular
 unit frame and a battalion `II` echelon marker. Armour uses a horizontal oval, mechanized infantry
 combines the infantry cross with tracked mobility, self-propelled artillery uses a horizontal track
-oval, and fighters use an infinity-shaped fixed-wing mark.
+oval, fighters use an infinity-shaped fixed-wing mark, and airfields use a marked runway. The XML
+connects those airfields to TripleA's native radius-2 scramble and return-to-base rules.
 
 ## What draws what
 

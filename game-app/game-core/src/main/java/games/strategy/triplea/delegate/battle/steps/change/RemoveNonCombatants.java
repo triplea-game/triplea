@@ -68,23 +68,24 @@ public class RemoveNonCombatants implements BattleStep {
       return;
     }
 
-    final boolean contested = !offenseAircraft.isEmpty() && !defenseAircraft.isEmpty();
     final GamePlayer controller = resolveController(offenseAircraft, defenseAircraft);
-    final Change change =
-        contested
-            ? AirControlTracker.changeContested(battleState.getBattleSite(), gameData)
-            : AirControlTracker.changeControl(battleState.getBattleSite(), controller, gameData);
+    final Change change;
+    final String historyText;
+    if (controller == null) {
+      change = AirControlTracker.changeContested(battleState.getBattleSite(), gameData);
+      historyText = "Air control over " + battleState.getBattleSite().getName() + " is contested";
+    } else {
+      change = AirControlTracker.changeControl(battleState.getBattleSite(), controller, gameData);
+      historyText =
+          controller.getName()
+              + " gains air control over "
+              + battleState.getBattleSite().getName();
+    }
     if (change.isEmpty()) {
       return;
     }
 
     bridge.addChange(change);
-    final String historyText =
-        contested
-            ? "Air control over " + battleState.getBattleSite().getName() + " is contested"
-            : controller.getName()
-                + " gains air control over "
-                + battleState.getBattleSite().getName();
     bridge.getHistoryWriter().addChildToEvent(historyText);
   }
 
@@ -96,11 +97,23 @@ public class RemoveNonCombatants implements BattleStep {
 
   private @Nullable GamePlayer resolveController(
       final Collection<Unit> offenseAircraft, final Collection<Unit> defenseAircraft) {
-    if (!offenseAircraft.isEmpty() && defenseAircraft.isEmpty()) {
-      return battleState.getPlayer(BattleState.Side.OFFENSE);
+    return resolveController(
+        offenseAircraft,
+        defenseAircraft,
+        battleState.getPlayer(BattleState.Side.OFFENSE),
+        battleState.getPlayer(BattleState.Side.DEFENSE));
+  }
+
+  static @Nullable GamePlayer resolveController(
+      final Collection<Unit> offenseAircraft,
+      final Collection<Unit> defenseAircraft,
+      final GamePlayer offensePlayer,
+      final GamePlayer defensePlayer) {
+    if (offenseAircraft.size() > defenseAircraft.size()) {
+      return offensePlayer;
     }
-    if (offenseAircraft.isEmpty() && !defenseAircraft.isEmpty()) {
-      return battleState.getPlayer(BattleState.Side.DEFENSE);
+    if (defenseAircraft.size() > offenseAircraft.size()) {
+      return defensePlayer;
     }
     return null;
   }

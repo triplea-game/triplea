@@ -5,123 +5,11 @@
   },
   {
     "path": "README.md",
-    "bytes": 4444
+    "bytes": 5330
   },
   {
     "path": "map.yml",
     "bytes": 116
-  },
-  {
-    "path": "map/baseTiles/0_0.png",
-    "bytes": 4829
-  },
-  {
-    "path": "map/baseTiles/0_1.png",
-    "bytes": 2399
-  },
-  {
-    "path": "map/baseTiles/0_2.png",
-    "bytes": 2825
-  },
-  {
-    "path": "map/baseTiles/0_3.png",
-    "bytes": 1994
-  },
-  {
-    "path": "map/baseTiles/1_0.png",
-    "bytes": 4626
-  },
-  {
-    "path": "map/baseTiles/1_1.png",
-    "bytes": 3177
-  },
-  {
-    "path": "map/baseTiles/1_2.png",
-    "bytes": 2815
-  },
-  {
-    "path": "map/baseTiles/1_3.png",
-    "bytes": 2396
-  },
-  {
-    "path": "map/baseTiles/2_0.png",
-    "bytes": 4261
-  },
-  {
-    "path": "map/baseTiles/2_1.png",
-    "bytes": 3309
-  },
-  {
-    "path": "map/baseTiles/2_2.png",
-    "bytes": 2444
-  },
-  {
-    "path": "map/baseTiles/2_3.png",
-    "bytes": 2546
-  },
-  {
-    "path": "map/baseTiles/3_0.png",
-    "bytes": 2142
-  },
-  {
-    "path": "map/baseTiles/3_1.png",
-    "bytes": 3203
-  },
-  {
-    "path": "map/baseTiles/3_2.png",
-    "bytes": 2793
-  },
-  {
-    "path": "map/baseTiles/3_3.png",
-    "bytes": 2362
-  },
-  {
-    "path": "map/baseTiles/4_0.png",
-    "bytes": 1535
-  },
-  {
-    "path": "map/baseTiles/4_1.png",
-    "bytes": 3212
-  },
-  {
-    "path": "map/baseTiles/4_2.png",
-    "bytes": 3048
-  },
-  {
-    "path": "map/baseTiles/4_3.png",
-    "bytes": 2131
-  },
-  {
-    "path": "map/baseTiles/5_0.png",
-    "bytes": 2527
-  },
-  {
-    "path": "map/baseTiles/5_1.png",
-    "bytes": 2983
-  },
-  {
-    "path": "map/baseTiles/5_2.png",
-    "bytes": 3183
-  },
-  {
-    "path": "map/baseTiles/5_3.png",
-    "bytes": 2053
-  },
-  {
-    "path": "map/baseTiles/6_0.png",
-    "bytes": 800
-  },
-  {
-    "path": "map/baseTiles/6_1.png",
-    "bytes": 858
-  },
-  {
-    "path": "map/baseTiles/6_2.png",
-    "bytes": 839
-  },
-  {
-    "path": "map/baseTiles/6_3.png",
-    "bytes": 738
   },
   {
     "path": "map/centers.txt",
@@ -133,7 +21,7 @@
   },
   {
     "path": "map/games/Small_Front_Meuse.xml",
-    "bytes": 40736
+    "bytes": 42327
   },
   {
     "path": "map/games/game.dtd",
@@ -142,10 +30,6 @@
   {
     "path": "map/map.properties",
     "bytes": 628
-  },
-  {
-    "path": "map/misc/vc.png",
-    "bytes": 231
   },
   {
     "path": "map/name_place.txt",
@@ -160,120 +44,8 @@
     "bytes": 2316
   },
   {
-    "path": "map/reliefTiles/0_0.png",
-    "bytes": 7883
-  },
-  {
-    "path": "map/reliefTiles/0_1.png",
-    "bytes": 13017
-  },
-  {
-    "path": "map/reliefTiles/0_2.png",
-    "bytes": 14701
-  },
-  {
-    "path": "map/reliefTiles/0_3.png",
-    "bytes": 6467
-  },
-  {
-    "path": "map/reliefTiles/1_0.png",
-    "bytes": 11148
-  },
-  {
-    "path": "map/reliefTiles/1_1.png",
-    "bytes": 18387
-  },
-  {
-    "path": "map/reliefTiles/1_2.png",
-    "bytes": 16647
-  },
-  {
-    "path": "map/reliefTiles/1_3.png",
-    "bytes": 12316
-  },
-  {
-    "path": "map/reliefTiles/2_0.png",
-    "bytes": 11127
-  },
-  {
-    "path": "map/reliefTiles/2_1.png",
-    "bytes": 15699
-  },
-  {
-    "path": "map/reliefTiles/2_2.png",
-    "bytes": 14427
-  },
-  {
-    "path": "map/reliefTiles/2_3.png",
-    "bytes": 14727
-  },
-  {
-    "path": "map/reliefTiles/3_0.png",
-    "bytes": 4906
-  },
-  {
-    "path": "map/reliefTiles/3_1.png",
-    "bytes": 11417
-  },
-  {
-    "path": "map/reliefTiles/3_2.png",
-    "bytes": 12028
-  },
-  {
-    "path": "map/reliefTiles/3_3.png",
-    "bytes": 10761
-  },
-  {
-    "path": "map/reliefTiles/4_0.png",
-    "bytes": 6774
-  },
-  {
-    "path": "map/reliefTiles/4_1.png",
-    "bytes": 15247
-  },
-  {
-    "path": "map/reliefTiles/4_2.png",
-    "bytes": 15054
-  },
-  {
-    "path": "map/reliefTiles/4_3.png",
-    "bytes": 10824
-  },
-  {
-    "path": "map/reliefTiles/5_0.png",
-    "bytes": 14110
-  },
-  {
-    "path": "map/reliefTiles/5_1.png",
-    "bytes": 24613
-  },
-  {
-    "path": "map/reliefTiles/5_2.png",
-    "bytes": 23399
-  },
-  {
-    "path": "map/reliefTiles/5_3.png",
-    "bytes": 15516
-  },
-  {
-    "path": "map/reliefTiles/6_0.png",
-    "bytes": 1938
-  },
-  {
-    "path": "map/reliefTiles/6_1.png",
-    "bytes": 3751
-  },
-  {
-    "path": "map/reliefTiles/6_2.png",
-    "bytes": 2464
-  },
-  {
-    "path": "map/reliefTiles/6_3.png",
-    "bytes": 1917
-  },
-  {
-    "path": "map/smallMap.png",
-    "bytes": 1909
+    "path": "map/units/Americans/airfield.png",
+    "bytes": 429
   },
   {
     "path": "map/units/Americans/americanInfantry.png",
@@ -302,6 +74,10 @@
   {
     "path": "map/units/Americans/selfPropelledArtillery.png",
     "bytes": 615
+  },
+  {
+    "path": "map/units/Germans/airfield.png",
+    "bytes": 410
   },
   {
     "path": "map/units/Germans/americanInfantry.png",
@@ -336,24 +112,20 @@
     "bytes": 118
   },
   {
-    "path": "preview/meuse_map_preview.png",
-    "bytes": 391061
-  },
-  {
     "path": "tools/MapGen.java",
     "bytes": 19023
   },
   {
     "path": "tools/README.md",
-    "bytes": 3443
+    "bytes": 3715
   },
   {
     "path": "tools/UnitGen.java",
-    "bytes": 4955
+    "bytes": 5339
   },
   {
     "path": "tools/genxml.py",
-    "bytes": 20448
+    "bytes": 21760
   },
   {
     "path": "tools/manifest.py",
@@ -361,6 +133,6 @@
   },
   {
     "path": "tools/validate_map.py",
-    "bytes": 2549
+    "bytes": 6060
   }
 ]

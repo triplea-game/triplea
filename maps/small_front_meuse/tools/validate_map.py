@@ -11,6 +11,8 @@ required = [
     root / "map" / "centers.txt",
     root / "map" / "place.txt",
     root / "map" / "polygons.txt",
+    root / "map" / "units" / "Germans" / "airfield.png",
+    root / "map" / "units" / "Americans" / "airfield.png",
     root / "tools" / "UnitGen.java",
     game,
 ]
@@ -97,6 +99,54 @@ for attachment in game_root.findall("./attachmentList/attachment"):
                 stack_capacities[attachment.attrib["attachTo"]] = int(option.attrib["value"])
 assert stack_capacities == {"Open": 7, "Forest": 5, "Town": 6}, stack_capacities
 
+unit_options = {}
+for attachment in game_root.findall("./attachmentList/attachment"):
+    if attachment.attrib.get("javaClass", "").endswith("UnitAttachment"):
+        unit_options[attachment.attrib["attachTo"]] = {
+            option.attrib["name"]: option.attrib["value"] for option in attachment.findall("option")
+        }
+
+armour = unit_options["armour"]
+assert armour["attack"] == "2"
+assert armour["attackRolls"] == "2"
+assert armour["defense"] == "3"
+assert armour["tuv"] == "7"
+
+fighter = unit_options["fighter"]
+assert fighter["canScramble"] == "true"
+assert fighter["maxScrambleDistance"] == "2"
+
+airfield = unit_options["airfield"]
+assert airfield["isInfrastructure"] == "true"
+assert airfield["isAirBase"] == "true"
+assert airfield["maxScrambleCount"] == "2"
+
+airfield_placements = {
+    (placement.attrib["territory"], placement.attrib["owner"])
+    for placement in game_root.findall("./initialize/unitInitialize/unitPlacement")
+    if placement.attrib["unitType"] == "airfield"
+}
+assert airfield_placements == {
+    ("Prum", "Germans"),
+    ("Bitburg", "Germans"),
+    ("Ciney", "Americans"),
+    ("Namur", "Americans"),
+}, airfield_placements
+
+properties = {
+    prop.attrib["name"]: prop.attrib["value"] for prop in game_root.findall("./propertyList/property")
+}
+for name, expected in {
+    "Air Control Persistent": "true",
+    "Scramble Rules In Effect": "true",
+    "Scrambled Units Return To Base": "true",
+    "Scramble To Sea Only": "false",
+    "Scramble From Island Only": "false",
+    "Battles May Be Preceeded By Air Battles": "true",
+    "Can Scramble Into Air Battles": "true",
+}.items():
+    assert properties.get(name) == expected, (name, properties.get(name))
+
 redeployment_steps = [
     step
     for step in game_root.findall("./gamePlay/sequence/step")
@@ -110,5 +160,5 @@ for step in redeployment_steps:
 
 print(
     f"OK: {len(territories)} territories, {len(connections)} movement edges, "
-    f"{len(roads)} roads, resilient central trunk, configured stack capacities"
+    f"{len(roads)} roads, native radius-2 scramble, persistent air control, armour 2x@2 TUV 7"
 )
