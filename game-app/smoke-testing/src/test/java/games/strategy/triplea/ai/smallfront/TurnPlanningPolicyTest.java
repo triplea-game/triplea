@@ -49,9 +49,13 @@ class TurnPlanningPolicyTest {
         .containsExactly(
             TurnPlan.ObjectiveType.CAPTURE, TurnPlan.ObjectiveType.GAIN_AIR_SUPERIORITY);
     assertThat(plan.objectives())
-        .allSatisfy(objective -> assertThat(objective.targetTerritories()).containsExactly("St. Vith"));
-    assertThat(plan.assignments()).singleElement().satisfies(
-        assignment -> assertThat(assignment.unitIds()).containsExactly(infantry.getId().toString()));
+        .allSatisfy(
+            objective -> assertThat(objective.targetTerritories()).containsExactly("St. Vith"));
+    assertThat(plan.assignments())
+        .singleElement()
+        .satisfies(
+            assignment ->
+                assertThat(assignment.unitIds()).containsExactly(infantry.getId().toString()));
   }
 
   @Test
@@ -97,10 +101,7 @@ class TurnPlanningPolicyTest {
                 "Keep Prum secure.",
                 List.of(
                     new TurnPlan.Objective(
-                        "capture-prum",
-                        TurnPlan.ObjectiveType.CAPTURE,
-                        Set.of("Prum"),
-                        100)),
+                        "capture-prum", TurnPlan.ObjectiveType.CAPTURE, Set.of("Prum"), 100)),
                 List.of()));
 
     runtime.refresh(data, germans);
