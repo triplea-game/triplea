@@ -8,6 +8,10 @@ permissions:
   contents: write
   pull-requests: read
 
+env:
+  MAP_ROOT: maps/small_front_meuse
+  WORK: /tmp/meuse-generated
+
 jobs:
   restore:
     if: github.event.pull_request.head.ref == 'agent/restore-meuse-png-assets'
@@ -25,19 +29,18 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Regenerate and commit map assets
-        shell: bash
+      - name: Prepare generation directory
         run: |
-          set -euxo pipefail
-          REPO="$GITHUB_WORKSPACE"
-          MAP_ROOT="$REPO/maps/small_front_meuse"
-          WORK="$(mktemp -d)"
-          export WORK
-
+          rm -rf "$WORK"
           mkdir -p "$WORK/map/games"
-          cd "$MAP_ROOT"
-          java -Djava.awt.headless=true tools/MapGen.java "$WORK"
 
+      - name: Generate geometry
+        working-directory: maps/small_front_meuse
+        run: java -Djava.awt.headless=true tools/MapGen.java "$WORK"
+
+      - name: Prepare XML without external DTD
+        working-directory: maps/small_front_meuse
+        run: |
           python3 - <<'PY'
           import os
           from pathlib import Path
@@ -45,11 +48,20 @@ jobs:
           source = source.replace('<!DOCTYPE game SYSTEM "game.dtd">\n', '')
           target = Path(os.environ['WORK']) / 'map/games/Small_Front_Meuse.xml'
           target.write_text(source, encoding='utf-8')
+          print(target)
           PY
 
-          java -Djava.awt.headless=true tools/MapGen.java "$WORK" "$WORK/map/games/Small_Front_Meuse.xml"
-          java -Djava.awt.headless=true tools/UnitGen.java "$WORK"
+      - name: Generate tiles and small map
+        working-directory: maps/small_front_meuse
+        run: java -Djava.awt.headless=true tools/MapGen.java "$WORK" "$WORK/map/games/Small_Front_Meuse.xml"
 
+      - name: Generate unit counters
+        working-directory: maps/small_front_meuse
+        run: java -Djava.awt.headless=true tools/UnitGen.java "$WORK"
+
+      - name: Install generated assets
+        working-directory: maps/small_front_meuse
+        run: |
           rm -rf map/baseTiles map/reliefTiles map/units
           cp -a "$WORK/map/baseTiles" map/
           cp -a "$WORK/map/reliefTiles" map/
@@ -58,18 +70,23 @@ jobs:
           cp "$WORK/map/smallMap.png" map/smallMap.png
           cp "$WORK/map/misc/vc.png" map/misc/vc.png
           cp "$WORK/preview.png" preview/meuse_map_preview.png
-
-          python3 tools/manifest.py .
-          python3 tools/validate_map.py
           test -s map/smallMap.png
           test "$(find map/baseTiles -type f -name '*.png' | wc -l)" -eq 28
           test "$(find map/reliefTiles -type f -name '*.png' | wc -l)" -eq 28
 
-          if ! grep -qxF '!maps/**/*.png' "$REPO/.gitignore"; then
-            printf '\n# Packaged map runtime assets\n!maps/**/*.png\n' >> "$REPO/.gitignore"
-          fi
+      - name: Refresh manifest
+        working-directory: maps/small_front_meuse
+        run: python3 tools/manifest.py .
 
-          cd "$REPO"
+      - name: Validate map
+        working-directory: maps/small_front_meuse
+        run: python3 tools/validate_map.py
+
+      - name: Commit generated assets
+        run: |
+          if ! grep -qxF '!maps/**/*.png' .gitignore; then
+            printf '\n# Packaged map runtime assets\n!maps/**/*.png\n' >> .gitignore
+          fi
           rm -f .github/workflows/restore-meuse-assets.yml
           git config user.name "OpenAI Agent"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
