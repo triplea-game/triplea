@@ -37,18 +37,7 @@ public interface SmallFrontPolicy {
     return choose(legalActions, data, player);
   }
 
-  /**
-   * Chooses with the stable turn plan and its progress state.
-   *
-   * <p>Existing policies remain source-compatible because the default implementation delegates to
-   * the phase-history overload.
-   */
-  default Optional<StrategicAction> choose(
-      final List<StrategicAction> legalActions,
-      final GameData data,
-      final GamePlayer player,
-      final List<StrategicAction> completedActions,
-      final PlanRuntime planRuntime) {
-    return choose(legalActions, data, player, completedActions);
-  }
+  /** Called after the delegate accepts an action so stateful policies can advance their plan. */
+  default void onActionCompleted(
+      final StrategicAction action, final GameData data, final GamePlayer player) {}
 }
