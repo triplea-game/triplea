@@ -22,4 +22,18 @@ public interface SmallFrontPolicy {
    */
   Optional<StrategicAction> choose(
       List<StrategicAction> legalActions, GameData data, GamePlayer player);
+
+  /**
+   * Chooses with the actions already completed in the current phase.
+   *
+   * <p>Stateless policies may ignore the history. Operational policies can use it to preserve a
+   * plan and avoid immediately reversing previous moves.
+   */
+  default Optional<StrategicAction> choose(
+      final List<StrategicAction> legalActions,
+      final GameData data,
+      final GamePlayer player,
+      final List<StrategicAction> completedActions) {
+    return choose(legalActions, data, player);
+  }
 }

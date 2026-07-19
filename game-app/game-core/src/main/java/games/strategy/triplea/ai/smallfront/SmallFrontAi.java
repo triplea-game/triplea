@@ -16,6 +16,7 @@ import games.strategy.triplea.delegate.strategic.simulation.StrategicActionResol
 import games.strategy.triplea.delegate.strategic.simulation.StrategicActionSpaceOverflow;
 import games.strategy.triplea.delegate.strategic.simulation.StrategicMoveCandidateGenerator;
 import games.strategy.triplea.delegate.strategic.simulation.StrategicPhase;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,7 +43,7 @@ public class SmallFrontAi extends AbstractAi {
   private final SmallFrontPolicy policy;
 
   public SmallFrontAi(final String name, final String playerLabel) {
-    this(name, playerLabel, new PressTheObjectivesPolicy());
+    this(name, playerLabel, new HybridOperationalPolicy());
   }
 
   public SmallFrontAi(final String name, final String playerLabel, final SmallFrontPolicy policy) {
@@ -56,20 +57,34 @@ public class SmallFrontAi extends AbstractAi {
       final IMoveDelegate moveDel,
       final GameData data,
       final GamePlayer player) {
-    final StrategicPhase phase =
-        nonCombat ? StrategicPhase.REDEPLOYMENT : StrategicPhase.COMBAT_MOVE;
+    if (nonCombat) {
+      movePhase(StrategicPhase.REDEPLOYMENT, moveDel, data, player);
+      return;
+    }
+    movePhase(StrategicPhase.COMBAT_MOVE, moveDel, data, player);
+    movePhase(StrategicPhase.AIR_ASSIGNMENT, moveDel, data, player);
+  }
+
+  private void movePhase(
+      final StrategicPhase phase,
+      final IMoveDelegate moveDel,
+      final GameData data,
+      final GamePlayer player) {
+    final List<StrategicAction> completedActions = new ArrayList<>();
     for (int i = 0; i < MAX_MOVES_PER_PHASE; i++) {
       final List<StrategicAction> actions = legalActions(data, player, phase, moveDel);
       if (actions.isEmpty()) {
         return;
       }
-      final Optional<StrategicAction> chosen = policy.choose(actions, data, player);
+      final Optional<StrategicAction> chosen =
+          policy.choose(actions, data, player, List.copyOf(completedActions));
       if (chosen.isEmpty() || "end_phase".equals(chosen.get().type())) {
         return;
       }
       if (!execute(chosen.get(), moveDel, data)) {
         return;
       }
+      completedActions.add(chosen.get());
     }
   }
 
