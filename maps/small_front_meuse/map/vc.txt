@@ -1,0 +1,6 @@
+St. Vith  (520,137)
+Bastogne  (558,795)
+Marche  (964,487)
+Neufchateau  (956,861)
+Namur  (1390,483)
+Dinant  (1435,679)

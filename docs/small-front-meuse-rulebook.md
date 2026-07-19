@@ -77,17 +77,22 @@
 
 | 부대 | 공격 | 방어 | 전투 이동 | 재배치 이동 | 스택 비용 | 특수 규칙 |
 |---|---:|---:|---:|---:|---:|---|
-| infantry | 1 | 2 | 1 | 1 | 1 | 포병 지원 가능 |
-| artillery | 2 | 2 | 1 | 1 | 1 | 보병 지원 |
-| armour | 2 | 3 | 2 | 3 | 2 | 전격 가능 |
-| mechanized | 2 | 2 | 2 | 3 | 2 | 기계화 보병 |
+| infantry | 1 | 2 | 1 | 1 | 1 | 독일군 보병, 포병 지원 가능 |
+| americanInfantry | 1 | 2 | 1 | 2 | 1 | 미군 보병, 전 군 차량화로 재배치 이동 +1, 포병 지원 가능 |
+| artillery | 2 | 2 | 1 | 1 | 1 | 모든 지상 전투 부대 지원 |
+| selfPropelledArtillery | 2 | 2 | 2 | 3 | 1 | 돌격포, 포병 화력 + 기계화 이동, 모든 지상 전투 부대 지원 |
+| armour | 2 | 3 | 2 | 3 | 2 | 전격 가능, 포병 지원 가능 |
+| mechanized | 2 | 2 | 2 | 3 | 1 | 기계화 보병, 포병 지원 가능 |
 | fighter | 3 | 3 | 4 | 4 | 0 | 공중전·요격·호위 가능 |
 
 전투 판정은 6면체 주사위를 사용한다. 일반 TripleA 전투 규칙에 따라 각 부대는 자신의 공격 또는 방어 수치 이하를 굴리면 명중한다.
 
+- **americanInfantry**는 미군 전용 보병이다. 능력치는 독일군 보병과 같지만 미군이 전 군 차량화되었음을 반영해 재배치(비전투) 이동이 1 더 높다.
+- **selfPropelledArtillery**(돌격포)는 포병의 화력과 기계화 부대의 이동력을 함께 가진다. 독일군 포병 일부가 돌격포로 편성되어 있다.
+
 ### 포병 지원
 
-일반 TripleA 포병 지원 규칙이 적용된다. 포병은 함께 공격하는 지원 가능한 보병의 공격력을 향상시킨다.
+일반 TripleA 포병 지원 규칙이 적용된다. 지원 부대(artillery, selfPropelledArtillery)는 함께 공격하는 지원 가능한 부대의 공격력을 향상시킨다. 이 시나리오에서는 보병뿐 아니라 armour와 mechanized를 포함한 **모든 지상 전투 부대**가 포병 지원을 받을 수 있다.
 
 ## 5. 지형
 
@@ -106,15 +111,17 @@
 한 지역에 있는 아군 및 동맹군의 스택 비용 합계가 그 지형의 스택 용량을 넘을 수 없다.
 
 - infantry: 1
+- americanInfantry: 1
 - artillery: 1
+- selfPropelledArtillery: 1
 - armour: 2
-- mechanized: 2
+- mechanized: 1
 - fighter: 0
 
 예시:
 
-- Forest 용량 5: `armour 1 + mechanized 1 + infantry 1` = 5
-- Town 용량 6: `armour 1 + mechanized 1 + infantry 2` = 6
+- Forest 용량 5: `armour 1 + mechanized 1 + infantry 2` = 5
+- Town 용량 6: `armour 2 + mechanized 1 + infantry 1` = 6
 - Open 용량 7: `armour 2 + infantry 3` = 7
 
 ### 6.2 목적지에서만 검사
@@ -187,8 +194,8 @@
 
 전투 이동에서는 적 지역으로 진입해 전투를 만들 수 있다.
 
-- infantry, artillery: 1
-- armour, mechanized: 2
+- infantry, americanInfantry, artillery: 1
+- armour, mechanized, selfPropelledArtillery: 2
 - fighter: 4
 - armour는 조건을 충족하면 전격 이동 가능
 - 보급이 끊긴 지상군은 이동 불가
@@ -199,7 +206,8 @@
 전투 후 생존 병력을 정비하고 후방·예비대를 재배치한다.
 
 - infantry, artillery: 1
-- armour, mechanized: 3
+- americanInfantry: 2
+- armour, mechanized, selfPropelledArtillery: 3
 - fighter: 4
 
 전투 이동에서 움직인 비공군 부대는 같은 턴의 재배치 단계에서 다시 이동할 수 없다. 공군은 전투 이동에서 사용하고 남은 이동력을 재배치에 사용할 수 있다.
@@ -268,25 +276,27 @@
 |---:|---|---|
 | 1 | Prum | armour 2 |
 | 1 | Bitburg | mechanized 1 |
-| 2 | Prum | artillery 1 |
+| 2 | Prum | selfPropelledArtillery 1 |
 | 2 | Blankenheim | armour 1 |
 | 3 | Bitburg | infantry 2 |
 | 3 | Prum | mechanized 1 |
 | 4 | Echternach | infantry 2 |
+| 4 | Bitburg | fighter 1 |
 | 5 | Prum | infantry 2 |
 
 ### 11.2 미군 증원 일정
 
 | 라운드 | 목적지 | 부대 |
 |---:|---|---|
-| 2 | Marche | infantry 2 |
+| 2 | Marche | americanInfantry 2 |
 | 3 | Namur | armour 1 |
 | 3 | Ciney | fighter 1 |
-| 4 | Namur | infantry 2 |
+| 4 | Namur | americanInfantry 2 |
 | 4 | Dinant | artillery 1 |
 | 5 | Namur | armour 2 |
-| 6 | Huy | infantry 2 |
-| 6 | Givet | infantry 2 |
+| 5 | Namur | fighter 1 |
+| 6 | Huy | americanInfantry 2 |
+| 6 | Givet | americanInfantry 2 |
 | 7 | Namur | armour 1 |
 
 ## 12. 초기 배치
@@ -297,33 +307,34 @@
 |---|---|
 | Prum | infantry 2, artillery 1, fighter 1 |
 | Blankenheim | infantry 2, armour 1 |
-| Bitburg | infantry 2, mechanized 1 |
+| Bitburg | infantry 2, mechanized 1, fighter 1 |
 | Echternach | infantry 2 |
 | Losheim Gap | infantry 2, mechanized 1 |
 | Clervaux | infantry 2, armour 1 |
-| Vianden | infantry 2, artillery 1 |
+| Vianden | infantry 2, selfPropelledArtillery 1 |
 
 ### 12.2 미군
 
 | 지역 | 초기 부대 |
 |---|---|
-| St. Vith | infantry 3, artillery 1 |
-| Houffalize | infantry 2 |
-| Wiltz | infantry 1 |
-| Bastogne | infantry 3, artillery 1 |
-| Martelange | infantry 1 |
-| Vielsalm | infantry 1 |
-| La Roche | infantry 1 |
-| Erezee | infantry 1 |
-| Hotton | infantry 1 |
-| Nassogne | infantry 1 |
-| Libramont | infantry 1 |
-| Marche | infantry 2, armour 1 |
-| Neufchateau | infantry 1 |
-| Saint-Hubert | infantry 1 |
-| Ciney | infantry 1, fighter 1 |
-| Namur | infantry 2 |
-| Dinant | infantry 1 |
+| St. Vith | americanInfantry 2, artillery 1 |
+| Houffalize | americanInfantry 1 |
+| Bastogne | americanInfantry 2, artillery 1 |
+| Martelange | americanInfantry 1 |
+| Vielsalm | americanInfantry 1 |
+| La Roche | americanInfantry 1 |
+| Erezee | americanInfantry 1 |
+| Hotton | americanInfantry 1 |
+| Nassogne | americanInfantry 1 |
+| Libramont | americanInfantry 1 |
+| Marche | americanInfantry 2, armour 1 |
+| Neufchateau | americanInfantry 1 |
+| Saint-Hubert | americanInfantry 1 |
+| Ciney | americanInfantry 1, fighter 1 |
+| Namur | americanInfantry 2, fighter 1 |
+| Dinant | americanInfantry 1 |
+
+초기 미군 전선 방어 병력은 이전 버전 대비 하향되었다. St. Vith와 Bastogne의 보병이 각각 1씩 줄었고, Houffalize는 1로 감소, 전방 돌출부인 Wiltz의 초기 병력은 제거되었다.
 
 ## 13. 전략 요약
 

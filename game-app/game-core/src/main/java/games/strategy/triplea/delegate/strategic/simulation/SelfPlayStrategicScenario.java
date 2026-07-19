@@ -166,7 +166,8 @@ public final class SelfPlayStrategicScenario implements StrategicScenario {
       if (!player.equals(step.getPlayerId()) || !matcher.matches(step.getName())) {
         continue;
       }
-      data.getSequence().setRoundAndStep(data.getSequence().getRound(), step.getDisplayName(), player);
+      data.getSequence()
+          .setRoundAndStep(data.getSequence().getRound(), step.getDisplayName(), player);
       final IDelegate delegate = step.getDelegate();
       delegate.setDelegateBridgeAndPlayer(bridgeFor(player));
       delegate.start();

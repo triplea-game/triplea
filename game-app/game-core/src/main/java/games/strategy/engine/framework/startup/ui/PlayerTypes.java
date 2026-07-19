@@ -39,6 +39,7 @@ public class PlayerTypes {
           return new ProAi(name, getLabel());
         }
       };
+
   /**
    * Only plays the Small Front maps. It drives their strategic move generator, which the other AIs
    * know nothing about, and does nothing useful anywhere else.

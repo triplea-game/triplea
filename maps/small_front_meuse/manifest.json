@@ -1,0 +1,362 @@
+[
+  {
+    "path": ".gitignore",
+    "bytes": 28
+  },
+  {
+    "path": "README.md",
+    "bytes": 4072
+  },
+  {
+    "path": "map.yml",
+    "bytes": 116
+  },
+  {
+    "path": "map/baseTiles/0_0.png",
+    "bytes": 4829
+  },
+  {
+    "path": "map/baseTiles/0_1.png",
+    "bytes": 2399
+  },
+  {
+    "path": "map/baseTiles/0_2.png",
+    "bytes": 2825
+  },
+  {
+    "path": "map/baseTiles/0_3.png",
+    "bytes": 1994
+  },
+  {
+    "path": "map/baseTiles/1_0.png",
+    "bytes": 4626
+  },
+  {
+    "path": "map/baseTiles/1_1.png",
+    "bytes": 3177
+  },
+  {
+    "path": "map/baseTiles/1_2.png",
+    "bytes": 2815
+  },
+  {
+    "path": "map/baseTiles/1_3.png",
+    "bytes": 2396
+  },
+  {
+    "path": "map/baseTiles/2_0.png",
+    "bytes": 4261
+  },
+  {
+    "path": "map/baseTiles/2_1.png",
+    "bytes": 3309
+  },
+  {
+    "path": "map/baseTiles/2_2.png",
+    "bytes": 2444
+  },
+  {
+    "path": "map/baseTiles/2_3.png",
+    "bytes": 2546
+  },
+  {
+    "path": "map/baseTiles/3_0.png",
+    "bytes": 2142
+  },
+  {
+    "path": "map/baseTiles/3_1.png",
+    "bytes": 3203
+  },
+  {
+    "path": "map/baseTiles/3_2.png",
+    "bytes": 2793
+  },
+  {
+    "path": "map/baseTiles/3_3.png",
+    "bytes": 2362
+  },
+  {
+    "path": "map/baseTiles/4_0.png",
+    "bytes": 1535
+  },
+  {
+    "path": "map/baseTiles/4_1.png",
+    "bytes": 3212
+  },
+  {
+    "path": "map/baseTiles/4_2.png",
+    "bytes": 3048
+  },
+  {
+    "path": "map/baseTiles/4_3.png",
+    "bytes": 2131
+  },
+  {
+    "path": "map/baseTiles/5_0.png",
+    "bytes": 2527
+  },
+  {
+    "path": "map/baseTiles/5_1.png",
+    "bytes": 2983
+  },
+  {
+    "path": "map/baseTiles/5_2.png",
+    "bytes": 3183
+  },
+  {
+    "path": "map/baseTiles/5_3.png",
+    "bytes": 2053
+  },
+  {
+    "path": "map/baseTiles/6_0.png",
+    "bytes": 800
+  },
+  {
+    "path": "map/baseTiles/6_1.png",
+    "bytes": 858
+  },
+  {
+    "path": "map/baseTiles/6_2.png",
+    "bytes": 839
+  },
+  {
+    "path": "map/baseTiles/6_3.png",
+    "bytes": 738
+  },
+  {
+    "path": "map/centers.txt",
+    "bytes": 660
+  },
+  {
+    "path": "map/games/Small_Front_Meuse.notes.html",
+    "bytes": 2281
+  },
+  {
+    "path": "map/games/Small_Front_Meuse.xml",
+    "bytes": 41644
+  },
+  {
+    "path": "map/games/game.dtd",
+    "bytes": 3871
+  },
+  {
+    "path": "map/map.properties",
+    "bytes": 628
+  },
+  {
+    "path": "map/misc/vc.png",
+    "bytes": 231
+  },
+  {
+    "path": "map/name_place.txt",
+    "bytes": 654
+  },
+  {
+    "path": "map/place.txt",
+    "bytes": 1781
+  },
+  {
+    "path": "map/polygons.txt",
+    "bytes": 2316
+  },
+  {
+    "path": "map/reliefTiles/0_0.png",
+    "bytes": 7883
+  },
+  {
+    "path": "map/reliefTiles/0_1.png",
+    "bytes": 13017
+  },
+  {
+    "path": "map/reliefTiles/0_2.png",
+    "bytes": 14701
+  },
+  {
+    "path": "map/reliefTiles/0_3.png",
+    "bytes": 6467
+  },
+  {
+    "path": "map/reliefTiles/1_0.png",
+    "bytes": 11148
+  },
+  {
+    "path": "map/reliefTiles/1_1.png",
+    "bytes": 18387
+  },
+  {
+    "path": "map/reliefTiles/1_2.png",
+    "bytes": 16647
+  },
+  {
+    "path": "map/reliefTiles/1_3.png",
+    "bytes": 12316
+  },
+  {
+    "path": "map/reliefTiles/2_0.png",
+    "bytes": 11127
+  },
+  {
+    "path": "map/reliefTiles/2_1.png",
+    "bytes": 15699
+  },
+  {
+    "path": "map/reliefTiles/2_2.png",
+    "bytes": 14427
+  },
+  {
+    "path": "map/reliefTiles/2_3.png",
+    "bytes": 14727
+  },
+  {
+    "path": "map/reliefTiles/3_0.png",
+    "bytes": 5538
+  },
+  {
+    "path": "map/reliefTiles/3_1.png",
+    "bytes": 12248
+  },
+  {
+    "path": "map/reliefTiles/3_2.png",
+    "bytes": 13851
+  },
+  {
+    "path": "map/reliefTiles/3_3.png",
+    "bytes": 12005
+  },
+  {
+    "path": "map/reliefTiles/4_0.png",
+    "bytes": 7250
+  },
+  {
+    "path": "map/reliefTiles/4_1.png",
+    "bytes": 15247
+  },
+  {
+    "path": "map/reliefTiles/4_2.png",
+    "bytes": 15054
+  },
+  {
+    "path": "map/reliefTiles/4_3.png",
+    "bytes": 10824
+  },
+  {
+    "path": "map/reliefTiles/5_0.png",
+    "bytes": 14110
+  },
+  {
+    "path": "map/reliefTiles/5_1.png",
+    "bytes": 24613
+  },
+  {
+    "path": "map/reliefTiles/5_2.png",
+    "bytes": 23399
+  },
+  {
+    "path": "map/reliefTiles/5_3.png",
+    "bytes": 15516
+  },
+  {
+    "path": "map/reliefTiles/6_0.png",
+    "bytes": 1938
+  },
+  {
+    "path": "map/reliefTiles/6_1.png",
+    "bytes": 3751
+  },
+  {
+    "path": "map/reliefTiles/6_2.png",
+    "bytes": 2464
+  },
+  {
+    "path": "map/reliefTiles/6_3.png",
+    "bytes": 1917
+  },
+  {
+    "path": "map/smallMap.png",
+    "bytes": 1909
+  },
+  {
+    "path": "map/units/Americans/americanInfantry.png",
+    "bytes": 443
+  },
+  {
+    "path": "map/units/Americans/armour.png",
+    "bytes": 318
+  },
+  {
+    "path": "map/units/Americans/artillery.png",
+    "bytes": 407
+  },
+  {
+    "path": "map/units/Americans/fighter.png",
+    "bytes": 376
+  },
+  {
+    "path": "map/units/Americans/infantry.png",
+    "bytes": 452
+  },
+  {
+    "path": "map/units/Americans/mechanized.png",
+    "bytes": 371
+  },
+  {
+    "path": "map/units/Americans/selfPropelledArtillery.png",
+    "bytes": 499
+  },
+  {
+    "path": "map/units/Germans/americanInfantry.png",
+    "bytes": 440
+  },
+  {
+    "path": "map/units/Germans/armour.png",
+    "bytes": 311
+  },
+  {
+    "path": "map/units/Germans/artillery.png",
+    "bytes": 406
+  },
+  {
+    "path": "map/units/Germans/fighter.png",
+    "bytes": 368
+  },
+  {
+    "path": "map/units/Germans/infantry.png",
+    "bytes": 445
+  },
+  {
+    "path": "map/units/Germans/mechanized.png",
+    "bytes": 364
+  },
+  {
+    "path": "map/units/Germans/selfPropelledArtillery.png",
+    "bytes": 478
+  },
+  {
+    "path": "map/vc.txt",
+    "bytes": 118
+  },
+  {
+    "path": "preview/meuse_map_preview.png",
+    "bytes": 395530
+  },
+  {
+    "path": "tools/MapGen.java",
+    "bytes": 19023
+  },
+  {
+    "path": "tools/README.md",
+    "bytes": 2562
+  },
+  {
+    "path": "tools/genxml.py",
+    "bytes": 19390
+  },
+  {
+    "path": "tools/manifest.py",
+    "bytes": 684
+  },
+  {
+    "path": "tools/validate_map.py",
+    "bytes": 1661
+  }
+]

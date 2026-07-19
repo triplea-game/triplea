@@ -69,7 +69,7 @@ class SmallFrontAiGameTest {
 
     final Territory vielsalm = data.getMap().getTerritoryOrThrow("Vielsalm");
     final Territory stVith = data.getMap().getTerritoryOrThrow("St. Vith");
-    final Unit americanInfantry = infantryIn(vielsalm, "Americans");
+    final Unit americanInfantry = unitIn(vielsalm, "americanInfantry", "Americans");
     assertThat(
             SupplyAwareMoveDelegate.validateStackCapacity(
                 new MoveDescription(List.of(americanInfantry), new Route(vielsalm, stVith)),
@@ -79,20 +79,21 @@ class SmallFrontAiGameTest {
     final Territory blankenheim = data.getMap().getTerritoryOrThrow("Blankenheim");
     final Territory losheimGap = data.getMap().getTerritoryOrThrow("Losheim Gap");
     final Territory prum = data.getMap().getTerritoryOrThrow("Prum");
-    final Unit germanInfantry = infantryIn(blankenheim, "Germans");
+    // Blankenheim's whole German land force (2 infantry + 1 armour, stack cost 4) overflows
+    // Losheim Gap's remaining Forest capacity, but Prum (Open) has room for it.
+    final List<Unit> assaultForce = landUnitsOf(blankenheim, "Germans");
+    final GamePlayer germanPlayer = assaultForce.get(0).getOwner();
 
     assertThat(
             SupplyAwareMoveDelegate.validateStackCapacity(
-                new MoveDescription(
-                    List.of(germanInfantry), new Route(blankenheim, losheimGap, prum)),
-                germanInfantry.getOwner()))
+                new MoveDescription(assaultForce, new Route(blankenheim, losheimGap, prum)),
+                germanPlayer))
         .as("a full intermediate territory must not block transit")
         .isEmpty();
 
     final Optional<String> overflow =
         SupplyAwareMoveDelegate.validateStackCapacity(
-            new MoveDescription(List.of(germanInfantry), new Route(blankenheim, losheimGap)),
-            germanInfantry.getOwner());
+            new MoveDescription(assaultForce, new Route(blankenheim, losheimGap)), germanPlayer);
     assertThat(overflow).isPresent();
     assertThat(overflow.orElseThrow())
         .contains(SupplyAwareMoveDelegate.STACK_CAPACITY_EXCEEDED)
@@ -104,12 +105,19 @@ class SmallFrontAiGameTest {
         .orElseThrow(() -> new AssertionError("map did not parse"));
   }
 
-  private static Unit infantryIn(final Territory territory, final String owner) {
+  private static Unit unitIn(final Territory territory, final String unitType, final String owner) {
     return territory.getUnitCollection().getUnits().stream()
-        .filter(unit -> unit.getType().getName().equals("infantry"))
+        .filter(unit -> unit.getType().getName().equals(unitType))
         .filter(unit -> unit.getOwner().getName().equals(owner))
         .findFirst()
         .orElseThrow();
+  }
+
+  private static List<Unit> landUnitsOf(final Territory territory, final String owner) {
+    return territory.getUnitCollection().getUnits().stream()
+        .filter(unit -> unit.getOwner().getName().equals(owner))
+        .filter(unit -> !unit.getUnitAttachment().isAir())
+        .toList();
   }
 
   private static Map<String, String> owners(final GameData data) {

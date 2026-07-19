@@ -8,8 +8,8 @@ import java.util.Objects;
  * <p>By default an episode is the one turn belonging to {@code player}. With {@code selfPlay} an
  * episode is instead a whole game: every player's turn is chained over one game state and {@code
  * player} is ignored, because the game's own sequence decides who acts. {@code maxRounds} caps a
- * self-play episode for maps that never terminate on their own; 0 leaves the map's end-round step in
- * sole charge.
+ * self-play episode for maps that never terminate on their own; 0 leaves the map's end-round step
+ * in sole charge.
  */
 public record StrategicResetRequest(
     String scenarioPath,

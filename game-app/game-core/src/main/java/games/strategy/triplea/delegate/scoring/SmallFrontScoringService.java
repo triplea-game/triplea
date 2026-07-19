@@ -61,7 +61,10 @@ public final class SmallFrontScoringService {
     }
     final int best = scores.values().stream().mapToInt(Integer::intValue).max().orElseThrow();
     final List<GamePlayer> leaders =
-        scores.entrySet().stream().filter(e -> e.getValue() == best).map(Map.Entry::getKey).toList();
+        scores.entrySet().stream()
+            .filter(e -> e.getValue() == best)
+            .map(Map.Entry::getKey)
+            .toList();
     if (leaders.size() == 1) {
       return Optional.of(leaders.getFirst());
     }
@@ -123,7 +126,6 @@ public final class SmallFrontScoringService {
     }
     final RelationshipTracker tracker = data.getRelationshipTracker();
     // A GameData assembled by a test may declare no relationship at all between two players.
-    return tracker.getRelationship(viewer, candidate) != null
-        && tracker.isAtWar(viewer, candidate);
+    return tracker.getRelationship(viewer, candidate) != null && tracker.isAtWar(viewer, candidate);
   }
 }

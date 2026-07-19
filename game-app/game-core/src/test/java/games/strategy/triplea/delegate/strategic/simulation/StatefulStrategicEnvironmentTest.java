@@ -143,7 +143,8 @@ class StatefulStrategicEnvironmentTest {
 
     reward.reset();
 
-    assertEquals(0.0, reward.reward(blue, Map.of("Blue", 1, "Red", 1), blue, Map.of("Blue", 1, "Red", 1)));
+    assertEquals(
+        0.0, reward.reward(blue, Map.of("Blue", 1, "Red", 1), blue, Map.of("Blue", 1, "Red", 1)));
   }
 
   private static StrategicObservation observationFor(final String player) {

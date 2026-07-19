@@ -1,0 +1,3 @@
+map_name: small_front_meuse
+games:
+- {game_name: "Small Front: Meuse Corridor", file_name: "Small_Front_Meuse.xml"}

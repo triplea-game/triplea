@@ -92,9 +92,9 @@ public final class SupplyNetworkResolver {
    * Whether {@code territory} would be in supply for {@code player} once the player holds it.
    *
    * <p>Distinct from {@link #isSupplied}, which only ever answers for territory the player already
-   * holds: an enemy territory is never friendly land, so it is never in the supplied set, and asking
-   * isSupplied about an attack target always says no. What a mover actually needs to know is whether
-   * a road would reach the place after taking it, which is what this answers.
+   * holds: an enemy territory is never friendly land, so it is never in the supplied set, and
+   * asking isSupplied about an attack target always says no. What a mover actually needs to know is
+   * whether a road would reach the place after taking it, which is what this answers.
    */
   public static boolean wouldBeSupplied(
       final Territory territory, final GamePlayer player, final GameState data) {

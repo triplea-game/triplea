@@ -44,7 +44,8 @@ public final class PressTheObjectivesPolicy implements SmallFrontPolicy {
 
   private static List<Territory> enemyObjectives(final GameData data, final GamePlayer player) {
     return data.getMap().getTerritories().stream()
-        .filter(t -> TerritoryAttachment.get(t).map(TerritoryAttachment::getVictoryCity).orElse(0) > 0)
+        .filter(
+            t -> TerritoryAttachment.get(t).map(TerritoryAttachment::getVictoryCity).orElse(0) > 0)
         .filter(t -> !player.equals(t.getOwner()))
         .sorted(Comparator.comparing(Territory::getName))
         .toList();

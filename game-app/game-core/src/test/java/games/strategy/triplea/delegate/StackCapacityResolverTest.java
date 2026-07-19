@@ -74,8 +74,7 @@ class StackCapacityResolverTest {
   void otherGamesKeepConfiguredTerrainCapacity() {
     assertEquals(
         3,
-        StackCapacityResolver.resolveCapacity(
-                List.of(namedEffect("Forest", 3)), "Another Game")
+        StackCapacityResolver.resolveCapacity(List.of(namedEffect("Forest", 3)), "Another Game")
             .orElseThrow());
   }
 

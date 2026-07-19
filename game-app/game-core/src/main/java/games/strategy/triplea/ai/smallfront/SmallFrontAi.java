@@ -26,15 +26,16 @@ import lombok.extern.slf4j.Slf4j;
  * mask the reinforcement-learning environment uses.
  *
  * <p>The Pro AI cannot play these maps: they have no production frontier, so TuvCostsCalculator
- * returns an empty cost map, every unit is worth 0, no attack ever looks profitable and the AI never
- * moves. Rather than teach the Pro AI about an economy that deliberately does not exist, this drives
- * the move generator the maps were designed around.
+ * returns an empty cost map, every unit is worth 0, no attack ever looks profitable and the AI
+ * never moves. Rather than teach the Pro AI about an economy that deliberately does not exist, this
+ * drives the move generator the maps were designed around.
  *
  * <p>There is no purchase, tech or placement on these maps, so those hooks do nothing.
  */
 @Slf4j
 public class SmallFrontAi extends AbstractAi {
   private static final int MAX_ACTIONS = 4096;
+
   /** A turn cannot need more decisions than this; the bound just stops a policy looping forever. */
   private static final int MAX_MOVES_PER_PHASE = 200;
 
@@ -95,7 +96,9 @@ public class SmallFrontAi extends AbstractAi {
     final List<Unit> units;
     try {
       route = StrategicActionResolver.resolveRoute(data, action.parameters().get("route"));
-      units = StrategicActionResolver.resolveUnits(action.parameters().get("unitIds"), route.getStart());
+      units =
+          StrategicActionResolver.resolveUnits(
+              action.parameters().get("unitIds"), route.getStart());
     } catch (final RuntimeException e) {
       log.warn("Small Front AI: could not decode its own action {}", action, e);
       return false;

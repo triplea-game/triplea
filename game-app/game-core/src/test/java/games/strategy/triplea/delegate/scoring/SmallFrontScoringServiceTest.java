@@ -17,8 +17,8 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Scores the rubric the map's README defines: a point per objective held, a German point for
- * supplied occupation of Bastogne or Neufchateau, an American point for keeping supplied Germans out
- * of the west, and ties to the Americans.
+ * supplied occupation of Bastogne or Neufchateau, an American point for keeping supplied Germans
+ * out of the west, and ties to the Americans.
  */
 class SmallFrontScoringServiceTest {
   private final GameData data = new GameData();
@@ -51,7 +51,8 @@ class SmallFrontScoringServiceTest {
     data.getRelationshipTracker().setSelfRelations();
     data.getRelationshipTracker().setNullPlayerRelations();
     data.getRelationshipTracker()
-        .setRelationship(germans, americans, data.getRelationshipTypeList().getDefaultWarRelationship());
+        .setRelationship(
+            germans, americans, data.getRelationshipTypeList().getDefaultWarRelationship());
 
     // A default UnitAttachment is neither air nor sea, which is what makes the unit count as land.
     infantry.addAttachment(

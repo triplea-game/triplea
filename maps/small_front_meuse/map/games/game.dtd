@@ -1,0 +1,82 @@
+<!ELEMENT game (info, loader?, triplea?, diceSides?, map, resourceList?, playerList, unitList?, relationshipTypes?, territoryEffectList?, gamePlay, production?, technology?, attachmentList?, initialize?, propertyList?)>
+<!ELEMENT info EMPTY>
+<!ATTLIST info name CDATA #REQUIRED version CDATA #IMPLIED>
+<!ELEMENT loader EMPTY>
+<!ATTLIST loader javaClass CDATA #REQUIRED>
+<!ELEMENT triplea EMPTY>
+<!ATTLIST triplea minimumVersion CDATA #REQUIRED>
+<!ELEMENT diceSides EMPTY>
+<!ATTLIST diceSides value CDATA #REQUIRED>
+
+<!ELEMENT map (territory+, connection*)>
+<!ELEMENT territory EMPTY>
+<!ATTLIST territory name CDATA #REQUIRED water (true|false) "false">
+<!ELEMENT connection EMPTY>
+<!ATTLIST connection t1 CDATA #REQUIRED t2 CDATA #REQUIRED>
+
+<!ELEMENT resourceList (resource+)>
+<!ELEMENT resource EMPTY>
+<!ATTLIST resource name ID #REQUIRED isDisplayedFor CDATA #IMPLIED>
+
+<!ELEMENT playerList (player+, alliance*)>
+<!ELEMENT player EMPTY>
+<!ATTLIST player name ID #REQUIRED optional (true|false) "false" canBeDisabled (true|false) "false" defaultType (Human|AI|DoesNothing) "Human" isHidden (true|false) "false">
+<!ELEMENT alliance EMPTY>
+<!ATTLIST alliance player IDREF #REQUIRED alliance CDATA #REQUIRED>
+
+<!ELEMENT unitList (unit+)>
+<!ELEMENT unit EMPTY>
+<!ATTLIST unit name ID #REQUIRED>
+
+<!ELEMENT relationshipTypes (relationshipType+)>
+<!ELEMENT relationshipType EMPTY>
+<!ATTLIST relationshipType name ID #REQUIRED>
+
+<!ELEMENT territoryEffectList (territoryEffect+)>
+<!ELEMENT territoryEffect EMPTY>
+<!ATTLIST territoryEffect name ID #REQUIRED>
+
+<!ELEMENT gamePlay (delegate+, sequence, offset?)>
+<!ELEMENT delegate EMPTY>
+<!ATTLIST delegate name ID #REQUIRED javaClass CDATA #REQUIRED display CDATA #IMPLIED>
+<!ELEMENT sequence (step+)>
+<!ELEMENT step (stepProperty*)>
+<!ATTLIST step name ID #REQUIRED delegate IDREF #REQUIRED player IDREF #IMPLIED maxRunCount CDATA #IMPLIED display CDATA #IMPLIED>
+<!ELEMENT stepProperty EMPTY>
+<!ATTLIST stepProperty name CDATA #REQUIRED value CDATA #REQUIRED>
+<!ELEMENT offset EMPTY>
+<!ATTLIST offset round CDATA #REQUIRED>
+
+<!ELEMENT production ANY>
+<!ELEMENT technology ANY>
+
+<!ELEMENT attachmentList (attachment+)>
+<!ELEMENT attachment (option+)>
+<!ATTLIST attachment foreach CDATA #IMPLIED name CDATA #REQUIRED attachTo CDATA #REQUIRED javaClass CDATA #REQUIRED type (unitType|territory|resource|player|relationship|territoryEffect|technology) "unitType">
+<!ELEMENT option EMPTY>
+<!ATTLIST option name CDATA #REQUIRED value CDATA #REQUIRED count CDATA "">
+
+<!ELEMENT initialize (ownerInitialize?, unitInitialize?, resourceInitialize?, relationshipInitialize?)>
+<!ELEMENT ownerInitialize (territoryOwner+)>
+<!ELEMENT territoryOwner EMPTY>
+<!ATTLIST territoryOwner territory CDATA #REQUIRED owner IDREF #REQUIRED>
+<!ELEMENT unitInitialize (unitPlacement*, heldUnits*)>
+<!ELEMENT unitPlacement EMPTY>
+<!ATTLIST unitPlacement unitType IDREF #REQUIRED territory CDATA #REQUIRED quantity CDATA #REQUIRED owner IDREF #IMPLIED hitsTaken CDATA #IMPLIED unitDamage CDATA #IMPLIED>
+<!ELEMENT heldUnits EMPTY>
+<!ATTLIST heldUnits unitType IDREF #REQUIRED player IDREF #REQUIRED quantity CDATA #REQUIRED>
+<!ELEMENT resourceInitialize (resourceGiven+)>
+<!ELEMENT resourceGiven EMPTY>
+<!ATTLIST resourceGiven player IDREF #REQUIRED resource IDREF #REQUIRED quantity CDATA #REQUIRED>
+<!ELEMENT relationshipInitialize (relationship+)>
+<!ELEMENT relationship EMPTY>
+<!ATTLIST relationship player1 IDREF #REQUIRED player2 IDREF #REQUIRED type IDREF #REQUIRED roundValue CDATA #REQUIRED>
+
+<!ELEMENT propertyList (property*)>
+<!ELEMENT property (boolean?, string?, number?, value?)>
+<!ATTLIST property value CDATA "" name CDATA #REQUIRED editable (true|false) "false" player CDATA "">
+<!ELEMENT value (#PCDATA)>
+<!ELEMENT boolean EMPTY>
+<!ELEMENT string EMPTY>
+<!ELEMENT number EMPTY>
+<!ATTLIST number max CDATA #REQUIRED min CDATA #REQUIRED>

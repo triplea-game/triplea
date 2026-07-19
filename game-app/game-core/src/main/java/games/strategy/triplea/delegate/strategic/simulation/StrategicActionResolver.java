@@ -24,7 +24,9 @@ public final class StrategicActionResolver {
       throw new IllegalArgumentException("route must not be blank");
     }
     final List<Territory> territories =
-        List.of(encodedRoute.split(">", -1)).stream().map(data.getMap()::getTerritoryOrThrow).toList();
+        List.of(encodedRoute.split(">", -1)).stream()
+            .map(data.getMap()::getTerritoryOrThrow)
+            .toList();
     if (territories.size() < 2) {
       throw new IllegalArgumentException("route must contain at least two territories");
     }

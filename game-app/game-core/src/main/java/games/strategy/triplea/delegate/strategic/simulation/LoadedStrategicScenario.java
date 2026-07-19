@@ -29,7 +29,6 @@ import games.strategy.triplea.delegate.visibility.VisibilityService;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -86,8 +85,7 @@ public final class LoadedStrategicScenario implements StrategicScenario {
   public Map<String, Integer> scores() {
     try (GameData.Unlocker ignored = data.acquireReadLock()) {
       return SmallFrontScoringService.score(data).entrySet().stream()
-          .collect(
-              Collectors.toMap(entry -> entry.getKey().getName(), Map.Entry::getValue));
+          .collect(Collectors.toMap(entry -> entry.getKey().getName(), Map.Entry::getValue));
     }
   }
 

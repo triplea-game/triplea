@@ -3050,7 +3050,11 @@ public class UnitAttachment extends DefaultAttachment {
     final String attack = (attackRolls > 1 ? (attackRolls + "x") : "") + getAttack(player);
     final String defense = (defenseRolls > 1 ? (defenseRolls + "x") : "") + getDefense(player);
     final String movement = String.valueOf(getMovement(player));
-    formatter.append("Att | Def | Mov", attack + " | " + defense + " | " + movement);
+    final String afmov = String.valueOf(getRedeploymentMovement(player));
+    final String width = String.valueOf(getStackCost());
+    formatter.append(
+        "Att | Def | Mov | Afmov | Wid",
+        attack + " | " + defense + " | " + movement + " | " + afmov + " | " + width);
     if (getHitPoints() > 1) {
       formatter.append("HP", String.valueOf(getHitPoints()));
     }
