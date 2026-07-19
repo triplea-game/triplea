@@ -1,18 +1,20 @@
-# Updated after creation so the branch receives a normal workflow-file push event.
 name: Apply Meuse Air Combat Changes
 
 on:
-  push:
+  pull_request:
     branches:
-      - agent/meuse-airbase-scramble-armour-shock
-    paths:
-      - .github/workflows/agent-apply-meuse-air-combat.yml
+      - main
+    types:
+      - opened
+      - reopened
+      - synchronize
 
 permissions:
   contents: write
 
 jobs:
   apply:
+    if: github.head_ref == 'agent/meuse-airbase-scramble-armour-shock'
     runs-on: ubuntu-latest
     steps:
       - name: Check out working branch
