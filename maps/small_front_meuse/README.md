@@ -51,11 +51,12 @@ The Voronoi adjacency is not used as-is. Five candidate edges are dropped:
 
 ### Supply road cuts
 
-Roads are a strict subset of movement edges: 43 of 67. The borders Vielsalm-Durbuy, Hotton-Marche
-and Libramont-Neufchateau remain legal movement edges, but no longer carry supply. Removing these
-three cross-links turns the central plateau roads into a vulnerable trunk without creating any
-static road-network dead ends. A spearhead can still manoeuvre off-road, but holding one road hub can
-now isolate a meaningful pocket.
+Roads are a strict subset of movement edges: 44 of 67. The borders Vielsalm-Durbuy, Hotton-Marche
+and Libramont-Neufchateau remain legal movement edges, but no longer carry supply. La Roche-Marche
+provides an indirect second route across the central plateau, so losing Hotton, Nassogne or
+Neufchateau alone cannot divide the entire road network. A spearhead can still manoeuvre off-road,
+and coordinated control of several road hubs can isolate a meaningful pocket without making one
+central territory an automatic half-map cutoff.
 
 ## Victory scoring
 
