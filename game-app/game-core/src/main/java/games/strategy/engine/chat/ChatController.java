@@ -91,7 +91,7 @@ public class ChatController implements IChatController {
     synchronized (mutex) {
       final IChatChannel chatter = getChatBroadcaster();
       for (final INode node : chatters.keySet()) {
-        chatter.speakerRemoved(node.getPlayerName());
+        chatter.speakerRemoved(node.getPlayerUserName());
       }
       messengers.unregisterRemote(getChatControllerRemoteName(chatName));
     }
@@ -116,7 +116,7 @@ public class ChatController implements IChatController {
       getChatBroadcaster()
           .speakerAdded(
               ChatParticipant.builder()
-                  .userName(node.getPlayerName().getValue())
+                  .userName(node.getPlayerUserName().getValue())
                   .playerChatId(id.getValue())
                   .isModerator(serverMessenger.isModerator(node))
                   .build());
@@ -126,9 +126,9 @@ public class ChatController implements IChatController {
               entry ->
                   ChatParticipant.builder()
                       .isModerator(serverMessenger.isModerator(entry.getKey()))
-                      .userName(entry.getKey().getPlayerName().getValue())
+                      .userName(entry.getKey().getPlayerUserName().getValue())
                       .playerChatId(chatterIds.get(entry.getKey()).getValue())
-                      .status(chatterStatus.get(entry.getKey().getPlayerName()))
+                      .status(chatterStatus.get(entry.getKey().getPlayerUserName()))
                       .build())
           .collect(Collectors.toSet());
     }
@@ -138,11 +138,11 @@ public class ChatController implements IChatController {
   public void setStatus(final String status) {
     final INode node = MessageContext.getSender();
     if (Strings.isNullOrEmpty(status)) {
-      chatterStatus.remove(node.getPlayerName());
+      chatterStatus.remove(node.getPlayerUserName());
     } else {
-      chatterStatus.put(node.getPlayerName(), status);
+      chatterStatus.put(node.getPlayerUserName(), status);
     }
-    getChatBroadcaster().statusChanged(node.getPlayerName(), status);
+    getChatBroadcaster().statusChanged(node.getPlayerUserName(), status);
   }
 
   // a player has left
@@ -155,7 +155,7 @@ public class ChatController implements IChatController {
     synchronized (mutex) {
       chatters.remove(node);
     }
-    getChatBroadcaster().speakerRemoved(node.getPlayerName());
+    getChatBroadcaster().speakerRemoved(node.getPlayerUserName());
     log.info("Chatter: " + node + " has left chat: " + chatName);
   }
 }

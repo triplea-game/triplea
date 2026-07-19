@@ -49,7 +49,7 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
           players.stream()
               .map(player -> new ImageIcon(factory.getSmallFlag(playerList.getPlayerId(player))))
               .collect(Collectors.toList());
-      final String name = playerNode.getPlayerName().getValue();
+      final String name = playerNode.getPlayerUserName().getValue();
       playerMap.put(name, players);
       iconMap.put(name, icons);
     }
