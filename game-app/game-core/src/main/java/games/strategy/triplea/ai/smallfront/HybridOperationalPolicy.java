@@ -35,9 +35,7 @@ public final class HybridOperationalPolicy implements SmallFrontPolicy {
 
   @Override
   public Optional<StrategicAction> choose(
-      final List<StrategicAction> legalActions,
-      final GameData data,
-      final GamePlayer player) {
+      final List<StrategicAction> legalActions, final GameData data, final GamePlayer player) {
     return choose(legalActions, data, player, List.of());
   }
 
@@ -137,9 +135,7 @@ public final class HybridOperationalPolicy implements SmallFrontPolicy {
   }
 
   private static int airControlValue(
-      final StrategicAction action,
-      final Territory destination,
-      final EvaluationContext context) {
+      final StrategicAction action, final Territory destination, final EvaluationContext context) {
     final boolean visible = context.visible().contains(destination);
     final AirControlTracker tracker = AirControlTracker.get(context.data());
     final Status status =
@@ -164,8 +160,7 @@ public final class HybridOperationalPolicy implements SmallFrontPolicy {
       if (status == Status.CONTESTED) {
         score += 35;
       } else if (status == Status.CONTROLLED && controller.isPresent()) {
-        score +=
-            isFriendly(controller.orElseThrow(), context.player(), context.data()) ? -20 : 55;
+        score += isFriendly(controller.orElseThrow(), context.player(), context.data()) ? -20 : 55;
       } else {
         score += 8;
       }
@@ -254,9 +249,7 @@ public final class HybridOperationalPolicy implements SmallFrontPolicy {
   }
 
   private static boolean isObjective(final Territory territory) {
-    return TerritoryAttachment.get(territory)
-        .map(TerritoryAttachment::getVictoryCity)
-        .orElse(0)
+    return TerritoryAttachment.get(territory).map(TerritoryAttachment::getVictoryCity).orElse(0)
         > 0;
   }
 
@@ -315,8 +308,7 @@ public final class HybridOperationalPolicy implements SmallFrontPolicy {
           data.getMap().getTerritories().stream()
               .filter(HybridOperationalPolicy::isObjective)
               .filter(
-                  territory ->
-                      !visible.contains(territory) || !player.equals(territory.getOwner()))
+                  territory -> !visible.contains(territory) || !player.equals(territory.getOwner()))
               .sorted(Comparator.comparing(Territory::getName))
               .toList();
     }
@@ -372,9 +364,7 @@ public final class HybridOperationalPolicy implements SmallFrontPolicy {
       while (!pending.isEmpty()) {
         final Territory current = pending.removeFirst();
         for (final Territory neighbor : SupplyNetworkResolver.getRoadNeighbors(current, data)) {
-          if (!neighbor.equals(blocked)
-              && isFriendlyLand(neighbor)
-              && supplied.add(neighbor)) {
+          if (!neighbor.equals(blocked) && isFriendlyLand(neighbor) && supplied.add(neighbor)) {
             pending.addLast(neighbor);
           }
         }
