@@ -37,19 +37,25 @@ The narrow-wide-narrow rhythm is the point. Traffic from four staging territorie
 forest territories, opens out across the nine-territory plateau where armour can manoeuvre, then
 narrows again onto five river crossings.
 
-### Two deliberate cuts
+### Two deliberate movement cuts
 
 The Voronoi adjacency is not used as-is. Five candidate edges are dropped:
 
-- **The forest wall has no lateral roads.** Losheim Gap, Clervaux and Vianden do not connect to each
-  other, so the three breakthroughs are three independent axes. Shifting between them means going
-  back through the German rear, which costs turns. Under radius-1 fog the German has to commit to an
-  axis without knowing where the American reserve is.
+- **The forest wall has no lateral movement links.** Losheim Gap, Clervaux and Vianden do not connect
+  to each other, so the three breakthroughs are three independent axes. Shifting between them means
+  going back through the German rear, which costs turns. Under radius-1 fog the German has to commit
+  to an axis without knowing where the American reserve is.
 - **Each Meuse crossing keeps one approach.** The river is a barrier, not a field: Durbuy-Huy,
   Havelange-Andenne, Ciney-Namur, Wellin-Dinant, Beauraing-Givet. The west bank is connected along
   itself, so once across you can roll up the river, but getting across is a single door each.
 
-Roads are a strict subset of movement edges (46 of 67), so a spearhead can outrun its supply.
+### Supply road cuts
+
+Roads are a strict subset of movement edges: 43 of 67. The borders Vielsalm-Durbuy, Hotton-Marche
+and Libramont-Neufchateau remain legal movement edges, but no longer carry supply. Removing these
+three cross-links turns the central plateau roads into a vulnerable trunk without creating any
+static road-network dead ends. A spearhead can still manoeuvre off-road, but holding one road hub can
+now isolate a meaningful pocket.
 
 ## Victory scoring
 

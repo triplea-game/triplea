@@ -159,6 +159,7 @@
       <step name="germanBattle" delegate="battle" player="Germans"/>
       <step name="germanNonCombatMove" delegate="move" player="Germans" display="Redeployment">
         <stepProperty name="nonCombatMove" value="true"/>
+        <stepProperty name="removeAirThatCanNotLand" value="false"/>
       </step>
       <step name="germanEndTurn" delegate="endTurn" player="Germans"/>
 
@@ -168,13 +169,13 @@
       <step name="americanBattle" delegate="battle" player="Americans"/>
       <step name="americanNonCombatMove" delegate="move" player="Americans" display="Redeployment">
         <stepProperty name="nonCombatMove" value="true"/>
+        <stepProperty name="removeAirThatCanNotLand" value="false"/>
       </step>
       <step name="americanEndTurn" delegate="endTurn" player="Americans"/>
 
       <step name="endRoundStep" delegate="endRound"/>
     </sequence>
   </gamePlay>
-
   <attachmentList>
     <attachment name="relationshipTypeAttachment" attachTo="War" javaClass="games.strategy.triplea.attachments.RelationshipTypeAttachment" type="relationship">
       <option name="archeType" value="war"/>
@@ -278,7 +279,6 @@
       <option name="stackCost" value="0"/>
       <option name="tuv" value="10"/>
     </attachment>
-
     <attachment name="territoryAttachment" attachTo="Andenne" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
       <option name="production" value="0"/>
       <option name="victoryCity" value="0"/>
@@ -404,7 +404,6 @@
       <option name="territoryEffect" value="Open"/>
     </attachment>
     <attachment name="supplyTerritoryAttachment" attachTo="Hotton" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
-      <option name="roadConnection" value="Marche"/>
       <option name="roadConnection" value="Nassogne"/>
     </attachment>
     <attachment name="territoryAttachment" attachTo="Houffalize" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
@@ -437,9 +436,6 @@
       <option name="production" value="0"/>
       <option name="victoryCity" value="0"/>
       <option name="territoryEffect" value="Open"/>
-    </attachment>
-    <attachment name="supplyTerritoryAttachment" attachTo="Libramont" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
-      <option name="roadConnection" value="Neufchateau"/>
     </attachment>
     <attachment name="territoryAttachment" attachTo="Losheim Gap" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
       <option name="production" value="0"/>
@@ -546,7 +542,6 @@
     </attachment>
     <attachment name="supplyTerritoryAttachment" attachTo="Vielsalm" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
       <option name="roadConnection" value="Erezee"/>
-      <option name="roadConnection" value="Durbuy"/>
     </attachment>
     <attachment name="territoryAttachment" attachTo="Wellin" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
       <option name="production" value="0"/>
@@ -600,7 +595,6 @@
       <option name="enemyAbsentBonus" value="2:Huy:Andenne:Namur:Dinant:Givet"/>
       <option name="winsTies" value="true"/>
     </attachment>
-
   </attachmentList>
 
   <initialize>
@@ -647,6 +641,7 @@
       <unitPlacement unitType="armour" territory="Blankenheim" quantity="1" owner="Germans"/>
       <unitPlacement unitType="infantry" territory="Bitburg" quantity="2" owner="Germans"/>
       <unitPlacement unitType="mechanized" territory="Bitburg" quantity="1" owner="Germans"/>
+      <unitPlacement unitType="fighter" territory="Bitburg" quantity="1" owner="Germans"/>
       <unitPlacement unitType="infantry" territory="Echternach" quantity="2" owner="Germans"/>
       <unitPlacement unitType="infantry" territory="Losheim Gap" quantity="2" owner="Germans"/>
       <unitPlacement unitType="mechanized" territory="Losheim Gap" quantity="1" owner="Germans"/>
@@ -654,7 +649,6 @@
       <unitPlacement unitType="armour" territory="Clervaux" quantity="1" owner="Germans"/>
       <unitPlacement unitType="infantry" territory="Vianden" quantity="2" owner="Germans"/>
       <unitPlacement unitType="selfPropelledArtillery" territory="Vianden" quantity="1" owner="Germans"/>
-      <unitPlacement unitType="fighter" territory="Bitburg" quantity="1" owner="Germans"/>
       <unitPlacement unitType="americanInfantry" territory="St. Vith" quantity="2" owner="Americans"/>
       <unitPlacement unitType="artillery" territory="St. Vith" quantity="1" owner="Americans"/>
       <unitPlacement unitType="americanInfantry" territory="Houffalize" quantity="1" owner="Americans"/>

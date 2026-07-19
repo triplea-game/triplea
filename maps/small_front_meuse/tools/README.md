@@ -1,13 +1,15 @@
 # Regenerating the map
 
-The geometry, the base tiles and the game XML are generated, not hand-authored. Edit the site list
-in `MapGen.java` or the graph tables in `genxml.py`, then run three steps in order:
+The geometry, base tiles, unit counters and game XML are generated, not hand-authored. Edit the site
+list in `MapGen.java`, the graph tables in `genxml.py`, or the counter drawing in `UnitGen.java`, then
+run the steps in order:
 
 ```sh
-java tools/MapGen.java <workdir>                                   # 1. geometry + adjacency
-python tools/genxml.py <workdir>/adjacency.txt <workdir>/Small_Front_Meuse.xml   # 2. game XML
-java tools/MapGen.java <workdir> <workdir>/Small_Front_Meuse.xml   # 3. tiles, now with roads
-python tools/manifest.py .                                         # refresh manifest byte counts
+java -Djava.awt.headless=true tools/MapGen.java <workdir>                                  # 1. geometry + adjacency
+python tools/genxml.py <workdir>/adjacency.txt <workdir>/Small_Front_Meuse.xml             # 2. game XML
+java -Djava.awt.headless=true tools/MapGen.java <workdir> <workdir>/Small_Front_Meuse.xml  # 3. tiles, now with roads
+java -Djava.awt.headless=true tools/UnitGen.java <workdir>                                 # 4. NATO-style unit counters
+python tools/manifest.py .                                                                  # 5. refresh manifest byte counts
 python tools/validate_map.py
 ```
 
@@ -19,8 +21,14 @@ draws the roads, objective markers and terrain from it, so none of those are dup
 renderer and the game rules: a road only appears on the map if the XML declares it.
 
 `genxml.py` drops the edges in its `DROP` set to create the forest wall and the river crossings, and
-asserts every declared road is a real movement edge, so a typo in `ROADS` fails the build rather
-than silently orphaning supply.
+asserts every declared road is a real movement edge, so a typo in `ROADS` fails the build rather than
+silently orphaning supply. The three supply-only cuts are declared by omitting Vielsalm-Durbuy,
+Hotton-Marche and Libramont-Neufchateau from `ROADS`; those borders remain movement edges.
+
+`UnitGen` writes 48x48 transparent PNG counters for both players. Every counter uses a rectangular
+unit frame and a battalion `II` echelon marker. Armour uses a horizontal oval, mechanized infantry
+combines the infantry cross with tracked mobility, self-propelled artillery uses a horizontal track
+oval, and fighters use an infinity-shaped fixed-wing mark.
 
 ## What draws what
 
@@ -31,6 +39,7 @@ top of `BASE_MAP_LEVEL`. Anything a base tile draws inside a polygon is invisibl
 | --- | --- | --- |
 | `baseTiles` | terrain fill, title | covered in play; still feeds the small map and the margin |
 | `reliefTiles` | terrain texture, roads | `RELIEF_LEVEL` draws above the owner fill; must be translucent |
+| `units/<player>` | generated NATO-style counters | engine draws the player-specific PNG for each unit type |
 | `name_place.txt` | name positions | engine draws names at `TERRITORY_TEXT_LEVEL` |
 | `vc.txt` + `misc/vc.png` | objective markers | engine draws at `VC_MARKER_LEVEL`; it ships no default marker |
 
