@@ -1,0 +1,47 @@
+name: Apply Meuse Air Combat Changes
+
+on:
+  push:
+    branches:
+      - agent/meuse-airbase-scramble-armour-shock
+    paths:
+      - .github/workflows/agent-apply-meuse-air-combat.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out working branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/meuse-airbase-scramble-armour-shock
+          fetch-depth: 0
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Apply source and scenario changes
+        run: python .github/agent/apply_meuse_air_combat.py
+
+      - name: Validate generated map configuration
+        run: |
+          python -m py_compile maps/small_front_meuse/tools/genxml.py maps/small_front_meuse/tools/validate_map.py
+          python maps/small_front_meuse/tools/validate_map.py
+          cmp maps/small_front_meuse/map/games/Small_Front_Meuse.xml game-app/smoke-testing/src/test/resources/map-xmls/Small_Front_Meuse.xml
+
+      - name: Commit applied changes
+        run: |
+          rm .github/workflows/agent-apply-meuse-air-combat.yml
+          rm .github/agent/apply_meuse_air_combat.py
+          rmdir .github/agent 2>/dev/null || true
+          git config user.name "OpenAI Agent"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Add native airbase scramble and armour shock"
+          git push origin HEAD:agent/meuse-airbase-scramble-armour-shock
