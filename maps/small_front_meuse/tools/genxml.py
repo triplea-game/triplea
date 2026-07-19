@@ -31,7 +31,7 @@ SUPPLY_SOURCES = ['Blankenheim', 'Prum', 'Bitburg', 'Echternach',
 
 # Main roads only. Three former cross-links are deliberately absent:
 # Vielsalm-Durbuy, Hotton-Marche and Libramont-Neufchateau. Movement remains possible across those
-# borders, but supply must use the more vulnerable trunk through the central plateau.
+# borders. La Roche-Marche preserves a second central supply axis without restoring a direct bypass.
 ROADS = [
     ('Prum', 'Blankenheim'), ('Prum', 'Bitburg'), ('Bitburg', 'Echternach'),
     ('Blankenheim', 'Losheim Gap'), ('Prum', 'Clervaux'), ('Bitburg', 'Vianden'),
@@ -41,7 +41,7 @@ ROADS = [
     ('St. Vith', 'Vielsalm'), ('Houffalize', 'Erezee'), ('Wiltz', 'Hotton'),
     ('Bastogne', 'Saint-Hubert'), ('Martelange', 'Libramont'),
     ('Vielsalm', 'Erezee'), ('Erezee', 'La Roche'), ('La Roche', 'Hotton'),
-    ('Hotton', 'Nassogne'), ('Nassogne', 'Neufchateau'),
+    ('La Roche', 'Marche'), ('Hotton', 'Nassogne'), ('Nassogne', 'Neufchateau'),
     ('Saint-Hubert', 'Libramont'),
     ('Marche', 'Ciney'), ('Marche', 'Rochefort'),
     ('Neufchateau', 'Beauraing'), ('Neufchateau', 'Bertrix'),
@@ -215,17 +215,17 @@ STATIC_ATTACHMENTS = '''    <attachment name="relationshipTypeAttachment" attach
     <attachment name="territoryEffectAttachment" attachTo="Open" javaClass="games.strategy.triplea.attachments.TerritoryEffectAttachment" type="territoryEffect">
       <option name="maxGroundBattleRounds" value="4"/>
       <option name="maxAirBattleRounds" value="2"/>
-      <option name="stackCapacity" value="6"/>
+      <option name="stackCapacity" value="7"/>
     </attachment>
     <attachment name="territoryEffectAttachment" attachTo="Forest" javaClass="games.strategy.triplea.attachments.TerritoryEffectAttachment" type="territoryEffect">
       <option name="maxGroundBattleRounds" value="2"/>
       <option name="maxAirBattleRounds" value="1"/>
-      <option name="stackCapacity" value="3"/>
+      <option name="stackCapacity" value="5"/>
     </attachment>
     <attachment name="territoryEffectAttachment" attachTo="Town" javaClass="games.strategy.triplea.attachments.TerritoryEffectAttachment" type="territoryEffect">
       <option name="maxGroundBattleRounds" value="3"/>
       <option name="maxAirBattleRounds" value="1"/>
-      <option name="stackCapacity" value="5"/>
+      <option name="stackCapacity" value="6"/>
     </attachment>
 
     <attachment name="unitAttachment" attachTo="infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
