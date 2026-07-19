@@ -8,11 +8,7 @@ import games.strategy.triplea.settings.ClientSetting;
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -39,7 +35,7 @@ import org.triplea.java.UrlStreams;
  * "<b>preindustrial</b>" (anything from muskets/cannons (1500) to right before ww1 (1900), <br>
  * "<b>classical</b>" (the ancient era, anything before cannons became a mainstay (10,000 bce - 1500
  * ad) <br>
- * "<b>future</b>" (sci-fi, spaceships, lasers, etc) <br>
+ * "<b>future</b>" (sci-fi, spaceships, lasers, etc.) <br>
  * <br>
  * After this, you can specify specific sounds if you want, using the "sound key location" (aka:
  * sound map folder). <br>
@@ -59,7 +55,7 @@ import org.triplea.java.UrlStreams;
  * Example: "<b>ww2/battle_aa_miss</b>" is the sound path for a folder, so we will use all the
  * sounds in that folder. "<b>future/battle_aa_miss/battle_aa_miss_01_ufo_flyby.mp3</b>" is a
  * specific file, so we will use just this file. Because we use both of these together, the engine
- * will make a list of all the files in that folder, plus that single file we specified, then it
+ * will make a list of all the files in that folder, plus that single file we specified. Then it
  * will randomly pick one of this whole list every time it needs to play the "battle_aa_miss" sound.
  * <br>
  * <br>
@@ -77,7 +73,7 @@ import org.triplea.java.UrlStreams;
  * classical/battle_land_02_war_trumpets.mp3;ww2/battle_land <br>
  * <br>
  * Furthermore, we can customize the sound key by adding "_nationName" onto the end of it. So if you
- * want a specific sound for a german land attack, then use: <br>
+ * want a specific sound for a German land attack, then use: <br>
  * battle_land<b>_Germans</b>=misc/battle_land/battle_land_Germans_panzers_and_yelling_in_german.mp3
  * <br>
  * You can use nation specific sound keys for almost all sounds, though things like game_start, or
@@ -107,6 +103,7 @@ public class ClipPlayer {
   @NonNls private static final String MP3_SUFFIX = ".mp3";
 
   private static final Set<String> mutedClips = ConcurrentHashMap.newKeySet();
+  private final Set<AdvancedPlayer> activePlayers = ConcurrentHashMap.newKeySet();
 
   static {
     final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
@@ -137,7 +134,8 @@ public class ClipPlayer {
       FactoryRegistry.systemRegistry().createAudioDevice();
       return true;
     } catch (final JavaLayerException e) {
-      log.info("Unable to create audio device, is there audio on the system? " + e.getMessage(), e);
+      log.info(
+          "Unable to create audio device, is there audio on the system? {}", e.getMessage(), e);
       return false;
     }
   }
@@ -194,7 +192,7 @@ public class ClipPlayer {
     try {
       prefs.flush();
     } catch (final BackingStoreException e) {
-      log.error("Failed to flush preferences: " + prefs.absolutePath(), e);
+      log.error("Failed to flush preferences: {}", prefs.absolutePath(), e);
     }
   }
 
@@ -229,9 +227,16 @@ public class ClipPlayer {
                             URI.create(clip.toString()),
                             inputStream -> {
                               try {
-                                new AdvancedPlayer(inputStream).play();
+                                final AdvancedPlayer advancedPlayer =
+                                    new AdvancedPlayer(inputStream);
+                                activePlayers.add(advancedPlayer);
+                                try {
+                                  advancedPlayer.play();
+                                } finally {
+                                  activePlayers.remove(advancedPlayer);
+                                }
                               } catch (final Exception e) {
-                                log.error("Failed to play: " + clip, e);
+                                log.error("Failed to play: {}", clip, e);
                               }
                               return null;
                             })));
@@ -257,7 +262,7 @@ public class ClipPlayer {
   /**
    * The user may or may not have a sounds.properties file. If they do not, we should have a default
    * folder (ww2) that we use for sounds. Because we do not want a lot of duplicate sound files, we
-   * also have a "generic" sound folder. If a sound cannot be found for a soundpath using the
+   * also have a "generic" sound folder. If a sound cannot be found for a sound path using the
    * sounds.properties or default folder, then we try to find one in the generic folder. The
    * sounds.properties file can specify all the sounds to use for a specific sound path (multiple
    * per path). If there is no key for that path, we try by the default way. <br>
@@ -293,11 +298,16 @@ public class ClipPlayer {
   /**
    * Returns a collection of clip files found at the specified location.
    *
-   * @param resourceAndPathUrl (URL uses '/', not File.separator or '\')
+   * @param resourceAndPathUrl (URL uses '/', not `File.separator` or '\')
    */
   private List<URL> findClipFiles(final String resourceAndPathUrl) {
     return resourceLoader.listResources(resourceAndPathUrl).stream()
         .filter(url -> url.toString().endsWith(MP3_SUFFIX))
         .toList();
+  }
+
+  public void stopAllSounds() {
+    activePlayers.forEach(AdvancedPlayer::close);
+    activePlayers.clear();
   }
 }
