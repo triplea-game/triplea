@@ -364,7 +364,7 @@ PROPERTIES = '''  <propertyList>
     <property name="Out Of Supply Removal Turns" value="2" editable="false"/>
     <property name="Separate Air And Ground Combat" value="true" editable="false"/>
     <property name="Air Control Enabled" value="true" editable="false"/>
-    <property name="Air Control Persistent" value="true" editable="false"/>
+    <property name="Air Control Persistent" value="false" editable="false"/>
     <property name="Air Control Ground Attack Bonus" value="1" editable="false"/>
     <property name="Scramble Rules In Effect" value="true" editable="false"/>
     <property name="Scrambled Units Return To Base" value="true" editable="false"/>
