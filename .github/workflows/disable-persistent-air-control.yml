@@ -1,9 +1,9 @@
 name: Disable persistent Small Front air control
 
 on:
-  push:
+  pull_request:
     branches:
-      - agent/disable-persistent-air-control
+      - main
 
 permissions:
   contents: write
