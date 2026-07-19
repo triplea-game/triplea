@@ -41,14 +41,25 @@ public class SmallFrontAi extends AbstractAi {
   private static final int MAX_MOVES_PER_PHASE = 200;
 
   private final SmallFrontPolicy policy;
+  private final TurnPlanner planner;
+  private Optional<PlanRuntime> planRuntime = Optional.empty();
 
   public SmallFrontAi(final String name, final String playerLabel) {
-    this(name, playerLabel, new HybridOperationalPolicy());
+    this(name, playerLabel, new PlanAwareOperationalPolicy(), new HeuristicTurnPlanner());
   }
 
   public SmallFrontAi(final String name, final String playerLabel, final SmallFrontPolicy policy) {
+    this(name, playerLabel, policy, new HeuristicTurnPlanner());
+  }
+
+  SmallFrontAi(
+      final String name,
+      final String playerLabel,
+      final SmallFrontPolicy policy,
+      final TurnPlanner planner) {
     super(name, playerLabel);
     this.policy = Objects.requireNonNull(policy);
+    this.planner = Objects.requireNonNull(planner);
   }
 
   @Override
@@ -58,11 +69,36 @@ public class SmallFrontAi extends AbstractAi {
       final GameData data,
       final GamePlayer player) {
     if (nonCombat) {
+      ensurePlan(StrategicPhase.REDEPLOYMENT, moveDel, data, player);
+      planRuntime.ifPresent(runtime -> runtime.refresh(data, player));
       movePhase(StrategicPhase.REDEPLOYMENT, moveDel, data, player);
+      planRuntime = Optional.empty();
       return;
     }
+
+    startPlan(StrategicPhase.COMBAT_MOVE, moveDel, data, player);
     movePhase(StrategicPhase.COMBAT_MOVE, moveDel, data, player);
     movePhase(StrategicPhase.AIR_ASSIGNMENT, moveDel, data, player);
+  }
+
+  private void startPlan(
+      final StrategicPhase phase,
+      final IMoveDelegate moveDel,
+      final GameData data,
+      final GamePlayer player) {
+    final List<StrategicAction> actions = legalActions(data, player, phase, moveDel);
+    planRuntime = Optional.of(new PlanRuntime(planner.createPlan(data, player, phase, actions)));
+  }
+
+  private void ensurePlan(
+      final StrategicPhase phase,
+      final IMoveDelegate moveDel,
+      final GameData data,
+      final GamePlayer player) {
+    if (planRuntime.isEmpty()
+        || !planRuntime.orElseThrow().plan().playerName().equals(player.getName())) {
+      startPlan(phase, moveDel, data, player);
+    }
   }
 
   private void movePhase(
@@ -76,8 +112,16 @@ public class SmallFrontAi extends AbstractAi {
       if (actions.isEmpty()) {
         return;
       }
+
+      final PlanRuntime runtime = planRuntime.orElse(null);
+      if (phase == StrategicPhase.COMBAT_MOVE
+          && runtime != null
+          && runtime.shouldReplan(actions, data)) {
+        runtime.replacePlan(planner.replan(data, player, phase, actions, runtime));
+      }
+
       final Optional<StrategicAction> chosen =
-          policy.choose(actions, data, player, List.copyOf(completedActions));
+          policy.choose(actions, data, player, List.copyOf(completedActions), runtime);
       if (chosen.isEmpty() || "end_phase".equals(chosen.get().type())) {
         return;
       }
@@ -85,6 +129,9 @@ public class SmallFrontAi extends AbstractAi {
         return;
       }
       completedActions.add(chosen.get());
+      if (runtime != null) {
+        runtime.recordAction(chosen.get(), data, player);
+      }
     }
   }
 
