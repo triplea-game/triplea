@@ -187,17 +187,17 @@
     <attachment name="territoryEffectAttachment" attachTo="Open" javaClass="games.strategy.triplea.attachments.TerritoryEffectAttachment" type="territoryEffect">
       <option name="maxGroundBattleRounds" value="4"/>
       <option name="maxAirBattleRounds" value="2"/>
-      <option name="stackCapacity" value="6"/>
+      <option name="stackCapacity" value="7"/>
     </attachment>
     <attachment name="territoryEffectAttachment" attachTo="Forest" javaClass="games.strategy.triplea.attachments.TerritoryEffectAttachment" type="territoryEffect">
       <option name="maxGroundBattleRounds" value="2"/>
       <option name="maxAirBattleRounds" value="1"/>
-      <option name="stackCapacity" value="3"/>
+      <option name="stackCapacity" value="5"/>
     </attachment>
     <attachment name="territoryEffectAttachment" attachTo="Town" javaClass="games.strategy.triplea.attachments.TerritoryEffectAttachment" type="territoryEffect">
       <option name="maxGroundBattleRounds" value="3"/>
       <option name="maxAirBattleRounds" value="1"/>
-      <option name="stackCapacity" value="5"/>
+      <option name="stackCapacity" value="6"/>
     </attachment>
 
     <attachment name="unitAttachment" attachTo="infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
@@ -431,6 +431,7 @@
     </attachment>
     <attachment name="supplyTerritoryAttachment" attachTo="La Roche" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
       <option name="roadConnection" value="Hotton"/>
+      <option name="roadConnection" value="Marche"/>
     </attachment>
     <attachment name="territoryAttachment" attachTo="Libramont" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
       <option name="production" value="0"/>
