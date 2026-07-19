@@ -21,19 +21,27 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import subprocess
 
-          paths = [
-              Path('tools/generate_small_front_meuse_map.py'),
-              Path('maps/small_front_meuse/map/games/Small_Front_Meuse.xml'),
-              Path('game-app/smoke-testing/src/test/resources/map-xmls/Small_Front_Meuse.xml'),
-          ]
           old = 'Air Control Persistent" value="true"'
           new = 'Air Control Persistent" value="false"'
+          result = subprocess.run(
+              ['git', 'grep', '-l', '-F', old],
+              check=False,
+              text=True,
+              capture_output=True,
+          )
+          paths = [Path(line) for line in result.stdout.splitlines() if line]
+          if len(paths) < 2:
+              raise SystemExit(
+                  f'expected at least the playable and smoke-test XMLs, found {len(paths)}: {paths}'
+              )
+          print('Updating:', ', '.join(map(str, paths)))
           for path in paths:
               text = path.read_text(encoding='utf-8')
               count = text.count(old)
-              if count != 1:
-                  raise SystemExit(f'{path}: expected exactly one persistent-air-control property, found {count}')
+              if count < 1:
+                  raise SystemExit(f'{path}: grep matched but replacement string was absent')
               path.write_text(text.replace(old, new), encoding='utf-8')
           PY
 
@@ -44,9 +52,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add tools/generate_small_front_meuse_map.py \
-                  maps/small_front_meuse/map/games/Small_Front_Meuse.xml \
-                  game-app/smoke-testing/src/test/resources/map-xmls/Small_Front_Meuse.xml \
-                  .github/workflows/disable-persistent-air-control.yml
+          git add -A
           git commit -m "Disable persistent Small Front air control"
           git push origin HEAD:agent/disable-persistent-air-control
