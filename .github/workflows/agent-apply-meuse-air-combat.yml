@@ -23,6 +23,12 @@ jobs:
           ref: agent/meuse-airbase-scramble-armour-shock
           fetch-depth: 0
 
+      - name: Merge current main
+        run: |
+          git config user.name "OpenAI Agent"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git merge --no-edit origin/main
+
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
@@ -30,7 +36,28 @@ jobs:
           java-version: '21'
 
       - name: Apply source and scenario changes
-        run: python .github/agent/apply_meuse_air_combat.py
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('.github/agent/apply_meuse_air_combat.py')
+          text = path.read_text(encoding='utf-8')
+          old = '''def insert_before(relative: str, marker: str, addition: str) -> None:
+              replace_once(relative, marker, addition + marker)
+          '''
+          new = '''def insert_before(relative: str, marker: str, addition: str) -> None:
+              path = ROOT / relative
+              text = path.read_text(encoding="utf-8")
+              index = text.rfind(marker)
+              if index < 0:
+                  raise RuntimeError(f"{relative}: marker not found")
+              path.write_text(text[:index] + addition + text[index:], encoding="utf-8")
+          '''
+          if old not in text:
+              raise RuntimeError('insert_before helper did not match')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+          python .github/agent/apply_meuse_air_combat.py
 
       - name: Validate generated map configuration
         run: |
@@ -43,8 +70,6 @@ jobs:
           rm .github/workflows/agent-apply-meuse-air-combat.yml
           rm .github/agent/apply_meuse_air_combat.py
           rmdir .github/agent 2>/dev/null || true
-          git config user.name "OpenAI Agent"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           git commit -m "Add native airbase scramble and armour shock"
           git push origin HEAD:agent/meuse-airbase-scramble-armour-shock
