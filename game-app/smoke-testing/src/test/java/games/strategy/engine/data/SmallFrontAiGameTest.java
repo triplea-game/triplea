@@ -115,8 +115,7 @@ class SmallFrontAiGameTest {
     assertThat(SupplyNetworkResolver.getRoadNeighbors(laRoche, data)).contains(marche);
     assertThat(SupplyNetworkResolver.getRoadNeighbors(hotton, data)).doesNotContain(marche);
     assertThat(SupplyNetworkResolver.getRoadNeighbors(vielsalm, data)).doesNotContain(durbuy);
-    assertThat(SupplyNetworkResolver.getRoadNeighbors(libramont, data))
-        .doesNotContain(neufchateau);
+    assertThat(SupplyNetworkResolver.getRoadNeighbors(libramont, data)).doesNotContain(neufchateau);
   }
 
   private static GameData loadMap() {
