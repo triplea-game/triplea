@@ -24,10 +24,6 @@ public final class SupplyAwareMoveDelegate extends MoveDelegate {
     final GameData data = getData();
     if (!EditDelegate.getEditMode(data.getProperties()) && !move.getRoute().hasNoSteps()) {
       final GamePlayer movingPlayer = getUnitsOwner(move.getUnits());
-      final Optional<String> capacityError = validateStackCapacity(move, movingPlayer);
-      if (capacityError.isPresent()) {
-        return capacityError;
-      }
       if (SupplyNetworkResolver.isEnabled(data)) {
         final List<Unit> outOfSupply =
             SupplyNetworkResolver.getOutOfSupplyUnits(
@@ -36,6 +32,10 @@ public final class SupplyAwareMoveDelegate extends MoveDelegate {
           return Optional.of(
               OUT_OF_SUPPLY_UNITS_CANNOT_MOVE + ": " + MyFormatter.unitsToTextNoOwner(outOfSupply));
         }
+      }
+      final Optional<String> capacityError = validateStackCapacity(move, movingPlayer);
+      if (capacityError.isPresent()) {
+        return capacityError;
       }
     }
     return super.performMove(move);

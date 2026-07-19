@@ -5,7 +5,7 @@
   },
   {
     "path": "README.md",
-    "bytes": 4072
+    "bytes": 4444
   },
   {
     "path": "map.yml",
@@ -133,7 +133,7 @@
   },
   {
     "path": "map/games/Small_Front_Meuse.xml",
-    "bytes": 41644
+    "bytes": 40736
   },
   {
     "path": "map/games/game.dtd",
@@ -209,23 +209,23 @@
   },
   {
     "path": "map/reliefTiles/3_0.png",
-    "bytes": 5538
+    "bytes": 4906
   },
   {
     "path": "map/reliefTiles/3_1.png",
-    "bytes": 12248
+    "bytes": 11417
   },
   {
     "path": "map/reliefTiles/3_2.png",
-    "bytes": 13851
+    "bytes": 12028
   },
   {
     "path": "map/reliefTiles/3_3.png",
-    "bytes": 12005
+    "bytes": 10761
   },
   {
     "path": "map/reliefTiles/4_0.png",
-    "bytes": 7250
+    "bytes": 6774
   },
   {
     "path": "map/reliefTiles/4_1.png",
@@ -277,59 +277,59 @@
   },
   {
     "path": "map/units/Americans/americanInfantry.png",
-    "bytes": 443
+    "bytes": 734
   },
   {
     "path": "map/units/Americans/armour.png",
-    "bytes": 318
+    "bytes": 630
   },
   {
     "path": "map/units/Americans/artillery.png",
-    "bytes": 407
+    "bytes": 382
   },
   {
     "path": "map/units/Americans/fighter.png",
-    "bytes": 376
+    "bytes": 1024
   },
   {
     "path": "map/units/Americans/infantry.png",
-    "bytes": 452
+    "bytes": 734
   },
   {
     "path": "map/units/Americans/mechanized.png",
-    "bytes": 371
+    "bytes": 900
   },
   {
     "path": "map/units/Americans/selfPropelledArtillery.png",
-    "bytes": 499
+    "bytes": 615
   },
   {
     "path": "map/units/Germans/americanInfantry.png",
-    "bytes": 440
+    "bytes": 727
   },
   {
     "path": "map/units/Germans/armour.png",
-    "bytes": 311
+    "bytes": 619
   },
   {
     "path": "map/units/Germans/artillery.png",
-    "bytes": 406
+    "bytes": 360
   },
   {
     "path": "map/units/Germans/fighter.png",
-    "bytes": 368
+    "bytes": 995
   },
   {
     "path": "map/units/Germans/infantry.png",
-    "bytes": 445
+    "bytes": 727
   },
   {
     "path": "map/units/Germans/mechanized.png",
-    "bytes": 364
+    "bytes": 880
   },
   {
     "path": "map/units/Germans/selfPropelledArtillery.png",
-    "bytes": 478
+    "bytes": 603
   },
   {
     "path": "map/vc.txt",
@@ -337,7 +337,7 @@
   },
   {
     "path": "preview/meuse_map_preview.png",
-    "bytes": 395530
+    "bytes": 391061
   },
   {
     "path": "tools/MapGen.java",
@@ -345,11 +345,15 @@
   },
   {
     "path": "tools/README.md",
-    "bytes": 2562
+    "bytes": 3443
+  },
+  {
+    "path": "tools/UnitGen.java",
+    "bytes": 4955
   },
   {
     "path": "tools/genxml.py",
-    "bytes": 19390
+    "bytes": 20448
   },
   {
     "path": "tools/manifest.py",
@@ -357,6 +361,6 @@
   },
   {
     "path": "tools/validate_map.py",
-    "bytes": 1661
+    "bytes": 2549
   }
 ]

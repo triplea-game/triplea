@@ -13,27 +13,25 @@ ZONE = {
     'Huy': 'F', 'Andenne': 'F', 'Namur': 'F', 'Dinant': 'F', 'Givet': 'F',
 }
 
-# Terrain by zone. The forest wall is the only Forest band, which is what makes it a wall.
 TERRAIN = {'A': 'Open', 'B': 'Forest', 'C': 'Town', 'D': 'Open', 'E': 'Open', 'F': 'Town'}
-
 GERMAN_START = ['Blankenheim', 'Prum', 'Bitburg', 'Echternach', 'Losheim Gap', 'Clervaux', 'Vianden']
-
 MEUSE = ['Huy', 'Andenne', 'Namur', 'Dinant', 'Givet']
 OBJECTIVES = ['St. Vith', 'Bastogne', 'Marche', 'Neufchateau', 'Namur', 'Dinant']
 
 # Dropped from the Voronoi adjacency on purpose.
-#   BB: the forest wall has no lateral roads, so the three breakthroughs are separate axes.
+#   BB: the forest wall has no lateral movement links, so the breakthroughs stay separate.
 #   EF: the Meuse is a river; each crossing keeps exactly one approach.
 DROP = {
     ('Clervaux', 'Vianden'), ('Losheim Gap', 'Clervaux'),
     ('Havelange', 'Huy'), ('Wellin', 'Namur'), ('Bertrix', 'Givet'),
 }
 
-# Supply sources: each side's rear.
 SUPPLY_SOURCES = ['Blankenheim', 'Prum', 'Bitburg', 'Echternach',
                   'Huy', 'Andenne', 'Namur', 'Dinant', 'Givet']
 
-# Main roads only - a strict subset of movement edges, so cutting one strands a spearhead.
+# Main roads only. Three former cross-links are deliberately absent:
+# Vielsalm-Durbuy, Hotton-Marche and Libramont-Neufchateau. Movement remains possible across those
+# borders. La Roche-Marche preserves a second central supply axis without restoring a direct bypass.
 ROADS = [
     ('Prum', 'Blankenheim'), ('Prum', 'Bitburg'), ('Bitburg', 'Echternach'),
     ('Blankenheim', 'Losheim Gap'), ('Prum', 'Clervaux'), ('Bitburg', 'Vianden'),
@@ -43,9 +41,9 @@ ROADS = [
     ('St. Vith', 'Vielsalm'), ('Houffalize', 'Erezee'), ('Wiltz', 'Hotton'),
     ('Bastogne', 'Saint-Hubert'), ('Martelange', 'Libramont'),
     ('Vielsalm', 'Erezee'), ('Erezee', 'La Roche'), ('La Roche', 'Hotton'),
-    ('Hotton', 'Marche'), ('Hotton', 'Nassogne'), ('Nassogne', 'Neufchateau'),
-    ('Saint-Hubert', 'Libramont'), ('Libramont', 'Neufchateau'),
-    ('Vielsalm', 'Durbuy'), ('Marche', 'Ciney'), ('Marche', 'Rochefort'),
+    ('La Roche', 'Marche'), ('Hotton', 'Nassogne'), ('Nassogne', 'Neufchateau'),
+    ('Saint-Hubert', 'Libramont'),
+    ('Marche', 'Ciney'), ('Marche', 'Rochefort'),
     ('Neufchateau', 'Beauraing'), ('Neufchateau', 'Bertrix'),
     ('Durbuy', 'Havelange'), ('Ciney', 'Havelange'), ('Rochefort', 'Ciney'),
     ('Rochefort', 'Wellin'), ('Beauraing', 'Wellin'), ('Beauraing', 'Bertrix'),
@@ -57,7 +55,7 @@ ROADS = [
 
 def connections(adj_path):
     edges = []
-    for line in open(adj_path):
+    for line in open(adj_path, encoding='utf-8'):
         a, b = line.strip().split(' | ')
         if (a, b) in DROP or (b, a) in DROP:
             continue
@@ -70,95 +68,103 @@ def main():
     edges = connections(adj_path)
     names = sorted(ZONE)
 
-    # roadConnection is declared one-sided; the engine treats roads as undirected.
     roads_by_source = {}
     for a, b in ROADS:
         assert tuple(sorted((a, b))) in edges, f'road {a}-{b} is not a movement edge'
         roads_by_source.setdefault(a, []).append(b)
 
-    L = []
-    L.append('<?xml version="1.0" encoding="UTF-8"?>')
-    L.append('<!DOCTYPE game SYSTEM "game.dtd">')
-    L.append('<game>')
-    L.append('  <info name="Small Front: Meuse Corridor" version="0.1"/>')
-    L.append('  <loader javaClass="games.strategy.triplea.TripleA"/>')
-    L.append('  <triplea minimumVersion="2.7.0"/>')
-    L.append('  <diceSides value="6"/>')
-    L.append('')
-    L.append('  <map>')
-    for n in names:
-        L.append(f'    <territory name="{n}"/>')
+    lines = []
+    add = lines.append
+    add('<?xml version="1.0" encoding="UTF-8"?>')
+    add('<!DOCTYPE game SYSTEM "game.dtd">')
+    add('<game>')
+    add('  <info name="Small Front: Meuse Corridor" version="0.1"/>')
+    add('  <loader javaClass="games.strategy.triplea.TripleA"/>')
+    add('  <triplea minimumVersion="2.7.0"/>')
+    add('  <diceSides value="6"/>')
+    add('')
+    add('  <map>')
+    for name in names:
+        add(f'    <territory name="{name}"/>')
     for a, b in edges:
-        L.append(f'    <connection t1="{a}" t2="{b}"/>')
-    L.append('  </map>')
-    L.append('')
-    L.append('  <resourceList>\n    <resource name="PUs"/>\n  </resourceList>')
-    L.append('')
-    L.append('  <playerList>')
-    L.append('    <player name="Germans" optional="false" defaultType="Human"/>')
-    L.append('    <player name="Americans" optional="false" defaultType="Human"/>')
-    L.append('    <alliance player="Germans" alliance="Axis"/>')
-    L.append('    <alliance player="Americans" alliance="Allies"/>')
-    L.append('  </playerList>')
-    L.append('')
-    L.append('  <unitList>')
-    for u in ['infantry', 'artillery', 'armour', 'mechanized', 'fighter']:
-        L.append(f'    <unit name="{u}"/>')
-    L.append('  </unitList>')
-    L.append('')
-    L.append('  <relationshipTypes>\n    <relationshipType name="War"/>\n    <relationshipType name="Allied"/>\n  </relationshipTypes>')
-    L.append('')
-    L.append('  <territoryEffectList>')
-    for t in ['Open', 'Forest', 'Town']:
-        L.append(f'    <territoryEffect name="{t}"/>')
-    L.append('  </territoryEffectList>')
-    L.append('')
-    L.append(GAMEPLAY)
-    L.append('  <attachmentList>')
-    L.append(STATIC_ATTACHMENTS)
+        add(f'    <connection t1="{a}" t2="{b}"/>')
+    add('  </map>')
+    add('')
+    add('  <resourceList>')
+    add('    <resource name="PUs"/>')
+    add('  </resourceList>')
+    add('')
+    add('  <playerList>')
+    add('    <player name="Germans" optional="false" defaultType="Human"/>')
+    add('    <player name="Americans" optional="false" defaultType="Human"/>')
+    add('    <alliance player="Germans" alliance="Axis"/>')
+    add('    <alliance player="Americans" alliance="Allies"/>')
+    add('  </playerList>')
+    add('')
+    add('  <unitList>')
+    for unit in ['infantry', 'americanInfantry', 'artillery', 'selfPropelledArtillery',
+                 'armour', 'mechanized', 'fighter']:
+        add(f'    <unit name="{unit}"/>')
+    add('  </unitList>')
+    add('')
+    add('  <relationshipTypes>')
+    add('    <relationshipType name="War"/>')
+    add('    <relationshipType name="Allied"/>')
+    add('  </relationshipTypes>')
+    add('')
+    add('  <territoryEffectList>')
+    for terrain in ['Open', 'Forest', 'Town']:
+        add(f'    <territoryEffect name="{terrain}"/>')
+    add('  </territoryEffectList>')
+    add('')
+    add(GAMEPLAY.rstrip())
+    add('  <attachmentList>')
+    add(STATIC_ATTACHMENTS.rstrip())
 
-    for n in names:
-        z = ZONE[n]
-        L.append(f'    <attachment name="territoryAttachment" attachTo="{n}" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">')
-        L.append('      <option name="production" value="0"/>')
-        L.append(f'      <option name="victoryCity" value="{1 if n in OBJECTIVES else 0}"/>')
-        if n == 'Prum':
-            L.append('      <option name="capital" value="Germans"/>')
-        if n == 'Namur':
-            L.append('      <option name="capital" value="Americans"/>')
-        L.append(f'      <option name="territoryEffect" value="{TERRAIN[z]}"/>')
-        L.append('    </attachment>')
-        src = n in SUPPLY_SOURCES
-        rc = roads_by_source.get(n, [])
-        if src or rc:
-            L.append(f'    <attachment name="supplyTerritoryAttachment" attachTo="{n}" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">')
-            if src:
-                L.append('      <option name="supplySource" value="true"/>')
-            for t in rc:
-                L.append(f'      <option name="roadConnection" value="{t}"/>')
-            L.append('    </attachment>')
+    for name in names:
+        zone = ZONE[name]
+        add(f'    <attachment name="territoryAttachment" attachTo="{name}" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">')
+        add('      <option name="production" value="0"/>')
+        add(f'      <option name="victoryCity" value="{1 if name in OBJECTIVES else 0}"/>')
+        if name == 'Prum':
+            add('      <option name="capital" value="Germans"/>')
+        if name == 'Namur':
+            add('      <option name="capital" value="Americans"/>')
+        add(f'      <option name="territoryEffect" value="{TERRAIN[zone]}"/>')
+        add('    </attachment>')
+        source = name in SUPPLY_SOURCES
+        road_targets = roads_by_source.get(name, [])
+        if source or road_targets:
+            add(f'    <attachment name="supplyTerritoryAttachment" attachTo="{name}" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">')
+            if source:
+                add('      <option name="supplySource" value="true"/>')
+            for target in road_targets:
+                add(f'      <option name="roadConnection" value="{target}"/>')
+            add('    </attachment>')
 
-    L.append(REINFORCEMENTS_AND_SCORING)
-    L.append('  </attachmentList>')
-    L.append('')
-    L.append('  <initialize>')
-    L.append('    <ownerInitialize>')
-    for n in names:
-        L.append(f'      <territoryOwner territory="{n}" owner="{"Germans" if n in GERMAN_START else "Americans"}"/>')
-    L.append('    </ownerInitialize>')
-    L.append('    <unitInitialize>')
-    for terr, units in UNITS:
-        for ut, qty, owner in units:
-            L.append(f'      <unitPlacement unitType="{ut}" territory="{terr}" quantity="{qty}" owner="{owner}"/>')
-    L.append('    </unitInitialize>')
-    L.append('    <relationshipInitialize>')
-    L.append('      <relationship player1="Germans" player2="Americans" type="War" roundValue="0"/>')
-    L.append('    </relationshipInitialize>')
-    L.append('  </initialize>')
-    L.append('')
-    L.append(PROPERTIES)
-    L.append('</game>')
-    open(out_path, 'w', encoding='utf-8').write('\n'.join(L) + '\n')
+    add(REINFORCEMENTS_AND_SCORING.rstrip())
+    add('  </attachmentList>')
+    add('')
+    add('  <initialize>')
+    add('    <ownerInitialize>')
+    for name in names:
+        owner = 'Germans' if name in GERMAN_START else 'Americans'
+        add(f'      <territoryOwner territory="{name}" owner="{owner}"/>')
+    add('    </ownerInitialize>')
+    add('    <unitInitialize>')
+    for territory, units in UNITS:
+        for unit_type, quantity, owner in units:
+            add(f'      <unitPlacement unitType="{unit_type}" territory="{territory}" quantity="{quantity}" owner="{owner}"/>')
+    add('    </unitInitialize>')
+    add('    <relationshipInitialize>')
+    add('      <relationship player1="Germans" player2="Americans" type="War" roundValue="0"/>')
+    add('    </relationshipInitialize>')
+    add('  </initialize>')
+    add('')
+    add(PROPERTIES.rstrip())
+    add('</game>')
+
+    open(out_path, 'w', encoding='utf-8').write('\n'.join(lines) + '\n')
     print(f'territories={len(names)} connections={len(edges)} roads={len(ROADS)} objectives={len(OBJECTIVES)}')
 
 
@@ -180,6 +186,7 @@ GAMEPLAY = '''  <gamePlay>
       <step name="germanBattle" delegate="battle" player="Germans"/>
       <step name="germanNonCombatMove" delegate="move" player="Germans" display="Redeployment">
         <stepProperty name="nonCombatMove" value="true"/>
+        <stepProperty name="removeAirThatCanNotLand" value="false"/>
       </step>
       <step name="germanEndTurn" delegate="endTurn" player="Germans"/>
 
@@ -189,6 +196,7 @@ GAMEPLAY = '''  <gamePlay>
       <step name="americanBattle" delegate="battle" player="Americans"/>
       <step name="americanNonCombatMove" delegate="move" player="Americans" display="Redeployment">
         <stepProperty name="nonCombatMove" value="true"/>
+        <stepProperty name="removeAirThatCanNotLand" value="false"/>
       </step>
       <step name="americanEndTurn" delegate="endTurn" player="Americans"/>
 
@@ -207,23 +215,34 @@ STATIC_ATTACHMENTS = '''    <attachment name="relationshipTypeAttachment" attach
     <attachment name="territoryEffectAttachment" attachTo="Open" javaClass="games.strategy.triplea.attachments.TerritoryEffectAttachment" type="territoryEffect">
       <option name="maxGroundBattleRounds" value="4"/>
       <option name="maxAirBattleRounds" value="2"/>
-      <option name="stackCapacity" value="6"/>
+      <option name="stackCapacity" value="7"/>
     </attachment>
     <attachment name="territoryEffectAttachment" attachTo="Forest" javaClass="games.strategy.triplea.attachments.TerritoryEffectAttachment" type="territoryEffect">
       <option name="maxGroundBattleRounds" value="2"/>
       <option name="maxAirBattleRounds" value="1"/>
-      <option name="stackCapacity" value="3"/>
+      <option name="stackCapacity" value="5"/>
     </attachment>
     <attachment name="territoryEffectAttachment" attachTo="Town" javaClass="games.strategy.triplea.attachments.TerritoryEffectAttachment" type="territoryEffect">
       <option name="maxGroundBattleRounds" value="3"/>
       <option name="maxAirBattleRounds" value="1"/>
-      <option name="stackCapacity" value="5"/>
+      <option name="stackCapacity" value="6"/>
     </attachment>
 
     <attachment name="unitAttachment" attachTo="infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
       <option name="movement" value="1"/>
       <option name="combatMovement" value="1"/>
       <option name="redeploymentMovement" value="1"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="2"/>
+      <option name="isInfantry" value="true"/>
+      <option name="artillerySupportable" value="true"/>
+      <option name="stackCost" value="1"/>
+      <option name="tuv" value="3"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="americanInfantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="combatMovement" value="1"/>
+      <option name="redeploymentMovement" value="2"/>
       <option name="attack" value="1"/>
       <option name="defense" value="2"/>
       <option name="isInfantry" value="true"/>
@@ -241,6 +260,16 @@ STATIC_ATTACHMENTS = '''    <attachment name="relationshipTypeAttachment" attach
       <option name="stackCost" value="1"/>
       <option name="tuv" value="4"/>
     </attachment>
+    <attachment name="unitAttachment" attachTo="selfPropelledArtillery" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="2"/>
+      <option name="combatMovement" value="2"/>
+      <option name="redeploymentMovement" value="3"/>
+      <option name="attack" value="2"/>
+      <option name="defense" value="2"/>
+      <option name="artillery" value="true"/>
+      <option name="stackCost" value="1"/>
+      <option name="tuv" value="5"/>
+    </attachment>
     <attachment name="unitAttachment" attachTo="armour" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
       <option name="movement" value="2"/>
       <option name="combatMovement" value="2"/>
@@ -248,6 +277,7 @@ STATIC_ATTACHMENTS = '''    <attachment name="relationshipTypeAttachment" attach
       <option name="attack" value="2"/>
       <option name="defense" value="3"/>
       <option name="canBlitz" value="true"/>
+      <option name="artillerySupportable" value="true"/>
       <option name="stackCost" value="2"/>
       <option name="tuv" value="6"/>
     </attachment>
@@ -258,7 +288,8 @@ STATIC_ATTACHMENTS = '''    <attachment name="relationshipTypeAttachment" attach
       <option name="attack" value="2"/>
       <option name="defense" value="2"/>
       <option name="isInfantry" value="true"/>
-      <option name="stackCost" value="2"/>
+      <option name="artillerySupportable" value="true"/>
+      <option name="stackCost" value="1"/>
       <option name="tuv" value="4"/>
     </attachment>
     <attachment name="unitAttachment" attachTo="fighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
@@ -282,22 +313,24 @@ REINFORCEMENTS_AND_SCORING = '''
     <attachment name="fixedReinforcementAttachment" attachTo="Germans" javaClass="games.strategy.triplea.attachments.FixedReinforcementAttachment" type="player">
       <option name="reinforcement" value="1:Prum:armour:2"/>
       <option name="reinforcement" value="1:Bitburg:mechanized:1"/>
-      <option name="reinforcement" value="2:Prum:artillery:1"/>
+      <option name="reinforcement" value="2:Prum:selfPropelledArtillery:1"/>
       <option name="reinforcement" value="2:Blankenheim:armour:1"/>
       <option name="reinforcement" value="3:Bitburg:infantry:2"/>
       <option name="reinforcement" value="3:Prum:mechanized:1"/>
       <option name="reinforcement" value="4:Echternach:infantry:2"/>
+      <option name="reinforcement" value="4:Bitburg:fighter:1"/>
       <option name="reinforcement" value="5:Prum:infantry:2"/>
     </attachment>
     <attachment name="fixedReinforcementAttachment" attachTo="Americans" javaClass="games.strategy.triplea.attachments.FixedReinforcementAttachment" type="player">
-      <option name="reinforcement" value="2:Marche:infantry:2"/>
+      <option name="reinforcement" value="2:Marche:americanInfantry:2"/>
       <option name="reinforcement" value="3:Namur:armour:1"/>
       <option name="reinforcement" value="3:Ciney:fighter:1"/>
-      <option name="reinforcement" value="4:Namur:infantry:2"/>
+      <option name="reinforcement" value="4:Namur:americanInfantry:2"/>
       <option name="reinforcement" value="4:Dinant:artillery:1"/>
       <option name="reinforcement" value="5:Namur:armour:2"/>
-      <option name="reinforcement" value="6:Huy:infantry:2"/>
-      <option name="reinforcement" value="6:Givet:infantry:2"/>
+      <option name="reinforcement" value="5:Namur:fighter:1"/>
+      <option name="reinforcement" value="6:Huy:americanInfantry:2"/>
+      <option name="reinforcement" value="6:Givet:americanInfantry:2"/>
       <option name="reinforcement" value="7:Namur:armour:1"/>
     </attachment>
 
@@ -329,33 +362,30 @@ PROPERTIES = '''  <propertyList>
     <property name="Sea Battle Rounds" value="3" editable="false"/>
   </propertyList>'''
 
-# The Germans open at 3.00 units per territory against 0.81, with 13 of the 26 American
-# territories holding nothing at all. Density, not armour, is what let a spearhead run.
 UNITS = [
     ('Prum', [('infantry', 2, 'Germans'), ('artillery', 1, 'Germans'), ('fighter', 1, 'Germans')]),
     ('Blankenheim', [('infantry', 2, 'Germans'), ('armour', 1, 'Germans')]),
-    ('Bitburg', [('infantry', 2, 'Germans'), ('mechanized', 1, 'Germans')]),
+    ('Bitburg', [('infantry', 2, 'Germans'), ('mechanized', 1, 'Germans'), ('fighter', 1, 'Germans')]),
     ('Echternach', [('infantry', 2, 'Germans')]),
     ('Losheim Gap', [('infantry', 2, 'Germans'), ('mechanized', 1, 'Germans')]),
     ('Clervaux', [('infantry', 2, 'Germans'), ('armour', 1, 'Germans')]),
-    ('Vianden', [('infantry', 2, 'Germans'), ('artillery', 1, 'Germans')]),
-    ('St. Vith', [('infantry', 3, 'Americans'), ('artillery', 1, 'Americans')]),
-    ('Houffalize', [('infantry', 2, 'Americans')]),
-    ('Wiltz', [('infantry', 1, 'Americans')]),
-    ('Bastogne', [('infantry', 3, 'Americans'), ('artillery', 1, 'Americans')]),
-    ('Martelange', [('infantry', 1, 'Americans')]),
-    ('Vielsalm', [('infantry', 1, 'Americans')]),
-    ('La Roche', [('infantry', 1, 'Americans')]),
-    ('Erezee', [('infantry', 1, 'Americans')]),
-    ('Hotton', [('infantry', 1, 'Americans')]),
-    ('Nassogne', [('infantry', 1, 'Americans')]),
-    ('Libramont', [('infantry', 1, 'Americans')]),
-    ('Marche', [('infantry', 2, 'Americans'), ('armour', 1, 'Americans')]),
-    ('Neufchateau', [('infantry', 1, 'Americans')]),
-    ('Saint-Hubert', [('infantry', 1, 'Americans')]),
-    ('Ciney', [('infantry', 1, 'Americans'), ('fighter', 1, 'Americans')]),
-    ('Namur', [('infantry', 2, 'Americans')]),
-    ('Dinant', [('infantry', 1, 'Americans')]),
+    ('Vianden', [('infantry', 2, 'Germans'), ('selfPropelledArtillery', 1, 'Germans')]),
+    ('St. Vith', [('americanInfantry', 2, 'Americans'), ('artillery', 1, 'Americans')]),
+    ('Houffalize', [('americanInfantry', 1, 'Americans')]),
+    ('Bastogne', [('americanInfantry', 2, 'Americans'), ('artillery', 1, 'Americans')]),
+    ('Martelange', [('americanInfantry', 1, 'Americans')]),
+    ('Vielsalm', [('americanInfantry', 1, 'Americans')]),
+    ('La Roche', [('americanInfantry', 1, 'Americans')]),
+    ('Erezee', [('americanInfantry', 1, 'Americans')]),
+    ('Hotton', [('americanInfantry', 1, 'Americans')]),
+    ('Nassogne', [('americanInfantry', 1, 'Americans')]),
+    ('Libramont', [('americanInfantry', 1, 'Americans')]),
+    ('Marche', [('americanInfantry', 2, 'Americans'), ('armour', 1, 'Americans')]),
+    ('Neufchateau', [('americanInfantry', 1, 'Americans')]),
+    ('Saint-Hubert', [('americanInfantry', 1, 'Americans')]),
+    ('Ciney', [('americanInfantry', 1, 'Americans'), ('fighter', 1, 'Americans')]),
+    ('Namur', [('americanInfantry', 2, 'Americans'), ('fighter', 1, 'Americans')]),
+    ('Dinant', [('americanInfantry', 1, 'Americans')]),
 ]
 
 if __name__ == '__main__':

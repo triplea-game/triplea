@@ -12,6 +12,7 @@ import games.strategy.net.Messengers;
 import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.delegate.scoring.SmallFrontScoringService;
 import games.strategy.triplea.delegate.supply.SupplyAwareMoveDelegate;
+import games.strategy.triplea.delegate.supply.SupplyNetworkResolver;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -98,6 +99,23 @@ class SmallFrontAiGameTest {
     assertThat(overflow.orElseThrow())
         .contains(SupplyAwareMoveDelegate.STACK_CAPACITY_EXCEEDED)
         .contains("Losheim Gap");
+  }
+
+  @Test
+  void centralSupplyGraphUsesIndirectSecondAxis() {
+    final GameData data = loadMap();
+    final Territory laRoche = data.getMap().getTerritoryOrThrow("La Roche");
+    final Territory marche = data.getMap().getTerritoryOrThrow("Marche");
+    final Territory hotton = data.getMap().getTerritoryOrThrow("Hotton");
+    final Territory vielsalm = data.getMap().getTerritoryOrThrow("Vielsalm");
+    final Territory durbuy = data.getMap().getTerritoryOrThrow("Durbuy");
+    final Territory libramont = data.getMap().getTerritoryOrThrow("Libramont");
+    final Territory neufchateau = data.getMap().getTerritoryOrThrow("Neufchateau");
+
+    assertThat(SupplyNetworkResolver.getRoadNeighbors(laRoche, data)).contains(marche);
+    assertThat(SupplyNetworkResolver.getRoadNeighbors(hotton, data)).doesNotContain(marche);
+    assertThat(SupplyNetworkResolver.getRoadNeighbors(vielsalm, data)).doesNotContain(durbuy);
+    assertThat(SupplyNetworkResolver.getRoadNeighbors(libramont, data)).doesNotContain(neufchateau);
   }
 
   private static GameData loadMap() {

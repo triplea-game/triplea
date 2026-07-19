@@ -8,39 +8,23 @@ import games.strategy.triplea.attachments.TerritoryEffectAttachment;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.OptionalInt;
 
 /** Resolves terrain capacity and unit stacking cost for every unit-entry path. */
 public final class StackCapacityResolver {
-  private static final String SMALL_FRONT_MEUSE_GAME = "Small Front: Meuse Corridor";
-  private static final Map<String, Integer> SMALL_FRONT_MEUSE_CAPACITIES =
-      Map.of("Open", 7, "Town", 6, "Forest", 5);
-
   private StackCapacityResolver() {}
 
   public static OptionalInt resolveCapacity(final Collection<TerritoryEffect> effects) {
-    return resolveCapacity(effects, "");
-  }
-
-  static OptionalInt resolveCapacity(
-      final Collection<TerritoryEffect> effects, final String gameName) {
     boolean configured = false;
     int finiteCapacity = Integer.MAX_VALUE;
     for (final TerritoryEffect effect : effects) {
-      final OptionalInt configuredCapacity =
-          TerritoryEffectAttachment.get(effect).getStackCapacity();
-      if (configuredCapacity.isEmpty()) {
+      final OptionalInt capacity = TerritoryEffectAttachment.get(effect).getStackCapacity();
+      if (capacity.isEmpty()) {
         continue;
       }
       configured = true;
-      final int capacity =
-          SMALL_FRONT_MEUSE_GAME.equals(gameName)
-              ? SMALL_FRONT_MEUSE_CAPACITIES.getOrDefault(
-                  effect.getName(), configuredCapacity.getAsInt())
-              : configuredCapacity.getAsInt();
-      if (capacity >= 0) {
-        finiteCapacity = Math.min(finiteCapacity, capacity);
+      if (capacity.getAsInt() >= 0) {
+        finiteCapacity = Math.min(finiteCapacity, capacity.getAsInt());
       }
     }
     if (!configured) {
@@ -76,8 +60,7 @@ public final class StackCapacityResolver {
         owner,
         TerritoryEffectHelper.getEffects(territory),
         alliedUnits(owner, territory.getUnits()),
-        pendingUnits,
-        owner.getData().getGameName());
+        pendingUnits);
   }
 
   static List<Unit> filterUnitsToFit(
@@ -86,17 +69,7 @@ public final class StackCapacityResolver {
       final Collection<TerritoryEffect> effects,
       final Collection<Unit> existingUnits,
       final Collection<Unit> pendingUnits) {
-    return filterUnitsToFit(candidates, owner, effects, existingUnits, pendingUnits, "");
-  }
-
-  private static List<Unit> filterUnitsToFit(
-      final Collection<Unit> candidates,
-      final GamePlayer owner,
-      final Collection<TerritoryEffect> effects,
-      final Collection<Unit> existingUnits,
-      final Collection<Unit> pendingUnits,
-      final String gameName) {
-    final OptionalInt capacity = resolveCapacity(effects, gameName);
+    final OptionalInt capacity = resolveCapacity(effects);
     if (capacity.isEmpty() || capacity.getAsInt() < 0) {
       return new ArrayList<>(candidates);
     }
