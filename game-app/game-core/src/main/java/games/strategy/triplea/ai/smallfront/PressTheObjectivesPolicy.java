@@ -15,10 +15,10 @@ import java.util.Optional;
 /**
  * Walks toward whichever objectives the enemy still holds, and takes one when the odds allow.
  *
- * <p>Deliberately simple. It exists because the Pro AI cannot play this map at all: with no
- * production frontier every unit is worth 0 TUV, so no attack ever scores as profitable and the AI
- * stands still for the whole game. Anything that moves toward the objectives is a better sparring
- * partner than that, and a better baseline to measure a trained policy against.
+ * <p>Deliberately simple. Earlier versions also served as a workaround for economy-free maps whose
+ * units lacked TUV values, causing the Pro AI to reject every attack as unprofitable and stand still.
+ * Explicit unit TUV values now prevent that failure mode. This policy remains a deterministic,
+ * objective-seeking sparring partner and a practical baseline for measuring trained policies.
  */
 public final class PressTheObjectivesPolicy implements SmallFrontPolicy {
   private static final int NO_PATH = 99;
