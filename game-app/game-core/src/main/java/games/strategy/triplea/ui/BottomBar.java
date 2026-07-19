@@ -165,13 +165,22 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
         ta.getResources().ifPresent(r -> resources.add(r.getResourcesCopy()));
       }
 
+      final String territoryName = territory.getName();
+      final GamePlayer territoryOwner = territory.getOwner();
+      final Collection<Unit> territoryUnits = List.copyOf(territory.getUnits());
       SwingUtilities.invokeLater(
-          () -> updateTerritoryInfo(territory, territoryEffectNames, resources));
+          () ->
+              updateTerritoryInfo(
+                  territoryName, territoryOwner, territoryUnits, territoryEffectNames, resources));
     }
   }
 
   private void updateTerritoryInfo(
-      Territory territory, List<String> territoryEffectNames, IntegerMap<Resource> resources) {
+      final String territoryName,
+      final GamePlayer territoryOwner,
+      Collection<Unit> territoryUnits,
+      List<String> territoryEffectNames,
+      IntegerMap<Resource> resources) {
     // Box layout with horizontal glue on both sides achieves the following desirable properties:
     //   1. If the content is narrower than the available space, it will be centered.
     //   2. If the content is wider than the available space, then the beginning will be shown,
@@ -195,7 +204,6 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
       }
     }
 
-    territoryInfo.add(createTerritoryNameLabel(territory));
 
     if (!territoryEffectText.isEmpty()) {
       territoryEffectText.setLength(territoryEffectText.length() - 2);
@@ -208,8 +216,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
       territoryInfo.add(uiContext.getResourceImageFactory().getLabel(resource, resources));
     }
 
-    final Collection<Unit> units =
-        uiContext.isShowUnitsInStatusBar() ? territory.getUnits() : List.of();
+    final Collection<Unit> units = uiContext.isShowUnitsInStatusBar() ? territoryUnits : List.of();
     if (!units.isEmpty()) {
       JSeparator separator = new JSeparator(JSeparator.VERTICAL);
       separator.setMaximumSize(new java.awt.Dimension(40, getHeight()));
@@ -222,8 +229,9 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     SwingComponents.redraw(territoryInfo);
   }
 
-  private JLabel createTerritoryNameLabel(Territory territory) {
-    final JLabel nameLabel = new JLabel(getTerritoryNameLabelText(territory));
+  private JLabel createTerritoryNameLabel(
+      final String territoryName, final GamePlayer territoryOwner) {
+    final JLabel nameLabel = new JLabel(getTerritoryNameLabelText(territoryName, territoryOwner));
     nameLabel.setFont(nameLabel.getFont().deriveFont(java.awt.Font.BOLD));
     // Ensure the text position is always the same, regardless of other components, by padding to
     // fill available height.
@@ -232,14 +240,14 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     return nameLabel;
   }
 
-  private String getTerritoryNameLabelText(Territory territory) {
-    GamePlayer territoryOwner = territory.getOwner();
+  private String getTerritoryNameLabelText(
+      final String territoryName, final GamePlayer territoryOwner) {
     if (territoryOwner == null) return "";
     GamePlayer currentPlayer = uiContext.getCurrentPlayer();
     if (currentPlayer == null)
       currentPlayer = territoryOwner.getData().getPlayerList().getNullPlayer();
     if (territoryOwner.equals(currentPlayer)) {
-      return String.format("<html>%s (current player)</html>", territory.getName());
+      return String.format("<html>%s (current player)</html>", territoryName);
     }
     final RelationshipTypeAttachment relationshipTypeAttachment =
         territoryOwner
@@ -257,7 +265,7 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
     }
     return String.format(
         "<html>%s (<font color=%s}>%s</font>)</html>",
-        territory.getName(),
+        territoryName,
         convertColorToHex(getRelationshipTypeAttachmentColor(relationshipTypeAttachment)),
         strArchType);
   }
