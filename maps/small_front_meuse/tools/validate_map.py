@@ -22,9 +22,13 @@ tree = ET.parse(game)
 game_root = tree.getroot()
 territories = {node.attrib["name"] for node in game_root.findall("./map/territory")}
 connections = game_root.findall("./map/connection")
+movement_edges = set()
 for connection in connections:
-    assert connection.attrib["t1"] in territories
-    assert connection.attrib["t2"] in territories
+    first = connection.attrib["t1"]
+    second = connection.attrib["t2"]
+    assert first in territories
+    assert second in territories
+    movement_edges.add(tuple(sorted((first, second))))
 
 centers = {}
 pattern = re.compile(r"^(.*?)\s+\((\d+),(\d+)\)")
@@ -45,7 +49,9 @@ for attachment in game_root.findall("./attachmentList/attachment"):
                 assert target in territories
                 roads.add(tuple(sorted((source, target))))
 
-assert len(roads) == 43, len(roads)
+assert len(roads) == 44, len(roads)
+assert roads <= movement_edges, roads - movement_edges
+assert tuple(sorted(("La Roche", "Marche"))) in roads
 for removed in {
     tuple(sorted(("Vielsalm", "Durbuy"))),
     tuple(sorted(("Hotton", "Marche"))),
@@ -53,8 +59,47 @@ for removed in {
 }:
     assert removed not in roads, removed
 
+road_neighbors = {territory: set() for territory in territories}
+for first, second in roads:
+    road_neighbors[first].add(second)
+    road_neighbors[second].add(first)
+
+
+def road_components_without(blocked):
+    remaining = territories - {blocked}
+    components = []
+    visited = set()
+    for start in sorted(remaining):
+        if start in visited:
+            continue
+        pending = [start]
+        component = set()
+        while pending:
+            current = pending.pop()
+            if current in visited:
+                continue
+            visited.add(current)
+            component.add(current)
+            pending.extend(road_neighbors[current] - visited - {blocked})
+        components.append(component)
+    return components
+
+
+# The added La Roche-Marche road prevents one central plateau hub from splitting the map in half.
+for central_hub in ("Hotton", "Nassogne", "Neufchateau"):
+    assert len(road_components_without(central_hub)) == 1, central_hub
+
+stack_capacities = {}
+for attachment in game_root.findall("./attachmentList/attachment"):
+    if attachment.attrib.get("javaClass", "").endswith("TerritoryEffectAttachment"):
+        for option in attachment.findall("option"):
+            if option.attrib["name"] == "stackCapacity":
+                stack_capacities[attachment.attrib["attachTo"]] = int(option.attrib["value"])
+assert stack_capacities == {"Open": 7, "Forest": 5, "Town": 6}, stack_capacities
+
 redeployment_steps = [
-    step for step in game_root.findall("./gamePlay/sequence/step")
+    step
+    for step in game_root.findall("./gamePlay/sequence/step")
     if step.attrib.get("display") == "Redeployment"
 ]
 assert len(redeployment_steps) == 2
@@ -65,5 +110,5 @@ for step in redeployment_steps:
 
 print(
     f"OK: {len(territories)} territories, {len(connections)} movement edges, "
-    f"{len(roads)} roads, fighter landing cleanup disabled"
+    f"{len(roads)} roads, resilient central trunk, configured stack capacities"
 )
