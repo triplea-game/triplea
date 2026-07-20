@@ -209,9 +209,13 @@ def _opponent_action_score(
         score += 15
     if parameters.get("uncertain") == "true":
         score -= 25
-    if origin is not None and origin.visible and origin.supply_source:
-        if _empties_matching_friendly_units(action, observation, origin):
-            score -= 120
+    if (
+        origin is not None
+        and origin.visible
+        and origin.supply_source
+        and _empties_matching_friendly_units(action, observation, origin)
+    ):
+        score -= 120
     return score
 
 
