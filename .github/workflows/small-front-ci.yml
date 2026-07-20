@@ -26,37 +26,6 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v7
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-
-      - name: Install Battle Gym lint dependencies
-        working-directory: python/battle-gym
-        run: python -m pip install -e '.[dev]'
-
-      - name: Capture Battle Gym lint diagnostics
-        working-directory: python/battle-gym
-        shell: bash
-        run: |
-          set +e
-          {
-            echo '=== ruff check ==='
-            ruff check src tests
-            echo 'check_exit='$?
-            echo '=== ruff format check ==='
-            ruff format --check src tests
-            echo 'format_exit='$?
-          } 2>&1 | tee ../../battle-gym-lint.log
-          exit 0
-
-      - name: Upload Battle Gym lint diagnostics
-        uses: actions/upload-artifact@v4
-        with:
-          name: battle-gym-lint-diagnostics
-          path: battle-gym-lint.log
-          if-no-files-found: error
-
       - name: Set up Java 25
         uses: actions/setup-java@v5
         with:
