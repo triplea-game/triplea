@@ -1221,42 +1221,17 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     messageAndDialogThreadPool.waitForAll();
     final CountDownLatch continueLatch = new CountDownLatch(1);
     final Collection<IndividualUnitPanelGrouped> unitPanels = new ArrayList<>();
+    final Map<String, Collection<Unit>> possibleUnitsToAttackFromTerritoryName =
+        getPossibleUnitsToAttackFromTerritoryName(possibleUnitsToAttack);
     SwingUtilities.invokeLater(
         () -> {
-          final Map<String, Collection<Unit>> possibleUnitsToAttackStringForm = new HashMap<>();
-          final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
-          for (final Map.Entry<Territory, Collection<Unit>> entry :
-              possibleUnitsToAttack.entrySet()) {
-            final List<Unit> units = new ArrayList<>(entry.getValue());
-            final List<Unit> sortedUnits =
-                CasualtySelector.getCasualtyOrderOfLoss(
-                    units,
-                    units.get(0).getOwner(),
-                    CombatValueBuilder.mainCombatValue()
-                        .enemyUnits(List.of())
-                        .friendlyUnits(List.of())
-                        .side(BattleState.Side.OFFENSE)
-                        .gameSequence(data.getSequence())
-                        .supportAttachments(data.getUnitTypeList().getSupportRules())
-                        .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
-                        .gameDiceSides(data.getDiceSides())
-                        .territoryEffects(TerritoryEffectHelper.getEffects(entry.getKey()))
-                        .build(),
-                    entry.getKey(),
-                    tuvCalculator.getCostsForTuv(units.get(0).getOwner()),
-                    data);
-            // OOL is ordered with the first unit the owner would want to remove but in a kamikaze
-            // the player who picks is the attacker, so flip the order
-            Collections.reverse(sortedUnits);
-            possibleUnitsToAttackStringForm.put(entry.getKey().getName(), sortedUnits);
-          }
           mapPanel.centerOn(
               data.getMap()
                   .getTerritoryOrNull(
-                      CollectionUtils.getAny(possibleUnitsToAttackStringForm.keySet())));
+                      CollectionUtils.getAny(possibleUnitsToAttackFromTerritoryName.keySet())));
           final IndividualUnitPanelGrouped unitPanel =
               new IndividualUnitPanelGrouped(
-                  possibleUnitsToAttackStringForm,
+                  possibleUnitsToAttackFromTerritoryName,
                   uiContext,
                   "Select Units to Suicide Attack using " + attackResourceToken.getName(),
                   maxNumberOfAttacksAllowed,
@@ -1321,6 +1296,37 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     Interruptibles.await(continueLatch);
     mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     return selection;
+  }
+
+  private Map<String, Collection<Unit>> getPossibleUnitsToAttackFromTerritoryName(
+      Map<Territory, Collection<Unit>> possibleUnitsToAttack) {
+    final Map<String, Collection<Unit>> possibleUnitsToAttackFromTerritoryName = new HashMap<>();
+    final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
+    for (final Map.Entry<Territory, Collection<Unit>> entry : possibleUnitsToAttack.entrySet()) {
+      final List<Unit> units = new ArrayList<>(entry.getValue());
+      final List<Unit> sortedUnits =
+          CasualtySelector.getCasualtyOrderOfLoss(
+              units,
+              units.getFirst().getOwner(),
+              CombatValueBuilder.mainCombatValue()
+                  .enemyUnits(List.of())
+                  .friendlyUnits(List.of())
+                  .side(BattleState.Side.OFFENSE)
+                  .gameSequence(data.getSequence())
+                  .supportAttachments(data.getUnitTypeList().getSupportRules())
+                  .lhtrHeavyBombers(Properties.getLhtrHeavyBombers(data.getProperties()))
+                  .gameDiceSides(data.getDiceSides())
+                  .territoryEffects(TerritoryEffectHelper.getEffects(entry.getKey()))
+                  .build(),
+              entry.getKey(),
+              tuvCalculator.getCostsForTuv(units.getFirst().getOwner()),
+              data);
+      // OOL is ordered with the first unit the owner would want to remove but in a kamikaze
+      // the player who picks is the attacker, so flip the order
+      Collections.reverse(sortedUnits);
+      possibleUnitsToAttackFromTerritoryName.put(entry.getKey().getName(), sortedUnits);
+    }
+    return possibleUnitsToAttackFromTerritoryName;
   }
 
   /**
