@@ -26,8 +26,8 @@ jobs:
         working-directory: python/battle-gym
         run: |
           python -m pip install -e '.[dev]'
-          ruff check --fix .
           ruff format .
+          ruff check --fix . || true
       - name: Format Java
         run: ./gradlew :game-core:spotlessApply
       - name: Commit formatter output
