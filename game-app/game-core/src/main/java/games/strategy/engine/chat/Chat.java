@@ -14,9 +14,9 @@ import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.jspecify.annotations.NonNull;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.ChatParticipant;
 
@@ -117,7 +117,7 @@ public class Chat implements ChatClient {
             });
   }
 
-  private @NonNull Optional<ChatParticipant> getAnyUserNameFromChatters(UserName userName) {
+  private @Nonnull Optional<ChatParticipant> getAnyUserNameFromChatters(UserName userName) {
     return chatters.stream()
         .filter(chatter -> chatter.getUserName().equals(userName.getValue()))
         .findAny();
