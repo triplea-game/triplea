@@ -63,5 +63,10 @@ warn_redundant_casts = true
 warn_unused_ignores = true
 
 [[tool.mypy.overrides]]
-module = ["sb3_contrib", "sb3_contrib.*"]
+module = [
+  "sb3_contrib",
+  "sb3_contrib.*",
+  "stable_baselines3",
+  "stable_baselines3.*",
+]
 ignore_missing_imports = true
