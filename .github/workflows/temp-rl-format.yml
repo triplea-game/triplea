@@ -1,6 +1,9 @@
 name: Temporary RL formatter
 
 on:
+  pull_request:
+    branches:
+      - agent/turn-plan-runtime
   push:
     branches:
       - agent/strategic-rl-foundation
