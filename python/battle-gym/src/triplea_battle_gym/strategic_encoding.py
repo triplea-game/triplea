@@ -97,9 +97,7 @@ class StrategicObservationEncoder:
                 territory, observation.player
             )
 
-        action_features = np.zeros(
-            (self.max_actions, self.ACTION_FEATURES), dtype=np.float32
-        )
+        action_features = np.zeros((self.max_actions, self.ACTION_FEATURES), dtype=np.float32)
         for index, action in enumerate(legal_actions):
             action_features[index] = self._action_features(
                 action=action,
@@ -174,9 +172,7 @@ class StrategicObservationEncoder:
         )
 
         values[6] = _slot_fraction(territory_slots.get(origin_name), self.max_territories)
-        values[7] = _slot_fraction(
-            territory_slots.get(destination_name), self.max_territories
-        )
+        values[7] = _slot_fraction(territory_slots.get(destination_name), self.max_territories)
         values[8] = _stable_fraction(unit_type) if unit_type else 0.0
         values[9] = float(moving_count)
         values[10] = _number(parameters.get("movementLeft"))
@@ -203,18 +199,12 @@ class StrategicObservationEncoder:
             else self.UNKNOWN
         )
         values[17] = (
-            float(origin.supply_source)
-            if origin is not None and origin.visible
-            else self.UNKNOWN
+            float(origin.supply_source) if origin is not None and origin.visible else self.UNKNOWN
         )
         values[18] = float(friendly_origin_count)
-        values[19] = (
-            moving_count / friendly_origin_count if friendly_origin_count > 0 else 0.0
-        )
+        values[19] = moving_count / friendly_origin_count if friendly_origin_count > 0 else 0.0
         battle_action_type = parameters.get("battleActionType", "")
-        values[20] = (
-            _stable_fraction(battle_action_type) if battle_action_type else 0.0
-        )
+        values[20] = _stable_fraction(battle_action_type) if battle_action_type else 0.0
         values[21] = float(_csv_count(parameters.get("killedUnitIds", "")))
         values[22] = float(_csv_count(parameters.get("damagedUnitIds", "")))
         values[23] = 1.0

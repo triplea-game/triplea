@@ -103,14 +103,14 @@ class SingleSideStrategicEnv(gym.Env[dict[str, np.ndarray], int]):
         opponent_steps = 0
         opponent_actions: list[dict[str, Any]] = []
 
-        while not terminated and not truncated and self.raw_observation.player != self._learner_player:
+        while (
+            not terminated and not truncated and self.raw_observation.player != self._learner_player
+        ):
             opponent = self.raw_observation.player
             self._register_opponent(opponent)
             opponent_action = self._opponent_policy(self.raw_observation, self.legal_actions)
             selected = self.legal_actions[opponent_action]
-            observation, opponent_reward, terminated, truncated, _ = self._env.step(
-                opponent_action
-            )
+            observation, opponent_reward, terminated, truncated, _ = self._env.step(opponent_action)
             # The Java reward is from the actor's perspective. In a two-sided zero-sum score margin,
             # the learner sees the opposite sign for an opponent transition.
             total_reward -= float(opponent_reward)
@@ -163,9 +163,7 @@ def scripted_opponent_action_index(
     )
     best_index = end_phase if end_phase is not None else 0
     best_score = 0 if end_phase is not None else -10_000
-    territories = {
-        territory.territory: territory for territory in observation.territories
-    }
+    territories = {territory.territory: territory for territory in observation.territories}
 
     for index, action in enumerate(actions):
         if action.type == "end_phase":
@@ -196,9 +194,8 @@ def _opponent_action_score(
         score += 20
         if destination is not None and destination.visible:
             own_control = (
-                (destination.air_control_status or "").upper() == "CONTROLLED"
-                and destination.air_control_player == observation.player
-            )
+                destination.air_control_status or ""
+            ).upper() == "CONTROLLED" and destination.air_control_player == observation.player
             score += -10 if own_control else 40
     elif destination is not None and destination.visible:
         if destination.owner not in {None, observation.player}:

@@ -89,9 +89,7 @@ class AlternatingStrategicEnv:
         self.observation_space = spaces.Dict(
             {
                 "state": spaces.Box(-np.inf, np.inf, shape=(1,), dtype=np.float32),
-                "action_features": spaces.Box(
-                    -np.inf, np.inf, shape=(2, 1), dtype=np.float32
-                ),
+                "action_features": spaces.Box(-np.inf, np.inf, shape=(2, 1), dtype=np.float32),
                 "action_mask": spaces.Box(0, 1, shape=(2,), dtype=np.int8),
             }
         )
@@ -126,9 +124,7 @@ class AlternatingStrategicEnv:
         self._observation = _observation("Blue", step=0)
         return self._encoded(), {"player": "Blue"}
 
-    def step(
-        self, action: int
-    ) -> tuple[dict[str, np.ndarray], float, bool, bool, dict[str, Any]]:
+    def step(self, action: int) -> tuple[dict[str, np.ndarray], float, bool, bool, dict[str, Any]]:
         assert action == 0
         if self._state == 0:
             self._state = 1
