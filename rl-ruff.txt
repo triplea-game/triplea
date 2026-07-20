@@ -1,0 +1,15 @@
+SIM102 Use a single `if` statement instead of nested `if` statements
+   --> src/triplea_battle_gym/strategic_training_env.py:212:5
+    |
+210 |       if parameters.get("uncertain") == "true":
+211 |           score -= 25
+212 | /     if origin is not None and origin.visible and origin.supply_source:
+213 | |         if _empties_matching_friendly_units(action, observation, origin):
+    | |_________________________________________________________________________^
+214 |               score -= 120
+215 |       return score
+    |
+help: Combine `if` statements using `and`
+
+Found 1 error.
+37 files already formatted
