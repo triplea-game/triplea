@@ -230,9 +230,7 @@ def test_fallback_plan_pairs_air_and_ground_objectives_and_protects_supply() -> 
     assert plan["protectedTerritories"] == ["Prum"]
     assert plan["objectives"][0]["type"] == "GAIN_AIR_SUPERIORITY"
     assert plan["objectives"][0]["territoryName"] == "St. Vith"
-    capture = next(
-        objective for objective in plan["objectives"] if objective["type"] == "CAPTURE"
-    )
+    capture = next(objective for objective in plan["objectives"] if objective["type"] == "CAPTURE")
     assert capture["territoryName"] == "St. Vith"
     assert capture["prerequisiteObjectiveIds"] == ["gain-air-st-vith"]
     assert any(

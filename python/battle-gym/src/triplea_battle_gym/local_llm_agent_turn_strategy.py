@@ -218,9 +218,7 @@ class TurnStrategyLocalLlmGame(verified.VerifiedLocalLlmGame):
                 ollama=self._ollama,
                 current_situation=current_situation,
                 previous_turn_strategy=self._latest_strategy_by_player.get(observation.player),
-                previous_turn_situation=self._latest_turn_start_by_player.get(
-                    observation.player
-                ),
+                previous_turn_situation=self._latest_turn_start_by_player.get(observation.player),
                 blocked_strategy=previous,
                 completed_steps=completed_steps,
             )
@@ -260,10 +258,7 @@ class TurnStrategyLocalLlmGame(verified.VerifiedLocalLlmGame):
         previous_strategy: Mapping[str, Any] | None,
         event: str,
     ) -> None:
-        print(
-            f"[{observation.player} TURN_PLAN] intent: "
-            f"{strategy.get('commanderIntent', '')}"
-        )
+        print(f"[{observation.player} TURN_PLAN] intent: {strategy.get('commanderIntent', '')}")
         objectives = strategy.get("objectives", [])
         if isinstance(objectives, Sequence) and not isinstance(objectives, (str, bytes)):
             rendered = [
@@ -313,8 +308,7 @@ def _strategy_context_message(
         "CURRENT TURN OPERATIONAL CONTEXT follows. CURRENT SITUATION is the only authoritative "
         "board state; all older action ids and state snapshots are expired. The deterministic "
         "executor follows CURRENT TURN OPERATIONAL PLAN and avoids reversing COMPLETED ACTIONS "
-        "THIS TURN.\n"
-        + json.dumps(payload, ensure_ascii=False)
+        "THIS TURN.\n" + json.dumps(payload, ensure_ascii=False)
     )
 
 
@@ -335,9 +329,7 @@ def _generate_turn_strategy(
         "previousTurnOpeningSituation": (
             None if previous_turn_situation is None else dict(previous_turn_situation)
         ),
-        "blockedCurrentPlan": (
-            None if blocked_strategy is None else dict(blocked_strategy)
-        ),
+        "blockedCurrentPlan": (None if blocked_strategy is None else dict(blocked_strategy)),
         "completedActionsThisTurn": [
             {
                 "type": step.action_type,
@@ -464,9 +456,7 @@ def _normalize_turn_strategy(
     )
     if not authoritative_player:
         raise OllamaError("turn strategy playerName was empty")
-    territory_names = (
-        _territory_names(current_situation) if current_situation is not None else None
-    )
+    territory_names = _territory_names(current_situation) if current_situation is not None else None
 
     plan_id = str(value.get("planId", "")).strip()[:120]
     commander_intent = str(value.get("commanderIntent", "")).strip()[:500]
@@ -558,9 +548,7 @@ def _fallback_turn_strategy(observation: StrategicObservation) -> JsonObject:
         (
             territory
             for territory in observation.territories
-            if territory.visible
-            and not territory.water
-            and territory.owner not in {None, player}
+            if territory.visible and not territory.water and territory.owner not in {None, player}
         ),
         key=lambda territory: territory.territory,
     )
@@ -568,9 +556,7 @@ def _fallback_turn_strategy(observation: StrategicObservation) -> JsonObject:
         (
             territory
             for territory in observation.territories
-            if territory.visible
-            and territory.owner == player
-            and territory.supply_source
+            if territory.visible and territory.owner == player and territory.supply_source
         ),
         key=lambda territory: territory.territory,
     )
@@ -584,12 +570,10 @@ def _fallback_turn_strategy(observation: StrategicObservation) -> JsonObject:
     for index, territory in enumerate(visible_enemy[:3]):
         dependencies: list[str] = []
         enemy_ground = any(
-            unit.owner != player and unit.land and unit.count > 0
-            for unit in territory.units
+            unit.owner != player and unit.land and unit.count > 0 for unit in territory.units
         )
         friendly_control = (
-            territory.air_control_status == "controlled"
-            and territory.air_control_player == player
+            territory.air_control_status == "controlled" and territory.air_control_player == player
         )
         if index == 0 and has_friendly_air and enemy_ground and not friendly_control:
             air_id = f"gain-air-{_slug(territory.territory)}"
@@ -667,9 +651,7 @@ def _choose_planned_action(
             completed_steps=completed_steps,
         )
         if choice.score > best.score or (
-            choice.score == best.score
-            and choice.score > 0
-            and choice.action_id < best.action_id
+            choice.score == best.score and choice.score > 0 and choice.action_id < best.action_id
         ):
             best = choice
     return best
@@ -747,10 +729,10 @@ def _score_planned_action(
         if _action_is_land(action, observation) and destination_state.supplied is False:
             score -= 80
             reasons.append("비보급 목적지 -80")
-        if (
-            action.type != "air_assignment"
-            and destination_state.owner not in {None, observation.player}
-        ):
+        if action.type != "air_assignment" and destination_state.owner not in {
+            None,
+            observation.player,
+        }:
             score += 25
             reasons.append("가시 적 통제 지역 압박 +25")
         if action.type == "air_assignment" and not (
@@ -886,9 +868,7 @@ def _empties_friendly_land(
         if territory.territory != origin:
             continue
         friendly_land = sum(
-            unit.count
-            for unit in territory.units
-            if unit.owner == observation.player and unit.land
+            unit.count for unit in territory.units if unit.owner == observation.player and unit.land
         )
         return friendly_land > 0 and moving_count >= friendly_land
     return False
@@ -941,9 +921,7 @@ def _territory_names(current_situation: Mapping[str, Any]) -> set[str]:
 
 def _validate_dependency_cycles(objectives: Sequence[Mapping[str, Any]]) -> None:
     graph = {
-        str(objective["objectiveId"]): {
-            str(item) for item in objective["prerequisiteObjectiveIds"]
-        }
+        str(objective["objectiveId"]): {str(item) for item in objective["prerequisiteObjectiveIds"]}
         for objective in objectives
     }
     visiting: set[str] = set()
