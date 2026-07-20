@@ -21,8 +21,8 @@ from . import local_llm_agent_purpose as purpose
 from . import local_llm_agent_verified as verified
 from .local_llm_agent import (
     ActionCatalog,
-    JsonObject,
     JsonlLogger,
+    JsonObject,
     OllamaError,
     OllamaHttpClient,
     ReplayStep,
