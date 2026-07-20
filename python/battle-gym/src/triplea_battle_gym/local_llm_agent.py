@@ -113,6 +113,7 @@ class ReplayStep:
     @classmethod
     def from_action(cls, action: StrategicAction, *, default_battle: bool = False) -> ReplayStep:
         parameters = action.parameters
+        keys: tuple[str, ...]
         if default_battle:
             keys = ("battleActionType", "battleTerritory")
         elif action.type in {"move", "air_assignment"}:
