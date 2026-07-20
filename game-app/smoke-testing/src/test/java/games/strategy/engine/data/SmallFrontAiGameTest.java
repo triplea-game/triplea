@@ -106,7 +106,7 @@ class SmallFrontAiGameTest {
   }
 
   @Test
-  void centralSupplyGraphUsesIndirectSecondAxis() {
+  void southernSupplyGraphBypassesWiltz() {
     final GameData data = loadMap();
     final Territory laRoche = data.getMap().getTerritoryOrThrow("La Roche");
     final Territory marche = data.getMap().getTerritoryOrThrow("Marche");
@@ -119,7 +119,18 @@ class SmallFrontAiGameTest {
     assertThat(SupplyNetworkResolver.getRoadNeighbors(laRoche, data)).contains(marche);
     assertThat(SupplyNetworkResolver.getRoadNeighbors(hotton, data)).doesNotContain(marche);
     assertThat(SupplyNetworkResolver.getRoadNeighbors(vielsalm, data)).doesNotContain(durbuy);
-    assertThat(SupplyNetworkResolver.getRoadNeighbors(libramont, data)).doesNotContain(neufchateau);
+    assertThat(SupplyNetworkResolver.getRoadNeighbors(libramont, data)).contains(neufchateau);
+
+    final Territory bastogne = data.getMap().getTerritoryOrThrow("Bastogne");
+    final Territory martelange = data.getMap().getTerritoryOrThrow("Martelange");
+    final Territory saintHubert = data.getMap().getTerritoryOrThrow("Saint-Hubert");
+    final Territory wiltz = data.getMap().getTerritoryOrThrow("Wiltz");
+    final GamePlayer germans = data.getPlayerList().getPlayerId("Germans");
+    final GamePlayer americans = data.getPlayerList().getPlayerId("Americans");
+    wiltz.setOwner(germans);
+
+    assertThat(SupplyNetworkResolver.getSuppliedTerritories(americans, data))
+        .contains(bastogne, martelange, saintHubert, libramont);
   }
 
   @Test

@@ -462,6 +462,9 @@
       <option name="victoryCity" value="0"/>
       <option name="territoryEffect" value="Open"/>
     </attachment>
+    <attachment name="supplyTerritoryAttachment" attachTo="Libramont" javaClass="games.strategy.triplea.attachments.SupplyTerritoryAttachment" type="territory">
+      <option name="roadConnection" value="Neufchateau"/>
+    </attachment>
     <attachment name="territoryAttachment" attachTo="Losheim Gap" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
       <option name="production" value="0"/>
       <option name="victoryCity" value="0"/>

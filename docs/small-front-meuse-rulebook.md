@@ -169,6 +169,10 @@
 
 보급 도로는 양방향으로 취급된다.
 
+### 7.1.1 남부 우회 보급축
+
+`Neufchateau–Libramont–Martelange–Bastogne` 도로망은 남부 미군의 우회 보급축을 형성한다. 따라서 **Wiltz 한 곳만 상실해도 Bastogne, Martelange, Saint-Hubert, Libramont가 즉시 고립되지는 않는다.** 독일군이 이 축을 차단하려면 Neufchateau, Libramont, Martelange 등 남부 전선의 실제 연결 지역을 추가로 점령해야 한다.
+
 ### 7.2 보급원
 
 지도에 지정된 보급원은 다음과 같다.
