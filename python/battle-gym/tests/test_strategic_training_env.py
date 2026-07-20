@@ -29,6 +29,8 @@ def test_single_side_wrapper_accumulates_opponent_rewards() -> None:
     assert not truncated
     assert step_info["opponentSteps"] == 1
     assert step_info["opponentActions"][0]["player"] == "Red"
+    assert step_info["terminalMarker"] == "opponent-transition"
+    assert step_info["selectedAction"] == {"type": "learner"}
     assert base.raw_observation.player == "Blue"
 
 
@@ -129,11 +131,26 @@ class AlternatingStrategicEnv:
         if self._state == 0:
             self._state = 1
             self._observation = _observation("Red", step=1)
-            return self._encoded(), 1.0, False, False, {"selectedAction": {}}
+            return (
+                self._encoded(),
+                1.0,
+                False,
+                False,
+                {"selectedAction": {"type": "learner"}},
+            )
         if self._state == 1:
             self._state = 2
             self._observation = _observation("Blue", step=2)
-            return self._encoded(), 0.5, False, False, {"selectedAction": {}}
+            return (
+                self._encoded(),
+                0.5,
+                False,
+                False,
+                {
+                    "selectedAction": {"type": "opponent"},
+                    "terminalMarker": "opponent-transition",
+                },
+            )
         raise AssertionError("unexpected step")
 
     def render(self) -> str:
