@@ -99,6 +99,8 @@ class SingleSideStrategicEnv(gym.Env[dict[str, np.ndarray], int]):
             )
 
         observation, reward, terminated, truncated, learner_info = self._env.step(action)
+        learner_selected_action = learner_info.get("selectedAction")
+        latest_info = dict(learner_info)
         total_reward = float(reward)
         opponent_steps = 0
         opponent_actions: list[dict[str, Any]] = []
@@ -110,7 +112,10 @@ class SingleSideStrategicEnv(gym.Env[dict[str, np.ndarray], int]):
             self._register_opponent(opponent)
             opponent_action = self._opponent_policy(self.raw_observation, self.legal_actions)
             selected = self.legal_actions[opponent_action]
-            observation, opponent_reward, terminated, truncated, _ = self._env.step(opponent_action)
+            observation, opponent_reward, terminated, truncated, opponent_info = self._env.step(
+                opponent_action
+            )
+            latest_info.update(opponent_info)
             # The Java reward is from the actor's perspective. In a two-sided zero-sum score margin,
             # the learner sees the opposite sign for an opponent transition.
             total_reward -= float(opponent_reward)
@@ -125,7 +130,8 @@ class SingleSideStrategicEnv(gym.Env[dict[str, np.ndarray], int]):
             if opponent_steps >= self._max_automatic_steps:
                 raise RuntimeError("opponent rollout exceeded max_automatic_steps")
 
-        info = dict(learner_info)
+        info = latest_info
+        info["selectedAction"] = learner_selected_action
         info["learnerPlayer"] = self._learner_player
         info["opponentSteps"] = opponent_steps
         info["opponentActions"] = opponent_actions
