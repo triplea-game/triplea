@@ -1,0 +1,7 @@
+src/triplea_battle_gym/strategic_train.py:57: error: Cannot find implementation or library stub for module named "stable_baselines3.common.callbacks"  [import-not-found]
+src/triplea_battle_gym/strategic_train.py:57: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+src/triplea_battle_gym/strategic_train.py:58: error: Cannot find implementation or library stub for module named "stable_baselines3.common.vec_env"  [import-not-found]
+src/triplea_battle_gym/local_llm_agent.py:119: error: Incompatible types in assignment (expression has type "tuple[str, str, str, str, str, str, str]", variable has type "tuple[str, str]")  [assignment]
+src/triplea_battle_gym/local_llm_agent.py:143: error: Incompatible types in assignment (expression has type "tuple[str]", variable has type "tuple[str, str]")  [assignment]
+src/triplea_battle_gym/local_llm_agent.py:145: error: Incompatible types in assignment (expression has type "tuple[str, ...]", variable has type "tuple[str, str]")  [assignment]
+Found 5 errors in 2 files (checked 20 source files)
