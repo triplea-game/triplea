@@ -1,2 +1,0 @@
-All checks passed!
-37 files already formatted
