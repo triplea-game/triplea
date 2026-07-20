@@ -70,6 +70,11 @@ def test_terminal_action_id_resolves_end_phase() -> None:
 
 
 def test_terminal_action_id_validates_execute_action() -> None:
-    assert _terminal_action_id(
-        "execute_action", {"action_id": 0}, FakeCatalog()  # type: ignore[arg-type]
-    ) == 0
+    assert (
+        _terminal_action_id(
+            "execute_action",
+            {"action_id": 0},
+            FakeCatalog(),  # type: ignore[arg-type]
+        )
+        == 0
+    )

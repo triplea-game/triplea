@@ -18,8 +18,8 @@ from typing import Any
 
 from .local_llm_agent import (
     ActionCatalog,
-    JsonObject,
     JsonlLogger,
+    JsonObject,
     OllamaError,
     OllamaHttpClient,
     ReplayStep,
@@ -194,9 +194,7 @@ class VerifiedLocalLlmGame(ReliableLocalLlmGame):
                     source="structured_choice",
                     logger=self._logger,
                 )
-                result = session.call(
-                    "execute_action", {"action_id": action_id, "reason": reason}
-                )
+                result = session.call("execute_action", {"action_id": action_id, "reason": reason})
                 if "error" in result:
                     raise OllamaError(f"structured action could not be executed: {result['error']}")
         except OllamaError as error:
@@ -220,9 +218,7 @@ class VerifiedLocalLlmGame(ReliableLocalLlmGame):
                 f"[{observation.player} {observation.phase}] fallback action {fallback}: "
                 f"{catalog.get(fallback).type}"
             )
-            session.call(
-                "execute_action", {"action_id": fallback, "reason": fallback_reason}
-            )
+            session.call("execute_action", {"action_id": fallback, "reason": fallback_reason})
 
         if session.selected_action is not None:
             action = session.selected_action
@@ -232,9 +228,7 @@ class VerifiedLocalLlmGame(ReliableLocalLlmGame):
             )
 
 
-def _terminal_action_id(
-    name: str, arguments: Mapping[str, Any], catalog: ActionCatalog
-) -> int:
+def _terminal_action_id(name: str, arguments: Mapping[str, Any], catalog: ActionCatalog) -> int:
     if name == "end_phase":
         return catalog.end_phase_id()
     value = arguments.get("action_id")
@@ -342,9 +336,7 @@ def _action_fact(catalog: ActionCatalog, action_id: int) -> str:
     unit_type = str(parameters.get("unitType", "unit"))
     count = int(description.get("unitCount", 1))
     if action_type == "allocate_reinforcement":
-        return (
-            f"{player}의 증원 {unit_type} {count}개를 {origin}에서 {destination}에 배치합니다."
-        )
+        return f"{player}의 증원 {unit_type} {count}개를 {origin}에서 {destination}에 배치합니다."
     if action_type == "air_assignment":
         return f"{player}의 {unit_type} {count}개를 {origin}에서 {destination}로 항공 배치합니다."
     return f"{player}의 {unit_type} {count}개를 {origin}에서 {destination}로 이동합니다."
