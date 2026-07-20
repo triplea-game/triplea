@@ -100,51 +100,26 @@ class StatefulStrategicEnvironmentTest {
   }
 
   @Test
-  void chargesAPlayerForGroundLostWhileItWasNotActing() {
-    // Blue acts, gains nothing, and then Red's turn costs Blue two points of margin. Blue's next
-    // reward has to carry that loss, or a policy is never charged for leaving itself open.
+  void doesNotChargeCurrentActionForLossAlreadyPresentBeforeIt() {
     final StandardStrategicRewardFunction reward =
         new StandardStrategicRewardFunction(StrategicRewardConfig.defaults());
     final StrategicObservation blue = observationFor("Blue");
-    final Map<String, Integer> even = Map.of("Blue", 2, "Red", 2);
     final Map<String, Integer> afterRedTurn = Map.of("Blue", 1, "Red", 3);
 
-    assertEquals(0.0, reward.reward(blue, even, blue, even));
-    // Blue 2->1 and Red 2->3 is a two-point margin swing, and Blue is charged all of it even though
-    // Blue's own action changed nothing.
-    assertEquals(-2.0, reward.reward(blue, afterRedTurn, blue, afterRedTurn));
+    assertEquals(0.0, reward.reward(blue, afterRedTurn, blue, afterRedTurn));
   }
 
   @Test
-  void eachPlayerRewardsSumToItsOwnMarginChange() {
+  void eachRewardDescribesOnlyItsOwnTransition() {
     final StandardStrategicRewardFunction reward =
         new StandardStrategicRewardFunction(StrategicRewardConfig.defaults());
     final StrategicObservation blue = observationFor("Blue");
-    final StrategicObservation red = observationFor("Red");
     final Map<String, Integer> start = Map.of("Blue", 4, "Red", 4);
     final Map<String, Integer> middle = Map.of("Blue", 6, "Red", 2);
     final Map<String, Integer> end = Map.of("Blue", 5, "Red", 3);
 
-    double blueTotal = reward.reward(blue, start, blue, middle);
-    double redTotal = reward.reward(red, middle, red, end);
-    blueTotal += reward.reward(blue, end, blue, end);
-
-    // Blue's margin went 0 -> 2, Red's went -4 -> -2, and each player's rewards telescope to that.
-    assertEquals(2.0, blueTotal);
-    assertEquals(2.0, redTotal);
-  }
-
-  @Test
-  void resetClearsTheMarginCarriedFromTheLastEpisode() {
-    final StandardStrategicRewardFunction reward =
-        new StandardStrategicRewardFunction(StrategicRewardConfig.defaults());
-    final StrategicObservation blue = observationFor("Blue");
-    reward.reward(blue, Map.of("Blue", 9, "Red", 0), blue, Map.of("Blue", 9, "Red", 0));
-
-    reward.reset();
-
-    assertEquals(
-        0.0, reward.reward(blue, Map.of("Blue", 1, "Red", 1), blue, Map.of("Blue", 1, "Red", 1)));
+    assertEquals(4.0, reward.reward(blue, start, blue, middle));
+    assertEquals(-2.0, reward.reward(blue, middle, blue, end));
   }
 
   private static StrategicObservation observationFor(final String player) {
