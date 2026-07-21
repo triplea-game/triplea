@@ -25,11 +25,13 @@ dev = [
 train = [
   "sb3-contrib>=2.4,<3",
   "stable-baselines3>=2.4,<3",
+  "tensorboard>=2.15,<3",
 ]
 
 [project.scripts]
 triplea-battle-evaluate = "triplea_battle_gym.evaluate:main"
 triplea-battle-train = "triplea_battle_gym.train:main"
+triplea-strategic-evaluate = "triplea_battle_gym.strategic_evaluate:main"
 triplea-strategic-train = "triplea_battle_gym.strategic_train:main"
 triplea-local-llm = "triplea_battle_gym.local_llm_agent_turn_strategy:main"
 
