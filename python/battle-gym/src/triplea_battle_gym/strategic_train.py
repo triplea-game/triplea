@@ -86,7 +86,6 @@ def main() -> None:
         raise SystemExit(f"--resume is not a file: {args.resume}")
     try:
         from sb3_contrib import MaskablePPO
-        from sb3_contrib.common.wrappers import ActionMasker
         from stable_baselines3.common.callbacks import CheckpointCallback
         from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
     except ImportError as error:
@@ -94,11 +93,8 @@ def main() -> None:
             "training dependencies are missing; install triplea-battle-gym[train]"
         ) from error
 
-    def mask(environment: Any) -> Any:
-        return environment.action_masks()
-
     def make(rank: int) -> Any:
-        def build() -> Any:
+        def build() -> SingleSideStrategicEnv:
             # Workers interleave disjoint episode seeds:
             # rank 0 => seed, seed+n, ...; rank 1 => seed+1, seed+1+n, ...
             env = TripleAStrategicEnv(
@@ -114,16 +110,17 @@ def main() -> None:
                 max_actions=args.max_actions,
                 episode_seed_stride=args.n_envs,
             )
-            learner = SingleSideStrategicEnv(
+            return SingleSideStrategicEnv(
                 env,
                 learner_player=args.learner_player,
             )
-            return ActionMasker(learner, mask)
 
         return build
 
     # One server process per worker: the environment is bound to one game, and a step is a
     # round-trip into Java, so throughput comes from running games side by side.
+    # SingleSideStrategicEnv implements action_masks() directly, as required by MaskablePPO when
+    # SubprocVecEnv is used. ActionMasker must not wrap subprocess environments.
     factories = [make(rank) for rank in range(args.n_envs)]
     wrapped = DummyVecEnv(factories) if len(factories) == 1 else SubprocVecEnv(factories)
     args.output.parent.mkdir(parents=True, exist_ok=True)
