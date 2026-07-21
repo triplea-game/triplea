@@ -18,16 +18,15 @@ from pathlib import Path
 from typing import Any
 
 from .local_llm_agent import (
+    SYSTEM_PROMPT,
+    TOOLS,
     ActionCatalog,
-    JsonObject,
     JsonlLogger,
+    JsonObject,
     LocalLlmGame,
     OllamaError,
     OllamaHttpClient,
-    ReplayStep,
     ShadowSimulator,
-    SYSTEM_PROMPT,
-    TOOLS,
     ToolSession,
     _fallback_action,
     _parse_tool_call,
@@ -176,9 +175,7 @@ class ReliableLocalLlmGame(LocalLlmGame):
                     reason=reason,
                     logger=self._logger,
                 )
-                result = session.call(
-                    "execute_action", {"action_id": action_id, "reason": reason}
-                )
+                result = session.call("execute_action", {"action_id": action_id, "reason": reason})
                 if "error" in result:
                     raise OllamaError(f"structured action could not be executed: {result['error']}")
         except OllamaError as error:
@@ -302,8 +299,7 @@ def _structured_final_choice(
                 "Final decision stage. Return only the JSON object required by the schema. Choose "
                 "exactly one action_id from the legal shortlist and provide a concise Korean public "
                 "commander explanation. Do not invent an action. Decision "
-                f"{decision_number} legal shortlist:\n"
-                + json.dumps(shortlist, ensure_ascii=False)
+                f"{decision_number} legal shortlist:\n" + json.dumps(shortlist, ensure_ascii=False)
             ),
         },
     ]
@@ -366,7 +362,9 @@ def _structured_chat(
             payload = json.loads(response.read().decode("utf-8"))
     except urllib.error.HTTPError as error:
         detail = error.read().decode("utf-8", errors="replace")
-        raise OllamaError(f"Ollama structured choice returned HTTP {error.code}: {detail}") from error
+        raise OllamaError(
+            f"Ollama structured choice returned HTTP {error.code}: {detail}"
+        ) from error
     except (OSError, urllib.error.URLError, json.JSONDecodeError) as error:
         raise OllamaError(f"Ollama structured choice failed: {error}") from error
     if not isinstance(payload, dict):
@@ -399,8 +397,7 @@ def _repair_decision_message(catalog: ActionCatalog, attempt: int) -> str:
     return (
         f"Repair attempt {attempt}: no action was executed. Choose one actionId from this balanced "
         "legal shortlist and provide a concise Korean reason. Return no prose-only answer. Legal "
-        "shortlist:\n"
-        + json.dumps(shortlist, ensure_ascii=False)
+        "shortlist:\n" + json.dumps(shortlist, ensure_ascii=False)
     )
 
 

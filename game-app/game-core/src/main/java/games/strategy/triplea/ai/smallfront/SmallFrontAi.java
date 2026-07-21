@@ -43,7 +43,7 @@ public class SmallFrontAi extends AbstractAi {
   private final SmallFrontPolicy policy;
 
   public SmallFrontAi(final String name, final String playerLabel) {
-    this(name, playerLabel, new HybridOperationalPolicy());
+    this(name, playerLabel, new PlanAwareOperationalPolicy());
   }
 
   public SmallFrontAi(final String name, final String playerLabel, final SmallFrontPolicy policy) {
@@ -85,6 +85,7 @@ public class SmallFrontAi extends AbstractAi {
         return;
       }
       completedActions.add(chosen.get());
+      policy.onActionCompleted(chosen.get(), data, player);
     }
   }
 

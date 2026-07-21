@@ -59,11 +59,7 @@ class OllamaHttpClient:
                 f"could not reach Ollama at {self._base_url}; start Ollama and retry"
             ) from error
         models = payload.get("models", []) if isinstance(payload, dict) else []
-        names = {
-            str(item.get("name", ""))
-            for item in models
-            if isinstance(item, Mapping)
-        }
+        names = {str(item.get("name", "")) for item in models if isinstance(item, Mapping)}
         if self._model not in names and not any(
             name.split(":", maxsplit=1)[0] == self._model for name in names
         ):
@@ -115,10 +111,9 @@ class ReplayStep:
     default_battle: bool = False
 
     @classmethod
-    def from_action(
-        cls, action: StrategicAction, *, default_battle: bool = False
-    ) -> ReplayStep:
+    def from_action(cls, action: StrategicAction, *, default_battle: bool = False) -> ReplayStep:
         parameters = action.parameters
+        keys: tuple[str, ...]
         if default_battle:
             keys = ("battleActionType", "battleTerritory")
         elif action.type in {"move", "air_assignment"}:
@@ -179,10 +174,14 @@ class JsonlLogger:
 
 
 class ActionCatalog:
-    def __init__(self, observation: StrategicObservation, actions: Sequence[StrategicAction]) -> None:
+    def __init__(
+        self, observation: StrategicObservation, actions: Sequence[StrategicAction]
+    ) -> None:
         self.observation = observation
         self.actions = tuple(actions)
-        self._territories = {territory.territory: territory for territory in observation.territories}
+        self._territories = {
+            territory.territory: territory for territory in observation.territories
+        }
 
     def get(self, action_id: int) -> StrategicAction:
         if action_id < 0 or action_id >= len(self.actions):
@@ -329,9 +328,7 @@ class ShadowSimulator:
                     raise RuntimeError("shadow episode ended while replaying the real history")
 
             before = env.raw_observation
-            candidate_index = _find_replay_action(
-                env.legal_actions, ReplayStep.from_action(action)
-            )
+            candidate_index = _find_replay_action(env.legal_actions, ReplayStep.from_action(action))
             _, reward, terminated, truncated, info = env.step(candidate_index)
             total_reward = float(reward)
             auto_steps = 0
@@ -573,8 +570,7 @@ class LocalLlmGame:
             observation = self._env.raw_observation
             if observation.over:
                 print(
-                    f"Game over at round {observation.round} after "
-                    f"{decision_number - 1} actions."
+                    f"Game over at round {observation.round} after {decision_number - 1} actions."
                 )
                 self._logger.write(
                     "game_over",
@@ -688,9 +684,7 @@ class LocalLlmGame:
             )
 
 
-def summarize_observation(
-    observation: StrategicObservation, legal_action_count: int
-) -> JsonObject:
+def summarize_observation(observation: StrategicObservation, legal_action_count: int) -> JsonObject:
     return {
         "schemaVersion": observation.schema_version,
         "round": observation.round,
@@ -769,7 +763,9 @@ def _territory_summary(territory: Any) -> JsonObject:
 def _find_replay_action(actions: Sequence[StrategicAction], step: ReplayStep) -> int:
     matches = [index for index, action in enumerate(actions) if step.matches(action)]
     if not matches:
-        raise RuntimeError(f"could not replay semantic action {step}; legal actions: {len(actions)}")
+        raise RuntimeError(
+            f"could not replay semantic action {step}; legal actions: {len(actions)}"
+        )
     return matches[0]
 
 
@@ -784,9 +780,10 @@ def _default_battle_action(actions: Sequence[StrategicAction]) -> int:
     if not actions:
         raise RuntimeError("battle phase has no legal action")
     for index, action in enumerate(actions):
-        if action.type == "battle_decision" and action.parameters.get(
-            "battleActionType"
-        ) == "continue":
+        if (
+            action.type == "battle_decision"
+            and action.parameters.get("battleActionType") == "continue"
+        ):
             return index
     return 0
 
@@ -845,9 +842,7 @@ def _unit_id_count(value: str) -> int:
     return len([item for item in value.split(",") if item])
 
 
-def _owner_changes(
-    before: StrategicObservation, after: StrategicObservation
-) -> list[JsonObject]:
+def _owner_changes(before: StrategicObservation, after: StrategicObservation) -> list[JsonObject]:
     before_owners = {
         territory.territory: territory.owner
         for territory in before.territories
@@ -869,9 +864,7 @@ def _owner_changes(
     return changes
 
 
-def _visible_unit_delta(
-    before: StrategicObservation, after: StrategicObservation
-) -> JsonObject:
+def _visible_unit_delta(before: StrategicObservation, after: StrategicObservation) -> JsonObject:
     before_counts = _visible_unit_counts(before)
     after_counts = _visible_unit_counts(after)
     keys = sorted(set(before_counts) | set(after_counts))
@@ -879,8 +872,7 @@ def _visible_unit_delta(
         f"{owner}:{unit_type}": after_counts.get((owner, unit_type), 0)
         - before_counts.get((owner, unit_type), 0)
         for owner, unit_type in keys
-        if after_counts.get((owner, unit_type), 0)
-        != before_counts.get((owner, unit_type), 0)
+        if after_counts.get((owner, unit_type), 0) != before_counts.get((owner, unit_type), 0)
     }
 
 

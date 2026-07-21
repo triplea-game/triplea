@@ -18,14 +18,14 @@ from .strategic_models import StrategicAction, StrategicObservation, StrategicRe
 
 
 class TripleAStrategicEnv(gym.Env[dict[str, np.ndarray], int]):
-    """Fixed-space adapter over one restored player turn.
+    """Fixed-space adapter over one strategic episode.
 
-    An episode is a single player's turn, not a whole game: the scenario runs that player's phases
-    and stops at COMPLETE. Reward is the score margin the turn swung, computed server-side from the
-    true position, which is why nothing here has to reconstruct a score from the fogged observation.
+    With ``self_play=False`` the episode is one selected player's turn. With ``self_play=True`` the
+    Java provider chains the complete game. Rewards are computed server-side from the true position;
+    fog-filtered observations never expose hidden score state.
 
-    Actions are indices into the server's current legal mask, so the mask changes shape every step.
-    Anything at or past `len(legal_actions)` is masked out.
+    Legal action indices are valid only for the current observation. ``action_features`` describes
+    each current index and ``action_mask`` excludes unused padded slots.
     """
 
     metadata = {"render_modes": ["ansi"]}
@@ -40,14 +40,19 @@ class TripleAStrategicEnv(gym.Env[dict[str, np.ndarray], int]):
         process_env: Mapping[str, str] | None = None,
         max_territories: int = 64,
         max_actions: int = 512,
+        episode_seed_stride: int = 0,
     ) -> None:
         super().__init__()
         if client is None and not server_command:
             raise ValueError("server_command is required when client is not supplied")
+        if episode_seed_stride < 0:
+            raise ValueError("episode_seed_stride must not be negative")
         self._client = client or BattleClient(server_command or (), cwd=cwd, env=process_env)
         self._owns_client = client is None
         self._base_reset_request = reset_request
         self._max_actions = max_actions
+        self._episode_seed_stride = episode_seed_stride
+        self._implicit_reset_count = 0
         self._encoder = StrategicObservationEncoder(
             max_territories=max_territories,
             max_actions=max_actions,
@@ -59,6 +64,12 @@ class TripleAStrategicEnv(gym.Env[dict[str, np.ndarray], int]):
                     low=-np.inf,
                     high=np.inf,
                     shape=(self._encoder.state_size,),
+                    dtype=np.float32,
+                ),
+                "action_features": spaces.Box(
+                    low=-np.inf,
+                    high=np.inf,
+                    shape=(max_actions, self._encoder.ACTION_FEATURES),
                     dtype=np.float32,
                 ),
                 "action_mask": spaces.Box(
@@ -97,6 +108,12 @@ class TripleAStrategicEnv(gym.Env[dict[str, np.ndarray], int]):
         request = self._base_reset_request
         if seed is not None:
             request = replace(request, seed=int(seed))
+        elif self._episode_seed_stride > 0:
+            request = replace(
+                request,
+                seed=request.seed + self._implicit_reset_count * self._episode_seed_stride,
+            )
+            self._implicit_reset_count += 1
         if options and "reset_request" in options:
             supplied = options["reset_request"]
             if not isinstance(supplied, StrategicResetRequest):
@@ -130,7 +147,7 @@ class TripleAStrategicEnv(gym.Env[dict[str, np.ndarray], int]):
 
     def render(self) -> str:
         observation = self.raw_observation
-        visible = sum(1 for t in observation.territories if t.visible)
+        visible = sum(1 for territory in observation.territories if territory.visible)
         return (
             f"round {observation.round} {observation.player} {observation.phase}: "
             f"{visible}/{len(observation.territories)} territories visible, "
@@ -160,6 +177,7 @@ class TripleAStrategicEnv(gym.Env[dict[str, np.ndarray], int]):
 
     def _info(self) -> dict[str, Any]:
         return {
+            "seed": self.raw_observation.seed,
             "round": self.raw_observation.round,
             "player": self.raw_observation.player,
             "phase": self.raw_observation.phase,

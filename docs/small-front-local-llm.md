@@ -1,19 +1,67 @@
 # Small Front local LLM player
 
-`play-small-front-llm.cmd` runs the Meuse scenario through TripleA's headless strategic environment
-and lets a local Ollama model choose from the engine's legal action mask.
+`play-small-front-llm.cmd` runs the Meuse scenario through TripleA's headless strategic environment.
+The local Ollama model acts as a **turn-level operational planner**, while a deterministic executor
+chooses individual actions from TripleA's current legal action mask.
 
-The model does **not** receive arbitrary Python or shell access. It can only call these bounded tools:
+## Decision architecture
 
-- `get_game_state`
-- `list_legal_actions`
-- `inspect_action`
-- `simulate_action`
-- `execute_action`
-- `end_phase`
+At the first strategic decision for each `(round, player)` pair:
 
-TripleA validates every executed action. Fogged owners, unit stacks, and supply state are not included
-in the model observation.
+1. TripleA produces a fog-filtered strategic observation.
+2. Ollama returns one schema-constrained operational plan.
+3. The plan remains active across Combat Move, Air Assignment, battles, and Redeployment.
+4. Every individual action is scored and selected deterministically from the current legal mask.
+5. The executor ends the phase when no legal action has positive plan value.
+
+The model is therefore not called separately for every move. A second planning call is permitted only
+when at least two operational actions have already completed, non-ending legal actions remain, and the
+current plan cannot produce a positive action. Each plan can allow at most one such replan.
+
+Public action explanations are deterministic and are generated from the exact engine action. They do
+not require another model request.
+
+## Operational plan schema
+
+The planner returns a versioned JSON object with:
+
+- `planId`, `playerName`, `round`, and Korean `commanderIntent`
+- prioritized objectives
+- objective dependencies
+- protected supply or reserve territories
+- `maximumReplans`, limited to `0` or `1`
+
+Supported objective types are:
+
+- `CAPTURE`
+- `HOLD`
+- `PROTECT_SUPPLY`
+- `GAIN_AIR_SUPERIORITY`
+- `REDEPLOY_RESERVE`
+- `SCREEN`
+
+The controller validates schema version, objective IDs, territory names, prerequisite references, and
+dependency cycles. Invalid output falls back to a deterministic fog-safe plan.
+
+## Deterministic executor
+
+Action scoring combines:
+
+- direct progress on active objectives
+- movement toward the primary objective
+- air assignment over a planned battle
+- preservation of protected supply sources and reserves
+- visible destination supply
+- visible enemy pressure
+- uncertainty penalties
+- immediate movement-reversal penalties
+- penalties for actions unrelated to the active plan
+
+All candidates still come from TripleA's legal action mask. The planner does not hard-code movement,
+scramble radius, airbase capacity, stack capacity, combat values, air-control persistence, or
+combined-arms bonuses. The current engine rules and delegates remain authoritative.
+
+Fogged owners, unit stacks, supply state, and air-control state are never added to the planning input.
 
 ## Requirements
 
@@ -43,14 +91,11 @@ The default model is `qwen3:8b`. Positional arguments are:
 Examples:
 
 ```bat
-REM Default qwen3:8b, seed 1, 12 rounds, one exact shadow rollout
+REM Default qwen3:8b, seed 1, 12 rounds
 play-small-front-llm.cmd
 
-REM Use another tool-capable local model
+REM Use another local model with structured-output support
 play-small-front-llm.cmd qwen3:14b
-
-REM Four battle rollouts before the episode has resolved a battle
-play-small-front-llm.cmd qwen3:8b 7 12 4
 ```
 
 The JSONL trace is written to:
@@ -59,25 +104,18 @@ The JSONL trace is written to:
 runs\local-llm\small-front-llm.jsonl
 ```
 
+It includes turn plans, fallback or replan events, deterministic action scores, accepted actions, and
+battle transitions.
+
 ## Shadow simulation
 
-A simulation starts a disposable TripleA server, reloads the same scenario and replays the real
-action history using UUID-independent action descriptors. It then applies the candidate, immediately
-ends remaining combat and air movement, uses TripleA's default casualties, declines optional
-retreats, and stops at redeployment.
-
-Before the first resolved battle, several seeds can evaluate the same deterministic movement state
-with different future dice. After a battle has already consumed RNG, changing the initial seed would
-also change the history that produced the current position. The tool therefore reduces a requested
-multi-seed evaluation to one exact original-seed rollout in that case.
-
-This first implementation is a bounded tactical calculator, not a perfect game-tree search. A future
-server-side state fork could support true Monte Carlo evaluation from any mid-game position without
-replaying the episode.
+The repository still includes bounded shadow simulation for the exploratory and verified-action agent
+modes. The operational-plan launcher does not invoke shadow simulation for every action. This avoids
+the previous behavior where evaluating one candidate immediately ended the remaining Combat Move and
+Air Assignment phases and consequently undervalued multi-action setup sequences.
 
 ## Battle decisions
 
 Casualty selection and optional retreat decisions are handled automatically with the engine default.
-The local model controls reinforcement allocation, combat movement, air assignment, redeployment and
-phase completion. This keeps the tool context strategic and makes shadow replay independent of random
-unit UUIDs.
+The operational planner controls reinforcement allocation, combat movement, air assignment,
+redeployment, and phase completion through its persistent plan and the deterministic executor.

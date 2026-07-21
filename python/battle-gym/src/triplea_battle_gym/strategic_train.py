@@ -1,9 +1,9 @@
-"""Train a Maskable PPO policy by self-play over whole Small Front games.
+"""Train a Maskable PPO learner against a fixed strategic opponent.
 
-Self-play here means one policy plays both sides: an episode alternates turns, and every reward is
-already from the acting player's perspective, so the same weights are updated for whoever moved. The
-policy never sees which side it is beyond the observation, which is what makes a single set of
-weights usable for both.
+PPO receives decisions for exactly one named player. The Java environment still runs complete
+two-sided games, but ``SingleSideStrategicEnv`` executes the opponent internally and accumulates all
+score-margin changes into the learner transition. This avoids interleaving two players' trajectories
+inside one single-agent rollout.
 """
 
 from __future__ import annotations
@@ -15,6 +15,7 @@ from typing import Any
 
 from .strategic_env import TripleAStrategicEnv
 from .strategic_models import StrategicResetRequest
+from .strategic_training_env import SingleSideStrategicEnv
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -25,6 +26,11 @@ def build_parser() -> argparse.ArgumentParser:
         type=Path,
         required=True,
         help="a map XML to start a fresh game, or a save game to resume one",
+    )
+    parser.add_argument(
+        "--learner-player",
+        required=True,
+        help="exact player name controlled by PPO; the other side uses the scripted baseline",
     )
     parser.add_argument("--timesteps", type=int, default=200_000)
     parser.add_argument("--seed", type=int, default=1)
@@ -42,7 +48,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--n-envs",
         type=int,
         default=1,
-        help="parallel games, each with its own server; one env runs about 4 steps/sec",
+        help="parallel learner games, each with its own TripleA server process",
     )
     return parser
 
@@ -51,6 +57,10 @@ def main() -> None:
     args = build_parser().parse_args()
     if args.timesteps <= 0:
         raise SystemExit("--timesteps must be positive")
+    if args.n_envs <= 0:
+        raise SystemExit("--n-envs must be positive")
+    if not args.scenario.is_file():
+        raise SystemExit(f"--scenario is not a file: {args.scenario}")
     try:
         from sb3_contrib import MaskablePPO
         from sb3_contrib.common.wrappers import ActionMasker
@@ -66,34 +76,42 @@ def main() -> None:
 
     def make(rank: int) -> Any:
         def build() -> Any:
+            # Workers interleave disjoint episode seeds:
+            # rank 0 => seed, seed+n, ...; rank 1 => seed+1, seed+1+n, ...
             env = TripleAStrategicEnv(
                 server_command=tuple(shlex.split(args.server_command)),
                 reset_request=StrategicResetRequest(
                     scenario_path=str(args.scenario),
-                    # Each worker plays its own games, or they would all replay one line.
-                    seed=args.seed + rank * 1000,
+                    seed=args.seed + rank,
                     self_play=True,
                     max_actions=args.max_actions,
                     max_rounds=args.max_rounds,
                 ),
                 max_territories=args.max_territories,
                 max_actions=args.max_actions,
+                episode_seed_stride=args.n_envs,
             )
-            return ActionMasker(env, mask)
+            learner = SingleSideStrategicEnv(
+                env,
+                learner_player=args.learner_player,
+            )
+            return ActionMasker(learner, mask)
 
         return build
 
     # One server process per worker: the environment is bound to one game, and a step is a
     # round-trip into Java, so throughput comes from running games side by side.
-    factories = [make(rank) for rank in range(max(1, args.n_envs))]
+    factories = [make(rank) for rank in range(args.n_envs)]
     wrapped = DummyVecEnv(factories) if len(factories) == 1 else SubprocVecEnv(factories)
+    args.output.parent.mkdir(parents=True, exist_ok=True)
     try:
         model = MaskablePPO("MultiInputPolicy", wrapped, verbose=1, seed=args.seed)
         callback = None
         if args.checkpoint_every > 0:
-            # A run this slow should not lose everything if it is interrupted.
+            # Callback calls count vector steps rather than individual timesteps.
+            save_frequency = max(args.checkpoint_every // args.n_envs, 1)
             callback = CheckpointCallback(
-                save_freq=args.checkpoint_every,
+                save_freq=save_frequency,
                 save_path=str(args.output.parent / "checkpoints"),
                 name_prefix=args.output.stem,
             )

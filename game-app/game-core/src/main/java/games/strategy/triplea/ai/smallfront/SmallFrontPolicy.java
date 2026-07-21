@@ -36,4 +36,8 @@ public interface SmallFrontPolicy {
       final List<StrategicAction> completedActions) {
     return choose(legalActions, data, player);
   }
+
+  /** Called after the delegate accepts an action so stateful policies can advance their plan. */
+  default void onActionCompleted(
+      final StrategicAction action, final GameData data, final GamePlayer player) {}
 }
