@@ -70,7 +70,9 @@ public class MapDownloadSwingTable {
 
   public JTable getSwingComponent() {
     // select first row, will trigger any selection listeners
-    table.setRowSelectionInterval(0, 0);
+    if (table.getRowCount() > 0) {
+      table.setRowSelectionInterval(0, 0);
+    }
     return table;
   }
 
