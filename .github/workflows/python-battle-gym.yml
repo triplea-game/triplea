@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+      - agent/turn-plan-runtime
     paths:
       - 'python/battle-gym/**'
       - '.github/workflows/python-battle-gym.yml'
