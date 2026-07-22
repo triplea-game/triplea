@@ -70,6 +70,7 @@ After step 15, if the battle is not over, the round increments and steps 4–15 
 **`steps/retreat/`** (~9 files) — Retreat logic:
 - `OffensiveSubsRetreat` / `DefensiveSubsRetreat` — Submarine retreat/submerge.
 - `OffensiveGeneralRetreat` — General offensive retreat option.
+- `DefensiveGeneralRetreat` - General defensive retreat option.
 - `RetreaterGeneral`, `RetreaterAirAmphibious`, `RetreaterPartialAmphibious` — Retreat strategy implementations.
 - `EvaderRetreat` — Evader retreat logic.
 - `SubmergeSubsVsOnlyAirStep` — Submarines auto-submerge when facing only air.

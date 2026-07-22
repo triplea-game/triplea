@@ -53,6 +53,8 @@ import games.strategy.triplea.delegate.battle.steps.fire.firststrike.DefensiveFi
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.OffensiveFirstStrike;
 import games.strategy.triplea.delegate.battle.steps.fire.general.DefensiveGeneral;
 import games.strategy.triplea.delegate.battle.steps.fire.general.OffensiveGeneral;
+import games.strategy.triplea.delegate.battle.steps.retreat.DefenderFightOrRetreat;
+import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveGeneralRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveGeneralRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveSubsRetreat;
@@ -150,6 +152,8 @@ public class MustFightBattle extends DependentBattle
   // -1 would mean forever until one side is eliminated (the default is infinite)
   private final int maxRounds;
 
+  private Territory defendersRetreatTo;
+
   public MustFightBattle(
       final Territory battleSite,
       final GamePlayer attacker,
@@ -161,6 +165,7 @@ public class MustFightBattle extends DependentBattle
         battleSite.isWater()
             ? Properties.getSeaBattleRounds(data.getProperties())
             : Properties.getLandBattleRounds(data.getProperties());
+    defendersRetreatTo = null;
   }
 
   void resetDefendingUnits(final GamePlayer attacker) {
@@ -866,6 +871,65 @@ public class MustFightBattle extends DependentBattle
     return possible;
   }
 
+  @Override
+  public Collection<Territory> getDefenderRetreatTerritories() {
+
+    // If defender is all planes, just return collection of current territory
+    if (headless
+        || (!defendingUnits.isEmpty() && defendingUnits.stream().allMatch(Matches.unitIsAir()))
+        || Properties.getRetreatingUnitsRemainInPlace(gameData.getProperties())) {
+      return Set.of(battleSite);
+    }
+    // If we are moving into a territory containing enemy units, we cannot
+    // retreat back there, but air units do not block retreat
+    final Predicate<Unit> enemyUnitsThatPreventRetreat =
+        PredicateBuilder.of(Matches.enemyUnit(defender))
+            .and(Matches.unitIsNotInfrastructure())
+            .and(Matches.unitIsBeingTransported().negate())
+            .and(Matches.unitIsSubmerged().negate())
+            .and(Matches.unitCanBeMovedThroughByEnemies().negate())
+            .and(Matches.unitIsAir().negate())
+            .andIf(
+                Properties.getIgnoreTransportInMovement(gameData.getProperties()),
+                Matches.unitIsNotSeaTransportButCouldBeCombatSeaTransport())
+            .build();
+
+    Collection<Territory> possible =
+        CollectionUtils.getMatches(
+            getGameData().getMap().getNeighbors(getBattleSite()),
+            Matches.territoryHasUnitsThatMatch(enemyUnitsThatPreventRetreat).negate());
+
+    // Remove territories we can't retreat to due to territory effects
+    final Predicate<Territory> unitsNotAllowed =
+        Matches.territoryEffectsAllowUnits(defendingUnits).negate();
+    possible.removeAll(CollectionUtils.getMatches(possible, unitsNotAllowed));
+
+    // Cannot retreat into enemy territory, or into another battle with non-air units
+    final Predicate<Territory> conqueredOrEnemy =
+        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(defender);
+    possible.removeAll(CollectionUtils.getMatches(possible, conqueredOrEnemy));
+
+    if (defendingUnits.stream().anyMatch(Matches.unitIsLand()) && !battleSite.isWater()) {
+      possible = CollectionUtils.getMatches(possible, Matches.territoryIsLand());
+    }
+    if (defendingUnits.stream().anyMatch(Matches.unitIsSea())) {
+      // make sure we can move through any canals
+      final Predicate<Territory> canalMatch =
+          t -> {
+            final Route r = new Route(getBattleSite(), t);
+            return new MoveValidator(getGameData(), false)
+                    .validateCanal(r, defendingUnits, getPlayer(DEFENSE))
+                == null;
+          };
+      final Predicate<Territory> match =
+          Matches.territoryIsWater()
+              .and(Matches.territoryHasNoEnemyUnits(getPlayer(DEFENSE)))
+              .and(canalMatch);
+      possible = CollectionUtils.getMatches(possible, match);
+    }
+    return possible;
+  }
+
   private void pushFightLoopOnStack() {
     if (isOver) {
       return;
@@ -1193,9 +1257,8 @@ public class MustFightBattle extends DependentBattle
       @Override
       @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        // Intentionally left blank
-        // Old saves will fall through to the IExecutable that instantiates
-        // OffensiveGeneralRetreat which does the work that previously was here
+        new DefenderFightOrRetreat(MustFightBattle.this, MustFightBattle.this)
+            .execute(stack, bridge);
       }
     };
     new IExecutable() {
@@ -1204,9 +1267,8 @@ public class MustFightBattle extends DependentBattle
       @Override
       @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        // Intentionally left blank
-        // Old saves will fall through to the IExecutable that instantiates
-        // OffensiveGeneralRetreat which does the work that previously was here
+        new DefensiveGeneralRetreat(MustFightBattle.this, MustFightBattle.this)
+            .execute(stack, bridge);
       }
     };
     new IExecutable() {
@@ -1534,5 +1596,15 @@ Round 10,000 reached in a battle. Something must be wrong. Please report this to
         + attackingFromMap.keySet()
         + " attacking with: "
         + attackingUnits;
+  }
+
+  @Override
+  public Territory getDefendersRetreatTo() {
+    return defendersRetreatTo;
+  }
+
+  @Override
+  public void setDefendersRetreatTo(final Territory retreatTo) {
+    defendersRetreatTo = retreatTo;
   }
 }
