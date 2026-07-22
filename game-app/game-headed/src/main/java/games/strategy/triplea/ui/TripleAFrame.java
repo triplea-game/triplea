@@ -245,7 +245,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
           "Show history",
           e -> {
             if (!inHistory.get()) {
-              showHistory();
+              showHistoryOffEdt();
               dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
             }
           });
@@ -261,7 +261,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
 
         @Override
         public void actionPerformed(final ActionEvent e) {
-          showGame();
+          showGameOffEdt();
           dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
         }
       };
@@ -313,7 +313,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     editModeButtonModel = new JToggleButton.ToggleButtonModel();
     editModeButtonModel.setEnabled(false);
 
-    SwingUtilities.invokeLater(() -> this.setJMenuBar(TripleAMenuBar.get(this)));
+    this.setJMenuBar(TripleAMenuBar.get(this));
     final ImageScrollModel model = new ImageScrollModel();
     model.setMaxBounds(
         uiContext.getMapData().getMapDimensions().width,
@@ -334,7 +334,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     mapPanel.addMouseOverUnitListener(
         (units, territory) -> tooltipManager.updateTooltip(getUnitInfo()));
     // link the small and large images
-    SwingUtilities.invokeLater(mapPanel::initSmallMap);
+    mapPanel.initSmallMap();
     mapAndChatPanel = new JPanel();
     mapAndChatPanel.setLayout(new BorderLayout());
     commentPanel = new CommentPanel(this, data);
@@ -400,7 +400,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             .build(),
         BorderLayout.SOUTH);
 
-    SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(getArrowKeyListener()));
+    mapPanel.addKeyListener(getArrowKeyListener());
 
     actionButtonsPanel.setBorder(null);
     statsPanel = new StatPanel(data, uiContext);
@@ -478,37 +478,12 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     uiContext.getUnitImageFactory().clearCache();
   }
 
-  /**
-   * Constructs a new instance of a TripleAFrame, but executes required IO-Operations off the EDT.
-   */
-  public static TripleAFrame create(
-      final IGame game,
-      final LocalPlayers players,
-      @Nullable final Chat chat,
-      final Runnable clientLeftGame) {
-    Preconditions.checkState(
-        !SwingUtilities.isEventDispatchThread(), "This method must not be called on the EDT");
-
-    final UiContext uiContext = new UiContext(game.getData());
-    game.setResourceLoader(uiContext.getResourceLoader());
-    uiContext.getMapData().verify(game.getData());
-    uiContext.setLocalPlayers(players);
-
-    final TripleAFrame frame =
-        Interruptibles.awaitResult(
-                () ->
-                    SwingAction.invokeAndWaitResult(
-                        () -> {
-                          final TripleAFrame newFrame =
-                              new TripleAFrame(game, players, uiContext, chat, clientLeftGame);
-                          newFrame.setVisible(true);
-                          newFrame.toFront();
-                          return newFrame;
-                        }))
-            .result
-            .orElseThrow(() -> new IllegalStateException("Error while instantiating TripleAFrame"));
-    frame.updateStep();
-    return frame;
+  private void updateStep() {
+    if (SwingUtilities.isEventDispatchThread()) {
+      ThreadRunner.runInNewThread(this::updateStepOffEdt);
+    } else {
+      updateStepOffEdt();
+    }
   }
 
   public void hideCommentLog() {
@@ -683,21 +658,156 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     return actionButtonsPanel.waitForRepair(bid, allowedPlayersToRepair);
   }
 
-  public MoveDescription getMove(
-      final GamePlayer player,
-      final PlayerBridge bridge,
-      final boolean nonCombat,
-      final String stepName) {
-    messageAndDialogThreadPool.waitForAll();
-    actionButtonsPanel.changeToMove(player, nonCombat, stepName);
-    // workaround for panel not receiving focus at beginning of n/c move phase
-    if (!getBattlePanel().isBattleShowing()) {
-      requestWindowFocus();
+  private void updateStepOffEdt() {
+    Preconditions.checkState(
+        !SwingUtilities.isEventDispatchThread(), "This method must not be invoked on the EDT!");
+    if (uiContext.isShutDown()) {
+      return;
     }
-    return actionButtonsPanel.waitForMove(bridge);
+    final int round;
+    final String stepDisplayName;
+    final GamePlayer player;
+    try (GameData.Unlocker ignored = data.acquireReadLock()) {
+      round = data.getSequence().getRound();
+      final GameStep step = data.getSequence().getStep();
+      if (step == null) {
+        return;
+      }
+      stepDisplayName = step.getDisplayName();
+      player = step.getPlayerId();
+    }
+
+    uiContext.setCurrentPlayer(player);
+
+    SwingUtilities.invokeLater(
+        () -> {
+          bottomBar.setStepInfo(round, stepDisplayName);
+          bottomBar.updateFromCurrentPlayer();
+        });
+    bottomBar.gameDataChanged();
+    // if the game control has passed to someone else and we are not just showing the map, show the
+    // history
+    if (player != null && !player.isNull()) {
+      if (!uiContext.isCurrentPlayerRemote()) {
+        if (inHistory.get()) {
+          requiredTurnSeries.put(player, true);
+          // if the game control is with us, show the current game
+          showGameOffEdt();
+        }
+      } else {
+        if (!inHistory.get()) {
+          showHistoryOffEdt();
+        }
+      }
+    }
   }
 
-  private void requestWindowFocus() {
+  private void showGameOffEdt() {
+    inGame.set(true);
+    final boolean inHistoryCompareTrueAndSetFalse = inHistory.compareAndSet(true, false);
+    if (inHistoryCompareTrueAndSetFalse) {
+      if (historySyncher != null) {
+        historySyncher.deactivate();
+        historySyncher = null;
+      }
+      historyPanel = null;
+      updatePanelsGameDataOffEdt(data);
+    }
+    // Are we coming from showHistory mode or showMapOnly mode?
+    SwingUtilities.invokeLater(
+        () -> {
+          if (inHistoryCompareTrueAndSetFalse) {
+            tabsPanel.removeAll();
+          }
+          setWidgetActivationOffEdt();
+          addTabs(null);
+          actionButtonsPanel.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(true));
+          gameMainPanel.removeAll();
+          gameMainPanel.setLayout(new BorderLayout());
+          gameMainPanel.add(gameCenterPanel, BorderLayout.CENTER);
+          gameMainPanel.add(bottomBar, BorderLayout.SOUTH);
+          getContentPane().removeAll();
+          getContentPane().add(gameMainPanel, BorderLayout.CENTER);
+          validate();
+          requestWindowFocusOffEdt();
+        });
+    mapPanel.setRoute(null);
+  }
+
+  private void showHistoryOffEdt() {
+    inHistory.set(true);
+    inGame.set(false);
+    setWidgetActivationOffEdt();
+    final GameData clonedGameData;
+    try (GameData.Unlocker ignored = data.acquireWriteLock()) {
+      // we want to use a clone of the data, so we can make changes to it as we walk up and down the
+      // history
+      final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
+      clonedGameData = GameDataUtils.cloneGameData(data, cloneOptions).orElse(null);
+      if (clonedGameData == null) {
+        return;
+      }
+    }
+    historySyncher = new HistorySynchronizer(clonedGameData, game);
+    updatePanelsGameDataOffEdt(clonedGameData);
+    Interruptibles.await(
+        () ->
+            SwingAction.invokeAndWait(
+                () -> {
+                  final HistoryDetailsPanel historyDetailPanel =
+                      getHistoryDetailsPanel(clonedGameData);
+                  // create history tree context menu
+                  final JSplitPane historyComponentSplitPane = new JSplitPane();
+                  historyComponentSplitPane.setOneTouchExpandable(true);
+                  historyComponentSplitPane.setContinuousLayout(true);
+                  historyComponentSplitPane.setDividerSize(8);
+                  historyComponentSplitPane.setLeftComponent(historyPanel);
+                  historyComponentSplitPane.setRightComponent(gameCenterPanel);
+                  historyComponentSplitPane.setDividerLocation(150);
+                  final JPanel historyComponent =
+                      new JPanelBuilder()
+                          .borderLayout()
+                          .addCenter(historyComponentSplitPane)
+                          .addSouth(bottomBar)
+                          .build();
+
+                  tabsPanel.removeAll();
+                  addTabs(historyDetailPanel);
+                  actionButtonsPanel
+                      .getCurrent()
+                      .ifPresent(actionPanel -> actionPanel.setActive(false));
+                  getContentPane().removeAll();
+                  getContentPane().add(historyComponent, BorderLayout.CENTER);
+                  validate();
+                }));
+  }
+
+  private void updatePanelsGameDataOffEdt(final GameData newGameData) {
+    mapPanel.setGameData(newGameData);
+    bottomBar.setGameDataForCurrentTerritory(newGameData);
+    if (!TechAdvance.getTechAdvances(newGameData.getTechnologyFrontier(), null).isEmpty()) {
+      technologyPanel.setGameData(newGameData);
+    }
+    statsPanel.setGameData(newGameData);
+    economyPanel.setGameData(newGameData);
+    if (objectivePanel != null) {
+      objectivePanel.setGameData(newGameData);
+    }
+    territoryDetailPanel.setGameData(newGameData);
+  }
+
+  private void setWidgetActivationOffEdt() {
+    SwingAction.invokeNowOrLater(
+        () -> {
+          showHistoryAction.setEnabled(!inHistory.get());
+          showGameAction.setEnabled(!inGame.get());
+          if (editModeButtonModel != null) {
+            editModeButtonModel.setEnabled(editDelegate != null);
+          }
+        });
+  }
+
+  private void requestWindowFocusOffEdt() {
     Interruptibles.await(
         () ->
             SwingAction.invokeAndWait(
@@ -707,14 +817,61 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                 }));
   }
 
-  public PlaceData waitForPlace(
+  /**
+   * Constructs a new instance of a TripleAFrame, but executes required IO-Operations off the EDT.
+   */
+  public static TripleAFrame create(
+      final IGame game,
+      final LocalPlayers players,
+      @Nullable final Chat chat,
+      final Runnable clientLeftGame) {
+    Preconditions.checkState(
+        !SwingUtilities.isEventDispatchThread(), "This method must not be called on the EDT");
+
+    final UiContext uiContext = new UiContext(game.getData());
+    game.setResourceLoader(uiContext.getResourceLoader());
+    uiContext.getMapData().verify(game.getData());
+    uiContext.setLocalPlayers(players);
+
+    final TripleAFrame frame =
+        Interruptibles.awaitResult(
+                () ->
+                    SwingAction.invokeAndWaitResult(
+                        () -> {
+                          final TripleAFrame newFrame =
+                              new TripleAFrame(game, players, uiContext, chat, clientLeftGame);
+                          newFrame.setVisible(true);
+                          newFrame.toFront();
+                          return newFrame;
+                        }))
+            .result
+            .orElseThrow(() -> new IllegalStateException("Error while instantiating TripleAFrame"));
+    frame.updateStepOffEdt();
+    return frame;
+  }
+
+  public MoveDescription getMoveOffEdt(
+      final GamePlayer player,
+      final PlayerBridge bridge,
+      final boolean nonCombat,
+      final String stepName) {
+    messageAndDialogThreadPool.waitForAll();
+    actionButtonsPanel.changeToMove(player, nonCombat, stepName);
+    // workaround for panel not receiving focus at beginning of n/c move phase
+    if (!getBattlePanel().isBattleShowing()) {
+      requestWindowFocusOffEdt();
+    }
+    return actionButtonsPanel.waitForMove(bridge);
+  }
+
+  public PlaceData waitForPlaceOffEdt(
       final GamePlayer player, final boolean bid, final PlayerBridge bridge) {
     messageAndDialogThreadPool.waitForAll();
     actionButtonsPanel.changeToPlace(player);
     return actionButtonsPanel.waitForPlace(bid, bridge);
   }
 
-  public void waitForMoveForumPoster(final GamePlayer player, final PlayerBridge bridge) {
+  public void waitForMoveForumPosterOffEdt(final GamePlayer player, final PlayerBridge bridge) {
     if (actionButtonsPanel == null) {
       return;
     }
@@ -722,7 +879,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     actionButtonsPanel.waitForMoveForumPosterPanel(this, bridge);
   }
 
-  public void waitForEndTurn(final GamePlayer player, final PlayerBridge bridge) {
+  public void waitForEndTurnOffEdt(final GamePlayer player, final PlayerBridge bridge) {
     if (actionButtonsPanel == null) {
       return;
     }
@@ -730,49 +887,20 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     actionButtonsPanel.waitForEndTurn(this, bridge);
   }
 
-  public FightBattleDetails getBattle(final GamePlayer player, final BattleListing battles) {
+  public FightBattleDetails getBattleOffEdt(final GamePlayer player, final BattleListing battles) {
     messageAndDialogThreadPool.waitForAll();
     actionButtonsPanel.changeToBattle(player, battles);
     return actionButtonsPanel.waitForBattleSelection();
   }
 
   /** We do NOT want to block the next player from beginning their turn. */
-  public void notifyError(final String message) {
+  public void notifyErrorOffEdt(final String message) {
     final String displayMessage =
         LocalizeHtml.localizeImgLinksInHtml(message, uiContext.getMapLocation());
-    showMessageDialog(displayMessage, "Error", JOptionPane.ERROR_MESSAGE);
+    showMessageDialogOffEdt(displayMessage, "Error", JOptionPane.ERROR_MESSAGE);
   }
 
-  /** We do NOT want to block the next player from beginning their turn. */
-  public void notifyMessage(final String message, final String title) {
-    if (message == null || title == null) {
-      return;
-    }
-    if (title.contains(AbstractConditionsAttachment.TRIGGER_CHANCE_FAILURE)
-        && message.contains(AbstractConditionsAttachment.TRIGGER_CHANCE_FAILURE)
-        && !getUiContext().getShowTriggerChanceFailure()) {
-      return;
-    }
-    if (title.contains(AbstractConditionsAttachment.TRIGGER_CHANCE_SUCCESSFUL)
-        && message.contains(AbstractConditionsAttachment.TRIGGER_CHANCE_SUCCESSFUL)
-        && !getUiContext().getShowTriggerChanceSuccessful()) {
-      return;
-    }
-    if (title.equals(AbstractTriggerAttachment.NOTIFICATION)
-        && !getUiContext().getShowTriggeredNotifications()) {
-      return;
-    }
-    if (title.contains(AbstractEndTurnDelegate.END_TURN_REPORT_STRING)
-        && message.contains(AbstractEndTurnDelegate.END_TURN_REPORT_STRING)
-        && !getUiContext().getShowEndOfTurnReport()) {
-      return;
-    }
-    final String displayMessage =
-        LocalizeHtml.localizeImgLinksInHtml(message, uiContext.getMapLocation());
-    showMessageDialog(displayMessage, title, JOptionPane.INFORMATION_MESSAGE);
-  }
-
-  private void showMessageDialog(String displayMessage, String title, int type) {
+  private void showMessageDialogOffEdt(String displayMessage, String title, int type) {
     try {
       messageAndDialogThreadPool.submit(
           () ->
@@ -785,155 +913,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     } catch (RejectedExecutionException e) {
       // The thread pool may have been shutdown. Nothing to do.
     }
-  }
-
-  /**
-   * Prompts the user with a list of territories that have air units that either cannot land
-   * (movement action) or be placed (placement action) in the territory. The user is asked whether
-   * they wish to end the current movement/placement action, which will destroy the air units in the
-   * specified territories, or if they wish to continue the current movement/placement action in
-   * order to possibly move/place those units in a different territory.
-   *
-   * @param gamePlayer The player performing the movement/placement action.
-   * @param airCantLand The collection of territories that have air units that either cannot land or
-   *     be placed in them.
-   * @param movePhase {@code true} if a movement action is active; otherwise {@code false} if a
-   *     placement action is active.
-   * @return {@code true} if the user wishes to end the current movement/placement action, and thus
-   *     destroy the affected air units; otherwise {@code false} if the user wishes to continue the
-   *     current movement/placement action.
-   */
-  public boolean getOkToLetAirDie(
-      final GamePlayer gamePlayer,
-      final Collection<Territory> airCantLand,
-      final boolean movePhase) {
-    if (airCantLand == null || airCantLand.isEmpty()) {
-      return true;
-    }
-    messageAndDialogThreadPool.waitForAll();
-    final StringBuilder sb = new StringBuilder("<html>Air units cannot land in:<ul> ");
-    for (final Territory t : airCantLand) {
-      sb.append("<li>").append(t.getName()).append("</li>");
-    }
-    sb.append("</ul></html>");
-    final boolean lhtrProd =
-        Properties.getLhtrCarrierProductionRules(data.getProperties())
-            || Properties.getLandExistingFightersOnNewCarriers(data.getProperties());
-    final int carrierCount =
-        GameStepPropertiesHelper.getCombinedTurns(data, gamePlayer).stream()
-            .map(GamePlayer::getUnitCollection)
-            .map(units -> units.getMatches(Matches.unitIsCarrier()))
-            .mapToInt(List::size)
-            .sum();
-    final boolean canProduceCarriersUnderFighter = lhtrProd && carrierCount != 0;
-    if (canProduceCarriersUnderFighter && carrierCount > 0) {
-      sb.append("\nYou have ")
-          .append(carrierCount)
-          .append(" ")
-          .append(MyFormatter.pluralize("carrier", carrierCount))
-          .append(" on which planes can land");
-    }
-    final String ok = movePhase ? "End Move Phase" : "Kill Planes";
-    final String cancel = movePhase ? "Keep Moving" : "Change Placement";
-    final String[] options = {cancel, ok};
-    mapPanel.centerOn(CollectionUtils.getAny(airCantLand));
-    final int choice =
-        EventThreadJOptionPane.showOptionDialog(
-            this,
-            sb.toString(),
-            "Air cannot land",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE,
-            null,
-            options,
-            cancel,
-            getUiContext().getCountDownLatchHandler());
-    return choice == JOptionPane.NO_OPTION;
-  }
-
-  /**
-   * Prompts the user with a list of territories that have units that cannot fight in the territory.
-   * The user is asked whether they wish to end the current movement action, which will destroy the
-   * units in the specified territories, or if they wish to continue the current movement action in
-   * order to possibly move those units to a different territory.
-   *
-   * @param unitsCantFight The collection of territories that have units that cannot fight.
-   * @return {@code true} if the user wishes to end the current movement action, and thus destroy
-   *     the affected units; otherwise {@code false} if the user wishes to continue the current
-   *     movement action.
-   */
-  public boolean getOkToLetUnitsDie(final Collection<Territory> unitsCantFight) {
-    if (unitsCantFight == null || unitsCantFight.isEmpty()) {
-      return true;
-    }
-    messageAndDialogThreadPool.waitForAll();
-    final String message =
-        unitsCantFight.stream()
-            .map(DefaultNamed::getName)
-            .collect(Collectors.joining(" ", "Units in the following territories will die: ", ""));
-    final String ok = "Done Moving";
-    final String cancel = "Keep Moving";
-    final String[] options = {cancel, ok};
-    this.mapPanel.centerOn(CollectionUtils.getAny(unitsCantFight));
-    final int choice =
-        EventThreadJOptionPane.showOptionDialog(
-            this,
-            message,
-            "Units cannot fight",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE,
-            null,
-            options,
-            cancel,
-            getUiContext().getCountDownLatchHandler());
-    return choice == JOptionPane.NO_OPTION;
-  }
-
-  /** Asks a given player if they wish confirm a given political action. */
-  public boolean acceptAction(
-      final GamePlayer playerSendingProposal,
-      final String acceptanceQuestion,
-      final boolean politics) {
-    messageAndDialogThreadPool.waitForAll();
-
-    return EventThreadJOptionPane.showConfirmDialog(
-        this,
-        acceptanceQuestion,
-        "Accept "
-            + (politics ? "Political " : "")
-            + "Proposal from "
-            + playerSendingProposal.getName()
-            + "?",
-        ConfirmDialogType.YES_NO);
-  }
-
-  public boolean getOk(final Object message, final String title) {
-    messageAndDialogThreadPool.waitForAll();
-    return EventThreadJOptionPane.showConfirmDialog(
-        this, message, title, ConfirmDialogType.OK_CANCEL);
-  }
-
-  /** Displays a message to the user informing them of the results of rolling for technologies. */
-  public void notifyTechResults(final TechResults msg) {
-    final Supplier<TechResultsDisplay> action = () -> new TechResultsDisplay(msg, uiContext, data);
-    messageAndDialogThreadPool.submit(
-        () ->
-            Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action))
-                .result
-                .ifPresent(
-                    display -> {
-                      SwingUtilities.invokeLater(this.mapPanel::resetMap);
-                      EventThreadJOptionPane.showOptionDialog(
-                          TripleAFrame.this,
-                          display,
-                          "Tech roll",
-                          JOptionPane.OK_OPTION,
-                          JOptionPane.PLAIN_MESSAGE,
-                          null,
-                          new String[] {"OK"},
-                          "OK",
-                          getUiContext().getCountDownLatchHandler());
-                    }));
   }
 
   /**
@@ -1151,49 +1130,33 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         .orElse(null);
   }
 
-  /**
-   * Prompts the user to pick a territory and a collection of associated units.
-   *
-   * @param player The player making the selection.
-   * @param territoryChoices The collection of territories from which the user may select.
-   * @param unitChoices The collection of units from which the user may select.
-   * @param unitsPerPick The number of units the user must select.
-   * @return A tuple whose first element is the selected territory and whose second element is the
-   *     collection of selected units.
-   */
-  public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(
-      final GamePlayer player,
-      final List<Territory> territoryChoices,
-      final List<Unit> unitChoices,
-      final int unitsPerPick) {
-    // total hacks
-    messageAndDialogThreadPool.waitForAll();
-    Interruptibles.await(
-        () ->
-            SwingAction.invokeAndWait(
-                () -> {
-                  uiContext.setCurrentPlayer(player);
-                  bottomBar.updateFromCurrentPlayer();
-                  if (inGame.compareAndSet(false, true)) {
-                    showGame();
-                  }
-                  if (tabsPanel.indexOfTab("Actions") == -1) {
-                    // add actions tab
-                    tabsPanel.insertTab("Actions", null, actionButtonsPanel, null, 0);
-                  }
-                  tabsPanel.setSelectedIndex(0);
-                }));
-    actionButtonsPanel.changeToPickTerritoryAndUnits(player);
-    final Tuple<Territory, Set<Unit>> territoryAndUnits =
-        actionButtonsPanel.waitForPickTerritoryAndUnits(
-            territoryChoices, unitChoices, unitsPerPick);
-    final int index = tabsPanel.indexOfTab("Actions");
-    if (index != -1 && inHistory.get()) {
-      // remove actions tab
-      Interruptibles.await(() -> SwingAction.invokeAndWait(() -> tabsPanel.remove(index)));
+  /** We do NOT want to block the next player from beginning their turn. */
+  public void notifyMessageOffEdt(final String message, final String title) {
+    if (message == null || title == null) {
+      return;
     }
-    actionButtonsPanel.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
-    return territoryAndUnits;
+    if (title.contains(AbstractConditionsAttachment.TRIGGER_CHANCE_FAILURE)
+        && message.contains(AbstractConditionsAttachment.TRIGGER_CHANCE_FAILURE)
+        && !getUiContext().getShowTriggerChanceFailure()) {
+      return;
+    }
+    if (title.contains(AbstractConditionsAttachment.TRIGGER_CHANCE_SUCCESSFUL)
+        && message.contains(AbstractConditionsAttachment.TRIGGER_CHANCE_SUCCESSFUL)
+        && !getUiContext().getShowTriggerChanceSuccessful()) {
+      return;
+    }
+    if (title.equals(AbstractTriggerAttachment.NOTIFICATION)
+        && !getUiContext().getShowTriggeredNotifications()) {
+      return;
+    }
+    if (title.contains(AbstractEndTurnDelegate.END_TURN_REPORT_STRING)
+        && message.contains(AbstractEndTurnDelegate.END_TURN_REPORT_STRING)
+        && !getUiContext().getShowEndOfTurnReport()) {
+      return;
+    }
+    final String displayMessage =
+        LocalizeHtml.localizeImgLinksInHtml(message, uiContext.getMapLocation());
+    showMessageDialogOffEdt(displayMessage, title, JOptionPane.INFORMATION_MESSAGE);
   }
 
   /**
@@ -1588,30 +1551,124 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     return selection;
   }
 
-  public PoliticalActionAttachment getPoliticalActionChoice(
-      final GamePlayer player, final boolean firstRun, final IPoliticsDelegate politicsDelegate) {
+  /**
+   * Prompts the user with a list of territories that have air units that either cannot land
+   * (movement action) or be placed (placement action) in the territory. The user is asked whether
+   * they wish to end the current movement/placement action, which will destroy the air units in the
+   * specified territories, or if they wish to continue the current movement/placement action in
+   * order to possibly move/place those units in a different territory.
+   *
+   * @param gamePlayer The player performing the movement/placement action.
+   * @param airCantLand The collection of territories that have air units that either cannot land or
+   *     be placed in them.
+   * @param movePhase {@code true} if a movement action is active; otherwise {@code false} if a
+   *     placement action is active.
+   * @return {@code true} if the user wishes to end the current movement/placement action, and thus
+   *     destroy the affected air units; otherwise {@code false} if the user wishes to continue the
+   *     current movement/placement action.
+   */
+  public boolean getOkToLetAirDieOffEdt(
+      final GamePlayer gamePlayer,
+      final Collection<Territory> airCantLand,
+      final boolean movePhase) {
+    if (airCantLand == null || airCantLand.isEmpty()) {
+      return true;
+    }
     messageAndDialogThreadPool.waitForAll();
-    actionButtonsPanel.changeToPolitics(player);
-    requestWindowFocus();
-    return actionButtonsPanel.waitForPoliticalAction(firstRun, politicsDelegate);
+    final StringBuilder sb = new StringBuilder("<html>Air units cannot land in:<ul> ");
+    for (final Territory t : airCantLand) {
+      sb.append("<li>").append(t.getName()).append("</li>");
+    }
+    sb.append("</ul></html>");
+    final boolean lhtrProd =
+        Properties.getLhtrCarrierProductionRules(data.getProperties())
+            || Properties.getLandExistingFightersOnNewCarriers(data.getProperties());
+    final int carrierCount =
+        GameStepPropertiesHelper.getCombinedTurns(data, gamePlayer).stream()
+            .map(GamePlayer::getUnitCollection)
+            .map(units -> units.getMatches(Matches.unitIsCarrier()))
+            .mapToInt(List::size)
+            .sum();
+    final boolean canProduceCarriersUnderFighter = lhtrProd && carrierCount != 0;
+    if (canProduceCarriersUnderFighter && carrierCount > 0) {
+      sb.append("\nYou have ")
+          .append(carrierCount)
+          .append(" ")
+          .append(MyFormatter.pluralize("carrier", carrierCount))
+          .append(" on which planes can land");
+    }
+    final String ok = movePhase ? "End Move Phase" : "Kill Planes";
+    final String cancel = movePhase ? "Keep Moving" : "Change Placement";
+    final String[] options = {cancel, ok};
+    mapPanel.centerOn(CollectionUtils.getAny(airCantLand));
+    final int choice =
+        EventThreadJOptionPane.showOptionDialog(
+            this,
+            sb.toString(),
+            "Air cannot land",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE,
+            null,
+            options,
+            cancel,
+            getUiContext().getCountDownLatchHandler());
+    return choice == JOptionPane.NO_OPTION;
   }
 
-  public UserActionAttachment getUserActionChoice(
-      final GamePlayer player,
-      final boolean firstRun,
-      final IUserActionDelegate userActionDelegate) {
+  /**
+   * Prompts the user with a list of territories that have units that cannot fight in the territory.
+   * The user is asked whether they wish to end the current movement action, which will destroy the
+   * units in the specified territories, or if they wish to continue the current movement action in
+   * order to possibly move those units to a different territory.
+   *
+   * @param unitsCantFight The collection of territories that have units that cannot fight.
+   * @return {@code true} if the user wishes to end the current movement action, and thus destroy
+   *     the affected units; otherwise {@code false} if the user wishes to continue the current
+   *     movement action.
+   */
+  public boolean getOkToLetUnitsDieOffEdt(final Collection<Territory> unitsCantFight) {
+    if (unitsCantFight == null || unitsCantFight.isEmpty()) {
+      return true;
+    }
     messageAndDialogThreadPool.waitForAll();
-    actionButtonsPanel.changeToUserActions(player);
-    requestWindowFocus();
-    return actionButtonsPanel.waitForUserActionAction(firstRun, userActionDelegate);
+    final String message =
+        unitsCantFight.stream()
+            .map(DefaultNamed::getName)
+            .collect(Collectors.joining(" ", "Units in the following territories will die: ", ""));
+    final String ok = "Done Moving";
+    final String cancel = "Keep Moving";
+    final String[] options = {cancel, ok};
+    this.mapPanel.centerOn(CollectionUtils.getAny(unitsCantFight));
+    final int choice =
+        EventThreadJOptionPane.showOptionDialog(
+            this,
+            message,
+            "Units cannot fight",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE,
+            null,
+            options,
+            cancel,
+            getUiContext().getCountDownLatchHandler());
+    return choice == JOptionPane.NO_OPTION;
   }
 
-  public TechRoll getTechRolls(final GamePlayer gamePlayer) {
+  /** Asks a given player if they wish confirm a given political action. */
+  public boolean acceptActionOffEdt(
+      final GamePlayer playerSendingProposal,
+      final String acceptanceQuestion,
+      final boolean politics) {
     messageAndDialogThreadPool.waitForAll();
-    actionButtonsPanel.changeToTech(gamePlayer);
-    // workaround for panel not receiving focus at beginning of tech phase
-    requestWindowFocus();
-    return actionButtonsPanel.waitForTech();
+
+    return EventThreadJOptionPane.showConfirmDialog(
+        this,
+        acceptanceQuestion,
+        "Accept "
+            + (politics ? "Political " : "")
+            + "Proposal from "
+            + playerSendingProposal.getName()
+            + "?",
+        ConfirmDialogType.YES_NO);
   }
 
   /**
@@ -1656,56 +1713,33 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         .orElse(null);
   }
 
-  private void updateStep() {
-    if (SwingUtilities.isEventDispatchThread()) {
-      ThreadRunner.runInNewThread(this::updateStepFromEdt);
-    } else {
-      updateStepFromEdt();
-    }
+  public boolean getOkOffEdt(final Object message, final String title) {
+    messageAndDialogThreadPool.waitForAll();
+    return EventThreadJOptionPane.showConfirmDialog(
+        this, message, title, ConfirmDialogType.OK_CANCEL);
   }
 
-  private void updateStepFromEdt() {
-    Preconditions.checkState(
-        !SwingUtilities.isEventDispatchThread(), "This method must not be invoked on the EDT!");
-    if (uiContext.isShutDown()) {
-      return;
-    }
-    final int round;
-    final String stepDisplayName;
-    final GamePlayer player;
-    try (GameData.Unlocker ignored = data.acquireReadLock()) {
-      round = data.getSequence().getRound();
-      final GameStep step = data.getSequence().getStep();
-      if (step == null) {
-        return;
-      }
-      stepDisplayName = step.getDisplayName();
-      player = step.getPlayerId();
-    }
-
-    uiContext.setCurrentPlayer(player);
-
-    SwingUtilities.invokeLater(
-        () -> {
-          bottomBar.setStepInfo(round, stepDisplayName);
-          bottomBar.updateFromCurrentPlayer();
-        });
-    bottomBar.gameDataChanged();
-    // if the game control has passed to someone else and we are not just showing the map, show the
-    // history
-    if (player != null && !player.isNull()) {
-      if (!uiContext.isCurrentPlayerRemote()) {
-        if (inHistory.get()) {
-          requiredTurnSeries.put(player, true);
-          // if the game control is with us, show the current game
-          showGame();
-        }
-      } else {
-        if (!inHistory.get()) {
-          showHistory();
-        }
-      }
-    }
+  /** Displays a message to the user informing them of the results of rolling for technologies. */
+  public void notifyTechResultsOffEdt(final TechResults msg) {
+    final Supplier<TechResultsDisplay> action = () -> new TechResultsDisplay(msg, uiContext, data);
+    messageAndDialogThreadPool.submit(
+        () ->
+            Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action))
+                .result
+                .ifPresent(
+                    display -> {
+                      SwingUtilities.invokeLater(this.mapPanel::resetMap);
+                      EventThreadJOptionPane.showOptionDialog(
+                          TripleAFrame.this,
+                          display,
+                          "Tech roll",
+                          JOptionPane.OK_OPTION,
+                          JOptionPane.PLAIN_MESSAGE,
+                          null,
+                          new String[] {"OK"},
+                          "OK",
+                          getUiContext().getCountDownLatchHandler());
+                    }));
   }
 
   /**
@@ -1808,66 +1842,22 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     tabsPanel.setSelectedIndex(0);
   }
 
-  private void showHistory() {
-    inHistory.set(true);
-    inGame.set(false);
-    setWidgetActivation();
-    final GameData clonedGameData;
-    try (GameData.Unlocker ignored = data.acquireWriteLock()) {
-      // we want to use a clone of the data, so we can make changes to it as we walk up and down the
-      // history
-      final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
-      clonedGameData = GameDataUtils.cloneGameData(data, cloneOptions).orElse(null);
-      if (clonedGameData == null) {
-        return;
-      }
-    }
-    historySyncher = new HistorySynchronizer(clonedGameData, game);
-    updatePanelsGameData(clonedGameData);
-    Interruptibles.await(
-        () ->
-            SwingAction.invokeAndWait(
-                () -> {
-                  final HistoryDetailsPanel historyDetailPanel =
-                      getHistoryDetailsPanel(clonedGameData);
-                  // create history tree context menu
-                  final JSplitPane historyComponentSplitPane = new JSplitPane();
-                  historyComponentSplitPane.setOneTouchExpandable(true);
-                  historyComponentSplitPane.setContinuousLayout(true);
-                  historyComponentSplitPane.setDividerSize(8);
-                  historyComponentSplitPane.setLeftComponent(historyPanel);
-                  historyComponentSplitPane.setRightComponent(gameCenterPanel);
-                  historyComponentSplitPane.setDividerLocation(150);
-                  final JPanel historyComponent =
-                      new JPanelBuilder()
-                          .borderLayout()
-                          .addCenter(historyComponentSplitPane)
-                          .addSouth(bottomBar)
-                          .build();
-
-                  tabsPanel.removeAll();
-                  addTabs(historyDetailPanel);
-                  actionButtonsPanel
-                      .getCurrent()
-                      .ifPresent(actionPanel -> actionPanel.setActive(false));
-                  getContentPane().removeAll();
-                  getContentPane().add(historyComponent, BorderLayout.CENTER);
-                  validate();
-                }));
+  public PoliticalActionAttachment getPoliticalActionChoice(
+      final GamePlayer player, final boolean firstRun, final IPoliticsDelegate politicsDelegate) {
+    messageAndDialogThreadPool.waitForAll();
+    actionButtonsPanel.changeToPolitics(player);
+    requestWindowFocusOffEdt();
+    return actionButtonsPanel.waitForPoliticalAction(firstRun, politicsDelegate);
   }
 
-  private void updatePanelsGameData(final GameData newGameData) {
-    mapPanel.setGameData(newGameData);
-    bottomBar.setGameDataForCurrentTerritory(newGameData);
-    if (!TechAdvance.getTechAdvances(newGameData.getTechnologyFrontier(), null).isEmpty()) {
-      technologyPanel.setGameData(newGameData);
-    }
-    statsPanel.setGameData(newGameData);
-    economyPanel.setGameData(newGameData);
-    if (objectivePanel != null) {
-      objectivePanel.setGameData(newGameData);
-    }
-    territoryDetailPanel.setGameData(newGameData);
+  public UserActionAttachment getUserActionChoice(
+      final GamePlayer player,
+      final boolean firstRun,
+      final IUserActionDelegate userActionDelegate) {
+    messageAndDialogThreadPool.waitForAll();
+    actionButtonsPanel.changeToUserActions(player);
+    requestWindowFocusOffEdt();
+    return actionButtonsPanel.waitForUserActionAction(firstRun, userActionDelegate);
   }
 
   @Nonnull
@@ -1996,55 +1986,65 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     historyLog.setVisible(true);
   }
 
-  private void showGame() {
-    inGame.set(true);
-    final boolean inHistoryCompareTrueAndSetFalse = inHistory.compareAndSet(true, false);
-    if (inHistoryCompareTrueAndSetFalse) {
-      if (historySyncher != null) {
-        historySyncher.deactivate();
-        historySyncher = null;
-      }
-      historyPanel = null;
-      updatePanelsGameData(data);
-    }
-    // Are we coming from showHistory mode or showMapOnly mode?
-    SwingUtilities.invokeLater(
-        () -> {
-          if (inHistoryCompareTrueAndSetFalse) {
-            tabsPanel.removeAll();
-          }
-          setWidgetActivation();
-          addTabs(null);
-          actionButtonsPanel.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(true));
-          gameMainPanel.removeAll();
-          gameMainPanel.setLayout(new BorderLayout());
-          gameMainPanel.add(gameCenterPanel, BorderLayout.CENTER);
-          gameMainPanel.add(bottomBar, BorderLayout.SOUTH);
-          getContentPane().removeAll();
-          getContentPane().add(gameMainPanel, BorderLayout.CENTER);
-          validate();
-          requestWindowFocus();
-        });
-    mapPanel.setRoute(null);
+  public TechRoll getTechRolls(final GamePlayer gamePlayer) {
+    messageAndDialogThreadPool.waitForAll();
+    actionButtonsPanel.changeToTech(gamePlayer);
+    // workaround for panel not receiving focus at beginning of tech phase
+    requestWindowFocusOffEdt();
+    return actionButtonsPanel.waitForTech();
   }
 
-  private void setWidgetActivation() {
-    SwingAction.invokeNowOrLater(
-        () -> {
-          showHistoryAction.setEnabled(!inHistory.get());
-          showGameAction.setEnabled(!inGame.get());
-          if (editModeButtonModel != null) {
-            editModeButtonModel.setEnabled(editDelegate != null);
-          }
-        });
+  /**
+   * Prompts the user to pick a territory and a collection of associated units.
+   *
+   * @param player The player making the selection.
+   * @param territoryChoices The collection of territories from which the user may select.
+   * @param unitChoices The collection of units from which the user may select.
+   * @param unitsPerPick The number of units the user must select.
+   * @return A tuple whose first element is the selected territory and whose second element is the
+   *     collection of selected units.
+   */
+  public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(
+      final GamePlayer player,
+      final List<Territory> territoryChoices,
+      final List<Unit> unitChoices,
+      final int unitsPerPick) {
+    // total hacks
+    messageAndDialogThreadPool.waitForAll();
+    Interruptibles.await(
+        () ->
+            SwingAction.invokeAndWait(
+                () -> {
+                  uiContext.setCurrentPlayer(player);
+                  bottomBar.updateFromCurrentPlayer();
+                  if (inGame.compareAndSet(false, true)) {
+                    showGameOffEdt();
+                  }
+                  if (tabsPanel.indexOfTab("Actions") == -1) {
+                    // add actions tab
+                    tabsPanel.insertTab("Actions", null, actionButtonsPanel, null, 0);
+                  }
+                  tabsPanel.setSelectedIndex(0);
+                }));
+    actionButtonsPanel.changeToPickTerritoryAndUnits(player);
+    final Tuple<Territory, Set<Unit>> territoryAndUnits =
+        actionButtonsPanel.waitForPickTerritoryAndUnits(
+            territoryChoices, unitChoices, unitsPerPick);
+    final int index = tabsPanel.indexOfTab("Actions");
+    if (index != -1 && inHistory.get()) {
+      // remove actions tab
+      Interruptibles.await(() -> SwingAction.invokeAndWait(() -> tabsPanel.remove(index)));
+    }
+    actionButtonsPanel.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
+    return territoryAndUnits;
   }
 
   // setEditDelegate is called by TripleAPlayer at the start and end of a turn
-  public void setEditDelegate(final IEditDelegate editDelegate) {
+  public void setEditDelegateOffEdt(final IEditDelegate editDelegate) {
     this.editDelegate = editDelegate;
     // force a data change event to update the UI for edit mode
     dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
-    setWidgetActivation();
+    setWidgetActivationOffEdt();
   }
 
   /**
@@ -2055,7 +2055,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
    * @param where The territory on which to center the map.
    * @return The collection of fighters to move to the newly-constructed carrier.
    */
-  public Collection<Unit> moveFightersToCarrier(
+  public Collection<Unit> moveFightersToCarrierOffEdt(
       final Collection<Unit> fighters, final Territory where) {
     messageAndDialogThreadPool.waitForAll();
     mapPanel.centerOn(where);
