@@ -4,6 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.NamedAttachable;
+import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Resource;
@@ -25,11 +26,13 @@ import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.ui.chooser.DataChooserBuilder;
 import games.strategy.triplea.ui.panels.map.MapSelectionListener;
 import games.strategy.triplea.ui.panels.map.UnitSelectionListener;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.TuvCostsCalculator;
 import games.strategy.triplea.util.UnitSeparator;
+import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -57,8 +60,8 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -261,16 +264,9 @@ class EditPanel extends ActionPanel {
             }
             final Optional<GamePlayer> optionalDefaultPlayer =
                 optionalTerritoryAttachment.get().getOriginalOwner();
-            final PlayerChooser playerChooser =
-                new PlayerChooser(
-                    getData().getPlayerList(),
-                    optionalDefaultPlayer.orElse(null),
-                    getMap().getUiContext(),
-                    true);
-            final JDialog dialog =
-                playerChooser.createDialog(getTopLevelAncestor(), "Select new owner for territory");
-            dialog.setVisible(true);
-            final GamePlayer player = playerChooser.getSelected();
+            final GamePlayer player =
+                choosePlayerOrNull(
+                    "Select new owner for territory", optionalDefaultPlayer.orElse(null), true);
             if (player != null) {
               final String result = frame.getEditDelegate().changeTerritoryOwner(territory, player);
               if (result != null) {
@@ -284,16 +280,9 @@ class EditPanel extends ActionPanel {
             SwingUtilities.invokeLater(() -> cancelEditAction.actionPerformed(null));
           } else if (currentAction == addUnitsAction) {
             final boolean allowNeutral = doesNeutralHaveUnitsOnMap(getData());
-            final PlayerChooser playerChooser =
-                new PlayerChooser(
-                    getData().getPlayerList(),
-                    territory.getOwner(),
-                    getMap().getUiContext(),
-                    allowNeutral);
-            final JDialog dialog =
-                playerChooser.createDialog(getTopLevelAncestor(), "Select owner for new units");
-            dialog.setVisible(true);
-            final GamePlayer player = playerChooser.getSelected();
+            final GamePlayer player =
+                choosePlayerOrNull(
+                    "Select owner for new units", territory.getOwner(), allowNeutral);
             if (player != null) {
               // open production panel for adding new units
               final IntegerMap<ProductionRule> production =
@@ -483,7 +472,7 @@ class EditPanel extends ActionPanel {
             currentAction = this;
             setWidgetActivation();
 
-            final GamePlayer player = choosePlayer().orElse(null);
+            final GamePlayer player = choosePlayerOrNull(ACTION_LABEL_CHANGE_RESOURCES);
             if (player == null) {
               cancelEditAction.actionPerformed(null);
               return;
@@ -513,15 +502,6 @@ class EditPanel extends ActionPanel {
             cancelEditAction.actionPerformed(null);
           }
 
-          private Optional<GamePlayer> choosePlayer() {
-            final PlayerChooser playerChooser =
-                new PlayerChooser(getData().getPlayerList(), getMap().getUiContext(), false);
-            final JDialog dialog =
-                playerChooser.createDialog(getTopLevelAncestor(), ACTION_LABEL_CHANGE_RESOURCES);
-            dialog.setVisible(true);
-            return Optional.ofNullable(playerChooser.getSelected());
-          }
-
           private Optional<Resource> chooseResource() {
             // Ignore VPS resources, since that's what the economy panel does.
             final List<Resource> resources =
@@ -532,9 +512,18 @@ class EditPanel extends ActionPanel {
               return Optional.of(resources.get(0));
             }
 
-            final ResourceChooser chooser = new ResourceChooser(resources, getMap().getUiContext());
-            return Optional.ofNullable(
-                chooser.showDialog(getTopLevelAncestor(), ACTION_LABEL_CHANGE_RESOURCES));
+            return new DataChooserBuilder<>(
+                    resources,
+                    resources.stream()
+                        .filter(r -> r.getName().equals(Constants.PUS))
+                        .findFirst()
+                        .orElseThrow(),
+                    value ->
+                        getMap()
+                            .getUiContext()
+                            .getResourceImageFactory()
+                            .getIcon(((Resource) value).getName()))
+                .showDialog(getTopLevelAncestor(), ACTION_LABEL_CHANGE_RESOURCES);
           }
 
           private Optional<Integer> chooseResourceValue(
@@ -567,13 +556,7 @@ class EditPanel extends ActionPanel {
           public void actionPerformed(final ActionEvent event) {
             currentAction = this;
             setWidgetActivation();
-            final PlayerChooser playerChooser =
-                new PlayerChooser(getData().getPlayerList(), getMap().getUiContext(), false);
-            final JDialog dialog =
-                playerChooser.createDialog(
-                    getTopLevelAncestor(), "Select player to get technology");
-            dialog.setVisible(true);
-            final GamePlayer player = playerChooser.getSelected();
+            final GamePlayer player = choosePlayerOrNull("Select player to get technology");
             if (player == null) {
               cancelEditAction.actionPerformed(null);
               return;
@@ -627,13 +610,7 @@ class EditPanel extends ActionPanel {
           public void actionPerformed(final ActionEvent event) {
             currentAction = this;
             setWidgetActivation();
-            final PlayerChooser playerChooser =
-                new PlayerChooser(getData().getPlayerList(), getMap().getUiContext(), false);
-            final JDialog dialog =
-                playerChooser.createDialog(
-                    getTopLevelAncestor(), "Select player to remove technology");
-            dialog.setVisible(true);
-            final GamePlayer player = playerChooser.getSelected();
+            final GamePlayer player = choosePlayerOrNull("Select player to remove technology");
             if (player == null) {
               cancelEditAction.actionPerformed(null);
               return;
@@ -944,6 +921,32 @@ class EditPanel extends ActionPanel {
     add(new JButton(changePoliticalRelationships));
     add(Box.createVerticalStrut(15));
     setWidgetActivation();
+  }
+
+  private @Nullable GamePlayer choosePlayerOrNull(final String title) {
+    return choosePlayerOrNull(title, null, false);
+  }
+
+  private @Nullable GamePlayer choosePlayerOrNull(
+      final String title, final GamePlayer initialSelect, final boolean allowNeutral) {
+    final UiContext uiContext = getMap().getUiContext();
+    return new DataChooserBuilder<>(
+            createDataList(getData().getPlayerList(), allowNeutral),
+            initialSelect,
+            value ->
+                (uiContext == null || ((GamePlayer) value).isNull()
+                    ? new ImageIcon(Util.newImage(32, 32, true))
+                    : new ImageIcon(uiContext.getFlagImageFactory().getFlag((GamePlayer) value))))
+        .showDialog(getTopLevelAncestor(), title)
+        .orElse(null);
+  }
+
+  private static Collection<GamePlayer> createDataList(PlayerList players, boolean allowNeutral) {
+    Collection<GamePlayer> dataList = new ArrayList<>(players.getPlayers());
+    if (allowNeutral) {
+      dataList.add(players.getNullPlayer());
+    }
+    return dataList;
   }
 
   private void sortUnits(GamePlayer player, List<Unit> units) {
