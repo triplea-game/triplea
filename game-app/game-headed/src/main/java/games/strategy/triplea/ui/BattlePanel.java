@@ -17,8 +17,6 @@ import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +37,7 @@ import org.triplea.swing.EventThreadJOptionPane.ConfirmDialogType;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.WindowAdapterFactory;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
 /** UI for fighting battles. */
@@ -62,12 +61,8 @@ public final class BattlePanel extends ActionPanel {
     battleWindow = new JDialog(frame);
     battleWindow.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     battleWindow.addWindowListener(
-        new WindowAdapter() {
-          @Override
-          public void windowActivated(final WindowEvent e) {
-            Optional.ofNullable(battleDisplay).ifPresent(BattleDisplay::takeFocus);
-          }
-        });
+        WindowAdapterFactory.activatedAndClosed(
+            () -> Optional.ofNullable(battleDisplay).ifPresent(BattleDisplay::takeFocus), null));
   }
 
   /**
