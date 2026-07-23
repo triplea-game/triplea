@@ -11,8 +11,6 @@ import java.awt.Window;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
@@ -166,13 +164,7 @@ public final class SwingComponents {
     checkNotNull(window);
     checkNotNull(action);
 
-    window.addWindowListener(
-        new WindowAdapter() {
-          @Override
-          public void windowClosing(final WindowEvent e) {
-            action.run();
-          }
-        });
+    window.addWindowListener(WindowAdapterFactory.closing(action));
   }
 
   /**
@@ -185,13 +177,7 @@ public final class SwingComponents {
     checkNotNull(window);
     checkNotNull(action);
 
-    window.addWindowListener(
-        new WindowAdapter() {
-          @Override
-          public void windowClosed(final WindowEvent e) {
-            action.run();
-          }
-        });
+    window.addWindowListener(WindowAdapterFactory.activatedAndClosed(null, action));
   }
 
   /**

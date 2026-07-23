@@ -96,8 +96,6 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serial;
@@ -157,6 +155,7 @@ import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.EventThreadJOptionPane.ConfirmDialogType;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.WindowAdapterFactory;
 import org.triplea.swing.jpanel.JPanelBuilder;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.swing.key.binding.SwingKeyBinding;
@@ -294,20 +293,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     data = game.getData();
     addZoomKeyboardShortcuts();
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    addWindowListener(
-        new WindowAdapter() {
-          @Override
-          public void windowClosing(final WindowEvent e) {
-            leaveGame();
-          }
-        });
-    addWindowFocusListener(
-        new WindowAdapter() {
-          @Override
-          public void windowGainedFocus(final WindowEvent e) {
-            mapPanel.requestFocusInWindow();
-          }
-        });
     this.uiContext = uiContext;
     this.setCursor(uiContext.getCursor());
     editModeButtonModel = new JToggleButton.ToggleButtonModel();
@@ -323,6 +308,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     final Image small = uiContext.getMapImage().getSmallMapImage();
     smallView = new ImageScrollerSmallView(small, model, uiContext.getMapData());
     mapPanel = new MapPanel(data, smallView, uiContext, model, this::computeScrollSpeed);
+    addWindowListener(
+        WindowAdapterFactory.gainedFocusAndClosing(
+            mapPanel::requestFocusInWindow, this::leaveGame));
     tooltipManager = new MapUnitTooltipManager(mapPanel);
     mapPanel.addMapSelectionListener(
         new DefaultMapSelectionListener() {
