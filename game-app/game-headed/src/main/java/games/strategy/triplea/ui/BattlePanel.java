@@ -65,11 +65,9 @@ public final class BattlePanel extends ActionPanel {
         new WindowAdapter() {
           @Override
           public void windowActivated(final WindowEvent e) {
-            SwingUtilities.invokeLater(
-                () -> Optional.ofNullable(battleDisplay).ifPresent(BattleDisplay::takeFocus));
+            Optional.ofNullable(battleDisplay).ifPresent(BattleDisplay::takeFocus);
           }
         });
-    getMap().getUiContext().addShutdownWindow(battleWindow);
   }
 
   /**
