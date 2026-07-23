@@ -1,6 +1,8 @@
 package org.triplea.swing;
 
+import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
+import java.awt.event.InputEvent;
 import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.swing.Action;
@@ -67,7 +69,10 @@ public class JMenuItemBuilder {
       if (acceleratorKey != null) {
         menuItem.setAccelerator(
             KeyStroke.getKeyStroke(
-                acceleratorKey, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
+                acceleratorKey,
+                GraphicsEnvironment.isHeadless()
+                    ? InputEvent.CTRL_DOWN_MASK
+                    : Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
       }
     } else {
       menuItem.setEnabled(false);
