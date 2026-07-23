@@ -7,7 +7,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
+import java.awt.event.InputEvent;
 import javax.swing.ButtonGroup;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
@@ -57,7 +59,10 @@ class JMenuItemBuilderTest {
     JMenuItem menuItem = menuItemBuilder.accelerator(KeyCode.F).build();
     KeyStroke expectedKeyStroke =
         KeyStroke.getKeyStroke(
-            KeyCode.F.getInputEventCode(), Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
+            KeyCode.F.getInputEventCode(),
+            GraphicsEnvironment.isHeadless()
+                ? InputEvent.CTRL_DOWN_MASK
+                : Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     assertEquals(expectedKeyStroke, menuItem.getAccelerator());
     assertEquals(KeyCode.E.getInputEventCode(), menuItem.getMnemonic());
   }
