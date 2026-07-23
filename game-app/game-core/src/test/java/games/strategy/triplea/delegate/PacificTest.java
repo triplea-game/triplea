@@ -357,6 +357,37 @@ class PacificTest {
   }
 
   @Test
+  void testCanMoveBetweenNavalBasesInMultipleSteps() {
+    // Remove Japanese units from sz20 so that we can move ships there non-combat.
+    removeFrom(sz20, sz20.getUnits());
+    addTo(sz5, destroyer.create(2, americans));
+    addTo(sz5, carrier.create(1, americans));
+    final IntegerMap<UnitType> oneDestroyer = new IntegerMap<>();
+    oneDestroyer.put(destroyer, 1);
+
+    advanceToStep(bridge, "americanNonCombatMove");
+
+    // First leg: sz5 -> sz7 (1 space). Destroyer has movement 2, no bonus needed here.
+    final Route leg1 = new Route(sz5, sz7);
+    move(GameDataTestUtil.getUnits(oneDestroyer, leg1.getStart()), leg1);
+
+    // Second leg: sz7 -> sz8 -> sz20 (2 spaces). The unit's overall journey
+    // is from sz5 (naval-base-adjacent) to sz20 (naval-base-adjacent), so the +1 bonus
+    // should still apply, allowing it to traverse the remaining 2 spaces with 1 movement left.
+    final Route leg2FromSz7 = new Route(sz7, sz8, sz20);
+    move(GameDataTestUtil.getUnits(oneDestroyer, leg2FromSz7.getStart()), leg2FromSz7);
+
+    // Now verify the +1 cap is still respected across multiple legs: starting fresh, a 4-space
+    // journey should fail even when split (sz5 -> sz4, then sz4 -> sz10 -> sz14 -> sz30).
+    final IntegerMap<UnitType> oneCarrier = new IntegerMap<>();
+    oneCarrier.put(carrier, 1);
+    final Route firstLeg = new Route(sz5, sz4);
+    move(GameDataTestUtil.getUnits(oneCarrier, firstLeg.getStart()), firstLeg);
+    final Route secondLegOver = new Route(sz4, sz10, sz14, sz30);
+    assertMoveError(GameDataTestUtil.getUnits(oneCarrier, secondLegOver.getStart()), secondLegOver);
+  }
+
+  @Test
   void testJapaneseDestroyerTransport() {
     bridge = newDelegateBridge(japanese);
     delegate = new MoveDelegate();
