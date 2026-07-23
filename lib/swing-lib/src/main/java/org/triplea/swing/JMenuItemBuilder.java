@@ -5,7 +5,6 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
@@ -48,13 +47,6 @@ public class JMenuItemBuilder {
   /** Constructs a Swing JMenuItem using current builder values. */
   public JMenuItem build() {
     final JMenuItem menuItem = new JMenuItem(title);
-    buildImpl(menuItem);
-    return menuItem;
-  }
-
-  /** Constructs a Swing JCheckBoxMenuItem using current builder values. */
-  public JCheckBoxMenuItem buildCheckbox() {
-    final JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(title, selected);
     buildImpl(menuItem);
     return menuItem;
   }
