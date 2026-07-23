@@ -1,11 +1,12 @@
 package org.triplea.swing;
 
+import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
+import java.awt.event.InputEvent;
 import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
@@ -52,13 +53,6 @@ public class JMenuItemBuilder {
     return menuItem;
   }
 
-  /** Constructs a Swing JCheckBoxMenuItem using current builder values. */
-  public JCheckBoxMenuItem buildCheckbox() {
-    final JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(title, selected);
-    buildImpl(menuItem);
-    return menuItem;
-  }
-
   /** Constructs a Swing JRadioButtonMenuItem using current builder values. */
   public JRadioButtonMenuItem buildRadio(final ButtonGroup group) {
     final JRadioButtonMenuItem menuItem = new JRadioButtonMenuItem(title, selected);
@@ -75,7 +69,10 @@ public class JMenuItemBuilder {
       if (acceleratorKey != null) {
         menuItem.setAccelerator(
             KeyStroke.getKeyStroke(
-                acceleratorKey, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
+                acceleratorKey,
+                GraphicsEnvironment.isHeadless()
+                    ? InputEvent.CTRL_DOWN_MASK
+                    : Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
       }
     } else {
       menuItem.setEnabled(false);
