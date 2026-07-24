@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -51,12 +50,12 @@ public class ClientSetupPanel extends SetupPanel {
 
           @Override
           public void playerListChanged() {
-            SwingUtilities.invokeLater(ClientSetupPanel.this::internalPlayersChanged);
+            ClientSetupPanel.this.internalPlayersChangedOffEdt();
           }
         });
   }
 
-  private void internalPlayersChanged() {
+  private void internalPlayersChangedOffEdt() {
     final Map<String, String> players = clientModel.getPlayerToNodesMapping();
     final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder =
         clientModel.getPlayerNamesAndAlliancesInTurnOrder();
@@ -67,20 +66,25 @@ public class ClientSetupPanel extends SetupPanel {
       // clients only get to change bot settings
       playersAllowedToBeDisabled.clear();
     }
-    playerRows.clear();
-    final Set<String> playerNames = playerNamesAndAlliancesInTurnOrder.keySet();
-    for (final String name : playerNames) {
-      final PlayerRow playerRow =
-          new PlayerRow(
-              name, playerNamesAndAlliancesInTurnOrder.get(name), enabledPlayers.get(name));
-      playerRows.add(playerRow);
-      SwingUtilities.invokeLater(
-          () ->
-              playerRow.update(
-                  Optional.ofNullable(players.get(name)).map(UserName::of).orElse(null),
-                  playersAllowedToBeDisabled.contains(name)));
-    }
-    SwingUtilities.invokeLater(this::layoutComponents);
+    SwingUtilities.invokeLater(
+        () -> {
+          playerRows.clear();
+          playerNamesAndAlliancesInTurnOrder
+              .keySet()
+              .forEach(
+                  playerName -> {
+                    PlayerRow playerRow =
+                        new PlayerRow(
+                            playerName,
+                            playerNamesAndAlliancesInTurnOrder.get(playerName),
+                            enabledPlayers.get(playerName));
+                    playerRow.update(
+                        Optional.ofNullable(players.get(playerName)).map(UserName::of).orElse(null),
+                        playersAllowedToBeDisabled.contains(playerName));
+                    playerRows.add(playerRow);
+                  });
+          layoutComponents();
+        });
   }
 
   private void layoutComponents() {
