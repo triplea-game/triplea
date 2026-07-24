@@ -47,6 +47,8 @@ public final class BattlePanel extends ActionPanel {
   private static final long serialVersionUID = 5304208569738042592L;
 
   private static final long ENSURE_BATTLE_DISPLAYED_TIMEOUT_MS = 45_000;
+  private static final int MINIMUM_BATTLE_WINDOW_WIDTH = 800;
+  private static final int MINIMUM_BATTLE_WINDOW_HEIGHT = 600;
 
   private FightBattleDetails fightBattleMessage;
   private volatile BattleDisplay battleDisplay;
@@ -98,12 +100,18 @@ public final class BattlePanel extends ActionPanel {
     final int targetWidth = Math.min(desiredWidth, (int) (screenSize.width * 0.95));
     final int targetHeight = Math.min(desiredHeight, (int) (screenSize.height * 0.95));
 
-    battleWindow.setMinimumSize(new Dimension(targetWidth, targetHeight));
+    battleWindow.setMinimumSize(minimumBattleWindowSize(new Dimension(targetWidth, targetHeight)));
     final Dimension currentSize = battleWindow.getSize();
     if (currentSize.width < targetWidth || currentSize.height < targetHeight) {
       battleWindow.setSize(
           Math.max(currentSize.width, targetWidth), Math.max(currentSize.height, targetHeight));
     }
+  }
+
+  static Dimension minimumBattleWindowSize(final Dimension contentFitSize) {
+    return new Dimension(
+        Math.min(MINIMUM_BATTLE_WINDOW_WIDTH, contentFitSize.width),
+        Math.min(MINIMUM_BATTLE_WINDOW_HEIGHT, contentFitSize.height));
   }
 
   void setBattlesAndBombing(final BattleListing battleListing) {
