@@ -416,7 +416,7 @@ then check your firewall rules.""",
   @Override
   public void connectionAdded(final INode to) {
     notifyLobby(
-        (lobbyConnection, gameId) -> lobbyConnection.playerJoined(gameId, to.getPlayerName()));
+        (lobbyConnection, gameId) -> lobbyConnection.playerJoined(gameId, to.getPlayerUserName()));
   }
 
   /**
@@ -439,7 +439,7 @@ then check your firewall rules.""",
   @Override
   public void connectionRemoved(final INode node) {
     notifyLobby(
-        (lobbyConnection, gameId) -> lobbyConnection.playerLeft(gameId, node.getPlayerName()));
+        (lobbyConnection, gameId) -> lobbyConnection.playerLeft(gameId, node.getPlayerUserName()));
     if (removeConnectionsLatch != null) {
       Interruptibles.await(() -> removeConnectionsLatch.await(6, TimeUnit.SECONDS));
     }

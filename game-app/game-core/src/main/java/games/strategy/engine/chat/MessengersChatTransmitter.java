@@ -34,7 +34,7 @@ public class MessengersChatTransmitter implements ChatTransmitter {
       final String chatName,
       final Messengers messengers,
       final ClientNetworkBridge clientNetworkBridge) {
-    this.userName = messengers.getLocalNode().getPlayerName();
+    this.userName = messengers.getLocalNode().getPlayerUserName();
     this.messengers = messengers;
     this.chatName = chatName;
     this.chatChannelName = ChatController.getChatChannelName(chatName);
@@ -71,12 +71,12 @@ public class MessengersChatTransmitter implements ChatTransmitter {
     return new IChatChannel() {
       @Override
       public void chatOccurred(final String message) {
-        chatClient.messageReceived(MessageContext.getSender().getPlayerName(), message);
+        chatClient.messageReceived(MessageContext.getSender().getPlayerUserName(), message);
       }
 
       @Override
       public void slapOccurred(final UserName slappedPlayer) {
-        final UserName slapper = MessageContext.getSender().getPlayerName();
+        final UserName slapper = MessageContext.getSender().getPlayerUserName();
         if (slappedPlayer.equals(userName)) {
           chatClient.slappedBy(slapper);
         } else {
@@ -155,7 +155,7 @@ public class MessengersChatTransmitter implements ChatTransmitter {
 
   @Override
   public UserName getLocalUserName() {
-    return messengers.getLocalNode().getPlayerName();
+    return messengers.getLocalNode().getPlayerUserName();
   }
 
   @Override
