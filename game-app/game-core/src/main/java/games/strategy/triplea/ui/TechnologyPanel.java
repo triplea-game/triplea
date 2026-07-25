@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import javax.annotation.Nullable;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -206,7 +207,13 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
     }
 
     private void initColList() {
-      final List<GamePlayer> players = gameData.getPlayerList().getPlayers();
+      final Set<String> hiddenPlayers = uiContext.getMapData().getHiddenPlayersInTechTable();
+
+      final List<GamePlayer> players =
+          gameData.getPlayerList().getPlayers().stream()
+              .filter(player -> !hiddenPlayers.contains(player.getName()))
+              .toList();
+
       colList = players.stream().map(GamePlayer::getName).toArray(String[]::new);
       Arrays.sort(colList);
     }
@@ -216,7 +223,12 @@ class TechnologyPanel extends JPanel implements GameDataChangeListener {
       // copy so that the object doesn't change underneath us
       final GameData gameDataSync = TechnologyPanel.this.gameData;
       try (GameData.Unlocker ignored = gameDataSync.acquireReadLock()) {
+        final Set<String> hiddenPlayers = uiContext.getMapData().getHiddenPlayersInTechTable();
         for (final GamePlayer playerID : gameDataSync.getPlayerList().getPlayers()) {
+          if (hiddenPlayers.contains(playerID.getName())) {
+            continue;
+          }
+
           if (colMap.get(playerID.getName()) == null) {
             throw new IllegalStateException(
                 String.format(

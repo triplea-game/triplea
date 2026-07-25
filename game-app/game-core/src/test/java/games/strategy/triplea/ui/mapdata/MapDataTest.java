@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import java.util.Properties;
+import java.util.Set;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -38,6 +39,32 @@ final class MapDataTest {
       properties.setProperty(NAME, "malformed");
 
       assertThat(getProperty(), is(DEFAULT_VALUE));
+    }
+
+    @Nested
+    final class ParseHiddenPlayersTest {
+
+      @Test
+      void shouldReturnEmptySetWhenPropertyIsBlank() {
+        assertThat(MapData.parseHiddenPlayers(""), is(Set.of()));
+      }
+
+      @Test
+      void shouldReturnSinglePlayer() {
+        assertThat(MapData.parseHiddenPlayers("Germans"), is(Set.of("Germans")));
+      }
+
+      @Test
+      void shouldTrimWhitespace() {
+        assertThat(
+            MapData.parseHiddenPlayers(" Germans , Russians "), is(Set.of("Germans", "Russians")));
+      }
+
+      @Test
+      void shouldIgnoreEmptyEntries() {
+        assertThat(
+            MapData.parseHiddenPlayers("Germans,,Russians,"), is(Set.of("Germans", "Russians")));
+      }
     }
   }
 }

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -83,7 +84,8 @@ public class MapData {
   @NonNls public static final String PROPERTY_MAP_MAPBLENDS = "map.mapBlends";
   @NonNls public static final String PROPERTY_MAP_MAPBLENDMODE = "map.mapBlendMode";
   @NonNls public static final String PROPERTY_MAP_MAPBLENDALPHA = "map.mapBlendAlpha";
-
+  private static final String PROPERTY_PLAYERS_NOT_SHOWN_IN_TECH_TABLE =
+      "players_not_shown_in_tech_table";
   @NonNls public static final String POLYGON_FILE = "polygons.txt";
 
   @NonNls private static final String PROPERTY_DONT_DRAW_UNITS = "dont_draw_units";
@@ -788,5 +790,22 @@ public class MapData {
                   .or(() -> loader.loadImage(standardImageName))
                   .orElse(null);
             }));
+  }
+
+  public Set<String> getHiddenPlayersInTechTable() {
+    return parseHiddenPlayers(
+        mapProperties.getProperty(PROPERTY_PLAYERS_NOT_SHOWN_IN_TECH_TABLE, ""));
+  }
+
+  @VisibleForTesting
+  static Set<String> parseHiddenPlayers(final String players) {
+    if (players.isBlank()) {
+      return Collections.emptySet();
+    }
+
+    return Arrays.stream(players.split(","))
+        .map(String::trim)
+        .filter(s -> !s.isEmpty())
+        .collect(Collectors.toSet());
   }
 }
