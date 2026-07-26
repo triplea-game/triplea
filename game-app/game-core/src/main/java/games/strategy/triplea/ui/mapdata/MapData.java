@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -87,6 +88,9 @@ public class MapData {
   @NonNls public static final String POLYGON_FILE = "polygons.txt";
 
   @NonNls private static final String PROPERTY_DONT_DRAW_UNITS = "dont_draw_units";
+
+  private static final String PROPERTY_PLAYERS_NOT_SHOWN_IN_UNIT_HELP_TABLE =
+      "players_not_shown_in_unit_help_table";
 
   @NonNls
   private static final String PROPERTY_MAP_SMALLMAPTERRITORYSATURATION =
@@ -788,5 +792,22 @@ public class MapData {
                   .or(() -> loader.loadImage(standardImageName))
                   .orElse(null);
             }));
+  }
+
+  public Set<String> getHiddenPlayersInUnitHelpTable() {
+    return parseHiddenPlayers(
+        mapProperties.getProperty(PROPERTY_PLAYERS_NOT_SHOWN_IN_UNIT_HELP_TABLE, ""));
+  }
+
+  @VisibleForTesting
+  static Set<String> parseHiddenPlayers(String players) {
+    if (players == null || players.isBlank()) {
+      return Set.of();
+    }
+
+    return Arrays.stream(players.split(","))
+        .map(String::trim)
+        .filter(player -> !player.isEmpty())
+        .collect(Collectors.toSet());
   }
 }

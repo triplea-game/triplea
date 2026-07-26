@@ -101,23 +101,38 @@ public class UnitStatsTable {
   private static Map<GamePlayer, List<UnitType>> getAllPlayerUnitsWithImages(
       final GameState data, final UiContext uiContext) {
     final Map<GamePlayer, List<UnitType>> unitTypes = new LinkedHashMap<>();
+    final Set<String> hiddenPlayers = uiContext.getMapData().getHiddenPlayersInUnitHelpTable();
+
     for (final GamePlayer p : data.getPlayerList().getPlayers()) {
+      if (hiddenPlayers.contains(p.getName())) {
+        continue;
+      }
+
       unitTypes.put(p, getPlayerUnitsWithImages(p, data, uiContext));
     }
+
     final Set<UnitType> unitsSoFar = new HashSet<>();
     for (final List<UnitType> l : unitTypes.values()) {
       unitsSoFar.addAll(l);
     }
+
     final Set<UnitType> all = data.getUnitTypeList().getAllUnitTypes();
     all.removeAll(unitsSoFar);
-    unitTypes.put(
-        data.getPlayerList().getNullPlayer(),
-        getPlayerUnitsWithImages(data.getPlayerList().getNullPlayer(), data, uiContext));
-    unitsSoFar.addAll(unitTypes.get(data.getPlayerList().getNullPlayer()));
+
+    final GamePlayer nullPlayer = data.getPlayerList().getNullPlayer();
+
+    if (!hiddenPlayers.contains(nullPlayer.getName())) {
+      unitTypes.put(nullPlayer, getPlayerUnitsWithImages(nullPlayer, data, uiContext));
+
+      unitsSoFar.addAll(unitTypes.get(nullPlayer));
+    }
+
     all.removeAll(unitsSoFar);
+
     if (!all.isEmpty()) {
       unitTypes.put(null, new ArrayList<>(all));
     }
+
     return unitTypes;
   }
 
