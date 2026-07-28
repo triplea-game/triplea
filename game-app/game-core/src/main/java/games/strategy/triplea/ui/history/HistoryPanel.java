@@ -176,10 +176,10 @@ public class HistoryPanel extends JPanel {
         });
     tree.addTreeSelectionListener(this::treeSelectionChanged);
 
+    // initialize tree by ensured EDT (for History.getLastNode call inside)
+    final TreePath nodeTreePath = new TreePath(data.getHistory().enableSeeking(this).getPath());
     SwingUtilities.invokeLater(
         () -> {
-          // initialize tree by ensured EDT (for History.getLastNode call inside)
-          TreePath nodeTreePath = new TreePath(data.getHistory().enableSeeking(this).getPath());
           tree.expandPath(nodeTreePath);
           tree.setSelectionPath(nodeTreePath);
         });

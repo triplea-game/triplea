@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.Serial;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -434,7 +435,8 @@ public class DownloadMapsWindow extends JFrame {
 
       final JLabel mapSizeLabel = new JLabel(" ");
 
-      if (getMapStore().hasAnyMap(mapStatuses)) {
+      if (Arrays.asList(mapStatuses).contains(ManagedMapStatus.UPDATE_AVAILABLE)
+          || getMapStore().hasAnyMap(mapStatuses)) {
 
         final List<ManagedMap> unsortedMaps = getMapsListFromStore();
         mapDownloadTable = new MapDownloadSwingTable(unsortedMaps);

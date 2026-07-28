@@ -84,7 +84,7 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
               return new PlaceableUnits();
             }
             // TODO: This is a remote network fetch (bad).
-            // Though, the local place delegate is not a replacment. The server has
+            // Though, the local place delegate is not a replacement. The server has
             // the 'player' and 'bridge' attributes set, which is done server side
             // and not client side. Using the local client bridge causes a NPE when
             // a game-client (in a networked game) tries to place units.
@@ -270,11 +270,11 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
   }
 
   PlaceData waitForPlace(final boolean bid, final PlayerBridge playerBridge) {
-    setUp(playerBridge);
+    setUpOffEdt(playerBridge);
     // workaround: meant to be in setUpSpecific, but it requires a variable
     refreshActionLabelText(bid);
     waitForRelease();
-    cleanUp();
+    cleanUpOffEdt();
     return placeData;
   }
 
