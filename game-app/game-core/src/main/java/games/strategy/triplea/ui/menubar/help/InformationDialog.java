@@ -1,8 +1,6 @@
 package games.strategy.triplea.ui.menubar.help;
 
 import java.awt.BorderLayout;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -10,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import lombok.experimental.UtilityClass;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.WindowAdapterFactory;
 
 @UtilityClass
 class InformationDialog {
@@ -31,13 +30,7 @@ class InformationDialog {
     dialog.getRootPane().setDefaultButton(button);
     dialog.add(buttons, BorderLayout.SOUTH);
     dialog.pack();
-    dialog.addWindowListener(
-        new WindowAdapter() {
-          @Override
-          public void windowOpened(final WindowEvent e) {
-            button.requestFocus();
-          }
-        });
+    dialog.addWindowListener(WindowAdapterFactory.openedAndClosing(button::requestFocus, null));
     return dialog;
   }
 }

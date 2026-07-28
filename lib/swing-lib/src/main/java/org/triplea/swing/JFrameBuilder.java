@@ -4,8 +4,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.LayoutManager;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -64,17 +62,7 @@ public class JFrameBuilder {
     // arg constructor.
     final JFrame frame = new JFrame(title, null);
     frame.addWindowListener(
-        new WindowAdapter() {
-          @Override
-          public void windowActivated(final WindowEvent e) {
-            Optional.ofNullable(windowActivatedAction).ifPresent(Runnable::run);
-          }
-
-          @Override
-          public void windowClosed(final WindowEvent e) {
-            Optional.ofNullable(windowClosedAction).ifPresent(Runnable::run);
-          }
-        });
+        WindowAdapterFactory.activatedAndClosed(windowActivatedAction, windowClosedAction));
 
     frame.setMinimumSize(new Dimension(minWidth, minHeight));
     Optional.ofNullable(iconImage).ifPresent(frame::setIconImage);

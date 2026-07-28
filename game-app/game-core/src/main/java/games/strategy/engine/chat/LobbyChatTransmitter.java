@@ -61,7 +61,7 @@ public class LobbyChatTransmitter implements ChatTransmitter {
 
   private void handleSlapMessage(
       final ChatClient chatClient, final PlayerSlapReceivedMessage message) {
-    if (message.getSlappedPlayer().equals(localUserName)) {
+    if (localUserName.getValue().equals(message.getSlappedPlayer())) {
       chatClient.slappedBy(UserName.of(message.getSlappingPlayer()));
     } else {
       chatClient.eventReceived(
