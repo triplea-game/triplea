@@ -29,7 +29,6 @@ import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.UserName;
 import org.triplea.game.chat.ChatModel;
@@ -63,13 +62,12 @@ public class HeadedLaunchAction implements LaunchAction {
 
   @Override
   public void onGameInterrupt() {
-    SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(ui).setVisible(true));
+    SwingComponents.setFrameFromComponentVisible(ui);
   }
 
   @Override
   public void onEnd(final String message) {
-    SwingUtilities.invokeLater(
-        () -> JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message));
+    SwingComponents.newMessageDialog(JOptionPane.getFrameForComponent(ui), message);
   }
 
   @Override
