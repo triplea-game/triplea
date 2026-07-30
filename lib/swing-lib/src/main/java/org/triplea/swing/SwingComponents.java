@@ -260,6 +260,11 @@ public final class SwingComponents {
         () -> JOptionPane.showMessageDialog(parentWindow, message, title, messageType));
   }
 
+  public static void showWarning(
+      final Component parentWindow, final String title, final String message) {
+    showMessage(parentWindow, message, title, JOptionPane.WARNING_MESSAGE);
+  }
+
   public static void showError(
       final Component parentWindow, final String title, final String message) {
     showMessage(parentWindow, message, title, JOptionPane.ERROR_MESSAGE);
