@@ -204,6 +204,8 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
       }
     }
 
+    territoryInfo.add(createTerritoryNameLabel(territoryName, territoryOwner));
+
     if (!territoryEffectText.isEmpty()) {
       territoryEffectText.setLength(territoryEffectText.length() - 2);
       final JLabel territoryEffectTextLabel = new JLabel(" (" + territoryEffectText + ")");
