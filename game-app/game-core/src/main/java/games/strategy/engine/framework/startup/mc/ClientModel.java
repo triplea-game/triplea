@@ -347,9 +347,9 @@ Check:
             .collect(Collectors.toMap(Map.Entry::getKey, e -> clientType));
     final Set<Player> playerSet = data.getGameLoader().newPlayers(playerMapping);
     game = new ClientGame(data, playerSet, players, messengers, clientNetworkBridge);
+    SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(ui).setVisible(false));
     ThreadRunner.runInNewThread(
         () -> {
-          SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(ui).setVisible(false));
           try {
             // game will be null if we loose the connection
             if (game != null) {
