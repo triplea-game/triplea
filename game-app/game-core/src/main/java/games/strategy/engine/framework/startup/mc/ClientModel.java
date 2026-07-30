@@ -1,5 +1,11 @@
 package games.strategy.engine.framework.startup.mc;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_CLIENT;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_HOST;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
+
 import com.google.common.base.Preconditions;
 import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
 import games.strategy.engine.chat.ChatPanel;
@@ -33,19 +39,6 @@ import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.net.websocket.WebsocketNetworkBridge;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.triplea.java.Interruptibles;
-import org.triplea.java.ThreadRunner;
-import org.triplea.java.concurrency.AsyncRunner;
-import org.triplea.swing.EventThreadJOptionPane;
-import org.triplea.swing.SwingAction;
-import org.triplea.swing.SwingComponents;
-
-import javax.annotation.Nonnull;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.awt.Frame;
 import java.io.ByteArrayInputStream;
@@ -58,12 +51,18 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_CLIENT;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_HOST;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
+import javax.annotation.Nonnull;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.triplea.java.Interruptibles;
+import org.triplea.java.ThreadRunner;
+import org.triplea.java.concurrency.AsyncRunner;
+import org.triplea.swing.EventThreadJOptionPane;
+import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 
 /** Represents a network aware game client connecting to another game that is acting as a server. */
 @Slf4j
