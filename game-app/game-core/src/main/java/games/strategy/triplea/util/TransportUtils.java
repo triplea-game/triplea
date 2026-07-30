@@ -280,7 +280,9 @@ public final class TransportUtils {
           transportOptions.add(transport);
         }
       }
-      result.put(unit, transportOptions);
+      if (!transportOptions.isEmpty()) {
+        result.put(unit, transportOptions);
+      }
     }
     return result;
   }
