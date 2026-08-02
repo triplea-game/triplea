@@ -257,6 +257,13 @@ class ProductionPanel extends JPanel {
     for (final Rule current : rules) {
       int max = leftToSpend.fitsHowOften(current.getCost());
       max += current.getQuantity();
+      if (max < 0) {
+        throw new IllegalStateException(
+            "Max value negative after sum of fitsHowOften: "
+                + leftToSpend.fitsHowOften(current.getCost())
+                + " and rule quantity: "
+                + current.getQuantity());
+      }
       current.setMax(max);
     }
   }
