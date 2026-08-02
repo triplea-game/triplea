@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.awt.Dimension;
 import org.junit.jupiter.api.Test;
@@ -11,17 +11,23 @@ final class BattlePanelTest {
   void shouldAllowBattleWindowToShrinkBelowContentFitSize() {
     final Dimension contentFitSize = new Dimension(1508, 900);
 
-    final Dimension minimumSize = BattlePanel.minimumBattleWindowSize(contentFitSize);
+    assertNotEquals(BattlePanel.MINIMUM_BATTLE_WINDOW_WIDTH, contentFitSize.width);
+    assertNotEquals(BattlePanel.MINIMUM_BATTLE_WINDOW_HEIGHT, contentFitSize.height);
 
-    assertThat(minimumSize, is(new Dimension(800, 600)));
+    final Dimension minimumSize = BattlePanel.getMinimumBattleWindowSize(contentFitSize);
+
+    assertEquals(
+        new Dimension(
+            BattlePanel.MINIMUM_BATTLE_WINDOW_WIDTH, BattlePanel.MINIMUM_BATTLE_WINDOW_HEIGHT),
+        minimumSize);
   }
 
   @Test
   void shouldNotSetMinimumSizeLargerThanContentFitSize() {
     final Dimension contentFitSize = new Dimension(760, 570);
 
-    final Dimension minimumSize = BattlePanel.minimumBattleWindowSize(contentFitSize);
+    final Dimension minimumSize = BattlePanel.getMinimumBattleWindowSize(contentFitSize);
 
-    assertThat(minimumSize, is(contentFitSize));
+    assertEquals(contentFitSize, minimumSize);
   }
 }
