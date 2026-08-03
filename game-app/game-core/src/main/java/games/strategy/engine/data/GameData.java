@@ -282,15 +282,11 @@ public class GameData implements Serializable, GameState {
   }
 
   @Override
-  public UnitHolder getUnitHolder(final String name, final String type) {
-    switch (type) {
-      case UnitHolder.PLAYER:
-        return playerList.getPlayerId(name);
-      case UnitHolder.TERRITORY:
-        return map.getTerritoryOrNull(name);
-      default:
-        throw new IllegalStateException("Invalid type: " + type);
-    }
+  public UnitHolder getUnitHolder(final String name, final UnitHolderType type) {
+    return switch (type) {
+      case UnitHolderType.PLAYER -> playerList.getPlayerId(name);
+      case UnitHolderType.TERRITORY -> map.getTerritoryOrNull(name);
+    };
   }
 
   @Override
