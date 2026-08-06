@@ -11,19 +11,20 @@ final class BattlePanelTest {
   void shouldAllowBattleWindowToShrinkBelowContentFitSize() {
     final Dimension contentFitSize = new Dimension(1508, 900);
 
-    assertNotEquals(BattlePanel.MINIMUM_BATTLE_WINDOW_WIDTH, contentFitSize.width);
-    assertNotEquals(BattlePanel.MINIMUM_BATTLE_WINDOW_HEIGHT, contentFitSize.height);
+    assertNotEquals(BattlePanel.MINIMUM_BATTLE_WINDOW_DEFAULT_WIDTH, contentFitSize.width);
+    assertNotEquals(BattlePanel.MINIMUM_BATTLE_WINDOW_DEFAULT_HEIGHT, contentFitSize.height);
 
     final Dimension minimumSize = BattlePanel.getMinimumBattleWindowSize(contentFitSize);
 
     assertEquals(
         new Dimension(
-            BattlePanel.MINIMUM_BATTLE_WINDOW_WIDTH, BattlePanel.MINIMUM_BATTLE_WINDOW_HEIGHT),
+            BattlePanel.MINIMUM_BATTLE_WINDOW_DEFAULT_WIDTH,
+            BattlePanel.MINIMUM_BATTLE_WINDOW_DEFAULT_HEIGHT),
         minimumSize);
   }
 
   @Test
-  void shouldNotSetMinimumSizeLargerThanContentFitSize() {
+  void keepMinimumWindowDimensionWhenSmallerThanDefault() {
     final Dimension contentFitSize = new Dimension(760, 570);
 
     final Dimension minimumSize = BattlePanel.getMinimumBattleWindowSize(contentFitSize);
