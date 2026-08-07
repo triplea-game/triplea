@@ -167,7 +167,8 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
 
       final String territoryName = territory.getName();
       final GamePlayer territoryOwner = territory.getOwner();
-      final Collection<Unit> territoryUnits = List.copyOf(territory.getUnits());
+      final Collection<Unit> territoryUnits =
+          uiContext.isShowUnitsInStatusBar() ? List.copyOf(territory.getUnits()) : List.of();
       SwingUtilities.invokeLater(
           () ->
               updateTerritoryInfo(
@@ -217,13 +218,12 @@ public class BottomBar extends JPanel implements TerritoryListener, ZoomMapListe
       territoryInfo.add(uiContext.getResourceImageFactory().getLabel(resource, resources));
     }
 
-    final Collection<Unit> units = uiContext.isShowUnitsInStatusBar() ? territoryUnits : List.of();
-    if (!units.isEmpty()) {
+    if (!territoryUnits.isEmpty()) {
       JSeparator separator = new JSeparator(JSeparator.VERTICAL);
       separator.setMaximumSize(new java.awt.Dimension(40, getHeight()));
       separator.setPreferredSize(separator.getMaximumSize());
       territoryInfo.add(separator);
-      territoryInfo.add(createUnitBar(units));
+      territoryInfo.add(createUnitBar(territoryUnits));
     }
 
     territoryInfo.add(Box.createHorizontalGlue());
