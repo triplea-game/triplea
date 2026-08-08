@@ -23,6 +23,8 @@ import games.strategy.triplea.delegate.battle.steps.fire.firststrike.DefensiveFi
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.OffensiveFirstStrike;
 import games.strategy.triplea.delegate.battle.steps.fire.general.DefensiveGeneral;
 import games.strategy.triplea.delegate.battle.steps.fire.general.OffensiveGeneral;
+import games.strategy.triplea.delegate.battle.steps.retreat.DefenderFightOrRetreat;
+import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveGeneralRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveGeneralRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveSubsRetreat;
@@ -45,6 +47,7 @@ import lombok.Value;
 public interface BattleStep extends IExecutable {
 
   enum Order {
+    DEFENDER_FIGHT_OR_RETREAT,
     AA_OFFENSIVE,
     AA_DEFENSIVE,
     AA_REMOVE_CASUALTIES,
@@ -71,6 +74,7 @@ public interface BattleStep extends IExecutable {
     SUICIDE_REMOVE_CASUALTIES,
     REMOVE_UNPROTECTED_UNITS_GENERAL,
     GENERAL_BATTLE_END_CHECK,
+    DEFENSIVE_GENERAL_RETREAT,
     SUB_OFFENSIVE_RETREAT_AFTER_BATTLE,
     OFFENSIVE_GENERAL_RETREAT,
     STALEMATE_BATTLE_END_CHECK,
@@ -98,30 +102,35 @@ public interface BattleStep extends IExecutable {
   Order getOrder();
 
   static List<BattleStep> getAll(final BattleState battleState, final BattleActions battleActions) {
-    return List.of(
-        new OffensiveAaFire(battleState, battleActions),
-        new DefensiveAaFire(battleState, battleActions),
-        new SubmergeSubsVsOnlyAirStep(battleState, battleActions),
-        new RemoveUnprotectedUnits(battleState, battleActions),
-        new NavalBombardment(battleState, battleActions),
-        new ClearBombardmentCasualties(battleState, battleActions),
-        new LandParatroopers(battleState, battleActions),
-        new OffensiveSubsRetreat(battleState, battleActions),
-        new DefensiveSubsRetreat(battleState, battleActions),
-        new OffensiveFirstStrike(battleState, battleActions),
-        new DefensiveFirstStrike(battleState, battleActions),
-        new ClearFirstStrikeCasualties(battleState, battleActions),
-        new OffensiveGeneral(battleState, battleActions),
-        new DefensiveGeneral(battleState, battleActions),
-        new ClearAaCasualties(battleState, battleActions),
-        new RemoveNonCombatants(battleState, battleActions),
-        new MarkNoMovementLeft(battleState, battleActions),
-        new RemoveFirstStrikeSuicide(battleState, battleActions),
-        new RemoveGeneralSuicide(battleState, battleActions),
-        new OffensiveGeneralRetreat(battleState, battleActions),
-        new ClearGeneralCasualties(battleState, battleActions),
-        new RemoveUnprotectedUnitsGeneral(battleState, battleActions),
-        new CheckGeneralBattleEnd(battleState, battleActions),
-        new CheckStalemateBattleEnd(battleState, battleActions));
+    List<BattleStep> battleSteps =
+        List.of(
+            new OffensiveAaFire(battleState, battleActions),
+            new DefensiveAaFire(battleState, battleActions),
+            new SubmergeSubsVsOnlyAirStep(battleState, battleActions),
+            new RemoveUnprotectedUnits(battleState, battleActions),
+            new NavalBombardment(battleState, battleActions),
+            new ClearBombardmentCasualties(battleState, battleActions),
+            new LandParatroopers(battleState, battleActions),
+            new OffensiveSubsRetreat(battleState, battleActions),
+            new DefensiveSubsRetreat(battleState, battleActions),
+            new OffensiveFirstStrike(battleState, battleActions),
+            new DefensiveFirstStrike(battleState, battleActions),
+            new ClearFirstStrikeCasualties(battleState, battleActions),
+            new OffensiveGeneral(battleState, battleActions),
+            new DefensiveGeneral(battleState, battleActions),
+            new ClearAaCasualties(battleState, battleActions),
+            new RemoveNonCombatants(battleState, battleActions),
+            new MarkNoMovementLeft(battleState, battleActions),
+            new RemoveFirstStrikeSuicide(battleState, battleActions),
+            new RemoveGeneralSuicide(battleState, battleActions),
+            new OffensiveGeneralRetreat(battleState, battleActions),
+            new DefensiveGeneralRetreat(battleState, battleActions),
+            new ClearGeneralCasualties(battleState, battleActions),
+            new RemoveUnprotectedUnitsGeneral(battleState, battleActions),
+            new CheckGeneralBattleEnd(battleState, battleActions),
+            new CheckStalemateBattleEnd(battleState, battleActions),
+            new DefenderFightOrRetreat(battleState, battleActions));
+
+    return battleSteps;
   }
 }

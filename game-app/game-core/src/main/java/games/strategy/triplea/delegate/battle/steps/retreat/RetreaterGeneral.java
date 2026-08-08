@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
-import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.REMOVED_CASUALTY;
 
@@ -20,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -28,9 +28,12 @@ class RetreaterGeneral implements Retreater {
 
   private final BattleState battleState;
 
+  private final BattleState.Side retreatingSide;
+
   @Override
   public Collection<Unit> getRetreatUnits() {
-    final Collection<Unit> retreatUnits = new HashSet<>(battleState.filterUnits(ALIVE, OFFENSE));
+    final Collection<Unit> retreatUnits =
+        new HashSet<>(battleState.filterUnits(ALIVE, retreatingSide));
     // some units might have been removed from the battle (such as infra) so grab all units at the
     // battle site
     retreatUnits.addAll(
@@ -38,9 +41,16 @@ class RetreaterGeneral implements Retreater {
             .getBattleSite()
             .getUnitCollection()
             .getMatches(
-                Matches.unitIsOwnedBy(battleState.getPlayer(OFFENSE))
+                Matches.unitIsOwnedBy(battleState.getPlayer(retreatingSide))
                     .and(Matches.unitIsSubmerged().negate())));
     retreatUnits.removeAll(battleState.filterUnits(REMOVED_CASUALTY));
+    if (retreatingSide == BattleState.Side.DEFENSE) {
+      // We only want units that can move (no buildings retreating)
+      final Predicate<Unit> cannotMove = Predicate.not(Matches.unitCanMove());
+      retreatUnits.removeIf(cannotMove);
+      // Remove units that can't defensive retreat
+      retreatUnits.removeIf(Matches.unitCanDefensiveRetreat().negate());
+    }
     return retreatUnits;
   }
 
@@ -76,10 +86,10 @@ class RetreaterGeneral implements Retreater {
     final Collection<Unit> airRetreating =
         CollectionUtils.getMatches(
             retreatUnits,
-            Matches.unitIsAir().and(Matches.unitIsOwnedBy(battleState.getPlayer(OFFENSE))));
+            Matches.unitIsAir().and(Matches.unitIsOwnedBy(battleState.getPlayer(retreatingSide))));
 
     if (!airRetreating.isEmpty()) {
-      battleState.retreatUnits(OFFENSE, airRetreating);
+      battleState.retreatUnits(retreatingSide, airRetreating);
       final String transcriptText = MyFormatter.unitsToText(airRetreating) + " retreated";
       historyChildren.add(RetreatHistoryChild.of(transcriptText, new ArrayList<>(airRetreating)));
     }
@@ -89,7 +99,7 @@ class RetreaterGeneral implements Retreater {
     nonAirRetreating.addAll(battleState.getDependentUnits(nonAirRetreating));
 
     if (!nonAirRetreating.isEmpty()) {
-      battleState.retreatUnits(OFFENSE, nonAirRetreating);
+      battleState.retreatUnits(retreatingSide, nonAirRetreating);
       historyChildren.add(
           RetreatHistoryChild.of(
               MyFormatter.unitsToText(nonAirRetreating) + " retreated to " + retreatTo.getName(),
