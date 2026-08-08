@@ -5,6 +5,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.delegate.IDelegateBridge;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -123,4 +124,11 @@ public interface BattleState {
   List<String> getStepStrings();
 
   Optional<String> findStepNameForFiringUnits(Collection<Unit> firingUnits);
+
+  /**
+   * Recompute the step strings from the current battle state and rebroadcast them to the display.
+   * Call this when firing groups have changed (e.g. due to casualties taken in an earlier step) so
+   * the UI's step list stays in sync with the steps the engine will actually execute.
+   */
+  void refreshStepStringsAndNotifyDisplay(IDelegateBridge bridge);
 }

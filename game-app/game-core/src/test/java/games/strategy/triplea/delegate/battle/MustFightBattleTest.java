@@ -210,8 +210,9 @@ class MustFightBattleTest extends AbstractClientSettingTestCase {
     // Ensure that all step names passed to notifyDice() exist in the battle's stepStrings.
     // This verifies what the real TripleADisplay's notifyDice() does (since it tries to select a
     // step in the UI created from stepStrings).
-    // This verifies the MustFightBattle.findStepNameForFiringUnits() logic (and its caller) is able
-    // to find the appropriate step even when the set of step names changes mid-battle.
+    // When step names change mid-battle (e.g. firing groups collapse after offensive AA casualties),
+    // MustFightBattle.refreshStepStringsAndNotifyDisplay() rebroadcasts the updated list so the UI
+    // stays in sync and BattleStepsPanel.setStep() never logs "Could not find step name".
     IDisplay display = bridge.getDisplayChannelBroadcaster();
     doAnswer(
             invocation -> {

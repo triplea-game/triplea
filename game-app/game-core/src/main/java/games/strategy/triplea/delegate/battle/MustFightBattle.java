@@ -807,6 +807,12 @@ public class MustFightBattle extends DependentBattle
   }
 
   @Override
+  public void refreshStepStringsAndNotifyDisplay(final IDelegateBridge bridge) {
+    determineStepStrings();
+    bridge.getDisplayChannelBroadcaster().listBattleSteps(battleId, stepStrings);
+  }
+
+  @Override
   public Collection<Territory> getAttackerRetreatTerritories() {
     // TODO: when attacking with paratroopers (air + carried land), there are several bugs in
     // retreating.
