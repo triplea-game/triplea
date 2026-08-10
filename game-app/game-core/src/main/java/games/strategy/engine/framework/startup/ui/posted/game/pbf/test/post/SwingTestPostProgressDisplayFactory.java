@@ -1,9 +1,8 @@
 package games.strategy.engine.framework.startup.ui.posted.game.pbf.test.post;
 
 import java.util.function.Supplier;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import org.triplea.swing.ProgressWindow;
+import org.triplea.swing.SwingComponents;
 
 public class SwingTestPostProgressDisplayFactory implements Supplier<TestPostProgressDisplay> {
 
@@ -17,21 +16,12 @@ public class SwingTestPostProgressDisplayFactory implements Supplier<TestPostPro
     return new TestPostProgressDisplay() {
       @Override
       public void showSuccess(final String message) {
-        SwingUtilities.invokeLater(
-            () ->
-                JOptionPane.showMessageDialog(
-                    null, message, "Test Turn Summary Post", JOptionPane.INFORMATION_MESSAGE));
+        SwingComponents.showDialog(null, message, "Test Turn Summary Post");
       }
 
       @Override
       public void showFailure(final Throwable throwable) {
-        SwingUtilities.invokeLater(
-            () ->
-                JOptionPane.showMessageDialog(
-                    null,
-                    throwable.getMessage(),
-                    "Test Turn Summary Post",
-                    JOptionPane.WARNING_MESSAGE));
+        SwingComponents.showWarning(null, throwable.getMessage(), "Test Turn Summary Post");
       }
 
       @Override
