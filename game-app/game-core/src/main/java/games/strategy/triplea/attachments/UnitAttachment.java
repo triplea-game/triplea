@@ -300,6 +300,19 @@ public class UnitAttachment extends DefaultAttachment {
   // also an allowed setter is "setUnitPlacementOnlyAllowedIn",
   // which just creates unitPlacementRestrictions with an inverted list of territories
   @Getter private @Nullable String[] unitPlacementRestrictions = null;
+
+  private String[] getUnitPlacementOnlyAllowedIn() {
+    final Set<String> restrictedTerritories =
+        unitPlacementRestrictions == null
+            ? Set.of()
+            : new HashSet<>(Arrays.asList(unitPlacementRestrictions));
+
+    return getData().getMap().getTerritories().stream()
+        .map(Territory::getName)
+        .filter(name -> !restrictedTerritories.contains(name))
+        .toArray(String[]::new);
+  }
+
   // -1 if infinite (infinite is default)
   @Getter private int maxBuiltPerPlayer = -1;
   private @Nullable Tuple<Integer, String> placementLimit = null;
@@ -979,6 +992,21 @@ public class UnitAttachment extends DefaultAttachment {
     restrictedTerritories.removeAll(allowedTerritories);
     unitPlacementRestrictions =
         restrictedTerritories.stream().map(Territory::getName).toArray(String[]::new);
+  }
+
+  private void setUnitPlacementOnlyAllowedInArray(final String[] value) throws GameParseException {
+    final Collection<Territory> allowedTerritories = getListedTerritories(value);
+    final Collection<Territory> restrictedTerritories =
+        new HashSet<>(getData().getMap().getTerritories());
+
+    restrictedTerritories.removeAll(allowedTerritories);
+
+    unitPlacementRestrictions =
+        restrictedTerritories.stream().map(Territory::getName).toArray(String[]::new);
+  }
+
+  private void resetUnitPlacementOnlyAllowedIn() {
+    unitPlacementRestrictions = null;
   }
 
   private void setRepairsUnits(final String value) throws GameParseException {
@@ -2874,6 +2902,8 @@ public class UnitAttachment extends DefaultAttachment {
         + maxDamage
         + "  unitPlacementRestrictions:"
         + toString(unitPlacementRestrictions)
+        + " unitPlacementOnlyAllowedIn:"
+        + toString(getUnitPlacementOnlyAllowedIn())
         + "  requiresUnits:"
         + toString(requiresUnits)
         + "  consumesUnits:"
@@ -4136,7 +4166,13 @@ public class UnitAttachment extends DefaultAttachment {
       case "destroyedWhenCapturedFrom" ->
           Optional.of(MutableProperty.ofWriteOnlyString(this::setDestroyedWhenCapturedFrom));
       case "unitPlacementOnlyAllowedIn" ->
-          Optional.of(MutableProperty.ofWriteOnlyString(this::setUnitPlacementOnlyAllowedIn));
+          Optional.of(
+              MutableProperty.of(
+                  this::setUnitPlacementOnlyAllowedInArray,
+                  this::setUnitPlacementOnlyAllowedIn,
+                  this::getUnitPlacementOnlyAllowedIn,
+                  this::resetUnitPlacementOnlyAllowedIn));
+
       case "isAAmovement" ->
           Optional.of(
               MutableProperty.<Boolean>ofWriteOnly(this::setIsAaMovement, this::setIsAaMovement));
