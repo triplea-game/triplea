@@ -532,7 +532,7 @@ public class MapPanel extends ImageScrollerLargeView {
 
   private void notifyUnitSelected(
       final List<Unit> units, @Nullable final Territory territory, final MouseDetails me) {
-    for (final UnitSelectionListener listener : unitSelectionListeners) {
+    for (final UnitSelectionListener listener : new ArrayList<>(unitSelectionListeners)) {
       listener.unitsSelected(units, territory, me);
     }
   }
