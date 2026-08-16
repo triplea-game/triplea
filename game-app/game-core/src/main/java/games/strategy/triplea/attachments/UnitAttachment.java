@@ -297,10 +297,10 @@ public class UnitAttachment extends DefaultAttachment {
   // this unit to move into a territory. (units must be owned by player, not be disabled)
   private @Nullable List<String[]> requiresUnitsToMove = null;
   // a colon delimited list of territories where this unit may not be placed
-  // also an allowed setter is "setUnitPlacementOnlyAllowedIn",
-  // which just creates unitPlacementRestrictions with an inverted list of territories
   @Getter private @Nullable String[] unitPlacementRestrictions = null;
 
+  // a colon delimited list of territories where this unit may only be placed. Essentially the
+  // inverse of unitPlacementRestrictions
   private String[] getUnitPlacementOnlyAllowedIn() {
     final Set<String> restrictedTerritories =
         unitPlacementRestrictions == null
@@ -983,8 +983,6 @@ public class UnitAttachment extends DefaultAttachment {
     unitPlacementRestrictions = null;
   }
 
-  // no field for this, since it is the inverse of unitPlacementRestrictions
-  // we might as well just use unitPlacementRestrictions
   private void setUnitPlacementOnlyAllowedIn(final String value) throws GameParseException {
     final Collection<Territory> allowedTerritories = getListedTerritories(splitOnColon(value));
     final Collection<Territory> restrictedTerritories =
@@ -4026,6 +4024,14 @@ public class UnitAttachment extends DefaultAttachment {
                   this::setUnitPlacementRestrictions,
                   this::getUnitPlacementRestrictions,
                   this::resetUnitPlacementRestrictions));
+      case "unitPlacementOnlyAllowedIn" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setUnitPlacementOnlyAllowedInArray,
+                  this::setUnitPlacementOnlyAllowedIn,
+                  this::getUnitPlacementOnlyAllowedIn,
+                  this::resetUnitPlacementOnlyAllowedIn));
+
       case "maxBuiltPerPlayer" ->
           Optional.of(
               MutableProperty.of(
@@ -4165,14 +4171,6 @@ public class UnitAttachment extends DefaultAttachment {
           Optional.of(MutableProperty.<Boolean>ofWriteOnly(this::setIsAa, this::setIsAa));
       case "destroyedWhenCapturedFrom" ->
           Optional.of(MutableProperty.ofWriteOnlyString(this::setDestroyedWhenCapturedFrom));
-      case "unitPlacementOnlyAllowedIn" ->
-          Optional.of(
-              MutableProperty.of(
-                  this::setUnitPlacementOnlyAllowedInArray,
-                  this::setUnitPlacementOnlyAllowedIn,
-                  this::getUnitPlacementOnlyAllowedIn,
-                  this::resetUnitPlacementOnlyAllowedIn));
-
       case "isAAmovement" ->
           Optional.of(
               MutableProperty.<Boolean>ofWriteOnly(this::setIsAaMovement, this::setIsAaMovement));
