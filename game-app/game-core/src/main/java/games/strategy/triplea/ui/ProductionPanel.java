@@ -7,6 +7,7 @@ import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
+import games.strategy.engine.data.ScrollableTextFieldInspector;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -61,7 +62,8 @@ class ProductionPanel extends JPanel {
 
   protected JDialog dialog;
   private boolean bid;
-  final Action doneAction = SwingAction.of("Done", () -> dialog.setVisible(false));
+  final Action doneAction =
+      SwingAction.of("Inspect", () -> ScrollableTextFieldInspector.runInspection());
 
   ProductionPanel(final UiContext uiContext) {
     this.uiContext = uiContext;
