@@ -1,25 +1,22 @@
 package games.strategy.ui;
 
 import games.strategy.engine.framework.system.SystemProperties;
-import java.awt.Color;
-import java.awt.Component;
+import games.strategy.triplea.EngineImageLoader;
 import java.awt.FlowLayout;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
-import java.awt.Polygon;
-import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
+import javax.swing.GrayFilter;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
 import org.triplea.swing.IntTextField;
 import org.triplea.swing.IntTextFieldChangeListener;
 
@@ -31,10 +28,11 @@ import org.triplea.swing.IntTextFieldChangeListener;
 public class ScrollableTextField extends JPanel {
   private static final long serialVersionUID = 6940592988573672224L;
 
-  private static final Icon UP_ICON = new StepperIcon(StepperKind.UP);
-  private static final Icon DOWN_ICON = new StepperIcon(StepperKind.DOWN);
-  private static final Icon MAX_ICON = new StepperIcon(StepperKind.MAX);
-  private static final Icon MIN_ICON = new StepperIcon(StepperKind.MIN);
+  private static boolean imagesLoaded;
+  private static Icon up;
+  private static Icon down;
+  private static Icon max;
+  private static Icon min;
 
   private final IntTextField text;
   private final JButton upButton;
@@ -44,6 +42,7 @@ public class ScrollableTextField extends JPanel {
   private final List<ScrollableTextFieldListener> listeners = new ArrayList<>();
 
   public ScrollableTextField(final int minVal, final int maxVal) {
+    loadImages();
     text = new IntTextField(minVal, maxVal);
     setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
     add(text);
@@ -51,7 +50,7 @@ public class ScrollableTextField extends JPanel {
     if (SystemProperties.isMac()) {
       inset = new Insets(2, 0, 2, 0);
     }
-    upButton = new JButton(UP_ICON);
+    upButton = new JButton(up);
     final Action incrementAction =
         new AbstractAction("inc") {
           private static final long serialVersionUID = 2125871167112459475L;
@@ -66,7 +65,7 @@ public class ScrollableTextField extends JPanel {
         };
     upButton.addActionListener(incrementAction);
     configureStepperButton(upButton, inset);
-    downButton = new JButton(DOWN_ICON);
+    downButton = new JButton(down);
     configureStepperButton(downButton, inset);
     final Action decrementAction =
         new AbstractAction("dec") {
@@ -81,7 +80,7 @@ public class ScrollableTextField extends JPanel {
           }
         };
     downButton.addActionListener(decrementAction);
-    maxButton = new JButton(MAX_ICON);
+    maxButton = new JButton(max);
     configureStepperButton(maxButton, inset);
     final Action maxAction =
         new AbstractAction("max") {
@@ -96,7 +95,7 @@ public class ScrollableTextField extends JPanel {
           }
         };
     maxButton.addActionListener(maxAction);
-    minButton = new JButton(MIN_ICON);
+    minButton = new JButton(min);
     configureStepperButton(minButton, inset);
     final Action minAction =
         new AbstractAction("min") {
@@ -126,15 +125,46 @@ public class ScrollableTextField extends JPanel {
     setWidgetActivation();
   }
 
+  private static synchronized void loadImages() {
+    if (imagesLoaded) {
+      return;
+    }
+    up = new ImageIcon(EngineImageLoader.loadImage("images", "up.gif"));
+    down = new ImageIcon(EngineImageLoader.loadImage("images", "down.gif"));
+    max = new ImageIcon(EngineImageLoader.loadImage("images", "max.gif"));
+    min = new ImageIcon(EngineImageLoader.loadImage("images", "min.gif"));
+    imagesLoaded = true;
+  }
+
   /**
-   * FlatLaf's default {@code Button.minimumWidth} is 72px and its disabled-icon filter turns the
-   * old black GIF arrows invisible on dark themes. Keep these steppers compact and let the icon
-   * paint with the button foreground.
+   * Keep the original GIF chrome. FlatLaf's disabled-icon filter can turn those black arrows
+   * invisible on dark themes, so bake Swing's GrayFilter transform as the disabled icon instead of
+   * letting Toolkit/LAF generate an empty one.
    */
   private static void configureStepperButton(final JButton button, final Insets inset) {
     button.setMargin(inset);
-    button.putClientProperty("JButton.buttonType", "toolBarButton");
-    button.putClientProperty("JComponent.minimumWidth", 0);
+    final Icon icon = button.getIcon();
+    if (icon instanceof ImageIcon imageIcon) {
+      button.setDisabledIcon(grayedIcon(imageIcon));
+    }
+  }
+
+  /** Same pixel transform as {@link GrayFilter#createDisabledImage}, applied synchronously. */
+  private static Icon grayedIcon(final ImageIcon enabled) {
+    final int width = Math.max(1, enabled.getIconWidth());
+    final int height = Math.max(1, enabled.getIconHeight());
+    final BufferedImage src = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+    final Graphics2D graphics = src.createGraphics();
+    enabled.paintIcon(null, graphics, 0, 0);
+    graphics.dispose();
+    final GrayFilter filter = new GrayFilter(true, 50);
+    final BufferedImage dst = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        dst.setRGB(x, y, filter.filterRGB(x, y, src.getRGB(x, y)));
+      }
+    }
+    return new ImageIcon(dst);
   }
 
   public void setMax(final int max) {
@@ -199,73 +229,5 @@ public class ScrollableTextField extends JPanel {
   public void setEnabled(final boolean enabled) {
     text.setEnabled(enabled);
     setWidgetActivation();
-  }
-
-  private enum StepperKind {
-    UP,
-    DOWN,
-    MAX,
-    MIN
-  }
-
-  /** Paints with the button's current foreground so disabled arrows stay visible on FlatLaf. */
-  private static final class StepperIcon implements Icon {
-    private static final int WIDTH = 12;
-    private static final int HEIGHT = 8;
-    private final StepperKind kind;
-
-    StepperIcon(final StepperKind kind) {
-      this.kind = kind;
-    }
-
-    @Override
-    public int getIconWidth() {
-      return WIDTH;
-    }
-
-    @Override
-    public int getIconHeight() {
-      return HEIGHT;
-    }
-
-    @Override
-    public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
-      final Color color =
-          c.isEnabled()
-              ? c.getForeground()
-              : Optional.ofNullable(UIManager.getColor("Button.disabledText"))
-                  .orElse(c.getForeground());
-      final Graphics2D g2 = (Graphics2D) g.create();
-      g2.setColor(color);
-      g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-      switch (kind) {
-        case UP -> fillTriangle(g2, x, y, HEIGHT, true);
-        case DOWN -> fillTriangle(g2, x, y, HEIGHT, false);
-        case MAX -> {
-          g2.fillRect(x + 1, y, WIDTH - 2, 2);
-          fillTriangle(g2, x, y + 2, HEIGHT - 2, true);
-        }
-        case MIN -> {
-          fillTriangle(g2, x, y, HEIGHT - 2, false);
-          g2.fillRect(x + 1, y + HEIGHT - 2, WIDTH - 2, 2);
-        }
-      }
-      g2.dispose();
-    }
-
-    private static void fillTriangle(
-        final Graphics2D g2, final int x, final int y, final int height, final boolean up) {
-      final Polygon triangle = new Polygon();
-      if (up) {
-        triangle.addPoint(x + WIDTH / 2, y);
-        triangle.addPoint(x + 1, y + height - 1);
-        triangle.addPoint(x + WIDTH - 1, y + height - 1);
-      } else {
-        triangle.addPoint(x + 1, y);
-        triangle.addPoint(x + WIDTH - 1, y);
-        triangle.addPoint(x + WIDTH / 2, y + height - 1);
-      }
-      g2.fillPolygon(triangle);
-    }
   }
 }
