@@ -423,10 +423,17 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             editPanel.setActive(false);
           }
         });
+
+    // The calculated minimum width (240px) is insufficient to display all buttons ('Cancel',
+    // 'Done', 'Undo All')
+    final int minimumRightHandSidePanelWidth = 248;
     rightHandSidePanel.setPreferredSize(
         new Dimension(
             (int) smallView.getPreferredSize().getWidth(),
             (int) mapPanel.getPreferredSize().getHeight()));
+    rightHandSidePanel.setMinimumSize(
+        new Dimension(minimumRightHandSidePanelWidth, rightHandSidePanel.getMinimumSize().height));
+
     gameCenterPanel =
         new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mapAndChatPanel, rightHandSidePanel);
     gameCenterPanel.setOneTouchExpandable(true);
