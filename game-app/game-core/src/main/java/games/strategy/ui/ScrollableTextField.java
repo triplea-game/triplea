@@ -1,5 +1,6 @@
 package games.strategy.ui;
 
+import com.formdev.flatlaf.FlatLaf;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.EngineImageLoader;
 import java.awt.FlowLayout;
@@ -157,7 +158,11 @@ public class ScrollableTextField extends JPanel {
     final Graphics2D graphics = src.createGraphics();
     enabled.paintIcon(null, graphics, 0, 0);
     graphics.dispose();
-    final GrayFilter filter = new GrayFilter(true, 50);
+    final int DARK_BRIGHTNESS = 34;
+    final int LIGHT_BRIGHTNESS = 58;
+    final boolean isDarkTheme = FlatLaf.isLafDark();
+    final int brightness = isDarkTheme ? DARK_BRIGHTNESS : LIGHT_BRIGHTNESS;
+    final GrayFilter filter = new GrayFilter(true, brightness);
     final BufferedImage dst = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
