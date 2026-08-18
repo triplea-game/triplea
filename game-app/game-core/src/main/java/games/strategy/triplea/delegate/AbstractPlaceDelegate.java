@@ -1334,6 +1334,38 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     return Math.max(0, production - unitCountHaveToAndHaveBeenBeProducedHere);
   }
 
+  private int getConstructionConsumptionBonus(
+      final String constructionType,
+      final IntegerMap<UnitType> existingByType,
+      final Map<UnitType, String> existingTypeToConstructionType,
+      final IntegerMap<UnitType> heldByType,
+      final Map<UnitType, String> heldTypeToConstructionType,
+      final Map<UnitType, IntegerMap<UnitType>> consumesUnitsByType) {
+    int consumptionBonus = 0;
+
+    for (final UnitType consumedType : existingByType.keySet()) {
+      if (!constructionType.equals(existingTypeToConstructionType.get(consumedType))) {
+        continue;
+      }
+
+      int potentialConsumption = 0;
+      for (final UnitType heldType : heldByType.keySet()) {
+        if (!constructionType.equals(heldTypeToConstructionType.get(heldType))) {
+          continue;
+        }
+
+        final IntegerMap<UnitType> consumesUnits = consumesUnitsByType.get(heldType);
+        if (consumesUnits != null) {
+          potentialConsumption += heldByType.getInt(heldType) * consumesUnits.getInt(consumedType);
+        }
+      }
+
+      consumptionBonus += Math.min(potentialConsumption, existingByType.getInt(consumedType));
+    }
+
+    return consumptionBonus;
+  }
+
   /**
    * Calculates how many of each of the specified construction units can be placed in the specified
    * territory.
@@ -1438,24 +1470,14 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
         // per-type max as long as it's back within the limit once consumption happens.
         // Each existing unit can only be consumed once, and we never credit more consumption
         // than the held units are actually capable of performing.
-        int consumptionBonus = 0;
-        for (final UnitType consumedType : existingByType.keySet()) {
-          if (!constructionType.equals(existingTypeToConstructionType.get(consumedType))) {
-            continue;
-          }
-          int desiredConsumption = 0;
-          for (final UnitType heldType : heldByType.keySet()) {
-            if (!constructionType.equals(heldTypeToConstructionType.get(heldType))) {
-              continue;
-            }
-            final IntegerMap<UnitType> consumesUnits = consumesUnitsByType.get(heldType);
-            if (consumesUnits != null) {
-              desiredConsumption +=
-                  heldByType.getInt(heldType) * consumesUnits.getInt(consumedType);
-            }
-          }
-          consumptionBonus += Math.min(desiredConsumption, existingByType.getInt(consumedType));
-        }
+        final int consumptionBonus =
+            getConstructionConsumptionBonus(
+                constructionType,
+                existingByType,
+                existingTypeToConstructionType,
+                heldByType,
+                heldTypeToConstructionType,
+                consumesUnitsByType);
 
         final int value =
             Math.min(
