@@ -20,15 +20,18 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerList;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.GameProperties;
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
@@ -240,6 +243,69 @@ class UnitAttachmentTest {
 
       // called in getCanNotBeTargetedBy when AIR_ATTACK_SUB_RESTRICTED is true
       verify(unitTypeList, never()).getAllUnitTypes();
+    }
+  }
+
+  @Nested
+  class UnitPlacementOnlyAllowedIn {
+
+    private Territory territoryA;
+    private Territory territoryB;
+    private Territory territoryC;
+    private GameMap map;
+
+    private MutableProperty<String[]> unitPlacementOnlyAllowedIn;
+    private MutableProperty<String[]> unitPlacementRestrictions;
+
+    @BeforeEach
+    void setUp() {
+      territoryA = mock(Territory.class);
+      territoryB = mock(Territory.class);
+      territoryC = mock(Territory.class);
+
+      when(territoryA.getName()).thenReturn("A");
+      when(territoryB.getName()).thenReturn("B");
+      when(territoryC.getName()).thenReturn("C");
+
+      map = mock(GameMap.class);
+      when(gameData.getMap()).thenReturn(map);
+      when(map.getTerritories()).thenReturn(List.of(territoryA, territoryB, territoryC));
+
+      unitPlacementOnlyAllowedIn =
+          (MutableProperty<String[]>) attachment.getPropertyOrThrow("unitPlacementOnlyAllowedIn");
+      unitPlacementRestrictions =
+          (MutableProperty<String[]>) attachment.getPropertyOrThrow("unitPlacementRestrictions");
+    }
+
+    @Test
+    void setUnitPlacementOnlyAllowedInUpdatesRestrictions()
+        throws MutableProperty.InvalidValueException {
+      when(map.getTerritoryOrNull("A")).thenReturn(territoryA);
+
+      unitPlacementOnlyAllowedIn.setValue(new String[] {"A"});
+
+      assertThat(Set.of(unitPlacementOnlyAllowedIn.getValue()), containsInAnyOrder("A"));
+      assertThat(Set.of(unitPlacementRestrictions.getValue()), containsInAnyOrder("B", "C"));
+    }
+
+    @Test
+    void setUnitPlacementRestrictionsUpdatesOnlyAllowedIn()
+        throws MutableProperty.InvalidValueException {
+      unitPlacementRestrictions.setValue(new String[] {"B", "C"});
+
+      assertThat(Set.of(unitPlacementOnlyAllowedIn.getValue()), containsInAnyOrder("A"));
+    }
+
+    @Test
+    void settingBothPlacementPropertiesUsesLastValue()
+        throws MutableProperty.InvalidValueException {
+      when(map.getTerritoryOrNull("A")).thenReturn(territoryA);
+
+      unitPlacementOnlyAllowedIn.setValue(new String[] {"A"});
+      unitPlacementRestrictions.setValue(new String[] {"B"});
+
+      assertThat(Set.of(unitPlacementOnlyAllowedIn.getValue()), containsInAnyOrder("A", "C"));
+      assertThat(Set.of(unitPlacementRestrictions.getValue()), containsInAnyOrder("B"));
     }
   }
 }
