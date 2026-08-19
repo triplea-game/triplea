@@ -992,7 +992,7 @@ public class UnitAttachment extends DefaultAttachment {
         restrictedTerritories.stream().map(Territory::getName).toArray(String[]::new);
   }
 
-  private void setUnitPlacementOnlyAllowedInArray(final String[] value) throws GameParseException {
+  private void setUnitPlacementOnlyAllowedIn(final String[] value) throws GameParseException {
     final Collection<Territory> allowedTerritories = getListedTerritories(value);
     final Collection<Territory> restrictedTerritories =
         new HashSet<>(getData().getMap().getTerritories());
@@ -4027,7 +4027,7 @@ public class UnitAttachment extends DefaultAttachment {
       case "unitPlacementOnlyAllowedIn" ->
           Optional.of(
               MutableProperty.of(
-                  this::setUnitPlacementOnlyAllowedInArray,
+                  this::setUnitPlacementOnlyAllowedIn,
                   this::setUnitPlacementOnlyAllowedIn,
                   this::getUnitPlacementOnlyAllowedIn,
                   this::resetUnitPlacementOnlyAllowedIn));
