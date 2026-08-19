@@ -9,6 +9,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
@@ -284,8 +285,8 @@ class UnitAttachmentTest {
 
       unitPlacementOnlyAllowedIn.setValue(new String[] {"A"});
 
-      assertThat(Set.of(unitPlacementOnlyAllowedIn.getValue()), containsInAnyOrder("A"));
-      assertThat(Set.of(unitPlacementRestrictions.getValue()), containsInAnyOrder("B", "C"));
+      assertEquals(Set.of("A"), Set.of(unitPlacementOnlyAllowedIn.getValue()));
+      assertEquals(Set.of("B", "C"), Set.of(unitPlacementRestrictions.getValue()));
     }
 
     @Test
@@ -293,7 +294,7 @@ class UnitAttachmentTest {
         throws MutableProperty.InvalidValueException {
       unitPlacementRestrictions.setValue(new String[] {"B", "C"});
 
-      assertThat(Set.of(unitPlacementOnlyAllowedIn.getValue()), containsInAnyOrder("A"));
+      assertEquals(Set.of("A"), Set.of(unitPlacementOnlyAllowedIn.getValue()));
     }
 
     @Test
@@ -304,8 +305,31 @@ class UnitAttachmentTest {
       unitPlacementOnlyAllowedIn.setValue(new String[] {"A"});
       unitPlacementRestrictions.setValue(new String[] {"B"});
 
-      assertThat(Set.of(unitPlacementOnlyAllowedIn.getValue()), containsInAnyOrder("A", "C"));
-      assertThat(Set.of(unitPlacementRestrictions.getValue()), containsInAnyOrder("B"));
+      assertEquals(Set.of("A", "C"), Set.of(unitPlacementOnlyAllowedIn.getValue()));
+      assertEquals(Set.of("B"), Set.of(unitPlacementRestrictions.getValue()));
+    }
+
+    @Test
+    void resettingUnitPlacementOnlyAllowedInClearsRestrictions()
+        throws MutableProperty.InvalidValueException {
+      when(map.getTerritoryOrNull("A")).thenReturn(territoryA);
+
+      unitPlacementOnlyAllowedIn.setValue(new String[] {"A"});
+      unitPlacementOnlyAllowedIn.resetValue();
+
+      assertEquals(Set.of("A", "B", "C"), Set.of(unitPlacementOnlyAllowedIn.getValue()));
+      assertNull(unitPlacementRestrictions.getValue());
+    }
+
+    @Test
+    void resettingUnitPlacementRestrictionsClearsOnlyAllowedIn()
+        throws MutableProperty.InvalidValueException {
+
+      unitPlacementRestrictions.setValue(new String[] {"A"});
+      unitPlacementRestrictions.resetValue();
+
+      assertEquals(Set.of("A", "B", "C"), Set.of(unitPlacementOnlyAllowedIn.getValue()));
+      assertNull(unitPlacementRestrictions.getValue());
     }
   }
 }
