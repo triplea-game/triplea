@@ -272,4 +272,27 @@ public abstract class PlaceDelegateTestCommon extends AbstractDelegateTestCase {
       assertThat(response.getUnits(), is(CollectionUtils.getMatches(units, unitIsOfType(carrier))));
     }
   }
+
+  @Test
+  void testCannotPlaceAirUnitOnFriendlyCarrier() {
+    northSea.getUnitCollection().addAll(create(russians, carrier, 1));
+
+    assertError(delegate.canUnitsBePlaced(northSea, create(british, fighter, 1), british));
+  }
+
+  @Test
+  void testCanPlaceAirUnitOnOwnCarrier() {
+    northSea.getUnitCollection().addAll(create(british, carrier, 1));
+
+    assertValid(delegate.canUnitsBePlaced(northSea, create(british, fighter, 1), british));
+  }
+
+  @Test
+  void testCannotPlaceAirUnitOnOwnAndFriendlyCarrier() {
+    northSea.getUnitCollection().addAll(create(british, carrier, 1));
+    northSea.getUnitCollection().addAll(create(russians, carrier, 1));
+    northSea.getUnitCollection().addAll(create(british, fighter, 2));
+
+    assertError(delegate.canUnitsBePlaced(northSea, create(british, fighter, 1), british));
+  }
 }
