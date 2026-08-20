@@ -35,6 +35,8 @@ import games.strategy.triplea.delegate.data.BattleRecords;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import games.strategy.triplea.formatter.MyFormatter;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -99,6 +101,21 @@ public class BattleTracker implements Serializable {
   private final Collection<
           Tuple<Tuple<GamePlayer, GamePlayer>, Tuple<RelationshipType, RelationshipType>>>
       relationshipChangesThisTurn = new ArrayList<>();
+
+  @Getter private Map<Territory, Collection<Unit>> defendingUnitsAtStartOfBattle = new HashMap<>();
+
+  public Collection<Unit> getDefendingUnitsAtStartOfBattle(final Territory t) {
+    return defendingUnitsAtStartOfBattle.getOrDefault(t, List.of());
+  }
+
+  // Guards against saves created before this field existed. Deserialization skips field
+  // initializers, so any field missing from the save's stream loads as null.
+  private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+    in.defaultReadObject();
+    if (defendingUnitsAtStartOfBattle == null) {
+      defendingUnitsAtStartOfBattle = new HashMap<>();
+    }
+  }
 
   void addToConquered(final Territory territory) {
     conquered.add(territory);
@@ -1130,6 +1147,8 @@ public class BattleTracker implements Serializable {
     if (airBattle != null) {
       addDependency(battle, airBattle);
     }
+    // take a snapshot of the defenders at the start of the battle
+    defendingUnitsAtStartOfBattle.putIfAbsent(site, new ArrayList<>(battle.getDefendingUnits()));
     return change;
   }
 
