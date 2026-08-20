@@ -1293,6 +1293,7 @@ public class BattleTracker implements Serializable {
     defendingAirThatCanNotLand.clear();
     noBombardAllowed.clear();
     relationshipChangesThisTurn.clear();
+    defendingUnitsAtStartOfBattle.clear();
   }
 
   void addToDefendingAirThatCanNotLand(
