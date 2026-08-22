@@ -21,11 +21,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
+import org.triplea.swing.SwingComponents;
 
 /** Implementation of {@link ILauncher} for a headed local or network client game. */
 @Slf4j
@@ -97,7 +96,7 @@ public class LocalLauncher implements ILauncher {
       // game. might be caused by closing of stream while unloading map resources.
       Interruptibles.sleep(100);
       gameSelector.onGameEnded();
-      SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(parent).setVisible(true));
+      SwingComponents.setFrameFromComponentVisible(parent);
     }
   }
 

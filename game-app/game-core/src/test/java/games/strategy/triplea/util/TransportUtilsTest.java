@@ -8,9 +8,11 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
+import static games.strategy.triplea.util.TransportUtils.findMinTransportsToUnload;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
@@ -19,6 +21,8 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -64,6 +68,16 @@ public class TransportUtilsTest {
     transport.setUnloaded(List.of(dummyUnit));
     dummyUnit.getProperty(Unit.PropertyName.UNLOADED_TO).orElseThrow().setValue(t);
     assertThat(dummyUnit.getUnloadedTo(), equalTo(t));
+  }
+
+  @Test
+  void findMinTransportsToUnloadFailsForUnitWithoutTransportOption() {
+    final Collection<Unit> units = Arrays.asList(infantry1, tank2);
+    final Collection<Unit> transports = List.of(transport1);
+
+    addTransportedUnits(sz5, transport1, List.of(infantry1));
+
+    assertDoesNotThrow(() -> findMinTransportsToUnload(units, transports));
   }
 
   @Nested

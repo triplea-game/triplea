@@ -8,8 +8,6 @@ import games.strategy.triplea.ui.QuitHandler;
 import games.strategy.triplea.ui.menubar.LobbyMenu;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.Optional;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
@@ -18,6 +16,7 @@ import org.triplea.game.client.HeadedGameRunner;
 import org.triplea.http.client.web.socket.WebSocket;
 import org.triplea.sound.ClipPlayer;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.WindowAdapterFactory;
 
 /** The top-level frame window for the lobby client UI. */
 public class LobbyFrame extends JFrame implements QuitHandler {
@@ -84,13 +83,7 @@ public class LobbyFrame extends JFrame implements QuitHandler {
     pack();
     chatMessagePanel.requestFocusInWindow();
     setLocationRelativeTo(null);
-    addWindowListener(
-        new WindowAdapter() {
-          @Override
-          public void windowClosing(final WindowEvent e) {
-            shutdown();
-          }
-        });
+    addWindowListener(WindowAdapterFactory.closing(this::shutdown));
   }
 
   @Override

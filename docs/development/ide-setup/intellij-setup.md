@@ -33,9 +33,8 @@ each plugin's page.
 1. *google-java-format* [plugin](https://plugins.jetbrains.com/plugin/8527-google-java-format)
     1. **Settings* > google-java-format Settings**
     2. Check 'enable'
-       ![Screenshot from 2019-08-08 17-35-52
-       ](https://user-images.githubusercontent.com/12397753/62746114-07cc2b80-ba03-11e9-9ac0-0b1e6e1e8788.png)*
-    3.
+      <img src="https://user-images.githubusercontent.com/12397753/62746114-07cc2b80-ba03-11e9-9ac0-0b1e6e1e8788.png" alt="Screenshot" height="200">
+    4.
    Check [IntelliJ JRE config from google-java-format]([url](https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-config))
    or do it manually as below.
 2. [OUT-DATED] *checkstyle-IDEA* [plugin](https://github.com/jshiell/checkstyle-idea)
@@ -55,7 +54,7 @@ each plugin's page.
 ## Download and import IDEA settings file
 
 Import IDEA settings file via `File > Manage IDE Settings > Import Settings...`.
-TODO: Identify file to be imported!
+*TODO: Identify file to be imported!*
 
 ## google-java-format Plugin Fix (if above settings do not work)
 
@@ -73,4 +72,23 @@ Add the following to your vmoptions file:
 --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
 --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
 ```
+
+### Further IDEA settings
+
+Note: **Settings** menu is accessible via, `File > Settings...`  or (on macOS): `IntelliJ IDEA > Preferences`
+
+1. No `*` imports and import order
+Path: `Editor > Code Style > Java`  in  tab `Imports`
+<img width="560" height="705" alt="image" src="https://github.com/user-attachments/assets/f646ec0a-4a33-42ee-a001-57844c62dea6" />
+
+2. Default annotations `@NotNull` / `@Nullable`
+Path: `Editor > Inspections > Revert changes`  in  tree entry `Java > Probably bugs > Nullability problems > @NotNull / @Nullable problems`
+Button: `Configure Annotations ...`
+- Nullable
+<img width="656" height="201" alt="image" src="https://github.com/user-attachments/assets/9334e3b8-1e84-43e0-be89-a369b5c2d720" />
+
+- NotNull
+<img width="656" height="197" alt="image" src="https://github.com/user-attachments/assets/5227f499-39c4-444c-8d0f-24c5ea02bde1" />
+
+
 

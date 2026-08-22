@@ -103,7 +103,9 @@ public final class UnitComparator {
 
       // Sort by increasing movement normally, but by decreasing movement during loading
       if (left1.compareTo(left2) != 0) {
-        return (route != null && route.isLoad()) ? left2.compareTo(left1) : left1.compareTo(left2);
+        return (route != null && route.isSeaLoad())
+            ? left2.compareTo(left1)
+            : left1.compareTo(left2);
       }
 
       // Sort units by type first.

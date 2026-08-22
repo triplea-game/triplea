@@ -858,7 +858,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       return Optional.of("Cannot place these units outside of the capital");
     }
     if (to.isWater()) {
-      final Optional<String> canLand = validateNewAirCanLandOnCarriers(to, units);
+      final Optional<String> canLand = validateNewAirCanLandOnCarriers(to, units, player);
       if (canLand.isPresent()) {
         return canLand;
       }
@@ -1655,16 +1655,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     return CollectionUtils.getAny(factoryUnits).getOriginalOwner();
   }
 
-  /**
-   * The rule is that new fighters can be produced on new carriers. This does not allow for fighters
-   * to be produced on old carriers. THIS ISN'T CORRECT.
-   */
   private static Optional<@Nls String> validateNewAirCanLandOnCarriers(
-      final Territory to, final Collection<Unit> units) {
-    final int cost = AirMovementValidator.carrierCost(units);
+      final Territory to, final Collection<Unit> units, final GamePlayer player) {
+    int cost = AirMovementValidator.carrierCost(units);
+    cost += AirMovementValidator.carrierCost(to.getMatches(Matches.unitIsOwnedBy(player)));
     int capacity = AirMovementValidator.carrierCapacity(units, to);
-    capacity += AirMovementValidator.carrierCapacity(to.getUnits(), to);
-    // TODO: This method considers existing carriers but not existing air units
+    capacity +=
+        AirMovementValidator.carrierCapacity(to.getMatches(Matches.unitIsOwnedBy(player)), to);
     if (cost > capacity) {
       return Optional.of("Not enough new carriers to land all the fighters");
     }

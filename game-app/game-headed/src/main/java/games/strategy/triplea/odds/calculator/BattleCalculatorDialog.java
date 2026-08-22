@@ -11,8 +11,6 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +21,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.swing.WindowAdapterFactory;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.swing.key.binding.SwingKeyBinding;
 
@@ -59,20 +58,16 @@ public class BattleCalculatorDialog extends JDialog {
     dialog.pack();
 
     dialog.addWindowListener(
-        new WindowAdapter() {
-          @Override
-          public void windowActivated(final WindowEvent e) {
-            instances.remove(dialog);
-            instances.add(dialog);
-          }
-
-          @Override
-          public void windowClosed(final WindowEvent e) {
-            if (taFrame.getUiContext() != null && !taFrame.getUiContext().isShutDown()) {
-              taFrame.getUiContext().removeShutdownWindow(dialog);
-            }
-          }
-        });
+        WindowAdapterFactory.activatedAndClosed(
+            () -> {
+              instances.remove(dialog);
+              instances.add(dialog);
+            },
+            () -> {
+              if (taFrame.getUiContext() != null && !taFrame.getUiContext().isShutDown()) {
+                taFrame.getUiContext().removeShutdownWindow(dialog);
+              }
+            }));
 
     dialog.addComponentListener(
         new ComponentAdapter() {
