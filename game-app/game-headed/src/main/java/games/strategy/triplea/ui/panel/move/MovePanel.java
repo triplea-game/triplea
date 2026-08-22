@@ -571,13 +571,13 @@ public class MovePanel extends AbstractMovePanel {
           setSelectedEndpointTerritory(territory);
           Collection<Unit> seaTransports = null;
           final var units = new ArrayList<>(unitsThatCanMoveOnRoute);
-          if (route.isLoad() && units.stream().anyMatch(Matches.unitIsLand())) {
+          if (route.isSeaLoad() && units.stream().anyMatch(Matches.unitIsLand())) {
             seaTransports = getSeaTransportsToLoad(route, units);
             if (seaTransports.isEmpty()) {
               cancelMove();
               return;
             }
-          } else if (route.isUnload() && units.stream().anyMatch(Matches.unitIsLand())) {
+          } else if (route.isSeaUnload() && units.stream().anyMatch(Matches.unitIsLand())) {
             units.clear();
             // Have user select which transports and land units to unload
             units.addAll(
@@ -689,7 +689,7 @@ public class MovePanel extends AbstractMovePanel {
           }
           if (mustQueryUser) {
             final List<Unit> defaultSelections = new ArrayList<>(units.size());
-            if (route.isLoad()) {
+            if (route.isSeaLoad()) {
               final Collection<Unit> transportsToLoad = getSeaTransportsToLoad(route, units);
               defaultSelections.addAll(
                   TransportUtils.mapTransports(route, units, transportsToLoad).keySet());
@@ -735,7 +735,7 @@ public class MovePanel extends AbstractMovePanel {
          */
         private Collection<Unit> getSeaTransportsToLoad(
             final Route route, final Collection<Unit> unitsToLoad) {
-          if (!route.isLoad()) {
+          if (!route.isSeaLoad()) {
             return List.of();
           }
           if (unitsToLoad.stream().anyMatch(Matches.unitIsAir())) {
@@ -1051,7 +1051,7 @@ public class MovePanel extends AbstractMovePanel {
 
   private Comparator<Unit> getUnitsToMoveComparator(final List<Unit> units, final Route route) {
     // sort units based on which transports are allowed to unload
-    if (route.isUnload() && units.stream().anyMatch(Matches.unitIsLand())) {
+    if (route.isSeaUnload() && units.stream().anyMatch(Matches.unitIsLand())) {
       return UnitComparator.getUnloadableUnitsComparator(units, route, getUnitOwner(units));
     } else {
       return UnitComparator.getMovableUnitsComparator(units, route);
@@ -1321,7 +1321,7 @@ public class MovePanel extends AbstractMovePanel {
       final Predicate<Unit> enoughMovement =
           u -> isEditMode() || (u.getMovementLeft().compareTo(route.getMovementCost(u)) >= 0);
 
-      if (route.isUnload()) {
+      if (route.isSeaUnload()) {
         final Predicate<Unit> notLandAndCanMove = enoughMovement.and(Matches.unitIsNotLand());
         final Predicate<Unit> landOrCanMove = Matches.unitIsLand().or(notLandAndCanMove);
         movableBuilder.and(landOrCanMove);
@@ -1329,7 +1329,7 @@ public class MovePanel extends AbstractMovePanel {
         movableBuilder.and(enoughMovement);
       }
       final boolean water = route.getEnd().isWater();
-      if (water && !route.isLoad()) {
+      if (water && !route.isSeaLoad()) {
         movableBuilder.and(Matches.unitIsNotLand());
       }
       if (!water) {

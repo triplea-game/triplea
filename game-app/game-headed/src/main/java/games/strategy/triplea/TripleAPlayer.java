@@ -101,130 +101,6 @@ public class TripleAPlayer extends AbstractBasePlayer {
     this.isClient = isClient;
   }
 
-  @Override
-  public void reportError(final String error) {
-    ui.notifyError(error);
-  }
-
-  @Override
-  public void reportMessage(final String message, final String title) {
-    if (ui != null) {
-      ui.notifyMessage(message, title);
-    }
-  }
-
-  @Override
-  public boolean isAi() {
-    return false;
-  }
-
-  @Override
-  public void start(final String name) {
-    // must call super.start
-    super.start(name);
-    try {
-      startImpl(name);
-    } catch (GameOverException e) {
-      // Return cleanly.
-    }
-  }
-
-  private void startImpl(final String name) {
-    if (getPlayerBridge().isGameOver()) {
-      return;
-    }
-    if (ui == null) {
-      // We will get here if we are loading a save game of a map that we do not have. Caller code
-      // should be doing the error handling, so just return.
-      return;
-    }
-
-    // Perform start-player-turn actions if it's the first unskipped phase of this player's turn
-    // that is not End Turn
-    if (!GameStep.isEndTurnStepName(name)) {
-      ui.performStartPlayerTurnActionsIfNeeded(this.getGamePlayer());
-    }
-
-    // TODO: parsing which UI thing we should run based on the string name of a possibly extended
-    // delegate
-    // class seems like a bad way of doing this whole method. however i can't think of anything
-    // better right now.
-    // This is how we find out our game step: getGameData().getSequence().getStep()
-    // The game step contains information, like the exact delegate and the delegate's class,
-    // that we can further use if needed. This is how we get our communication bridge for affecting
-    // the game data:
-    // (ISomeDelegate) getPlayerBridge().getRemote()
-    // We should never touch the game data directly. All changes to game data are done through the
-    // remote, which then changes the game using the DelegateBridge -> change factory
-
-    enableEditModeMenu();
-    boolean badStep = false;
-    if (GameStep.isTechStepName(name)) {
-      tech();
-    } else if (GameStep.isPurchaseOrBidStepName(name)) {
-      purchase(GameStepPropertiesHelper.isBid(getGameData()), false);
-      if (!GameStepPropertiesHelper.isBid(getGameData())) {
-        ui.waitForMoveForumPoster(this.getGamePlayer(), getPlayerBridge());
-        // TODO only do forum post if there is a combat
-      }
-    } else if (GameStep.isMoveStepName(name)) {
-      final boolean nonCombat = GameStepPropertiesHelper.isNonCombatMove(getGameData(), false);
-      move(nonCombat, name);
-      if (!nonCombat) {
-        ui.waitForMoveForumPoster(this.getGamePlayer(), getPlayerBridge());
-        // TODO only do forum post if there is a combat
-      }
-    } else if (GameStep.isBattleStepName(name)) {
-      battle();
-    } else if (GameStep.isPlaceStepName(name)) {
-      place();
-    } else if (GameStep.isPoliticsStepName(name)) {
-      politics(true);
-    } else if (GameStep.isUserActionsStepName(name)) {
-      userActions(true);
-    } else if (GameStep.isEndTurnStepName(name)) {
-      endTurn();
-      // reset our sounds
-      soundPlayedAlreadyCombatMove = false;
-      soundPlayedAlreadyNonCombatMove = false;
-      soundPlayedAlreadyPurchase = false;
-      soundPlayedAlreadyTechnology = false;
-      soundPlayedAlreadyBattle = false;
-      soundPlayedAlreadyEndTurn = false;
-      soundPlayedAlreadyPlacement = false;
-    } else {
-      badStep = !GameStep.isTechActivationStepName(name);
-    }
-    disableEditModeMenu();
-    if (badStep) {
-      throw new IllegalArgumentException("Unrecognized step name: " + name);
-    }
-  }
-
-  private void enableEditModeMenu() {
-    try {
-      ui.setEditDelegate((IEditDelegate) getPlayerBridge().getRemotePersistentDelegate("edit"));
-    } catch (final GameOverException e) {
-      return;
-    } catch (final Exception e) {
-      log.error("Failed to set edit delegate", e);
-    }
-    SwingUtilities.invokeLater(
-        () -> {
-          ui.getEditModeButtonModel().addActionListener(editModeAction);
-          ui.getEditModeButtonModel().setEnabled(true);
-        });
-  }
-
-  private void disableEditModeMenu() {
-    ui.setEditDelegate(null);
-    SwingUtilities.invokeLater(
-        () -> {
-          ui.getEditModeButtonModel().setEnabled(false);
-          ui.getEditModeButtonModel().removeActionListener(editModeAction);
-        });
-  }
-
   private void politics(final boolean firstRun) {
     if (getPlayerBridge().isGameOver()) {
       return;
@@ -275,16 +151,19 @@ public class TripleAPlayer extends AbstractBasePlayer {
   }
 
   @Override
-  public boolean acceptAction(
-      final GamePlayer playerSendingProposal,
-      final String acceptanceQuestion,
-      final boolean politics) {
-    return !getGamePlayer().amNotDeadYet()
-        || getPlayerBridge().isGameOver()
-        || ui.acceptAction(
-            playerSendingProposal,
-            "To " + getGamePlayer().getName() + ": " + acceptanceQuestion,
-            politics);
+  public boolean isAi() {
+    return false;
+  }
+
+  @Override
+  public void start(final String name) {
+    // must call super.start
+    super.start(name);
+    try {
+      startImpl(name);
+    } catch (GameOverException e) {
+      // Return cleanly.
+    }
   }
 
   private void playSound(final String soundPath) {
@@ -293,6 +172,103 @@ public class TripleAPlayer extends AbstractBasePlayer {
       return;
     }
     ui.getUiContext().getClipPlayer().play(soundPath, getGamePlayer());
+  }
+
+  private void startImpl(final String name) {
+    if (getPlayerBridge().isGameOver()) {
+      return;
+    }
+    if (ui == null) {
+      // We will get here if we are loading a save game of a map that we do not have. Caller code
+      // should be doing the error handling, so just return.
+      return;
+    }
+
+    // Perform start-player-turn actions if it's the first unskipped phase of this player's turn
+    // that is not End Turn
+    if (!GameStep.isEndTurnStepName(name)) {
+      ui.performStartPlayerTurnActionsIfNeeded(this.getGamePlayer());
+    }
+
+    // TODO: parsing which UI thing we should run based on the string name of a possibly extended
+    // delegate
+    // class seems like a bad way of doing this whole method. however i can't think of anything
+    // better right now.
+    // This is how we find out our game step: getGameData().getSequence().getStep()
+    // The game step contains information, like the exact delegate and the delegate's class,
+    // that we can further use if needed. This is how we get our communication bridge for affecting
+    // the game data:
+    // (ISomeDelegate) getPlayerBridge().getRemote()
+    // We should never touch the game data directly. All changes to game data are done through the
+    // remote, which then changes the game using the DelegateBridge -> change factory
+
+    enableEditModeMenu();
+    boolean badStep = false;
+    if (GameStep.isTechStepName(name)) {
+      tech();
+    } else if (GameStep.isPurchaseOrBidStepName(name)) {
+      purchase(GameStepPropertiesHelper.isBid(getGameData()), false);
+      if (!GameStepPropertiesHelper.isBid(getGameData())) {
+        ui.waitForMoveForumPosterOffEdt(this.getGamePlayer(), getPlayerBridge());
+        // TODO only do forum post if there is a combat
+      }
+    } else if (GameStep.isMoveStepName(name)) {
+      final boolean nonCombat = GameStepPropertiesHelper.isNonCombatMove(getGameData(), false);
+      move(nonCombat, name);
+      if (!nonCombat) {
+        ui.waitForMoveForumPosterOffEdt(this.getGamePlayer(), getPlayerBridge());
+        // TODO only do forum post if there is a combat
+      }
+    } else if (GameStep.isBattleStepName(name)) {
+      battle();
+    } else if (GameStep.isPlaceStepName(name)) {
+      place();
+    } else if (GameStep.isPoliticsStepName(name)) {
+      politics(true);
+    } else if (GameStep.isUserActionsStepName(name)) {
+      userActions(true);
+    } else if (GameStep.isEndTurnStepName(name)) {
+      endTurn();
+      // reset our sounds
+      soundPlayedAlreadyCombatMove = false;
+      soundPlayedAlreadyNonCombatMove = false;
+      soundPlayedAlreadyPurchase = false;
+      soundPlayedAlreadyTechnology = false;
+      soundPlayedAlreadyBattle = false;
+      soundPlayedAlreadyEndTurn = false;
+      soundPlayedAlreadyPlacement = false;
+    } else {
+      badStep = !GameStep.isTechActivationStepName(name);
+    }
+    disableEditModeMenuOffEdt();
+    if (badStep) {
+      throw new IllegalArgumentException("Unrecognized step name: " + name);
+    }
+  }
+
+  private void enableEditModeMenu() {
+    try {
+      ui.setEditDelegateOffEdt(
+          (IEditDelegate) getPlayerBridge().getRemotePersistentDelegate("edit"));
+    } catch (final GameOverException e) {
+      return;
+    } catch (final Exception e) {
+      log.error("Failed to set edit delegate", e);
+    }
+    SwingUtilities.invokeLater(
+        () -> {
+          ui.getEditModeButtonModel().addActionListener(editModeAction);
+          ui.getEditModeButtonModel().setEnabled(true);
+        });
+  }
+
+  private void disableEditModeMenuOffEdt() {
+    ui.setEditDelegateOffEdt(null);
+    SwingUtilities.invokeLater(
+        () -> {
+          ui.getEditModeButtonModel().setEnabled(false);
+          ui.getEditModeButtonModel().removeActionListener(editModeAction);
+        });
   }
 
   private void tech() {
@@ -327,10 +303,10 @@ public class TripleAPlayer extends AbstractBasePlayer {
               techRoll.getNewTokens(),
               techRoll.getWhoPaysHowMuch());
       if (techResults.isError()) {
-        ui.notifyError(techResults.getErrorString());
+        ui.notifyErrorOffEdt(techResults.getErrorString());
         tech();
       } else {
-        ui.notifyTechResults(techResults);
+        ui.notifyTechResultsOffEdt(techResults);
       }
     }
   }
@@ -367,7 +343,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
     // getMove will block until all moves are done. We recursively call this same method until
     // getMove stops blocking.
     final MoveDescription moveDescription =
-        ui.getMove(gamePlayer, getPlayerBridge(), nonCombat, stepName);
+        ui.getMoveOffEdt(gamePlayer, getPlayerBridge(), nonCombat, stepName);
     if (moveDescription == null) {
       if (GameStepPropertiesHelper.isRemoveAirThatCanNotLand(getGameData())
           && !canAirLand(true, gamePlayer)) {
@@ -379,7 +355,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
       }
       return;
     }
-    moveDel.performMove(moveDescription).ifPresent(error -> ui.notifyError(error));
+    moveDel.performMove(moveDescription).ifPresent(error -> ui.notifyErrorOffEdt(error));
     move(nonCombat, stepName);
   }
 
@@ -405,7 +381,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
       throw new IllegalStateException(errorContext, e);
     }
     return airCantLand.isEmpty()
-        || ui.getOkToLetAirDie(this.getGamePlayer(), airCantLand, movePhase);
+        || ui.getOkToLetAirDieOffEdt(this.getGamePlayer(), airCantLand, movePhase);
   }
 
   private boolean canUnitsFight() {
@@ -423,7 +399,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
       log.error(errorContext, e);
       throw new IllegalStateException(errorContext, e);
     }
-    return !(unitsCantFight.isEmpty() || ui.getOkToLetUnitsDie(unitsCantFight));
+    return !(unitsCantFight.isEmpty() || ui.getOkToLetUnitsDieOffEdt(unitsCantFight));
   }
 
   private void purchase(final boolean bid, final boolean keepCurrentPurchase) {
@@ -474,7 +450,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
           }
           final String error = purchaseDel.purchaseRepair(repair);
           if (error != null) {
-            ui.notifyError(error);
+            ui.notifyErrorOffEdt(error);
             // don't give up, keep going
             purchase(bid, true);
           }
@@ -502,126 +478,10 @@ public class TripleAPlayer extends AbstractBasePlayer {
     }
     final String purchaseError = purchaseDel.purchase(prod);
     if (purchaseError != null) {
-      ui.notifyError(purchaseError);
+      ui.notifyErrorOffEdt(purchaseError);
       // don't give up, keep going
       purchase(bid, true);
     }
-  }
-
-  private void battle() {
-    if (getPlayerBridge().isGameOver()) {
-      return;
-    }
-    final IBattleDelegate battleDel;
-    try {
-      battleDel = (IBattleDelegate) getPlayerBridge().getRemoteDelegate();
-    } catch (final ClassCastException e) {
-      final String errorContext =
-          "PlayerBridge step name: "
-              + getPlayerBridge().getStepName()
-              + ", Remote class name: "
-              + getPlayerBridge().getRemoteDelegate().getClass();
-      log.error(errorContext, e);
-      throw new IllegalStateException(errorContext, e);
-    }
-
-    final GamePlayer gamePlayer = this.getGamePlayer();
-    while (true) {
-      if (getPlayerBridge().isGameOver()) {
-        return;
-      }
-      final BattleListing battleListing = battleDel.getBattleListing();
-      if (battleListing.isEmpty()) {
-        return;
-      }
-      if (!soundPlayedAlreadyBattle) {
-        playSound(SoundPath.CLIP_PHASE_BATTLE);
-        soundPlayedAlreadyBattle = true;
-      }
-      final FightBattleDetails details = ui.getBattle(gamePlayer, battleListing);
-      if (getPlayerBridge().isGameOver()) {
-        return;
-      }
-      if (details != null) {
-        final String error =
-            battleDel.fightBattle(
-                details.getWhere(), details.isBombingRaid(), details.getBattleType());
-        if (error != null) {
-          ui.notifyError(error);
-        }
-      }
-    }
-  }
-
-  private void place() {
-    final boolean bid = GameStepPropertiesHelper.isBid(getGameData());
-    if (getPlayerBridge().isGameOver()) {
-      return;
-    }
-    final GamePlayer gamePlayer = this.getGamePlayer();
-    final IAbstractPlaceDelegate placeDel;
-    try {
-      placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
-    } catch (final ClassCastException e) {
-      final String errorContext =
-          "PlayerBridge step name: "
-              + getPlayerBridge().getStepName()
-              + ", Remote class name: "
-              + getPlayerBridge().getRemoteDelegate().getClass();
-      log.error(errorContext, e);
-      throw new IllegalStateException(errorContext, e);
-    }
-    while (true) {
-      if (!soundPlayedAlreadyPlacement) {
-        playSound(SoundPath.CLIP_PHASE_PLACEMENT);
-        soundPlayedAlreadyPlacement = true;
-      }
-      final PlaceData placeData = ui.waitForPlace(gamePlayer, bid, getPlayerBridge());
-      if (placeData == null) {
-        // this only happens in lhtr rules
-        if (!GameStepPropertiesHelper.isRemoveAirThatCanNotLand(getGameData())
-            || canAirLand(false, gamePlayer)
-            || getPlayerBridge().isGameOver()) {
-          return;
-        }
-        continue;
-      }
-      placeDel
-          .placeUnits(
-              placeData.getUnits(),
-              placeData.getAt(),
-              bid ? IAbstractPlaceDelegate.BidMode.BID : IAbstractPlaceDelegate.BidMode.NOT_BID)
-          .ifPresent(error -> ui.notifyError(error));
-    }
-  }
-
-  private void endTurn() {
-    if (getPlayerBridge().isGameOver()) {
-      return;
-    }
-    // play a sound for this phase
-    final IAbstractForumPosterDelegate endTurnDelegate;
-    try {
-      endTurnDelegate = (IAbstractForumPosterDelegate) getPlayerBridge().getRemoteDelegate();
-    } catch (final ClassCastException e) {
-      final String errorContext =
-          "PlayerBridge step name: "
-              + getPlayerBridge().getStepName()
-              + ", Remote class name: "
-              + getPlayerBridge().getRemoteDelegate().getClass();
-      log.error(errorContext, e);
-      throw new IllegalStateException(errorContext, e);
-    }
-    if (!soundPlayedAlreadyEndTurn
-        && TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(
-            this.getGamePlayer(), getGameData().getMap())) {
-      // do not play if we are reloading a save game from pbem (gets annoying)
-      if (!endTurnDelegate.getHasPostedTurnSummary()) {
-        playSound(SoundPath.CLIP_PHASE_END_TURN);
-      }
-      soundPlayedAlreadyEndTurn = true;
-    }
-    ui.waitForEndTurn(this.getGamePlayer(), getPlayerBridge());
   }
 
   @Override
@@ -689,6 +549,18 @@ public class TripleAPlayer extends AbstractBasePlayer {
   }
 
   @Override
+  public void reportError(final String error) {
+    ui.notifyErrorOffEdt(error);
+  }
+
+  @Override
+  public void reportMessage(final String message, final String title) {
+    if (ui != null) {
+      ui.notifyMessageOffEdt(message, title);
+    }
+  }
+
+  @Override
   public boolean shouldBomberBomb(final Territory territory) {
     return ui.getStrategicBombingRaid(territory);
   }
@@ -710,7 +582,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
   @Override
   public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(
       final Collection<Unit> fightersThatCanBeMoved, final Territory from) {
-    return ui.moveFightersToCarrier(fightersThatCanBeMoved, from);
+    return ui.moveFightersToCarrierOffEdt(fightersThatCanBeMoved, from);
   }
 
   @Override
@@ -737,7 +609,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
             .addCenter(new JLabel(question))
             .addSouth(dontWarnAgain)
             .build();
-    boolean result = ui.getOk(panel, question);
+    boolean result = ui.getOkOffEdt(panel, question);
     if (dontWarnAgain.isSelected()) {
       ClientSetting.showAaFlyoverWarning.setValue(false);
     }
@@ -748,7 +620,136 @@ public class TripleAPlayer extends AbstractBasePlayer {
   public boolean confirmMoveKamikaze() {
     final String question =
         "Not all air units in destination territory can land, do you still want to move?";
-    return ui.getOk(question, question);
+    return ui.getOkOffEdt(question, question);
+  }
+
+  @Override
+  public boolean acceptAction(
+      final GamePlayer playerSendingProposal,
+      final String acceptanceQuestion,
+      final boolean politics) {
+    return !getGamePlayer().amNotDeadYet()
+        || getPlayerBridge().isGameOver()
+        || ui.acceptActionOffEdt(
+            playerSendingProposal,
+            "To " + getGamePlayer().getName() + ": " + acceptanceQuestion,
+            politics);
+  }
+
+  private void battle() {
+    if (getPlayerBridge().isGameOver()) {
+      return;
+    }
+    final IBattleDelegate battleDel;
+    try {
+      battleDel = (IBattleDelegate) getPlayerBridge().getRemoteDelegate();
+    } catch (final ClassCastException e) {
+      final String errorContext =
+          "PlayerBridge step name: "
+              + getPlayerBridge().getStepName()
+              + ", Remote class name: "
+              + getPlayerBridge().getRemoteDelegate().getClass();
+      log.error(errorContext, e);
+      throw new IllegalStateException(errorContext, e);
+    }
+
+    final GamePlayer gamePlayer = this.getGamePlayer();
+    while (true) {
+      if (getPlayerBridge().isGameOver()) {
+        return;
+      }
+      final BattleListing battleListing = battleDel.getBattleListing();
+      if (battleListing.isEmpty()) {
+        return;
+      }
+      if (!soundPlayedAlreadyBattle) {
+        playSound(SoundPath.CLIP_PHASE_BATTLE);
+        soundPlayedAlreadyBattle = true;
+      }
+      final FightBattleDetails details = ui.getBattleOffEdt(gamePlayer, battleListing);
+      if (getPlayerBridge().isGameOver()) {
+        return;
+      }
+      if (details != null) {
+        final String error =
+            battleDel.fightBattle(
+                details.getWhere(), details.isBombingRaid(), details.getBattleType());
+        if (error != null) {
+          ui.notifyErrorOffEdt(error);
+        }
+      }
+    }
+  }
+
+  private void place() {
+    final boolean bid = GameStepPropertiesHelper.isBid(getGameData());
+    if (getPlayerBridge().isGameOver()) {
+      return;
+    }
+    final GamePlayer gamePlayer = this.getGamePlayer();
+    final IAbstractPlaceDelegate placeDel;
+    try {
+      placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
+    } catch (final ClassCastException e) {
+      final String errorContext =
+          "PlayerBridge step name: "
+              + getPlayerBridge().getStepName()
+              + ", Remote class name: "
+              + getPlayerBridge().getRemoteDelegate().getClass();
+      log.error(errorContext, e);
+      throw new IllegalStateException(errorContext, e);
+    }
+    while (true) {
+      if (!soundPlayedAlreadyPlacement) {
+        playSound(SoundPath.CLIP_PHASE_PLACEMENT);
+        soundPlayedAlreadyPlacement = true;
+      }
+      final PlaceData placeData = ui.waitForPlaceOffEdt(gamePlayer, bid, getPlayerBridge());
+      if (placeData == null) {
+        // this only happens in lhtr rules
+        if (!GameStepPropertiesHelper.isRemoveAirThatCanNotLand(getGameData())
+            || canAirLand(false, gamePlayer)
+            || getPlayerBridge().isGameOver()) {
+          return;
+        }
+        continue;
+      }
+      placeDel
+          .placeUnits(
+              placeData.getUnits(),
+              placeData.getAt(),
+              bid ? IAbstractPlaceDelegate.BidMode.BID : IAbstractPlaceDelegate.BidMode.NOT_BID)
+          .ifPresent(error -> ui.notifyErrorOffEdt(error));
+    }
+  }
+
+  private void endTurn() {
+    if (getPlayerBridge().isGameOver()) {
+      return;
+    }
+    // play a sound for this phase
+    final IAbstractForumPosterDelegate endTurnDelegate;
+    try {
+      endTurnDelegate = (IAbstractForumPosterDelegate) getPlayerBridge().getRemoteDelegate();
+    } catch (final ClassCastException e) {
+      final String errorContext =
+          "PlayerBridge step name: "
+              + getPlayerBridge().getStepName()
+              + ", Remote class name: "
+              + getPlayerBridge().getRemoteDelegate().getClass();
+      log.error(errorContext, e);
+      throw new IllegalStateException(errorContext, e);
+    }
+    if (!soundPlayedAlreadyEndTurn
+        && TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(
+            this.getGamePlayer(), getGameData().getMap())) {
+      // do not play if we are reloading a save game from pbem (gets annoying)
+      if (!endTurnDelegate.getHasPostedTurnSummary()) {
+        playSound(SoundPath.CLIP_PHASE_END_TURN);
+      }
+      soundPlayedAlreadyEndTurn = true;
+    }
+    ui.waitForEndTurnOffEdt(this.getGamePlayer(), getPlayerBridge());
   }
 
   @Override

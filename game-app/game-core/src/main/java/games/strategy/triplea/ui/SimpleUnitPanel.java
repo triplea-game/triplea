@@ -118,7 +118,7 @@ public class SimpleUnitPanel extends JPanel {
   /**
    * Adds {@code units} to the panel in accordance to their {@code UnitCategory}.
    *
-   * @param units units to be placed
+   * @param units independent list of units to be placed
    */
   public void setUnits(final Collection<Unit> units) {
     removeAll();

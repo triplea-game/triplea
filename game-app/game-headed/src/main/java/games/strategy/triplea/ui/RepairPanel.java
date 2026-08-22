@@ -107,22 +107,23 @@ class RepairPanel extends ActionPanel {
     release();
   }
 
-  private void refreshActionLabelText() {
-    SwingUtilities.invokeLater(
-        () ->
-            actionLabel.setText(
-                getCurrentPlayer().getName() + " repair " + (bid ? " for bid" : "")));
-  }
-
   Map<Unit, IntegerMap<RepairRule>> waitForRepair(
       final boolean bid, final Collection<GamePlayer> allowedPlayersToRepair) {
     this.bid = bid;
     this.allowedPlayersToRepair = allowedPlayersToRepair;
-    refreshActionLabelText();
+
     // automatically "click" the buy button for us!
-    SwingUtilities.invokeLater(() -> purchaseAction.actionPerformed(null));
+    SwingUtilities.invokeLater(
+        () -> {
+          refreshActionLabelText();
+          purchaseAction.actionPerformed(null);
+        });
     waitForRelease();
     return repair;
+  }
+
+  private void refreshActionLabelText() {
+    actionLabel.setText(getCurrentPlayer().getName() + " repair " + (bid ? " for bid" : ""));
   }
 
   // Spin through the territories to get this.

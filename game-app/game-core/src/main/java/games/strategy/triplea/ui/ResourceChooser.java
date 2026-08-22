@@ -12,6 +12,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import org.triplea.swing.SwingComponents;
 
@@ -47,12 +48,15 @@ class ResourceChooser extends JOptionPane {
             }
           }
         });
-    setMessage(SwingComponents.newJScrollPane(list));
+    JScrollPane scrollPane = SwingComponents.newJScrollPane(list);
 
     final int maxSize = 700;
-    final int suggestedSize = list.getModel().getSize() * 40;
+    final int suggestedSize =
+        list.getPreferredSize()
+            .height; // @TODO: Check to extract common logic from here and PlayerChooser
     final int actualSize = Math.min(suggestedSize, maxSize);
-    setPreferredSize(new Dimension(300, actualSize));
+    scrollPane.setPreferredSize(new Dimension(300, actualSize));
+    setMessage(scrollPane);
   }
 
   /**
