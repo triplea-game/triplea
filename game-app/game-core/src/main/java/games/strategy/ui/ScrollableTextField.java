@@ -27,9 +27,13 @@ public class ScrollableTextField extends JPanel {
 
   private static boolean imagesLoaded;
   private static Icon up;
+  private static Icon upDisabled;
   private static Icon down;
+  private static Icon downDisabled;
   private static Icon max;
+  private static Icon maxDisabled;
   private static Icon min;
+  private static Icon minDisabled;
 
   private final IntTextField text;
   private final JButton upButton;
@@ -48,6 +52,7 @@ public class ScrollableTextField extends JPanel {
       inset = new Insets(2, 0, 2, 0);
     }
     upButton = new JButton(up);
+    upButton.setDisabledIcon(upDisabled);
     final Action incrementAction =
         new AbstractAction("inc") {
           private static final long serialVersionUID = 2125871167112459475L;
@@ -63,6 +68,7 @@ public class ScrollableTextField extends JPanel {
     upButton.addActionListener(incrementAction);
     upButton.setMargin(inset);
     downButton = new JButton(down);
+    downButton.setDisabledIcon(downDisabled);
     downButton.setMargin(inset);
     final Action decrementAction =
         new AbstractAction("dec") {
@@ -78,6 +84,7 @@ public class ScrollableTextField extends JPanel {
         };
     downButton.addActionListener(decrementAction);
     maxButton = new JButton(max);
+    maxButton.setDisabledIcon(maxDisabled);
     maxButton.setMargin(inset);
     final Action maxAction =
         new AbstractAction("max") {
@@ -93,6 +100,7 @@ public class ScrollableTextField extends JPanel {
         };
     maxButton.addActionListener(maxAction);
     minButton = new JButton(min);
+    minButton.setDisabledIcon(minDisabled);
     minButton.setMargin(inset);
     final Action minAction =
         new AbstractAction("min") {
@@ -126,11 +134,21 @@ public class ScrollableTextField extends JPanel {
     if (imagesLoaded) {
       return;
     }
-    up = new ImageIcon(EngineImageLoader.loadImage("images", "up.gif"));
-    down = new ImageIcon(EngineImageLoader.loadImage("images", "down.gif"));
-    max = new ImageIcon(EngineImageLoader.loadImage("images", "max.gif"));
-    min = new ImageIcon(EngineImageLoader.loadImage("images", "min.gif"));
+
+    up = loadIcon("up.gif");
+    upDisabled = loadIcon("up_disabled.gif");
+    down = loadIcon("down.gif");
+    downDisabled = loadIcon("down_disabled.gif");
+    max = loadIcon("max.gif");
+    maxDisabled = loadIcon("max_disabled.gif");
+    min = loadIcon("min.gif");
+    minDisabled = loadIcon("min_disabled.gif");
+
     imagesLoaded = true;
+  }
+
+  private static Icon loadIcon(final String name) {
+    return new ImageIcon(EngineImageLoader.loadImage("images", name));
   }
 
   public void setMax(final int max) {
