@@ -50,6 +50,11 @@ class RetreaterGeneral implements Retreater {
       retreatUnits.removeIf(cannotMove);
       // Remove units that can't defensive retreat
       retreatUnits.removeIf(Matches.unitCanDefensiveRetreat().negate());
+      // Remove units that can't defensive retreat this round
+      retreatUnits.removeIf(
+          unit ->
+              battleState.getStatus().getRound()
+                  < unit.getUnitAttachment().getDefensiveRetreatRound());
     }
     return retreatUnits;
   }

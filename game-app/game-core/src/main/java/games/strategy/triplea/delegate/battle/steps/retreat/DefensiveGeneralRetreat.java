@@ -112,6 +112,14 @@ public class DefensiveGeneralRetreat implements BattleStep {
       // Remove units that can't defensive retreat
       retreater.getRetreatUnits().removeIf(Matches.unitCanDefensiveRetreat().negate());
 
+      // Remove units that can't defensive retreat this round
+      retreater
+          .getRetreatUnits()
+          .removeIf(
+              unit ->
+                  battleState.getStatus().getRound()
+                      < unit.getUnitAttachment().getDefensiveRetreatRound());
+
       // Remove units that can't retreat due to territory effect
       TerritoryEffectAttachment territoryEffect =
           (TerritoryEffectAttachment) retreatTo.getAttachment(TERRITORYEFFECT_ATTACHMENT_NAME);

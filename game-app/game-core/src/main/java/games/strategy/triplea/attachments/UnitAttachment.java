@@ -353,6 +353,7 @@ public class UnitAttachment extends DefaultAttachment {
 
   // defensive retreat properties
   private boolean canDefensiveRetreat = false;
+  @Getter private int defensiveRetreatRound = 1;
 
   public UnitAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -2514,6 +2515,23 @@ public class UnitAttachment extends DefaultAttachment {
     canDefensiveRetreat = false;
   }
 
+  private void setDefensiveRetreatRound(final String s) throws GameParseException {
+    final int value = getInt(s);
+    if (value < 1) {
+      throw new GameParseException(
+          "defensiveRetreatRound must be greater than or equal to 1" + thisErrorMsg());
+    }
+    defensiveRetreatRound = getInt(s);
+  }
+
+  private void setDefensiveRetreatRound(final Integer s) {
+    defensiveRetreatRound = s;
+  }
+
+  private void resetDefensiveRetreatRound() {
+    defensiveRetreatRound = 1;
+  }
+
   @Override
   public void validate(final GameState data) throws GameParseException {
     if (isAir) {
@@ -2975,8 +2993,10 @@ public class UnitAttachment extends DefaultAttachment {
         + (placementLimit != null ? placementLimit.toString() : "null")
         + "  tuv:"
         + tuv
-        + "canDefensiveRetreat:"
-        + canDefensiveRetreat;
+        + "  canDefensiveRetreat:"
+        + canDefensiveRetreat
+        + "  defensiveRetreatRound:"
+        + defensiveRetreatRound;
   }
 
   /**
@@ -4175,6 +4195,11 @@ public class UnitAttachment extends DefaultAttachment {
               MutableProperty.of(
                   this::setCanDefensiveRetreat, this::setCanDefensiveRetreat,
                   this::getCanDefensiveRetreat, this::resetCanDefensiveRetreat));
+      case "defensiveRetreatRound" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setDefensiveRetreatRound, this::setDefensiveRetreatRound,
+                  this::getDefensiveRetreatRound, this::resetDefensiveRetreatRound));
       default -> Optional.empty();
     };
   }
