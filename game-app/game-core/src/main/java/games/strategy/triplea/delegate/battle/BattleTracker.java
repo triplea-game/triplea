@@ -505,6 +505,11 @@ public class BattleTracker implements Serializable {
     }
     // check the last territory
     if (conquerable.test(route.getEnd())) {
+      if (isEmptyEnemyConvoyZone(route.getEnd(), gamePlayer)) {
+        this.conquered.add(route.getEnd());
+        takeOver(route.getEnd(), gamePlayer, bridge, changeTracker, units);
+        return;
+      }
       IBattle precede = getDependentAmphibiousAssault(route);
       if (precede == null) {
         precede = getPendingBombingBattle(route.getEnd());
@@ -555,7 +560,13 @@ public class BattleTracker implements Serializable {
         takeOver(route.getEnd(), gamePlayer, bridge, changeTracker, units);
       }
     }
-    // TODO: else what?
+  }
+
+  private static boolean isEmptyEnemyConvoyZone(
+      final Territory territory, final GamePlayer player) {
+    return territory.isWater()
+        && Matches.isTerritoryEnemy(player).test(territory)
+        && Matches.territoryIsEmptyOfCombatUnits(player).test(territory);
   }
 
   /**
@@ -1201,7 +1212,7 @@ public class BattleTracker implements Serializable {
    *
    * @param bombing whether only battles where there is bombing or where there is no bombing.
    */
-  private Collection<Territory> getPendingBattleSites(final boolean bombing) {
+  public Collection<Territory> getPendingBattleSites(final boolean bombing) {
     return pendingBattles.stream()
         .filter(b -> !b.isEmpty() && b.getBattleType().isBombingRun() == bombing)
         .map(IBattle::getTerritory)
