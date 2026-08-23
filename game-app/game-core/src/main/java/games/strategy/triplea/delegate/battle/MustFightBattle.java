@@ -909,6 +909,11 @@ public class MustFightBattle extends DependentBattle
         Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(defender);
     possible.removeAll(CollectionUtils.getMatches(possible, conqueredOrEnemy));
 
+    // Cannot retreat into territories where relationship with owner prevents it
+    final Predicate<Territory> relationshipPreventsEntry =
+        Matches.territoryAllowsCanMoveLandUnitsOverOwnedLand(defender).negate();
+    possible.removeAll(CollectionUtils.getMatches(possible, relationshipPreventsEntry));
+
     if (defendingUnits.stream().anyMatch(Matches.unitIsLand()) && !battleSite.isWater()) {
       possible = CollectionUtils.getMatches(possible, Matches.territoryIsLand());
     }
