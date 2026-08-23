@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
+import static games.strategy.triplea.Constants.TERRITORYEFFECT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.REMOVED_CASUALTY;
 
@@ -9,6 +10,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.triplea.attachments.TerritoryEffectAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.battle.BattleState;
@@ -21,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
+import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 
 @AllArgsConstructor
@@ -43,11 +46,31 @@ class RetreaterGeneral implements Retreater {
             .getMatches(
                 Matches.unitIsOwnedBy(battleState.getPlayer(retreatingSide))
                     .and(Matches.unitIsSubmerged().negate())));
+
     retreatUnits.removeAll(battleState.filterUnits(REMOVED_CASUALTY));
     if (retreatingSide == BattleState.Side.DEFENSE) {
-      // We only want units that can move (no buildings retreating)
-      final Predicate<Unit> cannotMove = Predicate.not(Matches.unitCanMove());
-      retreatUnits.removeIf(cannotMove);
+      // We only want units that can move, be transported, or given bonus movement (no buildings
+      // retreating)
+      final Territory battleSite = battleState.getBattleSite();
+      final Predicate<Unit> canMoveOrBeMoved =
+          PredicateBuilder.of(Matches.unitCanMove())
+              .or(
+                  u ->
+                      // Unit can be given bonus movement by another unit in this territory
+                      Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
+                                  battleSite, u.getOwner())
+                              .test(u)
+                          // Unit is already being transported
+                          // TODO: Check if transporting unit has movement left for sea transports
+                          || Matches.unitIsBeingTransported().test(u)
+                          // Unit can be loaded onto an available transport in this
+                          // territory
+                          || (Matches.unitCanBeTransported().test(u)
+                              && battleSite.anyUnitsMatch(Matches.unitCanTransport())))
+              // cannot move aa units
+              .and(Matches.unitCanMoveDuringCombatMove())
+              .build();
+      retreatUnits.removeIf(canMoveOrBeMoved.negate());
       // Remove units that can't defensive retreat
       retreatUnits.removeIf(Matches.unitCanDefensiveRetreat().negate());
       // Remove units that can't defensive retreat this round
@@ -55,6 +78,12 @@ class RetreaterGeneral implements Retreater {
           unit ->
               battleState.getStatus().getRound()
                   < unit.getUnitAttachment().getDefensiveRetreatRound());
+      // Remove units that can't retreat due to territory effect
+      TerritoryEffectAttachment territoryEffect =
+          (TerritoryEffectAttachment)
+              battleState.getDefendersRetreatTo().getAttachment(TERRITORYEFFECT_ATTACHMENT_NAME);
+      if (territoryEffect != null)
+        retreatUnits.removeIf(unit -> territoryEffect.getUnitsNotAllowed().contains(unit));
     }
     return retreatUnits;
   }
