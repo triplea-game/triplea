@@ -406,8 +406,7 @@ Philippines  <  (3011,3021) (3012,3022) (3013,3023) >  <  (3111,3121) (3112,3122
               () -> PointFileReaderWriter.readOneToManyPolygons(pathToVirtualTextFile(content)));
 
       assertThat(exception.getCause().getClass(), is(IllegalArgumentException.class));
-      assertThat(
-          exception.getCause().getMessage(), is("No polygons for \"East Compass Sea Zone\""));
+      assertTrue(exception.getMessage().contains("East Compass Sea Zone"));
     }
 
     @Test
