@@ -25,7 +25,6 @@ import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -57,16 +56,10 @@ public final class ProSimulateTurnUtils {
       for (final Territory t : entry.getValue()) {
         final IBattle battle =
             battleDelegate.getBattleTracker().getPendingBattle(t, entry.getKey());
-        // Use LinkedHashSet to deduplicate while preserving order. A unit that appears in
-        // both the attacking and defending collections would cause BattleCalculator to throw, so
-        // we remove any attacker units from defenders to guarantee the two sets are disjoint.
-        final Collection<Unit> attackers =
-            new ArrayList<>(new LinkedHashSet<>(battle.getAttackingUnits()));
+        final Collection<Unit> attackers = new ArrayList<>(battle.getAttackingUnits());
         attackers.retainAll(t.getUnits());
-        final Collection<Unit> defenders =
-            new ArrayList<>(new LinkedHashSet<>(battle.getDefendingUnits()));
+        final Collection<Unit> defenders = new ArrayList<>(battle.getDefendingUnits());
         defenders.retainAll(t.getUnits());
-        defenders.removeAll(attackers);
         final Collection<Unit> bombardingUnits = battle.getBombardingUnits();
         ProLogger.debug("---" + t);
         ProLogger.debug("attackers=" + attackers);
