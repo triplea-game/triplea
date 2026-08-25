@@ -47,7 +47,6 @@ import lombok.Value;
 public interface BattleStep extends IExecutable {
 
   enum Order {
-    DEFENDER_FIGHT_OR_RETREAT,
     AA_OFFENSIVE,
     AA_DEFENSIVE,
     AA_REMOVE_CASUALTIES,
@@ -66,6 +65,7 @@ public interface BattleStep extends IExecutable {
     FIRST_STRIKE_SUICIDE_REMOVE_CASUALTIES,
     FIRST_STRIKE_OFFENSIVE_REGULAR,
     AIR_OFFENSIVE_NON_SUBS,
+    DEFENDER_FIGHT_OR_RETREAT,
     GENERAL_OFFENSIVE,
     FIRST_STRIKE_DEFENSIVE_REGULAR,
     AIR_DEFENSIVE_NON_SUBS,
