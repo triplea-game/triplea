@@ -801,11 +801,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         }
 
         // now we roll, or don't if there is nothing to roll.
-        nextDieIndex = rollDie(bridge, annotation, maxDice, rolls, nextDieIndex, bonus);
+        nextDieIndex = rollDiceAndReturnDieIndex(bridge, annotation, maxDice, rolls, nextDieIndex, bonus);
       }
     }
 
-    private int rollDie(
+    private int rollDiceAndReturnDieIndex(
         IDelegateBridge bridge,
         String annotation,
         int maxDice,
