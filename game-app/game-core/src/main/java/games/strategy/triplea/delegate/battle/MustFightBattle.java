@@ -874,10 +874,8 @@ public class MustFightBattle extends DependentBattle
   @Override
   public Collection<Territory> getDefenderRetreatTerritories() {
 
-    // If defender is all planes, just return collection of current territory
-    if (headless
-        || (!defendingUnits.isEmpty() && defendingUnits.stream().allMatch(Matches.unitIsAir()))
-        || Properties.getRetreatingUnitsRemainInPlace(gameData.getProperties())) {
+    // If retreating units remain in place, just return collection of current territory
+    if (headless || Properties.getRetreatingUnitsRemainInPlace(gameData.getProperties())) {
       return Set.of(battleSite);
     }
     // If we are moving into a territory containing enemy units, we cannot

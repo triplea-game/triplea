@@ -117,28 +117,46 @@ class RetreaterGeneral implements Retreater {
 
     change.add(computeDependentUnitChanges(retreatTo, retreatUnits));
 
-    final Collection<Unit> airRetreating =
-        CollectionUtils.getMatches(
-            retreatUnits,
-            Matches.unitIsAir().and(Matches.unitIsOwnedBy(battleState.getPlayer(retreatingSide))));
+    if (retreatingSide == BattleState.Side.OFFENSE) {
+      final Collection<Unit> airRetreating =
+          CollectionUtils.getMatches(
+              retreatUnits,
+              Matches.unitIsAir()
+                  .and(Matches.unitIsOwnedBy(battleState.getPlayer(retreatingSide))));
 
-    if (!airRetreating.isEmpty()) {
-      battleState.retreatUnits(retreatingSide, airRetreating);
-      final String transcriptText = MyFormatter.unitsToText(airRetreating) + " retreated";
-      historyChildren.add(RetreatHistoryChild.of(transcriptText, new ArrayList<>(airRetreating)));
-    }
+      if (!airRetreating.isEmpty()) {
+        battleState.retreatUnits(retreatingSide, airRetreating);
+        final String transcriptText = MyFormatter.unitsToText(airRetreating) + " retreated";
+        historyChildren.add(RetreatHistoryChild.of(transcriptText, new ArrayList<>(airRetreating)));
+      }
 
-    final Collection<Unit> nonAirRetreating = new HashSet<>(retreatUnits);
-    nonAirRetreating.removeAll(airRetreating);
-    nonAirRetreating.addAll(battleState.getDependentUnits(nonAirRetreating));
+      final Collection<Unit> nonAirRetreating = new HashSet<>(retreatUnits);
+      nonAirRetreating.removeAll(airRetreating);
+      nonAirRetreating.addAll(battleState.getDependentUnits(nonAirRetreating));
 
-    if (!nonAirRetreating.isEmpty()) {
-      battleState.retreatUnits(retreatingSide, nonAirRetreating);
-      historyChildren.add(
-          RetreatHistoryChild.of(
-              MyFormatter.unitsToText(nonAirRetreating) + " retreated to " + retreatTo.getName(),
-              new ArrayList<>(nonAirRetreating)));
-      change.add(ChangeFactory.moveUnits(battleState.getBattleSite(), retreatTo, nonAirRetreating));
+      if (!nonAirRetreating.isEmpty()) {
+        battleState.retreatUnits(retreatingSide, nonAirRetreating);
+        historyChildren.add(
+            RetreatHistoryChild.of(
+                MyFormatter.unitsToText(nonAirRetreating) + " retreated to " + retreatTo.getName(),
+                new ArrayList<>(nonAirRetreating)));
+        change.add(
+            ChangeFactory.moveUnits(battleState.getBattleSite(), retreatTo, nonAirRetreating));
+      }
+    } else {
+      final Collection<Unit> allUnitsRetreating = new HashSet<>(retreatUnits);
+      allUnitsRetreating.addAll(battleState.getDependentUnits(allUnitsRetreating));
+      if (!allUnitsRetreating.isEmpty()) {
+        battleState.retreatUnits(retreatingSide, allUnitsRetreating);
+        historyChildren.add(
+            RetreatHistoryChild.of(
+                MyFormatter.unitsToText(allUnitsRetreating)
+                    + " retreated to "
+                    + retreatTo.getName(),
+                new ArrayList<>(allUnitsRetreating)));
+        change.add(
+            ChangeFactory.moveUnits(battleState.getBattleSite(), retreatTo, allUnitsRetreating));
+      }
     }
 
     return RetreatChanges.of(change, historyChildren);
