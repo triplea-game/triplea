@@ -42,17 +42,8 @@ import games.strategy.triplea.util.TuvUtils;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import org.triplea.java.Interruptibles;
@@ -816,10 +807,12 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         final int[] diceRolls =
             bridge.getRandom(maxDice, rolls, attacker, DiceType.BOMBING, annotation);
         for (final int die : diceRolls) {
+          // min value is -1 as we add 1 when setting damage
           dice[dieIndex++] = Math.max(-1, die + bonus);
         }
       } else {
         for (int i = 0; i < rolls; i++) {
+          // min value is -1 as we add 1 when setting damage
           dice[dieIndex++] = Math.max(-1, bonus);
         }
       }
