@@ -801,11 +801,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         }
 
         // now we roll, or don't if there is nothing to roll.
-        rollDie(bridge, annotation, maxDice, rolls, nextDieIndex++, bonus);
+        nextDieIndex = rollDie(bridge, annotation, maxDice, rolls, nextDieIndex, bonus);
       }
     }
 
-    private void rollDie(
+    private int rollDie(
         IDelegateBridge bridge,
         String annotation,
         int maxDice,
@@ -816,15 +816,15 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         final int[] diceRolls =
             bridge.getRandom(maxDice, rolls, attacker, DiceType.BOMBING, annotation);
         for (final int die : diceRolls) {
-          // min value is -1 as we add 1 when setting damage
-          dice[dieIndex] = Math.max(-1, die + bonus);
+          dice[dieIndex++] = Math.max(-1, die + bonus);
         }
       } else {
         for (int i = 0; i < rolls; i++) {
-          // min value is -1 as we add 1 when setting damage
-          dice[dieIndex] = Math.max(-1, bonus);
+          dice[dieIndex++] = Math.max(-1, bonus);
         }
       }
+
+      return dieIndex;
     }
 
     private void addToTargetDiceMap(
