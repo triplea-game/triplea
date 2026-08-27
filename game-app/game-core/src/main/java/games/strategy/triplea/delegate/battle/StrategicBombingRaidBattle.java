@@ -801,7 +801,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         }
 
         // now we roll, or don't if there is nothing to roll.
-        nextDieIndex = rollDiceAndReturnDieIndex(bridge, annotation, maxDice, rolls, nextDieIndex, bonus);
+        nextDieIndex =
+            rollDiceAndReturnDieIndex(bridge, annotation, maxDice, rolls, nextDieIndex, bonus);
       }
     }
 
