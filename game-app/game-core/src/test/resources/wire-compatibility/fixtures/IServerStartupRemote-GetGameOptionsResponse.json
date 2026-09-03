@@ -1,0 +1,6 @@
+{
+  "type": "games.strategy.engine.framework.startup.mc.IServerStartupRemote$GetGameOptionsResponse",
+  "payload": {
+    "gameOptions": [1, 2, 3]
+  }
+}

@@ -5,6 +5,8 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
+import games.strategy.engine.framework.startup.mc.ServerModel;
+import games.strategy.net.Messengers;
 import java.awt.Component;
 import java.io.IOException;
 import java.util.List;
@@ -20,7 +22,7 @@ import org.triplea.java.ThreadRunner;
 public class ChangeGameOptionsClientAction {
 
   public static void run(
-      final Component parent, final byte[] oldBytes, final IServerStartupRemote serverRemote) {
+      final Component parent, final byte[] oldBytes, final Messengers messengers) {
     Preconditions.checkState(SwingUtilities.isEventDispatchThread(), "Should be run on EDT!");
     if (oldBytes.length == 0) {
       return;
@@ -45,8 +47,11 @@ public class ChangeGameOptionsClientAction {
         ThreadRunner.runInNewThread(
             () -> {
               try {
-                serverRemote.changeToGameOptions(
-                    GameProperties.writeEditableProperties(properties));
+                messengers.invokeRemoteMessage(
+                    ServerModel.SERVER_REMOTE_NAME,
+                    new IServerStartupRemote.ChangeToGameOptionsRequest(
+                        GameProperties.writeEditableProperties(properties)),
+                    IServerStartupRemote.ChangeToGameOptionsResponse.TYPE);
               } catch (final IOException ex) {
                 log.error("Failed to write game properties", ex);
               }

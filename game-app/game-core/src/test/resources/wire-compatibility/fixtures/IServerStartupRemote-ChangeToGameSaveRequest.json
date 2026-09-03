@@ -1,0 +1,7 @@
+{
+  "type": "games.strategy.engine.framework.startup.mc.IServerStartupRemote$ChangeToGameSaveRequest",
+  "payload": {
+    "bytes": [1, 2, 3],
+    "fileName": "game.tsvg"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "type": "games.strategy.engine.framework.startup.mc.IServerStartupRemote$TakePlayerRequest",
+  "payload": {
+    "playerName": "Germans"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "type": "games.strategy.engine.framework.startup.mc.IClientChannel$PlayerListingChangedMessage",
+  "payload": {
+    "listing": {
+      "gameName": "270BC",
+      "gameRound": "round 1"
+    }
+  }
+}

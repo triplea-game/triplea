@@ -1,0 +1,6 @@
+{
+  "type": "games.strategy.engine.framework.startup.mc.IServerStartupRemote$DisablePlayerRequest",
+  "payload": {
+    "playerName": "Germans"
+  }
+}

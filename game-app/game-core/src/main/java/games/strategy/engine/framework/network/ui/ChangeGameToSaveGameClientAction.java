@@ -1,7 +1,9 @@
 package games.strategy.engine.framework.network.ui;
 
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
+import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameFileSelector;
+import games.strategy.net.Messengers;
 import java.awt.Frame;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,16 +15,15 @@ import org.triplea.java.ThreadRunner;
 @Slf4j
 public class ChangeGameToSaveGameClientAction {
 
-  public static void execute(IServerStartupRemote serverStartupRemote, Frame owner) {
+  public static void execute(Messengers messengers, Frame owner) {
     GameFileSelector.builder()
         .fileDoesNotExistAction(file -> {}) // no-op if selected game file does not exist
         .build()
         .selectGameFile(owner)
-        .ifPresent(saveGame -> changeToGameSave(saveGame, serverStartupRemote));
+        .ifPresent(saveGame -> changeToGameSave(saveGame, messengers));
   }
 
-  private static void changeToGameSave(
-      final Path saveGame, IServerStartupRemote serverStartupRemote) {
+  private static void changeToGameSave(final Path saveGame, Messengers messengers) {
     if (!Files.exists(saveGame)) {
       return;
     }
@@ -34,6 +35,11 @@ public class ChangeGameToSaveGameClientAction {
       return;
     }
     ThreadRunner.runInNewThread(
-        () -> serverStartupRemote.changeToGameSave(bytes, saveGame.getFileName().toString()));
+        () ->
+            messengers.invokeRemoteMessage(
+                ServerModel.SERVER_REMOTE_NAME,
+                new IServerStartupRemote.ChangeToGameSaveRequest(
+                    bytes, saveGame.getFileName().toString()),
+                IServerStartupRemote.ChangeToGameSaveResponse.TYPE));
   }
 }

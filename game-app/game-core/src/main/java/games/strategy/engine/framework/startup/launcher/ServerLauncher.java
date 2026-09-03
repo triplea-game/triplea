@@ -153,8 +153,10 @@ public class ServerLauncher implements ILauncher {
               inGameLobbyWatcher);
       launchAction.onLaunch(serverGame);
       // tell the clients to start, later we will wait for them to all signal that they are ready.
-      ((IClientChannel) messengers.getChannelBroadcaster(IClientChannel.CHANNEL_NAME))
-          .doneSelectingPlayers(gameDataAsBytes, serverGame.getPlayerManager().getPlayerMapping());
+      messengers.sendChannelMessage(
+          IClientChannel.CHANNEL_NAME,
+          new IClientChannel.DoneSelectingPlayersMessage(
+              gameDataAsBytes, serverGame.getPlayerManager().getPlayerMapping()));
 
       final boolean useSecureRandomSource = !remotePlayers.isEmpty();
       if (useSecureRandomSource) {

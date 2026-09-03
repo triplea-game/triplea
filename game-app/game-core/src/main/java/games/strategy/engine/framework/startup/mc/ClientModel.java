@@ -160,7 +160,7 @@ public class ClientModel implements IMessengerErrorListener {
 
   public void setRemoteModelListener(@Nonnull final IRemoteModelListener listener) {
     this.listener = checkNotNull(listener);
-    AsyncRunner.runAsync(() -> internalPlayerListingChanged(getServerStartup().getPlayerListing()))
+    AsyncRunner.runAsync(() -> internalPlayerListingChanged(requestPlayerListing()))
         .exceptionally(e -> log.warn("Network communication error", e));
   }
 
@@ -265,6 +265,24 @@ Check:
 
     this.messengers = new Messengers(messenger);
     messengers.registerChannelSubscriber(channelListener, IClientChannel.CHANNEL_NAME);
+    messengers.registerMessageHandler(
+        IClientChannel.PlayerListingChangedMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IClientChannel) implementor);
+          return null;
+        });
+    messengers.registerMessageHandler(
+        IClientChannel.DoneSelectingPlayersMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IClientChannel) implementor);
+          return null;
+        });
+    messengers.registerMessageHandler(
+        IClientChannel.GameResetMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IClientChannel) implementor);
+          return null;
+        });
 
     chatPanel =
         ChatPanel.newChatPanel(
@@ -284,10 +302,9 @@ Check:
         observerWaitingToJoin, ServerModel.getObserverWaitingToStartName(messenger.getLocalNode()));
     // save this, it will be cleared later
     gameDataOnStartup = gameSelectorModel.getGameData();
-    final IServerStartupRemote serverStartup = getServerStartup();
-    final PlayerListing players = serverStartup.getPlayerListing();
+    final PlayerListing players = requestPlayerListing();
     internalPlayerListingChanged(players);
-    if (!serverStartup.isGameStarted(messenger.getLocalNode())) {
+    if (!requestIsGameStarted()) {
       messengers.unregisterRemote(
           ServerModel.getObserverWaitingToStartName(messenger.getLocalNode()));
     }
@@ -295,8 +312,31 @@ Check:
     return true;
   }
 
-  private IServerStartupRemote getServerStartup() {
-    return (IServerStartupRemote) messengers.getRemote(ServerModel.SERVER_REMOTE_NAME);
+  private PlayerListing requestPlayerListing() {
+    return messengers
+        .invokeRemoteMessage(
+            ServerModel.SERVER_REMOTE_NAME,
+            new IServerStartupRemote.GetPlayerListingRequest(),
+            IServerStartupRemote.GetPlayerListingResponse.TYPE)
+        .getPlayerListing();
+  }
+
+  private boolean requestIsGameStarted() {
+    return messengers
+        .invokeRemoteMessage(
+            ServerModel.SERVER_REMOTE_NAME,
+            new IServerStartupRemote.IsGameStartedRequest(messenger.getLocalNode()),
+            IServerStartupRemote.IsGameStartedResponse.TYPE)
+        .isGameStarted();
+  }
+
+  private byte[] requestGameOptions() {
+    return messengers
+        .invokeRemoteMessage(
+            ServerModel.SERVER_REMOTE_NAME,
+            new IServerStartupRemote.GetGameOptionsRequest(),
+            IServerStartupRemote.GetGameOptionsResponse.TYPE)
+        .getGameOptions();
   }
 
   /** Resets stats and nulls out references, keeps chat alive. */
@@ -366,7 +406,10 @@ Check:
               }
             }
             if (!gameRunning) {
-              ((IServerReady) messengers.getRemote(CLIENT_READY_CHANNEL)).clientReady();
+              messengers.invokeRemoteMessage(
+                  CLIENT_READY_CHANNEL,
+                  new IServerReady.ClientReadyRequest(),
+                  IServerReady.ClientReadyResponse.TYPE);
             }
           } finally {
             gameLoadingWindow.doneWait();
@@ -375,23 +418,44 @@ Check:
   }
 
   public void takePlayer(final String playerName) {
-    AsyncRunner.runAsync(() -> getServerStartup().takePlayer(messenger.getLocalNode(), playerName))
+    AsyncRunner.runAsync(
+            () ->
+                messengers.invokeRemoteMessage(
+                    ServerModel.SERVER_REMOTE_NAME,
+                    new IServerStartupRemote.TakePlayerRequest(
+                        messenger.getLocalNode(), playerName),
+                    IServerStartupRemote.TakePlayerResponse.TYPE))
         .exceptionally(e -> log.warn("Network communication error", e));
   }
 
   public void releasePlayer(final String playerName) {
     AsyncRunner.runAsync(
-            () -> getServerStartup().releasePlayer(messenger.getLocalNode(), playerName))
+            () ->
+                messengers.invokeRemoteMessage(
+                    ServerModel.SERVER_REMOTE_NAME,
+                    new IServerStartupRemote.ReleasePlayerRequest(
+                        messenger.getLocalNode(), playerName),
+                    IServerStartupRemote.ReleasePlayerResponse.TYPE))
         .exceptionally(e -> log.warn("Network communication error", e));
   }
 
   public void disablePlayer(final String playerName) {
-    AsyncRunner.runAsync(() -> getServerStartup().disablePlayer(playerName))
+    AsyncRunner.runAsync(
+            () ->
+                messengers.invokeRemoteMessage(
+                    ServerModel.SERVER_REMOTE_NAME,
+                    new IServerStartupRemote.DisablePlayerRequest(playerName),
+                    IServerStartupRemote.DisablePlayerResponse.TYPE))
         .exceptionally(e -> log.warn("Network communication error", e));
   }
 
   public void enablePlayer(final String playerName) {
-    AsyncRunner.runAsync(() -> getServerStartup().enablePlayer(playerName))
+    AsyncRunner.runAsync(
+            () ->
+                messengers.invokeRemoteMessage(
+                    ServerModel.SERVER_REMOTE_NAME,
+                    new IServerStartupRemote.EnablePlayerRequest(playerName),
+                    IServerStartupRemote.EnablePlayerResponse.TYPE))
         .exceptionally(e -> log.warn("Network communication error", e));
   }
 
@@ -465,7 +529,7 @@ Check:
     Preconditions.checkState(SwingUtilities.isEventDispatchThread(), "Should be run on EDT!");
     ThreadRunner.runInNewThread(
         () -> {
-          final var action = new SetMapClientAction(parent, getServerStartup());
+          final var action = new SetMapClientAction(parent, messengers);
           SwingUtilities.invokeLater(action::run);
         });
   }
@@ -474,15 +538,14 @@ Check:
     Preconditions.checkState(SwingUtilities.isEventDispatchThread(), "Should be run on EDT!");
     ThreadRunner.runInNewThread(
         () -> {
-          final IServerStartupRemote startupRemote = getServerStartup();
-          final byte[] oldBytes = startupRemote.getGameOptions();
+          final byte[] oldBytes = requestGameOptions();
           SwingUtilities.invokeLater(
-              () -> ChangeGameOptionsClientAction.run(parent, oldBytes, startupRemote));
+              () -> ChangeGameOptionsClientAction.run(parent, oldBytes, messengers));
         });
   }
 
   public void executeChangeGameToSaveGameClientAction(final Frame owner) {
-    ChangeGameToSaveGameClientAction.execute(getServerStartup(), owner);
+    ChangeGameToSaveGameClientAction.execute(messengers, owner);
   }
 
   /** Simple data object for which host we are connecting to and with which name. */

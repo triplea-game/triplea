@@ -19,6 +19,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameState;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.LobbyWatcherThread;
+import games.strategy.engine.framework.startup.launcher.IServerReady;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 import games.strategy.engine.framework.startup.mc.messages.ModeratorMessage;
@@ -239,11 +240,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       messengers = new Messengers(serverMessenger);
       messengers.registerRemote(
           launchAction.getStartupRemote(new DefaultServerModelView()), SERVER_REMOTE_NAME);
-      messengers.registerMessageHandler(
-          IServerStartupRemote.GetServerHeadlessRequest.TYPE,
-          (request, implementor) ->
-              new IServerStartupRemote.GetServerHeadlessResponse(
-                  ((IServerStartupRemote) implementor).getIsServerHeadless()));
+      registerStartupMessageHandlers();
 
       if (System.getProperty(LOBBY_URI) != null) {
         final URI lobbyUri = URI.create(System.getProperty(LOBBY_URI));
@@ -331,6 +328,96 @@ then check your firewall rules.""",
     }
   }
 
+  /**
+   * Registers the typed-message handlers for the startup remote and client-ready remote. The
+   * endpoint supplies the current implementor, so a handler stays stateless and dispatches to
+   * whichever remote is registered under its endpoint name. Registration happens once, at the
+   * single point where this server's messengers are created, because the registry rejects
+   * duplicates.
+   */
+  private void registerStartupMessageHandlers() {
+    messengers.registerMessageHandler(
+        IServerStartupRemote.GetServerHeadlessRequest.TYPE,
+        (request, implementor) ->
+            new IServerStartupRemote.GetServerHeadlessResponse(
+                ((IServerStartupRemote) implementor).getIsServerHeadless()));
+    messengers.registerMessageHandler(
+        IServerStartupRemote.GetPlayerListingRequest.TYPE,
+        (request, implementor) ->
+            new IServerStartupRemote.GetPlayerListingResponse(
+                ((IServerStartupRemote) implementor).getPlayerListing()));
+    messengers.registerMessageHandler(
+        IServerStartupRemote.TakePlayerRequest.TYPE,
+        (request, implementor) -> {
+          ((IServerStartupRemote) implementor)
+              .takePlayer(request.getWho(), request.getPlayerName());
+          return new IServerStartupRemote.TakePlayerResponse();
+        });
+    messengers.registerMessageHandler(
+        IServerStartupRemote.ReleasePlayerRequest.TYPE,
+        (request, implementor) -> {
+          ((IServerStartupRemote) implementor)
+              .releasePlayer(request.getWho(), request.getPlayerName());
+          return new IServerStartupRemote.ReleasePlayerResponse();
+        });
+    messengers.registerMessageHandler(
+        IServerStartupRemote.DisablePlayerRequest.TYPE,
+        (request, implementor) -> {
+          ((IServerStartupRemote) implementor).disablePlayer(request.getPlayerName());
+          return new IServerStartupRemote.DisablePlayerResponse();
+        });
+    messengers.registerMessageHandler(
+        IServerStartupRemote.EnablePlayerRequest.TYPE,
+        (request, implementor) -> {
+          ((IServerStartupRemote) implementor).enablePlayer(request.getPlayerName());
+          return new IServerStartupRemote.EnablePlayerResponse();
+        });
+    messengers.registerMessageHandler(
+        IServerStartupRemote.IsGameStartedRequest.TYPE,
+        (request, implementor) ->
+            new IServerStartupRemote.IsGameStartedResponse(
+                ((IServerStartupRemote) implementor).isGameStarted(request.getNewNode())));
+    messengers.registerMessageHandler(
+        IServerStartupRemote.GetAvailableGamesRequest.TYPE,
+        (request, implementor) ->
+            new IServerStartupRemote.GetAvailableGamesResponse(
+                ((IServerStartupRemote) implementor).getAvailableGames()));
+    messengers.registerMessageHandler(
+        IServerStartupRemote.ChangeServerGameToRequest.TYPE,
+        (request, implementor) -> {
+          ((IServerStartupRemote) implementor).changeServerGameTo(request.getGameName());
+          return new IServerStartupRemote.ChangeServerGameToResponse();
+        });
+    messengers.registerMessageHandler(
+        IServerStartupRemote.ChangeToGameSaveRequest.TYPE,
+        (request, implementor) -> {
+          ((IServerStartupRemote) implementor)
+              .changeToGameSave(request.getBytes(), request.getFileName());
+          return new IServerStartupRemote.ChangeToGameSaveResponse();
+        });
+    messengers.registerMessageHandler(
+        IServerStartupRemote.GetGameOptionsRequest.TYPE,
+        (request, implementor) ->
+            new IServerStartupRemote.GetGameOptionsResponse(
+                ((IServerStartupRemote) implementor).getGameOptions()));
+    messengers.registerMessageHandler(
+        IServerStartupRemote.ChangeToGameOptionsRequest.TYPE,
+        (request, implementor) -> {
+          ((IServerStartupRemote) implementor).changeToGameOptions(request.getBytes());
+          return new IServerStartupRemote.ChangeToGameOptionsResponse();
+        });
+    // The client-ready remote is registered per launch under CLIENT_READY_CHANNEL by
+    // ServerLauncher;
+    // its handler is registered here, once, since the registry shared by these messengers rejects
+    // duplicates across relaunches.
+    messengers.registerMessageHandler(
+        IServerReady.ClientReadyRequest.TYPE,
+        (request, implementor) -> {
+          ((IServerReady) implementor).clientReady();
+          return new IServerReady.ClientReadyResponse();
+        });
+  }
+
   private void takePlayerInternal(final INode from, final boolean take, final String playerName) {
     // synchronize to make sure two adds aren't executed at once
     synchronized (this) {
@@ -374,12 +461,14 @@ then check your firewall rules.""",
   private void notifyChannelPlayersChanged() {
     Optional.ofNullable(messengers)
         .ifPresent(
-            messenger -> {
-              final IClientChannel channel =
-                  (IClientChannel) messenger.getChannelBroadcaster(IClientChannel.CHANNEL_NAME);
-              AsyncRunner.runAsync(() -> channel.playerListingChanged(getPlayerListingInternal()))
-                  .exceptionally(e -> log.warn("Network communication error", e));
-            });
+            messenger ->
+                AsyncRunner.runAsync(
+                        () ->
+                            messenger.sendChannelMessage(
+                                IClientChannel.CHANNEL_NAME,
+                                new IClientChannel.PlayerListingChangedMessage(
+                                    getPlayerListingInternal())))
+                    .exceptionally(e -> log.warn("Network communication error", e)));
   }
 
   public void takePlayer(final String playerName) {
@@ -541,10 +630,9 @@ then check your firewall rules.""",
 
   public void newGame() {
     serverMessenger.setAcceptNewConnections(true);
-    final IClientChannel channel =
-        (IClientChannel) messengers.getChannelBroadcaster(IClientChannel.CHANNEL_NAME);
     notifyChannelPlayersChanged();
-    channel.gameReset();
+    messengers.sendChannelMessage(
+        IClientChannel.CHANNEL_NAME, new IClientChannel.GameResetMessage());
   }
 
   public void setServerLauncher(final ServerLauncher launcher) {

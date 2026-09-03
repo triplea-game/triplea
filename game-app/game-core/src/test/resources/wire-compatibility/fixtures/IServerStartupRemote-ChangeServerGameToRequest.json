@@ -1,0 +1,6 @@
+{
+  "type": "games.strategy.engine.framework.startup.mc.IServerStartupRemote$ChangeServerGameToRequest",
+  "payload": {
+    "gameName": "270BC"
+  }
+}

@@ -2,6 +2,8 @@ package games.strategy.engine.framework.network.ui;
 
 import com.google.common.base.Preconditions;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
+import games.strategy.engine.framework.startup.mc.ServerModel;
+import games.strategy.net.Messengers;
 import java.awt.Component;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,14 +20,21 @@ public class SetMapClientAction {
 
   final List<String> availableGames;
   private final Component parent;
-  private final IServerStartupRemote serverStartupRemote;
+  private final Messengers messengers;
 
-  public SetMapClientAction(
-      final Component parent, final IServerStartupRemote serverStartupRemote) {
+  public SetMapClientAction(final Component parent, final Messengers messengers) {
     this.parent = JOptionPane.getFrameForComponent(parent);
-    this.serverStartupRemote = serverStartupRemote;
+    this.messengers = messengers;
     this.availableGames =
-        serverStartupRemote.getAvailableGames().stream().sorted().collect(Collectors.toList());
+        messengers
+            .invokeRemoteMessage(
+                ServerModel.SERVER_REMOTE_NAME,
+                new IServerStartupRemote.GetAvailableGamesRequest(),
+                IServerStartupRemote.GetAvailableGamesResponse.TYPE)
+            .getAvailableGames()
+            .stream()
+            .sorted()
+            .collect(Collectors.toList());
   }
 
   public void run() {
@@ -51,6 +60,11 @@ public class SetMapClientAction {
       return;
     }
     // don't block UI thread
-    ThreadRunner.runInNewThread(() -> serverStartupRemote.changeServerGameTo(name));
+    ThreadRunner.runInNewThread(
+        () ->
+            messengers.invokeRemoteMessage(
+                ServerModel.SERVER_REMOTE_NAME,
+                new IServerStartupRemote.ChangeServerGameToRequest(name),
+                IServerStartupRemote.ChangeServerGameToResponse.TYPE));
   }
 }
