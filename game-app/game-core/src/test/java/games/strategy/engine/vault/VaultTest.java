@@ -5,12 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import games.strategy.engine.message.ChannelMessenger;
-import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MessengerTestUtils;
+import games.strategy.net.Messengers;
 import games.strategy.net.Node;
 import games.strategy.net.TestServerMessenger;
 import java.io.IOException;
@@ -39,10 +38,8 @@ class VaultTest {
     final int serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
     clientMessenger =
         new ClientMessenger("localhost", serverPort, "client1", SystemId.of("system-id"));
-    final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(serverMessenger);
-    final UnifiedMessenger clientUnifiedMessenger = new UnifiedMessenger(clientMessenger);
-    serverVault = new Vault(new ChannelMessenger(serverUnifiedMessenger));
-    clientVault = new Vault(new ChannelMessenger(clientUnifiedMessenger));
+    serverVault = new Vault(new Messengers(serverMessenger));
+    clientVault = new Vault(new Messengers(clientMessenger));
   }
 
   @AfterEach
@@ -55,10 +52,7 @@ class VaultTest {
   void testLocal() throws Exception {
     final IServerMessenger messenger = mock(IServerMessenger.class);
     when(messenger.getLocalNode()).thenReturn(new Node("dummy", InetAddress.getLocalHost(), 0));
-    final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(messenger);
-    final ChannelMessenger channelMessenger = new ChannelMessenger(unifiedMessenger);
-    // RemoteMessenger remoteMessenger = new RemoteMessenger(unifiedMessenger);
-    final Vault vault = new Vault(channelMessenger);
+    final Vault vault = new Vault(new Messengers(messenger));
     final byte[] data = new byte[] {0, 1, 2, 3, 4, 5};
     final VaultId id = vault.lock(data);
     vault.unlock(id);

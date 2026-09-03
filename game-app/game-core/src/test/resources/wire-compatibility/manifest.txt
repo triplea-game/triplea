@@ -37,3 +37,6 @@ IDisplay-GoToBattleStepMessage.json
 IDisplay-DisplayShutdownMessage.json
 IServerStartupRemote-GetServerHeadlessRequest.json
 IServerStartupRemote-GetServerHeadlessResponse.json
+Vault-AddLockedValueMessage.json
+Vault-UnlockMessage.json
+Vault-ReleaseMessage.json

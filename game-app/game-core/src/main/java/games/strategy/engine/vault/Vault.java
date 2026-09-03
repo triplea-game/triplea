@@ -1,9 +1,11 @@
 package games.strategy.engine.vault;
 
-import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IChannelSubscriber;
 import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.engine.message.RemoteName;
+import games.strategy.net.Messengers;
+import java.io.Serial;
+import java.io.Serializable;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -17,7 +19,11 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
+import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NonNls;
+import org.triplea.http.client.web.socket.MessageEnvelope;
+import org.triplea.http.client.web.socket.messages.MessageType;
+import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 
 /**
  * A vault is a secure way for the client and server to share information without trusting each
@@ -44,7 +50,7 @@ public class Vault {
 
   private final SecretKeyFactory secretKeyFactory;
   private final KeyGenerator keyGen;
-  private final IChannelMessenger channelMessenger;
+  private final Messengers messengers;
   // Maps VaultId -> SecretKey
   private final ConcurrentMap<VaultId, SecretKey> secretKeys = new ConcurrentHashMap<>();
   // maps VaultId -> encrypted byte[]
@@ -56,7 +62,7 @@ public class Vault {
       new IRemoteVault() {
         @Override
         public void addLockedValue(final VaultId id, final byte[] data) {
-          if (id.getGeneratedOn().equals(channelMessenger.getLocalNode())) {
+          if (id.getGeneratedOn().equals(messengers.getLocalNode())) {
             return;
           }
           if (unverifiedValues.putIfAbsent(id, data) != null) {
@@ -69,7 +75,7 @@ public class Vault {
 
         @Override
         public void unlock(final VaultId id, final byte[] secretKeyBytes) {
-          if (id.getGeneratedOn().equals(channelMessenger.getLocalNode())) {
+          if (id.getGeneratedOn().equals(messengers.getLocalNode())) {
             return;
           }
           final SecretKey key = bytesToKey(secretKeyBytes);
@@ -119,9 +125,10 @@ public class Vault {
         }
       };
 
-  public Vault(final IChannelMessenger channelMessenger) {
-    this.channelMessenger = channelMessenger;
-    this.channelMessenger.registerChannelSubscriber(remoteVault, VAULT_CHANNEL);
+  public Vault(final Messengers messengers) {
+    this.messengers = messengers;
+    this.messengers.registerChannelSubscriber(remoteVault, VAULT_CHANNEL);
+    registerVaultChannelHandlers();
     try {
       secretKeyFactory = SecretKeyFactory.getInstance(ALGORITHM);
       keyGen = KeyGenerator.getInstance(ALGORITHM);
@@ -130,8 +137,34 @@ public class Vault {
     }
   }
 
+  /**
+   * Routes each inbound broadcast on the vault channel to the local subscriber. The endpoint
+   * supplies the subscriber as the implementor, so the handlers stay stateless and dispatch to
+   * whichever subscriber is registered.
+   */
+  private void registerVaultChannelHandlers() {
+    messengers.registerMessageHandler(
+        IRemoteVault.AddLockedValueMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IRemoteVault) implementor);
+          return null;
+        });
+    messengers.registerMessageHandler(
+        IRemoteVault.UnlockMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IRemoteVault) implementor);
+          return null;
+        });
+    messengers.registerMessageHandler(
+        IRemoteVault.ReleaseMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IRemoteVault) implementor);
+          return null;
+        });
+  }
+
   public void shutDown() {
-    channelMessenger.unregisterChannelSubscriber(remoteVault, VAULT_CHANNEL);
+    messengers.unregisterChannelSubscriber(remoteVault, VAULT_CHANNEL);
   }
 
   private SecretKey bytesToKey(final byte[] bytes) {
@@ -152,10 +185,6 @@ public class Vault {
     }
   }
 
-  private IRemoteVault getRemoteBroadcaster() {
-    return (IRemoteVault) channelMessenger.getChannelBroadcaster(VAULT_CHANNEL);
-  }
-
   /**
    * Place data in the vault. An encrypted form of the data is sent at this time to all nodes.
    *
@@ -166,7 +195,7 @@ public class Vault {
    * @return the VaultId of the data
    */
   public VaultId lock(final byte[] data) {
-    final VaultId id = new VaultId(channelMessenger.getLocalNode());
+    final VaultId id = new VaultId(messengers.getLocalNode());
     final SecretKey key = keyGen.generateKey();
     if (secretKeys.putIfAbsent(id, key) != null) {
       throw new IllegalStateException("duplicate id: " + id);
@@ -189,7 +218,8 @@ public class Vault {
       throw new IllegalStateException(e);
     }
     // tell the world
-    getRemoteBroadcaster().addLockedValue(id, encrypted);
+    messengers.sendChannelMessage(
+        VAULT_CHANNEL, new IRemoteVault.AddLockedValueMessage(id, encrypted));
     return id;
   }
 
@@ -213,12 +243,13 @@ public class Vault {
    * @param id - the vault id to unlock
    */
   public void unlock(final VaultId id) {
-    if (!id.getGeneratedOn().equals(channelMessenger.getLocalNode())) {
+    if (!id.getGeneratedOn().equals(messengers.getLocalNode())) {
       throw new IllegalArgumentException("Can't unlock data that wasn't locked on this node");
     }
     final SecretKey key = secretKeys.remove(id);
     // let everyone unlock it
-    getRemoteBroadcaster().unlock(id, secretKeyToBytes(key));
+    messengers.sendChannelMessage(
+        VAULT_CHANNEL, new IRemoteVault.UnlockMessage(id, secretKeyToBytes(key)));
   }
 
   /**
@@ -261,7 +292,7 @@ public class Vault {
    * <p>If the id has already been released, then nothing will happen.
    */
   public void release(final VaultId id) {
-    getRemoteBroadcaster().release(id);
+    messengers.sendChannelMessage(VAULT_CHANNEL, new IRemoteVault.ReleaseMessage(id));
   }
 
   /** Waits until we know about a given vault id. waits for at most timeout milliseconds */
@@ -313,10 +344,67 @@ public class Vault {
     @RemoteActionCode(0)
     void addLockedValue(VaultId id, byte[] data);
 
+    @AllArgsConstructor
+    class AddLockedValueMessage implements WebSocketMessage, Serializable {
+      @Serial private static final long serialVersionUID = 4468318034073526181L;
+
+      public static final MessageType<AddLockedValueMessage> TYPE =
+          MessageType.of(AddLockedValueMessage.class);
+
+      private final VaultId id;
+      private final byte[] data;
+
+      @Override
+      public MessageEnvelope toEnvelope() {
+        return MessageEnvelope.packageMessage(TYPE, this);
+      }
+
+      public void invokeCallback(IRemoteVault remoteVault) {
+        remoteVault.addLockedValue(id, data);
+      }
+    }
+
     @RemoteActionCode(2)
     void unlock(VaultId id, byte[] secretKeyBytes);
 
+    @AllArgsConstructor
+    class UnlockMessage implements WebSocketMessage, Serializable {
+      @Serial private static final long serialVersionUID = 6621694516134667018L;
+
+      public static final MessageType<UnlockMessage> TYPE = MessageType.of(UnlockMessage.class);
+
+      private final VaultId id;
+      private final byte[] secretKeyBytes;
+
+      @Override
+      public MessageEnvelope toEnvelope() {
+        return MessageEnvelope.packageMessage(TYPE, this);
+      }
+
+      public void invokeCallback(IRemoteVault remoteVault) {
+        remoteVault.unlock(id, secretKeyBytes);
+      }
+    }
+
     @RemoteActionCode(1)
     void release(VaultId id);
+
+    @AllArgsConstructor
+    class ReleaseMessage implements WebSocketMessage, Serializable {
+      @Serial private static final long serialVersionUID = 2530852533771560432L;
+
+      public static final MessageType<ReleaseMessage> TYPE = MessageType.of(ReleaseMessage.class);
+
+      private final VaultId id;
+
+      @Override
+      public MessageEnvelope toEnvelope() {
+        return MessageEnvelope.packageMessage(TYPE, this);
+      }
+
+      public void invokeCallback(IRemoteVault remoteVault) {
+        remoteVault.release(id);
+      }
+    }
   }
 }

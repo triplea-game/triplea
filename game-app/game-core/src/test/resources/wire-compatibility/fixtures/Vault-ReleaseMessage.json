@@ -1,0 +1,8 @@
+{
+  "type": "games.strategy.engine.vault.Vault$IRemoteVault$ReleaseMessage",
+  "payload": {
+    "id": {
+      "uniqueId": 7
+    }
+  }
+}

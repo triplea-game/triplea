@@ -1,0 +1,9 @@
+{
+  "type": "games.strategy.engine.vault.Vault$IRemoteVault$AddLockedValueMessage",
+  "payload": {
+    "id": {
+      "uniqueId": 7
+    },
+    "data": [0, 1, 2, 3, 4, 5]
+  }
+}
