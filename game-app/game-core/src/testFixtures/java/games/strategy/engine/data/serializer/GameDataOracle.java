@@ -1,10 +1,18 @@
 package games.strategy.engine.data.serializer;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.GameDataManager;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Base64;
+import java.util.Map;
 import java.util.Optional;
 import org.triplea.io.IoUtils;
 
@@ -32,14 +40,16 @@ public final class GameDataOracle {
     final JsonObject first = saver.write(state, refs);
     final T reread = saver.read(deepCopy(first), refs);
     final JsonObject second = saver.write(reread, refs);
-    if (!first.equals(second)) {
+    final JsonObject firstNorm = normalizeBlobs(first);
+    final JsonObject secondNorm = normalizeBlobs(second);
+    if (!firstNorm.equals(secondNorm)) {
       throw new AssertionError(
           "TextSaver round-trip mismatch for "
               + state.getClass().getName()
               + "\n  first write:  "
-              + first
+              + firstNorm
               + "\n  second write: "
-              + second);
+              + secondNorm);
     }
   }
 
@@ -88,8 +98,8 @@ public final class GameDataOracle {
     if (saver.isEmpty()) {
       return; // legacy blob delegate; Java serialization is trusted for round-trip.
     }
-    final JsonObject expected = saver.get().write(originalState, originalRefs);
-    final JsonObject actual = saver.get().write(reloaded.saveState(), reloadedRefs);
+    final JsonObject expected = normalizeBlobs(saver.get().write(originalState, originalRefs));
+    final JsonObject actual = normalizeBlobs(saver.get().write(reloaded.saveState(), reloadedRefs));
     if (!expected.equals(actual)) {
       throw new AssertionError(
           "Delegate state mismatch after reload for '"
@@ -105,6 +115,63 @@ public final class GameDataOracle {
 
   private static JsonObject deepCopy(final JsonObject json) {
     return json.deepCopy();
+  }
+
+  /**
+   * Returns a copy of {@code json} with every {@code encoding:"java"} blob rewritten to its
+   * post-deserialization form (deserialize then re-serialize). Java serialization is not a fixpoint
+   * for empty hash collections (a fresh {@code HashSet} serializes with capacity 16, but the
+   * deserialized-then-reserialized form uses a minimal capacity), so raw blob bytes differ across a
+   * round trip even when the data is identical. Normalizing both sides removes that incidental
+   * difference while still exposing any real change (a dropped field, a changed value).
+   */
+  private static JsonObject normalizeBlobs(final JsonObject json) {
+    return normalizeElement(json).getAsJsonObject();
+  }
+
+  private static JsonElement normalizeElement(final JsonElement element) {
+    if (element.isJsonObject()) {
+      final JsonObject object = element.getAsJsonObject();
+      final JsonObject result = new JsonObject();
+      for (final Map.Entry<String, JsonElement> member : object.entrySet()) {
+        if ("bytes".equals(member.getKey())
+            && object.has("encoding")
+            && "java".equals(object.get("encoding").getAsString())
+            && member.getValue().isJsonPrimitive()) {
+          result.addProperty("bytes", reserialize(member.getValue().getAsString()));
+        } else {
+          result.add(member.getKey(), normalizeElement(member.getValue()));
+        }
+      }
+      return result;
+    }
+    if (element.isJsonArray()) {
+      final JsonArray array = new JsonArray();
+      for (final JsonElement child : element.getAsJsonArray()) {
+        array.add(normalizeElement(child));
+      }
+      return array;
+    }
+    return element;
+  }
+
+  private static String reserialize(final String base64) {
+    try {
+      final Object value;
+      try (ObjectInputStream in =
+          new ObjectInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(base64)))) {
+        value = in.readObject();
+      }
+      final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      try (ObjectOutputStream out = new ObjectOutputStream(bos)) {
+        out.writeObject(value);
+      }
+      return Base64.getEncoder().encodeToString(bos.toByteArray());
+    } catch (final Exception e) {
+      // Not deserializable here (unlikely) — leave the original so a genuine difference still
+      // shows.
+      return base64;
+    }
   }
 
   private static void assertEquals(final String field, final Object expected, final Object actual) {
