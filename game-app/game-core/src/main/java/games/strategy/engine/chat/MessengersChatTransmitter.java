@@ -110,8 +110,58 @@ public class MessengersChatTransmitter implements ChatTransmitter {
     final IChatController controller = messengers.getRemoteChatController(chatName);
     addTrackedListener(
         IChatController.SetChatStatusMessage.TYPE, message -> message.invokeCallback(controller));
+    registerChatChannelHandlers();
     messengers.addChatChannelSubscriber(chatChannelSubscriber, chatChannelName);
-    return controller.joinChat();
+    return messengers
+        .invokeRemoteMessage(
+            ChatController.getChatControllerRemoteName(chatName),
+            new IChatController.JoinChatRequest(),
+            IChatController.JoinChatResponse.TYPE)
+        .getChatParticipants();
+  }
+
+  /**
+   * Routes each inbound broadcast on the chat channel to the local subscriber. The endpoint
+   * supplies the subscriber as the implementor, so the handlers stay stateless and dispatch to
+   * whichever subscriber is registered.
+   */
+  private void registerChatChannelHandlers() {
+    messengers.registerMessageHandler(
+        IChatChannel.ChatMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IChatChannel) implementor);
+          return null;
+        });
+    messengers.registerMessageHandler(
+        IChatChannel.SlapMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IChatChannel) implementor);
+          return null;
+        });
+    messengers.registerMessageHandler(
+        IChatChannel.SpeakAddedMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IChatChannel) implementor);
+          return null;
+        });
+    messengers.registerMessageHandler(
+        IChatChannel.SpeakerRemovedMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IChatChannel) implementor);
+          return null;
+        });
+    messengers.registerMessageHandler(
+        IChatChannel.PingMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IChatChannel) implementor);
+          return null;
+        });
+    messengers.registerMessageHandler(
+        IChatChannel.StatusChangedMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IChatChannel) implementor);
+          return null;
+        });
   }
 
   @Override
@@ -120,7 +170,10 @@ public class MessengersChatTransmitter implements ChatTransmitter {
       if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
         clientNetworkBridge.disconnect();
       } else {
-        messengers.getRemoteChatController(chatName).leaveChat();
+        messengers.invokeRemoteMessage(
+            ChatController.getChatControllerRemoteName(chatName),
+            new IChatController.LeaveChatRequest(),
+            IChatController.LeaveChatResponse.TYPE);
       }
     }
     messengers.unregisterChannelSubscriber(
@@ -134,10 +187,9 @@ public class MessengersChatTransmitter implements ChatTransmitter {
     if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
       clientNetworkBridge.sendMessage(new IChatChannel.SlapMessage(userName));
     } else {
-      final IChatChannel remote =
-          (IChatChannel)
-              messengers.getChannelBroadcaster(new RemoteName(chatChannelName, IChatChannel.class));
-      remote.slapOccurred(userName);
+      messengers.sendChannelMessage(
+          new RemoteName(chatChannelName, IChatChannel.class),
+          new IChatChannel.SlapMessage(userName));
     }
   }
 
@@ -147,8 +199,12 @@ public class MessengersChatTransmitter implements ChatTransmitter {
       clientNetworkBridge.sendMessage(new IChatController.SetChatStatusMessage(status));
     } else {
       final RemoteName chatControllerName = ChatController.getChatControllerRemoteName(chatName);
-      final IChatController controller = (IChatController) messengers.getRemote(chatControllerName);
-      AsyncRunner.runAsync(() -> controller.setStatus(status))
+      AsyncRunner.runAsync(
+              () ->
+                  messengers.invokeRemoteMessage(
+                      chatControllerName,
+                      new IChatController.SetChatStatusMessage(status),
+                      IChatController.SetStatusResponse.TYPE))
           .exceptionally(throwable -> log.warn("Error updating status", throwable));
     }
   }
@@ -163,10 +219,9 @@ public class MessengersChatTransmitter implements ChatTransmitter {
     if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
       clientNetworkBridge.sendMessage(new IChatChannel.ChatMessage(message));
     } else {
-      final IChatChannel remote =
-          (IChatChannel)
-              messengers.getChannelBroadcaster(new RemoteName(chatChannelName, IChatChannel.class));
-      remote.chatOccurred(message);
+      messengers.sendChannelMessage(
+          new RemoteName(chatChannelName, IChatChannel.class),
+          new IChatChannel.ChatMessage(message));
     }
   }
 }

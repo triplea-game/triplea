@@ -1,0 +1,6 @@
+{
+  "type": "games.strategy.engine.chat.IChatController$SetChatStatusMessage",
+  "payload": {
+    "status": "Looking for a game"
+  }
+}

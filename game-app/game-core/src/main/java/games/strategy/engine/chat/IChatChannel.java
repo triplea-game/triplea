@@ -2,6 +2,8 @@ package games.strategy.engine.chat;
 
 import games.strategy.engine.message.IChannelSubscriber;
 import games.strategy.engine.message.RemoteActionCode;
+import java.io.Serial;
+import java.io.Serializable;
 import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import org.triplea.domain.data.UserName;
@@ -17,7 +19,9 @@ public interface IChatChannel extends IChannelSubscriber {
   void chatOccurred(String message);
 
   @AllArgsConstructor
-  class ChatMessage implements WebSocketMessage {
+  class ChatMessage implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 8069447089999124301L;
+
     public static final MessageType<ChatMessage> TYPE = MessageType.of(ChatMessage.class);
 
     @Nonnull private final String message;
@@ -36,7 +40,9 @@ public interface IChatChannel extends IChannelSubscriber {
   void slapOccurred(UserName userName);
 
   @AllArgsConstructor
-  class SlapMessage implements WebSocketMessage {
+  class SlapMessage implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5563896137216078099L;
+
     public static final MessageType<SlapMessage> TYPE = MessageType.of(SlapMessage.class);
 
     @Nonnull private final UserName userName;
@@ -55,7 +61,9 @@ public interface IChatChannel extends IChannelSubscriber {
   void speakerAdded(ChatParticipant chatParticipant);
 
   @AllArgsConstructor
-  class SpeakAddedMessage implements WebSocketMessage {
+  class SpeakAddedMessage implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 2971033844411110987L;
+
     public static final MessageType<SpeakAddedMessage> TYPE =
         MessageType.of(SpeakAddedMessage.class);
 
@@ -75,7 +83,9 @@ public interface IChatChannel extends IChannelSubscriber {
   void speakerRemoved(UserName userName);
 
   @AllArgsConstructor
-  class SpeakerRemovedMessage implements WebSocketMessage {
+  class SpeakerRemovedMessage implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6114060409231051221L;
+
     public static final MessageType<SpeakerRemovedMessage> TYPE =
         MessageType.of(SpeakerRemovedMessage.class);
 
@@ -97,7 +107,9 @@ public interface IChatChannel extends IChannelSubscriber {
   void ping();
 
   @AllArgsConstructor
-  class PingMessage implements WebSocketMessage {
+  class PingMessage implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 4753221055964055443L;
+
     public static final MessageType<PingMessage> TYPE = MessageType.of(PingMessage.class);
 
     @Override
@@ -114,7 +126,9 @@ public interface IChatChannel extends IChannelSubscriber {
   void statusChanged(UserName userName, String status);
 
   @AllArgsConstructor
-  class StatusChangedMessage implements WebSocketMessage {
+  class StatusChangedMessage implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 7238991029348871155L;
+
     public static final MessageType<StatusChangedMessage> TYPE =
         MessageType.of(StatusChangedMessage.class);
 

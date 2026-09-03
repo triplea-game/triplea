@@ -4,9 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
-import games.strategy.engine.message.ChannelMessenger;
-import games.strategy.engine.message.RemoteMessenger;
-import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.Messengers;
@@ -35,12 +32,9 @@ final class ChatIntegrationTest extends AbstractClientSettingTestCase {
   private ServerMessenger messenger;
   private IMessenger client1Messenger;
   private IMessenger client2Messenger;
-  private RemoteMessenger remoteMessenger;
-  private ChannelMessenger channelMessenger;
-  private RemoteMessenger client1RemoteMessenger;
-  private ChannelMessenger client1ChannelMessenger;
-  private RemoteMessenger client2RemoteMessenger;
-  private ChannelMessenger client2ChannelMessenger;
+  private Messengers serverMessengers;
+  private Messengers client1Messengers;
+  private Messengers client2Messengers;
 
   private final TestChatMessageListener serverChatMessageListener = new TestChatMessageListener();
   private final TestChatPlayerListener serverChatPlayerListener = new TestChatPlayerListener();
@@ -59,15 +53,9 @@ final class ChatIntegrationTest extends AbstractClientSettingTestCase {
     final SystemId systemId = SystemId.of("system-id");
     client1Messenger = new ClientMessenger("localhost", serverPort, "client1", systemId);
     client2Messenger = new ClientMessenger("localhost", serverPort, "client2", systemId);
-    final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(messenger);
-    remoteMessenger = new RemoteMessenger(serverUnifiedMessenger);
-    channelMessenger = new ChannelMessenger(serverUnifiedMessenger);
-    final UnifiedMessenger client1UnifiedMessenger = new UnifiedMessenger(client1Messenger);
-    client1RemoteMessenger = new RemoteMessenger(client1UnifiedMessenger);
-    client1ChannelMessenger = new ChannelMessenger(client1UnifiedMessenger);
-    final UnifiedMessenger client2UnifiedMessenger = new UnifiedMessenger(client2Messenger);
-    client2RemoteMessenger = new RemoteMessenger(client2UnifiedMessenger);
-    client2ChannelMessenger = new ChannelMessenger(client2UnifiedMessenger);
+    serverMessengers = new Messengers(messenger);
+    client1Messengers = new Messengers(client1Messenger);
+    client2Messengers = new Messengers(client2Messenger);
   }
 
   @AfterEach
@@ -99,20 +87,13 @@ final class ChatIntegrationTest extends AbstractClientSettingTestCase {
         Duration.ofSeconds(15),
         () -> {
           final ChatController controller = newChatController();
-          final Chat server = newChat(new Messengers(messenger, remoteMessenger, channelMessenger));
+          final Chat server = newChat(serverMessengers);
           server.addChatListener(serverChatMessageListener);
           server.addChatListener(serverChatPlayerListener);
-          final Chat client1 =
-              newChat(
-                  new Messengers(
-                      client1Messenger, client1RemoteMessenger, client1ChannelMessenger));
-
+          final Chat client1 = newChat(client1Messengers);
           client1.addChatListener(client1ChatMessageListener);
           client1.addChatListener(client1ChatPlayerListener);
-          final Chat client2 =
-              newChat(
-                  new Messengers(
-                      client2Messenger, client2RemoteMessenger, client2ChannelMessenger));
+          final Chat client2 = newChat(client2Messengers);
           client2.addChatListener(client2ChatMessageListener);
           client2.addChatListener(client2ChatPlayerListener);
           waitFor(this::allNodesToConnect);
@@ -129,8 +110,7 @@ final class ChatIntegrationTest extends AbstractClientSettingTestCase {
   }
 
   private ChatController newChatController() {
-    return new ChatController(
-        CHAT_NAME, new Messengers(messenger, remoteMessenger, channelMessenger), messenger);
+    return new ChatController(CHAT_NAME, serverMessengers, messenger);
   }
 
   private static Chat newChat(final Messengers messengers) {

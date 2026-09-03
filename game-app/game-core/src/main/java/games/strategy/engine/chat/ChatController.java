@@ -7,6 +7,7 @@ import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.net.ServerMessenger;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.jetbrains.annotations.NonNls;
 import org.triplea.domain.data.PlayerChatId;
 import org.triplea.domain.data.UserName;
 import org.triplea.http.client.lobby.web.socket.messages.envelopes.chat.ChatParticipant;
+import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 
 /** Default implementation of {@link IChatController}. */
 @Slf4j
@@ -59,6 +61,23 @@ public class ChatController implements IChatController {
     this.serverMessenger = serverMessenger;
     chatChannel = getChatChannelName(name);
     messengers.registerRemote(this, getChatControllerRemoteName(name));
+    messengers.registerMessageHandler(
+        IChatController.JoinChatRequest.TYPE,
+        (request, implementor) ->
+            new IChatController.JoinChatResponse(
+                new ArrayList<>(((IChatController) implementor).joinChat())));
+    messengers.registerMessageHandler(
+        IChatController.LeaveChatRequest.TYPE,
+        (request, implementor) -> {
+          ((IChatController) implementor).leaveChat();
+          return new IChatController.LeaveChatResponse();
+        });
+    messengers.registerMessageHandler(
+        IChatController.SetChatStatusMessage.TYPE,
+        (request, implementor) -> {
+          request.invokeCallback((IChatController) implementor);
+          return new IChatController.SetStatusResponse();
+        });
     messengers.addConnectionChangeListener(connectionChangeListener);
     startPinger();
   }
@@ -75,7 +94,7 @@ public class ChatController implements IChatController {
     pingThread.scheduleAtFixedRate(
         () -> {
           try {
-            getChatBroadcaster().ping();
+            broadcastToChatChannel(new IChatChannel.PingMessage());
           } catch (final Exception e) {
             log.error("Error pinging", e);
           }
@@ -89,18 +108,17 @@ public class ChatController implements IChatController {
   public void deactivate() {
     pingThread.shutdown();
     synchronized (mutex) {
-      final IChatChannel chatter = getChatBroadcaster();
       for (final INode node : chatters.keySet()) {
-        chatter.speakerRemoved(node.getPlayerUserName());
+        broadcastToChatChannel(
+            new IChatChannel.SpeakerRemovedMessage(node.getPlayerUserName().getValue()));
       }
       messengers.unregisterRemote(getChatControllerRemoteName(chatName));
     }
     messengers.removeConnectionChangeListener(connectionChangeListener);
   }
 
-  private IChatChannel getChatBroadcaster() {
-    return (IChatChannel)
-        messengers.getChannelBroadcaster(new RemoteName(chatChannel, IChatChannel.class));
+  private void broadcastToChatChannel(final WebSocketMessage message) {
+    messengers.sendChannelMessage(new RemoteName(chatChannel, IChatChannel.class), message);
   }
 
   // a player has joined
@@ -113,13 +131,13 @@ public class ChatController implements IChatController {
       final PlayerChatId id = PlayerChatId.newId();
       chatterIds.put(node, id);
       chatters.put(node, tag);
-      getChatBroadcaster()
-          .speakerAdded(
+      broadcastToChatChannel(
+          new IChatChannel.SpeakAddedMessage(
               ChatParticipant.builder()
                   .userName(node.getPlayerUserName().getValue())
                   .playerChatId(id.getValue())
                   .isModerator(serverMessenger.isModerator(node))
-                  .build());
+                  .build()));
 
       return chatters.entrySet().stream()
           .map(
@@ -142,7 +160,7 @@ public class ChatController implements IChatController {
     } else {
       chatterStatus.put(node.getPlayerUserName(), status);
     }
-    getChatBroadcaster().statusChanged(node.getPlayerUserName(), status);
+    broadcastToChatChannel(new IChatChannel.StatusChangedMessage(node.getPlayerUserName(), status));
   }
 
   // a player has left
@@ -155,7 +173,8 @@ public class ChatController implements IChatController {
     synchronized (mutex) {
       chatters.remove(node);
     }
-    getChatBroadcaster().speakerRemoved(node.getPlayerUserName());
+    broadcastToChatChannel(
+        new IChatChannel.SpeakerRemovedMessage(node.getPlayerUserName().getValue()));
     log.info("Chatter: " + node + " has left chat: " + chatName);
   }
 }

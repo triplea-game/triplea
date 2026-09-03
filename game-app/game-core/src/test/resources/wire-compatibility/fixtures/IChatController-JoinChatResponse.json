@@ -1,0 +1,13 @@
+{
+  "type": "games.strategy.engine.chat.IChatController$JoinChatResponse",
+  "payload": {
+    "chatParticipants": [
+      {
+        "userName": "Tester",
+        "playerChatId": "chat-id-123",
+        "isModerator": false,
+        "status": "AFK"
+      }
+    ]
+  }
+}

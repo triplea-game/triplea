@@ -22,6 +22,12 @@ IChatChannel-SpeakAddedMessage.json
 IChatChannel-SpeakerRemovedMessage.json
 IChatChannel-PingMessage.json
 IChatChannel-StatusChangedMessage.json
+IChatController-JoinChatRequest.json
+IChatController-JoinChatResponse.json
+IChatController-LeaveChatRequest.json
+IChatController-LeaveChatResponse.json
+IChatController-SetChatStatusMessage.json
+IChatController-SetStatusResponse.json
 IDisplay-BroadcastMessageMessage.json
 IDisplay-BombingResultsMessage.json
 IDisplay-NotifyRetreatMessage.json
