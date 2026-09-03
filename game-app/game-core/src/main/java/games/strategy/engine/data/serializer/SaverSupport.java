@@ -1,6 +1,8 @@
 package games.strategy.engine.data.serializer;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -9,7 +11,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.UncheckedIOException;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Nullable;
@@ -110,6 +115,45 @@ public final class SaverSupport {
       map.put(key, object.get("value").getAsInt());
     }
     return map;
+  }
+
+  /** Encodes a collection of game entities as an array of references (by name / UUID). */
+  public static JsonArray writeRefList(
+      final @Nullable Collection<?> entities, final GameRefResolver refs) {
+    final JsonArray array = new JsonArray();
+    if (entities != null) {
+      for (final Object entity : entities) {
+        array.add(refs.writeRef(entity));
+      }
+    }
+    return array;
+  }
+
+  /** Inverse of {@link #writeRefList}; resolves each ref back to a {@code T}. */
+  public static <T> List<T> readRefList(
+      final JsonArray array, final GameRefResolver refs, final Class<T> elementType) {
+    final List<T> list = new ArrayList<>();
+    for (final var element : array) {
+      list.add(elementType.cast(refs.readRef(element.getAsJsonObject())));
+    }
+    return list;
+  }
+
+  /** Encodes a nullable game entity as a reference, or JSON null. */
+  public static JsonElement writeRefOrNull(
+      final @Nullable Object entity, final GameRefResolver refs) {
+    return entity == null ? JsonNull.INSTANCE : refs.writeRef(entity);
+  }
+
+  /**
+   * Inverse of {@link #writeRefOrNull}; a JSON null (or absent element) resolves to {@code null}.
+   */
+  public static <T> @Nullable T readRefOrNull(
+      final @Nullable JsonElement element, final GameRefResolver refs, final Class<T> type) {
+    if (element == null || element.isJsonNull()) {
+      return null;
+    }
+    return type.cast(refs.readRef(element.getAsJsonObject()));
   }
 
   private static String toBlob(final Serializable value) {
