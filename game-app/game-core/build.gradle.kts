@@ -25,6 +25,7 @@ dependencies {
     testFixturesImplementation(libs.jsr305) {
         because("This provides javax.annotations.Nullable directly, instead of relying on pulling it as a transitive dep of websockets")
     }
+    testFixturesImplementation(libs.gson)
     testFixturesImplementation(libs.guava)
     testFixturesImplementation(libs.hamcrest)
     testFixturesImplementation(libs.jetbrains.annotations)

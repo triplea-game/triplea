@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
+import games.strategy.triplea.settings.ClientSetting;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.EOFException;
@@ -62,7 +63,17 @@ public final class GameDataManager {
    * @return The loaded game data, or an empty optional if an error occurs.
    */
   public static Optional<GameData> loadGame(final InputStream is) {
-    try (GZIPInputStream input = new GZIPInputStream(is)) {
+    try (GZIPInputStream gzip = new GZIPInputStream(is)) {
+      // Both formats are GZIP-wrapped; the first decompressed bytes tell them apart: the text
+      // format starts with an ASCII sentinel, a legacy save with the Java serialization magic.
+      final BufferedInputStream input = new BufferedInputStream(gzip);
+      input.mark(16);
+      final byte[] prefix = new byte[8];
+      final int read = input.readNBytes(prefix, 0, prefix.length);
+      input.reset();
+      if (read == prefix.length && TextGameDataFormat.startsWithSentinel(prefix)) {
+        return Optional.of(TextGameDataReader.load(input));
+      }
       return loadGameUncompressed(input);
     } catch (final EOFException e) {
       log.warn("Bad save game file (corrupted or truncated) try redownloading the save file.", e);
@@ -137,7 +148,11 @@ public final class GameDataManager {
       try (OutputStream os = Files.newOutputStream(tempFile);
           OutputStream bufferedOutStream = new BufferedOutputStream(os);
           OutputStream zippedOutStream = new GZIPOutputStream(bufferedOutStream)) {
-        saveGameUncompressed(zippedOutStream, gameData, Options.forSaveGame());
+        if (ClientSetting.writeTextSaveFormat.getSetting()) {
+          TextGameDataWriter.save(zippedOutStream, gameData);
+        } else {
+          saveGameUncompressed(zippedOutStream, gameData, Options.forSaveGame());
+        }
       }
 
       // now write to sink (ensure sink is closed per method contract)
@@ -147,6 +162,22 @@ public final class GameDataManager {
       }
     } finally {
       Files.delete(tempFile);
+    }
+  }
+
+  /**
+   * Saves {@code gameData} to {@code out} in the experimental text (JSONL) format, regardless of the
+   * {@code writeTextSaveFormat} setting. Reading is auto-detecting, so a game written here loads
+   * through {@link #loadGame}. Intended for tests and tooling; normal saves route through {@link
+   * #saveGame} under the feature flag.
+   */
+  public static void saveGameText(final OutputStream out, final GameData gameData)
+      throws IOException {
+    checkNotNull(out);
+    checkNotNull(gameData);
+    try (OutputStream bufferedOutStream = new BufferedOutputStream(out);
+        OutputStream zippedOutStream = new GZIPOutputStream(bufferedOutStream)) {
+      TextGameDataWriter.save(zippedOutStream, gameData);
     }
   }
 
