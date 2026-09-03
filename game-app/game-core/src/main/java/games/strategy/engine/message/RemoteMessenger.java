@@ -3,8 +3,10 @@ package games.strategy.engine.message;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import lombok.Getter;
 
 /** An implementation of IRemoteMessenger based on MessageManager and Messenger. */
+@Getter
 public class RemoteMessenger implements IRemoteMessenger {
   private final UnifiedMessenger unifiedMessenger;
 

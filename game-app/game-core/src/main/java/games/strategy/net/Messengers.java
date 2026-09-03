@@ -47,7 +47,24 @@ public class Messengers implements IMessenger, IRemoteMessenger, IChannelMesseng
     this.messenger = messenger;
     this.remoteMessenger = remoteMessenger;
     this.channelMessenger = channelMessenger;
-    unifiedMessenger = null;
+    unifiedMessenger = extractUnifiedMessenger(remoteMessenger, channelMessenger);
+  }
+
+  /**
+   * Recovers the shared {@link UnifiedMessenger} when the test constructor is handed real wrapper
+   * messengers, so the typed messaging API works without the production constructor. Stays null for
+   * mock messengers, which carry no UnifiedMessenger to dispatch through.
+   */
+  @Nullable
+  private static UnifiedMessenger extractUnifiedMessenger(
+      final IRemoteMessenger remoteMessenger, final IChannelMessenger channelMessenger) {
+    if (channelMessenger instanceof ChannelMessenger cm) {
+      return cm.getUnifiedMessenger();
+    }
+    if (remoteMessenger instanceof RemoteMessenger rm) {
+      return rm.getUnifiedMessenger();
+    }
+    return null;
   }
 
   /**
