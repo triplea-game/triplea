@@ -5,8 +5,8 @@ import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
+import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
-import games.strategy.net.ServerMessenger;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +26,7 @@ public class ChatController implements IChatController {
   @NonNls private static final String CHAT_REMOTE = "_ChatRemote_";
   @NonNls private static final String CHAT_CHANNEL = "_ChatControl_";
   private final Messengers messengers;
-  private final ServerMessenger serverMessenger;
+  private final IServerMessenger serverMessenger;
 
   private final String chatName;
   private final Map<INode, Tag> chatters = new HashMap<>();
@@ -53,7 +53,7 @@ public class ChatController implements IChatController {
       };
 
   public ChatController(
-      final String name, final Messengers messengers, ServerMessenger serverMessenger) {
+      final String name, final Messengers messengers, IServerMessenger serverMessenger) {
     chatName = name;
     this.messengers = messengers;
     this.serverMessenger = serverMessenger;

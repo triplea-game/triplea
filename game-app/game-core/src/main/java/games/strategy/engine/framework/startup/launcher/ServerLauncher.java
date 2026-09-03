@@ -43,6 +43,16 @@ public class ServerLauncher implements ILauncher {
   // TODO: relay server port hardcoded for now, ideally it would be configurable by client
   public static final int RELAY_SERVER_PORT = 6000;
 
+  /**
+   * Port the in-process websocket-transport relay binds on, and the port clients dial. Defaults to
+   * {@link #RELAY_SERVER_PORT} but is overridable with {@code -Dtriplea.relay.port} (the same
+   * property the standalone {@code RelayServerMain} honours), so the host and client agree and
+   * tests can pick a free port.
+   */
+  public static int relayServerPort() {
+    return Integer.getInteger("triplea.relay.port", RELAY_SERVER_PORT);
+  }
+
   private final GameData gameData;
   private final GameSelectorModel gameSelectorModel;
   private final LaunchAction launchAction;

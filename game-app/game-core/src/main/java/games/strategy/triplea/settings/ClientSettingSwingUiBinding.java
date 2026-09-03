@@ -277,6 +277,17 @@ All players in the same game must have it set to the same value. Restart to full
     }
   },
 
+  USE_WEBSOCKET_TRANSPORT(
+      "Use Websocket Transport (Beta)",
+      SettingType.TESTING,
+      "Toggles whether the game's network transport dials out to a relay over websockets "
+          + "instead of using direct sockets") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return booleanRadioButtons(ClientSetting.useWebsocketTransport);
+    }
+  },
+
   DO_NOT_REDRAW_MAP(
       "Do Not Redraw Map",
       SettingType.TESTING,

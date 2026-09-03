@@ -19,6 +19,14 @@ public interface IServerMessenger extends IMessenger {
   /** Remove the node from the network. */
   void removeConnection(INode node);
 
+  /**
+   * Whether the given node is a game moderator. Defaults to {@code false}; the round-1 relay
+   * transport has no moderation, so only the socket messenger reports true moderators.
+   */
+  default boolean isModerator(final INode node) {
+    return false;
+  }
+
   /** Get a list of nodes. */
   Set<INode> getNodes();
 

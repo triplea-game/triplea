@@ -32,6 +32,9 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.ServerMessenger;
 import games.strategy.net.websocket.ClientNetworkBridge;
+import games.strategy.net.websocket.transport.WebsocketServerMessenger;
+import games.strategy.net.websocket.transport.WebsocketTransport;
+import games.strategy.triplea.settings.ClientSetting;
 import java.io.IOException;
 import java.net.BindException;
 import java.net.URI;
@@ -56,6 +59,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.game.chat.ChatModel;
+import org.triplea.game.server.GameRelayServer;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingClient;
 import org.triplea.http.client.lobby.game.hosting.request.GameHostingResponse;
 import org.triplea.http.client.lobby.web.socket.messages.envelopes.remote.actions.PlayerBannedMessage;
@@ -79,7 +83,9 @@ public class ServerModel extends Observable implements IConnectionChangeListener
   static final String CHAT_NAME = "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
 
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
-  private ServerMessenger serverMessenger;
+  private IServerMessenger serverMessenger;
+  // In-process relay started only on the websocket-transport path; stopped in cancel().
+  private GameRelayServer gameRelayServer;
   private Messengers messengers;
   private GameData data;
   private Map<String, String> playersToNodeListing = new HashMap<>();
@@ -127,6 +133,9 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     Optional.ofNullable(chatController).ifPresent(ChatController::deactivate);
     Optional.ofNullable(messengers).ifPresent(Messengers::shutDown);
     Optional.ofNullable(chatModel).ifPresent(ChatModel::cancel);
+    // Free the in-process relay port on the websocket-transport path (started in
+    // createServerMessenger); a no-op on the socket path where no relay was started.
+    Optional.ofNullable(gameRelayServer).ifPresent(GameRelayServer::stop);
   }
 
   public void setRemoteModelListener(final @Nullable IRemoteModelListener listener) {
@@ -215,32 +224,51 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
   private boolean createServerMessenger(final ServerConnectionProps props) {
     try {
-      this.serverMessenger =
-          new ServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
+      if (ClientSetting.useWebsocketTransport.getValue().orElse(false)) {
+        // The relay must be running BEFORE the server messenger is constructed: the messenger's
+        // handshake blocks until the relay sends WELCOME. Start it here (earlier than the old
+        // useWebsocketNetwork side-channel, which starts its relay later in ServerLauncher).
+        final int relayPort = ServerLauncher.relayServerPort();
+        gameRelayServer = new GameRelayServer(relayPort);
+        gameRelayServer.start();
+        final URI relayUri = GameRelayServer.createLocalhostConnectionUri(relayPort);
+        this.serverMessenger =
+            new WebsocketServerMessenger(
+                relayUri, WebsocketTransport.ROUND1_GAME_ID, props.getName(), objectStreamFactory);
+      } else {
+        this.serverMessenger =
+            new ServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
+      }
       serverMessenger.addConnectionChangeListener(this);
 
-      // add moderator action handlers (eg: ban/disconnect)
-      serverMessenger.addMessageListener(
-          (msg, from) -> {
-            // check that message is from a moderator
-            if (msg instanceof ModeratorMessage moderatorMessage) {
-              if (!serverMessenger.isModerator(from)) {
-                return;
-              }
+      // Moderator action handlers (eg: ban/disconnect) are socket/lobby features; the round-1
+      // relay defers auth/moderation, so they are only wired for the socket messenger.
+      if (serverMessenger instanceof ServerMessenger socketMessenger) {
+        socketMessenger.addMessageListener(
+            (msg, from) -> {
+              // check that message is from a moderator
+              if (msg instanceof ModeratorMessage moderatorMessage) {
+                if (!socketMessenger.isModerator(from)) {
+                  return;
+                }
 
-              if (moderatorMessage.isBan()) {
-                serverMessenger.banPlayer(moderatorMessage.getPlayerName());
-              } else if (moderatorMessage.isDisconnect()) {
-                serverMessenger.removeConnection(moderatorMessage.getPlayerName());
+                if (moderatorMessage.isBan()) {
+                  socketMessenger.banPlayer(moderatorMessage.getPlayerName());
+                } else if (moderatorMessage.isDisconnect()) {
+                  socketMessenger.removeConnection(moderatorMessage.getPlayerName());
+                }
               }
-            }
-          });
+            });
+      }
 
       messengers = new Messengers(serverMessenger);
       messengers.registerRemote(
           launchAction.getStartupRemote(new DefaultServerModelView()), SERVER_REMOTE_NAME);
 
-      if (System.getProperty(LOBBY_URI) != null) {
+      // Lobby hosting is a socket-path feature in round 1 (setGameToLobbyConnection lives on the
+      // concrete socket messenger); the relay transport does not yet integrate with the lobby.
+      if (serverMessenger instanceof ServerMessenger socketMessenger
+          && System.getProperty(LOBBY_URI) != null) {
         final URI lobbyUri = URI.create(System.getProperty(LOBBY_URI));
         final GameHostingResponse gameHostingResponse =
             GameHostingClient.newClient(lobbyUri).sendGameHostingRequest();
@@ -252,7 +280,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
         gameToLobbyConnection =
             new GameToLobbyConnection(lobbyUri, gameHostingResponse, launchAction::handleError);
 
-        serverMessenger.setGameToLobbyConnection(gameToLobbyConnection);
+        socketMessenger.setGameToLobbyConnection(gameToLobbyConnection);
 
         gameToLobbyConnection.addMessageListener(
             PlayerBannedMessage.TYPE,

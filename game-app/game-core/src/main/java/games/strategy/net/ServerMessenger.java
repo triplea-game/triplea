@@ -321,6 +321,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     return true;
   }
 
+  @Override
   public boolean isModerator(INode node) {
     return getModerators().stream()
         .anyMatch(
