@@ -4,6 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.engine.random.IRandomStats;
+import games.strategy.engine.random.RandomStatsDetails;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.ui.ActionButtonsPanel;
@@ -142,10 +143,16 @@ public final class ForumPosterComponent extends JPanel {
       historyLog.printProductionSummary(data);
     }
     if (showDiceStatisticsCheckBox.isSelected()) {
-      historyLog.printDiceStatistics(
-          data,
-          (IRandomStats)
-              frame.getGame().getMessengers().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME));
+      final RandomStatsDetails randomStats =
+          frame
+              .getGame()
+              .getMessengers()
+              .invokeRemoteMessage(
+                  IRandomStats.RANDOM_STATS_REMOTE_NAME,
+                  new IRandomStats.GetRandomStatsRequest(data.getDiceSides()),
+                  IRandomStats.GetRandomStatsResponse.TYPE)
+              .getRandomStats();
+      historyLog.printDiceStatistics(data, diceSides -> randomStats);
     }
     historyLog.requestFocus();
   }

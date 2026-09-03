@@ -40,3 +40,5 @@ IServerStartupRemote-GetServerHeadlessResponse.json
 Vault-AddLockedValueMessage.json
 Vault-UnlockMessage.json
 Vault-ReleaseMessage.json
+IRandomStats-GetRandomStatsRequest.json
+IRandomStats-GetRandomStatsResponse.json

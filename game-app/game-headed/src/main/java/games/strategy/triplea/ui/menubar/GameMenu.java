@@ -233,11 +233,13 @@ final class GameMenu {
         .actionListener(
             () -> {
               IGame game = frame.getGame();
-              final IRandomStats randomStats =
-                  (IRandomStats)
-                      game.getMessengers().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME);
               final RandomStatsDetails stats =
-                  randomStats.getRandomStats(game.getData().getDiceSides());
+                  game.getMessengers()
+                      .invokeRemoteMessage(
+                          IRandomStats.RANDOM_STATS_REMOTE_NAME,
+                          new IRandomStats.GetRandomStatsRequest(game.getData().getDiceSides()),
+                          IRandomStats.GetRandomStatsResponse.TYPE)
+                      .getRandomStats();
               JOptionPane.showMessageDialog(
                   frame,
                   new JScrollPane(stats.getAllStats()),

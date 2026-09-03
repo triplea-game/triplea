@@ -1,0 +1,6 @@
+{
+  "type": "games.strategy.engine.random.IRandomStats$GetRandomStatsRequest",
+  "payload": {
+    "diceSides": 6
+  }
+}

@@ -1,7 +1,7 @@
 package games.strategy.engine.random;
 
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.message.IRemoteMessenger;
+import games.strategy.net.Messengers;
 import java.util.HashMap;
 import java.util.Map;
 import org.triplea.java.collections.IntegerMap;
@@ -14,16 +14,21 @@ import org.triplea.java.collections.IntegerMap;
  * RandomStatsDetails}.
  */
 public class RandomStats implements IRandomStats {
-  private final IRemoteMessenger remoteMessenger;
+  private final Messengers messengers;
   private final Map<GamePlayer, IntegerMap<Integer>> randomStats = new HashMap<>();
 
-  public RandomStats(final IRemoteMessenger remoteMessenger) {
-    this.remoteMessenger = remoteMessenger;
-    remoteMessenger.registerRemote(this, RANDOM_STATS_REMOTE_NAME);
+  public RandomStats(final Messengers messengers) {
+    this.messengers = messengers;
+    messengers.registerRemote(this, RANDOM_STATS_REMOTE_NAME);
+    messengers.registerMessageHandler(
+        IRandomStats.GetRandomStatsRequest.TYPE,
+        (request, implementor) ->
+            IRandomStats.GetRandomStatsResponse.of(
+                ((IRandomStats) implementor).getRandomStats(request.getDiceSides())));
   }
 
   public void shutDown() {
-    remoteMessenger.unregisterRemote(RANDOM_STATS_REMOTE_NAME);
+    messengers.unregisterRemote(RANDOM_STATS_REMOTE_NAME);
   }
 
   public synchronized void addRandom(
