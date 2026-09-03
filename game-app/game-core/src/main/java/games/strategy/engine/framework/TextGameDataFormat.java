@@ -1,6 +1,7 @@
 package games.strategy.engine.framework;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import java.nio.charset.StandardCharsets;
 
@@ -25,7 +26,9 @@ import java.nio.charset.StandardCharsets;
  */
 final class TextGameDataFormat {
 
-  static final Gson GSON = new Gson();
+  // serializeNulls so an explicit JSON null (e.g. a null collection distinct from empty) survives
+  // the round-trip instead of being dropped from the record.
+  static final Gson GSON = new GsonBuilder().serializeNulls().create();
 
   static final String SENTINEL = "TRIPLEA-JSONL v1";
 
@@ -34,9 +37,7 @@ final class TextGameDataFormat {
   static final String SECTION_DELEGATE = "delegate";
   static final String SECTION_END = "end";
 
-  static final String ENCODING_TEXT = "text";
   static final String ENCODING_JAVA = "java";
-  static final String ENCODING_NONE = "none";
 
   private static final byte[] SENTINEL_PREFIX =
       SENTINEL.substring(0, 8).getBytes(StandardCharsets.UTF_8);

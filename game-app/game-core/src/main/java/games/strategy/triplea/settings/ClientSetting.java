@@ -127,6 +127,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new BooleanClientSetting("SHOW_BETA_FEATURES");
   public static final ClientSetting<Boolean> useWebsocketNetwork =
       new BooleanClientSetting("USE_WEBSOCKET_NETWORK");
+
   /**
    * When true, new save games are written in the experimental text (JSONL) format instead of Java
    * serialization. Reading auto-detects the format regardless of this setting, so text and legacy
@@ -134,6 +135,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
    */
   public static final BooleanClientSetting writeTextSaveFormat =
       new BooleanClientSetting("WRITE_TEXT_SAVE_FORMAT", false);
+
   public static final ClientSetting<Boolean> doNotRedrawMap =
       new BooleanClientSetting("DO_NOT_REDRAW_MAP");
   public static final ClientSetting<Boolean> showSerializeFeatures =

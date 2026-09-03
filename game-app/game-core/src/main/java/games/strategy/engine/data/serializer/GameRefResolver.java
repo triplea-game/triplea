@@ -10,8 +10,8 @@ import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Resource;
-import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.serializer.EntityRef.RefKind;
@@ -20,14 +20,15 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 /**
- * Resolves game entities to and from {@link EntityRef}s against a specific {@link GameData}. This is
- * the text-save generalization of {@link games.strategy.engine.data.GameObjectStreamData}: the write
- * side ({@link #refFor}) mirrors that class's constructor if/else chain, and the read side ({@link
- * #resolve}) mirrors its {@code getReference} switch — both extended to cover {@code Unit} (by UUID)
- * and the entity kinds the network handle omitted.
+ * Resolves game entities to and from {@link EntityRef}s against a specific {@link GameData}. This
+ * is the text-save generalization of {@link games.strategy.engine.data.GameObjectStreamData}: the
+ * write side ({@link #refFor}) mirrors that class's constructor if/else chain, and the read side
+ * ({@link #resolve}) mirrors its {@code getReference} switch — both extended to cover {@code Unit}
+ * (by UUID) and the entity kinds the network handle omitted.
  *
  * <p>The existing {@code GameObjectStreamData}/{@code GameObjectOutputStream} network classes are
- * intentionally left untouched; this is a parallel, text-oriented reimplementation of the same idea.
+ * intentionally left untouched; this is a parallel, text-oriented reimplementation of the same
+ * idea.
  */
 public final class GameRefResolver {
 

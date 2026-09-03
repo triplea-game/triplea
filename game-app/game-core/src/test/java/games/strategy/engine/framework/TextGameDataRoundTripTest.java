@@ -19,8 +19,8 @@ import org.triplea.io.IoUtils;
 
 /**
  * End-to-end plumbing test for the text save format. At this point no {@link
- * games.strategy.engine.data.serializer.TextSaver} is registered, so every section is a legacy blob;
- * this proves the sentinel/header/gameData/delegate framing, format auto-detection, and the
+ * games.strategy.engine.data.serializer.TextSaver} is registered, so every section is a legacy
+ * blob; this proves the sentinel/header/gameData/delegate framing, format auto-detection, and the
  * reflective delegate reconstruction all work before any native saver exists.
  */
 class TextGameDataRoundTripTest extends AbstractClientSettingTestCase {
@@ -49,7 +49,9 @@ class TextGameDataRoundTripTest extends AbstractClientSettingTestCase {
     ClientSetting.writeTextSaveFormat.setValue(true);
     final byte[] textBytes = IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, gameData));
 
-    assertThat("flag should route saveGame to the text format", decompressHead(textBytes),
+    assertThat(
+        "flag should route saveGame to the text format",
+        decompressHead(textBytes),
         startsWith("TRIPLEA-JSONL"));
 
     final GameData reloaded =

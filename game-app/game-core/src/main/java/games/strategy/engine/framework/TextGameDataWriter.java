@@ -3,29 +3,27 @@ package games.strategy.engine.framework;
 import com.google.gson.JsonObject;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.serializer.GameRefResolver;
-import games.strategy.engine.data.serializer.SaverRegistry;
-import games.strategy.engine.data.serializer.TextSaver;
+import games.strategy.engine.data.serializer.SaverSupport;
 import games.strategy.engine.delegate.IDelegate;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.Optional;
 import org.triplea.config.product.ProductVersionReader;
 
 /**
- * Writes a game as the experimental text (JSONL) save format. See {@link TextGameDataFormat} for the
- * on-disk layout.
+ * Writes a game as the experimental text (JSONL) save format. See {@link TextGameDataFormat} for
+ * the on-disk layout.
  *
  * <p>This is an incremental replacement for Java serialization. The monolithic {@code GameData}
- * object graph is emitted as one legacy-serialized {@code gameData} section (an entangled graph that
- * cannot yet be split), while each delegate's state is emitted natively as text when a {@link
- * TextSaver} is registered for its state class, and otherwise falls back to a legacy blob. As savers
- * are added, delegate sections migrate from {@code java} to {@code text} with no format change.
+ * object graph is emitted as one legacy-serialized {@code gameData} section (an entangled graph
+ * that cannot yet be split), while each delegate's state is emitted natively as text when a {@link
+ * TextSaver} is registered for its state class, and otherwise falls back to a legacy blob. As
+ * savers are added, delegate sections migrate from {@code java} to {@code text} with no format
+ * change.
  */
 final class TextGameDataWriter {
 
@@ -81,37 +79,14 @@ final class TextGameDataWriter {
     return json;
   }
 
-  private static JsonObject delegateSection(final IDelegate delegate, final GameRefResolver refs)
-      throws IOException {
+  private static JsonObject delegateSection(final IDelegate delegate, final GameRefResolver refs) {
     final JsonObject json = new JsonObject();
     json.addProperty("section", TextGameDataFormat.SECTION_DELEGATE);
     json.addProperty("name", delegate.getName());
     json.addProperty("displayName", delegate.getDisplayName());
     json.addProperty("className", delegate.getClass().getName());
-
-    final Serializable state = delegate.saveState();
-    if (state == null) {
-      json.addProperty("encoding", TextGameDataFormat.ENCODING_NONE);
-      return json;
-    }
-    final Optional<TextSaver<Object>> saver = SaverRegistry.forInstance(state);
-    if (saver.isPresent()) {
-      json.addProperty("encoding", TextGameDataFormat.ENCODING_TEXT);
-      json.addProperty("stateClass", state.getClass().getName());
-      json.add("state", saver.get().write(state, refs));
-    } else {
-      json.addProperty("encoding", TextGameDataFormat.ENCODING_JAVA);
-      json.addProperty("bytes", toJavaBlob(state));
-    }
+    json.add("state", SaverSupport.writeNested(delegate.saveState(), refs));
     return json;
-  }
-
-  private static String toJavaBlob(final Serializable value) throws IOException {
-    final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    try (ObjectOutputStream out = new ObjectOutputStream(bos)) {
-      out.writeObject(value);
-    }
-    return Base64.getEncoder().encodeToString(bos.toByteArray());
   }
 
   private static void writeJson(final Writer writer, final JsonObject json) throws IOException {

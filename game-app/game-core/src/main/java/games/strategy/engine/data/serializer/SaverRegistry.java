@@ -12,16 +12,22 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Maps a state/Change/component class to the {@link TextSaver} that serializes it.
  *
- * <p>Savers are discovered <b>additively</b>: on first use the registry scans the {@code
- * serializer} package tree for public {@link TextSaver} implementations with a public no-argument
- * constructor and registers each by its {@link TextSaver#type()}. A new unit therefore only adds its
- * own saver class — no central dispatch file or service index is edited, which is what keeps the
- * fan-out free of merge conflicts on shared infrastructure.
+ * <p>Savers are discovered <b>additively</b>: on first use the registry scans the class path for
+ * {@code *Saver} classes that implement {@link TextSaver} and have a public no-argument
+ * constructor, registering each by its {@link TextSaver#type()}. A new unit therefore only adds its
+ * own saver class — no central dispatch file or service index is edited, which keeps the fan-out
+ * free of merge conflicts on shared infrastructure.
+ *
+ * <p>The scan is broad ({@code games.strategy}) and savers live in the same package as the type
+ * they serialize, because many serialized types (e.g. delegate state classes) are package-private
+ * and can only be referenced — and their fields accessed — from within their own package. The
+ * {@code *Saver} name suffix is a cheap pre-filter so the scan only loads candidate classes.
  */
 @Slf4j
 public final class SaverRegistry {
 
-  private static final String SCAN_PACKAGE = "games.strategy.engine.data.serializer";
+  private static final String SCAN_PACKAGE = "games.strategy";
+  private static final String SAVER_SUFFIX = "Saver";
 
   private static final Map<Class<?>, TextSaver<?>> byType = new ConcurrentHashMap<>();
   private static volatile boolean scanned = false;
@@ -67,9 +73,10 @@ public final class SaverRegistry {
   private static void scanClasspath() {
     try {
       final ClassPath classPath = ClassPath.from(SaverRegistry.class.getClassLoader());
-      for (final ClassPath.ClassInfo info :
-          classPath.getTopLevelClassesRecursive(SCAN_PACKAGE)) {
-        registerIfSaver(info);
+      for (final ClassPath.ClassInfo info : classPath.getTopLevelClassesRecursive(SCAN_PACKAGE)) {
+        if (info.getSimpleName().endsWith(SAVER_SUFFIX)) {
+          registerIfSaver(info);
+        }
       }
     } catch (final IOException e) {
       log.error("Failed to scan classpath for TextSaver implementations", e);
@@ -89,11 +96,11 @@ public final class SaverRegistry {
       return;
     }
     try {
-      final TextSaver<?> saver =
-          (TextSaver<?>) clazz.getDeclaredConstructor().newInstance();
+      final TextSaver<?> saver = (TextSaver<?>) clazz.getDeclaredConstructor().newInstance();
       register(saver);
     } catch (final ReflectiveOperationException e) {
-      log.warn("TextSaver {} has no usable public no-arg constructor; skipping", clazz.getName(), e);
+      log.warn(
+          "TextSaver {} has no usable public no-arg constructor; skipping", clazz.getName(), e);
     }
   }
 }

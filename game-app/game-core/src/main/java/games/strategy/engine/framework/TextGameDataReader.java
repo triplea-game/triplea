@@ -3,8 +3,7 @@ package games.strategy.engine.framework;
 import com.google.gson.JsonObject;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.serializer.GameRefResolver;
-import games.strategy.engine.data.serializer.SaverRegistry;
-import games.strategy.engine.data.serializer.TextSaver;
+import games.strategy.engine.data.serializer.SaverSupport;
 import games.strategy.engine.delegate.IDelegate;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -12,16 +11,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
-import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import javax.annotation.Nullable;
 
 /**
  * Reads the experimental text (JSONL) save format written by {@link TextGameDataWriter}. The
  * counterpart of the legacy {@code GameDataManager.loadGameUncompressed}: it rebuilds the {@code
- * GameData} graph from the {@code gameData} blob, then reconstructs each delegate — loading its state
- * natively when written as text (via the registered {@link TextSaver}) and from a legacy blob
+ * GameData} graph from the {@code gameData} blob, then reconstructs each delegate — loading its
+ * state natively when written as text (via the registered {@link TextSaver}) and from a legacy blob
  * otherwise.
  */
 final class TextGameDataReader {
@@ -107,34 +104,6 @@ final class TextGameDataReader {
       throw new IOException("Failed to construct delegate " + className, e);
     }
 
-    instance.loadState(readState(record, refs));
-  }
-
-  @SuppressWarnings("unchecked")
-  private static @Nullable Serializable readState(
-      final JsonObject record, final GameRefResolver refs)
-      throws IOException, ClassNotFoundException {
-    final String encoding = record.get("encoding").getAsString();
-    return switch (encoding) {
-      case TextGameDataFormat.ENCODING_NONE -> null;
-      case TextGameDataFormat.ENCODING_TEXT -> {
-        final Class<?> stateClass = Class.forName(record.get("stateClass").getAsString());
-        final TextSaver<Object> saver =
-            (TextSaver<Object>)
-                SaverRegistry.forType(stateClass)
-                    .orElseThrow(
-                        () ->
-                            new IOException(
-                                "No TextSaver registered for state class " + stateClass.getName()));
-        yield (Serializable) saver.read(record.getAsJsonObject("state"), refs);
-      }
-      case TextGameDataFormat.ENCODING_JAVA -> {
-        final byte[] bytes = Base64.getDecoder().decode(record.get("bytes").getAsString());
-        try (ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
-          yield (Serializable) in.readObject();
-        }
-      }
-      default -> throw new IOException("Unknown state encoding: " + encoding);
-    };
+    instance.loadState(SaverSupport.readNested(record.getAsJsonObject("state"), refs));
   }
 }

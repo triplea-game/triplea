@@ -166,10 +166,10 @@ public final class GameDataManager {
   }
 
   /**
-   * Saves {@code gameData} to {@code out} in the experimental text (JSONL) format, regardless of the
-   * {@code writeTextSaveFormat} setting. Reading is auto-detecting, so a game written here loads
-   * through {@link #loadGame}. Intended for tests and tooling; normal saves route through {@link
-   * #saveGame} under the feature flag.
+   * Saves {@code gameData} to {@code out} in the experimental text (JSONL) format, regardless of
+   * the {@code writeTextSaveFormat} setting. Reading is auto-detecting, so a game written here
+   * loads through {@link #loadGame}. Intended for tests and tooling; normal saves route through
+   * {@link #saveGame} under the feature flag.
    */
   public static void saveGameText(final OutputStream out, final GameData gameData)
       throws IOException {

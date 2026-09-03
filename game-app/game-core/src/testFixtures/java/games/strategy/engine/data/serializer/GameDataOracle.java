@@ -23,8 +23,8 @@ public final class GameDataOracle {
   private GameDataOracle() {}
 
   /**
-   * Asserts that {@code saver} round-trips {@code state}: write → read → write must produce identical
-   * JSON. This is the primary per-unit gate and needs no save-file plumbing.
+   * Asserts that {@code saver} round-trips {@code state}: write → read → write must produce
+   * identical JSON. This is the primary per-unit gate and needs no save-file plumbing.
    */
   public static <T> void assertStateRoundTrips(
       final TextSaver<T> saver, final T state, final GameData data) {
@@ -44,17 +44,16 @@ public final class GameDataOracle {
   }
 
   /**
-   * Saves {@code original} through the full text pipeline, reloads it, and asserts the reconstruction
-   * matches: same game name, same delegate set, and — for every delegate whose state is written
-   * natively as text — identical serialized state. Delegates still written as legacy blobs round-trip
-   * through Java serialization and are not re-compared here. Returns the reloaded game for further
-   * assertions.
+   * Saves {@code original} through the full text pipeline, reloads it, and asserts the
+   * reconstruction matches: same game name, same delegate set, and — for every delegate whose state
+   * is written natively as text — identical serialized state. Delegates still written as legacy
+   * blobs round-trip through Java serialization and are not re-compared here. Returns the reloaded
+   * game for further assertions.
    */
   public static GameData assertReconstructs(final GameData original) {
     final GameData reloaded;
     try {
-      final byte[] bytes =
-          IoUtils.writeToMemory(os -> GameDataManager.saveGameText(os, original));
+      final byte[] bytes = IoUtils.writeToMemory(os -> GameDataManager.saveGameText(os, original));
       reloaded =
           IoUtils.readFromMemory(bytes, GameDataManager::loadGame)
               .orElseThrow(() -> new AssertionError("Text save failed to reload"));
