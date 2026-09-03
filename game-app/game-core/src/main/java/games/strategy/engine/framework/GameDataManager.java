@@ -148,7 +148,7 @@ public final class GameDataManager {
       try (OutputStream os = Files.newOutputStream(tempFile);
           OutputStream bufferedOutStream = new BufferedOutputStream(os);
           OutputStream zippedOutStream = new GZIPOutputStream(bufferedOutStream)) {
-        if (ClientSetting.writeTextSaveFormat.getSetting()) {
+        if (isTextSaveFormatEnabled()) {
           TextGameDataWriter.save(zippedOutStream, gameData);
         } else {
           saveGameUncompressed(zippedOutStream, gameData, Options.forSaveGame());
@@ -178,6 +178,16 @@ public final class GameDataManager {
     try (OutputStream bufferedOutStream = new BufferedOutputStream(out);
         OutputStream zippedOutStream = new GZIPOutputStream(bufferedOutStream)) {
       TextGameDataWriter.save(zippedOutStream, gameData);
+    }
+  }
+
+  private static boolean isTextSaveFormatEnabled() {
+    try {
+      return ClientSetting.writeTextSaveFormat.getSetting();
+    } catch (final IllegalStateException e) {
+      // The client settings framework is not initialized (headless tools, tests); the text format
+      // is an opt-in desktop feature, so fall back to the legacy format rather than fail the save.
+      return false;
     }
   }
 
