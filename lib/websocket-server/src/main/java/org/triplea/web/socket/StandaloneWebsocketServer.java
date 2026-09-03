@@ -17,7 +17,12 @@ public class StandaloneWebsocketServer extends WebSocketServer {
   }
 
   public StandaloneWebsocketServer(final GenericWebSocket genericWebSocket, final int portToOpen) {
-    super(new InetSocketAddress(portToOpen));
+    this(genericWebSocket, new InetSocketAddress(portToOpen));
+  }
+
+  public StandaloneWebsocketServer(
+      final GenericWebSocket genericWebSocket, final InetSocketAddress bindAddress) {
+    super(bindAddress);
     this.genericWebSocket = genericWebSocket;
   }
 

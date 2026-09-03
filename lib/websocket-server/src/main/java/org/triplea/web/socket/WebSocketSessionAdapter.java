@@ -56,8 +56,11 @@ public class WebSocketSessionAdapter {
   }
 
   static WebSocketSession fromWebSocket(final WebSocket webSocket) {
+    // The websocket server hands us the same underlying WebSocket for the whole lifecycle of a
+    // connection (onOpen/onMessage/onClose), but a fresh adapter each time. Store a stable id on
+    // the connection itself so callers can correlate events (needed by the relay to track members).
+    final String id = stableConnectionId(webSocket);
     return new WebSocketSession() {
-      private final String id = UUID.randomUUID().toString();
 
       @Override
       public boolean isOpen() {
@@ -84,5 +87,15 @@ public class WebSocketSessionAdapter {
         return id;
       }
     };
+  }
+
+  private static synchronized String stableConnectionId(final WebSocket webSocket) {
+    final String existing = webSocket.getAttachment();
+    if (existing != null) {
+      return existing;
+    }
+    final String id = UUID.randomUUID().toString();
+    webSocket.setAttachment(id);
+    return id;
   }
 }

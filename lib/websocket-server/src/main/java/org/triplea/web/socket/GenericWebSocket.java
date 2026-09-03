@@ -49,6 +49,12 @@ public class GenericWebSocket {
     this(webSocketMessagingBus, ip -> false, new MessageSender());
   }
 
+  public GenericWebSocket(
+      @Nonnull final WebSocketMessagingBus webSocketMessagingBus,
+      @Nonnull final Predicate<InetAddress> banCheck) {
+    this(webSocketMessagingBus, banCheck, new MessageSender());
+  }
+
   public static void init(
       final Class<?> websocketClass,
       final WebSocketMessagingBus webSocketMessagingBus,
