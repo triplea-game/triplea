@@ -32,6 +32,7 @@ import org.triplea.game.server.relay.RelayControl.MemberJoinedPayload;
 import org.triplea.game.server.relay.RelayControl.MemberLeftPayload;
 import org.triplea.game.server.relay.RelayControl.WelcomePayload;
 import org.triplea.http.client.web.socket.GenericWebSocketClient;
+import org.triplea.http.client.web.socket.WebSocket;
 
 /**
  * Common relay-client behaviour shared by the websocket {@link games.strategy.net.IClientMessenger}
@@ -101,11 +102,24 @@ abstract class RelayMessenger implements IMessenger {
             .headers(Map.of())
             .build();
     client.addListener(GameRelayEnvelope.TYPE, this::onEnvelope);
-    // A client-initiated close is a clean shutdown; an unexpected drop is auto-reconnected by the
-    // underlying connection, and a ban is surfaced via connectionTerminated.
+    // A client-initiated close is a clean shutdown; a ban is surfaced via connectionTerminated.
     client.addConnectionClosedListener(() -> shutDown = true);
     client.addConnectionTerminatedListener(
         reason -> fireError(new IOException("Connection terminated by relay: " + reason)));
+    // An unexpected drop of an established connection would otherwise be silently auto-reconnected
+    // by the underlying client (firing onReconnecting on each attempt). For round 1 we fail fast
+    // instead: the first reconnect attempt is our signal that the relay died, so surface it as an
+    // error (see onUnexpectedDisconnect) rather than reconnect silently.
+    client.addReconnectionListener(
+        new WebSocket.ReconnectionHandler() {
+          @Override
+          public void onReconnecting(final int currentAttempt) {
+            onUnexpectedDisconnect();
+          }
+
+          @Override
+          public void onReconnected() {}
+        });
     client.connect();
 
     // Queued until the socket opens, then flushed in order (see WebSocketConnection).
@@ -148,6 +162,28 @@ abstract class RelayMessenger implements IMessenger {
     } else {
       fireError(new IOException(message));
     }
+  }
+
+  /**
+   * Fires when an established relay connection drops unexpectedly (the underlying client would
+   * otherwise silently auto-reconnect). Round 1 fails fast: surface it to error listeners so L1's
+   * pending {@code invokeAndWait} latches fail rather than hang forever, mirroring the socket
+   * {@code ClientMessenger.socketError} contract, then shut down (which also stops the background
+   * reconnect). Runs on the reconnect thread; must not block on relay traffic.
+   */
+  private void onUnexpectedDisconnect() {
+    if (shutDown) {
+      return;
+    }
+    if (initLatch.getCount() > 0) {
+      // Dropped mid-handshake: unblock and fail the blocked constructor, matching
+      // onConnectionError.
+      handshakeError.compareAndSet(null, new IOException("Relay connection lost during handshake"));
+      initLatch.countDown();
+      return;
+    }
+    fireError(new IOException("Relay connection lost"));
+    shutDown();
   }
 
   /** Runs on the OkHttp reader thread. Must not block. */
@@ -340,7 +376,10 @@ abstract class RelayMessenger implements IMessenger {
 
   @Override
   public void shutDown() {
+    // Set first so the reconnection handler treats this as INTENTIONAL and never fires an error.
     shutDown = true;
-    client.close();
+    // shutdown() (not close()) also releases the OkHttp thread/connection pools, so repeated
+    // join/leave cycles do not leak resources.
+    client.shutdown();
   }
 }

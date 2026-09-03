@@ -2,6 +2,7 @@ package org.triplea.http.client.web.socket;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
+import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
 import java.util.ArrayDeque;
@@ -15,6 +16,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -126,6 +128,26 @@ class WebSocketConnection {
     final WebSocket currentClient = client;
     if (currentClient != null) {
       currentClient.close(NORMAL_CLOSURE, CLIENT_DISCONNECT_MESSAGE);
+    }
+  }
+
+  /**
+   * Closes the connection (like {@link #close()}) and additionally releases the underlying OkHttp
+   * resources: the dispatcher thread pool, the connection pool, and the response cache if present.
+   * Use this for a terminal shutdown where this connection will not be reused; {@link #close()}
+   * leaves the pools intact (e.g. for reconnects). Idempotent and safe to call more than once.
+   */
+  void shutdown() {
+    close();
+    httpClient.dispatcher().executorService().shutdown();
+    httpClient.connectionPool().evictAll();
+    final Cache cache = httpClient.cache();
+    if (cache != null) {
+      try {
+        cache.close();
+      } catch (final IOException e) {
+        log.info("Ignoring error while closing OkHttp cache during shutdown", e);
+      }
     }
   }
 

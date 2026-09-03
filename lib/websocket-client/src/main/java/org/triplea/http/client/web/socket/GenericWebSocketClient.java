@@ -121,6 +121,19 @@ public class GenericWebSocketClient implements WebSocket, WebSocketConnectionLis
     webSocketConnection.close();
   }
 
+  /**
+   * Closes the connection AND releases the underlying OkHttp resources (dispatcher thread pool,
+   * connection pool, response cache). Use this for a terminal shutdown where this client will not
+   * be reused; {@link #close()} only closes the connection and leaves the pools intact for
+   * reconnects. Idempotent and safe to call even if {@link #connect()} was never invoked.
+   */
+  public void shutdown() {
+    final WebSocketConnection connection = webSocketConnection;
+    if (connection != null) {
+      connection.shutdown();
+    }
+  }
+
   @SuppressWarnings("unchecked")
   @Override
   @Synchronized

@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
 import games.strategy.net.DefaultObjectStreamFactory;
 import games.strategy.net.IConnectionChangeListener;
@@ -33,12 +34,12 @@ import org.triplea.game.server.GameRelayServer;
  * WebsocketClientMessenger}s) over a real {@link GameRelayServer} on localhost, mirroring the
  * socket {@code MessengerIntegrationTest}.
  *
- * <p>One host+two-client trio is shared across the tests (built in {@code @BeforeAll}, listener
- * state reset per test). This is deliberate: each messenger owns a {@code GenericWebSocketClient}
- * backed by its own {@code OkHttpClient}, whose thread/connection pools cannot be released through
- * the public API, so building a fresh trio per test would leak them and eventually exhaust the test
- * JVM. Destructive cases (disconnect, ban) spin up a short-lived extra client so the shared trio
- * survives.
+ * <p>One host+two-client trio is shared across the message-routing tests (built in
+ * {@code @BeforeAll}, listener state reset per test) purely for speed; destructive cases
+ * (disconnect, ban) spin up a short-lived extra client so the shared trio survives. Resource
+ * release now works ({@code GenericWebSocketClient.shutdown()} evicts the OkHttp pools), so a fresh
+ * trio per test would no longer leak — {@link #manySequentialTriosCreatedAndTornDownWithoutHang()}
+ * exercises exactly that, many times over, to guard the fix.
  */
 class WebsocketMessengerIntegrationTest {
   // Random port to avoid clashing with a slow-to-release relay from a prior quick re-run.
@@ -209,6 +210,83 @@ class WebsocketMessengerIntegrationTest {
 
     await().atMost(TIMEOUT).untilTrue(victimErrored);
     await().atMost(TIMEOUT).until(() -> server.currentNodes().size() == 3);
+  }
+
+  @Test
+  @DisplayName("shutDown closes cleanly: isConnected() false afterward, idempotent, no throw")
+  void shutDownClosesCleanly() throws Exception {
+    final WebsocketClientMessenger transient3 =
+        new WebsocketClientMessenger(
+            RELAY_URI, GAME_ID, "shutdown-clean", new DefaultObjectStreamFactory());
+    assertThat(transient3.isConnected(), is(true));
+
+    transient3.shutDown();
+    assertThat(transient3.isConnected(), is(false));
+
+    // A second shutDown must be a safe no-op (idempotent resource release).
+    transient3.shutDown();
+    assertThat(transient3.isConnected(), is(false));
+  }
+
+  @Test
+  @DisplayName("Many sequential host+client trios create and tear down without the pool-leak hang")
+  void manySequentialTriosCreatedAndTornDownWithoutHang() {
+    // Well past the ~22-connection hang seen before GenericWebSocketClient.shutdown() released the
+    // OkHttp pools; each trio is 3 OkHttpClients, so 40 iterations exercises 120 create/teardowns.
+    assertTimeoutPreemptively(
+        Duration.ofSeconds(120),
+        () -> {
+          for (int i = 0; i < 40; i++) {
+            final String gameId = "leak-test-" + i;
+            final WebsocketServerMessenger host =
+                new WebsocketServerMessenger(
+                    RELAY_URI, gameId, "host", new DefaultObjectStreamFactory());
+            final WebsocketClientMessenger c1 =
+                new WebsocketClientMessenger(
+                    RELAY_URI, gameId, "c1", new DefaultObjectStreamFactory());
+            final WebsocketClientMessenger c2 =
+                new WebsocketClientMessenger(
+                    RELAY_URI, gameId, "c2", new DefaultObjectStreamFactory());
+
+            c1.shutDown();
+            c2.shutDown();
+            host.shutDown();
+
+            assertThat(c1.isConnected(), is(false));
+            assertThat(c2.isConnected(), is(false));
+            assertThat(host.isConnected(), is(false));
+          }
+        });
+  }
+
+  @Test
+  @DisplayName("Relay death under a connected client fires its error listener (fail-fast)")
+  void relayDeathFiresClientErrorListener() throws Exception {
+    final int deadPort = 8000 + ((int) (Math.random() * 1000));
+    final URI deadUri = URI.create("ws://localhost:" + deadPort);
+    final GameRelayServer deadRelay = new GameRelayServer(deadPort);
+    deadRelay.start();
+
+    final WebsocketServerMessenger deadHost =
+        new WebsocketServerMessenger(
+            deadUri, "relay-death", "host", new DefaultObjectStreamFactory());
+    final WebsocketClientMessenger deadClient =
+        new WebsocketClientMessenger(
+            deadUri, "relay-death", "client", new DefaultObjectStreamFactory());
+    final AtomicBoolean clientErrored = new AtomicBoolean(false);
+    deadClient.addErrorListener(cause -> clientErrored.set(true));
+
+    try {
+      // Kill the relay out from under a live connection: an unexpected drop, not a client shutDown.
+      deadRelay.stop();
+
+      await().atMost(TIMEOUT).untilTrue(clientErrored);
+      await().atMost(TIMEOUT).until(() -> !deadClient.isConnected());
+    } finally {
+      shutDownQuietly(deadClient);
+      shutDownQuietly(deadHost);
+      deadRelay.stop();
+    }
   }
 
   private static void shutDownQuietly(final RelayMessenger messenger) {
