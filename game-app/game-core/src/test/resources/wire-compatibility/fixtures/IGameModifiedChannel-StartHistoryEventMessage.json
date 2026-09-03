@@ -1,0 +1,6 @@
+{
+  "type": "games.strategy.engine.framework.IGameModifiedChannel$StartHistoryEventMessage",
+  "payload": {
+    "event": "Russia has 3 production"
+  }
+}

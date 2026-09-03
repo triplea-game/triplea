@@ -97,14 +97,21 @@ public class CryptoRandomSource implements IRandomSource {
     // lock it so the client knows that its there, but cant read it
     final VaultId localId = vault.lock(intsToBytes(localRandom));
     // ask the remote to generate numbers
-    final IRemoteRandom remote =
-        (IRemoteRandom)
-            game.getMessengers().getRemote(ServerGame.getRemoteRandomName(remotePlayer));
-    final int[] remoteNumbers = remote.generate(max, count, annotation, localId);
+    final int[] remoteNumbers =
+        game.getMessengers()
+            .invokeRemoteMessage(
+                ServerGame.getRemoteRandomName(remotePlayer),
+                new IRemoteRandom.GenerateRequest(max, count, annotation, localId),
+                IRemoteRandom.GenerateResponse.TYPE)
+            .getNumbers();
 
     // unlock ours, tell the client he can verify
     vault.unlock(localId);
-    remote.verifyNumbers();
+    game.getMessengers()
+        .invokeRemoteMessage(
+            ServerGame.getRemoteRandomName(remotePlayer),
+            new IRemoteRandom.VerifyNumbersRequest(),
+            IRemoteRandom.VerifyNumbersResponse.TYPE);
     // finally, we join the two together to get the real value
     return mix(localRandom, remoteNumbers, max);
   }

@@ -1,0 +1,10 @@
+{
+  "type": "games.strategy.engine.framework.IGameStepAdvancer$StartPlayerStepRequest",
+  "payload": {
+    "stepName": "germanCombatMove",
+    "player": {
+      "kind": "player",
+      "key": "Germans"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "type": "games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin$CannotJoinGameRequest",
+  "payload": {
+    "reason": "Taking too long to join."
+  }
+}

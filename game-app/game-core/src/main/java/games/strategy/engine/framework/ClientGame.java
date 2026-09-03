@@ -131,6 +131,7 @@ public class ClientGame extends AbstractGame {
           }
         };
     messengers.registerChannelSubscriber(gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
+    IGameModifiedChannel.registerHandlers(messengers, gameData);
     final IGameStepAdvancer gameStepAdvancer =
         (stepName, player) -> {
           if (isGameOver) {
@@ -173,9 +174,38 @@ public class ClientGame extends AbstractGame {
         };
     messengers.registerRemote(
         gameStepAdvancer, getRemoteStepAdvancerName(messengers.getLocalNode()));
+    if (!messengers.hasTypedMessageHandler(IGameStepAdvancer.StartPlayerStepRequest.TYPE)) {
+      messengers.registerMessageHandler(
+          IGameStepAdvancer.StartPlayerStepRequest.TYPE,
+          (request, implementor) -> {
+            ((IGameStepAdvancer) implementor)
+                .startPlayerStep(request.getStepName(), request.resolvePlayer(gameData));
+            return new IGameStepAdvancer.StartPlayerStepResponse();
+          });
+    }
     for (final GamePlayer player : this.gamePlayers.keySet()) {
       final IRemoteRandom remoteRandom = new RemoteRandom(this);
       messengers.registerRemote(remoteRandom, ServerGame.getRemoteRandomName(player));
+    }
+    if (!messengers.hasTypedMessageHandler(IRemoteRandom.GenerateRequest.TYPE)) {
+      messengers.registerMessageHandler(
+          IRemoteRandom.GenerateRequest.TYPE,
+          (request, implementor) ->
+              new IRemoteRandom.GenerateResponse(
+                  ((IRemoteRandom) implementor)
+                      .generate(
+                          request.getMax(),
+                          request.getCount(),
+                          request.getAnnotation(),
+                          request.getServerVaultId())));
+    }
+    if (!messengers.hasTypedMessageHandler(IRemoteRandom.VerifyNumbersRequest.TYPE)) {
+      messengers.registerMessageHandler(
+          IRemoteRandom.VerifyNumbersRequest.TYPE,
+          (request, implementor) -> {
+            ((IRemoteRandom) implementor).verifyNumbers();
+            return new IRemoteRandom.VerifyNumbersResponse();
+          });
     }
   }
 
@@ -226,8 +256,13 @@ public class ClientGame extends AbstractGame {
 
   @Override
   public void saveGame(final Path f) {
-    final IServerRemote server = (IServerRemote) messengers.getRemote(ServerGame.SERVER_REMOTE);
-    final byte[] bytes = server.getSavedGame();
+    final byte[] bytes =
+        messengers
+            .invokeRemoteMessage(
+                ServerGame.SERVER_REMOTE,
+                new IServerRemote.GetSavedGameRequest(),
+                IServerRemote.GetSavedGameResponse.TYPE)
+            .getSavedGame();
     try (OutputStream fout = Files.newOutputStream(f)) {
       fout.write(bytes);
     } catch (final IOException e) {

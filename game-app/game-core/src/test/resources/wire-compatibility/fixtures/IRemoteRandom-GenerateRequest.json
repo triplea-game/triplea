@@ -1,0 +1,8 @@
+{
+  "type": "games.strategy.engine.random.IRemoteRandom$GenerateRequest",
+  "payload": {
+    "max": 6,
+    "count": 2,
+    "annotation": "combat roll"
+  }
+}

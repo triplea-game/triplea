@@ -113,6 +113,7 @@ public class HistorySynchronizer {
     this.game
         .getMessengers()
         .registerChannelSubscriber(gameModifiedChannelListener, IGame.GAME_MODIFICATION_CHANNEL);
+    IGameModifiedChannel.registerHandlers(this.game.getMessengers(), gameData);
   }
 
   public void deactivate() {

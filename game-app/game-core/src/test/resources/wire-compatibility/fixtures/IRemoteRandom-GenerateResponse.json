@@ -1,0 +1,6 @@
+{
+  "type": "games.strategy.engine.random.IRemoteRandom$GenerateResponse",
+  "payload": {
+    "numbers": [1, 2, 3]
+  }
+}

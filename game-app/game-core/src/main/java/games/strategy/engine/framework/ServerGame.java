@@ -32,6 +32,7 @@ import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
+import games.strategy.engine.message.wire.EntityRef;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRemoteRandom;
@@ -187,6 +188,7 @@ public class ServerGame extends AbstractGame {
           public void shutDown() {}
         };
     messengers.registerChannelSubscriber(gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
+    IGameModifiedChannel.registerHandlers(messengers, gameData);
     setupDelegateMessaging(data);
     randomStats = new RandomStats(messengers);
     // Import dice stats from history if there is any (e.g. loading a saved game).
@@ -194,6 +196,12 @@ public class ServerGame extends AbstractGame {
     final IServerRemote serverRemote =
         () -> GameDataWriter.writeToBytes(data, delegateExecutionManager);
     messengers.registerRemote(serverRemote, SERVER_REMOTE);
+    if (!messengers.hasTypedMessageHandler(IServerRemote.GetSavedGameRequest.TYPE)) {
+      messengers.registerMessageHandler(
+          IServerRemote.GetSavedGameRequest.TYPE,
+          (request, implementor) ->
+              new IServerRemote.GetSavedGameResponse(((IServerRemote) implementor).getSavedGame()));
+    }
   }
 
   private void importDiceStats(final HistoryNode node) {
@@ -388,7 +396,8 @@ public class ServerGame extends AbstractGame {
     // shutdown
     try {
       delegateExecutionManager.setGameOver();
-      getGameModifiedBroadcaster().shutDown();
+      messengers.sendChannelMessage(
+          IGame.GAME_MODIFICATION_CHANNEL, new IGameModifiedChannel.ShutDownMessage());
       randomStats.shutDown();
       messengers.unregisterChannelSubscriber(gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
       messengers.unregisterRemote(SERVER_REMOTE);
@@ -618,10 +627,11 @@ public class ServerGame extends AbstractGame {
     } else {
       // a remote player
       final INode destination = playerManager.getNode(gamePlayer.getName());
-      final IGameStepAdvancer advancer =
-          (IGameStepAdvancer)
-              messengers.getRemote(ClientGame.getRemoteStepAdvancerName(destination));
-      advancer.startPlayerStep(getCurrentStep().getName(), gamePlayer);
+      messengers.invokeRemoteMessage(
+          ClientGame.getRemoteStepAdvancerName(destination),
+          new IGameStepAdvancer.StartPlayerStepRequest(
+              getCurrentStep().getName(), EntityRef.of(gamePlayer)),
+          IGameStepAdvancer.StartPlayerStepResponse.TYPE);
     }
   }
 
@@ -633,8 +643,15 @@ public class ServerGame extends AbstractGame {
     final int round = gameData.getSequence().getRound();
     final GamePlayer gamePlayer = currentStep.getPlayerId();
     gameData.fireGameDataEvent(GameDataEvent.GAME_STEP_CHANGED);
-    getGameModifiedBroadcaster()
-        .stepChanged(stepName, delegateName, gamePlayer, round, displayName, loadedFromSavedGame);
+    messengers.sendChannelMessage(
+        IGame.GAME_MODIFICATION_CHANNEL,
+        new IGameModifiedChannel.StepChangedMessage(
+            stepName,
+            delegateName,
+            gamePlayer == null ? null : EntityRef.of(gamePlayer),
+            round,
+            displayName,
+            loadedFromSavedGame));
   }
 
   private String isOrAre(String playerName) {

@@ -1,0 +1,4 @@
+{
+  "type": "games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin$CannotJoinGameResponse",
+  "payload": {}
+}

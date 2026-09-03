@@ -671,10 +671,44 @@ then check your firewall rules.""",
     public boolean isGameStarted(final INode newNode) {
       if (serverLauncher != null) {
         final RemoteName remoteName = getObserverWaitingToStartName(newNode);
+        // Blocking variant: joinGame must not return until the observer is ready, so let any
+        // failure propagate to the caller as the reflective proxy did.
         final IObserverWaitingToJoin observerWaitingToJoinBlocking =
-            (IObserverWaitingToJoin) messengers.getRemote(remoteName);
+            new IObserverWaitingToJoin() {
+              @Override
+              public void joinGame(final byte[] gameData, final Map<String, INode> players) {
+                messengers.invokeRemoteMessage(
+                    remoteName,
+                    new IObserverWaitingToJoin.JoinGameRequest(gameData, players),
+                    IObserverWaitingToJoin.JoinGameResponse.TYPE);
+              }
+
+              @Override
+              public void cannotJoinGame(final String reason) {
+                messengers.invokeRemoteMessage(
+                    remoteName,
+                    new IObserverWaitingToJoin.CannotJoinGameRequest(reason),
+                    IObserverWaitingToJoin.CannotJoinGameResponse.TYPE);
+              }
+            };
+        // Non-blocking variant: cannotJoinGame is best-effort notification, so swallow errors
+        // rather than disrupt the caller (mirrors the old ignore-results proxy).
         final IObserverWaitingToJoin observerWaitingToJoinNonBlocking =
-            (IObserverWaitingToJoin) messengers.getRemote(remoteName, true);
+            new IObserverWaitingToJoin() {
+              @Override
+              public void joinGame(final byte[] gameData, final Map<String, INode> players) {
+                observerWaitingToJoinBlocking.joinGame(gameData, players);
+              }
+
+              @Override
+              public void cannotJoinGame(final String reason) {
+                try {
+                  observerWaitingToJoinBlocking.cannotJoinGame(reason);
+                } catch (final RuntimeException e) {
+                  log.warn("Failed to notify observer it could not join", e);
+                }
+              }
+            };
         serverLauncher.addObserver(
             observerWaitingToJoinBlocking, observerWaitingToJoinNonBlocking, newNode);
         return true;

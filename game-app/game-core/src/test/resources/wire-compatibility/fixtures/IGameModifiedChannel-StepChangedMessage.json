@@ -1,0 +1,14 @@
+{
+  "type": "games.strategy.engine.framework.IGameModifiedChannel$StepChangedMessage",
+  "payload": {
+    "stepName": "germanCombatMove",
+    "delegateName": "move",
+    "player": {
+      "kind": "player",
+      "key": "Germans"
+    },
+    "round": 1,
+    "displayName": "Combat Move",
+    "loadedFromSavedGame": false
+  }
+}

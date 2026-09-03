@@ -1,0 +1,6 @@
+{
+  "type": "games.strategy.engine.framework.IServerRemote$GetSavedGameResponse",
+  "payload": {
+    "savedGame": [1, 2, 3]
+  }
+}
