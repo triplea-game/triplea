@@ -20,11 +20,13 @@ public class RandomStats implements IRandomStats {
   public RandomStats(final Messengers messengers) {
     this.messengers = messengers;
     messengers.registerRemote(this, RANDOM_STATS_REMOTE_NAME);
-    messengers.registerMessageHandler(
-        IRandomStats.GetRandomStatsRequest.TYPE,
-        (request, implementor) ->
-            IRandomStats.GetRandomStatsResponse.of(
-                ((IRandomStats) implementor).getRandomStats(request.getDiceSides())));
+    if (!messengers.hasTypedMessageHandler(IRandomStats.GetRandomStatsRequest.TYPE)) {
+      messengers.registerMessageHandler(
+          IRandomStats.GetRandomStatsRequest.TYPE,
+          (request, implementor) ->
+              IRandomStats.GetRandomStatsResponse.of(
+                  ((IRandomStats) implementor).getRandomStats(request.getDiceSides())));
+    }
   }
 
   public void shutDown() {

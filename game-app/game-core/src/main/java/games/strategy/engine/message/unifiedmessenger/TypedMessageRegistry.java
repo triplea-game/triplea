@@ -31,6 +31,16 @@ public final class TypedMessageRegistry {
     }
   }
 
+  /**
+   * Reports whether a handler is already registered for the given message type. Call sites guard
+   * their registration with this so a per-game object rebuilt for a later game on the same
+   * session-scoped registry re-registers the same type harmlessly instead of tripping {@link
+   * #register}'s duplicate check.
+   */
+  public boolean hasHandler(final MessageType<?> messageType) {
+    return handlers.containsKey(messageType.getMessageTypeId());
+  }
+
   @SuppressWarnings("unchecked")
   Optional<TypedMessageHandler<WebSocketMessage>> handlerFor(final WebSocketMessage message) {
     return Optional.ofNullable(

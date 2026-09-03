@@ -77,6 +77,17 @@ public class Messengers implements IMessenger, IRemoteMessenger, IChannelMesseng
     unifiedMessenger.getTypedMessageRegistry().register(messageType, handler);
   }
 
+  /**
+   * Reports whether a handler is already registered for the given typed message. The registry lives
+   * on the session-scoped {@link UnifiedMessenger}, which outlives any one game, so per-game
+   * objects guard their registration with this to stay idempotent across a second game on the same
+   * session. A mock-messengers test instance carries no {@link UnifiedMessenger} and so never has a
+   * handler.
+   */
+  public boolean hasTypedMessageHandler(final MessageType<?> type) {
+    return unifiedMessenger != null && unifiedMessenger.getTypedMessageRegistry().hasHandler(type);
+  }
+
   /** Fire-and-forget broadcast of a typed message to every subscriber of the given channel. */
   public void sendChannelMessage(final RemoteName channel, final WebSocketMessage message) {
     requireUnifiedMessenger();

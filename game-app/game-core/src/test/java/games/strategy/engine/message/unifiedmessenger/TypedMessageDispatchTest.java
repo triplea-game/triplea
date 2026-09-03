@@ -5,6 +5,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
 import games.strategy.engine.message.ChannelMessenger;
@@ -16,6 +18,7 @@ import games.strategy.engine.message.RemoteMethodCallResults;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IServerMessenger;
+import games.strategy.net.Messengers;
 import games.strategy.net.TestServerMessenger;
 import java.io.Serial;
 import java.io.Serializable;
@@ -137,6 +140,53 @@ class TypedMessageDispatchTest {
       assertThat(handlerThread.get(), is(not(Thread.currentThread().getName())));
     } finally {
       shutdown(server, client);
+    }
+  }
+
+  @Test
+  void guardedRegistrationIsIdempotentAcrossGamesAndStillDispatches() throws Exception {
+    IServerMessenger server = null;
+    ClientMessenger client = null;
+    try {
+      server = new TestServerMessenger();
+      server.setAcceptNewConnections(true);
+      final int serverPort = server.getLocalNode().getSocketAddress().getPort();
+      client = new ClientMessenger("localhost", serverPort, "client", SystemId.of("system-id"));
+
+      final Messengers serverMessengers = new Messengers(server);
+      final Messengers clientMessengers = new Messengers(client);
+      serverMessengers.registerRemote((EchoRemote) () -> {}, ECHO);
+
+      // Two sequential games on one session share this registry, so the guarded call-site path must
+      // register the first time and no-op the second, never tripping the duplicate check.
+      registerEchoHandlerGuarded(serverMessengers);
+      assertDoesNotThrow(() -> registerEchoHandlerGuarded(serverMessengers));
+
+      final EchoResponse response =
+          assertTimeoutPreemptively(
+              Duration.ofSeconds(10),
+              () ->
+                  clientMessengers.invokeRemoteMessage(
+                      ECHO, new EchoRequest("hello"), EchoResponse.TYPE));
+      assertThat(response.value, is("hello-ack"));
+
+      // Backstop intact: an unguarded double registration of the same type still throws, so a real
+      // fan-out collision surfaces during development.
+      serverMessengers.registerMessageHandler(OrderMessage.TYPE, (message, implementor) -> null);
+      assertThrows(
+          IllegalStateException.class,
+          () ->
+              serverMessengers.registerMessageHandler(
+                  OrderMessage.TYPE, (message, implementor) -> null));
+    } finally {
+      shutdown(server, client);
+    }
+  }
+
+  private static void registerEchoHandlerGuarded(final Messengers messengers) {
+    if (!messengers.hasTypedMessageHandler(EchoRequest.TYPE)) {
+      messengers.registerMessageHandler(
+          EchoRequest.TYPE, (request, implementor) -> new EchoResponse(request.value + "-ack"));
     }
   }
 
