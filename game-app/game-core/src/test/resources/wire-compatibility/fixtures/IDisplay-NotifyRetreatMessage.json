@@ -1,0 +1,9 @@
+{
+  "type": "games.strategy.engine.display.IDisplay$NotifyRetreatMessage",
+  "payload": {
+    "shortMessage": "Retreat",
+    "message": "Germans retreat",
+    "step": "Germans retreat",
+    "retreatingPlayerName": "Germans"
+  }
+}

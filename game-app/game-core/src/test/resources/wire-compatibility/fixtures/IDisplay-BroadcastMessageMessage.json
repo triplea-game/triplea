@@ -1,0 +1,7 @@
+{
+  "type": "games.strategy.engine.display.IDisplay$BroadcastMessageMessage",
+  "payload": {
+    "message": "The battle has begun",
+    "title": "Battle"
+  }
+}

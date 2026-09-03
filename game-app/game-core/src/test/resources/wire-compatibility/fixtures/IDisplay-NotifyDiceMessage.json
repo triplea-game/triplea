@@ -1,0 +1,16 @@
+{
+  "type": "games.strategy.engine.display.IDisplay$NotifyDiceMessage",
+  "payload": {
+    "stepName": "Germans Fire",
+    "diceRollData": [
+      {
+        "type": "HIT",
+        "rolledAt": 1,
+        "value": 0
+      }
+    ],
+    "diceRollHits": 1,
+    "diceRollExpectedHits": 1.5,
+    "playerName": "Germans"
+  }
+}

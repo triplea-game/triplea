@@ -1,0 +1,6 @@
+{
+  "type": "games.strategy.engine.message.wire.OpaqueBlob",
+  "payload": {
+    "data": "rO0ABXQAG3dpcmUtY29tcGF0LWZpeHR1cmUtcGF5bG9hZA=="
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "games.strategy.engine.chat.IChatChannel$SpeakAddedMessage",
+  "payload": {
+    "chatParticipant": {
+      "userName": "Tester",
+      "playerChatId": "chat-id-123",
+      "isModerator": false,
+      "status": "AFK"
+    }
+  }
+}

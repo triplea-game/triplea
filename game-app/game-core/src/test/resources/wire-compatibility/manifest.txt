@@ -1,0 +1,31 @@
+# Wire-compatibility fixture corpus (see docs/development/networking.md).
+#
+# Each line names a fixture file under wire-compatibility/fixtures/. Every fixture
+# is a stored example of a wire payload that a released client version put on the
+# wire; WireCompatibilityFixtureTest asserts each one still deserializes into its
+# current class and re-serializes as a superset (additive evolution stays green;
+# removing, renaming, or retyping a field goes red).
+#
+# This manifest is the required list, the way the op-code CSV once was:
+#   - Adding coverage    = add a fixture file + add its name here.
+#   - Dropping coverage  = delete the fixture file + delete its line here. Both
+#                          edits show in the diff, so retiring a guarantee is a
+#                          deliberate, reviewable act and cannot be rubber-stamped.
+# A missing file for a listed line, or a fixture file no listed line covers, fails
+# the test.
+EntityRef-Territory.json
+EntityRef-Unit.json
+OpaqueBlob.json
+IChatChannel-ChatMessage.json
+IChatChannel-SlapMessage.json
+IChatChannel-SpeakAddedMessage.json
+IChatChannel-SpeakerRemovedMessage.json
+IChatChannel-PingMessage.json
+IChatChannel-StatusChangedMessage.json
+IDisplay-BroadcastMessageMessage.json
+IDisplay-BombingResultsMessage.json
+IDisplay-NotifyRetreatMessage.json
+IDisplay-NotifyUnitsRetreatingMessage.json
+IDisplay-NotifyDiceMessage.json
+IDisplay-GoToBattleStepMessage.json
+IDisplay-DisplayShutdownMessage.json

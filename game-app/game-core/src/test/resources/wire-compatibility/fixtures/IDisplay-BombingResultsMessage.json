@@ -1,0 +1,14 @@
+{
+  "type": "games.strategy.engine.display.IDisplay$BombingResultsMessage",
+  "payload": {
+    "battleId": "11111111-1111-1111-1111-111111111111",
+    "diceData": [
+      {
+        "type": "HIT",
+        "rolledAt": 1,
+        "value": 2
+      }
+    ],
+    "cost": 5
+  }
+}

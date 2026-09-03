@@ -1,0 +1,9 @@
+{
+  "type": "games.strategy.engine.chat.IChatChannel$StatusChangedMessage",
+  "payload": {
+    "userName": {
+      "value": "Tester"
+    },
+    "status": "Looking for a game"
+  }
+}

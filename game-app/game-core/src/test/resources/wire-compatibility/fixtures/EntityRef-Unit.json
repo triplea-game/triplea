@@ -1,0 +1,7 @@
+{
+  "type": "games.strategy.engine.message.wire.EntityRef",
+  "payload": {
+    "kind": "unit",
+    "key": "55555555-5555-5555-5555-555555555555"
+  }
+}

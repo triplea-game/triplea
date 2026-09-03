@@ -1,0 +1,6 @@
+{
+  "type": "games.strategy.engine.chat.IChatChannel$SpeakerRemovedMessage",
+  "payload": {
+    "userName": "Tester"
+  }
+}

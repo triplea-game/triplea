@@ -1,0 +1,8 @@
+{
+  "type": "games.strategy.engine.chat.IChatChannel$SlapMessage",
+  "payload": {
+    "userName": {
+      "value": "Tester"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "type": "games.strategy.engine.display.IDisplay$GoToBattleStepMessage",
+  "payload": {
+    "battleStepUuid": "44444444-4444-4444-4444-444444444444",
+    "battleStepName": "Germans Fire"
+  }
+}

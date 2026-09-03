@@ -1,0 +1,6 @@
+{
+  "type": "games.strategy.engine.chat.IChatChannel$ChatMessage",
+  "payload": {
+    "message": "hello world"
+  }
+}
