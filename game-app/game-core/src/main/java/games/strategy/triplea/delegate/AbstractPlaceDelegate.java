@@ -45,6 +45,7 @@ import javax.annotation.Nullable;
 import org.jetbrains.annotations.Nls;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.sound.ISound;
 import org.triplea.sound.SoundPath;
 import org.triplea.util.Tuple;
 
@@ -285,15 +286,15 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
 
     // play a sound
     if (units.stream().anyMatch(Matches.unitIsInfrastructure())) {
-      bridge
-          .getSoundChannelBroadcaster()
-          .playSoundForAll(SoundPath.CLIP_PLACED_INFRASTRUCTURE, player);
+      bridge.sendSoundMessage(
+          new ISound.PlaySoundForAllMessage(SoundPath.CLIP_PLACED_INFRASTRUCTURE, player));
     } else if (units.stream().anyMatch(Matches.unitIsSea())) {
-      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_SEA, player);
+      bridge.sendSoundMessage(new ISound.PlaySoundForAllMessage(SoundPath.CLIP_PLACED_SEA, player));
     } else if (units.stream().anyMatch(Matches.unitIsAir())) {
-      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_AIR, player);
+      bridge.sendSoundMessage(new ISound.PlaySoundForAllMessage(SoundPath.CLIP_PLACED_AIR, player));
     } else {
-      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_LAND, player);
+      bridge.sendSoundMessage(
+          new ISound.PlaySoundForAllMessage(SoundPath.CLIP_PLACED_LAND, player));
     }
     return Optional.empty();
   }

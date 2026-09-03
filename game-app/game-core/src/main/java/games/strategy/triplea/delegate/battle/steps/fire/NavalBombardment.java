@@ -27,6 +27,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.triplea.java.RemoveOnNextMajorRelease;
+import org.triplea.sound.ISound;
 import org.triplea.sound.SoundPath;
 
 @AllArgsConstructor
@@ -70,9 +71,9 @@ public class NavalBombardment implements BattleStep {
     final List<BattleStep> steps = getSteps();
 
     if (!steps.isEmpty()) {
-      bridge
-          .getSoundChannelBroadcaster()
-          .playSoundForAll(SoundPath.CLIP_BATTLE_BOMBARD, battleState.getPlayer(side));
+      bridge.sendSoundMessage(
+          new ISound.PlaySoundForAllMessage(
+              SoundPath.CLIP_BATTLE_BOMBARD, battleState.getPlayer(side)));
 
       // steps go in reverse order on the stack
       Collections.reverse(steps);

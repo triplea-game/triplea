@@ -69,3 +69,5 @@ IClientChannel-DoneSelectingPlayersMessage.json
 IClientChannel-GameResetMessage.json
 IServerReady-ClientReadyRequest.json
 IServerReady-ClientReadyResponse.json
+ISound-PlaySoundForAllMessage.json
+ISound-PlaySoundToPlayersMessage.json

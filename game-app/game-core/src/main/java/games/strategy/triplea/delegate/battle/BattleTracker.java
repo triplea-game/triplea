@@ -925,19 +925,20 @@ public class BattleTracker implements Serializable {
       changeTracker.addToConquered(territory);
     }
     // play a sound
-    ISound broadcaster = bridge.getSoundChannelBroadcaster();
+    final String clip;
     if (territory.isWater()) {
       // should probably see if there is something actually happening for water
-      broadcaster.playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_SEA, gamePlayer);
+      clip = SoundPath.CLIP_TERRITORY_CAPTURE_SEA;
     } else if (territoryAttachment.getCapital().isPresent()) {
-      broadcaster.playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL, gamePlayer);
+      clip = SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL;
     } else if (blitzed.contains(territory)
         && arrivedUnits != null
         && arrivedUnits.stream().anyMatch(Matches.unitCanBlitz())) {
-      broadcaster.playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_BLITZ, gamePlayer);
+      clip = SoundPath.CLIP_TERRITORY_CAPTURE_BLITZ;
     } else {
-      broadcaster.playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_LAND, gamePlayer);
+      clip = SoundPath.CLIP_TERRITORY_CAPTURE_LAND;
     }
+    bridge.sendSoundMessage(new ISound.PlaySoundForAllMessage(clip, gamePlayer));
   }
 
   /**

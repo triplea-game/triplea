@@ -194,6 +194,26 @@ public abstract class AbstractGame implements IGame {
     }
     if (soundChannel != null) {
       messengers.registerChannelSubscriber(soundChannel, getSoundChannel());
+
+      // Register once against the session-scoped registry: the handler dispatches to whatever
+      // sound channel the endpoint currently holds, so a channel swap or a later game reuses it
+      // rather than re-registering.
+      if (!messengers.hasTypedMessageHandler(ISound.PlaySoundForAllMessage.TYPE)) {
+        messengers.registerMessageHandler(
+            ISound.PlaySoundForAllMessage.TYPE,
+            (message, implementor) -> {
+              message.accept((ISound) implementor, gameData);
+              return null;
+            });
+      }
+      if (!messengers.hasTypedMessageHandler(ISound.PlaySoundToPlayersMessage.TYPE)) {
+        messengers.registerMessageHandler(
+            ISound.PlaySoundToPlayersMessage.TYPE,
+            (message, implementor) -> {
+              message.accept((ISound) implementor, gameData);
+              return null;
+            });
+      }
     }
     sound = soundChannel;
   }

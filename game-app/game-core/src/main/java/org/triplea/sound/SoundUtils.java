@@ -25,21 +25,17 @@ public final class SoundUtils {
       if ((!attackingUnits.isEmpty() && attackingUnits.stream().allMatch(Matches.unitCanEvade()))
           || (attackingUnits.stream().anyMatch(Matches.unitCanEvade())
               && defendingUnits.stream().anyMatch(Matches.unitCanEvade()))) {
-        bridge
-            .getSoundChannelBroadcaster()
-            .playSoundForAll(SoundPath.CLIP_BATTLE_SEA_SUBS, attacker);
+        playSoundForAll(bridge, SoundPath.CLIP_BATTLE_SEA_SUBS, attacker);
       } else {
-        bridge
-            .getSoundChannelBroadcaster()
-            .playSoundForAll(SoundPath.CLIP_BATTLE_SEA_NORMAL, attacker);
+        playSoundForAll(bridge, SoundPath.CLIP_BATTLE_SEA_NORMAL, attacker);
       }
     } else if (!attackingUnits.isEmpty()
         && attackingUnits.stream().allMatch(Matches.unitIsAir())
         && !defendingUnits.isEmpty()
         && defendingUnits.stream().allMatch(Matches.unitIsAir())) {
-      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR, attacker);
+      playSoundForAll(bridge, SoundPath.CLIP_BATTLE_AIR, attacker);
     } else {
-      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_LAND, attacker);
+      playSoundForAll(bridge, SoundPath.CLIP_BATTLE_LAND, attacker);
     }
   }
 
@@ -53,31 +49,25 @@ public final class SoundUtils {
       final IDelegateBridge bridge) {
     if (aaType.equals("AA")) {
       if (isHit) {
-        bridge
-            .getSoundChannelBroadcaster()
-            .playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT, firingPlayer);
+        playSoundForAll(bridge, SoundPath.CLIP_BATTLE_AA_HIT, firingPlayer);
       } else {
-        bridge
-            .getSoundChannelBroadcaster()
-            .playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS, firingPlayer);
+        playSoundForAll(bridge, SoundPath.CLIP_BATTLE_AA_MISS, firingPlayer);
       }
     } else {
       if (isHit) {
-        bridge
-            .getSoundChannelBroadcaster()
-            .playSoundForAll(
-                SoundPath.CLIP_BATTLE_X_PREFIX
-                    + aaType.toLowerCase(Locale.ROOT)
-                    + SoundPath.CLIP_BATTLE_X_HIT,
-                firingPlayer);
+        playSoundForAll(
+            bridge,
+            SoundPath.CLIP_BATTLE_X_PREFIX
+                + aaType.toLowerCase(Locale.ROOT)
+                + SoundPath.CLIP_BATTLE_X_HIT,
+            firingPlayer);
       } else {
-        bridge
-            .getSoundChannelBroadcaster()
-            .playSoundForAll(
-                SoundPath.CLIP_BATTLE_X_PREFIX
-                    + aaType.toLowerCase(Locale.ROOT)
-                    + SoundPath.CLIP_BATTLE_X_MISS,
-                firingPlayer);
+        playSoundForAll(
+            bridge,
+            SoundPath.CLIP_BATTLE_X_PREFIX
+                + aaType.toLowerCase(Locale.ROOT)
+                + SoundPath.CLIP_BATTLE_X_MISS,
+            firingPlayer);
       }
     }
   }
@@ -90,28 +80,18 @@ public final class SoundUtils {
       final IDelegateBridge bridge) {
     switch (retreatType) {
       case SUBS:
-        bridge
-            .getSoundChannelBroadcaster()
-            .playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_SUBMERGE, attacker);
+        playSoundForAll(bridge, SoundPath.CLIP_BATTLE_RETREAT_SUBMERGE, attacker);
         break;
       case PLANES:
-        bridge
-            .getSoundChannelBroadcaster()
-            .playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR, attacker);
+        playSoundForAll(bridge, SoundPath.CLIP_BATTLE_RETREAT_AIR, attacker);
         break;
       default:
         if (units.stream().anyMatch(Matches.unitIsSea())) {
-          bridge
-              .getSoundChannelBroadcaster()
-              .playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_SEA, attacker);
+          playSoundForAll(bridge, SoundPath.CLIP_BATTLE_RETREAT_SEA, attacker);
         } else if (units.stream().anyMatch(Matches.unitIsLand())) {
-          bridge
-              .getSoundChannelBroadcaster()
-              .playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_LAND, attacker);
+          playSoundForAll(bridge, SoundPath.CLIP_BATTLE_RETREAT_LAND, attacker);
         } else {
-          bridge
-              .getSoundChannelBroadcaster()
-              .playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR, attacker);
+          playSoundForAll(bridge, SoundPath.CLIP_BATTLE_RETREAT_AIR, attacker);
         }
     }
   }
@@ -127,20 +107,19 @@ public final class SoundUtils {
       final IDelegateBridge bridge) {
     if (isWater) {
       if (!attackingUnits.isEmpty() && attackingUnits.stream().allMatch(Matches.unitIsAir())) {
-        bridge
-            .getSoundChannelBroadcaster()
-            .playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, attacker);
+        playSoundForAll(bridge, SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, attacker);
       } else {
-        bridge
-            .getSoundChannelBroadcaster()
-            .playSoundForAll(SoundPath.CLIP_BATTLE_SEA_SUCCESSFUL, attacker);
+        playSoundForAll(bridge, SoundPath.CLIP_BATTLE_SEA_SUCCESSFUL, attacker);
       }
     } else {
       if (!attackingUnits.isEmpty() && attackingUnits.stream().allMatch(Matches.unitIsAir())) {
-        bridge
-            .getSoundChannelBroadcaster()
-            .playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, attacker);
+        playSoundForAll(bridge, SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, attacker);
       }
     }
+  }
+
+  private static void playSoundForAll(
+      final IDelegateBridge bridge, final String clipName, final GamePlayer gamePlayer) {
+    bridge.sendSoundMessage(new ISound.PlaySoundForAllMessage(clipName, gamePlayer));
   }
 }

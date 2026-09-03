@@ -1,0 +1,10 @@
+{
+  "type": "org.triplea.sound.ISound$PlaySoundForAllMessage",
+  "payload": {
+    "clipName": "battle_aa_hit",
+    "gamePlayer": {
+      "kind": "player",
+      "key": "Germans"
+    }
+  }
+}

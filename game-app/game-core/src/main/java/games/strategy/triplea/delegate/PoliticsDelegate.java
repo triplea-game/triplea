@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.sound.ISound;
 import org.triplea.sound.SoundPath;
 
 /** Responsible allowing players to perform politicalActions. */
@@ -307,9 +308,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    * @param paa the political action attachment that just failed.
    */
   private void notifyFailure(final PoliticalActionAttachment paa) {
-    bridge
-        .getSoundChannelBroadcaster()
-        .playSoundForAll(SoundPath.CLIP_POLITICAL_ACTION_FAILURE, player);
+    bridge.sendSoundMessage(
+        new ISound.PlaySoundForAllMessage(SoundPath.CLIP_POLITICAL_ACTION_FAILURE, player));
     final String transcriptText =
         bridge.getGamePlayer().getName()
             + " fails on action: "
@@ -331,9 +331,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    * @param paa the political action attachment that just succeeded.
    */
   private void notifySuccess(final PoliticalActionAttachment paa) {
-    bridge
-        .getSoundChannelBroadcaster()
-        .playSoundForAll(SoundPath.CLIP_POLITICAL_ACTION_SUCCESSFUL, player);
+    bridge.sendSoundMessage(
+        new ISound.PlaySoundForAllMessage(SoundPath.CLIP_POLITICAL_ACTION_SUCCESSFUL, player));
     bridge
         .getResourceLoader()
         .ifPresent(

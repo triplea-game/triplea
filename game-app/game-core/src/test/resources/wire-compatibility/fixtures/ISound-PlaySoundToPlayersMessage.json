@@ -1,0 +1,19 @@
+{
+  "type": "org.triplea.sound.ISound$PlaySoundToPlayersMessage",
+  "payload": {
+    "clipName": "triggered_victory",
+    "playersToSendTo": [
+      {
+        "kind": "player",
+        "key": "Germans"
+      }
+    ],
+    "butNotThesePlayers": [
+      {
+        "kind": "player",
+        "key": "Russians"
+      }
+    ],
+    "includeObservers": true
+  }
+}

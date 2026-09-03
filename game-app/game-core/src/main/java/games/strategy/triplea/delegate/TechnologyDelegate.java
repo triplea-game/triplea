@@ -34,6 +34,7 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.sound.ISound;
 import org.triplea.sound.SoundPath;
 
 /**
@@ -282,13 +283,11 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     if (!advances.isEmpty()) {
       bridge.getHistoryWriter().startEvent(transcriptText);
       // play a sound
-      bridge
-          .getSoundChannelBroadcaster()
-          .playSoundForAll(SoundPath.CLIP_TECHNOLOGY_SUCCESSFUL, player);
+      bridge.sendSoundMessage(
+          new ISound.PlaySoundForAllMessage(SoundPath.CLIP_TECHNOLOGY_SUCCESSFUL, player));
     } else {
-      bridge
-          .getSoundChannelBroadcaster()
-          .playSoundForAll(SoundPath.CLIP_TECHNOLOGY_FAILURE, player);
+      bridge.sendSoundMessage(
+          new ISound.PlaySoundForAllMessage(SoundPath.CLIP_TECHNOLOGY_FAILURE, player));
     }
     return new TechResults(random, remainder, techHits, advancesAsString);
   }

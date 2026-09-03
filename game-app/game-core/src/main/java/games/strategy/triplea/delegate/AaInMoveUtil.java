@@ -32,6 +32,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
+import org.triplea.sound.ISound;
 import org.triplea.sound.SoundPath;
 
 /** Code to fire AA guns while in combat and non combat move. */
@@ -148,19 +149,15 @@ class AaInMoveUtil implements Serializable {
                 GamePlayer defender = findDefender(getData(), currentPossibleAa, territory);
                 if (hitCount == 0) {
                   if (currentTypeAa.equals("AA")) {
-                    AaInMoveUtil.this
-                        .bridge
-                        .getSoundChannelBroadcaster()
-                        .playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS, defender);
+                    AaInMoveUtil.this.bridge.sendSoundMessage(
+                        new ISound.PlaySoundForAllMessage(SoundPath.CLIP_BATTLE_AA_MISS, defender));
                   } else {
-                    AaInMoveUtil.this
-                        .bridge
-                        .getSoundChannelBroadcaster()
-                        .playSoundForAll(
+                    AaInMoveUtil.this.bridge.sendSoundMessage(
+                        new ISound.PlaySoundForAllMessage(
                             SoundPath.CLIP_BATTLE_X_PREFIX
                                 + currentTypeAa.toLowerCase(Locale.ROOT)
                                 + SoundPath.CLIP_BATTLE_X_MISS,
-                            defender);
+                            defender));
                   }
                   AaInMoveUtil.this
                       .bridge
@@ -170,19 +167,15 @@ class AaInMoveUtil implements Serializable {
                           "No " + currentTypeAa + " hits in " + territory.getName());
                 } else {
                   if (currentTypeAa.equals("AA")) {
-                    AaInMoveUtil.this
-                        .bridge
-                        .getSoundChannelBroadcaster()
-                        .playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT, defender);
+                    AaInMoveUtil.this.bridge.sendSoundMessage(
+                        new ISound.PlaySoundForAllMessage(SoundPath.CLIP_BATTLE_AA_HIT, defender));
                   } else {
-                    AaInMoveUtil.this
-                        .bridge
-                        .getSoundChannelBroadcaster()
-                        .playSoundForAll(
+                    AaInMoveUtil.this.bridge.sendSoundMessage(
+                        new ISound.PlaySoundForAllMessage(
                             SoundPath.CLIP_BATTLE_X_PREFIX
                                 + currentTypeAa.toLowerCase(Locale.ROOT)
                                 + SoundPath.CLIP_BATTLE_X_HIT,
-                            defender);
+                            defender));
                   }
                   selectCasualties(
                       dice.get(),

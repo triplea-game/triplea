@@ -553,13 +553,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         final String sounds = notificationMessages.getSoundsKey(notificationMessageKey);
         if (sounds != null) {
           // play to observers if we are playing to everyone
-          bridge
-              .getSoundChannelBroadcaster()
-              .playSoundToPlayers(
+          bridge.sendSoundMessage(
+              new ISound.PlaySoundToPlayersMessage(
                   SoundPath.CLIP_TRIGGERED_NOTIFICATION_SOUND + sounds.trim(),
                   t.getPlayers(),
                   null,
-                  t.getPlayers().containsAll(data.getPlayerList().getPlayers()));
+                  t.getPlayers().containsAll(data.getPlayerList().getPlayers())));
         }
         final String message = notificationMessages.getMessage(notificationMessageKey);
         if (message != null) {
@@ -1488,14 +1487,18 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       final String sounds = notificationMessages.getSoundsKey(t.getVictoryOrThrow().trim());
       if (victoryMessage != null) {
         if (sounds != null) { // only play the sound if we are also notifying everyone
-          ISound sound = bridge.getSoundChannelBroadcaster();
-          sound.playSoundToPlayers(
-              SoundPath.CLIP_TRIGGERED_VICTORY_SOUND + sounds.trim(), t.getPlayers(), null, true);
-          sound.playSoundToPlayers(
-              SoundPath.CLIP_TRIGGERED_DEFEAT_SOUND + sounds.trim(),
-              data.getPlayerList().getPlayers(),
-              t.getPlayers(),
-              false);
+          bridge.sendSoundMessage(
+              new ISound.PlaySoundToPlayersMessage(
+                  SoundPath.CLIP_TRIGGERED_VICTORY_SOUND + sounds.trim(),
+                  t.getPlayers(),
+                  null,
+                  true));
+          bridge.sendSoundMessage(
+              new ISound.PlaySoundToPlayersMessage(
+                  SoundPath.CLIP_TRIGGERED_DEFEAT_SOUND + sounds.trim(),
+                  data.getPlayerList().getPlayers(),
+                  t.getPlayers(),
+                  false));
         }
         String messageForRecord = victoryMessage.trim();
         if (messageForRecord.length() > 150) {

@@ -82,6 +82,7 @@ import org.triplea.java.PredicateBuilder;
 import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.sound.ISound;
 import org.triplea.sound.SoundPath;
 import org.triplea.sound.SoundUtils;
 
@@ -1383,7 +1384,8 @@ Round 10,000 reached in a battle. Something must be wrong. Please report this to
     checkDefendingPlanesCanLand();
     BattleTracker.captureOrDestroyUnits(battleSite, defender, defender, bridge, null);
     if (!headless) {
-      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_FAILURE, attacker);
+      bridge.sendSoundMessage(
+          new ISound.PlaySoundForAllMessage(SoundPath.CLIP_BATTLE_FAILURE, attacker));
     }
   }
 
@@ -1407,9 +1409,8 @@ Round 10,000 reached in a battle. Something must be wrong. Please report this to
               defenderLostTuv,
               battleResultDescription,
               new BattleResults(this, gameData));
-      bridge
-          .getSoundChannelBroadcaster()
-          .playSoundForAll(SoundPath.CLIP_BATTLE_STALEMATE, attacker);
+      bridge.sendSoundMessage(
+          new ISound.PlaySoundForAllMessage(SoundPath.CLIP_BATTLE_STALEMATE, attacker));
     }
     checkDefendingPlanesCanLand();
   }

@@ -32,6 +32,7 @@ import java.util.function.Predicate;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.sound.ISound;
 import org.triplea.sound.SoundPath;
 
 /** Logic to fire rockets. */
@@ -536,7 +537,8 @@ public class RocketsFireHelper implements Serializable {
     }
     // play a sound
     if (cost > 0) {
-      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_ROCKET, player);
+      bridge.sendSoundMessage(
+          new ISound.PlaySoundForAllMessage(SoundPath.CLIP_BOMBING_ROCKET, player));
     }
   }
 

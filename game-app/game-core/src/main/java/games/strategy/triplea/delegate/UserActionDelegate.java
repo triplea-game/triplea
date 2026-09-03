@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.sound.ISound;
 import org.triplea.sound.SoundPath;
 
 /** Contains validation and logic to change game data for UserActionAttachments. */
@@ -259,9 +260,8 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    */
   private void notifySuccess(final UserActionAttachment userActionAttachment) {
     // play a sound
-    bridge
-        .getSoundChannelBroadcaster()
-        .playSoundForAll(SoundPath.CLIP_USER_ACTION_SUCCESSFUL, player);
+    bridge.sendSoundMessage(
+        new ISound.PlaySoundForAllMessage(SoundPath.CLIP_USER_ACTION_SUCCESSFUL, player));
     bridge
         .getResourceLoader()
         .ifPresent(
@@ -283,7 +283,8 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    */
   private void notifyFailure(final UserActionAttachment userActionAttachment) {
     // play a sound
-    bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_USER_ACTION_FAILURE, player);
+    bridge.sendSoundMessage(
+        new ISound.PlaySoundForAllMessage(SoundPath.CLIP_USER_ACTION_FAILURE, player));
     final String transcriptText =
         bridge.getGamePlayer().getName()
             + " fails on action: "

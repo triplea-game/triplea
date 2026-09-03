@@ -101,6 +101,13 @@ public interface IDelegateBridge {
   default void sendDisplayMessage(final WebSocketMessage message) {}
 
   /**
+   * Broadcasts a typed message to every sound channel in the game, the typed-dispatch replacement
+   * for calling a method on {@link #getSoundChannelBroadcaster()}. Bridges without a live sound
+   * channel (simulation, tests) inherit the no-op default, matching their no-op sound broadcaster.
+   */
+  default void sendSoundMessage(final WebSocketMessage message) {}
+
+  /**
    * Allow delegate code to access a {@link ResourceLoader}. Implementations may choose to return an
    * empty optional to prevent messaging in simulation scenarios.
    */

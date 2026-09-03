@@ -29,6 +29,7 @@ import java.util.function.Predicate;
 import java.util.stream.StreamSupport;
 import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
+import org.triplea.sound.ISound;
 import org.triplea.sound.SoundPath;
 
 /** A delegate used to check for end of game conditions. */
@@ -295,13 +296,12 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     if (!gameOver) {
       gameOver = true;
       this.winners = winners;
-      bridge
-          .getSoundChannelBroadcaster()
-          .playSoundForAll(
+      bridge.sendSoundMessage(
+          new ISound.PlaySoundForAllMessage(
               SoundPath.CLIP_GAME_WON,
               ((this.winners != null && !this.winners.isEmpty())
                   ? CollectionUtils.getAny(this.winners)
-                  : getData().getPlayerList().getNullPlayer()));
+                  : getData().getPlayerList().getNullPlayer())));
       // send a message to everyone's screen except the HOST (there is no 'current player' for the
       // end round delegate)
       final String title =

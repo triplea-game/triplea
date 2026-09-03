@@ -58,6 +58,7 @@ import javax.annotation.Nonnull;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.sound.ISound;
 import org.triplea.sound.SoundPath;
 
 /** A strategic bombing raid (SBR) battle. */
@@ -520,22 +521,23 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                               .supportAttachments(
                                   bridge.getData().getUnitTypeList().getSupportAaRules())
                               .build());
-                  final var sound = bridge.getSoundChannelBroadcaster();
                   if (currentTypeAa.equals("AA")) {
-                    sound.playSoundForAll(
-                        dice.getHits() > 0
-                            ? SoundPath.CLIP_BATTLE_AA_HIT
-                            : SoundPath.CLIP_BATTLE_AA_MISS,
-                        defender);
+                    bridge.sendSoundMessage(
+                        new ISound.PlaySoundForAllMessage(
+                            dice.getHits() > 0
+                                ? SoundPath.CLIP_BATTLE_AA_HIT
+                                : SoundPath.CLIP_BATTLE_AA_MISS,
+                            defender));
                   } else {
                     String prefix =
                         SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase(Locale.ROOT);
-                    sound.playSoundForAll(
-                        prefix
-                            + (dice.getHits() > 0
-                                ? SoundPath.CLIP_BATTLE_X_HIT
-                                : SoundPath.CLIP_BATTLE_X_MISS),
-                        defender);
+                    bridge.sendSoundMessage(
+                        new ISound.PlaySoundForAllMessage(
+                            prefix
+                                + (dice.getHits() > 0
+                                    ? SoundPath.CLIP_BATTLE_X_HIT
+                                    : SoundPath.CLIP_BATTLE_X_MISS),
+                            defender));
                   }
                 }
               }
@@ -944,9 +946,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           }
 
           if (currentUnitCost > 0) {
-            bridge
-                .getSoundChannelBroadcaster()
-                .playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, attacker);
+            bridge.sendSoundMessage(
+                new ISound.PlaySoundForAllMessage(SoundPath.CLIP_BOMBING_STRATEGIC, attacker));
           }
           // Record production lost
           gameData.getMoveDelegate().pusLost(battleSite, currentUnitCost);
@@ -985,9 +986,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           bridge.getDisplayChannelBroadcaster().bombingResults(battleId, bombingDice, cost);
         }
         if (cost > 0) {
-          bridge
-              .getSoundChannelBroadcaster()
-              .playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, attacker);
+          bridge.sendSoundMessage(
+              new ISound.PlaySoundForAllMessage(SoundPath.CLIP_BOMBING_STRATEGIC, attacker));
         }
         // get resources
         final Resource pus = gameData.getResourceList().getResourceOrThrow(Constants.PUS);
