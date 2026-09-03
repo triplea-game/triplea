@@ -9,6 +9,7 @@ import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
+import games.strategy.triplea.delegate.battle.SoundUtils;
 import games.strategy.triplea.delegate.battle.casualty.AaCasualtySelector;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.fire.FireRoundStepsFactory;
@@ -23,7 +24,6 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
-import org.triplea.sound.SoundUtils;
 
 @AllArgsConstructor
 public abstract class AaFireAndCasualtyStep implements BattleStep {
