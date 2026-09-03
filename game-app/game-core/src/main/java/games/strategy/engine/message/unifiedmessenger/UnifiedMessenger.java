@@ -52,6 +52,7 @@ public class UnifiedMessenger {
   private final Map<UUID, RemoteMethodCallResults> results = new HashMap<>();
   // only non null for the server
   private UnifiedMessengerHub hub;
+  private final TypedMessageRegistry typedMessageRegistry = new TypedMessageRegistry();
 
   public UnifiedMessenger(final IMessenger messenger) {
     this.messenger = messenger;
@@ -67,6 +68,11 @@ public class UnifiedMessenger {
   @VisibleForTesting
   public UnifiedMessengerHub getHub() {
     return hub;
+  }
+
+  /** The registry a converted method registers its typed handler with. */
+  public TypedMessageRegistry getTypedMessageRegistry() {
+    return typedMessageRegistry;
   }
 
   private void messengerInvalid(final Throwable cause) {
@@ -226,7 +232,11 @@ public class UnifiedMessenger {
         return localEndPoints.get(endPointDescriptor.getName());
       }
       endPoint =
-          new EndPoint(endPointDescriptor.getName(), endPointDescriptor.getClazz(), singleThreaded);
+          new EndPoint(
+              endPointDescriptor.getName(),
+              endPointDescriptor.getClazz(),
+              singleThreaded,
+              typedMessageRegistry);
       localEndPoints.put(endPointDescriptor.getName(), endPoint);
     }
     final HasEndPointImplementor msg = new HasEndPointImplementor(endPointDescriptor.getName());

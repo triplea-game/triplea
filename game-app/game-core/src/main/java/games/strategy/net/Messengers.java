@@ -1,5 +1,7 @@
 package games.strategy.net;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.IChatChannel;
@@ -10,10 +12,17 @@ import games.strategy.engine.message.IChannelSubscriber;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.RemoteMessenger;
+import games.strategy.engine.message.RemoteMethodCall;
+import games.strategy.engine.message.RemoteMethodCallResults;
 import games.strategy.engine.message.RemoteName;
+import games.strategy.engine.message.RemoteNotFoundException;
+import games.strategy.engine.message.unifiedmessenger.TypedMessageHandler;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import java.io.Serializable;
+import javax.annotation.Nullable;
 import lombok.ToString;
+import org.triplea.http.client.web.socket.messages.MessageType;
+import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 
 /** Convenience grouping of a messenger, remote messenger and channel messenger. */
 @ToString
@@ -21,10 +30,11 @@ public class Messengers implements IMessenger, IRemoteMessenger, IChannelMesseng
   private final IMessenger messenger;
   private final IRemoteMessenger remoteMessenger;
   private final IChannelMessenger channelMessenger;
+  @Nullable private final UnifiedMessenger unifiedMessenger;
 
   public Messengers(final IMessenger messenger) {
     this.messenger = messenger;
-    final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(messenger);
+    unifiedMessenger = new UnifiedMessenger(messenger);
     channelMessenger = new ChannelMessenger(unifiedMessenger);
     remoteMessenger = new RemoteMessenger(unifiedMessenger);
   }
@@ -37,6 +47,48 @@ public class Messengers implements IMessenger, IRemoteMessenger, IChannelMesseng
     this.messenger = messenger;
     this.remoteMessenger = remoteMessenger;
     this.channelMessenger = channelMessenger;
+    unifiedMessenger = null;
+  }
+
+  /**
+   * Registers the handler a typed message dispatches to when it arrives at a local endpoint. A
+   * converted method makes this one call, then sends its message type instead of a proxy call.
+   */
+  public <T extends WebSocketMessage> void registerMessageHandler(
+      final MessageType<T> messageType, final TypedMessageHandler<T> handler) {
+    requireUnifiedMessenger();
+    unifiedMessenger.getTypedMessageRegistry().register(messageType, handler);
+  }
+
+  /** Fire-and-forget broadcast of a typed message to every subscriber of the given channel. */
+  public void sendChannelMessage(final RemoteName channel, final WebSocketMessage message) {
+    requireUnifiedMessenger();
+    unifiedMessenger.invoke(channel.getName(), RemoteMethodCall.typed(channel.getName(), message));
+  }
+
+  /** Sends a typed request to a remote endpoint and blocks for its typed reply. */
+  public <R extends WebSocketMessage> R invokeRemoteMessage(
+      final RemoteName remote, final WebSocketMessage request, final MessageType<R> responseType) {
+    requireUnifiedMessenger();
+    final RemoteMethodCallResults results;
+    try {
+      results =
+          unifiedMessenger.invokeAndWait(
+              remote.getName(), RemoteMethodCall.typed(remote.getName(), request));
+    } catch (final RemoteNotFoundException e) {
+      throw new IllegalStateException("No remote registered for " + remote, e);
+    }
+    if (results.getException() != null) {
+      throw new RuntimeException("Exception on remote", results.getException());
+    }
+    return responseType.getPayloadType().cast(results.getRVal());
+  }
+
+  private void requireUnifiedMessenger() {
+    checkNotNull(
+        unifiedMessenger,
+        "Typed messaging requires the production Messengers constructor; this instance was built"
+            + " with the test constructor that supplies mock messengers.");
   }
 
   // TODO: API could be improved, perhaps return an optional, and/or store exact instance types from

@@ -29,3 +29,5 @@ IDisplay-NotifyUnitsRetreatingMessage.json
 IDisplay-NotifyDiceMessage.json
 IDisplay-GoToBattleStepMessage.json
 IDisplay-DisplayShutdownMessage.json
+IServerStartupRemote-GetServerHeadlessRequest.json
+IServerStartupRemote-GetServerHeadlessResponse.json

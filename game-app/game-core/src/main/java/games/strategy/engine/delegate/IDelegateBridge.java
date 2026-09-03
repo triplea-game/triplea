@@ -94,6 +94,13 @@ public interface IDelegateBridge {
   void sendMessage(WebSocketMessage webSocketMessage);
 
   /**
+   * Broadcasts a typed message to every display in the game, the typed-dispatch replacement for
+   * calling a method on {@link #getDisplayChannelBroadcaster()}. Bridges without a live display
+   * (simulation, tests) inherit the no-op default, matching their no-op display broadcaster.
+   */
+  default void sendDisplayMessage(final WebSocketMessage message) {}
+
+  /**
    * Allow delegate code to access a {@link ResourceLoader}. Implementations may choose to return an
    * empty optional to prevent messaging in simulation scenarios.
    */

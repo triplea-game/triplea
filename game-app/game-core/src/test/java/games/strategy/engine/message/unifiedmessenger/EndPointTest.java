@@ -18,7 +18,8 @@ class EndPointTest {
 
   @Test
   void testEndPoint() throws Exception {
-    final EndPoint endPoint = new EndPoint("", TestInterface.class, false);
+    final EndPoint endPoint =
+        new EndPoint("", TestInterface.class, false, new TypedMessageRegistry());
     endPoint.addImplementor((TestInterface) () -> 2);
     final RemoteMethodCall call =
         new RemoteMethodCall("", TestInterface.class.getMethod("dummy"), new Object[] {});

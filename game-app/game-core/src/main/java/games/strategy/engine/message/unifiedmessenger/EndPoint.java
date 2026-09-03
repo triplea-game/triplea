@@ -13,6 +13,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.java.collections.CollectionUtils;
 
 /**
@@ -31,11 +32,17 @@ class EndPoint {
   private final Class<?> remoteClass;
   private final Set<Object> implementors = new CopyOnWriteArraySet<>();
   private final boolean singleThreaded;
+  private final TypedMessageRegistry typedMessageRegistry;
 
-  EndPoint(final String name, final Class<?> remoteClass, final boolean singleThreaded) {
+  EndPoint(
+      final String name,
+      final Class<?> remoteClass,
+      final boolean singleThreaded,
+      final TypedMessageRegistry typedMessageRegistry) {
     this.name = name;
     this.remoteClass = remoteClass;
     this.singleThreaded = singleThreaded;
+    this.typedMessageRegistry = typedMessageRegistry;
   }
 
   /**
@@ -125,6 +132,9 @@ class EndPoint {
 
   private RemoteMethodCallResults invokeSingle(
       final RemoteMethodCall call, final Object implementor, final INode messageOriginator) {
+    if (call.getTypedMessage() != null) {
+      return invokeTyped(call.getTypedMessage(), implementor, messageOriginator);
+    }
     call.resolve(remoteClass);
     final Method method;
     try {
@@ -145,6 +155,27 @@ class EndPoint {
     } catch (final IllegalAccessException | IllegalArgumentException e) {
       log.error("error in call: " + call, e);
       return new RemoteMethodCallResults(e);
+    } finally {
+      MessageContext.setSenderNodeForThread(null);
+    }
+  }
+
+  private RemoteMethodCallResults invokeTyped(
+      final WebSocketMessage message, final Object implementor, final INode messageOriginator) {
+    final TypedMessageHandler<WebSocketMessage> handler =
+        typedMessageRegistry
+            .handlerFor(message)
+            .orElseThrow(
+                () ->
+                    new IllegalStateException(
+                        "No typed handler registered for " + message.getClass().getName()));
+    MessageContext.setSenderNodeForThread(messageOriginator);
+    try {
+      return new RemoteMethodCallResults(handler.handle(message, implementor));
+    } catch (final Throwable t) {
+      // Mirror the reflective branch: any failure the handler raises returns to the caller through
+      // the latch as an exception result rather than escaping on the delegate/thread-pool thread.
+      return new RemoteMethodCallResults(t);
     } finally {
       MessageContext.setSenderNodeForThread(null);
     }

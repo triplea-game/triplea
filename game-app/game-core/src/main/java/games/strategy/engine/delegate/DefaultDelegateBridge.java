@@ -144,6 +144,11 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   }
 
   @Override
+  public void sendDisplayMessage(final WebSocketMessage message) {
+    game.getMessengers().sendChannelMessage(AbstractGame.getDisplayChannel(), message);
+  }
+
+  @Override
   public Optional<ResourceLoader> getResourceLoader() {
     return Optional.of(game.getResourceLoader());
   }

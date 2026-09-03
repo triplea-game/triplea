@@ -10,6 +10,8 @@ import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -238,7 +240,9 @@ public interface IDisplay extends IChannelSubscriber {
 
   @Builder
   @AllArgsConstructor
-  class NotifyDiceMessage implements WebSocketMessage {
+  class NotifyDiceMessage implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 7519027418522003773L;
+
     public static final MessageType<NotifyDiceMessage> TYPE =
         MessageType.of(NotifyDiceMessage.class);
 
@@ -311,7 +315,9 @@ public interface IDisplay extends IChannelSubscriber {
   }
 
   @Value
-  class DieRollData {
+  class DieRollData implements Serializable {
+    @Serial private static final long serialVersionUID = 8494082086391123010L;
+
     String type;
     int rolledAt;
     int value;

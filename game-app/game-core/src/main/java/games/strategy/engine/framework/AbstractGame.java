@@ -52,6 +52,7 @@ public abstract class AbstractGame implements IGame {
 
   private final ClientNetworkBridge clientNetworkBridge;
   @Nullable private IDisplay display;
+  private boolean typedDisplayHandlersRegistered;
   private final List<Runnable> displayListenerRemovals = new ArrayList<>();
   @Nullable private ISound sound;
 
@@ -143,6 +144,18 @@ public abstract class AbstractGame implements IGame {
     }
     if (display != null) {
       messengers.registerChannelSubscriber(display, getDisplayChannel());
+
+      // Register once per game: the handler dispatches to whatever display the channel endpoint
+      // currently holds, so a later display swap reuses it rather than re-registering.
+      if (!typedDisplayHandlersRegistered) {
+        messengers.registerMessageHandler(
+            IDisplay.NotifyDiceMessage.TYPE,
+            (message, implementor) -> {
+              message.accept((IDisplay) implementor);
+              return null;
+            });
+        typedDisplayHandlersRegistered = true;
+      }
 
       addTrackedDisplayListener(
           IDisplay.BombingResultsMessage.TYPE, message -> message.accept(display));

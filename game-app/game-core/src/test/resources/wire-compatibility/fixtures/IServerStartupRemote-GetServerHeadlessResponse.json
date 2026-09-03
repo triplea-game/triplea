@@ -1,0 +1,6 @@
+{
+  "type": "games.strategy.engine.framework.startup.mc.IServerStartupRemote$GetServerHeadlessResponse",
+  "payload": {
+    "serverHeadless": true
+  }
+}

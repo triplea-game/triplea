@@ -447,8 +447,13 @@ Check:
   }
 
   private boolean getIsServerHeadlessTest() {
-    final IServerStartupRemote serverRemote = getServerStartup();
-    hostIsHeadlessBot = serverRemote != null && serverRemote.getIsServerHeadless();
+    hostIsHeadlessBot =
+        messengers
+            .invokeRemoteMessage(
+                ServerModel.SERVER_REMOTE_NAME,
+                new IServerStartupRemote.GetServerHeadlessRequest(),
+                IServerStartupRemote.GetServerHeadlessResponse.TYPE)
+            .isServerHeadless();
     return hostIsHeadlessBot;
   }
 

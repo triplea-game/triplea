@@ -4,7 +4,14 @@ import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.net.INode;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.triplea.http.client.web.socket.MessageEnvelope;
+import org.triplea.http.client.web.socket.messages.MessageType;
+import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 
 /**
  * Allows client nodes to access various information from the server node during network game setup.
@@ -35,6 +42,35 @@ public interface IServerStartupRemote extends IRemote {
 
   @RemoteActionCode(8)
   boolean getIsServerHeadless();
+
+  /** Typed request asking whether the server node is a headless (bot) host. */
+  class GetServerHeadlessRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5559981337288369814L;
+
+    public static final MessageType<GetServerHeadlessRequest> TYPE =
+        MessageType.of(GetServerHeadlessRequest.class);
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed reply carrying the server's headless flag. */
+  @AllArgsConstructor
+  class GetServerHeadlessResponse implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 3623145572069361182L;
+
+    public static final MessageType<GetServerHeadlessResponse> TYPE =
+        MessageType.of(GetServerHeadlessResponse.class);
+
+    @Getter private final boolean serverHeadless;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
 
   @RemoteActionCode(6)
   List<String> getAvailableGames();

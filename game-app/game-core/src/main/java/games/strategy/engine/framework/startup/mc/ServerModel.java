@@ -239,6 +239,11 @@ public class ServerModel extends Observable implements IConnectionChangeListener
       messengers = new Messengers(serverMessenger);
       messengers.registerRemote(
           launchAction.getStartupRemote(new DefaultServerModelView()), SERVER_REMOTE_NAME);
+      messengers.registerMessageHandler(
+          IServerStartupRemote.GetServerHeadlessRequest.TYPE,
+          (request, implementor) ->
+              new IServerStartupRemote.GetServerHeadlessResponse(
+                  ((IServerStartupRemote) implementor).getIsServerHeadless()));
 
       if (System.getProperty(LOBBY_URI) != null) {
         final URI lobbyUri = URI.create(System.getProperty(LOBBY_URI));

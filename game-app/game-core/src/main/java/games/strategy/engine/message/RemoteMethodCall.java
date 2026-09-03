@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import javax.annotation.Nullable;
 import lombok.Getter;
+import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 
 /** All the info necessary to describe a method call in one handy serializable package. */
 public class RemoteMethodCall implements Externalizable {
@@ -21,8 +22,21 @@ public class RemoteMethodCall implements Externalizable {
   private int methodNumber;
   // stored as a String[] so we can be serialized
   private String[] argTypes;
+  // set for a typed call: the endpoint dispatches this message through the handler registry rather
+  // than reflecting a method, so methodName/args stay null. This field is what E4 lifts out into a
+  // dedicated envelope once the reflective fields are gone.
+  @Getter @Nullable private WebSocketMessage typedMessage;
 
   public RemoteMethodCall() {}
+
+  /** Describes a typed message addressed to an endpoint, bypassing reflective method resolution. */
+  public static RemoteMethodCall typed(
+      final String remoteName, final WebSocketMessage typedMessage) {
+    final RemoteMethodCall call = new RemoteMethodCall();
+    call.remoteName = remoteName;
+    call.typedMessage = typedMessage;
+    return call;
+  }
 
   public RemoteMethodCall(final String remoteName, final Method method, final Object[] args) {
     final Class<?>[] argTypes = method.getParameterTypes();
@@ -121,6 +135,7 @@ public class RemoteMethodCall implements Externalizable {
         out.writeObject(arg);
       }
     }
+    out.writeObject(typedMessage);
   }
 
   @Override
@@ -134,6 +149,7 @@ public class RemoteMethodCall implements Externalizable {
         args[i] = in.readObject();
       }
     }
+    typedMessage = (WebSocketMessage) in.readObject();
   }
 
   /**
@@ -141,7 +157,7 @@ public class RemoteMethodCall implements Externalizable {
    * without being told what class we operate on.
    */
   public void resolve(final Class<?> remoteType) {
-    if (methodName != null) {
+    if (typedMessage != null || methodName != null) {
       return;
     }
     final Method method = RemoteInterfaceHelper.getMethod(methodNumber, remoteType);

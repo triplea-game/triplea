@@ -65,7 +65,8 @@ public class SelectCasualties implements BattleStep {
       bridge.sendMessage(
           new IDisplay.NotifyDiceMessage(diceRoll, stepName, diceRoll.getPlayerName()));
     } else {
-      bridge.getDisplayChannelBroadcaster().notifyDice(diceRoll, stepName);
+      bridge.sendDisplayMessage(
+          new IDisplay.NotifyDiceMessage(diceRoll, stepName, diceRoll.getPlayerName()));
     }
 
     final CasualtyDetails details = selectCasualties.apply(bridge, this);
