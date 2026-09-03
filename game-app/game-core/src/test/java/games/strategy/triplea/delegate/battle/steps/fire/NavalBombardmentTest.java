@@ -31,7 +31,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.sound.ISound;
 
 @ExtendWith(MockitoExtension.class)
 class NavalBombardmentTest {
@@ -46,8 +45,6 @@ class NavalBombardmentTest {
     final UnitType unitType = spy(new UnitType("type", givenGameData().build()));
     when(unitType.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(mock(UnitAttachment.class));
     final Unit bombarder = spy(unitType.createTemp(1, mock(GamePlayer.class)).get(0));
-
-    when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(mock(ISound.class));
 
     final BattleState battleState =
         givenBattleStateBuilder()

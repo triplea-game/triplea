@@ -41,7 +41,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.sound.ISound;
 
 @ExtendWith(MockitoExtension.class)
 class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
@@ -128,13 +127,11 @@ class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
   class SubmergeHappens {
 
     @Mock IDisplay display;
-    @Mock ISound sound;
     @Mock IDelegateHistoryWriter historyWriter;
 
     @BeforeEach
     public void setupMocks() {
       when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(display);
-      when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(sound);
       when(delegateBridge.getHistoryWriter()).thenReturn(historyWriter);
       when(defender.getName()).thenReturn("defender");
     }
@@ -204,14 +201,12 @@ class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
   class RetreatHappens {
 
     @Mock IDisplay display;
-    @Mock ISound sound;
     @Mock IDelegateHistoryWriter historyWriter;
     @Mock UnitCollection battleSiteCollection;
 
     @BeforeEach
     public void setupMocks() {
       when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(display);
-      when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(sound);
       when(delegateBridge.getHistoryWriter()).thenReturn(historyWriter);
       when(defender.getName()).thenReturn("defender");
       when(battleSite.getUnitCollection()).thenReturn(battleSiteCollection);

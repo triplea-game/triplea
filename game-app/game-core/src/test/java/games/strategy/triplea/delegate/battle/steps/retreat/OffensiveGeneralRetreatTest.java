@@ -49,7 +49,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.sound.ISound;
 
 @ExtendWith(MockitoExtension.class)
 class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
@@ -333,7 +332,6 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
 
     @Mock GamePlayer attacker;
     @Mock IDisplay display;
-    @Mock ISound sound;
     @Mock IDelegateHistoryWriter historyWriter;
     @Mock UnitCollection battleSiteCollection;
 
@@ -354,7 +352,6 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
       @BeforeEach
       public void setupMocks() {
         when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(display);
-        when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(sound);
         when(delegateBridge.getHistoryWriter()).thenReturn(historyWriter);
         when(attacker.getName()).thenReturn("attacker");
       }
@@ -461,7 +458,6 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
       @BeforeEach
       public void setupMocks() {
         when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(display);
-        when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(sound);
         when(delegateBridge.getHistoryWriter()).thenReturn(historyWriter);
         when(attacker.getName()).thenReturn("attacker");
         when(battleSite.getUnitCollection()).thenReturn(battleSiteCollection);
@@ -589,7 +585,6 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
       @BeforeEach
       public void setupMocks() {
         when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(display);
-        when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(sound);
         when(delegateBridge.getHistoryWriter()).thenReturn(historyWriter);
         when(attacker.getName()).thenReturn("attacker");
         when(battleSite.getUnitCollection()).thenReturn(battleSiteCollection);
