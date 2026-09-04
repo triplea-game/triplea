@@ -13,7 +13,7 @@ import org.triplea.http.client.web.socket.messages.WebSocketMessage;
  * Base for the typed-message-backed delegate adapters handed to the AI and the action UI in place
  * of the reflective current-delegate proxy. Business methods on the concrete subclass forward to
  * {@link #invokeCurrent} which addresses the current step's delegate over the messenger latch,
- * mirroring {@link PlayerBridge#getRemoteDelegate()}'s lookup. The lifecycle and state methods of
+ * mirroring {@link PlayerBridge#invokeCurrentDelegate}'s lookup. The lifecycle and state methods of
  * {@link IDelegate} are never reached through a remote proxy (they run server-side on the real
  * delegate), so they stay unsupported here.
  */
