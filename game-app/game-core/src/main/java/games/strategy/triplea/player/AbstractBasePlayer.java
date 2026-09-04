@@ -6,13 +6,11 @@ import games.strategy.engine.player.Player;
 import games.strategy.engine.player.PlayerBridge;
 import lombok.Getter;
 import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done
  * through an IDelegate using a change).
  */
-@Slf4j
 @ToString(exclude = "playerBridge")
 public abstract class AbstractBasePlayer implements Player {
 
