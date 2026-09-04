@@ -10,6 +10,7 @@ import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.message.wire.EntityRef;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -49,6 +50,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.swing.ButtonModel;
 import javax.swing.JCheckBox;
@@ -85,9 +87,13 @@ public class TripleAPlayer extends AbstractBasePlayer {
         try {
           // Set edit mode
           // All GameDataChangeListeners will be notified upon success
-          final IEditDelegate editDelegate =
-              (IEditDelegate) getPlayerBridge().getRemotePersistentDelegate("edit");
-          AsyncRunner.runAsync(() -> editDelegate.setEditMode(editMode))
+          AsyncRunner.runAsync(
+                  () ->
+                      getPlayerBridge()
+                          .invokePersistentDelegate(
+                              "edit",
+                              new IEditDelegate.SetEditModeRequest(editMode),
+                              IEditDelegate.SetEditModeResponse.TYPE))
               .exceptionally(throwable -> log.error("Failed to toggle edit mode", throwable));
         } catch (final Exception exception) {
           log.error("Failed to set edit mode to " + editMode, exception);
@@ -121,7 +127,10 @@ public class TripleAPlayer extends AbstractBasePlayer {
     final PoliticalActionAttachment actionChoice =
         ui.getPoliticalActionChoice(this.getGamePlayer(), firstRun, politicsDelegate);
     if (actionChoice != null) {
-      politicsDelegate.attemptAction(actionChoice);
+      getPlayerBridge()
+          .invokeCurrentDelegate(
+              new IPoliticsDelegate.AttemptActionRequest(actionChoice),
+              IPoliticsDelegate.AttemptActionResponse.TYPE);
       politics(false);
     }
   }
@@ -145,7 +154,10 @@ public class TripleAPlayer extends AbstractBasePlayer {
     final UserActionAttachment actionChoice =
         ui.getUserActionChoice(this.getGamePlayer(), firstRun, userActionDelegate);
     if (actionChoice != null) {
-      userActionDelegate.attemptAction(actionChoice);
+      getPlayerBridge()
+          .invokeCurrentDelegate(
+              new IUserActionDelegate.AttemptActionRequest(actionChoice),
+              IUserActionDelegate.AttemptActionResponse.TYPE);
       userActions(false);
     }
   }
@@ -275,20 +287,6 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    final ITechDelegate techDelegate;
-    try {
-      techDelegate = (ITechDelegate) getPlayerBridge().getRemoteDelegate();
-    } catch (final ClassCastException e) {
-      final String errorContext =
-          "PlayerBridge step name: "
-              + getPlayerBridge().getStepName()
-              + ", Remote class name: "
-              + getPlayerBridge().getRemoteDelegate().getClass();
-      // for some reason the client is not seeing or getting these errors, so print to err too
-      log.error(errorContext, e);
-      throw new IllegalStateException(errorContext, e);
-    }
-
     final GamePlayer gamePlayer = this.getGamePlayer();
     if (!soundPlayedAlreadyTechnology) {
       playSound(SoundPath.CLIP_PHASE_TECHNOLOGY);
@@ -297,11 +295,15 @@ public class TripleAPlayer extends AbstractBasePlayer {
     final TechRoll techRoll = ui.getTechRolls(gamePlayer);
     if (techRoll != null) {
       final TechResults techResults =
-          techDelegate.rollTech(
-              techRoll.getRolls(),
-              techRoll.getTech(),
-              techRoll.getNewTokens(),
-              techRoll.getWhoPaysHowMuch());
+          getPlayerBridge()
+              .invokeCurrentDelegate(
+                  new ITechDelegate.RollTechRequest(
+                      techRoll.getRolls(),
+                      techRoll.getTech(),
+                      techRoll.getNewTokens(),
+                      techRoll.getWhoPaysHowMuch()),
+                  ITechDelegate.RollTechResponse.TYPE)
+              .getTechResults();
       if (techResults.isError()) {
         ui.notifyErrorOffEdt(techResults.getErrorString());
         tech();
@@ -315,20 +317,6 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    final IMoveDelegate moveDel;
-    try {
-      moveDel = (IMoveDelegate) getPlayerBridge().getRemoteDelegate();
-    } catch (final ClassCastException e) {
-      final String errorContext =
-          "PlayerBridge step name: "
-              + getPlayerBridge().getStepName()
-              + ", Remote class name: "
-              + getPlayerBridge().getRemoteDelegate().getClass();
-      // for some reason the client is not seeing or getting these errors, so print to err too
-      log.error(errorContext, e);
-      throw new IllegalStateException(errorContext, e);
-    }
-
     final GamePlayer gamePlayer = this.getGamePlayer();
 
     if (nonCombat && !soundPlayedAlreadyNonCombatMove) {
@@ -355,50 +343,44 @@ public class TripleAPlayer extends AbstractBasePlayer {
       }
       return;
     }
-    moveDel.performMove(moveDescription).ifPresent(error -> ui.notifyErrorOffEdt(error));
+    Optional.ofNullable(
+            getPlayerBridge()
+                .invokeCurrentDelegate(
+                    new IMoveDelegate.PerformMoveRequest(moveDescription),
+                    IMoveDelegate.PerformMoveResponse.TYPE)
+                .getError())
+        .ifPresent(error -> ui.notifyErrorOffEdt(error));
     move(nonCombat, stepName);
   }
 
   private boolean canAirLand(final boolean movePhase, final GamePlayer player) {
     final Collection<Territory> airCantLand;
-    try {
-      if (movePhase) {
-        airCantLand =
-            ((IMoveDelegate) getPlayerBridge().getRemoteDelegate())
-                .getTerritoriesWhereAirCantLand(player);
-      } else {
-        airCantLand =
-            ((IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate())
-                .getTerritoriesWhereAirCantLand();
-      }
-    } catch (final ClassCastException e) {
-      final String errorContext =
-          "PlayerBridge step name: "
-              + getPlayerBridge().getStepName()
-              + ", Remote class name: "
-              + getPlayerBridge().getRemoteDelegate().getClass();
-      log.error(errorContext, e);
-      throw new IllegalStateException(errorContext, e);
+    if (movePhase) {
+      airCantLand =
+          getPlayerBridge()
+              .invokeCurrentDelegate(
+                  new IMoveDelegate.GetAirCantLandForPlayerRequest(EntityRef.of(player)),
+                  IMoveDelegate.TerritoriesResponse.TYPE)
+              .resolve(getGameData());
+    } else {
+      airCantLand =
+          getPlayerBridge()
+              .invokeCurrentDelegate(
+                  new IAbstractPlaceDelegate.GetAirCantLandRequest(),
+                  IMoveDelegate.TerritoriesResponse.TYPE)
+              .resolve(getGameData());
     }
     return airCantLand.isEmpty()
         || ui.getOkToLetAirDieOffEdt(this.getGamePlayer(), airCantLand, movePhase);
   }
 
   private boolean canUnitsFight() {
-    final Collection<Territory> unitsCantFight;
-    try {
-      unitsCantFight =
-          ((IMoveDelegate) getPlayerBridge().getRemoteDelegate())
-              .getTerritoriesWhereUnitsCantFight();
-    } catch (final ClassCastException e) {
-      final String errorContext =
-          "PlayerBridge step name: "
-              + getPlayerBridge().getStepName()
-              + ", Remote class name: "
-              + getPlayerBridge().getRemoteDelegate().getClass();
-      log.error(errorContext, e);
-      throw new IllegalStateException(errorContext, e);
-    }
+    final Collection<Territory> unitsCantFight =
+        getPlayerBridge()
+            .invokeCurrentDelegate(
+                new IMoveDelegate.GetUnitsCantFightRequest(),
+                IMoveDelegate.TerritoriesResponse.TYPE)
+            .resolve(getGameData());
     return !(unitsCantFight.isEmpty() || ui.getOkToLetUnitsDieOffEdt(unitsCantFight));
   }
 
@@ -434,21 +416,12 @@ public class TripleAPlayer extends AbstractBasePlayer {
             ui.getRepair(
                 gamePlayer, bid, GameStepPropertiesHelper.getRepairPlayers(data, gamePlayer));
         if (repair != null) {
-          final IPurchaseDelegate purchaseDel;
-          try {
-            purchaseDel = (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
-          } catch (final ClassCastException e) {
-            final String errorContext =
-                "PlayerBridge step name: "
-                    + getPlayerBridge().getStepName()
-                    + ", Remote class name: "
-                    + getPlayerBridge().getRemoteDelegate().getClass();
-            // for some reason the client is not seeing or getting these errors, so print to err
-            // too
-            log.error(errorContext, e);
-            throw new IllegalStateException(errorContext, e);
-          }
-          final String error = purchaseDel.purchaseRepair(repair);
+          final String error =
+              getPlayerBridge()
+                  .invokeCurrentDelegate(
+                      new IPurchaseDelegate.PurchaseRepairRequest(repair),
+                      IPurchaseDelegate.PurchaseRepairResponse.TYPE)
+                  .getError();
           if (error != null) {
             ui.notifyErrorOffEdt(error);
             // don't give up, keep going
@@ -464,19 +437,12 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (prod == null) {
       return;
     }
-    final IPurchaseDelegate purchaseDel;
-    try {
-      purchaseDel = (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
-    } catch (final ClassCastException e) {
-      final String errorContext =
-          "PlayerBridge step name: "
-              + getPlayerBridge().getStepName()
-              + ", Remote class name: "
-              + getPlayerBridge().getRemoteDelegate().getClass();
-      log.error(errorContext, e);
-      throw new IllegalStateException(errorContext, e);
-    }
-    final String purchaseError = purchaseDel.purchase(prod);
+    final String purchaseError =
+        getPlayerBridge()
+            .invokeCurrentDelegate(
+                new IPurchaseDelegate.PurchaseRequest(prod),
+                IPurchaseDelegate.PurchaseResponse.TYPE)
+            .getError();
     if (purchaseError != null) {
       ui.notifyErrorOffEdt(purchaseError);
       // don't give up, keep going
@@ -640,25 +606,17 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    final IBattleDelegate battleDel;
-    try {
-      battleDel = (IBattleDelegate) getPlayerBridge().getRemoteDelegate();
-    } catch (final ClassCastException e) {
-      final String errorContext =
-          "PlayerBridge step name: "
-              + getPlayerBridge().getStepName()
-              + ", Remote class name: "
-              + getPlayerBridge().getRemoteDelegate().getClass();
-      log.error(errorContext, e);
-      throw new IllegalStateException(errorContext, e);
-    }
-
     final GamePlayer gamePlayer = this.getGamePlayer();
     while (true) {
       if (getPlayerBridge().isGameOver()) {
         return;
       }
-      final BattleListing battleListing = battleDel.getBattleListing();
+      final BattleListing battleListing =
+          getPlayerBridge()
+              .invokeCurrentDelegate(
+                  new IBattleDelegate.GetBattleListingRequest(),
+                  IBattleDelegate.GetBattleListingResponse.TYPE)
+              .getBattleListing();
       if (battleListing.isEmpty()) {
         return;
       }
@@ -672,8 +630,14 @@ public class TripleAPlayer extends AbstractBasePlayer {
       }
       if (details != null) {
         final String error =
-            battleDel.fightBattle(
-                details.getWhere(), details.isBombingRaid(), details.getBattleType());
+            getPlayerBridge()
+                .invokeCurrentDelegate(
+                    new IBattleDelegate.FightBattleRequest(
+                        EntityRef.of(details.getWhere()),
+                        details.isBombingRaid(),
+                        details.getBattleType()),
+                    IBattleDelegate.FightBattleResponse.TYPE)
+                .getError();
         if (error != null) {
           ui.notifyErrorOffEdt(error);
         }
@@ -687,18 +651,6 @@ public class TripleAPlayer extends AbstractBasePlayer {
       return;
     }
     final GamePlayer gamePlayer = this.getGamePlayer();
-    final IAbstractPlaceDelegate placeDel;
-    try {
-      placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
-    } catch (final ClassCastException e) {
-      final String errorContext =
-          "PlayerBridge step name: "
-              + getPlayerBridge().getStepName()
-              + ", Remote class name: "
-              + getPlayerBridge().getRemoteDelegate().getClass();
-      log.error(errorContext, e);
-      throw new IllegalStateException(errorContext, e);
-    }
     while (true) {
       if (!soundPlayedAlreadyPlacement) {
         playSound(SoundPath.CLIP_PHASE_PLACEMENT);
@@ -714,11 +666,19 @@ public class TripleAPlayer extends AbstractBasePlayer {
         }
         continue;
       }
-      placeDel
-          .placeUnits(
-              placeData.getUnits(),
-              placeData.getAt(),
-              bid ? IAbstractPlaceDelegate.BidMode.BID : IAbstractPlaceDelegate.BidMode.NOT_BID)
+      Optional.ofNullable(
+              getPlayerBridge()
+                  .invokeCurrentDelegate(
+                      new IAbstractPlaceDelegate.PlaceUnitsRequest(
+                          placeData.getUnits().stream()
+                              .map(EntityRef::of)
+                              .collect(Collectors.toList()),
+                          EntityRef.of(placeData.getAt()),
+                          bid
+                              ? IAbstractPlaceDelegate.BidMode.BID
+                              : IAbstractPlaceDelegate.BidMode.NOT_BID),
+                      IAbstractPlaceDelegate.PlaceUnitsResponse.TYPE)
+                  .getError())
           .ifPresent(error -> ui.notifyErrorOffEdt(error));
     }
   }
@@ -728,23 +688,17 @@ public class TripleAPlayer extends AbstractBasePlayer {
       return;
     }
     // play a sound for this phase
-    final IAbstractForumPosterDelegate endTurnDelegate;
-    try {
-      endTurnDelegate = (IAbstractForumPosterDelegate) getPlayerBridge().getRemoteDelegate();
-    } catch (final ClassCastException e) {
-      final String errorContext =
-          "PlayerBridge step name: "
-              + getPlayerBridge().getStepName()
-              + ", Remote class name: "
-              + getPlayerBridge().getRemoteDelegate().getClass();
-      log.error(errorContext, e);
-      throw new IllegalStateException(errorContext, e);
-    }
     if (!soundPlayedAlreadyEndTurn
         && TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(
             this.getGamePlayer(), getGameData().getMap())) {
       // do not play if we are reloading a save game from pbem (gets annoying)
-      if (!endTurnDelegate.getHasPostedTurnSummary()) {
+      final boolean hasPostedTurnSummary =
+          getPlayerBridge()
+              .invokeCurrentDelegate(
+                  new IAbstractForumPosterDelegate.GetHasPostedTurnSummaryRequest(),
+                  IAbstractForumPosterDelegate.GetHasPostedTurnSummaryResponse.TYPE)
+              .isHasPosted();
+      if (!hasPostedTurnSummary) {
         playSound(SoundPath.CLIP_PHASE_END_TURN);
       }
       soundPlayedAlreadyEndTurn = true;

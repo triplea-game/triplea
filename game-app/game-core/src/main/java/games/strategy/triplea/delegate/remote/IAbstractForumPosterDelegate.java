@@ -5,13 +5,33 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
+import games.strategy.net.Messengers;
+import java.io.Serial;
 import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.triplea.http.client.web.socket.MessageEnvelope;
+import org.triplea.http.client.web.socket.messages.MessageType;
+import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 
 /**
  * Logic for posting a save game to a forum. Supplements other game logic at points where it makes
  * sense to record a save game (e.g. at the end of a game turn).
  */
 public interface IAbstractForumPosterDelegate extends IRemote, IDelegate {
+  /**
+   * Registers the typed handlers for this delegate's converted methods, guarded for idempotency.
+   */
+  static void registerHandlers(final Messengers messengers) {
+    if (!messengers.hasTypedMessageHandler(GetHasPostedTurnSummaryRequest.TYPE)) {
+      messengers.registerMessageHandler(
+          GetHasPostedTurnSummaryRequest.TYPE,
+          (request, implementor) ->
+              new GetHasPostedTurnSummaryResponse(
+                  ((IAbstractForumPosterDelegate) implementor).getHasPostedTurnSummary()));
+    }
+  }
+
   @RemoteActionCode(9)
   boolean postTurnSummary(PbemMessagePoster poster, String title);
 
@@ -20,6 +40,35 @@ public interface IAbstractForumPosterDelegate extends IRemote, IDelegate {
 
   @RemoteActionCode(4)
   boolean getHasPostedTurnSummary();
+
+  /** Typed request asking whether the turn summary has been posted. */
+  class GetHasPostedTurnSummaryRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5320048576544675221L;
+
+    public static final MessageType<GetHasPostedTurnSummaryRequest> TYPE =
+        MessageType.of(GetHasPostedTurnSummaryRequest.class);
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed reply carrying whether the turn summary has been posted. */
+  @AllArgsConstructor
+  class GetHasPostedTurnSummaryResponse implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5320048576544675222L;
+
+    public static final MessageType<GetHasPostedTurnSummaryResponse> TYPE =
+        MessageType.of(GetHasPostedTurnSummaryResponse.class);
+
+    @Getter private final boolean hasPosted;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
 
   @RemoteActionCode(7)
   @Override

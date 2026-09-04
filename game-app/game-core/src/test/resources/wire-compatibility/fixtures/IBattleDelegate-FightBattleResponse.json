@@ -1,0 +1,6 @@
+{
+  "type": "games.strategy.triplea.delegate.remote.IBattleDelegate$FightBattleResponse",
+  "payload": {
+    "error": "Some error"
+  }
+}

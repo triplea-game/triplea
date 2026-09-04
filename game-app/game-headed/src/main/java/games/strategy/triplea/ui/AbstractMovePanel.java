@@ -110,12 +110,17 @@ public abstract class AbstractMovePanel extends ActionPanel {
   }
 
   @SuppressWarnings("unchecked")
-  private IAbstractMoveDelegate<UndoableMove> getMoveDelegate() {
-    return (IAbstractMoveDelegate<UndoableMove>) playerBridge.getRemoteDelegate();
+  private List<UndoableMove> getMovesMade() {
+    return (List<UndoableMove>)
+        playerBridge
+            .invokeCurrentDelegate(
+                new IAbstractMoveDelegate.GetMovesMadeRequest(),
+                IAbstractMoveDelegate.GetMovesMadeResponse.TYPE)
+            .getMovesMade();
   }
 
   private void updateMoves() {
-    undoableMoves = getMoveDelegate().getMovesMade();
+    undoableMoves = getMovesMade();
     this.undoableMovesPanel.setMoves(new ArrayList<>(undoableMoves));
     undoAllButton.setEnabled(!undoableMoves.isEmpty());
   }
@@ -137,7 +142,12 @@ public abstract class AbstractMovePanel extends ActionPanel {
     // clean up any state we may have
     cancelMove();
     // undo the move
-    final String error = getMoveDelegate().undoMove(moveIndex);
+    final String error =
+        playerBridge
+            .invokeCurrentDelegate(
+                new IAbstractMoveDelegate.UndoMoveRequest(moveIndex),
+                IAbstractMoveDelegate.UndoMoveResponse.TYPE)
+            .getError();
     if (error != null && !suppressError) {
       JOptionPane.showMessageDialog(
           getTopLevelAncestor(), error, "Could not undo move", JOptionPane.ERROR_MESSAGE);
@@ -163,7 +173,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
    * come up with a way to deal with "n" reasons for an undo failure rather than just one)
    */
   void undoMoves(final Set<Unit> units) {
-    final Set<UndoableMove> movesToUndo = getMovesToUndo(units, getMoveDelegate().getMovesMade());
+    final Set<UndoableMove> movesToUndo = getMovesToUndo(units, getMovesMade());
 
     if (movesToUndo.isEmpty()) {
       final String error =

@@ -20,6 +20,8 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.http.client.web.socket.messages.MessageType;
+import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 
 /**
  * Communication with the GamePlayer goes through the PlayerBridge to make the game network
@@ -127,6 +129,76 @@ public class PlayerBridge {
       }
       throw e;
     }
+  }
+
+  /**
+   * Resolves the current delegate to its remote endpoint name, mirroring {@link
+   * #getRemoteDelegate()}'s lookup so a typed delegate message addresses the same endpoint the
+   * reflective proxy used.
+   */
+  public RemoteName getCurrentDelegateRemoteName() {
+    if (game.isGameOver()) {
+      throw new GameOverException("Game Over");
+    }
+    try (GameData.Unlocker ignored = game.getData().acquireReadLock()) {
+      final Optional<IDelegate> optionalDelegate =
+          game.getData().getDelegateOptional(currentDelegate);
+      Preconditions.checkState(
+          optionalDelegate.isPresent(),
+          "IDelegate in PlayerBridge cannot be null. CurrentStep: "
+              + stepName
+              + ", and CurrentDelegate: "
+              + currentDelegate);
+      return ServerGame.getRemoteName(optionalDelegate.get());
+    }
+  }
+
+  /**
+   * Sends a typed request to the current delegate and blocks for its typed reply, preserving the
+   * game-over semantics of the reflective proxy. Void business methods use a typed acknowledgement
+   * response so the caller still blocks until the delegate has applied the change.
+   */
+  public <R extends WebSocketMessage> R invokeCurrentDelegate(
+      final WebSocketMessage request, final MessageType<R> responseType) {
+    try {
+      return game.getMessengers()
+          .invokeRemoteMessage(getCurrentDelegateRemoteName(), request, responseType);
+    } catch (final RuntimeException e) {
+      throw convertToGameOverIfNeeded(e);
+    }
+  }
+
+  /**
+   * Sends a typed request to a named persistent delegate and blocks for its typed reply. Returns
+   * {@code null} when the delegate is not a persistent delegate, matching {@link
+   * #getRemotePersistentDelegate(String)}.
+   */
+  @Nullable
+  public <R extends WebSocketMessage> R invokePersistentDelegate(
+      final String name, final WebSocketMessage request, final MessageType<R> responseType) {
+    final RemoteName remoteName;
+    if (game.isGameOver()) {
+      throw new GameOverException("Game Over");
+    }
+    try (GameData.Unlocker ignored = game.getData().acquireReadLock()) {
+      final IDelegate delegate = game.getData().getDelegate(name);
+      if (!(delegate instanceof IPersistentDelegate)) {
+        return null;
+      }
+      remoteName = ServerGame.getRemoteName(delegate);
+    }
+    try {
+      return game.getMessengers().invokeRemoteMessage(remoteName, request, responseType);
+    } catch (final RuntimeException e) {
+      throw convertToGameOverIfNeeded(e);
+    }
+  }
+
+  private RuntimeException convertToGameOverIfNeeded(final RuntimeException e) {
+    if (e.getCause() instanceof MessengerException) {
+      return new GameOverException("Game Over!");
+    }
+    return e;
   }
 
   private IRemote getRemoteThatChecksForGameOver(final IRemote implementor) {

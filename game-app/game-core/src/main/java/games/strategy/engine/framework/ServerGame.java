@@ -43,6 +43,7 @@ import games.strategy.net.Messengers;
 import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.EditDelegate;
+import games.strategy.triplea.delegate.remote.DelegateRemoteMessageHandlers;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -295,6 +296,9 @@ public class ServerGame extends AbstractGame {
             delegate, new Class<?>[] {delegate.getRemoteType()});
     final RemoteName descriptor = getRemoteName(delegate);
     messengers.registerRemote(wrappedDelegate, descriptor);
+    // Register the typed delegate-message handlers (guarded/idempotent). The per-name endpoint
+    // registered above supplies the specific delegate as the handler's implementor at dispatch.
+    DelegateRemoteMessageHandlers.registerAll(messengers, gameData);
   }
 
   public static RemoteName getRemoteName(final IDelegate delegate) {

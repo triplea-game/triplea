@@ -1,0 +1,6 @@
+{
+  "type": "games.strategy.triplea.delegate.remote.IEditDelegate$SetEditModeRequest",
+  "payload": {
+    "editMode": true
+  }
+}

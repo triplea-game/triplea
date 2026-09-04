@@ -1,0 +1,15 @@
+{
+  "type": "games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate$GetPlaceableUnitsRequest",
+  "payload": {
+    "units": [
+      {
+        "kind": "unit",
+        "key": "11111111-1111-1111-1111-111111111111"
+      }
+    ],
+    "at": {
+      "kind": "territory",
+      "key": "France"
+    }
+  }
+}

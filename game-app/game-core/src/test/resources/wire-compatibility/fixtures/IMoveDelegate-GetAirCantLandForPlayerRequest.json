@@ -1,0 +1,9 @@
+{
+  "type": "games.strategy.triplea.delegate.remote.IMoveDelegate$GetAirCantLandForPlayerRequest",
+  "payload": {
+    "player": {
+      "kind": "player",
+      "key": "Germans"
+    }
+  }
+}

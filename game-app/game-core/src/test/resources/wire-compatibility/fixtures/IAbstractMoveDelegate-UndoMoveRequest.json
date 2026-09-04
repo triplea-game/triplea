@@ -1,0 +1,6 @@
+{
+  "type": "games.strategy.triplea.delegate.remote.IAbstractMoveDelegate$UndoMoveRequest",
+  "payload": {
+    "moveIndex": 3
+  }
+}

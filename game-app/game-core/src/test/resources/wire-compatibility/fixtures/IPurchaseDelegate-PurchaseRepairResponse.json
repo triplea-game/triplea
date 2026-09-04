@@ -1,0 +1,6 @@
+{
+  "type": "games.strategy.triplea.delegate.remote.IPurchaseDelegate$PurchaseRepairResponse",
+  "payload": {
+    "error": "Some error"
+  }
+}

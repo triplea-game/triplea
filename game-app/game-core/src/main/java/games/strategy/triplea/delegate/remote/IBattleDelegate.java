@@ -1,21 +1,120 @@
 package games.strategy.triplea.delegate.remote;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteActionCode;
+import games.strategy.engine.message.wire.EntityRef;
+import games.strategy.net.Messengers;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.data.BattleListing;
+import java.io.Serial;
 import java.io.Serializable;
+import javax.annotation.Nullable;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.triplea.http.client.web.socket.MessageEnvelope;
+import org.triplea.http.client.web.socket.messages.MessageType;
+import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.java.RemoveOnNextMajorRelease;
 
 /** Logic for querying and fighting pending battles. */
 public interface IBattleDelegate extends IRemote, IDelegate {
+  /**
+   * Registers the typed handlers for this delegate's converted methods, guarded for idempotency.
+   */
+  static void registerHandlers(final Messengers messengers, final GameData gameData) {
+    if (!messengers.hasTypedMessageHandler(GetBattleListingRequest.TYPE)) {
+      messengers.registerMessageHandler(
+          GetBattleListingRequest.TYPE,
+          (request, implementor) ->
+              new GetBattleListingResponse(((IBattleDelegate) implementor).getBattleListing()));
+    }
+    if (!messengers.hasTypedMessageHandler(FightBattleRequest.TYPE)) {
+      messengers.registerMessageHandler(
+          FightBattleRequest.TYPE,
+          (request, implementor) ->
+              new FightBattleResponse(
+                  ((IBattleDelegate) implementor)
+                      .fightBattle(
+                          request.getWhere().resolveTerritory(gameData),
+                          request.isBombing(),
+                          request.getType())));
+    }
+  }
+
   /** Returns the battles currently waiting to be fought. */
   @RemoteActionCode(3)
   BattleListing getBattleListing();
+
+  /** Typed request asking for the pending battle listing. */
+  class GetBattleListingRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5320048576544673221L;
+
+    public static final MessageType<GetBattleListingRequest> TYPE =
+        MessageType.of(GetBattleListingRequest.class);
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /**
+   * Typed reply carrying the pending battle listing. The listing rides the Java wire as it did
+   * under the reflective path, so it has no Gson fixture.
+   */
+  @AllArgsConstructor
+  class GetBattleListingResponse implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5320048576544673222L;
+
+    public static final MessageType<GetBattleListingResponse> TYPE =
+        MessageType.of(GetBattleListingResponse.class);
+
+    @Getter private final BattleListing battleListing;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed request to fight the battle in a given territory. */
+  @AllArgsConstructor
+  class FightBattleRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5320048576544673223L;
+
+    public static final MessageType<FightBattleRequest> TYPE =
+        MessageType.of(FightBattleRequest.class);
+
+    @Getter private final EntityRef where;
+    @Getter private final boolean bombing;
+    @Getter private final BattleType type;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed reply with an error string, or null when the battle was fought successfully. */
+  @AllArgsConstructor
+  class FightBattleResponse implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5320048576544673224L;
+
+    public static final MessageType<FightBattleResponse> TYPE =
+        MessageType.of(FightBattleResponse.class);
+
+    @Getter @Nullable private final String error;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
 
   /**
    * Fight the battle in the given country.

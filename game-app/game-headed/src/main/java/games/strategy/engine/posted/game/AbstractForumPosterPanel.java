@@ -63,7 +63,11 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
     }
 
     final boolean hasPosted =
-        ((IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate()).getHasPostedTurnSummary();
+        playerBridge
+            .invokeCurrentDelegate(
+                new IAbstractForumPosterDelegate.GetHasPostedTurnSummaryRequest(),
+                IAbstractForumPosterDelegate.GetHasPostedTurnSummaryResponse.TYPE)
+            .isHasPosted();
 
     SwingUtilities.invokeLater(
         () -> {

@@ -7,19 +7,70 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IPersistentDelegate;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteActionCode;
+import games.strategy.net.Messengers;
 import games.strategy.triplea.delegate.TechAdvance;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Collection;
 import javax.annotation.Nullable;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.triplea.http.client.web.socket.MessageEnvelope;
+import org.triplea.http.client.web.socket.messages.MessageType;
+import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Triple;
 
 /** Remote interface for EditDelegate. */
 public interface IEditDelegate extends IRemote, IPersistentDelegate {
+  /**
+   * Registers the typed handlers for this delegate's converted methods, guarded for idempotency.
+   */
+  static void registerHandlers(final Messengers messengers) {
+    if (!messengers.hasTypedMessageHandler(SetEditModeRequest.TYPE)) {
+      messengers.registerMessageHandler(
+          SetEditModeRequest.TYPE,
+          (request, implementor) -> {
+            ((IEditDelegate) implementor).setEditMode(request.isEditMode());
+            return new SetEditModeResponse();
+          });
+    }
+  }
+
   @RemoteActionCode(9)
   boolean getEditMode();
 
   @RemoteActionCode(12)
   void setEditMode(boolean editMode);
+
+  /** Typed request to toggle edit mode. */
+  @AllArgsConstructor
+  class SetEditModeRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5320048576544676221L;
+
+    public static final MessageType<SetEditModeRequest> TYPE =
+        MessageType.of(SetEditModeRequest.class);
+
+    @Getter private final boolean editMode;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed acknowledgement that edit mode was toggled. */
+  class SetEditModeResponse implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5320048576544676222L;
+
+    public static final MessageType<SetEditModeResponse> TYPE =
+        MessageType.of(SetEditModeResponse.class);
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
 
   @RemoteActionCode(11)
   @Nullable

@@ -4,9 +4,16 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteActionCode;
+import games.strategy.net.Messengers;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.Nullable;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.triplea.http.client.web.socket.MessageEnvelope;
+import org.triplea.http.client.web.socket.messages.MessageType;
+import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 
 /**
  * Remote interface for MoveDelegate and PlaceDelegate.
@@ -15,12 +22,63 @@ import javax.annotation.Nullable;
  */
 public interface IAbstractMoveDelegate<T> extends IRemote, IDelegate {
   /**
+   * Registers the typed handlers shared by every move/place delegate, guarded for idempotency. The
+   * moves-made list rides the Java wire (as it did under the reflective path), so its response has
+   * no Gson fixture. A single handler serves every delegate because each per-name endpoint supplies
+   * its own implementor at dispatch.
+   */
+  static void registerHandlers(final Messengers messengers) {
+    if (!messengers.hasTypedMessageHandler(GetMovesMadeRequest.TYPE)) {
+      messengers.registerMessageHandler(
+          GetMovesMadeRequest.TYPE,
+          (request, implementor) ->
+              new GetMovesMadeResponse(((IAbstractMoveDelegate<?>) implementor).getMovesMade()));
+    }
+    if (!messengers.hasTypedMessageHandler(UndoMoveRequest.TYPE)) {
+      messengers.registerMessageHandler(
+          UndoMoveRequest.TYPE,
+          (request, implementor) ->
+              new UndoMoveResponse(
+                  ((IAbstractMoveDelegate<?>) implementor).undoMove(request.getMoveIndex())));
+    }
+  }
+
+  /**
    * Get the moves already made.
    *
    * @return A list of moves already made.
    */
   @RemoteActionCode(4)
   List<T> getMovesMade();
+
+  /** Typed request asking for the moves already made. */
+  class GetMovesMadeRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5320048576544677221L;
+
+    public static final MessageType<GetMovesMadeRequest> TYPE =
+        MessageType.of(GetMovesMadeRequest.class);
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed reply carrying the moves already made (the list rides the Java wire). */
+  @AllArgsConstructor
+  class GetMovesMadeResponse implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5320048576544677222L;
+
+    public static final MessageType<GetMovesMadeResponse> TYPE =
+        MessageType.of(GetMovesMadeResponse.class);
+
+    @Getter private final List<?> movesMade;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
 
   /**
    * Undoes the move at the specified index.
@@ -31,6 +89,36 @@ public interface IAbstractMoveDelegate<T> extends IRemote, IDelegate {
   @RemoteActionCode(12)
   @Nullable
   String undoMove(int moveIndex);
+
+  /** Typed request to undo the move at a given index. */
+  @AllArgsConstructor
+  class UndoMoveRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5320048576544677223L;
+
+    public static final MessageType<UndoMoveRequest> TYPE = MessageType.of(UndoMoveRequest.class);
+
+    @Getter private final int moveIndex;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed reply with an error string, or null when the move was undone. */
+  @AllArgsConstructor
+  class UndoMoveResponse implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5320048576544677224L;
+
+    public static final MessageType<UndoMoveResponse> TYPE = MessageType.of(UndoMoveResponse.class);
+
+    @Getter @Nullable private final String error;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
 
   @RemoteActionCode(7)
   @Override

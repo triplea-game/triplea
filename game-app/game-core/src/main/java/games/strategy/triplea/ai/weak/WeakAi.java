@@ -13,6 +13,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.message.wire.EntityRef;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
@@ -42,6 +43,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -120,38 +122,36 @@ public class WeakAi extends AbstractAi {
       final GameData data,
       final GamePlayer player) {
     if (nonCombat) {
-      doNonCombatMove(moveDel, player, data);
+      doNonCombatMove(player, data);
     } else {
-      doCombatMove(moveDel, player, data);
+      doCombatMove(player, data);
     }
     movePause();
   }
 
-  private void doNonCombatMove(
-      final IMoveDelegate moveDel, final GamePlayer player, final GameData data) {
+  private void doNonCombatMove(final GamePlayer player, final GameData data) {
     // load the transports first
     // they may be able to move farther
-    doMove(calculateTransportLoad(data, player), moveDel);
+    doMove(calculateTransportLoad(data, player));
     // do the rest of the moves
-    doMove(calculateNonCombat(data, player), moveDel);
-    doMove(calculateNonCombatSea(true, data, player), moveDel);
+    doMove(calculateNonCombat(data, player));
+    doMove(calculateNonCombatSea(true, data, player));
     // load the transports again if we can
     // they may be able to move farther
-    doMove(calculateTransportLoad(data, player), moveDel);
+    doMove(calculateTransportLoad(data, player));
     // unload the transports that can be unloaded
-    doMove(calculateTransportUnloadNonCombat(data, player), moveDel);
+    doMove(calculateTransportUnloadNonCombat(data, player));
   }
 
-  private void doCombatMove(
-      final IMoveDelegate moveDel, final GamePlayer player, final GameData data) {
+  private void doCombatMove(final GamePlayer player, final GameData data) {
     // load the transports first
     // they may be able to take part in a battle
-    doMove(calculateTransportLoad(data, player), moveDel);
-    doMove(calculateCombatSea(data, player), moveDel);
+    doMove(calculateTransportLoad(data, player));
+    doMove(calculateCombatSea(data, player));
 
     // fight
-    doMove(calculateCombatMove(data, player), moveDel);
-    doMove(calculateCombatMoveSea(data, player), moveDel);
+    doMove(calculateCombatMove(data, player));
+    doMove(calculateCombatMoveSea(data, player));
   }
 
   private List<MoveDescription> calculateTransportLoad(
@@ -233,9 +233,11 @@ public class WeakAi extends AbstractAi {
     return units;
   }
 
-  private static void doMove(final List<MoveDescription> moves, final IMoveDelegate moveDel) {
+  private void doMove(final List<MoveDescription> moves) {
     for (final MoveDescription move : moves) {
-      moveDel.performMove(move);
+      getPlayerBridge()
+          .invokeCurrentDelegate(
+              new IMoveDelegate.PerformMoveRequest(move), IMoveDelegate.PerformMoveResponse.TYPE);
       movePause();
     }
   }
@@ -512,8 +514,6 @@ public class WeakAi extends AbstractAi {
 
   private List<MoveDescription> movePlanesHomeNonCombat(
       final GamePlayer player, final GameData data) {
-    // the preferred way to get the delegate
-    final IMoveDelegate delegateRemote = (IMoveDelegate) getPlayerBridge().getRemoteDelegate();
     // this works because we are on the server
     final BattleDelegate delegate = data.getBattleDelegate();
     final Predicate<Territory> canLand =
@@ -522,8 +522,13 @@ public class WeakAi extends AbstractAi {
         Matches.territoryHasEnemyAaForFlyOver(player)
             .negate()
             .and(Matches.territoryIsImpassable().negate());
+    final Collection<Territory> airCantLand =
+        getPlayerBridge()
+            .invokeCurrentDelegate(
+                new IMoveDelegate.GetAirCantLandRequest(), IMoveDelegate.TerritoriesResponse.TYPE)
+            .resolve(data);
     final var moves = new ArrayList<MoveDescription>();
-    for (final Territory t : delegateRemote.getTerritoriesWhereAirCantLand()) {
+    for (final Territory t : airCantLand) {
       final Optional<Route> noAaRoute = Utils.findNearest(t, canLand, routeCondition, data);
       final Optional<Route> aaRoute =
           Utils.findNearest(t, canLand, Matches.territoryIsImpassable().negate(), data);
@@ -797,7 +802,10 @@ public class WeakAi extends AbstractAi {
           }
         }
       }
-      purchaseDelegate.purchase(purchase);
+      getPlayerBridge()
+          .invokeCurrentDelegate(
+              new IPurchaseDelegate.PurchaseRequest(purchase),
+              IPurchaseDelegate.PurchaseResponse.TYPE);
       movePause();
       return;
     }
@@ -910,7 +918,10 @@ public class WeakAi extends AbstractAi {
             repairMap.add(rrule, diff);
             repair.put(capUnit, repairMap);
             leftToSpend -= diff;
-            purchaseDelegate.purchaseRepair(repair);
+            getPlayerBridge()
+                .invokeCurrentDelegate(
+                    new IPurchaseDelegate.PurchaseRepairRequest(repair),
+                    IPurchaseDelegate.PurchaseRepairResponse.TYPE);
             repair.clear();
             repairMap.clear();
             // ideally we would adjust this after each single PU spent, then re-evaluate everything.
@@ -957,7 +968,10 @@ public class WeakAi extends AbstractAi {
               repairMap.add(rrule, diff);
               repair.put(fixUnit, repairMap);
               leftToSpend -= diff;
-              purchaseDelegate.purchaseRepair(repair);
+              getPlayerBridge()
+                  .invokeCurrentDelegate(
+                      new IPurchaseDelegate.PurchaseRepairRequest(repair),
+                      IPurchaseDelegate.PurchaseRepairResponse.TYPE);
               repair.clear();
               repairMap.clear();
               // ideally we would adjust this after each single PU spent, then re-evaluate
@@ -1036,7 +1050,10 @@ public class WeakAi extends AbstractAi {
         }
       }
     }
-    purchaseDelegate.purchase(purchase);
+    getPlayerBridge()
+        .invokeCurrentDelegate(
+            new IPurchaseDelegate.PurchaseRequest(purchase),
+            IPurchaseDelegate.PurchaseResponse.TYPE);
     movePause();
   }
 
@@ -1056,7 +1073,7 @@ public class WeakAi extends AbstractAi {
     // place in capitol first, but not if it's impassable
     optionalCapitol
         .filter(Matches.territoryIsImpassable().negate())
-        .ifPresent(capitol -> placeAllWeCanOn(data, capitol, placeDelegate, player));
+        .ifPresent(capitol -> placeAllWeCanOn(data, capitol, player));
     final List<Territory> randomTerritories = new ArrayList<>(data.getMap().getTerritories());
     Collections.shuffle(randomTerritories);
     final @Nullable Territory capitol = optionalCapitol.orElse(null);
@@ -1064,17 +1081,21 @@ public class WeakAi extends AbstractAi {
       if (!t.equals(capitol)
           && t.isOwnedBy(player)
           && (placementAnyTerritory || t.anyUnitsMatch(Matches.unitCanProduceUnits()))) {
-        placeAllWeCanOn(data, t, placeDelegate, player);
+        placeAllWeCanOn(data, t, player);
       }
     }
   }
 
-  private static void placeAllWeCanOn(
-      final GameState data,
-      final Territory placeAt,
-      final IAbstractPlaceDelegate placeDelegate,
-      final GamePlayer player) {
-    final PlaceableUnits pu = placeDelegate.getPlaceableUnits(player.getUnits(), placeAt);
+  private void placeAllWeCanOn(
+      final GameState data, final Territory placeAt, final GamePlayer player) {
+    final PlaceableUnits pu =
+        getPlayerBridge()
+            .invokeCurrentDelegate(
+                new IAbstractPlaceDelegate.GetPlaceableUnitsRequest(
+                    player.getUnits().stream().map(EntityRef::of).collect(Collectors.toList()),
+                    EntityRef.of(placeAt)),
+                IAbstractPlaceDelegate.GetPlaceableUnitsResponse.TYPE)
+            .getPlaceableUnits();
     if (pu.getErrorMessage() != null) {
       return;
     }
@@ -1099,20 +1120,25 @@ public class WeakAi extends AbstractAi {
         final int seaPlacement = Math.min(placementLeft, seaUnits.size());
         placementLeft -= seaPlacement;
         final Collection<Unit> toPlace = seaUnits.subList(0, seaPlacement);
-        doPlace(seaPlaceAt, toPlace, placeDelegate);
+        doPlace(seaPlaceAt, toPlace);
       }
     }
     final List<Unit> landUnits = new ArrayList<>(player.getMatches(Matches.unitIsLand()));
     if (!landUnits.isEmpty()) {
       final int landPlaceCount = Math.min(placementLeft, landUnits.size());
       final Collection<Unit> toPlace = landUnits.subList(0, landPlaceCount);
-      doPlace(placeAt, toPlace, placeDelegate);
+      doPlace(placeAt, toPlace);
     }
   }
 
-  private static void doPlace(
-      final Territory where, final Collection<Unit> toPlace, final IAbstractPlaceDelegate del) {
-    del.placeUnits(new ArrayList<>(toPlace), where, IAbstractPlaceDelegate.BidMode.NOT_BID);
+  private void doPlace(final Territory where, final Collection<Unit> toPlace) {
+    getPlayerBridge()
+        .invokeCurrentDelegate(
+            new IAbstractPlaceDelegate.PlaceUnitsRequest(
+                toPlace.stream().map(EntityRef::of).collect(Collectors.toList()),
+                EntityRef.of(where),
+                IAbstractPlaceDelegate.BidMode.NOT_BID),
+            IAbstractPlaceDelegate.PlaceUnitsResponse.TYPE);
     movePause();
   }
 

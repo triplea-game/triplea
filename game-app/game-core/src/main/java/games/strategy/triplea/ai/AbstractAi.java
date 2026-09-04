@@ -7,6 +7,7 @@ import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.message.wire.EntityRef;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
@@ -517,7 +518,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
         move(GameStep.isNonCombatMoveStepName(name), moveDel, getGameData(), gamePlayer);
       }
     } else if (GameStep.isBattleStepName(name)) {
-      battle((IBattleDelegate) getPlayerBridge().getRemoteDelegate());
+      battle();
     } else if (GameStep.isPoliticsStepName(name)) {
       politicalActions();
     } else if (GameStep.isPlaceStepName(name)) {
@@ -591,18 +592,22 @@ public abstract class AbstractAi extends AbstractBasePlayer {
 
   /**
    * It is the AI's turn to fight. Subclasses may override this if they want, but generally the AI
-   * does not need to worry about the order of fighting battles.
-   *
-   * @param battleDelegate the battle delegate to query for battles not fought and the
+   * does not need to worry about the order of fighting battles. Battles are queried and fought
+   * against the current battle delegate via typed messages on the player bridge.
    */
-  protected void battle(final IBattleDelegate battleDelegate) {
+  protected void battle() {
     // generally all AI's will follow the same logic.
     // loop until all battles are fought.
     // rather than try to analyze battles to figure out which must be fought before others
     // as in the case of a naval battle preceding an amphibious attack, keep trying to fight every
     // battle
     while (true) {
-      final BattleListing listing = battleDelegate.getBattleListing();
+      final BattleListing listing =
+          getPlayerBridge()
+              .invokeCurrentDelegate(
+                  new IBattleDelegate.GetBattleListingRequest(),
+                  IBattleDelegate.GetBattleListingResponse.TYPE)
+              .getBattleListing();
       if (listing.isEmpty()) {
         return;
       }
@@ -610,7 +615,12 @@ public abstract class AbstractAi extends AbstractBasePlayer {
           listing.getBattlesMap().entrySet()) {
         for (final Territory current : entry.getValue()) {
           final String error =
-              battleDelegate.fightBattle(current, entry.getKey().isBombingRun(), entry.getKey());
+              getPlayerBridge()
+                  .invokeCurrentDelegate(
+                      new IBattleDelegate.FightBattleRequest(
+                          EntityRef.of(current), entry.getKey().isBombingRun(), entry.getKey()),
+                      IBattleDelegate.FightBattleResponse.TYPE)
+                  .getError();
           if (error != null && !BattleDelegate.isBattleDependencyErrorMessage(error)) {
             log.warn(error);
           }
@@ -620,8 +630,6 @@ public abstract class AbstractAi extends AbstractBasePlayer {
   }
 
   protected void politicalActions() {
-    final IPoliticsDelegate remotePoliticsDelegate =
-        (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
     final GameData data = getGameData();
     final GamePlayer gamePlayer = this.getGamePlayer();
     final float numPlayers = data.getPlayerList().getPlayers().size();
@@ -663,7 +671,10 @@ public abstract class AbstractAi extends AbstractBasePlayer {
           if (i > maxWarActionsPerTurn) {
             break;
           }
-          remotePoliticsDelegate.attemptAction(action);
+          getPlayerBridge()
+              .invokeCurrentDelegate(
+                  new IPoliticsDelegate.AttemptActionRequest(action),
+                  IPoliticsDelegate.AttemptActionResponse.TYPE);
         }
       }
     } else {
@@ -694,7 +705,10 @@ public abstract class AbstractAi extends AbstractBasePlayer {
           if (i > maxOtherActionsPerTurn) {
             break;
           }
-          remotePoliticsDelegate.attemptAction(action);
+          getPlayerBridge()
+              .invokeCurrentDelegate(
+                  new IPoliticsDelegate.AttemptActionRequest(action),
+                  IPoliticsDelegate.AttemptActionResponse.TYPE);
         }
       }
     }

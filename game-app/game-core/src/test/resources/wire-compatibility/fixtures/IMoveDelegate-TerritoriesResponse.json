@@ -1,0 +1,11 @@
+{
+  "type": "games.strategy.triplea.delegate.remote.IMoveDelegate$TerritoriesResponse",
+  "payload": {
+    "territories": [
+      {
+        "kind": "territory",
+        "key": "France"
+      }
+    ]
+  }
+}

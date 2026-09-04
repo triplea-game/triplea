@@ -1,0 +1,11 @@
+{
+  "type": "games.strategy.triplea.delegate.remote.IBattleDelegate$FightBattleRequest",
+  "payload": {
+    "where": {
+      "kind": "territory",
+      "key": "France"
+    },
+    "bombing": false,
+    "type": "NORMAL"
+  }
+}

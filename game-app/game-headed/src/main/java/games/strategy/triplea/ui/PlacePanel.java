@@ -11,6 +11,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.message.wire.EntityRef;
 import games.strategy.engine.player.PlayerBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.PlayerAttachment;
@@ -30,6 +31,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -89,8 +91,13 @@ class PlacePanel extends AbstractMovePanel implements GameDataChangeListener {
             // and not client side. Using the local client bridge causes a NPE when
             // a game-client (in a networked game) tries to place units.
             final PlaceableUnits production =
-                ((IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate())
-                    .getPlaceableUnits(units, territory);
+                getPlayerBridge()
+                    .invokeCurrentDelegate(
+                        new IAbstractPlaceDelegate.GetPlaceableUnitsRequest(
+                            units.stream().map(EntityRef::of).collect(Collectors.toList()),
+                            EntityRef.of(territory)),
+                        IAbstractPlaceDelegate.GetPlaceableUnitsResponse.TYPE)
+                    .getPlaceableUnits();
             if (production.isError()) {
               JOptionPane.showMessageDialog(
                   getTopLevelAncestor(),
