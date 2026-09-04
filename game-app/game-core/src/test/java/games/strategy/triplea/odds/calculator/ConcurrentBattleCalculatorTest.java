@@ -3,8 +3,7 @@ package games.strategy.triplea.odds.calculator;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -69,6 +68,6 @@ class ConcurrentBattleCalculatorTest extends AbstractClientSettingTestCase {
                     false,
                     10));
 
-    assertThat(results.getResults(), empty());
+    assertThat(results.getResults()).isEmpty();
   }
 }

@@ -1,7 +1,6 @@
 package games.strategy.triplea.settings;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -17,14 +16,12 @@ final class PathClientSettingTest {
     @Test
     void shouldReturnEncodedValue() {
       final String separator = File.separator;
-      assertThat(
-          clientSetting.encodeValue(Path.of("/absolute", "path", "to", "file")),
-          is(
+      assertThat(clientSetting.encodeValue(Path.of("/absolute", "path", "to", "file")))
+          .isEqualTo(
               String.format(
-                  "%sabsolute%spath%sto%sfile", separator, separator, separator, separator)));
-      assertThat(
-          clientSetting.encodeValue(Path.of("relative", "path", "to", "file")),
-          is(String.format("relative%spath%sto%sfile", separator, separator, separator)));
+                  "%sabsolute%spath%sto%sfile", separator, separator, separator, separator));
+      assertThat(clientSetting.encodeValue(Path.of("relative", "path", "to", "file")))
+          .isEqualTo(String.format("relative%spath%sto%sfile", separator, separator, separator));
     }
   }
 
@@ -32,12 +29,10 @@ final class PathClientSettingTest {
   final class DecodeValueTest {
     @Test
     void shouldReturnPath() {
-      assertThat(
-          clientSetting.decodeValue("/absolute/path/to/file"),
-          is(Path.of("/absolute", "path", "to", "file")));
-      assertThat(
-          clientSetting.decodeValue("relative/path/to/file"),
-          is(Path.of("relative", "path", "to", "file")));
+      assertThat(clientSetting.decodeValue("/absolute/path/to/file"))
+          .isEqualTo(Path.of("/absolute", "path", "to", "file"));
+      assertThat(clientSetting.decodeValue("relative/path/to/file"))
+          .isEqualTo(Path.of("relative", "path", "to", "file"));
     }
   }
 }

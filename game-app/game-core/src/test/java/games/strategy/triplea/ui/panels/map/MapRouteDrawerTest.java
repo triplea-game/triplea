@@ -1,9 +1,6 @@
 package games.strategy.triplea.ui.panels.map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayWithSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -123,9 +120,9 @@ final class MapRouteDrawerTest {
     final MapRouteDrawer routeDrawer = new MapRouteDrawer(mock(MapPanel.class), dummyMapData);
     final double[] index = routeDrawer.newParameterizedIndex(points);
 
-    assertThat(Arrays.stream(index).boxed().toArray(), is(arrayWithSize(points.length)));
+    assertThat(Arrays.stream(index).boxed().toArray()).hasSize(points.length);
     for (int i = 1; i < points.length; i++) {
-      assertThat(index[i - 1], is(lessThan(index[i])));
+      assertThat(index[i - 1]).isLessThan(index[i]);
     }
   }
 
