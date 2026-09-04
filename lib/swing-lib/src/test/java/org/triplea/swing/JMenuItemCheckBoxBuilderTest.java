@@ -1,7 +1,6 @@
 package org.triplea.swing;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
 import java.awt.event.KeyEvent;
@@ -21,14 +20,14 @@ class JMenuItemCheckBoxBuilderTest {
   void verifyTitle() {
     final var checkBoxMenuItem =
         new JMenuItemCheckBoxBuilder(TITLE, KeyCode.A).actionListener(e -> {}).build();
-    assertThat(checkBoxMenuItem.getText(), is(TITLE));
+    assertThat(checkBoxMenuItem.getText()).isEqualTo(TITLE);
   }
 
   @Test
   void verifyMnemonic() {
     final var checkBoxMenuItem =
         new JMenuItemCheckBoxBuilder(TITLE, KeyCode.A).actionListener(e -> {}).build();
-    assertThat(checkBoxMenuItem.getMnemonic(), is(KeyEvent.VK_A));
+    assertThat(checkBoxMenuItem.getMnemonic()).isEqualTo(KeyEvent.VK_A);
   }
 
   @Test
@@ -36,7 +35,7 @@ class JMenuItemCheckBoxBuilderTest {
     var checkBoxMenuItem =
         new JMenuItemCheckBoxBuilder(TITLE, KeyCode.A).actionListener(e -> {}).build();
 
-    assertThat(checkBoxMenuItem.isSelected(), is(false));
+    assertThat(checkBoxMenuItem.isSelected()).isFalse();
 
     checkBoxMenuItem =
         new JMenuItemCheckBoxBuilder(TITLE, KeyCode.A)
@@ -44,7 +43,7 @@ class JMenuItemCheckBoxBuilderTest {
             .selected(true)
             .build();
 
-    assertThat(checkBoxMenuItem.isSelected(), is(true));
+    assertThat(checkBoxMenuItem.isSelected()).isTrue();
   }
 
   @Nested
@@ -56,18 +55,18 @@ class JMenuItemCheckBoxBuilderTest {
     void addActionListener() {
       var checkBoxMenuItem =
           new JMenuItemCheckBoxBuilder(TITLE, KeyCode.A).actionListener(e -> {}).build();
-      assertThat(checkBoxMenuItem.getActionListeners().length, is(1));
+      assertThat(checkBoxMenuItem.getActionListeners().length).isEqualTo(1);
 
       checkBoxMenuItem =
           new JMenuItemCheckBoxBuilder(TITLE, KeyCode.A)
               .actionListener(selected -> {})
               .selected(true)
               .build();
-      assertThat(
-          "Adding the first action listener replaces the default swing "
-              + "action listener that exists on the component",
-          checkBoxMenuItem.getActionListeners().length,
-          is(1));
+      assertThat(checkBoxMenuItem.getActionListeners().length)
+          .as(
+              "Adding the first action listener replaces the default swing "
+                  + "action listener that exists on the component")
+          .isEqualTo(1);
     }
 
     @Test

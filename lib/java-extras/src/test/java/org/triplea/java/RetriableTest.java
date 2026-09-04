@@ -1,9 +1,6 @@
 package org.triplea.java;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.Duration;
@@ -78,8 +75,8 @@ class RetriableTest {
             .withTask(task)
             .buildAndExecute();
 
-    assertThat(result, isEmpty());
-    assertThat(task.invocationCount, is(2));
+    assertThat(result).isEmpty();
+    assertThat(task.invocationCount).isEqualTo(2);
   }
 
   @Test
@@ -93,8 +90,8 @@ class RetriableTest {
             .withTask(task)
             .buildAndExecute();
 
-    assertThat(result, is(isPresent()));
-    assertThat(task.invocationCount, is(2));
+    assertThat(result).isPresent();
+    assertThat(task.invocationCount).isEqualTo(2);
   }
 
   @Test
@@ -108,8 +105,8 @@ class RetriableTest {
             .withTask(task)
             .buildAndExecute();
 
-    assertThat(result, is(isPresent()));
-    assertThat(task.invocationCount, is(1));
+    assertThat(result).isPresent();
+    assertThat(task.invocationCount).isEqualTo(1);
   }
 
   @Test
@@ -125,6 +122,6 @@ class RetriableTest {
         .withTask(task)
         .buildAndExecute();
 
-    assertThat(sleepCount, is(maxAttempts - 1));
+    assertThat(sleepCount).isEqualTo(maxAttempts - 1);
   }
 }
