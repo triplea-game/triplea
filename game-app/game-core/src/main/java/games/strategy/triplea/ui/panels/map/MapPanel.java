@@ -531,7 +531,6 @@ public class MapPanel extends ImageScrollerLargeView {
     unitSelectionListeners.remove(listener);
   }
 
-  // We iterate over a copy of the listener list to allow listeners to modify it
   private void notifyUnitSelected(
       final List<Unit> units, @Nullable final Territory territory, final MouseDetails me) {
     for (final UnitSelectionListener listener :
