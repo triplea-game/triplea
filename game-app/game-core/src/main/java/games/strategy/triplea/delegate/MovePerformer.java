@@ -11,7 +11,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.player.Player;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -65,14 +65,6 @@ public class MovePerformer implements Serializable {
     if (aaInMoveUtil != null) {
       aaInMoveUtil.initialize(bridge);
     }
-  }
-
-  private Player getRemotePlayer(final GamePlayer gamePlayer) {
-    return bridge.getRemotePlayer(gamePlayer);
-  }
-
-  private Player getRemotePlayer() {
-    return getRemotePlayer(player);
   }
 
   void moveUnits(
@@ -210,7 +202,8 @@ public class MovePerformer implements Serializable {
               boolean targetedAttack = false;
               // if it's all bombers and there's something to bomb
               if (allCanBomb && targetsOrEscort && GameStepPropertiesHelper.isCombatMove(data)) {
-                final boolean bombing = getRemotePlayer().shouldBomberBomb(route.getEnd());
+                final boolean bombing =
+                    PlayerRemoteMessageHandlers.shouldBomberBomb(bridge, player, route.getEnd());
                 // if bombing and there's something to target - ask what to bomb
                 if (bombing) {
                   // CompositeMatchOr<Unit> unitsToBeBombed = new
@@ -223,8 +216,8 @@ public class MovePerformer implements Serializable {
                           data.getProperties())
                       && !canCreateAirBattle) {
                     target =
-                        getRemotePlayer()
-                            .whatShouldBomberBomb(route.getEnd(), enemyTargets, arrived);
+                        PlayerRemoteMessageHandlers.whatShouldBomberBomb(
+                            bridge, player, route.getEnd(), enemyTargets, arrived);
                   } else if (!enemyTargets.isEmpty()) {
                     target = CollectionUtils.getAny(enemyTargets);
                   } else {

@@ -17,6 +17,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
@@ -900,9 +901,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
                 + ")";
         delegateBridge.getHistoryWriter().startEvent(notificationMessage);
         changeChanceDecrementOrIncrementOnSuccessOrFailure(delegateBridge, objectiveMet, true);
-        delegateBridge
-            .getRemotePlayer(delegateBridge.getGamePlayer())
-            .reportMessage(notificationMessage, notificationMessage);
+        PlayerRemoteMessageHandlers.reportMessage(
+            delegateBridge,
+            delegateBridge.getGamePlayer(),
+            notificationMessage,
+            notificationMessage);
       }
     }
     return objectiveMet != invert;

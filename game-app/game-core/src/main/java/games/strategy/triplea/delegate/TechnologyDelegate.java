@@ -7,7 +7,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.changefactory.ChangeFactory;
-import games.strategy.engine.player.Player;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -199,8 +199,9 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     int remainder = 0;
     final int diceSides = data.getDiceSides();
     if (EditDelegate.getEditMode(data.getProperties())) {
-      final Player tripleaPlayer = bridge.getRemotePlayer();
-      random = tripleaPlayer.selectFixedDice(techRolls, diceSides, annotation, diceSides);
+      random =
+          PlayerRemoteMessageHandlers.selectFixedDice(
+              bridge, bridge.getGamePlayer(), techRolls, diceSides, annotation, diceSides);
       techHits = getTechHits(random);
     } else if (Properties.getLowLuckTechOnly(getData().getProperties())) {
       techHits = techRolls / diceSides;
@@ -376,8 +377,9 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     final int[] random;
     if (Properties.getSelectableTechRoll(getData().getProperties())
         || EditDelegate.getEditMode(getData().getProperties())) {
-      final Player tripleaPlayer = bridge.getRemotePlayer();
-      random = tripleaPlayer.selectFixedDice(hits, 0, annotation, available.size());
+      random =
+          PlayerRemoteMessageHandlers.selectFixedDice(
+              bridge, bridge.getGamePlayer(), hits, 0, annotation, available.size());
     } else {
       random = new int[hits];
       final List<Integer> rolled = new ArrayList<>();

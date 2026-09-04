@@ -8,6 +8,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.message.IRemote;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -145,9 +146,11 @@ public class RandomStartDelegate extends BaseTripleADelegate {
               || unitsToPlace.size() > UNITS_PER_PICK
               || (unitsToPlace.size() < UNITS_PER_PICK
                   && unitsToPlace.size() < currentPickingPlayer.getUnits().size())) {
-            getRemotePlayer(currentPickingPlayer)
-                .reportMessage(
-                    "Chosen territory or units invalid!", "Chosen territory or units invalid!");
+            PlayerRemoteMessageHandlers.reportMessage(
+                bridge,
+                currentPickingPlayer,
+                "Chosen territory or units invalid!",
+                "Chosen territory or units invalid!");
           } else {
             break;
           }
@@ -207,9 +210,11 @@ public class RandomStartDelegate extends BaseTripleADelegate {
             || unitsToPlace.size() > UNITS_PER_PICK
             || (unitsToPlace.size() < UNITS_PER_PICK
                 && unitsToPlace.size() < currentPickingPlayer.getUnits().size())) {
-          getRemotePlayer(currentPickingPlayer)
-              .reportMessage(
-                  "Chosen territory or units invalid!", "Chosen territory or units invalid!");
+          PlayerRemoteMessageHandlers.reportMessage(
+              bridge,
+              currentPickingPlayer,
+              "Chosen territory or units invalid!",
+              "Chosen territory or units invalid!");
         } else {
           break;
         }

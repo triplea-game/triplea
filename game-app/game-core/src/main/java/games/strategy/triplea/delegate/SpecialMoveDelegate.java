@@ -12,6 +12,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
@@ -123,7 +124,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     final Collection<Territory> aaFiringTerritories =
         aaInMoveUtil.getTerritoriesWhereAaWillFire(route, units);
     if (!aaFiringTerritories.isEmpty()
-        && !bridge.getRemotePlayer().confirmMoveInFaceOfAa(aaFiringTerritories)) {
+        && !PlayerRemoteMessageHandlers.confirmMoveInFaceOfAa(
+            bridge, bridge.getGamePlayer(), aaFiringTerritories)) {
       return Optional.empty();
     }
     // do the move

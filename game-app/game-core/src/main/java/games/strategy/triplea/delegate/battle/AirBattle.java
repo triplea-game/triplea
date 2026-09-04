@@ -17,6 +17,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.change.HistoryChangeFactory;
 import games.strategy.engine.history.change.units.RemoveUnitsHistoryChange;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -367,7 +368,8 @@ public class AirBattle extends AbstractBattle {
                     gameData.getProperties())) {
               while (target == null) {
                 target =
-                    getRemote(bridge).whatShouldBomberBomb(battleSite, enemyTargets, List.of(unit));
+                    PlayerRemoteMessageHandlers.whatShouldBomberBomb(
+                        bridge, bridge.getGamePlayer(), battleSite, enemyTargets, List.of(unit));
               }
             } else {
               target = CollectionUtils.getAny(enemyTargets);
@@ -602,9 +604,12 @@ public class AirBattle extends AbstractBattle {
       if (isBombingRun) {
         // if bombing run, ask who will intercept
         interceptors =
-            getRemote(defender, bridge)
-                .selectUnitsQuery(
-                    battleSite, new ArrayList<>(defendingUnits), "Select Air to Intercept");
+            PlayerRemoteMessageHandlers.selectUnitsQuery(
+                bridge,
+                defender,
+                battleSite,
+                new ArrayList<>(defendingUnits),
+                "Select Air to Intercept");
         groundedPlanesRetreated = false;
       } else {
         // if normal battle, we may choose to withdraw some air units (keep them grounded for both
@@ -612,9 +617,12 @@ public class AirBattle extends AbstractBattle {
         // subsequent normal battle) instead of launching
         if (Properties.getAirBattleDefendersCanRetreat(gameData.getProperties())) {
           interceptors =
-              getRemote(defender, bridge)
-                  .selectUnitsQuery(
-                      battleSite, new ArrayList<>(defendingUnits), "Select Air to Intercept");
+              PlayerRemoteMessageHandlers.selectUnitsQuery(
+                  bridge,
+                  defender,
+                  battleSite,
+                  new ArrayList<>(defendingUnits),
+                  "Select Air to Intercept");
           groundedPlanesRetreated = true;
         } else {
           // if not allowed to withdraw, we must commit all air
@@ -933,15 +941,16 @@ public class AirBattle extends AbstractBattle {
         new Thread(
             () -> {
               try {
-                getRemote(firingPlayer, bridge)
-                    .confirmEnemyCasualties(battleId, "Press space to continue", hitPlayer);
+                PlayerRemoteMessageHandlers.confirmEnemyCasualties(
+                    bridge, firingPlayer, battleId, "Press space to continue", hitPlayer);
               } catch (final Exception e) {
                 log.error("Error during casualty notification", e);
               }
             },
             "Click to continue waiter");
     t.start();
-    getRemote(hitPlayer, bridge).confirmOwnCasualties(battleId, "Press space to continue");
+    PlayerRemoteMessageHandlers.confirmOwnCasualties(
+        bridge, hitPlayer, battleId, "Press space to continue");
     bridge.leaveDelegateExecution();
     Interruptibles.join(t);
     bridge.enterDelegateExecution();

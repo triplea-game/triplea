@@ -7,6 +7,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -159,12 +160,11 @@ class AaInMoveUtil implements Serializable {
                                 + SoundPath.CLIP_BATTLE_X_MISS,
                             defender));
                   }
-                  AaInMoveUtil.this
-                      .bridge
-                      .getRemotePlayer(player)
-                      .reportMessage(
-                          "No " + currentTypeAa + " hits in " + territory.getName(),
-                          "No " + currentTypeAa + " hits in " + territory.getName());
+                  PlayerRemoteMessageHandlers.reportMessage(
+                      AaInMoveUtil.this.bridge,
+                      player,
+                      "No " + currentTypeAa + " hits in " + territory.getName(),
+                      "No " + currentTypeAa + " hits in " + territory.getName());
                 } else {
                   if (currentTypeAa.equals("AA")) {
                     AaInMoveUtil.this.bridge.sendSoundMessage(
@@ -356,11 +356,11 @@ class AaInMoveUtil implements Serializable {
             player,
             null,
             territory);
-    bridge
-        .getRemotePlayer(player)
-        .reportMessage(
-            casualties.size() + " " + currentTypeAa + " hits in " + territory.getName(),
-            casualties.size() + " " + currentTypeAa + " hits in " + territory.getName());
+    PlayerRemoteMessageHandlers.reportMessage(
+        bridge,
+        player,
+        casualties.size() + " " + currentTypeAa + " hits in " + territory.getName(),
+        casualties.size() + " " + currentTypeAa + " hits in " + territory.getName());
     BattleDelegate.markDamaged(new ArrayList<>(casualties.getDamaged()), bridge, territory);
     bridge
         .getHistoryWriter()

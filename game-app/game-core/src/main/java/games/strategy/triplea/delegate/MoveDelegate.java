@@ -13,6 +13,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
@@ -641,7 +642,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
     // confirm kamikaze moves, and remove them from unresolved units
     if (getKamikazeAir || move.getUnits().stream().anyMatch(Matches.unitIsKamikaze())) {
       kamikazeUnits = result.getUnresolvedUnits(AirMovementValidator.NOT_ALL_AIR_UNITS_CAN_LAND);
-      if (!kamikazeUnits.isEmpty() && bridge.getRemotePlayer().confirmMoveKamikaze()) {
+      if (!kamikazeUnits.isEmpty()
+          && PlayerRemoteMessageHandlers.confirmMoveKamikaze(bridge, bridge.getGamePlayer())) {
         for (final Unit unit : kamikazeUnits) {
           if (getKamikazeAir || Matches.unitIsKamikaze().test(unit)) {
             result.removeUnresolvedUnit(AirMovementValidator.NOT_ALL_AIR_UNITS_CAN_LAND, unit);
@@ -661,7 +663,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final Collection<Territory> aaFiringTerritores =
         aaInMoveUtil.getTerritoriesWhereAaWillFire(move.getRoute(), move.getUnits());
     if (!aaFiringTerritores.isEmpty()
-        && !bridge.getRemotePlayer().confirmMoveInFaceOfAa(aaFiringTerritores)) {
+        && !PlayerRemoteMessageHandlers.confirmMoveInFaceOfAa(
+            bridge, bridge.getGamePlayer(), aaFiringTerritores)) {
       return Optional.empty();
     }
 

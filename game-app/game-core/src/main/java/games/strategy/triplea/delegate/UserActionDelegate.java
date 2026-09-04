@@ -7,6 +7,7 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.display.IDisplay;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.ICondition;
@@ -196,7 +197,8 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
             // String is ignored if getResourceLoader() returns empty Optional.
             .orElse("");
     for (final GamePlayer player : userActionAttachment.getActionAccept()) {
-      if (!getRemotePlayer(player).acceptAction(this.player, acceptanceQuestion, false)) {
+      if (!PlayerRemoteMessageHandlers.acceptAction(
+          bridge, player, this.player, acceptanceQuestion, false)) {
         return false;
       }
     }
@@ -219,7 +221,8 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    */
   private void sendNotification(final String notificationText) {
     if (!"NONE".equals(notificationText)) {
-      bridge.getRemotePlayer().reportMessage(notificationText, notificationText);
+      PlayerRemoteMessageHandlers.reportMessage(
+          bridge, bridge.getGamePlayer(), notificationText, notificationText);
     }
   }
 

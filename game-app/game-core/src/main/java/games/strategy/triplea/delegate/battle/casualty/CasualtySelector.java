@@ -8,6 +8,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.player.Player;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -149,7 +150,7 @@ public class CasualtySelector {
               dice,
               allowMultipleHitsPerUnit);
       log.error(diagnostic);
-      tripleaPlayer.reportError(diagnostic);
+      PlayerRemoteMessageHandlers.reportError(bridge, player, diagnostic);
       casualtyDetails = new CasualtyDetails(defaultCasualties, true);
     } else {
       casualtyDetails =
@@ -207,7 +208,8 @@ public class CasualtySelector {
 
     // check right number
     if (numhits + damaged.size() != Math.min(hitsRemaining, totalHitpoints)) {
-      tripleaPlayer.reportError("Wrong number of casualties selected");
+      PlayerRemoteMessageHandlers.reportError(
+          bridge, player, "Wrong number of casualties selected");
       if (headLess) {
         log.error(
             "Possible Infinite Loop: Wrong number of casualties selected: number of hits on units "
@@ -233,7 +235,8 @@ public class CasualtySelector {
     // check we have enough of each type
     if (!sortedTargetsToPickFrom.containsAll(killed)
         || !sortedTargetsToPickFrom.containsAll(damaged)) {
-      tripleaPlayer.reportError("Cannot remove enough units of those types");
+      PlayerRemoteMessageHandlers.reportError(
+          bridge, player, "Cannot remove enough units of those types");
       if (headLess) {
         log.error(
             "Possible Infinite Loop: Cannot remove enough units of those types: targets "

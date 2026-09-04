@@ -22,7 +22,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.change.HistoryChangeFactory;
 import games.strategy.engine.message.IRemote;
-import games.strategy.engine.player.Player;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
@@ -279,7 +279,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   @VisibleForTesting
   public void addBombardmentSources() {
     final GamePlayer attacker = bridge.getGamePlayer();
-    final Player remotePlayer = bridge.getRemotePlayer();
     final Predicate<Unit> ownedAndCanBombard =
         Matches.unitCanBombard(attacker).and(Matches.unitIsOwnedBy(attacker));
     final Map<Territory, Collection<IBattle>> adjBombardment = getPossibleBombardingTerritories();
@@ -292,7 +291,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           final List<Unit> listedBombardUnits = new ArrayList<>(bombardUnits);
           sortUnitsToBombard(listedBombardUnits);
           // if bombarding, ask if they want to bombard
-          if (!bombardUnits.isEmpty() && !remotePlayer.selectShoreBombard(t)) {
+          if (!bombardUnits.isEmpty()
+              && !PlayerRemoteMessageHandlers.selectShoreBombard(bridge, attacker, t)) {
             continue;
           }
           for (final Unit u : listedBombardUnits) {
@@ -376,11 +376,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       battleTerritories.put(battle.getTerritory(), battle);
     }
-    final Player remotePlayer = bridge.getRemotePlayer();
     Territory bombardingTerritory = null;
     if (!territories.isEmpty()) {
       bombardingTerritory =
-          remotePlayer.selectBombardingTerritory(u, unitTerritory, territories, true);
+          PlayerRemoteMessageHandlers.selectBombardingTerritory(
+              bridge, bridge.getGamePlayer(), u, unitTerritory, territories, true);
     }
     if (bombardingTerritory != null) {
       return battleTerritories.get(bombardingTerritory);
@@ -537,11 +537,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       // possibility to ignore battle altogether
       if (!attackingUnits.isEmpty()) {
-        final Player remotePlayer = bridge.getRemotePlayer();
         final boolean isWater = territory.isWater();
         if ((isWater && Properties.getSeaBattlesMayBeIgnored(data.getProperties()))
             || (!isWater && Properties.getLandBattlesMayBeIgnored(data.getProperties()))) {
-          if (!remotePlayer.selectAttackUnits(territory)) {
+          if (!PlayerRemoteMessageHandlers.selectAttackUnits(
+              bridge, bridge.getGamePlayer(), territory)) {
             final BattleResults results = new BattleResults(battle, WhoWon.NOT_FINISHED, data);
             battleTracker
                 .getBattleRecords()
@@ -563,7 +563,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (ignoreTransports
             && !enemyUnits.isEmpty()
             && enemyUnits.stream().allMatch(seaTransports)) {
-          if (!remotePlayer.selectAttackTransports(territory)) {
+          if (!PlayerRemoteMessageHandlers.selectAttackTransports(
+              bridge, bridge.getGamePlayer(), territory)) {
             final BattleResults results = new BattleResults(battle, WhoWon.NOT_FINISHED, data);
             battleTracker
                 .getBattleRecords()
@@ -583,7 +584,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         // if only enemy subs... attack them?
         if (!enemyUnits.isEmpty()
             && enemyUnits.stream().allMatch(Matches.unitCanBeMovedThroughByEnemies())) {
-          if (!remotePlayer.selectAttackSubs(territory)) {
+          if (!PlayerRemoteMessageHandlers.selectAttackSubs(
+              bridge, bridge.getGamePlayer(), territory)) {
             final BattleResults results = new BattleResults(battle, WhoWon.NOT_FINISHED, data);
             battleTracker
                 .getBattleRecords()
@@ -604,7 +606,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (ignoreTransports
             && !enemyUnits.isEmpty()
             && enemyUnits.stream().allMatch(seaTransportsOrSubs)
-            && !remotePlayer.selectAttackUnits(territory)) {
+            && !PlayerRemoteMessageHandlers.selectAttackUnits(
+                bridge, bridge.getGamePlayer(), territory)) {
           final BattleResults results = new BattleResults(battle, WhoWon.NOT_FINISHED, data);
           battleTracker
               .getBattleRecords()
@@ -952,7 +955,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                 String.format(
                     "Select territory for air units to land. (Current territory is %s): %s",
                     t.getName(), MyFormatter.unitsToText(List.of(u)));
-            landingTerr = getRemotePlayer(owner).selectTerritoryForAirToLand(possible, t, text);
+            landingTerr =
+                PlayerRemoteMessageHandlers.selectTerritoryForAirToLand(
+                    bridge, owner, possible, t, text);
           } else if (possible.size() == 1) {
             landingTerr = CollectionUtils.getAny(possible);
           }
@@ -1084,14 +1089,15 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         Territory territory;
         while (canLandHere.size() > 1 && !defendingAir.isEmpty()) {
           territory =
-              getRemotePlayer(defender)
-                  .selectTerritoryForAirToLand(
-                      canLandHere,
-                      battleSite,
-                      "Select territory for air units to land. (Current territory is "
-                          + battleSite.getName()
-                          + "): "
-                          + MyFormatter.unitsToText(defendingAir));
+              PlayerRemoteMessageHandlers.selectTerritoryForAirToLand(
+                  bridge,
+                  defender,
+                  canLandHere,
+                  battleSite,
+                  "Select territory for air units to land. (Current territory is "
+                      + battleSite.getName()
+                      + "): "
+                      + MyFormatter.unitsToText(defendingAir));
           // added for test script
           if (territory == null) {
             territory = CollectionUtils.getAny(canLandHere);

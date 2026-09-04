@@ -11,7 +11,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.player.Player;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -149,9 +149,9 @@ public class RocketsFireHelper implements Serializable {
           if (enemyTargets.size() == 1) {
             unitTarget = CollectionUtils.getAny(enemyTargets);
           } else {
-            final Player remotePlayer = bridge.getRemotePlayer(player);
             unitTarget =
-                remotePlayer.whatShouldBomberBomb(targetTerritory, enemyTargets, rocketTargets);
+                PlayerRemoteMessageHandlers.whatShouldBomberBomb(
+                    bridge, player, targetTerritory, enemyTargets, rocketTargets);
           }
           if (unitTarget == null) {
             continue;
@@ -248,7 +248,8 @@ public class RocketsFireHelper implements Serializable {
       final Collection<Territory> targets, final IDelegateBridge bridge, final Territory from) {
     // ask even if there is only once choice, that will allow the user to not attack if he doesn't
     // want to
-    return bridge.getRemotePlayer().whereShouldRocketsAttack(targets, from);
+    return PlayerRemoteMessageHandlers.whereShouldRocketsAttack(
+        bridge, bridge.getGamePlayer(), targets, from);
   }
 
   private void fireRocket(
@@ -465,20 +466,21 @@ public class RocketsFireHelper implements Serializable {
     // Record the PUs lost
     data.getMoveDelegate().pusLost(attackedTerritory, cost);
     if (damageFromBombingDoneToUnits && unit != null) {
-      getRemote(bridge)
-          .reportMessage(
-              "Rocket attack in "
-                  + attackedTerritory.getName()
-                  + " does "
-                  + cost
-                  + " damage to "
-                  + unit,
-              "Rocket attack in "
-                  + attackedTerritory.getName()
-                  + " does "
-                  + cost
-                  + " damage to "
-                  + unit);
+      PlayerRemoteMessageHandlers.reportMessage(
+          bridge,
+          bridge.getGamePlayer(),
+          "Rocket attack in "
+              + attackedTerritory.getName()
+              + " does "
+              + cost
+              + " damage to "
+              + unit,
+          "Rocket attack in "
+              + attackedTerritory.getName()
+              + " does "
+              + cost
+              + " damage to "
+              + unit);
       bridge
           .getHistoryWriter()
           .startEvent(
@@ -490,10 +492,11 @@ public class RocketsFireHelper implements Serializable {
                   + unit);
     } else {
       cost *= Properties.getPuMultiplier(data.getProperties());
-      getRemote(bridge)
-          .reportMessage(
-              "Rocket attack in " + attackedTerritory.getName() + " costs: " + cost,
-              "Rocket attack in " + attackedTerritory.getName() + " costs: " + cost);
+      PlayerRemoteMessageHandlers.reportMessage(
+          bridge,
+          bridge.getGamePlayer(),
+          "Rocket attack in " + attackedTerritory.getName() + " costs: " + cost,
+          "Rocket attack in " + attackedTerritory.getName() + " costs: " + cost);
       // Trying to remove more PUs than the victim has is A Bad Thing[tm]
       final int availForRemoval = attacked.getResources().getQuantity(pus);
       if (cost > availForRemoval) {
@@ -540,9 +543,5 @@ public class RocketsFireHelper implements Serializable {
       bridge.sendSoundMessage(
           new ISound.PlaySoundForAllMessage(SoundPath.CLIP_BOMBING_ROCKET, player));
     }
-  }
-
-  private static Player getRemote(final IDelegateBridge bridge) {
-    return bridge.getRemotePlayer();
   }
 }

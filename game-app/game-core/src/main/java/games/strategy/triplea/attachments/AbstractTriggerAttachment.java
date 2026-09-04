@@ -10,6 +10,7 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -210,9 +211,8 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
             + ")";
     bridge.getHistoryWriter().startEvent(notificationMessage);
     changeChanceDecrementOrIncrementOnSuccessOrFailure(bridge, testChance, true);
-    bridge
-        .getRemotePlayer(bridge.getGamePlayer())
-        .reportMessage(notificationMessage, notificationMessage);
+    PlayerRemoteMessageHandlers.reportMessage(
+        bridge, bridge.getGamePlayer(), notificationMessage, notificationMessage);
     return testChance;
   }
 

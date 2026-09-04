@@ -9,7 +9,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.player.Player;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.battle.BattleTracker;
@@ -132,9 +132,10 @@ public class UndoableMove extends AbstractUndoableMove {
                 && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(
                     data.getProperties())
                 && !Properties.getRaidsMayBePreceededByAirBattles(data.getProperties())) {
-              Player player = bridge.getRemotePlayer(bridge.getGamePlayer());
               while (target == null) {
-                target = player.whatShouldBomberBomb(end, enemyTargets, List.of(unit));
+                target =
+                    PlayerRemoteMessageHandlers.whatShouldBomberBomb(
+                        bridge, bridge.getGamePlayer(), end, enemyTargets, List.of(unit));
               }
             } else if (!enemyTargets.isEmpty()) {
               target = CollectionUtils.getAny(enemyTargets);

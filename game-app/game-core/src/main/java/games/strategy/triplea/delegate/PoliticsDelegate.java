@@ -12,6 +12,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.FireTriggerParams;
@@ -195,7 +196,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     if (!Properties.getAlliancesCanChainTogether(data.getProperties())
         || !intoAlliedChainOrIntoOrOutOfWar.test(paa)) {
       for (final GamePlayer player : paa.getActionAccept()) {
-        if (!getRemotePlayer(player).acceptAction(this.player, acceptanceQuestion, true)) {
+        if (!PlayerRemoteMessageHandlers.acceptAction(
+            bridge, player, this.player, acceptanceQuestion, true)) {
           return false;
         }
       }
@@ -235,12 +237,14 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
                   + ", the following question: \r\n "
                   + acceptanceQuestion;
         }
-        if (!getRemotePlayer(player).acceptAction(this.player, actionText, true)) {
+        if (!PlayerRemoteMessageHandlers.acceptAction(
+            bridge, player, this.player, actionText, true)) {
           return false;
         }
       }
       for (final GamePlayer player : paa.getActionAccept()) {
-        if (!getRemotePlayer(player).acceptAction(this.player, acceptanceQuestion, true)) {
+        if (!PlayerRemoteMessageHandlers.acceptAction(
+            bridge, player, this.player, acceptanceQuestion, true)) {
           return false;
         }
       }
@@ -369,7 +373,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    */
   private void sendNotification(final String text) {
     if (!"NONE".equals(text)) {
-      bridge.getRemotePlayer().reportMessage(text, text);
+      PlayerRemoteMessageHandlers.reportMessage(bridge, bridge.getGamePlayer(), text, text);
     }
   }
 

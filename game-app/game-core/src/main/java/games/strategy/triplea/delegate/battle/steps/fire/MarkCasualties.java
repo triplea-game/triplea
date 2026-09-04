@@ -11,6 +11,7 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.UNITS;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
@@ -121,9 +122,11 @@ public class MarkCasualties implements BattleStep {
     // Always confirm casualties for AI to give them a chance to pause.
     if (fireRoundState.getCasualties().getAutoCalculated()
         || battleState.getPlayer(side.getOpposite()).isAi()) {
-      battleActions
-          .getRemotePlayer(battleState.getPlayer(side.getOpposite()), bridge)
-          .confirmOwnCasualties(battleState.getBattleId(), "Press space to continue");
+      PlayerRemoteMessageHandlers.confirmOwnCasualties(
+          bridge,
+          battleState.getPlayer(side.getOpposite()),
+          battleState.getBattleId(),
+          "Press space to continue");
     }
 
     // execute in a separate thread to allow either player to click continue first.
@@ -131,12 +134,12 @@ public class MarkCasualties implements BattleStep {
         new Thread(
             () -> {
               try {
-                battleActions
-                    .getRemotePlayer(battleState.getPlayer(side), bridge)
-                    .confirmEnemyCasualties(
-                        battleState.getBattleId(),
-                        "Press space to continue",
-                        battleState.getPlayer(side.getOpposite()));
+                PlayerRemoteMessageHandlers.confirmEnemyCasualties(
+                    bridge,
+                    battleState.getPlayer(side),
+                    battleState.getBattleId(),
+                    "Press space to continue",
+                    battleState.getPlayer(side.getOpposite()));
               } catch (final Exception e) {
                 // ignore
               }

@@ -17,7 +17,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
-import games.strategy.engine.player.Player;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
@@ -240,9 +240,10 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
 
   protected void showEndTurnReport(final String endTurnReport) {
     if (endTurnReport != null && endTurnReport.trim().length() > 6 && !player.isAi()) {
-      final Player currentPlayer = getRemotePlayer(player);
       final String playerName = player.getName();
-      currentPlayer.reportMessage(
+      PlayerRemoteMessageHandlers.reportMessage(
+          bridge,
+          player,
           "<html><b style=\"font-size:120%\" >"
               + END_TURN_REPORT_STRING
               + playerName
@@ -306,9 +307,11 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     for (int i = 0; i < dice.size(); i++) {
       total += dice.getDie(i).getValue() + 1;
     }
-    getRemotePlayer(player)
-        .reportMessage(
-            annotation + MyFormatter.asDice(dice), annotation + MyFormatter.asDice(dice));
+    PlayerRemoteMessageHandlers.reportMessage(
+        delegateBridge,
+        player,
+        annotation + MyFormatter.asDice(dice),
+        annotation + MyFormatter.asDice(dice));
     return total;
   }
 
@@ -388,9 +391,11 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
     delegateBridge.getHistoryWriter().startEvent(transcriptText);
     final Change change = ChangeFactory.changeResourcesChange(giveWarBondsTo, pus, totalWarBonds);
     delegateBridge.addChange(change);
-    getRemotePlayer(player)
-        .reportMessage(
-            annotation + MyFormatter.asDice(dice), annotation + MyFormatter.asDice(dice));
+    PlayerRemoteMessageHandlers.reportMessage(
+        delegateBridge,
+        player,
+        annotation + MyFormatter.asDice(dice),
+        annotation + MyFormatter.asDice(dice));
     return transcriptText + "<br />";
   }
 

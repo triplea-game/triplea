@@ -13,7 +13,7 @@ import games.strategy.engine.history.EventChild;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Step;
 import games.strategy.engine.message.IRemote;
-import games.strategy.engine.player.Player;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.battle.BattleTracker;
@@ -372,8 +372,9 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
   }
 
   private @Nullable String checkPlayerId() {
-    final Player remotePlayer = bridge.getRemotePlayer();
-    if (!bridge.getGamePlayer().equals(remotePlayer.getGamePlayer())) {
+    if (!bridge
+        .getGamePlayer()
+        .equals(PlayerRemoteMessageHandlers.getGamePlayer(bridge, bridge.getGamePlayer()))) {
       return "Edit actions can only be performed during players turn";
     }
     return null;
@@ -393,8 +394,9 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
 
   @Override
   public void setEditMode(final boolean editMode) {
-    final Player remotePlayer = bridge.getRemotePlayer();
-    if (!bridge.getGamePlayer().equals(remotePlayer.getGamePlayer())) {
+    if (!bridge
+        .getGamePlayer()
+        .equals(PlayerRemoteMessageHandlers.getGamePlayer(bridge, bridge.getGamePlayer()))) {
       return;
     }
     logEvent((editMode ? EDITMODE_ON : EDITMODE_OFF), null);

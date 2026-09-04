@@ -15,6 +15,7 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.message.IRemote;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
@@ -566,7 +567,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     }
     final List<Unit> fighters = producer.getMatches(ownedFighters);
     final Collection<Unit> movedFighters =
-        bridge.getRemotePlayer().getNumberOfFightersToMoveToNewCarrier(fighters, producer);
+        PlayerRemoteMessageHandlers.getNumberOfFightersToMoveToNewCarrier(
+            bridge, bridge.getGamePlayer(), fighters, producer);
     if (movedFighters == null || movedFighters.isEmpty()) {
       return null;
     }

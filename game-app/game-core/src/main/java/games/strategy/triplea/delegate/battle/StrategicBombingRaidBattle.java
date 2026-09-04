@@ -14,7 +14,7 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.change.HistoryChangeFactory;
-import games.strategy.engine.player.Player;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -680,16 +680,16 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         new Thread(
             () -> {
               try {
-                final Player defender = bridge.getRemotePlayer(this.defender);
-                defender.confirmEnemyCasualties(battleId, "Press space to continue", attacker);
+                PlayerRemoteMessageHandlers.confirmEnemyCasualties(
+                    bridge, this.defender, battleId, "Press space to continue", attacker);
               } catch (final Exception e) {
                 // ignore
               }
             },
             "click to continue waiter");
     t.start();
-    final Player attacker = bridge.getRemotePlayer(this.attacker);
-    attacker.confirmOwnCasualties(battleId, "Press space to continue");
+    PlayerRemoteMessageHandlers.confirmOwnCasualties(
+        bridge, this.attacker, battleId, "Press space to continue");
     bridge.leaveDelegateExecution();
     Interruptibles.join(t);
     bridge.enterDelegateExecution();
@@ -751,9 +751,15 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             MessageFormat.format(
                 "{0} fixing dice to allocate cost of strategic bombing raid against {1} in {2}",
                 attacker.getName(), defender.getName(), battleSite.getName());
-        final Player attacker = bridge.getRemotePlayer(StrategicBombingRaidBattle.this.attacker);
         // does not take into account bombers with dice sides higher than getDiceSides
-        dice = attacker.selectFixedDice(rollCount, 0, annotation, gameData.getDiceSides());
+        dice =
+            PlayerRemoteMessageHandlers.selectFixedDice(
+                bridge,
+                StrategicBombingRaidBattle.this.attacker,
+                rollCount,
+                0,
+                annotation,
+                gameData.getDiceSides());
         return;
       }
 
@@ -960,17 +966,18 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                       MyFormatter.asDice(targetToDiceMap.get(current)),
                       currentUnitCost,
                       current.getType().getName()));
-          getRemote(bridge)
-              .reportMessage(
-                  MessageFormat.format(
-                      "Bombing raid in {0} rolls: {1} and causes: {2} damage to unit: {3}",
-                      battleSite.getName(),
-                      MyFormatter.asDice(targetToDiceMap.get(current)),
-                      currentUnitCost,
-                      current.getType().getName()),
-                  MessageFormat.format(
-                      "Bombing raid causes {0} damage to {1}",
-                      currentUnitCost, current.getType().getName()));
+          PlayerRemoteMessageHandlers.reportMessage(
+              bridge,
+              bridge.getGamePlayer(),
+              MessageFormat.format(
+                  "Bombing raid in {0} rolls: {1} and causes: {2} damage to unit: {3}",
+                  battleSite.getName(),
+                  MyFormatter.asDice(targetToDiceMap.get(current)),
+                  currentUnitCost,
+                  current.getType().getName()),
+              MessageFormat.format(
+                  "Bombing raid causes {0} damage to {1}",
+                  currentUnitCost, current.getType().getName()));
         }
       } else {
         // Record PUs lost
