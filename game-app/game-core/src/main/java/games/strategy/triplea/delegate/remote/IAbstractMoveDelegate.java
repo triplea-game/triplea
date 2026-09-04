@@ -22,25 +22,22 @@ import org.triplea.http.client.web.socket.messages.WebSocketMessage;
  */
 public interface IAbstractMoveDelegate<T> extends IRemote, IDelegate {
   /**
-   * Registers the typed handlers shared by every move/place delegate, guarded for idempotency. The
-   * moves-made list rides the Java wire (as it did under the reflective path), so its response has
-   * no Gson fixture. A single handler serves every delegate because each per-name endpoint supplies
-   * its own implementor at dispatch.
+   * Registers the typed handlers shared by every move/place delegate. Registration is
+   * unconditional: the registry overwrites any prior handler, refreshing per-game captures on a
+   * later game. The moves-made list rides the Java wire (as it did under the reflective path), so
+   * its response has no Gson fixture. A single handler serves every delegate because each per-name
+   * endpoint supplies its own implementor at dispatch.
    */
   static void registerHandlers(final Messengers messengers) {
-    if (!messengers.hasTypedMessageHandler(GetMovesMadeRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          GetMovesMadeRequest.TYPE,
-          (request, implementor) ->
-              new GetMovesMadeResponse(((IAbstractMoveDelegate<?>) implementor).getMovesMade()));
-    }
-    if (!messengers.hasTypedMessageHandler(UndoMoveRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          UndoMoveRequest.TYPE,
-          (request, implementor) ->
-              new UndoMoveResponse(
-                  ((IAbstractMoveDelegate<?>) implementor).undoMove(request.getMoveIndex())));
-    }
+    messengers.registerMessageHandler(
+        GetMovesMadeRequest.TYPE,
+        (request, implementor) ->
+            new GetMovesMadeResponse(((IAbstractMoveDelegate<?>) implementor).getMovesMade()));
+    messengers.registerMessageHandler(
+        UndoMoveRequest.TYPE,
+        (request, implementor) ->
+            new UndoMoveResponse(
+                ((IAbstractMoveDelegate<?>) implementor).undoMove(request.getMoveIndex())));
   }
 
   /**

@@ -18,17 +18,17 @@ import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 /** Logic for performing political actions. */
 public interface IPoliticsDelegate extends IRemote, IDelegate {
   /**
-   * Registers the typed handlers for this delegate's converted methods, guarded for idempotency.
+   * Registers the typed handlers for this delegate's converted methods. Registration is
+   * unconditional: the registry overwrites any prior handler, refreshing per-game captures on a
+   * later game.
    */
   static void registerHandlers(final Messengers messengers) {
-    if (!messengers.hasTypedMessageHandler(AttemptActionRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          AttemptActionRequest.TYPE,
-          (request, implementor) -> {
-            ((IPoliticsDelegate) implementor).attemptAction(request.getActionChoice());
-            return new AttemptActionResponse();
-          });
-    }
+    messengers.registerMessageHandler(
+        AttemptActionRequest.TYPE,
+        (request, implementor) -> {
+          ((IPoliticsDelegate) implementor).attemptAction(request.getActionChoice());
+          return new AttemptActionResponse();
+        });
   }
 
   @RemoteActionCode(0)

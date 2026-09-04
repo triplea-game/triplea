@@ -27,41 +27,37 @@ import org.triplea.java.RemoveOnNextMajorRelease;
 /** Logic for placing units within a territory. */
 public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePlacement> {
   /**
-   * Registers the typed handlers for this delegate's converted methods, guarded for idempotency.
-   * Units and the target territory ride as {@link EntityRef}s resolved against the server's game
-   * data; the {@link PlaceableUnits} result rides the Java wire (so it has no Gson fixture) and the
-   * air-cant-land territories reuse {@link IMoveDelegate.TerritoriesResponse}.
+   * Registers the typed handlers for this delegate's converted methods. Registration is
+   * unconditional: the registry overwrites any prior handler, so re-registering on a later game
+   * refreshes the {@code gameData} captured below. Units and the target territory ride as {@link
+   * EntityRef}s resolved against the server's game data; the {@link PlaceableUnits} result rides
+   * the Java wire (so it has no Gson fixture) and the air-cant-land territories reuse {@link
+   * IMoveDelegate.TerritoriesResponse}.
    */
   static void registerHandlers(final Messengers messengers, final GameData gameData) {
-    if (!messengers.hasTypedMessageHandler(PlaceUnitsRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          PlaceUnitsRequest.TYPE,
-          (request, implementor) ->
-              new PlaceUnitsResponse(
-                  ((IAbstractPlaceDelegate) implementor)
-                      .placeUnits(
-                          request.resolveUnits(gameData),
-                          request.getAt().resolveTerritory(gameData),
-                          request.getBidMode())
-                      .orElse(null)));
-    }
-    if (!messengers.hasTypedMessageHandler(GetPlaceableUnitsRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          GetPlaceableUnitsRequest.TYPE,
-          (request, implementor) ->
-              new GetPlaceableUnitsResponse(
-                  ((IAbstractPlaceDelegate) implementor)
-                      .getPlaceableUnits(
-                          request.resolveUnits(gameData),
-                          request.getAt().resolveTerritory(gameData))));
-    }
-    if (!messengers.hasTypedMessageHandler(GetAirCantLandRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          GetAirCantLandRequest.TYPE,
-          (request, implementor) ->
-              IMoveDelegate.TerritoriesResponse.of(
-                  ((IAbstractPlaceDelegate) implementor).getTerritoriesWhereAirCantLand()));
-    }
+    messengers.registerMessageHandler(
+        PlaceUnitsRequest.TYPE,
+        (request, implementor) ->
+            new PlaceUnitsResponse(
+                ((IAbstractPlaceDelegate) implementor)
+                    .placeUnits(
+                        request.resolveUnits(gameData),
+                        request.getAt().resolveTerritory(gameData),
+                        request.getBidMode())
+                    .orElse(null)));
+    messengers.registerMessageHandler(
+        GetPlaceableUnitsRequest.TYPE,
+        (request, implementor) ->
+            new GetPlaceableUnitsResponse(
+                ((IAbstractPlaceDelegate) implementor)
+                    .getPlaceableUnits(
+                        request.resolveUnits(gameData),
+                        request.getAt().resolveTerritory(gameData))));
+    messengers.registerMessageHandler(
+        GetAirCantLandRequest.TYPE,
+        (request, implementor) ->
+            IMoveDelegate.TerritoriesResponse.of(
+                ((IAbstractPlaceDelegate) implementor).getTerritoriesWhereAirCantLand()));
   }
 
   /**

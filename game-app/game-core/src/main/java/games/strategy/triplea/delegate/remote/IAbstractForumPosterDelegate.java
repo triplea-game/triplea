@@ -20,16 +20,16 @@ import org.triplea.http.client.web.socket.messages.WebSocketMessage;
  */
 public interface IAbstractForumPosterDelegate extends IRemote, IDelegate {
   /**
-   * Registers the typed handlers for this delegate's converted methods, guarded for idempotency.
+   * Registers the typed handlers for this delegate's converted methods. Registration is
+   * unconditional: the registry overwrites any prior handler, refreshing per-game captures on a
+   * later game.
    */
   static void registerHandlers(final Messengers messengers) {
-    if (!messengers.hasTypedMessageHandler(GetHasPostedTurnSummaryRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          GetHasPostedTurnSummaryRequest.TYPE,
-          (request, implementor) ->
-              new GetHasPostedTurnSummaryResponse(
-                  ((IAbstractForumPosterDelegate) implementor).getHasPostedTurnSummary()));
-    }
+    messengers.registerMessageHandler(
+        GetHasPostedTurnSummaryRequest.TYPE,
+        (request, implementor) ->
+            new GetHasPostedTurnSummaryResponse(
+                ((IAbstractForumPosterDelegate) implementor).getHasPostedTurnSummary()));
   }
 
   @RemoteActionCode(9)

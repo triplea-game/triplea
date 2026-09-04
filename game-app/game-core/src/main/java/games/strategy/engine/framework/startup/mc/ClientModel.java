@@ -300,22 +300,18 @@ Check:
     }
     messengers.registerRemote(
         observerWaitingToJoin, ServerModel.getObserverWaitingToStartName(messenger.getLocalNode()));
-    if (!messengers.hasTypedMessageHandler(IObserverWaitingToJoin.JoinGameRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          IObserverWaitingToJoin.JoinGameRequest.TYPE,
-          (request, implementor) -> {
-            request.invokeCallback((IObserverWaitingToJoin) implementor);
-            return new IObserverWaitingToJoin.JoinGameResponse();
-          });
-    }
-    if (!messengers.hasTypedMessageHandler(IObserverWaitingToJoin.CannotJoinGameRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          IObserverWaitingToJoin.CannotJoinGameRequest.TYPE,
-          (request, implementor) -> {
-            request.invokeCallback((IObserverWaitingToJoin) implementor);
-            return new IObserverWaitingToJoin.CannotJoinGameResponse();
-          });
-    }
+    messengers.registerMessageHandler(
+        IObserverWaitingToJoin.JoinGameRequest.TYPE,
+        (request, implementor) -> {
+          request.invokeCallback((IObserverWaitingToJoin) implementor);
+          return new IObserverWaitingToJoin.JoinGameResponse();
+        });
+    messengers.registerMessageHandler(
+        IObserverWaitingToJoin.CannotJoinGameRequest.TYPE,
+        (request, implementor) -> {
+          request.invokeCallback((IObserverWaitingToJoin) implementor);
+          return new IObserverWaitingToJoin.CannotJoinGameResponse();
+        });
     // save this, it will be cleared later
     gameDataOnStartup = gameSelectorModel.getGameData();
     final PlayerListing players = requestPlayerListing();

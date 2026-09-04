@@ -143,30 +143,24 @@ public class Vault {
    * whichever subscriber is registered.
    */
   private void registerVaultChannelHandlers() {
-    if (!messengers.hasTypedMessageHandler(IRemoteVault.AddLockedValueMessage.TYPE)) {
-      messengers.registerMessageHandler(
-          IRemoteVault.AddLockedValueMessage.TYPE,
-          (message, implementor) -> {
-            message.invokeCallback((IRemoteVault) implementor);
-            return null;
-          });
-    }
-    if (!messengers.hasTypedMessageHandler(IRemoteVault.UnlockMessage.TYPE)) {
-      messengers.registerMessageHandler(
-          IRemoteVault.UnlockMessage.TYPE,
-          (message, implementor) -> {
-            message.invokeCallback((IRemoteVault) implementor);
-            return null;
-          });
-    }
-    if (!messengers.hasTypedMessageHandler(IRemoteVault.ReleaseMessage.TYPE)) {
-      messengers.registerMessageHandler(
-          IRemoteVault.ReleaseMessage.TYPE,
-          (message, implementor) -> {
-            message.invokeCallback((IRemoteVault) implementor);
-            return null;
-          });
-    }
+    messengers.registerMessageHandler(
+        IRemoteVault.AddLockedValueMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IRemoteVault) implementor);
+          return null;
+        });
+    messengers.registerMessageHandler(
+        IRemoteVault.UnlockMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IRemoteVault) implementor);
+          return null;
+        });
+    messengers.registerMessageHandler(
+        IRemoteVault.ReleaseMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IRemoteVault) implementor);
+          return null;
+        });
   }
 
   public void shutDown() {

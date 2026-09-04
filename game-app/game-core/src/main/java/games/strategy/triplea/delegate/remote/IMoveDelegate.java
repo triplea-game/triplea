@@ -28,41 +28,33 @@ import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 public interface IMoveDelegate
     extends IAbstractMoveDelegate<UndoableMove>, IAbstractForumPosterDelegate {
   /**
-   * Registers the typed handlers for this delegate's converted methods, guarded for idempotency.
-   * The move description rides the Java wire (as it did under the reflective path); territory
-   * results ride as {@link EntityRef}s that the caller resolves against its own game data.
+   * Registers the typed handlers for this delegate's converted methods. Registration is
+   * unconditional: the registry overwrites any prior handler, so re-registering on a later game
+   * refreshes the {@code gameData} captured below. The move description rides the Java wire (as it
+   * did under the reflective path); territory results ride as {@link EntityRef}s that the caller
+   * resolves against its own game data.
    */
   static void registerHandlers(final Messengers messengers, final GameData gameData) {
-    if (!messengers.hasTypedMessageHandler(PerformMoveRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          PerformMoveRequest.TYPE,
-          (request, implementor) ->
-              new PerformMoveResponse(
-                  ((IMoveDelegate) implementor).performMove(request.getMove()).orElse(null)));
-    }
-    if (!messengers.hasTypedMessageHandler(GetAirCantLandForPlayerRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          GetAirCantLandForPlayerRequest.TYPE,
-          (request, implementor) ->
-              TerritoriesResponse.of(
-                  ((IMoveDelegate) implementor)
-                      .getTerritoriesWhereAirCantLand(
-                          request.getPlayer().resolvePlayer(gameData))));
-    }
-    if (!messengers.hasTypedMessageHandler(GetAirCantLandRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          GetAirCantLandRequest.TYPE,
-          (request, implementor) ->
-              TerritoriesResponse.of(
-                  ((IMoveDelegate) implementor).getTerritoriesWhereAirCantLand()));
-    }
-    if (!messengers.hasTypedMessageHandler(GetUnitsCantFightRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          GetUnitsCantFightRequest.TYPE,
-          (request, implementor) ->
-              TerritoriesResponse.of(
-                  ((IMoveDelegate) implementor).getTerritoriesWhereUnitsCantFight()));
-    }
+    messengers.registerMessageHandler(
+        PerformMoveRequest.TYPE,
+        (request, implementor) ->
+            new PerformMoveResponse(
+                ((IMoveDelegate) implementor).performMove(request.getMove()).orElse(null)));
+    messengers.registerMessageHandler(
+        GetAirCantLandForPlayerRequest.TYPE,
+        (request, implementor) ->
+            TerritoriesResponse.of(
+                ((IMoveDelegate) implementor)
+                    .getTerritoriesWhereAirCantLand(request.getPlayer().resolvePlayer(gameData))));
+    messengers.registerMessageHandler(
+        GetAirCantLandRequest.TYPE,
+        (request, implementor) ->
+            TerritoriesResponse.of(((IMoveDelegate) implementor).getTerritoriesWhereAirCantLand()));
+    messengers.registerMessageHandler(
+        GetUnitsCantFightRequest.TYPE,
+        (request, implementor) ->
+            TerritoriesResponse.of(
+                ((IMoveDelegate) implementor).getTerritoriesWhereUnitsCantFight()));
   }
 
   /**

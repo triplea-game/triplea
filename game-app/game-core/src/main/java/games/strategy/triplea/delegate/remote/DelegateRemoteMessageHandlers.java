@@ -7,8 +7,9 @@ import lombok.experimental.UtilityClass;
 /**
  * Central registration point for the typed delegate message handlers. Called from {@link
  * games.strategy.engine.framework.ServerGame#addDelegateMessenger} as each delegate endpoint is
- * registered; each interface's {@code registerHandlers} guards its own registration so re-running
- * this across delegates and across games is a harmless no-op.
+ * registered; each interface's {@code registerHandlers} registers unconditionally and the registry
+ * overwrites, so re-running this across delegates and across games is harmless and refreshes each
+ * handler's captured per-game game data.
  *
  * <p>Handlers are keyed by message type on the session-scoped registry and dispatch to whichever
  * delegate the addressed per-name endpoint currently holds, so a single registration per type

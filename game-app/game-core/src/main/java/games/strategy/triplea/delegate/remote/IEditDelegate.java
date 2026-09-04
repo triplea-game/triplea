@@ -24,17 +24,17 @@ import org.triplea.util.Triple;
 /** Remote interface for EditDelegate. */
 public interface IEditDelegate extends IRemote, IPersistentDelegate {
   /**
-   * Registers the typed handlers for this delegate's converted methods, guarded for idempotency.
+   * Registers the typed handlers for this delegate's converted methods. Registration is
+   * unconditional: the registry overwrites any prior handler, refreshing per-game captures on a
+   * later game.
    */
   static void registerHandlers(final Messengers messengers) {
-    if (!messengers.hasTypedMessageHandler(SetEditModeRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          SetEditModeRequest.TYPE,
-          (request, implementor) -> {
-            ((IEditDelegate) implementor).setEditMode(request.isEditMode());
-            return new SetEditModeResponse();
-          });
-    }
+    messengers.registerMessageHandler(
+        SetEditModeRequest.TYPE,
+        (request, implementor) -> {
+          ((IEditDelegate) implementor).setEditMode(request.isEditMode());
+          return new SetEditModeResponse();
+        });
   }
 
   @RemoteActionCode(9)

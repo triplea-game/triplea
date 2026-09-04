@@ -18,36 +18,31 @@ import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 /** All changes to game data (Changes and History events) can be tracked through this channel. */
 public interface IGameModifiedChannel extends IChannelSubscriber {
   /**
-   * Registers the typed handlers for the light channel messages, guarded so per-game subscribers
-   * stay idempotent on the session-scoped registry. Each handler dispatches to whichever subscriber
-   * the channel endpoint currently holds; the entity reference in a step change resolves by name,
-   * so the game data captured here works for any subscriber's data.
+   * Registers the typed handlers for the light channel messages. Registration is unconditional: the
+   * registry overwrites any prior handler, so re-registering on a later game refreshes the {@code
+   * gameData} captured below. Each handler dispatches to whichever subscriber the channel endpoint
+   * currently holds; the entity reference in a step change resolves by name, so the game data
+   * captured here works for any subscriber's data.
    */
   static void registerHandlers(final Messengers messengers, final GameData gameData) {
-    if (!messengers.hasTypedMessageHandler(ShutDownMessage.TYPE)) {
-      messengers.registerMessageHandler(
-          ShutDownMessage.TYPE,
-          (message, implementor) -> {
-            message.invokeCallback((IGameModifiedChannel) implementor);
-            return null;
-          });
-    }
-    if (!messengers.hasTypedMessageHandler(StartHistoryEventMessage.TYPE)) {
-      messengers.registerMessageHandler(
-          StartHistoryEventMessage.TYPE,
-          (message, implementor) -> {
-            message.invokeCallback((IGameModifiedChannel) implementor);
-            return null;
-          });
-    }
-    if (!messengers.hasTypedMessageHandler(StepChangedMessage.TYPE)) {
-      messengers.registerMessageHandler(
-          StepChangedMessage.TYPE,
-          (message, implementor) -> {
-            message.invokeCallback((IGameModifiedChannel) implementor, gameData);
-            return null;
-          });
-    }
+    messengers.registerMessageHandler(
+        ShutDownMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IGameModifiedChannel) implementor);
+          return null;
+        });
+    messengers.registerMessageHandler(
+        StartHistoryEventMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IGameModifiedChannel) implementor);
+          return null;
+        });
+    messengers.registerMessageHandler(
+        StepChangedMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IGameModifiedChannel) implementor, gameData);
+          return null;
+        });
   }
 
   @RemoteActionCode(1)

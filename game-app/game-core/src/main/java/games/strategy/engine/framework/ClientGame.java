@@ -174,39 +174,33 @@ public class ClientGame extends AbstractGame {
         };
     messengers.registerRemote(
         gameStepAdvancer, getRemoteStepAdvancerName(messengers.getLocalNode()));
-    if (!messengers.hasTypedMessageHandler(IGameStepAdvancer.StartPlayerStepRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          IGameStepAdvancer.StartPlayerStepRequest.TYPE,
-          (request, implementor) -> {
-            ((IGameStepAdvancer) implementor)
-                .startPlayerStep(request.getStepName(), request.resolvePlayer(gameData));
-            return new IGameStepAdvancer.StartPlayerStepResponse();
-          });
-    }
+    messengers.registerMessageHandler(
+        IGameStepAdvancer.StartPlayerStepRequest.TYPE,
+        (request, implementor) -> {
+          ((IGameStepAdvancer) implementor)
+              .startPlayerStep(request.getStepName(), request.resolvePlayer(gameData));
+          return new IGameStepAdvancer.StartPlayerStepResponse();
+        });
     for (final GamePlayer player : this.gamePlayers.keySet()) {
       final IRemoteRandom remoteRandom = new RemoteRandom(this);
       messengers.registerRemote(remoteRandom, ServerGame.getRemoteRandomName(player));
     }
-    if (!messengers.hasTypedMessageHandler(IRemoteRandom.GenerateRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          IRemoteRandom.GenerateRequest.TYPE,
-          (request, implementor) ->
-              new IRemoteRandom.GenerateResponse(
-                  ((IRemoteRandom) implementor)
-                      .generate(
-                          request.getMax(),
-                          request.getCount(),
-                          request.getAnnotation(),
-                          request.getServerVaultId())));
-    }
-    if (!messengers.hasTypedMessageHandler(IRemoteRandom.VerifyNumbersRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          IRemoteRandom.VerifyNumbersRequest.TYPE,
-          (request, implementor) -> {
-            ((IRemoteRandom) implementor).verifyNumbers();
-            return new IRemoteRandom.VerifyNumbersResponse();
-          });
-    }
+    messengers.registerMessageHandler(
+        IRemoteRandom.GenerateRequest.TYPE,
+        (request, implementor) ->
+            new IRemoteRandom.GenerateResponse(
+                ((IRemoteRandom) implementor)
+                    .generate(
+                        request.getMax(),
+                        request.getCount(),
+                        request.getAnnotation(),
+                        request.getServerVaultId())));
+    messengers.registerMessageHandler(
+        IRemoteRandom.VerifyNumbersRequest.TYPE,
+        (request, implementor) -> {
+          ((IRemoteRandom) implementor).verifyNumbers();
+          return new IRemoteRandom.VerifyNumbersResponse();
+        });
   }
 
   public static RemoteName getRemoteStepAdvancerName(final INode node) {

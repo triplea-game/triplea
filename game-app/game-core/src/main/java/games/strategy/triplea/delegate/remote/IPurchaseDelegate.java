@@ -21,25 +21,22 @@ import org.triplea.java.collections.IntegerMap;
 /** Logic for purchasing and repairing units. */
 public interface IPurchaseDelegate extends IAbstractForumPosterDelegate {
   /**
-   * Registers the typed handlers for this delegate's converted methods, guarded for idempotency.
-   * The production/repair maps ride the Java wire (as they did under the reflective path), so these
-   * messages carry no Gson fixture.
+   * Registers the typed handlers for this delegate's converted methods. Registration is
+   * unconditional: the registry overwrites any prior handler, refreshing per-game captures on a
+   * later game. The production/repair maps ride the Java wire (as they did under the reflective
+   * path), so these messages carry no Gson fixture.
    */
   static void registerHandlers(final Messengers messengers) {
-    if (!messengers.hasTypedMessageHandler(PurchaseRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          PurchaseRequest.TYPE,
-          (request, implementor) ->
-              new PurchaseResponse(
-                  ((IPurchaseDelegate) implementor).purchase(request.getProductionRules())));
-    }
-    if (!messengers.hasTypedMessageHandler(PurchaseRepairRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          PurchaseRepairRequest.TYPE,
-          (request, implementor) ->
-              new PurchaseRepairResponse(
-                  ((IPurchaseDelegate) implementor).purchaseRepair(request.getProductionRules())));
-    }
+    messengers.registerMessageHandler(
+        PurchaseRequest.TYPE,
+        (request, implementor) ->
+            new PurchaseResponse(
+                ((IPurchaseDelegate) implementor).purchase(request.getProductionRules())));
+    messengers.registerMessageHandler(
+        PurchaseRepairRequest.TYPE,
+        (request, implementor) ->
+            new PurchaseRepairResponse(
+                ((IPurchaseDelegate) implementor).purchaseRepair(request.getProductionRules())));
   }
 
   /**

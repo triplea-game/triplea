@@ -197,12 +197,10 @@ public class ServerGame extends AbstractGame {
     final IServerRemote serverRemote =
         () -> GameDataWriter.writeToBytes(data, delegateExecutionManager);
     messengers.registerRemote(serverRemote, SERVER_REMOTE);
-    if (!messengers.hasTypedMessageHandler(IServerRemote.GetSavedGameRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          IServerRemote.GetSavedGameRequest.TYPE,
-          (request, implementor) ->
-              new IServerRemote.GetSavedGameResponse(((IServerRemote) implementor).getSavedGame()));
-    }
+    messengers.registerMessageHandler(
+        IServerRemote.GetSavedGameRequest.TYPE,
+        (request, implementor) ->
+            new IServerRemote.GetSavedGameResponse(((IServerRemote) implementor).getSavedGame()));
   }
 
   private void importDiceStats(final HistoryNode node) {

@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
 import games.strategy.engine.message.ChannelMessenger;
@@ -144,7 +143,7 @@ class TypedMessageDispatchTest {
   }
 
   @Test
-  void guardedRegistrationIsIdempotentAcrossGamesAndStillDispatches() throws Exception {
+  void reRegistrationOverwritesCapturedGameDataAndStillDispatches() throws Exception {
     IServerMessenger server = null;
     ClientMessenger client = null;
     try {
@@ -157,10 +156,12 @@ class TypedMessageDispatchTest {
       final Messengers clientMessengers = new Messengers(client);
       serverMessengers.registerRemote((EchoRemote) () -> {}, ECHO);
 
-      // Two sequential games on one session share this registry, so the guarded call-site path must
-      // register the first time and no-op the second, never tripping the duplicate check.
-      registerEchoHandlerGuarded(serverMessengers);
-      assertDoesNotThrow(() -> registerEchoHandlerGuarded(serverMessengers));
+      // Two sequential games on one session share this registry. Game 1's handler closes over game
+      // 1's data; game 2 re-registers the same type bound to game 2's data. Registration overwrites
+      // (never throws), so dispatch must resolve against game 2 -- proving a stale per-game capture
+      // cannot survive into a later game.
+      registerEchoHandlerForGame(serverMessengers, "game-1");
+      assertDoesNotThrow(() -> registerEchoHandlerForGame(serverMessengers, "game-2"));
 
       final EchoResponse response =
           assertTimeoutPreemptively(
@@ -168,26 +169,17 @@ class TypedMessageDispatchTest {
               () ->
                   clientMessengers.invokeRemoteMessage(
                       ECHO, new EchoRequest("hello"), EchoResponse.TYPE));
-      assertThat(response.value, is("hello-ack"));
-
-      // Backstop intact: an unguarded double registration of the same type still throws, so a real
-      // fan-out collision surfaces during development.
-      serverMessengers.registerMessageHandler(OrderMessage.TYPE, (message, implementor) -> null);
-      assertThrows(
-          IllegalStateException.class,
-          () ->
-              serverMessengers.registerMessageHandler(
-                  OrderMessage.TYPE, (message, implementor) -> null));
+      assertThat(response.value, is("hello-game-2"));
     } finally {
       shutdown(server, client);
     }
   }
 
-  private static void registerEchoHandlerGuarded(final Messengers messengers) {
-    if (!messengers.hasTypedMessageHandler(EchoRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          EchoRequest.TYPE, (request, implementor) -> new EchoResponse(request.value + "-ack"));
-    }
+  private static void registerEchoHandlerForGame(
+      final Messengers messengers, final String gameMarker) {
+    messengers.registerMessageHandler(
+        EchoRequest.TYPE,
+        (request, implementor) -> new EchoResponse(request.value + "-" + gameMarker));
   }
 
   private static void sleepQuietly() {

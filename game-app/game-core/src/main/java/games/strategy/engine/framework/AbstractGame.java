@@ -148,113 +148,87 @@ public abstract class AbstractGame implements IGame {
     if (display != null) {
       messengers.registerChannelSubscriber(display, getDisplayChannel());
 
-      // Register once against the session-scoped registry: the handler dispatches to whatever
-      // display the channel endpoint currently holds, so a display swap or a later game reuses it
-      // rather than re-registering.
-      if (!messengers.hasTypedMessageHandler(IDisplay.NotifyDiceMessage.TYPE)) {
-        messengers.registerMessageHandler(
-            IDisplay.NotifyDiceMessage.TYPE,
-            (message, implementor) -> {
-              message.accept((IDisplay) implementor);
-              return null;
-            });
-      }
-      if (!messengers.hasTypedMessageHandler(IDisplay.GoToBattleStepMessage.TYPE)) {
-        messengers.registerMessageHandler(
-            IDisplay.GoToBattleStepMessage.TYPE,
-            (message, implementor) -> {
-              message.accept((IDisplay) implementor);
-              return null;
-            });
-      }
-      if (!messengers.hasTypedMessageHandler(IDisplay.BombingResultsMessage.TYPE)) {
-        messengers.registerMessageHandler(
-            IDisplay.BombingResultsMessage.TYPE,
-            (message, implementor) -> {
-              message.accept((IDisplay) implementor);
-              return null;
-            });
-      }
-      if (!messengers.hasTypedMessageHandler(IDisplay.NotifyRetreatMessage.TYPE)) {
-        messengers.registerMessageHandler(
-            IDisplay.NotifyRetreatMessage.TYPE,
-            (message, implementor) -> {
-              message.accept((IDisplay) implementor, gameData.getPlayerList());
-              return null;
-            });
-      }
-      if (!messengers.hasTypedMessageHandler(IDisplay.NotifyUnitsRetreatingMessage.TYPE)) {
-        messengers.registerMessageHandler(
-            IDisplay.NotifyUnitsRetreatingMessage.TYPE,
-            (message, implementor) -> {
-              message.accept((IDisplay) implementor, gameData.getUnits());
-              return null;
-            });
-      }
-      if (!messengers.hasTypedMessageHandler(IDisplay.BroadcastMessageMessage.TYPE)) {
-        messengers.registerMessageHandler(
-            IDisplay.BroadcastMessageMessage.TYPE,
-            (message, implementor) -> {
-              message.invokeCallback((IDisplay) implementor);
-              return null;
-            });
-      }
-      if (!messengers.hasTypedMessageHandler(IDisplay.ReportMessageToPlayersMessage.TYPE)) {
-        messengers.registerMessageHandler(
-            IDisplay.ReportMessageToPlayersMessage.TYPE,
-            (message, implementor) -> {
-              message.accept((IDisplay) implementor, gameData);
-              return null;
-            });
-      }
-      if (!messengers.hasTypedMessageHandler(IDisplay.ShowBattleMessage.TYPE)) {
-        messengers.registerMessageHandler(
-            IDisplay.ShowBattleMessage.TYPE,
-            (message, implementor) -> {
-              message.accept((IDisplay) implementor, gameData);
-              return null;
-            });
-      }
-      if (!messengers.hasTypedMessageHandler(IDisplay.ListBattleStepsMessage.TYPE)) {
-        messengers.registerMessageHandler(
-            IDisplay.ListBattleStepsMessage.TYPE,
-            (message, implementor) -> {
-              message.accept((IDisplay) implementor);
-              return null;
-            });
-      }
-      if (!messengers.hasTypedMessageHandler(IDisplay.BattleEndMessage.TYPE)) {
-        messengers.registerMessageHandler(
-            IDisplay.BattleEndMessage.TYPE,
-            (message, implementor) -> {
-              message.accept((IDisplay) implementor);
-              return null;
-            });
-      }
-      if (!messengers.hasTypedMessageHandler(IDisplay.CasualtyNotificationMessage.TYPE)) {
-        messengers.registerMessageHandler(
-            IDisplay.CasualtyNotificationMessage.TYPE,
-            (message, implementor) -> {
-              message.accept((IDisplay) implementor, gameData);
-              return null;
-            });
-      }
-      if (!messengers.hasTypedMessageHandler(IDisplay.DeadUnitNotificationMessage.TYPE)) {
-        messengers.registerMessageHandler(
-            IDisplay.DeadUnitNotificationMessage.TYPE,
-            (message, implementor) -> {
-              message.accept((IDisplay) implementor, gameData);
-              return null;
-            });
-      }
-      if (!messengers.hasTypedMessageHandler(IDisplay.ChangedUnitsNotificationMessage.TYPE)) {
-        messengers.registerMessageHandler(
-            IDisplay.ChangedUnitsNotificationMessage.TYPE,
-            (message, implementor) -> {
-              message.accept((IDisplay) implementor, gameData);
-              return null;
-            });
-      }
+      // Register unconditionally against the session-scoped registry: the registry overwrites, so a
+      // later game refreshes the gameData these handlers capture. Each handler dispatches to
+      // whatever display the channel endpoint currently holds, so a display swap reuses it too.
+      messengers.registerMessageHandler(
+          IDisplay.NotifyDiceMessage.TYPE,
+          (message, implementor) -> {
+            message.accept((IDisplay) implementor);
+            return null;
+          });
+      messengers.registerMessageHandler(
+          IDisplay.GoToBattleStepMessage.TYPE,
+          (message, implementor) -> {
+            message.accept((IDisplay) implementor);
+            return null;
+          });
+      messengers.registerMessageHandler(
+          IDisplay.BombingResultsMessage.TYPE,
+          (message, implementor) -> {
+            message.accept((IDisplay) implementor);
+            return null;
+          });
+      messengers.registerMessageHandler(
+          IDisplay.NotifyRetreatMessage.TYPE,
+          (message, implementor) -> {
+            message.accept((IDisplay) implementor, gameData.getPlayerList());
+            return null;
+          });
+      messengers.registerMessageHandler(
+          IDisplay.NotifyUnitsRetreatingMessage.TYPE,
+          (message, implementor) -> {
+            message.accept((IDisplay) implementor, gameData.getUnits());
+            return null;
+          });
+      messengers.registerMessageHandler(
+          IDisplay.BroadcastMessageMessage.TYPE,
+          (message, implementor) -> {
+            message.invokeCallback((IDisplay) implementor);
+            return null;
+          });
+      messengers.registerMessageHandler(
+          IDisplay.ReportMessageToPlayersMessage.TYPE,
+          (message, implementor) -> {
+            message.accept((IDisplay) implementor, gameData);
+            return null;
+          });
+      messengers.registerMessageHandler(
+          IDisplay.ShowBattleMessage.TYPE,
+          (message, implementor) -> {
+            message.accept((IDisplay) implementor, gameData);
+            return null;
+          });
+      messengers.registerMessageHandler(
+          IDisplay.ListBattleStepsMessage.TYPE,
+          (message, implementor) -> {
+            message.accept((IDisplay) implementor);
+            return null;
+          });
+      messengers.registerMessageHandler(
+          IDisplay.BattleEndMessage.TYPE,
+          (message, implementor) -> {
+            message.accept((IDisplay) implementor);
+            return null;
+          });
+      messengers.registerMessageHandler(
+          IDisplay.CasualtyNotificationMessage.TYPE,
+          (message, implementor) -> {
+            message.accept((IDisplay) implementor, gameData);
+            return null;
+          });
+      messengers.registerMessageHandler(
+          IDisplay.DeadUnitNotificationMessage.TYPE,
+          (message, implementor) -> {
+            message.accept((IDisplay) implementor, gameData);
+            return null;
+          });
+      messengers.registerMessageHandler(
+          IDisplay.ChangedUnitsNotificationMessage.TYPE,
+          (message, implementor) -> {
+            message.accept((IDisplay) implementor, gameData);
+            return null;
+          });
 
       addTrackedDisplayListener(
           IDisplay.BombingResultsMessage.TYPE, message -> message.accept(display));
@@ -295,25 +269,21 @@ public abstract class AbstractGame implements IGame {
     if (soundChannel != null) {
       messengers.registerChannelSubscriber(soundChannel, getSoundChannel());
 
-      // Register once against the session-scoped registry: the handler dispatches to whatever
-      // sound channel the endpoint currently holds, so a channel swap or a later game reuses it
-      // rather than re-registering.
-      if (!messengers.hasTypedMessageHandler(ISound.PlaySoundForAllMessage.TYPE)) {
-        messengers.registerMessageHandler(
-            ISound.PlaySoundForAllMessage.TYPE,
-            (message, implementor) -> {
-              message.accept((ISound) implementor, gameData);
-              return null;
-            });
-      }
-      if (!messengers.hasTypedMessageHandler(ISound.PlaySoundToPlayersMessage.TYPE)) {
-        messengers.registerMessageHandler(
-            ISound.PlaySoundToPlayersMessage.TYPE,
-            (message, implementor) -> {
-              message.accept((ISound) implementor, gameData);
-              return null;
-            });
-      }
+      // Register unconditionally against the session-scoped registry: the registry overwrites, so a
+      // later game refreshes the gameData these handlers capture. Each handler dispatches to
+      // whatever sound channel the endpoint currently holds, so a channel swap reuses it too.
+      messengers.registerMessageHandler(
+          ISound.PlaySoundForAllMessage.TYPE,
+          (message, implementor) -> {
+            message.accept((ISound) implementor, gameData);
+            return null;
+          });
+      messengers.registerMessageHandler(
+          ISound.PlaySoundToPlayersMessage.TYPE,
+          (message, implementor) -> {
+            message.accept((ISound) implementor, gameData);
+            return null;
+          });
     }
     sound = soundChannel;
   }

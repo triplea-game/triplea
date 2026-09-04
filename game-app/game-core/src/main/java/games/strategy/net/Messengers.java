@@ -78,11 +78,10 @@ public class Messengers implements IMessenger, IRemoteMessenger, IChannelMesseng
   }
 
   /**
-   * Reports whether a handler is already registered for the given typed message. The registry lives
-   * on the session-scoped {@link UnifiedMessenger}, which outlives any one game, so per-game
-   * objects guard their registration with this to stay idempotent across a second game on the same
-   * session. A mock-messengers test instance carries no {@link UnifiedMessenger} and so never has a
-   * handler.
+   * Reports whether a handler is already registered for the given typed message. Registration must
+   * not be guarded with this: {@link #registerMessageHandler} overwrites, and re-registering on a
+   * later game is how a handler's captured per-game game data is refreshed. A mock-messengers test
+   * instance carries no {@link UnifiedMessenger} and so never has a handler.
    */
   public boolean hasTypedMessageHandler(final MessageType<?> type) {
     return unifiedMessenger != null && unifiedMessenger.getTypedMessageRegistry().hasHandler(type);

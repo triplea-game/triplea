@@ -61,29 +61,23 @@ public class ChatController implements IChatController {
     this.serverMessenger = serverMessenger;
     chatChannel = getChatChannelName(name);
     messengers.registerRemote(this, getChatControllerRemoteName(name));
-    if (!messengers.hasTypedMessageHandler(IChatController.JoinChatRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          IChatController.JoinChatRequest.TYPE,
-          (request, implementor) ->
-              new IChatController.JoinChatResponse(
-                  new ArrayList<>(((IChatController) implementor).joinChat())));
-    }
-    if (!messengers.hasTypedMessageHandler(IChatController.LeaveChatRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          IChatController.LeaveChatRequest.TYPE,
-          (request, implementor) -> {
-            ((IChatController) implementor).leaveChat();
-            return new IChatController.LeaveChatResponse();
-          });
-    }
-    if (!messengers.hasTypedMessageHandler(IChatController.SetChatStatusMessage.TYPE)) {
-      messengers.registerMessageHandler(
-          IChatController.SetChatStatusMessage.TYPE,
-          (request, implementor) -> {
-            request.invokeCallback((IChatController) implementor);
-            return new IChatController.SetStatusResponse();
-          });
-    }
+    messengers.registerMessageHandler(
+        IChatController.JoinChatRequest.TYPE,
+        (request, implementor) ->
+            new IChatController.JoinChatResponse(
+                new ArrayList<>(((IChatController) implementor).joinChat())));
+    messengers.registerMessageHandler(
+        IChatController.LeaveChatRequest.TYPE,
+        (request, implementor) -> {
+          ((IChatController) implementor).leaveChat();
+          return new IChatController.LeaveChatResponse();
+        });
+    messengers.registerMessageHandler(
+        IChatController.SetChatStatusMessage.TYPE,
+        (request, implementor) -> {
+          request.invokeCallback((IChatController) implementor);
+          return new IChatController.SetStatusResponse();
+        });
     messengers.addConnectionChangeListener(connectionChangeListener);
     startPinger();
   }

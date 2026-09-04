@@ -17,26 +17,18 @@ public final class TypedMessageRegistry {
       new ConcurrentHashMap<>();
 
   /**
-   * Registers the handler that a converted method's message type dispatches to. Throws on a
-   * duplicate type so the fan-out of registrations surfaces a collision during development instead
-   * of silently overwriting an earlier handler.
+   * Registers the handler that a converted method's message type dispatches to, overwriting any
+   * handler already registered for that type. Message type ids are unique per class, so a
+   * re-registration is the same logical handler being refreshed (for example a new game's game data
+   * captured in the handler's closure); overwriting is correct and prevents a stale per-game
+   * capture from surviving into a later game on the session-scoped registry.
    */
   public <T extends WebSocketMessage> void register(
       final MessageType<T> messageType, final TypedMessageHandler<T> handler) {
-    final TypedMessageHandler<? extends WebSocketMessage> existing =
-        handlers.putIfAbsent(messageType.getMessageTypeId(), handler);
-    if (existing != null) {
-      throw new IllegalStateException(
-          "A handler is already registered for " + messageType.getMessageTypeId());
-    }
+    handlers.put(messageType.getMessageTypeId(), handler);
   }
 
-  /**
-   * Reports whether a handler is already registered for the given message type. Call sites guard
-   * their registration with this so a per-game object rebuilt for a later game on the same
-   * session-scoped registry re-registers the same type harmlessly instead of tripping {@link
-   * #register}'s duplicate check.
-   */
+  /** Reports whether a handler is already registered for the given message type. */
   public boolean hasHandler(final MessageType<?> messageType) {
     return handlers.containsKey(messageType.getMessageTypeId());
   }

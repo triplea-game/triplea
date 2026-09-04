@@ -126,54 +126,42 @@ public class MessengersChatTransmitter implements ChatTransmitter {
    * whichever subscriber is registered.
    */
   private void registerChatChannelHandlers() {
-    if (!messengers.hasTypedMessageHandler(IChatChannel.ChatMessage.TYPE)) {
-      messengers.registerMessageHandler(
-          IChatChannel.ChatMessage.TYPE,
-          (message, implementor) -> {
-            message.invokeCallback((IChatChannel) implementor);
-            return null;
-          });
-    }
-    if (!messengers.hasTypedMessageHandler(IChatChannel.SlapMessage.TYPE)) {
-      messengers.registerMessageHandler(
-          IChatChannel.SlapMessage.TYPE,
-          (message, implementor) -> {
-            message.invokeCallback((IChatChannel) implementor);
-            return null;
-          });
-    }
-    if (!messengers.hasTypedMessageHandler(IChatChannel.SpeakAddedMessage.TYPE)) {
-      messengers.registerMessageHandler(
-          IChatChannel.SpeakAddedMessage.TYPE,
-          (message, implementor) -> {
-            message.invokeCallback((IChatChannel) implementor);
-            return null;
-          });
-    }
-    if (!messengers.hasTypedMessageHandler(IChatChannel.SpeakerRemovedMessage.TYPE)) {
-      messengers.registerMessageHandler(
-          IChatChannel.SpeakerRemovedMessage.TYPE,
-          (message, implementor) -> {
-            message.invokeCallback((IChatChannel) implementor);
-            return null;
-          });
-    }
-    if (!messengers.hasTypedMessageHandler(IChatChannel.PingMessage.TYPE)) {
-      messengers.registerMessageHandler(
-          IChatChannel.PingMessage.TYPE,
-          (message, implementor) -> {
-            message.invokeCallback((IChatChannel) implementor);
-            return null;
-          });
-    }
-    if (!messengers.hasTypedMessageHandler(IChatChannel.StatusChangedMessage.TYPE)) {
-      messengers.registerMessageHandler(
-          IChatChannel.StatusChangedMessage.TYPE,
-          (message, implementor) -> {
-            message.invokeCallback((IChatChannel) implementor);
-            return null;
-          });
-    }
+    messengers.registerMessageHandler(
+        IChatChannel.ChatMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IChatChannel) implementor);
+          return null;
+        });
+    messengers.registerMessageHandler(
+        IChatChannel.SlapMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IChatChannel) implementor);
+          return null;
+        });
+    messengers.registerMessageHandler(
+        IChatChannel.SpeakAddedMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IChatChannel) implementor);
+          return null;
+        });
+    messengers.registerMessageHandler(
+        IChatChannel.SpeakerRemovedMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IChatChannel) implementor);
+          return null;
+        });
+    messengers.registerMessageHandler(
+        IChatChannel.PingMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IChatChannel) implementor);
+          return null;
+        });
+    messengers.registerMessageHandler(
+        IChatChannel.StatusChangedMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IChatChannel) implementor);
+          return null;
+        });
   }
 
   @Override

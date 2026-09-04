@@ -20,8 +20,8 @@ import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 /**
  * Central registration point and dispatcher for the typed {@link Player} remote messages, mirroring
  * {@code DelegateRemoteMessageHandlers}. Called from {@code AbstractGame} as each local player
- * endpoint is registered; the registration is guarded so re-running it across players and across
- * games is a harmless no-op.
+ * endpoint is registered; registration is unconditional and overwrites, so re-running it across
+ * players and across games is harmless and refreshes each handler's captured per-game game data.
  *
  * <p>Handlers are keyed by message type on the session-scoped registry and dispatch to whichever
  * player the addressed per-name endpoint currently holds, so a single registration per type serves
@@ -32,7 +32,11 @@ import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 @UtilityClass
 public class PlayerRemoteMessageHandlers {
 
-  /** Registers every converted {@link Player} message handler, guarded for idempotency. */
+  /**
+   * Registers every converted {@link Player} message handler. Registration is unconditional: the
+   * registry overwrites, so re-registering on a later game refreshes the {@code gameData} each
+   * handler captures for {@link EntityRef} resolution.
+   */
   public static void registerAll(final Messengers messengers, final GameData gameData) {
     register(messengers, Player.AcceptActionRequest.TYPE, gameData);
     register(messengers, Player.SelectAttackSubsRequest.TYPE, gameData);
@@ -58,10 +62,8 @@ public class PlayerRemoteMessageHandlers {
 
   private static <T extends WebSocketMessage> void register(
       final Messengers messengers, final MessageType<T> type, final GameData gameData) {
-    if (!messengers.hasTypedMessageHandler(type)) {
-      messengers.registerMessageHandler(
-          type, (message, implementor) -> handle(message, (Player) implementor, gameData));
-    }
+    messengers.registerMessageHandler(
+        type, (message, implementor) -> handle(message, (Player) implementor, gameData));
   }
 
   /**

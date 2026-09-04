@@ -24,26 +24,24 @@ import org.triplea.java.RemoveOnNextMajorRelease;
 /** Logic for querying and fighting pending battles. */
 public interface IBattleDelegate extends IRemote, IDelegate {
   /**
-   * Registers the typed handlers for this delegate's converted methods, guarded for idempotency.
+   * Registers the typed handlers for this delegate's converted methods. Registration is
+   * unconditional: the registry overwrites any prior handler, so re-registering on a later game
+   * refreshes the {@code gameData} captured below.
    */
   static void registerHandlers(final Messengers messengers, final GameData gameData) {
-    if (!messengers.hasTypedMessageHandler(GetBattleListingRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          GetBattleListingRequest.TYPE,
-          (request, implementor) ->
-              new GetBattleListingResponse(((IBattleDelegate) implementor).getBattleListing()));
-    }
-    if (!messengers.hasTypedMessageHandler(FightBattleRequest.TYPE)) {
-      messengers.registerMessageHandler(
-          FightBattleRequest.TYPE,
-          (request, implementor) ->
-              new FightBattleResponse(
-                  ((IBattleDelegate) implementor)
-                      .fightBattle(
-                          request.getWhere().resolveTerritory(gameData),
-                          request.isBombing(),
-                          request.getType())));
-    }
+    messengers.registerMessageHandler(
+        GetBattleListingRequest.TYPE,
+        (request, implementor) ->
+            new GetBattleListingResponse(((IBattleDelegate) implementor).getBattleListing()));
+    messengers.registerMessageHandler(
+        FightBattleRequest.TYPE,
+        (request, implementor) ->
+            new FightBattleResponse(
+                ((IBattleDelegate) implementor)
+                    .fightBattle(
+                        request.getWhere().resolveTerritory(gameData),
+                        request.isBombing(),
+                        request.getType())));
   }
 
   /** Returns the battles currently waiting to be fought. */
