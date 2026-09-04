@@ -143,3 +143,5 @@ Player-ReportErrorRequest.json
 Player-ReportMessageRequest.json
 Player-ConfirmEnemyCasualtiesRequest.json
 Player-ConfirmOwnCasualtiesRequest.json
+IPoliticsDelegate-GetValidActionsRequest.json
+IUserActionDelegate-GetValidActionsRequest.json

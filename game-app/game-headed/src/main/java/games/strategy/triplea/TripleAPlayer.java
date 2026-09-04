@@ -34,6 +34,8 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.delegate.remote.typed.TypedEditDelegate;
+import games.strategy.triplea.delegate.remote.typed.TypedPoliticsDelegate;
+import games.strategy.triplea.delegate.remote.typed.TypedUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.AbstractBasePlayer;
 import games.strategy.triplea.settings.ClientSetting;
@@ -112,19 +114,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    final IPoliticsDelegate politicsDelegate;
-    try {
-      politicsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
-    } catch (final ClassCastException e) {
-      final String errorContext =
-          "PlayerBridge step name: "
-              + getPlayerBridge().getStepName()
-              + ", Remote class name: "
-              + getPlayerBridge().getRemoteDelegate().getClass();
-      log.error(errorContext, e);
-      throw new IllegalStateException(errorContext, e);
-    }
-
+    final IPoliticsDelegate politicsDelegate = new TypedPoliticsDelegate(getPlayerBridge());
     final PoliticalActionAttachment actionChoice =
         ui.getPoliticalActionChoice(this.getGamePlayer(), firstRun, politicsDelegate);
     if (actionChoice != null) {
@@ -140,18 +130,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    final IUserActionDelegate userActionDelegate;
-    try {
-      userActionDelegate = (IUserActionDelegate) getPlayerBridge().getRemoteDelegate();
-    } catch (final ClassCastException e) {
-      final String errorContext =
-          "PlayerBridge step name: "
-              + getPlayerBridge().getStepName()
-              + ", Remote class name: "
-              + getPlayerBridge().getRemoteDelegate().getClass();
-      log.error(errorContext, e);
-      throw new IllegalStateException(errorContext, e);
-    }
+    final IUserActionDelegate userActionDelegate = new TypedUserActionDelegate(getPlayerBridge());
     final UserActionAttachment actionChoice =
         ui.getUserActionChoice(this.getGamePlayer(), firstRun, userActionDelegate);
     if (actionChoice != null) {

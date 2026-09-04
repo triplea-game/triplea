@@ -9,6 +9,7 @@ import games.strategy.triplea.attachments.UserActionAttachment;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.triplea.http.client.web.socket.MessageEnvelope;
@@ -29,6 +30,11 @@ public interface IUserActionDelegate extends IRemote, IDelegate {
           ((IUserActionDelegate) implementor).attemptAction(request.getActionChoice());
           return new AttemptActionResponse();
         });
+    messengers.registerMessageHandler(
+        GetValidActionsRequest.TYPE,
+        (request, implementor) ->
+            new GetValidActionsResponse(
+                List.copyOf(((IUserActionDelegate) implementor).getValidActions())));
   }
 
   @RemoteActionCode(0)
@@ -65,6 +71,38 @@ public interface IUserActionDelegate extends IRemote, IDelegate {
 
   @RemoteActionCode(7)
   Collection<UserActionAttachment> getValidActions();
+
+  /** Typed request for the currently valid user actions. */
+  class GetValidActionsRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5320048576544672223L;
+
+    public static final MessageType<GetValidActionsRequest> TYPE =
+        MessageType.of(GetValidActionsRequest.class);
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /**
+   * Typed reply carrying the valid user actions. The attachments ride the Java wire as they did
+   * under the reflective path, so this has no Gson fixture.
+   */
+  @AllArgsConstructor
+  class GetValidActionsResponse implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5320048576544672224L;
+
+    public static final MessageType<GetValidActionsResponse> TYPE =
+        MessageType.of(GetValidActionsResponse.class);
+
+    @Getter private final List<UserActionAttachment> validActions;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
 
   @RemoteActionCode(8)
   @Override
