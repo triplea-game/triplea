@@ -11,3 +11,7 @@ setup:
 # Apply code formatting
 format:
     ./gradlew spotlessApply
+
+# Launch the headed TripleA game client (the main app)
+run:
+    ./gradlew :game-headed:run
