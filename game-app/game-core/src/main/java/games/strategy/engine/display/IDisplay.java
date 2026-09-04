@@ -7,7 +7,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitsList;
 import games.strategy.engine.message.IChannelSubscriber;
-import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.engine.message.wire.EntityRef;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
@@ -39,7 +38,6 @@ public interface IDisplay extends IChannelSubscriber {
   /**
    * Sends a message to all TripleAFrame that have joined the game, possibly including observers.
    */
-  @RemoteActionCode(10)
   void reportMessageToAll(
       String message,
       String title,
@@ -73,7 +71,6 @@ public interface IDisplay extends IChannelSubscriber {
    * players listed but NOT any of the players listed as butNotThesePlayers. (No message to any
    * observers or players not in the list.)
    */
-  @RemoteActionCode(11)
   void reportMessageToPlayers(
       Collection<GamePlayer> playersToSendTo,
       Collection<GamePlayer> butNotThesePlayers,
@@ -95,7 +92,6 @@ public interface IDisplay extends IChannelSubscriber {
    */
   @RemoveOnNextMajorRelease(
       "Remove isAmphibious, amphibiousLandAttackers, dependentUnits, and battleTitle")
-  @RemoteActionCode(12)
   void showBattle(
       UUID battleId,
       Territory location,
@@ -118,15 +114,12 @@ public interface IDisplay extends IChannelSubscriber {
    * @param battleId - the battle we are listing steps for.
    * @param steps - a collection of strings denoting all steps in the battle
    */
-  @RemoteActionCode(6)
   void listBattleSteps(UUID battleId, List<String> steps);
 
   /** The given battle has ended. */
-  @RemoteActionCode(0)
   void battleEnd(UUID battleId, String message);
 
   /** Notify that the casualties occurred. */
-  @RemoteActionCode(2)
   void casualtyNotification(
       UUID battleId,
       String step,
@@ -137,14 +130,12 @@ public interface IDisplay extends IChannelSubscriber {
       Map<Unit, Collection<Unit>> dependents);
 
   /** Notify that the casualties occurred, and only the casualty. */
-  @RemoteActionCode(4)
   void deadUnitNotification(
       UUID battleId,
       GamePlayer player,
       Collection<Unit> dead,
       Map<Unit, Collection<Unit>> dependents);
 
-  @RemoteActionCode(3)
   void changedUnitsNotification(
       UUID battleId,
       GamePlayer player,
@@ -153,7 +144,6 @@ public interface IDisplay extends IChannelSubscriber {
       Map<Unit, Collection<Unit>> dependents);
 
   /** Notification of the results of a bombing raid. */
-  @RemoteActionCode(1)
   void bombingResults(UUID battleId, List<Die> dice, int cost);
 
   class BombingResultsMessage implements WebSocketMessage, Serializable {
@@ -183,7 +173,6 @@ public interface IDisplay extends IChannelSubscriber {
   }
 
   /** Notify that the given player has retreated some or all of his units. */
-  @RemoteActionCode(9)
   void notifyRetreat(String shortMessage, String message, String step, GamePlayer retreatingPlayer);
 
   @Builder
@@ -209,7 +198,6 @@ public interface IDisplay extends IChannelSubscriber {
     }
   }
 
-  @RemoteActionCode(8)
   void notifyRetreat(UUID battleId, Collection<Unit> retreating);
 
   class NotifyUnitsRetreatingMessage implements WebSocketMessage, Serializable {
@@ -247,7 +235,6 @@ public interface IDisplay extends IChannelSubscriber {
   }
 
   /** Show dice for the given battle and step. */
-  @RemoteActionCode(7)
   void notifyDice(DiceRoll dice, String stepName);
 
   @Builder
@@ -279,6 +266,10 @@ public interface IDisplay extends IChannelSubscriber {
       return MessageEnvelope.packageMessage(TYPE, this);
     }
 
+    public String getStepName() {
+      return stepName;
+    }
+
     public void accept(final IDisplay display) {
       final List<Die> rolls = DieRollData.toDieList(diceRollData);
       DiceRoll diceRoll = new DiceRoll(rolls, diceRollHits, diceRollExpectedHits, playerName);
@@ -286,7 +277,6 @@ public interface IDisplay extends IChannelSubscriber {
     }
   }
 
-  @RemoteActionCode(5)
   void gotoBattleStep(UUID battleId, String step);
 
   @AllArgsConstructor
@@ -310,7 +300,6 @@ public interface IDisplay extends IChannelSubscriber {
     }
   }
 
-  @RemoteActionCode(13)
   void shutDown();
 
   class DisplayShutdownMessage implements WebSocketMessage, Consumer<IDisplay>, Serializable {

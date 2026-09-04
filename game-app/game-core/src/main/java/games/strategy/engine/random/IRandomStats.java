@@ -1,7 +1,6 @@
 package games.strategy.engine.random;
 
 import games.strategy.engine.message.IRemote;
-import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.message.wire.OpaqueBlob;
 import java.io.Serial;
@@ -30,7 +29,6 @@ public interface IRandomStats extends IRemote {
     ENGINE
   }
 
-  @RemoteActionCode(0)
   RandomStatsDetails getRandomStats(int diceSides);
 
   /** Typed request for the current dice statistics computed over the given number of dice sides. */

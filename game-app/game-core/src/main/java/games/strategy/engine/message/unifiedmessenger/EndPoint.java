@@ -1,18 +1,14 @@
 package games.strategy.engine.message.unifiedmessenger;
 
 import games.strategy.engine.message.MessageContext;
-import games.strategy.engine.message.RemoteMethodCall;
-import games.strategy.engine.message.RemoteMethodCallResults;
+import games.strategy.engine.message.TypedInvocation;
+import games.strategy.engine.message.TypedInvocationResult;
 import games.strategy.net.INode;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -21,7 +17,6 @@ import org.triplea.java.collections.CollectionUtils;
  * name that are local to this node. You can invoke the method and get the results for all the
  * implementors.
  */
-@Slf4j
 class EndPoint {
   // the next number we are going to give
   private final AtomicLong nextGivenNumber = new AtomicLong();
@@ -33,16 +28,19 @@ class EndPoint {
   private final Set<Object> implementors = new CopyOnWriteArraySet<>();
   private final boolean singleThreaded;
   private final TypedMessageRegistry typedMessageRegistry;
+  private final InvocationExecutionGate executionGate;
 
   EndPoint(
       final String name,
       final Class<?> remoteClass,
       final boolean singleThreaded,
-      final TypedMessageRegistry typedMessageRegistry) {
+      final TypedMessageRegistry typedMessageRegistry,
+      final InvocationExecutionGate executionGate) {
     this.name = name;
     this.remoteClass = remoteClass;
     this.singleThreaded = singleThreaded;
     this.typedMessageRegistry = typedMessageRegistry;
+    this.executionGate = executionGate;
   }
 
   /**
@@ -109,10 +107,10 @@ class EndPoint {
   /**
    * @param number - like the number you get in a bank line, if we are single threaded, then the
    *     method will not run until the number comes up. Acquire with {@link #takeANumber()}
-   * @return a List of RemoteMethodCallResults
+   * @return a List of {@link TypedInvocationResult}
    */
-  public List<RemoteMethodCallResults> invokeLocal(
-      final RemoteMethodCall call, final long number, final INode messageOriginator) {
+  public List<TypedInvocationResult> invokeLocal(
+      final TypedInvocation call, final long number, final INode messageOriginator) {
     try {
       if (singleThreaded) {
         waitTillCanBeRun(number);
@@ -123,45 +121,16 @@ class EndPoint {
     }
   }
 
-  private List<RemoteMethodCallResults> invokeMultiple(
-      final RemoteMethodCall call, final INode messageOriginator) {
+  private List<TypedInvocationResult> invokeMultiple(
+      final TypedInvocation call, final INode messageOriginator) {
     return implementors.stream()
         .map(implementor -> invokeSingle(call, implementor, messageOriginator))
         .collect(Collectors.toUnmodifiableList());
   }
 
-  private RemoteMethodCallResults invokeSingle(
-      final RemoteMethodCall call, final Object implementor, final INode messageOriginator) {
-    if (call.getTypedMessage() != null) {
-      return invokeTyped(call.getTypedMessage(), implementor, messageOriginator);
-    }
-    call.resolve(remoteClass);
-    final Method method;
-    try {
-      method = implementor.getClass().getMethod(call.getMethodName(), call.getArgTypes());
-      method.setAccessible(true);
-    } catch (final NoSuchMethodException e) {
-      throw new IllegalStateException(e);
-    }
-    MessageContext.setSenderNodeForThread(messageOriginator);
-    try {
-      final Object methodRVal = method.invoke(implementor, call.getArgs());
-      // Optional is not Serializable; unwrap to the contained value or null for network transfer.
-      final Object serializable =
-          methodRVal instanceof Optional ? ((Optional<?>) methodRVal).orElse(null) : methodRVal;
-      return new RemoteMethodCallResults(serializable);
-    } catch (final InvocationTargetException e) {
-      return new RemoteMethodCallResults(e.getTargetException());
-    } catch (final IllegalAccessException | IllegalArgumentException e) {
-      log.error("error in call: " + call, e);
-      return new RemoteMethodCallResults(e);
-    } finally {
-      MessageContext.setSenderNodeForThread(null);
-    }
-  }
-
-  private RemoteMethodCallResults invokeTyped(
-      final WebSocketMessage message, final Object implementor, final INode messageOriginator) {
+  private TypedInvocationResult invokeSingle(
+      final TypedInvocation call, final Object implementor, final INode messageOriginator) {
+    final WebSocketMessage message = call.getMessage();
     final TypedMessageHandler<WebSocketMessage> handler =
         typedMessageRegistry
             .handlerFor(message)
@@ -169,15 +138,20 @@ class EndPoint {
                 () ->
                     new IllegalStateException(
                         "No typed handler registered for " + message.getClass().getName()));
+    // The execution gate (delegate endpoints only) acquires the delegate-execution read lock around
+    // the handler so a save cannot serialize game state mid-mutation; it is entered before the try
+    // so a failed enter does not trigger a spurious leave, mirroring the old inbound proxy wrapper.
+    executionGate.enter();
     MessageContext.setSenderNodeForThread(messageOriginator);
     try {
-      return new RemoteMethodCallResults(handler.handle(message, implementor));
+      return new TypedInvocationResult(handler.handle(message, implementor));
     } catch (final Throwable t) {
-      // Mirror the reflective branch: any failure the handler raises returns to the caller through
-      // the latch as an exception result rather than escaping on the delegate/thread-pool thread.
-      return new RemoteMethodCallResults(t);
+      // Any failure the handler raises returns to the caller through the latch as an exception
+      // result rather than escaping on the delegate/thread-pool thread.
+      return new TypedInvocationResult(t);
     } finally {
       MessageContext.setSenderNodeForThread(null);
+      executionGate.leave();
     }
   }
 

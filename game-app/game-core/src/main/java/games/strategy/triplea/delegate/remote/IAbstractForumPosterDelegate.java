@@ -3,7 +3,6 @@ package games.strategy.triplea.delegate.remote;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
-import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.net.Messengers;
 import java.io.Serial;
@@ -45,7 +44,6 @@ public interface IAbstractForumPosterDelegate extends IRemote, IDelegate {
         });
   }
 
-  @RemoteActionCode(9)
   boolean postTurnSummary(PbemMessagePoster poster, String title);
 
   /**
@@ -85,7 +83,6 @@ public interface IAbstractForumPosterDelegate extends IRemote, IDelegate {
     }
   }
 
-  @RemoteActionCode(12)
   void setHasPostedTurnSummary(boolean hasPostedTurnSummary);
 
   /** Typed request to record whether the turn summary has been posted. */
@@ -117,7 +114,6 @@ public interface IAbstractForumPosterDelegate extends IRemote, IDelegate {
     }
   }
 
-  @RemoteActionCode(4)
   boolean getHasPostedTurnSummary();
 
   /** Typed request asking whether the turn summary has been posted. */
@@ -149,47 +145,36 @@ public interface IAbstractForumPosterDelegate extends IRemote, IDelegate {
     }
   }
 
-  @RemoteActionCode(7)
   @Override
   void initialize(String name, String displayName);
 
-  @RemoteActionCode(11)
   @Override
   void setDelegateBridgeAndPlayer(IDelegateBridge delegateBridge);
 
-  @RemoteActionCode(13)
   @Override
   void start();
 
-  @RemoteActionCode(1)
   @Override
   void end();
 
-  @RemoteActionCode(5)
   @Override
   String getName();
 
-  @RemoteActionCode(3)
   @Override
   String getDisplayName();
 
-  @RemoteActionCode(2)
   @Override
   IDelegateBridge getBridge();
 
-  @RemoteActionCode(10)
   @Override
   Serializable saveState();
 
-  @RemoteActionCode(8)
   @Override
   void loadState(Serializable state);
 
-  @RemoteActionCode(6)
   @Override
   Class<? extends IRemote> getRemoteType();
 
-  @RemoteActionCode(0)
   @Override
   boolean delegateCurrentlyRequiresUserInput();
 }

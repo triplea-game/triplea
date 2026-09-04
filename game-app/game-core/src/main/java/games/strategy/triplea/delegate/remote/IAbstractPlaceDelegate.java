@@ -5,7 +5,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
-import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.engine.message.wire.EntityRef;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.delegate.UndoablePlacement;
@@ -72,7 +71,6 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
    * @param at territory to place
    * @return an error code if the placement was not successful
    */
-  @RemoteActionCode(13)
   Optional<String> placeUnits(Collection<Unit> units, Territory at, BidMode bidMode);
 
   /** Typed request to place units in a territory. */
@@ -133,7 +131,6 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
    * @param at referring territory
    * @return object that contains place-able units
    */
-  @RemoteActionCode(6)
   PlaceableUnits getPlaceableUnits(Collection<Unit> units, Territory at);
 
   /** Typed request asking which of the given units can be placed in a territory. */
@@ -177,7 +174,6 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
    * Returns the number of placements made so far. this is not the number of units placed, but the
    * number of times we have made successful placements.
    */
-  @RemoteActionCode(7)
   int getPlacementsMade();
 
   /** Typed request for the number of successful placements made so far. */
@@ -214,7 +210,6 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
    *
    * @return a list of Territories with air units that must move
    */
-  @RemoteActionCode(9)
   Collection<Territory> getTerritoriesWhereAirCantLand();
 
   /** Typed request for the territories where air units cannot land during placement. */
@@ -230,52 +225,40 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
     }
   }
 
-  @RemoteActionCode(17)
   @Override
   @Nullable
   String undoMove(int moveIndex);
 
-  @RemoteActionCode(10)
   @Override
   void initialize(String name, String displayName);
 
-  @RemoteActionCode(15)
   @Override
   void setDelegateBridgeAndPlayer(IDelegateBridge delegateBridge);
 
-  @RemoteActionCode(16)
   @Override
   void start();
 
-  @RemoteActionCode(1)
   @Override
   void end();
 
-  @RemoteActionCode(5)
   @Override
   String getName();
 
-  @RemoteActionCode(3)
   @Override
   String getDisplayName();
 
-  @RemoteActionCode(2)
   @Override
   IDelegateBridge getBridge();
 
-  @RemoteActionCode(14)
   @Override
   Serializable saveState();
 
-  @RemoteActionCode(11)
   @Override
   void loadState(Serializable state);
 
-  @RemoteActionCode(8)
   @Override
   Class<? extends IRemote> getRemoteType();
 
-  @RemoteActionCode(0)
   @Override
   boolean delegateCurrentlyRequiresUserInput();
 }

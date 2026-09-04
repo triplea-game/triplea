@@ -1,68 +1,33 @@
 package games.strategy.net;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.chat.IChatChannel;
-import games.strategy.engine.message.ChannelMessenger;
-import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IChannelSubscriber;
-import games.strategy.engine.message.IRemote;
-import games.strategy.engine.message.IRemoteMessenger;
-import games.strategy.engine.message.RemoteMessenger;
-import games.strategy.engine.message.RemoteMethodCall;
-import games.strategy.engine.message.RemoteMethodCallResults;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.message.RemoteNotFoundException;
+import games.strategy.engine.message.TypedInvocation;
+import games.strategy.engine.message.TypedInvocationResult;
+import games.strategy.engine.message.unifiedmessenger.InvocationExecutionGate;
 import games.strategy.engine.message.unifiedmessenger.TypedMessageHandler;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import java.io.Serializable;
-import javax.annotation.Nullable;
 import lombok.ToString;
 import org.triplea.http.client.web.socket.messages.MessageType;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 
-/** Convenience grouping of a messenger, remote messenger and channel messenger. */
+/**
+ * Groups the transport {@link IMessenger} with the {@link UnifiedMessenger} that correlates typed
+ * request/response invocations and dispatches inbound messages to their registered handlers. The
+ * reflective remote/channel proxy layer this used to wrap was removed by the RMI flatten; every
+ * remote call now rides the typed message API below.
+ */
 @ToString
-public class Messengers implements IMessenger, IRemoteMessenger, IChannelMessenger {
+public class Messengers implements IMessenger {
   private final IMessenger messenger;
-  private final IRemoteMessenger remoteMessenger;
-  private final IChannelMessenger channelMessenger;
-  @Nullable private final UnifiedMessenger unifiedMessenger;
+  private final UnifiedMessenger unifiedMessenger;
 
   public Messengers(final IMessenger messenger) {
     this.messenger = messenger;
     unifiedMessenger = new UnifiedMessenger(messenger);
-    channelMessenger = new ChannelMessenger(unifiedMessenger);
-    remoteMessenger = new RemoteMessenger(unifiedMessenger);
-  }
-
-  @VisibleForTesting
-  public Messengers(
-      final IMessenger messenger,
-      final IRemoteMessenger remoteMessenger,
-      final IChannelMessenger channelMessenger) {
-    this.messenger = messenger;
-    this.remoteMessenger = remoteMessenger;
-    this.channelMessenger = channelMessenger;
-    unifiedMessenger = extractUnifiedMessenger(remoteMessenger, channelMessenger);
-  }
-
-  /**
-   * Recovers the shared {@link UnifiedMessenger} when the test constructor is handed real wrapper
-   * messengers, so the typed messaging API works without the production constructor. Stays null for
-   * mock messengers, which carry no UnifiedMessenger to dispatch through.
-   */
-  @Nullable
-  private static UnifiedMessenger extractUnifiedMessenger(
-      final IRemoteMessenger remoteMessenger, final IChannelMessenger channelMessenger) {
-    if (channelMessenger instanceof ChannelMessenger cm) {
-      return cm.getUnifiedMessenger();
-    }
-    if (remoteMessenger instanceof RemoteMessenger rm) {
-      return rm.getUnifiedMessenger();
-    }
-    return null;
   }
 
   /**
@@ -71,49 +36,38 @@ public class Messengers implements IMessenger, IRemoteMessenger, IChannelMesseng
    */
   public <T extends WebSocketMessage> void registerMessageHandler(
       final MessageType<T> messageType, final TypedMessageHandler<T> handler) {
-    requireUnifiedMessenger();
     unifiedMessenger.getTypedMessageRegistry().register(messageType, handler);
   }
 
   /**
    * Reports whether a handler is already registered for the given typed message. Registration must
    * not be guarded with this: {@link #registerMessageHandler} overwrites, and re-registering on a
-   * later game is how a handler's captured per-game game data is refreshed. A mock-messengers test
-   * instance carries no {@link UnifiedMessenger} and so never has a handler.
+   * later game is how a handler's captured per-game game data is refreshed.
    */
   public boolean hasTypedMessageHandler(final MessageType<?> type) {
-    return unifiedMessenger != null && unifiedMessenger.getTypedMessageRegistry().hasHandler(type);
+    return unifiedMessenger.getTypedMessageRegistry().hasHandler(type);
   }
 
   /** Fire-and-forget broadcast of a typed message to every subscriber of the given channel. */
   public void sendChannelMessage(final RemoteName channel, final WebSocketMessage message) {
-    requireUnifiedMessenger();
-    unifiedMessenger.invoke(channel.getName(), RemoteMethodCall.typed(channel.getName(), message));
+    unifiedMessenger.invoke(channel.getName(), new TypedInvocation(channel.getName(), message));
   }
 
   /** Sends a typed request to a remote endpoint and blocks for its typed reply. */
   public <R extends WebSocketMessage> R invokeRemoteMessage(
       final RemoteName remote, final WebSocketMessage request, final MessageType<R> responseType) {
-    requireUnifiedMessenger();
-    final RemoteMethodCallResults results;
+    final TypedInvocationResult results;
     try {
       results =
           unifiedMessenger.invokeAndWait(
-              remote.getName(), RemoteMethodCall.typed(remote.getName(), request));
+              remote.getName(), new TypedInvocation(remote.getName(), request));
     } catch (final RemoteNotFoundException e) {
       throw new IllegalStateException("No remote registered for " + remote, e);
     }
     if (results.getException() != null) {
       throw new RuntimeException("Exception on remote", results.getException());
     }
-    return responseType.getPayloadType().cast(results.getRVal());
-  }
-
-  private void requireUnifiedMessenger() {
-    checkNotNull(
-        unifiedMessenger,
-        "Typed messaging requires the production Messengers constructor; this instance was built"
-            + " with the test constructor that supplies mock messengers.");
+    return responseType.getPayloadType().cast(results.getReturnValue());
   }
 
   // TODO: API could be improved, perhaps return an optional, and/or store exact instance types from
@@ -124,53 +78,51 @@ public class Messengers implements IMessenger, IRemoteMessenger, IChannelMesseng
 
   public void addChatChannelSubscriber(
       final IChatChannel chatChannelSubscriber, final String chatChannelName) {
-    channelMessenger.registerChannelSubscriber(
+    registerChannelSubscriber(
         chatChannelSubscriber, new RemoteName(chatChannelName, IChatChannel.class));
   }
 
-  @Override
-  public IChannelSubscriber getChannelBroadcaster(final RemoteName channelName) {
-    return channelMessenger.getChannelBroadcaster(channelName);
-  }
-
-  @Override
+  /** Registers a channel subscriber (single-threaded endpoint) for the given channel name. */
   public void registerChannelSubscriber(final Object implementor, final RemoteName channelName) {
-    channelMessenger.registerChannelSubscriber(implementor, channelName);
+    if (!IChannelSubscriber.class.isAssignableFrom(channelName.getClazz())) {
+      throw new IllegalStateException(channelName.getClazz() + " is not a channel subscriber");
+    }
+    unifiedMessenger.addImplementor(channelName, implementor, true, InvocationExecutionGate.NONE);
   }
 
-  @Override
   public void unregisterChannelSubscriber(final Object implementor, final RemoteName channelName) {
-    channelMessenger.unregisterChannelSubscriber(implementor, channelName);
+    unifiedMessenger.removeImplementor(channelName.getName(), implementor);
   }
 
-  @Override
-  public IRemote getRemote(final RemoteName name) {
-    return remoteMessenger.getRemote(name);
-  }
-
-  @Override
-  public IRemote getRemote(final RemoteName name, final boolean ignoreResults) {
-    return remoteMessenger.getRemote(name, ignoreResults);
-  }
-
-  @Override
+  /** Registers a remote implementor (multi-threaded endpoint) for the given remote name. */
   public void registerRemote(final Object implementor, final RemoteName name) {
-    remoteMessenger.registerRemote(implementor, name);
+    unifiedMessenger.addImplementor(name, implementor, false, InvocationExecutionGate.NONE);
   }
 
-  @Override
+  /**
+   * Registers a remote implementor whose inbound calls must be bracketed by the given execution
+   * gate (the delegate endpoints acquire the delegate-execution read lock so a save cannot run
+   * while an inbound message mutates game state).
+   */
+  public void registerRemote(
+      final Object implementor,
+      final RemoteName name,
+      final InvocationExecutionGate executionGate) {
+    unifiedMessenger.addImplementor(name, implementor, false, executionGate);
+  }
+
   public void unregisterRemote(final String name) {
-    remoteMessenger.unregisterRemote(name);
+    if (unifiedMessenger.hasSingleImplementor(name)) {
+      unifiedMessenger.removeImplementor(name, unifiedMessenger.getImplementor(name));
+    }
   }
 
-  @Override
   public void unregisterRemote(final RemoteName name) {
-    remoteMessenger.unregisterRemote(name);
+    unregisterRemote(name.getName());
   }
 
-  @Override
   public boolean hasLocalImplementor(final RemoteName name) {
-    return remoteMessenger.hasLocalImplementor(name);
+    return unifiedMessenger.hasSingleImplementor(name.getName());
   }
 
   @Override

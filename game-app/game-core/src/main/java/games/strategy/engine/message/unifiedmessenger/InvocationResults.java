@@ -2,7 +2,7 @@ package games.strategy.engine.message.unifiedmessenger;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import games.strategy.engine.message.RemoteMethodCallResults;
+import games.strategy.engine.message.TypedInvocationResult;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -12,12 +12,12 @@ import java.util.UUID;
 /** The results of a remote invocation. */
 public abstract class InvocationResults implements Externalizable {
   private static final long serialVersionUID = -382704036681832123L;
-  public RemoteMethodCallResults results;
+  public TypedInvocationResult results;
   public UUID methodCallId;
 
   public InvocationResults() {}
 
-  public InvocationResults(final RemoteMethodCallResults results, final UUID methodCallId) {
+  public InvocationResults(final TypedInvocationResult results, final UUID methodCallId) {
     checkNotNull(results);
     checkNotNull(methodCallId);
 
@@ -38,7 +38,7 @@ public abstract class InvocationResults implements Externalizable {
 
   @Override
   public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
-    results = new RemoteMethodCallResults();
+    results = new TypedInvocationResult();
     results.readExternal(in);
     methodCallId = UUID.fromString((String) in.readObject());
   }

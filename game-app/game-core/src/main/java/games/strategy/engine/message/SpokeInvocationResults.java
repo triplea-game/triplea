@@ -9,7 +9,7 @@ public class SpokeInvocationResults extends InvocationResults {
 
   public SpokeInvocationResults() {}
 
-  public SpokeInvocationResults(final RemoteMethodCallResults results, final UUID methodCallId) {
+  public SpokeInvocationResults(final TypedInvocationResult results, final UUID methodCallId) {
     super(results, methodCallId);
   }
 }

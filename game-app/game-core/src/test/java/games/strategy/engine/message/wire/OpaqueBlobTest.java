@@ -43,7 +43,7 @@ class OpaqueBlobTest {
 
   @Test
   void blobSurvivesJavaSerialization() throws Exception {
-    // Typed messages ride the UnifiedMessenger wire via Java serialization (RemoteMethodCall writes
+    // Typed messages ride the UnifiedMessenger wire via Java serialization (TypedInvocation writes
     // the payload with writeObject), so a blob field must itself be Serializable, not only
     // Gson-serializable.
     final Change change =

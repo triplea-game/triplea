@@ -8,13 +8,11 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
-import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.message.IChannelSubscriber;
 import games.strategy.engine.message.IRemote;
-import games.strategy.engine.message.RemoteMessenger;
-import games.strategy.engine.message.RemoteMethodCall;
-import games.strategy.engine.message.RemoteMethodCallResults;
 import games.strategy.engine.message.RemoteName;
+import games.strategy.engine.message.TypedInvocation;
+import games.strategy.engine.message.TypedInvocationResult;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
@@ -53,9 +51,9 @@ class TypedMessageDispatchTest {
       client = new ClientMessenger("localhost", serverPort, "client", SystemId.of("system-id"));
 
       final UnifiedMessenger serverUnified = new UnifiedMessenger(server);
-      final RemoteMessenger serverRemote = new RemoteMessenger(serverUnified);
       final AtomicReference<String> handlerThread = new AtomicReference<>();
-      serverRemote.registerRemote((EchoRemote) () -> {}, ECHO);
+      serverUnified.addImplementor(
+          ECHO, (EchoRemote) () -> {}, false, InvocationExecutionGate.NONE);
       serverUnified
           .getTypedMessageRegistry()
           .register(
@@ -73,11 +71,11 @@ class TypedMessageDispatchTest {
               Duration.ofSeconds(10),
               () -> {
                 callerThread.set(Thread.currentThread().getName());
-                final RemoteMethodCallResults results =
+                final TypedInvocationResult results =
                     clientUnified.invokeAndWait(
                         ECHO.getName(),
-                        RemoteMethodCall.typed(ECHO.getName(), new EchoRequest("hello")));
-                return (EchoResponse) results.getRVal();
+                        new TypedInvocation(ECHO.getName(), new EchoRequest("hello")));
+                return (EchoResponse) results.getReturnValue();
               });
 
       assertThat(response.value, is("hello-ack"));
@@ -103,11 +101,11 @@ class TypedMessageDispatchTest {
 
       final UnifiedMessenger serverUnified = new UnifiedMessenger(server);
       final UnifiedMessenger clientUnified = new UnifiedMessenger(client);
-      final ChannelMessenger clientChannel = new ChannelMessenger(clientUnified);
 
       final List<Integer> applied = new CopyOnWriteArrayList<>();
       final AtomicReference<String> handlerThread = new AtomicReference<>();
-      clientChannel.registerChannelSubscriber((OrderedChannel) () -> {}, ORDERED);
+      clientUnified.addImplementor(
+          ORDERED, (OrderedChannel) () -> {}, true, InvocationExecutionGate.NONE);
       clientUnified
           .getTypedMessageRegistry()
           .register(
@@ -130,7 +128,7 @@ class TypedMessageDispatchTest {
               sequence ->
                   serverUnified.invoke(
                       ORDERED.getName(),
-                      RemoteMethodCall.typed(ORDERED.getName(), new OrderMessage(sequence))));
+                      new TypedInvocation(ORDERED.getName(), new OrderMessage(sequence))));
 
       await().until(applied::size, is(messageCount));
 

@@ -4,7 +4,6 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.player.PlayerRemoteMessageHandlers;
@@ -15,7 +14,6 @@ import java.util.Optional;
 import org.triplea.http.client.web.socket.messages.MessageType;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.java.collections.IntegerMap;
-import org.triplea.sound.ISound;
 
 /**
  * A class that communicates with the Delegate. DelegateBridge coordinates communication between the
@@ -76,22 +74,6 @@ public interface IDelegateBridge {
   IDelegateHistoryWriter getHistoryWriter();
 
   /**
-   * Return an object that implements the IDisplay interface for the game.
-   *
-   * <p>Methods called on this returned object will be invoked on all displays in the game,
-   * including those on remote machines
-   */
-  IDisplay getDisplayChannelBroadcaster();
-
-  /**
-   * Return an object that implements the ISound interface for the game.
-   *
-   * <p>Methods called on this returned object will be invoked on all sound channels in the game,
-   * including those on remote machines
-   */
-  ISound getSoundChannelBroadcaster();
-
-  /**
    * After this step finishes executing, the next delegate will not be called.
    *
    * <p>This method allows the delegate to signal that the game is over, but does not force the ui
@@ -108,16 +90,14 @@ public interface IDelegateBridge {
   void sendMessage(WebSocketMessage webSocketMessage);
 
   /**
-   * Broadcasts a typed message to every display in the game, the typed-dispatch replacement for
-   * calling a method on {@link #getDisplayChannelBroadcaster()}. Bridges without a live display
-   * (simulation, tests) inherit the no-op default, matching their no-op display broadcaster.
+   * Broadcasts a typed message to every display in the game. Bridges without a live display
+   * (simulation, tests) inherit the no-op default.
    */
   default void sendDisplayMessage(final WebSocketMessage message) {}
 
   /**
-   * Broadcasts a typed message to every sound channel in the game, the typed-dispatch replacement
-   * for calling a method on {@link #getSoundChannelBroadcaster()}. Bridges without a live sound
-   * channel (simulation, tests) inherit the no-op default, matching their no-op sound broadcaster.
+   * Broadcasts a typed message to every sound channel in the game. Bridges without a live sound
+   * channel (simulation, tests) inherit the no-op default.
    */
   default void sendSoundMessage(final WebSocketMessage message) {}
 

@@ -86,8 +86,8 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
       endPointCols.remove(from);
       if (endPointCols.isEmpty()) {
         if (invoke.needReturnValues) {
-          final RemoteMethodCallResults results =
-              new RemoteMethodCallResults(
+          final TypedInvocationResult results =
+              new TypedInvocationResult(
                   new RemoteNotFoundException(
                       "Not found:"
                           + invoke.call.getRemoteName()
@@ -117,7 +117,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
 
   private void sendResultsToCaller(
       final UUID methodId, final InvocationInProgress invocationInProgress) {
-    final RemoteMethodCallResults result = invocationInProgress.getResults();
+    final TypedInvocationResult result = invocationInProgress.getResults();
     final INode caller = invocationInProgress.getCaller();
     final SpokeInvocationResults spokeResults = new SpokeInvocationResults(result, methodId);
     send(spokeResults, caller);
@@ -161,8 +161,8 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
     }
     for (final InvocationInProgress invocation : invocations.values()) {
       if (invocation.isWaitingOn(to)) {
-        final RemoteMethodCallResults results =
-            new RemoteMethodCallResults(
+        final TypedInvocationResult results =
+            new TypedInvocationResult(
                 new ConnectionLostException("Connection to " + to.getName() + " lost"));
         final HubInvocationResults hubResults =
             new HubInvocationResults(results, invocation.getMethodCallId());

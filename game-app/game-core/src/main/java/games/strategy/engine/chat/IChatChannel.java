@@ -1,7 +1,6 @@
 package games.strategy.engine.chat;
 
 import games.strategy.engine.message.IChannelSubscriber;
-import games.strategy.engine.message.RemoteActionCode;
 import java.io.Serial;
 import java.io.Serializable;
 import javax.annotation.Nonnull;
@@ -15,7 +14,6 @@ import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 /** Chat messages occur on this channel. */
 public interface IChatChannel extends IChannelSubscriber {
   // we get the sender from MessageContext
-  @RemoteActionCode(0)
   void chatOccurred(String message);
 
   @AllArgsConstructor
@@ -36,7 +34,6 @@ public interface IChatChannel extends IChannelSubscriber {
     }
   }
 
-  @RemoteActionCode(2)
   void slapOccurred(UserName userName);
 
   @AllArgsConstructor
@@ -57,7 +54,6 @@ public interface IChatChannel extends IChannelSubscriber {
     }
   }
 
-  @RemoteActionCode(3)
   void speakerAdded(ChatParticipant chatParticipant);
 
   @AllArgsConstructor
@@ -79,7 +75,6 @@ public interface IChatChannel extends IChannelSubscriber {
     }
   }
 
-  @RemoteActionCode(4)
   void speakerRemoved(UserName userName);
 
   @AllArgsConstructor
@@ -103,7 +98,6 @@ public interface IChatChannel extends IChannelSubscriber {
 
   // purely here to keep connections open and stop NATs and crap from thinking that our connection
   // is closed when it is not.
-  @RemoteActionCode(1)
   void ping();
 
   @AllArgsConstructor
@@ -122,7 +116,6 @@ public interface IChatChannel extends IChannelSubscriber {
     }
   }
 
-  @RemoteActionCode(5)
   void statusChanged(UserName userName, String status);
 
   @AllArgsConstructor

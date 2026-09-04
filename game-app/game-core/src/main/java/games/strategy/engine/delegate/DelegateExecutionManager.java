@@ -4,11 +4,7 @@ import static com.google.common.base.Preconditions.checkState;
 
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.message.MessengerException;
-import games.strategy.engine.message.WrappedInvocationHandler;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import games.strategy.engine.random.IRandomSource;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -61,75 +57,50 @@ public class DelegateExecutionManager {
   }
 
   /**
-   * Used to create an object the exits delegate execution.
-   *
-   * <p>Objects on this method will decrement the thread lock count when called, and will increment
-   * it again when execution is finished.
+   * Wraps a random source so that a blocking dice call (e.g. a networked/PBEM dice server) releases
+   * the delegate-execution read lock for the duration of the call and re-acquires it afterward, so
+   * a save can proceed while a delegate is blocked waiting for dice. This preserves the bracketing
+   * the reflective outbound proxy used to provide.
    */
-  public Object newOutboundImplementation(final Object implementor, final Class<?>[] interfaces) {
+  public IRandomSource newDelegateRandomSource(final IRandomSource randomSource) {
+    return new IRandomSource() {
+      @Override
+      public int getRandom(final int max, final String annotation) {
+        return outbound(() -> randomSource.getRandom(max, annotation));
+      }
+
+      @Override
+      public int[] getRandom(final int max, final int count, final String annotation) {
+        return outbound(() -> randomSource.getRandom(max, count, annotation));
+      }
+    };
+  }
+
+  private <T> T outbound(final java.util.function.Supplier<T> call) {
     assertGameNotOver();
-    final InvocationHandler ih =
-        (proxy, method, args) -> {
-          assertGameNotOver();
-          final boolean threadLocks = currentThreadHasReadLock();
-          if (threadLocks) {
-            leaveDelegateExecution();
-          }
-          try {
-            return method.invoke(implementor, args);
-          } catch (final InvocationTargetException e) {
-            if (e.getCause() instanceof MessengerException) {
-              throw new GameOverException("Game Over!");
-            }
-            assertGameNotOver();
-            throw e;
-          } finally {
-            if (threadLocks) {
-              enterDelegateExecution();
-            }
-          }
-        };
-    return Proxy.newProxyInstance(implementor.getClass().getClassLoader(), interfaces, ih);
+    final boolean threadLocks = currentThreadHasReadLock();
+    if (threadLocks) {
+      leaveDelegateExecution();
+    }
+    try {
+      return call.get();
+    } catch (final RuntimeException e) {
+      if (e.getCause() instanceof MessengerException) {
+        throw new GameOverException("Game Over!");
+      }
+      assertGameNotOver();
+      throw e;
+    } finally {
+      if (threadLocks) {
+        enterDelegateExecution();
+      }
+    }
   }
 
   private void assertGameNotOver() {
     if (isGameOver) {
       throw new GameOverException("Game Over");
     }
-  }
-
-  /**
-   * Use to create an object that begins delegate execution.
-   *
-   * <p>Objects on this method will increment the thread lock count when called, and will decrement
-   * it again when execution is finished.
-   */
-  public Object newInboundImplementation(final Object implementor, final Class<?>[] interfaces) {
-    assertGameNotOver();
-    final InvocationHandler ih =
-        new WrappedInvocationHandler(implementor) {
-          @Override
-          public Object invoke(final Object proxy, final Method method, final Object[] args)
-              throws Throwable {
-            if (super.shouldHandle(method, args)) {
-              return super.handle(method, args);
-            }
-            assertGameNotOver();
-            enterDelegateExecution();
-            try {
-              return method.invoke(implementor, args);
-            } catch (final InvocationTargetException ite) {
-              assertGameNotOver();
-              throw ite.getCause();
-            } catch (final RuntimeException re) {
-              assertGameNotOver();
-              throw re;
-            } finally {
-              leaveDelegateExecution();
-            }
-          }
-        };
-    return Proxy.newProxyInstance(implementor.getClass().getClassLoader(), interfaces, ih);
   }
 
   /** Invoke immediately after executing a delegate. */

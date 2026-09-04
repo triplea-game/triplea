@@ -1,7 +1,6 @@
 package games.strategy.engine.chat;
 
 import games.strategy.engine.message.IRemote;
-import games.strategy.engine.message.RemoteActionCode;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
@@ -21,7 +20,6 @@ import org.triplea.http.client.web.socket.messages.WebSocketMessage;
  */
 public interface IChatController extends IRemote {
   /** Join the chat, returns the chatters currently in the chat. */
-  @RemoteActionCode(0)
   Collection<ChatParticipant> joinChat();
 
   /** Typed request asking to join the chat. */
@@ -51,7 +49,6 @@ public interface IChatController extends IRemote {
     }
   }
 
-  @RemoteActionCode(1)
   void leaveChat();
 
   /** Typed request asking to leave the chat. */
@@ -79,7 +76,6 @@ public interface IChatController extends IRemote {
     }
   }
 
-  @RemoteActionCode(2)
   void setStatus(String newStatus);
 
   @AllArgsConstructor

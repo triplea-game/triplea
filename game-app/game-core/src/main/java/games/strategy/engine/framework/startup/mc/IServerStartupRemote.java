@@ -2,7 +2,6 @@ package games.strategy.engine.framework.startup.mc;
 
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.message.IRemote;
-import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.net.INode;
 import java.io.Serial;
 import java.io.Serializable;
@@ -19,7 +18,6 @@ import org.triplea.http.client.web.socket.messages.WebSocketMessage;
  */
 public interface IServerStartupRemote extends IRemote {
   /** Returns a listing of the players in the game. */
-  @RemoteActionCode(9)
   PlayerListing getPlayerListing();
 
   /** Typed request asking for the current player listing. */
@@ -51,7 +49,6 @@ public interface IServerStartupRemote extends IRemote {
     }
   }
 
-  @RemoteActionCode(13)
   void takePlayer(INode who, String playerName);
 
   /** Typed request to assign a player to the requesting node. */
@@ -84,7 +81,6 @@ public interface IServerStartupRemote extends IRemote {
     }
   }
 
-  @RemoteActionCode(12)
   void releasePlayer(INode who, String playerName);
 
   /** Typed request to release a player held by the requesting node. */
@@ -117,7 +113,6 @@ public interface IServerStartupRemote extends IRemote {
     }
   }
 
-  @RemoteActionCode(4)
   void disablePlayer(String playerName);
 
   /** Typed request to disable a player. */
@@ -149,7 +144,6 @@ public interface IServerStartupRemote extends IRemote {
     }
   }
 
-  @RemoteActionCode(5)
   void enablePlayer(String playerName);
 
   /** Typed request to enable a player. */
@@ -185,7 +179,6 @@ public interface IServerStartupRemote extends IRemote {
    * Has the game already started? If true, the server will call our ObserverWaitingToJoin to start
    * the game. Note, the return value may come back after our ObserverWaitingToJoin has been created
    */
-  @RemoteActionCode(11)
   boolean isGameStarted(INode newNode);
 
   /** Typed request asking whether the game has already started. */
@@ -220,7 +213,6 @@ public interface IServerStartupRemote extends IRemote {
     }
   }
 
-  @RemoteActionCode(8)
   boolean getIsServerHeadless();
 
   /** Typed request asking whether the server node is a headless (bot) host. */
@@ -252,7 +244,6 @@ public interface IServerStartupRemote extends IRemote {
     }
   }
 
-  @RemoteActionCode(6)
   List<String> getAvailableGames();
 
   /** Typed request asking for the games available on the server. */
@@ -284,7 +275,6 @@ public interface IServerStartupRemote extends IRemote {
     }
   }
 
-  @RemoteActionCode(0)
   void changeServerGameTo(String gameName);
 
   /** Typed request to change the server's selected game. */
@@ -316,7 +306,6 @@ public interface IServerStartupRemote extends IRemote {
     }
   }
 
-  @RemoteActionCode(2)
   void changeToGameSave(byte[] bytes, String fileName);
 
   /** Typed request to load a save game across the network. */
@@ -349,7 +338,6 @@ public interface IServerStartupRemote extends IRemote {
     }
   }
 
-  @RemoteActionCode(7)
   byte[] getGameOptions();
 
   /** Typed request asking for the current game options bytes. */
@@ -381,7 +369,6 @@ public interface IServerStartupRemote extends IRemote {
     }
   }
 
-  @RemoteActionCode(1)
   void changeToGameOptions(byte[] bytes);
 
   /** Typed request to apply new game options across the network. */

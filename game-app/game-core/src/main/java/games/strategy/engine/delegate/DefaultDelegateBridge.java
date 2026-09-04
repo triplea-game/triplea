@@ -5,7 +5,6 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.AbstractGame;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.history.IDelegateHistoryWriter;
@@ -21,7 +20,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.triplea.http.client.web.socket.messages.MessageType;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
-import org.triplea.sound.ISound;
 
 /** Default implementation of DelegateBridge. */
 @RequiredArgsConstructor
@@ -87,11 +85,6 @@ public class DefaultDelegateBridge implements IDelegateBridge {
     return historyWriter;
   }
 
-  private Object getOutbound(final Object o) {
-    final Class<?>[] interfaces = o.getClass().getInterfaces();
-    return delegateExecutionManager.newOutboundImplementation(o, interfaces);
-  }
-
   @Override
   public Player getRemotePlayer() {
     return getRemotePlayer(getGamePlayer());
@@ -99,16 +92,13 @@ public class DefaultDelegateBridge implements IDelegateBridge {
 
   @Override
   public Player getRemotePlayer(final GamePlayer gamePlayer) {
-    try {
-      final Object implementor =
-          game.getMessengers().getRemote(ServerGame.getRemoteName(gamePlayer));
-      return (Player) getOutbound(implementor);
-    } catch (final RuntimeException e) {
-      if (e.getCause() instanceof MessengerException) {
-        throw new GameOverException("Game Over!");
-      }
-      throw e;
-    }
+    // The networked bridge overrides invokeRemotePlayer to route player queries over the messenger,
+    // so it never needs a local player object; only the simulation/odds/mock bridges resolve a
+    // local
+    // player for the applyLocally default.
+    throw new UnsupportedOperationException(
+        "The networked delegate bridge has no local player object; player queries are routed over"
+            + " the messenger via invokeRemotePlayer");
   }
 
   @Override
@@ -123,20 +113,6 @@ public class DefaultDelegateBridge implements IDelegateBridge {
       }
       throw e;
     }
-  }
-
-  @Override
-  public IDisplay getDisplayChannelBroadcaster() {
-    final Object implementor =
-        game.getMessengers().getChannelBroadcaster(AbstractGame.getDisplayChannel());
-    return (IDisplay) getOutbound(implementor);
-  }
-
-  @Override
-  public ISound getSoundChannelBroadcaster() {
-    final Object implementor =
-        game.getMessengers().getChannelBroadcaster(AbstractGame.getSoundChannel());
-    return (ISound) getOutbound(implementor);
   }
 
   @Override

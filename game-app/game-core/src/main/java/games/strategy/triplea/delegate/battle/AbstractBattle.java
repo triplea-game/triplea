@@ -11,8 +11,6 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.player.Player;
-import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.TransportTracker;
@@ -322,17 +320,5 @@ abstract class AbstractBattle implements IBattle {
 
   void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge) {
     BattleDelegate.markDamaged(damaged, bridge, battleSite);
-  }
-
-  protected static Player getRemote(final IDelegateBridge bridge) {
-    return bridge.getRemotePlayer();
-  }
-
-  protected static Player getRemote(final GamePlayer player, final IDelegateBridge bridge) {
-    // if its the null player, return a do nothing proxy
-    if (player.isNull()) {
-      return new WeakAi(player.getName());
-    }
-    return bridge.getRemotePlayer(player);
   }
 }

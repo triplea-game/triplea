@@ -5,7 +5,6 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
@@ -13,11 +12,8 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ai.pro.AbstractProAi;
-import games.strategy.triplea.ui.display.HeadlessDisplay;
 import java.util.Optional;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
-import org.triplea.sound.HeadlessSoundChannel;
-import org.triplea.sound.ISound;
 
 /**
  * Dummy implementation of {@link IDelegateBridge} used during a battle simulation to capture all
@@ -25,8 +21,6 @@ import org.triplea.sound.ISound;
  */
 public class ProDummyDelegateBridge implements IDelegateBridge {
   private final PlainRandomSource randomSource = new PlainRandomSource();
-  private final IDisplay display = new HeadlessDisplay();
-  private final ISound soundChannel = new HeadlessSoundChannel();
   private final GamePlayer player;
   private final AbstractProAi proAi;
   private final DelegateHistoryWriter writer = DelegateHistoryWriter.createNoOpImplementation();
@@ -90,16 +84,6 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   @Override
   public IDelegateHistoryWriter getHistoryWriter() {
     return writer;
-  }
-
-  @Override
-  public IDisplay getDisplayChannelBroadcaster() {
-    return display;
-  }
-
-  @Override
-  public ISound getSoundChannelBroadcaster() {
-    return soundChannel;
   }
 
   @Override

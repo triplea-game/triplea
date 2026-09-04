@@ -37,7 +37,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.times;
 
@@ -62,6 +61,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
+import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.java.collections.CollectionUtils;
 
 class MustFightBattleTest extends AbstractClientSettingTestCase {
@@ -207,21 +207,23 @@ class MustFightBattleTest extends AbstractClientSettingTestCase {
         // Then the casualty infantry rolls.
         .thenAnswer(withDiceValues(6));
 
-    // Ensure that all step names passed to notifyDice() exist in the battle's stepStrings.
-    // This verifies what the real TripleADisplay's notifyDice() does (since it tries to select a
-    // step in the UI created from stepStrings).
-    // This verifies the MustFightBattle.findStepNameForFiringUnits() logic (and its caller) is able
-    // to find the appropriate step even when the set of step names changes mid-battle.
-    IDisplay display = bridge.getDisplayChannelBroadcaster();
+    // Ensure that all step names carried by the typed NotifyDiceMessage broadcasts exist in the
+    // battle's stepStrings. This verifies what the real TripleADisplay's notifyDice() does (since
+    // it
+    // tries to select a step in the UI created from stepStrings), and that
+    // MustFightBattle.findStepNameForFiringUnits() (and its caller) finds the appropriate step even
+    // when the set of step names changes mid-battle.
     doAnswer(
             invocation -> {
-              String stepName = invocation.getArgument(1);
-              List<String> stepNames = ((MustFightBattle) battle).getStepStrings();
-              assertThat(stepName, in(stepNames));
+              final WebSocketMessage message = invocation.getArgument(0);
+              if (message instanceof IDisplay.NotifyDiceMessage notifyDice) {
+                final List<String> stepNames = ((MustFightBattle) battle).getStepStrings();
+                assertThat(notifyDice.getStepName(), in(stepNames));
+              }
               return null;
             })
-        .when(display)
-        .notifyDice(any(), anyString());
+        .when(bridge)
+        .sendDisplayMessage(any());
 
     battle.fight(bridge);
     assertThat(indoChina.getUnits(), containsInAnyOrder(attackers.toArray()));

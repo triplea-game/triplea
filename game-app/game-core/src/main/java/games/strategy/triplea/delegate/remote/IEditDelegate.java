@@ -6,7 +6,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IPersistentDelegate;
 import games.strategy.engine.message.IRemote;
-import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.delegate.TechAdvance;
 import java.io.Serial;
@@ -100,10 +99,8 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate {
                     .changePoliticalRelationships(request.getRelationshipChanges())));
   }
 
-  @RemoteActionCode(9)
   boolean getEditMode();
 
-  @RemoteActionCode(12)
   void setEditMode(boolean editMode);
 
   /** Typed request to toggle edit mode. */
@@ -153,7 +150,6 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate {
     }
   }
 
-  @RemoteActionCode(11)
   @Nullable
   String removeUnits(Territory t, Collection<Unit> units);
 
@@ -174,7 +170,6 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate {
     }
   }
 
-  @RemoteActionCode(2)
   @Nullable
   String addUnits(Territory t, Collection<Unit> units);
 
@@ -194,7 +189,6 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate {
     }
   }
 
-  @RemoteActionCode(6)
   @Nullable
   String changeTerritoryOwner(Territory t, GamePlayer player);
 
@@ -215,7 +209,6 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate {
     }
   }
 
-  @RemoteActionCode(13)
   @Nullable
   String changeResource(GamePlayer player, String resourceName, int newTotal);
 
@@ -237,7 +230,6 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate {
     }
   }
 
-  @RemoteActionCode(1)
   @Nullable
   String addTechAdvance(GamePlayer player, Collection<TechAdvance> advance);
 
@@ -258,7 +250,6 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate {
     }
   }
 
-  @RemoteActionCode(10)
   @Nullable
   String removeTechAdvance(GamePlayer player, Collection<TechAdvance> advance);
 
@@ -279,7 +270,6 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate {
     }
   }
 
-  @RemoteActionCode(8)
   @Nullable
   String changeUnitHitDamage(IntegerMap<Unit> unitDamageMap, Territory territory);
 
@@ -300,7 +290,6 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate {
     }
   }
 
-  @RemoteActionCode(7)
   @Nullable
   String changeUnitBombingDamage(IntegerMap<Unit> unitDamageMap, Territory territory);
 
@@ -321,7 +310,6 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate {
     }
   }
 
-  @RemoteActionCode(0)
   @Nullable
   String addComment(String message);
 
@@ -341,7 +329,6 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate {
     }
   }
 
-  @RemoteActionCode(4)
   @Nullable
   String changePoliticalRelationships(
       Collection<Triple<GamePlayer, GamePlayer, RelationshipType>> relationshipChanges);

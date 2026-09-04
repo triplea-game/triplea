@@ -1,7 +1,6 @@
 package games.strategy.engine.vault;
 
 import games.strategy.engine.message.IChannelSubscriber;
-import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.Messengers;
 import java.io.Serial;
@@ -341,7 +340,6 @@ public class Vault {
   }
 
   interface IRemoteVault extends IChannelSubscriber {
-    @RemoteActionCode(0)
     void addLockedValue(VaultId id, byte[] data);
 
     @AllArgsConstructor
@@ -364,7 +362,6 @@ public class Vault {
       }
     }
 
-    @RemoteActionCode(2)
     void unlock(VaultId id, byte[] secretKeyBytes);
 
     @AllArgsConstructor
@@ -386,7 +383,6 @@ public class Vault {
       }
     }
 
-    @RemoteActionCode(1)
     void release(VaultId id);
 
     @AllArgsConstructor

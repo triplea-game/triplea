@@ -6,12 +6,12 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.message.HubInvocationResults;
 import games.strategy.engine.message.HubInvoke;
-import games.strategy.engine.message.RemoteMethodCall;
-import games.strategy.engine.message.RemoteMethodCallResults;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.message.RemoteNotFoundException;
 import games.strategy.engine.message.SpokeInvocationResults;
 import games.strategy.engine.message.SpokeInvoke;
+import games.strategy.engine.message.TypedInvocation;
+import games.strategy.engine.message.TypedInvocationResult;
 import games.strategy.engine.message.UnifiedMessengerHub;
 import games.strategy.net.IClientMessenger;
 import games.strategy.net.IMessenger;
@@ -49,7 +49,7 @@ public class UnifiedMessenger {
   private final Map<UUID, CountDownLatch> pendingInvocations = new HashMap<>();
   // after the remote has invoked, the results are placed here
   // access should be synchronized on pendingLock
-  private final Map<UUID, RemoteMethodCallResults> results = new HashMap<>();
+  private final Map<UUID, TypedInvocationResult> results = new HashMap<>();
   // only non null for the server
   private UnifiedMessengerHub hub;
   private final TypedMessageRegistry typedMessageRegistry = new TypedMessageRegistry();
@@ -81,14 +81,14 @@ public class UnifiedMessenger {
       for (final UUID id : pendingInvocationsKeySet) {
         final CountDownLatch latch = pendingInvocations.remove(id);
         latch.countDown();
-        results.put(id, new RemoteMethodCallResults(cause));
+        results.put(id, new TypedInvocationResult(cause));
       }
     }
   }
 
   /** Invoke and wait for all implementors on all vms to finish executing. */
-  public RemoteMethodCallResults invokeAndWait(
-      final String endPointName, final RemoteMethodCall remoteCall) throws RemoteNotFoundException {
+  public TypedInvocationResult invokeAndWait(
+      final String endPointName, final TypedInvocation remoteCall) throws RemoteNotFoundException {
     final EndPoint local;
     synchronized (endPointMutex) {
       local = localEndPoints.get(endPointName);
@@ -99,16 +99,11 @@ public class UnifiedMessenger {
     }
 
     final long number = local.takeANumber();
-    final List<RemoteMethodCallResults> results =
+    final List<TypedInvocationResult> results =
         local.invokeLocal(remoteCall, number, getLocalNode());
     if (results.isEmpty()) {
       throw new RemoteNotFoundException(
-          "Not found:"
-              + endPointName
-              + ", method name: "
-              + remoteCall.getMethodName()
-              + ", remote name: "
-              + remoteCall.getRemoteName());
+          "Not found:" + endPointName + ", remote name: " + remoteCall.getRemoteName());
     }
     if (results.size() > 1) {
       throw new IllegalStateException("Too many implementors, got back: " + results);
@@ -116,7 +111,7 @@ public class UnifiedMessenger {
     return results.get(0);
   }
 
-  private RemoteMethodCallResults invokeAndWaitRemote(final RemoteMethodCall remoteCall) {
+  private TypedInvocationResult invokeAndWaitRemote(final TypedInvocation remoteCall) {
     final UUID methodCallId = UUID.randomUUID();
     final CountDownLatch latch = new CountDownLatch(1);
     synchronized (pendingLock) {
@@ -129,12 +124,10 @@ public class UnifiedMessenger {
     Interruptibles.await(latch);
 
     synchronized (pendingLock) {
-      final RemoteMethodCallResults methodCallResults = results.remove(methodCallId);
+      final TypedInvocationResult methodCallResults = results.remove(methodCallId);
       if (methodCallResults == null) {
         throw new IllegalStateException(
-            "No results from remote call. Method returned:"
-                + remoteCall.getMethodName()
-                + " for remote name:"
+            "No results from remote call for remote name:"
                 + remoteCall.getRemoteName()
                 + " with id:"
                 + methodCallId);
@@ -144,7 +137,7 @@ public class UnifiedMessenger {
   }
 
   /** invoke without waiting for remote nodes to respond. */
-  public void invoke(final String endPointName, final RemoteMethodCall call) {
+  public void invoke(final String endPointName, final TypedInvocation call) {
     // send the remote invocation
     final Invoke invoke = new HubInvoke(null, false, call);
     send(invoke, messenger.getServerNode());
@@ -155,9 +148,9 @@ public class UnifiedMessenger {
     }
     if (endPoint != null) {
       final long number = endPoint.takeANumber();
-      final List<RemoteMethodCallResults> results =
+      final List<TypedInvocationResult> results =
           endPoint.invokeLocal(call, number, getLocalNode());
-      for (final RemoteMethodCallResults r : results) {
+      for (final TypedInvocationResult r : results) {
         if (r.getException() != null) {
           log.warn(
               "Remote method call exception: " + r.getException().getMessage(), r.getException());
@@ -167,12 +160,16 @@ public class UnifiedMessenger {
   }
 
   public void addImplementor(
-      final RemoteName endPointDescriptor, final Object implementor, final boolean singleThreaded) {
+      final RemoteName endPointDescriptor,
+      final Object implementor,
+      final boolean singleThreaded,
+      final InvocationExecutionGate executionGate) {
     if (!endPointDescriptor.getClazz().isAssignableFrom(implementor.getClass())) {
       throw new IllegalArgumentException(
           implementor + " does not implement " + endPointDescriptor.getClazz());
     }
-    final EndPoint endPoint = getLocalEndPointOrCreate(endPointDescriptor, singleThreaded);
+    final EndPoint endPoint =
+        getLocalEndPointOrCreate(endPointDescriptor, singleThreaded, executionGate);
     endPoint.addImplementor(implementor);
   }
 
@@ -225,7 +222,9 @@ public class UnifiedMessenger {
   }
 
   private EndPoint getLocalEndPointOrCreate(
-      final RemoteName endPointDescriptor, final boolean singleThreaded) {
+      final RemoteName endPointDescriptor,
+      final boolean singleThreaded,
+      final InvocationExecutionGate executionGate) {
     final EndPoint endPoint;
     synchronized (endPointMutex) {
       if (localEndPoints.containsKey(endPointDescriptor.getName())) {
@@ -236,7 +235,8 @@ public class UnifiedMessenger {
               endPointDescriptor.getName(),
               endPointDescriptor.getClazz(),
               singleThreaded,
-              typedMessageRegistry);
+              typedMessageRegistry,
+              executionGate);
       localEndPoints.put(endPointDescriptor.getName(), endPoint);
     }
     final HasEndPointImplementor msg = new HasEndPointImplementor(endPointDescriptor.getName());
@@ -274,7 +274,7 @@ public class UnifiedMessenger {
         if (invoke.needReturnValues) {
           send(
               new HubInvocationResults(
-                  new RemoteMethodCallResults(
+                  new TypedInvocationResult(
                       new RemoteNotFoundException(
                           "No implementors for "
                               + invoke.call
@@ -324,15 +324,15 @@ public class UnifiedMessenger {
     // reading messages per connection, so run with out thread pool
     AsyncRunner.runAsync(
             () -> {
-              final List<RemoteMethodCallResults> results =
+              final List<TypedInvocationResult> results =
                   local.invokeLocal(invoke.call, methodRunNumber, invoke.getInvoker());
               if (invoke.needReturnValues) {
-                final RemoteMethodCallResults result;
+                final TypedInvocationResult result;
                 if (results.size() == 1) {
                   result = results.get(0);
                 } else {
                   result =
-                      new RemoteMethodCallResults(
+                      new TypedInvocationResult(
                           new IllegalStateException(
                               String.format(
                                   "Invalid result count '%d' for end point '%s'",
@@ -349,7 +349,7 @@ public class UnifiedMessenger {
                 try {
                   send(
                       new HubInvocationResults(
-                          new RemoteMethodCallResults(throwable), invoke.methodCallId),
+                          new TypedInvocationResult(throwable), invoke.methodCallId),
                       from);
                 } catch (final RuntimeException e) {
                   log.error("Exception while sending exception to client", throwable);

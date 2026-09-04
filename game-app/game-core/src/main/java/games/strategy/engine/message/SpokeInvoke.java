@@ -23,7 +23,7 @@ public class SpokeInvoke extends Invoke {
   public SpokeInvoke(
       final UUID methodCallId,
       final boolean needReturnValues,
-      final RemoteMethodCall call,
+      final TypedInvocation call,
       final INode invoker) {
     super(methodCallId, needReturnValues, call);
     this.invoker = invoker;

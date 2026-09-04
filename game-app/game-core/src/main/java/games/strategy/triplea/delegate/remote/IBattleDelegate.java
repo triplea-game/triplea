@@ -5,7 +5,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
-import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.engine.message.wire.EntityRef;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.delegate.battle.IBattle;
@@ -49,7 +48,6 @@ public interface IBattleDelegate extends IRemote, IDelegate {
   }
 
   /** Returns the battles currently waiting to be fought. */
-  @RemoteActionCode(3)
   BattleListing getBattleListing();
 
   /** Typed request asking for the pending battle listing. */
@@ -126,13 +124,11 @@ public interface IBattleDelegate extends IRemote, IDelegate {
    * @return an error string if the battle could not be fought or an error occurred, null otherwise
    */
   @RemoveOnNextMajorRelease("Remove 'boolean bombing' parameter")
-  @RemoteActionCode(2)
   String fightBattle(Territory where, boolean bombing, BattleType type);
 
   /**
    * Returns the current battle if there is one, or null if there is no current battle in progress.
    */
-  @RemoteActionCode(5)
   IBattle getCurrentBattle();
 
   /** Typed request for the battle currently in progress, if any. */
@@ -167,47 +163,36 @@ public interface IBattleDelegate extends IRemote, IDelegate {
     }
   }
 
-  @RemoteActionCode(9)
   @Override
   void initialize(String name, String displayName);
 
-  @RemoteActionCode(12)
   @Override
   void setDelegateBridgeAndPlayer(IDelegateBridge delegateBridge);
 
-  @RemoteActionCode(13)
   @Override
   void start();
 
-  @RemoteActionCode(1)
   @Override
   void end();
 
-  @RemoteActionCode(7)
   @Override
   String getName();
 
-  @RemoteActionCode(6)
   @Override
   String getDisplayName();
 
-  @RemoteActionCode(4)
   @Override
   IDelegateBridge getBridge();
 
-  @RemoteActionCode(11)
   @Override
   Serializable saveState();
 
-  @RemoteActionCode(10)
   @Override
   void loadState(Serializable state);
 
-  @RemoteActionCode(8)
   @Override
   Class<? extends IRemote> getRemoteType();
 
-  @RemoteActionCode(0)
   @Override
   boolean delegateCurrentlyRequiresUserInput();
 }

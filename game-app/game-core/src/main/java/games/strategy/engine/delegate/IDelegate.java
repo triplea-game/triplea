@@ -11,7 +11,7 @@ import java.io.Serializable;
  * constructor, due to reflection constraints. The delegate will be initialized with a call of
  * initialize(..) before used. Delegates start executing with the start method, and stop with the
  * end message. Delegates can be made accessible to players through implementing an IRemote, and
- * will be called through RemoteMessenger.
+ * will be called through the typed messenger.
  */
 public interface IDelegate {
   /** Uses name as the internal unique name and displayName for display to users. */
@@ -71,7 +71,7 @@ public interface IDelegate {
   void loadState(Serializable state);
 
   /**
-   * Returns the remote type of this delegate for use by a RemoteMessenger. (Class must be an
+   * Returns the remote type of this delegate for use by the typed messenger. (Class must be an
    * interface that extends IRemote. If the return value is null, then it indicates that this
    * delegate should not be used as in IRemote.)
    */

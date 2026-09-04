@@ -14,7 +14,6 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.player.PlayerRemoteMessageHandlers;
@@ -22,7 +21,6 @@ import lombok.experimental.UtilityClass;
 import org.mockito.stubbing.Answer;
 import org.mockito.stubbing.OngoingStubbing;
 import org.mockito.verification.VerificationMode;
-import org.triplea.sound.ISound;
 
 @UtilityClass
 public final class MockDelegateBridge {
@@ -44,7 +42,6 @@ public final class MockDelegateBridge {
         .when(delegateBridge)
         .addChange(any());
     when(delegateBridge.getData()).thenReturn(gameData);
-    when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(mock(IDisplay.class));
     when(delegateBridge.getHistoryWriter())
         .thenReturn(DelegateHistoryWriter.createNoOpImplementation());
     when(delegateBridge.getGamePlayer()).thenReturn(gamePlayer);
@@ -57,7 +54,6 @@ public final class MockDelegateBridge {
             invocation ->
                 PlayerRemoteMessageHandlers.applyLocally(
                     invocation.getArgument(1), remotePlayer, gameData, invocation.getArgument(2)));
-    when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(mock(ISound.class));
     when(delegateBridge.getCostsForTuv(any())).thenCallRealMethod();
     return delegateBridge;
   }

@@ -6,7 +6,6 @@ import games.strategy.engine.data.MoveDescription;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
-import games.strategy.engine.message.RemoteActionCode;
 import games.strategy.engine.message.wire.EntityRef;
 import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.net.Messengers;
@@ -63,7 +62,6 @@ public interface IMoveDelegate
    * @param move - the move to perform.
    * @return an error message if the move can't be made, null otherwise
    */
-  @RemoteActionCode(13)
   Optional<String> performMove(MoveDescription move);
 
   /** Typed request to perform a move (the move description rides the Java wire). */
@@ -104,7 +102,6 @@ public interface IMoveDelegate
    * @param player referring player ID
    * @return a list of territories with air units that must move of player ID
    */
-  @RemoteActionCode(9)
   Collection<Territory> getTerritoriesWhereAirCantLand(GamePlayer player);
 
   /** Typed request for the territories where a given player's air units cannot land. */
@@ -123,7 +120,6 @@ public interface IMoveDelegate
     }
   }
 
-  @RemoteActionCode(8)
   Collection<Territory> getTerritoriesWhereAirCantLand();
 
   /** Typed request for the territories where air units cannot land. */
@@ -144,7 +140,6 @@ public interface IMoveDelegate
    *
    * @return a list of Territories with units that can't fight
    */
-  @RemoteActionCode(10)
   Collection<Territory> getTerritoriesWhereUnitsCantFight();
 
   /** Typed request for the territories where units cannot fight. */
@@ -191,64 +186,49 @@ public interface IMoveDelegate
     }
   }
 
-  @RemoteActionCode(17)
   @Override
   void setHasPostedTurnSummary(boolean hasPostedTurnSummary);
 
-  @RemoteActionCode(14)
   @Override
   boolean postTurnSummary(PbemMessagePoster poster, String title);
 
-  @RemoteActionCode(19)
   @Override
   @Nullable
   String undoMove(int moveIndex);
 
-  @RemoteActionCode(5)
   @Override
   List<UndoableMove> getMovesMade();
 
-  @RemoteActionCode(11)
   @Override
   void initialize(String name, String displayName);
 
-  @RemoteActionCode(16)
   @Override
   void setDelegateBridgeAndPlayer(IDelegateBridge delegateBridge);
 
-  @RemoteActionCode(18)
   @Override
   void start();
 
-  @RemoteActionCode(1)
   @Override
   void end();
 
-  @RemoteActionCode(6)
   @Override
   String getName();
 
-  @RemoteActionCode(3)
   @Override
   String getDisplayName();
 
-  @RemoteActionCode(2)
   @Override
   IDelegateBridge getBridge();
 
-  @RemoteActionCode(15)
   @Override
   Serializable saveState();
 
-  @RemoteActionCode(12)
   @Override
   void loadState(Serializable state);
 
-  @RemoteActionCode(7)
   @Override
   Class<? extends IRemote> getRemoteType();
 
-  @RemoteActionCode(0)
   @Override
   boolean delegateCurrentlyRequiresUserInput();
 }

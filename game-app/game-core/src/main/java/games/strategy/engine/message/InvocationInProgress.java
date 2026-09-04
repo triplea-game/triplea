@@ -8,7 +8,7 @@ class InvocationInProgress {
   private final INode waitingOn;
   private final HubInvoke methodCall;
   private final INode caller;
-  private RemoteMethodCallResults results;
+  private TypedInvocationResult results;
 
   InvocationInProgress(
       final INode waitingOn, final HubInvoke methodCalls, final INode methodCallsFrom) {
@@ -33,7 +33,7 @@ class InvocationInProgress {
     return caller;
   }
 
-  RemoteMethodCallResults getResults() {
+  TypedInvocationResult getResults() {
     return results;
   }
 

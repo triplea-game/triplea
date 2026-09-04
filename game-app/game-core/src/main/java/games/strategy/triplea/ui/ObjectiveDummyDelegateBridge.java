@@ -7,7 +7,6 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
@@ -21,20 +20,15 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.triplea.ui.display.HeadlessDisplay;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
-import org.triplea.sound.HeadlessSoundChannel;
-import org.triplea.sound.ISound;
 import org.triplea.util.Tuple;
 
 /** Class used to avoid making actual data changes when checking objectives. */
 public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
-  private final IDisplay display = new HeadlessDisplay();
-  private final ISound soundChannel = new HeadlessSoundChannel();
   private final DelegateHistoryWriter writer = DelegateHistoryWriter.createNoOpImplementation();
   private final GameData gameData;
   private final ObjectivePanelDummyPlayer dummyAi =
@@ -102,16 +96,6 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
   @Override
   public IDelegateHistoryWriter getHistoryWriter() {
     return writer;
-  }
-
-  @Override
-  public IDisplay getDisplayChannelBroadcaster() {
-    return display;
-  }
-
-  @Override
-  public ISound getSoundChannelBroadcaster() {
-    return soundChannel;
   }
 
   @Override

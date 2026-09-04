@@ -8,7 +8,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.units.UnitDamageReceivedChange;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
@@ -16,21 +15,16 @@ import games.strategy.engine.random.IRandomStats;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
-import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.util.TuvCostsCalculator;
 import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.java.collections.IntegerMap;
-import org.triplea.sound.HeadlessSoundChannel;
-import org.triplea.sound.ISound;
 
 /** Delegate bridge implementation with minimum valid behavior. */
 public class DummyDelegateBridge implements IDelegateBridge {
   private final PlainRandomSource randomSource = new PlainRandomSource();
-  private final IDisplay display = new HeadlessDisplay();
-  private final ISound soundChannel = new HeadlessSoundChannel();
   private final DummyPlayer attackingPlayer;
   private final DummyPlayer defendingPlayer;
   private final GamePlayer attacker;
@@ -132,16 +126,6 @@ public class DummyDelegateBridge implements IDelegateBridge {
   @Override
   public IDelegateHistoryWriter getHistoryWriter() {
     return writer;
-  }
-
-  @Override
-  public IDisplay getDisplayChannelBroadcaster() {
-    return display;
-  }
-
-  @Override
-  public ISound getSoundChannelBroadcaster() {
-    return soundChannel;
   }
 
   @Override

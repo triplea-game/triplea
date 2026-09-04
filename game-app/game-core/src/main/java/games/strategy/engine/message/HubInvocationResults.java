@@ -9,7 +9,7 @@ public class HubInvocationResults extends InvocationResults {
 
   public HubInvocationResults() {}
 
-  public HubInvocationResults(final RemoteMethodCallResults results, final UUID methodCallId) {
+  public HubInvocationResults(final TypedInvocationResult results, final UUID methodCallId) {
     super(results, methodCallId);
   }
 }

@@ -32,6 +32,7 @@ import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
+import games.strategy.engine.message.unifiedmessenger.InvocationExecutionGate;
 import games.strategy.engine.message.wire.EntityRef;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomSource;
@@ -78,6 +79,23 @@ public class ServerGame extends AbstractGame {
   private IRandomSource randomSource = new PlainRandomSource();
   private @Nullable IRandomSource delegateRandomSource;
   private final DelegateExecutionManager delegateExecutionManager = new DelegateExecutionManager();
+
+  // Brackets each inbound delegate message with the delegate-execution read lock, so a save cannot
+  // serialize game state while an inbound message mutates it. This is the typed-dispatch
+  // replacement
+  // for the reflective inbound proxy the delegate used to be wrapped in.
+  private final InvocationExecutionGate delegateExecutionGate =
+      new InvocationExecutionGate() {
+        @Override
+        public void enter() {
+          delegateExecutionManager.enterDelegateExecution();
+        }
+
+        @Override
+        public void leave() {
+          delegateExecutionManager.leaveDelegateExecution();
+        }
+      };
   @Nullable @Getter private final InGameLobbyWatcherWrapper inGameLobbyWatcher;
   private boolean needToInitialize = true;
   private final LaunchAction launchAction;
@@ -289,11 +307,10 @@ public class ServerGame extends AbstractGame {
     if (remoteType == null) {
       return;
     }
-    final Object wrappedDelegate =
-        delegateExecutionManager.newInboundImplementation(
-            delegate, new Class<?>[] {delegate.getRemoteType()});
     final RemoteName descriptor = getRemoteName(delegate);
-    messengers.registerRemote(wrappedDelegate, descriptor);
+    // Register the raw delegate; the execution gate on the endpoint brackets each inbound call with
+    // the delegate-execution read lock (previously done by the reflective inbound proxy wrapper).
+    messengers.registerRemote(delegate, descriptor, delegateExecutionGate);
     // Register the typed delegate-message handlers (guarded/idempotent). The per-name endpoint
     // registered above supplies the specific delegate as the handler's implementor at dispatch.
     DelegateRemoteMessageHandlers.registerAll(messengers, gameData);
@@ -554,10 +571,7 @@ public class ServerGame extends AbstractGame {
         continue;
       }
       if (delegateRandomSource == null) {
-        delegateRandomSource =
-            (IRandomSource)
-                delegateExecutionManager.newOutboundImplementation(
-                    randomSource, new Class<?>[] {IRandomSource.class});
+        delegateRandomSource = delegateExecutionManager.newDelegateRandomSource(randomSource);
       }
       final DefaultDelegateBridge bridge =
           new DefaultDelegateBridge(
@@ -581,10 +595,7 @@ public class ServerGame extends AbstractGame {
   private void startStep(final boolean stepIsRestoredFromSavedGame) {
     // dont save if we just loaded
     if (delegateRandomSource == null) {
-      delegateRandomSource =
-          (IRandomSource)
-              delegateExecutionManager.newOutboundImplementation(
-                  randomSource, new Class<?>[] {IRandomSource.class});
+      delegateRandomSource = delegateExecutionManager.newDelegateRandomSource(randomSource);
     }
     final DefaultDelegateBridge bridge =
         new DefaultDelegateBridge(

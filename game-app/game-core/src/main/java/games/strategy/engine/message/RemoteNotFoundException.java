@@ -6,8 +6,8 @@ package games.strategy.engine.message;
  * <p>This can be thrown by the remote messenger in two cases,
  *
  * <ol>
- *   <li>looking up a someRemoteMessenger.getRemote(...)
- *   <li>invoking a method on the object returned by someRemoteMessenger.getRemote(...)
+ *   <li>looking up a remote endpoint that has no registered implementor
+ *   <li>invoking a typed message on a remote endpoint that has no registered implementor
  * </ol>
  *
  * <p>There are two possible causes. Either the remote never existed, or a remote was once bound to

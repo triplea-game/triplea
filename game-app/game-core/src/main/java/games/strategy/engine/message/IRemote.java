@@ -1,7 +1,7 @@
 package games.strategy.engine.message;
 
 /**
- * A marker interface, used to indicate that the interface can be used by IRemoteMessenger.
+ * A marker interface, used to indicate that the interface can be registered as a remote endpoint.
  *
  * <p>All arguments and return values to all methods of an IRemote must be serializable, since the
  * methods may be called by a remote VM.

@@ -13,7 +13,7 @@ public class HubInvoke extends Invoke {
   public HubInvoke() {}
 
   public HubInvoke(
-      final UUID methodCallId, final boolean needReturnValues, final RemoteMethodCall call) {
+      final UUID methodCallId, final boolean needReturnValues, final TypedInvocation call) {
     super(methodCallId, needReturnValues, call);
   }
 }
