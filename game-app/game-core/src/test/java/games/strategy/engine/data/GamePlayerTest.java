@@ -1,8 +1,6 @@
 package games.strategy.engine.data;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
@@ -24,9 +22,8 @@ final class GamePlayerTest {
               idAndName -> {
                 gamePlayer.setWhoAmI(idAndName.getFirst() + ":" + idAndName.getSecond());
 
-                assertThat(
-                    gamePlayer.getPlayerType(),
-                    is(new GamePlayer.Type(idAndName.getFirst(), idAndName.getSecond())));
+                assertThat(gamePlayer.getPlayerType())
+                    .isEqualTo(new GamePlayer.Type(idAndName.getFirst(), idAndName.getSecond()));
               });
     }
   }
@@ -40,7 +37,7 @@ final class GamePlayerTest {
               encodedType -> {
                 gamePlayer.setWhoAmI(encodedType);
 
-                assertThat(gamePlayer.isAi(), is(true));
+                assertThat(gamePlayer.isAi()).isTrue();
               });
     }
 
@@ -51,7 +48,7 @@ final class GamePlayerTest {
               encodedType -> {
                 gamePlayer.setWhoAmI(encodedType);
 
-                assertThat(gamePlayer.isAi(), is(false));
+                assertThat(gamePlayer.isAi()).isFalse();
               });
     }
   }
@@ -71,7 +68,7 @@ final class GamePlayerTest {
               encodedType -> {
                 gamePlayer.setWhoAmI(encodedType);
 
-                assertThat(gamePlayer.getWhoAmI(), is(encodedType));
+                assertThat(gamePlayer.getWhoAmI()).isEqualTo(encodedType);
               });
     }
 
@@ -84,7 +81,7 @@ final class GamePlayerTest {
 
     private void assertThrowsDoesNotHaveExactlyTwoTokensException(final Executable executable) {
       final Exception e = assertThrows(IllegalArgumentException.class, executable);
-      assertThat(e.getMessage(), containsString("two strings"));
+      assertThat(e.getMessage()).contains("two strings");
     }
 
     @Test
@@ -92,7 +89,7 @@ final class GamePlayerTest {
       final Exception e =
           assertThrows(
               IllegalArgumentException.class, () -> gamePlayer.setWhoAmI("otherTypeId:Patton"));
-      assertThat(e.getMessage(), containsString("ai or human or null"));
+      assertThat(e.getMessage()).contains("ai or human or null");
     }
   }
 

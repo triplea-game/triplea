@@ -1,7 +1,6 @@
 package games.strategy.engine.data.properties;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.jetbrains.annotations.NonNls;
@@ -31,7 +30,7 @@ final class DoublePropertyTest {
                       MIN_VALUE,
                       DEFAULT_VALUE,
                       NUMBER_OF_PLACES));
-      assertThat(e.getMessage(), is("Max must be greater than min"));
+      assertThat(e.getMessage()).isEqualTo("Max must be greater than min");
     }
 
     @Test
@@ -42,7 +41,7 @@ final class DoublePropertyTest {
               () ->
                   new DoubleProperty(
                       NAME, DESCRIPTION, MAX_VALUE, MIN_VALUE, MAX_VALUE + 1.0, NUMBER_OF_PLACES));
-      assertThat(e.getMessage(), is("Default value out of range"));
+      assertThat(e.getMessage()).isEqualTo("Default value out of range");
     }
 
     @Test
@@ -53,7 +52,7 @@ final class DoublePropertyTest {
               () ->
                   new DoubleProperty(
                       NAME, DESCRIPTION, MAX_VALUE, MIN_VALUE, MIN_VALUE - 1.0, NUMBER_OF_PLACES));
-      assertThat(e.getMessage(), is("Default value out of range"));
+      assertThat(e.getMessage()).isEqualTo("Default value out of range");
     }
   }
 }
