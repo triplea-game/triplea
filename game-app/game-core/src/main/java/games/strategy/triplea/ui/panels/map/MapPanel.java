@@ -62,7 +62,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -506,19 +505,19 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   private void notifyTerritorySelected(final Territory t, final MouseDetails me) {
-    for (final MapSelectionListener msl : new CopyOnWriteArrayList<>(mapSelectionListeners)) {
+    for (final MapSelectionListener msl : new ArrayList<>(mapSelectionListeners)) {
       msl.territorySelected(t, me);
     }
   }
 
   private void notifyMouseMoved(final Territory t, final MouseDetails me) {
-    for (final MapSelectionListener msl : new CopyOnWriteArrayList<>(mapSelectionListeners)) {
+    for (final MapSelectionListener msl : new ArrayList<>(mapSelectionListeners)) {
       msl.mouseMoved(t, me);
     }
   }
 
   private void notifyMouseEntered(final Territory t) {
-    for (final MapSelectionListener msl : new CopyOnWriteArrayList<>(mapSelectionListeners)) {
+    for (final MapSelectionListener msl : new ArrayList<>(mapSelectionListeners)) {
       msl.mouseEntered(t);
     }
   }
@@ -533,15 +532,13 @@ public class MapPanel extends ImageScrollerLargeView {
 
   private void notifyUnitSelected(
       final List<Unit> units, @Nullable final Territory territory, final MouseDetails me) {
-    for (final UnitSelectionListener listener :
-        new CopyOnWriteArrayList<>(unitSelectionListeners)) {
+    for (final UnitSelectionListener listener : new ArrayList<>(unitSelectionListeners)) {
       listener.unitsSelected(units, territory, me);
     }
   }
 
   private void notifyMouseEnterUnit(final List<Unit> units, final Territory t) {
-    for (final MouseOverUnitListener listener :
-        new CopyOnWriteArrayList<>(mouseOverUnitsListeners)) {
+    for (final MouseOverUnitListener listener : new ArrayList<>(mouseOverUnitsListeners)) {
       listener.mouseEnter(units, t);
     }
   }
