@@ -1134,9 +1134,14 @@ public final class Matches {
    * phase, walks back through the move history; otherwise returns {@code currentLocation}.
    */
   private static Territory findPhaseStartTerritory(Unit unit, Territory currentLocation) {
-    for (final UndoableMove move : unit.getData().getMoveDelegate().getMovesMade()) {
-      if (move.getUnits().contains(unit)) {
-        return move.getRoute().getStart();
+    // Absent a move delegate (e.g. AI simulation or headless contexts operating on derived game
+    // data), fall back to the current location — the move history is unavailable there anyway.
+    if (unit.getData().getDelegateOptional("move").orElse(null)
+        instanceof AbstractMoveDelegate moveDelegate) {
+      for (final UndoableMove move : moveDelegate.getMovesMade()) {
+        if (move.getUnits().contains(unit)) {
+          return move.getRoute().getStart();
+        }
       }
     }
     return currentLocation;
