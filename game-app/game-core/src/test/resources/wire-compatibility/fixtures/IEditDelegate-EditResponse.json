@@ -1,0 +1,6 @@
+{
+  "type": "games.strategy.triplea.delegate.remote.IEditDelegate$EditResponse",
+  "payload": {
+    "error": "example error"
+  }
+}

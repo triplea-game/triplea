@@ -100,6 +100,8 @@ IAbstractForumPosterDelegate-GetHasPostedTurnSummaryRequest.json
 IAbstractForumPosterDelegate-GetHasPostedTurnSummaryResponse.json
 IEditDelegate-SetEditModeRequest.json
 IEditDelegate-SetEditModeResponse.json
+IEditDelegate-AddCommentRequest.json
+IEditDelegate-EditResponse.json
 IAbstractMoveDelegate-GetMovesMadeRequest.json
 IAbstractMoveDelegate-UndoMoveRequest.json
 IAbstractMoveDelegate-UndoMoveResponse.json

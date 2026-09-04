@@ -33,6 +33,7 @@ import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
+import games.strategy.triplea.delegate.remote.typed.TypedEditDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.AbstractBasePlayer;
 import games.strategy.triplea.settings.ClientSetting;
@@ -260,8 +261,7 @@ public class TripleAPlayer extends AbstractBasePlayer {
 
   private void enableEditModeMenu() {
     try {
-      ui.setEditDelegateOffEdt(
-          (IEditDelegate) getPlayerBridge().getRemotePersistentDelegate("edit"));
+      ui.setEditDelegateOffEdt(new TypedEditDelegate(getPlayerBridge()));
     } catch (final GameOverException e) {
       return;
     } catch (final Exception e) {
