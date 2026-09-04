@@ -1,8 +1,6 @@
 package org.triplea.map.data.elements;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.triplea.map.data.elements.XmlReaderTestUtils.parseMapXml;
 
 import org.junit.jupiter.api.Test;
@@ -13,19 +11,19 @@ public class GameTest {
   void readGamePlayTag() {
     final Game game = parseMapXml("game.xml");
 
-    assertThat(game.getInfo(), is(notNullValue()));
-    assertThat(game.getDiceSides(), is(notNullValue()));
-    assertThat(game.getVariableList(), is(notNullValue()));
-    assertThat(game.getMap(), is(notNullValue()));
-    assertThat(game.getResourceList(), is(notNullValue()));
-    assertThat(game.getPlayerList(), is(notNullValue()));
-    assertThat(game.getUnitList(), is(notNullValue()));
-    assertThat(game.getRelationshipTypes(), is(notNullValue()));
-    assertThat(game.getTerritoryEffectList(), is(notNullValue()));
-    assertThat(game.getProduction(), is(notNullValue()));
-    assertThat(game.getTechnology(), is(notNullValue()));
-    assertThat(game.getAttachmentList(), is(notNullValue()));
-    assertThat(game.getInitialize(), is(notNullValue()));
-    assertThat(game.getPropertyList(), is(notNullValue()));
+    assertThat(game.getInfo()).isNotNull();
+    assertThat(game.getDiceSides()).isNotNull();
+    assertThat(game.getVariableList()).isNotNull();
+    assertThat(game.getMap()).isNotNull();
+    assertThat(game.getResourceList()).isNotNull();
+    assertThat(game.getPlayerList()).isNotNull();
+    assertThat(game.getUnitList()).isNotNull();
+    assertThat(game.getRelationshipTypes()).isNotNull();
+    assertThat(game.getTerritoryEffectList()).isNotNull();
+    assertThat(game.getProduction()).isNotNull();
+    assertThat(game.getTechnology()).isNotNull();
+    assertThat(game.getAttachmentList()).isNotNull();
+    assertThat(game.getInitialize()).isNotNull();
+    assertThat(game.getPropertyList()).isNotNull();
   }
 }
