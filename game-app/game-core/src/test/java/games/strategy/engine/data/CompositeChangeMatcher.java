@@ -3,27 +3,31 @@ package games.strategy.engine.data;
 import java.util.Arrays;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
+import org.mockito.ArgumentMatcher;
 
 /**
- * Matches all changes of a {@link CompositeChange} object
+ * Matches all changes of a {@link CompositeChange} object, used with Mockito's {@code argThat}
+ * verification.
  *
  * <p>Each of the changes are matched against the requested matchers in the same order and will fail
  * if the changes are not the same size or in the same order.
  *
- * <p>Example usage: assertThat(change, compositeChangeContains(propertyChange(property, newValue,
- * oldValue)));
+ * <p>Example usage:
+ * verify(bridge).addChange(argThat(compositeChangeContains(propertyChange(property, newValue,
+ * oldValue))));
  */
 @AllArgsConstructor
-public class CompositeChangeMatcher extends ChangeMatcher<CompositeChange> {
+public class CompositeChangeMatcher implements ArgumentMatcher<Change> {
 
-  private final List<ChangeMatcher<?>> changeMatchers;
+  private final List<ArgumentMatcher<Change>> changeMatchers;
 
   @Override
-  protected boolean matchesSafely(final CompositeChange compositeChange) {
-    final List<Change> changes = compositeChange.getChanges();
+  public boolean matches(final Change change) {
+    if (!(change instanceof CompositeChange)) {
+      return false;
+    }
 
+    final List<Change> changes = ((CompositeChange) change).getChanges();
     if (changes.size() != changeMatchers.size()) {
       return false;
     }
@@ -37,15 +41,9 @@ public class CompositeChangeMatcher extends ChangeMatcher<CompositeChange> {
     return true;
   }
 
-  @Override
-  public void describeTo(final Description description) {
-    description.appendText("CompositeChange <[");
-    changeMatchers.forEach(change -> change.describeTo(description));
-    description.appendText("]>");
-  }
-
-  public static Matcher<CompositeChange> compositeChangeContains(
-      final ChangeMatcher<?>... changes) {
+  @SafeVarargs
+  public static ArgumentMatcher<Change> compositeChangeContains(
+      final ArgumentMatcher<Change>... changes) {
     return new CompositeChangeMatcher(Arrays.asList(changes));
   }
 }

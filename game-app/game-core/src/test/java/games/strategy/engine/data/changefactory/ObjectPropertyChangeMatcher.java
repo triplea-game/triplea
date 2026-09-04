@@ -1,19 +1,19 @@
 package games.strategy.engine.data.changefactory;
 
-import static org.hamcrest.Matchers.equalTo;
-
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangeMatcher;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
-import org.hamcrest.Description;
+import org.mockito.ArgumentMatcher;
 
 /**
- * Matches {@link ObjectPropertyChange} objects with the requested property, newValue, and oldValue
+ * Matches {@link ObjectPropertyChange} objects with the requested property, newValue, and oldValue,
+ * used with Mockito's {@code argThat} verification.
  *
- * <p>Example usage: assertThat(change, propertyChange(property, newValue, oldValue));
+ * <p>Example usage: verify(bridge).addChange(argThat(propertyChange(property, newValue,
+ * oldValue)));
  */
 @AllArgsConstructor
-public class ObjectPropertyChangeMatcher extends ChangeMatcher<Change> {
+public class ObjectPropertyChangeMatcher implements ArgumentMatcher<Change> {
 
   private final String property;
 
@@ -22,25 +22,18 @@ public class ObjectPropertyChangeMatcher extends ChangeMatcher<Change> {
   private final Object oldValue;
 
   @Override
-  protected boolean matchesSafely(final Change change) {
+  public boolean matches(final Change change) {
     if (!(change instanceof ObjectPropertyChange)) {
       return false;
     }
 
     final ObjectPropertyChange objectPropertyChange = (ObjectPropertyChange) change;
-    return equalTo(objectPropertyChange.getProperty()).matches(property)
-        && equalTo(objectPropertyChange.getNewValue()).matches(newValue)
-        && equalTo(objectPropertyChange.getOldValue()).matches(oldValue);
+    return Objects.equals(objectPropertyChange.getProperty(), property)
+        && Objects.equals(objectPropertyChange.getNewValue(), newValue)
+        && Objects.equals(objectPropertyChange.getOldValue(), oldValue);
   }
 
-  @Override
-  public void describeTo(final Description description) {
-    description.appendText("property: " + property);
-    description.appendText(" newValue: " + newValue);
-    description.appendText(" oldValue: " + oldValue);
-  }
-
-  public static ChangeMatcher<Change> propertyChange(
+  public static ArgumentMatcher<Change> propertyChange(
       final String property, final Object newValue, final Object oldValue) {
     return new ObjectPropertyChangeMatcher(property, newValue, oldValue);
   }
