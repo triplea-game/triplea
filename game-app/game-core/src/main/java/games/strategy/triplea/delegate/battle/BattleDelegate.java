@@ -754,7 +754,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         }
 
         final Map<Territory, Collection<Unit>> toScramble =
-            getRemotePlayer(defender).scrambleUnitsQuery(to, scramblers);
+            PlayerRemoteMessageHandlers.scrambleUnitsQuery(bridge, defender, to, scramblers);
         if (toScramble == null) {
           continue;
         }
@@ -1334,7 +1334,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         }
       }
       final Map<Territory, Map<Unit, IntegerMap<Resource>>> attacks =
-          getRemotePlayer(currentEnemy).selectKamikazeSuicideAttacks(possibleUnitsToAttack);
+          PlayerRemoteMessageHandlers.selectKamikazeSuicideAttacks(
+              bridge, currentEnemy, possibleUnitsToAttack);
       if (attacks == null || attacks.isEmpty()) {
         continue;
       }

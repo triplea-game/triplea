@@ -7,7 +7,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.player.Player;
 import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.weak.WeakAi;
@@ -69,8 +68,6 @@ public class CasualtySelector {
     }
     final GameData data = bridge.getData();
 
-    final Player tripleaPlayer =
-        player.isNull() ? new WeakAi(player.getName()) : bridge.getRemotePlayer(player);
     final Map<Unit, Collection<Unit>> dependents =
         headLess ? Map.of() : CasualtyUtil.getDependents(targetsToPickFrom);
 
@@ -80,17 +77,16 @@ public class CasualtySelector {
             : dice.getHits();
 
     if (EditDelegate.getEditMode(data.getProperties())) {
-      return tripleaPlayer.selectCasualties(
+      return queryCasualties(
+          bridge,
+          player,
           targetsToPickFrom,
           dependents,
           hitsRemaining,
           text,
           dice,
-          player,
           combatValue.getFriendUnits(),
           combatValue.getEnemyUnits(),
-          false,
-          List.of(),
           new CasualtyDetails(),
           battleId,
           battleSite,
@@ -154,17 +150,16 @@ public class CasualtySelector {
       casualtyDetails = new CasualtyDetails(defaultCasualties, true);
     } else {
       casualtyDetails =
-          tripleaPlayer.selectCasualties(
+          queryCasualties(
+              bridge,
+              player,
               sortedTargetsToPickFrom,
               dependents,
               hitsRemaining,
               text,
               dice,
-              player,
               combatValue.getFriendUnits(),
               combatValue.getEnemyUnits(),
-              false,
-              List.of(),
               defaultCasualties,
               battleId,
               battleSite,
@@ -258,6 +253,62 @@ public class CasualtySelector {
           allowMultipleHitsPerUnit);
     }
     return casualtyDetails;
+  }
+
+  /**
+   * Dispatches a casualty selection, preserving the reflective path's null-player rule: the null
+   * player has no remote endpoint and is answered locally by the fallback AI, while a real player
+   * rides the typed request (carrying its units, dice, and casualty lists raw) through the bridge.
+   */
+  private static CasualtyDetails queryCasualties(
+      final IDelegateBridge bridge,
+      final GamePlayer player,
+      final Collection<Unit> selectFrom,
+      final Map<Unit, Collection<Unit>> dependents,
+      final int count,
+      final String text,
+      final DiceRoll dice,
+      final Collection<Unit> friendlyUnits,
+      final Collection<Unit> enemyUnits,
+      final CasualtyList defaultCasualties,
+      final UUID battleId,
+      final Territory battleSite,
+      final boolean allowMultipleHitsPerUnit) {
+    if (player.isNull()) {
+      return new WeakAi(player.getName())
+          .selectCasualties(
+              selectFrom,
+              dependents,
+              count,
+              text,
+              dice,
+              player,
+              friendlyUnits,
+              enemyUnits,
+              false,
+              List.of(),
+              defaultCasualties,
+              battleId,
+              battleSite,
+              allowMultipleHitsPerUnit);
+    }
+    return PlayerRemoteMessageHandlers.selectCasualties(
+        bridge,
+        player,
+        selectFrom,
+        dependents,
+        count,
+        text,
+        dice,
+        player,
+        friendlyUnits,
+        enemyUnits,
+        false,
+        List.of(),
+        defaultCasualties,
+        battleId,
+        battleSite,
+        allowMultipleHitsPerUnit);
   }
 
   /**

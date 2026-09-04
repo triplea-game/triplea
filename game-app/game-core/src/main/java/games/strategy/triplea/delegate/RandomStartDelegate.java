@@ -134,11 +134,12 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         Set<Unit> unitsToPlace;
         while (true) {
           final Tuple<Territory, Set<Unit>> pick =
-              getRemotePlayer(currentPickingPlayer)
-                  .pickTerritoryAndUnits(
-                      new ArrayList<>(allPickableTerritories),
-                      new ArrayList<>(currentPickingPlayer.getUnits()),
-                      UNITS_PER_PICK);
+              PlayerRemoteMessageHandlers.pickTerritoryAndUnits(
+                  bridge,
+                  currentPickingPlayer,
+                  new ArrayList<>(allPickableTerritories),
+                  new ArrayList<>(currentPickingPlayer.getUnits()),
+                  UNITS_PER_PICK);
           picked = pick.getFirst();
           unitsToPlace = pick.getSecond();
           if (!allPickableTerritories.contains(picked)
@@ -198,11 +199,12 @@ public class RandomStartDelegate extends BaseTripleADelegate {
       Set<Unit> unitsToPlace;
       while (true) {
         final Tuple<Territory, Set<Unit>> pick =
-            getRemotePlayer(currentPickingPlayer)
-                .pickTerritoryAndUnits(
-                    new ArrayList<>(territoriesToPickFrom),
-                    new ArrayList<>(currentPickingPlayer.getUnits()),
-                    UNITS_PER_PICK);
+            PlayerRemoteMessageHandlers.pickTerritoryAndUnits(
+                bridge,
+                currentPickingPlayer,
+                new ArrayList<>(territoriesToPickFrom),
+                new ArrayList<>(currentPickingPlayer.getUnits()),
+                UNITS_PER_PICK);
         picked = pick.getFirst();
         unitsToPlace = pick.getSecond();
         if (!territoriesToPickFrom.contains(picked)

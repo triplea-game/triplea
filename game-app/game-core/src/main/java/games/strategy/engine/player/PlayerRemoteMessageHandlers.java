@@ -2,6 +2,7 @@ package games.strategy.engine.player;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -9,13 +10,21 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.message.wire.EntityRef;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.ai.weak.WeakAi;
+import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.data.CasualtyList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import lombok.experimental.UtilityClass;
 import org.triplea.http.client.web.socket.messages.MessageType;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
+import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Tuple;
 
 /**
  * Central registration point and dispatcher for the typed {@link Player} remote messages, mirroring
@@ -58,6 +67,11 @@ public class PlayerRemoteMessageHandlers {
     register(messengers, Player.ReportMessageRequest.TYPE, gameData);
     register(messengers, Player.ConfirmEnemyCasualtiesRequest.TYPE, gameData);
     register(messengers, Player.ConfirmOwnCasualtiesRequest.TYPE, gameData);
+    register(messengers, Player.SelectCasualtiesRequest.TYPE, gameData);
+    register(messengers, Player.RetreatQueryRequest.TYPE, gameData);
+    register(messengers, Player.ScrambleUnitsQueryRequest.TYPE, gameData);
+    register(messengers, Player.SelectKamikazeSuicideAttacksRequest.TYPE, gameData);
+    register(messengers, Player.PickTerritoryAndUnitsRequest.TYPE, gameData);
   }
 
   private static <T extends WebSocketMessage> void register(
@@ -186,6 +200,45 @@ public class PlayerRemoteMessageHandlers {
             r.getBattleId() == null ? null : UUID.fromString(r.getBattleId()), r.getMessage());
         yield new Player.VoidAck();
       }
+      // Gnarly queries: arguments and returns ride raw, so dispatch is a straight pass-through with
+      // no EntityRef resolution.
+      case Player.SelectCasualtiesRequest r ->
+          new Player.SelectCasualtiesResponse(
+              player.selectCasualties(
+                  r.getSelectFrom(),
+                  r.getDependents(),
+                  r.getCount(),
+                  r.getMessage(),
+                  r.getDice(),
+                  r.getHit(),
+                  r.getFriendlyUnits(),
+                  r.getEnemyUnits(),
+                  r.isAmphibious(),
+                  r.getAmphibiousLandAttackers(),
+                  r.getDefaultCasualties(),
+                  r.getBattleId(),
+                  r.getBattlesite(),
+                  r.isAllowMultipleHitsPerUnit()));
+      case Player.RetreatQueryRequest r ->
+          new Player.RetreatQueryResponse(
+              player
+                  .retreatQuery(
+                      r.getBattleId(),
+                      r.isSubmerge(),
+                      r.getBattleTerritory(),
+                      r.getPossibleTerritories(),
+                      r.getMessage())
+                  .orElse(null));
+      case Player.ScrambleUnitsQueryRequest r ->
+          new Player.ScrambleUnitsQueryResponse(
+              player.scrambleUnitsQuery(r.getScrambleTo(), r.getPossibleScramblers()));
+      case Player.SelectKamikazeSuicideAttacksRequest r ->
+          new Player.SelectKamikazeSuicideAttacksResponse(
+              player.selectKamikazeSuicideAttacks(r.getPossibleUnitsToAttack()));
+      case Player.PickTerritoryAndUnitsRequest r ->
+          new Player.PickTerritoryAndUnitsResponse(
+              player.pickTerritoryAndUnits(
+                  r.getTerritoryChoices(), r.getUnitChoices(), r.getUnitsPerPick()));
       default ->
           throw new IllegalArgumentException(
               "Unhandled player message: " + request.getClass().getName());
@@ -440,6 +493,122 @@ public class PlayerRemoteMessageHandlers {
         new Player.ConfirmOwnCasualtiesRequest(
             battleId == null ? null : battleId.toString(), message),
         Player.VoidAck.TYPE);
+  }
+
+  // --- Gnarly query facades: build the raw-carrying request, dispatch, unwrap the reply. ---
+
+  public static CasualtyDetails selectCasualties(
+      final IDelegateBridge bridge,
+      final GamePlayer player,
+      final Collection<Unit> selectFrom,
+      final Map<Unit, Collection<Unit>> dependents,
+      final int count,
+      final String message,
+      final DiceRoll dice,
+      final GamePlayer hit,
+      final Collection<Unit> friendlyUnits,
+      final Collection<Unit> enemyUnits,
+      final boolean amphibious,
+      final Collection<Unit> amphibiousLandAttackers,
+      final CasualtyList defaultCasualties,
+      final @Nullable UUID battleId,
+      final Territory battlesite,
+      final boolean allowMultipleHitsPerUnit) {
+    return invoke(
+            bridge,
+            player,
+            new Player.SelectCasualtiesRequest(
+                selectFrom,
+                dependents,
+                count,
+                message,
+                dice,
+                hit,
+                friendlyUnits,
+                enemyUnits,
+                amphibious,
+                amphibiousLandAttackers,
+                defaultCasualties,
+                battleId,
+                battlesite,
+                allowMultipleHitsPerUnit),
+            Player.SelectCasualtiesResponse.TYPE)
+        .getCasualties();
+  }
+
+  public static Optional<Territory> retreatQuery(
+      final IDelegateBridge bridge,
+      final GamePlayer player,
+      final @Nullable UUID battleId,
+      final boolean submerge,
+      final Territory battleTerritory,
+      final Collection<Territory> possibleTerritories,
+      final String message) {
+    return Optional.ofNullable(
+        invoke(
+                bridge,
+                player,
+                new Player.RetreatQueryRequest(
+                    battleId, submerge, battleTerritory, possibleTerritories, message),
+                Player.RetreatQueryResponse.TYPE)
+            .getRetreatTo());
+  }
+
+  @Nullable
+  public static Map<Territory, Collection<Unit>> scrambleUnitsQuery(
+      final IDelegateBridge bridge,
+      final GamePlayer player,
+      final Territory scrambleTo,
+      final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
+    return invoke(
+            bridge,
+            player,
+            new Player.ScrambleUnitsQueryRequest(scrambleTo, possibleScramblers),
+            Player.ScrambleUnitsQueryResponse.TYPE)
+        .getScrambled();
+  }
+
+  @Nullable
+  public static Map<Territory, Map<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
+      final IDelegateBridge bridge,
+      final GamePlayer player,
+      final Map<Territory, Collection<Unit>> possibleUnitsToAttack) {
+    return invoke(
+            bridge,
+            player,
+            new Player.SelectKamikazeSuicideAttacksRequest(possibleUnitsToAttack),
+            Player.SelectKamikazeSuicideAttacksResponse.TYPE)
+        .getAttacks();
+  }
+
+  public static Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(
+      final IDelegateBridge bridge,
+      final GamePlayer player,
+      final List<Territory> territoryChoices,
+      final List<Unit> unitChoices,
+      final int unitsPerPick) {
+    return invoke(
+            bridge,
+            player,
+            new Player.PickTerritoryAndUnitsRequest(territoryChoices, unitChoices, unitsPerPick),
+            Player.PickTerritoryAndUnitsResponse.TYPE)
+        .getPick();
+  }
+
+  /**
+   * Dispatches a typed request to a player, mirroring {@code getRemotePlayer}'s null-player rule:
+   * the null player has no remote endpoint, so it is answered locally by the fallback AI; a real
+   * player routes through the bridge (over the wire under the networked bridge, in process
+   * otherwise).
+   */
+  private static <R extends WebSocketMessage> R invoke(
+      final IDelegateBridge bridge,
+      final GamePlayer player,
+      final WebSocketMessage request,
+      final MessageType<R> responseType) {
+    return player.isNull()
+        ? applyLocally(request, new WeakAi(player.getName()), bridge.getData(), responseType)
+        : bridge.invokeRemotePlayer(player, request, responseType);
   }
 
   // --- Encoding / decoding helpers. ---

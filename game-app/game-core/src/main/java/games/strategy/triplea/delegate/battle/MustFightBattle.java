@@ -26,7 +26,7 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.history.change.HistoryChangeFactory;
 import games.strategy.engine.history.change.units.RemoveUnitsHistoryChange;
 import games.strategy.engine.history.change.units.TransformDamagedUnitsHistoryChange;
-import games.strategy.engine.player.Player;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.delegate.ExecutionStack;
@@ -291,18 +291,20 @@ public class MustFightBattle extends DependentBattle
       final GamePlayer retreatingPlayer,
       final Collection<Territory> availableTerritories,
       final String text) {
-    return retreatQuery(
-        battleState, getRemote(retreatingPlayer, bridge), availableTerritories, false, text);
+    return retreatQuery(battleState, bridge, retreatingPlayer, availableTerritories, false, text);
   }
 
   private Optional<Territory> retreatQuery(
       final BattleState battleState,
-      final Player remotePlayer,
+      final IDelegateBridge bridge,
+      final GamePlayer retreatingPlayer,
       final Collection<Territory> availableTerritories,
       final boolean submerge,
       final String text) {
     final Optional<Territory> optionalRetreatTo =
-        remotePlayer.retreatQuery(
+        PlayerRemoteMessageHandlers.retreatQuery(
+            bridge,
+            retreatingPlayer,
             battleState.getBattleId(),
             submerge,
             battleState.getBattleSite(),
@@ -326,8 +328,7 @@ public class MustFightBattle extends DependentBattle
       final GamePlayer retreatingPlayer,
       final Collection<Territory> availableTerritories,
       final String text) {
-    return retreatQuery(
-        battleState, getRemote(retreatingPlayer, bridge), availableTerritories, true, text);
+    return retreatQuery(battleState, bridge, retreatingPlayer, availableTerritories, true, text);
   }
 
   @Override

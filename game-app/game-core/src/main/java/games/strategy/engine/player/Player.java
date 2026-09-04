@@ -753,4 +753,204 @@ public interface Player extends IRemote {
       return MessageEnvelope.packageMessage(TYPE, this);
     }
   }
+
+  // --- Gnarly decision queries. ---
+  // These blocking queries carry their entity arguments and returns RAW as Serializable fields
+  // rather than as symbolic EntityRefs. Production messengers serialize with
+  // GameObjectStreamFactory,
+  // so a Unit rides as its id/type/owner marker and is resolved-or-created on the receiver by
+  // GameObjectInputStream.resolveUnit; a Territory/GamePlayer rides as a name marker. This exactly
+  // reproduces the old reflective wire, and unlike an EntityRef (which resolves-or-nulls) it lets a
+  // casualty/scramble/reinforcement unit that does not yet exist on the receiver be created rather
+  // than lost. Because a request/response reply is dereferenced by the caller, each response wraps
+  // a
+  // possibly-absent value in a nullable field instead of returning null.
+
+  /**
+   * Typed request asking the player to select casualties. Correctness-critical: every argument and
+   * the {@link CasualtyDetails} return ride raw so the selection matches the reflective path
+   * exactly.
+   */
+  @AllArgsConstructor
+  class SelectCasualtiesRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600030L;
+
+    public static final MessageType<SelectCasualtiesRequest> TYPE =
+        MessageType.of(SelectCasualtiesRequest.class);
+
+    @Getter private final Collection<Unit> selectFrom;
+    @Getter private final Map<Unit, Collection<Unit>> dependents;
+    @Getter private final int count;
+    @Getter private final String message;
+    @Getter private final DiceRoll dice;
+    @Getter private final GamePlayer hit;
+    @Getter private final Collection<Unit> friendlyUnits;
+    @Getter private final Collection<Unit> enemyUnits;
+    @Getter private final boolean amphibious;
+    @Getter private final Collection<Unit> amphibiousLandAttackers;
+    @Getter private final CasualtyList defaultCasualties;
+    @Getter @Nullable private final UUID battleId;
+    @Getter private final Territory battlesite;
+    @Getter private final boolean allowMultipleHitsPerUnit;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed reply carrying the selected casualties. */
+  @AllArgsConstructor
+  class SelectCasualtiesResponse implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600031L;
+
+    public static final MessageType<SelectCasualtiesResponse> TYPE =
+        MessageType.of(SelectCasualtiesResponse.class);
+
+    @Getter private final CasualtyDetails casualties;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed request asking whether and where the player wishes to retreat. */
+  @AllArgsConstructor
+  class RetreatQueryRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600032L;
+
+    public static final MessageType<RetreatQueryRequest> TYPE =
+        MessageType.of(RetreatQueryRequest.class);
+
+    @Getter @Nullable private final UUID battleId;
+    @Getter private final boolean submerge;
+    @Getter private final Territory battleTerritory;
+    @Getter private final Collection<Territory> possibleTerritories;
+    @Getter private final String message;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /**
+   * Typed reply carrying the chosen retreat territory (null when the player declined to retreat).
+   */
+  @AllArgsConstructor
+  class RetreatQueryResponse implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600033L;
+
+    public static final MessageType<RetreatQueryResponse> TYPE =
+        MessageType.of(RetreatQueryResponse.class);
+
+    @Getter @Nullable private final Territory retreatTo;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed request asking which units, if any, the player wants to scramble to defend. */
+  @AllArgsConstructor
+  class ScrambleUnitsQueryRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600034L;
+
+    public static final MessageType<ScrambleUnitsQueryRequest> TYPE =
+        MessageType.of(ScrambleUnitsQueryRequest.class);
+
+    @Getter private final Territory scrambleTo;
+
+    @Getter
+    private final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed reply mapping scrambled units to where they come from (null when nothing scrambles). */
+  @AllArgsConstructor
+  class ScrambleUnitsQueryResponse implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600035L;
+
+    public static final MessageType<ScrambleUnitsQueryResponse> TYPE =
+        MessageType.of(ScrambleUnitsQueryResponse.class);
+
+    @Getter @Nullable private final Map<Territory, Collection<Unit>> scrambled;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed request asking the player which kamikaze suicide attacks, if any, to perform. */
+  @AllArgsConstructor
+  class SelectKamikazeSuicideAttacksRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600036L;
+
+    public static final MessageType<SelectKamikazeSuicideAttacksRequest> TYPE =
+        MessageType.of(SelectKamikazeSuicideAttacksRequest.class);
+
+    @Getter private final Map<Territory, Collection<Unit>> possibleUnitsToAttack;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed reply carrying the chosen kamikaze attacks (null when none are made). */
+  @AllArgsConstructor
+  class SelectKamikazeSuicideAttacksResponse implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600037L;
+
+    public static final MessageType<SelectKamikazeSuicideAttacksResponse> TYPE =
+        MessageType.of(SelectKamikazeSuicideAttacksResponse.class);
+
+    @Getter @Nullable private final Map<Territory, Map<Unit, IntegerMap<Resource>>> attacks;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed request asking the player to pick a territory and units during a random start. */
+  @AllArgsConstructor
+  class PickTerritoryAndUnitsRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600038L;
+
+    public static final MessageType<PickTerritoryAndUnitsRequest> TYPE =
+        MessageType.of(PickTerritoryAndUnitsRequest.class);
+
+    @Getter private final List<Territory> territoryChoices;
+    @Getter private final List<Unit> unitChoices;
+    @Getter private final int unitsPerPick;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed reply carrying the picked territory and units. */
+  @AllArgsConstructor
+  class PickTerritoryAndUnitsResponse implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600039L;
+
+    public static final MessageType<PickTerritoryAndUnitsResponse> TYPE =
+        MessageType.of(PickTerritoryAndUnitsResponse.class);
+
+    @Getter private final Tuple<Territory, Set<Unit>> pick;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
 }

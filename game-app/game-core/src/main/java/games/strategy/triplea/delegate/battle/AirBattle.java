@@ -490,8 +490,8 @@ public class AirBattle extends AbstractBattle {
     final GamePlayer retreatingPlayer = defender ? this.defender : attacker;
     final String text = retreatingPlayer.getName() + " retreat?";
     final Optional<Territory> optionalRetreatTo =
-        getRemote(retreatingPlayer, bridge)
-            .retreatQuery(battleId, false, battleSite, List.of(battleSite), text);
+        PlayerRemoteMessageHandlers.retreatQuery(
+            bridge, retreatingPlayer, battleId, false, battleSite, List.of(battleSite), text);
     if (optionalRetreatTo.isEmpty()) {
       return;
     }
