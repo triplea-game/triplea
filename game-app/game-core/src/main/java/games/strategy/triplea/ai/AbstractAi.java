@@ -28,6 +28,10 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
+import games.strategy.triplea.delegate.remote.typed.TypedMoveDelegate;
+import games.strategy.triplea.delegate.remote.typed.TypedPlaceDelegate;
+import games.strategy.triplea.delegate.remote.typed.TypedPurchaseDelegate;
+import games.strategy.triplea.delegate.remote.typed.TypedTechDelegate;
 import games.strategy.triplea.player.AbstractBasePlayer;
 import games.strategy.triplea.settings.ClientSetting;
 import java.util.ArrayList;
@@ -498,33 +502,35 @@ public abstract class AbstractAi extends AbstractBasePlayer {
     super.start(name);
     final GamePlayer gamePlayer = this.getGamePlayer();
     if (GameStep.isBidStepName(name)) {
-      final IPurchaseDelegate purchaseDelegate =
-          (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
+      final IPurchaseDelegate purchaseDelegate = new TypedPurchaseDelegate(getPlayerBridge());
       final String propertyName = gamePlayer.getName() + " bid";
       final int bidAmount = getGameData().getProperties().get(propertyName, 0);
       purchase(true, bidAmount, purchaseDelegate, getGameData(), gamePlayer);
     } else if (GameStep.isPurchaseStepName(name)) {
-      final IPurchaseDelegate purchaseDelegate =
-          (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
+      final IPurchaseDelegate purchaseDelegate = new TypedPurchaseDelegate(getPlayerBridge());
       final Resource pus = getGameData().getResourceList().getResourceOrThrow(Constants.PUS);
       final int leftToSpend = gamePlayer.getResources().getQuantity(pus);
       purchase(false, leftToSpend, purchaseDelegate, getGameData(), gamePlayer);
     } else if (GameStep.isTechStepName(name)) {
-      final ITechDelegate techDelegate = (ITechDelegate) getPlayerBridge().getRemoteDelegate();
-      tech(techDelegate, getGameData(), gamePlayer);
+      tech(new TypedTechDelegate(getPlayerBridge()), getGameData(), gamePlayer);
     } else if (GameStep.isMoveStepName(name)) {
-      final IMoveDelegate moveDel = (IMoveDelegate) getPlayerBridge().getRemoteDelegate();
       if (!GameStepPropertiesHelper.isAirborneMove(getGameData())) {
-        move(GameStep.isNonCombatMoveStepName(name), moveDel, getGameData(), gamePlayer);
+        move(
+            GameStep.isNonCombatMoveStepName(name),
+            new TypedMoveDelegate(getPlayerBridge()),
+            getGameData(),
+            gamePlayer);
       }
     } else if (GameStep.isBattleStepName(name)) {
       battle();
     } else if (GameStep.isPoliticsStepName(name)) {
       politicalActions();
     } else if (GameStep.isPlaceStepName(name)) {
-      final IAbstractPlaceDelegate placeDel =
-          (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
-      place(GameStep.isBidStepName(name), placeDel, getGameData(), gamePlayer);
+      place(
+          GameStep.isBidStepName(name),
+          new TypedPlaceDelegate(getPlayerBridge()),
+          getGameData(),
+          gamePlayer);
     } else if (GameStep.isEndTurnStepName(name)) {
       endTurn((IAbstractForumPosterDelegate) getPlayerBridge().getRemoteDelegate(), gamePlayer);
     }

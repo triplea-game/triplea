@@ -29,7 +29,7 @@ public abstract class AbstractTypedCurrentDelegate implements IDelegate, IRemote
     return playerBridge.invokeCurrentDelegate(request, responseType);
   }
 
-  private UnsupportedOperationException notForwarded(final String method) {
+  protected UnsupportedOperationException notForwarded(final String method) {
     return new UnsupportedOperationException(
         method
             + " is not forwarded by the typed delegate adapter; it runs server-side on the real"
