@@ -394,6 +394,22 @@ Philippines  <  (3011,3021) (3012,3022) (3013,3023) >  <  (3111,3121) (3112,3122
     }
 
     @Test
+    void shouldRejectTerritoryWithoutPolygons() throws Exception {
+      final String content =
+          """
+              East Compass Sea Zone  <
+              """;
+
+      final IOException exception =
+          assertThrows(
+              IOException.class,
+              () -> PointFileReaderWriter.readOneToManyPolygons(pathToVirtualTextFile(content)));
+
+      assertThat(exception.getCause().getClass(), is(IllegalArgumentException.class));
+      assertTrue(exception.getMessage().contains("East Compass Sea Zone"));
+    }
+
+    @Test
     void shouldErrorOnDuplicateKey() {
       final String content1 =
 """
