@@ -8,6 +8,7 @@ import games.strategy.engine.player.PlayerBridge;
 import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
+import games.strategy.triplea.delegate.remote.typed.TypedForumPosterDelegate;
 import games.strategy.triplea.ui.ActionPanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.panels.map.MapPanel;
@@ -76,7 +77,7 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
           add(
               forumPosterComponent.layoutComponents(
                   pbemMessagePoster,
-                  (IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate(),
+                  new TypedForumPosterDelegate(playerBridge),
                   tripleAFrame,
                   hasPosted,
                   includeDetailsAndSummary()));

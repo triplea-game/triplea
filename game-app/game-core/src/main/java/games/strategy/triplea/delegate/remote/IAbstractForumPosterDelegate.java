@@ -30,13 +30,92 @@ public interface IAbstractForumPosterDelegate extends IRemote, IDelegate {
         (request, implementor) ->
             new GetHasPostedTurnSummaryResponse(
                 ((IAbstractForumPosterDelegate) implementor).getHasPostedTurnSummary()));
+    messengers.registerMessageHandler(
+        PostTurnSummaryRequest.TYPE,
+        (request, implementor) ->
+            new PostTurnSummaryResponse(
+                ((IAbstractForumPosterDelegate) implementor)
+                    .postTurnSummary(request.getPoster(), request.getTitle())));
+    messengers.registerMessageHandler(
+        SetHasPostedTurnSummaryRequest.TYPE,
+        (request, implementor) -> {
+          ((IAbstractForumPosterDelegate) implementor)
+              .setHasPostedTurnSummary(request.isHasPostedTurnSummary());
+          return new SetHasPostedTurnSummaryResponse();
+        });
   }
 
   @RemoteActionCode(9)
   boolean postTurnSummary(PbemMessagePoster poster, String title);
 
+  /**
+   * Typed request to post a turn summary. The {@link PbemMessagePoster} is {@link Serializable} (it
+   * carries the fields the delegate needs) and rides the Java wire as it did under the reflective
+   * path, so this has no Gson fixture.
+   */
+  @AllArgsConstructor
+  class PostTurnSummaryRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5320048576544675223L;
+
+    public static final MessageType<PostTurnSummaryRequest> TYPE =
+        MessageType.of(PostTurnSummaryRequest.class);
+
+    @Getter private final PbemMessagePoster poster;
+    @Getter private final String title;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed reply carrying whether the turn summary posted successfully. */
+  @AllArgsConstructor
+  class PostTurnSummaryResponse implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5320048576544675224L;
+
+    public static final MessageType<PostTurnSummaryResponse> TYPE =
+        MessageType.of(PostTurnSummaryResponse.class);
+
+    @Getter private final boolean posted;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
   @RemoteActionCode(12)
   void setHasPostedTurnSummary(boolean hasPostedTurnSummary);
+
+  /** Typed request to record whether the turn summary has been posted. */
+  @AllArgsConstructor
+  class SetHasPostedTurnSummaryRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5320048576544675225L;
+
+    public static final MessageType<SetHasPostedTurnSummaryRequest> TYPE =
+        MessageType.of(SetHasPostedTurnSummaryRequest.class);
+
+    @Getter private final boolean hasPostedTurnSummary;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed acknowledgement that the posted-turn-summary flag was recorded. */
+  class SetHasPostedTurnSummaryResponse implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5320048576544675226L;
+
+    public static final MessageType<SetHasPostedTurnSummaryResponse> TYPE =
+        MessageType.of(SetHasPostedTurnSummaryResponse.class);
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
 
   @RemoteActionCode(4)
   boolean getHasPostedTurnSummary();

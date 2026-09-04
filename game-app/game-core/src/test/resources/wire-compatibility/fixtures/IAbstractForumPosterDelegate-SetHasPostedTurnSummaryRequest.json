@@ -1,0 +1,6 @@
+{
+  "type": "games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate$SetHasPostedTurnSummaryRequest",
+  "payload": {
+    "hasPostedTurnSummary": true
+  }
+}
