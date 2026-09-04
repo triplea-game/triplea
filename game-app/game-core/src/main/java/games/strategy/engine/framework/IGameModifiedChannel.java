@@ -43,6 +43,24 @@ public interface IGameModifiedChannel extends IChannelSubscriber {
           message.invokeCallback((IGameModifiedChannel) implementor, gameData);
           return null;
         });
+    messengers.registerMessageHandler(
+        GameDataChangedMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IGameModifiedChannel) implementor);
+          return null;
+        });
+    messengers.registerMessageHandler(
+        StartHistoryEventWithRenderingMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IGameModifiedChannel) implementor);
+          return null;
+        });
+    messengers.registerMessageHandler(
+        AddChildToEventMessage.TYPE,
+        (message, implementor) -> {
+          message.invokeCallback((IGameModifiedChannel) implementor);
+          return null;
+        });
   }
 
   @RemoteActionCode(1)
@@ -121,6 +139,84 @@ public interface IGameModifiedChannel extends IChannelSubscriber {
           round,
           displayName,
           loadedFromSavedGame);
+    }
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /**
+   * Typed broadcast of a game data change. The {@link Change} rides RAW as a Serializable field:
+   * production messengers serialize with GameObjectStreamFactory, so the change's unit/territory/
+   * player references keep identity (resolve-or-create) exactly as the reflective wire did — no
+   * whole GameData graph is sent. It is delivered on the single-threaded game-modification channel
+   * endpoint under the same number gate as {@code stepChanged}, so changes apply strictly in send
+   * order.
+   */
+  @AllArgsConstructor
+  class GameDataChangedMessage implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5590109384712000301L;
+
+    public static final MessageType<GameDataChangedMessage> TYPE =
+        MessageType.of(GameDataChangedMessage.class);
+
+    private final Change change;
+
+    public void invokeCallback(final IGameModifiedChannel channel) {
+      channel.gameDataChanged(change);
+    }
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /**
+   * Typed broadcast that a history event has started with rendering data. The {@code renderingData}
+   * rides RAW as a Serializable field (it is a game object such as a {@link
+   * games.strategy.triplea.delegate.DiceRoll} or a unit collection, consumed downstream by history
+   * rendering and dice-stat import), matching the reflective wire; it is not dropped.
+   */
+  @AllArgsConstructor
+  class StartHistoryEventWithRenderingMessage implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5590109384712000302L;
+
+    public static final MessageType<StartHistoryEventWithRenderingMessage> TYPE =
+        MessageType.of(StartHistoryEventWithRenderingMessage.class);
+
+    private final String event;
+    @Nullable private final Object renderingData;
+
+    public void invokeCallback(final IGameModifiedChannel channel) {
+      channel.startHistoryEvent(event, renderingData);
+    }
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /**
+   * Typed broadcast adding a child to the current history event. The {@code renderingData} rides
+   * RAW as a Serializable field (wrapped into an EventChild and read downstream), matching the
+   * reflective wire; it is not dropped.
+   */
+  @AllArgsConstructor
+  class AddChildToEventMessage implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5590109384712000303L;
+
+    public static final MessageType<AddChildToEventMessage> TYPE =
+        MessageType.of(AddChildToEventMessage.class);
+
+    private final String text;
+    @Nullable private final Object renderingData;
+
+    public void invokeCallback(final IGameModifiedChannel channel) {
+      channel.addChildToEvent(text, renderingData);
     }
 
     @Override

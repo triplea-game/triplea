@@ -722,14 +722,12 @@ public class ServerGame extends AbstractGame {
     }
   }
 
-  private IGameModifiedChannel getGameModifiedBroadcaster() {
-    return (IGameModifiedChannel) messengers.getChannelBroadcaster(IGame.GAME_MODIFICATION_CHANNEL);
-  }
-
   @Override
   public void addChange(final Change change) {
-    // let our channel subscriber do the change, that way all changes will happen in the same thread
-    getGameModifiedBroadcaster().gameDataChanged(change);
+    // Broadcast on the single-threaded game-modification channel, so every subscriber applies the
+    // change on that channel's thread in send order (the same ordering the reflective path gave).
+    messengers.sendChannelMessage(
+        IGame.GAME_MODIFICATION_CHANNEL, new IGameModifiedChannel.GameDataChangedMessage(change));
   }
 
   @Override
