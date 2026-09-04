@@ -47,13 +47,13 @@ public class JTextFieldBuilder {
     Optional.ofNullable(actionListener)
         .ifPresent(action -> textField.addActionListener(e -> action.accept(textField)));
 
+    Optional.ofNullable(maxLength).map(JTextFieldLimit::new).ifPresent(textField::setDocument);
+
     Optional.ofNullable(textListener)
         .ifPresent(
             listener ->
                 new DocumentListenerBuilder(() -> textListener.accept(textField.getText()))
                     .attachTo(textField));
-
-    Optional.ofNullable(maxLength).map(JTextFieldLimit::new).ifPresent(textField::setDocument);
 
     Optional.ofNullable(text).ifPresent(textField::setText);
 

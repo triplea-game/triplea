@@ -5,6 +5,7 @@ import static org.hamcrest.core.Is.is;
 
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.swing.JTextField;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
@@ -52,6 +53,17 @@ class JTextFieldBuilderTest {
     Awaitility.await()
         .atMost(Duration.ofMillis(DocumentListenerBuilder.CALLBACK_DELAY_MS * 2))
         .until(() -> value.get() == 1);
+  }
+
+  @Test
+  void textListenerWithMaxLength() {
+    final AtomicReference<String> value = new AtomicReference<>();
+
+    JTextFieldBuilder.builder().maxLength(20).textListener(value::set).build().setText("test");
+
+    Awaitility.await()
+        .atMost(Duration.ofMillis(DocumentListenerBuilder.CALLBACK_DELAY_MS * 2))
+        .until(() -> "test".equals(value.get()));
   }
 
   @Test
