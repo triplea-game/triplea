@@ -1,0 +1,7 @@
+{
+  "type": "games.strategy.engine.player.Player$ConfirmOwnCasualtiesRequest",
+  "payload": {
+    "battleId": "00000000-0000-0000-0000-000000000009",
+    "message": "Press space to continue"
+  }
+}

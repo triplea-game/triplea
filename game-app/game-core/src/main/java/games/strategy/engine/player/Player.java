@@ -7,9 +7,12 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteActionCode;
+import games.strategy.engine.message.wire.EntityRef;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +20,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.triplea.http.client.web.socket.MessageEnvelope;
+import org.triplea.http.client.web.socket.messages.MessageType;
+import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.java.ChangeOnNextMajorRelease;
 import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.IntegerMap;
@@ -297,4 +305,452 @@ public interface Player extends IRemote {
   @RemoteActionCode(10)
   Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(
       List<Territory> territoryChoices, List<Unit> unitChoices, int unitsPerPick);
+
+  // --- Typed request/response records for the converted remote methods. ---
+  // Entity arguments and returns ride as symbolic EntityRef references (see the wire package); the
+  // receiver re-resolves them against its own GameData. Every remote Player call blocked for a
+  // reply
+  // under the reflective path, so void methods use a VoidAck to keep the caller blocking until the
+  // player has handled the message. PlayerRemoteMessageHandlers registers the handlers and
+  // dispatches
+  // each request to the addressed player. The gnarly decision queries stay reflective for E3.
+
+  /** Shared typed reply carrying a single boolean answer. */
+  @AllArgsConstructor
+  class BooleanResponse implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600001L;
+
+    public static final MessageType<BooleanResponse> TYPE = MessageType.of(BooleanResponse.class);
+
+    @Getter private final boolean value;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Shared typed acknowledgement for a void method, so the caller still blocks on the reply. */
+  class VoidAck implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600002L;
+
+    public static final MessageType<VoidAck> TYPE = MessageType.of(VoidAck.class);
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Shared typed reply carrying an optional territory reference (null when none was chosen). */
+  @AllArgsConstructor
+  class TerritoryResponse implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600003L;
+
+    public static final MessageType<TerritoryResponse> TYPE =
+        MessageType.of(TerritoryResponse.class);
+
+    @Getter @Nullable private final EntityRef territory;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Shared typed reply carrying an optional unit reference (null when none was chosen). */
+  @AllArgsConstructor
+  class UnitResponse implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600004L;
+
+    public static final MessageType<UnitResponse> TYPE = MessageType.of(UnitResponse.class);
+
+    @Getter @Nullable private final EntityRef unit;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Shared typed reply carrying a list of unit references. */
+  @AllArgsConstructor
+  class UnitsResponse implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600005L;
+
+    public static final MessageType<UnitsResponse> TYPE = MessageType.of(UnitsResponse.class);
+
+    @Getter private final List<EntityRef> units;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Shared typed reply carrying an optional player reference. */
+  @AllArgsConstructor
+  class PlayerResponse implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600006L;
+
+    public static final MessageType<PlayerResponse> TYPE = MessageType.of(PlayerResponse.class);
+
+    @Getter @Nullable private final EntityRef player;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /**
+   * Typed reply carrying a fixed dice array. The array rides the Java wire, so it has no fixture.
+   */
+  @AllArgsConstructor
+  class IntArrayResponse implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600007L;
+
+    public static final MessageType<IntArrayResponse> TYPE = MessageType.of(IntArrayResponse.class);
+
+    @Getter private final int[] values;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed request asking whether the player accepts a proposed action. */
+  @AllArgsConstructor
+  class AcceptActionRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600010L;
+
+    public static final MessageType<AcceptActionRequest> TYPE =
+        MessageType.of(AcceptActionRequest.class);
+
+    @Getter private final EntityRef playerSendingProposal;
+    @Getter private final String acceptanceQuestion;
+    @Getter private final boolean politics;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed request asking whether the player wants to attack lone subs in a territory. */
+  @AllArgsConstructor
+  class SelectAttackSubsRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600011L;
+
+    public static final MessageType<SelectAttackSubsRequest> TYPE =
+        MessageType.of(SelectAttackSubsRequest.class);
+
+    @Getter private final EntityRef unitTerritory;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed request asking whether the player wants to attack lone transports in a territory. */
+  @AllArgsConstructor
+  class SelectAttackTransportsRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600012L;
+
+    public static final MessageType<SelectAttackTransportsRequest> TYPE =
+        MessageType.of(SelectAttackTransportsRequest.class);
+
+    @Getter private final EntityRef unitTerritory;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed request asking whether the player wants to attack units in a territory. */
+  @AllArgsConstructor
+  class SelectAttackUnitsRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600013L;
+
+    public static final MessageType<SelectAttackUnitsRequest> TYPE =
+        MessageType.of(SelectAttackUnitsRequest.class);
+
+    @Getter private final EntityRef unitTerritory;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed request asking whether the player wants to shore bombard a territory. */
+  @AllArgsConstructor
+  class SelectShoreBombardRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600014L;
+
+    public static final MessageType<SelectShoreBombardRequest> TYPE =
+        MessageType.of(SelectShoreBombardRequest.class);
+
+    @Getter private final EntityRef unitTerritory;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed request asking whether a bomber that moved into a territory should bomb. */
+  @AllArgsConstructor
+  class ShouldBomberBombRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600015L;
+
+    public static final MessageType<ShouldBomberBombRequest> TYPE =
+        MessageType.of(ShouldBomberBombRequest.class);
+
+    @Getter private final EntityRef territory;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed request confirming a move that will incur anti-aircraft fire. */
+  @AllArgsConstructor
+  class ConfirmMoveInFaceOfAaRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600016L;
+
+    public static final MessageType<ConfirmMoveInFaceOfAaRequest> TYPE =
+        MessageType.of(ConfirmMoveInFaceOfAaRequest.class);
+
+    @Getter private final List<EntityRef> aaFiringTerritories;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed request confirming a move that will kill some air units. */
+  class ConfirmMoveKamikazeRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600017L;
+
+    public static final MessageType<ConfirmMoveKamikazeRequest> TYPE =
+        MessageType.of(ConfirmMoveKamikazeRequest.class);
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed request asking which territory the player's rockets should attack. */
+  @AllArgsConstructor
+  class WhereShouldRocketsAttackRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600018L;
+
+    public static final MessageType<WhereShouldRocketsAttackRequest> TYPE =
+        MessageType.of(WhereShouldRocketsAttackRequest.class);
+
+    @Getter private final List<EntityRef> candidates;
+    @Getter @Nullable private final EntityRef from;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed request asking which unit a bomber should bomb in a territory. */
+  @AllArgsConstructor
+  class WhatShouldBomberBombRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600019L;
+
+    public static final MessageType<WhatShouldBomberBombRequest> TYPE =
+        MessageType.of(WhatShouldBomberBombRequest.class);
+
+    @Getter private final EntityRef territory;
+    @Getter private final List<EntityRef> potentialTargets;
+    @Getter private final List<EntityRef> bombers;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed request asking which fighters to move to a newly produced carrier. */
+  @AllArgsConstructor
+  class GetNumberOfFightersToMoveToNewCarrierRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600020L;
+
+    public static final MessageType<GetNumberOfFightersToMoveToNewCarrierRequest> TYPE =
+        MessageType.of(GetNumberOfFightersToMoveToNewCarrierRequest.class);
+
+    @Getter private final List<EntityRef> fightersThatCanBeMoved;
+    @Getter private final EntityRef from;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed request asking where stranded air units should try to land. */
+  @AllArgsConstructor
+  class SelectTerritoryForAirToLandRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600021L;
+
+    public static final MessageType<SelectTerritoryForAirToLandRequest> TYPE =
+        MessageType.of(SelectTerritoryForAirToLandRequest.class);
+
+    @Getter private final List<EntityRef> candidates;
+    @Getter private final EntityRef currentTerritory;
+    @Getter private final String unitMessage;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed request asking which territory the player's bombarding unit should bombard. */
+  @AllArgsConstructor
+  class SelectBombardingTerritoryRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600022L;
+
+    public static final MessageType<SelectBombardingTerritoryRequest> TYPE =
+        MessageType.of(SelectBombardingTerritoryRequest.class);
+
+    @Getter private final EntityRef unit;
+    @Getter private final EntityRef unitTerritory;
+    @Getter private final List<EntityRef> territories;
+    @Getter private final boolean noneAvailable;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed request asking which units, if any, the player wants to select. */
+  @AllArgsConstructor
+  class SelectUnitsQueryRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600023L;
+
+    public static final MessageType<SelectUnitsQueryRequest> TYPE =
+        MessageType.of(SelectUnitsQueryRequest.class);
+
+    @Getter private final EntityRef current;
+    @Getter private final List<EntityRef> possible;
+    @Getter private final String message;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed request asking the player to select a fixed dice roll. */
+  @AllArgsConstructor
+  class SelectFixedDiceRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600024L;
+
+    public static final MessageType<SelectFixedDiceRequest> TYPE =
+        MessageType.of(SelectFixedDiceRequest.class);
+
+    @Getter private final int numDice;
+    @Getter private final int hitAt;
+    @Getter private final String title;
+    @Getter private final int diceSides;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed request asking the player for its game player identity. */
+  class GetGamePlayerRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600025L;
+
+    public static final MessageType<GetGamePlayerRequest> TYPE =
+        MessageType.of(GetGamePlayerRequest.class);
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed notification reporting an error to the player. */
+  @AllArgsConstructor
+  class ReportErrorRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600026L;
+
+    public static final MessageType<ReportErrorRequest> TYPE =
+        MessageType.of(ReportErrorRequest.class);
+
+    @Getter private final String error;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed notification reporting a message to the player. */
+  @AllArgsConstructor
+  class ReportMessageRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600027L;
+
+    public static final MessageType<ReportMessageRequest> TYPE =
+        MessageType.of(ReportMessageRequest.class);
+
+    @Getter private final String message;
+    @Getter private final String title;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed request pausing so the player can confirm enemy casualties. */
+  @AllArgsConstructor
+  class ConfirmEnemyCasualtiesRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600028L;
+
+    public static final MessageType<ConfirmEnemyCasualtiesRequest> TYPE =
+        MessageType.of(ConfirmEnemyCasualtiesRequest.class);
+
+    @Getter @Nullable private final String battleId;
+    @Getter private final String message;
+    @Getter private final EntityRef hitPlayer;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed request pausing so the player can confirm their own casualties. */
+  @AllArgsConstructor
+  class ConfirmOwnCasualtiesRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 6320048576544600029L;
+
+    public static final MessageType<ConfirmOwnCasualtiesRequest> TYPE =
+        MessageType.of(ConfirmOwnCasualtiesRequest.class);
+
+    @Getter @Nullable private final String battleId;
+    @Getter private final String message;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
 }

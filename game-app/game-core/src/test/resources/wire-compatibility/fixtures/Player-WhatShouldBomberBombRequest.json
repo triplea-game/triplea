@@ -1,0 +1,21 @@
+{
+  "type": "games.strategy.engine.player.Player$WhatShouldBomberBombRequest",
+  "payload": {
+    "territory": {
+      "kind": "territory",
+      "key": "Germany"
+    },
+    "potentialTargets": [
+      {
+        "kind": "unit",
+        "key": "00000000-0000-0000-0000-000000000001"
+      }
+    ],
+    "bombers": [
+      {
+        "kind": "unit",
+        "key": "00000000-0000-0000-0000-000000000001"
+      }
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "type": "games.strategy.engine.player.Player$BooleanResponse",
+  "payload": {
+    "value": true
+  }
+}

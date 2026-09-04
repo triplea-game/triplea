@@ -1,0 +1,15 @@
+{
+  "type": "games.strategy.engine.player.Player$WhereShouldRocketsAttackRequest",
+  "payload": {
+    "candidates": [
+      {
+        "kind": "territory",
+        "key": "Germany"
+      }
+    ],
+    "from": {
+      "kind": "territory",
+      "key": "Germany"
+    }
+  }
+}

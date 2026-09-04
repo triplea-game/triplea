@@ -1,0 +1,7 @@
+{
+  "type": "games.strategy.engine.player.Player$ReportMessageRequest",
+  "payload": {
+    "message": "A message",
+    "title": "A title"
+  }
+}

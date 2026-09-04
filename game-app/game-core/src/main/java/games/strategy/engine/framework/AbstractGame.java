@@ -9,6 +9,7 @@ import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.player.PlayerBridge;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
@@ -98,6 +99,9 @@ public abstract class AbstractGame implements IGame {
       final RemoteName descriptor = ServerGame.getRemoteName(gp.getGamePlayer());
       messengers.registerRemote(gp, descriptor);
     }
+    // Register the typed player-message handlers (guarded/idempotent). The per-name endpoints
+    // registered above supply the specific player as the handler's implementor at dispatch.
+    PlayerRemoteMessageHandlers.registerAll(messengers, gameData);
   }
 
   @Override

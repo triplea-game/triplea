@@ -1,0 +1,16 @@
+{
+  "type": "games.strategy.engine.player.Player$SelectTerritoryForAirToLandRequest",
+  "payload": {
+    "candidates": [
+      {
+        "kind": "territory",
+        "key": "Germany"
+      }
+    ],
+    "currentTerritory": {
+      "kind": "territory",
+      "key": "Germany"
+    },
+    "unitMessage": "Select territory"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "games.strategy.engine.player.Player$ConfirmEnemyCasualtiesRequest",
+  "payload": {
+    "battleId": "00000000-0000-0000-0000-000000000009",
+    "message": "Press space to continue",
+    "hitPlayer": {
+      "kind": "player",
+      "key": "Germans"
+    }
+  }
+}

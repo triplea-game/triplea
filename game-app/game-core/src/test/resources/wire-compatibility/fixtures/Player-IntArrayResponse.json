@@ -1,0 +1,10 @@
+{
+  "type": "games.strategy.engine.player.Player$IntArrayResponse",
+  "payload": {
+    "values": [
+      1,
+      2,
+      3
+    ]
+  }
+}

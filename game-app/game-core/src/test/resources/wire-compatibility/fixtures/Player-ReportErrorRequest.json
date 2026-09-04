@@ -1,0 +1,6 @@
+{
+  "type": "games.strategy.engine.player.Player$ReportErrorRequest",
+  "payload": {
+    "error": "An error occurred"
+  }
+}

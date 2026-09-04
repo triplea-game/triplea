@@ -17,6 +17,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.player.Player;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import lombok.experimental.UtilityClass;
 import org.mockito.stubbing.Answer;
 import org.mockito.stubbing.OngoingStubbing;
@@ -50,6 +51,12 @@ public final class MockDelegateBridge {
     final Player remotePlayer = mock(Player.class);
     when(delegateBridge.getRemotePlayer()).thenReturn(remotePlayer);
     when(delegateBridge.getRemotePlayer(any())).thenReturn(remotePlayer);
+    // Route invokeRemotePlayer to the same mock so tests keep stubbing via getRemotePlayer(...).
+    when(delegateBridge.invokeRemotePlayer(any(), any(), any()))
+        .thenAnswer(
+            invocation ->
+                PlayerRemoteMessageHandlers.applyLocally(
+                    invocation.getArgument(1), remotePlayer, gameData, invocation.getArgument(2)));
     when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(mock(ISound.class));
     when(delegateBridge.getCostsForTuv(any())).thenCallRealMethod();
     return delegateBridge;

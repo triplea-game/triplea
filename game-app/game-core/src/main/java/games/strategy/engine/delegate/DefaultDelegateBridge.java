@@ -11,6 +11,7 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.message.MessengerException;
 import games.strategy.engine.player.Player;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.RandomStats;
@@ -18,6 +19,7 @@ import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.ResourceLoader;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.triplea.http.client.web.socket.messages.MessageType;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.sound.ISound;
 
@@ -101,6 +103,20 @@ public class DefaultDelegateBridge implements IDelegateBridge {
       final Object implementor =
           game.getMessengers().getRemote(ServerGame.getRemoteName(gamePlayer));
       return (Player) getOutbound(implementor);
+    } catch (final RuntimeException e) {
+      if (e.getCause() instanceof MessengerException) {
+        throw new GameOverException("Game Over!");
+      }
+      throw e;
+    }
+  }
+
+  @Override
+  public <R extends WebSocketMessage> R invokeRemotePlayer(
+      final GamePlayer player, final WebSocketMessage request, final MessageType<R> responseType) {
+    try {
+      return PlayerRemoteMessageHandlers.invokeRemotePlayer(
+          game.getMessengers(), gameData, player, request, responseType);
     } catch (final RuntimeException e) {
       if (e.getCause() instanceof MessengerException) {
         throw new GameOverException("Game Over!");

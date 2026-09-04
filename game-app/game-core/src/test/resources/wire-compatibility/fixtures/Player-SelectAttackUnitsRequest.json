@@ -1,0 +1,9 @@
+{
+  "type": "games.strategy.engine.player.Player$SelectAttackUnitsRequest",
+  "payload": {
+    "unitTerritory": {
+      "kind": "territory",
+      "key": "Germany"
+    }
+  }
+}

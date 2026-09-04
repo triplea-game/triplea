@@ -1,0 +1,11 @@
+{
+  "type": "games.strategy.engine.player.Player$ConfirmMoveInFaceOfAaRequest",
+  "payload": {
+    "aaFiringTerritories": [
+      {
+        "kind": "territory",
+        "key": "Germany"
+      }
+    ]
+  }
+}

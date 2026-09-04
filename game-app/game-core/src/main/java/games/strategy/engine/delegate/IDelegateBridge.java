@@ -7,10 +7,12 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
+import games.strategy.engine.player.PlayerRemoteMessageHandlers;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.util.TuvCostsCalculator;
 import java.util.Optional;
+import org.triplea.http.client.web.socket.messages.MessageType;
 import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.sound.ISound;
@@ -31,6 +33,18 @@ public interface IDelegateBridge {
 
   /** Get a remote reference to the given player. */
   Player getRemotePlayer(GamePlayer gamePlayer);
+
+  /**
+   * Sends a typed request to the given player and blocks for its typed reply. The default applies
+   * the request in process against {@link #getRemotePlayer(GamePlayer)}, which is what the
+   * simulation and odds-calculator bridges want; the networked bridge overrides this to route the
+   * request over the messenger to the addressed per-player endpoint.
+   */
+  default <R extends WebSocketMessage> R invokeRemotePlayer(
+      final GamePlayer player, final WebSocketMessage request, final MessageType<R> responseType) {
+    return PlayerRemoteMessageHandlers.applyLocally(
+        request, getRemotePlayer(player), getData(), responseType);
+  }
 
   GamePlayer getGamePlayer();
 

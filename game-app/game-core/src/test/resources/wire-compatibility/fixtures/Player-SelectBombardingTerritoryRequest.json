@@ -1,0 +1,20 @@
+{
+  "type": "games.strategy.engine.player.Player$SelectBombardingTerritoryRequest",
+  "payload": {
+    "unit": {
+      "kind": "unit",
+      "key": "00000000-0000-0000-0000-000000000001"
+    },
+    "unitTerritory": {
+      "kind": "territory",
+      "key": "Germany"
+    },
+    "territories": [
+      {
+        "kind": "territory",
+        "key": "Germany"
+      }
+    ],
+    "noneAvailable": true
+  }
+}
