@@ -78,7 +78,7 @@ public class CasualtySelector {
             ? extraHits
             : dice.getHits();
 
-    if (EditDelegate.getEditMode(data.getProperties())) {
+    if (EditDelegate.getEditMode(data.getProperties()) && !player.isAi()) {
       return tripleaPlayer.selectCasualties(
           targetsToPickFrom,
           dependents,

@@ -1,4 +1,4 @@
-package org.triplea.sound;
+package games.strategy.triplea.delegate.battle;
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
@@ -8,6 +8,7 @@ import games.strategy.triplea.delegate.battle.MustFightBattle.RetreatType;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import org.triplea.sound.SoundPath;
 
 /** Contains methods to play various sound clips. */
 public final class SoundUtils {
