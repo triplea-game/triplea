@@ -21,7 +21,6 @@ import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.data.BattleListing;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
-import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
@@ -532,7 +531,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
           getGameData(),
           gamePlayer);
     } else if (GameStep.isEndTurnStepName(name)) {
-      endTurn((IAbstractForumPosterDelegate) getPlayerBridge().getRemoteDelegate(), gamePlayer);
+      endTurn(gamePlayer);
     }
   }
 
@@ -588,11 +587,9 @@ public abstract class AbstractAi extends AbstractBasePlayer {
   /**
    * No need to override this.
    *
-   * @param endTurnForumPosterDelegate The delegate to end the turn with.
    * @param player The player whose turn is ending.
    */
-  protected void endTurn(
-      final IAbstractForumPosterDelegate endTurnForumPosterDelegate, final GamePlayer player) {
+  protected void endTurn(final GamePlayer player) {
     // we should not override this...
   }
 

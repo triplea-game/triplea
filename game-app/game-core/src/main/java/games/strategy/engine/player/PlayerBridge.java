@@ -5,6 +5,7 @@ import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataEvent;
 import games.strategy.engine.delegate.IDelegate;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.delegate.IPersistentDelegate;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.ServerGame;
@@ -150,6 +151,28 @@ public class PlayerBridge {
               + ", and CurrentDelegate: "
               + currentDelegate);
       return ServerGame.getRemoteName(optionalDelegate.get());
+    }
+  }
+
+  /**
+   * Returns the live bridge of the current step's delegate. Valid only for a caller that shares the
+   * delegate's VM (the AI runs server-co-located); it yields the same {@link IDelegateBridge} the
+   * reflective current-delegate proxy's {@code getBridge()} returned, without a network round-trip.
+   */
+  public IDelegateBridge getCurrentDelegateBridge() {
+    if (game.isGameOver()) {
+      throw new GameOverException("Game Over");
+    }
+    try (GameData.Unlocker ignored = game.getData().acquireReadLock()) {
+      final Optional<IDelegate> optionalDelegate =
+          game.getData().getDelegateOptional(currentDelegate);
+      Preconditions.checkState(
+          optionalDelegate.isPresent(),
+          "IDelegate in PlayerBridge cannot be null. CurrentStep: "
+              + stepName
+              + ", and CurrentDelegate: "
+              + currentDelegate);
+      return optionalDelegate.get().getBridge();
     }
   }
 

@@ -9,7 +9,6 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.weak.WeakAi;
-import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
@@ -34,9 +33,19 @@ public class DoesNothingAi extends AbstractAi {
       final GamePlayer player) {
     // spend whatever we have
     if (!player.getResources().isEmpty()) {
-      new WeakAi(this.getName())
-          .purchase(purchaseForBid, pusToSpend, purchaseDelegate, data, player);
+      delegateWeakAi().purchase(purchaseForBid, pusToSpend, purchaseDelegate, data, player);
     }
+  }
+
+  /**
+   * A {@link WeakAi} initialized with this AI's own bridge and player, so its typed delegate
+   * invokes address the current step. Creating a bare {@code new WeakAi(name)} would leave its
+   * player bridge null and NPE when it issues a typed invoke.
+   */
+  private WeakAi delegateWeakAi() {
+    final WeakAi weakAi = new WeakAi(this.getName());
+    weakAi.initialize(getPlayerBridge(), getGamePlayer());
+    return weakAi;
   }
 
   @Override
@@ -58,7 +67,7 @@ public class DoesNothingAi extends AbstractAi {
       final GamePlayer player) {
     // place whatever we have
     if (!player.getUnitCollection().isEmpty()) {
-      new WeakAi(this.getName()).place(placeForBid, placeDelegate, data, player);
+      delegateWeakAi().place(placeForBid, placeDelegate, data, player);
     }
   }
 
@@ -66,15 +75,14 @@ public class DoesNothingAi extends AbstractAi {
   public void politicalActions() {}
 
   @Override
-  protected void endTurn(
-      final IAbstractForumPosterDelegate endTurnForumPosterDelegate, final GamePlayer player) {
+  protected void endTurn(final GamePlayer player) {
     // destroy whatever we have
     final ResourceCollection resourceCollection = player.getResources();
     final Change removeChange = ChangeFactory.removeResourceCollection(player, resourceCollection);
     // shameless cheating... (do NOT do this, normally you are never supposed to access the
-    // IDelegateBridge from outside
-    // of a delegate)
-    final IDelegateBridge bridge = endTurnForumPosterDelegate.getBridge();
+    // IDelegateBridge from outside of a delegate). The AI is server-co-located, so grab the current
+    // delegate's live bridge directly rather than through a remote proxy.
+    final IDelegateBridge bridge = getPlayerBridge().getCurrentDelegateBridge();
     // resourceCollection is not yet a valid renderingObject
     bridge
         .getHistoryWriter()

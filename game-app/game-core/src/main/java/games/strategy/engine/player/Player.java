@@ -307,13 +307,18 @@ public interface Player extends IRemote {
       List<Territory> territoryChoices, List<Unit> unitChoices, int unitsPerPick);
 
   // --- Typed request/response records for the converted remote methods. ---
-  // Entity arguments and returns ride as symbolic EntityRef references (see the wire package); the
-  // receiver re-resolves them against its own GameData. Every remote Player call blocked for a
+  // Resolve-mode arguments and returns ride as symbolic EntityRef references (see the wire
+  // package);
+  // the receiver re-resolves them against its own GameData. The gnarly decision queries and the
+  // edit
+  // methods instead carry their entities RAW as Serializable fields (create-on-miss), so a
+  // casualty/scramble/reinforcement unit not yet present on the receiver is created rather than
+  // lost
+  // -- see the "Gnarly decision queries" section below. Every remote Player call blocked for a
   // reply
   // under the reflective path, so void methods use a VoidAck to keep the caller blocking until the
   // player has handled the message. PlayerRemoteMessageHandlers registers the handlers and
-  // dispatches
-  // each request to the addressed player. The gnarly decision queries stay reflective for E3.
+  // dispatches each request to the addressed player.
 
   /** Shared typed reply carrying a single boolean answer. */
   @AllArgsConstructor

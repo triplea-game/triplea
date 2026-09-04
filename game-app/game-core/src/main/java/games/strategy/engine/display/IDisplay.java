@@ -313,7 +313,9 @@ public interface IDisplay extends IChannelSubscriber {
   @RemoteActionCode(13)
   void shutDown();
 
-  class DisplayShutdownMessage implements WebSocketMessage, Consumer<IDisplay> {
+  class DisplayShutdownMessage implements WebSocketMessage, Consumer<IDisplay>, Serializable {
+    @Serial private static final long serialVersionUID = 5024736025922801205L;
+
     public static final MessageType<DisplayShutdownMessage> TYPE =
         MessageType.of(DisplayShutdownMessage.class);
 

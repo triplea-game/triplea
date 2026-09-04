@@ -106,10 +106,6 @@ public class MessengersChatTransmitter implements ChatTransmitter {
 
   @Override
   public Collection<ChatParticipant> connect() {
-    final String chatChannelName = ChatController.getChatChannelName(chatName);
-    final IChatController controller = messengers.getRemoteChatController(chatName);
-    addTrackedListener(
-        IChatController.SetChatStatusMessage.TYPE, message -> message.invokeCallback(controller));
     registerChatChannelHandlers();
     messengers.addChatChannelSubscriber(chatChannelSubscriber, chatChannelName);
     return messengers
