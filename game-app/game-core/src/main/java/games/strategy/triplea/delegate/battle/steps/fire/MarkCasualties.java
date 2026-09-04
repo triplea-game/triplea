@@ -10,6 +10,7 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.UNITS;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
@@ -106,16 +107,15 @@ public class MarkCasualties implements BattleStep {
       dependentUnits.put(unit, battleState.getDependentUnits(List.of(unit)));
     }
 
-    bridge
-        .getDisplayChannelBroadcaster()
-        .casualtyNotification(
+    bridge.sendDisplayMessage(
+        new IDisplay.CasualtyNotificationMessage(
             battleState.getBattleId(),
             getPossibleOldNameForNotifyingBattleDisplay(battleState, firingGroup, side, getName()),
             fireRoundState.getDice(),
             battleState.getPlayer(side.getOpposite()),
             new ArrayList<>(fireRoundState.getCasualties().getKilled()),
             new ArrayList<>(fireRoundState.getCasualties().getDamaged()),
-            dependentUnits);
+            dependentUnits));
 
     // Allow players to confirm if the casualties were auto calculated
     // Always confirm casualties for AI to give them a chance to pause.
@@ -200,10 +200,9 @@ public class MarkCasualties implements BattleStep {
       dependentUnits.put(unit, battleState.getDependentUnits(List.of(unit)));
     }
 
-    bridge
-        .getDisplayChannelBroadcaster()
-        .deadUnitNotification(
-            battleState.getBattleId(), battleState.getPlayer(side), suicidedUnits, dependentUnits);
+    bridge.sendDisplayMessage(
+        new IDisplay.DeadUnitNotificationMessage(
+            battleState.getBattleId(), battleState.getPlayer(side), suicidedUnits, dependentUnits));
 
     battleActions.removeUnits(suicidedUnits, bridge, battleState.getBattleSite(), side);
   }

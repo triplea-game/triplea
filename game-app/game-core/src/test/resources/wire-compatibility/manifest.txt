@@ -35,6 +35,13 @@ IDisplay-NotifyUnitsRetreatingMessage.json
 IDisplay-NotifyDiceMessage.json
 IDisplay-GoToBattleStepMessage.json
 IDisplay-DisplayShutdownMessage.json
+IDisplay-ReportMessageToPlayersMessage.json
+IDisplay-ShowBattleMessage.json
+IDisplay-ListBattleStepsMessage.json
+IDisplay-BattleEndMessage.json
+IDisplay-CasualtyNotificationMessage.json
+IDisplay-DeadUnitNotificationMessage.json
+IDisplay-ChangedUnitsNotificationMessage.json
 IServerStartupRemote-GetServerHeadlessRequest.json
 IServerStartupRemote-GetServerHeadlessResponse.json
 Vault-AddLockedValueMessage.json

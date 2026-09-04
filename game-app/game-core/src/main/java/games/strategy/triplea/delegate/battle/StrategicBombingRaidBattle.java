@@ -294,7 +294,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleId, RAID);
+        bridge.sendDisplayMessage(new IDisplay.GoToBattleStepMessage(battleId.toString(), RAID));
         addPostBombingToHistory(bridge);
         // TODO remove the reference to the constant.japanese- replace with a rule
         if ((Properties.getPacificTheater(gameData.getProperties())
@@ -380,7 +380,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   }
 
   private void endBeforeRolling(final IDelegateBridge bridge) {
-    bridge.getDisplayChannelBroadcaster().battleEnd(battleId, "Bombing raid does no damage");
+    bridge.sendDisplayMessage(
+        new IDisplay.BattleEndMessage(battleId, "Bombing raid does no damage"));
     whoWon = WhoWon.DRAW;
     battleResultDescription = BattleRecord.BattleResultDescription.NO_BATTLE;
     battleTracker
@@ -405,9 +406,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(
             gameData.getProperties())) {
-          bridge
-              .getDisplayChannelBroadcaster()
-              .battleEnd(
+          bridge.sendDisplayMessage(
+              new IDisplay.BattleEndMessage(
                   battleId,
                   MessageFormat.format(
                       "Raid causes {0} damage total.{1}",
@@ -417,15 +417,14 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                               " To units: {0}",
                               MyFormatter.integerUnitMapToString(
                                   bombingRaidDamage, ", ", " = ", false)))
-                          : ""));
+                          : "")));
         } else {
-          bridge
-              .getDisplayChannelBroadcaster()
-              .battleEnd(
+          bridge.sendDisplayMessage(
+              new IDisplay.BattleEndMessage(
                   battleId,
                   MessageFormat.format(
                       "Bombing raid cost {0} {1}",
-                      bombingRaidTotal, MyFormatter.pluralize("PU", bombingRaidTotal)));
+                      bombingRaidTotal, MyFormatter.pluralize("PU", bombingRaidTotal))));
         }
         if (bombingRaidTotal > 0) {
           whoWon = WhoWon.ATTACKER;
@@ -452,9 +451,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
   private void showBattle(final IDelegateBridge bridge) {
     final String title = MessageFormat.format("Bombing raid in {0}", battleSite.getName());
-    bridge
-        .getDisplayChannelBroadcaster()
-        .showBattle(
+    bridge.sendDisplayMessage(
+        new IDisplay.ShowBattleMessage(
             battleId,
             battleSite,
             title,
@@ -468,8 +466,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             defender,
             false,
             getBattleType(),
-            Set.of());
-    bridge.getDisplayChannelBroadcaster().listBattleSteps(battleId, steps);
+            Set.of()));
+    bridge.sendDisplayMessage(new IDisplay.ListBattleStepsMessage(battleId, steps));
   }
 
   class FireAa implements IExecutable {
@@ -625,9 +623,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       final IDelegateBridge bridge,
       final DiceRoll dice,
       final String currentTypeAa) {
-    bridge
-        .getDisplayChannelBroadcaster()
-        .notifyDice(dice, SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX);
+    bridge.sendDisplayMessage(
+        new IDisplay.NotifyDiceMessage(
+            dice, SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX, dice.getPlayerName()));
     final CasualtyDetails casualties =
         AaCasualtySelector.getAaCasualties(
             validAttackingUnitsForThisRoll,
@@ -669,16 +667,15 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       final DiceRoll dice,
       final CasualtyDetails casualties,
       final String currentTypeAa) {
-    bridge
-        .getDisplayChannelBroadcaster()
-        .casualtyNotification(
+    bridge.sendDisplayMessage(
+        new IDisplay.CasualtyNotificationMessage(
             battleId,
             NOTIFY_PREFIX + currentTypeAa + CASUALTIES_SUFFIX,
             dice,
             attacker,
             new ArrayList<>(casualties.getKilled()),
             new ArrayList<>(casualties.getDamaged()),
-            Map.of());
+            Map.of()));
     final Thread t =
         new Thread(
             () -> {
@@ -940,9 +937,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             bridge.sendMessage(
                 new IDisplay.BombingResultsMessage(battleId, bombingDice, currentUnitCost));
           } else {
-            bridge
-                .getDisplayChannelBroadcaster()
-                .bombingResults(battleId, bombingDice, currentUnitCost);
+            bridge.sendDisplayMessage(
+                new IDisplay.BombingResultsMessage(battleId, bombingDice, currentUnitCost));
           }
 
           if (currentUnitCost > 0) {
@@ -983,7 +979,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
           bridge.sendMessage(new IDisplay.BombingResultsMessage(battleId, bombingDice, cost));
         } else {
-          bridge.getDisplayChannelBroadcaster().bombingResults(battleId, bombingDice, cost);
+          bridge.sendDisplayMessage(
+              new IDisplay.BombingResultsMessage(battleId, bombingDice, cost));
         }
         if (cost > 0) {
           bridge.sendSoundMessage(

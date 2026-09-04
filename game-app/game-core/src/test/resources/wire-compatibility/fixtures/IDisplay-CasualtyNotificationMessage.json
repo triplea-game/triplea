@@ -1,0 +1,37 @@
+{
+  "type": "games.strategy.engine.display.IDisplay$CasualtyNotificationMessage",
+  "payload": {
+    "battleId": "00000000-0000-0000-0000-000000000001",
+    "step": "Germans Fire",
+    "diceRollData": [
+      {
+        "type": "HIT",
+        "rolledAt": 1,
+        "value": 0
+      }
+    ],
+    "diceRollHits": 1,
+    "diceRollExpectedHits": 1.5,
+    "dicePlayerName": "Germans",
+    "player": {
+      "kind": "player",
+      "key": "Russians"
+    },
+    "killed": [
+      {
+        "kind": "unit",
+        "key": "22222222-2222-2222-2222-222222222222"
+      }
+    ],
+    "damaged": [],
+    "dependents": [
+      {
+        "unit": {
+          "kind": "unit",
+          "key": "22222222-2222-2222-2222-222222222222"
+        },
+        "dependents": []
+      }
+    ]
+  }
+}

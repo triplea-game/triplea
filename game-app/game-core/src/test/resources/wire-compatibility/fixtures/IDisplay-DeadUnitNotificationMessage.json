@@ -1,0 +1,25 @@
+{
+  "type": "games.strategy.engine.display.IDisplay$DeadUnitNotificationMessage",
+  "payload": {
+    "battleId": "00000000-0000-0000-0000-000000000001",
+    "player": {
+      "kind": "player",
+      "key": "Germans"
+    },
+    "dead": [
+      {
+        "kind": "unit",
+        "key": "44444444-4444-4444-4444-444444444444"
+      }
+    ],
+    "dependents": [
+      {
+        "unit": {
+          "kind": "unit",
+          "key": "44444444-4444-4444-4444-444444444444"
+        },
+        "dependents": []
+      }
+    ]
+  }
+}

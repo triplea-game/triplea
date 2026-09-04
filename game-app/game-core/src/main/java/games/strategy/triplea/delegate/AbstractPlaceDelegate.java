@@ -13,6 +13,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -275,13 +276,12 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     }
 
     if (!unitsLeftToPlace.isEmpty()) {
-      bridge
-          .getDisplayChannelBroadcaster()
-          .reportMessageToPlayers(
+      bridge.sendDisplayMessage(
+          new IDisplay.ReportMessageToPlayersMessage(
               List.of(player),
               List.of(),
               "Not enough unit production territories available",
-              "Unit Placement Canceled");
+              "Unit Placement Canceled"));
     }
 
     // play a sound

@@ -543,9 +543,8 @@ public class MustFightBattle extends DependentBattle
     final var oldUnits = List.copyOf(transformDamagedUnitsHistoryChange.getOldUnits());
     final var newUnits = List.copyOf(transformDamagedUnitsHistoryChange.getNewUnits());
     cleanupKilledUnits(bridge, side, oldUnits, newUnits);
-    bridge
-        .getDisplayChannelBroadcaster()
-        .changedUnitsNotification(battleId, player, oldUnits, newUnits, null);
+    bridge.sendDisplayMessage(
+        new IDisplay.ChangedUnitsNotificationMessage(battleId, player, oldUnits, newUnits, null));
   }
 
   @Override
@@ -624,26 +623,26 @@ public class MustFightBattle extends DependentBattle
     removeUnitsThatNoLongerExist();
     removeDisabledUnits();
     if (stack.isExecuting()) {
-      final IDisplay display = bridge.getDisplayChannelBroadcaster();
-      display.showBattle(
-          battleId,
-          battleSite,
-          getBattleTitle(),
-          removeNonCombatants(attackingUnits, defendingUnits, true, false),
-          removeNonCombatants(defendingUnits, attackingUnits, false, false),
-          killed,
-          attackingWaitingToDie,
-          defendingWaitingToDie,
-          TransportTracker.transportingInTerritory(
-              Stream.concat(attackingUnits.stream(), defendingUnits.stream())
-                  .collect(Collectors.toList()),
-              battleSite),
-          attacker,
-          defender,
-          false,
-          getBattleType(),
-          List.of());
-      display.listBattleSteps(battleId, stepStrings);
+      bridge.sendDisplayMessage(
+          new IDisplay.ShowBattleMessage(
+              battleId,
+              battleSite,
+              getBattleTitle(),
+              removeNonCombatants(attackingUnits, defendingUnits, true, false),
+              removeNonCombatants(defendingUnits, attackingUnits, false, false),
+              killed,
+              attackingWaitingToDie,
+              defendingWaitingToDie,
+              TransportTracker.transportingInTerritory(
+                  Stream.concat(attackingUnits.stream(), defendingUnits.stream())
+                      .collect(Collectors.toList()),
+                  battleSite),
+              attacker,
+              defender,
+              false,
+              getBattleType(),
+              List.of()));
+      bridge.sendDisplayMessage(new IDisplay.ListBattleStepsMessage(battleId, stepStrings));
       stack.execute(bridge);
       return;
     }
@@ -660,26 +659,26 @@ public class MustFightBattle extends DependentBattle
       return;
     }
     determineStepStrings();
-    final IDisplay display = bridge.getDisplayChannelBroadcaster();
-    display.showBattle(
-        battleId,
-        battleSite,
-        getBattleTitle(),
-        removeNonCombatants(attackingUnits, defendingUnits, true, false),
-        removeNonCombatants(defendingUnits, attackingUnits, false, false),
-        killed,
-        attackingWaitingToDie,
-        defendingWaitingToDie,
-        TransportTracker.transportingInTerritory(
-            Stream.concat(attackingUnits.stream(), defendingUnits.stream())
-                .collect(Collectors.toList()),
-            battleSite),
-        attacker,
-        defender,
-        false,
-        getBattleType(),
-        List.of());
-    display.listBattleSteps(battleId, stepStrings);
+    bridge.sendDisplayMessage(
+        new IDisplay.ShowBattleMessage(
+            battleId,
+            battleSite,
+            getBattleTitle(),
+            removeNonCombatants(attackingUnits, defendingUnits, true, false),
+            removeNonCombatants(defendingUnits, attackingUnits, false, false),
+            killed,
+            attackingWaitingToDie,
+            defendingWaitingToDie,
+            TransportTracker.transportingInTerritory(
+                Stream.concat(attackingUnits.stream(), defendingUnits.stream())
+                    .collect(Collectors.toList()),
+                battleSite),
+            attacker,
+            defender,
+            false,
+            getBattleType(),
+            List.of()));
+    bridge.sendDisplayMessage(new IDisplay.ListBattleStepsMessage(battleId, stepStrings));
     if (!headless) {
       // take the casualties with the least movement first
       CasualtySortingUtil.sortPreBattle(attackingUnits);
@@ -1321,8 +1320,7 @@ Round 10,000 reached in a battle. Something must be wrong. Please report this to
                             .collect(Collectors.joining(",")));
               }
               determineStepStrings();
-              final IDisplay display = bridge.getDisplayChannelBroadcaster();
-              display.listBattleSteps(battleId, stepStrings);
+              bridge.sendDisplayMessage(new IDisplay.ListBattleStepsMessage(battleId, stepStrings));
               // continue fighting the recursive steps
               // this should always be the base of the stack
               // when we execute the loop, it will populate the stack with the battle steps
@@ -1338,7 +1336,7 @@ Round 10,000 reached in a battle. Something must be wrong. Please report this to
   private void defenderWins(final IDelegateBridge bridge) {
     endBattle(bridge);
     whoWon = WhoWon.DEFENDER;
-    bridge.getDisplayChannelBroadcaster().battleEnd(battleId, defender.getName() + " win");
+    bridge.sendDisplayMessage(new IDisplay.BattleEndMessage(battleId, defender.getName() + " win"));
     if (Properties.getAbandonedTerritoriesMayBeTakenOverImmediately(gameData.getProperties())) {
       if (defendingUnits.stream().noneMatch(Matches.unitIsNotInfrastructure())) {
         final List<Unit> allyOfAttackerUnits =
@@ -1392,7 +1390,7 @@ Round 10,000 reached in a battle. Something must be wrong. Please report this to
   private void nobodyWins(final IDelegateBridge bridge) {
     endBattle(bridge);
     whoWon = WhoWon.DRAW;
-    bridge.getDisplayChannelBroadcaster().battleEnd(battleId, "Stalemate");
+    bridge.sendDisplayMessage(new IDisplay.BattleEndMessage(battleId, "Stalemate"));
     bridge
         .getHistoryWriter()
         .addChildToEvent(defender.getName() + " and " + attacker.getName() + " reach a stalemate");
@@ -1418,7 +1416,7 @@ Round 10,000 reached in a battle. Something must be wrong. Please report this to
   private void attackerWins(final IDelegateBridge bridge) {
     endBattle(bridge);
     whoWon = WhoWon.ATTACKER;
-    bridge.getDisplayChannelBroadcaster().battleEnd(battleId, attacker.getName() + " win");
+    bridge.sendDisplayMessage(new IDisplay.BattleEndMessage(battleId, attacker.getName() + " win"));
     if (headless) {
       return;
     }

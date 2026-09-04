@@ -44,6 +44,7 @@ import games.strategy.triplea.delegate.battle.FakeBattleState;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Value;
@@ -90,6 +91,7 @@ public class BattleStepsTest {
     final Unit unit = mock(Unit.class);
     final UnitType unitType = mock(UnitType.class);
     final UnitAttachment unitAttachment = mock(UnitAttachment.class);
+    lenient().when(unit.getId()).thenReturn(UUID.randomUUID());
     lenient().when(unit.getType()).thenReturn(unitType);
     lenient().when(unitType.getAttachment(UNIT_ATTACHMENT_NAME)).thenReturn(unitAttachment);
     lenient().when(unit.getUnitAttachment()).thenReturn(unitAttachment);

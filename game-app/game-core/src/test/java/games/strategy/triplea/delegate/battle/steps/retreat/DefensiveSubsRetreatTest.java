@@ -25,7 +25,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
@@ -126,12 +125,10 @@ class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
   @Nested
   class SubmergeHappens {
 
-    @Mock IDisplay display;
     @Mock IDelegateHistoryWriter historyWriter;
 
     @BeforeEach
     public void setupMocks() {
-      when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(display);
       when(delegateBridge.getHistoryWriter()).thenReturn(historyWriter);
       when(defender.getName()).thenReturn("defender");
     }
@@ -200,13 +197,11 @@ class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
   @Nested
   class RetreatHappens {
 
-    @Mock IDisplay display;
     @Mock IDelegateHistoryWriter historyWriter;
     @Mock UnitCollection battleSiteCollection;
 
     @BeforeEach
     public void setupMocks() {
-      when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(display);
       when(delegateBridge.getHistoryWriter()).thenReturn(historyWriter);
       when(defender.getName()).thenReturn("defender");
       when(battleSite.getUnitCollection()).thenReturn(battleSiteCollection);

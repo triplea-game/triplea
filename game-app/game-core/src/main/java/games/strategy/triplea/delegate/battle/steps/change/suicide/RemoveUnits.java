@@ -6,6 +6,7 @@ import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilte
 
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
@@ -40,13 +41,12 @@ abstract class RemoveUnits implements BattleStep {
                 side == OFFENSE
                     ? Matches.unitIsSuicideOnAttack()
                     : Matches.unitIsSuicideOnDefense()));
-    bridge
-        .getDisplayChannelBroadcaster()
-        .deadUnitNotification(
+    bridge.sendDisplayMessage(
+        new IDisplay.DeadUnitNotificationMessage(
             battleState.getBattleId(),
             battleState.getPlayer(side),
             suicideUnits,
-            getDependents(suicideUnits));
+            getDependents(suicideUnits)));
     battleActions.removeUnits(suicideUnits, bridge, battleState.getBattleSite(), side);
   }
 

@@ -47,10 +47,9 @@ public class EvaderRetreat {
           new IDisplay.GoToBattleStepMessage(
               parameters.battleState.getBattleId().toString(), step));
     } else {
-      parameters
-          .bridge
-          .getDisplayChannelBroadcaster()
-          .gotoBattleStep(parameters.battleState.getBattleId(), step);
+      parameters.bridge.sendDisplayMessage(
+          new IDisplay.GoToBattleStepMessage(
+              parameters.battleState.getBattleId().toString(), step));
     }
 
     final boolean isAttemptingSubmerge =
@@ -100,10 +99,13 @@ public class EvaderRetreat {
               .retreatingPlayerName(retreatingPlayer.getName())
               .build());
     } else {
-      parameters
-          .bridge
-          .getDisplayChannelBroadcaster()
-          .notifyRetreat(shortMessage, longMessage, step, retreatingPlayer);
+      parameters.bridge.sendDisplayMessage(
+          IDisplay.NotifyRetreatMessage.builder()
+              .shortMessage(shortMessage)
+              .message(longMessage)
+              .step(step)
+              .retreatingPlayerName(retreatingPlayer.getName())
+              .build());
     }
   }
 
@@ -143,7 +145,8 @@ public class EvaderRetreat {
         bridge.sendMessage(
             new IDisplay.NotifyUnitsRetreatingMessage(battleState.getBattleId(), retreating));
       } else {
-        bridge.getDisplayChannelBroadcaster().notifyRetreat(battleState.getBattleId(), retreating);
+        bridge.sendDisplayMessage(
+            new IDisplay.NotifyUnitsRetreatingMessage(battleState.getBattleId(), retreating));
       }
     }
   }

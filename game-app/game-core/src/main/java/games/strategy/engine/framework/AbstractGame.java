@@ -155,6 +155,102 @@ public abstract class AbstractGame implements IGame {
               return null;
             });
       }
+      if (!messengers.hasTypedMessageHandler(IDisplay.GoToBattleStepMessage.TYPE)) {
+        messengers.registerMessageHandler(
+            IDisplay.GoToBattleStepMessage.TYPE,
+            (message, implementor) -> {
+              message.accept((IDisplay) implementor);
+              return null;
+            });
+      }
+      if (!messengers.hasTypedMessageHandler(IDisplay.BombingResultsMessage.TYPE)) {
+        messengers.registerMessageHandler(
+            IDisplay.BombingResultsMessage.TYPE,
+            (message, implementor) -> {
+              message.accept((IDisplay) implementor);
+              return null;
+            });
+      }
+      if (!messengers.hasTypedMessageHandler(IDisplay.NotifyRetreatMessage.TYPE)) {
+        messengers.registerMessageHandler(
+            IDisplay.NotifyRetreatMessage.TYPE,
+            (message, implementor) -> {
+              message.accept((IDisplay) implementor, gameData.getPlayerList());
+              return null;
+            });
+      }
+      if (!messengers.hasTypedMessageHandler(IDisplay.NotifyUnitsRetreatingMessage.TYPE)) {
+        messengers.registerMessageHandler(
+            IDisplay.NotifyUnitsRetreatingMessage.TYPE,
+            (message, implementor) -> {
+              message.accept((IDisplay) implementor, gameData.getUnits());
+              return null;
+            });
+      }
+      if (!messengers.hasTypedMessageHandler(IDisplay.BroadcastMessageMessage.TYPE)) {
+        messengers.registerMessageHandler(
+            IDisplay.BroadcastMessageMessage.TYPE,
+            (message, implementor) -> {
+              message.invokeCallback((IDisplay) implementor);
+              return null;
+            });
+      }
+      if (!messengers.hasTypedMessageHandler(IDisplay.ReportMessageToPlayersMessage.TYPE)) {
+        messengers.registerMessageHandler(
+            IDisplay.ReportMessageToPlayersMessage.TYPE,
+            (message, implementor) -> {
+              message.accept((IDisplay) implementor, gameData);
+              return null;
+            });
+      }
+      if (!messengers.hasTypedMessageHandler(IDisplay.ShowBattleMessage.TYPE)) {
+        messengers.registerMessageHandler(
+            IDisplay.ShowBattleMessage.TYPE,
+            (message, implementor) -> {
+              message.accept((IDisplay) implementor, gameData);
+              return null;
+            });
+      }
+      if (!messengers.hasTypedMessageHandler(IDisplay.ListBattleStepsMessage.TYPE)) {
+        messengers.registerMessageHandler(
+            IDisplay.ListBattleStepsMessage.TYPE,
+            (message, implementor) -> {
+              message.accept((IDisplay) implementor);
+              return null;
+            });
+      }
+      if (!messengers.hasTypedMessageHandler(IDisplay.BattleEndMessage.TYPE)) {
+        messengers.registerMessageHandler(
+            IDisplay.BattleEndMessage.TYPE,
+            (message, implementor) -> {
+              message.accept((IDisplay) implementor);
+              return null;
+            });
+      }
+      if (!messengers.hasTypedMessageHandler(IDisplay.CasualtyNotificationMessage.TYPE)) {
+        messengers.registerMessageHandler(
+            IDisplay.CasualtyNotificationMessage.TYPE,
+            (message, implementor) -> {
+              message.accept((IDisplay) implementor, gameData);
+              return null;
+            });
+      }
+      if (!messengers.hasTypedMessageHandler(IDisplay.DeadUnitNotificationMessage.TYPE)) {
+        messengers.registerMessageHandler(
+            IDisplay.DeadUnitNotificationMessage.TYPE,
+            (message, implementor) -> {
+              message.accept((IDisplay) implementor, gameData);
+              return null;
+            });
+      }
+      if (!messengers.hasTypedMessageHandler(IDisplay.ChangedUnitsNotificationMessage.TYPE)) {
+        messengers.registerMessageHandler(
+            IDisplay.ChangedUnitsNotificationMessage.TYPE,
+            (message, implementor) -> {
+              message.accept((IDisplay) implementor, gameData);
+              return null;
+            });
+      }
 
       addTrackedDisplayListener(
           IDisplay.BombingResultsMessage.TYPE, message -> message.accept(display));

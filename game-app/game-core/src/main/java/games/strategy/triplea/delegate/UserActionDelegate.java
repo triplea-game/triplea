@@ -6,6 +6,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.ICondition;
@@ -227,9 +228,9 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
       final Collection<GamePlayer> dontSendTo,
       final String notificationText) {
     if (!"NONE".equals(notificationText)) {
-      bridge
-          .getDisplayChannelBroadcaster()
-          .reportMessageToPlayers(toPlayers, dontSendTo, notificationText, notificationText);
+      bridge.sendDisplayMessage(
+          new IDisplay.ReportMessageToPlayersMessage(
+              toPlayers, dontSendTo, notificationText, notificationText));
     }
   }
 

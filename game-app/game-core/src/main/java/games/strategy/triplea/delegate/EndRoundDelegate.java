@@ -318,9 +318,11 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       } else {
         // we send the bridge, because we can call this method from outside this delegate, which
         // means our local copy of playerBridge could be null.
-        bridge
-            .getDisplayChannelBroadcaster()
-            .reportMessageToAll(("<html>" + status + "</html>"), title, true, false, true);
+        bridge.sendDisplayMessage(
+            IDisplay.BroadcastMessageMessage.builder()
+                .message("<html>" + status + "</html>")
+                .title(title)
+                .build());
         bridge.stopGameSequence(status, title);
       }
     }

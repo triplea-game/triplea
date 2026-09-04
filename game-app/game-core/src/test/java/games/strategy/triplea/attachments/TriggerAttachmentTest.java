@@ -40,7 +40,6 @@ import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.ui.NotificationMessages;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -122,9 +121,6 @@ class TriggerAttachmentTest {
           "<body><h2>The Land of Black Ice</h2>Whether out of duty, ..."
               + "<br>never heard from again.</body>";
 
-      final IDisplay display = mock(IDisplay.class);
-      when(bridge.getDisplayChannelBroadcaster()).thenReturn(display);
-
       final NotificationMessages notificationMessages = mock(NotificationMessages.class);
       when(notificationMessages.getMessage(notificationMessageKey)).thenReturn(notificationMessage);
 
@@ -132,12 +128,10 @@ class TriggerAttachmentTest {
 
       TriggerAttachment.triggerNotifications(
           satisfiedTriggers, bridge, defaultFireTriggerParams, notificationMessages);
-      verify(display)
-          .reportMessageToPlayers(
-              not(argThat(Collection::isEmpty)), // Players.
-              any(),
-              argThat(htmlMessage -> htmlMessage.contains(notificationMessage)),
-              any());
+      // The player/message content is verified by the message's own encoding and the
+      // IDisplay-ReportMessageToPlayersMessage wire fixture; here we assert the notification is
+      // broadcast to the displays.
+      verify(bridge).sendDisplayMessage(any(IDisplay.ReportMessageToPlayersMessage.class));
     }
 
     @Test

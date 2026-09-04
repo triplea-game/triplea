@@ -27,7 +27,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.ExecutionStack;
@@ -51,7 +50,6 @@ public class OffensiveSubsRetreatTest extends AbstractClientSettingTestCase {
 
   @Mock ExecutionStack executionStack;
   @Mock IDelegateBridge delegateBridge;
-  @Mock IDisplay display;
   @Mock IDelegateHistoryWriter historyWriter;
   @Mock BattleActions battleActions;
   @Mock Territory battleSite;
@@ -178,7 +176,6 @@ public class OffensiveSubsRetreatTest extends AbstractClientSettingTestCase {
 
     @BeforeEach
     public void setupMocks() {
-      when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(display);
       when(delegateBridge.getHistoryWriter()).thenReturn(historyWriter);
       when(attacker.getName()).thenReturn("attacker");
     }
@@ -256,7 +253,6 @@ public class OffensiveSubsRetreatTest extends AbstractClientSettingTestCase {
 
     @BeforeEach
     public void setupMocks() {
-      when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(display);
       when(delegateBridge.getHistoryWriter()).thenReturn(historyWriter);
       when(attacker.getName()).thenReturn("attacker");
       when(battleSite.getUnitCollection()).thenReturn(battleSiteCollection);

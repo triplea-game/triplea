@@ -187,6 +187,7 @@ public class FakeBattleState implements BattleState {
   public static FakeBattleState.FakeBattleStateBuilder givenBattleStateBuilder(
       final GamePlayer attacker, final GamePlayer defender) {
     return FakeBattleState.builder()
+        .battleId(UUID.randomUUID())
         .battleRound(2)
         .maxBattleRounds(-1)
         .battleSite(mock(Territory.class))

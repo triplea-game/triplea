@@ -1,0 +1,31 @@
+{
+  "type": "games.strategy.engine.display.IDisplay$ChangedUnitsNotificationMessage",
+  "payload": {
+    "battleId": "00000000-0000-0000-0000-000000000001",
+    "player": {
+      "kind": "player",
+      "key": "Germans"
+    },
+    "removedUnits": [
+      {
+        "kind": "unit",
+        "key": "55555555-5555-5555-5555-555555555555"
+      }
+    ],
+    "addedUnits": [
+      {
+        "kind": "unit",
+        "key": "66666666-6666-6666-6666-666666666666"
+      }
+    ],
+    "dependents": [
+      {
+        "unit": {
+          "kind": "unit",
+          "key": "55555555-5555-5555-5555-555555555555"
+        },
+        "dependents": []
+      }
+    ]
+  }
+}

@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate.battle.steps.change;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
@@ -48,10 +49,9 @@ public class RemoveNonCombatants implements BattleStep {
     if (nonCombatants.isEmpty()) {
       return;
     }
-    bridge
-        .getDisplayChannelBroadcaster()
-        .changedUnitsNotification(
-            battleState.getBattleId(), battleState.getPlayer(side), nonCombatants, null, null);
+    bridge.sendDisplayMessage(
+        new IDisplay.ChangedUnitsNotificationMessage(
+            battleState.getBattleId(), battleState.getPlayer(side), nonCombatants, null, null));
   }
 
   @RemoveOnNextMajorRelease("battleState will not need to be converted from battleActions")

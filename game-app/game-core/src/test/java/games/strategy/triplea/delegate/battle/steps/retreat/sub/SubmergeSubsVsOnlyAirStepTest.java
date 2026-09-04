@@ -21,7 +21,6 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.ExecutionStack;
@@ -111,7 +110,6 @@ class SubmergeSubsVsOnlyAirStepTest extends AbstractClientSettingTestCase {
       final List<Unit> expectedSubmergingSubs,
       final BattleState.Side expectedSide) {
 
-    when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(mock(IDisplay.class));
     when(delegateBridge.getHistoryWriter()).thenReturn(mock(IDelegateHistoryWriter.class));
 
     final BattleState battleStateSpy = spy(battleState);

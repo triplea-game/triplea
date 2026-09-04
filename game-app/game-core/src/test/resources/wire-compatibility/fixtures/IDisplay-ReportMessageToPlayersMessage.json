@@ -1,0 +1,19 @@
+{
+  "type": "games.strategy.engine.display.IDisplay$ReportMessageToPlayersMessage",
+  "payload": {
+    "playersToSendTo": [
+      {
+        "kind": "player",
+        "key": "Germans"
+      }
+    ],
+    "butNotThesePlayers": [
+      {
+        "kind": "player",
+        "key": "Russians"
+      }
+    ],
+    "message": "A political notification",
+    "title": "Notification"
+  }
+}

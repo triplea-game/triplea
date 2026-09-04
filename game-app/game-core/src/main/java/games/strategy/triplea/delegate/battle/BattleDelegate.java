@@ -19,6 +19,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.change.HistoryChangeFactory;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.player.Player;
@@ -1463,9 +1464,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final Collection<GamePlayer> playersInvolved = new ArrayList<>();
     playersInvolved.add(player);
     playersInvolved.add(firingEnemy);
-    bridge
-        .getDisplayChannelBroadcaster()
-        .reportMessageToPlayers(playersInvolved, null, title + dice, title);
+    bridge.sendDisplayMessage(
+        new IDisplay.ReportMessageToPlayersMessage(playersInvolved, null, title + dice, title));
   }
 
   public static void markDamaged(

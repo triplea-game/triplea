@@ -11,6 +11,7 @@ import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.FireTriggerParams;
@@ -355,9 +356,9 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       currentPlayer.add(player);
       final Collection<GamePlayer> otherPlayers = getData().getPlayerList().getPlayers();
       otherPlayers.removeAll(currentPlayer);
-      bridge
-          .getDisplayChannelBroadcaster()
-          .reportMessageToPlayers(otherPlayers, currentPlayer, notification, notification);
+      bridge.sendDisplayMessage(
+          new IDisplay.ReportMessageToPlayersMessage(
+              otherPlayers, currentPlayer, notification, notification));
     }
   }
 

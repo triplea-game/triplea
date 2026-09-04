@@ -6,14 +6,11 @@ import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattle
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenSeaUnitFirstStrikeSuicideOnAttack;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenSeaUnitFirstStrikeSuicideOnDefense;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
@@ -32,7 +29,6 @@ public class RemoveFirstStrikeSuicideTest {
 
   @Test
   void suicideUnitsRemoved() {
-    when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(mock(IDisplay.class));
 
     final List<Unit> attackers = List.of(givenAnyUnit(), givenSeaUnitFirstStrikeSuicideOnAttack());
     final List<Unit> defenders = List.of(givenAnyUnit(), givenSeaUnitFirstStrikeSuicideOnDefense());

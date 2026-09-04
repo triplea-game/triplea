@@ -119,7 +119,8 @@ public class OffensiveGeneralRetreat implements BattleStep {
         if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
           bridge.sendMessage(new IDisplay.GoToBattleStepMessage(battleId.toString(), stepName));
         } else {
-          bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleId, stepName);
+          bridge.sendDisplayMessage(
+              new IDisplay.GoToBattleStepMessage(battleId.toString(), stepName));
         }
       }
 
@@ -183,9 +184,8 @@ public class OffensiveGeneralRetreat implements BattleStep {
         bridge.sendMessage(
             new IDisplay.NotifyUnitsRetreatingMessage(battleState.getBattleId(), retreatUnits));
       } else {
-        bridge
-            .getDisplayChannelBroadcaster()
-            .notifyRetreat(battleState.getBattleId(), retreatUnits);
+        bridge.sendDisplayMessage(
+            new IDisplay.NotifyUnitsRetreatingMessage(battleState.getBattleId(), retreatUnits));
       }
     }
 
@@ -206,9 +206,13 @@ public class OffensiveGeneralRetreat implements BattleStep {
               .retreatingPlayerName(battleState.getPlayer(OFFENSE).getName())
               .build());
     } else {
-      bridge
-          .getDisplayChannelBroadcaster()
-          .notifyRetreat(shortMessage, longMessage, getName(), battleState.getPlayer(OFFENSE));
+      bridge.sendDisplayMessage(
+          IDisplay.NotifyRetreatMessage.builder()
+              .shortMessage(shortMessage)
+              .message(longMessage)
+              .step(getName())
+              .retreatingPlayerName(battleState.getPlayer(OFFENSE).getName())
+              .build());
     }
   }
 

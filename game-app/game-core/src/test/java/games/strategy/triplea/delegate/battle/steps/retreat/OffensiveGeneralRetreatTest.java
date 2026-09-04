@@ -30,7 +30,6 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.TerritoryEffectAttachment;
@@ -331,7 +330,6 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
   class Execute {
 
     @Mock GamePlayer attacker;
-    @Mock IDisplay display;
     @Mock IDelegateHistoryWriter historyWriter;
     @Mock UnitCollection battleSiteCollection;
 
@@ -351,7 +349,6 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
 
       @BeforeEach
       public void setupMocks() {
-        when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(display);
         when(delegateBridge.getHistoryWriter()).thenReturn(historyWriter);
         when(attacker.getName()).thenReturn("attacker");
       }
@@ -457,7 +454,6 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
 
       @BeforeEach
       public void setupMocks() {
-        when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(display);
         when(delegateBridge.getHistoryWriter()).thenReturn(historyWriter);
         when(attacker.getName()).thenReturn("attacker");
         when(battleSite.getUnitCollection()).thenReturn(battleSiteCollection);
@@ -584,7 +580,6 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
 
       @BeforeEach
       public void setupMocks() {
-        when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(display);
         when(delegateBridge.getHistoryWriter()).thenReturn(historyWriter);
         when(attacker.getName()).thenReturn("attacker");
         when(battleSite.getUnitCollection()).thenReturn(battleSiteCollection);

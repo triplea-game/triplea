@@ -1,0 +1,7 @@
+{
+  "type": "games.strategy.engine.display.IDisplay$BattleEndMessage",
+  "payload": {
+    "battleId": "00000000-0000-0000-0000-000000000001",
+    "message": "Germans win"
+  }
+}
