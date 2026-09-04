@@ -28,11 +28,7 @@ import static games.strategy.triplea.delegate.MockDelegateBridge.thenGetRandomSh
 import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withDiceValues;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.in;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -155,7 +151,7 @@ class MustFightBattleTest extends AbstractClientSettingTestCase {
     whenGetRandom(bridge).thenAnswer(withDiceValues(1, 1)).thenAnswer(withDiceValues(6, 6, 6));
     battle.fight(bridge);
     // Attackers killed the two defenders, while defenders failed to hit anything.
-    assertThat(burma.getUnits(), containsInAnyOrder(attackers.toArray()));
+    assertThat(burma.getUnits()).containsExactlyInAnyOrderElementsOf(attackers);
   }
 
   @Test
@@ -217,14 +213,14 @@ class MustFightBattleTest extends AbstractClientSettingTestCase {
             invocation -> {
               String stepName = invocation.getArgument(1);
               List<String> stepNames = ((MustFightBattle) battle).getStepStrings();
-              assertThat(stepName, in(stepNames));
+              assertThat(stepName).isIn(stepNames);
               return null;
             })
         .when(display)
         .notifyDice(any(), anyString());
 
     battle.fight(bridge);
-    assertThat(indoChina.getUnits(), containsInAnyOrder(attackers.toArray()));
+    assertThat(indoChina.getUnits()).containsExactlyInAnyOrderElementsOf(attackers);
   }
 
   @Test
@@ -257,12 +253,12 @@ class MustFightBattleTest extends AbstractClientSettingTestCase {
     // For the battle, transportedBy will be set to the carrier so that it's shown in the UI and
     // the units destroyed if the carrier is sunk.
     GameDataTestUtil.move(units, new Route(sz46, sz45));
-    assertThat(fighters.get(0).getTransportedBy(), is(carrier));
-    assertThat(fighters.get(1).getTransportedBy(), is(carrier));
+    assertThat(fighters.get(0).getTransportedBy()).isEqualTo(carrier);
+    assertThat(fighters.get(1).getTransportedBy()).isEqualTo(carrier);
     // But if the units move out, then transportedBy should be cleared.
     GameDataTestUtil.move(units, new Route(sz45, sz42));
-    assertThat(fighters.get(0).getTransportedBy(), is(nullValue()));
-    assertThat(fighters.get(1).getTransportedBy(), is(nullValue()));
+    assertThat(fighters.get(0).getTransportedBy()).isNull();
+    assertThat(fighters.get(1).getTransportedBy()).isNull();
   }
 
   @Test

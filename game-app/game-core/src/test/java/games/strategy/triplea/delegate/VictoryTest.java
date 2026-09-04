@@ -6,8 +6,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.unitType;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -190,14 +189,14 @@ class VictoryTest {
     @BeforeEach
     void setUp() {
       // Ensure that both territories we're testing are owned by an enemy.
-      assertThat(angloEgypt.getOwner().isAtWar(italians), is(true));
-      assertThat(transJordan.getOwner().isAtWar(italians), is(true));
+      assertThat(angloEgypt.getOwner().isAtWar(italians)).isTrue();
+      assertThat(transJordan.getOwner().isAtWar(italians)).isTrue();
       // Add some enemy units to both of them.
       gameData.performChange(ChangeFactory.addUnits(angloEgypt, armour.create(1, british)));
       gameData.performChange(ChangeFactory.addUnits(transJordan, armour.create(1, british)));
       // Ensure that infantry can't blitz and tank can, since we want to test both cases.
-      assertThat(Matches.unitCanBlitz().test(infantryUnit.get(0)), is(false));
-      assertThat(Matches.unitCanBlitz().test(tankUnit.get(0)), is(true));
+      assertThat(Matches.unitCanBlitz().test(infantryUnit.get(0))).isFalse();
+      assertThat(Matches.unitCanBlitz().test(tankUnit.get(0))).isTrue();
       // Add them to angloEgypt.
       gameData.performChange(ChangeFactory.addUnits(angloEgypt, tankAndInfantry));
 
@@ -251,7 +250,7 @@ class VictoryTest {
     @Test
     void testAttackToEmptyEnemyTerritory() {
       removeEnemyUnits(italians, transJordan);
-      assertThat(transJordan.getOwner().isAtWar(italians), is(true));
+      assertThat(transJordan.getOwner().isAtWar(italians)).isTrue();
 
       assertError(
           MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_FURTHER_INTO_ENEMY_TERRITORY,
@@ -271,7 +270,7 @@ class VictoryTest {
     @Test
     void testAttackFromContestedTerritoryWithNoEnemies() {
       removeEnemyUnits(italians, angloEgypt);
-      assertThat(angloEgypt.getOwner().isAtWar(italians), is(true));
+      assertThat(angloEgypt.getOwner().isAtWar(italians)).isTrue();
 
       assertError(
           MoveValidator.NOT_ALL_UNITS_CAN_BLITZ_OUT_OF_EMPTY_ENEMY_TERRITORY,
@@ -286,7 +285,7 @@ class VictoryTest {
     @Test
     void testAttackFromContestedTerritoryWithNoEnemiesWithPropertySet() {
       removeEnemyUnits(italians, angloEgypt);
-      assertThat(angloEgypt.getOwner().isAtWar(italians), is(true));
+      assertThat(angloEgypt.getOwner().isAtWar(italians)).isTrue();
 
       gameData.getProperties().set(Constants.ALL_UNITS_CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
       assertValid(moveDelegate.move(tankAndInfantry, route));
@@ -296,9 +295,9 @@ class VictoryTest {
     @Test
     void testAttackFromContestedTerritoryWithNoEnemiesToEmptyEnemyTerritory() {
       removeEnemyUnits(italians, angloEgypt);
-      assertThat(angloEgypt.getOwner().isAtWar(italians), is(true));
+      assertThat(angloEgypt.getOwner().isAtWar(italians)).isTrue();
       removeEnemyUnits(italians, transJordan);
-      assertThat(transJordan.getOwner().isAtWar(italians), is(true));
+      assertThat(transJordan.getOwner().isAtWar(italians)).isTrue();
 
       assertError(
           MoveValidator.NOT_ALL_UNITS_CAN_BLITZ_OUT_OF_EMPTY_ENEMY_TERRITORY,
@@ -313,9 +312,9 @@ class VictoryTest {
     @Test
     void testAttackFromContestedTerritoryWithNoEnemiesToEmptyEnemyTerritoryWithPropertySet() {
       removeEnemyUnits(italians, angloEgypt);
-      assertThat(angloEgypt.getOwner().isAtWar(italians), is(true));
+      assertThat(angloEgypt.getOwner().isAtWar(italians)).isTrue();
       removeEnemyUnits(italians, transJordan);
-      assertThat(transJordan.getOwner().isAtWar(italians), is(true));
+      assertThat(transJordan.getOwner().isAtWar(italians)).isTrue();
 
       gameData.getProperties().set(Constants.ALL_UNITS_CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
       assertValid(moveDelegate.move(tankAndInfantry, route));
@@ -326,7 +325,7 @@ class VictoryTest {
     void testAttackFromOwnContestedTerritory() {
       // Make angloEgypt owned by italians, but with enemy units.
       angloEgypt.setOwner(italians);
-      assertThat(Matches.territoryHasEnemyUnits(italians).test(angloEgypt), is(true));
+      assertThat(Matches.territoryHasEnemyUnits(italians).test(angloEgypt)).isTrue();
 
       assertError(
           MoveValidator.CANNOT_BLITZ_OUT_OF_BATTLE_INTO_ENEMY_TERRITORY,
@@ -347,7 +346,7 @@ class VictoryTest {
     void testAttackToOwnContestedTerritory() {
       // Make transJordan owned by italians, but with enemy units.
       transJordan.setOwner(italians);
-      assertThat(Matches.territoryHasEnemyUnits(italians).test(transJordan), is(true));
+      assertThat(Matches.territoryHasEnemyUnits(italians).test(transJordan)).isTrue();
 
       assertValid(moveDelegate.move(tankAndInfantry, route));
     }
@@ -357,7 +356,7 @@ class VictoryTest {
     void testAttackToOwnContestedTerritoryWithPropertySet() {
       // Make transJordan owned by italians, but with enemy units.
       transJordan.setOwner(italians);
-      assertThat(Matches.territoryHasEnemyUnits(italians).test(transJordan), is(true));
+      assertThat(Matches.territoryHasEnemyUnits(italians).test(transJordan)).isTrue();
 
       gameData.getProperties().set(Constants.ALL_UNITS_CAN_ATTACK_FROM_CONTESTED_TERRITORIES, true);
       assertValid(moveDelegate.move(tankAndInfantry, route));
@@ -367,7 +366,7 @@ class VictoryTest {
       Predicate<Unit> isEnemy = Matches.unitIsEnemyOf(player);
       Collection<Unit> enemyUnits = CollectionUtils.getMatches(t.getUnits(), isEnemy);
       gameData.performChange(ChangeFactory.removeUnits(t, enemyUnits));
-      assertThat(CollectionUtils.countMatches(t.getUnits(), isEnemy), is(0));
+      assertThat(CollectionUtils.countMatches(t.getUnits(), isEnemy)).isEqualTo(0);
     }
   }
 
