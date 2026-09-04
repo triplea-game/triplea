@@ -12,6 +12,8 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
+import games.strategy.engine.random.IRandomSource;
+import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.triplea.delegate.battle.BattleResults;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
@@ -35,6 +37,8 @@ class BattleCalculator implements IBattleCalculator {
   @Setter private int retreatAfterXUnitsLeft = -1;
   @Setter private String attackerOrderOfLosses = null;
   @Setter private String defenderOrderOfLosses = null;
+  // Injectable so tests can supply a seeded or scripted source for reproducible simulations.
+  @Setter private IRandomSource randomSource = new PlainRandomSource();
   private volatile boolean cancelled = false;
   private final AtomicBoolean isRunning = new AtomicBoolean(false);
 
@@ -105,7 +109,8 @@ class BattleCalculator implements IBattleCalculator {
                 retreatAfterRound,
                 retreatAfterXUnitsLeft,
                 retreatWhenOnlyAirLeft,
-                tuvCalculator);
+                tuvCalculator,
+                randomSource);
         final MustFightBattle battle =
             new MustFightBattle(location2, attacker2, gameData, battleTracker);
         battle.setHeadless(true);
