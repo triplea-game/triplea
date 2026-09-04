@@ -1,7 +1,6 @@
 package org.triplea.http.client;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import feign.RequestTemplate;
 import feign.gson.GsonEncoder;
@@ -22,7 +21,7 @@ class JsonEncoderTest {
 
     jsonEncoder.encode(value, String.class, template);
 
-    assertThat(new String(template.body(), StandardCharsets.UTF_8), is(value));
+    assertThat(new String(template.body(), StandardCharsets.UTF_8)).isEqualTo(value);
   }
 
   /**
@@ -35,9 +34,8 @@ class JsonEncoderTest {
 
     jsonEncoder.encode(sampleObject, SampleObject.class, template);
 
-    assertThat(
-        new String(template.body(), StandardCharsets.UTF_8),
-        is(new String(encodeWithGson(sampleObject).body(), StandardCharsets.UTF_8)));
+    assertThat(new String(template.body(), StandardCharsets.UTF_8))
+        .isEqualTo(new String(encodeWithGson(sampleObject).body(), StandardCharsets.UTF_8));
   }
 
   private static RequestTemplate encodeWithGson(final SampleObject sampleObject) {

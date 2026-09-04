@@ -1,8 +1,6 @@
 package games.strategy.engine.lobby.client.ui.action.player.info;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.StringContains.containsString;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.lobby.moderator.PlayerSummary;
@@ -15,7 +13,7 @@ class PlayerInfoSummaryTextAreaTest {
 
     final String result = PlayerInfoSummaryTextArea.buildPlayerInfoText(playerSummary);
 
-    assertThat(result, is("Not registered"));
+    assertThat(result).isEqualTo("Not registered");
   }
 
   @Test
@@ -29,8 +27,8 @@ class PlayerInfoSummaryTextAreaTest {
 
     final String result = PlayerInfoSummaryTextArea.buildPlayerInfoText(playerSummary);
 
-    assertThat(result, containsString("IP: 3.3.3.3"));
-    assertThat(result, containsString("System ID: system-id"));
-    assertThat(result, containsString("Registered on:"));
+    assertThat(result).contains("IP: 3.3.3.3");
+    assertThat(result).contains("System ID: system-id");
+    assertThat(result).contains("Registered on:");
   }
 }

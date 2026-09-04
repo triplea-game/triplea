@@ -1,7 +1,6 @@
 package games.strategy.engine.lobby.moderator.toolbox.tabs;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import lombok.experimental.UtilityClass;
@@ -23,19 +22,17 @@ public final class ToolboxTabModelTestUtil {
   public static void verifyTableDataAtRow(
       final List<List<String>> data, final int row, final String... expectedData) {
 
-    assertThat(
-        String.format("Data table size: %s, row requested: %s", data.size(), row),
-        data.size() > row,
-        is(true));
+    assertThat(data.size() > row)
+        .as("Data table size: %s, row requested: %s", data.size(), row)
+        .isTrue();
     final List<String> rowData = data.get(row);
 
     for (int i = 0; i < expectedData.length; i++) {
-      assertThat(
-          String.format(
+      assertThat(rowData.get(i))
+          .as(
               "Mismatch at column %s, rowData: %s, expectedData: %s",
-              i, rowData, List.of(expectedData)),
-          rowData.get(i),
-          is(expectedData[i]));
+              i, rowData, List.of(expectedData))
+          .isEqualTo(expectedData[i]);
     }
   }
 
@@ -46,15 +43,14 @@ public final class ToolboxTabModelTestUtil {
   public static void verifyTableDimensions(
       final List<List<String>> data, final List<String> headers) {
     for (int i = 0; i < data.size(); i++) {
-      assertThat(
-          String.format(
+      assertThat(data.get(i).size())
+          .as(
 """
 Row: %s expected to have length %s, had length %s.
 Row data = %s
 Expected to match column headers: %s""",
-              i, headers.size(), data.get(i).size(), data.get(i), headers),
-          data.get(i).size(),
-          is(headers.size()));
+              i, headers.size(), data.get(i).size(), data.get(i), headers)
+          .isEqualTo(headers.size());
     }
   }
 }

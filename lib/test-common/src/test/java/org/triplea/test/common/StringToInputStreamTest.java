@@ -1,7 +1,6 @@
 package org.triplea.test.common;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.triplea.test.common.StringToInputStream.asInputStream;
 
 import java.io.InputStream;
@@ -14,13 +13,13 @@ class StringToInputStreamTest {
   @Test
   void nullInput() throws Exception {
     final InputStream inputStream = asInputStream(null);
-    assertThat(inputStream.read(), is(-1));
+    assertThat(inputStream.read()).isEqualTo(-1);
   }
 
   @Test
   void emptyInput() throws Exception {
     final InputStream inputStream = asInputStream("");
-    assertThat(inputStream.read(), is(-1));
+    assertThat(inputStream.read()).isEqualTo(-1);
   }
 
   @Test
@@ -28,6 +27,6 @@ class StringToInputStreamTest {
     final InputStream inputStream = asInputStream("example input");
 
     final Scanner s = new Scanner(inputStream, StandardCharsets.UTF_8);
-    assertThat(s.nextLine(), is("example input"));
+    assertThat(s.nextLine()).isEqualTo("example input");
   }
 }
