@@ -12,6 +12,10 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -64,5 +68,26 @@ class EntityRefTest {
     final EntityRef reference = wireRoundTrip(EntityRef.of(resource));
 
     assertThat(reference.resolveResource(gameData), is(sameInstance(resource)));
+  }
+
+  @Test
+  void survivesJavaSerialization() throws Exception {
+    // Typed messages carrying an entity reference ride the UnifiedMessenger wire via Java
+    // serialization, so the reference must be Serializable, not only Gson-serializable.
+    final Territory territory = gameData.getMap().getTerritories().get(0);
+    final EntityRef reference = EntityRef.of(territory);
+
+    final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+    try (ObjectOutputStream out = new ObjectOutputStream(bytes)) {
+      out.writeObject(reference);
+    }
+    final EntityRef restored;
+    try (ObjectInputStream in =
+        new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()))) {
+      restored = (EntityRef) in.readObject();
+    }
+
+    assertThat(restored, is(reference));
+    assertThat(restored.resolveTerritory(gameData), is(sameInstance(territory)));
   }
 }

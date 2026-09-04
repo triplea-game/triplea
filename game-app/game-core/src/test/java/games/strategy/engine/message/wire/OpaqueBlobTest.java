@@ -10,6 +10,10 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -35,5 +39,29 @@ class OpaqueBlobTest {
     // change survived the round-trip untouched.
     assertThat(OpaqueBlob.of(restored), is(blob));
     assertThat(restored.toString(), is(change.toString()));
+  }
+
+  @Test
+  void blobSurvivesJavaSerialization() throws Exception {
+    // Typed messages ride the UnifiedMessenger wire via Java serialization (RemoteMethodCall writes
+    // the payload with writeObject), so a blob field must itself be Serializable, not only
+    // Gson-serializable.
+    final Change change =
+        ChangeFactory.changeOwner(
+            gameData.getMap().getTerritories().get(0),
+            gameData.getPlayerList().getPlayers().get(0));
+    final OpaqueBlob blob = OpaqueBlob.of(change);
+
+    final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+    try (ObjectOutputStream out = new ObjectOutputStream(bytes)) {
+      out.writeObject(blob);
+    }
+    final OpaqueBlob restored;
+    try (ObjectInputStream in =
+        new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()))) {
+      restored = (OpaqueBlob) in.readObject();
+    }
+
+    assertThat(restored, is(blob));
   }
 }

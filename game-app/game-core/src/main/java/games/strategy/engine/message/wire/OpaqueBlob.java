@@ -18,7 +18,9 @@ import lombok.EqualsAndHashCode;
  * reconstructs the identical object graph.
  */
 @EqualsAndHashCode
-public final class OpaqueBlob {
+public final class OpaqueBlob implements Serializable {
+  private static final long serialVersionUID = 1L;
+
   @Nonnull private final String data;
 
   private OpaqueBlob(final String data) {

@@ -5,6 +5,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import java.io.Serializable;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import lombok.EqualsAndHashCode;
@@ -20,7 +21,9 @@ import lombok.ToString;
  */
 @EqualsAndHashCode
 @ToString
-public final class EntityRef {
+public final class EntityRef implements Serializable {
+  private static final long serialVersionUID = 1L;
+
   private static final String UNIT = "unit";
   private static final String TERRITORY = "territory";
   private static final String PLAYER = "player";
