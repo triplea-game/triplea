@@ -1,0 +1,6 @@
+{
+  "type": "games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate$GetPlacementsMadeResponse",
+  "payload": {
+    "placementsMade": 2
+  }
+}

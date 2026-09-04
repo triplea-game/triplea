@@ -42,6 +42,10 @@ public interface IBattleDelegate extends IRemote, IDelegate {
                         request.getWhere().resolveTerritory(gameData),
                         request.isBombing(),
                         request.getType())));
+    messengers.registerMessageHandler(
+        GetCurrentBattleRequest.TYPE,
+        (request, implementor) ->
+            new GetCurrentBattleResponse(((IBattleDelegate) implementor).getCurrentBattle()));
   }
 
   /** Returns the battles currently waiting to be fought. */
@@ -130,6 +134,38 @@ public interface IBattleDelegate extends IRemote, IDelegate {
    */
   @RemoteActionCode(5)
   IBattle getCurrentBattle();
+
+  /** Typed request for the battle currently in progress, if any. */
+  class GetCurrentBattleRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5320048576544673225L;
+
+    public static final MessageType<GetCurrentBattleRequest> TYPE =
+        MessageType.of(GetCurrentBattleRequest.class);
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /**
+   * Typed reply carrying the current battle, or null when none is in progress. The battle rides the
+   * Java wire, so this has no Gson fixture.
+   */
+  @AllArgsConstructor
+  class GetCurrentBattleResponse implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5320048576544673226L;
+
+    public static final MessageType<GetCurrentBattleResponse> TYPE =
+        MessageType.of(GetCurrentBattleResponse.class);
+
+    @Getter @Nullable private final IBattle currentBattle;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
 
   @RemoteActionCode(9)
   @Override

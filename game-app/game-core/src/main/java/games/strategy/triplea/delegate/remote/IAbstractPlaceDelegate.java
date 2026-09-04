@@ -58,6 +58,11 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
         (request, implementor) ->
             IMoveDelegate.TerritoriesResponse.of(
                 ((IAbstractPlaceDelegate) implementor).getTerritoriesWhereAirCantLand()));
+    messengers.registerMessageHandler(
+        GetPlacementsMadeRequest.TYPE,
+        (request, implementor) ->
+            new GetPlacementsMadeResponse(
+                ((IAbstractPlaceDelegate) implementor).getPlacementsMade()));
   }
 
   /**
@@ -174,6 +179,35 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
    */
   @RemoteActionCode(7)
   int getPlacementsMade();
+
+  /** Typed request for the number of successful placements made so far. */
+  class GetPlacementsMadeRequest implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5320048576544679226L;
+
+    public static final MessageType<GetPlacementsMadeRequest> TYPE =
+        MessageType.of(GetPlacementsMadeRequest.class);
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
+
+  /** Typed reply carrying the number of successful placements made so far. */
+  @AllArgsConstructor
+  class GetPlacementsMadeResponse implements WebSocketMessage, Serializable {
+    @Serial private static final long serialVersionUID = 5320048576544679227L;
+
+    public static final MessageType<GetPlacementsMadeResponse> TYPE =
+        MessageType.of(GetPlacementsMadeResponse.class);
+
+    @Getter private final int placementsMade;
+
+    @Override
+    public MessageEnvelope toEnvelope() {
+      return MessageEnvelope.packageMessage(TYPE, this);
+    }
+  }
 
   /**
    * Get what air units must move before the end of the players turn.
