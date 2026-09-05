@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui.mapdata;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Properties;
 import org.junit.jupiter.api.Nested;
@@ -23,21 +22,21 @@ final class MapDataTest {
     void shouldReturnValueWhenPropertyExists() {
       properties.setProperty(NAME, "76");
 
-      assertThat(getProperty(), is(76));
+      assertThat(getProperty()).isEqualTo(76);
     }
 
     @Test
     void shouldReturnDefaultValueWhenPropertyDoesNotExist() {
       properties.remove(NAME);
 
-      assertThat(getProperty(), is(DEFAULT_VALUE));
+      assertThat(getProperty()).isEqualTo(DEFAULT_VALUE);
     }
 
     @Test
     void shouldReturnDefaultValueWhenPropertyExistsButIsMalformed() {
       properties.setProperty(NAME, "malformed");
 
-      assertThat(getProperty(), is(DEFAULT_VALUE));
+      assertThat(getProperty()).isEqualTo(DEFAULT_VALUE);
     }
   }
 }

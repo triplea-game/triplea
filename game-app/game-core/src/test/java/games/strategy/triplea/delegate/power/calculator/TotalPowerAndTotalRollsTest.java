@@ -2,8 +2,7 @@ package games.strategy.triplea.delegate.power.calculator;
 
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 
@@ -88,10 +87,11 @@ class TotalPowerAndTotalRollsTest {
 
       final AaPowerStrengthAndRolls result = whenGetPowerHitsResult(units, sortedDie, 1, 4);
 
-      assertThat(
-          "Total Power equals the single unit's strength", result.calculateTotalPower(), is(2));
-      assertThat("Only one unit, so only one strength", result.isSameStrength(), is(true));
-      assertThat(sortedDie, is(List.of(new Die(1, 2, Die.DieType.HIT))));
+      assertThat(result.calculateTotalPower())
+          .as("Total Power equals the single unit's strength")
+          .isEqualTo(2);
+      assertThat(result.isSameStrength()).as("Only one unit, so only one strength").isTrue();
+      assertThat(sortedDie).isEqualTo(List.of(new Die(1, 2, Die.DieType.HIT)));
     }
 
     private AaPowerStrengthAndRolls whenGetPowerHitsResult(
@@ -130,10 +130,9 @@ class TotalPowerAndTotalRollsTest {
 
       whenGetPowerHitsResult(units, sortedDie, 6, 4);
 
-      assertThat(
-          "The strength was 2 but the dice rolled a 6 so it was a miss",
-          sortedDie,
-          is(List.of(new Die(6, 2, Die.DieType.MISS))));
+      assertThat(sortedDie)
+          .as("The strength was 2 but the dice rolled a 6 so it was a miss")
+          .isEqualTo(List.of(new Die(6, 2, Die.DieType.MISS)));
     }
 
     @Test
@@ -146,11 +145,12 @@ class TotalPowerAndTotalRollsTest {
 
       final AaPowerStrengthAndRolls result = whenGetPowerHitsResult(units, sortedDie, 1, 4);
 
-      assertThat(
-          "2 strength in 2 rolls equals total power of 4", result.calculateTotalPower(), is(4));
-      assertThat("Only one unit, so only one strength", result.isSameStrength(), is(true));
-      assertThat(
-          sortedDie, is(List.of(new Die(1, 2, Die.DieType.HIT), new Die(1, 2, Die.DieType.HIT))));
+      assertThat(result.calculateTotalPower())
+          .as("2 strength in 2 rolls equals total power of 4")
+          .isEqualTo(4);
+      assertThat(result.isSameStrength()).as("Only one unit, so only one strength").isTrue();
+      assertThat(sortedDie)
+          .isEqualTo(List.of(new Die(1, 2, Die.DieType.HIT), new Die(1, 2, Die.DieType.HIT)));
     }
 
     @Test
@@ -163,13 +163,12 @@ class TotalPowerAndTotalRollsTest {
 
       final AaPowerStrengthAndRolls result = whenGetPowerHitsResult(units, sortedDie, 1, 2);
 
-      assertThat(
-          "Unit has 3 rolls but only 2 targets, so 2 rolls of 2 strength = 4",
-          result.calculateTotalPower(),
-          is(4));
-      assertThat("Only one unit, so only one strength", result.isSameStrength(), is(true));
-      assertThat(
-          sortedDie, is(List.of(new Die(1, 2, Die.DieType.HIT), new Die(1, 2, Die.DieType.HIT))));
+      assertThat(result.calculateTotalPower())
+          .as("Unit has 3 rolls but only 2 targets, so 2 rolls of 2 strength = 4")
+          .isEqualTo(4);
+      assertThat(result.isSameStrength()).as("Only one unit, so only one strength").isTrue();
+      assertThat(sortedDie)
+          .isEqualTo(List.of(new Die(1, 2, Die.DieType.HIT), new Die(1, 2, Die.DieType.HIT)));
     }
 
     @Test
@@ -185,10 +184,10 @@ class TotalPowerAndTotalRollsTest {
 
       final AaPowerStrengthAndRolls result = whenGetPowerHitsResult(units, sortedDie, 1, 4);
 
-      assertThat("2 strength + 2 strength is 4", result.calculateTotalPower(), is(4));
-      assertThat("Both units have the same strength", result.isSameStrength(), is(true));
-      assertThat(
-          sortedDie, is(List.of(new Die(1, 2, Die.DieType.HIT), new Die(1, 2, Die.DieType.HIT))));
+      assertThat(result.calculateTotalPower()).as("2 strength + 2 strength is 4").isEqualTo(4);
+      assertThat(result.isSameStrength()).as("Both units have the same strength").isTrue();
+      assertThat(sortedDie)
+          .isEqualTo(List.of(new Die(1, 2, Die.DieType.HIT), new Die(1, 2, Die.DieType.HIT)));
     }
 
     @Test
@@ -205,10 +204,10 @@ class TotalPowerAndTotalRollsTest {
 
       final AaPowerStrengthAndRolls result = whenGetPowerHitsResult(units, sortedDie, 1, 4);
 
-      assertThat("2 strength + 3 strength is 5", result.calculateTotalPower(), is(5));
-      assertThat("Both units have different strength values", result.isSameStrength(), is(false));
-      assertThat(
-          sortedDie, is(List.of(new Die(1, 3, Die.DieType.HIT), new Die(1, 2, Die.DieType.HIT))));
+      assertThat(result.calculateTotalPower()).as("2 strength + 3 strength is 5").isEqualTo(5);
+      assertThat(result.isSameStrength()).as("Both units have different strength values").isFalse();
+      assertThat(sortedDie)
+          .isEqualTo(List.of(new Die(1, 3, Die.DieType.HIT), new Die(1, 2, Die.DieType.HIT)));
     }
 
     @Test
@@ -225,19 +224,18 @@ class TotalPowerAndTotalRollsTest {
 
       final AaPowerStrengthAndRolls result = whenGetPowerHitsResult(units, sortedDie, 1, 3);
 
-      assertThat(
-          "The second unit has higher strength so it rolls both "
-              + "and the first unit only rolls once. 3 * 2 + 2",
-          result.calculateTotalPower(),
-          is(8));
-      assertThat(
-          "First two dice are from the second stronger unit",
-          sortedDie,
-          is(
+      assertThat(result.calculateTotalPower())
+          .as(
+              "The second unit has higher strength so it rolls both "
+                  + "and the first unit only rolls once. 3 * 2 + 2")
+          .isEqualTo(8);
+      assertThat(sortedDie)
+          .as("First two dice are from the second stronger unit")
+          .isEqualTo(
               List.of(
                   new Die(1, 3, Die.DieType.HIT),
                   new Die(1, 3, Die.DieType.HIT),
-                  new Die(1, 2, Die.DieType.HIT))));
+                  new Die(1, 2, Die.DieType.HIT)));
     }
 
     @Test
@@ -253,12 +251,12 @@ class TotalPowerAndTotalRollsTest {
 
       whenGetPowerHitsResult(units, sortedDie, 2, 4);
 
-      assertThat(
-          "The dice is a 2 so the first unit hits (with a strength of 3) "
-              + "but the second misses (with a strength of 2). "
-              + "Strength is 1 based and the dice value is 0 based.",
-          sortedDie,
-          is(List.of(new Die(2, 3, Die.DieType.HIT), new Die(2, 2, Die.DieType.MISS))));
+      assertThat(sortedDie)
+          .as(
+              "The dice is a 2 so the first unit hits (with a strength of 3) "
+                  + "but the second misses (with a strength of 2). "
+                  + "Strength is 1 based and the dice value is 0 based.")
+          .isEqualTo(List.of(new Die(2, 3, Die.DieType.HIT), new Die(2, 2, Die.DieType.MISS)));
     }
 
     @Test
@@ -271,19 +269,17 @@ class TotalPowerAndTotalRollsTest {
 
       final AaPowerStrengthAndRolls result = whenGetPowerHitsResult(units, sortedDie, 1, 4);
 
-      assertThat(
-          "Infinite strength of 2 is multiplied by the rolls so 8",
-          result.calculateTotalPower(),
-          is(8));
-      assertThat("Only one unit, so only one strength", result.isSameStrength(), is(true));
-      assertThat(
-          sortedDie,
-          is(
+      assertThat(result.calculateTotalPower())
+          .as("Infinite strength of 2 is multiplied by the rolls so 8")
+          .isEqualTo(8);
+      assertThat(result.isSameStrength()).as("Only one unit, so only one strength").isTrue();
+      assertThat(sortedDie)
+          .isEqualTo(
               List.of(
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
-                  new Die(1, 2, Die.DieType.HIT))));
+                  new Die(1, 2, Die.DieType.HIT)));
     }
 
     @Test
@@ -299,20 +295,19 @@ class TotalPowerAndTotalRollsTest {
 
       final AaPowerStrengthAndRolls result = whenGetPowerHitsResult(units, sortedDie, 1, 4);
 
-      assertThat(
-          "Two infinite units are equal to one infinite unit", result.calculateTotalPower(), is(8));
-      assertThat(
-          "Only one infinite unit is used and it always has the same strength",
-          result.isSameStrength(),
-          is(true));
-      assertThat(
-          sortedDie,
-          is(
+      assertThat(result.calculateTotalPower())
+          .as("Two infinite units are equal to one infinite unit")
+          .isEqualTo(8);
+      assertThat(result.isSameStrength())
+          .as("Only one infinite unit is used and it always has the same strength")
+          .isTrue();
+      assertThat(sortedDie)
+          .isEqualTo(
               List.of(
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
-                  new Die(1, 2, Die.DieType.HIT))));
+                  new Die(1, 2, Die.DieType.HIT)));
     }
 
     @Test
@@ -328,22 +323,19 @@ class TotalPowerAndTotalRollsTest {
 
       final AaPowerStrengthAndRolls result = whenGetPowerHitsResult(units, sortedDie, 1, 4);
 
-      assertThat(
-          "The strongest infinite unit is used for all targets",
-          result.calculateTotalPower(),
-          is(12));
-      assertThat(
-          "Only one infinite unit and it always has the same strength",
-          result.isSameStrength(),
-          is(true));
-      assertThat(
-          sortedDie,
-          is(
+      assertThat(result.calculateTotalPower())
+          .as("The strongest infinite unit is used for all targets")
+          .isEqualTo(12);
+      assertThat(result.isSameStrength())
+          .as("Only one infinite unit and it always has the same strength")
+          .isTrue();
+      assertThat(sortedDie)
+          .isEqualTo(
               List.of(
                   new Die(1, 3, Die.DieType.HIT),
                   new Die(1, 3, Die.DieType.HIT),
                   new Die(1, 3, Die.DieType.HIT),
-                  new Die(1, 3, Die.DieType.HIT))));
+                  new Die(1, 3, Die.DieType.HIT)));
     }
 
     @Test
@@ -366,23 +358,20 @@ class TotalPowerAndTotalRollsTest {
 
       final AaPowerStrengthAndRolls result = whenGetPowerHitsResult(units, sortedDie, 1, 4);
 
-      assertThat(
-          "2 of 4 is better than 3 of 8 so the 2 strength is used for all targets",
-          result.calculateTotalPower(),
-          is(8));
-      assertThat(
-          "Only one infinite unit and it always has the same strength",
-          result.isSameStrength(),
-          is(true));
-      assertThat(
-          "2 of 4 is better than 3 of 8 so that is used for strength and dice sides",
-          sortedDie,
-          is(
+      assertThat(result.calculateTotalPower())
+          .as("2 of 4 is better than 3 of 8 so the 2 strength is used for all targets")
+          .isEqualTo(8);
+      assertThat(result.isSameStrength())
+          .as("Only one infinite unit and it always has the same strength")
+          .isTrue();
+      assertThat(sortedDie)
+          .as("2 of 4 is better than 3 of 8 so that is used for strength and dice sides")
+          .isEqualTo(
               List.of(
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
-                  new Die(1, 2, Die.DieType.HIT))));
+                  new Die(1, 2, Die.DieType.HIT)));
     }
 
     @Test
@@ -398,19 +387,17 @@ class TotalPowerAndTotalRollsTest {
 
       final AaPowerStrengthAndRolls result = whenGetPowerHitsResult(units, sortedDie, 1, 4);
 
-      assertThat(
-          "Both units have strength 2 so the power is 2 * 4 (rolls) = 8",
-          result.calculateTotalPower(),
-          is(8));
-      assertThat("Both units have the same strength", result.isSameStrength(), is(true));
-      assertThat(
-          sortedDie,
-          is(
+      assertThat(result.calculateTotalPower())
+          .as("Both units have strength 2 so the power is 2 * 4 (rolls) = 8")
+          .isEqualTo(8);
+      assertThat(result.isSameStrength()).as("Both units have the same strength").isTrue();
+      assertThat(sortedDie)
+          .isEqualTo(
               List.of(
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
-                  new Die(1, 2, Die.DieType.HIT))));
+                  new Die(1, 2, Die.DieType.HIT)));
     }
 
     @Test
@@ -426,23 +413,20 @@ class TotalPowerAndTotalRollsTest {
 
       final AaPowerStrengthAndRolls result = whenGetPowerHitsResult(units, sortedDie, 1, 4);
 
-      assertThat(
-          "The non infinite unit is not used so the power is 3 (strength) * 4 (roll)",
-          result.calculateTotalPower(),
-          is(12));
-      assertThat(
-          "The non infinite unit is not used so the infinite unit always has the same strength",
-          result.isSameStrength(),
-          is(true));
-      assertThat(
-          "The non infinite unit is not used",
-          sortedDie,
-          is(
+      assertThat(result.calculateTotalPower())
+          .as("The non infinite unit is not used so the power is 3 (strength) * 4 (roll)")
+          .isEqualTo(12);
+      assertThat(result.isSameStrength())
+          .as("The non infinite unit is not used so the infinite unit always has the same strength")
+          .isTrue();
+      assertThat(sortedDie)
+          .as("The non infinite unit is not used")
+          .isEqualTo(
               List.of(
                   new Die(1, 3, Die.DieType.HIT),
                   new Die(1, 3, Die.DieType.HIT),
                   new Die(1, 3, Die.DieType.HIT),
-                  new Die(1, 3, Die.DieType.HIT))));
+                  new Die(1, 3, Die.DieType.HIT)));
     }
 
     @Test
@@ -458,21 +442,20 @@ class TotalPowerAndTotalRollsTest {
 
       final AaPowerStrengthAndRolls result = whenGetPowerHitsResult(units, sortedDie, 1, 4);
 
-      assertThat(
-          "The non infinite unit is used once so 3 + 2 * 3", result.calculateTotalPower(), is(9));
-      assertThat(
-          "The non infinite has a higher strength than the infinite so both are used",
-          result.isSameStrength(),
-          is(false));
-      assertThat(
-          "The non infinite unit is used first",
-          sortedDie,
-          is(
+      assertThat(result.calculateTotalPower())
+          .as("The non infinite unit is used once so 3 + 2 * 3")
+          .isEqualTo(9);
+      assertThat(result.isSameStrength())
+          .as("The non infinite has a higher strength than the infinite so both are used")
+          .isFalse();
+      assertThat(sortedDie)
+          .as("The non infinite unit is used first")
+          .isEqualTo(
               List.of(
                   new Die(1, 3, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
-                  new Die(1, 2, Die.DieType.HIT))));
+                  new Die(1, 2, Die.DieType.HIT)));
     }
 
     @Test
@@ -485,10 +468,12 @@ class TotalPowerAndTotalRollsTest {
 
       final AaPowerStrengthAndRolls result = whenGetPowerHitsResult(units, sortedDie, 1, 4);
 
-      assertThat("2 rolls with 2 strength is 4 power", result.calculateTotalPower(), is(4));
-      assertThat("Only one unit, so only one strength", result.isSameStrength(), is(true));
-      assertThat(
-          sortedDie, is(List.of(new Die(1, 2, Die.DieType.HIT), new Die(1, 2, Die.DieType.HIT))));
+      assertThat(result.calculateTotalPower())
+          .as("2 rolls with 2 strength is 4 power")
+          .isEqualTo(4);
+      assertThat(result.isSameStrength()).as("Only one unit, so only one strength").isTrue();
+      assertThat(sortedDie)
+          .isEqualTo(List.of(new Die(1, 2, Die.DieType.HIT), new Die(1, 2, Die.DieType.HIT)));
     }
 
     @Test
@@ -501,20 +486,18 @@ class TotalPowerAndTotalRollsTest {
 
       final AaPowerStrengthAndRolls result = whenGetPowerHitsResult(units, sortedDie, 1, 4);
 
-      assertThat(
-          "Unit has 5 rolls with 2 strength and can overstack, so 5 * 2",
-          result.calculateTotalPower(),
-          is(10));
-      assertThat("Only one unit, so only one strength", result.isSameStrength(), is(true));
-      assertThat(
-          sortedDie,
-          is(
+      assertThat(result.calculateTotalPower())
+          .as("Unit has 5 rolls with 2 strength and can overstack, so 5 * 2")
+          .isEqualTo(10);
+      assertThat(result.isSameStrength()).as("Only one unit, so only one strength").isTrue();
+      assertThat(sortedDie)
+          .isEqualTo(
               List.of(
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
-                  new Die(1, 2, Die.DieType.HIT))));
+                  new Die(1, 2, Die.DieType.HIT)));
     }
 
     @Test
@@ -527,14 +510,14 @@ class TotalPowerAndTotalRollsTest {
 
       final AaPowerStrengthAndRolls result = whenGetPowerHitsResult(units, sortedDie, 1, 2);
 
-      assertThat(
-          "Overstack makes no sense on an infinite unit. "
-              + "Unit gets 1 roll for each target: 2 (roll) * 2 (strength)",
-          result.calculateTotalPower(),
-          is(4));
-      assertThat(result.isSameStrength(), is(true));
-      assertThat(
-          sortedDie, is(List.of(new Die(1, 2, Die.DieType.HIT), new Die(1, 2, Die.DieType.HIT))));
+      assertThat(result.calculateTotalPower())
+          .as(
+              "Overstack makes no sense on an infinite unit. "
+                  + "Unit gets 1 roll for each target: 2 (roll) * 2 (strength)")
+          .isEqualTo(4);
+      assertThat(result.isSameStrength()).isTrue();
+      assertThat(sortedDie)
+          .isEqualTo(List.of(new Die(1, 2, Die.DieType.HIT), new Die(1, 2, Die.DieType.HIT)));
     }
 
     @Test
@@ -550,22 +533,20 @@ class TotalPowerAndTotalRollsTest {
 
       final AaPowerStrengthAndRolls result = whenGetPowerHitsResult(units, sortedDie, 1, 4);
 
-      assertThat(
-          "Infinite unit hits all 4, overstack unit adds 2 more: 6 (roll) * 2 (strength)",
-          result.calculateTotalPower(),
-          is(12));
-      assertThat("Both units have the same strength", result.isSameStrength(), is(true));
-      assertThat(
-          "Infiniteunit hits all 4, overstack unit adds 2 more",
-          sortedDie,
-          is(
+      assertThat(result.calculateTotalPower())
+          .as("Infinite unit hits all 4, overstack unit adds 2 more: 6 (roll) * 2 (strength)")
+          .isEqualTo(12);
+      assertThat(result.isSameStrength()).as("Both units have the same strength").isTrue();
+      assertThat(sortedDie)
+          .as("Infiniteunit hits all 4, overstack unit adds 2 more")
+          .isEqualTo(
               List.of(
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
-                  new Die(1, 2, Die.DieType.HIT))));
+                  new Die(1, 2, Die.DieType.HIT)));
     }
 
     @Test
@@ -581,23 +562,22 @@ class TotalPowerAndTotalRollsTest {
 
       final AaPowerStrengthAndRolls result = whenGetPowerHitsResult(units, sortedDie, 1, 4);
 
-      assertThat(
-          "Infinite unit hits all 4 with strength 2, "
-              + "overstack unit adds 2 more with strength 3: 4 * 2 + 3 * 2",
-          result.calculateTotalPower(),
-          is(14));
-      assertThat("Both units have different strength", result.isSameStrength(), is(false));
-      assertThat(
-          "Infinite unit hits all 4, overstack unit adds 2 more at the end",
-          sortedDie,
-          is(
+      assertThat(result.calculateTotalPower())
+          .as(
+              "Infinite unit hits all 4 with strength 2, "
+                  + "overstack unit adds 2 more with strength 3: 4 * 2 + 3 * 2")
+          .isEqualTo(14);
+      assertThat(result.isSameStrength()).as("Both units have different strength").isFalse();
+      assertThat(sortedDie)
+          .as("Infinite unit hits all 4, overstack unit adds 2 more at the end")
+          .isEqualTo(
               List.of(
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 3, Die.DieType.HIT),
-                  new Die(1, 3, Die.DieType.HIT))));
+                  new Die(1, 3, Die.DieType.HIT)));
     }
 
     @Test
@@ -613,17 +593,16 @@ class TotalPowerAndTotalRollsTest {
 
       final AaPowerStrengthAndRolls result = whenGetPowerHitsResult(units, sortedDie, 1, 4);
 
-      assertThat(result.calculateTotalPower(), is(8));
-      assertThat(result.isSameStrength(), is(true));
-      assertThat(
-          "Overstack adds more rolls",
-          sortedDie,
-          is(
+      assertThat(result.calculateTotalPower()).isEqualTo(8);
+      assertThat(result.isSameStrength()).isTrue();
+      assertThat(sortedDie)
+          .as("Overstack adds more rolls")
+          .isEqualTo(
               List.of(
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
-                  new Die(1, 2, Die.DieType.HIT))));
+                  new Die(1, 2, Die.DieType.HIT)));
     }
 
     @Test
@@ -639,17 +618,16 @@ class TotalPowerAndTotalRollsTest {
 
       final AaPowerStrengthAndRolls result = whenGetPowerHitsResult(units, sortedDie, 1, 4);
 
-      assertThat(result.calculateTotalPower(), is(10));
-      assertThat(result.isSameStrength(), is(false));
-      assertThat(
-          "Overstack adds more rolls at the end",
-          sortedDie,
-          is(
+      assertThat(result.calculateTotalPower()).isEqualTo(10);
+      assertThat(result.isSameStrength()).isFalse();
+      assertThat(sortedDie)
+          .as("Overstack adds more rolls at the end")
+          .isEqualTo(
               List.of(
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 3, Die.DieType.HIT),
-                  new Die(1, 3, Die.DieType.HIT))));
+                  new Die(1, 3, Die.DieType.HIT)));
     }
 
     @Test
@@ -667,19 +645,18 @@ class TotalPowerAndTotalRollsTest {
 
       final AaPowerStrengthAndRolls result = whenGetPowerHitsResult(units, sortedDie, 1, 4);
 
-      assertThat(result.calculateTotalPower(), is(12));
-      assertThat(result.isSameStrength(), is(true));
-      assertThat(
-          "Overstack adds more rolls",
-          sortedDie,
-          is(
+      assertThat(result.calculateTotalPower()).isEqualTo(12);
+      assertThat(result.isSameStrength()).isTrue();
+      assertThat(sortedDie)
+          .as("Overstack adds more rolls")
+          .isEqualTo(
               List.of(
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
-                  new Die(1, 2, Die.DieType.HIT))));
+                  new Die(1, 2, Die.DieType.HIT)));
     }
 
     @Test
@@ -697,19 +674,18 @@ class TotalPowerAndTotalRollsTest {
 
       final AaPowerStrengthAndRolls result = whenGetPowerHitsResult(units, sortedDie, 1, 4);
 
-      assertThat(result.calculateTotalPower(), is(18));
-      assertThat(result.isSameStrength(), is(false));
-      assertThat(
-          "Overstack adds more rolls",
-          sortedDie,
-          is(
+      assertThat(result.calculateTotalPower()).isEqualTo(18);
+      assertThat(result.isSameStrength()).isFalse();
+      assertThat(sortedDie)
+          .as("Overstack adds more rolls")
+          .isEqualTo(
               List.of(
                   new Die(1, 4, Die.DieType.HIT),
                   new Die(1, 4, Die.DieType.HIT),
                   new Die(1, 3, Die.DieType.HIT),
                   new Die(1, 3, Die.DieType.HIT),
                   new Die(1, 2, Die.DieType.HIT),
-                  new Die(1, 2, Die.DieType.HIT))));
+                  new Die(1, 2, Die.DieType.HIT)));
     }
 
     @Test
@@ -727,19 +703,18 @@ class TotalPowerAndTotalRollsTest {
 
       final AaPowerStrengthAndRolls result = whenGetPowerHitsResult(units, sortedDie, 1, 4);
 
-      assertThat(result.calculateTotalPower(), is(20));
-      assertThat(result.isSameStrength(), is(false));
-      assertThat(
-          "Overstack adds more rolls",
-          sortedDie,
-          is(
+      assertThat(result.calculateTotalPower()).isEqualTo(20);
+      assertThat(result.isSameStrength()).isFalse();
+      assertThat(sortedDie)
+          .as("Overstack adds more rolls")
+          .isEqualTo(
               List.of(
                   new Die(1, 3, Die.DieType.HIT),
                   new Die(1, 3, Die.DieType.HIT),
                   new Die(1, 3, Die.DieType.HIT),
                   new Die(1, 3, Die.DieType.HIT),
                   new Die(1, 4, Die.DieType.HIT),
-                  new Die(1, 4, Die.DieType.HIT))));
+                  new Die(1, 4, Die.DieType.HIT)));
     }
   }
 
@@ -789,11 +764,11 @@ class TotalPowerAndTotalRollsTest {
                       .build()
                       .unitComparator())
               .collect(Collectors.toList());
-      assertThat(sortedUnits.get(0), is(unit1));
-      assertThat(sortedUnits.get(1), is(unit2));
-      assertThat(sortedUnits.get(2), is(unit3));
-      assertThat(sortedUnits.get(3), is(unit4));
-      assertThat(sortedUnits.get(4), is(unit5));
+      assertThat(sortedUnits.get(0)).isEqualTo(unit1);
+      assertThat(sortedUnits.get(1)).isEqualTo(unit2);
+      assertThat(sortedUnits.get(2)).isEqualTo(unit3);
+      assertThat(sortedUnits.get(3)).isEqualTo(unit4);
+      assertThat(sortedUnits.get(4)).isEqualTo(unit5);
     }
 
     @Test
@@ -817,11 +792,11 @@ class TotalPowerAndTotalRollsTest {
                       .build()
                       .unitComparator())
               .collect(Collectors.toList());
-      assertThat(sortedUnits.get(0), is(unit5));
-      assertThat(sortedUnits.get(1), is(unit3));
-      assertThat(sortedUnits.get(2), is(unit4));
-      assertThat(sortedUnits.get(3), is(unit1));
-      assertThat(sortedUnits.get(4), is(unit2));
+      assertThat(sortedUnits.get(0)).isEqualTo(unit5);
+      assertThat(sortedUnits.get(1)).isEqualTo(unit3);
+      assertThat(sortedUnits.get(2)).isEqualTo(unit4);
+      assertThat(sortedUnits.get(3)).isEqualTo(unit1);
+      assertThat(sortedUnits.get(4)).isEqualTo(unit2);
     }
   }
 
@@ -848,7 +823,9 @@ class TotalPowerAndTotalRollsTest {
                   .supportAttachments(List.of())
                   .build());
 
-      assertThat("Dice comes from the unitAttachment", aaPowerAndRolls.getDiceSides(), is(8));
+      assertThat(aaPowerAndRolls.getDiceSides())
+          .as("Dice comes from the unitAttachment")
+          .isEqualTo(8);
     }
 
     @Test
@@ -869,7 +846,9 @@ class TotalPowerAndTotalRollsTest {
                   .supportAttachments(List.of())
                   .build());
 
-      assertThat("Dice comes from the unitAttachment", aaPowerAndRolls.getDiceSides(), is(8));
+      assertThat(aaPowerAndRolls.getDiceSides())
+          .as("Dice comes from the unitAttachment")
+          .isEqualTo(8);
     }
 
     @Test
@@ -915,14 +894,12 @@ class TotalPowerAndTotalRollsTest {
                   .strengthSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
                   .build());
 
-      assertThat(
-          "Unit has a max die side of 4 so that will be used",
-          totalPowerAndTotalRolls.getDiceSides(),
-          is(4));
-      assertThat(
-          "Unit gets 2 support so its best strength is 4",
-          totalPowerAndTotalRolls.getBestStrength(),
-          is(4));
+      assertThat(totalPowerAndTotalRolls.getDiceSides())
+          .as("Unit has a max die side of 4 so that will be used")
+          .isEqualTo(4);
+      assertThat(totalPowerAndTotalRolls.getBestStrength())
+          .as("Unit gets 2 support so its best strength is 4")
+          .isEqualTo(4);
 
       // Now, test the same thing through the CombatValueBuilder.aaCombatValue() API.
       final AaPowerStrengthAndRolls totalPowerAndTotalRolls2 =
@@ -935,14 +912,12 @@ class TotalPowerAndTotalRollsTest {
                   .side(BattleState.Side.OFFENSE)
                   .supportAttachments(List.of(unitSupportAttachment))
                   .build());
-      assertThat(
-          "Unit has a max die side of 4 so that will be used",
-          totalPowerAndTotalRolls2.getDiceSides(),
-          is(4));
-      assertThat(
-          "Unit gets 2 support so its best strength is 4",
-          totalPowerAndTotalRolls2.getBestStrength(),
-          is(4));
+      assertThat(totalPowerAndTotalRolls2.getDiceSides())
+          .as("Unit has a max die side of 4 so that will be used")
+          .isEqualTo(4);
+      assertThat(totalPowerAndTotalRolls2.getBestStrength())
+          .as("Unit gets 2 support so its best strength is 4")
+          .isEqualTo(4);
     }
 
     @Test
@@ -978,18 +953,15 @@ class TotalPowerAndTotalRollsTest {
                   .supportAttachments(List.of(unitSupportAttachment))
                   .build());
 
-      assertThat(
-          "Unit has a max die side of 4 so that will be used",
-          totalPowerAndTotalRolls.getDiceSides(),
-          is(4));
-      assertThat(
-          "Unit should get 3 rolls via a bonus of 2",
-          totalPowerAndTotalRolls.getRolls(unit),
-          is(3));
-      assertThat(
-          "Unit gets no strength support so its best strength is 2",
-          totalPowerAndTotalRolls.getBestStrength(),
-          is(2));
+      assertThat(totalPowerAndTotalRolls.getDiceSides())
+          .as("Unit has a max die side of 4 so that will be used")
+          .isEqualTo(4);
+      assertThat(totalPowerAndTotalRolls.getRolls(unit))
+          .as("Unit should get 3 rolls via a bonus of 2")
+          .isEqualTo(3);
+      assertThat(totalPowerAndTotalRolls.getBestStrength())
+          .as("Unit gets no strength support so its best strength is 2")
+          .isEqualTo(2);
     }
 
     @Test
@@ -1014,10 +986,9 @@ class TotalPowerAndTotalRollsTest {
                   .supportAttachments(List.of())
                   .build());
 
-      assertThat(
-          "All have the same dice sides, so take the best strength",
-          aaPowerAndRolls.getBestStrength(),
-          is(4));
+      assertThat(aaPowerAndRolls.getBestStrength())
+          .as("All have the same dice sides, so take the best strength")
+          .isEqualTo(4);
     }
 
     @Test
@@ -1053,9 +1024,12 @@ class TotalPowerAndTotalRollsTest {
                   .supportAttachments(List.of())
                   .build());
 
-      assertThat(
-          "4 of 4 is better than 2 of 6 and 3 of 5", aaPowerAndRolls.getBestStrength(), is(4));
-      assertThat("4 of 4 is better than 2 of 6 and 3 of 5", aaPowerAndRolls.getDiceSides(), is(4));
+      assertThat(aaPowerAndRolls.getBestStrength())
+          .as("4 of 4 is better than 2 of 6 and 3 of 5")
+          .isEqualTo(4);
+      assertThat(aaPowerAndRolls.getDiceSides())
+          .as("4 of 4 is better than 2 of 6 and 3 of 5")
+          .isEqualTo(4);
     }
 
     @Test
@@ -1091,9 +1065,12 @@ class TotalPowerAndTotalRollsTest {
                   .supportAttachments(List.of())
                   .build());
 
-      assertThat(
-          "3 of 6 is better than 3 of 7 and 3 of 8", aaPowerAndRolls.getBestStrength(), is(3));
-      assertThat("3 of 6 is better than 3 of 7 and 3 of 8", aaPowerAndRolls.getDiceSides(), is(6));
+      assertThat(aaPowerAndRolls.getBestStrength())
+          .as("3 of 6 is better than 3 of 7 and 3 of 8")
+          .isEqualTo(3);
+      assertThat(aaPowerAndRolls.getDiceSides())
+          .as("3 of 6 is better than 3 of 7 and 3 of 8")
+          .isEqualTo(6);
     }
   }
 
@@ -1117,7 +1094,7 @@ class TotalPowerAndTotalRollsTest {
                   .strengthSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
                   .build());
 
-      assertThat(result.getStrength(unit), is(0));
+      assertThat(result.getStrength(unit)).isEqualTo(0);
     }
 
     @Test
@@ -1137,7 +1114,7 @@ class TotalPowerAndTotalRollsTest {
                   .strengthSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
                   .build());
 
-      assertThat(result.getRolls(unit), is(0));
+      assertThat(result.getRolls(unit)).isEqualTo(0);
     }
 
     @Test
@@ -1179,16 +1156,20 @@ class TotalPowerAndTotalRollsTest {
                   .strengthSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
                   .build());
 
-      assertThat(
-          "The strong unit should get the bonus for its power",
-          result.getStrength(strongUnit),
-          is(5));
-      assertThat(
-          "The strong unit should get the bonus for its rolls", result.getRolls(strongUnit), is(2));
-      assertThat("The less weak unit should get no bonus", result.getStrength(lessWeakUnit), is(3));
-      assertThat("The less weak unit should get no bonus", result.getRolls(lessWeakUnit), is(1));
-      assertThat("The weak unit should get no bonus", result.getStrength(weakUnit), is(2));
-      assertThat("The weak unit should get no bonus", result.getRolls(weakUnit), is(1));
+      assertThat(result.getStrength(strongUnit))
+          .as("The strong unit should get the bonus for its power")
+          .isEqualTo(5);
+      assertThat(result.getRolls(strongUnit))
+          .as("The strong unit should get the bonus for its rolls")
+          .isEqualTo(2);
+      assertThat(result.getStrength(lessWeakUnit))
+          .as("The less weak unit should get no bonus")
+          .isEqualTo(3);
+      assertThat(result.getRolls(lessWeakUnit))
+          .as("The less weak unit should get no bonus")
+          .isEqualTo(1);
+      assertThat(result.getStrength(weakUnit)).as("The weak unit should get no bonus").isEqualTo(2);
+      assertThat(result.getRolls(weakUnit)).as("The weak unit should get no bonus").isEqualTo(1);
     }
   }
 
@@ -1216,7 +1197,7 @@ class TotalPowerAndTotalRollsTest {
                   .territoryEffects(List.of())
                   .build());
 
-      assertThat(result.getStrength(unit), is(0));
+      assertThat(result.getStrength(unit)).isEqualTo(0);
     }
 
     @Test
@@ -1238,7 +1219,7 @@ class TotalPowerAndTotalRollsTest {
                   .strengthSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
                   .territoryEffects(List.of())
                   .build());
-      assertThat(result.getRolls(unit), is(0));
+      assertThat(result.getRolls(unit)).isEqualTo(0);
     }
 
     @Test
@@ -1289,29 +1270,33 @@ class TotalPowerAndTotalRollsTest {
                   .territoryEffects(List.of())
                   .build());
 
-      assertThat("First should have both support", result.getStrength(unit), is(3));
-      assertThat("First should have both support", result.getRolls(unit), is(3));
-      assertThat("Second should have one support", result.getStrength(otherSupportedUnit), is(2));
-      assertThat("Second should have one support", result.getRolls(otherSupportedUnit), is(2));
-      assertThat("Last should have no support", result.getStrength(nonSupportedUnit), is(1));
-      assertThat("Last should have no support", result.getRolls(nonSupportedUnit), is(1));
+      assertThat(result.getStrength(unit)).as("First should have both support").isEqualTo(3);
+      assertThat(result.getRolls(unit)).as("First should have both support").isEqualTo(3);
+      assertThat(result.getStrength(otherSupportedUnit))
+          .as("Second should have one support")
+          .isEqualTo(2);
+      assertThat(result.getRolls(otherSupportedUnit))
+          .as("Second should have one support")
+          .isEqualTo(2);
+      assertThat(result.getStrength(nonSupportedUnit))
+          .as("Last should have no support")
+          .isEqualTo(1);
+      assertThat(result.getRolls(nonSupportedUnit)).as("Last should have no support").isEqualTo(1);
 
-      assertThat(
-          "First support unit supported two, the second supported one",
-          result.getUnitSupportPowerMap(),
-          is(
+      assertThat(result.getUnitSupportPowerMap())
+          .as("First support unit supported two, the second supported one")
+          .isEqualTo(
               Map.of(
                   supportUnit,
                   new IntegerMap<>(Map.of(unit, 1, otherSupportedUnit, 1)),
                   supportUnit2,
-                  new IntegerMap<>(Map.of(unit, 1)))));
-      assertThat(
-          "First support unit supported two, the second supported one",
-          result.getUnitSupportRollsMap(),
-          is(
+                  new IntegerMap<>(Map.of(unit, 1))));
+      assertThat(result.getUnitSupportRollsMap())
+          .as("First support unit supported two, the second supported one")
+          .isEqualTo(
               Map.of(
                   supportUnit, new IntegerMap<>(Map.of(unit, 1, otherSupportedUnit, 1)),
-                  supportUnit2, new IntegerMap<>(Map.of(unit, 1)))));
+                  supportUnit2, new IntegerMap<>(Map.of(unit, 1))));
     }
   }
 
@@ -1339,8 +1324,8 @@ class TotalPowerAndTotalRollsTest {
                   .supportAttachments(List.of())
                   .build());
 
-      assertThat(powerStrengthAndRolls.calculateTotalPower(), is(0));
-      assertThat(powerStrengthAndRolls.calculateTotalRolls(), is(0));
+      assertThat(powerStrengthAndRolls.calculateTotalPower()).isEqualTo(0);
+      assertThat(powerStrengthAndRolls.calculateTotalRolls()).isEqualTo(0);
     }
 
     @Test
@@ -1362,8 +1347,8 @@ class TotalPowerAndTotalRollsTest {
                   .supportAttachments(List.of())
                   .build());
 
-      assertThat(powerStrengthAndRolls.calculateTotalPower(), is(5));
-      assertThat(powerStrengthAndRolls.calculateTotalRolls(), is(2));
+      assertThat(powerStrengthAndRolls.calculateTotalPower()).isEqualTo(5);
+      assertThat(powerStrengthAndRolls.calculateTotalRolls()).isEqualTo(2);
     }
 
     @Test
@@ -1385,8 +1370,8 @@ class TotalPowerAndTotalRollsTest {
                   .supportAttachments(List.of())
                   .build());
 
-      assertThat(powerStrengthAndRolls.calculateTotalPower(), is(10));
-      assertThat(powerStrengthAndRolls.calculateTotalRolls(), is(4));
+      assertThat(powerStrengthAndRolls.calculateTotalPower()).isEqualTo(10);
+      assertThat(powerStrengthAndRolls.calculateTotalRolls()).isEqualTo(4);
     }
 
     @Test
@@ -1406,8 +1391,8 @@ class TotalPowerAndTotalRollsTest {
                   .supportAttachments(List.of())
                   .build());
 
-      assertThat(powerStrengthAndRolls.calculateTotalPower(), is(12));
-      assertThat(powerStrengthAndRolls.calculateTotalRolls(), is(2));
+      assertThat(powerStrengthAndRolls.calculateTotalPower()).isEqualTo(12);
+      assertThat(powerStrengthAndRolls.calculateTotalRolls()).isEqualTo(2);
     }
 
     @ParameterizedTest
@@ -1436,8 +1421,8 @@ class TotalPowerAndTotalRollsTest {
                   .territoryEffects(List.of())
                   .build());
 
-      assertThat(powerStrengthAndRolls.calculateTotalPower(), is(expectedPower));
-      assertThat(powerStrengthAndRolls.calculateTotalRolls(), is(expectedRolls));
+      assertThat(powerStrengthAndRolls.calculateTotalPower()).isEqualTo(expectedPower);
+      assertThat(powerStrengthAndRolls.calculateTotalRolls()).isEqualTo(expectedRolls);
     }
 
     List<Arguments> bestRollSimulated() {
@@ -1478,8 +1463,8 @@ class TotalPowerAndTotalRollsTest {
                   .territoryEffects(List.of())
                   .build());
 
-      assertThat(powerStrengthAndRolls.calculateTotalPower(), is(expectedPower));
-      assertThat(powerStrengthAndRolls.calculateTotalRolls(), is(expectedRolls));
+      assertThat(powerStrengthAndRolls.calculateTotalPower()).isEqualTo(expectedPower);
+      assertThat(powerStrengthAndRolls.calculateTotalRolls()).isEqualTo(expectedRolls);
     }
   }
 
@@ -1503,7 +1488,9 @@ class TotalPowerAndTotalRollsTest {
                   .supportAttachments(List.of())
                   .build());
 
-      assertThat("No targets so no rolls", totalPowerAndTotalRolls.calculateTotalRolls(), is(0));
+      assertThat(totalPowerAndTotalRolls.calculateTotalRolls())
+          .as("No targets so no rolls")
+          .isEqualTo(0);
     }
 
     @Test
@@ -1526,10 +1513,9 @@ class TotalPowerAndTotalRollsTest {
                   .supportAttachments(List.of())
                   .build());
 
-      assertThat(
-          "Both units had either zero rolls or zero strength so no total rolls",
-          totalPowerAndTotalRolls.calculateTotalRolls(),
-          is(0));
+      assertThat(totalPowerAndTotalRolls.calculateTotalRolls())
+          .as("Both units had either zero rolls or zero strength so no total rolls")
+          .isEqualTo(0);
     }
 
     @Test
@@ -1547,10 +1533,9 @@ class TotalPowerAndTotalRollsTest {
                   .side(BattleState.Side.OFFENSE)
                   .supportAttachments(List.of())
                   .build());
-      assertThat(
-          "Infinite unit gets one roll for each target",
-          totalPowerAndTotalRolls.calculateTotalRolls(),
-          is(3));
+      assertThat(totalPowerAndTotalRolls.calculateTotalRolls())
+          .as("Infinite unit gets one roll for each target")
+          .isEqualTo(3);
     }
 
     @Test
@@ -1571,10 +1556,9 @@ class TotalPowerAndTotalRollsTest {
                   .side(BattleState.Side.OFFENSE)
                   .supportAttachments(List.of())
                   .build());
-      assertThat(
-          "Infinite unit gets one roll for each target but no overstacking",
-          totalPowerAndTotalRolls.calculateTotalRolls(),
-          is(3));
+      assertThat(totalPowerAndTotalRolls.calculateTotalRolls())
+          .as("Infinite unit gets one roll for each target but no overstacking")
+          .isEqualTo(3);
     }
 
     @Test
@@ -1595,10 +1579,9 @@ class TotalPowerAndTotalRollsTest {
                   .side(BattleState.Side.OFFENSE)
                   .supportAttachments(List.of())
                   .build());
-      assertThat(
-          "Non infinite and an infinite unit still just hit all the targets once",
-          totalPowerAndTotalRolls.calculateTotalRolls(),
-          is(3));
+      assertThat(totalPowerAndTotalRolls.calculateTotalRolls())
+          .as("Non infinite and an infinite unit still just hit all the targets once")
+          .isEqualTo(3);
     }
 
     @Test
@@ -1616,7 +1599,9 @@ class TotalPowerAndTotalRollsTest {
                   .side(BattleState.Side.OFFENSE)
                   .supportAttachments(List.of())
                   .build());
-      assertThat("Unit only has one roll", totalPowerAndTotalRolls.calculateTotalRolls(), is(1));
+      assertThat(totalPowerAndTotalRolls.calculateTotalRolls())
+          .as("Unit only has one roll")
+          .isEqualTo(1);
     }
 
     @Test
@@ -1637,10 +1622,9 @@ class TotalPowerAndTotalRollsTest {
                   .side(BattleState.Side.OFFENSE)
                   .supportAttachments(List.of())
                   .build());
-      assertThat(
-          "There is only 3 units targets and the units have no overstack so only allow 3",
-          totalPowerAndTotalRolls.calculateTotalRolls(),
-          is(3));
+      assertThat(totalPowerAndTotalRolls.calculateTotalRolls())
+          .as("There is only 3 units targets and the units have no overstack so only allow 3")
+          .isEqualTo(3);
     }
 
     @Test
@@ -1668,11 +1652,11 @@ class TotalPowerAndTotalRollsTest {
                   .supportAttachments(List.of())
                   .build());
 
-      assertThat(
-          "Infinite gives total attacks equal to number of units (3)"
-              + " and the overstacked unit adds 2 more",
-          totalPowerAndTotalRolls.calculateTotalRolls(),
-          is(5));
+      assertThat(totalPowerAndTotalRolls.calculateTotalRolls())
+          .as(
+              "Infinite gives total attacks equal to number of units (3)"
+                  + " and the overstacked unit adds 2 more")
+          .isEqualTo(5);
     }
   }
 }

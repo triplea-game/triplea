@@ -7,10 +7,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -51,11 +48,10 @@ class SetUpBattlesAfterRelationshipChangeTest extends AbstractClientSettingTestC
     BattleDelegate.setUpBattlesForChangedRelationships(getBattleTracker(), bridge);
 
     final IBattle battle = getBattleTracker().getPendingBattle(karelia, IBattle.BattleType.NORMAL);
-    assertThat("a battle should be pending in Karelia S.S.R.", battle, notNullValue());
-    assertThat(
-        "Italian units should be the attackers",
-        battle.getAttackingUnits().stream().allMatch(u -> u.getOwner().equals(italians)),
-        equalTo(true));
+    assertThat(battle).as("a battle should be pending in Karelia S.S.R.").isNotNull();
+    assertThat(battle.getAttackingUnits().stream().allMatch(u -> u.getOwner().equals(italians)))
+        .as("Italian units should be the attackers")
+        .isEqualTo(true);
   }
 
   @Test
@@ -70,14 +66,12 @@ class SetUpBattlesAfterRelationshipChangeTest extends AbstractClientSettingTestC
     setRelationship(italians, russians, "War");
     BattleDelegate.setUpBattlesForChangedRelationships(getBattleTracker(), bridge);
 
-    assertThat(
-        "Karelia S.S.R. should now be Italian-owned after the war declaration",
-        karelia.getOwner(),
-        equalTo(italians));
-    assertThat(
-        "no normal battle should remain pending — territory was captured outright",
-        getBattleTracker().getPendingBattle(karelia, IBattle.BattleType.NORMAL),
-        nullValue());
+    assertThat(karelia.getOwner())
+        .as("Karelia S.S.R. should now be Italian-owned after the war declaration")
+        .isEqualTo(italians);
+    assertThat(getBattleTracker().getPendingBattle(karelia, IBattle.BattleType.NORMAL))
+        .as("no normal battle should remain pending — territory was captured outright")
+        .isNull();
   }
 
   private void setRelationship(

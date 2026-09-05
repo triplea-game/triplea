@@ -10,8 +10,7 @@ import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import games.strategy.engine.data.GameData;
@@ -351,7 +350,7 @@ class PacificTest {
 
     // Finally, adding a naval base in Canada shouldn't boost movement further.
     TerritoryAttachment.getOrThrow(canada).getPropertyOrThrow("navalBase").setValue(true);
-    assertThat(TerritoryAttachment.hasNavalBase(canada), is(true));
+    assertThat(TerritoryAttachment.hasNavalBase(canada)).isTrue();
     // Should still fail to move 4.
     assertMoveError(GameDataTestUtil.getUnits(map, toSz30.getStart()), toSz30);
   }

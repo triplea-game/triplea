@@ -1,8 +1,6 @@
 package org.triplea.java.concurrency;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
@@ -50,13 +48,11 @@ class AsyncRunnerTest {
 
     verify(exceptionHandler, timeout(1000)).accept(exceptionArgumentCaptor.capture());
 
-    assertThat(
-        "Throwable should be a completion exception",
-        exceptionArgumentCaptor.getValue(),
-        instanceOf(CompletionException.class));
-    assertThat(
-        "The cause of the completion exception should be the exception thrown by the runnable",
-        exceptionArgumentCaptor.getValue().getCause(),
-        is(exception));
+    assertThat(exceptionArgumentCaptor.getValue())
+        .as("Throwable should be a completion exception")
+        .isInstanceOf(CompletionException.class);
+    assertThat(exceptionArgumentCaptor.getValue().getCause())
+        .as("The cause of the completion exception should be the exception thrown by the runnable")
+        .isEqualTo(exception);
   }
 }

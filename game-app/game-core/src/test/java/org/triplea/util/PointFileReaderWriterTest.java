@@ -1,9 +1,6 @@
 package org.triplea.util;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.aMapWithSize;
-import static org.hamcrest.Matchers.hasKey;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -60,7 +57,7 @@ final class PointFileReaderWriterTest {
     @Test
     void shouldReturnEmptyMapWhenStreamIsEmpty() throws Exception {
       final Path path = pathToVirtualTextFile("");
-      assertThat(PointFileReaderWriter.readOneToOne(path), is(Map.of()));
+      assertThat(PointFileReaderWriter.readOneToOne(path)).isEqualTo(Map.of());
     }
 
     @Test
@@ -76,14 +73,13 @@ final class PointFileReaderWriterTest {
       final Map<String, Point> pointsByName =
           PointFileReaderWriter.readOneToOne(pathToVirtualTextFile(content));
 
-      assertThat(
-          pointsByName,
-          is(
+      assertThat(pointsByName)
+          .isEqualTo(
               Map.of(
                   "United Kingdom", new Point(1011, 1021),
                   "Germany", new Point(2011, 2021),
                   "Eastern United States", new Point(3011, 3021),
-                  "", new Point(321, 456))));
+                  "", new Point(321, 456)));
     }
 
     @Test
@@ -161,13 +157,12 @@ Eastern United States (-123, -456)""";
       final Map<String, Point> pointsByName =
           PointFileReaderWriter.readOneToOne(pathToVirtualTextFile(content));
 
-      assertThat(
-          pointsByName,
-          is(
+      assertThat(pointsByName)
+          .isEqualTo(
               Map.of(
                   "United Kingdom", new Point(-1011, 1021),
                   "Germany", new Point(1234, -12_424),
-                  "Eastern United States", new Point(-123, -456))));
+                  "Eastern United States", new Point(-123, -456)));
     }
   }
 
@@ -175,7 +170,8 @@ Eastern United States (-123, -456)""";
   final class ReadOneToManyTest {
     @Test
     void shouldReturnEmptyMapWhenStreamIsEmpty() throws Exception {
-      assertThat(PointFileReaderWriter.readOneToMany(pathToVirtualTextFile("")), is(Map.of()));
+      assertThat(PointFileReaderWriter.readOneToMany(pathToVirtualTextFile("")))
+          .isEqualTo(Map.of());
     }
 
     @Test
@@ -190,14 +186,13 @@ Philippines (3011,3021)
       final Map<String, List<Point>> pointListsByName =
           PointFileReaderWriter.readOneToMany(pathToVirtualTextFile(content));
 
-      assertThat(
-          pointListsByName,
-          is(
+      assertThat(pointListsByName)
+          .isEqualTo(
               Map.of(
                   "Belarus",
                       List.of(new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023)),
                   "54 Sea Zone", List.of(new Point(2011, 2021), new Point(2012, 2022)),
-                  "Philippines", List.of(new Point(3011, 3021)))));
+                  "Philippines", List.of(new Point(3011, 3021))));
     }
 
     @Test
@@ -243,13 +238,12 @@ Philippines (3011,3021)
       final Map<String, List<Point>> pointListsByName =
           PointFileReaderWriter.readOneToMany(pathToVirtualTextFile(content));
 
-      assertThat(
-          pointListsByName,
-          is(
+      assertThat(pointListsByName)
+          .isEqualTo(
               Map.of(
                   "United Kingdom",
                   List.of(
-                      new Point(-1011, 1021), new Point(1234, -12_424), new Point(-123, -456)))));
+                      new Point(-1011, 1021), new Point(1234, -12_424), new Point(-123, -456))));
     }
   }
 
@@ -257,8 +251,8 @@ Philippines (3011,3021)
   final class ReadOneToManyPlacementsTest {
     @Test
     void shouldReturnEmptyMapWhenStreamIsEmpty() throws Exception {
-      assertThat(
-          PointFileReaderWriter.readOneToManyPlacements(pathToVirtualTextFile("")), is(Map.of()));
+      assertThat(PointFileReaderWriter.readOneToManyPlacements(pathToVirtualTextFile("")))
+          .isEqualTo(Map.of());
     }
 
     @Test
@@ -275,9 +269,8 @@ East Africa (5011,5021) | overflowToLeft=not a boolean
       final Map<String, Tuple<List<Point>, Boolean>> pointListsByName =
           PointFileReaderWriter.readOneToManyPlacements(pathToVirtualTextFile(content));
 
-      assertThat(
-          pointListsByName,
-          is(
+      assertThat(pointListsByName)
+          .isEqualTo(
               Map.of(
                   "Belarus",
                   Tuple.of(
@@ -291,7 +284,7 @@ East Africa (5011,5021) | overflowToLeft=not a boolean
                   "East America",
                   Tuple.of(List.of(new Point(4011, 4021)), false),
                   "East Africa",
-                  Tuple.of(List.of(new Point(5011, 5021)), false))));
+                  Tuple.of(List.of(new Point(5011, 5021)), false)));
     }
 
     @Test
@@ -337,15 +330,14 @@ East Africa (5011,5021) | overflowToLeft=not a boolean
       final Map<String, Tuple<List<Point>, Boolean>> pointListsByName =
           PointFileReaderWriter.readOneToManyPlacements(pathToVirtualTextFile(content));
 
-      assertThat(
-          pointListsByName,
-          is(
+      assertThat(pointListsByName)
+          .isEqualTo(
               Map.of(
                   "United Kingdom",
                   Tuple.of(
                       List.of(
                           new Point(-1011, 1021), new Point(1234, -12_424), new Point(-123, -456)),
-                      Boolean.FALSE))));
+                      Boolean.FALSE)));
     }
   }
 
@@ -353,8 +345,8 @@ East Africa (5011,5021) | overflowToLeft=not a boolean
   final class ReadOneToManyPolygonsTest {
     @Test
     void shouldReturnEmptyMapWhenStreamIsEmpty() throws Exception {
-      assertThat(
-          PointFileReaderWriter.readOneToManyPolygons(pathToVirtualTextFile("")), is(Map.of()));
+      assertThat(PointFileReaderWriter.readOneToManyPolygons(pathToVirtualTextFile("")))
+          .isEqualTo(Map.of());
     }
 
     @Test
@@ -369,28 +361,25 @@ Philippines  <  (3011,3021) (3012,3022) (3013,3023) >  <  (3111,3121) (3112,3122
       final Map<String, List<Polygon>> polygonListsByName =
           PointFileReaderWriter.readOneToManyPolygons(pathToVirtualTextFile(content));
 
-      assertThat(polygonListsByName, is(aMapWithSize(3)));
-      assertThat(polygonListsByName, hasKey("Belarus"));
-      assertThat(
-          points(polygonListsByName.get("Belarus")),
-          is(
+      assertThat(polygonListsByName).hasSize(3);
+      assertThat(polygonListsByName).containsKey("Belarus");
+      assertThat(points(polygonListsByName.get("Belarus")))
+          .isEqualTo(
               List.of(
-                  List.of(new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023)))));
-      assertThat(polygonListsByName, hasKey("54 Sea Zone"));
-      assertThat(
-          points(polygonListsByName.get("54 Sea Zone")),
-          is(
+                  List.of(new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023))));
+      assertThat(polygonListsByName).containsKey("54 Sea Zone");
+      assertThat(points(polygonListsByName.get("54 Sea Zone")))
+          .isEqualTo(
               List.of(
                   List.of(new Point(2011, 2021), new Point(2012, 2022), new Point(2013, 2023)),
-                  List.of(new Point(2111, 2121), new Point(2112, 2122), new Point(2113, 2123)))));
-      assertThat(polygonListsByName, hasKey("Philippines"));
-      assertThat(
-          points(polygonListsByName.get("Philippines")),
-          is(
+                  List.of(new Point(2111, 2121), new Point(2112, 2122), new Point(2113, 2123))));
+      assertThat(polygonListsByName).containsKey("Philippines");
+      assertThat(points(polygonListsByName.get("Philippines")))
+          .isEqualTo(
               List.of(
                   List.of(new Point(3011, 3021), new Point(3012, 3022), new Point(3013, 3023)),
                   List.of(new Point(3111, 3121), new Point(3112, 3122)),
-                  List.of(new Point(3211, 3221)))));
+                  List.of(new Point(3211, 3221))));
     }
 
     @Test
@@ -405,7 +394,7 @@ Philippines  <  (3011,3021) (3012,3022) (3013,3023) >  <  (3111,3121) (3112,3122
               IOException.class,
               () -> PointFileReaderWriter.readOneToManyPolygons(pathToVirtualTextFile(content)));
 
-      assertThat(exception.getCause().getClass(), is(IllegalArgumentException.class));
+      assertThat(exception.getCause().getClass()).isEqualTo(IllegalArgumentException.class);
       assertTrue(exception.getMessage().contains("East Compass Sea Zone"));
     }
 
@@ -462,12 +451,11 @@ Philippines  <  (3011,3021) (3012,3022) (3013,3023) >  <  (3111,3121) (3112,3122
       final Map<String, List<Polygon>> polygonListsByName =
           PointFileReaderWriter.readOneToManyPolygons(pathToVirtualTextFile(content));
 
-      assertThat(
-          points(polygonListsByName.get("United Kingdom")),
-          is(
+      assertThat(points(polygonListsByName.get("United Kingdom")))
+          .isEqualTo(
               List.of(
                   List.of(
-                      new Point(-1011, 1021), new Point(1234, -12_424), new Point(-123, -456)))));
+                      new Point(-1011, 1021), new Point(1234, -12_424), new Point(-123, -456))));
     }
   }
 
@@ -485,13 +473,12 @@ Philippines  <  (3011,3021) (3012,3022) (3013,3023) >  <  (3111,3121) (3112,3122
       final String content =
           writeToString(os -> PointFileReaderWriter.writeOneToOne(os, pointsByName));
 
-      assertThat(
-          content,
-          is(
+      assertThat(content)
+          .isEqualTo(
               ""
                   + "United Kingdom  (1011,1021) \r\n"
                   + "Germany  (2011,2021) \r\n"
-                  + "Eastern United States  (3011,3021) "));
+                  + "Eastern United States  (3011,3021) ");
     }
   }
 
@@ -510,13 +497,12 @@ Philippines  <  (3011,3021) (3012,3022) (3013,3023) >  <  (3111,3121) (3112,3122
       final String content =
           writeToString(os -> PointFileReaderWriter.writeOneToMany(os, pointListsByName));
 
-      assertThat(
-          content,
-          is(
+      assertThat(content)
+          .isEqualTo(
               ""
                   + "Belarus  (1011,1021)  (1012,1022)  (1013,1023) \r\n"
                   + "54 Sea Zone  (2011,2021)  (2012,2022) \r\n"
-                  + "Philippines  (3011,3021) "));
+                  + "Philippines  (3011,3021) ");
     }
   }
 
@@ -544,13 +530,12 @@ Philippines  <  (3011,3021) (3012,3022) (3013,3023) >  <  (3111,3121) (3112,3122
           writeToString(
               os -> PointFileReaderWriter.writeOneToManyPlacements(os, polygonListsByName));
 
-      assertThat(
-          content,
-          is(
+      assertThat(content)
+          .isEqualTo(
               ""
                   + "Belarus  (1011,1021)  (1012,1022)  (1013,1023)  | overflowToLeft=true\r\n"
                   + "54 Sea Zone  (2011,2021)  (2012,2022)  (2013,2023)  | overflowToLeft=false\r\n"
-                  + "Philippines  (3011,3021)  (3012,3022)  (3013,3023)  | overflowToLeft=true"));
+                  + "Philippines  (3011,3021)  (3012,3022)  (3013,3023)  | overflowToLeft=true");
     }
   }
 
@@ -576,15 +561,14 @@ Philippines  <  (3011,3021) (3012,3022) (3013,3023) >  <  (3111,3121) (3112,3122
       final String content =
           writeToString(os -> PointFileReaderWriter.writeOneToManyPolygons(os, polygonListsByName));
 
-      assertThat(
-          content,
-          is(
+      assertThat(content)
+          .isEqualTo(
               ""
                   + "Belarus  <  (1011,1021)  (1012,1022)  (1013,1023)  > \r\n"
                   + "54 Sea Zone  <  (2011,2021)  (2012,2022)  (2013,2023)  > "
                   + " <  (2111,2121)  (2112,2122)  (2113,2123)  > \r\n"
                   + "Philippines  <  (3011,3021)  (3012,3022)  (3013,3023)  > "
-                  + " <  (3111,3121)  (3112,3122)  >  <  (3211,3221)  > "));
+                  + " <  (3111,3121)  (3112,3122)  >  <  (3211,3221)  > ");
     }
 
     private Polygon polygon(final Point... points) {

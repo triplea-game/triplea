@@ -1,8 +1,6 @@
 package games.strategy.triplea.settings;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -27,7 +25,7 @@ final class ProtectedStringClientSettingTest {
         final String encodedValue =
             ProtectedStringClientSetting.encodeValue(value, credentialManager);
 
-        assertThat(credentialManager.unprotectToString(encodedValue), is("value"));
+        assertThat(credentialManager.unprotectToString(encodedValue)).isEqualTo("value");
       }
     }
 
@@ -53,7 +51,7 @@ final class ProtectedStringClientSettingTest {
         final char[] value =
             ProtectedStringClientSetting.decodeValue(encodedValue, credentialManager);
 
-        assertThat(value, is("encodedValue".toCharArray()));
+        assertThat(value).isEqualTo("encodedValue".toCharArray());
       }
     }
 
@@ -74,7 +72,7 @@ final class ProtectedStringClientSettingTest {
     void shouldBeAbleToRoundTripValue() {
       final String value = "value";
       clientSetting.setValue(value.toCharArray());
-      assertThat(clientSetting.getValue().map(String::new), isPresentAndIs(value));
+      assertThat(clientSetting.getValue().map(String::new)).contains(value);
     }
   }
 }

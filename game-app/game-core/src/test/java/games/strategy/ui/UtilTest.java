@@ -1,7 +1,6 @@
 package games.strategy.ui;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -48,18 +47,18 @@ final class UtilTest {
     void shouldTranslatePolygonBySpecifiedDisplacement() {
       final Polygon translatedPolygon = Util.translatePolygon(polygon, 2, -5);
 
-      assertThat(translatedPolygon.xpoints, is(new int[] {3, 4, 5}));
-      assertThat(translatedPolygon.ypoints, is(new int[] {-1, 0, 1}));
-      assertThat(translatedPolygon.npoints, is(3));
+      assertThat(translatedPolygon.xpoints).isEqualTo(new int[] {3, 4, 5});
+      assertThat(translatedPolygon.ypoints).isEqualTo(new int[] {-1, 0, 1});
+      assertThat(translatedPolygon.npoints).isEqualTo(3);
     }
 
     @Test
     void shouldNotModifyOriginalPolygon() {
       Util.translatePolygon(polygon, 2, -5);
 
-      assertThat(polygon.xpoints, is(new int[] {1, 2, 3}));
-      assertThat(polygon.ypoints, is(new int[] {4, 5, 6}));
-      assertThat(polygon.npoints, is(3));
+      assertThat(polygon.xpoints).isEqualTo(new int[] {1, 2, 3});
+      assertThat(polygon.ypoints).isEqualTo(new int[] {4, 5, 6});
+      assertThat(polygon.npoints).isEqualTo(3);
     }
   }
 }

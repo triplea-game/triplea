@@ -1,7 +1,6 @@
 package games.strategy.triplea.delegate;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -35,7 +34,7 @@ final class UndoablePlacementTest {
       final UndoablePlacement undoablePlacement =
           newUndoablePlacement(producerTerritory, placeTerritory);
 
-      assertThat(undoablePlacement.getMoveLabel(), is(placeTerritory.getName()));
+      assertThat(undoablePlacement.getMoveLabel()).isEqualTo(placeTerritory.getName());
     }
 
     @Test
@@ -44,9 +43,8 @@ final class UndoablePlacementTest {
       final UndoablePlacement undoablePlacement =
           newUndoablePlacement(producerTerritory, placeTerritory);
 
-      assertThat(
-          undoablePlacement.getMoveLabel(),
-          is(producerTerritory.getName() + " -> " + placeTerritory.getName()));
+      assertThat(undoablePlacement.getMoveLabel())
+          .isEqualTo(producerTerritory.getName() + " -> " + placeTerritory.getName());
     }
   }
 
@@ -58,8 +56,8 @@ final class UndoablePlacementTest {
       final UndoablePlacement undoablePlacement =
           newUndoablePlacement(producerTerritory, placeTerritory);
 
-      assertThat(
-          undoablePlacement.toString(), is(placeTerritory.getName() + ": 1 " + UNIT_TYPE_NAME));
+      assertThat(undoablePlacement.toString())
+          .isEqualTo(placeTerritory.getName() + ": 1 " + UNIT_TYPE_NAME);
     }
 
     @Test
@@ -68,14 +66,13 @@ final class UndoablePlacementTest {
       final UndoablePlacement undoablePlacement =
           newUndoablePlacement(producerTerritory, placeTerritory);
 
-      assertThat(
-          undoablePlacement.toString(),
-          is(
+      assertThat(undoablePlacement.toString())
+          .isEqualTo(
               producerTerritory.getName()
                   + " produces in "
                   + placeTerritory.getName()
                   + ": 1 "
-                  + UNIT_TYPE_NAME));
+                  + UNIT_TYPE_NAME);
     }
   }
 }

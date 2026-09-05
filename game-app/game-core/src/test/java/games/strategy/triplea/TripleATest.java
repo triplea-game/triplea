@@ -1,7 +1,6 @@
 package games.strategy.triplea;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.isA;
@@ -55,7 +54,7 @@ public class TripleATest {
     playerNames.put("second", PlayerTypes.WEAK_AI);
     playerNames.put("third", PlayerTypes.PRO_AI);
     final Set<Player> players = tripleA.newPlayers(playerNames);
-    assertThat(players, hasSize(playerNames.size()));
+    assertThat(players).hasSize(playerNames.size());
   }
 
   @Test

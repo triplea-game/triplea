@@ -7,19 +7,16 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.UNITS;
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitSeaTransport;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
@@ -94,15 +91,18 @@ class SelectMainBattleCasualtiesTest {
     final CasualtyDetails details =
         new SelectMainBattleCasualties(selectFunction).apply(delegateBridge, selectCasualties);
 
-    assertThat(details.getKilled().toArray(), is(targetUnits.toArray()));
-    assertThat(
-        "edit mode always sets auto calculated to true", details.getAutoCalculated(), is(true));
+    assertThat(details.getKilled().toArray()).isEqualTo(targetUnits.toArray());
+    assertThat(details.getAutoCalculated())
+        .as("edit mode always sets auto calculated to true")
+        .isTrue();
 
     verify(selectFunction)
         .apply(
             eq(delegateBridge),
             eq(selectCasualties),
-            (Collection<Unit>) argThat(containsInAnyOrder(targetUnits.toArray())),
+            argThat(
+                (Collection<Unit> arg) ->
+                    arg.size() == targetUnits.size() && arg.containsAll(targetUnits)),
             eq(0));
   }
 
@@ -146,13 +146,15 @@ class SelectMainBattleCasualtiesTest {
       final CasualtyDetails details =
           new SelectMainBattleCasualties(selectFunction).apply(delegateBridge, selectCasualties);
 
-      assertThat(details, is(expected));
+      assertThat(details).isEqualTo(expected);
 
       verify(selectFunction)
           .apply(
               eq(delegateBridge),
               eq(selectCasualties),
-              (Collection<Unit>) argThat(containsInAnyOrder(targetUnits.toArray())),
+              argThat(
+                  (Collection<Unit> arg) ->
+                      arg.size() == targetUnits.size() && arg.containsAll(targetUnits)),
               eq(3));
     }
 
@@ -191,9 +193,9 @@ class SelectMainBattleCasualtiesTest {
       final CasualtyDetails details =
           new SelectMainBattleCasualties(selectFunction).apply(delegateBridge, selectCasualties);
 
-      assertThat(details.getKilled(), is(targetUnits));
-      assertThat(details.getDamaged(), is(empty()));
-      assertThat(details.getAutoCalculated(), is(true));
+      assertThat(details.getKilled()).isEqualTo(targetUnits);
+      assertThat(details.getDamaged()).isEmpty();
+      assertThat(details.getAutoCalculated()).isTrue();
 
       verify(
               selectFunction,
@@ -255,13 +257,15 @@ class SelectMainBattleCasualtiesTest {
       final CasualtyDetails details =
           new SelectMainBattleCasualties(selectFunction).apply(delegateBridge, selectCasualties);
 
-      assertThat(details, is(expected));
+      assertThat(details).isEqualTo(expected);
 
       verify(selectFunction)
           .apply(
               eq(delegateBridge),
               eq(selectCasualties),
-              (Collection<Unit>) argThat(containsInAnyOrder(nonTransportUnits.toArray())),
+              argThat(
+                  (Collection<Unit> arg) ->
+                      arg.size() == nonTransportUnits.size() && arg.containsAll(nonTransportUnits)),
               eq(3));
     }
 
@@ -306,8 +310,8 @@ class SelectMainBattleCasualtiesTest {
       final CasualtyDetails details =
           new SelectMainBattleCasualties(selectFunction).apply(delegateBridge, selectCasualties);
 
-      assertThat(details.getKilled().toArray(), is(nonTransportUnits.toArray()));
-      assertThat(details.getAutoCalculated(), is(true));
+      assertThat(details.getKilled().toArray()).isEqualTo(nonTransportUnits.toArray());
+      assertThat(details.getAutoCalculated()).isTrue();
       verify(selectFunction, never()).apply(any(), any(), anyCollection(), anyInt());
     }
 
@@ -366,16 +370,19 @@ class SelectMainBattleCasualtiesTest {
       final CasualtyDetails details =
           new SelectMainBattleCasualties(selectFunction).apply(delegateBridge, selectCasualties);
 
-      assertThat(details.getAutoCalculated(), is(true));
+      assertThat(details.getAutoCalculated()).isTrue();
       final List<Unit> killedUnits = new ArrayList<>(nonTransportUnits);
       killedUnits.addAll(expected.getKilled());
-      assertThat(details.getKilled().toArray(), is(killedUnits.toArray()));
+      assertThat(details.getKilled().toArray()).isEqualTo(killedUnits.toArray());
 
       verify(selectFunction)
           .apply(
               eq(delegateBridge),
               eq(selectCasualties),
-              (Collection<Unit>) argThat(containsInAnyOrder(expectedCasualtyList.toArray())),
+              argThat(
+                  (Collection<Unit> arg) ->
+                      arg.size() == expectedCasualtyList.size()
+                          && arg.containsAll(expectedCasualtyList)),
               eq(2));
     }
 
@@ -448,16 +455,19 @@ class SelectMainBattleCasualtiesTest {
       final CasualtyDetails details =
           new SelectMainBattleCasualties(selectFunction).apply(delegateBridge, selectCasualties);
 
-      assertThat(details.getAutoCalculated(), is(true));
+      assertThat(details.getAutoCalculated()).isTrue();
       final List<Unit> killedUnits = new ArrayList<>(nonTransportUnits);
       killedUnits.addAll(expected.getKilled());
-      assertThat(details.getKilled().toArray(), is(killedUnits.toArray()));
+      assertThat(details.getKilled().toArray()).isEqualTo(killedUnits.toArray());
 
       verify(selectFunction)
           .apply(
               eq(delegateBridge),
               eq(selectCasualties),
-              (Collection<Unit>) argThat(containsInAnyOrder(expectedCasualtyList.toArray())),
+              argThat(
+                  (Collection<Unit> arg) ->
+                      arg.size() == expectedCasualtyList.size()
+                          && arg.containsAll(expectedCasualtyList)),
               eq(2));
     }
 
@@ -510,8 +520,8 @@ class SelectMainBattleCasualtiesTest {
       final CasualtyDetails details =
           new SelectMainBattleCasualties(selectFunction).apply(delegateBridge, selectCasualties);
 
-      assertThat(details.getAutoCalculated(), is(true));
-      assertThat(details.getKilled().toArray(), is(targetUnits.toArray()));
+      assertThat(details.getAutoCalculated()).isTrue();
+      assertThat(details.getKilled().toArray()).isEqualTo(targetUnits.toArray());
 
       verify(selectFunction, never()).apply(any(), any(), anyCollection(), anyInt());
     }
@@ -575,8 +585,8 @@ class SelectMainBattleCasualtiesTest {
       final CasualtyDetails details =
           new SelectMainBattleCasualties(selectFunction).apply(delegateBridge, selectCasualties);
 
-      assertThat(details.getAutoCalculated(), is(true));
-      assertThat(details.getKilled().toArray(), is(targetUnits.toArray()));
+      assertThat(details.getAutoCalculated()).isTrue();
+      assertThat(details.getKilled().toArray()).isEqualTo(targetUnits.toArray());
 
       verify(selectFunction, never()).apply(any(), any(), anyCollection(), anyInt());
     }

@@ -1,13 +1,6 @@
 package org.triplea.io;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
 
@@ -35,10 +28,9 @@ final class FileUtilsTest {
       Files.createFile(tempDir.resolve("file2"));
       Files.createFile(tempDir.resolve("file3"));
 
-      assertThat(
-          FileUtils.listFiles(tempDir),
-          containsInAnyOrder(
-              tempDir.resolve("file1"), tempDir.resolve("file2"), tempDir.resolve("file3")));
+      assertThat(FileUtils.listFiles(tempDir))
+          .containsExactlyInAnyOrder(
+              tempDir.resolve("file1"), tempDir.resolve("file2"), tempDir.resolve("file3"));
     }
 
     @Test
@@ -46,14 +38,14 @@ final class FileUtilsTest {
       final Path tempDir = Files.createTempDirectory(null);
       final Path file1 = Files.createFile(tempDir.resolve("file1"));
 
-      assertThat(FileUtils.listFiles(file1), is(empty()));
+      assertThat(FileUtils.listFiles(file1)).isEmpty();
     }
 
     @Test
     void shouldReturnEmptyCollectionWhenDirectoryIsEmpty() throws Exception {
       final Path tempDir = Files.createTempDirectory(null);
 
-      assertThat(FileUtils.listFiles(tempDir), is(empty()));
+      assertThat(FileUtils.listFiles(tempDir)).isEmpty();
     }
   }
 
@@ -64,7 +56,7 @@ final class FileUtilsTest {
 
     final Optional<String> contentRead = FileUtils.readContents(testFilePath);
 
-    assertThat(contentRead, isPresent());
+    assertThat(contentRead).isPresent();
   }
 
   @Nested
@@ -74,7 +66,7 @@ final class FileUtilsTest {
     void fileDoesNotExist() {
       final Optional<Path> result =
           FileUtils.findFileInParentFolders(Path.of(""), "does not exist");
-      assertThat(result, isEmpty());
+      assertThat(result).isEmpty();
     }
 
     @Test
@@ -89,28 +81,23 @@ final class FileUtilsTest {
       final Path child1 = testFolderPath.resolve("child1");
       final Path child2 = child1.resolve("child2");
 
-      assertThat(
-          "child2 folder contains 'touch-file'",
-          FileUtils.findFileInParentFolders(child2, "touch-file"),
-          isPresentAndIs(child2.resolve("touch-file")));
+      assertThat(FileUtils.findFileInParentFolders(child2, "touch-file"))
+          .as("child2 folder contains 'touch-file'")
+          .contains(child2.resolve("touch-file"));
 
-      assertThat(
-          "child1 nor parents do not contain'touch-file'",
-          FileUtils.findFileInParentFolders(child1, "touch-file"),
-          isEmpty());
+      assertThat(FileUtils.findFileInParentFolders(child1, "touch-file"))
+          .as("child1 nor parents do not contain'touch-file'")
+          .isEmpty();
 
-      assertThat(
-          "all three test folder contain 'touch-parent' at a top level",
-          FileUtils.findFileInParentFolders(child1, "touch-parent"),
-          isPresentAndIs(testFolderPath.resolve("touch-parent")));
+      assertThat(FileUtils.findFileInParentFolders(child1, "touch-parent"))
+          .as("all three test folder contain 'touch-parent' at a top level")
+          .contains(testFolderPath.resolve("touch-parent"));
 
-      assertThat(
-          FileUtils.findFileInParentFolders(child2, "touch-parent"),
-          isPresentAndIs(testFolderPath.resolve("touch-parent")));
+      assertThat(FileUtils.findFileInParentFolders(child2, "touch-parent"))
+          .contains(testFolderPath.resolve("touch-parent"));
 
-      assertThat(
-          FileUtils.findFileInParentFolders(testFolderPath, "touch-parent"),
-          isPresentAndIs(testFolderPath.resolve("touch-parent")));
+      assertThat(FileUtils.findFileInParentFolders(testFolderPath, "touch-parent"))
+          .contains(testFolderPath.resolve("touch-parent"));
     }
   }
 
@@ -128,28 +115,26 @@ final class FileUtilsTest {
 
     @Test
     void findClosestToRootDepth1() {
-      assertThat(
-          FileUtils.findClosestToRoot(child2, 1, "test-file"),
-          isPresentAndIs(child2.resolve("test-file")));
+      assertThat(FileUtils.findClosestToRoot(child2, 1, "test-file"))
+          .contains(child2.resolve("test-file"));
     }
 
     @Test
     void findClosestToRootDepth3() {
-      assertThat(
-          FileUtils.findClosestToRoot(testFolderPath, 3, "test-file"),
-          isPresentAndIs(testFolderPath.resolve("test-file")));
+      assertThat(FileUtils.findClosestToRoot(testFolderPath, 3, "test-file"))
+          .contains(testFolderPath.resolve("test-file"));
     }
 
     @Test
     void findDepth1() {
-      assertThat(FileUtils.find(child2, 1, "test-file"), contains(child2.resolve("test-file")));
+      assertThat(FileUtils.find(child2, 1, "test-file"))
+          .containsExactly(child2.resolve("test-file"));
     }
 
     @Test
     void findDepth3() {
-      assertThat(
-          FileUtils.find(testFolderPath, 3, "test-file"),
-          contains(testFolderPath.resolve("test-file"), child2.resolve("test-file")));
+      assertThat(FileUtils.find(testFolderPath, 3, "test-file"))
+          .containsExactly(testFolderPath.resolve("test-file"), child2.resolve("test-file"));
     }
   }
 
@@ -164,11 +149,11 @@ final class FileUtilsTest {
     Files.createDirectory(directory);
     // create a file in the directory so that it is non-empty
     Files.createFile(directory.resolve("touch-file"));
-    assertThat("Precondition, make sure the directory exists", Files.exists(directory), is(true));
+    assertThat(Files.exists(directory)).as("Precondition, make sure the directory exists").isTrue();
 
     FileUtils.deleteDirectory(directory);
 
-    assertThat(Files.exists(directory), is(false));
+    assertThat(Files.exists(directory)).isFalse();
   }
 
   @ExtendWith(MockitoExtension.class)
@@ -192,16 +177,14 @@ final class FileUtilsTest {
 
       final boolean result = FileUtils.replaceFolder(src, dest);
 
-      assertThat(result, is(true));
-      assertThat("Destination folder should now exist", Files.exists(dest), is(true));
-      assertThat(
-          "'temp-file' from the source folder should now exist under the dest folder",
-          Files.exists(dest.resolve("temp-file")),
-          is(true));
-      assertThat(
-          "The original source folder is moved and should no longer exist",
-          Files.exists(src),
-          is(false));
+      assertThat(result).isTrue();
+      assertThat(Files.exists(dest)).as("Destination folder should now exist").isTrue();
+      assertThat(Files.exists(dest.resolve("temp-file")))
+          .as("'temp-file' from the source folder should now exist under the dest folder")
+          .isTrue();
+      assertThat(Files.exists(src))
+          .as("The original source folder is moved and should no longer exist")
+          .isFalse();
     }
 
     @DisplayName("Verify happy case of replace folder where dest folder is cleanly overwitten")
@@ -217,17 +200,15 @@ final class FileUtilsTest {
 
       final boolean result = FileUtils.replaceFolder(src, dest);
 
-      assertThat(result, is(true));
-      assertThat("Destination folder should exist", Files.exists(dest), is(true));
-      assertThat(
-          "Destination folder should contain the child file of 'src'",
-          Files.exists(dest.resolve("temp-file")),
-          is(true));
-      assertThat(
-          "Previous contents of destination folder should be deleted",
-          Files.exists(dest.resolve("dest-temp-file")),
-          is(false));
-      assertThat("src folder should be moved and no longer exist", Files.exists(src), is(false));
+      assertThat(result).isTrue();
+      assertThat(Files.exists(dest)).as("Destination folder should exist").isTrue();
+      assertThat(Files.exists(dest.resolve("temp-file")))
+          .as("Destination folder should contain the child file of 'src'")
+          .isTrue();
+      assertThat(Files.exists(dest.resolve("dest-temp-file")))
+          .as("Previous contents of destination folder should be deleted")
+          .isFalse();
+      assertThat(Files.exists(src)).as("src folder should be moved and no longer exist").isFalse();
     }
 
     @DisplayName("Simulate a failure to replace the dest directory, we should see a rollback")
@@ -253,21 +234,18 @@ final class FileUtilsTest {
           .move(any(), any());
 
       final boolean result = FileUtils.replaceFolder(src, dest, fileMoveSpy);
-      assertThat(result, is(false));
+      assertThat(result).isFalse();
 
-      assertThat("Destination folder should exist", Files.exists(dest), is(true));
-      assertThat(
-          "Destination folder should contain original child file",
-          Files.exists(dest.resolve("dest-temp-file")),
-          is(true));
-      assertThat(
-          "Destination folder should not contain src child file",
-          Files.exists(dest.resolve("temp-file")),
-          is(false));
-      assertThat(
-          "Previous src folder child file should still exist",
-          Files.exists(src.resolve("temp-file")),
-          is(true));
+      assertThat(Files.exists(dest)).as("Destination folder should exist").isTrue();
+      assertThat(Files.exists(dest.resolve("dest-temp-file")))
+          .as("Destination folder should contain original child file")
+          .isTrue();
+      assertThat(Files.exists(dest.resolve("temp-file")))
+          .as("Destination folder should not contain src child file")
+          .isFalse();
+      assertThat(Files.exists(src.resolve("temp-file")))
+          .as("Previous src folder child file should still exist")
+          .isTrue();
     }
   }
 
@@ -275,7 +253,7 @@ final class FileUtilsTest {
   void getLastModifiedForFileThatDoesNotExist() {
     final Path doesNotExist = Path.of("DNE");
 
-    assertThat(FileUtils.getLastModified(doesNotExist), isEmpty());
+    assertThat(FileUtils.getLastModified(doesNotExist)).isEmpty();
   }
 
   @SuppressWarnings("OptionalGetWithoutIsPresent")
@@ -283,8 +261,8 @@ final class FileUtilsTest {
   void getLastModified() throws IOException {
     final Path tempFile = Files.createTempFile("test", "txt");
 
-    assertThat(FileUtils.getLastModified(tempFile), isPresent());
-    assertThat(FileUtils.getLastModified(tempFile).get().isBefore(Instant.now()), is(true));
+    assertThat(FileUtils.getLastModified(tempFile)).isPresent();
+    assertThat(FileUtils.getLastModified(tempFile).get().isBefore(Instant.now())).isTrue();
   }
 
   private Path getPathOfResource(String name) {

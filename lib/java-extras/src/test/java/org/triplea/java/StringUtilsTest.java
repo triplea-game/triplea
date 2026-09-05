@@ -1,7 +1,6 @@
 package org.triplea.java;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.triplea.java.StringUtils.capitalize;
 
@@ -13,12 +12,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 final class StringUtilsTest {
   @Test
   void shouldCapitalizeFirstCharacterAndLeaveOtherCharactersUnchanged() {
-    assertThat(capitalize(""), is(""));
-    assertThat(capitalize("a"), is("A"));
-    assertThat(capitalize("A"), is("A"));
-    assertThat(capitalize("abcd"), is("Abcd"));
-    assertThat(capitalize("aBCD"), is("ABCD"));
-    assertThat(capitalize("ABCD"), is("ABCD"));
+    assertThat(capitalize("")).isEqualTo("");
+    assertThat(capitalize("a")).isEqualTo("A");
+    assertThat(capitalize("A")).isEqualTo("A");
+    assertThat(capitalize("abcd")).isEqualTo("Abcd");
+    assertThat(capitalize("aBCD")).isEqualTo("ABCD");
+    assertThat(capitalize("ABCD")).isEqualTo("ABCD");
   }
 
   @Nested
@@ -26,7 +25,7 @@ final class StringUtilsTest {
     @ParameterizedTest
     @ValueSource(strings = {" 0 ", "-1", "1000", "0001"})
     void isInt(final String intValue) {
-      assertThat(StringUtils.isInt(intValue), is(true));
+      assertThat(StringUtils.isInt(intValue)).isTrue();
     }
 
     @ParameterizedTest
@@ -42,7 +41,7 @@ final class StringUtilsTest {
           ".0"
         })
     void notInt(final String notInt) {
-      assertThat(StringUtils.isInt(notInt), is(false));
+      assertThat(StringUtils.isInt(notInt)).isFalse();
     }
   }
 
@@ -51,7 +50,7 @@ final class StringUtilsTest {
     @ParameterizedTest
     @ValueSource(strings = {" 1 ", "1000", "0001"})
     void isPositiveInt(final String positiveInt) {
-      assertThat(StringUtils.isPositiveInt(positiveInt), is(true));
+      assertThat(StringUtils.isPositiveInt(positiveInt)).isTrue();
     }
 
     @ParameterizedTest
@@ -69,16 +68,16 @@ final class StringUtilsTest {
           ".0"
         })
     void notPositiveInt(final String notPositiveInt) {
-      assertThat(StringUtils.isPositiveInt(notPositiveInt), is(false));
+      assertThat(StringUtils.isPositiveInt(notPositiveInt)).isFalse();
     }
   }
 
   @Test
   void truncate() {
-    assertThat(StringUtils.truncate(null, 3), is(""));
-    assertThat(StringUtils.truncate("1234", 4), is("1234"));
-    assertThat(StringUtils.truncate("12345", 4), is("1..."));
-    assertThat(StringUtils.truncate("1234", 3), is("..."));
+    assertThat(StringUtils.truncate(null, 3)).isEqualTo("");
+    assertThat(StringUtils.truncate("1234", 4)).isEqualTo("1234");
+    assertThat(StringUtils.truncate("12345", 4)).isEqualTo("1...");
+    assertThat(StringUtils.truncate("1234", 3)).isEqualTo("...");
   }
 
   @Test
@@ -90,27 +89,27 @@ final class StringUtilsTest {
 
   @Test
   void truncateEnding() {
-    assertThat(StringUtils.truncateEnding("string.xml", ".xml"), is("string"));
-    assertThat(StringUtils.truncateEnding("string.xml", "string.xml"), is(""));
-    assertThat(StringUtils.truncateEnding("string", "xml"), is("string"));
-    assertThat(StringUtils.truncateEnding("string", "  "), is("string"));
-    assertThat(StringUtils.truncateEnding("string  ", "  "), is("string"));
-    assertThat(StringUtils.truncateEnding("string\n", "\n"), is("string"));
-    assertThat(StringUtils.truncateEnding("", ".xml"), is(""));
+    assertThat(StringUtils.truncateEnding("string.xml", ".xml")).isEqualTo("string");
+    assertThat(StringUtils.truncateEnding("string.xml", "string.xml")).isEqualTo("");
+    assertThat(StringUtils.truncateEnding("string", "xml")).isEqualTo("string");
+    assertThat(StringUtils.truncateEnding("string", "  ")).isEqualTo("string");
+    assertThat(StringUtils.truncateEnding("string  ", "  ")).isEqualTo("string");
+    assertThat(StringUtils.truncateEnding("string\n", "\n")).isEqualTo("string");
+    assertThat(StringUtils.truncateEnding("", ".xml")).isEqualTo("");
     assertThrows(IllegalArgumentException.class, () -> StringUtils.truncateEnding("", ""));
   }
 
   @Test
   void truncateFrom() {
-    assertThat(StringUtils.truncateFrom("", "+"), is(""));
-    assertThat(StringUtils.truncateFrom("abc", "+"), is("abc"));
-    assertThat(StringUtils.truncateFrom("abc", "c"), is("ab"));
-    assertThat(StringUtils.truncateFrom("abc", "b"), is("a"));
-    assertThat(StringUtils.truncateFrom("abc", "a"), is(""));
+    assertThat(StringUtils.truncateFrom("", "+")).isEqualTo("");
+    assertThat(StringUtils.truncateFrom("abc", "+")).isEqualTo("abc");
+    assertThat(StringUtils.truncateFrom("abc", "c")).isEqualTo("ab");
+    assertThat(StringUtils.truncateFrom("abc", "b")).isEqualTo("a");
+    assertThat(StringUtils.truncateFrom("abc", "a")).isEqualTo("");
 
-    assertThat(StringUtils.truncateFrom("abc", "xy"), is("abc"));
-    assertThat(StringUtils.truncateFrom("abc", "bc"), is("a"));
-    assertThat(StringUtils.truncateFrom("abc", "abc"), is(""));
-    assertThat(StringUtils.truncateFrom("abc", "ab"), is(""));
+    assertThat(StringUtils.truncateFrom("abc", "xy")).isEqualTo("abc");
+    assertThat(StringUtils.truncateFrom("abc", "bc")).isEqualTo("a");
+    assertThat(StringUtils.truncateFrom("abc", "abc")).isEqualTo("");
+    assertThat(StringUtils.truncateFrom("abc", "ab")).isEqualTo("");
   }
 }

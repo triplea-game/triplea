@@ -1,7 +1,6 @@
 package games.strategy.triplea.formatter;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -19,19 +18,19 @@ final class MyFormatterTest {
     @Test
     void empty() {
       final String result = MyFormatter.asDice(new int[] {});
-      assertThat(result, is("none"));
+      assertThat(result).isEqualTo("none");
     }
 
     @Test
     void singleton() {
       final String result = MyFormatter.asDice(new int[] {1});
-      assertThat(result, is("2"));
+      assertThat(result).isEqualTo("2");
     }
 
     @Test
     void multiple() {
       final String result = MyFormatter.asDice(new int[] {1, 2, 3, 10});
-      assertThat(result, is("2,3,4,11"));
+      assertThat(result).isEqualTo("2,3,4,11");
     }
   }
 
@@ -53,7 +52,7 @@ final class MyFormatterTest {
 
     @Test
     void shouldReturnEmptyStringWhenUnitsIsEmpty() {
-      assertThat(MyFormatter.unitsToText(List.of()), is(""));
+      assertThat(MyFormatter.unitsToText(List.of())).isEqualTo("");
     }
 
     @Test
@@ -69,14 +68,13 @@ final class MyFormatterTest {
               newUnit(unitType1, gamePlayer2),
               newUnit(unitType2, gamePlayer2));
 
-      assertThat(
-          MyFormatter.unitsToText(units),
-          is(
+      assertThat(MyFormatter.unitsToText(units))
+          .isEqualTo(
               ""
                   + "1 unitType1 owned by the playerId2, "
                   + "1 unitType2 owned by the playerId2, "
                   + "1 unitType1 owned by the playerId1 "
-                  + "and 1 unitType2 owned by the playerId1"));
+                  + "and 1 unitType2 owned by the playerId1");
     }
 
     @Test
@@ -86,18 +84,18 @@ final class MyFormatterTest {
       final Collection<Unit> units =
           List.of(newUnit(unitType, gamePlayer), newUnit(unitType, gamePlayer));
 
-      assertThat(MyFormatter.unitsToText(units), is("2 unitTypes owned by the playerId"));
+      assertThat(MyFormatter.unitsToText(units)).isEqualTo("2 unitTypes owned by the playerId");
     }
 
     @Test
     void addHtmlBreaksAndIndentsWithEmptyString() {
-      assertThat(MyFormatter.addHtmlBreaksAndIndents("", 80, 100), is(""));
+      assertThat(MyFormatter.addHtmlBreaksAndIndents("", 80, 100)).isEqualTo("");
     }
 
     @Test
     void addHtmlBreaksAndIndentsWithNoBreak() {
       final String target = "unitType, unitType";
-      assertThat(MyFormatter.addHtmlBreaksAndIndents(target, 80, 100), is(target));
+      assertThat(MyFormatter.addHtmlBreaksAndIndents(target, 80, 100)).isEqualTo(target);
     }
 
     @Test
@@ -109,7 +107,7 @@ final class MyFormatterTest {
           "unitType, unitType, unitType, unitType, unitType, unitType, unitType, "
               + "<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
               + "unitType, unitType, unitType, unitType, unitType";
-      assertThat(MyFormatter.addHtmlBreaksAndIndents(target, 80, 100), is(result));
+      assertThat(MyFormatter.addHtmlBreaksAndIndents(target, 80, 100)).isEqualTo(result);
     }
 
     @Test
@@ -121,7 +119,7 @@ final class MyFormatterTest {
           "<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aVery"
               + "VeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVery"
               + "VeryLongUnitType";
-      assertThat(MyFormatter.addHtmlBreaksAndIndents(target, 80, 100), is(result));
+      assertThat(MyFormatter.addHtmlBreaksAndIndents(target, 80, 100)).isEqualTo(result);
     }
   }
 }

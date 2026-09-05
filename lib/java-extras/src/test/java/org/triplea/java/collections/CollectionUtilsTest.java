@@ -1,10 +1,6 @@
 package org.triplea.java.collections;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.sameInstance;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.triplea.java.collections.CollectionUtils.countMatches;
@@ -54,20 +50,20 @@ final class CollectionUtilsTest {
     void returnsDistinctInstanceWithDifferenceStorage() {
       final Collection<Integer> input = new ArrayList<>(List.of(-1, 0, 1));
       final List<Integer> result = getMatches(input, ALWAYS);
-      assertThat(result, equalTo(input));
-      assertThat(result, not(sameInstance(input)));
+      assertThat(result).isEqualTo(input);
+      assertThat(result).isNotSameAs(input);
       // Modifying input shouldn't change result.
       input.add(5);
-      assertThat(result, not(equalTo(input)));
+      assertThat(result).isNotEqualTo(input);
     }
 
     @Test
     void returnsMutableInstance() {
       final Collection<Integer> input = List.of(-1, 0, 1);
       final List<Integer> result = getMatches(input, IS_ZERO.negate());
-      assertThat(result, equalTo(List.of(-1, 1)));
+      assertThat(result).isEqualTo(List.of(-1, 1));
       result.add(5);
-      assertThat(result, equalTo(List.of(-1, 1, 5)));
+      assertThat(result).isEqualTo(List.of(-1, 1, 5));
     }
   }
 
@@ -107,23 +103,23 @@ final class CollectionUtilsTest {
   final class HaveEqualSizeAndEquivalentElementsTest {
     @Test
     void shouldReturnTrueWhenCollectionsAreEqual() {
-      assertThat(haveEqualSizeAndEquivalentElements(List.of(1, 2, 3), List.of(1, 2, 3)), is(true));
+      assertThat(haveEqualSizeAndEquivalentElements(List.of(1, 2, 3), List.of(1, 2, 3))).isTrue();
     }
 
     @Test
     void shouldReturnTrueWhenCollectionsAreNotEqualButHaveSameSizeAndEquivalentElements() {
-      assertThat(haveEqualSizeAndEquivalentElements(List.of(1, 2, 1), List.of(2, 1, 2)), is(true));
+      assertThat(haveEqualSizeAndEquivalentElements(List.of(1, 2, 1), List.of(2, 1, 2))).isTrue();
     }
 
     @Test
     void shouldReturnFalseWhenCollectionsHaveEquivalentElementsButDifferentSize() {
-      assertThat(haveEqualSizeAndEquivalentElements(List.of(1, 2), List.of(1, 2, 2)), is(false));
+      assertThat(haveEqualSizeAndEquivalentElements(List.of(1, 2), List.of(1, 2, 2))).isFalse();
     }
 
     @Test
     void shouldReturnFalseWhenCollectionsHaveSameSizeButElementsAreNotEquivalent() {
-      assertThat(haveEqualSizeAndEquivalentElements(List.of(1, 2, 3), List.of(1, 2, 2)), is(false));
-      assertThat(haveEqualSizeAndEquivalentElements(List.of(1, 2, 2), List.of(1, 2, 3)), is(false));
+      assertThat(haveEqualSizeAndEquivalentElements(List.of(1, 2, 3), List.of(1, 2, 2))).isFalse();
+      assertThat(haveEqualSizeAndEquivalentElements(List.of(1, 2, 2), List.of(1, 2, 3))).isFalse();
     }
   }
 
@@ -133,27 +129,27 @@ final class CollectionUtilsTest {
     void supportsDuplicates() {
       final Collection<Integer> collection =
           CollectionUtils.createSortedCollection(List.of(1, 2, 3, -1, 2, 2), null);
-      assertThat(collection.toArray(), is(new Integer[] {-1, 1, 2, 2, 2, 3}));
+      assertThat(collection.toArray()).containsExactly(-1, 1, 2, 2, 2, 3);
     }
 
     @Test
     void staysSortedWhenModified() {
       final Collection<Integer> collection =
           CollectionUtils.createSortedCollection(List.of(35, 53, 9), null);
-      assertThat(collection.toArray(), is(new Integer[] {9, 35, 53}));
+      assertThat(collection.toArray()).containsExactly(9, 35, 53);
       collection.add(10);
-      assertThat(collection.toArray(), is(new Integer[] {9, 10, 35, 53}));
+      assertThat(collection.toArray()).containsExactly(9, 10, 35, 53);
       collection.remove(35);
-      assertThat(collection.toArray(), is(new Integer[] {9, 10, 53}));
+      assertThat(collection.toArray()).containsExactly(9, 10, 53);
       collection.addAll(List.of(25, -100));
-      assertThat(collection.toArray(), is(new Integer[] {-100, 9, 10, 25, 53}));
+      assertThat(collection.toArray()).containsExactly(-100, 9, 10, 25, 53);
     }
 
     @Test
     void iterationOrder() {
       final Collection<Integer> collection =
           CollectionUtils.createSortedCollection(List.of(9, 5, 4, 12), null);
-      assertThat(List.copyOf(collection), is(List.of(4, 5, 9, 12)));
+      assertThat(List.copyOf(collection)).isEqualTo(List.of(4, 5, 9, 12));
     }
   }
 }

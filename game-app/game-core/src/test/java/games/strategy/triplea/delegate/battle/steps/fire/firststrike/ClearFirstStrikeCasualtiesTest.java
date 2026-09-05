@@ -3,8 +3,7 @@ package games.strategy.triplea.delegate.battle.steps.fire.firststrike;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
 import static games.strategy.triplea.delegate.battle.steps.fire.firststrike.BattleStateBuilder.givenBattleState;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
@@ -39,7 +38,7 @@ class ClearFirstStrikeCasualtiesTest {
     final ClearFirstStrikeCasualties clearFirstStrikeCasualties =
         new ClearFirstStrikeCasualties(battleState, battleActions);
 
-    assertThat(clearFirstStrikeCasualties.getAllStepDetails(), hasSize(sides.isEmpty() ? 0 : 1));
+    assertThat(clearFirstStrikeCasualties.getAllStepDetails()).hasSize(sides.isEmpty() ? 0 : 1);
 
     clearFirstStrikeCasualties.execute(executionStack, delegateBridge);
 

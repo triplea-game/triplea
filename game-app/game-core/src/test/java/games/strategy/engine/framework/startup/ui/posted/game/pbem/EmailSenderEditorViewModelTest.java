@@ -1,12 +1,8 @@
 package games.strategy.engine.framework.startup.ui.posted.game.pbem;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static games.strategy.engine.framework.startup.ui.posted.game.pbem.EmailProviderPreset.GMAIL;
 import static games.strategy.engine.framework.startup.ui.posted.game.pbem.EmailSenderEditorViewModel.GENERIC_SMTP;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.text.IsEmptyString.emptyString;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.verify;
@@ -50,10 +46,9 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
     void selectedProviderDefaultsToDisabled() {
       final var viewModel = new EmailSenderEditorViewModel(view);
 
-      assertThat(
-          "no client setting is set, default should be disabled",
-          viewModel.getSelectedProvider(),
-          is(EmailSenderEditorViewModel.PROVIDER_DISABLED));
+      assertThat(viewModel.getSelectedProvider())
+          .as("no client setting is set, default should be disabled")
+          .isEqualTo(EmailSenderEditorViewModel.PROVIDER_DISABLED);
     }
 
     @Test
@@ -61,10 +56,9 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       ClientSetting.emailProvider.setValueAndFlush("email provider");
       final var viewModel = new EmailSenderEditorViewModel(view);
 
-      assertThat(
-          "Value should match the client setting we have set",
-          viewModel.getSelectedProvider(),
-          is("email provider"));
+      assertThat(viewModel.getSelectedProvider())
+          .as("Value should match the client setting we have set")
+          .isEqualTo("email provider");
     }
 
     @Test
@@ -72,9 +66,9 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       final var viewModel = new EmailSenderEditorViewModel(view);
       viewModel.setSelectedProvider(GMAIL.getName());
 
-      assertThat(viewModel.getSmtpServer(), is(GMAIL.getServer()));
-      assertThat(viewModel.getSmtpPort(), is(String.valueOf(GMAIL.getPort())));
-      assertThat(viewModel.isUseTls(), is(GMAIL.isUseTlsByDefault()));
+      assertThat(viewModel.getSmtpServer()).isEqualTo(GMAIL.getServer());
+      assertThat(viewModel.getSmtpPort()).isEqualTo(String.valueOf(GMAIL.getPort()));
+      assertThat(viewModel.isUseTls()).isEqualTo(GMAIL.isUseTlsByDefault());
     }
   }
 
@@ -86,10 +80,10 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
 
       viewModel.setSelectedProvider(EmailSenderEditorViewModel.PROVIDER_DISABLED);
 
-      assertThat(viewModel.getSmtpServer(), is(emptyString()));
-      assertThat(viewModel.getSmtpPort(), is(emptyString()));
-      assertThat(viewModel.getEmailUsername(), is(emptyString()));
-      assertThat(viewModel.getEmailPassword(), is(emptyString()));
+      assertThat(viewModel.getSmtpServer()).isEmpty();
+      assertThat(viewModel.getSmtpPort()).isEmpty();
+      assertThat(viewModel.getEmailUsername()).isEmpty();
+      assertThat(viewModel.getEmailPassword()).isEmpty();
     }
 
     @Test
@@ -98,8 +92,8 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
 
       viewModel.setSelectedProvider(EmailSenderEditorViewModel.PROVIDER_DISABLED);
 
-      assertThat(viewModel.showServerOptions(), is(false));
-      assertThat(viewModel.showEmailOptions(), is(false));
+      assertThat(viewModel.showServerOptions()).isFalse();
+      assertThat(viewModel.showEmailOptions()).isFalse();
     }
   }
 
@@ -199,18 +193,18 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
     void sendTestEmailIsDefaultDisabled() {
       final var viewModel = new EmailSenderEditorViewModel(view);
 
-      assertThat(
-          "By default we should not have smtp server settings or any others"
-              + "set, sending test email should be disabled",
-          viewModel.isTestEmailButtonEnabled(),
-          is(false));
+      assertThat(viewModel.isTestEmailButtonEnabled())
+          .as(
+              "By default we should not have smtp server settings or any others"
+                  + "set, sending test email should be disabled")
+          .isFalse();
     }
 
     @Test
     void sendTestEmailButtonEnabledWhenFieldsAreSet() {
       final var viewModel = givenViewModelWithEnabledSendTestEmailButton();
 
-      assertThat(viewModel.isTestEmailButtonEnabled(), is(true));
+      assertThat(viewModel.isTestEmailButtonEnabled()).isTrue();
     }
 
     private EmailSenderEditorViewModel givenViewModelWithEnabledSendTestEmailButton() {
@@ -230,8 +224,9 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
 
       viewModel.setSmtpPort(invalidPortNumber);
 
-      assertThat(
-          "Port number field is no longer valid", viewModel.isTestEmailButtonEnabled(), is(false));
+      assertThat(viewModel.isTestEmailButtonEnabled())
+          .as("Port number field is no longer valid")
+          .isFalse();
     }
 
     @Test
@@ -240,7 +235,9 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
 
       viewModel.setSmtpServer("");
 
-      assertThat("Smtp server is no longer valid", viewModel.isTestEmailButtonEnabled(), is(false));
+      assertThat(viewModel.isTestEmailButtonEnabled())
+          .as("Smtp server is no longer valid")
+          .isFalse();
     }
 
     @Test
@@ -249,7 +246,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
 
       viewModel.setEmailUsername("");
 
-      assertThat(viewModel.isTestEmailButtonEnabled(), is(false));
+      assertThat(viewModel.isTestEmailButtonEnabled()).isFalse();
     }
 
     @Test
@@ -258,7 +255,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
 
       viewModel.setEmailPassword(new char[0]);
 
-      assertThat(viewModel.isTestEmailButtonEnabled(), is(false));
+      assertThat(viewModel.isTestEmailButtonEnabled()).isFalse();
     }
 
     @Test
@@ -267,7 +264,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
 
       viewModel.setToAddress("not-valid");
 
-      assertThat(viewModel.isTestEmailButtonEnabled(), is(false));
+      assertThat(viewModel.isTestEmailButtonEnabled()).isFalse();
     }
   }
 
@@ -279,9 +276,9 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
     void defaultValuesAreBlankWithoutAnyClientSettings() {
       final var viewModel = new EmailSenderEditorViewModel(view);
 
-      assertThat(viewModel.getSmtpServer(), is(emptyString()));
-      assertThat(viewModel.getSmtpPort(), is(emptyString()));
-      assertThat(viewModel.isUseTls(), is(true));
+      assertThat(viewModel.getSmtpServer()).isEmpty();
+      assertThat(viewModel.getSmtpPort()).isEmpty();
+      assertThat(viewModel.isUseTls()).isTrue();
     }
 
     @Test
@@ -289,7 +286,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       ClientSetting.emailServerHost.setValueAndFlush("server");
       final var viewModel = new EmailSenderEditorViewModel(view);
 
-      assertThat(viewModel.getSmtpServer(), is("server"));
+      assertThat(viewModel.getSmtpServer()).isEqualTo("server");
     }
 
     @Test
@@ -297,7 +294,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       ClientSetting.emailServerPort.setValueAndFlush(500);
       final var viewModel = new EmailSenderEditorViewModel(view);
 
-      assertThat(viewModel.getSmtpPort(), is("500"));
+      assertThat(viewModel.getSmtpPort()).isEqualTo("500");
     }
 
     @Test
@@ -305,7 +302,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       ClientSetting.emailServerSecurity.setValueAndFlush(false);
       final var viewModel = new EmailSenderEditorViewModel(view);
 
-      assertThat(viewModel.isUseTls(), is(false));
+      assertThat(viewModel.isUseTls()).isFalse();
     }
 
     @Test
@@ -313,7 +310,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       ClientSetting.emailUsername.setValueAndFlush("user-name".toCharArray());
       final var viewModel = new EmailSenderEditorViewModel(view);
 
-      assertThat(viewModel.getEmailUsername(), is("user-name"));
+      assertThat(viewModel.getEmailUsername()).isEqualTo("user-name");
     }
 
     @Test
@@ -321,7 +318,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       ClientSetting.emailPassword.resetValue();
       final var viewModel = new EmailSenderEditorViewModel(view);
 
-      assertThat(String.valueOf(viewModel.getEmailPassword()), is(emptyString()));
+      assertThat(String.valueOf(viewModel.getEmailPassword())).isEmpty();
     }
 
     @Test
@@ -329,7 +326,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       ClientSetting.rememberEmailPassword.setValueAndFlush(true);
       final var viewModel = new EmailSenderEditorViewModel(view);
 
-      assertThat(viewModel.isForgetPasswordOnShutdown(), is(false));
+      assertThat(viewModel.isForgetPasswordOnShutdown()).isFalse();
     }
   }
 
@@ -340,28 +337,28 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
     void smtpServer() {
       final var viewModel = new EmailSenderEditorViewModel(view);
       viewModel.setSmtpServer("server value");
-      assertThat(ClientSetting.emailServerHost.getValueOrThrow(), is("server value"));
+      assertThat(ClientSetting.emailServerHost.getValueOrThrow()).isEqualTo("server value");
     }
 
     @Test
     void useTls() {
       final var viewModel = new EmailSenderEditorViewModel(view);
       viewModel.setUseTls(false);
-      assertThat(ClientSetting.emailServerSecurity.getValueOrThrow(), is(false));
+      assertThat(ClientSetting.emailServerSecurity.getValueOrThrow()).isFalse();
     }
 
     @Test
     void smtpPort() {
       final var viewModel = new EmailSenderEditorViewModel(view);
       viewModel.setSmtpPort("333");
-      assertThat(ClientSetting.emailServerPort.getValueOrThrow(), is(333));
+      assertThat(ClientSetting.emailServerPort.getValueOrThrow()).isEqualTo(333);
     }
 
     @Test
     void invalidSmtpPortValueIsNotPersisted() {
       final var viewModel = new EmailSenderEditorViewModel(view);
       viewModel.setSmtpPort("-1");
-      assertThat(ClientSetting.emailServerPort.getValue(), isEmpty());
+      assertThat(ClientSetting.emailServerPort.getValue()).isEmpty();
     }
 
     @Test
@@ -373,10 +370,10 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
     }
 
     private void assertGenericSmtpProviderSettings() {
-      assertThat(ClientSetting.emailProvider.getValueOrThrow(), is(GENERIC_SMTP));
-      assertThat(ClientSetting.emailServerSecurity.getValueOrThrow(), is(true));
-      assertThat(ClientSetting.emailServerHost.getValue(), isEmpty());
-      assertThat(ClientSetting.emailServerPort.getValue(), isEmpty());
+      assertThat(ClientSetting.emailProvider.getValueOrThrow()).isEqualTo(GENERIC_SMTP);
+      assertThat(ClientSetting.emailServerSecurity.getValueOrThrow()).isTrue();
+      assertThat(ClientSetting.emailServerHost.getValue()).isEmpty();
+      assertThat(ClientSetting.emailServerPort.getValue()).isEmpty();
     }
 
     @Test
@@ -384,10 +381,10 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
     void emailProviderPreset() {
       final var viewModel = new EmailSenderEditorViewModel(view);
       viewModel.setSelectedProvider(GMAIL.getName());
-      assertThat(ClientSetting.emailProvider.getValueOrThrow(), is(GMAIL.getName()));
-      assertThat(ClientSetting.emailServerSecurity.getValueOrThrow(), is(true));
-      assertThat(ClientSetting.emailServerHost.getValue(), isPresentAndIs(GMAIL.getServer()));
-      assertThat(ClientSetting.emailServerPort.getValue(), isPresentAndIs(GMAIL.getPort()));
+      assertThat(ClientSetting.emailProvider.getValueOrThrow()).isEqualTo(GMAIL.getName());
+      assertThat(ClientSetting.emailServerSecurity.getValueOrThrow()).isTrue();
+      assertThat(ClientSetting.emailServerHost.getValue()).contains(GMAIL.getServer());
+      assertThat(ClientSetting.emailServerPort.getValue()).contains(GMAIL.getPort());
     }
 
     @Test
@@ -404,21 +401,22 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
     void username() {
       final var viewModel = new EmailSenderEditorViewModel(view);
       viewModel.setEmailUsername("user");
-      assertThat(ClientSetting.emailUsername.getValueOrThrow(), is("user".toCharArray()));
+      assertThat(ClientSetting.emailUsername.getValueOrThrow()).isEqualTo("user".toCharArray());
     }
 
     @Test
     void password() {
       final var viewModel = new EmailSenderEditorViewModel(view);
       viewModel.setEmailPassword("password123".toCharArray());
-      assertThat(ClientSetting.emailPassword.getValueOrThrow(), is("password123".toCharArray()));
+      assertThat(ClientSetting.emailPassword.getValueOrThrow())
+          .isEqualTo("password123".toCharArray());
     }
 
     @Test
     void rememberPassword() {
       final var viewModel = new EmailSenderEditorViewModel(view);
       viewModel.setRememberPassword(true);
-      assertThat(ClientSetting.rememberEmailPassword.getValueOrThrow(), is(true));
+      assertThat(ClientSetting.rememberEmailPassword.getValueOrThrow()).isTrue();
     }
   }
 
@@ -432,7 +430,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       final var viewModel = new EmailSenderEditorViewModel(view);
       viewModel.setSelectedProvider(provider);
 
-      assertThat(viewModel.showServerOptions(), is(false));
+      assertThat(viewModel.showServerOptions()).isFalse();
     }
 
     @DisplayName("Verify show server options is true when email provider is generic smtp")
@@ -441,7 +439,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       final var viewModel = new EmailSenderEditorViewModel(view);
       viewModel.setSelectedProvider(GENERIC_SMTP);
 
-      assertThat(viewModel.showServerOptions(), is(true));
+      assertThat(viewModel.showServerOptions()).isTrue();
     }
 
     @DisplayName("Verify show email options is false when email provider is disabled")
@@ -449,7 +447,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
     void showEmailOptionsNegativeCases() {
       final var viewModel = new EmailSenderEditorViewModel(view);
       viewModel.setSelectedProvider(EmailSenderEditorViewModel.PROVIDER_DISABLED);
-      assertThat(viewModel.showEmailOptions(), is(false));
+      assertThat(viewModel.showEmailOptions()).isFalse();
     }
 
     @DisplayName("Verify show email options is true when email provider is not disabled")
@@ -458,7 +456,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
     void showEmailOptionsPositiveCases(final String providers) {
       final var viewModel = new EmailSenderEditorViewModel(view);
       viewModel.setSelectedProvider(providers);
-      assertThat(viewModel.showEmailOptions(), is(true));
+      assertThat(viewModel.showEmailOptions()).isTrue();
     }
   }
 
@@ -475,9 +473,9 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
 
       viewModel.populateFromGameProperties(gameProperties);
 
-      assertThat(viewModel.getToAddress(), is("to"));
-      assertThat(viewModel.getSubject(), is("subject"));
-      assertThat(viewModel.isSendEmailAfterCombatMove(), is(true));
+      assertThat(viewModel.getToAddress()).isEqualTo("to");
+      assertThat(viewModel.getSubject()).isEqualTo("subject");
+      assertThat(viewModel.isSendEmailAfterCombatMove()).isTrue();
     }
 
     @Test
@@ -496,12 +494,12 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       final var viewModel = new EmailSenderEditorViewModel(view);
       viewModel.setSelectedProvider(EmailSenderEditorViewModel.PROVIDER_DISABLED);
 
-      assertThat(viewModel.isSmtpServerValid(), is(true));
-      assertThat(viewModel.isSmtpPortValid(), is(true));
-      assertThat(viewModel.isToAddressValid(), is(true));
-      assertThat(viewModel.isSubjectValid(), is(true));
-      assertThat(viewModel.isUsernameValid(), is(true));
-      assertThat(viewModel.isPasswordValid(), is(true));
+      assertThat(viewModel.isSmtpServerValid()).isTrue();
+      assertThat(viewModel.isSmtpPortValid()).isTrue();
+      assertThat(viewModel.isToAddressValid()).isTrue();
+      assertThat(viewModel.isSubjectValid()).isTrue();
+      assertThat(viewModel.isUsernameValid()).isTrue();
+      assertThat(viewModel.isPasswordValid()).isTrue();
     }
 
     @ParameterizedTest
@@ -511,7 +509,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       viewModel.setSelectedProvider(GENERIC_SMTP);
       viewModel.setSmtpServer(blankValue);
 
-      assertThat(viewModel.isSmtpServerValid(), is(false));
+      assertThat(viewModel.isSmtpServerValid()).isFalse();
     }
 
     @Test
@@ -520,7 +518,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       viewModel.setSelectedProvider(GENERIC_SMTP);
       viewModel.setSmtpServer("-");
 
-      assertThat(viewModel.isSmtpServerValid(), is(true));
+      assertThat(viewModel.isSmtpServerValid()).isTrue();
     }
 
     @ParameterizedTest
@@ -530,7 +528,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       viewModel.setSelectedProvider(GENERIC_SMTP);
       viewModel.setSmtpPort(notValid);
 
-      assertThat(viewModel.isSmtpPortValid(), is(false));
+      assertThat(viewModel.isSmtpPortValid()).isFalse();
     }
 
     @ParameterizedTest
@@ -540,7 +538,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       viewModel.setSelectedProvider(GENERIC_SMTP);
       viewModel.setSmtpPort(valid);
 
-      assertThat(viewModel.isSmtpPortValid(), is(true));
+      assertThat(viewModel.isSmtpPortValid()).isTrue();
     }
 
     @ParameterizedTest
@@ -550,7 +548,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       viewModel.setSelectedProvider(GENERIC_SMTP);
       viewModel.setToAddress(invalidEmail);
 
-      assertThat(viewModel.isToAddressValid(), is(false));
+      assertThat(viewModel.isToAddressValid()).isFalse();
     }
 
     @Test
@@ -559,7 +557,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       viewModel.setSelectedProvider(GENERIC_SMTP);
       viewModel.setToAddress("valid@email.com");
 
-      assertThat(viewModel.isToAddressValid(), is(true));
+      assertThat(viewModel.isToAddressValid()).isTrue();
     }
 
     @Test
@@ -568,7 +566,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       viewModel.setSelectedProvider(GENERIC_SMTP);
       viewModel.setSubject("");
 
-      assertThat(viewModel.isSubjectValid(), is(false));
+      assertThat(viewModel.isSubjectValid()).isFalse();
     }
 
     @Test
@@ -577,7 +575,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       viewModel.setSelectedProvider(GENERIC_SMTP);
       viewModel.setSubject("-");
 
-      assertThat(viewModel.isSubjectValid(), is(true));
+      assertThat(viewModel.isSubjectValid()).isTrue();
     }
 
     @Test
@@ -585,7 +583,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       final var viewModel = new EmailSenderEditorViewModel(view);
       viewModel.setEmailUsername("name");
 
-      assertThat(viewModel.isUsernameValid(), is(true));
+      assertThat(viewModel.isUsernameValid()).isTrue();
     }
 
     @Test
@@ -593,7 +591,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       final var viewModel = new EmailSenderEditorViewModel(view);
       viewModel.setEmailPassword("password".toCharArray());
 
-      assertThat(viewModel.isPasswordValid(), is(true));
+      assertThat(viewModel.isPasswordValid()).isTrue();
     }
   }
 
@@ -604,7 +602,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
     void allFieldsAreValidIfProviderIsDisabled() {
       final var viewModel = new EmailSenderEditorViewModel(view);
       viewModel.setSelectedProvider(EmailSenderEditorViewModel.PROVIDER_DISABLED);
-      assertThat(viewModel.areFieldsValid(), is(true));
+      assertThat(viewModel.areFieldsValid()).isTrue();
     }
 
     @Test
@@ -614,7 +612,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       final var viewModel = givenGenericProviderWithValidSettings();
       ClientSetting.flush();
 
-      assertThat(viewModel.areFieldsValid(), is(true));
+      assertThat(viewModel.areFieldsValid()).isTrue();
     }
 
     private EmailSenderEditorViewModel givenGenericProviderWithValidSettings() {
@@ -637,7 +635,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       ClientSetting.emailServerHost.resetValue();
       ClientSetting.flush();
 
-      assertThat(viewModel.areFieldsValid(), is(false));
+      assertThat(viewModel.areFieldsValid()).isFalse();
     }
 
     @Test
@@ -646,7 +644,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       ClientSetting.emailServerPort.resetValue();
       ClientSetting.flush();
 
-      assertThat(viewModel.areFieldsValid(), is(false));
+      assertThat(viewModel.areFieldsValid()).isFalse();
     }
 
     @Test
@@ -654,7 +652,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       final var viewModel = givenGenericProviderWithValidSettings();
       viewModel.setEmailUsername("");
 
-      assertThat(viewModel.areFieldsValid(), is(false));
+      assertThat(viewModel.areFieldsValid()).isFalse();
     }
 
     @Test
@@ -662,7 +660,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       final var viewModel = givenGenericProviderWithValidSettings();
       viewModel.setEmailPassword(new char[0]);
 
-      assertThat(viewModel.areFieldsValid(), is(false));
+      assertThat(viewModel.areFieldsValid()).isFalse();
     }
 
     @Test
@@ -671,7 +669,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       ClientSetting.flush();
       viewModel.setToAddress("to");
 
-      assertThat(viewModel.areFieldsValid(), is(false));
+      assertThat(viewModel.areFieldsValid()).isFalse();
     }
 
     @Test
@@ -680,7 +678,7 @@ class EmailSenderEditorViewModelTest extends AbstractClientSettingTestCase {
       ClientSetting.flush();
       viewModel.setSubject(" ");
 
-      assertThat(viewModel.areFieldsValid(), is(false));
+      assertThat(viewModel.areFieldsValid()).isFalse();
     }
   }
 }

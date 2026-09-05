@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -55,7 +54,7 @@ final class MapDownloadControllerTest {
       when(tutorialMapPreferences.canPromptToDownload()).thenReturn(true);
       when(userMaps.isEmpty()).thenReturn(true);
 
-      assertThat(shouldPromptToDownloadTutorialMap(), is(true));
+      assertThat(shouldPromptToDownloadTutorialMap()).isTrue();
     }
 
     private boolean shouldPromptToDownloadTutorialMap() {
@@ -68,14 +67,14 @@ final class MapDownloadControllerTest {
       when(tutorialMapPreferences.canPromptToDownload()).thenReturn(true);
       when(userMaps.isEmpty()).thenReturn(false);
 
-      assertThat(shouldPromptToDownloadTutorialMap(), is(false));
+      assertThat(shouldPromptToDownloadTutorialMap()).isFalse();
     }
 
     @Test
     void shouldReturnFalseWhenCannotPromptToDownload() {
       when(tutorialMapPreferences.canPromptToDownload()).thenReturn(false);
 
-      assertThat(shouldPromptToDownloadTutorialMap(), is(false));
+      assertThat(shouldPromptToDownloadTutorialMap()).isFalse();
     }
   }
 }

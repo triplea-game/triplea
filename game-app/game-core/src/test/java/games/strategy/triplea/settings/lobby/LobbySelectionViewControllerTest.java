@@ -1,6 +1,6 @@
 package games.strategy.triplea.settings.lobby;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.triplea.ui.events.queue.test.support.EventQueueAssertions.controllerEventIs;
 
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
@@ -47,16 +47,16 @@ class LobbySelectionViewControllerTest extends AbstractClientSettingTestCase {
     lobbySelectionViewController.handleEvent(
         LobbySelectionView.Events.RADIO_BUTTON_CHANGED, inputData);
 
-    assertThat(
-        eventQueueTestSupport.popFirstControllerEvent(),
-        controllerEventIs(
-            LobbySelectionViewController.Events.UPDATE_UI_DATA,
-            inputData,
-            LobbySelectionViewData.builder()
-                .selectedRadioButton(lobbyChoice)
-                .uriFieldEnabled(!lobbyChoice.isReadOnly())
-                .uriFieldValue(lobbyChoice.getUri())
-                .build()));
+    assertThat(eventQueueTestSupport.popFirstControllerEvent())
+        .is(
+            controllerEventIs(
+                LobbySelectionViewController.Events.UPDATE_UI_DATA,
+                inputData,
+                LobbySelectionViewData.builder()
+                    .selectedRadioButton(lobbyChoice)
+                    .uriFieldEnabled(!lobbyChoice.isReadOnly())
+                    .uriFieldValue(lobbyChoice.getUri())
+                    .build()));
   }
 
   /**
@@ -76,16 +76,16 @@ class LobbySelectionViewControllerTest extends AbstractClientSettingTestCase {
     final LobbyChoice defaultLobbyChoice =
         LobbyChoice.fromUri(ClientSetting.lobbyUri.getDefaultValue().orElseThrow());
 
-    assertThat(
-        eventQueueTestSupport.popFirstControllerEvent(),
-        controllerEventIs(
-            LobbySelectionViewController.Events.UPDATE_UI_DATA,
-            inputData,
-            LobbySelectionViewData.builder()
-                .selectedRadioButton(defaultLobbyChoice)
-                .uriFieldEnabled(!defaultLobbyChoice.isReadOnly())
-                .uriFieldValue(defaultLobbyChoice.getUri())
-                .build()));
+    assertThat(eventQueueTestSupport.popFirstControllerEvent())
+        .is(
+            controllerEventIs(
+                LobbySelectionViewController.Events.UPDATE_UI_DATA,
+                inputData,
+                LobbySelectionViewData.builder()
+                    .selectedRadioButton(defaultLobbyChoice)
+                    .uriFieldEnabled(!defaultLobbyChoice.isReadOnly())
+                    .uriFieldValue(defaultLobbyChoice.getUri())
+                    .build()));
   }
 
   /**
@@ -107,16 +107,16 @@ class LobbySelectionViewControllerTest extends AbstractClientSettingTestCase {
 
     lobbySelectionViewController.handleEvent(LobbySelectionView.Events.RESET, inputData);
 
-    assertThat(
-        eventQueueTestSupport.popFirstControllerEvent(),
-        controllerEventIs(
-            LobbySelectionViewController.Events.UPDATE_UI_DATA,
-            inputData,
-            LobbySelectionViewData.builder()
-                .selectedRadioButton(LobbyChoice.OTHER)
-                .uriFieldEnabled(true)
-                .uriFieldValue(URI.create("http://127.0.0.1:3000").toString())
-                .build()));
+    assertThat(eventQueueTestSupport.popFirstControllerEvent())
+        .is(
+            controllerEventIs(
+                LobbySelectionViewController.Events.UPDATE_UI_DATA,
+                inputData,
+                LobbySelectionViewData.builder()
+                    .selectedRadioButton(LobbyChoice.OTHER)
+                    .uriFieldEnabled(true)
+                    .uriFieldValue(URI.create("http://127.0.0.1:3000").toString())
+                    .build()));
   }
 
   /**
@@ -136,15 +136,15 @@ class LobbySelectionViewControllerTest extends AbstractClientSettingTestCase {
 
     lobbySelectionViewController.handleEvent(LobbySelectionView.Events.RESET, inputData);
 
-    assertThat(
-        eventQueueTestSupport.popFirstControllerEvent(),
-        controllerEventIs(
-            LobbySelectionViewController.Events.UPDATE_UI_DATA,
-            inputData,
-            LobbySelectionViewData.builder()
-                .selectedRadioButton(LobbyChoice.LOCAL)
-                .uriFieldEnabled(false)
-                .uriFieldValue(LobbyChoice.LOCAL.getUri())
-                .build()));
+    assertThat(eventQueueTestSupport.popFirstControllerEvent())
+        .is(
+            controllerEventIs(
+                LobbySelectionViewController.Events.UPDATE_UI_DATA,
+                inputData,
+                LobbySelectionViewData.builder()
+                    .selectedRadioButton(LobbyChoice.LOCAL)
+                    .uriFieldEnabled(false)
+                    .uriFieldValue(LobbyChoice.LOCAL.getUri())
+                    .build()));
   }
 }

@@ -1,9 +1,6 @@
 package games.strategy.engine.data;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.io.FileMatchers.aFileWithSize;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.ServerGame;
@@ -42,6 +39,6 @@ class GameSaveTest {
     ServerGame game = GameTestUtils.setUpGameWithAis(mapXmlPath);
     Path saveFile = Files.createTempFile("save", GameDataFileUtils.getExtension());
     game.saveGame(saveFile);
-    assertThat(saveFile.toFile(), is(not(aFileWithSize(0))));
+    assertThat(saveFile.toFile().length()).isNotEqualTo(0);
   }
 }
