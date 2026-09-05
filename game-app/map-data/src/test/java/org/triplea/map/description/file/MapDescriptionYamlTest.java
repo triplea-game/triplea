@@ -1,8 +1,6 @@
 package org.triplea.map.description.file;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.nio.file.Path;
@@ -17,7 +15,7 @@ class MapDescriptionYamlTest {
   @ParameterizedTest
   @MethodSource
   void isValid(final MapDescriptionYaml mapDescriptionYaml) {
-    assertThat(mapDescriptionYaml.isValid(Path.of("")), is(true));
+    assertThat(mapDescriptionYaml.isValid(Path.of(""))).isTrue();
   }
 
   @SuppressWarnings("unused")
@@ -48,9 +46,8 @@ class MapDescriptionYamlTest {
                 () -> new IllegalStateException("Unexpected failure to parse map.yml file"));
 
     final Optional<Path> gameFilePath = mapDescriptionYaml.getGameXmlPathByGameName("Great Game");
-    assertThat(
-        gameFilePath,
-        isPresentAndIs(mapFolder.resolve("games").resolve("game1").resolve("game-file.xml")));
+    assertThat(gameFilePath)
+        .contains(mapFolder.resolve("games").resolve("game1").resolve("game-file.xml"));
   }
 
   @Test
@@ -70,7 +67,7 @@ class MapDescriptionYamlTest {
     final String gameName =
         mapDescriptionYaml.findGameNameFromXmlFileName(Path.of("/root/path.xml"));
 
-    assertThat(gameName, is("game name"));
+    assertThat(gameName).isEqualTo("game name");
   }
 
   @Test
