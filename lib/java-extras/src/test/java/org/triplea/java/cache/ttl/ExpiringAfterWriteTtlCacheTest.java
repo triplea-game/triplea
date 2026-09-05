@@ -1,10 +1,6 @@
 package org.triplea.java.cache.ttl;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 import java.util.Optional;
@@ -40,12 +36,12 @@ class ExpiringAfterWriteTtlCacheTest {
     @Test
     void getWillReturnValuesThatHaveBeenPutIntoCache() {
       realCache.put("id", 0);
-      assertThat(realCache.get("id"), isPresentAndIs(0));
+      assertThat(realCache.get("id")).contains(0);
     }
 
     @Test
     void getReturnsEmptyIfValueDoesNotExist() {
-      assertThat(realCache.get("DNE"), isEmpty());
+      assertThat(realCache.get("DNE")).isEmpty();
     }
 
     @Test
@@ -54,9 +50,9 @@ class ExpiringAfterWriteTtlCacheTest {
 
       realCache.put("id", 1);
 
-      assertThat(realCache.get("id"), isPresentAndIs(1));
-      assertThat(cacheRemovalKey, is(nullValue()));
-      assertThat(cacheRemovalValue, is(nullValue()));
+      assertThat(realCache.get("id")).contains(1);
+      assertThat(cacheRemovalKey).isNull();
+      assertThat(cacheRemovalValue).isNull();
     }
   }
 
@@ -67,7 +63,7 @@ class ExpiringAfterWriteTtlCacheTest {
     @DisplayName("When replacing a value that does not exist, no value should be returned")
     void emptyReplaceDoesNotReturnValues() {
       final Optional<Integer> result = realCache.replace("id0", 0);
-      assertThat(result, isEmpty());
+      assertThat(result).isEmpty();
     }
 
     @Test
@@ -77,7 +73,7 @@ class ExpiringAfterWriteTtlCacheTest {
 
       final Optional<Integer> result = realCache.get("id0");
 
-      assertThat(result, isEmpty());
+      assertThat(result).isEmpty();
     }
 
     @Test
@@ -88,7 +84,7 @@ class ExpiringAfterWriteTtlCacheTest {
       realCache.replace("id1", 1);
       final Optional<Integer> result = realCache.get("id1");
 
-      assertThat(result, isPresentAndIs(1));
+      assertThat(result).contains(1);
     }
 
     @Test
@@ -98,7 +94,7 @@ class ExpiringAfterWriteTtlCacheTest {
 
       final Optional<Integer> result = realCache.replace("id2", 1);
 
-      assertThat(result, isPresentAndIs(0));
+      assertThat(result).contains(0);
     }
 
     @Test
@@ -107,8 +103,8 @@ class ExpiringAfterWriteTtlCacheTest {
 
       realCache.replace("id20", 1);
 
-      assertThat(cacheRemovalKey, is(nullValue()));
-      assertThat(cacheRemovalValue, is(nullValue()));
+      assertThat(cacheRemovalKey).isNull();
+      assertThat(cacheRemovalValue).isNull();
     }
   }
 
@@ -120,7 +116,7 @@ class ExpiringAfterWriteTtlCacheTest {
 
       realCache.invalidate("id3");
 
-      assertThat(realCache.get("id3"), isEmpty());
+      assertThat(realCache.get("id3")).isEmpty();
     }
 
     @Test
@@ -129,14 +125,14 @@ class ExpiringAfterWriteTtlCacheTest {
 
       final Optional<Integer> result = realCache.invalidate("id4");
 
-      assertThat(result, isPresentAndIs(0));
+      assertThat(result).contains(0);
     }
 
     @Test
     void invalidateReturnsEmptyIfValueDoesNotExist() {
       final Optional<Integer> result = realCache.invalidate("DNE");
 
-      assertThat(result, isEmpty());
+      assertThat(result).isEmpty();
     }
 
     @Test
@@ -144,8 +140,8 @@ class ExpiringAfterWriteTtlCacheTest {
       realCache.put("id10", 0);
       realCache.invalidate("id10");
 
-      assertThat(cacheRemovalKey, is("id10"));
-      assertThat(cacheRemovalValue, is(0));
+      assertThat(cacheRemovalKey).isEqualTo("id10");
+      assertThat(cacheRemovalValue).isEqualTo(0);
     }
   }
 
@@ -153,13 +149,13 @@ class ExpiringAfterWriteTtlCacheTest {
   class FindEntryByKey {
     @Test
     void emptyCase() {
-      assertThat(realCache.findEntryByKey(key -> key.equals(KEY)), isEmpty());
+      assertThat(realCache.findEntryByKey(key -> key.equals(KEY))).isEmpty();
     }
 
     @Test
     void notFoundCase() {
       realCache.put(KEY, VALUE);
-      assertThat(realCache.findEntryByKey(key -> key.equals("some-other-key")), isEmpty());
+      assertThat(realCache.findEntryByKey(key -> key.equals("some-other-key"))).isEmpty();
     }
 
     @Test
@@ -169,9 +165,9 @@ class ExpiringAfterWriteTtlCacheTest {
       final Optional<Map.Entry<String, Integer>> result =
           realCache.findEntryByKey(key -> key.equals(KEY));
 
-      assertThat(result.isPresent(), is(true));
-      assertThat(result.get().getKey(), is(KEY));
-      assertThat(result.get().getValue(), is(VALUE));
+      assertThat(result.isPresent()).isTrue();
+      assertThat(result.get().getKey()).isEqualTo(KEY);
+      assertThat(result.get().getValue()).isEqualTo(VALUE);
     }
   }
 
@@ -182,7 +178,7 @@ class ExpiringAfterWriteTtlCacheTest {
     void refreshFalseIfNotInCacheEmptyCase() {
       final boolean result = realCache.refresh(KEY);
 
-      assertThat(result, is(false));
+      assertThat(result).isFalse();
     }
 
     @Test
@@ -191,7 +187,7 @@ class ExpiringAfterWriteTtlCacheTest {
 
       final boolean result = realCache.refresh("wrong-key-value");
 
-      assertThat(result, is(false));
+      assertThat(result).isFalse();
     }
 
     @Test
@@ -200,7 +196,7 @@ class ExpiringAfterWriteTtlCacheTest {
 
       final boolean result = realCache.refresh(KEY);
 
-      assertThat(result, is(true));
+      assertThat(result).isTrue();
     }
   }
 }

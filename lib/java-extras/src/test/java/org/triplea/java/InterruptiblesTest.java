@@ -1,7 +1,6 @@
 package org.triplea.java;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
@@ -30,8 +29,8 @@ final class InterruptiblesTest {
     void shouldReturnTrueWhenCompleted() {
       final boolean completed = Interruptibles.await(runnable);
 
-      assertThat(invoked, is(true));
-      assertThat(completed, is(true));
+      assertThat(invoked).isTrue();
+      assertThat(completed).isTrue();
     }
 
     @Test
@@ -42,8 +41,8 @@ final class InterruptiblesTest {
                 throw new InterruptedException();
               });
 
-      assertThat(completed, is(false));
-      assertThat(Thread.currentThread().isInterrupted(), is(true));
+      assertThat(completed).isFalse();
+      assertThat(Thread.currentThread().isInterrupted()).isTrue();
     }
 
     @Test
@@ -66,16 +65,16 @@ final class InterruptiblesTest {
 
       final Interruptibles.Result<Object> result = Interruptibles.awaitResult(() -> value);
 
-      assertThat(result.completed, is(true));
-      assertThat(result.result, is(Optional.of(value)));
+      assertThat(result.completed).isTrue();
+      assertThat(result.result).isEqualTo(Optional.of(value));
     }
 
     @Test
     void shouldReturnCompletedSupplierNullResultWhenCompleted() {
       final Interruptibles.Result<Object> result = Interruptibles.awaitResult(() -> null);
 
-      assertThat(result.completed, is(true));
-      assertThat(result.result, is(Optional.empty()));
+      assertThat(result.completed).isTrue();
+      assertThat(result.result).isEqualTo(Optional.empty());
     }
 
     @Test
@@ -86,9 +85,9 @@ final class InterruptiblesTest {
                 throw new InterruptedException();
               });
 
-      assertThat(result.completed, is(false));
-      assertThat(result.result, is(Optional.empty()));
-      assertThat(Thread.currentThread().isInterrupted(), is(true));
+      assertThat(result.completed).isFalse();
+      assertThat(result.result).isEqualTo(Optional.empty());
+      assertThat(Thread.currentThread().isInterrupted()).isTrue();
     }
 
     @Test
@@ -110,7 +109,7 @@ final class InterruptiblesTest {
       final CountDownLatch latch = new CountDownLatch(0);
 
       assertTimeoutPreemptively(
-          Duration.ofSeconds(5L), () -> assertThat(Interruptibles.await(latch), is(true)));
+          Duration.ofSeconds(5L), () -> assertThat(Interruptibles.await(latch)).isTrue());
     }
   }
 
@@ -122,7 +121,7 @@ final class InterruptiblesTest {
       thread.start();
 
       assertTimeoutPreemptively(
-          Duration.ofSeconds(5L), () -> assertThat(Interruptibles.join(thread), is(true)));
+          Duration.ofSeconds(5L), () -> assertThat(Interruptibles.join(thread)).isTrue());
     }
   }
 

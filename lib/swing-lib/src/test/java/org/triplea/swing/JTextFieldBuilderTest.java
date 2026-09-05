@@ -1,7 +1,6 @@
 package org.triplea.swing;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,25 +15,25 @@ class JTextFieldBuilderTest {
   void defaultValues() {
     final JTextField field = JTextFieldBuilder.builder().build();
 
-    assertThat(field.isEnabled(), is(true));
+    assertThat(field.isEnabled()).isTrue();
 
-    assertThat(field.getText(), is(""));
+    assertThat(field.getText()).isEqualTo("");
   }
 
   @Test
   void text() {
     final String testValue = "test value";
-    assertThat(JTextFieldBuilder.builder().text(testValue).build().getText(), is(testValue));
+    assertThat(JTextFieldBuilder.builder().text(testValue).build().getText()).isEqualTo(testValue);
   }
 
   @Test
   void textWithIntegerValue() {
-    assertThat(JTextFieldBuilder.builder().text(2).build().getText(), is("2"));
+    assertThat(JTextFieldBuilder.builder().text(2).build().getText()).isEqualTo("2");
   }
 
   @Test
   void columns() {
-    assertThat(JTextFieldBuilder.builder().columns(3).build().getColumns(), is(3));
+    assertThat(JTextFieldBuilder.builder().columns(3).build().getColumns()).isEqualTo(3);
   }
 
   @Test
@@ -68,16 +67,16 @@ class JTextFieldBuilderTest {
 
   @Test
   void enabled() {
-    assertThat(JTextFieldBuilder.builder().build().isEnabled(), is(true));
+    assertThat(JTextFieldBuilder.builder().build().isEnabled()).isTrue();
   }
 
   @Test
   void readyOnly() {
-    assertThat(JTextFieldBuilder.builder().readOnly().build().isEditable(), is(false));
+    assertThat(JTextFieldBuilder.builder().readOnly().build().isEditable()).isFalse();
   }
 
   @Test
   void disabled() {
-    assertThat(JTextFieldBuilder.builder().disabled().build().isEnabled(), is(false));
+    assertThat(JTextFieldBuilder.builder().disabled().build().isEnabled()).isFalse();
   }
 }
