@@ -1,8 +1,6 @@
 package org.triplea.generic.xml.reader;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.triplea.generic.xml.reader.AttributeDataCastingTest.TagExample.SingleChild;
@@ -49,23 +47,23 @@ public class AttributeDataCastingTest extends AbstractXmlMapperTest {
 
     final SingleChild singleChild = xmlMapper.mapXmlToObject(TagExample.class).singleChild;
 
-    assertThat(singleChild.numberAttribute, is(1));
-    assertThat(singleChild.missingNumberAttribute, is(0));
+    assertThat(singleChild.numberAttribute).isEqualTo(1);
+    assertThat(singleChild.missingNumberAttribute).isEqualTo(0);
 
-    assertThat(singleChild.integerObjectAttribute, is(-1));
-    assertThat(singleChild.missingIntegerObjectAttribute, is(nullValue()));
+    assertThat(singleChild.integerObjectAttribute).isEqualTo(-1);
+    assertThat(singleChild.missingIntegerObjectAttribute).isNull();
 
-    assertThat(singleChild.decimalAttribute, is(0.3));
-    assertThat(singleChild.decimalWithIntAttribute, is(3.0));
-    assertThat(singleChild.missingDecimalAttribute, is(0.0));
-    assertThat(singleChild.decimalObjectAttribute, is(10.0));
+    assertThat(singleChild.decimalAttribute).isEqualTo(0.3);
+    assertThat(singleChild.decimalWithIntAttribute).isEqualTo(3.0);
+    assertThat(singleChild.missingDecimalAttribute).isEqualTo(0.0);
+    assertThat(singleChild.decimalObjectAttribute).isEqualTo(10.0);
 
-    assertThat(singleChild.booleanAttribute, is(true));
-    assertThat(singleChild.booleanObjectAttribute, is(true));
-    assertThat(singleChild.missingBooleanAttribute, is(false));
+    assertThat(singleChild.booleanAttribute).isTrue();
+    assertThat(singleChild.booleanObjectAttribute).isTrue();
+    assertThat(singleChild.missingBooleanAttribute).isFalse();
 
-    assertThat(singleChild.defaultInt, is(100));
-    assertThat(singleChild.defaultDouble, is(110.0));
-    assertThat(singleChild.defaultBoolean, is(true));
+    assertThat(singleChild.defaultInt).isEqualTo(100);
+    assertThat(singleChild.defaultDouble).isEqualTo(110.0);
+    assertThat(singleChild.defaultBoolean).isTrue();
   }
 }
