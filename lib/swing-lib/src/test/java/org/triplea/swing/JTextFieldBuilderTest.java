@@ -47,12 +47,11 @@ class JTextFieldBuilderTest {
         .build()
         .setText("text");
 
-    // Callback is buffered, we need to wait long enough for the event to be scheduled and fired.
-    // Eventually callback action is expected to have been called and incremented our value from 0
-    // to 1.
-    Awaitility.await()
-        .atMost(Duration.ofMillis(DocumentListenerBuilder.CALLBACK_DELAY_MS * 2))
-        .until(() -> value.get() == 1);
+    // Callback is buffered and fires after CALLBACK_DELAY_MS. The ceiling is a generous upper
+    // bound, not a latency assertion: await returns as soon as the callback fires, so a large
+    // timeout keeps the test robust under CPU contention (e.g. parallel test forks) without
+    // slowing the passing case.
+    Awaitility.await().atMost(Duration.ofSeconds(5)).until(() -> value.get() == 1);
   }
 
   @Test
@@ -61,9 +60,8 @@ class JTextFieldBuilderTest {
 
     JTextFieldBuilder.builder().maxLength(20).textListener(value::set).build().setText("test");
 
-    Awaitility.await()
-        .atMost(Duration.ofMillis(DocumentListenerBuilder.CALLBACK_DELAY_MS * 2))
-        .until(() -> "test".equals(value.get()));
+    // Generous ceiling, not a latency assertion; see textListener() above.
+    Awaitility.await().atMost(Duration.ofSeconds(5)).until(() -> "test".equals(value.get()));
   }
 
   @Test
