@@ -1001,6 +1001,46 @@ class RevisedTest extends AbstractClientSettingTestCase {
     assertEquals(pusBeforeRaid - 6, pusAfterRaid);
   }
 
+  // Regression test for #14914
+  @Test
+  void testStratBombRaidWithHeavyBombersEachDieCountsTowardDamage() {
+    final Territory germany = gameData.getMap().getTerritoryOrNull("Germany");
+    final Territory uk = gameData.getMap().getTerritoryOrNull("United Kingdom");
+    final GamePlayer germans = GameDataTestUtil.germans(gameData);
+    final GamePlayer british = GameDataTestUtil.british(gameData);
+    final BattleTracker tracker = new BattleTracker();
+    final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
+    final List<Unit> bombers = bomber(gameData).create(1, british);
+    addTo(germany, bombers);
+    battle.addAttackChange(
+        gameData.getMap().getRouteOrElseThrow(uk, germany, it -> true), bombers, null);
+    tracker
+        .getBattleRecords()
+        .addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
+    final IDelegateBridge bridge = newDelegateBridge(british);
+    TechTracker.addAdvance(
+        british,
+        bridge,
+        TechAdvance.findAdvance(
+            TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData.getTechnologyFrontier(), british));
+    // USE_BOMBING_MAX_DICE_SIDES_AND_BONUS needs to be set so the damage roll routes through
+    // rollDiceComplex(), the code path that had the indexing bug from issue #14914
+    gameData.getProperties().set(Constants.USE_BOMBING_MAX_DICE_SIDES_AND_BONUS, Boolean.TRUE);
+    // aa guns rolls 3, misses. heavy bomber rolls two dice: raw 1 and raw 4 (i.e. "2" and "5").
+    whenGetRandom(bridge).thenAnswer(withValues(3)).thenAnswer(withValues(1, 4));
+    final int pusBeforeRaid =
+        germans
+            .getResources()
+            .getQuantity(gameData.getResourceList().getResourceOrThrow(Constants.PUS));
+    battle.fight(bridge);
+    final int pusAfterRaid =
+        germans
+            .getResources()
+            .getQuantity(gameData.getResourceList().getResourceOrThrow(Constants.PUS));
+    // Total PU damage should be: 2 + 5 = 7.
+    assertEquals(pusBeforeRaid - 7, pusAfterRaid);
+  }
+
   @Test
   void testLandBattleNoSneakAttack() {
     final GamePlayer defenderPlayer = germans(gameData);
