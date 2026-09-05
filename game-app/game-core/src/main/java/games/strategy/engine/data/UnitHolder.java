@@ -6,14 +6,14 @@ import java.util.function.Predicate;
 
 /** An object that contains a collection of {@link Unit}s. */
 public interface UnitHolder {
-  String TERRITORY = "T";
-  String PLAYER = "P";
+  @Deprecated String TERRITORY = UnitHolderType.TERRITORY.id();
+  @Deprecated String PLAYER = UnitHolderType.PLAYER.id();
 
   UnitCollection getUnitCollection();
 
   void notifyChanged();
 
-  String getType();
+  UnitHolderType getType();
 
   default Collection<Unit> getUnits() {
     return getUnitCollection().getUnits();

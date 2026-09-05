@@ -46,7 +46,7 @@ public interface GameState {
 
   UnitTypeList getUnitTypeList();
 
-  UnitHolder getUnitHolder(String name, String type);
+  UnitHolder getUnitHolder(String name, UnitHolderType type);
 
   GameProperties getProperties();
 
