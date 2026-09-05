@@ -331,5 +331,27 @@ class UnitAttachmentTest {
       assertEquals(Set.of("A", "B", "C"), Set.of(unitPlacementOnlyAllowedIn.getValue()));
       assertNull(unitPlacementRestrictions.getValue());
     }
+
+    @Test
+    void setUnitPlacementOnlyAllowedInWithColonDelimitedStringUpdatesRestrictions()
+        throws MutableProperty.InvalidValueException {
+      when(map.getTerritoryOrNull("A")).thenReturn(territoryA);
+
+      unitPlacementOnlyAllowedIn.setValue("A");
+
+      assertEquals(Set.of("A"), Set.of(unitPlacementOnlyAllowedIn.getValue()));
+      assertEquals(Set.of("B", "C"), Set.of(unitPlacementRestrictions.getValue()));
+    }
+
+    @Test
+    void setUnitPlacementRestrictionsWithColonDelimitedStringUpdatesOnlyAllowedIn()
+        throws MutableProperty.InvalidValueException {
+      when(map.getTerritoryOrNull("B")).thenReturn(territoryB);
+      when(map.getTerritoryOrNull("C")).thenReturn(territoryC);
+
+      unitPlacementRestrictions.setValue("B:C");
+
+      assertEquals(Set.of("A"), Set.of(unitPlacementOnlyAllowedIn.getValue()));
+    }
   }
 }

@@ -2900,8 +2900,6 @@ public class UnitAttachment extends DefaultAttachment {
         + maxDamage
         + "  unitPlacementRestrictions:"
         + toString(unitPlacementRestrictions)
-        + " unitPlacementOnlyAllowedIn:"
-        + toString(getUnitPlacementOnlyAllowedIn())
         + "  requiresUnits:"
         + toString(requiresUnits)
         + "  consumesUnits:"
