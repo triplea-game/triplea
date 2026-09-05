@@ -45,6 +45,9 @@ public class MapRouteDrawer {
   private static final int MESSAGE_TEXT_Y = 18;
   private static final int MESSAGE_TEXT_SPACING = 6;
   private static final Font MESSAGE_FONT = new Font("Dialog", Font.BOLD, 16);
+  // Offset the cursor to prevent it from obscuring UI elements
+  private static final double CURSOR_OFFSET_X = 25;
+  private static final double CURSOR_OFFSET_Y = 10;
 
   private final RouteCalculator routeCalculator;
   private final MapData mapData;
@@ -140,9 +143,11 @@ public class MapRouteDrawer {
     if (cursorImage != null) {
       for (final Point2D[] endPoint : routeCalculator.getAllPoints(lastRoutePoint)) {
         final AffineTransform imageTransform = getDrawingTransform();
-        imageTransform.translate(endPoint[0].getX(), endPoint[0].getY());
+        imageTransform.translate(
+            endPoint[0].getX() + CURSOR_OFFSET_X, endPoint[0].getY() + CURSOR_OFFSET_Y);
         imageTransform.translate(cursorImage.getWidth() / 2.0, cursorImage.getHeight() / 2.0);
         imageTransform.scale(1 / mapPanel.getScale(), 1 / mapPanel.getScale());
+        imageTransform.translate(-cursorImage.getWidth() / 2.0, -cursorImage.getHeight() / 2.0);
         graphics.drawImage(cursorImage, imageTransform, null);
       }
     }
