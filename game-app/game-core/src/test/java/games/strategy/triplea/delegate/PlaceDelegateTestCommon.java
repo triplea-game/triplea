@@ -3,11 +3,7 @@ package games.strategy.triplea.delegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.unitType;
 import static games.strategy.triplea.delegate.Matches.unitIsOfType;
 import static games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate.BidMode.NOT_BID;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import games.strategy.engine.data.GamePlayer;
@@ -158,7 +154,7 @@ public abstract class PlaceDelegateTestCommon extends AbstractDelegateTestCase {
   void testTerritoryEffectForbiddenUnits() {
     List<Unit> units = armour.create(1, british);
     final PlaceableUnits response = delegate.getPlaceableUnits(units, westCanada);
-    assertThat(response.getUnits(), is(empty()));
+    assertThat(response.getUnits()).isEmpty();
     assertError(delegate.canUnitsBePlaced(westCanada, units, british));
   }
 
@@ -208,14 +204,14 @@ public abstract class PlaceDelegateTestCommon extends AbstractDelegateTestCase {
     assertError(delegate.canUnitsBePlaced(japan, units, japanese));
     // However, getPlaceableUnits() should return 2 of each, since that's what's for filtering the
     // options given to the user.
-    assertThat(
-        delegate.getPlaceableUnits(units, japan).getUnits(), containsInAnyOrder(units.toArray()));
+    assertThat(delegate.getPlaceableUnits(units, japan).getUnits())
+        .containsExactlyInAnyOrderElementsOf(units);
     units.addAll(create(japanese, infantry, 7));
     units.addAll(create(japanese, infantry2, 5));
     var result = delegate.getPlaceableUnits(units, japan).getUnits();
-    assertThat(CollectionUtils.getMatches(result, Matches.unitIsOfType(infantry)), hasSize(3));
-    assertThat(CollectionUtils.getMatches(result, Matches.unitIsOfType(infantry2)), hasSize(3));
-    assertThat(result, hasSize(6));
+    assertThat(CollectionUtils.getMatches(result, Matches.unitIsOfType(infantry))).hasSize(3);
+    assertThat(CollectionUtils.getMatches(result, Matches.unitIsOfType(infantry2))).hasSize(3);
+    assertThat(result).hasSize(6);
   }
 
   @Test
@@ -236,15 +232,14 @@ public abstract class PlaceDelegateTestCommon extends AbstractDelegateTestCase {
     assertError(delegate.canUnitsBePlaced(northSea, units, british));
     // However, getPlaceableUnits() should return 2 of each, since that's what's for filtering the
     // options given to the user.
-    assertThat(
-        delegate.getPlaceableUnits(units, northSea).getUnits(),
-        containsInAnyOrder(units.toArray()));
+    assertThat(delegate.getPlaceableUnits(units, northSea).getUnits())
+        .containsExactlyInAnyOrderElementsOf(units);
     units.addAll(create(british, carrier, 5));
     units.addAll(create(british, battleship, 7));
     var result = delegate.getPlaceableUnits(units, northSea).getUnits();
-    assertThat(result, hasSize(6));
-    assertThat(CollectionUtils.getMatches(result, Matches.unitIsOfType(battleship)), hasSize(3));
-    assertThat(CollectionUtils.getMatches(result, Matches.unitIsOfType(carrier)), hasSize(3));
+    assertThat(result).hasSize(6);
+    assertThat(CollectionUtils.getMatches(result, Matches.unitIsOfType(battleship))).hasSize(3);
+    assertThat(CollectionUtils.getMatches(result, Matches.unitIsOfType(carrier))).hasSize(3);
   }
 
   @Test
@@ -261,15 +256,17 @@ public abstract class PlaceDelegateTestCommon extends AbstractDelegateTestCase {
     assertError(delegate.canUnitsBePlaced(westCanadaSeaZone, units, british));
 
     PlaceableUnits response = delegate.getPlaceableUnits(units, westCanadaSeaZone);
-    assertThat(response.getUnits(), hasSize(2));
-    assertThat(response.getUnits(), is(CollectionUtils.getMatches(units, unitIsOfType(carrier))));
+    assertThat(response.getUnits()).hasSize(2);
+    assertThat(response.getUnits())
+        .isEqualTo(CollectionUtils.getMatches(units, unitIsOfType(carrier)));
 
     // Check that it's the case even if we shuffle the list a few times.
     for (int i = 0; i < 5; i++) {
       Collections.shuffle(units);
       response = delegate.getPlaceableUnits(units, westCanadaSeaZone);
-      assertThat(response.getUnits(), hasSize(2));
-      assertThat(response.getUnits(), is(CollectionUtils.getMatches(units, unitIsOfType(carrier))));
+      assertThat(response.getUnits()).hasSize(2);
+      assertThat(response.getUnits())
+          .isEqualTo(CollectionUtils.getMatches(units, unitIsOfType(carrier)));
     }
   }
 
