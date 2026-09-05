@@ -10,10 +10,7 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitSeaTransport;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitWasAmphibious;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -109,7 +106,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
 
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);
-        assertThat(offensiveGeneralRetreat.getAllStepDetails(), is(empty()));
+        assertThat(offensiveGeneralRetreat.getAllStepDetails()).isEmpty();
         final UnitAttachment unitAttachment =
             (UnitAttachment) unit.getType().getAttachment(UNIT_ATTACHMENT_NAME);
         // ensure it didn't even try to check if there are planes
@@ -128,7 +125,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
 
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);
-        assertThat(offensiveGeneralRetreat.getAllStepDetails(), hasSize(1));
+        assertThat(offensiveGeneralRetreat.getAllStepDetails()).hasSize(1);
         final UnitAttachment unitAttachment =
             (UnitAttachment) unit.getType().getAttachment(UNIT_ATTACHMENT_NAME);
         verify(unitAttachment).isAir();
@@ -150,7 +147,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
 
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);
-        assertThat(offensiveGeneralRetreat.getAllStepDetails(), hasSize(1));
+        assertThat(offensiveGeneralRetreat.getAllStepDetails()).hasSize(1);
       }
 
       @Test
@@ -165,7 +162,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
 
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);
-        assertThat(offensiveGeneralRetreat.getAllStepDetails(), hasSize(1));
+        assertThat(offensiveGeneralRetreat.getAllStepDetails()).hasSize(1);
       }
 
       @Test
@@ -179,7 +176,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
 
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);
-        assertThat(offensiveGeneralRetreat.getAllStepDetails(), is(empty()));
+        assertThat(offensiveGeneralRetreat.getAllStepDetails()).isEmpty();
       }
 
       @Test
@@ -198,7 +195,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
 
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);
-        assertThat(offensiveGeneralRetreat.getAllStepDetails(), is(empty()));
+        assertThat(offensiveGeneralRetreat.getAllStepDetails()).isEmpty();
       }
     }
 
@@ -218,7 +215,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
 
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);
-        assertThat(offensiveGeneralRetreat.getAllStepDetails(), hasSize(1));
+        assertThat(offensiveGeneralRetreat.getAllStepDetails()).hasSize(1);
       }
 
       @Test
@@ -233,7 +230,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
 
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);
-        assertThat(offensiveGeneralRetreat.getAllStepDetails(), is(empty()));
+        assertThat(offensiveGeneralRetreat.getAllStepDetails()).isEmpty();
       }
 
       @Test
@@ -248,7 +245,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
 
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);
-        assertThat(offensiveGeneralRetreat.getAllStepDetails(), is(empty()));
+        assertThat(offensiveGeneralRetreat.getAllStepDetails()).isEmpty();
         // ensure that it doesn't even check for amphibious units
         verify(amphibiousUnit, never()).getWasAmphibious();
       }
@@ -266,7 +263,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
 
       final OffensiveGeneralRetreat offensiveGeneralRetreat =
           new OffensiveGeneralRetreat(battleState, battleActions);
-      assertThat(offensiveGeneralRetreat.getAllStepDetails(), hasSize(1));
+      assertThat(offensiveGeneralRetreat.getAllStepDetails()).hasSize(1);
     }
 
     @Nested
@@ -282,7 +279,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
 
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);
-        assertThat(offensiveGeneralRetreat.getAllStepDetails(), is(empty()));
+        assertThat(offensiveGeneralRetreat.getAllStepDetails()).isEmpty();
       }
 
       @Test
@@ -295,7 +292,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
 
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);
-        assertThat(offensiveGeneralRetreat.getAllStepDetails(), hasSize(1));
+        assertThat(offensiveGeneralRetreat.getAllStepDetails()).hasSize(1);
       }
 
       @Test
@@ -309,7 +306,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
 
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);
-        assertThat(offensiveGeneralRetreat.getAllStepDetails(), is(empty()));
+        assertThat(offensiveGeneralRetreat.getAllStepDetails()).isEmpty();
       }
 
       @Test
@@ -323,7 +320,7 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
 
         final OffensiveGeneralRetreat offensiveGeneralRetreat =
             new OffensiveGeneralRetreat(battleState, battleActions);
-        assertThat(offensiveGeneralRetreat.getAllStepDetails(), hasSize(1));
+        assertThat(offensiveGeneralRetreat.getAllStepDetails()).hasSize(1);
       }
     }
   }
