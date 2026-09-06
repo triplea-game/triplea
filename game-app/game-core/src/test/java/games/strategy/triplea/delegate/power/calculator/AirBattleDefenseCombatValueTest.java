@@ -2,8 +2,7 @@ package games.strategy.triplea.delegate.power.calculator;
 
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import games.strategy.engine.data.GameData;
@@ -33,7 +32,7 @@ class AirBattleDefenseCombatValueTest {
 
       final AirBattleDefenseCombatValue.AirBattleDefenseStrength strength =
           new AirBattleDefenseCombatValue.AirBattleDefenseStrength(6);
-      assertThat("Air defense is 3", strength.getStrength(unit).getValue(), is(3));
+      assertThat(strength.getStrength(unit).getValue()).as("Air defense is 3").isEqualTo(3);
     }
 
     @Test
@@ -50,10 +49,9 @@ class AirBattleDefenseCombatValueTest {
 
       final AirBattleDefenseCombatValue.AirBattleDefenseStrength strength =
           new AirBattleDefenseCombatValue.AirBattleDefenseStrength(6);
-      assertThat(
-          "Air defense is 8 but dice sides is 6 so it is limited to 6",
-          strength.getStrength(unit).getValue(),
-          is(6));
+      assertThat(strength.getStrength(unit).getValue())
+          .as("Air defense is 8 but dice sides is 6 so it is limited to 6")
+          .isEqualTo(6);
     }
   }
 }

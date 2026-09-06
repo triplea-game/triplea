@@ -240,6 +240,9 @@ public final class PointFileReaderWriter {
       }
       polygons.add(newPolygonFromPoints(points));
     }
+    if (polygons.isEmpty()) {
+      throw new IllegalArgumentException(MessageFormat.format("No polygons for \"{0}\"", name));
+    }
     mapping.put(name, polygons);
   }
 

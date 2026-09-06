@@ -1,8 +1,6 @@
 package org.triplea.swing;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.awt.Component;
@@ -28,12 +26,12 @@ class JComboBoxBuilderTest {
             .item("option 3")
             .build();
 
-    assertThat(box.getSelectedIndex(), is(0));
-    assertThat(box.getItemCount(), is(3));
-    assertThat(box.getItemAt(0), is("option 1"));
-    assertThat(box.getItemAt(1), is("option 2"));
-    assertThat(box.getItemAt(2), is("option 3"));
-    assertThat(box.getSelectedItem(), is("option 1"));
+    assertThat(box.getSelectedIndex()).isEqualTo(0);
+    assertThat(box.getItemCount()).isEqualTo(3);
+    assertThat(box.getItemAt(0)).isEqualTo("option 1");
+    assertThat(box.getItemAt(1)).isEqualTo("option 2");
+    assertThat(box.getItemAt(2)).isEqualTo("option 3");
+    assertThat(box.getSelectedItem()).isEqualTo("option 1");
   }
 
   @Test
@@ -53,7 +51,7 @@ class JComboBoxBuilderTest {
                 })
             .build();
     box.setSelectedIndex(1);
-    assertThat(triggerCount.get(), is(1));
+    assertThat(triggerCount.get()).isEqualTo(1);
   }
 
   @Nested
@@ -64,9 +62,9 @@ class JComboBoxBuilderTest {
           JComboBoxBuilder.builder(Object.class).item(new Object()).enableAutoComplete().build();
 
       final Component editorComponent = comboBox.getEditor().getEditorComponent();
-      assertThat(editorComponent, is(instanceOf(JTextComponent.class)));
-      assertThat(
-          ((JTextComponent) editorComponent).getDocument(), is(instanceOf(AutoCompletion.class)));
+      assertThat(editorComponent).isInstanceOf(JTextComponent.class);
+      assertThat(((JTextComponent) editorComponent).getDocument())
+          .isInstanceOf(AutoCompletion.class);
     }
   }
 
@@ -80,7 +78,7 @@ class JComboBoxBuilderTest {
               .selectedItem("B")
               .build();
 
-      assertThat(comboBox.getSelectedItem(), is("B"));
+      assertThat(comboBox.getSelectedItem()).isEqualTo("B");
     }
   }
 
@@ -94,7 +92,7 @@ class JComboBoxBuilderTest {
               .nullableSelectedItem("B")
               .build();
 
-      assertThat(comboBox.getSelectedItem(), is("B"));
+      assertThat(comboBox.getSelectedItem()).isEqualTo("B");
     }
 
     @Test
@@ -105,7 +103,7 @@ class JComboBoxBuilderTest {
               .nullableSelectedItem(null)
               .build();
 
-      assertThat(comboBox.getSelectedItem(), is("A"));
+      assertThat(comboBox.getSelectedItem()).isEqualTo("A");
     }
   }
 }

@@ -1,7 +1,6 @@
 package games.strategy.engine.data;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.RelationshipTracker.RelatedPlayers;
 import nl.jqno.equalsverifier.EqualsVerifier;
@@ -31,7 +30,7 @@ final class RelationshipTrackerTest {
         final RelatedPlayers relatedPlayers1 = new RelatedPlayers(player1, player2);
         final RelatedPlayers relatedPlayers2 = new RelatedPlayers(player2, player1);
 
-        assertThat(relatedPlayers1.equals(relatedPlayers2), is(true));
+        assertThat(relatedPlayers1.equals(relatedPlayers2)).isTrue();
       }
 
       @Test
@@ -39,7 +38,7 @@ final class RelationshipTrackerTest {
         final RelatedPlayers relatedPlayers1 = new RelatedPlayers(player1, player2);
         final RelatedPlayers relatedPlayers2 = new RelatedPlayers(player2, player1);
 
-        assertThat(relatedPlayers1.hashCode(), is(relatedPlayers2.hashCode()));
+        assertThat(relatedPlayers1.hashCode()).isEqualTo(relatedPlayers2.hashCode());
       }
     }
   }

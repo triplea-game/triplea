@@ -1,12 +1,10 @@
 package games.strategy.engine.framework.startup.ui;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import games.strategy.engine.player.Player;
 import java.util.List;
-import org.hamcrest.core.IsCollectionContaining;
 import org.junit.jupiter.api.Test;
 
 class PlayerTypesTest {
@@ -14,10 +12,9 @@ class PlayerTypesTest {
   @Test
   void playerTypes() {
     final PlayerTypes playerTypes = new PlayerTypes(PlayerTypes.getBuiltInPlayerTypes());
-    assertThat(
-        "Ensure we have a visible player type in the selection list",
-        List.of(playerTypes.getAvailablePlayerLabels()),
-        IsCollectionContaining.hasItem(PlayerTypes.WEAK_AI.getLabel()));
+    assertThat(List.of(playerTypes.getAvailablePlayerLabels()))
+        .as("Ensure we have a visible player type in the selection list")
+        .contains(PlayerTypes.WEAK_AI.getLabel());
   }
 
   @Test
@@ -30,14 +27,13 @@ class PlayerTypesTest {
         .forEach(
             playerType -> {
               final Player result = playerType.newPlayerWithName(testName);
-              assertThat(
-                  "The player label should match after construction, input type: " + playerType,
-                  result.getPlayerLabel(),
-                  is(playerType.getLabel()));
-              assertThat(
-                  "The name is a passed in parameter, this should still match after construction",
-                  result.getName(),
-                  is(testName));
+              assertThat(result.getPlayerLabel())
+                  .as("The player label should match after construction, input type: " + playerType)
+                  .isEqualTo(playerType.getLabel());
+              assertThat(result.getName())
+                  .as(
+                      "The name is a passed in parameter, this should still match after construction")
+                  .isEqualTo(testName);
             });
   }
 
@@ -51,25 +47,27 @@ class PlayerTypesTest {
         .getPlayerTypes()
         .forEach(
             playerType ->
-                assertThat(
-                    "Make sure that we can reconstruct each player type from its label",
-                    playerTypesProvider.fromLabel(playerType.getLabel()),
-                    is(playerType)));
+                assertThat(playerTypesProvider.fromLabel(playerType.getLabel()))
+                    .as("Make sure that we can reconstruct each player type from its label")
+                    .isEqualTo(playerType));
   }
 
   @Test
   void getLabel() {
     final PlayerTypes playerTypes = new PlayerTypes(PlayerTypes.getBuiltInPlayerTypes());
     assertThat(
-        "All player type labels should be unique, count of unique labels should match total",
-        playerTypes.getPlayerTypes().stream().map(PlayerTypes.Type::getLabel).distinct().count(),
-        is((long) playerTypes.getPlayerTypes().size()));
+            playerTypes.getPlayerTypes().stream()
+                .map(PlayerTypes.Type::getLabel)
+                .distinct()
+                .count())
+        .as("All player type labels should be unique, count of unique labels should match total")
+        .isEqualTo((long) playerTypes.getPlayerTypes().size());
 
     assertThat(
-        "No label should be empty ",
-        playerTypes.getPlayerTypes().stream()
-            .map(PlayerTypes.Type::getLabel)
-            .anyMatch(String::isEmpty),
-        is(false));
+            playerTypes.getPlayerTypes().stream()
+                .map(PlayerTypes.Type::getLabel)
+                .anyMatch(String::isEmpty))
+        .as("No label should be empty ")
+        .isFalse();
   }
 }

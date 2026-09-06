@@ -1,7 +1,6 @@
 package games.strategy.engine.auto.update;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
 import java.time.Instant;
@@ -31,7 +30,7 @@ final class UpdatedMapsCheckTest {
     final boolean result =
         UpdatedMapsCheck.isMapUpdateCheckRequired(lastCheckEpochMilli, lastCheckSetter);
 
-    assertThat(result, is(true));
+    assertThat(result).isTrue();
 
     verify(lastCheckSetter).run();
   }
@@ -50,7 +49,7 @@ final class UpdatedMapsCheckTest {
     final boolean result =
         UpdatedMapsCheck.isMapUpdateCheckRequired(lastCheckTime, lastCheckSetter);
 
-    assertThat(result, is(false));
+    assertThat(result).isFalse();
 
     verify(lastCheckSetter).run();
   }

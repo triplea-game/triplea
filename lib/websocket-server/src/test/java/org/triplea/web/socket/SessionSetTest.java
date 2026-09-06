@@ -1,11 +1,6 @@
 package org.triplea.web.socket;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsCollectionContaining.hasItem;
-import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -40,8 +35,8 @@ class SessionSetTest {
     void addSession() {
       sessionSet.put(session);
 
-      assertThat(sessionSet.getSessions(), hasSize(1));
-      assertThat(sessionSet.getSessions(), hasItem(session));
+      assertThat(sessionSet.getSessions()).hasSize(1);
+      assertThat(sessionSet.getSessions()).contains(session);
     }
 
     @Test
@@ -50,8 +45,8 @@ class SessionSetTest {
       sessionSet.put(session);
       sessionSet.put(session0);
 
-      assertThat(sessionSet.getSessions(), hasSize(2));
-      assertThat(sessionSet.getSessions(), hasItems(session, session0));
+      assertThat(sessionSet.getSessions()).hasSize(2);
+      assertThat(sessionSet.getSessions()).contains(session, session0);
     }
   }
 
@@ -60,7 +55,7 @@ class SessionSetTest {
     @Test
     @DisplayName("Verify session count starts empty at zero")
     void initiallyEmpty() {
-      assertThat(sessionSet.values(), is(empty()));
+      assertThat(sessionSet.values()).isEmpty();
     }
 
     @Test
@@ -68,7 +63,7 @@ class SessionSetTest {
     void addASession() {
       when(session.isOpen()).thenReturn(true);
       sessionSet.put(session);
-      assertThat(sessionSet.values(), hasSize(1));
+      assertThat(sessionSet.values()).hasSize(1);
     }
 
     @Test
@@ -77,14 +72,14 @@ class SessionSetTest {
       sessionSet.put(session);
       sessionSet.remove(session);
 
-      assertThat(sessionSet.values(), is(empty()));
+      assertThat(sessionSet.values()).isEmpty();
     }
 
     @Test
     void removeSessionThatDoesNotExistIsNoOp() {
       sessionSet.remove(session);
 
-      assertThat(sessionSet.values(), is(empty()));
+      assertThat(sessionSet.values()).isEmpty();
     }
 
     @Test
@@ -92,7 +87,7 @@ class SessionSetTest {
     void closedSessionsArePruned() {
       when(session.isOpen()).thenReturn(false);
       sessionSet.put(session);
-      assertThat(sessionSet.values(), is(empty()));
+      assertThat(sessionSet.values()).isEmpty();
     }
 
     @Test
@@ -105,7 +100,7 @@ class SessionSetTest {
       when(session1.isOpen()).thenReturn(true);
       sessionSet.put(session1);
 
-      assertThat("Added two open sessions", sessionSet.values(), hasSize(2));
+      assertThat(sessionSet.values()).as("Added two open sessions").hasSize(2);
     }
   }
 
@@ -116,7 +111,7 @@ class SessionSetTest {
     void noSessions() {
       final Collection<WebSocketSession> matches = sessionSet.getSessionsByIp(IP_0);
 
-      assertThat("session set contains no sessions to match", matches, is(empty()));
+      assertThat(matches).as("session set contains no sessions to match").isEmpty();
     }
 
     @Test
@@ -126,7 +121,7 @@ class SessionSetTest {
 
       final Collection<WebSocketSession> matches = sessionSet.getSessionsByIp(IP_0);
 
-      assertThat("IP_1 is in the set, but IP_0 is not", matches, is(empty()));
+      assertThat(matches).as("IP_1 is in the set, but IP_0 is not").isEmpty();
     }
 
     @Test
@@ -137,7 +132,7 @@ class SessionSetTest {
 
       final Collection<WebSocketSession> matches = sessionSet.getSessionsByIp(IP_0);
 
-      assertThat("IP_0 matches, but the session is closed", matches, is(empty()));
+      assertThat(matches).as("IP_0 matches, but the session is closed").isEmpty();
     }
 
     @Test
@@ -152,8 +147,8 @@ class SessionSetTest {
 
       final var matches = sessionSet.getSessionsByIp(IP_0);
 
-      assertThat("Two open sessions match IP_0", matches, hasSize(2));
-      assertThat(matches, hasItems(session, session0));
+      assertThat(matches).as("Two open sessions match IP_0").hasSize(2);
+      assertThat(matches).contains(session, session0);
     }
   }
 

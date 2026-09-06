@@ -1,7 +1,6 @@
 package org.triplea.swing;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,25 +15,25 @@ class JTextFieldBuilderTest {
   void defaultValues() {
     final JTextField field = JTextFieldBuilder.builder().build();
 
-    assertThat(field.isEnabled(), is(true));
+    assertThat(field.isEnabled()).isTrue();
 
-    assertThat(field.getText(), is(""));
+    assertThat(field.getText()).isEqualTo("");
   }
 
   @Test
   void text() {
     final String testValue = "test value";
-    assertThat(JTextFieldBuilder.builder().text(testValue).build().getText(), is(testValue));
+    assertThat(JTextFieldBuilder.builder().text(testValue).build().getText()).isEqualTo(testValue);
   }
 
   @Test
   void textWithIntegerValue() {
-    assertThat(JTextFieldBuilder.builder().text(2).build().getText(), is("2"));
+    assertThat(JTextFieldBuilder.builder().text(2).build().getText()).isEqualTo("2");
   }
 
   @Test
   void columns() {
-    assertThat(JTextFieldBuilder.builder().columns(3).build().getColumns(), is(3));
+    assertThat(JTextFieldBuilder.builder().columns(3).build().getColumns()).isEqualTo(3);
   }
 
   @Test
@@ -47,12 +46,11 @@ class JTextFieldBuilderTest {
         .build()
         .setText("text");
 
-    // Callback is buffered, we need to wait long enough for the event to be scheduled and fired.
-    // Eventually callback action is expected to have been called and incremented our value from 0
-    // to 1.
-    Awaitility.await()
-        .atMost(Duration.ofMillis(DocumentListenerBuilder.CALLBACK_DELAY_MS * 2))
-        .until(() -> value.get() == 1);
+    // Callback is buffered and fires after CALLBACK_DELAY_MS. The ceiling is a generous upper
+    // bound, not a latency assertion: await returns as soon as the callback fires, so a large
+    // timeout keeps the test robust under CPU contention (e.g. parallel test forks) without
+    // slowing the passing case.
+    Awaitility.await().atMost(Duration.ofSeconds(5)).until(() -> value.get() == 1);
   }
 
   @Test
@@ -61,23 +59,22 @@ class JTextFieldBuilderTest {
 
     JTextFieldBuilder.builder().maxLength(20).textListener(value::set).build().setText("test");
 
-    Awaitility.await()
-        .atMost(Duration.ofMillis(DocumentListenerBuilder.CALLBACK_DELAY_MS * 2))
-        .until(() -> "test".equals(value.get()));
+    // Generous ceiling, not a latency assertion; see textListener() above.
+    Awaitility.await().atMost(Duration.ofSeconds(5)).until(() -> "test".equals(value.get()));
   }
 
   @Test
   void enabled() {
-    assertThat(JTextFieldBuilder.builder().build().isEnabled(), is(true));
+    assertThat(JTextFieldBuilder.builder().build().isEnabled()).isTrue();
   }
 
   @Test
   void readyOnly() {
-    assertThat(JTextFieldBuilder.builder().readOnly().build().isEditable(), is(false));
+    assertThat(JTextFieldBuilder.builder().readOnly().build().isEditable()).isFalse();
   }
 
   @Test
   void disabled() {
-    assertThat(JTextFieldBuilder.builder().disabled().build().isEnabled(), is(false));
+    assertThat(JTextFieldBuilder.builder().disabled().build().isEnabled()).isFalse();
   }
 }

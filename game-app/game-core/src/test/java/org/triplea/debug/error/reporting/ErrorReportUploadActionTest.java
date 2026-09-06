@@ -1,7 +1,6 @@
 package org.triplea.debug.error.reporting;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -56,7 +55,7 @@ class ErrorReportUploadActionTest {
 
     final boolean result = errorReportUploadAction.test(ERROR_REPORT);
 
-    assertThat(result, is(false));
+    assertThat(result).isFalse();
 
     verify(failureConfirmation).accept(feignException);
     verify(successConfirmation, never()).accept(any());
@@ -68,7 +67,7 @@ class ErrorReportUploadActionTest {
 
     final boolean result = errorReportUploadAction.test(ERROR_REPORT);
 
-    assertThat(result, is(true));
+    assertThat(result).isTrue();
 
     verify(failureConfirmation, never()).accept(any());
     verify(successConfirmation).accept(URI.create(SUCCESS_RESPONSE.getGithubIssueLink()));

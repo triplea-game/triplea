@@ -12,6 +12,7 @@ import games.strategy.engine.display.IDisplay;
 import games.strategy.triplea.delegate.battle.BattleActions;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
+import games.strategy.triplea.delegate.battle.SoundUtils;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.settings.ClientSetting;
 import java.util.ArrayList;
@@ -20,7 +21,6 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.experimental.UtilityClass;
-import org.triplea.sound.SoundUtils;
 
 /** Utility class for handling retreating or submerging of `canEvade` units */
 @UtilityClass

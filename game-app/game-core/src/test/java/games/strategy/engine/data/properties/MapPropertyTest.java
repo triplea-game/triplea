@@ -1,7 +1,6 @@
 package games.strategy.engine.data.properties;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.common.collect.ImmutableMap;
 import java.util.HashMap;
@@ -26,7 +25,7 @@ final class MapPropertyTest {
     void shouldReturnTrueWhenValueIsMapAndPropertyMapIsEmpty() {
       final MapProperty<Integer> mapProperty = newMapProperty(Map.of());
 
-      assertThat(mapProperty.validate(Map.of(KEY_1, "11", KEY_2, "22")), is(true));
+      assertThat(mapProperty.validate(Map.of(KEY_1, "11", KEY_2, "22"))).isTrue();
     }
 
     @Test
@@ -36,49 +35,49 @@ final class MapPropertyTest {
 
       final MapProperty<Integer> mapProperty = newMapProperty(map);
 
-      assertThat(mapProperty.validate(Map.of(KEY_1, 11, KEY_2, 22)), is(true));
+      assertThat(mapProperty.validate(Map.of(KEY_1, 11, KEY_2, 22))).isTrue();
     }
 
     @Test
     void shouldReturnTrueWhenValueIsMapAndEmpty() {
-      assertThat(mapProperty.validate(Map.of()), is(true));
+      assertThat(mapProperty.validate(Map.of())).isTrue();
     }
 
     @Test
     void shouldReturnTrueWhenValueIsMapAndKeysAreCompatibleAndValuesAreCompatible() {
-      assertThat(mapProperty.validate(Map.of(KEY_1, 11, KEY_2, 22)), is(true));
+      assertThat(mapProperty.validate(Map.of(KEY_1, 11, KEY_2, 22))).isTrue();
       final Map<String, Integer> map = new HashMap<>();
       map.put(null, 33);
-      assertThat(mapProperty.validate(map), is(true));
+      assertThat(mapProperty.validate(map)).isTrue();
     }
 
     @Test
     void shouldReturnFalseWhenValueIsNotMap() {
-      assertThat(mapProperty.validate(new Object()), is(false));
+      assertThat(mapProperty.validate(new Object())).isFalse();
     }
 
     @Test
     void shouldReturnFalseWhenValueIsMapAndContainsNullValue() {
       final Map<String, Integer> map = new HashMap<>();
       map.put(KEY_1, null);
-      assertThat(mapProperty.validate(map), is(false));
+      assertThat(mapProperty.validate(map)).isFalse();
     }
 
     @Test
     void shouldReturnFalseWhenValueIsMapAndValuesAreCompatibleButKeysAreNotCompatible() {
-      assertThat(mapProperty.validate(ImmutableMap.of(1, 11, 2, 22)), is(false));
+      assertThat(mapProperty.validate(ImmutableMap.of(1, 11, 2, 22))).isFalse();
     }
 
     @Test
     void shouldReturnFalseWhenValueIsMapAndKeysAreCompatibleButValuesAreNotCompatible() {
-      assertThat(mapProperty.validate(ImmutableMap.of(KEY_1, "11", KEY_2, "22")), is(false));
+      assertThat(mapProperty.validate(ImmutableMap.of(KEY_1, "11", KEY_2, "22"))).isFalse();
     }
 
     @Test
     void shouldReturnFalseWhenValueIsMapAndValuesAreCompatibleButValueTypeIsNotSupported() {
       final MapProperty<Integer> mapProperty = newMapProperty(ImmutableMap.of());
 
-      assertThat(mapProperty.validate(ImmutableMap.of(KEY_1, Long.MAX_VALUE)), is(false));
+      assertThat(mapProperty.validate(ImmutableMap.of(KEY_1, Long.MAX_VALUE))).isFalse();
     }
   }
 }

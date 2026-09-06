@@ -1,9 +1,6 @@
 package games.strategy.engine.random;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.collection.IsArray.array;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import games.strategy.engine.random.IRemoteDiceServer.DiceServerException;
@@ -54,7 +51,7 @@ public class MartiDiceRollerTest {
   void singleDie() throws Exception {
     final Integer[] dice = boxedArray(martiDiceRoller.getDice(singleDieSuccess, 0));
 
-    assertThat(dice, is(array(equalTo(1336))));
+    assertThat(dice).containsExactly(1336);
   }
 
   @Test
@@ -62,21 +59,21 @@ public class MartiDiceRollerTest {
   void successfulMessageGetsExtractedCorrectly() throws Exception {
     final Integer[] dice = boxedArray(martiDiceRoller.getDice(threeDiceSuccess, 0));
 
-    assertThat(dice, is(array(equalTo(21), equalTo(4), equalTo(99))));
+    assertThat(dice).containsExactly(21, 4, 99);
   }
 
   @Test
   void unsuccessfulMessageGetsExtractedCorrectly() {
     final Exception exception =
         assertThrows(DiceServerException.class, () -> martiDiceRoller.getDice(singleError, 0));
-    assertThat(exception.getMessage(), is("Error description."));
+    assertThat(exception.getMessage()).isEqualTo("Error description.");
   }
 
   @Test
   void multipleErrorsAreJoined() {
     final Exception exception =
         assertThrows(DiceServerException.class, () -> martiDiceRoller.getDice(multipleErrors, 0));
-    assertThat(exception.getMessage(), is("first; second"));
+    assertThat(exception.getMessage()).isEqualTo("first; second");
   }
 
   @Test

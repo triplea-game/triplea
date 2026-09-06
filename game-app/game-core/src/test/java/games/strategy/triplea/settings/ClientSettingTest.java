@@ -1,9 +1,6 @@
 package games.strategy.triplea.settings;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -38,7 +35,7 @@ final class ClientSettingTest {
               });
       clientSetting.setValue(illegalValue);
 
-      assertThat(clientSetting.getValue(), isPresentAndIs(defaultValue));
+      assertThat(clientSetting.getValue()).contains(defaultValue);
     }
   }
 
@@ -65,7 +62,7 @@ final class ClientSettingTest {
 
       clientSetting.setValue(illegalValue);
 
-      assertThat(clientSetting.getValue(), isPresentAndIs(legalValue));
+      assertThat(clientSetting.getValue()).contains(legalValue);
     }
 
     @Test
@@ -77,7 +74,7 @@ final class ClientSettingTest {
 
       clientSetting.setValue(defaultValue);
 
-      assertThat(getPreferences().get(name, null), is(nullValue()));
+      assertThat(getPreferences().get(name, null)).isNull();
     }
   }
 
@@ -94,7 +91,7 @@ final class ClientSettingTest {
       doAnswer(
               invocation -> {
                 final GameSetting<String> gameSetting = invocation.getArgument(0);
-                assertThat(gameSetting.getValue(), isPresentAndIs(TEST_VALUE));
+                assertThat(gameSetting.getValue()).contains(TEST_VALUE);
                 return null;
               })
           .when(listener)
@@ -124,7 +121,7 @@ final class ClientSettingTest {
       final String name = "name";
       final ClientSetting<String> clientSetting = new FakeClientSetting(name);
 
-      assertThat(clientSetting.toString(), is(name));
+      assertThat(clientSetting.toString()).isEqualTo(name);
     }
   }
 

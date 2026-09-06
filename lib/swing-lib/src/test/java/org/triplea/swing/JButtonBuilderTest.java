@@ -1,7 +1,6 @@
 package org.triplea.swing;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.common.util.concurrent.Runnables;
@@ -18,7 +17,7 @@ class JButtonBuilderTest {
     final String value = "testing title";
     final JButton button =
         new JButtonBuilder().title(value).actionListener(Runnables.doNothing()).build();
-    assertThat(button.getText(), is(value));
+    assertThat(button.getText()).isEqualTo(value);
   }
 
   @Test
@@ -35,9 +34,9 @@ class JButtonBuilderTest {
 
     Arrays.stream(button.getActionListeners())
         .forEach(listener -> listener.actionPerformed(new ActionEvent(new Object(), 0, "")));
-    assertThat(integer.get(), is(1));
+    assertThat(integer.get()).isEqualTo(1);
 
-    assertThat(button.getToolTipText(), is("toolTip"));
+    assertThat(button.getToolTipText()).isEqualTo("toolTip");
   }
 
   @Test

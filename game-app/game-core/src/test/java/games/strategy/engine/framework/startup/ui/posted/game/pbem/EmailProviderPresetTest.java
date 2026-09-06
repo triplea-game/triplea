@@ -1,9 +1,7 @@
 package games.strategy.engine.framework.startup.ui.posted.game.pbem;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static games.strategy.engine.framework.startup.ui.posted.game.pbem.EmailProviderPreset.lookupByName;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -17,12 +15,12 @@ class EmailProviderPresetTest {
 
     @Test
     void lookupGmail() {
-      assertThat(lookupByName("Gmail"), isPresentAndIs(EmailProviderPreset.GMAIL));
+      assertThat(lookupByName("Gmail")).contains(EmailProviderPreset.GMAIL);
     }
 
     @Test
     void lookupHotmail() {
-      assertThat(lookupByName("Hotmail"), isPresentAndIs(EmailProviderPreset.HOTMAIL));
+      assertThat(lookupByName("Hotmail")).contains(EmailProviderPreset.HOTMAIL);
     }
   }
 
@@ -30,7 +28,7 @@ class EmailProviderPresetTest {
   class VerifyLookupByNameNegativeCases {
     @Test
     void nullLookupIsEmpty() {
-      assertThat(lookupByName(null), isEmpty());
+      assertThat(lookupByName(null)).isEmpty();
     }
 
     @ParameterizedTest
@@ -45,10 +43,9 @@ class EmailProviderPresetTest {
         })
     @DisplayName("Verify for a set of strings that are not a preset, we get an empty result")
     void invalidValues(final String value) {
-      assertThat(
-          "Searching for value is not expected to match any of the presets: " + value,
-          lookupByName(value),
-          isEmpty());
+      assertThat(lookupByName(value))
+          .as("Searching for value is not expected to match any of the presets: " + value)
+          .isEmpty();
     }
   }
 }

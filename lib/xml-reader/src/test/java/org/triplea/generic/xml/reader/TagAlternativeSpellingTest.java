@@ -1,9 +1,6 @@
 package org.triplea.generic.xml.reader;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import lombok.Getter;
@@ -50,17 +47,19 @@ public class TagAlternativeSpellingTest extends AbstractXmlMapperTest {
   void verifySimpleExample() throws Exception {
     final Library library = xmlMapper.mapXmlToObject(Library.class);
 
-    assertThat(library, is(notNullValue()));
-    assertThat(library.catalog, is(notNullValue()));
-    assertThat(library.catalog.libraryItems, hasSize(2));
-    assertThat(library.catalog.libraryItems.get(0).articles, hasSize(2));
-    assertThat(
-        library.catalog.libraryItems.get(0).articles.get(0).title, is("Crossing the Atlantic"));
-    assertThat(
-        library.catalog.libraryItems.get(0).articles.get(1).title, is("The Battle of the Bulge"));
+    assertThat(library).isNotNull();
+    assertThat(library.catalog).isNotNull();
+    assertThat(library.catalog.libraryItems).hasSize(2);
+    assertThat(library.catalog.libraryItems.get(0).articles).hasSize(2);
+    assertThat(library.catalog.libraryItems.get(0).articles.get(0).title)
+        .isEqualTo("Crossing the Atlantic");
+    assertThat(library.catalog.libraryItems.get(0).articles.get(1).title)
+        .isEqualTo("The Battle of the Bulge");
 
-    assertThat(library.catalog.libraryItems.get(1).articles, hasSize(2));
-    assertThat(library.catalog.libraryItems.get(1).articles.get(0).title, is("How to Win Revised"));
-    assertThat(library.catalog.libraryItems.get(1).articles.get(1).title, is("Game of TripleA"));
+    assertThat(library.catalog.libraryItems.get(1).articles).hasSize(2);
+    assertThat(library.catalog.libraryItems.get(1).articles.get(0).title)
+        .isEqualTo("How to Win Revised");
+    assertThat(library.catalog.libraryItems.get(1).articles.get(1).title)
+        .isEqualTo("Game of TripleA");
   }
 }
