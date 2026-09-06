@@ -38,8 +38,11 @@ public class History extends DefaultTreeModel {
   private final List<Change> changes = new ArrayList<>();
   private final GameData gameData;
   private HistoryPanel panel;
-  // Index at which point we are in history. Only valid if seekingEnabled is true.
+
+  /// Legacy field name retained for serialization compatibility. The value represents change index
+  /// at which point we are in history (not the next value). Only valid if seekingEnabled is true.
   private int nextChangeIndex;
+
   private boolean seekingEnabled = false;
 
   public History(final GameData data) {
@@ -82,7 +85,7 @@ public class History extends DefaultTreeModel {
   public HistoryNode enableSeeking(final HistoryPanel panel) {
     Preconditions.checkState(!seekingEnabled);
     this.panel = panel;
-    nextChangeIndex = changes.size();
+    nextChangeIndex = changes.size() - 1;
     seekingEnabled = true;
     HistoryNode lastNode = getLastNode();
     gotoNode(lastNode);
@@ -107,7 +110,7 @@ public class History extends DefaultTreeModel {
     return getLastChildInternal((HistoryNode) node.getLastChild());
   }
 
-  private int getNextChange(final HistoryNode node) {
+  private int getLastChangeIndex(final HistoryNode node) {
     int lastChangeIndex;
     if (node == getRoot()) {
       lastChangeIndex = 0;
@@ -120,21 +123,21 @@ public class History extends DefaultTreeModel {
       // If this node is still current, or comes from an old save game where we didn't set it, get
       // the last change index from its last child node.
       if (lastChangeIndex == -1 && indexedHistoryNode.getChildCount() > 0) {
-        lastChangeIndex = getNextChange((HistoryNode) indexedHistoryNode.getLastChild());
+        lastChangeIndex = getLastChangeIndex((HistoryNode) indexedHistoryNode.getLastChild());
       }
     } else {
       lastChangeIndex = 0;
     }
     if (lastChangeIndex == -1) {
-      return changes.size();
+      return changes.size() - 1;
     }
     return lastChangeIndex;
   }
 
   private Change getDeltaTo(int changeIndex) {
-    final List<Change> deltaChanges =
-        changes.subList(
-            Math.min(nextChangeIndex, changeIndex), Math.max(nextChangeIndex, changeIndex));
+    int fromIndexIncluding = Math.min(nextChangeIndex, changeIndex);
+    int toIndexExcluding = Math.max(nextChangeIndex, changeIndex) + 1;
+    final List<Change> deltaChanges = changes.subList(fromIndexIncluding, toIndexExcluding);
     final Change compositeChange = new CompositeChange(deltaChanges);
     return (changeIndex >= nextChangeIndex) ? compositeChange : compositeChange.invert();
   }
@@ -145,10 +148,10 @@ public class History extends DefaultTreeModel {
     Preconditions.checkNotNull(node);
     Preconditions.checkState(seekingEnabled);
     try (GameData.Unlocker ignored = gameData.acquireWriteLock()) {
-      final int nodeChangeIndex = getNextChange(node);
-      if (nodeChangeIndex != nextChangeIndex) {
-        gameData.performChange(getDeltaTo(nodeChangeIndex));
-        nextChangeIndex = nodeChangeIndex;
+      final int nodeLastChangeIndex = getLastChangeIndex(node);
+      if (nodeLastChangeIndex != nextChangeIndex) {
+        gameData.performChange(getDeltaTo(nodeLastChangeIndex));
+        nextChangeIndex = nodeLastChangeIndex;
       }
     }
   }
@@ -168,7 +171,7 @@ public class History extends DefaultTreeModel {
         changes.subList(nextChangeIndex, changes.size()).clear();
       }
       final List<HistoryNode> nodesToRemove =
-          collectNodesFromChange((HistoryNode) getRoot(), nextChangeIndex);
+          collectNodesFromChange((HistoryNode) getRoot(), nextChangeIndex + 1);
       removeNodesFromTheirParents(nodesToRemove);
     }
   }
@@ -237,7 +240,7 @@ public class History extends DefaultTreeModel {
       if (node.isLeaf()) {
         // Don't do this logic on non-leaf nodes as getNextChange() will return
         // the next change after this non-leaf, skipping all the child nodes.
-        int nodeChangeIndex = getNextChange(node);
+        int nodeChangeIndex = getLastChangeIndex(node);
         if (seekingEnabled && nodeChangeIndex > nextChangeIndex) {
           break;
         }
