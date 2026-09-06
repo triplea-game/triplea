@@ -1212,7 +1212,7 @@ public class BattleTracker implements Serializable {
    *
    * @param bombing whether only battles where there is bombing or where there is no bombing.
    */
-  public Collection<Territory> getPendingBattleSites(final boolean bombing) {
+  private Collection<Territory> getPendingBattleSites(final boolean bombing) {
     return pendingBattles.stream()
         .filter(b -> !b.isEmpty() && b.getBattleType().isBombingRun() == bombing)
         .map(IBattle::getTerritory)
