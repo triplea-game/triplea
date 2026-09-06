@@ -1334,6 +1334,38 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     return Math.max(0, production - unitCountHaveToAndHaveBeenBeProducedHere);
   }
 
+  private int getConstructionConsumptionBonus(
+      final String constructionType,
+      final IntegerMap<UnitType> existingByType,
+      final Map<UnitType, String> existingTypeToConstructionType,
+      final IntegerMap<UnitType> heldByType,
+      final Map<UnitType, String> heldTypeToConstructionType,
+      final Map<UnitType, IntegerMap<UnitType>> consumesUnitsByType) {
+    int consumptionBonus = 0;
+
+    for (final UnitType consumedType : existingByType.keySet()) {
+      if (!constructionType.equals(existingTypeToConstructionType.get(consumedType))) {
+        continue;
+      }
+
+      int potentialConsumption = 0;
+      for (final UnitType heldType : heldByType.keySet()) {
+        if (!constructionType.equals(heldTypeToConstructionType.get(heldType))) {
+          continue;
+        }
+
+        final IntegerMap<UnitType> consumesUnits = consumesUnitsByType.get(heldType);
+        if (consumesUnits != null) {
+          potentialConsumption += heldByType.getInt(heldType) * consumesUnits.getInt(consumedType);
+        }
+      }
+
+      consumptionBonus += Math.min(potentialConsumption, existingByType.getInt(consumedType));
+    }
+
+    return consumptionBonus;
+  }
+
   /**
    * Calculates how many of each of the specified construction units can be placed in the specified
    * territory.
@@ -1361,6 +1393,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     final IntegerMap<String> unitMapHeld = new IntegerMap<>();
     final IntegerMap<String> unitMapMaxType = new IntegerMap<>();
     final IntegerMap<String> unitMapTypePerTurn = new IntegerMap<>();
+    // per-unit-type breakdown of held (candidate) units, so we can work out exactly how many
+    // existing units of the same constructionType would be consumed on placement
+    final IntegerMap<UnitType> heldByType = new IntegerMap<>();
+    final Map<UnitType, String> heldTypeToConstructionType = new HashMap<>();
+    final Map<UnitType, IntegerMap<UnitType>> consumesUnitsByType = new HashMap<>();
     final int maxFactory = Properties.getFactoriesPerCountry(getProperties());
     final int territoryProduction = TerritoryAttachment.getProduction(to);
     for (final Unit currentUnit : CollectionUtils.getMatches(units, Matches.unitIsConstruction())) {
@@ -1391,6 +1428,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       } else {
         unitMapMaxType.put(constructionType, ua.getMaxConstructionsPerTypePerTerr());
       }
+      heldByType.add(currentUnit.getType(), 1);
+      heldTypeToConstructionType.put(currentUnit.getType(), constructionType);
+      consumesUnitsByType.put(currentUnit.getType(), ua.getConsumesUnits());
     }
     final boolean moreWithoutFactory =
         Properties.getMoreConstructionsWithoutFactory(getProperties());
@@ -1398,8 +1438,16 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     final boolean unlimitedConstructions = Properties.getUnlimitedConstructions(getProperties());
     final boolean wasFactoryThereAtStart =
         wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(to, player);
-    // build an integer map of each construction unit in the territory
+    // build an integer map of each construction unit in the territory, plus a per-unit-type
+    // breakdown (at start of turn) of units that are actually available to be consumed
     final IntegerMap<String> unitMapTo = new IntegerMap<>();
+    final IntegerMap<UnitType> existingByType = new IntegerMap<>();
+    final Map<UnitType, String> existingTypeToConstructionType = new HashMap<>();
+    for (final Unit u :
+        CollectionUtils.getMatches(unitsAtStartOfTurnInTo, Matches.unitIsConstruction())) {
+      existingByType.add(u.getType(), 1);
+      existingTypeToConstructionType.put(u.getType(), u.getUnitAttachment().getConstructionType());
+    }
     final var existingConstruction =
         CollectionUtils.getMatches(to.getUnits(), Matches.unitIsConstruction());
     if (!existingConstruction.isEmpty()) {
@@ -1416,7 +1464,24 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
           unitMax = Math.max(Math.max(unitMax, production), (unlimitedConstructions ? 10_000 : 0));
         }
         final int existingCount = unitMapTo.getInt(constructionType);
-        final int value = Math.min(unitMax - existingCount, unitMapHeld.getInt(constructionType));
+
+        // Work out how many existing units of this constructionType would actually be consumed
+        // by the units we're trying to place, so placement can (temporarily) exceed the
+        // per-type max as long as it's back within the limit once consumption happens.
+        // Each existing unit can only be consumed once, and we never credit more consumption
+        // than the held units are actually capable of performing.
+        final int consumptionBonus =
+            getConstructionConsumptionBonus(
+                constructionType,
+                existingByType,
+                existingTypeToConstructionType,
+                heldByType,
+                heldTypeToConstructionType,
+                consumesUnitsByType);
+
+        final int value =
+            Math.min(
+                unitMax - existingCount + consumptionBonus, unitMapHeld.getInt(constructionType));
         unitMapHeld.put(constructionType, Math.max(0, value));
       }
     }
