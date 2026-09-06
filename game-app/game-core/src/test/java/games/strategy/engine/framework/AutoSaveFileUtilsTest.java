@@ -1,7 +1,6 @@
 package games.strategy.engine.framework;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.settings.ClientSetting;
@@ -22,9 +21,8 @@ final class AutoSaveFileUtilsTest extends AbstractClientSettingTestCase {
       ClientSetting.saveGamesFolderPath.setValue(Path.of("path", "to", "saves"));
 
       @NonNls final String fileName = "savegame.tsvg";
-      assertThat(
-          autoSaveFileUtils.getAutoSaveFile(fileName),
-          is(Path.of("path", "to", "saves", "autoSave", fileName)));
+      assertThat(autoSaveFileUtils.getAutoSaveFile(fileName))
+          .isEqualTo(Path.of("path", "to", "saves", "autoSave", fileName));
     }
   }
 
@@ -34,7 +32,7 @@ final class AutoSaveFileUtilsTest extends AbstractClientSettingTestCase {
 
     @Test
     void shouldNotPrefixFileNameWhenHeaded() {
-      assertThat(autoSaveFileUtils.getAutoSaveFileName(BASE_FILE_NAME), is(BASE_FILE_NAME));
+      assertThat(autoSaveFileUtils.getAutoSaveFileName(BASE_FILE_NAME)).isEqualTo(BASE_FILE_NAME);
     }
   }
 
@@ -43,11 +41,11 @@ final class AutoSaveFileUtilsTest extends AbstractClientSettingTestCase {
     @Test
     void shouldReturnFileNameWithLocalDateTime() {
       assertThat(
-          autoSaveFileUtils
-              .getLostConnectionAutoSaveFile(LocalDateTime.of(2008, 5, 9, 22, 8))
-              .getFileName()
-              .toString(),
-          is("connection_lost_on_May_09_at_22_08.tsvg"));
+              autoSaveFileUtils
+                  .getLostConnectionAutoSaveFile(LocalDateTime.of(2008, 5, 9, 22, 8))
+                  .getFileName()
+                  .toString())
+          .isEqualTo("connection_lost_on_May_09_at_22_08.tsvg");
     }
   }
 
@@ -55,9 +53,8 @@ final class AutoSaveFileUtilsTest extends AbstractClientSettingTestCase {
   final class GetBeforeStepAutoSaveFileTest {
     @Test
     void shouldReturnFileNameWithCapitalizedStepName() {
-      assertThat(
-          autoSaveFileUtils.getBeforeStepAutoSaveFile("step").getFileName().toString(),
-          is("autosaveBeforeStep.tsvg"));
+      assertThat(autoSaveFileUtils.getBeforeStepAutoSaveFile("step").getFileName().toString())
+          .isEqualTo("autosaveBeforeStep.tsvg");
     }
   }
 
@@ -65,9 +62,8 @@ final class AutoSaveFileUtilsTest extends AbstractClientSettingTestCase {
   final class GetAfterStepAutoSaveFileTest {
     @Test
     void shouldReturnFileNameWithCapitalizedStepName() {
-      assertThat(
-          autoSaveFileUtils.getAfterStepAutoSaveFile("step").getFileName().toString(),
-          is("autosaveAfterStep.tsvg"));
+      assertThat(autoSaveFileUtils.getAfterStepAutoSaveFile("step").getFileName().toString())
+          .isEqualTo("autosaveAfterStep.tsvg");
     }
   }
 }

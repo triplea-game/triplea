@@ -1,8 +1,6 @@
 package games.strategy.triplea.delegate.data;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.Unit;
 import java.util.HashMap;
@@ -23,6 +21,6 @@ class MustMoveWithDetailsTest {
   void getMustMoveWithForUnitReturnsEmptyCollectionsWhenValueIsNull() {
     final MustMoveWithDetails mustMoveWithDetails = new MustMoveWithDetails(new HashMap<>());
     mustMoveWithDetails.getMustMoveWith().put(unit, null);
-    assertThat(mustMoveWithDetails.getMustMoveWithForUnit(unit), is(empty()));
+    assertThat(mustMoveWithDetails.getMustMoveWithForUnit(unit)).isEmpty();
   }
 }

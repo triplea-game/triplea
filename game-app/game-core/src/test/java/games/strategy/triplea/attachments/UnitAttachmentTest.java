@@ -4,10 +4,7 @@ import static games.strategy.triplea.Constants.AIR_ATTACK_SUB_RESTRICTED;
 import static games.strategy.triplea.Constants.IGNORE_SUB_IN_MOVEMENT;
 import static games.strategy.triplea.Constants.SUBMERSIBLE_SUBS;
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -205,12 +202,12 @@ class UnitAttachmentTest {
 
       attachment.getPropertyOrThrow("isSub").setValue(true);
 
-      assertThat(attachment.getIsFirstStrike(), is(true));
-      assertThat(attachment.getCanEvade(), is(true));
-      assertThat(attachment.getCanMoveThroughEnemies(), is(true));
-      assertThat(attachment.getCanBeMovedThroughByEnemies(), is(true));
-      assertThat(attachment.getCanNotTarget(), containsInAnyOrder(air));
-      assertThat(attachment.getCanNotBeTargetedBy(), containsInAnyOrder(air));
+      assertThat(attachment.getIsFirstStrike()).isTrue();
+      assertThat(attachment.getCanEvade()).isTrue();
+      assertThat(attachment.getCanMoveThroughEnemies()).isTrue();
+      assertThat(attachment.getCanBeMovedThroughByEnemies()).isTrue();
+      assertThat(attachment.getCanNotTarget()).containsExactlyInAnyOrder(air);
+      assertThat(attachment.getCanNotBeTargetedBy()).containsExactlyInAnyOrder(air);
     }
 
     @Test
@@ -234,9 +231,9 @@ class UnitAttachmentTest {
       ignoreSubInMovement.setValue(false);
       airAttackSubRestricted.setValue(false);
 
-      assertThat(attachment.getCanMoveThroughEnemies(), is(false));
-      assertThat(attachment.getCanBeMovedThroughByEnemies(), is(false));
-      assertThat(attachment.getCanNotBeTargetedBy(), is(empty()));
+      assertThat(attachment.getCanMoveThroughEnemies()).isFalse();
+      assertThat(attachment.getCanBeMovedThroughByEnemies()).isFalse();
+      assertThat(attachment.getCanNotBeTargetedBy()).isEmpty();
 
       // called in getCanNotBeTargetedBy when AIR_ATTACK_SUB_RESTRICTED is true
       verify(unitTypeList, never()).getAllUnitTypes();

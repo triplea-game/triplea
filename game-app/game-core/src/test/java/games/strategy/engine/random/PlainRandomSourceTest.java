@@ -1,11 +1,6 @@
 package games.strategy.engine.random;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
@@ -20,7 +15,7 @@ final class PlainRandomSourceTest {
   private final PlainRandomSource plainRandomSource = new PlainRandomSource();
 
   private static void assertValueBetweenZeroInclusiveAndMaxExclusive(final int value) {
-    assertThat(value, allOf(greaterThanOrEqualTo(0), lessThan(MAX)));
+    assertThat(value).isGreaterThanOrEqualTo(0).isLessThan(MAX);
   }
 
   @Test
@@ -37,13 +32,13 @@ final class PlainRandomSourceTest {
     final Exception e =
         assertThrows(
             IllegalArgumentException.class, () -> plainRandomSource.getRandom(0, ANNOTATION));
-    assertThat(e.getMessage(), containsString("max"));
+    assertThat(e.getMessage()).contains("max");
   }
 
   @Test
   void getRandomMany_ShouldReturnRequestedCountOfValues() {
-    assertThat(plainRandomSource.getRandom(MAX, 1, ANNOTATION).length, is(1));
-    assertThat(plainRandomSource.getRandom(MAX, 42, ANNOTATION).length, is(42));
+    assertThat(plainRandomSource.getRandom(MAX, 1, ANNOTATION).length).isEqualTo(1);
+    assertThat(plainRandomSource.getRandom(MAX, 42, ANNOTATION).length).isEqualTo(42);
   }
 
   @Test
@@ -59,7 +54,7 @@ final class PlainRandomSourceTest {
         assertThrows(
             IllegalArgumentException.class, () -> plainRandomSource.getRandom(0, 1, ANNOTATION));
 
-    assertThat(e.getMessage(), containsString("max"));
+    assertThat(e.getMessage()).contains("max");
   }
 
   @Test
@@ -67,6 +62,6 @@ final class PlainRandomSourceTest {
     final Exception e =
         assertThrows(
             IllegalArgumentException.class, () -> plainRandomSource.getRandom(MAX, 0, ANNOTATION));
-    assertThat(e.getMessage(), containsString("count"));
+    assertThat(e.getMessage()).contains("count");
   }
 }

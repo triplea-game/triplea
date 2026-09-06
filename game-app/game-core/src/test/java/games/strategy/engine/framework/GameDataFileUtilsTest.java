@@ -1,7 +1,6 @@
 package games.strategy.engine.framework;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.commons.io.IOCase;
 import org.junit.jupiter.api.Nested;
@@ -16,12 +15,12 @@ final class GameDataFileUtilsTest {
 
     @Test
     void shouldAddExtensionWhenExtensionAbsent() {
-      assertThat(addExtension("file"), is("file.tsvg"));
+      assertThat(addExtension("file")).isEqualTo("file.tsvg");
     }
 
     @Test
     void shouldAddExtensionWhenExtensionPresent() {
-      assertThat(addExtension("file.tsvg"), is("file.tsvg.tsvg"));
+      assertThat(addExtension("file.tsvg")).isEqualTo("file.tsvg.tsvg");
     }
   }
 
@@ -35,17 +34,17 @@ final class GameDataFileUtilsTest {
 
       @Test
       void shouldAddExtensionWhenExtensionAbsent() {
-        assertThat(addExtensionIfAbsent("file"), is("file.tsvg"));
+        assertThat(addExtensionIfAbsent("file")).isEqualTo("file.tsvg");
       }
 
       @Test
       void shouldNotAddExtensionWhenSameCasedExtensionPresent() {
-        assertThat(addExtensionIfAbsent("file.tsvg"), is("file.tsvg"));
+        assertThat(addExtensionIfAbsent("file.tsvg")).isEqualTo("file.tsvg");
       }
 
       @Test
       void shouldAddExtensionWhenDifferentCasedExtensionPresent() {
-        assertThat(addExtensionIfAbsent("file.TSVG"), is("file.TSVG.tsvg"));
+        assertThat(addExtensionIfAbsent("file.TSVG")).isEqualTo("file.TSVG.tsvg");
       }
     }
 
@@ -57,17 +56,17 @@ final class GameDataFileUtilsTest {
 
       @Test
       void shouldAddExtensionWhenExtensionAbsent() {
-        assertThat(addExtensionIfAbsent("file"), is("file.tsvg"));
+        assertThat(addExtensionIfAbsent("file")).isEqualTo("file.tsvg");
       }
 
       @Test
       void shouldNotAddExtensionWhenSameCasedExtensionPresent() {
-        assertThat(addExtensionIfAbsent("file.tsvg"), is("file.tsvg"));
+        assertThat(addExtensionIfAbsent("file.tsvg")).isEqualTo("file.tsvg");
       }
 
       @Test
       void shouldNotAddExtensionWhenDifferentCasedExtensionPresent() {
-        assertThat(addExtensionIfAbsent("file.TSVG"), is("file.TSVG"));
+        assertThat(addExtensionIfAbsent("file.TSVG")).isEqualTo("file.TSVG");
       }
     }
   }
@@ -82,37 +81,37 @@ final class GameDataFileUtilsTest {
 
       @Test
       void shouldReturnFalseWhenExtensionAbsent() {
-        assertThat(isCandidateFileName("file"), is(false));
+        assertThat(isCandidateFileName("file")).isFalse();
       }
 
       @Test
       void shouldReturnTrueWhenSameCasedPrimaryExtensionPresent() {
-        assertThat(isCandidateFileName("file.tsvg"), is(true));
+        assertThat(isCandidateFileName("file.tsvg")).isTrue();
       }
 
       @Test
       void shouldReturnFalseWhenDifferentCasedPrimaryExtensionPresent() {
-        assertThat(isCandidateFileName("file.TSVG"), is(false));
+        assertThat(isCandidateFileName("file.TSVG")).isFalse();
       }
 
       @Test
       void shouldReturnTrueWhenSameCasedLegacyExtensionPresent() {
-        assertThat(isCandidateFileName("file.svg"), is(true));
+        assertThat(isCandidateFileName("file.svg")).isTrue();
       }
 
       @Test
       void shouldReturnFalseWhenDifferentCasedLegacyExtensionPresent() {
-        assertThat(isCandidateFileName("file.SVG"), is(false));
+        assertThat(isCandidateFileName("file.SVG")).isFalse();
       }
 
       @Test
       void shouldReturnTrueWhenSameCasedMacOsAlternativeExtensionPresent() {
-        assertThat(isCandidateFileName("filetsvg.gz"), is(true));
+        assertThat(isCandidateFileName("filetsvg.gz")).isTrue();
       }
 
       @Test
       void shouldReturnFalseWhenDifferentCasedMacOsAlternativeExtensionPresent() {
-        assertThat(isCandidateFileName("fileTSVG.GZ"), is(false));
+        assertThat(isCandidateFileName("fileTSVG.GZ")).isFalse();
       }
     }
 
@@ -124,37 +123,37 @@ final class GameDataFileUtilsTest {
 
       @Test
       void shouldReturnFalseWhenExtensionAbsent() {
-        assertThat(isCandidateFileName("file"), is(false));
+        assertThat(isCandidateFileName("file")).isFalse();
       }
 
       @Test
       void shouldReturnTrueWhenSameCasedPrimaryExtensionPresent() {
-        assertThat(isCandidateFileName("file.tsvg"), is(true));
+        assertThat(isCandidateFileName("file.tsvg")).isTrue();
       }
 
       @Test
       void shouldReturnTrueWhenDifferentCasedPrimaryExtensionPresent() {
-        assertThat(isCandidateFileName("file.TSVG"), is(true));
+        assertThat(isCandidateFileName("file.TSVG")).isTrue();
       }
 
       @Test
       void shouldReturnTrueWhenSameCasedLegacyExtensionPresent() {
-        assertThat(isCandidateFileName("file.svg"), is(true));
+        assertThat(isCandidateFileName("file.svg")).isTrue();
       }
 
       @Test
       void shouldReturnTrueWhenDifferentCasedLegacyExtensionPresent() {
-        assertThat(isCandidateFileName("file.SVG"), is(true));
+        assertThat(isCandidateFileName("file.SVG")).isTrue();
       }
 
       @Test
       void shouldReturnTrueWhenSameCasedMacOsAlternativeExtensionPresent() {
-        assertThat(isCandidateFileName("filetsvg.gz"), is(true));
+        assertThat(isCandidateFileName("filetsvg.gz")).isTrue();
       }
 
       @Test
       void shouldReturnTrueWhenDifferentCasedMacOsAlternativeExtensionPresent() {
-        assertThat(isCandidateFileName("fileTSVG.GZ"), is(true));
+        assertThat(isCandidateFileName("fileTSVG.GZ")).isTrue();
       }
     }
   }

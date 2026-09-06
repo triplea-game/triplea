@@ -1,8 +1,6 @@
 package org.triplea.security;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.AdditionalAnswers.returnsSecondArg;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,7 +42,7 @@ final class DefaultCredentialManagerTest {
     final String protectedCredential = credentialManager.protect(expected);
     final String actual = credentialManager.unprotectToString(protectedCredential);
 
-    assertThat(actual, is(expected));
+    assertThat(actual).isEqualTo(expected);
   }
 
   @Nested
@@ -77,7 +75,7 @@ final class DefaultCredentialManagerTest {
 
       final char[] actual = DefaultCredentialManager.getMasterPassword(preferences);
 
-      assertThat(actual, is(MASTER_PASSWORD));
+      assertThat(actual).isEqualTo(MASTER_PASSWORD);
     }
 
     private void givenMasterPasswordExists(final char[] masterPassword) {
@@ -95,7 +93,7 @@ final class DefaultCredentialManagerTest {
           assertThrows(
               CredentialManagerException.class, () -> credentialManager.unprotect("AAAABBBB"));
 
-      assertThat(e.getMessage(), containsString("malformed protected credential"));
+      assertThat(e.getMessage()).contains("malformed protected credential");
     }
 
     @Test
@@ -105,7 +103,7 @@ final class DefaultCredentialManagerTest {
               CredentialManagerException.class,
               () -> credentialManager.unprotect("AAAA.BBBB.CCCC"));
 
-      assertThat(e.getMessage(), containsString("malformed protected credential"));
+      assertThat(e.getMessage()).contains("malformed protected credential");
     }
   }
 }

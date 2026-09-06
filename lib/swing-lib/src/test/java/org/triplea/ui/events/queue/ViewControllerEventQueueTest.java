@@ -1,7 +1,6 @@
 package org.triplea.ui.events.queue;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -28,10 +27,9 @@ class ViewControllerEventQueueTest {
   /** Verify that we can emit a controller event and our view class would receive it. */
   @Test
   void publishModelEvent() {
-    assertThat(
-        "pre-state, view should have received no controller events",
-        exampleViewClass.hasReceivedControllerEvent(),
-        is(false));
+    assertThat(exampleViewClass.hasReceivedControllerEvent())
+        .as("pre-state, view should have received no controller events")
+        .isFalse();
 
     // emit a controller event
     exampleEventQueue.publishControllerEvent(
@@ -47,10 +45,9 @@ class ViewControllerEventQueueTest {
   /** Publish an event from UI and verify controller will receive it. */
   @Test
   void publishUiEvent() {
-    assertThat(
-        "pre-state, controller has yet to receive any events",
-        controllerClassSample.hasReceivedUiEvent(),
-        is(false));
+    assertThat(controllerClassSample.hasReceivedUiEvent())
+        .as("pre-state, controller has yet to receive any events")
+        .isFalse();
 
     // publish UI event
     exampleEventQueue.publishUiEvent(

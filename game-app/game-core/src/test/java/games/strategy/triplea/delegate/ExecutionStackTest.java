@@ -1,7 +1,6 @@
 package games.strategy.triplea.delegate;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -38,7 +37,7 @@ class ExecutionStackTest {
 
     executionStack.execute(null);
 
-    assertThat(orderCheck.toArray(new Integer[0]), is(new Integer[] {0, 1, 2, 3, 4}));
+    assertThat(orderCheck.toArray(new Integer[0])).isEqualTo(new Integer[] {0, 1, 2, 3, 4});
   }
 
   @Test
@@ -54,19 +53,19 @@ class ExecutionStackTest {
 
   @Test
   void testIsEmpty() {
-    assertThat(executionStack.isEmpty(), is(true));
+    assertThat(executionStack.isEmpty()).isTrue();
 
     final IExecutable mock = mock(IExecutable.class);
 
     executionStack.push(mock);
-    assertThat(executionStack.isEmpty(), is(false));
+    assertThat(executionStack.isEmpty()).isFalse();
     executionStack.execute(null);
-    assertThat(executionStack.isEmpty(), is(true));
+    assertThat(executionStack.isEmpty()).isTrue();
 
     executionStack.push(List.of(mock, mock));
-    assertThat(executionStack.isEmpty(), is(false));
+    assertThat(executionStack.isEmpty()).isFalse();
     executionStack.execute(null);
-    assertThat(executionStack.isEmpty(), is(true));
+    assertThat(executionStack.isEmpty()).isTrue();
   }
 
   @Test

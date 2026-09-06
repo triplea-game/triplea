@@ -1,12 +1,6 @@
 package games.strategy.triplea;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -46,8 +40,8 @@ final class ResourceLoaderTest {
       final Path targetDir = startDir.resolve(TARGET_DIR_NAME);
       Files.createDirectories(targetDir);
 
-      assertThat(
-          ResourceLoader.findDirectory(startDir, TARGET_DIR_NAME), is(Optional.of(targetDir)));
+      assertThat(ResourceLoader.findDirectory(startDir, TARGET_DIR_NAME))
+          .isEqualTo(Optional.of(targetDir));
     }
 
     @Test
@@ -55,7 +49,8 @@ final class ResourceLoaderTest {
       final Path targetDir = startDir.resolve(TARGET_DIR_NAME);
       Files.createFile(targetDir);
 
-      assertThat(ResourceLoader.findDirectory(startDir, TARGET_DIR_NAME), is(Optional.empty()));
+      assertThat(ResourceLoader.findDirectory(startDir, TARGET_DIR_NAME))
+          .isEqualTo(Optional.empty());
     }
 
     @Test
@@ -63,8 +58,8 @@ final class ResourceLoaderTest {
       final Path targetDir = startDir.resolveSibling(TARGET_DIR_NAME);
       Files.createDirectories(targetDir);
 
-      assertThat(
-          ResourceLoader.findDirectory(startDir, TARGET_DIR_NAME), is(Optional.of(targetDir)));
+      assertThat(ResourceLoader.findDirectory(startDir, TARGET_DIR_NAME))
+          .isEqualTo(Optional.of(targetDir));
     }
 
     @Test
@@ -72,12 +67,14 @@ final class ResourceLoaderTest {
       final Path targetDir = startDir.resolveSibling(TARGET_DIR_NAME);
       Files.createFile(targetDir);
 
-      assertThat(ResourceLoader.findDirectory(startDir, TARGET_DIR_NAME), is(Optional.empty()));
+      assertThat(ResourceLoader.findDirectory(startDir, TARGET_DIR_NAME))
+          .isEqualTo(Optional.empty());
     }
 
     @Test
     void shouldReturnEmptyWhenTargetDirDoesNotExist() {
-      assertThat(ResourceLoader.findDirectory(startDir, TARGET_DIR_NAME), is(Optional.empty()));
+      assertThat(ResourceLoader.findDirectory(startDir, TARGET_DIR_NAME))
+          .isEqualTo(Optional.empty());
     }
   }
 
@@ -118,7 +115,7 @@ final class ResourceLoaderTest {
 
       var result = loader.listResources("nonexistent/path");
 
-      assertThat("path does not exist so result should be empty", result, is(empty()));
+      assertThat(result).as("path does not exist so result should be empty").isEmpty();
     }
 
     @Test
@@ -131,10 +128,9 @@ final class ResourceLoaderTest {
 
       var result = loader.listResources("sounds/game_start");
 
-      assertThat(
-          "directory with two files should return both file URLs",
-          result,
-          containsInAnyOrder(file1.toUri().toURL(), file2.toUri().toURL()));
+      assertThat(result)
+          .as("directory with two files should return both file URLs")
+          .containsExactlyInAnyOrder(file1.toUri().toURL(), file2.toUri().toURL());
     }
 
     @Test
@@ -146,10 +142,9 @@ final class ResourceLoaderTest {
 
       var result = loader.listResources("sounds/game_start/sound.mp3");
 
-      assertThat(
-          "path points directly to a file, so only that file URL should be returned",
-          result,
-          contains(file.toUri().toURL()));
+      assertThat(result)
+          .as("path points directly to a file, so only that file URL should be returned")
+          .containsExactly(file.toUri().toURL());
     }
 
     @Test
@@ -167,11 +162,12 @@ final class ResourceLoaderTest {
 
         var result = loader.listResources("sounds/game start");
 
-        assertThat("JAR directory entry should yield both contained files", result, hasSize(2));
-        assertThat(
-            "returned URLs should reference the expected sound files",
-            result.stream().map(URL::toString).toList(),
-            containsInAnyOrder(containsString("sound1.mp3"), containsString("sound2.mp3")));
+        assertThat(result).as("JAR directory entry should yield both contained files").hasSize(2);
+        assertThat(result.stream().map(URL::toString).toList())
+            .as("returned URLs should reference the expected sound files")
+            .satisfiesExactlyInAnyOrder(
+                url -> assertThat(url).contains("sound1.mp3"),
+                url -> assertThat(url).contains("sound2.mp3"));
       }
     }
 
@@ -183,11 +179,12 @@ final class ResourceLoaderTest {
 
         var result = loader.listResources("sounds/game_start/sound.mp3");
 
-        assertThat("JAR entry for a single file should return exactly one URL", result, hasSize(1));
-        assertThat(
-            "returned URL should reference the expected sound file",
-            result.get(0).toString(),
-            containsString("sounds/game_start/sound.mp3"));
+        assertThat(result)
+            .as("JAR entry for a single file should return exactly one URL")
+            .hasSize(1);
+        assertThat(result.get(0).toString())
+            .as("returned URL should reference the expected sound file")
+            .contains("sounds/game_start/sound.mp3");
       }
     }
 

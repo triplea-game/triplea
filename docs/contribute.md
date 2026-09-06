@@ -92,7 +92,6 @@ role from below and find out what you can do to help.
 
 #### _How to become one_
 
-https://github.com/triplea-game/triplea/tree/master/docs/map-making
 - Check the documentation on [map-making](map-making)
 
 ### :trident: Map Admin

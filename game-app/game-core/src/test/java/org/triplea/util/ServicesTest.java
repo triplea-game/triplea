@@ -1,11 +1,6 @@
 package org.triplea.util;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAnd;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.triplea.util.Services.loadAny;
 import static org.triplea.util.Services.tryLoadAny;
@@ -18,14 +13,14 @@ final class ServicesTest {
   final class LoadAnyTest {
     @Test
     void shouldReturnServiceWhenServiceIsAvailable() {
-      assertThat(loadAny(KnownService.class), is(instanceOf(KnownServiceImpl.class)));
+      assertThat(loadAny(KnownService.class)).isInstanceOf(KnownServiceImpl.class);
     }
 
     @Test
     void shouldThrowExceptionWhenServiceNotAvailable() {
       final Exception e =
           assertThrows(ServiceNotAvailableException.class, () -> loadAny(UnknownService.class));
-      assertThat(e.getMessage(), containsString(UnknownService.class.getName()));
+      assertThat(e.getMessage()).contains(UnknownService.class.getName());
     }
   }
 
@@ -33,13 +28,12 @@ final class ServicesTest {
   final class TryLoadAnyTest {
     @Test
     void shouldReturnServiceWhenServiceIsAvailable() {
-      assertThat(
-          tryLoadAny(KnownService.class), isPresentAnd(is(instanceOf(KnownServiceImpl.class))));
+      assertThat(tryLoadAny(KnownService.class)).get().isInstanceOf(KnownServiceImpl.class);
     }
 
     @Test
     void shouldReturnEmptyWhenServiceNotAvailable() {
-      assertThat(tryLoadAny(UnknownService.class), isEmpty());
+      assertThat(tryLoadAny(UnknownService.class)).isEmpty();
     }
   }
 

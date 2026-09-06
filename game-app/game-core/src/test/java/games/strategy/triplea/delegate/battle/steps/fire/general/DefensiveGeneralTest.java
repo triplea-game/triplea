@@ -4,10 +4,7 @@ import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattle
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitFirstStrike;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.delegate.battle.BattleActions;
@@ -37,7 +34,7 @@ class DefensiveGeneralTest {
               .gameData(gameData)
               .build();
       final DefensiveGeneral defensiveGeneral = new DefensiveGeneral(battleState, battleActions);
-      assertThat(defensiveGeneral.getAllStepDetails(), hasSize(3));
+      assertThat(defensiveGeneral.getAllStepDetails()).hasSize(3);
     }
 
     @Test
@@ -51,7 +48,7 @@ class DefensiveGeneralTest {
               .gameData(gameData)
               .build();
       final DefensiveGeneral defensiveGeneral = new DefensiveGeneral(battleState, battleActions);
-      assertThat(defensiveGeneral.getAllStepDetails(), is(empty()));
+      assertThat(defensiveGeneral.getAllStepDetails()).isEmpty();
     }
   }
 }
