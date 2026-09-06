@@ -39,10 +39,6 @@ public class FinishedBattleTest extends AbstractClientSettingTestCase {
   final Territory uk = territory("United Kingdom", pos2GameData);
   private final GamePlayer germans = GameDataTestUtil.germans(pos2GameData);
   private final GamePlayer british = GameDataTestUtil.british(pos2GameData);
-
-  private Unit britishBattleship;
-  private Unit transport;
-  private Unit tank;
   private IDelegateBridge bridge;
 
   /**
@@ -51,7 +47,7 @@ public class FinishedBattleTest extends AbstractClientSettingTestCase {
    */
   @Test
   void testEmptyEnemyConvoyIsCapturedWithoutCreatingBattle() {
-    moveBritishFleetToSz3AndUnloadTankInNorway();
+    final Unit tank = moveBritishFleetToSz3AndUnloadTankInNorway();
 
     final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(pos2GameData);
     assertNull(
@@ -76,7 +72,7 @@ public class FinishedBattleTest extends AbstractClientSettingTestCase {
     // a sea battle, which the Norway landing will then depend on.
     addTo(sz3, battleship(pos2GameData).create(1, germans));
 
-    moveBritishFleetToSz3AndUnloadTankInNorway();
+    final Unit tank = moveBritishFleetToSz3AndUnloadTankInNorway();
 
     advanceToStep(bridge, "Combat");
     BattleDelegate battleDelegate = GameDataTestUtil.battleDelegate(pos2GameData);
@@ -103,14 +99,14 @@ public class FinishedBattleTest extends AbstractClientSettingTestCase {
    * Moves the British battleship into sz3, then loads the tank onto the transport, moves both into
    * sz3, and lands the tank in Norway.
    */
-  private void moveBritishFleetToSz3AndUnloadTankInNorway() {
+  private Unit moveBritishFleetToSz3AndUnloadTankInNorway() {
     assertEquals("Germans", sz3.getOwner().getName());
     // Clear all units in Norway since we just want to land uncontested there.
     norway.getUnitCollection().clear();
 
-    britishBattleship = getSingleUnit(sz2, battleship(pos2GameData));
-    transport = getSingleUnit(sz2, transport(pos2GameData));
-    tank = getSingleUnit(uk, armour(pos2GameData));
+    Unit britishBattleship = getSingleUnit(sz2, battleship(pos2GameData));
+    Unit transport = getSingleUnit(sz2, transport(pos2GameData));
+    final Unit tank = getSingleUnit(uk, armour(pos2GameData));
 
     bridge = newDelegateBridge(british);
     advanceToStep(bridge, "CombatMove");
@@ -124,6 +120,7 @@ public class FinishedBattleTest extends AbstractClientSettingTestCase {
     GameDataTestUtil.move(List.of(transport, tank), new Route(sz2, sz3));
     GameDataTestUtil.move(List.of(tank), new Route(sz3, norway));
     moveDelegate.end();
+    return tank;
   }
 
   private static Unit getSingleUnit(final Territory territory, final UnitType type) {
