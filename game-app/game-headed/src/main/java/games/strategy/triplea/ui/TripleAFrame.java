@@ -729,8 +729,13 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     final GameData clonedGameData;
     try (GameData.Unlocker ignored = data.acquireWriteLock()) {
       // we want to use a clone of the data, so we can make changes to it as we walk up and down the
-      // history
-      final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
+      // history, but the history itself can be the same (that might get extend to by the continued
+      // game)
+      final var cloneOptions =
+          GameDataManager.Options.builder()
+              .withHistoryCopyMode(GameDataManager.Options.HistoryCopyMode.REFERENCE)
+              .withDelegates(true)
+              .build();
       clonedGameData = GameDataUtils.cloneGameData(data, cloneOptions).orElse(null);
       if (clonedGameData == null) {
         return;
@@ -1891,8 +1896,17 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                       GameFileSelector.getSaveGameLocation(TripleAFrame.this, clonedGameData);
                   if (f.isPresent()) {
                     try (OutputStream fileOutputStream = Files.newOutputStream(f.get())) {
-                      clonedGameData
-                          .getHistory()
+                      // the game data for saving needs to allow making changes to it to remove
+                      // later history nodes
+                      final var cloneOptions =
+                          GameDataManager.Options.builder()
+                              .withHistoryCopyMode(GameDataManager.Options.HistoryCopyMode.DEEP)
+                              .withDelegates(true)
+                              .build();
+                      GameData gameDataForSave =
+                          GameDataUtils.cloneGameData(clonedGameData, cloneOptions).orElse(null);
+                      gameDataForSave
+                          .getGameHistory()
                           .removeAllHistoryAfterNode(popupHistoryPanel.getCurrentPopupNode());
                       // TODO: the saved current delegate is still the current delegate,
                       // rather than the delegate at that history popup node
@@ -1902,15 +1916,15 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                       // but that could greatly increase the file size :(
                       // TODO: this also does not undo the run count of each delegate step
                       final Enumeration<?> enumeration =
-                          ((DefaultMutableTreeNode) clonedGameData.getHistory().getRoot())
+                          ((DefaultMutableTreeNode) gameDataForSave.getGameHistory().getRoot())
                               .preorderEnumeration();
                       enumeration.nextElement();
                       int round = 0;
                       String stepDisplayName =
-                          clonedGameData.getSequence().getStep(0).getDisplayName();
+                          gameDataForSave.getSequence().getStep(0).getDisplayName();
                       GamePlayer currentPlayer =
-                          clonedGameData.getSequence().getStep(0).getPlayerId();
-                      int roundOffset = clonedGameData.getSequence().getRoundOffset();
+                          gameDataForSave.getSequence().getStep(0).getPlayerId();
+                      int roundOffset = gameDataForSave.getSequence().getRoundOffset();
                       while (enumeration.hasMoreElements()) {
                         final HistoryNode node = (HistoryNode) enumeration.nextElement();
                         if (node instanceof Round nodeRound) {
@@ -1922,17 +1936,17 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                           stepDisplayName = node.getTitle();
                         }
                       }
-                      clonedGameData
+                      gameDataForSave
                           .getSequence()
                           .setRoundAndStep(round, stepDisplayName, currentPlayer);
-                      GameDataManager.saveGame(fileOutputStream, clonedGameData);
+                      GameDataManager.saveGame(fileOutputStream, gameDataForSave);
                       JOptionPane.showMessageDialog(
                           TripleAFrame.this,
                           "Game Saved",
                           "Game Saved",
                           JOptionPane.INFORMATION_MESSAGE);
                     } catch (final IOException e) {
-                      log.error("Failed to save game: " + f.get().toAbsolutePath(), e);
+                      log.error("Failed to save game: {}", f.get().toAbsolutePath(), e);
                     }
                   }
                   popupHistoryPanel.clearCurrentPopupNode();
