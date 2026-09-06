@@ -13,6 +13,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
 import static games.strategy.triplea.delegate.GameDataTestUtil.british;
 import static games.strategy.triplea.delegate.GameDataTestUtil.carrier;
 import static games.strategy.triplea.delegate.GameDataTestUtil.destroyer;
+import static games.strategy.triplea.delegate.GameDataTestUtil.factory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.fighter;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.getIndex;
@@ -87,6 +88,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 import org.triplea.java.collections.CollectionUtils;
@@ -858,147 +861,121 @@ class RevisedTest extends AbstractClientSettingTestCase {
     assertEquals(Constants.PLAYER_NAME_AMERICANS, endOwner);
   }
 
-  @Test
-  void testStratBombCasualties() {
-    final Territory germany = gameData.getMap().getTerritoryOrNull("Germany");
-    final Territory uk = gameData.getMap().getTerritoryOrNull("United Kingdom");
-    final GamePlayer germans = germans(gameData);
-    final GamePlayer british = british(gameData);
-    final BattleTracker tracker = new BattleTracker();
-    final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
-    final List<Unit> bombers = uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber());
-    addTo(germany, bombers);
-    battle.addAttackChange(
-        gameData.getMap().getRouteOrElseThrow(uk, germany, it -> true), bombers, null);
-    tracker
-        .getBattleRecords()
-        .addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
-    final IDelegateBridge bridge = newDelegateBridge(british);
-    // aa guns rolls 0 and hits
-    whenGetRandom(bridge).thenAnswer(withValues(0));
-    final int pusBeforeRaid =
-        germans
-            .getResources()
-            .getQuantity(gameData.getResourceList().getResourceOrThrow(Constants.PUS));
-    battle.fight(bridge);
-    final int pusAfterRaid =
-        germans
-            .getResources()
-            .getQuantity(gameData.getResourceList().getResourceOrThrow(Constants.PUS));
-    assertEquals(pusBeforeRaid, pusAfterRaid);
-    assertEquals(0, germany.getUnitCollection().getMatches(Matches.unitIsOwnedBy(british)).size());
-    thenGetRandomShouldHaveBeenCalled(bridge, times(1));
-  }
+  @Nested
+  class StrategicBombingRaidTests {
 
-  @Test
-  void testStratBombCasualtiesLowLuck() {
-    makeGameLowLuck(gameData);
-    final Territory germany = gameData.getMap().getTerritoryOrNull("Germany");
-    final Territory uk = gameData.getMap().getTerritoryOrNull("United Kingdom");
-    final GamePlayer germans = GameDataTestUtil.germans(gameData);
-    final GamePlayer british = GameDataTestUtil.british(gameData);
-    final BattleTracker tracker = new BattleTracker();
-    final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
-    final List<Unit> bombers = bomber(gameData).create(2, british);
-    addTo(germany, bombers);
-    battle.addAttackChange(
-        gameData.getMap().getRouteOrElseThrow(uk, germany, it -> true), bombers, null);
-    tracker
-        .getBattleRecords()
-        .addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
-    final IDelegateBridge bridge = newDelegateBridge(british);
-    // should be exactly 3 rolls total. would be exactly 2 rolls if the number of units being shot
-    // at = max dice side of
-    // the AA gun, because the casualty selection roll would not happen in LL
-    // first 0 is the AA gun rolling 1@2 and getting a 1, which is a hit
-    // second 0 is the LL AA casualty selection randomly picking the first unit to die
-    // third 0 is the single remaining bomber dealing 1 damage to the enemy's PUs
-    whenGetRandom(bridge)
-        .thenAnswer(withValues(0))
-        .thenAnswer(withValues(0))
-        .thenAnswer(withValues(0));
-    final int pusBeforeRaid =
-        germans
-            .getResources()
-            .getQuantity(gameData.getResourceList().getResourceOrThrow(Constants.PUS));
-    battle.fight(bridge);
-    final int pusAfterRaid =
-        germans
-            .getResources()
-            .getQuantity(gameData.getResourceList().getResourceOrThrow(Constants.PUS));
-    assertEquals(pusBeforeRaid - 1, pusAfterRaid);
-    assertEquals(1, germany.getUnitCollection().getMatches(Matches.unitIsOwnedBy(british)).size());
-    thenGetRandomShouldHaveBeenCalled(bridge, times(3));
-  }
+    private Territory germany;
+    private Territory uk;
+    private GamePlayer germans;
+    private GamePlayer british;
+    private BattleTracker tracker;
+    private IBattle battle;
 
-  @Test
-  void testStratBombCasualtiesLowLuckManyBombers() {
-    makeGameLowLuck(gameData);
-    final Territory germany = gameData.getMap().getTerritoryOrNull("Germany");
-    final Territory uk = gameData.getMap().getTerritoryOrNull("United Kingdom");
-    final GamePlayer germans = GameDataTestUtil.germans(gameData);
-    final GamePlayer british = GameDataTestUtil.british(gameData);
-    final BattleTracker tracker = new BattleTracker();
-    final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
-    final List<Unit> bombers = bomber(gameData).create(7, british);
-    addTo(germany, bombers);
-    battle.addAttackChange(
-        gameData.getMap().getRouteOrElseThrow(uk, germany, it -> true), bombers, null);
-    tracker
-        .getBattleRecords()
-        .addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
-    final IDelegateBridge bridge = newDelegateBridge(british);
-    // aa guns rolls 0 and hits, next 5 dice are for the bombing raid cost for the surviving bombers
-    whenGetRandom(bridge).thenAnswer(withValues(0)).thenAnswer(withValues(0, 0, 0, 0, 0));
-    final int pusBeforeRaid =
-        germans
-            .getResources()
-            .getQuantity(gameData.getResourceList().getResourceOrThrow(Constants.PUS));
-    battle.fight(bridge);
-    final int pusAfterRaid =
-        germans
-            .getResources()
-            .getQuantity(gameData.getResourceList().getResourceOrThrow(Constants.PUS));
-    assertEquals(pusBeforeRaid - 5, pusAfterRaid);
-    // 2 bombers get hit
-    assertEquals(5, germany.getUnitCollection().getMatches(Matches.unitIsOwnedBy(british)).size());
-    thenGetRandomShouldHaveBeenCalled(bridge, times(2));
-  }
+    @BeforeEach
+    void setUp() {
+      germany = gameData.getMap().getTerritoryOrNull("Germany");
+      uk = gameData.getMap().getTerritoryOrNull("United Kingdom");
+      germans = germans(gameData);
+      british = british(gameData);
+      tracker = new BattleTracker();
+      germany.getUnitCollection().clear();
+      addTo(germany, aaGun(gameData).create(1, germans));
+      addTo(germany, factory(gameData).create(1, germans));
+      battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
+    }
 
-  @Test
-  void testStratBombRaidWithHeavyBombers() {
-    final Territory germany = gameData.getMap().getTerritoryOrNull("Germany");
-    final Territory uk = gameData.getMap().getTerritoryOrNull("United Kingdom");
-    final GamePlayer germans = GameDataTestUtil.germans(gameData);
-    final GamePlayer british = GameDataTestUtil.british(gameData);
-    final BattleTracker tracker = new BattleTracker();
-    final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
-    battle.addAttackChange(
-        gameData.getMap().getRouteOrElseThrow(uk, germany, it -> true),
-        uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()),
-        null);
-    addTo(germany, uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()));
-    tracker
-        .getBattleRecords()
-        .addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
-    final IDelegateBridge bridge = newDelegateBridge(british);
-    TechTracker.addAdvance(
-        british,
-        bridge,
-        TechAdvance.findAdvance(
-            TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData.getTechnologyFrontier(), british));
-    // aa guns rolls 3, misses, bomber rolls 2 dice at 3
-    whenGetRandom(bridge).thenAnswer(withValues(3)).thenAnswer(withValues(2, 2));
-    final int pusBeforeRaid =
-        germans
-            .getResources()
-            .getQuantity(gameData.getResourceList().getResourceOrThrow(Constants.PUS));
-    battle.fight(bridge);
-    final int pusAfterRaid =
-        germans
-            .getResources()
-            .getQuantity(gameData.getResourceList().getResourceOrThrow(Constants.PUS));
-    assertEquals(pusBeforeRaid - 6, pusAfterRaid);
+    @Test
+    void testStratBombCasualties() {
+      final List<Unit> bombers = bomber(gameData).create(1, british);
+      final IDelegateBridge bridge = addBombersAndCreateBridge(bombers);
+      // AA gun rolls 0 and hits
+      whenGetRandom(bridge).thenAnswer(withValues(0));
+      final int pusBeforeRaid = getGermanPUs();
+      battle.fight(bridge);
+      final int pusAfterRaid = getGermanPUs();
+      assertEquals(pusBeforeRaid, pusAfterRaid);
+      assertEquals(0, getBritishBombersInGermany());
+      thenGetRandomShouldHaveBeenCalled(bridge, times(1));
+    }
+
+    @Test
+    void testStratBombCasualtiesLowLuck() {
+      makeGameLowLuck(gameData);
+      final List<Unit> bombers = bomber(gameData).create(2, british);
+      final IDelegateBridge bridge = addBombersAndCreateBridge(bombers);
+      /*
+      First 0 is the AA gun rolling 1@2 and getting a 1, which is a hit.
+      Second 0 is the Low Luck AA casualty selection randomly picking the first unit to die.
+      Third 0 is the single remaining bomber dealing 1 damage to the enemy's PUs.
+      */
+      whenGetRandom(bridge)
+          .thenAnswer(withValues(0))
+          .thenAnswer(withValues(0))
+          .thenAnswer(withValues(0));
+      final int pusBeforeRaid = getGermanPUs();
+      battle.fight(bridge);
+      final int pusAfterRaid = getGermanPUs();
+      assertEquals(pusBeforeRaid - 1, pusAfterRaid);
+      assertEquals(1, getBritishBombersInGermany());
+      thenGetRandomShouldHaveBeenCalled(bridge, times(3));
+    }
+
+    @Test
+    void testStratBombCasualtiesLowLuckManyBombers() {
+      makeGameLowLuck(gameData);
+      final List<Unit> bombers = bomber(gameData).create(7, british);
+      final IDelegateBridge bridge = addBombersAndCreateBridge(bombers);
+      // AA gun rolls 0 and hits, killing two bombers. Next five dice are for the bombing raid cost
+      // for the surviving bombers.
+      whenGetRandom(bridge).thenAnswer(withValues(0)).thenAnswer(withValues(0, 0, 0, 0, 0));
+      final int pusBeforeRaid = getGermanPUs();
+      battle.fight(bridge);
+      final int pusAfterRaid = getGermanPUs();
+      assertEquals(pusBeforeRaid - 5, pusAfterRaid);
+      // two bombers get hit
+      assertEquals(5, getBritishBombersInGermany());
+      thenGetRandomShouldHaveBeenCalled(bridge, times(2));
+    }
+
+    @Test
+    void testStratBombRaidWithHeavyBombers() {
+      final List<Unit> bombers = bomber(gameData).create(1, british);
+      final IDelegateBridge bridge = addBombersAndCreateBridge(bombers);
+      TechTracker.addAdvance(
+          british,
+          bridge,
+          TechAdvance.findAdvance(
+              TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData.getTechnologyFrontier(), british));
+      // This setting ensures the test covers the dice-rolling behavior affected by issue #14914.
+      gameData.getProperties().set(Constants.USE_BOMBING_MAX_DICE_SIDES_AND_BONUS, Boolean.TRUE);
+      // AA gun rolls 3, misses. Heavy bomber rolls two dice: 1 and 4 (i.e. "2" and "5").
+      whenGetRandom(bridge).thenAnswer(withValues(3)).thenAnswer(withValues(1, 4));
+      final int pusBeforeRaid = getGermanPUs();
+      battle.fight(bridge);
+      final int pusAfterRaid = getGermanPUs();
+      // Total PU damage should be: 2 + 5 = 7.
+      assertEquals(pusBeforeRaid - 7, pusAfterRaid);
+    }
+
+    private IDelegateBridge addBombersAndCreateBridge(List<Unit> bombers) {
+      addTo(germany, bombers);
+      battle.addAttackChange(
+          gameData.getMap().getRouteOrElseThrow(uk, germany, it -> true), bombers, null);
+      tracker
+          .getBattleRecords()
+          .addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
+      return newDelegateBridge(british);
+    }
+
+    private int getGermanPUs() {
+      return germans
+          .getResources()
+          .getQuantity(gameData.getResourceList().getResourceOrThrow(Constants.PUS));
+    }
+
+    private int getBritishBombersInGermany() {
+      return germany.getUnitCollection().getMatches(Matches.unitIsOwnedBy(british)).size();
+    }
   }
 
   @Test
