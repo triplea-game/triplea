@@ -8,8 +8,7 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenSeaUnitCanEvadeAndCanNotBeTargetedByRandomUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -50,7 +49,7 @@ class SubmergeSubsVsOnlyAirStepTest extends AbstractClientSettingTestCase {
   void stepName(final String displayName, final BattleState battleState, final boolean expected) {
     final SubmergeSubsVsOnlyAirStep submergeSubsVsOnlyAirStep =
         new SubmergeSubsVsOnlyAirStep(battleState, battleActions);
-    assertThat(submergeSubsVsOnlyAirStep.getAllStepDetails(), hasSize(expected ? 1 : 0));
+    assertThat(submergeSubsVsOnlyAirStep.getAllStepDetails()).hasSize(expected ? 1 : 0);
   }
 
   static List<Arguments> stepName() {

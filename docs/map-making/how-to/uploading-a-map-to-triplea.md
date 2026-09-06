@@ -18,14 +18,15 @@ If you have just worked on your map, it is presumably in your downloadedMaps fol
 <img width="640" height="182" alt="image" src="https://github.com/user-attachments/assets/c2399fd2-54ad-4d73-9fc2-57ba252dbe91" />
 
 * Folder called "description", that contains a small PNG file of the game board (around ~400 px wide). The name of this file should be "TripleA_[map folder's name]_mini.png" (e.g. "TripleA_my_map_mini.png").
-* Folder called "map" that contains all your relevant game files (baseTiles, flags, games, centers.txt, place.txt, etc.).
+* Folder called "map" that contains all your relevant game files (baseTiles, flags, games, centers.txt, place.txt, etc.). Consult the [map-making tutorial](https://github.com/triplea-game/triplea/blob/main/docs/map-making/tutorial/creating-custom-map-xml.md) for more information about the contents of this folder.
+
 * "description.html" file, that contains a small description about the game. Important things to include here are: scenario, time period, setting, etc. Example, "World War II in Europe, starting in 1942". This is the description that people will see when they scroll through the list of maps, so make sure the description clearly tells what the game is about and possibly the captivates players to play your map!
 * "preview.png" file, should be the same image that's inside the "description" folder, except that it is called "preview.png".
 * "map.yml" file. This file specifies important information about your game. "map_name" should be the name of your map in lower case letters and with underscores. "game_name" is how you want the name of your game to appear in the TripleA "Select Game" list. "file_name" is the name of the XML file used by your game. If you have a game that has multiple scenarios with multiple XMLs, you can list multiple instances. See screenshot below.
 
 <img width="414" height="62" alt="image" src="https://github.com/user-attachments/assets/a764f9a5-937c-4282-a642-0984204b5736" />
 
-If you need to know how the inside of the folder called "map" should look, consult the following tutorial: https://github.com/triplea-game/triplea/blob/main/docs/map-making/tutorial/creating-custom-map-xml.md
+See this [tutorial](https://github.com/triplea-game/triplea/blob/main/docs/map-making/reference/map-yml-file.md) for more information about the map.yml file.
 
 ## 2. Sign up at GitHub
 Next, you should create an account at GitHub, the place where TripleA maps are stored and the game is developed: https://github.com/.
@@ -44,10 +45,10 @@ Install it with all default options if you don’t know what you are doing.
 *	Start the Git GUI program.
 *	Click *Create New Repository*.
 *	Find the place on your computer where your map is and click *Create*. Example: C:\Users\VictoryFirst\triplea\downloadedMaps\my_map
-*	Now the program starts up. The next step is to let the installed program be recognized and trusted by GitHub as your computer, when you try to upload the map to GitHub. For this we need to copy an “SSH key” from the installed Git GUI program and paste it into your GitHub settings. In Git GUI click *Help* - click *Show SSH Key* - click *Generate Key* -  Type nothing, just click OK, and OK again - Copy the new key to clipboard and close.
+*	Now the program starts up. The next step is to let the installed program be recognized and trusted by GitHub as your computer, when you try to upload the map to GitHub. For this we need to copy an “SSH key” from the installed Git GUI program and paste it into your GitHub settings. In Git GUI click *Help* - click *Show SSH Key* - click *Generate Key* -  Type nothing, just click *OK*, and *OK* again - Copy the new key to clipboard and close.
 *	Go to Github.com - click on your profile icon - click *Settings* - click *SSH and DGP keys* - click *New SSH Key* - In first field type something like “Git GUI on my PC” - In second field paste the SSH key from your clipboard and click *Add SSH key*. GitHub will probably send you a mail informing you about this added key.
 *	We need to give Git GUI on your PC some information that can become your signature when you upload to GitHub. In Git GUI click *Edit* - click *Options* - enter your GitHub username and email adress under *Global (All Repositories)* - click *Save*.
-*	Before we can upload to Git GUI, we also need to inform Git GUI what remote location we want to upload to. Go to your GitHub repository, click on the green button that says "Code" and copy the link. This is the repository adress. In Git GUI, click *Remote* - click *Add...* - in Name, type in an identifying name - in Location, paste the repository address, select Do Nothing Else Now, and click Add.
+*	Before we can upload to Git GUI, we also need to inform Git GUI what remote location we want to upload to. Go to your GitHub repository, click on the green button that says "Code" and copy the link. This is the repository adress. In Git GUI, click *Remote* - click *Add...* - in Name, type in an identifying name - in Location, paste the repository address, select Do Nothing Else Now, and click *Add*.
 
 <img width="544" height="390" alt="image" src="https://github.com/user-attachments/assets/f1391e5e-6bee-4a05-92a7-9a65ce4eeff6" />
 
@@ -62,7 +63,7 @@ Install it with all default options if you don’t know what you are doing.
 
 ## 6. Request your map to be added to the official TripleA map repository
 Your map then needs to be added to TripleA's official map repository, called "triplea-maps". You cannot do this on your own. Instead, you need to ask someone with permissions to do this for you. To do this, you need to create an issue in the TripleA GitHub.
-Go to https://github.com/triplea-game/triplea. Click on "Issues", "New Issue" and then choose "Map Registration". Fill out the fields as shown in the screenshot below and wait until a map admin adds your repository to the TripleA maps repository.
+Go to https://github.com/triplea-game/triplea/issues. Click *New Issue* on the top right, and then choose *Map Registration*. Fill out the fields as shown in the screenshot below and wait until a map admin adds your repository to the TripleA maps repository.
    
 <img width="790" height="696" alt="image" src="https://github.com/user-attachments/assets/8eea2850-f337-4010-be64-d3f395a0a76b" />
 

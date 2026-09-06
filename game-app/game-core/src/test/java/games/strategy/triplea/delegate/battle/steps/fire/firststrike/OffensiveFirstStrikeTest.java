@@ -2,10 +2,7 @@ package games.strategy.triplea.delegate.battle.steps.fire.firststrike;
 
 import static games.strategy.triplea.Constants.ALLIED_AIR_INDEPENDENT;
 import static games.strategy.triplea.delegate.battle.steps.fire.firststrike.BattleStateBuilder.givenBattleState;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -41,7 +38,7 @@ class OffensiveFirstStrikeTest {
 
     final OffensiveFirstStrike offensiveFirstStrike =
         new OffensiveFirstStrike(battleState, battleActions);
-    assertThat(offensiveFirstStrike.getAllStepDetails(), is(empty()));
+    assertThat(offensiveFirstStrike.getAllStepDetails()).isEmpty();
 
     offensiveFirstStrike.execute(executionStack, delegateBridge);
     verify(executionStack, never()).push(any());
@@ -57,8 +54,8 @@ class OffensiveFirstStrikeTest {
 
     final OffensiveFirstStrike offensiveFirstStrike =
         new OffensiveFirstStrike(battleState, battleActions);
-    assertThat(offensiveFirstStrike.getAllStepDetails(), hasSize(3));
-    assertThat(offensiveFirstStrike.getOrder(), is(stepOrder));
+    assertThat(offensiveFirstStrike.getAllStepDetails()).hasSize(3);
+    assertThat(offensiveFirstStrike.getOrder()).isEqualTo(stepOrder);
 
     offensiveFirstStrike.execute(executionStack, delegateBridge);
     verify(executionStack, times(3)).push(any());

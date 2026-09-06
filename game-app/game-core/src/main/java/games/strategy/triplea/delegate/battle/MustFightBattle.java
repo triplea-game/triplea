@@ -85,7 +85,6 @@ import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.sound.SoundPath;
-import org.triplea.sound.SoundUtils;
 
 /** Handles logic for battles in which fighting actually occurs. */
 @Slf4j

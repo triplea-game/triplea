@@ -1,8 +1,6 @@
 package games.strategy.triplea.delegate.battle.casualty;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Unit;
@@ -41,11 +39,11 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
     final List<Unit> result =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(amphibAssault(attackingUnits));
 
-    assertThat(result, hasSize(4));
-    assertThat(result.get(0).getType(), is(testData.tank));
-    assertThat(result.get(1).getType(), is(testData.artillery));
-    assertThat(result.get(2).getType(), is(testData.marine));
-    assertThat(result.get(3).getType(), is(testData.marine));
+    assertThat(result).hasSize(4);
+    assertThat(result.get(0).getType()).isEqualTo(testData.tank);
+    assertThat(result.get(1).getType()).isEqualTo(testData.artillery);
+    assertThat(result.get(2).getType()).isEqualTo(testData.marine);
+    assertThat(result.get(3).getType()).isEqualTo(testData.marine);
   }
 
   private CasualtyOrderOfLosses.Parameters amphibAssault(final Collection<Unit> amphibUnits) {
@@ -91,11 +89,11 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
     final List<Unit> result =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(amphibAssault(attackingUnits));
 
-    assertThat(result, hasSize(4));
-    assertThat(result.get(0).getType(), is(testData.artillery));
-    assertThat(result.get(1).getType(), is(testData.tank));
-    assertThat(result.get(2).getType(), is(testData.marine));
-    assertThat(result.get(3).getType(), is(testData.marine)); // << bug, should be tank
+    assertThat(result).hasSize(4);
+    assertThat(result.get(0).getType()).isEqualTo(testData.artillery);
+    assertThat(result.get(1).getType()).isEqualTo(testData.tank);
+    assertThat(result.get(2).getType()).isEqualTo(testData.marine);
+    assertThat(result.get(3).getType()).isEqualTo(testData.marine); // << bug, should be tank
   }
 
   @Test
@@ -109,13 +107,12 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
     final List<Unit> result =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(amphibAssault(attackingUnits));
 
-    assertThat(result, hasSize(3));
-    assertThat(result.get(0).getType(), is(testData.infantry));
-    assertThat(result.get(1).getType(), is(testData.artillery));
-    assertThat(
-        "The marine is attacking at a 3 without support, it is the strongest land unit",
-        result.get(2).getType(),
-        is(testData.marine));
+    assertThat(result).hasSize(3);
+    assertThat(result.get(0).getType()).isEqualTo(testData.infantry);
+    assertThat(result.get(1).getType()).isEqualTo(testData.artillery);
+    assertThat(result.get(2).getType())
+        .as("The marine is attacking at a 3 without support, it is the strongest land unit")
+        .isEqualTo(testData.marine);
   }
 
   @Test
@@ -128,16 +125,15 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
     final List<Unit> result =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(amphibAssault(attackingUnits));
 
-    assertThat(result, hasSize(2));
-    assertThat(
-        "marine is attacking at a 3, defends at 2, "
-            + "ties with fighter but the weaker defense means it is chosen first",
-        result.get(0).getType(),
-        is(testData.marine));
-    assertThat(
-        "fighter ties with marine, attacking at 3, but fighter has better defense power of 4",
-        result.get(1).getType(),
-        is(testData.fighter));
+    assertThat(result).hasSize(2);
+    assertThat(result.get(0).getType())
+        .as(
+            "marine is attacking at a 3, defends at 2, "
+                + "ties with fighter but the weaker defense means it is chosen first")
+        .isEqualTo(testData.marine);
+    assertThat(result.get(1).getType())
+        .as("fighter ties with marine, attacking at 3, but fighter has better defense power of 4")
+        .isEqualTo(testData.fighter);
   }
 
   @Test
@@ -150,10 +146,10 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
     final List<Unit> result =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(amphibAssault(attackingUnits));
 
-    assertThat(result, hasSize(3));
-    assertThat(result.get(0).getType(), is(testData.infantry));
-    assertThat(result.get(1).getType(), is(testData.fighter));
-    assertThat(result.get(2).getType(), is(testData.bomber));
+    assertThat(result).hasSize(3);
+    assertThat(result.get(0).getType()).isEqualTo(testData.infantry);
+    assertThat(result.get(1).getType()).isEqualTo(testData.fighter);
+    assertThat(result.get(2).getType()).isEqualTo(testData.bomber);
   }
 
   @Test
@@ -165,10 +161,11 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
     final List<Unit> result =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(amphibAssault(attackingUnits));
 
-    assertThat(result, hasSize(2));
-    assertThat(result.get(0).getType(), is(testData.infantry));
-    assertThat(
-        "Artillery has the better total power", result.get(1).getType(), is(testData.artillery));
+    assertThat(result).hasSize(2);
+    assertThat(result.get(0).getType()).isEqualTo(testData.infantry);
+    assertThat(result.get(1).getType())
+        .as("Artillery has the better total power")
+        .isEqualTo(testData.artillery);
   }
 
   @Test
@@ -216,14 +213,15 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
                 .data(testData.gameData)
                 .build());
 
-    assertThat(result, hasSize(4));
-    assertThat(
-        "Non amphibious marine only has attack of 2 since it doesn't get marine bonus",
-        result.get(0),
-        is(attackingUnits.get(2)));
-    assertThat(result.get(1), is(attackingUnits.get(1)));
-    assertThat("Amphibious marine has attack of 3", result.get(2), is(attackingUnits.get(3)));
-    assertThat(result.get(3), is(attackingUnits.get(0)));
+    assertThat(result).hasSize(4);
+    assertThat(result.get(0))
+        .as("Non amphibious marine only has attack of 2 since it doesn't get marine bonus")
+        .isEqualTo(attackingUnits.get(2));
+    assertThat(result.get(1)).isEqualTo(attackingUnits.get(1));
+    assertThat(result.get(2))
+        .as("Amphibious marine has attack of 3")
+        .isEqualTo(attackingUnits.get(3));
+    assertThat(result.get(3)).isEqualTo(attackingUnits.get(0));
   }
 
   @Test
@@ -272,11 +270,12 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
                 .data(testData.gameData)
                 .build());
 
-    assertThat(
-        "Non amphibious marine only has attack of 2 since it doesn't get marine bonus",
-        result.get(0),
-        is(attackingUnits.get(3)));
-    assertThat("Amphibious marine has attack of 3", result.get(2), is(attackingUnits.get(2)));
+    assertThat(result.get(0))
+        .as("Non amphibious marine only has attack of 2 since it doesn't get marine bonus")
+        .isEqualTo(attackingUnits.get(3));
+    assertThat(result.get(2))
+        .as("Amphibious marine has attack of 3")
+        .isEqualTo(attackingUnits.get(2));
 
     final List<Unit> result2 =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(
@@ -300,9 +299,11 @@ class CasualtyOrderOfLossesTestOnBigWorldV3 {
                 .data(testData.gameData)
                 .build());
 
-    assertThat(result2, hasSize(3));
-    assertThat(result2.get(0), is(attackingUnits.get(1)));
-    assertThat("Amphibious marine has attack of 3", result2.get(1), is(attackingUnits.get(2)));
-    assertThat(result2.get(2), is(attackingUnits.get(0)));
+    assertThat(result2).hasSize(3);
+    assertThat(result2.get(0)).isEqualTo(attackingUnits.get(1));
+    assertThat(result2.get(1))
+        .as("Amphibious marine has attack of 3")
+        .isEqualTo(attackingUnits.get(2));
+    assertThat(result2.get(2)).isEqualTo(attackingUnits.get(0));
   }
 }

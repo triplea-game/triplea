@@ -1,7 +1,6 @@
 package games.strategy.engine.data.properties;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import org.junit.jupiter.api.Nested;
@@ -21,7 +20,7 @@ final class GamePropertiesTest {
       final byte[] bytes = GameProperties.writeEditableProperties(expected);
       final List<IEditableProperty<?>> actual = GameProperties.readEditableProperties(bytes);
 
-      assertThat(actual, is(expected));
+      assertThat(actual).isEqualTo(expected);
     }
   }
 }

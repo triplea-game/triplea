@@ -1,8 +1,7 @@
 package games.strategy.engine.data;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import com.github.npathai.hamcrestopt.OptionalMatchers;
 import games.strategy.engine.data.gameparser.GameParser;
 import games.strategy.engine.data.gameparser.XmlGameElementMapper;
 import java.io.IOException;
@@ -21,7 +20,7 @@ class ParseGameXmlsTest {
   @MethodSource
   void parseGameFiles(final Path xmlFile) {
     final Optional<GameData> result = GameParser.parse(xmlFile, new XmlGameElementMapper(), false);
-    assertThat(result, OptionalMatchers.isPresent());
+    assertThat(result).isPresent();
   }
 
   @SuppressWarnings("unused")

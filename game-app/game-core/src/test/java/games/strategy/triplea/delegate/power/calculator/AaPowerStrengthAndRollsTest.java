@@ -2,8 +2,7 @@ package games.strategy.triplea.delegate.power.calculator;
 
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -65,7 +64,9 @@ class AaPowerStrengthAndRollsTest {
 
       final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 2);
 
-      assertThat("Unit has 1 roll and there are is least 1 target", result.getRolls(unit), is(1));
+      assertThat(result.getRolls(unit))
+          .as("Unit has 1 roll and there are is least 1 target")
+          .isEqualTo(1);
     }
 
     @Test
@@ -77,7 +78,7 @@ class AaPowerStrengthAndRollsTest {
 
       final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 2);
 
-      assertThat("Unit has 3 rolls but only 2 targets", result.getRolls(unit), is(2));
+      assertThat(result.getRolls(unit)).as("Unit has 3 rolls but only 2 targets").isEqualTo(2);
     }
 
     @Test
@@ -92,8 +93,8 @@ class AaPowerStrengthAndRollsTest {
 
       final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
-      assertThat("Unit1 has 1 roll and there is 4 targets", result.getRolls(unit1), is(1));
-      assertThat("Unit2 has 1 roll and there is 4 targets", result.getRolls(unit2), is(1));
+      assertThat(result.getRolls(unit1)).as("Unit1 has 1 roll and there is 4 targets").isEqualTo(1);
+      assertThat(result.getRolls(unit2)).as("Unit2 has 1 roll and there is 4 targets").isEqualTo(1);
     }
 
     @Test
@@ -108,9 +109,10 @@ class AaPowerStrengthAndRollsTest {
 
       final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 3);
 
-      assertThat(
-          "Unit2 has higher strength so can use both its rolls", result.getRolls(unit2), is(2));
-      assertThat("Unit1 can only use one of its rolls", result.getRolls(unit1), is(1));
+      assertThat(result.getRolls(unit2))
+          .as("Unit2 has higher strength so can use both its rolls")
+          .isEqualTo(2);
+      assertThat(result.getRolls(unit1)).as("Unit1 can only use one of its rolls").isEqualTo(1);
     }
 
     @Test
@@ -127,10 +129,11 @@ class AaPowerStrengthAndRollsTest {
 
       final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 3);
 
-      assertThat(
-          "Unit2 has higher strength so can use both its rolls", result.getRolls(unit2), is(2));
-      assertThat("Unit1 can only use one of its rolls", result.getRolls(unit1), is(1));
-      assertThat("Unit3 can not use any of its rolls", result.getRolls(unit3), is(0));
+      assertThat(result.getRolls(unit2))
+          .as("Unit2 has higher strength so can use both its rolls")
+          .isEqualTo(2);
+      assertThat(result.getRolls(unit1)).as("Unit1 can only use one of its rolls").isEqualTo(1);
+      assertThat(result.getRolls(unit3)).as("Unit3 can not use any of its rolls").isEqualTo(0);
     }
 
     @Test
@@ -142,7 +145,7 @@ class AaPowerStrengthAndRollsTest {
 
       final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
-      assertThat("Infinite unit can roll for all targets", result.getRolls(unit), is(4));
+      assertThat(result.getRolls(unit)).as("Infinite unit can roll for all targets").isEqualTo(4);
     }
 
     @Test
@@ -156,9 +159,12 @@ class AaPowerStrengthAndRollsTest {
 
       final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
-      assertThat(
-          "Unit2 is stronger so it rolls for all the targets", result.getRolls(unit2), is(4));
-      assertThat("Unit1 is weaker so it doesn't roll at all", result.getRolls(unit1), is(0));
+      assertThat(result.getRolls(unit2))
+          .as("Unit2 is stronger so it rolls for all the targets")
+          .isEqualTo(4);
+      assertThat(result.getRolls(unit1))
+          .as("Unit1 is weaker so it doesn't roll at all")
+          .isEqualTo(0);
     }
 
     @Test
@@ -180,11 +186,10 @@ class AaPowerStrengthAndRollsTest {
 
       final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
-      assertThat(
-          "2 of 4 is better than 3 of 8 so unit1 rolls for all targets",
-          result.getRolls(unit1),
-          is(4));
-      assertThat("Unit2 is weaker so it doesn't roll", result.getRolls(unit2), is(0));
+      assertThat(result.getRolls(unit1))
+          .as("2 of 4 is better than 3 of 8 so unit1 rolls for all targets")
+          .isEqualTo(4);
+      assertThat(result.getRolls(unit2)).as("Unit2 is weaker so it doesn't roll").isEqualTo(0);
     }
 
     @Test
@@ -198,11 +203,12 @@ class AaPowerStrengthAndRollsTest {
 
       final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
-      assertThat(
-          "Unit1 is equal power to the infinite unit2 so it doesn't roll",
-          result.getRolls(unit1),
-          is(0));
-      assertThat("Unit2 is infinite so it rolls for all targets", result.getRolls(unit2), is(4));
+      assertThat(result.getRolls(unit1))
+          .as("Unit1 is equal power to the infinite unit2 so it doesn't roll")
+          .isEqualTo(0);
+      assertThat(result.getRolls(unit2))
+          .as("Unit2 is infinite so it rolls for all targets")
+          .isEqualTo(4);
     }
 
     @Test
@@ -216,11 +222,12 @@ class AaPowerStrengthAndRollsTest {
 
       final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
-      assertThat(
-          "Unit1 is weaker than the infinite unit2 so it doesn't roll",
-          result.getRolls(unit1),
-          is(0));
-      assertThat("Unit2 is infinite so it rolls for all targets", result.getRolls(unit2), is(4));
+      assertThat(result.getRolls(unit1))
+          .as("Unit1 is weaker than the infinite unit2 so it doesn't roll")
+          .isEqualTo(0);
+      assertThat(result.getRolls(unit2))
+          .as("Unit2 is infinite so it rolls for all targets")
+          .isEqualTo(4);
     }
 
     @Test
@@ -234,12 +241,12 @@ class AaPowerStrengthAndRollsTest {
 
       final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
-      assertThat(
-          "Unit1 is stronger than the infinite unit2 so it rolls once",
-          result.getRolls(unit1),
-          is(1));
-      assertThat(
-          "Unit2 is infinite so it rolls for the other targets", result.getRolls(unit2), is(3));
+      assertThat(result.getRolls(unit1))
+          .as("Unit1 is stronger than the infinite unit2 so it rolls once")
+          .isEqualTo(1);
+      assertThat(result.getRolls(unit2))
+          .as("Unit2 is infinite so it rolls for the other targets")
+          .isEqualTo(3);
     }
 
     @Test
@@ -251,10 +258,9 @@ class AaPowerStrengthAndRollsTest {
 
       final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
-      assertThat(
-          "Overstack always uses all of its rolls even if there are not enough targets",
-          result.getRolls(unit),
-          is(5));
+      assertThat(result.getRolls(unit))
+          .as("Overstack always uses all of its rolls even if there are not enough targets")
+          .isEqualTo(5);
     }
 
     @Test
@@ -266,10 +272,9 @@ class AaPowerStrengthAndRollsTest {
 
       final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 2);
 
-      assertThat(
-          "Overstack makes no sense on an infinite unit so it only rolls for all the targets",
-          result.getRolls(unit),
-          is(2));
+      assertThat(result.getRolls(unit))
+          .as("Overstack makes no sense on an infinite unit so it only rolls for all the targets")
+          .isEqualTo(2);
     }
 
     @Test
@@ -283,9 +288,12 @@ class AaPowerStrengthAndRollsTest {
 
       final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
-      assertThat(
-          "Unit1 is infinite so it rolls for all the targets", result.getRolls(unit1), is(4));
-      assertThat("Unit2 is overstack so it just uses all its rolls", result.getRolls(unit2), is(2));
+      assertThat(result.getRolls(unit1))
+          .as("Unit1 is infinite so it rolls for all the targets")
+          .isEqualTo(4);
+      assertThat(result.getRolls(unit2))
+          .as("Unit2 is overstack so it just uses all its rolls")
+          .isEqualTo(2);
     }
 
     @Test
@@ -299,8 +307,12 @@ class AaPowerStrengthAndRollsTest {
 
       final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
-      assertThat("Unit1 has two rolls and there are 4 targets", result.getRolls(unit1), is(2));
-      assertThat("Unit2 is overstack so it just uses all its rolls", result.getRolls(unit2), is(2));
+      assertThat(result.getRolls(unit1))
+          .as("Unit1 has two rolls and there are 4 targets")
+          .isEqualTo(2);
+      assertThat(result.getRolls(unit2))
+          .as("Unit2 is overstack so it just uses all its rolls")
+          .isEqualTo(2);
     }
 
     @Test
@@ -316,15 +328,16 @@ class AaPowerStrengthAndRollsTest {
 
       final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
-      assertThat(
-          "Unit1 is infinite and equal strength as the non-infinite so it rolls for all targets",
-          result.getRolls(unit1),
-          is(4));
-      assertThat(
-          "Unit2 is normal but since it has equal strength to infinite, it doesn't roll",
-          result.getRolls(unit2),
-          is(0));
-      assertThat("Unit3 is overstack so it just uses all its rolls", result.getRolls(unit3), is(2));
+      assertThat(result.getRolls(unit1))
+          .as(
+              "Unit1 is infinite and equal strength as the non-infinite so it rolls for all targets")
+          .isEqualTo(4);
+      assertThat(result.getRolls(unit2))
+          .as("Unit2 is normal but since it has equal strength to infinite, it doesn't roll")
+          .isEqualTo(0);
+      assertThat(result.getRolls(unit3))
+          .as("Unit3 is overstack so it just uses all its rolls")
+          .isEqualTo(2);
     }
 
     @Test
@@ -340,15 +353,15 @@ class AaPowerStrengthAndRollsTest {
 
       final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
-      assertThat(
-          "Unit1 is infinite and weaker than the non infinite, so it only rolls for 2 targets",
-          result.getRolls(unit1),
-          is(2));
-      assertThat(
-          "Unit2 is normal and is stronger than the infinite so it uses both its rolls",
-          result.getRolls(unit2),
-          is(2));
-      assertThat("Unit3 is overstack so it just uses all its rolls", result.getRolls(unit3), is(2));
+      assertThat(result.getRolls(unit1))
+          .as("Unit1 is infinite and weaker than the non infinite, so it only rolls for 2 targets")
+          .isEqualTo(2);
+      assertThat(result.getRolls(unit2))
+          .as("Unit2 is normal and is stronger than the infinite so it uses both its rolls")
+          .isEqualTo(2);
+      assertThat(result.getRolls(unit3))
+          .as("Unit3 is overstack so it just uses all its rolls")
+          .isEqualTo(2);
     }
 
     @Test
@@ -364,15 +377,15 @@ class AaPowerStrengthAndRollsTest {
 
       final AaPowerStrengthAndRolls result = givenAaPowerStrengthAndRolls(units, 4);
 
-      assertThat(
-          "Unit1 is infinite and stronger than the non infinite, so it rolls for all targets",
-          result.getRolls(unit1),
-          is(4));
-      assertThat(
-          "Unit2 is normal and is weaker than the infinite so it doesn't roll",
-          result.getRolls(unit2),
-          is(0));
-      assertThat("Unit3 is overstack so it just uses all its rolls", result.getRolls(unit3), is(2));
+      assertThat(result.getRolls(unit1))
+          .as("Unit1 is infinite and stronger than the non infinite, so it rolls for all targets")
+          .isEqualTo(4);
+      assertThat(result.getRolls(unit2))
+          .as("Unit2 is normal and is weaker than the infinite so it doesn't roll")
+          .isEqualTo(0);
+      assertThat(result.getRolls(unit3))
+          .as("Unit3 is overstack so it just uses all its rolls")
+          .isEqualTo(2);
     }
   }
 
@@ -393,19 +406,19 @@ class AaPowerStrengthAndRollsTest {
       final int[] dice = {0, 5, 1, 4, 2, 4};
       final List<Die> diceHits = RolledDice.getDiceHits(dice, result.getActiveUnits());
 
-      assertThat(
-          "Normal unit rolls twice but only hits on the 0, not the 5. Infinite unit rolls "
-              + "twice (because only 2 more targets) but only hits on the 1, not the 4. Overstack "
-              + "unit rolls twice but only hits on the 2, not the 4.",
-          diceHits,
-          is(
+      assertThat(diceHits)
+          .as(
+              "Normal unit rolls twice but only hits on the 0, not the 5. Infinite unit rolls "
+                  + "twice (because only 2 more targets) but only hits on the 1, not the 4. Overstack "
+                  + "unit rolls twice but only hits on the 2, not the 4.")
+          .isEqualTo(
               List.of(
                   new Die(0, 3, Die.DieType.HIT),
                   new Die(5, 3, Die.DieType.MISS),
                   new Die(1, 2, Die.DieType.HIT),
                   new Die(4, 2, Die.DieType.MISS),
                   new Die(2, 4, Die.DieType.HIT),
-                  new Die(4, 4, Die.DieType.MISS))));
+                  new Die(4, 4, Die.DieType.MISS)));
     }
   }
 }

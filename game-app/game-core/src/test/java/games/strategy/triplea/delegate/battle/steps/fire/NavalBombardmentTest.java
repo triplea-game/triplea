@@ -5,10 +5,7 @@ import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattle
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenSeaBattleSite;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -57,7 +54,7 @@ class NavalBombardmentTest {
             .build();
 
     final NavalBombardment navalBombardment = new NavalBombardment(battleState, battleActions);
-    assertThat(navalBombardment.getAllStepDetails(), hasSize(3));
+    assertThat(navalBombardment.getAllStepDetails()).hasSize(3);
 
     navalBombardment.execute(executionStack, delegateBridge);
     verify(executionStack, times(3)).push(any());
@@ -72,7 +69,7 @@ class NavalBombardmentTest {
             .battleRound(2)
             .build();
     final NavalBombardment navalBombardment = new NavalBombardment(battleState, battleActions);
-    assertThat(navalBombardment.getAllStepDetails(), is(empty()));
+    assertThat(navalBombardment.getAllStepDetails()).isEmpty();
     navalBombardment.execute(executionStack, delegateBridge);
     verify(executionStack, never()).push(any());
   }
@@ -86,7 +83,7 @@ class NavalBombardmentTest {
             .battleRound(1)
             .build();
     final NavalBombardment navalBombardment = new NavalBombardment(battleState, battleActions);
-    assertThat(navalBombardment.getAllStepDetails(), is(empty()));
+    assertThat(navalBombardment.getAllStepDetails()).isEmpty();
     navalBombardment.execute(executionStack, delegateBridge);
     verify(executionStack, never()).push(any());
   }
@@ -101,7 +98,7 @@ class NavalBombardmentTest {
             .battleSite(givenSeaBattleSite())
             .build();
     final NavalBombardment navalBombardment = new NavalBombardment(battleState, battleActions);
-    assertThat(navalBombardment.getAllStepDetails(), is(empty()));
+    assertThat(navalBombardment.getAllStepDetails()).isEmpty();
     navalBombardment.execute(executionStack, delegateBridge);
     verify(executionStack, never()).push(any());
   }

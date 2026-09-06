@@ -1,7 +1,6 @@
 package org.triplea.swing;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -46,7 +45,7 @@ final class EventThreadJOptionPaneTest {
               .start();
           latch.await();
 
-          assertThat(runOnEventDispatchThread.get(), is(true));
+          assertThat(runOnEventDispatchThread.get()).isTrue();
         });
   }
 
@@ -70,7 +69,7 @@ final class EventThreadJOptionPaneTest {
               });
           latch.await();
 
-          assertThat(run.get(), is(true));
+          assertThat(run.get()).isTrue();
         });
   }
 
@@ -85,7 +84,7 @@ final class EventThreadJOptionPaneTest {
               EventThreadJOptionPane.invokeAndWait(latchHandler, () -> Optional.of(expectedResult))
                   .get();
 
-          assertThat(actualResult, is(expectedResult));
+          assertThat(actualResult).isEqualTo(expectedResult);
         });
   }
 
@@ -112,7 +111,7 @@ final class EventThreadJOptionPaneTest {
           final int actualResult =
               EventThreadJOptionPane.invokeAndWait(latchHandler, () -> expectedResult);
 
-          assertThat(actualResult, is(expectedResult));
+          assertThat(actualResult).isEqualTo(expectedResult);
         });
   }
 }

@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui.panel.move;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
@@ -45,7 +44,7 @@ class DoneMoveActionTest {
     when(undoableMovesPanel.movesMade()).thenReturn(false);
     when(confirmNoMovement.apply(parentComponent)).thenReturn(false);
 
-    assertThat(doneMoveAction.doneMoveAction(), is(false));
+    assertThat(doneMoveAction.doneMoveAction()).isFalse();
 
     verify(unitScrollerPanel, never()).setVisible(anyBoolean());
   }
@@ -56,7 +55,7 @@ class DoneMoveActionTest {
     when(undoableMovesPanel.movesMade()).thenReturn(false);
     when(confirmNoMovement.apply(parentComponent)).thenReturn(true);
 
-    assertThat(doneMoveAction.doneMoveAction(), is(true));
+    assertThat(doneMoveAction.doneMoveAction()).isTrue();
     verify(unitScrollerPanel).setVisible(false);
   }
 
@@ -65,7 +64,7 @@ class DoneMoveActionTest {
   void movesMadeDoesNotPrompt() {
     when(undoableMovesPanel.movesMade()).thenReturn(true);
 
-    assertThat(doneMoveAction.doneMoveAction(), is(true));
+    assertThat(doneMoveAction.doneMoveAction()).isTrue();
 
     verify(confirmNoMovement, never()).apply(any());
     verify(unitScrollerPanel).setVisible(false);

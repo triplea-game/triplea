@@ -1,7 +1,6 @@
 package games.strategy.engine.chat;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
 import games.strategy.engine.message.ChannelMessenger;
@@ -154,23 +153,23 @@ final class ChatIntegrationTest extends AbstractClientSettingTestCase {
   }
 
   private void allNodesToConnect() {
-    assertThat(serverChatPlayerListener.playerCount.get(), is(NODE_COUNT));
-    assertThat(client1ChatPlayerListener.playerCount.get(), is(NODE_COUNT));
-    assertThat(client2ChatPlayerListener.playerCount.get(), is(NODE_COUNT));
+    assertThat(serverChatPlayerListener.playerCount.get()).isEqualTo(NODE_COUNT);
+    assertThat(client1ChatPlayerListener.playerCount.get()).isEqualTo(NODE_COUNT);
+    assertThat(client2ChatPlayerListener.playerCount.get()).isEqualTo(NODE_COUNT);
   }
 
   private void allMessagesToArrive() {
-    assertThat(serverChatMessageListener.messageCount.get(), is(NODE_COUNT * MESSAGE_COUNT));
-    assertThat(client1ChatMessageListener.messageCount.get(), is(NODE_COUNT * MESSAGE_COUNT));
-    assertThat(client2ChatMessageListener.messageCount.get(), is(NODE_COUNT * MESSAGE_COUNT));
+    assertThat(serverChatMessageListener.messageCount.get()).isEqualTo(NODE_COUNT * MESSAGE_COUNT);
+    assertThat(client1ChatMessageListener.messageCount.get()).isEqualTo(NODE_COUNT * MESSAGE_COUNT);
+    assertThat(client2ChatMessageListener.messageCount.get()).isEqualTo(NODE_COUNT * MESSAGE_COUNT);
   }
 
   private void clientNodesToDisconnect() {
-    assertThat(serverChatPlayerListener.playerCount.get(), is(1));
+    assertThat(serverChatPlayerListener.playerCount.get()).isEqualTo(1);
   }
 
   private void serverNodeToDisconnect() {
-    assertThat(serverChatPlayerListener.playerCount.get(), is(0));
+    assertThat(serverChatPlayerListener.playerCount.get()).isEqualTo(0);
   }
 
   private static void sendMessagesFrom(final Chat node) {

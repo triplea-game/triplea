@@ -1,10 +1,6 @@
 package games.strategy.triplea.delegate.battle.steps.fire.general;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.core.IsNot.not;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
@@ -24,7 +20,7 @@ class TargetGroupTest extends AbstractDelegateTestCase {
   @DisplayName("Verify no target groups if no units and no enemy units")
   void testNewTargetGroupsWithEmptyUnitsAndEnemyUnits() {
     final List<TargetGroup> result = TargetGroup.newTargetGroups(List.of(), List.of());
-    assertThat(result, empty());
+    assertThat(result).isEmpty();
   }
 
   @Test
@@ -33,7 +29,7 @@ class TargetGroupTest extends AbstractDelegateTestCase {
     final GamePlayer germany = GameDataTestUtil.germany(twwGameData);
     final List<Unit> enemyUnits = GameDataTestUtil.germanInfantry(twwGameData).create(1, germany);
     final List<TargetGroup> result = TargetGroup.newTargetGroups(List.of(), enemyUnits);
-    assertThat(result, empty());
+    assertThat(result).isEmpty();
   }
 
   @Test
@@ -42,7 +38,7 @@ class TargetGroupTest extends AbstractDelegateTestCase {
     final GamePlayer germany = GameDataTestUtil.germany(twwGameData);
     final List<Unit> units = GameDataTestUtil.germanInfantry(twwGameData).create(1, germany);
     final List<TargetGroup> result = TargetGroup.newTargetGroups(units, List.of());
-    assertThat(result, empty());
+    assertThat(result).isEmpty();
   }
 
   @Test
@@ -53,7 +49,7 @@ class TargetGroupTest extends AbstractDelegateTestCase {
     final GamePlayer britain = GameDataTestUtil.britain(twwGameData);
     final List<Unit> enemyUnits = GameDataTestUtil.britishInfantry(twwGameData).create(1, britain);
     final List<TargetGroup> result = TargetGroup.newTargetGroups(units, enemyUnits);
-    assertThat(result, hasSize(1));
+    assertThat(result).hasSize(1);
   }
 
   @Test
@@ -65,7 +61,7 @@ class TargetGroupTest extends AbstractDelegateTestCase {
     final List<Unit> enemyUnits = GameDataTestUtil.britishInfantry(twwGameData).create(1, britain);
     enemyUnits.addAll(GameDataTestUtil.britishArtillery(twwGameData).create(2, britain));
     final List<TargetGroup> result = TargetGroup.newTargetGroups(units, enemyUnits);
-    assertThat(result, hasSize(1));
+    assertThat(result).hasSize(1);
   }
 
   @Test
@@ -77,7 +73,7 @@ class TargetGroupTest extends AbstractDelegateTestCase {
     final GamePlayer britain = GameDataTestUtil.britain(twwGameData);
     final List<Unit> enemyUnits = GameDataTestUtil.britishInfantry(twwGameData).create(1, britain);
     final List<TargetGroup> result = TargetGroup.newTargetGroups(units, enemyUnits);
-    assertThat(result, hasSize(1));
+    assertThat(result).hasSize(1);
   }
 
   @Test
@@ -91,7 +87,7 @@ class TargetGroupTest extends AbstractDelegateTestCase {
     final List<Unit> enemyUnits = GameDataTestUtil.britishInfantry(twwGameData).create(1, britain);
     enemyUnits.addAll(GameDataTestUtil.britishArtillery(twwGameData).create(2, britain));
     final List<TargetGroup> result = TargetGroup.newTargetGroups(units, enemyUnits);
-    assertThat(result, hasSize(1));
+    assertThat(result).hasSize(1);
   }
 
   @Test
@@ -106,7 +102,7 @@ class TargetGroupTest extends AbstractDelegateTestCase {
     final List<Unit> enemyUnits = GameDataTestUtil.britishSubmarine(twwGameData).create(1, britain);
     enemyUnits.addAll(GameDataTestUtil.britishFighter(twwGameData).create(2, britain));
     final List<TargetGroup> result = TargetGroup.newTargetGroups(units, enemyUnits);
-    assertThat(units.get(0).getUnitAttachment().getCanNotTarget(), is(not(empty())));
-    assertThat(result, hasSize(2));
+    assertThat(units.get(0).getUnitAttachment().getCanNotTarget()).isNotEmpty();
+    assertThat(result).hasSize(2);
   }
 }

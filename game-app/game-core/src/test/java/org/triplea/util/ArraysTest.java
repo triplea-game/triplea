@@ -1,7 +1,6 @@
 package org.triplea.util;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.triplea.util.Arrays.withSensitiveArray;
@@ -32,7 +31,7 @@ final class ArraysTest {
     void shouldScrubArray() {
       withSensitiveArray(() -> array, it -> {});
 
-      assertThat(array, is(new char[] {'\0', '\0', '\0'}));
+      assertThat(array).isEqualTo(new char[] {'\0', '\0', '\0'});
     }
   }
 
@@ -46,7 +45,7 @@ final class ArraysTest {
 
       final Integer result = withSensitiveArrayAndReturn(() -> array, function);
 
-      assertThat(result, is(42));
+      assertThat(result).isEqualTo(42);
       verify(function).apply(array);
     }
 
@@ -54,7 +53,7 @@ final class ArraysTest {
     void shouldScrubArray() {
       withSensitiveArrayAndReturn(() -> array, Function.identity());
 
-      assertThat(array, is(new char[] {'\0', '\0', '\0'}));
+      assertThat(array).isEqualTo(new char[] {'\0', '\0', '\0'});
     }
   }
 }
