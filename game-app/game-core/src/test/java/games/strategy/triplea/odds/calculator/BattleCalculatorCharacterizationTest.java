@@ -238,6 +238,10 @@ class BattleCalculatorCharacterizationTest extends AbstractClientSettingTestCase
 
   @Nested
   class OrderOfLossesRespected {
+    /**
+     * Every shot hits, so the lone defender dies and lands exactly one attacker casualty; the order
+     * of losses directs that casualty onto the infantry, leaving the armour standing.
+     */
     @Test
     void cheapUnitIsTakenAsCasualtyFirstWhenOrderOfLossListsItFirst() {
       final GameData gameData = TestMapGameData.REVISED.getGameData();
@@ -253,8 +257,6 @@ class BattleCalculatorCharacterizationTest extends AbstractClientSettingTestCase
           fight(
               calculator, russians(gameData), germans(gameData), germany, attackers, defenders, 1);
 
-      // Every shot hits: the lone defender dies and inflicts exactly one attacker casualty, which
-      // the order of losses directs onto the infantry, leaving the armour standing.
       assertThat(results.getAttackerWinPercent()).isEqualTo(1.0);
       assertThat(unitTypeNames(results.getResults().get(0).getRemainingAttackingUnits()))
           .containsExactly("armour");
@@ -280,10 +282,12 @@ class BattleCalculatorCharacterizationTest extends AbstractClientSettingTestCase
           .containsExactly("infantry");
     }
 
+    /**
+     * With a single casualty across two order-of-loss sections, only the first listed type should
+     * die, so the relative order of the sections is what is pinned here.
+     */
     @Test
     void firstListedTypeAcrossMultipleSectionsIsTakenFirst() {
-      // Two sections with a single casualty: only the *first* listed type should die, so the
-      // relative order of the sections is what is being pinned here.
       final GameData gameData = TestMapGameData.REVISED.getGameData();
       final Territory germany = territory("Germany", gameData);
       final List<Unit> attackers = armour(gameData).create(1, russians(gameData));
@@ -303,10 +307,12 @@ class BattleCalculatorCharacterizationTest extends AbstractClientSettingTestCase
           .containsExactlyInAnyOrder("infantry", "artillery");
     }
 
+    /**
+     * The order of losses names only one unit but two casualties are taken; the second must fall
+     * back to default selection, so two hits still remove two units, not one.
+     */
     @Test
     void casualtiesBeyondTheOrderOfLossListFallBackToDefaultSelection() {
-      // The order of losses names only one unit but two casualties are taken; the second must fall
-      // back to a default pick, so two hits still remove two units (not one).
       final GameData gameData = TestMapGameData.REVISED.getGameData();
       final Territory germany = territory("Germany", gameData);
       final List<Unit> attackers = infantry(gameData).create(1, russians(gameData));
@@ -351,10 +357,13 @@ class BattleCalculatorCharacterizationTest extends AbstractClientSettingTestCase
       assertThat(results.getDefenderWinPercent()).isLessThan(0.01);
     }
 
+    /**
+     * Infantry attack at 1 but defend at 2, so an even infantry-vs-infantry fight is lopsided
+     * toward the defender — a rules-level property that survives any dice-order change an overhaul
+     * brings.
+     */
     @Test
     void equalInfantryForcesFavorTheDefender() {
-      // Infantry attack at 1 but defend at 2, so an even infantry-vs-infantry fight is lopsided
-      // toward the defender. This is a rules-level property that survives any dice-order change.
       final GameData gameData = TestMapGameData.REVISED.getGameData();
       final Territory germany = territory("Germany", gameData);
       final List<Unit> attackers = infantry(gameData).create(5, russians(gameData));
@@ -395,12 +404,18 @@ class BattleCalculatorCharacterizationTest extends AbstractClientSettingTestCase
 
   @Nested
   class Invariants {
+    /**
+     * keepOneAttackingLandUnit spares the last land unit and spends the bomber instead, because air
+     * cannot capture the territory; default selection would sacrifice the cheaper infantry.
+     *
+     * <pre>
+     * (1) default selection: infantry + bomber vs a lone fighter, every shot hits, one casualty
+     * (2) same fight with keepOneAttackingLandUnit=true
+     * (3) validate: default leaves the bomber standing; keep-one leaves the infantry
+     * </pre>
+     */
     @Test
     void keepingOneAttackingLandUnitSpendsTheAirUnitAsCasualtyInstead() {
-      // One infantry + one bomber take exactly one casualty (every shot hits, the lone defending
-      // fighter lands one hit before dying). Default selection sacrifices the cheaper infantry;
-      // keepOneAttackingLandUnit instead spares the last land unit and spends the bomber, because
-      // air cannot capture the territory.
       final GameData gameData = TestMapGameData.REVISED.getGameData();
       final Territory easternCanada = territory("Eastern Canada", gameData);
 
@@ -468,6 +483,12 @@ class BattleCalculatorCharacterizationTest extends AbstractClientSettingTestCase
           .isGreaterThan(fourAttackers.getAttackerWinPercent());
     }
 
+    /**
+     * When the attacker crushes the defender the average TUV swing is strongly positive. The
+     * observed swing for this setup is ~55; the 30.0 floor sits well below that, so it catches a
+     * regression that collapses the swing while surviving the dice-order changes an overhaul
+     * brings.
+     */
     @Test
     void averageTuvSwingIsStronglyPositiveWhenTheAttackerDominates() {
       final GameData gameData = TestMapGameData.REVISED.getGameData();
@@ -485,19 +506,18 @@ class BattleCalculatorCharacterizationTest extends AbstractClientSettingTestCase
               defenders,
               200);
 
-      // The attacker crushes the defender, so on average the defender loses far more unit value.
-      // Observed swing for this setup is ~55; the floor is well below that so it still catches a
-      // regression that collapses the swing while surviving dice-order changes.
       assertThat(
               results.getAverageTuvSwing(
                   russians(gameData), attackers, germans(gameData), defenders, gameData))
           .isGreaterThan(30.0);
     }
 
+    /**
+     * A submarine wipes out a defenseless transport and survives untouched, so the swing is exactly
+     * the transport's unit value — no attacker value was lost.
+     */
     @Test
     void averageTuvSwingEqualsTheValueDestroyedInAOneSidedBattle() {
-      // A submarine wipes out a defenseless transport and survives untouched, so the swing is
-      // exactly the transport's unit value: no attacker value was lost.
       final GameData gameData = TestMapGameData.REVISED.getGameData();
       final Territory seaZone = territory("1 Sea Zone", gameData);
       final List<Unit> attackers = submarine(gameData).create(1, americans(gameData));
@@ -521,11 +541,19 @@ class BattleCalculatorCharacterizationTest extends AbstractClientSettingTestCase
           .isEqualTo((double) destroyedTransportValue);
     }
 
+    /**
+     * Bailing out early surrenders wins the attacker would otherwise take. The gap is wide
+     * (observed ~0.59 vs ~0.02 attacker win rate), so the direction holds regardless of dice-draw
+     * order.
+     *
+     * <pre>
+     * (1) 12 vs 8 infantry fought to the death
+     * (2) same fight retreating as soon as the attacker is down to 10 units
+     * (3) validate: (1) wins the majority of the time; (2) wins almost none
+     * </pre>
+     */
     @Test
     void retreatingEarlyThrowsAwayAnOtherwiseWinningAttack() {
-      // 12 vs 8: fighting to the death the attacker wins the majority of the time; bailing out as
-      // soon as it is down to 10 units surrenders almost all of those wins. The gap is wide
-      // (observed ~0.59 vs ~0.02), so the direction holds regardless of dice-draw order.
       final GameData gameData = TestMapGameData.REVISED.getGameData();
       final Territory germany = territory("Germany", gameData);
       final List<Unit> defenders = infantry(gameData).create(8, germans(gameData));
@@ -556,11 +584,21 @@ class BattleCalculatorCharacterizationTest extends AbstractClientSettingTestCase
       assertThat(retreatingEarly.getAttackerWinPercent()).isLessThan(0.15);
     }
 
+    /**
+     * Once the lone infantry dies the attacker has only air left, which cannot capture, so "retreat
+     * when only air is left" pulls the fighters out instead of throwing them away — preserving
+     * their unit value. The TUV swing improves markedly (observed ~-21 without retreat vs ~-9
+     * with); the 5.0 floor keeps the direction honest without pinning the exact magnitude an
+     * overhaul may shift.
+     *
+     * <pre>
+     * (1) one infantry + three fighters vs six defending infantry, retreatWhenOnlyAirLeft=false
+     * (2) same fight with retreatWhenOnlyAirLeft=true
+     * (3) validate: (2) TUV swing beats (1) by more than 5.0
+     * </pre>
+     */
     @Test
     void retreatingWhenOnlyAirIsLeftChangesTheAttackerOutcome() {
-      // A lone infantry backed by fighters against a strong defender: once the infantry dies the
-      // attacker has only air left, which cannot capture, so "retreat when only air is left" pulls
-      // the fighters out instead of throwing them away.
       final GameData gameData = TestMapGameData.REVISED.getGameData();
       final Territory germany = territory("Germany", gameData);
       final List<Unit> defenders = infantry(gameData).create(6, germans(gameData));
@@ -589,9 +627,6 @@ class BattleCalculatorCharacterizationTest extends AbstractClientSettingTestCase
               true,
               300);
 
-      // Pulling the fighters out preserves their unit value: the TUV swing improves markedly
-      // (observed ~-21 without retreat vs ~-9 with). The 5.0 floor keeps the direction honest
-      // without pinning the exact magnitude the overhaul may shift.
       final double swingNoRetreat =
           noRetreat.getAverageTuvSwing(
               russians(gameData), attackersNoRetreat, germans(gameData), defenders, gameData);
@@ -663,11 +698,19 @@ class BattleCalculatorCharacterizationTest extends AbstractClientSettingTestCase
 
   @Nested
   class SpecialUnits {
+    /**
+     * The AA gun does not fire in the general engagement, so any additional average air loss in the
+     * with-AA case is attributable to AA fire, not the infantry's defense — isolating the AA
+     * effect.
+     *
+     * <pre>
+     * (1) three fighters vs one infantry plus an AA gun
+     * (2) the same attack vs the infantry alone
+     * (3) validate: (1) leaves fewer attacking aircraft on average than (2)
+     * </pre>
+     */
     @Test
     void antiAircraftFireCostsTheAttackerAircraftBeyondNormalCombat() {
-      // Compare the same air attack against one defending infantry, with and without an AA gun
-      // beside it. The AA gun does not fire in the general engagement, so any additional average
-      // air loss in the with-AA case is attributable to AA fire, not to the infantry's defense.
       final GameData gameData = TestMapGameData.REVISED.getGameData();
       final Territory germany = territory("Germany", gameData);
 
@@ -696,12 +739,19 @@ class BattleCalculatorCharacterizationTest extends AbstractClientSettingTestCase
           .isLessThan(withoutAaGun.getAverageAttackingUnitsLeft());
     }
 
+    /**
+     * Bombardment before an amphibious assault can flip a loss into a win: it pins the
+     * bombarding-units parameter of {@code calculate()}, the amphibious flag, and their
+     * interaction.
+     *
+     * <pre>
+     * (1) two amphibious infantry vs three defenders, every shot hits
+     * (2) the same assault with three bombarding battleships softening the defenders first
+     * (3) validate: (1) the defender always wins; (2) the attacker always wins
+     * </pre>
+     */
     @Test
     void bombardmentBeforeAnAmphibiousAssaultCanFlipTheOutcome() {
-      // Two amphibious infantry lose outright to three defenders when every shot hits. Adding three
-      // bombarding battleships that soften the defenders before round one removes all three
-      // defenders first, so the same assault now wins. This pins the bombarding-units parameter of
-      // calculate(), the amphibious flag, and their interaction.
       final GameData gameData = TestMapGameData.REVISED.getGameData();
       final Territory germany = territory("Germany", gameData);
 
