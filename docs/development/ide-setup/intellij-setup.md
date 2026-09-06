@@ -41,7 +41,7 @@ each plugin's page.
     1. after install finish configuration in: **Other Settings > Checkstyle**
         1. load checkstyle file by clicking on the "plus" and navigating to the file
            `.\triplea\config\checkstyle` (If you can't find it, you can download it from
-           [the repository](https://github.com/triplea-game/triplea/blob/master/.build/checkstyle.xml))
+           [the repository](https://github.com/triplea-game/triplea/blob/main/.build/checkstyle.xml))
         2. set checkstyle version
         3. set to scan all sources
 3. *Lombok*
