@@ -1001,7 +1001,7 @@ class RevisedTest extends AbstractClientSettingTestCase {
     assertEquals(pusBeforeRaid - 6, pusAfterRaid);
   }
 
-  // Regression test for #14914
+  // Regression test for issue #14914
   @Test
   void testStratBombRaidWithHeavyBombersEachDieCountsTowardDamage() {
     final Territory germany = gameData.getMap().getTerritoryOrNull("Germany");
@@ -1010,10 +1010,10 @@ class RevisedTest extends AbstractClientSettingTestCase {
     final GamePlayer british = GameDataTestUtil.british(gameData);
     final BattleTracker tracker = new BattleTracker();
     final IBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
-    final List<Unit> bombers = bomber(gameData).create(1, british);
-    addTo(germany, bombers);
+    final List<Unit> bomber = bomber(gameData).create(1, british);
+    addTo(germany, bomber);
     battle.addAttackChange(
-        gameData.getMap().getRouteOrElseThrow(uk, germany, it -> true), bombers, null);
+        gameData.getMap().getRouteOrElseThrow(uk, germany, it -> true), bomber, null);
     tracker
         .getBattleRecords()
         .addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
@@ -1023,8 +1023,7 @@ class RevisedTest extends AbstractClientSettingTestCase {
         bridge,
         TechAdvance.findAdvance(
             TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData.getTechnologyFrontier(), british));
-    // USE_BOMBING_MAX_DICE_SIDES_AND_BONUS needs to be set so the damage roll routes through
-    // rollDiceComplex(), the code path that had the indexing bug from issue #14914
+    // This setting ensures the test covers the dice-rolling behavior affected by issue #14914
     gameData.getProperties().set(Constants.USE_BOMBING_MAX_DICE_SIDES_AND_BONUS, Boolean.TRUE);
     // aa guns rolls 3, misses. heavy bomber rolls two dice: raw 1 and raw 4 (i.e. "2" and "5").
     whenGetRandom(bridge).thenAnswer(withValues(3)).thenAnswer(withValues(1, 4));
