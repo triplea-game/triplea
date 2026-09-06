@@ -45,6 +45,10 @@ public class FinishedBattleTest extends AbstractClientSettingTestCase {
   private Unit tank;
   private IDelegateBridge bridge;
 
+  /**
+   * Regression test for #14542: capturing an empty enemy convoy zone must not register a pending
+   * battle. Tests if {@code TRANSPORTED_BY} is immediately cleared on unload.
+   */
   @Test
   void testEmptyEnemyConvoyIsCapturedWithoutCreatingBattle() {
     moveBritishFleetToSz3AndUnloadTankInNorway();
@@ -62,6 +66,10 @@ public class FinishedBattleTest extends AbstractClientSettingTestCase {
     assertEquals(british, sz3.getOwner());
   }
 
+  /**
+   * Companion to the test above - An enemy convoy zone with enemy units must still register a real
+   * battle, keeping {@code TRANSPORTED_BY} set until that battle resolves.
+   */
   @Test
   void testTransportedByClearedAfterDependentBattle() {
     // Place a German battleship in sz3 so the British fleet moving there triggers
@@ -93,8 +101,7 @@ public class FinishedBattleTest extends AbstractClientSettingTestCase {
 
   /**
    * Moves the British battleship into sz3, then loads the tank onto the transport, moves both into
-   * sz3, and lands the tank in Norway. Leaves {@link #bridge}, {@link #britishBattleship}, {@link
-   * #transport}, and {@link #tank} populated for use in the Combat phase.
+   * sz3, and lands the tank in Norway.
    */
   private void moveBritishFleetToSz3AndUnloadTankInNorway() {
     assertEquals("Germans", sz3.getOwner().getName());

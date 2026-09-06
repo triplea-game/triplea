@@ -505,6 +505,8 @@ public class BattleTracker implements Serializable {
     }
     // check the last territory
     if (conquerable.test(route.getEnd())) {
+      // If the last territory is an empty enemy convoy zone, it should only be captured and not
+      // registered as a battle, as there is no actual combat to resolve
       if (isEmptyEnemyConvoyZone(route.getEnd(), gamePlayer)) {
         this.conquered.add(route.getEnd());
         takeOver(route.getEnd(), gamePlayer, bridge, changeTracker, units);
@@ -562,6 +564,13 @@ public class BattleTracker implements Serializable {
     }
   }
 
+  /**
+   * Returns true if the given territory is a convoy zone - a controllable sea zone with an income
+   * value - that is currently owned by an enemy of {@code player} and contains no combat units.
+   *
+   * <p>Capturing such a zone should not register a pending battle, since there is no combat to
+   * resolve — it should be treated the same as capturing an empty land territory.
+   */
   private static boolean isEmptyEnemyConvoyZone(
       final Territory territory, final GamePlayer player) {
     return territory.isWater()
