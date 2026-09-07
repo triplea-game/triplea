@@ -64,15 +64,27 @@ public class ReferenceCombatRelations implements CombatRelations {
   }
 
   /**
-   * A first striker fires in the sub phase only when it genuinely sneaks; otherwise it fires in
-   * main combat. An enemy destroyer pins either side's sneak. A defending first striker
-   * additionally needs {@code ww2v2} or {@code defendingSubsSneakAttack} — without one it fires in
-   * main even with no enemy destroyer — mirroring {@code DefensiveFirstStrike#calculateState};
-   * offense sneaks on the bare no-destroyer check ({@code OffensiveFirstStrike#calculateState}).
+   * Whether a first striker is pushed out of its sneak into main combat. An enemy destroyer pins
+   * the sneak; a defending first striker additionally needs {@code ww2v2} or {@code
+   * defendingSubsSneakAttack} to sneak at all, mirroring {@code
+   * DefensiveFirstStrike#calculateState} (offense sneaks on the bare no-destroyer check, {@code
+   * OffensiveFirstStrike#calculateState}).
+   *
+   * <p>This is faithful except under {@code ww2v2}: the engine keeps a first striker in the sub
+   * phase even against an enemy destroyer, where it fires with no sneak benefit and its casualties
+   * are cleared asymmetrically ({@code ClearFirstStrikeCasualties#getSidesToClear}). The boolean
+   * here collapses "fires in main" and "fires in sub without sneak benefit" into one bucket — see
+   * the phase-2b note at the destroyer check.
    */
   @Override
   public boolean firstStrikeNegated(
       final Side side, final Force friendly, final Force enemy, final RulesProfile rules) {
+    // KNOWN GAP (phase-2b): under ww2v2 the engine still fires a destroyer-pinned first striker in
+    // the sub phase — it trades before dying — rather than deferring it to main. Modelling that
+    // needs "waiting-to-die" units in ReferenceBattleSimulator#fightRound: a first-strike casualty
+    // on a side the round did not clear must still fire in main and stay targetable. Until then a
+    // ww2v2 fight with first strikers on both sides and a destroyer on exactly one side diverges —
+    // see BattleCalcDifferentialTest#ww2v2DestroyerPinnedFirstStrikeStillTradesInTheSubPhase.
     if (hasDestroyer(enemy)) {
       return true;
     }
