@@ -20,8 +20,11 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.properties.BooleanProperty;
+import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.engine.random.ScriptedRandomSource;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.odds.calculator.adapter.EngineRandomSource;
 import games.strategy.triplea.odds.calculator.adapter.GameDataBattleAdapter;
@@ -263,6 +266,27 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
     }
 
     /**
+     * The submerge property gate: with {@code Submersible Subs} off (and no defending-submerge
+     * variant), defending subs facing pure air cannot dive — they neither submerge nor can be hit
+     * by the air, so both sides remain exactly as the engine leaves them. Contrast {@link
+     * #subsSubmergeAgainstPureAirMatchesTheEngine}, which runs with the Revised default on.
+     */
+    @Test
+    void subsCannotSubmergeAgainstPureAirWhenSubmersibleSubsIsOff() {
+      final GameData gameData = TestMapGameData.REVISED.getGameData();
+      setBooleanProperty(gameData, Constants.SUBMERSIBLE_SUBS, false);
+      final Territory seaZone = territory("1 Sea Zone", gameData);
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          seaZone,
+          fighter(gameData).create(2, americans(gameData)),
+          submarine(gameData).create(2, germans(gameData)));
+    }
+
+    /**
      * The named §9 multi-HP + first-strike seam, composed in one fight and exercised nowhere else
      * in the differential: a 2-hit battleship alongside a first-strike submarine, against subs that
      * also fire first strike. Multi-hit concentration (which hit damages vs sinks the battleship)
@@ -372,6 +396,20 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
         .isEqualTo(countByType(oracleResult.getRemainingAttackingUnits()));
     assertThat(countByType(newResult.defenderSurvivors()))
         .isEqualTo(countByType(oracleResult.getRemainingDefendingUnits()));
+  }
+
+  // An editable rule flag is read from the editable-property store before the map that set(String,
+  // Object) writes, so it must be flipped in place; a non-editable flag lives only in that map, so
+  // it falls through to set(). This override handles either kind.
+  private static void setBooleanProperty(
+      final GameData gameData, final String propertyName, final boolean value) {
+    for (final IEditableProperty<?> property : gameData.getProperties().getEditableProperties()) {
+      if (property.getName().equals(propertyName)) {
+        ((BooleanProperty) property).setValue(value);
+        return;
+      }
+    }
+    gameData.getProperties().set(propertyName, value);
   }
 
   private static Map<String, Integer> countByType(final Collection<Unit> units) {

@@ -71,8 +71,11 @@ public class ReferenceCombatRelations implements CombatRelations {
   }
 
   /**
-   * Submerge-vs-only-air: the cohort dives only when every unit is air-untargetable and the enemy
-   * is nothing but aircraft, mirroring {@code DummyPlayer#retreatQuery}'s submerge branch. A
+   * Submerge-vs-only-air: the cohort dives only when the rules grant its side a submerge, every
+   * unit is air-untargetable, and the enemy is nothing but aircraft — mirroring {@code
+   * DummyPlayer#retreatQuery}'s submerge branch. The rules gate follows the engine retreat steps:
+   * offense submerges on {@code submersibleSubs} ({@code OffensiveSubsRetreat}), while defense also
+   * submerges on {@code submarinesDefendingMaySubmergeOrRetreat} ({@code DefensiveSubsRetreat}). A
    * Revised sub (canEvade but targetable by air) fails the immunity test and stays to fight rather
    * than diving on a bare no-destroyer check.
    */
@@ -83,6 +86,13 @@ public class ReferenceCombatRelations implements CombatRelations {
       final Force enemy,
       final RulesProfile rules) {
     if (cohort.isEmpty()) {
+      return false;
+    }
+    final boolean rulesAllowSubmerge =
+        side == Side.OFFENSE
+            ? rules.submersibleSubs()
+            : rules.submersibleSubs() || rules.submarinesDefendingMaySubmergeOrRetreat();
+    if (!rulesAllowSubmerge) {
       return false;
     }
     final boolean cohortAirImmune =
