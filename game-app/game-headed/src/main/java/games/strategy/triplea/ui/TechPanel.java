@@ -173,7 +173,7 @@ class TechPanel extends ActionPanel {
 
   private final Action justRollTech =
       SwingAction.of(
-          "Done/Roll Current Tokens",
+          "Done",
           e -> {
             currTokens = getCurrentPlayer().getResources().getQuantity(Constants.TECH_TOKENS);
             // If this player has tokens, roll them.
