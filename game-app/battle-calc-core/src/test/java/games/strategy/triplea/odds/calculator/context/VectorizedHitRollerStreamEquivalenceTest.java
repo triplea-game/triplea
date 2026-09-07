@@ -3,8 +3,10 @@ package games.strategy.triplea.odds.calculator.context;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.air;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.land;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.rolls;
+import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.withFlags;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import games.strategy.triplea.odds.calculator.context.model.CombatFlag;
 import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
 import games.strategy.triplea.odds.calculator.context.model.FireContext;
 import games.strategy.triplea.odds.calculator.context.model.Phase;
@@ -30,14 +32,18 @@ class VectorizedHitRollerStreamEquivalenceTest {
 
   @Test
   void batchedDrawScoresIdenticalHitsToPerDieRollsAcrossManyStreams() {
-    // A mixed vector: single- and multi-roll bodies at different strengths, so the die-to-profile
+    // A mixed vector: single- and multi-roll bodies at different strengths, plus a choose-best-roll
+    // body whose per-body grouping the batch must segment the same way, so the die-to-profile
     // mapping actually matters and a mis-segmented batch would diverge.
     final CombatProfile infantry = land("infantry", 1, 2, 1);
     final CombatProfile artillery = land("artillery", 2, 2, 1);
     final CombatProfile fighter = rolls(air("fighter", 3, 4, 1), 2);
-    final Map<CombatProfile, Integer> firing = Map.of(infantry, 4, artillery, 2, fighter, 3);
+    final CombatProfile bomber =
+        withFlags(rolls(air("bomber", 4, 4, 1), 2), CombatFlag.CHOOSE_BEST_ROLL);
+    final Map<CombatProfile, Integer> firing =
+        Map.of(infantry, 4, artillery, 2, fighter, 3, bomber, 2);
     final FireContext offense = new FireContext(1, Phase.GENERAL, true, false, DICE_SIDES);
-    final int totalDice = 4 + 2 + 3 * 2;
+    final int totalDice = 4 + 2 + 3 * 2 + 2 * 2;
 
     final Random random = new Random(4242);
     int nonZeroTrials = 0;
