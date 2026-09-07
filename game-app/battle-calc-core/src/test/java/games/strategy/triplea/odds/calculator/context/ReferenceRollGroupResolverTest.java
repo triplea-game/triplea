@@ -30,8 +30,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Contract test for {@link RollGroupResolver}, pinned against the {@link
  * ReferenceRollGroupResolver} impl — the hardest seam in the bounded context (design §4, §8 stage-2
- * hoist target). All four tests are RED: the reference impl still throws {@code
- * UnsupportedOperationException("phase 1")}.
+ * hoist target).
  *
  * <p>Whether an enemy destroyer negates sub first strike is relational, so it comes through an
  * injected {@link CombatRelations} fake, not from matching unit names — the "destroyer gone

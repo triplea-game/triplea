@@ -30,8 +30,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Contract test for {@link CombatRelations} (design §3.1/§4: targeting is RELATIONAL — it reads the
  * opposing force, not a profile scalar), run against the reference {@link
- * ReferenceCombatRelations}, still a throwing "phase 1" stub, so every case here is RED at runtime
- * by design.
+ * ReferenceCombatRelations}.
  *
  * <p>Pins the two relational rules the vector model most needs a seam for: {@code eligibleTargets}
  * (an AA group hits air only; air cannot hit an evading submarine unless a destroyer on its own

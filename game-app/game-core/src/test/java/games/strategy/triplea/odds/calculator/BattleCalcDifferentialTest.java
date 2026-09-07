@@ -57,11 +57,10 @@ import org.junit.jupiter.api.Test;
  * rules-determined, so survivor counts must be <em>identical</em>; under a seeded source only the
  * distribution is comparable, so win% is asserted within a tolerance.
  *
- * <p><b>RED until Phase 2.</b> Both {@code GameDataBattleAdapter.toScenario} and {@code
- * ReferenceBattleSimulator.simulate} are throwing stubs, so every case here fails at runtime on the
- * new-path call. Writing them now fixes the bar. The starter matrix below seeds the seams the model
- * reshapes most; WW2V2 both-sneak and V2-vs-V3 bombard need other map XMLs and are deferred to the
- * full Phase-3 fuzzing gate.
+ * <p>The adapter and reference simulator are wired, so these cases run green and hold the bar. The
+ * matrix seeds the seams the model reshapes most — casualty timing, targeting, damage migration,
+ * and the per-flag rules baked from map Properties; V2-vs-V3 bombard and the broad random sweep are
+ * deferred to the Phase-3 fuzzing gate.
  */
 class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
 
