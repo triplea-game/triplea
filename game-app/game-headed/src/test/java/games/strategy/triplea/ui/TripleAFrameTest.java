@@ -88,6 +88,20 @@ final class TripleAFrameTest {
     }
 
     @Test
+    void upPanTruncatesTowardNegativeYWithSameMagnitudeAsLeftPan() {
+      // Guards the VK_UP -> negative-y mapping so vertical panning mirrors the horizontal sign
+      // convention; without it only three of the four arrow directions have a direct sign check.
+      final Set<Integer> up = Set.of(KeyEvent.VK_UP);
+
+      ScrollStep step = TripleAFrame.computeScrollStep(0, 0, SUB_PIXEL_PER_TICK, up);
+      step = TripleAFrame.computeScrollStep(0, step.residualY(), SUB_PIXEL_PER_TICK, up);
+      step = TripleAFrame.computeScrollStep(0, step.residualY(), SUB_PIXEL_PER_TICK, up);
+
+      assertEquals(-1, step.stepY());
+      assertEquals(-0.2, step.residualY(), RESIDUAL_TOLERANCE);
+    }
+
+    @Test
     void diagonalAccumulatesEachAxisIndependently() {
       final ScrollStep step =
           TripleAFrame.computeScrollStep(0, 0, 1.5, Set.of(KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN));
