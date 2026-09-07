@@ -1131,6 +1131,17 @@ public final class Matches {
         .anyMatch(t2 -> hasAlliedNavalBase(t2, player));
   }
 
+  /**
+   * Whether a territory neighbors a naval base allied to {@code player} — the per-endpoint
+   * condition that grants a non-combat sea unit the +1 naval-base movement bonus. Exposed so move
+   * planning can mirror {@link #unitHasEnoughMovementForRoute}, which applies it to both the
+   * journey start and the end.
+   */
+  public static Predicate<Territory> territoryHasNeighboringAlliedNavalBase(
+      final GamePlayer player) {
+    return t -> hasNeighboringAlliedNavalBase(t, player);
+  }
+
   private static boolean hasAlliedNavalBase(Territory t, GamePlayer player) {
     return TerritoryAttachment.hasNavalBase(t) && t.getOwner().isAllied(player);
   }
