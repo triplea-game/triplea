@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -101,7 +102,8 @@ class ReferenceRollGroupResolverTest {
         new ReferenceRollGroupResolver(
             (force, enemy, side, rules, round) -> rawCounts(force), new FakeCombatRelations(false));
 
-    final BattleRound plan = resolver.plan(attackers, defenders, new RulesProfile(Map.of()), 1);
+    final BattleRound plan =
+        resolver.plan(attackers, defenders, new RulesProfile(Map.of()), List.of(), 1);
 
     final List<RollGroup> sequence = plan.firing().sequencedKeySet().stream().toList();
     assertThat(sequence).hasSize(3);
@@ -134,13 +136,13 @@ class ReferenceRollGroupResolverTest {
 
     final Force defendersWithDestroyer = forceOf(destroyer, 1, defendingInfantry, 1);
     final BattleRound roundWithDestroyer =
-        resolver.plan(attackers, defendersWithDestroyer, rules, 1);
+        resolver.plan(attackers, defendersWithDestroyer, rules, List.of(), 1);
     assertThat(groupFiring(roundWithDestroyer, sub).firingMode()).isEqualTo(FiringMode.DEFERRED);
 
     relations.firstStrikeNegated = false;
     final Force defendersWithoutDestroyer = forceOf(defendingInfantry, 1);
     final BattleRound roundWithoutDestroyer =
-        resolver.plan(attackers, defendersWithoutDestroyer, rules, 2);
+        resolver.plan(attackers, defendersWithoutDestroyer, rules, List.of(), 2);
     assertThat(groupFiring(roundWithoutDestroyer, sub).firingMode())
         .isEqualTo(FiringMode.IMMEDIATE);
   }
@@ -166,7 +168,8 @@ class ReferenceRollGroupResolverTest {
         new ReferenceRollGroupResolver(
             (force, enemy, side, rules, round) -> Map.of(), new FakeCombatRelations(false));
 
-    final BattleRound plan = resolver.plan(attackers, defenders, new RulesProfile(Map.of()), 1);
+    final BattleRound plan =
+        resolver.plan(attackers, defenders, new RulesProfile(Map.of()), List.of(), 1);
 
     assertThat(groupFiring(plan, sub).firingMode()).isEqualTo(FiringMode.IMMEDIATE);
     assertThat(groupFiring(plan, infantry).firingMode()).isEqualTo(FiringMode.DEFERRED);
@@ -192,7 +195,8 @@ class ReferenceRollGroupResolverTest {
         new ReferenceRollGroupResolver(
             (force, enemy, side, rules, round) -> fakeEvaluation, new FakeCombatRelations(false));
 
-    final BattleRound plan = resolver.plan(attackers, defenders, new RulesProfile(Map.of()), 1);
+    final BattleRound plan =
+        resolver.plan(attackers, defenders, new RulesProfile(Map.of()), List.of(), 1);
 
     final boolean anyGroupUsesTheFakeEvaluation =
         plan.firing().sequencedKeySet().stream()
@@ -201,11 +205,40 @@ class ReferenceRollGroupResolverTest {
   }
 
   /**
-   * In-test {@link CombatRelations} whose {@code firstStrikeNegated} answer the test controls
-   * directly; the targeting and submerge methods are outside these tests' intent and reject calls.
+   * Collaboration test for the {@code CombatRelations} targeting seam (design §4: targeting reads
+   * the opposing composition): the resolver must set each {@link RollGroup#target()} from {@link
+   * CombatRelations#eligibleTargets}, not leave it empty. A fake returning one fixed filter proves
+   * every planned group carries the seam's answer rather than a hardcoded empty filter.
+   */
+  @Test
+  void eachGroupTargetIsPopulatedFromCombatRelationsEligibleTargets() {
+    final CombatProfile infantry = land("infantry", 1, 2, 1);
+    final CombatProfile defendingInfantry = land("defendingInfantry", 1, 2, 1);
+    final Force attackers = forceOf(infantry, 3);
+    final Force defenders = forceOf(defendingInfantry, 2);
+    final TargetFilter onlyDefendingInfantry = new TargetFilter(Set.of(defendingInfantry));
+    final FakeCombatRelations relations = new FakeCombatRelations(false);
+    relations.targets = onlyDefendingInfantry;
+    final RollGroupResolver resolver =
+        new ReferenceRollGroupResolver(
+            (force, enemy, side, rules, round) -> rawCounts(force), relations);
+
+    final BattleRound plan =
+        resolver.plan(attackers, defenders, new RulesProfile(Map.of()), List.of(), 1);
+
+    assertThat(plan.firing().sequencedKeySet()).isNotEmpty();
+    assertThat(plan.firing().sequencedKeySet())
+        .allMatch(group -> group.target().equals(onlyDefendingInfantry));
+  }
+
+  /**
+   * In-test {@link CombatRelations} whose {@code firstStrikeNegated} answer and {@code
+   * eligibleTargets} filter the test controls directly; the submerge method is outside these tests'
+   * intent and rejects calls.
    */
   private static final class FakeCombatRelations implements CombatRelations {
     private boolean firstStrikeNegated;
+    private TargetFilter targets = new TargetFilter(Set.of());
 
     FakeCombatRelations(final boolean firstStrikeNegated) {
       this.firstStrikeNegated = firstStrikeNegated;
@@ -219,7 +252,7 @@ class ReferenceRollGroupResolverTest {
     @Override
     public TargetFilter eligibleTargets(
         final RollGroup group, final Force friendly, final Force enemy) {
-      throw new UnsupportedOperationException("not exercised by this test");
+      return targets;
     }
 
     @Override

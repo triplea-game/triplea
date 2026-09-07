@@ -15,6 +15,7 @@ import games.strategy.triplea.odds.calculator.context.model.FiringMode;
 import games.strategy.triplea.odds.calculator.context.model.Force;
 import games.strategy.triplea.odds.calculator.context.model.Key;
 import games.strategy.triplea.odds.calculator.context.model.Lifecycle;
+import games.strategy.triplea.odds.calculator.context.model.ProfileStats;
 import games.strategy.triplea.odds.calculator.context.model.Side;
 import games.strategy.triplea.odds.calculator.context.model.TargetFilter;
 import games.strategy.triplea.odds.calculator.context.reference.ReferenceCasualtyAllocator;
@@ -79,7 +80,8 @@ class CasualtyAllocatorContractTest {
                 new Constraints(false),
                 PREFERS_LAND,
                 FiringMode.IMMEDIATE,
-                Side.OFFENSE);
+                Side.OFFENSE,
+                new ProfileStats(Map.of()));
 
     assertThat(countAt(result, fullTank, Lifecycle.ACTIVE)).isZero();
     assertThat(countAt(result, damagedTank, Lifecycle.ACTIVE)).isZero();
@@ -115,7 +117,8 @@ class CasualtyAllocatorContractTest {
                 new Constraints(true),
                 PREFERS_LAND,
                 FiringMode.IMMEDIATE,
-                Side.DEFENSE);
+                Side.DEFENSE,
+                new ProfileStats(Map.of()));
 
     assertThat(countAt(result, landUnit, Lifecycle.ACTIVE)).isEqualTo(1);
     assertThat(countAt(result, landUnit, Lifecycle.DEAD)).isEqualTo(1);
@@ -153,7 +156,8 @@ class CasualtyAllocatorContractTest {
                 new Constraints(false),
                 PREFERS_LAND,
                 FiringMode.IMMEDIATE,
-                Side.OFFENSE);
+                Side.OFFENSE,
+                new ProfileStats(Map.of()));
 
     assertThat(countAt(result, transport, Lifecycle.DEAD)).isEqualTo(1);
     assertThat(countAt(result, infantry, Lifecycle.ACTIVE)).isZero();
@@ -192,7 +196,8 @@ class CasualtyAllocatorContractTest {
                 new Constraints(false),
                 PREFERS_LAND,
                 FiringMode.DEFERRED,
-                Side.OFFENSE);
+                Side.OFFENSE,
+                new ProfileStats(Map.of()));
 
     assertThat(countAt(result, transport, Lifecycle.DEAD)).isEqualTo(1);
     assertThat(countAt(result, infantry, Lifecycle.ACTIVE)).isEqualTo(1);
@@ -227,7 +232,8 @@ class CasualtyAllocatorContractTest {
                 new Constraints(false),
                 PREFERS_LAND,
                 FiringMode.IMMEDIATE,
-                Side.DEFENSE);
+                Side.DEFENSE,
+                new ProfileStats(Map.of()));
 
     assertThat(countAt(result, infantry, Lifecycle.ACTIVE)).isEqualTo(1);
     assertThat(countAt(result, infantry, Lifecycle.DEAD)).isZero();

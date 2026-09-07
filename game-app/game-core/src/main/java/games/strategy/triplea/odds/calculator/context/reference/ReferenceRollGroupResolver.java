@@ -11,6 +11,7 @@ import games.strategy.triplea.odds.calculator.context.model.Lifecycle;
 import games.strategy.triplea.odds.calculator.context.model.RollGroup;
 import games.strategy.triplea.odds.calculator.context.model.RulesProfile;
 import games.strategy.triplea.odds.calculator.context.model.Side;
+import games.strategy.triplea.odds.calculator.context.model.SupportRule;
 import games.strategy.triplea.odds.calculator.context.model.TargetFilter;
 import games.strategy.triplea.odds.calculator.context.seam.CombatRelations;
 import games.strategy.triplea.odds.calculator.context.seam.RollGroupResolver;
@@ -44,7 +45,11 @@ public class ReferenceRollGroupResolver implements RollGroupResolver {
    */
   @Override
   public BattleRound plan(
-      final Force attackers, final Force defenders, final RulesProfile rules, final int round) {
+      final Force attackers,
+      final Force defenders,
+      final RulesProfile rules,
+      final List<SupportRule> support,
+      final int round) {
     final Side side = Side.OFFENSE;
     final Map<CombatProfile, Integer> active = activeProfileCounts(attackers);
     final boolean firstStrikeNegated = relations.firstStrikeNegated(side, attackers, defenders);
@@ -65,17 +70,19 @@ public class ReferenceRollGroupResolver implements RollGroupResolver {
     }
 
     final SequencedMap<RollGroup, Set<RollGroup>> firing = new LinkedHashMap<>();
-    addGroup(firing, side, defenders, aa, FiringMode.IMMEDIATE, round);
-    addGroup(firing, side, defenders, firstStrike, FiringMode.IMMEDIATE, round);
-    addGroup(firing, side, defenders, main, FiringMode.DEFERRED, round);
+    addGroup(firing, side, attackers, defenders, aa, support, FiringMode.IMMEDIATE, round);
+    addGroup(firing, side, attackers, defenders, firstStrike, support, FiringMode.IMMEDIATE, round);
+    addGroup(firing, side, attackers, defenders, main, support, FiringMode.DEFERRED, round);
     return new BattleRound(firing);
   }
 
   private void addGroup(
       final SequencedMap<RollGroup, Set<RollGroup>> firing,
       final Side side,
+      final Force friendly,
       final Force enemy,
       final Map<CombatProfile, Integer> partition,
+      final List<SupportRule> support,
       final FiringMode mode,
       final int round) {
     if (partition.isEmpty()) {
@@ -83,12 +90,16 @@ public class ReferenceRollGroupResolver implements RollGroupResolver {
     }
     final Force partitionForce = activeForce(partition);
     final Map<CombatProfile, Integer> evaluated =
-        supportResolver.resolve(partitionForce, enemy, side, List.of(), round);
-    // Support rules are not threaded into plan()'s RulesProfile, so an empty evaluation means "no
-    // support applied" — the group still fires its base counts.
+        supportResolver.resolve(partitionForce, enemy, side, support, round);
+    // An empty evaluation means the support resolver applied nothing — eg no rule matched — so the
+    // group falls back to its base counts.
     final Map<CombatProfile, Integer> fired = evaluated.isEmpty() ? partition : evaluated;
-    firing.put(
-        new RollGroup(side, fired, new TargetFilter(Set.of()), mode, DiceMode.NORMAL), Set.of());
+    // Targeting reads the enemy composition, so the filter is derived from CombatRelations off a
+    // preliminary group rather than left empty; the fired group carries the resulting TargetFilter.
+    final RollGroup unfiltered =
+        new RollGroup(side, fired, new TargetFilter(Set.of()), mode, DiceMode.NORMAL);
+    final TargetFilter target = relations.eligibleTargets(unfiltered, friendly, enemy);
+    firing.put(new RollGroup(side, fired, target, mode, DiceMode.NORMAL), Set.of());
   }
 
   private static Map<CombatProfile, Integer> activeProfileCounts(final Force force) {
