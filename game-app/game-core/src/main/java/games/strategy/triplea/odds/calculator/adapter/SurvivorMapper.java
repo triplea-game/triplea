@@ -60,14 +60,16 @@ class SurvivorMapper {
       return;
     }
     final Optional<BattleResult> representative = representativeRun();
+    // ArrayList (not List.of) even when empty: consumers such as ProOddsCalculator addAll onto the
+    // returned collection, so it must stay mutable.
     attackerRemaining =
         representative
             .map(run -> selectOriginals(run.attackerSurvivors(), attackingOriginals))
-            .orElseGet(List::of);
+            .orElseGet(ArrayList::new);
     defenderRemaining =
         representative
             .map(run -> selectOriginals(run.defenderSurvivors(), defendingOriginals))
-            .orElseGet(List::of);
+            .orElseGet(ArrayList::new);
     computed = true;
   }
 
@@ -101,6 +103,11 @@ class SurvivorMapper {
    * Selects, for each non-DEAD survivor bucket, {@code count} original units of the bucket's type —
    * preferring instances whose current hits match the profile's damage level when a type survives
    * at several levels, else any unused instance of that type. A unit is claimed at most once.
+   *
+   * <p>TODO(seam-phase2): a survivor whose profile transformed to a different {@code UnitType} via
+   * {@code whenHitPointsDamagedChangesInto} cannot be matched to an original by type name, so it is
+   * dropped from the returned units. The identity-dependent AI consumers deal in single-HP units,
+   * so this is a known phase-2 gap rather than a live bug.
    */
   private static Collection<Unit> selectOriginals(
       final Force survivors, final List<Unit> originals) {
