@@ -10,7 +10,8 @@ import java.util.Set;
 /** Order-of-losses preference, falling back to the default order. */
 public class OolCasualtyOrder implements CasualtyOrder {
 
-  // The caller's chosen loss order; Phase 1 ranks eligible buckets by it, engine-default when empty.
+  // The caller's chosen loss order; Phase 1 ranks eligible buckets by it, engine-default when
+  // empty.
   private final List<UnitTypeId> orderedLosses;
 
   public OolCasualtyOrder(final List<UnitTypeId> orderedLosses) {
