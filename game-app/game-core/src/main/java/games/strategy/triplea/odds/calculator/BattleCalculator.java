@@ -17,6 +17,15 @@ import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.triplea.delegate.battle.BattleResults;
 import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.MustFightBattle;
+import games.strategy.triplea.odds.calculator.adapter.AggregateResultsBridge;
+import games.strategy.triplea.odds.calculator.adapter.EngineRandomSource;
+import games.strategy.triplea.odds.calculator.adapter.GameDataBattleAdapter;
+import games.strategy.triplea.odds.calculator.context.model.BattleOptions;
+import games.strategy.triplea.odds.calculator.context.model.BattleScenario;
+import games.strategy.triplea.odds.calculator.context.model.SimulationResults;
+import games.strategy.triplea.odds.calculator.context.model.UnitTypeId;
+import games.strategy.triplea.odds.calculator.context.reference.ReferenceBattleSimulator;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.util.TuvCostsCalculator;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,6 +33,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.Setter;
 
@@ -84,6 +94,18 @@ class BattleCalculator implements IBattleCalculator {
           translateCollectionIntoOtherGameData(bombarding, gameData);
       final Collection<TerritoryEffect> territoryEffects2 =
           translateCollectionIntoOtherGameData(territoryEffects, gameData);
+      if (ClientSetting.useBoundedContextBattleCalc.getSetting()) {
+        return calculateWithBoundedContext(
+            attacker2,
+            defender2,
+            location2,
+            attackingUnits,
+            defendingUnits,
+            bombardingUnits,
+            territoryEffects2,
+            retreatWhenOnlyAirLeft,
+            runCount);
+      }
       gameData.performChange(ChangeFactory.removeUnits(location2, location2.getUnits()));
       gameData.performChange(
           ChangeFactory.addUnits(location2, mergeUnitCollections(attackingUnits, defendingUnits)));
@@ -133,6 +155,70 @@ class BattleCalculator implements IBattleCalculator {
     } finally {
       isRunning.set(false);
     }
+  }
+
+  /**
+   * The experimental bounded-context path (flag-gated): bakes a self-contained {@link
+   * BattleScenario} from the cloned game data, runs the engine-free {@link
+   * ReferenceBattleSimulator} over the caller's real {@link IRandomSource}, and bridges the
+   * survivor forces back into an {@link AggregateResults} the existing accessors understand. No map
+   * mutation happens here — the adapter only reads — so this returns before the {@code
+   * MustFightBattle} path's setup.
+   */
+  private AggregateResults calculateWithBoundedContext(
+      final GamePlayer attacker,
+      final GamePlayer defender,
+      final Territory location,
+      final Collection<Unit> attacking,
+      final Collection<Unit> defending,
+      final Collection<Unit> bombarding,
+      final Collection<TerritoryEffect> territoryEffects,
+      final boolean retreatWhenOnlyAirLeft,
+      final int runCount) {
+    final long start = System.currentTimeMillis();
+    if (amphibious) {
+      attacking.forEach(unit -> unit.setWasAmphibious(true));
+    }
+    final BattleOptions options =
+        new BattleOptions(
+            retreatWhenOnlyAirLeft,
+            orderOfLossTypes(attackerOrderOfLosses, attacking),
+            orderOfLossTypes(defenderOrderOfLosses, defending));
+    final GameDataBattleAdapter adapter = new GameDataBattleAdapter();
+    final BattleScenario scenario =
+        adapter.toScenario(
+            attacker,
+            defender,
+            location,
+            attacking,
+            defending,
+            bombarding,
+            territoryEffects,
+            options);
+    final SimulationResults results =
+        new ReferenceBattleSimulator()
+            .simulate(scenario, runCount, new EngineRandomSource(randomSource));
+    final AggregateResults aggregateResults =
+        new AggregateResultsBridge(adapter).toAggregateResults(results, gameData);
+    aggregateResults.setTime(System.currentTimeMillis() - start);
+    return aggregateResults;
+  }
+
+  /**
+   * Collapses a parsed order-of-losses (a unit list, casualty-first) into the distinct type
+   * sequence {@link BattleOptions} carries; a blank OOL yields an empty list and the reference
+   * default order.
+   */
+  private List<UnitTypeId> orderOfLossTypes(final String ool, final Collection<Unit> units) {
+    final List<Unit> ordered =
+        OrderOfLossesInputPanel.getUnitListByOrderOfLoss(ool, units, gameData);
+    if (ordered == null) {
+      return List.of();
+    }
+    return ordered.stream()
+        .map(unit -> new UnitTypeId(unit.getType().getName()))
+        .distinct()
+        .collect(Collectors.toList());
   }
 
   private <T> Collection<T> translateCollectionIntoOtherGameData(
