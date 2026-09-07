@@ -411,16 +411,15 @@ public class GameDataBattleAdapter {
       Map<String, SupportCategory> gives,
       Map<String, SupportCategory> receives) {}
 
-  // TODO(adapter): a curated slice of the ~60-70 combat flags (design §3.1). The full port is
-  // enumerated as the differential harness lights up rules that read them.
   private static RulesProfile rulesProfile(final GameData data) {
     final var properties = data.getProperties();
-    final Map<String, Boolean> flags = new LinkedHashMap<>();
-    flags.put("ww2v2", Properties.getWW2V2(properties));
-    flags.put("defendingSubsSneakAttack", Properties.getDefendingSubsSneakAttack(properties));
-    flags.put(
-        "transportCasualtiesRestricted", Properties.getTransportCasualtiesRestricted(properties));
-    return new RulesProfile(flags);
+    return new RulesProfile(
+        Properties.getWW2V2(properties),
+        Properties.getDefendingSubsSneakAttack(properties),
+        Properties.getTransportCasualtiesRestricted(properties),
+        Properties.getSubmersibleSubs(properties),
+        Properties.getSubmarinesDefendingMaySubmergeOrRetreat(properties),
+        Properties.getLhtrHeavyBombers(properties));
   }
 
   /** Per-unit-type PU cost for caller-side TUV, merged across both players' cost schedules. */

@@ -1,10 +1,21 @@
 package games.strategy.triplea.odds.calculator.context.model;
 
-import java.util.Map;
-
-// TODO(phase1): the flat flag-bag is a placeholder for the ~60-70 typed combat flags the adapter
-// bakes from GameData Properties; replace with named fields as the port enumerates them.
 /**
  * The battle-scoped rule flags baked from map Properties; nothing here reaches back into GameData.
+ * Only the subset battle resolution reads today is modelled — the adapter bakes each field from the
+ * matching {@code Properties} getter.
  */
-public record RulesProfile(Map<String, Boolean> flags) {}
+public record RulesProfile(
+    boolean ww2v2,
+    boolean defendingSubsSneakAttack,
+    // TODO(seam-phase2b): transport casualty restriction consumer not yet wired
+    boolean transportCasualtiesRestricted,
+    boolean submersibleSubs,
+    boolean submarinesDefendingMaySubmergeOrRetreat,
+    boolean lhtrHeavyBombers) {
+
+  /** Standard-rules default: every flag off, matching the engine Properties defaults. */
+  public static RulesProfile standard() {
+    return new RulesProfile(false, false, false, false, false, false);
+  }
+}

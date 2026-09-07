@@ -104,7 +104,7 @@ class ReferenceRollGroupResolverTest {
             (force, enemy, side, rules, round) -> rawCounts(force), new FakeCombatRelations(false));
 
     final BattleRound plan =
-        resolver.plan(attackers, defenders, new RulesProfile(Map.of()), List.of(), 1);
+        resolver.plan(attackers, defenders, RulesProfile.standard(), List.of(), 1);
 
     final List<RollGroup> sequence = plan.firing().sequencedKeySet().stream().toList();
     assertThat(sequence).hasSize(3);
@@ -130,7 +130,7 @@ class ReferenceRollGroupResolverTest {
     final CombatProfile destroyer = sea("destroyer", 2, 2, 1);
     final CombatProfile defendingInfantry = land("infantry", 1, 2, 1);
     final Force attackers = forceOf(sub, 2);
-    final RulesProfile rules = new RulesProfile(Map.of());
+    final RulesProfile rules = RulesProfile.standard();
     final FakeCombatRelations relations = new FakeCombatRelations(true);
     final RollGroupResolver resolver =
         new ReferenceRollGroupResolver((force, enemy, side, r, round) -> Map.of(), relations);
@@ -170,7 +170,7 @@ class ReferenceRollGroupResolverTest {
             (force, enemy, side, rules, round) -> Map.of(), new FakeCombatRelations(false));
 
     final BattleRound plan =
-        resolver.plan(attackers, defenders, new RulesProfile(Map.of()), List.of(), 1);
+        resolver.plan(attackers, defenders, RulesProfile.standard(), List.of(), 1);
 
     assertThat(groupFiring(plan, sub).firingMode()).isEqualTo(FiringMode.IMMEDIATE);
     assertThat(groupFiring(plan, infantry).firingMode()).isEqualTo(FiringMode.DEFERRED);
@@ -197,7 +197,7 @@ class ReferenceRollGroupResolverTest {
             (force, enemy, side, rules, round) -> fakeEvaluation, new FakeCombatRelations(false));
 
     final BattleRound plan =
-        resolver.plan(attackers, defenders, new RulesProfile(Map.of()), List.of(), 1);
+        resolver.plan(attackers, defenders, RulesProfile.standard(), List.of(), 1);
 
     final boolean anyGroupUsesTheFakeEvaluation =
         plan.firing().sequencedKeySet().stream()
@@ -225,7 +225,7 @@ class ReferenceRollGroupResolverTest {
             (force, enemy, side, rules, round) -> rawCounts(force), relations);
 
     final BattleRound plan =
-        resolver.plan(attackers, defenders, new RulesProfile(Map.of()), List.of(), 1);
+        resolver.plan(attackers, defenders, RulesProfile.standard(), List.of(), 1);
 
     assertThat(plan.firing().sequencedKeySet()).isNotEmpty();
     assertThat(plan.firing().sequencedKeySet())
@@ -247,7 +247,7 @@ class ReferenceRollGroupResolverTest {
             (force, enemy, side, rules, round) -> rawCounts(force), new FakeCombatRelations(false));
 
     final BattleRound plan =
-        resolver.plan(attackers, defenders, new RulesProfile(Map.of()), List.of(), 1);
+        resolver.plan(attackers, defenders, RulesProfile.standard(), List.of(), 1);
 
     assertThat(groupFiring(plan, infantry).firing()).containsKey(infantry);
     assertThat(plan.firing().sequencedKeySet())
