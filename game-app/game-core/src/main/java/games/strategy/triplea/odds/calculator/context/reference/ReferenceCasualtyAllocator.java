@@ -29,10 +29,6 @@ import java.util.Set;
  */
 public class ReferenceCasualtyAllocator implements CasualtyAllocator {
 
-  // The allocate seam carries no per-profile cost, so the order ranks with no cost tiebreak here;
-  // the caller-facing ordering that needs cost is exercised through OolCasualtyOrder directly.
-  private static final ProfileStats NO_STATS = new ProfileStats(Map.of());
-
   @Override
   public Force allocate(
       final Force force,
@@ -42,7 +38,8 @@ public class ReferenceCasualtyAllocator implements CasualtyAllocator {
       final Constraints constraints,
       final CasualtyOrder order,
       final FiringMode firingMode,
-      final Side side) {
+      final Side side,
+      final ProfileStats stats) {
     final Map<Key, Integer> working = new LinkedHashMap<>(force.counts());
     for (int hit = 0; hit < hits; hit++) {
       final Set<CombatProfile> candidates = targetableProfiles(working, eligible);
@@ -50,7 +47,7 @@ public class ReferenceCasualtyAllocator implements CasualtyAllocator {
         continue;
       }
       final CombatProfile target =
-          order.next(selectable(candidates, working, constraints), NO_STATS, side);
+          order.next(selectable(candidates, working, constraints), stats, side);
       applyHit(working, target, deps, firingMode);
     }
     return new Force(working);

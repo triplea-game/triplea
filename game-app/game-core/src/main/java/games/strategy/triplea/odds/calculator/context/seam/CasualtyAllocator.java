@@ -4,6 +4,7 @@ import games.strategy.triplea.odds.calculator.context.model.Constraints;
 import games.strategy.triplea.odds.calculator.context.model.Dependents;
 import games.strategy.triplea.odds.calculator.context.model.FiringMode;
 import games.strategy.triplea.odds.calculator.context.model.Force;
+import games.strategy.triplea.odds.calculator.context.model.ProfileStats;
 import games.strategy.triplea.odds.calculator.context.model.Side;
 import games.strategy.triplea.odds.calculator.context.model.TargetFilter;
 
@@ -22,5 +23,6 @@ public interface CasualtyAllocator {
       Constraints constraints,
       CasualtyOrder order,
       FiringMode firingMode,
-      Side side);
+      Side side,
+      ProfileStats stats);
 }
