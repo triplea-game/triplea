@@ -165,17 +165,16 @@ class CasualtyAllocatorContractTest {
   }
 
   /**
-   * The other half of the design §4 cascade-timing rule: under DEFERRED the cargo of a killed
-   * transport still fires this round, so this single allocation leaves it ACTIVE — it dies only at
-   * the later reconcile, which one {@code allocate} call does not perform. The transport itself is
-   * already dead; only the cargo's removal is deferred.
+   * Cargo removal does not wait on firing-mode timing: because cargo never fires, a DEFERRED hit
+   * that kills a transport sheds the cargo in the same allocation, exactly as the IMMEDIATE case
+   * does. Pins that firing mode is irrelevant to a non-combatant dependent's death.
    *
    * <p>1a simplification: as in the IMMEDIATE case, "cargo dies with its transport" omits the
    * engine's rehosting rule (cargo survives if another surviving transport could carry it) — a
    * known gap, not verified fidelity.
    */
   @Test
-  void deferredHitKillingATransportLeavesItsCargoActiveUntilReconcile() {
+  void deferredHitKillingATransportStillRemovesItsCargo() {
     final CombatProfile transport = sea("transport", 0, 1, 1);
     final CombatProfile infantry = land("infantry", 1, 2, 1);
     final Force side =
@@ -200,8 +199,8 @@ class CasualtyAllocatorContractTest {
                 new ProfileStats(Map.of()));
 
     assertThat(countAt(result, transport, Lifecycle.DEAD)).isEqualTo(1);
-    assertThat(countAt(result, infantry, Lifecycle.ACTIVE)).isEqualTo(1);
-    assertThat(countAt(result, infantry, Lifecycle.DEAD)).isZero();
+    assertThat(countAt(result, infantry, Lifecycle.ACTIVE)).isZero();
+    assertThat(countAt(result, infantry, Lifecycle.DEAD)).isEqualTo(1);
   }
 
   /**

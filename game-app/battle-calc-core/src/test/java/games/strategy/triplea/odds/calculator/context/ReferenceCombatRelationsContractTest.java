@@ -2,6 +2,7 @@ package games.strategy.triplea.odds.calculator.context;
 
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.aa;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.air;
+import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.cargo;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.land;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.sea;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.submarine;
@@ -165,5 +166,23 @@ class ReferenceCombatRelationsContractTest {
         withFlags(sea("destroyer", 2, 2, 1), CombatFlag.IS_DESTROYER);
 
     assertThat(relations.canSubmerge(Map.of(sub, 2), forceOf(enemyDestroyer, 1))).isFalse();
+  }
+
+  /**
+   * Dependent cargo is a non-combatant: no firing group may target it, even when it shares the enemy
+   * force with an ordinary targetable unit. Only the combatant is eligible.
+   */
+  @Test
+  void aDependentCargoUnitIsNeverAnEligibleTarget() {
+    final CombatProfile cruiser = sea("cruiser", 3, 3, 1);
+    final CombatProfile enemyCruiser = sea("enemyCruiser", 3, 3, 1);
+    final CombatProfile cargoInfantry = cargo("infantry", 1, 2, 1);
+    final RollGroup seaGroup = groupOf(cruiser, 1);
+
+    final TargetFilter eligible =
+        relations.eligibleTargets(
+            seaGroup, forceOf(cruiser, 1), forceOf(enemyCruiser, 1, cargoInfantry, 2));
+
+    assertThat(eligible.eligibleTargets()).containsExactly(enemyCruiser);
   }
 }

@@ -113,10 +113,17 @@ public class ReferenceCombatRelations implements CombatRelations {
                     && e.getKey().profile().flags().contains(CombatFlag.IS_DESTROYER));
   }
 
+  /**
+   * The active combat profiles of a force. Dependent cargo is a non-combatant and is dropped here,
+   * so it is never a target, never counts toward the only-air submerge test, and never pins an
+   * enemy first strike.
+   */
   private static Set<CombatProfile> activeProfiles(final Force force) {
     final Set<CombatProfile> profiles = new LinkedHashSet<>();
     for (final Map.Entry<Key, Integer> entry : force.counts().entrySet()) {
-      if (entry.getKey().state() == Lifecycle.ACTIVE && entry.getValue() > 0) {
+      if (entry.getKey().state() == Lifecycle.ACTIVE
+          && entry.getValue() > 0
+          && !entry.getKey().profile().flags().contains(CombatFlag.IS_DEPENDENT)) {
         profiles.add(entry.getKey().profile());
       }
     }

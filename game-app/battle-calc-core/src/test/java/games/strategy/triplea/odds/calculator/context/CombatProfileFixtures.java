@@ -62,6 +62,12 @@ public final class CombatProfileFixtures {
     return withFlags(land(name, attack, defense, hitPoints), CombatFlag.IS_AA);
   }
 
+  /** A non-combatant cargo profile (eg a land unit riding a transport), IS_DEPENDENT flag set. */
+  public static CombatProfile cargo(
+      final String name, final int attack, final int defense, final int hitPoints) {
+    return withFlags(land(name, attack, defense, hitPoints), CombatFlag.IS_DEPENDENT);
+  }
+
   /**
    * A classic air-immune submarine: eligible to submerge (CAN_SUBMERGE) and untargetable by
    * aircraft without a friendly destroyer (CANNOT_BE_TARGETED_BY_ALL). A Revised sub carries only
