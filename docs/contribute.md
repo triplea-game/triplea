@@ -183,7 +183,7 @@ role from below and find out what you can do to help.
 
 #### _How to become one_
 
-- Read and follow the [Developer Setup Guide](https://github.com/triplea-game/triplea/blob/master/docs/development/README.md)
+- Read and follow the [Developer Setup Guide](https://github.com/triplea-game/triplea/blob/main/docs/development/README.md)
 
 ### :hammer: Developer with Merge Rights
 
