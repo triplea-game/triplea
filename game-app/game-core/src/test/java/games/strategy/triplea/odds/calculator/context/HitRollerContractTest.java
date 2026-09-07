@@ -86,19 +86,41 @@ class HitRollerContractTest {
 
   /**
    * Low-luck's fractional remainder is bucketed into one extra die (design doc §4, handover §6.2
-   * item 1), scored by the same {@code < strength} rule using the remainder as that die's strength.
-   * The docs describe the bucketing but do not spell out the extra die's own hit rule in so many
-   * words; this test pins that reading — see the friction note in the final report.
+   * item 1), scored by the same {@code < strength} rule with the remainder as that die's strength.
+   * The remainder here is 2, and a rolled 2 is not {@code < 2}, so the extra die misses and only
+   * the floor hits stand. A scripted die pins the boundary that {@code alwaysHits} (always 0)
+   * cannot: a boundary-blind impl that scored the remainder as an unconditional extra hit would
+   * fail here.
    */
   @Test
-  void lowLuckRemainderIsScoredAsOneExtraDieAtTheRemainderStrength() {
+  void lowLuckRemainderDieRollingEqualToTheRemainderMissesLeavingOnlyTheFloorHits() {
     final CombatProfile attacker = land("armor", 7, 2, 1);
     final FireContext lowLuckOffense = new FireContext(1, Phase.GENERAL, true, true, 6);
 
-    // 2 attackers x strength 7 = 14; 14 / 6 = 2 remainder 2, so 2 guaranteed hits plus one extra
-    // die that hits here because alwaysHits rolls a 0, and 0 < remainder(2).
+    // 2 attackers x strength 7 = 14; 14 / 6 = 2 remainder 2. The single remainder die rolls 2,
+    // which
+    // is not < 2, so it misses: exactly the 2 floor hits.
     final int hits =
-        hitRoller.roll(Map.of(attacker, 2), lowLuckOffense, FakeRandomSource.alwaysHits());
+        hitRoller.roll(Map.of(attacker, 2), lowLuckOffense, FakeRandomSource.scripted(2));
+
+    assertThat(hits).isEqualTo(2);
+  }
+
+  /**
+   * The other side of the remainder-die boundary: a die one below the remainder is {@code <
+   * strength}, so it hits and adds one to the floor. Pinned with a scripted die rather than {@code
+   * alwaysHits} so the pass depends on the {@code < remainder} comparison, not on the die happening
+   * to be 0.
+   */
+  @Test
+  void lowLuckRemainderDieRollingBelowTheRemainderAddsOneHitToTheFloor() {
+    final CombatProfile attacker = land("armor", 7, 2, 1);
+    final FireContext lowLuckOffense = new FireContext(1, Phase.GENERAL, true, true, 6);
+
+    // 2 attackers x strength 7 = 14; 14 / 6 = 2 remainder 2. The remainder die rolls 1, which is
+    // < 2, so it hits: 2 floor hits + 1.
+    final int hits =
+        hitRoller.roll(Map.of(attacker, 2), lowLuckOffense, FakeRandomSource.scripted(1));
 
     assertThat(hits).isEqualTo(3);
   }

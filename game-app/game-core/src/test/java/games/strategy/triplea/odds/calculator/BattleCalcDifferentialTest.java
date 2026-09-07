@@ -1,7 +1,10 @@
 package games.strategy.triplea.odds.calculator;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.americans;
+import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
+import static games.strategy.triplea.delegate.GameDataTestUtil.battleship;
 import static games.strategy.triplea.delegate.GameDataTestUtil.destroyer;
+import static games.strategy.triplea.delegate.GameDataTestUtil.fighter;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
@@ -72,6 +75,30 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
         infantry(gameData).create(2, germans(gameData)));
   }
 
+  /**
+   * The oracle for default-casualty-order fidelity: a mixed-unit fight with NO order-of-losses set,
+   * so both paths take casualties by the engine default ({@code CasualtyOrderOfLosses}, a power/TUV
+   * sort — NOT cost-ascending). Under {@code alwaysHits} the survivors on the winning side are
+   * exactly whatever that order spared, so identical survivor counts by type pin that the new path
+   * reproduces the default order rather than guessing. This, not {@code OolCasualtyOrderTest}'s
+   * fallback case, is what owns default-order correctness.
+   */
+  @Test
+  void alwaysHitsWithMixedUnitTypesAndNoOolAgreesOnSurvivorsByType() {
+    final GameData gameData = TestMapGameData.REVISED.getGameData();
+    final Territory germany = territory("Germany", gameData);
+    final Collection<Unit> attacking = infantry(gameData).create(4, russians(gameData));
+    attacking.addAll(armour(gameData).create(2, russians(gameData)));
+
+    assertIdenticalSurvivorsUnderAlwaysHits(
+        gameData,
+        russians(gameData),
+        germans(gameData),
+        germany,
+        attacking,
+        infantry(gameData).create(3, germans(gameData)));
+  }
+
   @Test
   void seededRunsAgreeOnAttackerWinPercentWithinTolerance() {
     final GameData gameData = TestMapGameData.REVISED.getGameData();
@@ -94,7 +121,7 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
                 List.of(),
                 TerritoryEffectHelper.getEffects(germany),
                 false,
-                500)
+                2000)
             .getAttackerWinPercent();
 
     final BattleScenario scenario =
@@ -108,14 +135,17 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
                 List.of(),
                 TerritoryEffectHelper.getEffects(germany),
                 new BattleOptions(false, List.of(), List.of()));
-    // Separate same-seed source per side: the oracle exhausts its 500 runs before the new path
+    // Separate same-seed source per side: the oracle exhausts its 2000 runs before the new path
     // starts, so a shared instance would diverge — same seed keeps both sequences identical.
     final double newWinPercent =
         new ReferenceBattleSimulator()
-            .simulate(scenario, 500, new EngineRandomSource(new PlainRandomSource(SEED)))
+            .simulate(scenario, 2000, new EngineRandomSource(new PlainRandomSource(SEED)))
             .attackerWinPercent();
 
-    assertThat(newWinPercent).isCloseTo(oracleWinPercent, within(0.1));
+    // Distributional guard, not an exact oracle — exact fidelity is owned by the alwaysHits cases.
+    // within(0.1) (10 percentage points) was slack enough to pass a badly-wrong impl; 2000 runs
+    // shrink the sampling spread enough to hold ~3 points, at the cost of 2000 engine clones here.
+    assertThat(newWinPercent).isCloseTo(oracleWinPercent, within(0.03));
   }
 
   /**
@@ -154,6 +184,49 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
           seaZone,
           submarine(gameData).create(2, americans(gameData)),
           defenders);
+    }
+
+    /**
+     * Submerge as a retreat migration: defending subs facing pure air with no destroyer evade under
+     * water and survive, where naive per-unit iteration would let the planes grind them out. The
+     * submerged subs must show up as defender survivors, matching the engine.
+     */
+    @Test
+    void subsSubmergeAgainstPureAirMatchesTheEngine() {
+      final GameData gameData = TestMapGameData.REVISED.getGameData();
+      final Territory seaZone = territory("1 Sea Zone", gameData);
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          seaZone,
+          fighter(gameData).create(2, americans(gameData)),
+          submarine(gameData).create(2, germans(gameData)));
+    }
+
+    /**
+     * The named §9 multi-HP + first-strike seam, composed in one fight and exercised nowhere else
+     * in the differential: a 2-hit battleship alongside a first-strike submarine, against subs that
+     * also fire first strike. Multi-hit concentration (which hit damages vs sinks the battleship)
+     * and first-strike timing (opening fire off live counts) must both match the engine survivor
+     * counts.
+     */
+    @Test
+    void multiHitBattleshipWithAFirstStrikeSubMatchesTheEngine() {
+      final GameData gameData = TestMapGameData.REVISED.getGameData();
+      final Territory seaZone = territory("1 Sea Zone", gameData);
+
+      final Collection<Unit> attacking = battleship(gameData).create(1, americans(gameData));
+      attacking.addAll(submarine(gameData).create(1, americans(gameData)));
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          seaZone,
+          attacking,
+          submarine(gameData).create(2, germans(gameData)));
     }
   }
 

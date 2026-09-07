@@ -18,10 +18,19 @@ import org.junit.jupiter.api.Test;
  * to the engine default order. RED at runtime by design — the impl is still a throwing "phase 1"
  * stub.
  *
- * <p>The frozen contract gives the fallback nothing to rank on but {@link ProfileStats}'s cost map,
- * so these tests treat "default order" as ascending cost (cheapest dies first) — the only ordering
- * the seam can currently express. See the report: this is a guess standing in for whatever {@code
- * CasualtyDetails}' actual default-order algorithm turns out to need.
+ * <p>The listed-order behavior is pinned crisply here. The non-OOL <em>fallback</em> is not: the
+ * engine default is NOT cost-ascending. It is {@code CasualtyOrderOfLosses}, a power/TUV-efficiency
+ * sort — it repeatedly takes the lowest-combat-power unit (including the support power that unit
+ * grants others), breaking ties by {@code UnitBattleComparator} (cost among them), interleaving
+ * types so support is preserved. So this test asserts only what is rule-true of the fallback (it
+ * returns an eligible bucket, totally and deterministically); the exact fallback ordering is owned
+ * by the differential harness ({@code BattleCalcDifferentialTest}, the mixed-type no-OOL {@code
+ * alwaysHits} case), not pinned to a cost guess here.
+ *
+ * <p>Contract-change candidate (see report, do not apply here): replicating that default order also
+ * needs the battle {@link games.strategy.triplea.odds.calculator.context.model.Side} (attack vs
+ * defense strength selects the power) and support interactions — inputs {@code next(eligible,
+ * stats)} + a cost-only {@link ProfileStats} do not carry.
  */
 class OolCasualtyOrderTest {
 
@@ -41,10 +50,13 @@ class OolCasualtyOrderTest {
 
   /**
    * Neither eligible type appears in the OOL list, so the order must fall back to the engine
-   * default (cost-ascending) rather than throwing or picking arbitrarily.
+   * default rather than throwing or returning something outside the eligible set. This asserts only
+   * the total-function contract (the pick is one of the eligible buckets); it deliberately does NOT
+   * assert which one, because the real default is a power/TUV sort the cost-only seam cannot yet
+   * reproduce — the differential harness owns that ordering (see the class note).
    */
   @Test
-  void nextFallsBackToCheapestFirstWhenNoEligibleTypeIsInTheOol() {
+  void nextFallsBackToAnEligibleBucketWhenNoEligibleTypeIsInTheOol() {
     final CombatProfile infantry = land("infantry", 1, 2, 1);
     final CombatProfile artillery = land("artillery", 2, 2, 1);
     final CombatProfile unrelatedListedType = land("submarine", 2, 1, 1);
@@ -53,6 +65,6 @@ class OolCasualtyOrderTest {
 
     final CombatProfile chosen = order.next(Set.of(infantry, artillery), stats);
 
-    assertThat(chosen).isEqualTo(artillery);
+    assertThat(chosen).isIn(infantry, artillery);
   }
 }
