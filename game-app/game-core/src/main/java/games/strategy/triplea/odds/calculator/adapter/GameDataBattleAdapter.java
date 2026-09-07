@@ -80,10 +80,16 @@ public class GameDataBattleAdapter {
         anyAmphibious(attacking),
         data.getDiceSides(),
         Properties.getLowLuck(data.getProperties()),
-        // TODO(adapter): BattleOptions carries only retreatWhenOnlyAirLeft; the retreatAfterRound /
-        // retreatAfterXUnitsLeft thresholds have no caller input yet, so they are disabled (-1).
-        new ReferenceRetreatPolicy(-1, -1, options.retreatWhenOnlyAirLeft()),
-        new ReferenceRetreatPolicy(-1, -1, options.retreatWhenOnlyAirLeft()),
+        // keepOneAttackingLandUnit rides in BattleOptions for interface parity but is not threaded
+        // into the scenario — the simulator hardcodes it off (a deferred fidelity item).
+        new ReferenceRetreatPolicy(
+            options.retreatAfterRound(),
+            options.retreatAfterXUnitsLeft(),
+            options.retreatWhenOnlyAirLeft()),
+        new ReferenceRetreatPolicy(
+            options.retreatAfterRound(),
+            options.retreatAfterXUnitsLeft(),
+            options.retreatWhenOnlyAirLeft()),
         new OolCasualtyOrder(options.attackerOol()),
         new OolCasualtyOrder(options.defenderOol()));
   }

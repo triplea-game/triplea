@@ -20,7 +20,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
-import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,21 +54,20 @@ class BattleCalculatorTest extends AbstractClientSettingTestCase {
   }
 
   /**
-   * With the bounded-context flag ON, {@code calculate} must route through the engine-free
-   * simulator instead of {@code MustFightBattle} and still return a coherent {@link
-   * AggregateResults}. An alwaysHits 3-vs-2 infantry brawl is deterministic: both sides trade every
-   * hit in round one, so the attacker wins outright with a single infantry left standing. Asserting
-   * that exact outcome pins that the new path ran end to end (adapter to simulator to bridge) and
-   * its accessors read sanely; the flag-OFF path stays covered by the other tests here.
+   * The engine-free {@link BoundedContextBattleCalculator} must return a coherent {@link
+   * AggregateResults} without touching {@code MustFightBattle}. An alwaysHits 3-vs-2 infantry brawl
+   * is deterministic: both sides trade every hit in round one, so the attacker wins outright with a
+   * single infantry left standing. Asserting that exact outcome pins that the new path ran end to
+   * end (adapter to simulator to bridge) and its accessors read sanely.
    */
   @Test
-  void flagOnRoutesThroughBoundedContextCalcAndReturnsSaneResults() {
-    ClientSetting.useBoundedContextBattleCalc.setValue(true);
+  void boundedContextCalcReturnsSaneResults() {
     final GameData gameData = TestMapGameData.REVISED.getGameData();
     final Territory germany = territory("Germany", gameData);
     final GamePlayer russians = russians(gameData);
     final GamePlayer germans = germans(gameData);
-    final BattleCalculator calculator = new BattleCalculator(gameData);
+    final BoundedContextBattleCalculator calculator = new BoundedContextBattleCalculator();
+    calculator.setGameData(gameData);
     calculator.setRandomSource(ScriptedRandomSource.alwaysHits());
 
     final AggregateResults results =
