@@ -86,8 +86,10 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
@@ -1809,8 +1811,6 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
    * #computeScrollSpeed()} still applies and takes effect live while held.
    */
   private final class ArrowKeyScroller implements KeyListener {
-    // ~66 fps; small enough that each frame's pan step is a few pixels rather than a visible jump.
-    private static final int FRAME_INTERVAL_MS = 15;
     // computeScrollSpeed() is calibrated as pixels per 50ms tick by MapPanel's button-drag scroll
     // loop; reusing that cadence here keeps the arrowKeyScrollSpeed setting feeling the same.
     private static final double LEGACY_TICKS_PER_SECOND = 20.0;
@@ -1820,7 +1820,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     // release/press pair, and the paired press clears this before the deferred check deactivates
     // it.
     private final Set<Integer> pendingRelease = new HashSet<>();
-    private final Timer timer = new Timer(FRAME_INTERVAL_MS, e -> tick());
+    private final Timer timer = new Timer(computeFrameIntervalMs(), e -> tick());
     private long lastTickNanos;
     // Sub-pixel pan carried between frames so fractional velocity is not lost to integer rounding.
     private double residualX;
@@ -1900,6 +1900,29 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
           || keyCode == KeyEvent.VK_DOWN
           || keyCode == KeyEvent.VK_LEFT
           || keyCode == KeyEvent.VK_RIGHT;
+    }
+
+    /**
+     * Frame interval matched to the display's refresh rate, so a panned frame is never held on
+     * screen longer than the monitor shows it — that hold is what smears map motion on a
+     * sample-and-hold display, and running slower than the refresh only adds judder on top of it.
+     * Clamped to 60-120 fps, and falls back to ~100 fps when the driver reports an unknown rate.
+     */
+    private int computeFrameIntervalMs() {
+      int refreshHz = 0;
+      try {
+        refreshHz =
+            GraphicsEnvironment.getLocalGraphicsEnvironment()
+                .getDefaultScreenDevice()
+                .getDisplayMode()
+                .getRefreshRate();
+      } catch (final HeadlessException ignored) {
+        // no display available; the fallback below applies
+      }
+      if (refreshHz <= 0) {
+        refreshHz = 100;
+      }
+      return Math.max(8, Math.min(16, Math.round(1000f / refreshHz)));
     }
   }
 
