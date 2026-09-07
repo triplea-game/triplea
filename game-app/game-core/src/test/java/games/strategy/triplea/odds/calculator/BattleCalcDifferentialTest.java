@@ -18,10 +18,10 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.odds.calculator.context.model.BattleOptions;
 import games.strategy.triplea.odds.calculator.context.model.BattleResult;
 import games.strategy.triplea.odds.calculator.context.model.BattleScenario;
 import games.strategy.triplea.odds.calculator.context.model.Force;
-import games.strategy.triplea.odds.calculator.context.model.Outcome;
 import games.strategy.triplea.odds.calculator.context.reference.GameDataBattleAdapter;
 import games.strategy.triplea.odds.calculator.context.reference.ReferenceBattleSimulator;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
@@ -106,10 +106,11 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
                 defending,
                 List.of(),
                 TerritoryEffectHelper.getEffects(germany),
-                false);
+                new BattleOptions(false, List.of(), List.of()));
     final double newWinPercent =
-        attackerWinPercent(
-            new ReferenceBattleSimulator().simulate(scenario, 500, new PlainRandomSource(SEED)));
+        new ReferenceBattleSimulator()
+            .simulate(scenario, 500, new PlainRandomSource(SEED))
+            .attackerWinPercent();
 
     assertThat(newWinPercent).isCloseTo(oracleWinPercent, within(0.1));
   }
@@ -198,7 +199,7 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
                 defending,
                 List.of(),
                 TerritoryEffectHelper.getEffects(location),
-                false);
+                new BattleOptions(false, List.of(), List.of()));
     final BattleResult newResult =
         new ReferenceBattleSimulator()
             .simulate(scenario, 1, ScriptedRandomSource.alwaysHits())
@@ -209,13 +210,6 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
         .isEqualTo(countByType(oracleResult.getRemainingAttackingUnits()));
     assertThat(countByType(newResult.defenderSurvivors()))
         .isEqualTo(countByType(oracleResult.getRemainingDefendingUnits()));
-  }
-
-  private static double attackerWinPercent(
-      final games.strategy.triplea.odds.calculator.context.model.AggregateResults results) {
-    final long wins =
-        results.results().stream().filter(r -> r.outcome() == Outcome.ATTACKER_WINS).count();
-    return (double) wins / results.results().size();
   }
 
   private static Map<String, Integer> countByType(final Collection<Unit> units) {

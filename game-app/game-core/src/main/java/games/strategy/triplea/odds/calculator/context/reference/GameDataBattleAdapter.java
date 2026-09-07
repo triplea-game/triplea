@@ -5,6 +5,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.odds.calculator.context.model.BattleOptions;
 import games.strategy.triplea.odds.calculator.context.model.BattleScenario;
 import games.strategy.triplea.odds.calculator.context.model.Force;
 import java.util.Collection;
@@ -16,10 +17,10 @@ import java.util.Collection;
  */
 public class GameDataBattleAdapter {
 
-  // TODO(phase0-decision): the design's illustrative `BattleOptions options` has no engine type;
-  // this mirrors the real IBattleCalculator entry with `boolean retreatWhenOnlyAirLeft`. Confirm
-  // the
-  // full option set the port needs.
+  /**
+   * Bakes a self-contained {@link BattleScenario}; Phase 1 derives its {@code
+   * attackerOrder}/{@code defenderOrder} from {@code options}' order-of-loss lists.
+   */
   public BattleScenario toScenario(
       final GamePlayer attacker,
       final GamePlayer defender,
@@ -28,7 +29,7 @@ public class GameDataBattleAdapter {
       final Collection<Unit> defending,
       final Collection<Unit> bombarding,
       final Collection<TerritoryEffect> effects,
-      final boolean retreatWhenOnlyAirLeft) {
+      final BattleOptions options) {
     throw new UnsupportedOperationException("phase 1");
   }
 
