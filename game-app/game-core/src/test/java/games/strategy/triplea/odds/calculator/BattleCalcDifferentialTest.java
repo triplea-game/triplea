@@ -7,6 +7,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.destroyer;
 import static games.strategy.triplea.delegate.GameDataTestUtil.fighter;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
+import static games.strategy.triplea.delegate.GameDataTestUtil.makeGameLowLuck;
 import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
 import static games.strategy.triplea.delegate.GameDataTestUtil.submarine;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
@@ -97,6 +98,33 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
         germany,
         attacking,
         infantry(gameData).create(3, germans(gameData)));
+  }
+
+  /**
+   * The low-luck + non-standard-dice oracle: with low luck on and eight-sided dice, {@code
+   * alwaysHits} still exercises the low-luck arithmetic (guaranteed hits are {@code power /
+   * diceSides} plus a remainder die that the always-0 source resolves deterministically), so
+   * survivors stay exactly comparable. A one-round wipe isolates the dice model — the attacker
+   * removes all four defenders whatever the dice, so the attacker's survivor count is driven purely
+   * by the defender's low-luck return fire (power 8 → one guaranteed hit at eight sides, versus two
+   * at six sides, versus four under all-hit normal dice). Identical survivors therefore pin that
+   * the new path reads both {@code lowLuck} and {@code diceSides} off the scenario rather than
+   * baking in normal six-sided dice.
+   */
+  @Test
+  void alwaysHitsUnderLowLuckAndEightSidedDiceMatchesTheEngine() {
+    final GameData gameData = TestMapGameData.REVISED.getGameData();
+    makeGameLowLuck(gameData);
+    gameData.setDiceSides(8);
+    final Territory germany = territory("Germany", gameData);
+
+    assertIdenticalSurvivorsUnderAlwaysHits(
+        gameData,
+        russians(gameData),
+        germans(gameData),
+        germany,
+        infantry(gameData).create(30, russians(gameData)),
+        infantry(gameData).create(4, germans(gameData)));
   }
 
   @Test
