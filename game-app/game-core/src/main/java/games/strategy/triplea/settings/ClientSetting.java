@@ -62,8 +62,10 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new IntegerClientSetting("BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK", 500);
 
   /**
-   * Routes the odds calculator through the experimental engine-free bounded-context simulator; off
-   * by default so the production path stays the real {@code MustFightBattle}.
+   * Selects the engine-free bounded-context odds calculator at construction time: when on, {@code
+   * BattleCalculatorFactory} builds the bounded-context implementation instead of the {@code
+   * MustFightBattle}-backed one. Off by default so the production path stays the real {@code
+   * MustFightBattle}.
    */
   public static final BooleanClientSetting useBoundedContextBattleCalc =
       new BooleanClientSetting("USE_BOUNDED_CONTEXT_BATTLE_CALC");
