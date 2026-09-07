@@ -106,6 +106,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -140,6 +141,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -1789,42 +1791,116 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
   }
 
   private KeyListener getArrowKeyListener() {
-    return new KeyListener() {
-      @Override
-      public void keyPressed(final KeyEvent e) {
-        isCtrlPressed = e.isControlDown();
-        // scroll map according to wasd/arrow keys
-        final int diffPixel = computeScrollSpeed();
-        final int x = mapPanel.getXOffset();
-        final int y = mapPanel.getYOffset();
-        final int keyCode = e.getKeyCode();
-
-        if (keyCode == KeyEvent.VK_RIGHT) {
-          getMapPanel().setTopLeft(x + diffPixel, y);
-        } else if (keyCode == KeyEvent.VK_LEFT) {
-          getMapPanel().setTopLeft(x - diffPixel, y);
-        } else if (keyCode == KeyEvent.VK_DOWN) {
-          getMapPanel().setTopLeft(x, y + diffPixel);
-        } else if (keyCode == KeyEvent.VK_UP) {
-          getMapPanel().setTopLeft(x, y - diffPixel);
-        }
-      }
-
-      @Override
-      public void keyTyped(final KeyEvent e) {
-        // not needed interface method
-      }
-
-      @Override
-      public void keyReleased(final KeyEvent e) {
-        isCtrlPressed = e.isControlDown();
-      }
-    };
+    return new ArrowKeyScroller();
   }
 
   private int computeScrollSpeed() {
     return ClientSetting.arrowKeyScrollSpeed.getValueOrThrow()
         * (isCtrlPressed ? ClientSetting.fasterArrowKeyScrollMultiplier.getValueOrThrow() : 1);
+  }
+
+  /**
+   * Pans the map while an arrow key is held using a fixed-rate animation timer, so motion is smooth
+   * regardless of the operating system's key-repeat rate. Driving the pan off {@code keyPressed}
+   * events directly (as before) produced jagged jumps, because those events arrive on the OS repeat
+   * cadence — a long initial delay followed by chunky, uneven repeats.
+   *
+   * <p>Holding two arrow keys pans diagonally. The Ctrl multiplier from {@link
+   * #computeScrollSpeed()} still applies and takes effect live while held.
+   */
+  private final class ArrowKeyScroller implements KeyListener {
+    // ~66 fps; small enough that each frame's pan step is a few pixels rather than a visible jump.
+    private static final int FRAME_INTERVAL_MS = 15;
+    // computeScrollSpeed() is calibrated as pixels per 50ms tick by MapPanel's button-drag scroll
+    // loop; reusing that cadence here keeps the arrowKeyScrollSpeed setting feeling the same.
+    private static final double LEGACY_TICKS_PER_SECOND = 20.0;
+
+    private final Set<Integer> heldKeys = new HashSet<>();
+    // Keys whose keyReleased is awaiting confirmation; an X11 auto-repeat fires a phantom
+    // release/press pair, and the paired press clears this before the deferred check deactivates
+    // it.
+    private final Set<Integer> pendingRelease = new HashSet<>();
+    private final Timer timer = new Timer(FRAME_INTERVAL_MS, e -> tick());
+    private long lastTickNanos;
+    // Sub-pixel pan carried between frames so fractional velocity is not lost to integer rounding.
+    private double residualX;
+    private double residualY;
+
+    @Override
+    public void keyPressed(final KeyEvent e) {
+      isCtrlPressed = e.isControlDown();
+      final int keyCode = e.getKeyCode();
+      if (!isArrowKey(keyCode)) {
+        return;
+      }
+      pendingRelease.remove(keyCode);
+      if (heldKeys.add(keyCode) && !timer.isRunning()) {
+        residualX = 0;
+        residualY = 0;
+        lastTickNanos = System.nanoTime();
+        timer.start();
+      }
+    }
+
+    @Override
+    public void keyReleased(final KeyEvent e) {
+      isCtrlPressed = e.isControlDown();
+      final int keyCode = e.getKeyCode();
+      if (!isArrowKey(keyCode)) {
+        return;
+      }
+      // Defer deactivation one event-loop cycle: on X11 the auto-repeat press is already queued
+      // ahead of this runnable and will clear pendingRelease, so a held key never stops mid-scroll.
+      pendingRelease.add(keyCode);
+      SwingUtilities.invokeLater(
+          () -> {
+            if (pendingRelease.remove(keyCode)) {
+              heldKeys.remove(keyCode);
+            }
+          });
+    }
+
+    @Override
+    public void keyTyped(final KeyEvent e) {
+      // not needed interface method
+    }
+
+    private void tick() {
+      if (heldKeys.isEmpty()) {
+        timer.stop();
+        return;
+      }
+      final long now = System.nanoTime();
+      final double dtSeconds = (now - lastTickNanos) / 1_000_000_000.0;
+      lastTickNanos = now;
+      final double distance = computeScrollSpeed() * LEGACY_TICKS_PER_SECOND * dtSeconds;
+      if (heldKeys.contains(KeyEvent.VK_RIGHT)) {
+        residualX += distance;
+      }
+      if (heldKeys.contains(KeyEvent.VK_LEFT)) {
+        residualX -= distance;
+      }
+      if (heldKeys.contains(KeyEvent.VK_DOWN)) {
+        residualY += distance;
+      }
+      if (heldKeys.contains(KeyEvent.VK_UP)) {
+        residualY -= distance;
+      }
+      final int stepX = (int) residualX;
+      final int stepY = (int) residualY;
+      residualX -= stepX;
+      residualY -= stepY;
+      if (stepX != 0 || stepY != 0) {
+        getMapPanel().setTopLeft(mapPanel.getXOffset() + stepX, mapPanel.getYOffset() + stepY);
+      }
+    }
+
+    private boolean isArrowKey(final int keyCode) {
+      return keyCode == KeyEvent.VK_UP
+          || keyCode == KeyEvent.VK_DOWN
+          || keyCode == KeyEvent.VK_LEFT
+          || keyCode == KeyEvent.VK_RIGHT;
+    }
   }
 
   private void showEditMode() {
