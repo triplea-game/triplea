@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
 import games.strategy.triplea.odds.calculator.context.model.ProfileStats;
+import games.strategy.triplea.odds.calculator.context.model.Side;
 import games.strategy.triplea.odds.calculator.context.reference.OolCasualtyOrder;
 import java.util.List;
 import java.util.Map;
@@ -27,10 +28,9 @@ import org.junit.jupiter.api.Test;
  * by the differential harness ({@code BattleCalcDifferentialTest}, the mixed-type no-OOL {@code
  * alwaysHits} case), not pinned to a cost guess here.
  *
- * <p>Contract-change candidate (see report, do not apply here): replicating that default order also
- * needs the battle {@link games.strategy.triplea.odds.calculator.context.model.Side} (attack vs
- * defense strength selects the power) and support interactions — inputs {@code next(eligible,
- * stats)} + a cost-only {@link ProfileStats} do not carry.
+ * <p>{@code next} now takes the battle {@link Side} so the default order can rank by side-relative
+ * power (attack on offense, defense on defense); the remaining gap is the engine's support-power
+ * interleave, still owned by the differential harness.
  */
 class OolCasualtyOrderTest {
 
@@ -43,7 +43,7 @@ class OolCasualtyOrderTest {
     // Cost says tank should die first if this were a pure cost ranking; the OOL says otherwise.
     final ProfileStats costFavoringTank = new ProfileStats(Map.of(infantry, 5, tank, 1));
 
-    final CombatProfile chosen = order.next(Set.of(tank, infantry), costFavoringTank);
+    final CombatProfile chosen = order.next(Set.of(tank, infantry), costFavoringTank, Side.OFFENSE);
 
     assertThat(chosen).isEqualTo(infantry);
   }
@@ -63,7 +63,7 @@ class OolCasualtyOrderTest {
     final OolCasualtyOrder order = new OolCasualtyOrder(List.of(unrelatedListedType.type()));
     final ProfileStats stats = new ProfileStats(Map.of(infantry, 5, artillery, 2));
 
-    final CombatProfile chosen = order.next(Set.of(infantry, artillery), stats);
+    final CombatProfile chosen = order.next(Set.of(infantry, artillery), stats, Side.OFFENSE);
 
     assertThat(chosen).isIn(infantry, artillery);
   }
