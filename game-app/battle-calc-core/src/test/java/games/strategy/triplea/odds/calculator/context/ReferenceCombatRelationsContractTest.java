@@ -169,8 +169,8 @@ class ReferenceCombatRelationsContractTest {
   }
 
   /**
-   * Dependent cargo is a non-combatant: no firing group may target it, even when it shares the enemy
-   * force with an ordinary targetable unit. Only the combatant is eligible.
+   * Dependent cargo is a non-combatant: no firing group may target it, even when it shares the
+   * enemy force with an ordinary targetable unit. Only the combatant is eligible.
    */
   @Test
   void aDependentCargoUnitIsNeverAnEligibleTarget() {

@@ -103,8 +103,8 @@ public class ReferenceRollGroupResolver implements RollGroupResolver {
   }
 
   /**
-   * The firing side's active profiles. Dependent cargo is a non-combatant and is dropped here, so it
-   * never joins an AA, first-strike, or main partition and thus never fires.
+   * The firing side's active profiles. Dependent cargo is a non-combatant and is dropped here, so
+   * it never joins an AA, first-strike, or main partition and thus never fires.
    */
   private static Map<CombatProfile, Integer> activeProfileCounts(final Force force) {
     final Map<CombatProfile, Integer> counts = new LinkedHashMap<>();

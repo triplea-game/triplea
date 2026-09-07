@@ -32,6 +32,7 @@ import games.strategy.triplea.odds.calculator.context.model.Force;
 import games.strategy.triplea.odds.calculator.context.reference.ReferenceBattleSimulator;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -283,6 +284,32 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
           seaZone,
           attacking,
           submarine(gameData).create(2, germans(gameData)));
+    }
+
+    /**
+     * The transport cargo cascade under alwaysHits: two subs sink a transport carrying two
+     * infantry, so the cargo — a non-combatant in the sea battle — must be gone from the defender
+     * exactly as the engine drops it. Were the cargo left unflagged it would fire back and change
+     * the survivors, so identical counts pin that the adapter marks it dependent and the allocator
+     * sinks it with its transport.
+     */
+    @Test
+    void transportCargoSinksWithItsTransportMatchingTheEngine() {
+      final GameData gameData = TestMapGameData.REVISED.getGameData();
+      final Territory seaZone = territory("1 Sea Zone", gameData);
+      final List<Unit> transportUnit = transport(gameData).create(1, germans(gameData));
+      final Collection<Unit> cargo = infantry(gameData).create(2, germans(gameData));
+      cargo.forEach(unit -> unit.setTransportedBy(transportUnit.get(0)));
+      final Collection<Unit> defending = new ArrayList<>(transportUnit);
+      defending.addAll(cargo);
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          seaZone,
+          submarine(gameData).create(2, americans(gameData)),
+          defending);
     }
   }
 
