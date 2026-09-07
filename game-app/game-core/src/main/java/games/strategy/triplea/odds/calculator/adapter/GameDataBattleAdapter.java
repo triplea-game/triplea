@@ -76,6 +76,8 @@ public class GameDataBattleAdapter {
         List.of(),
         costs(data, attacker, defender),
         anyAmphibious(attacking),
+        data.getDiceSides(),
+        Properties.getLowLuck(data.getProperties()),
         // TODO(adapter): BattleOptions carries only retreatWhenOnlyAirLeft; the retreatAfterRound /
         // retreatAfterXUnitsLeft thresholds have no caller input yet, so they are disabled (-1).
         new ReferenceRetreatPolicy(-1, -1, options.retreatWhenOnlyAirLeft()),
@@ -205,7 +207,6 @@ public class GameDataBattleAdapter {
   private static RulesProfile rulesProfile(final GameData data) {
     final var properties = data.getProperties();
     final Map<String, Boolean> flags = new LinkedHashMap<>();
-    flags.put("lowLuck", Properties.getLowLuck(properties));
     flags.put("ww2v2", Properties.getWW2V2(properties));
     flags.put("defendingSubsSneakAttack", Properties.getDefendingSubsSneakAttack(properties));
     flags.put(

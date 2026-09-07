@@ -53,12 +53,6 @@ public class ReferenceBattleSimulator implements BattleSimulator {
   // another) so a run cannot spin forever. Reaching it ends the round loop as a stalemate.
   private static final int MAX_ROUNDS = 100;
 
-  // The scenario carries neither dice sides nor a low-luck flag yet, so the reference bakes in
-  // standard six-sided normal dice, threaded through by the adapter once low-luck lands. Under
-  // alwaysHits the value is inert — every die reads 0 and hits any strength >= 1.
-  private static final int DICE_SIDES = 6;
-  private static final boolean LOW_LUCK = false;
-
   private final RollGroupResolver resolver;
   private final HitRoller roller;
   private final CasualtyAllocator allocator;
@@ -246,7 +240,8 @@ public class ReferenceBattleSimulator implements BattleSimulator {
       return;
     }
     final FireContext ctx =
-        new FireContext(round, step.phase(), step.offense(), LOW_LUCK, DICE_SIDES);
+        new FireContext(
+            round, step.phase(), step.offense(), scenario.lowLuck(), scenario.diceSides());
     final int hits = roller.roll(firing, ctx, rng);
     if (hits == 0) {
       return;

@@ -95,6 +95,8 @@ class ScenarioFromLiteralsTest {
                 new UnitTypeId("artillery"), 4,
                 new UnitTypeId("tank"), 5),
             false,
+            6,
+            false,
             new ReferenceRetreatPolicy(-1, -1, false),
             new ReferenceRetreatPolicy(-1, -1, false),
             new OolCasualtyOrder(List.of()),
