@@ -172,4 +172,40 @@ abstract class HitRollerContractTest {
 
     assertThat(hits).isEqualTo(2);
   }
+
+  /**
+   * Low-luck has no best die to pick, so a CHOOSE_BEST_ROLL unit's extra rolls become a flat bonus
+   * per roll rather than a multiple of its strength (engine {@code PowerCalculator}). At strength
+   * 5, rolls 2, six-sided dice the bonus is one, giving power 6 per body — half again what the same
+   * unit would contribute without the flag, where two rolls would sum to power 10.
+   */
+  @Test
+  void lowLuckChooseBestRollAddsABonusPerExtraRollNotAStrengthMultiple() {
+    final CombatProfile bestRollBomber =
+        withFlags(rolls(air("bomber", 5, 5, 1), 2), CombatFlag.CHOOSE_BEST_ROLL);
+    final FireContext lowLuckOffense = new FireContext(1, Phase.GENERAL, true, true, 6);
+
+    // Per body: min(5 + 1 * (2 - 1), 6) = 6. Two bodies = power 12; 12 / 6 = 2 hits, no remainder.
+    final int hits =
+        hitRoller.roll(Map.of(bestRollBomber, 2), lowLuckOffense, FakeRandomSource.alwaysHits());
+
+    assertThat(hits).isEqualTo(2);
+  }
+
+  /**
+   * The low-luck best-of-rolls bonus is capped at the die sides, so extra rolls past the cap add
+   * nothing: strength 6 with three rolls would be 6 + 2 = 8, clamped to 6.
+   */
+  @Test
+  void lowLuckChooseBestRollCapsThePowerAtDiceSides() {
+    final CombatProfile bestRollBomber =
+        withFlags(rolls(air("bomber", 6, 6, 1), 3), CombatFlag.CHOOSE_BEST_ROLL);
+    final FireContext lowLuckOffense = new FireContext(1, Phase.GENERAL, true, true, 6);
+
+    // Per body: min(6 + 1 * (3 - 1), 6) = 6. One body = power 6; 6 / 6 = 1 hit, no remainder.
+    final int hits =
+        hitRoller.roll(Map.of(bestRollBomber, 1), lowLuckOffense, FakeRandomSource.alwaysHits());
+
+    assertThat(hits).isEqualTo(1);
+  }
 }
