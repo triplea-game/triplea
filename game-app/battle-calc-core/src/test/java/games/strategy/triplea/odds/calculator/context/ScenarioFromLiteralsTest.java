@@ -86,7 +86,7 @@ class ScenarioFromLiteralsTest {
             defenders,
             new Force(Map.of()),
             new Dependents(Map.of()),
-            new RulesProfile(Map.of()),
+            RulesProfile.standard(),
             List.of(
                 new SupportRule(
                     ARTILLERY_GIVES, ARTILLERY_RECEIVES, 1, true, 1, Side.OFFENSE, false)),
