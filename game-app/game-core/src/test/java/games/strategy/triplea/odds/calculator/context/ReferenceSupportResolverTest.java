@@ -110,6 +110,87 @@ class ReferenceSupportResolverTest {
     assertThat(evaluated).isEqualTo(Map.of(artillery, 1, infantry, 1));
   }
 
+  /**
+   * A {@code Side.DEFENSE} strength rule boosts the recipient's <em>defense</em> stat, not attack:
+   * the resolve {@code side} selects which strength the bonus lands on. A copy-paste impl that only
+   * ever bumps attack would fail here.
+   */
+  @Test
+  void defenseSideStrengthSupportBoostsDefenseNotAttack() {
+    final CombatProfile artillery = gives(land("artillery", 2, 2, 1), ARTILLERY_GIVES);
+    final CombatProfile infantry = receives(land("infantry", 1, 2, 1), ARTILLERY_RECEIVES);
+    final Force defenders =
+        new Force(
+            Map.of(
+                new Key(artillery, Lifecycle.ACTIVE), 1,
+                new Key(infantry, Lifecycle.ACTIVE), 1));
+    final SupportRule rule =
+        new SupportRule(ARTILLERY_GIVES, ARTILLERY_RECEIVES, 1, true, 1, Side.DEFENSE, false);
+
+    final Map<CombatProfile, Integer> evaluated =
+        new ReferenceSupportResolver()
+            .resolve(defenders, emptyForce(), Side.DEFENSE, List.of(rule), 1);
+
+    assertThat(evaluated).isEqualTo(Map.of(artillery, 1, boostedDefense(infantry, 1), 1));
+  }
+
+  /**
+   * A rule with {@code appliesToStrength=false} grants extra rolls, not strength — the untested
+   * branch of that boolean. The recipient's attack/defense stay put; only {@code rolls} climbs.
+   */
+  @Test
+  void rollsSupportBoostsRollsRatherThanStrength() {
+    final CombatProfile artillery = gives(land("artillery", 2, 2, 1), ARTILLERY_GIVES);
+    final CombatProfile infantry = receives(land("infantry", 1, 2, 1), ARTILLERY_RECEIVES);
+    final Force attackers =
+        new Force(
+            Map.of(
+                new Key(artillery, Lifecycle.ACTIVE), 1,
+                new Key(infantry, Lifecycle.ACTIVE), 1));
+    final SupportRule rule =
+        new SupportRule(ARTILLERY_GIVES, ARTILLERY_RECEIVES, 1, false, 1, Side.OFFENSE, false);
+
+    final Map<CombatProfile, Integer> evaluated =
+        new ReferenceSupportResolver()
+            .resolve(attackers, emptyForce(), Side.OFFENSE, List.of(rule), 1);
+
+    assertThat(evaluated).isEqualTo(Map.of(artillery, 1, boostedRolls(infantry, 1), 1));
+  }
+
+  /**
+   * Two distinct recipient TYPES compete for a single unit of support. The engine gives limited
+   * support to the strongest recipients first ({@code PowerStrengthAndRolls}: "sort units strongest
+   * to weakest... so the support is given to the best units first"), so the higher-base-attack
+   * marine takes the boost and the weaker infantry stays at base — pinning WHICH recipient wins the
+   * scarce support, not just how many.
+   *
+   * <pre>
+   * (1) 1 artillery (capacity 1) + 1 marine (base attack 2) + 1 infantry (base attack 1), OFFENSE
+   * (2) capacity 1 < the 2 competing recipients, so exactly one is boosted
+   * (3) validate: marine evaluated at attack+bonus, infantry left at base, artillery unchanged
+   * </pre>
+   */
+  @Test
+  void scarceSupportBoostsTheStrongerRecipientTypeFirst() {
+    final CombatProfile artillery = gives(land("artillery", 2, 2, 1), ARTILLERY_GIVES);
+    final CombatProfile marine = receives(land("marine", 2, 2, 1), ARTILLERY_RECEIVES);
+    final CombatProfile infantry = receives(land("infantry", 1, 2, 1), ARTILLERY_RECEIVES);
+    final Force attackers =
+        new Force(
+            Map.of(
+                new Key(artillery, Lifecycle.ACTIVE), 1,
+                new Key(marine, Lifecycle.ACTIVE), 1,
+                new Key(infantry, Lifecycle.ACTIVE), 1));
+    final SupportRule rule =
+        new SupportRule(ARTILLERY_GIVES, ARTILLERY_RECEIVES, 1, true, 1, Side.OFFENSE, false);
+
+    final Map<CombatProfile, Integer> evaluated =
+        new ReferenceSupportResolver()
+            .resolve(attackers, emptyForce(), Side.OFFENSE, List.of(rule), 1);
+
+    assertThat(evaluated).isEqualTo(Map.of(artillery, 1, boostedAttack(marine, 1), 1, infantry, 1));
+  }
+
   private static Force emptyForce() {
     return new Force(Map.of());
   }
@@ -121,6 +202,40 @@ class ReferenceSupportResolverTest {
         base.attack() + bonus,
         base.defense(),
         base.rolls(),
+        base.hitPoints(),
+        base.domain(),
+        base.damage(),
+        base.gives(),
+        base.receives(),
+        base.flags(),
+        base.next());
+  }
+
+  /**
+   * The evaluated profile a defense-side strength bonus produces: {@code base} with +bonus defense.
+   */
+  private static CombatProfile boostedDefense(final CombatProfile base, final int bonus) {
+    return new CombatProfile(
+        base.type(),
+        base.attack(),
+        base.defense() + bonus,
+        base.rolls(),
+        base.hitPoints(),
+        base.domain(),
+        base.damage(),
+        base.gives(),
+        base.receives(),
+        base.flags(),
+        base.next());
+  }
+
+  /** The evaluated profile a rolls bonus produces: {@code base} firing {@code bonus} more dice. */
+  private static CombatProfile boostedRolls(final CombatProfile base, final int bonus) {
+    return new CombatProfile(
+        base.type(),
+        base.attack(),
+        base.defense(),
+        base.rolls() + bonus,
         base.hitPoints(),
         base.domain(),
         base.damage(),
