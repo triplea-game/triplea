@@ -2,6 +2,7 @@ package games.strategy.engine.framework.lookandfeel;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import com.formdev.flatlaf.FlatLaf;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.Constants;
@@ -9,6 +10,7 @@ import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.SettingsWindow;
 import java.awt.Color;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -18,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.FontUIResource;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.game.client.ui.swing.laf.SubstanceLookAndFeelManager;
@@ -54,6 +57,13 @@ Look and feel changes can cause instability.
 Please restart all running TripleA instances.""",
               "Close TripleA and Restart",
               JOptionPane.WARNING_MESSAGE);
+        });
+    // A font-scale change re-installs the look-and-feel to reset to unscaled defaults, re-applies
+    // the scale, and repaints every open window; unlike a theme change it needs no restart.
+    ClientSetting.uiScalePercent.addListener(
+        gameSetting -> {
+          setupLookAndFeel(ClientSetting.lookAndFeel.getValueOrThrow());
+          FlatLaf.updateUI();
         });
     setupLookAndFeel(ClientSetting.lookAndFeel.getValueOrThrow());
   }
@@ -132,6 +142,30 @@ Please restart all running TripleA instances.""",
       // Disabling the painted shadow on Linux falls back to standard lightweight Swing popups.
       UIManager.put("Popup.dropShadowPainted", Boolean.FALSE);
     }
+
+    applyUiFontScale();
+  }
+
+  /**
+   * Scales the global UI by overriding FlatLaf's {@code defaultFont}, from which FlatLaf derives
+   * the scale factor for both fonts and component sizes. Must run right after {@link
+   * UIManager#setLookAndFeel}, while {@code Label.font} still holds the look-and-feel's unscaled
+   * base size, so the scale is computed from the base rather than compounding a previous scale.
+   *
+   * <p>A no-op on look-and-feels that ignore {@code defaultFont} (eg: the system look-and-feel used
+   * on macOS).
+   */
+  private static void applyUiFontScale() {
+    final int scalePercent = ClientSetting.uiScalePercent.getValueOrThrow();
+    if (scalePercent == 100) {
+      return;
+    }
+    final Font baseFont = UIManager.getFont("Label.font");
+    if (baseFont == null) {
+      return;
+    }
+    final float scaledSize = baseFont.getSize() * (scalePercent / 100f);
+    UIManager.put("defaultFont", new FontUIResource(baseFont.deriveFont(scaledSize)));
   }
 
   public static @NonNls String convertColorToHex(Color color) {

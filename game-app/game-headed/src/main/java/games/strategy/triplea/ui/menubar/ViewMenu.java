@@ -69,6 +69,7 @@ final class ViewMenu {
         .addMenuItem(getShowMapBlends(frame))
         .addMenuItem(getShowZoomMenu(frame))
         .addMenuItem(getMapFontAndColorEditorMenu(frame))
+        .addMenuItem(getUiScaleMenu(frame))
         .addMenuItemIf(frame.hasChat(), () -> getChatTimeMenu())
         .addMenuItem(getShowCommentLog(frame))
         .addSeparator()
@@ -366,6 +367,34 @@ final class ViewMenu {
         .build();
   }
 
+  private static JMenuItem getUiScaleMenu(final TripleAFrame frame) {
+    return new JMenuItemBuilder("UI Font Size", Mnemonic.UI_SCALE.getMnemonicCode())
+        .actionListener(
+            () -> {
+              final SpinnerNumberModel model =
+                  new SpinnerNumberModel(
+                      ClientSetting.uiScalePercent.getValueOrThrow().intValue(), 75, 250, 5);
+              final JSpinner spinner = new JSpinner(model);
+              final JPanel panel = new JPanel(new BorderLayout());
+              panel.add(
+                  new JLabel("Scale the whole UI - fonts and controls - by this percentage (%):"),
+                  BorderLayout.NORTH);
+              panel.add(spinner, BorderLayout.CENTER);
+              final int result =
+                  JOptionPane.showConfirmDialog(
+                      frame,
+                      panel,
+                      "UI Font Size",
+                      JOptionPane.OK_CANCEL_OPTION,
+                      JOptionPane.PLAIN_MESSAGE);
+              if (result == JOptionPane.OK_OPTION) {
+                // Persisting fires the ClientSetting listener that re-applies the scale live.
+                ClientSetting.uiScalePercent.setValueAndFlush((Integer) spinner.getValue());
+              }
+            })
+        .build();
+  }
+
   private static JCheckBoxMenuItem getShowTerritoryEffects(final TripleAFrame frame) {
     final JCheckBoxMenuItem territoryEffectsBox = new JCheckBoxMenuItem("Show TerritoryEffects");
     territoryEffectsBox.setMnemonic(Mnemonic.SHOW_TERRITORY_EFFECTS.getValue());
@@ -549,6 +578,7 @@ final class ViewMenu {
     SHOW_MAP_BLENDS(KeyCode.B),
     SHOW_UNIT(KeyCode.U),
     MAP_FONT_OPTIONS(KeyCode.C),
+    UI_SCALE(KeyCode.I),
     SHOW_TERRITORY_EFFECTS(KeyCode.T),
     FLAGS_OFF(KeyCode.S),
     FLAGS_LARGE(KeyCode.P),

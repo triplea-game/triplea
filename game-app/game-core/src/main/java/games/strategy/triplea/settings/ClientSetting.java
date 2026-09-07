@@ -92,6 +92,15 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new BooleanClientSetting("LOGIN_ANONYMOUSLY", true);
   public static final ClientSetting<String> lookAndFeel =
       new StringClientSetting("LOOK_AND_FEEL_PREF", LookAndFeel.getDefaultLookAndFeelClassName());
+
+  /**
+   * Global UI scale as a percentage of the look-and-feel's default size; 100 leaves the UI
+   * untouched. {@link LookAndFeel} translates this into a scaled {@code defaultFont}, from which
+   * FlatLaf derives the scale for both fonts and component sizes.
+   */
+  public static final ClientSetting<Integer> uiScalePercent =
+      new IntegerClientSetting("UI_SCALE_PERCENT", 100);
+
   public static final ClientSetting<Integer> mapEdgeScrollSpeed =
       new IntegerClientSetting("MAP_EDGE_SCROLL_SPEED", 30);
   public static final ClientSetting<Integer> mapEdgeScrollZoneSize =

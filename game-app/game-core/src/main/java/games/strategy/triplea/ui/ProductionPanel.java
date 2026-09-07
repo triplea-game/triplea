@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui;
 
+import com.formdev.flatlaf.util.UIScale;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -389,7 +390,7 @@ class ProductionPanel extends JPanel {
       if (numberOfUnitsGiven > 1) {
         final JLabel numberOfUnitsLabel =
             new JLabel("<html>for " + numberOfUnitsGiven + "<br>" + " units</html>");
-        numberOfUnitsLabel.setFont(numberOfUnitsLabel.getFont().deriveFont(12f));
+        numberOfUnitsLabel.setFont(numberOfUnitsLabel.getFont().deriveFont(UIScale.scale(12f)));
         costPanel.add(
             numberOfUnitsLabel,
             new GridBagConstraints(

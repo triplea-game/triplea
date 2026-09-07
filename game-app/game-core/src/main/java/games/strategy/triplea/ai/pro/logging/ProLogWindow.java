@@ -1,5 +1,6 @@
 package games.strategy.triplea.ai.pro.logging;
 
+import com.formdev.flatlaf.util.UIScale;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -134,14 +135,14 @@ class ProLogWindow extends JDialog {
     panel8.setPreferredSize(new Dimension(500, 314));
     panel8.setLayout(new GridBagLayout());
     logHolderTabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-    logHolderTabbedPane.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+    logHolderTabbedPane.setFont(new Font("Segoe UI", Font.PLAIN, UIScale.scale(10)));
     logHolderTabbedPane.setName("logHolderTabbedPane");
     panel9.setName("panel9");
     panel9.setLayout(new GridLayout(1, 0));
     aiOutputLogAreaScrollPane.setName("aiOutputLogAreaScrollPane");
     aiOutputLogArea.setColumns(20);
     aiOutputLogArea.setEditable(false);
-    aiOutputLogArea.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+    aiOutputLogArea.setFont(new Font("Segoe UI", Font.PLAIN, UIScale.scale(10)));
     aiOutputLogArea.setRows(5);
     aiOutputLogArea.setName("aiOutputLogArea");
     aiOutputLogAreaScrollPane.setViewportView(aiOutputLogArea);
@@ -331,7 +332,7 @@ class ProLogWindow extends JDialog {
               + "be limited to X rounds of information.\r\n";
     }
     final JTextArea label = new JTextArea(message);
-    label.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+    label.setFont(new Font("Segoe UI", Font.PLAIN, UIScale.scale(12)));
     label.setEditable(false);
     label.setAutoscrolls(true);
     label.setLineWrap(false);
@@ -381,7 +382,7 @@ class ProLogWindow extends JDialog {
           final JTextArea newTextArea = new JTextArea();
           newTextArea.setColumns(20);
           newTextArea.setRows(5);
-          newTextArea.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+          newTextArea.setFont(new Font("Segoe UI", Font.PLAIN, UIScale.scale(10)));
           newTextArea.setEditable(false);
           newScrollPane.getHorizontalScrollBar().setEnabled(true);
           newScrollPane.setViewportView(newTextArea);

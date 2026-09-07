@@ -2,6 +2,7 @@ package games.strategy.triplea.ui;
 
 import static games.strategy.triplea.image.UnitImageFactory.ImageKey;
 
+import com.formdev.flatlaf.util.UIScale;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel.ChatSoundProfile;
@@ -1331,7 +1332,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                   options,
                   options[1]);
           final JLabel whereTo = new JLabel("Scramble To: " + scrambleTo.getName());
-          whereTo.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.ITALIC, 12));
+          whereTo.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.ITALIC, UIScale.scale(12)));
           panel.add(whereTo, BorderLayout.NORTH);
           final JPanel panel2 = new JPanel();
           panel2.setBorder(BorderFactory.createEmptyBorder());
@@ -1344,7 +1345,7 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             panelChooser.setBorder(BorderFactory.createLineBorder(getBackground()));
             final JLabel whereFrom = new JLabel("From: " + from.getName());
             whereFrom.setHorizontalAlignment(SwingConstants.LEFT);
-            whereFrom.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, 12));
+            whereFrom.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, UIScale.scale(12)));
             panelChooser.add(whereFrom);
             panelChooser.add(new JLabel(" "));
             final Collection<Unit> possible = possibleScramblers.get(from).getSecond();
@@ -1485,14 +1486,15 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
           final JPanel panel = new JPanel();
           panel.setLayout(new BorderLayout());
           final JLabel messageLabel = new JLabel(message);
-          messageLabel.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.ITALIC, 12));
+          messageLabel.setFont(
+              new Font(MapImage.FONT_FAMILY_DEFAULT, Font.ITALIC, UIScale.scale(12)));
           panel.add(messageLabel, BorderLayout.NORTH);
           final JPanel panelChooser = new JPanel();
           panelChooser.setLayout(new BoxLayout(panelChooser, BoxLayout.Y_AXIS));
           panelChooser.setBorder(BorderFactory.createLineBorder(getBackground()));
           final JLabel whereFrom = new JLabel("From: " + current.getName());
           whereFrom.setHorizontalAlignment(SwingConstants.LEFT);
-          whereFrom.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, 12));
+          whereFrom.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, UIScale.scale(12)));
           panelChooser.add(whereFrom);
           panelChooser.add(new JLabel(" "));
           final int maxAllowed =

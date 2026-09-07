@@ -2,6 +2,7 @@ package games.strategy.triplea.ui;
 
 import static games.strategy.triplea.image.UnitImageFactory.ImageKey;
 
+import com.formdev.flatlaf.util.UIScale;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
@@ -582,7 +583,8 @@ public class BattleDisplay extends JPanel {
     instantCasualtiesPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
     instantCasualtiesPanel.setLayout(new GridBagLayout());
     final JLabel casualtiesLabel = new JLabel("Casualties", SwingConstants.CENTER);
-    casualtiesLabel.setFont(getPlayerComponent(attacker).getFont().deriveFont(Font.BOLD, 14));
+    casualtiesLabel.setFont(
+        getPlayerComponent(attacker).getFont().deriveFont(Font.BOLD, UIScale.scale(14f)));
     instantCasualtiesPanel.add(
         casualtiesLabel,
         new GridBagConstraints(
@@ -679,7 +681,7 @@ public class BattleDisplay extends JPanel {
   static JComponent getPlayerComponent(final GamePlayer gamePlayer) {
     final JLabel player = new JLabel(gamePlayer.getName());
     player.setBorder(new EmptyBorder(5, 5, 5, 5));
-    player.setFont(player.getFont().deriveFont((float) 14));
+    player.setFont(player.getFont().deriveFont(UIScale.scale(14f)));
     return player;
   }
 

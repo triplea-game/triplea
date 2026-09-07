@@ -169,6 +169,17 @@ WARNING: restart all running TripleA instances after changing this setting to av
     }
   },
 
+  UI_SCALE_PERCENT_BINDING(
+      "UI Font & Size Scale (%)",
+      SettingType.LOOK_AND_FEEL,
+      "Scales the whole UI - fonts and component sizes - by this percentage. "
+          + "100 is the default size; increase it for larger, more readable text.") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return intValueRange(ClientSetting.uiScalePercent, 75, 250);
+    }
+  },
+
   MAP_EDGE_SCROLL_SPEED_BINDING(
       "Map Scroll Speed",
       SettingType.MAP_SCROLLING,
