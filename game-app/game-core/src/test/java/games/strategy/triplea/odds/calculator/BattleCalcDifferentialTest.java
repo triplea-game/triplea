@@ -41,6 +41,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -346,6 +347,33 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
           seaZone,
           carrier(gameData).create(1, americans(gameData)),
           submarine(gameData).create(1, germans(gameData)));
+    }
+
+    /**
+     * The known ww2v2 waiting-to-die gap ({@code ReferenceCombatRelations#firstStrikeNegated}):
+     * under ww2v2 a destroyer-pinned first striker still fires in the sub phase and trades before
+     * dying, but the sim defers it to main. Attacker one sub, defender one sub plus a destroyer —
+     * the engine leaves the defender its destroyer alone (the defending sub traded with the
+     * attacking sub in the sub phase), while the sim spares both defenders because the attacker
+     * sub, pinned to main, is killed before it fires. Disabled until phase-2b models waiting-to-die
+     * casualties in {@code fightRound}; kept so the divergence cannot silently change.
+     */
+    @Test
+    @Disabled("phase-2b: ww2v2 waiting-to-die, see ReferenceCombatRelations")
+    void ww2v2DestroyerPinnedFirstStrikeStillTradesInTheSubPhase() {
+      final GameData gameData = TestMapGameData.REVISED.getGameData();
+      final Territory seaZone = territory("1 Sea Zone", gameData);
+      final Collection<Unit> defending =
+          new ArrayList<>(submarine(gameData).create(1, germans(gameData)));
+      defending.addAll(destroyer(gameData).create(1, germans(gameData)));
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          seaZone,
+          submarine(gameData).create(1, americans(gameData)),
+          defending);
     }
 
     /**
