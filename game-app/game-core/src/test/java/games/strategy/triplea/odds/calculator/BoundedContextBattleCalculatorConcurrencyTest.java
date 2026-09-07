@@ -11,6 +11,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.List;
@@ -19,9 +20,12 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Proves the lock-free bake's <em>shape</em>, not its staleness semantics (design §3): a background
- * thread mutates the live game while the main thread hammers {@code calculate}, and every call must
- * still return a non-null result without throwing. It does not assert on the odds — a stale bake is
- * acceptable by design; a crash from iterating a mutating collection is not.
+ * thread flips a game property the bake actually reads (low-luck) via a locked {@code
+ * performChange} while the main thread hammers {@code calculate} reading that same property without
+ * a lock. Every call must still return a non-null result without throwing — a stale bake is
+ * acceptable by design; a crash from racing the live game read is not. It exercises the bake's
+ * lock-free scalar reads, not the collection-iteration retry (which a single-mutation race, not
+ * this steady churn, would probe).
  */
 class BoundedContextBattleCalculatorConcurrencyTest {
 
@@ -33,9 +37,6 @@ class BoundedContextBattleCalculatorConcurrencyTest {
     final GamePlayer russians = russians(gameData);
     final GamePlayer germans = germans(gameData);
     final Territory germany = territory("Germany", gameData);
-    // An unrelated territory the churn thread pounds, kept off the battle so it cannot skew the
-    // odds.
-    final Territory russia = territory("Russia", gameData);
 
     final BoundedContextBattleCalculator calculator = new BoundedContextBattleCalculator();
     calculator.setGameData(gameData);
@@ -44,11 +45,11 @@ class BoundedContextBattleCalculatorConcurrencyTest {
     final Thread churn =
         new Thread(
             () -> {
+              boolean lowLuck = false;
               while (!stop.get()) {
-                final var add =
-                    ChangeFactory.addUnits(russia, infantry(gameData).create(1, russians));
-                gameData.performChange(add);
-                gameData.performChange(add.invert());
+                lowLuck = !lowLuck;
+                gameData.performChange(
+                    ChangeFactory.setProperty(Constants.LOW_LUCK, lowLuck, gameData));
               }
             });
     churn.setDaemon(true);
