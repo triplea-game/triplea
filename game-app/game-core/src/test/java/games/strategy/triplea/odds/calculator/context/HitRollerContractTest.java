@@ -5,8 +5,6 @@ import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtur
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.rolls;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import games.strategy.engine.random.IRandomSource;
-import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
 import games.strategy.triplea.odds.calculator.context.model.FireContext;
 import games.strategy.triplea.odds.calculator.context.model.Phase;
@@ -32,7 +30,7 @@ class HitRollerContractTest {
 
     // 3 infantry + 2 artillery, one roll each (fixture default) = 5 dice, all hits.
     final int hits =
-        hitRoller.roll(Map.of(infantry, 3, artillery, 2), ctx, ScriptedRandomSource.alwaysHits());
+        hitRoller.roll(Map.of(infantry, 3, artillery, 2), ctx, FakeRandomSource.alwaysHits());
 
     assertThat(hits).isEqualTo(5);
   }
@@ -42,7 +40,8 @@ class HitRollerContractTest {
     final CombatProfile strengthThreeUnit = land("submarine", 3, 3, 1);
     final FireContext offense = new FireContext(1, Phase.GENERAL, true, false, 6);
 
-    final int hits = hitRoller.roll(Map.of(strengthThreeUnit, 1), offense, new ScriptedValues(2));
+    final int hits =
+        hitRoller.roll(Map.of(strengthThreeUnit, 1), offense, FakeRandomSource.scripted(2));
 
     assertThat(hits).isEqualTo(1);
   }
@@ -52,7 +51,8 @@ class HitRollerContractTest {
     final CombatProfile strengthThreeUnit = land("submarine", 3, 3, 1);
     final FireContext offense = new FireContext(1, Phase.GENERAL, true, false, 6);
 
-    final int hits = hitRoller.roll(Map.of(strengthThreeUnit, 1), offense, new ScriptedValues(3));
+    final int hits =
+        hitRoller.roll(Map.of(strengthThreeUnit, 1), offense, FakeRandomSource.scripted(3));
 
     assertThat(hits).isZero();
   }
@@ -67,7 +67,7 @@ class HitRollerContractTest {
     // 3 double-shot units = 6 dice, 2 single-shot units = 2 dice; 8 dice total, all hits.
     final int hits =
         hitRoller.roll(
-            Map.of(doubleShotUnit, 3, singleShotUnit, 2), ctx, ScriptedRandomSource.alwaysHits());
+            Map.of(doubleShotUnit, 3, singleShotUnit, 2), ctx, FakeRandomSource.alwaysHits());
 
     assertThat(hits).isEqualTo(8);
   }
@@ -79,7 +79,7 @@ class HitRollerContractTest {
 
     // 2 defenders x strength 6 = 12; 12 / 6 = 2 exactly, no remainder die to score.
     final int hits =
-        hitRoller.roll(Map.of(defender, 2), lowLuckDefense, ScriptedRandomSource.alwaysHits());
+        hitRoller.roll(Map.of(defender, 2), lowLuckDefense, FakeRandomSource.alwaysHits());
 
     assertThat(hits).isEqualTo(2);
   }
@@ -98,36 +98,8 @@ class HitRollerContractTest {
     // 2 attackers x strength 7 = 14; 14 / 6 = 2 remainder 2, so 2 guaranteed hits plus one extra
     // die that hits here because alwaysHits rolls a 0, and 0 < remainder(2).
     final int hits =
-        hitRoller.roll(Map.of(attacker, 2), lowLuckOffense, ScriptedRandomSource.alwaysHits());
+        hitRoller.roll(Map.of(attacker, 2), lowLuckOffense, FakeRandomSource.alwaysHits());
 
     assertThat(hits).isEqualTo(3);
-  }
-
-  /**
-   * Replays exact scripted die values, in order — needed because {@link ScriptedRandomSource}
-   * exposes only {@code alwaysHits()} and has no constructor for an arbitrary value (contract
-   * friction; see the final report).
-   */
-  private static final class ScriptedValues implements IRandomSource {
-    private final int[] values;
-    private int next = 0;
-
-    ScriptedValues(final int... values) {
-      this.values = values;
-    }
-
-    @Override
-    public int getRandom(final int max, final String annotation) {
-      return values[next++];
-    }
-
-    @Override
-    public int[] getRandom(final int max, final int count, final String annotation) {
-      final int[] result = new int[count];
-      for (int i = 0; i < count; i++) {
-        result[i] = getRandom(max, annotation);
-      }
-      return result;
-    }
   }
 }

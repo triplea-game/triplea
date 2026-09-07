@@ -1,4 +1,4 @@
-package games.strategy.triplea.odds.calculator.context;
+package games.strategy.triplea.odds.calculator.adapter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,7 +15,6 @@ import games.strategy.triplea.odds.calculator.context.model.Domain;
 import games.strategy.triplea.odds.calculator.context.model.Key;
 import games.strategy.triplea.odds.calculator.context.model.Lifecycle;
 import games.strategy.triplea.odds.calculator.context.model.UnitTypeId;
-import games.strategy.triplea.odds.calculator.context.reference.GameDataBattleAdapter;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
 import java.util.List;
