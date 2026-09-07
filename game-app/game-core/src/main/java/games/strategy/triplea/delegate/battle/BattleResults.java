@@ -35,6 +35,24 @@ public class BattleResults extends GameDataComponent {
   }
 
   /**
+   * Builds results from already-computed survivors rather than a live {@link IBattle}, for the
+   * bounded-context calc path whose simulator yields survivor forces directly. {@code whoWon} is
+   * the final verdict and must never be {@link WhoWon#NOT_FINISHED}.
+   */
+  public BattleResults(
+      final int battleRoundsFought,
+      final Collection<Unit> remainingAttackingUnits,
+      final Collection<Unit> remainingDefendingUnits,
+      final WhoWon whoWon,
+      final GameData data) {
+    super(data);
+    this.battleRoundsFought = battleRoundsFought;
+    this.remainingAttackingUnits = remainingAttackingUnits;
+    this.remainingDefendingUnits = remainingDefendingUnits;
+    this.whoWon = whoWon;
+  }
+
+  /**
    * This battle may or may not have been fought already. Use this for pre-setting the WhoWon flag.
    */
   public BattleResults(final IBattle battle, final WhoWon scriptedWhoWon, final GameData data) {
