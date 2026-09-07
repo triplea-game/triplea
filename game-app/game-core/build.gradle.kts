@@ -4,6 +4,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":battle-calc-core"))
     implementation(project(":domain-data"))
     implementation(project(":map-data"))
     implementation(project(":game-relay-server"))
@@ -16,8 +17,6 @@ dependencies {
     implementation(libs.gson)
     testImplementation(project(":swing-lib-test-support"))
     testImplementation(project(":test-common"))
-    // Build-gates the battle-calc core's island boundary; see BoundedContextBoundaryTest.
-    testImplementation(libs.archunit.junit5)
     // Configures mockito to use the legacy "subclass mock maker"
     // see https://github.com/mockito/mockito/releases/tag/v5.0.0 for more information
 
