@@ -2,6 +2,7 @@ package games.strategy.triplea.odds.calculator;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.americans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
+import static games.strategy.triplea.delegate.GameDataTestUtil.artillery;
 import static games.strategy.triplea.delegate.GameDataTestUtil.battleship;
 import static games.strategy.triplea.delegate.GameDataTestUtil.destroyer;
 import static games.strategy.triplea.delegate.GameDataTestUtil.fighter;
@@ -125,6 +126,33 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
         germany,
         infantry(gameData).create(30, russians(gameData)),
         infantry(gameData).create(4, germans(gameData)));
+  }
+
+  /**
+   * Support fidelity in the one regime where a strength bonus is observable: low luck plus {@code
+   * alwaysHits}. Normal all-hit dice saturate strength (everything hits), but low luck derives its
+   * guaranteed hits from summed power, so artillery support raising {@code floor(power /
+   * diceSides)} changes the result. Four artillery lend +1 attack to four infantry; with the bonus
+   * the attacker clears the three defenders in one round, without it the fight runs a second round
+   * and costs an extra attacker — so identical survivors pin that the adapter bakes the artillery
+   * support the engine applies. If the support list were still empty, the new path would lose the
+   * extra hit and diverge here.
+   */
+  @Test
+  void alwaysHitsUnderLowLuckWithArtillerySupportMatchesTheEngine() {
+    final GameData gameData = TestMapGameData.REVISED.getGameData();
+    makeGameLowLuck(gameData);
+    final Territory germany = territory("Germany", gameData);
+    final Collection<Unit> attacking = artillery(gameData).create(4, russians(gameData));
+    attacking.addAll(infantry(gameData).create(4, russians(gameData)));
+
+    assertIdenticalSurvivorsUnderAlwaysHits(
+        gameData,
+        russians(gameData),
+        germans(gameData),
+        germany,
+        attacking,
+        infantry(gameData).create(3, germans(gameData)));
   }
 
   @Test

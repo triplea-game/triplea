@@ -12,8 +12,12 @@ import games.strategy.triplea.odds.calculator.context.model.BattleOptions;
 import games.strategy.triplea.odds.calculator.context.model.BattleScenario;
 import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
 import games.strategy.triplea.odds.calculator.context.model.Domain;
+import games.strategy.triplea.odds.calculator.context.model.Force;
 import games.strategy.triplea.odds.calculator.context.model.Key;
 import games.strategy.triplea.odds.calculator.context.model.Lifecycle;
+import games.strategy.triplea.odds.calculator.context.model.Side;
+import games.strategy.triplea.odds.calculator.context.model.SupportCategory;
+import games.strategy.triplea.odds.calculator.context.model.SupportRule;
 import games.strategy.triplea.odds.calculator.context.model.UnitTypeId;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
@@ -171,5 +175,62 @@ class GameDataBattleAdapterTest {
         scenario.defenders().counts().keySet().iterator().next().profile();
     assertThat(infantry.hitPoints()).isEqualTo(1);
     assertThat(infantry.onHit()).isEmpty();
+  }
+
+  /**
+   * The support port (design §7): Revised's artillery lends +1 attack to infantry on offense (its
+   * old-artillery rule, synthesized into a {@code UnitSupportAttachment}). The adapter must bake
+   * that into a {@link SupportRule} and set the matching give/receive categories on the two
+   * profiles, so the resolver's category match finds artillery as the giver and infantry as the
+   * receiver. Uses Revised rather than TWW because its artillery support is the canonical
+   * single-giver/single-receiver shape the v1 model represents exactly.
+   */
+  @Test
+  void artillerySupportBakesIntoARuleAndMatchingGiveReceiveCategories() {
+    final GameData revised = TestMapGameData.REVISED.getGameData();
+    final GamePlayer russians = GameDataTestUtil.russians(revised);
+    final GamePlayer germans = GameDataTestUtil.germans(revised);
+    final Territory germany = GameDataTestUtil.territory("Germany", revised);
+    final Collection<Unit> attacking = GameDataTestUtil.artillery(revised).create(1, russians);
+    attacking.addAll(GameDataTestUtil.infantry(revised).create(1, russians));
+    final Collection<Unit> defending = GameDataTestUtil.infantry(revised).create(1, germans);
+
+    final BattleScenario scenario =
+        adapter.toScenario(
+            russians,
+            germans,
+            germany,
+            attacking,
+            defending,
+            List.of(),
+            List.of(),
+            new BattleOptions(false, List.of(), List.of()));
+
+    final CombatProfile artilleryProfile = profileOf(scenario.attackers(), "artillery");
+    final CombatProfile infantryProfile = profileOf(scenario.attackers(), "infantry");
+    assertThat(artilleryProfile.gives()).isNotEqualTo(SupportCategory.NONE);
+    assertThat(artilleryProfile.receives()).isEqualTo(SupportCategory.NONE);
+    assertThat(infantryProfile.gives()).isEqualTo(SupportCategory.NONE);
+    assertThat(infantryProfile.receives()).isNotEqualTo(SupportCategory.NONE);
+
+    final SupportRule rule =
+        scenario.support().stream()
+            .filter(r -> r.from().equals(artilleryProfile.gives()))
+            .findFirst()
+            .orElseThrow();
+    assertThat(rule.to()).isEqualTo(infantryProfile.receives());
+    assertThat(rule.side()).isEqualTo(Side.OFFENSE);
+    assertThat(rule.appliesToStrength()).as("classic artillery boosts attack strength").isTrue();
+    assertThat(rule.bonus()).isEqualTo(1);
+    assertThat(rule.usesPerGiver()).as("one artillery supports one infantry").isEqualTo(1);
+    assertThat(rule.firstRoundOnly()).isFalse();
+  }
+
+  private static CombatProfile profileOf(final Force force, final String typeName) {
+    return force.counts().keySet().stream()
+        .map(Key::profile)
+        .filter(profile -> profile.type().equals(new UnitTypeId(typeName)))
+        .findFirst()
+        .orElseThrow();
   }
 }
