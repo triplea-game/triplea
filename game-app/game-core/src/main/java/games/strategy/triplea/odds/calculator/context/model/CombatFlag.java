@@ -6,5 +6,8 @@ package games.strategy.triplea.odds.calculator.context.model;
 public enum CombatFlag {
   FIRST_STRIKE,
   IS_AA,
-  CHOOSE_BEST_ROLL
+  CHOOSE_BEST_ROLL,
+  // Intrinsic eligibility to submerge; whether it may actually submerge is relational (no blocking
+  // enemy destroyer) and lives in CombatRelations, not here.
+  CAN_SUBMERGE
 }
