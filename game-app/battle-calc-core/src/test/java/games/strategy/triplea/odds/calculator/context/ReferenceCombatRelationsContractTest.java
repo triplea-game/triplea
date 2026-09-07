@@ -229,4 +229,37 @@ class ReferenceCombatRelationsContractTest {
 
     assertThat(eligible.eligibleTargets()).containsExactly(enemyCruiser);
   }
+
+  /**
+   * The full first-strike gate truth table, independent of any map fixture: an enemy destroyer pins
+   * either side; absent one, offense always sneaks while a defender sneaks only under {@code ww2v2}
+   * or {@code defendingSubsSneakAttack}. ({@code negated} true means the striker is pushed to
+   * main.)
+   */
+  @Test
+  void firstStrikeNegatedFollowsSideDestroyerAndTheSneakRules() {
+    final CombatProfile sub = withFlags(sea("uboat", 2, 1, 1), CombatFlag.FIRST_STRIKE);
+    final CombatProfile plainEnemy = sea("cruiser", 3, 3, 1);
+    final CombatProfile enemyDestroyer =
+        withFlags(sea("destroyer", 2, 2, 1), CombatFlag.IS_DESTROYER);
+    final Force friendly = forceOf(sub, 1);
+    final Force noDestroyer = forceOf(plainEnemy, 1);
+    final Force withDestroyer = forceOf(enemyDestroyer, 1);
+    final RulesProfile none = RulesProfile.standard();
+    final RulesProfile ww2v2 = new RulesProfile(true, false, false, false, false, false);
+    final RulesProfile defendingSneak = new RulesProfile(false, true, false, false, false, false);
+
+    // An enemy destroyer pins the sneak on either side, whatever the rules.
+    assertThat(relations.firstStrikeNegated(Side.OFFENSE, friendly, withDestroyer, none)).isTrue();
+    assertThat(relations.firstStrikeNegated(Side.DEFENSE, friendly, withDestroyer, ww2v2)).isTrue();
+
+    // Offense sneaks on the bare no-destroyer check; the sneak rules are irrelevant to it.
+    assertThat(relations.firstStrikeNegated(Side.OFFENSE, friendly, noDestroyer, none)).isFalse();
+
+    // A defender with no enemy destroyer sneaks only under ww2v2 or defendingSubsSneakAttack.
+    assertThat(relations.firstStrikeNegated(Side.DEFENSE, friendly, noDestroyer, none)).isTrue();
+    assertThat(relations.firstStrikeNegated(Side.DEFENSE, friendly, noDestroyer, ww2v2)).isFalse();
+    assertThat(relations.firstStrikeNegated(Side.DEFENSE, friendly, noDestroyer, defendingSneak))
+        .isFalse();
+  }
 }
