@@ -167,7 +167,11 @@ public class GameDataBattleAdapter {
   /**
    * The intrinsic combat abilities baked from GameData, never string-matched in the core. {@code
    * CAN_SUBMERGE} tracks {@code canEvade} — the eligibility to submerge; whether it may actually do
-   * so is relational (a blocking enemy destroyer) and computed downstream.
+   * so is relational (a blocking enemy destroyer) and computed downstream. {@code
+   * CANNOT_BE_TARGETED_BY_ALL} tracks {@code canNotBeTargetedBy} separately: a Revised sub evades
+   * but is still air-targetable, so air-immunity and the submerge-vs-air trigger cannot ride on
+   * {@code canEvade} — see {@code AirVsNonSubsStep#airWillMissSubs} and {@code
+   * DummyPlayer#retreatQuery}.
    */
   private static EnumSet<CombatFlag> flagsOf(final UnitAttachment ua) {
     final EnumSet<CombatFlag> flags = EnumSet.noneOf(CombatFlag.class);
@@ -182,6 +186,9 @@ public class GameDataBattleAdapter {
     }
     if (ua.getCanEvade()) {
       flags.add(CombatFlag.CAN_SUBMERGE);
+    }
+    if (!ua.getCanNotBeTargetedBy().isEmpty()) {
+      flags.add(CombatFlag.CANNOT_BE_TARGETED_BY_ALL);
     }
     if (ua.isDestroyer()) {
       flags.add(CombatFlag.IS_DESTROYER);
