@@ -167,6 +167,39 @@ class ReferenceCombatRelationsContractTest {
         .isTrue();
   }
 
+  /**
+   * The submerge is rules-gated as well as relational: on offense it needs {@code submersibleSubs},
+   * so with that property off an otherwise-diveable cohort facing pure air stays and fights.
+   */
+  @Test
+  void offenseCannotSubmergeWhenSubmersibleSubsIsOff() {
+    final CombatProfile sub = submarine("uboat", 2, 1, 1);
+    final CombatProfile enemyFighter = air("fighter", 3, 4, 1);
+
+    assertThat(
+            relations.canSubmerge(
+                Side.OFFENSE, Map.of(sub, 2), forceOf(enemyFighter, 2), RulesProfile.standard()))
+        .isFalse();
+  }
+
+  /**
+   * Defense gets a second key to the same door: {@code submarinesDefendingMaySubmergeOrRetreat}
+   * grants the submerge even when {@code submersibleSubs} is off, matching {@code
+   * DefensiveSubsRetreat}.
+   */
+  @Test
+  void defenseMaySubmergeUnderSubmarinesDefendingMaySubmergeOrRetreat() {
+    final CombatProfile sub = submarine("uboat", 2, 1, 1);
+    final CombatProfile enemyFighter = air("fighter", 3, 4, 1);
+    final RulesProfile defendingMayRetreat =
+        new RulesProfile(false, false, false, false, true, false);
+
+    assertThat(
+            relations.canSubmerge(
+                Side.DEFENSE, Map.of(sub, 2), forceOf(enemyFighter, 2), defendingMayRetreat))
+        .isTrue();
+  }
+
   /** A single enemy destroyer denies the whole submerge — the cohort cannot slip away. */
   @Test
   void aSubmergeCapableCohortCannotSubmergeWhileAnEnemyDestroyerIsPresent() {
