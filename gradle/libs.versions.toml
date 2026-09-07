@@ -1,6 +1,7 @@
 [versions]
 # Libraries
 apache-http-components = "4.5.14"
+archunit = "1.4.1"
 assertj-core = "3.27.7"
 awaitility = "4.3.0"
 caffeine = "3.2.4"
@@ -45,6 +46,7 @@ download = "5.7.0"
 
 [libraries]
 apache-httpmime = { module = "org.apache.httpcomponents:httpmime", version.ref = "apache-http-components" }
+archunit-junit5 = { module = "com.tngtech.archunit:archunit-junit5", version.ref = "archunit" }
 assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj-core" }
 awaitility = { module = "org.awaitility:awaitility", version.ref = "awaitility" }
 caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine" }
