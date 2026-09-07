@@ -45,10 +45,10 @@ import org.junit.jupiter.api.Test;
  *   <li><b>The gate</b> — the isolated {@code simulate(...)} loop, reporting ns/run and (via {@link
  *       ThreadMXBean#getThreadAllocatedBytes}) bytes allocated per run. Bytes/run is the direct
  *       proxy for the {@code LinkedHashMap}/{@code Integer}-boxing churn that piece #2 removes.
- *   <li><b>The baseline</b> — end-to-end {@code BattleCalculator.calculate} with the bounded-context
- *       flag off (the shipping {@code MustFightBattle} path) versus on. Confirms whether stage 1a
- *       already banked the dominant clone+replay win, and sets the wall-clock bar piece #2 must
- *       beat.
+ *   <li><b>The baseline</b> — end-to-end {@code BattleCalculator.calculate} with the
+ *       bounded-context flag off (the shipping {@code MustFightBattle} path) versus on. Confirms
+ *       whether stage 1a already banked the dominant clone+replay win, and sets the wall-clock bar
+ *       piece #2 must beat.
  * </ol>
  *
  * <p>Numbers are indicative, not a JMH-grade benchmark: single-fork, in-process, one warmed loop.
@@ -60,11 +60,10 @@ class BattleCalcProfilingBench extends AbstractClientSettingTestCase {
 
   private static final long SEED = 20260907L;
   private static final int WARMUP_RUNS = 3000;
-  private static final int SIM_RUNS = 20000;
+  private static final int SIM_RUNS = 20_000;
   private static final int E2E_RUNS = 2000;
 
-  private static final ThreadMXBean THREADS =
-      (ThreadMXBean) ManagementFactory.getThreadMXBean();
+  private static final ThreadMXBean THREADS = (ThreadMXBean) ManagementFactory.getThreadMXBean();
 
   @Test
   void profileBoundedContextPath() {
@@ -84,8 +83,7 @@ class BattleCalcProfilingBench extends AbstractClientSettingTestCase {
     System.out.println();
     System.out.println(
         "Baseline: end-to-end BattleCalculator.calculate over " + E2E_RUNS + " runs");
-    System.out.printf(
-        "%-22s %12s %12s %10s%n", "scenario", "engine ms", "bounded ms", "ratio");
+    System.out.printf("%-22s %12s %12s %10s%n", "scenario", "engine ms", "bounded ms", "ratio");
     for (final Case c : cases) {
       profileEndToEnd(c);
     }
@@ -110,13 +108,11 @@ class BattleCalcProfilingBench extends AbstractClientSettingTestCase {
     final long thread = Thread.currentThread().threadId();
     final long allocBefore = THREADS.getThreadAllocatedBytes(thread);
     final long nanosBefore = System.nanoTime();
-    new ReferenceBattleSimulator(new VectorizedHitRoller())
-        .simulate(scenario, SIM_RUNS, rng.get());
+    new ReferenceBattleSimulator(new VectorizedHitRoller()).simulate(scenario, SIM_RUNS, rng.get());
     final long nanos = System.nanoTime() - nanosBefore;
     final long alloc = THREADS.getThreadAllocatedBytes(thread) - allocBefore;
 
-    System.out.printf(
-        "%-22s %,12d %,14d%n", c.name(), nanos / SIM_RUNS, alloc / SIM_RUNS);
+    System.out.printf("%-22s %,12d %,14d%n", c.name(), nanos / SIM_RUNS, alloc / SIM_RUNS);
   }
 
   /** The baseline: engine path vs bounded-context path, same runs, same seed, wall-clock only. */
@@ -160,11 +156,13 @@ class BattleCalcProfilingBench extends AbstractClientSettingTestCase {
 
   private static Case mediumCase() {
     final GameData gameData = TestMapGameData.REVISED.getGameData();
-    final Collection<Unit> attacking = new ArrayList<>(infantry(gameData).create(10, russians(gameData)));
+    final Collection<Unit> attacking =
+        new ArrayList<>(infantry(gameData).create(10, russians(gameData)));
     attacking.addAll(armour(gameData).create(4, russians(gameData)));
     attacking.addAll(artillery(gameData).create(2, russians(gameData)));
     attacking.addAll(fighter(gameData).create(2, russians(gameData)));
-    final Collection<Unit> defending = new ArrayList<>(infantry(gameData).create(8, germans(gameData)));
+    final Collection<Unit> defending =
+        new ArrayList<>(infantry(gameData).create(8, germans(gameData)));
     defending.addAll(armour(gameData).create(3, germans(gameData)));
     defending.addAll(fighter(gameData).create(2, germans(gameData)));
     return new Case(
@@ -179,11 +177,13 @@ class BattleCalcProfilingBench extends AbstractClientSettingTestCase {
 
   private static Case largeCase() {
     final GameData gameData = TestMapGameData.REVISED.getGameData();
-    final Collection<Unit> attacking = new ArrayList<>(infantry(gameData).create(30, russians(gameData)));
+    final Collection<Unit> attacking =
+        new ArrayList<>(infantry(gameData).create(30, russians(gameData)));
     attacking.addAll(armour(gameData).create(15, russians(gameData)));
     attacking.addAll(artillery(gameData).create(8, russians(gameData)));
     attacking.addAll(fighter(gameData).create(6, russians(gameData)));
-    final Collection<Unit> defending = new ArrayList<>(infantry(gameData).create(30, germans(gameData)));
+    final Collection<Unit> defending =
+        new ArrayList<>(infantry(gameData).create(30, germans(gameData)));
     defending.addAll(armour(gameData).create(15, germans(gameData)));
     defending.addAll(artillery(gameData).create(8, germans(gameData)));
     defending.addAll(fighter(gameData).create(6, germans(gameData)));
@@ -197,7 +197,10 @@ class BattleCalcProfilingBench extends AbstractClientSettingTestCase {
         defending);
   }
 
-  /** One profiling scenario: raw {@code calculate} inputs plus a lazily-baked {@link BattleScenario}. */
+  /**
+   * One profiling scenario: raw {@code calculate} inputs plus a lazily-baked {@link
+   * BattleScenario}.
+   */
   private record Case(
       String name,
       GameData gameData,

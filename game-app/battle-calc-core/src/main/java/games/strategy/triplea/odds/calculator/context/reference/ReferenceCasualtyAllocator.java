@@ -115,8 +115,8 @@ public class ReferenceCasualtyAllocator implements CasualtyAllocator {
 
   /**
    * A killed carrier takes its cargo down in the same allocation. Cargo is a non-combatant that
-   * never fires, so its removal does not wait on firing-mode timing — a sunk carrier sheds its cargo
-   * at once, capped at the carrier's capacity and matched by cargo type.
+   * never fires, so its removal does not wait on firing-mode timing — a sunk carrier sheds its
+   * cargo at once, capped at the carrier's capacity and matched by cargo type.
    */
   private void cascade(
       final Map<Key, Integer> working, final CombatProfile carrier, final Dependents deps) {

@@ -89,11 +89,11 @@ public class GameDataBattleAdapter {
   }
 
   /**
-   * Groups a side's units into merged {@code (profile, ACTIVE)} buckets with summed counts. In a sea
-   * battle a side's land units are non-combatant cargo, marked {@code IS_DEPENDENT} so they neither
-   * fire nor are targeted and leave only through the carrier cascade — but only when the side
-   * actually fields a carrier to tie them to, so a stray land unit with no transport is not left an
-   * un-killable dependent.
+   * Groups a side's units into merged {@code (profile, ACTIVE)} buckets with summed counts. In a
+   * sea battle a side's land units are non-combatant cargo, marked {@code IS_DEPENDENT} so they
+   * neither fire nor are targeted and leave only through the carrier cascade — but only when the
+   * side actually fields a carrier to tie them to, so a stray land unit with no transport is not
+   * left an un-killable dependent.
    */
   private static Force toForce(
       final Collection<Unit> units,
@@ -232,12 +232,13 @@ public class GameDataBattleAdapter {
    * the transport's own {@link CombatProfile}, so a sunk transport sheds the land units it carried.
    * A land battle carries no sea cargo, so it gets an empty map.
    *
-   * <p>Compact loading: capacity is a transport's full load, and a side's land cargo is one pool the
-   * greedy cascade empties transport-load by transport-load — early transport losses take a full
-   * load rather than one unit spread across the fleet.
+   * <p>Compact loading: capacity is a transport's full load, and a side's land cargo is one pool
+   * the greedy cascade empties transport-load by transport-load — early transport losses take a
+   * full load rather than one unit spread across the fleet.
    *
-   * <p>v1 scope: one cargo type per side (the first land type present), keyed to undamaged transport
-   * profiles. Mixed loads, per-unit cargo linkage, and damaged transports are unmodeled follow-ups.
+   * <p>v1 scope: one cargo type per side (the first land type present), keyed to undamaged
+   * transport profiles. Mixed loads, per-unit cargo linkage, and damaged transports are unmodeled
+   * follow-ups.
    */
   private static Dependents dependents(
       final Collection<Unit> attacking,
