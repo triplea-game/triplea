@@ -748,10 +748,21 @@ public class ProTerritoryManager {
         final BigDecimal range =
             getUnitRange(mySeaUnit, myUnitTerritory, player, isCheckingEnemyAttacks);
 
+        // A non-combat sea unit starting next to a friendly naval base may travel one extra space,
+        // but only to a sea zone that is itself next to a friendly naval base (the AAP territory
+        // 'navalBase' option, applied per-destination below). Enumerate that wider reach so the AI
+        // considers those base-to-base moves; MoveValidator still gates the actual move.
+        final boolean navalBaseBonus =
+            !isCombatMove
+                && Matches.territoryHasNeighboringAlliedNavalBase(player).test(myUnitTerritory);
+        final BigDecimal enumerationRange = navalBaseBonus ? range.add(BigDecimal.ONE) : range;
+
         // Find list of potential territories to move to
         final Set<Territory> possibleMoveTerritories =
             gameMap.getNeighborsByMovementCost(
-                myUnitTerritory, range, ProMatches.territoryCanMoveSeaUnits(player, isCombatMove));
+                myUnitTerritory,
+                enumerationRange,
+                ProMatches.territoryCanMoveSeaUnits(player, isCombatMove));
         possibleMoveTerritories.add(myUnitTerritory);
         final Collection<Territory> potentialTerritories =
             CollectionUtils.getMatches(possibleMoveTerritories, moveToTerritoryMatch);
@@ -768,7 +779,14 @@ public class ProTerritoryManager {
             continue;
           }
           final BigDecimal myRouteLength = optionalRoute.get().getMovementCost(mySeaUnit);
-          if (myRouteLength.compareTo(range) > 0) {
+          // The +1 naval-base bonus only reaches a destination that is itself base-adjacent.
+          final BigDecimal allowedLength =
+              navalBaseBonus
+                      && Matches.territoryHasNeighboringAlliedNavalBase(player)
+                          .test(potentialTerritory)
+                  ? range.add(BigDecimal.ONE)
+                  : range;
+          if (myRouteLength.compareTo(allowedLength) > 0) {
             continue;
           }
 
