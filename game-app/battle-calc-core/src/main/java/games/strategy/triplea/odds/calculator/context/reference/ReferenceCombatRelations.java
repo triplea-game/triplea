@@ -63,11 +63,20 @@ public class ReferenceCombatRelations implements CombatRelations {
     return new TargetFilter(eligible);
   }
 
-  /** A first-strike capability is stripped when the enemy fields a destroyer to pin it. */
+  /**
+   * A first striker fires in the sub phase only when it genuinely sneaks; otherwise it fires in
+   * main combat. An enemy destroyer pins either side's sneak. A defending first striker
+   * additionally needs {@code ww2v2} or {@code defendingSubsSneakAttack} — without one it fires in
+   * main even with no enemy destroyer — mirroring {@code DefensiveFirstStrike#calculateState};
+   * offense sneaks on the bare no-destroyer check ({@code OffensiveFirstStrike#calculateState}).
+   */
   @Override
   public boolean firstStrikeNegated(
       final Side side, final Force friendly, final Force enemy, final RulesProfile rules) {
-    return hasDestroyer(enemy);
+    if (hasDestroyer(enemy)) {
+      return true;
+    }
+    return side == Side.DEFENSE && !(rules.ww2v2() || rules.defendingSubsSneakAttack());
   }
 
   /**
