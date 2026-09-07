@@ -47,7 +47,10 @@ public class DiceHitRoller implements HitRoller {
       final Map<CombatProfile, Integer> firing, final FireContext ctx, final RandomSource rng) {
     int power = 0;
     for (final Map.Entry<CombatProfile, Integer> entry : firing.entrySet()) {
-      power += strengthOf(entry.getKey(), ctx) * entry.getKey().rolls() * entry.getValue();
+      // Engine caps each unit's low-luck strength at diceSides (StrengthValue) before summing —
+      // a unit can't contribute better than one guaranteed hit per die.
+      final int strength = Math.min(strengthOf(entry.getKey(), ctx), ctx.diceSides());
+      power += strength * entry.getKey().rolls() * entry.getValue();
     }
     int hits = power / ctx.diceSides();
     final int remainder = power % ctx.diceSides();
