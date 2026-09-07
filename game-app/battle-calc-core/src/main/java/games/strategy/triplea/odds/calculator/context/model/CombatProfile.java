@@ -18,9 +18,9 @@ public record CombatProfile(
     DamageState damage,
     SupportCategory gives,
     SupportCategory receives,
-    // Invariant: never mutated after construction, so the profile is safely shared across the
-    // simulator threads reading one immutable scenario. The EnumSet type stays for the reader seam;
-    // nothing here reassigns or writes to it.
+    // Effectively immutable: populated once at construction and only read thereafter, so the
+    // profile
+    // is safe to share across the simulator threads that read one scenario.
     EnumSet<CombatFlag> flags,
     // The profile this one migrates to on a hit, or null if the hit kills it; encodes
     // whenHitPointsDamagedChangesInto (a stat or unit-type change) as data. Combat-relevant, so it

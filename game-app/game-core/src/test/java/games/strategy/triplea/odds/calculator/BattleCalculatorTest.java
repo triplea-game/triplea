@@ -58,7 +58,7 @@ class BattleCalculatorTest extends AbstractClientSettingTestCase {
    * AggregateResults} without touching {@code MustFightBattle}. An alwaysHits 3-vs-2 infantry brawl
    * is deterministic: both sides trade every hit in round one, so the attacker wins outright with a
    * single infantry left standing. Asserting that exact outcome pins that the new path ran end to
-   * end (adapter to simulator to bridge) and its accessors read sanely.
+   * end (adapter to simulator to count-backed results) and its accessors read sanely.
    */
   @Test
   void boundedContextCalcReturnsSaneResults() {
