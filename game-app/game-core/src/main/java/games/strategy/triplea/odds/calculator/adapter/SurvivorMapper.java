@@ -89,10 +89,7 @@ class SurvivorMapper {
                         + Math.abs(survivorCount(run.defenderSurvivors()) - averageDefending)));
   }
 
-  /**
-   * A side's survivor total: every non-DEAD bucket, mirroring the old {@code
-   * toRepresentativeUnits}.
-   */
+  /** A side's survivor total: every non-DEAD bucket (ACTIVE plus WITHDRAWN units count). */
   private static int survivorCount(final Force force) {
     return force.counts().entrySet().stream()
         .filter(entry -> entry.getKey().state() != Lifecycle.DEAD)

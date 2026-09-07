@@ -87,7 +87,7 @@ class BattleCalculator {
       gameData.performChange(
           ChangeFactory.addUnits(location2, mergeUnitCollections(attackingUnits, defendingUnits)));
       final long start = System.currentTimeMillis();
-      final AggregateResults aggregateResults = new AggregateResults(runCount);
+      final ListBackedAggregateResults aggregateResults = new ListBackedAggregateResults(runCount);
       final BattleTracker battleTracker = new BattleTracker();
       final List<Unit> attackerOrderOfLosses =
           OrderOfLossesInputPanel.getUnitListByOrderOfLoss(

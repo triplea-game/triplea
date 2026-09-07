@@ -7,8 +7,6 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.PlainRandomSource;
-import games.strategy.triplea.delegate.battle.BattleResults;
-import games.strategy.triplea.odds.calculator.adapter.AggregateResultsBridge;
 import games.strategy.triplea.odds.calculator.adapter.BoundedContextAggregateResults;
 import games.strategy.triplea.odds.calculator.adapter.EngineRandomSource;
 import games.strategy.triplea.odds.calculator.adapter.GameDataBattleAdapter;
@@ -77,7 +75,7 @@ class BoundedContextBattleCalculator implements IBattleCalculator {
     final long start = System.currentTimeMillis();
     final GameData data = gameData;
     if (data == null || runCount <= 0) {
-      return new AggregateResults(0);
+      return new ListBackedAggregateResults(0);
     }
     cancelled = false;
     if (amphibious) {
@@ -103,10 +101,8 @@ class BoundedContextBattleCalculator implements IBattleCalculator {
             territoryEffects,
             options);
     final SimulationResults results = simulate(scenario, runCount);
-    final List<BattleResults> bridged =
-        new AggregateResultsBridge(adapter).toAggregateResults(results, data).getResults();
     final AggregateResults aggregateResults =
-        new BoundedContextAggregateResults(bridged, results, attacking, defending);
+        new BoundedContextAggregateResults(results, scenario.cost(), attacking, defending);
     aggregateResults.setTime(System.currentTimeMillis() - start);
     return aggregateResults;
   }
