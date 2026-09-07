@@ -104,7 +104,7 @@ public class OffensiveGeneralRetreat implements BattleStep {
     if (battleState.getStatus().isAmphibious()) {
       retreater = getAmphibiousRetreater();
     } else if (canAttackerRetreat()) {
-      retreater = new RetreaterGeneral(battleState);
+      retreater = new RetreaterGeneral(battleState, OFFENSE);
     } else {
       retreater = null;
     }

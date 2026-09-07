@@ -29,6 +29,7 @@ public interface BattleStepStrings {
   String SUBS_WITHDRAW = " withdraw subs?";
   String SUBS_SUBMERGE = " submerge subs?";
   String ATTACKER_WITHDRAW = " withdraw?";
+  String DEFENDER_WITHDRAW = " withdraw?";
   String SUICIDE_ATTACK = "Suicide and Munition units Attack";
   String SUICIDE_DEFEND = "Suicide and Munition units Defend";
   String SELECT_CASUALTIES_SUICIDE = " select suicide casualties";
