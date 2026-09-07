@@ -85,9 +85,12 @@ class CasualtyAllocatorContractTest {
   }
 
   /**
-   * Mirrors {@code DummyPlayer#selectCasualties} lines 206-222: the allocator must never let the
-   * last land unit die while a non-land alternative is eligible, even though the supplied
-   * preference ranks land ahead of air. The land unit survives and an air unit dies in its place.
+   * Mirrors {@code DummyPlayer#selectCasualties} lines 206-222: keep-one-land spares only the LAST
+   * land unit, it does not blanket-protect land. With two land units and a land-preferring order,
+   * the first hit takes a land unit (preference wins, it is not the last); the second hit would
+   * take the now-last land unit, but keep-one-land redirects it onto an eligible air unit instead.
+   * A degenerate "never allocate to land while a non-land unit is eligible" impl kills both air and
+   * spares both land, so it produces zero land deaths and fails this.
    */
   @Test
   void keepOneLandSparesTheLastLandUnitByKillingAirInstead() {
@@ -96,7 +99,7 @@ class CasualtyAllocatorContractTest {
     final Force side =
         new Force(
             Map.of(
-                new Key(landUnit, Lifecycle.ACTIVE), 1,
+                new Key(landUnit, Lifecycle.ACTIVE), 2,
                 new Key(airUnit, Lifecycle.ACTIVE), 2));
     final TargetFilter eligible = new TargetFilter(Set.of(landUnit, airUnit));
 
@@ -104,7 +107,7 @@ class CasualtyAllocatorContractTest {
         new ReferenceCasualtyAllocator()
             .allocate(
                 side,
-                1,
+                2,
                 eligible,
                 new Dependents(Map.of()),
                 new Constraints(true),
@@ -112,13 +115,18 @@ class CasualtyAllocatorContractTest {
                 FiringMode.IMMEDIATE);
 
     assertThat(countAt(result, landUnit, Lifecycle.ACTIVE)).isEqualTo(1);
-    assertThat(countAt(result, landUnit, Lifecycle.DEAD)).isZero();
+    assertThat(countAt(result, landUnit, Lifecycle.DEAD)).isEqualTo(1);
+    assertThat(countAt(result, airUnit, Lifecycle.ACTIVE)).isEqualTo(1);
     assertThat(countAt(result, airUnit, Lifecycle.DEAD)).isEqualTo(1);
   }
 
   /**
    * Design §4: an IMMEDIATE hit that kills a transport removes the cargo it carries in the same
    * allocation — there's no other transport for the infantry to ride, so it goes down now.
+   *
+   * <p>1a simplification: the model assumes cargo dies with its transport; it omits the engine's
+   * rehosting rule (cargo survives if another surviving transport could carry it). Not verified
+   * fidelity — a single transport keeps that gap out of this case.
    */
   @Test
   void immediateHitKillingATransportRemovesItsCargoInTheSameAllocation() {
@@ -153,6 +161,10 @@ class CasualtyAllocatorContractTest {
    * transport still fires this round, so this single allocation leaves it ACTIVE — it dies only at
    * the later reconcile, which one {@code allocate} call does not perform. The transport itself is
    * already dead; only the cargo's removal is deferred.
+   *
+   * <p>1a simplification: as in the IMMEDIATE case, "cargo dies with its transport" omits the
+   * engine's rehosting rule (cargo survives if another surviving transport could carry it) — a
+   * known gap, not verified fidelity.
    */
   @Test
   void deferredHitKillingATransportLeavesItsCargoActiveUntilReconcile() {
