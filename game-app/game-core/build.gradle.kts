@@ -17,6 +17,7 @@ dependencies {
     implementation(libs.gson)
     testImplementation(project(":swing-lib-test-support"))
     testImplementation(project(":test-common"))
+    testImplementation(libs.archunit.junit5)
     // Configures mockito to use the legacy "subclass mock maker"
     // see https://github.com/mockito/mockito/releases/tag/v5.0.0 for more information
 
