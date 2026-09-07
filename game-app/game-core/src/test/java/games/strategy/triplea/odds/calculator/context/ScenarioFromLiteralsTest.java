@@ -1,14 +1,15 @@
 package games.strategy.triplea.odds.calculator.context;
 
+import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.gives;
+import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.land;
+import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.multiHp;
+import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.receives;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.random.ScriptedRandomSource;
-import games.strategy.triplea.odds.calculator.context.model.AggregateResults;
 import games.strategy.triplea.odds.calculator.context.model.BattleResult;
 import games.strategy.triplea.odds.calculator.context.model.BattleScenario;
-import games.strategy.triplea.odds.calculator.context.model.CombatFlag;
 import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
-import games.strategy.triplea.odds.calculator.context.model.DamageState;
 import games.strategy.triplea.odds.calculator.context.model.Dependents;
 import games.strategy.triplea.odds.calculator.context.model.Domain;
 import games.strategy.triplea.odds.calculator.context.model.Force;
@@ -17,13 +18,13 @@ import games.strategy.triplea.odds.calculator.context.model.Lifecycle;
 import games.strategy.triplea.odds.calculator.context.model.Outcome;
 import games.strategy.triplea.odds.calculator.context.model.RulesProfile;
 import games.strategy.triplea.odds.calculator.context.model.Side;
+import games.strategy.triplea.odds.calculator.context.model.SimulationResults;
 import games.strategy.triplea.odds.calculator.context.model.SupportCategory;
 import games.strategy.triplea.odds.calculator.context.model.SupportRule;
 import games.strategy.triplea.odds.calculator.context.model.UnitTypeId;
 import games.strategy.triplea.odds.calculator.context.reference.OolCasualtyOrder;
 import games.strategy.triplea.odds.calculator.context.reference.ReferenceBattleSimulator;
 import games.strategy.triplea.odds.calculator.context.reference.ReferenceRetreatPolicy;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -61,14 +62,11 @@ class ScenarioFromLiteralsTest {
    */
   @Test
   void handWrittenScenarioYieldsAnAttackerWinWithNoDefendersLeft() {
-    final CombatProfile infantry =
-        land("infantry", 1, 2, 1, null, ARTILLERY_RECEIVES, /* next= */ null);
-    final CombatProfile artillery =
-        land("artillery", 2, 2, 1, ARTILLERY_GIVES, null, /* next= */ null);
+    final CombatProfile infantry = receives(land("infantry", 1, 2, 1), ARTILLERY_RECEIVES);
+    final CombatProfile artillery = gives(land("artillery", 2, 2, 1), ARTILLERY_GIVES);
 
-    // A 2-HP unit encoded as a next-chain: full tank --hit--> damaged tank --hit--> dead (null).
-    final CombatProfile damagedTank = land("tank", 3, 3, 1, null, null, /* next= */ null);
-    final CombatProfile tank = land("tank", 3, 3, 2, null, null, /* next= */ damagedTank);
+    // A 2-HP unit as a next-chain: full tank --hit--> damaged tank --hit--> dead (null).
+    final CombatProfile tank = multiHp("tank", 3, 3, 2, Domain.LAND);
 
     final Force attackers =
         new Force(
@@ -78,7 +76,7 @@ class ScenarioFromLiteralsTest {
                 new Key(tank, Lifecycle.ACTIVE), 1));
 
     // Defense 3 bakes a +1 territory bonus straight into the stat — the whole point of isolation.
-    final CombatProfile defendingInfantry = land("infantry", 1, 3, 1, null, null, /* next= */ null);
+    final CombatProfile defendingInfantry = land("infantry", 1, 3, 1);
     final Force defenders = new Force(Map.of(new Key(defendingInfantry, Lifecycle.ACTIVE), 2));
 
     final BattleScenario scenario =
@@ -98,10 +96,10 @@ class ScenarioFromLiteralsTest {
             false,
             new ReferenceRetreatPolicy(),
             new ReferenceRetreatPolicy(),
-            new OolCasualtyOrder(),
-            new OolCasualtyOrder());
+            new OolCasualtyOrder(List.of()),
+            new OolCasualtyOrder(List.of()));
 
-    final AggregateResults results =
+    final SimulationResults results =
         new ReferenceBattleSimulator().simulate(scenario, 1, ScriptedRandomSource.alwaysHits());
 
     assertThat(results.results()).hasSize(1);
@@ -109,32 +107,6 @@ class ScenarioFromLiteralsTest {
     assertThat(only.outcome()).isEqualTo(Outcome.ATTACKER_WINS);
     assertThat(totalUnits(only.defenderSurvivors())).isZero();
     assertThat(totalUnits(only.attackerSurvivors())).isPositive();
-  }
-
-  /**
-   * Fills the combat-irrelevant fields (single roll, land, undamaged, no flags) so each call site
-   * shows only the stats that drive the outcome.
-   */
-  private static CombatProfile land(
-      final String name,
-      final int attack,
-      final int defense,
-      final int hitPoints,
-      final SupportCategory gives,
-      final SupportCategory receives,
-      final CombatProfile next) {
-    return new CombatProfile(
-        new UnitTypeId(name),
-        attack,
-        defense,
-        1,
-        hitPoints,
-        Domain.LAND,
-        new DamageState(0),
-        gives,
-        receives,
-        EnumSet.noneOf(CombatFlag.class),
-        next);
   }
 
   private static int totalUnits(final Force force) {
