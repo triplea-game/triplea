@@ -1,5 +1,6 @@
 package games.strategy.triplea.ai.fast;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
@@ -12,6 +13,7 @@ import games.strategy.triplea.odds.calculator.IBattleCalculator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 class FastOddsEstimator implements IBattleCalculator {
 
@@ -54,4 +56,33 @@ class FastOddsEstimator implements IBattleCalculator {
     return new AggregateEstimate(
         battleRoundsFought, winPercentage / 100, remainingAttackingUnits, remainingDefendingUnits);
   }
+
+  // The heuristic estimate reads nothing from GameData and ignores the calculator knobs, so the
+  // rest of the interface is inert here.
+
+  @Override
+  public CompletableFuture<Boolean> setGameData(final GameData data) {
+    return CompletableFuture.completedFuture(true);
+  }
+
+  @Override
+  public void cancel() {}
+
+  @Override
+  public void setKeepOneAttackingLandUnit(final boolean value) {}
+
+  @Override
+  public void setAmphibious(final boolean value) {}
+
+  @Override
+  public void setRetreatAfterRound(final int value) {}
+
+  @Override
+  public void setRetreatAfterXUnitsLeft(final int value) {}
+
+  @Override
+  public void setAttackerOrderOfLosses(final String value) {}
+
+  @Override
+  public void setDefenderOrderOfLosses(final String value) {}
 }

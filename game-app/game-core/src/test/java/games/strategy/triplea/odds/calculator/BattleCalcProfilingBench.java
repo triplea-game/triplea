@@ -12,6 +12,7 @@ import com.sun.management.ThreadMXBean;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -22,7 +23,6 @@ import games.strategy.triplea.odds.calculator.context.model.BattleScenario;
 import games.strategy.triplea.odds.calculator.context.reference.ReferenceBattleSimulator;
 import games.strategy.triplea.odds.calculator.context.vector.VectorizedHitRoller;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
-import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
@@ -125,11 +125,20 @@ class BattleCalcProfilingBench extends AbstractClientSettingTestCase {
   }
 
   private long timeCalculate(final Case c, final boolean boundedContext) {
-    ClientSetting.useBoundedContextBattleCalc.setValue(boundedContext);
+    if (boundedContext) {
+      final BoundedContextBattleCalculator calc = new BoundedContextBattleCalculator();
+      calc.setGameData(c.gameData());
+      calc.setRandomSource(new PlainRandomSource(SEED));
+      return timeCalculate(c, calc::calculate);
+    }
     final BattleCalculator calc = new BattleCalculator(c.gameData());
     calc.setRandomSource(new PlainRandomSource(SEED));
+    return timeCalculate(c, calc::calculate);
+  }
+
+  private long timeCalculate(final Case c, final CalculateCall call) {
     final long start = System.nanoTime();
-    calc.calculate(
+    call.calculate(
         c.attacker(),
         c.defender(),
         c.location(),
@@ -140,6 +149,21 @@ class BattleCalcProfilingBench extends AbstractClientSettingTestCase {
         false,
         E2E_RUNS);
     return (System.nanoTime() - start) / 1_000_000;
+  }
+
+  /** The shared shape of both calculators' {@code calculate}, so the bench can time either. */
+  @FunctionalInterface
+  private interface CalculateCall {
+    AggregateResults calculate(
+        GamePlayer attacker,
+        GamePlayer defender,
+        Territory location,
+        Collection<Unit> attacking,
+        Collection<Unit> defending,
+        Collection<Unit> bombarding,
+        Collection<TerritoryEffect> territoryEffects,
+        boolean retreatWhenOnlyAirLeft,
+        int runCount);
   }
 
   private static Case smallCase() {

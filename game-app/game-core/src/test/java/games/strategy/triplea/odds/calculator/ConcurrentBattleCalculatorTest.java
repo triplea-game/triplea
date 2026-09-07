@@ -73,23 +73,20 @@ class ConcurrentBattleCalculatorTest extends AbstractClientSettingTestCase {
   }
 
   /**
-   * The Hard AI holds a {@link ConcurrentBattleCalculator}, so this is the seam that decides
-   * whether the AI runs on the bounded-context calc. With the flag ON, the concurrent path must
-   * survive serializing the game data, deserializing it per worker, and running the adapter and
-   * simulator inside that worker — a path the single-instance {@code BattleCalculatorTest} never
-   * exercises.
+   * With the flag ON, {@link BattleCalculatorFactory} hands the AI the engine-free bounded-context
+   * calculator, so this pins that the factory-selected path runs end to end over many parallel
+   * runs.
    *
-   * <p>Workers use a {@code PlainRandomSource} with no injection seam, so this cannot pin an exact
-   * {@code alwaysHits} outcome the way {@code BattleCalculatorTest} does; it asserts coherence and
-   * direction instead. A lopsided 10-vs-2 infantry attack is attacker-favored regardless of luck,
-   * so a near-certain attacker win over many runs shows the flag-on concurrent path ran end to end
-   * and its odds read sanely. Distinguishing the bounded-context path from {@code MustFightBattle}
-   * is the deterministic single-calc test's job — by design the two agree distributionally.
+   * <p>The bounded calc fans runs across workers on a {@code PlainRandomSource} with no injection
+   * seam, so this cannot pin an exact {@code alwaysHits} outcome the way {@code
+   * BattleCalculatorTest} does; it asserts coherence and direction instead. A lopsided 10-vs-2
+   * infantry attack is attacker-favored regardless of luck, so a near-certain attacker win over
+   * many runs shows the flag-on path ran end to end and its odds read sanely.
    */
   @Test
-  void flagOnConcurrentPathReturnsCoherentAttackerFavoredOdds() {
+  void flagOnRoutesFactoryToBoundedContextCalc() {
     ClientSetting.useBoundedContextBattleCalc.setValue(true);
-    final ConcurrentBattleCalculator calc = new ConcurrentBattleCalculator();
+    final IBattleCalculator calc = BattleCalculatorFactory.newBattleCalculator();
     final GameData gameData = TestMapGameData.REVISED.getGameData();
     assertTrue(calc.setGameData(gameData).join());
 
@@ -109,7 +106,7 @@ class ConcurrentBattleCalculatorTest extends AbstractClientSettingTestCase {
             false,
             50);
 
-    assertThat(results.getResults()).hasSize(50);
+    assertThat(results.getRollCount()).isEqualTo(50);
     assertThat(results.getAttackerWinPercent()).isGreaterThan(0.9);
     assertThat(results.getDefenderWinPercent()).isLessThan(0.1);
   }
