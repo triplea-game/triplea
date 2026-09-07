@@ -1,6 +1,7 @@
 package games.strategy.triplea.odds.calculator.context.model;
 
 import java.util.EnumSet;
+import java.util.Optional;
 
 /**
  * The board-counter identity: the pure combat stats a unit carries into battle, and the merge key
@@ -17,15 +18,15 @@ public record CombatProfile(
     DamageState damage,
     SupportCategory gives,
     SupportCategory receives,
-    EnumSet<CombatFlag> flags) {
+    EnumSet<CombatFlag> flags,
+    // The profile this one migrates to on a hit, or null if the hit kills it; encodes
+    // whenHitPointsDamagedChangesInto (a stat or unit-type change) as data. Combat-relevant, so it
+    // participates in equality (invariant 1) — a same-stats unit with a different successor is a
+    // different bucket.
+    CombatProfile next) {
 
-  /**
-   * The profile a unit becomes after one hit — the next-damage profile or the DEAD sentinel. The
-   * transition is data the adapter bakes in (stat change or unit-type change), not a code branch.
-   */
-  public CombatProfile onHit() {
-    // TODO(phase0-decision): needs the adapter-supplied transition; DEAD-sentinel representation is
-    // deferred (a record has no natural null-profile). Throws until phase 1.
-    throw new UnsupportedOperationException("phase 1");
+  /** The profile a unit becomes after one hit, or empty when the hit kills it. */
+  public Optional<CombatProfile> onHit() {
+    return Optional.ofNullable(next);
   }
 }
