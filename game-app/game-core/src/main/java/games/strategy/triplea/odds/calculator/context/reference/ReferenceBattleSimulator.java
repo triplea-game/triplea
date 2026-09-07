@@ -28,6 +28,7 @@ import games.strategy.triplea.odds.calculator.context.seam.RandomSource;
 import games.strategy.triplea.odds.calculator.context.seam.RetreatPolicy;
 import games.strategy.triplea.odds.calculator.context.seam.RollGroupResolver;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,8 +41,10 @@ import java.util.Map;
  *
  * <p>{@code plan} is per-firing-side: each round plans the attackers and the defenders separately,
  * then interleaves their groups into one true firing sequence (AA, then first strike, then main).
- * The simulator owns the shared exchange-start snapshot so both sides' DEFERRED main groups roll
- * from pre-exchange counts while casualties land on the live working map as they are dealt.
+ * Each phase is a simultaneous exchange rolled off a frozen snapshot: first strike off the
+ * round-start plan, main off a re-plan taken after first-strike casualties — so both sides fire
+ * from a shared exchange-start view while casualties land on the live working map as they are
+ * dealt.
  */
 public class ReferenceBattleSimulator implements BattleSimulator {
 
@@ -106,8 +109,15 @@ public class ReferenceBattleSimulator implements BattleSimulator {
 
   /**
    * Runs one round's firing sequence across both sides, returning whether either side withdrew.
-   * Both plans are derived from the round-start forces, so a DEFERRED group's evaluated vector is
-   * already the exchange-start snapshot; an IMMEDIATE group re-reads the live working map instead.
+   *
+   * <p>Each combat phase is a simultaneous exchange read off a snapshot taken at that phase's
+   * start: AA and first strike fire off the round-start plan (nothing sea has died yet, so a first
+   * striker the opposing first strike kills still gets its shot), then main combat is
+   * <em>re-planned</em> from the post-first-strike working map so a unit killed in first strike
+   * drops out and a unit damaged in first strike fires at its migrated profile. First-strike
+   * negation is stable across the re-plan: a destroyer can die in neither AA (air only) nor first
+   * strike (an un-negated sub implies the enemy fields no destroyer), so no group changes phase
+   * mid-round.
    */
   private boolean fightRound(
       final BattleScenario scenario,
@@ -116,26 +126,20 @@ public class ReferenceBattleSimulator implements BattleSimulator {
       final int round,
       final ProfileStats stats,
       final RandomSource rng) {
-    final BattleRound attackPlan =
-        resolver.plan(
-            new Force(attackers),
-            new Force(defenders),
-            scenario.rules(),
-            scenario.support(),
-            round);
-    final BattleRound defendPlan =
-        resolver.plan(
-            new Force(defenders),
-            new Force(attackers),
-            scenario.rules(),
-            scenario.support(),
-            round);
-
     final List<FireStep> aa = new ArrayList<>();
     final List<FireStep> firstStrike = new ArrayList<>();
-    final List<FireStep> main = new ArrayList<>();
-    collect(attackPlan, true, aa, firstStrike, main);
-    collect(defendPlan, false, aa, firstStrike, main);
+    collectPhases(
+        plan(scenario, attackers, defenders, round),
+        true,
+        EnumSet.of(Phase.AA, Phase.FIRST_STRIKE),
+        aa,
+        firstStrike);
+    collectPhases(
+        plan(scenario, defenders, attackers, round),
+        false,
+        EnumSet.of(Phase.AA, Phase.FIRST_STRIKE),
+        aa,
+        firstStrike);
 
     for (final FireStep step : aa) {
       fire(step, scenario, attackers, defenders, round, stats, rng);
@@ -150,6 +154,14 @@ public class ReferenceBattleSimulator implements BattleSimulator {
     submerge(scenario.attackerRetreat(), attackers, defenders, round);
     submerge(scenario.defenderRetreat(), defenders, attackers, round);
 
+    // Re-plan main off the post-first-strike forces: the fresh evaluated vectors are the shared
+    // exchange-start snapshot both sides' main groups roll from, now free of first-strike
+    // casualties.
+    final List<FireStep> main = new ArrayList<>();
+    collectPhases(
+        plan(scenario, attackers, defenders, round), true, EnumSet.of(Phase.GENERAL), main);
+    collectPhases(
+        plan(scenario, defenders, attackers, round), false, EnumSet.of(Phase.GENERAL), main);
     for (final FireStep step : main) {
       fire(step, scenario, attackers, defenders, round, stats, rng);
     }
@@ -160,25 +172,46 @@ public class ReferenceBattleSimulator implements BattleSimulator {
     return attackerWithdrew || defenderWithdrew;
   }
 
-  /** Bins one side's planned groups into the shared AA / first-strike / main firing phases. */
-  private static void collect(
+  private BattleRound plan(
+      final BattleScenario scenario,
+      final Map<Key, Integer> firing,
+      final Map<Key, Integer> enemy,
+      final int round) {
+    return resolver.plan(
+        new Force(firing), new Force(enemy), scenario.rules(), scenario.support(), round);
+  }
+
+  /** Bins the planned groups whose phase is in {@code wanted} into the matching output lists. */
+  private static void collectPhases(
       final BattleRound plan,
       final boolean offense,
-      final List<FireStep> aa,
-      final List<FireStep> firstStrike,
-      final List<FireStep> main) {
+      final EnumSet<Phase> wanted,
+      final List<FireStep> aaOrMain,
+      final List<FireStep> firstStrike) {
     for (final RollGroup group : plan.firing().sequencedKeySet()) {
       if (group.firing().isEmpty()) {
         continue;
       }
       final Phase phase = phaseOf(group);
+      if (!wanted.contains(phase)) {
+        continue;
+      }
       final FireStep step = new FireStep(group, offense, phase);
-      switch (phase) {
-        case AA -> aa.add(step);
-        case FIRST_STRIKE -> firstStrike.add(step);
-        default -> main.add(step);
+      if (phase == Phase.FIRST_STRIKE) {
+        firstStrike.add(step);
+      } else {
+        aaOrMain.add(step);
       }
     }
+  }
+
+  /** Single-list overload for the main phase, where no first-strike groups are collected. */
+  private static void collectPhases(
+      final BattleRound plan,
+      final boolean offense,
+      final EnumSet<Phase> wanted,
+      final List<FireStep> main) {
+    collectPhases(plan, offense, wanted, main, new ArrayList<>());
   }
 
   /**
@@ -202,12 +235,13 @@ public class ReferenceBattleSimulator implements BattleSimulator {
       final int round,
       final ProfileStats stats,
       final RandomSource rng) {
-    final Map<Key, Integer> firingForce = step.offense() ? attackers : defenders;
     final Map<Key, Integer> targetForce = step.offense() ? defenders : attackers;
-    final Map<CombatProfile, Integer> firing =
-        step.group().firingMode() == FiringMode.IMMEDIATE
-            ? liveFiring(step.group(), firingForce)
-            : step.group().firing();
+    // The group's evaluated vector is the phase-start snapshot: first-strike groups carry the
+    // round-start counts (so paired first strikes roll simultaneously), main groups carry the
+    // re-planned post-first-strike counts. Both sides thus roll off a frozen exchange snapshot
+    // while
+    // casualties land per hit on the live target map.
+    final Map<CombatProfile, Integer> firing = step.group().firing();
     if (firing.isEmpty()) {
       return;
     }
@@ -236,28 +270,6 @@ public class ReferenceBattleSimulator implements BattleSimulator {
             stats);
     targetForce.clear();
     targetForce.putAll(after.counts());
-  }
-
-  /**
-   * An IMMEDIATE group's firing vector against the current working map: a first striker killed
-   * earlier this round fires fewer dice. Support-boosted evaluated profiles never appear raw in the
-   * working map, so they fall back to their planned count rather than reading as zero.
-   */
-  private static Map<CombatProfile, Integer> liveFiring(
-      final RollGroup group, final Map<Key, Integer> working) {
-    final Map<CombatProfile, Integer> active = activeProfileCounts(working);
-    final Map<CombatProfile, Integer> live = new LinkedHashMap<>();
-    group
-        .firing()
-        .forEach(
-            (profile, planned) -> {
-              final Integer liveCount = active.get(profile);
-              final int count = liveCount != null ? liveCount : planned;
-              if (count > 0) {
-                live.put(profile, count);
-              }
-            });
-    return live;
   }
 
   /** Dives the submergeable slice of a side when no enemy destroyer pins it. */
