@@ -9,6 +9,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.dice.calculator.LowLuckDice;
+import games.strategy.triplea.delegate.dice.calculator.RandomDiceGenerator;
 import games.strategy.triplea.delegate.dice.calculator.RolledDice;
 import games.strategy.triplea.delegate.power.calculator.AaPowerStrengthAndRolls;
 import games.strategy.triplea.delegate.power.calculator.CombatValue;
@@ -62,14 +63,35 @@ public class RollDiceFactory {
       final IDelegateBridge bridge,
       final String annotation,
       final CombatValue combatValueCalculator) {
+    return rollBattleDice(
+        units, player, bridge, annotation, combatValueCalculator, bridge::getRandom);
+  }
+
+  /**
+   * Same as {@link #rollBattleDice(Collection, GamePlayer, IDelegateBridge, String, CombatValue)}
+   * but with the dice source injected, so Same Luck can supply a generator that shares one
+   * remainder die across the round rather than drawing fresh from the bridge.
+   */
+  public static DiceRoll rollBattleDice(
+      final Collection<Unit> units,
+      final GamePlayer player,
+      final IDelegateBridge bridge,
+      final String annotation,
+      final CombatValue combatValueCalculator,
+      final RandomDiceGenerator diceGenerator) {
 
     final PowerStrengthAndRolls unitPowerAndRollsMap =
         PowerStrengthAndRolls.build(units, combatValueCalculator);
 
-    final DiceRoll diceRoll =
+    // Same Luck implies the Low Luck hit calculation; it only changes where the remainder die comes
+    // from (a round-shared value), which the injected generator handles.
+    final boolean lowLuck =
         Properties.getLowLuck(bridge.getData().getProperties())
-            ? LowLuckDice.calculate(unitPowerAndRollsMap, player, bridge::getRandom, annotation)
-            : RolledDice.calculate(unitPowerAndRollsMap, player, bridge::getRandom, annotation);
+            || Properties.getSameLuck(bridge.getData().getProperties());
+    final DiceRoll diceRoll =
+        lowLuck
+            ? LowLuckDice.calculate(unitPowerAndRollsMap, player, diceGenerator, annotation)
+            : RolledDice.calculate(unitPowerAndRollsMap, player, diceGenerator, annotation);
 
     bridge
         .getHistoryWriter()

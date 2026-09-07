@@ -38,6 +38,8 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.times;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameObjectInputStream;
+import games.strategy.engine.data.GameObjectOutputStream;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
@@ -46,6 +48,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
+import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
@@ -54,10 +57,15 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
+import org.triplea.io.IoUtils;
 import org.triplea.java.collections.CollectionUtils;
 
 class MustFightBattleTest extends AbstractClientSettingTestCase {
@@ -295,6 +303,78 @@ class MustFightBattleTest extends AbstractClientSettingTestCase {
     // And just to double-check, we can't move it.
     advanceToNonCombatMove(bridge);
     GameDataTestUtil.assertMoveError(sz23.getUnits(), new Route(sz23, sz25));
+  }
+
+  @Test
+  void sameLuckSharesOneRemainderDiePerRoundBetweenAttackerAndDefender() {
+    final GameData gameData = TestMapGameData.TWW.getGameData();
+    final Territory burma = territory("Burma", gameData);
+    final IDelegateBridge bridge = attackWithOneInfantryUnderSameLuck(gameData, burma);
+    final IBattle battle =
+        AbstractMoveDelegate.getBattleTracker(gameData).getPendingNonBombingBattle(burma);
+
+    // Round 1's shared die misses for both sides; round 2's hits for both.
+    whenGetRandom(bridge)
+        .thenAnswer(withValues(gameData.getDiceSides() - 1))
+        .thenAnswer(withValues(0));
+    battle.fight(bridge);
+
+    thenGetRandomShouldHaveBeenCalled(bridge, times(2));
+    assertThat(burma.getUnits()).isEmpty();
+  }
+
+  @Test
+  void battleFromSaveWithoutSameLuckDiePoolCanStartANewRound() throws Exception {
+    final GameData gameData = TestMapGameData.TWW.getGameData();
+    final Territory burma = territory("Burma", gameData);
+    final IDelegateBridge bridge = attackWithOneInfantryUnderSameLuck(gameData, burma);
+    final IBattle pending =
+        AbstractMoveDelegate.getBattleTracker(gameData).getPendingNonBombingBattle(burma);
+    // A save made before the field existed deserializes it as null.
+    final Field poolField = MustFightBattle.class.getDeclaredField("sameLuckDiePool");
+    poolField.setAccessible(true);
+    poolField.set(pending, null);
+    final IBattle loaded = serializeAndDeserialize(pending, gameData);
+
+    whenGetRandom(bridge)
+        .thenAnswer(withValues(gameData.getDiceSides() - 1))
+        .thenAnswer(withValues(0));
+    loaded.fight(bridge);
+
+    assertThat(burma.getUnits()).isEmpty();
+  }
+
+  private IDelegateBridge attackWithOneInfantryUnderSameLuck(
+      final GameData gameData, final Territory target) {
+    gameData.getProperties().set(Constants.SAME_LUCK, true);
+    final Territory indoChina = territory("French Indochina", gameData);
+    removeFrom(indoChina, indoChina.getUnits());
+    addTo(indoChina, japaneseInfantry(gameData).create(1, japan(gameData)));
+    removeFrom(target, target.getUnits());
+    addTo(target, britishInfantry(gameData).create(1, britain(gameData)));
+    return performCombatMove(
+        japan(gameData), List.copyOf(indoChina.getUnits()), new Route(indoChina, target));
+  }
+
+  private static IBattle serializeAndDeserialize(final IBattle battle, final GameData gameData)
+      throws IOException {
+    final byte[] bytes =
+        IoUtils.writeToMemory(
+            os -> {
+              try (ObjectOutputStream output = new GameObjectOutputStream(os)) {
+                output.writeObject(battle);
+              }
+            });
+    return IoUtils.readFromMemory(
+        bytes,
+        is -> {
+          try (ObjectInputStream input =
+              new GameObjectInputStream(new GameObjectStreamFactory(gameData), is)) {
+            return (IBattle) input.readObject();
+          } catch (final ClassNotFoundException e) {
+            throw new IOException(e);
+          }
+        });
   }
 
   private static <T> void setPropertyValue(GameData gameData, String propertyName, T value) {

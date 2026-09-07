@@ -347,6 +347,15 @@ public final class Properties implements Constants {
     return properties.get(LOW_LUCK, false);
   }
 
+  /**
+   * Same Luck is a stricter Low Luck: the single fractional remainder die is rolled once per battle
+   * round and its value is shared by every firing group on both sides, so attacker and defender get
+   * the same luck. Implies the Low Luck hit calculation.
+   */
+  public static boolean getSameLuck(final GameProperties properties) {
+    return properties.get(SAME_LUCK, false);
+  }
+
   public static boolean getLowLuckAaOnly(final GameProperties properties) {
     return properties.get(LL_AA_ONLY, false);
   }

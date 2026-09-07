@@ -82,6 +82,14 @@ public interface BattleState {
 
   BattleStatus getStatus();
 
+  /**
+   * The round-scoped die shared by Same Luck low-luck rolls. The default returns a throwaway pool
+   * (no sharing); only the real battle keeps one that persists across a round's fire steps.
+   */
+  default SameLuckDiePool getSameLuckDiePool() {
+    return new SameLuckDiePool();
+  }
+
   Territory getBattleSite();
 
   Collection<TerritoryEffect> getTerritoryEffects();
