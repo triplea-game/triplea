@@ -25,6 +25,7 @@ import games.strategy.triplea.odds.calculator.context.model.BattleScenario;
 import games.strategy.triplea.odds.calculator.context.model.SimulationResults;
 import games.strategy.triplea.odds.calculator.context.model.UnitTypeId;
 import games.strategy.triplea.odds.calculator.context.reference.ReferenceBattleSimulator;
+import games.strategy.triplea.odds.calculator.context.vector.VectorizedHitRoller;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.util.TuvCostsCalculator;
 import java.io.Serializable;
@@ -196,7 +197,7 @@ class BattleCalculator implements IBattleCalculator {
             territoryEffects,
             options);
     final SimulationResults results =
-        new ReferenceBattleSimulator()
+        new ReferenceBattleSimulator(new VectorizedHitRoller())
             .simulate(scenario, runCount, new EngineRandomSource(randomSource));
     final AggregateResults aggregateResults =
         new AggregateResultsBridge(adapter).toAggregateResults(results, gameData);
