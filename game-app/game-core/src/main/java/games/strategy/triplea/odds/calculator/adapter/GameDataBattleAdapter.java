@@ -69,8 +69,15 @@ public class GameDataBattleAdapter {
         toForce(attacking, attacker, Side.OFFENSE, effects, support),
         toForce(defending, defender, Side.DEFENSE, effects, support),
         toForce(bombarding, attacker, Side.OFFENSE, effects, support),
-        // TODO(adapter): transport/carrier cargo cascade — build from Unit#getTransporting once the
-        // allocator's dependent handling is exercised by a test.
+        // TODO(adapter): transport/carrier cargo cascade. The allocator cascade is already built
+        // and tested, but baking Dependents from Unit#getTransporting is not enough on its own:
+        // cargo must sit in the Force for the cascade to remove it, yet the model has no
+        // non-combatant dependent concept, so ReferenceCombatRelations would let cargo (eg a land
+        // unit in a sea battle) both fire and be targeted. Correct handling needs a dependent
+        // marker
+        // spanning CombatFlag + relations (exclude from targeting) + resolver (exclude from firing)
+        // + cascade profile-matching — a core-model change, not adapter-only. Deferred to a
+        // follow-up.
         new Dependents(Map.of()),
         rulesProfile(data),
         support.rules(),
