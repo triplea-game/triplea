@@ -108,10 +108,39 @@ public class GameDataBattleAdapter {
     final SupportModel support = supportModel(data, attacker, defender);
     final boolean seaBattle = location.isWater();
     return new BattleScenario(
-        toForce(attackers, attacker, Side.OFFENSE, effects, support, seaBattle),
-        toForce(defenders, defender, Side.DEFENSE, effects, support, seaBattle),
-        toForce(bombarders, attacker, Side.OFFENSE, effects, support, seaBattle),
-        dependents(attackers, attacker, defenders, defender, seaBattle, effects, support),
+        toForce(
+            attackers,
+            attacker,
+            Side.OFFENSE,
+            effects,
+            support,
+            seaBattle,
+            rules.lhtrHeavyBombers()),
+        toForce(
+            defenders,
+            defender,
+            Side.DEFENSE,
+            effects,
+            support,
+            seaBattle,
+            rules.lhtrHeavyBombers()),
+        toForce(
+            bombarders,
+            attacker,
+            Side.OFFENSE,
+            effects,
+            support,
+            seaBattle,
+            rules.lhtrHeavyBombers()),
+        dependents(
+            attackers,
+            attacker,
+            defenders,
+            defender,
+            seaBattle,
+            effects,
+            support,
+            rules.lhtrHeavyBombers()),
         rules,
         support.rules(),
         costs(data, attacker, defender),
@@ -145,14 +174,23 @@ public class GameDataBattleAdapter {
       final Side side,
       final Collection<TerritoryEffect> effects,
       final SupportModel support,
-      final boolean seaBattle) {
+      final boolean seaBattle,
+      final boolean lhtrHeavyBombers) {
     final boolean hasCarrier = seaBattle && anyCarrier(units);
     final Map<Key, Integer> counts = new LinkedHashMap<>();
     for (final Unit unit : units) {
       final boolean dependent =
           hasCarrier && domainOf(unit.getType().getUnitAttachment()) == Domain.LAND;
       final CombatProfile profile =
-          profileFor(unit.getType(), player, side, effects, unit.getHits(), support, dependent);
+          profileFor(
+              unit.getType(),
+              player,
+              side,
+              effects,
+              unit.getHits(),
+              support,
+              dependent,
+              lhtrHeavyBombers);
       final Key key = new Key(profile, Lifecycle.ACTIVE);
       counts.merge(key, 1, Integer::sum);
     }
@@ -183,7 +221,8 @@ public class GameDataBattleAdapter {
       final Collection<TerritoryEffect> effects,
       final int hits,
       final SupportModel support,
-      final boolean dependent) {
+      final boolean dependent,
+      final boolean lhtrHeavyBombers) {
     final UnitAttachment ua = type.getUnitAttachment();
     final int remaining = ua.getHitPoints() - hits;
     return new CombatProfile(
@@ -196,8 +235,9 @@ public class GameDataBattleAdapter {
         new DamageState(hits),
         support.gives().getOrDefault(type.getName(), SupportCategory.NONE),
         support.receives().getOrDefault(type.getName(), SupportCategory.NONE),
-        flagsOf(ua, dependent),
-        successor(type, player, side, effects, hits, remaining, support, dependent));
+        flagsOf(ua, dependent, lhtrHeavyBombers),
+        successor(
+            type, player, side, effects, hits, remaining, support, dependent, lhtrHeavyBombers));
   }
 
   private static CombatProfile successor(
@@ -208,7 +248,8 @@ public class GameDataBattleAdapter {
       final int hits,
       final int remaining,
       final SupportModel support,
-      final boolean dependent) {
+      final boolean dependent,
+      final boolean lhtrHeavyBombers) {
     if (remaining <= 1) {
       return null;
     }
@@ -219,7 +260,8 @@ public class GameDataBattleAdapter {
     // its type and stats change.
     final UnitType nextType =
         changesInto.containsKey(nextHits) ? changesInto.get(nextHits).getSecond() : type;
-    return profileFor(nextType, player, side, effects, nextHits, support, dependent);
+    return profileFor(
+        nextType, player, side, effects, nextHits, support, dependent, lhtrHeavyBombers);
   }
 
   private static Domain domainOf(final UnitAttachment ua) {
@@ -241,7 +283,8 @@ public class GameDataBattleAdapter {
    * {@code canEvade} — see {@code AirVsNonSubsStep#airWillMissSubs} and {@code
    * DummyPlayer#retreatQuery}.
    */
-  private static EnumSet<CombatFlag> flagsOf(final UnitAttachment ua, final boolean dependent) {
+  private static EnumSet<CombatFlag> flagsOf(
+      final UnitAttachment ua, final boolean dependent, final boolean lhtrHeavyBombers) {
     final EnumSet<CombatFlag> flags = EnumSet.noneOf(CombatFlag.class);
     if (ua.getIsFirstStrike()) {
       flags.add(CombatFlag.FIRST_STRIKE);
@@ -249,7 +292,10 @@ public class GameDataBattleAdapter {
     if (ua.isAaForCombatOnly()) {
       flags.add(CombatFlag.IS_AA);
     }
-    if (ua.getChooseBestRoll()) {
+    // LHTR heavy bombers make every multi-roll unit take its best die, so the flag rides the map
+    // property as well as the unit's own attribute — mirroring
+    // MainOffenseCombatValue#chooseBestRoll.
+    if (lhtrHeavyBombers || ua.getChooseBestRoll()) {
       flags.add(CombatFlag.CHOOSE_BEST_ROLL);
     }
     if (ua.getCanEvade()) {
@@ -291,13 +337,14 @@ public class GameDataBattleAdapter {
       final GamePlayer defender,
       final boolean seaBattle,
       final Collection<TerritoryEffect> effects,
-      final SupportModel support) {
+      final SupportModel support,
+      final boolean lhtrHeavyBombers) {
     if (!seaBattle) {
       return new Dependents(Map.of());
     }
     final Map<CombatProfile, CargoRule> rules = new LinkedHashMap<>();
-    addCarrierRules(rules, attacking, attacker, Side.OFFENSE, effects, support);
-    addCarrierRules(rules, defending, defender, Side.DEFENSE, effects, support);
+    addCarrierRules(rules, attacking, attacker, Side.OFFENSE, effects, support, lhtrHeavyBombers);
+    addCarrierRules(rules, defending, defender, Side.DEFENSE, effects, support, lhtrHeavyBombers);
     return new Dependents(Map.copyOf(rules));
   }
 
@@ -307,7 +354,8 @@ public class GameDataBattleAdapter {
       final GamePlayer player,
       final Side side,
       final Collection<TerritoryEffect> effects,
-      final SupportModel support) {
+      final SupportModel support,
+      final boolean lhtrHeavyBombers) {
     UnitType cargoType = null;
     for (final Unit unit : units) {
       if (domainOf(unit.getType().getUnitAttachment()) == Domain.LAND) {
@@ -330,7 +378,7 @@ public class GameDataBattleAdapter {
       final int capacity =
           Math.max(1, carrierType.getUnitAttachment().getTransportCapacity() / cargoCost);
       final CombatProfile carrier =
-          profileFor(carrierType, player, side, effects, 0, support, false);
+          profileFor(carrierType, player, side, effects, 0, support, false, lhtrHeavyBombers);
       rules.put(carrier, new CargoRule(cargoId, capacity));
     }
   }

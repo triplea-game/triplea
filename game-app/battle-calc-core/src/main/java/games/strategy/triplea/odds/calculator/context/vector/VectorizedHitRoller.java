@@ -1,5 +1,6 @@
 package games.strategy.triplea.odds.calculator.context.vector;
 
+import games.strategy.triplea.odds.calculator.context.model.CombatFlag;
 import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
 import games.strategy.triplea.odds.calculator.context.model.FireContext;
 import games.strategy.triplea.odds.calculator.context.reference.DiceHitRoller;
@@ -49,11 +50,30 @@ public class VectorizedHitRoller implements HitRoller {
     int hits = 0;
     int die = 0;
     for (final Map.Entry<CombatProfile, Integer> entry : firing.entrySet()) {
-      final int strength = strengthOf(entry.getKey(), ctx);
-      final int dice = entry.getValue() * entry.getKey().rolls();
-      for (int i = 0; i < dice; i++) {
-        if (draws[die++] < strength) {
-          hits++;
+      final CombatProfile profile = entry.getKey();
+      final int strength = strengthOf(profile, ctx);
+      final int count = entry.getValue();
+      final int rolls = profile.rolls();
+      if (rolls > 1 && profile.flags().contains(CombatFlag.CHOOSE_BEST_ROLL)) {
+        // Best-of-rolls: each body consumes all its dice but scores at most one hit, on its best
+        // die — kept identical to DiceHitRoller so the two stay stream-equivalent.
+        for (int unit = 0; unit < count; unit++) {
+          boolean hit = false;
+          for (int r = 0; r < rolls; r++) {
+            if (draws[die++] < strength) {
+              hit = true;
+            }
+          }
+          if (hit) {
+            hits++;
+          }
+        }
+      } else {
+        final int dice = count * rolls;
+        for (int i = 0; i < dice; i++) {
+          if (draws[die++] < strength) {
+            hits++;
+          }
         }
       }
     }

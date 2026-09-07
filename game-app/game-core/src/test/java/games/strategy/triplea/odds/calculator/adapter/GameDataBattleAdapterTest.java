@@ -7,9 +7,13 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.properties.BooleanProperty;
+import games.strategy.engine.data.properties.IEditableProperty;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.odds.calculator.context.model.BattleOptions;
 import games.strategy.triplea.odds.calculator.context.model.BattleScenario;
+import games.strategy.triplea.odds.calculator.context.model.CombatFlag;
 import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
 import games.strategy.triplea.odds.calculator.context.model.Domain;
 import games.strategy.triplea.odds.calculator.context.model.Force;
@@ -224,6 +228,67 @@ class GameDataBattleAdapterTest {
     assertThat(rule.bonus()).isEqualTo(1);
     assertThat(rule.usesPerGiver()).as("one artillery supports one infantry").isEqualTo(1);
     assertThat(rule.firstRoundOnly()).isFalse();
+  }
+
+  /**
+   * The LHTR heavy-bombers property is a map-level rule, not a unit attribute, so the adapter must
+   * bake {@code CHOOSE_BEST_ROLL} onto the profile from the property — mirroring {@code
+   * MainOffenseCombatValue#chooseBestRoll}. Pinned on plain infantry (no own {@code
+   * chooseBestRoll}) so the flag's only source is the property.
+   */
+  @Test
+  void lhtrHeavyBombersBakesChooseBestRollOntoEveryProfile() {
+    final GameData revised = TestMapGameData.REVISED.getGameData();
+    final GamePlayer russians = GameDataTestUtil.russians(revised);
+    final GamePlayer germans = GameDataTestUtil.germans(revised);
+    final Territory germany = GameDataTestUtil.territory("Germany", revised);
+    final Collection<Unit> attacking = GameDataTestUtil.infantry(revised).create(1, russians);
+    final Collection<Unit> defending = GameDataTestUtil.infantry(revised).create(1, germans);
+
+    final CombatProfile offWithoutLhtr =
+        profileOf(
+            adapter
+                .toScenario(
+                    russians,
+                    germans,
+                    germany,
+                    attacking,
+                    defending,
+                    List.of(),
+                    List.of(),
+                    new BattleOptions(false, List.of(), List.of()))
+                .attackers(),
+            "infantry");
+    assertThat(offWithoutLhtr.flags()).doesNotContain(CombatFlag.CHOOSE_BEST_ROLL);
+
+    enableLhtrHeavyBombers(revised);
+    final CombatProfile onWithLhtr =
+        profileOf(
+            adapter
+                .toScenario(
+                    russians,
+                    germans,
+                    germany,
+                    attacking,
+                    defending,
+                    List.of(),
+                    List.of(),
+                    new BattleOptions(false, List.of(), List.of()))
+                .attackers(),
+            "infantry");
+    assertThat(onWithLhtr.flags()).contains(CombatFlag.CHOOSE_BEST_ROLL);
+  }
+
+  // 'LHTR Heavy Bombers' is an editable property; get() reads editable entries before the map that
+  // set(String, Object) writes, so it must be flipped on the editable property itself.
+  private static void enableLhtrHeavyBombers(final GameData data) {
+    for (final IEditableProperty<?> property : data.getProperties().getEditableProperties()) {
+      if (property.getName().equals(Constants.LHTR_HEAVY_BOMBERS)) {
+        ((BooleanProperty) property).setValue(true);
+        return;
+      }
+    }
+    throw new IllegalStateException("LHTR Heavy Bombers property not found");
   }
 
   private static CombatProfile profileOf(final Force force, final String typeName) {

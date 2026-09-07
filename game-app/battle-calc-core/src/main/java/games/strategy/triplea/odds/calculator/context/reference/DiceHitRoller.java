@@ -1,5 +1,6 @@
 package games.strategy.triplea.odds.calculator.context.reference;
 
+import games.strategy.triplea.odds.calculator.context.model.CombatFlag;
 import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
 import games.strategy.triplea.odds.calculator.context.model.FireContext;
 import games.strategy.triplea.odds.calculator.context.seam.HitRoller;
@@ -25,12 +26,45 @@ public class DiceHitRoller implements HitRoller {
       final Map<CombatProfile, Integer> firing, final FireContext ctx, final RandomSource rng) {
     int hits = 0;
     for (final Map.Entry<CombatProfile, Integer> entry : firing.entrySet()) {
-      final int strength = strengthOf(entry.getKey(), ctx);
-      final int dice = entry.getValue() * entry.getKey().rolls();
-      for (int i = 0; i < dice; i++) {
-        if (rng.getRandom(ctx.diceSides(), ANNOTATION) < strength) {
-          hits++;
+      final CombatProfile profile = entry.getKey();
+      final int strength = strengthOf(profile, ctx);
+      final int count = entry.getValue();
+      final int rolls = profile.rolls();
+      if (rolls > 1 && profile.flags().contains(CombatFlag.CHOOSE_BEST_ROLL)) {
+        hits += chooseBestRollHits(count, rolls, strength, ctx, rng);
+      } else {
+        final int dice = count * rolls;
+        for (int i = 0; i < dice; i++) {
+          if (rng.getRandom(ctx.diceSides(), ANNOTATION) < strength) {
+            hits++;
+          }
         }
+      }
+    }
+    return hits;
+  }
+
+  /**
+   * Best-of-rolls counting: each body still rolls all its dice but scores at most one hit, on its
+   * best die — the LHTR heavy-bomber rule (engine {@code RolledDice#getDiceForChooseBestRoll}). All
+   * the dice are drawn so the random stream advances the same as the all-rolls path.
+   */
+  private static int chooseBestRollHits(
+      final int count,
+      final int rolls,
+      final int strength,
+      final FireContext ctx,
+      final RandomSource rng) {
+    int hits = 0;
+    for (int unit = 0; unit < count; unit++) {
+      boolean hit = false;
+      for (int r = 0; r < rolls; r++) {
+        if (rng.getRandom(ctx.diceSides(), ANNOTATION) < strength) {
+          hit = true;
+        }
+      }
+      if (hit) {
+        hits++;
       }
     }
     return hits;
@@ -47,10 +81,20 @@ public class DiceHitRoller implements HitRoller {
       final Map<CombatProfile, Integer> firing, final FireContext ctx, final RandomSource rng) {
     int power = 0;
     for (final Map.Entry<CombatProfile, Integer> entry : firing.entrySet()) {
-      // Engine caps each unit's low-luck strength at diceSides (StrengthValue) before summing —
-      // a unit can't contribute better than one guaranteed hit per die.
-      final int strength = Math.min(strengthOf(entry.getKey(), ctx), ctx.diceSides());
-      power += strength * entry.getKey().rolls() * entry.getValue();
+      final CombatProfile profile = entry.getKey();
+      final int rolls = profile.rolls();
+      final int count = entry.getValue();
+      if (rolls > 1 && profile.flags().contains(CombatFlag.CHOOSE_BEST_ROLL)) {
+        // Best-of-rolls has no meaning under low luck, so the engine (PowerCalculator) instead adds
+        // one bonus per extra roll rather than multiplying — capped at diceSides.
+        final int bonus = Math.max(1, ctx.diceSides() / 6);
+        power += Math.min(strengthOf(profile, ctx) + bonus * (rolls - 1), ctx.diceSides()) * count;
+      } else {
+        // Engine caps each unit's low-luck strength at diceSides (StrengthValue) before summing —
+        // a unit can't contribute better than one guaranteed hit per die.
+        final int strength = Math.min(strengthOf(profile, ctx), ctx.diceSides());
+        power += strength * rolls * count;
+      }
     }
     int hits = power / ctx.diceSides();
     final int remainder = power % ctx.diceSides();

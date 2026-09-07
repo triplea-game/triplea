@@ -3,8 +3,10 @@ package games.strategy.triplea.odds.calculator.context;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.air;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.land;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.rolls;
+import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.withFlags;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import games.strategy.triplea.odds.calculator.context.model.CombatFlag;
 import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
 import games.strategy.triplea.odds.calculator.context.model.FireContext;
 import games.strategy.triplea.odds.calculator.context.model.Phase;
@@ -78,6 +80,45 @@ abstract class HitRollerContractTest {
             Map.of(doubleShotUnit, 3, singleShotUnit, 2), ctx, FakeRandomSource.alwaysHits());
 
     assertThat(hits).isEqualTo(8);
+  }
+
+  /**
+   * A CHOOSE_BEST_ROLL unit (LHTR heavy bomber) rolls all its dice but scores at most one hit per
+   * body, on its best die — so under {@code alwaysHits} its hits equal the unit count, not the die
+   * count. Contrast {@link #rollsGreaterThanOneMultipliesTheDiceFiredByThatUnit}, where the same
+   * two rolls without the flag score two hits.
+   */
+  @Test
+  void chooseBestRollScoresOneHitPerUnitNotOnePerDie() {
+    final CombatProfile bestRollBomber =
+        withFlags(rolls(air("bomber", 4, 4, 1), 2), CombatFlag.CHOOSE_BEST_ROLL);
+    final CombatProfile singleShotUnit = land("infantry", 1, 2, 1);
+    final FireContext ctx = new FireContext(1, Phase.GENERAL, true, false, 6);
+
+    // 3 best-roll bombers = 3 hits (one each, not 6), plus 2 single-shot units = 2 hits.
+    final int hits =
+        hitRoller.roll(
+            Map.of(bestRollBomber, 3, singleShotUnit, 2), ctx, FakeRandomSource.alwaysHits());
+
+    assertThat(hits).isEqualTo(5);
+  }
+
+  /**
+   * The best die decides a CHOOSE_BEST_ROLL body: one die below strength is a hit even when the
+   * other misses. A scripted pair pins that the miss on the first die does not veto the hit on the
+   * best.
+   */
+  @Test
+  void chooseBestRollHitsWhenAnyOfTheRolledDiceBeatsStrength() {
+    final CombatProfile bestRollBomber =
+        withFlags(rolls(air("bomber", 4, 4, 1), 2), CombatFlag.CHOOSE_BEST_ROLL);
+    final FireContext offense = new FireContext(1, Phase.GENERAL, true, false, 6);
+
+    // One body, two dice: 5 misses (not < 4) but 2 hits (< 4); the best die stands, so one hit.
+    final int hits =
+        hitRoller.roll(Map.of(bestRollBomber, 1), offense, FakeRandomSource.scripted(5, 2));
+
+    assertThat(hits).isEqualTo(1);
   }
 
   @Test
