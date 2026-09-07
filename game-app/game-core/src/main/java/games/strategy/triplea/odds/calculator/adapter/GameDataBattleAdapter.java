@@ -31,6 +31,7 @@ import games.strategy.triplea.odds.calculator.context.reference.ReferenceRetreat
 import games.strategy.triplea.util.TuvCostsCalculator;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -52,10 +53,10 @@ import org.triplea.util.Tuple;
 public class GameDataBattleAdapter {
 
   /**
-   * Bakes a self-contained {@link BattleScenario}. Combat-fungible units fold into one {@link
-   * CombatProfile} bucket (invariant 1); territory {@link TerritoryEffect} bonuses fold into the
-   * profile's attack/defense; and {@code whenHitPointsDamagedChangesInto} becomes the {@code
-   * onHit()} migration chain (invariant 2).
+   * Bakes a self-contained {@link BattleScenario} without holding any {@code GameData} lock (design
+   * §3). The bake only reads the live game, so its lone hazard is a collection mutating mid-walk;
+   * that surfaces as a {@link ConcurrentModificationException}, which a single retry against a
+   * now-quiescent read clears. A second failure propagates rather than spinning.
    */
   public BattleScenario toScenario(
       final GamePlayer attacker,
@@ -66,18 +67,47 @@ public class GameDataBattleAdapter {
       final Collection<Unit> bombarding,
       final Collection<TerritoryEffect> effects,
       final BattleOptions options) {
+    try {
+      return bake(attacker, defender, location, attacking, defending, bombarding, effects, options);
+    } catch (final ConcurrentModificationException retryable) {
+      return bake(attacker, defender, location, attacking, defending, bombarding, effects, options);
+    }
+  }
+
+  /**
+   * The single-pass bake. Combat-fungible units fold into one {@link CombatProfile} bucket
+   * (invariant 1); territory {@link TerritoryEffect} bonuses fold into the profile's
+   * attack/defense; and {@code whenHitPointsDamagedChangesInto} becomes the {@code onHit()}
+   * migration chain (invariant 2).
+   *
+   * <p>The caller's live force collections are snapshotted up front so every downstream walk
+   * iterates a stable copy; the produced scenario holds only immutable collections so N simulator
+   * threads can share it.
+   */
+  private BattleScenario bake(
+      final GamePlayer attacker,
+      final GamePlayer defender,
+      final Territory location,
+      final Collection<Unit> attacking,
+      final Collection<Unit> defending,
+      final Collection<Unit> bombarding,
+      final Collection<TerritoryEffect> effects,
+      final BattleOptions options) {
     final GameData data = location.getData();
+    final List<Unit> attackers = List.copyOf(attacking);
+    final List<Unit> defenders = List.copyOf(defending);
+    final List<Unit> bombarders = List.copyOf(bombarding);
     final SupportModel support = supportModel(data, attacker, defender);
     final boolean seaBattle = location.isWater();
     return new BattleScenario(
-        toForce(attacking, attacker, Side.OFFENSE, effects, support, seaBattle),
-        toForce(defending, defender, Side.DEFENSE, effects, support, seaBattle),
-        toForce(bombarding, attacker, Side.OFFENSE, effects, support, seaBattle),
-        dependents(attacking, attacker, defending, defender, seaBattle, effects, support),
+        toForce(attackers, attacker, Side.OFFENSE, effects, support, seaBattle),
+        toForce(defenders, defender, Side.DEFENSE, effects, support, seaBattle),
+        toForce(bombarders, attacker, Side.OFFENSE, effects, support, seaBattle),
+        dependents(attackers, attacker, defenders, defender, seaBattle, effects, support),
         rulesProfile(data),
         support.rules(),
         costs(data, attacker, defender),
-        anyAmphibious(attacking),
+        anyAmphibious(attackers),
         data.getDiceSides(),
         Properties.getLowLuck(data.getProperties()),
         // keepOneAttackingLandUnit rides in BattleOptions for interface parity but is not threaded
@@ -118,7 +148,7 @@ public class GameDataBattleAdapter {
       final Key key = new Key(profile, Lifecycle.ACTIVE);
       counts.merge(key, 1, Integer::sum);
     }
-    return new Force(counts);
+    return new Force(Map.copyOf(counts));
   }
 
   private static boolean anyCarrier(final Collection<Unit> units) {
@@ -260,7 +290,7 @@ public class GameDataBattleAdapter {
     final Map<CombatProfile, CargoRule> rules = new LinkedHashMap<>();
     addCarrierRules(rules, attacking, attacker, Side.OFFENSE, effects, support);
     addCarrierRules(rules, defending, defender, Side.DEFENSE, effects, support);
-    return new Dependents(rules);
+    return new Dependents(Map.copyOf(rules));
   }
 
   private static void addCarrierRules(
@@ -317,7 +347,8 @@ public class GameDataBattleAdapter {
     final List<SupportRule> rules = new ArrayList<>();
     final Map<String, SupportCategory> gives = new LinkedHashMap<>();
     final Map<String, SupportCategory> receives = new LinkedHashMap<>();
-    for (final UnitSupportAttachment attachment : data.getUnitTypeList().getSupportRules()) {
+    for (final UnitSupportAttachment attachment :
+        Set.copyOf(data.getUnitTypeList().getSupportRules())) {
       if (!attachment.getAllied()) {
         continue;
       }
@@ -334,7 +365,7 @@ public class GameDataBattleAdapter {
         register(gives, receives, giver, attachment, category);
       }
     }
-    return new SupportModel(rules, gives, receives);
+    return new SupportModel(List.copyOf(rules), gives, receives);
   }
 
   private static SupportRule supportRule(
@@ -391,7 +422,7 @@ public class GameDataBattleAdapter {
     final Map<UnitTypeId, Integer> cost = new LinkedHashMap<>();
     addCosts(cost, calculator.getCostsForTuv(attacker));
     addCosts(cost, calculator.getCostsForTuv(defender));
-    return cost;
+    return Map.copyOf(cost);
   }
 
   private static void addCosts(
