@@ -428,8 +428,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
         new Dimension(
             (int) smallView.getPreferredSize().getWidth(),
             (int) mapPanel.getPreferredSize().getHeight()));
-    // The calculated minimum width (240px) is insufficient to display all buttons ('Cancel',
-    // 'Done', 'Undo All')
+    // The right-hand side panel's minimum width needs to be at least as wide as the smallMap, but
+    // not smaller than 248 px or there is not enough room for the Cancel/Done/Undo All buttons
+    // (issue #14880).
     final int minimumRightHandSidePanelWidth = 248;
     rightHandSidePanel.setMinimumSize(
         new Dimension(
