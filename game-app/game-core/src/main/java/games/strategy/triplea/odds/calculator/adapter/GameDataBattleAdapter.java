@@ -292,10 +292,12 @@ public class GameDataBattleAdapter {
     if (ua.isAaForCombatOnly()) {
       flags.add(CombatFlag.IS_AA);
     }
-    // LHTR heavy bombers make every multi-roll unit take its best die, so the flag rides the map
+    // LHTR heavy bombers make a multi-roll unit take its best die, so the flag rides the map
     // property as well as the unit's own attribute — mirroring
     // MainOffenseCombatValue#chooseBestRoll.
-    if (lhtrHeavyBombers || ua.getChooseBestRoll()) {
+    // AA fire is exempt: AaOffenseCombatValue and AaDefenseCombatValue force chooseBestRoll off, so
+    // an AA gun rolls all its dice; the flag is baked for non-AA units only.
+    if ((lhtrHeavyBombers || ua.getChooseBestRoll()) && !ua.isAaForCombatOnly()) {
       flags.add(CombatFlag.CHOOSE_BEST_ROLL);
     }
     if (ua.getCanEvade()) {

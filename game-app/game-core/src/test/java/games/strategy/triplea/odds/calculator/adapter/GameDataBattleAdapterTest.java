@@ -231,52 +231,52 @@ class GameDataBattleAdapterTest {
   }
 
   /**
-   * The LHTR heavy-bombers property is a map-level rule, not a unit attribute, so the adapter must
-   * bake {@code CHOOSE_BEST_ROLL} onto the profile from the property — mirroring {@code
-   * MainOffenseCombatValue#chooseBestRoll}. Pinned on plain infantry (no own {@code
-   * chooseBestRoll}) so the flag's only source is the property.
+   * The LHTR heavy-bombers property is a map-level rule, not a unit attribute, so the adapter bakes
+   * {@code CHOOSE_BEST_ROLL} onto a non-AA profile from the property — mirroring {@code
+   * MainOffenseCombatValue#chooseBestRoll}. An AA gun is exempt: {@code AaOffenseCombatValue} and
+   * {@code AaDefenseCombatValue} force chooseBestRoll off, so it must not receive the flag even
+   * under LHTR. Pinned on plain infantry (no own {@code chooseBestRoll}) so the flag's only source
+   * is the property.
    */
   @Test
-  void lhtrHeavyBombersBakesChooseBestRollOntoEveryProfile() {
+  void lhtrHeavyBombersBakesChooseBestRollOntoNonAaProfilesButNotAaGuns() {
     final GameData revised = TestMapGameData.REVISED.getGameData();
     final GamePlayer russians = GameDataTestUtil.russians(revised);
     final GamePlayer germans = GameDataTestUtil.germans(revised);
     final Territory germany = GameDataTestUtil.territory("Germany", revised);
     final Collection<Unit> attacking = GameDataTestUtil.infantry(revised).create(1, russians);
     final Collection<Unit> defending = GameDataTestUtil.infantry(revised).create(1, germans);
+    defending.addAll(GameDataTestUtil.aaGun(revised).create(1, germans));
 
-    final CombatProfile offWithoutLhtr =
+    final CombatProfile infantryWithoutLhtr =
         profileOf(
-            adapter
-                .toScenario(
-                    russians,
-                    germans,
-                    germany,
-                    attacking,
-                    defending,
-                    List.of(),
-                    List.of(),
-                    new BattleOptions(false, List.of(), List.of()))
-                .attackers(),
-            "infantry");
-    assertThat(offWithoutLhtr.flags()).doesNotContain(CombatFlag.CHOOSE_BEST_ROLL);
+            scenarioFor(russians, germans, germany, attacking, defending).attackers(), "infantry");
+    assertThat(infantryWithoutLhtr.flags()).doesNotContain(CombatFlag.CHOOSE_BEST_ROLL);
 
     enableLhtrHeavyBombers(revised);
-    final CombatProfile onWithLhtr =
-        profileOf(
-            adapter
-                .toScenario(
-                    russians,
-                    germans,
-                    germany,
-                    attacking,
-                    defending,
-                    List.of(),
-                    List.of(),
-                    new BattleOptions(false, List.of(), List.of()))
-                .attackers(),
-            "infantry");
-    assertThat(onWithLhtr.flags()).contains(CombatFlag.CHOOSE_BEST_ROLL);
+    final BattleScenario withLhtr = scenarioFor(russians, germans, germany, attacking, defending);
+    assertThat(profileOf(withLhtr.attackers(), "infantry").flags())
+        .contains(CombatFlag.CHOOSE_BEST_ROLL);
+    assertThat(profileOf(withLhtr.defenders(), "aaGun").flags())
+        .as("AA fire never takes its best roll, so it stays off even under LHTR")
+        .doesNotContain(CombatFlag.CHOOSE_BEST_ROLL);
+  }
+
+  private BattleScenario scenarioFor(
+      final GamePlayer attacker,
+      final GamePlayer defender,
+      final Territory location,
+      final Collection<Unit> attacking,
+      final Collection<Unit> defending) {
+    return adapter.toScenario(
+        attacker,
+        defender,
+        location,
+        attacking,
+        defending,
+        List.of(),
+        List.of(),
+        new BattleOptions(false, List.of(), List.of()));
   }
 
   // 'LHTR Heavy Bombers' is an editable property; get() reads editable entries before the map that
