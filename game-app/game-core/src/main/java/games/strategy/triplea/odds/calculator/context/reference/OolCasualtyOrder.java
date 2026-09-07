@@ -2,6 +2,7 @@ package games.strategy.triplea.odds.calculator.context.reference;
 
 import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
 import games.strategy.triplea.odds.calculator.context.model.ProfileStats;
+import games.strategy.triplea.odds.calculator.context.model.Side;
 import games.strategy.triplea.odds.calculator.context.model.UnitTypeId;
 import games.strategy.triplea.odds.calculator.context.seam.CasualtyOrder;
 import java.util.List;
@@ -19,7 +20,8 @@ public class OolCasualtyOrder implements CasualtyOrder {
   }
 
   @Override
-  public CombatProfile next(final Set<CombatProfile> eligible, final ProfileStats stats) {
+  public CombatProfile next(
+      final Set<CombatProfile> eligible, final ProfileStats stats, final Side side) {
     throw new UnsupportedOperationException("phase 1");
   }
 }

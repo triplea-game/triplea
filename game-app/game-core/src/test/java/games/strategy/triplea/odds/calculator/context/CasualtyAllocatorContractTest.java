@@ -15,6 +15,7 @@ import games.strategy.triplea.odds.calculator.context.model.FiringMode;
 import games.strategy.triplea.odds.calculator.context.model.Force;
 import games.strategy.triplea.odds.calculator.context.model.Key;
 import games.strategy.triplea.odds.calculator.context.model.Lifecycle;
+import games.strategy.triplea.odds.calculator.context.model.Side;
 import games.strategy.triplea.odds.calculator.context.model.TargetFilter;
 import games.strategy.triplea.odds.calculator.context.reference.ReferenceCasualtyAllocator;
 import games.strategy.triplea.odds.calculator.context.seam.CasualtyAllocator;
@@ -45,7 +46,7 @@ class CasualtyAllocatorContractTest {
    * constraint to actually override the preference rather than coincidentally agree with it.
    */
   private static final CasualtyOrder PREFERS_LAND =
-      (eligible, stats) ->
+      (eligible, stats, side) ->
           eligible.stream()
               .filter(p -> p.domain() == Domain.LAND)
               .findFirst()
@@ -77,7 +78,8 @@ class CasualtyAllocatorContractTest {
                 new Dependents(Map.of()),
                 new Constraints(false),
                 PREFERS_LAND,
-                FiringMode.IMMEDIATE);
+                FiringMode.IMMEDIATE,
+                Side.OFFENSE);
 
     assertThat(countAt(result, fullTank, Lifecycle.ACTIVE)).isZero();
     assertThat(countAt(result, damagedTank, Lifecycle.ACTIVE)).isZero();
@@ -112,7 +114,8 @@ class CasualtyAllocatorContractTest {
                 new Dependents(Map.of()),
                 new Constraints(true),
                 PREFERS_LAND,
-                FiringMode.IMMEDIATE);
+                FiringMode.IMMEDIATE,
+                Side.DEFENSE);
 
     assertThat(countAt(result, landUnit, Lifecycle.ACTIVE)).isEqualTo(1);
     assertThat(countAt(result, landUnit, Lifecycle.DEAD)).isEqualTo(1);
@@ -149,7 +152,8 @@ class CasualtyAllocatorContractTest {
                 deps,
                 new Constraints(false),
                 PREFERS_LAND,
-                FiringMode.IMMEDIATE);
+                FiringMode.IMMEDIATE,
+                Side.OFFENSE);
 
     assertThat(countAt(result, transport, Lifecycle.DEAD)).isEqualTo(1);
     assertThat(countAt(result, infantry, Lifecycle.ACTIVE)).isZero();
@@ -181,7 +185,14 @@ class CasualtyAllocatorContractTest {
     final Force result =
         new ReferenceCasualtyAllocator()
             .allocate(
-                side, 1, eligible, deps, new Constraints(false), PREFERS_LAND, FiringMode.DEFERRED);
+                side,
+                1,
+                eligible,
+                deps,
+                new Constraints(false),
+                PREFERS_LAND,
+                FiringMode.DEFERRED,
+                Side.OFFENSE);
 
     assertThat(countAt(result, transport, Lifecycle.DEAD)).isEqualTo(1);
     assertThat(countAt(result, infantry, Lifecycle.ACTIVE)).isEqualTo(1);
@@ -215,7 +226,8 @@ class CasualtyAllocatorContractTest {
                 new Dependents(Map.of()),
                 new Constraints(false),
                 PREFERS_LAND,
-                FiringMode.IMMEDIATE);
+                FiringMode.IMMEDIATE,
+                Side.DEFENSE);
 
     assertThat(countAt(result, infantry, Lifecycle.ACTIVE)).isEqualTo(1);
     assertThat(countAt(result, infantry, Lifecycle.DEAD)).isZero();
