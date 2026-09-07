@@ -331,7 +331,8 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
      * With neither WW2V2 nor defendingSubsSneakAttack, a defending sub has no sneak — it fires in
      * main combat, trading simultaneously with the carrier, so the carrier takes the sub down with
      * it and neither survives. This is the live-bug pin: a defender-blind first-strike rule would
-     * wrongly let the sub open fire and spare it.
+     * wrongly let the sub open fire and spare it. The discriminator depends on the carrier being
+     * 1-HP — a 2-HP attacker would survive the single sub hit and blur the sneak-vs-main outcome.
      */
     @Test
     void withoutTheSneakRulesADefendingSubFiresInMainCombat() {
@@ -377,11 +378,13 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
     }
 
     /**
-     * The named §9 multi-HP + first-strike seam, composed in one fight and exercised nowhere else
-     * in the differential: a 2-hit battleship alongside a first-strike submarine, against subs that
-     * also fire first strike. Multi-hit concentration (which hit damages vs sinks the battleship)
-     * and first-strike timing (opening fire off live counts) must both match the engine survivor
-     * counts.
+     * The multi-HP damage chain composed with first strikers on both sides: a 2-hit battleship and
+     * a first-strike sub attack two subs that also first strike (REVISED, WW2V2). The sub first
+     * strikes fire off the round-start snapshot and the battleship's {@code onHit} migration is
+     * applied as it takes hits, and the survivor counts must match the engine. It does not pin
+     * concentration-to-sink: the battleship is paired with a sub, so the second incoming hit lands
+     * on the sub by casualty order rather than on the battleship, and the lone-multi-HP allocator
+     * path (a single 2-HP unit absorbing two hits from one volley) is not exercised here.
      */
     @Test
     void multiHitBattleshipWithAFirstStrikeSubMatchesTheEngine() {
