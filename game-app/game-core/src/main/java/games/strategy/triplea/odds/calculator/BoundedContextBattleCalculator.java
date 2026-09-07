@@ -34,6 +34,9 @@ import lombok.Setter;
  */
 class BoundedContextBattleCalculator implements IBattleCalculator {
   private static final int MAX_THREADS = Runtime.getRuntime().availableProcessors();
+  // Runs a worker simulates before re-checking the cancel flag; small enough that Cancel feels
+  // responsive, large enough that the per-batch overhead stays negligible.
+  private static final int CANCEL_POLL_BATCH = 16;
 
   // The live game the adapter reads; never cloned. Volatile because setGameData runs off the caller
   // thread while calculate runs on a worker thread.
@@ -78,9 +81,7 @@ class BoundedContextBattleCalculator implements IBattleCalculator {
       return new ListBackedAggregateResults(0);
     }
     cancelled = false;
-    if (amphibious) {
-      attacking.forEach(unit -> unit.setWasAmphibious(true));
-    }
+    // Amphibious rides in BattleOptions; an odds query must not write the caller's live units.
     final BattleOptions options =
         new BattleOptions(
             retreatWhenOnlyAirLeft,
@@ -88,6 +89,7 @@ class BoundedContextBattleCalculator implements IBattleCalculator {
             orderOfLossTypes(defenderOrderOfLosses, defending, data),
             retreatAfterRound,
             retreatAfterXUnitsLeft,
+            amphibious,
             keepOneAttackingLandUnit);
     final GameDataBattleAdapter adapter = new GameDataBattleAdapter();
     final BattleScenario scenario =
@@ -102,34 +104,48 @@ class BoundedContextBattleCalculator implements IBattleCalculator {
             options);
     final SimulationResults results = simulate(scenario, runCount);
     final AggregateResults aggregateResults =
-        new BoundedContextAggregateResults(results, scenario.cost(), attacking, defending);
+        new BoundedContextAggregateResults(results, attacking, defending);
     aggregateResults.setTime(System.currentTimeMillis() - start);
     return aggregateResults;
   }
 
   /**
-   * Splits {@code runCount} across worker threads that each simulate a chunk over the shared
-   * immutable {@code scenario} with their own simulator and dice source, then concatenates the
-   * per-run results. Cancellation is polled between chunks — an in-flight chunk finishes.
+   * Splits {@code runCount} across worker threads that share the one immutable {@code scenario},
+   * each with its own simulator and dice source, then concatenates the per-run results. Each worker
+   * runs its share in small sub-batches and checks the volatile {@code cancelled} flag between
+   * them, so a {@link #cancel} bites within {@link #CANCEL_POLL_BATCH} runs per worker rather than
+   * only after the whole share finishes.
    */
   private SimulationResults simulate(final BattleScenario scenario, final int runCount) {
     final int workers = Math.max(1, Math.min(MAX_THREADS, runCount));
     final RunCountDistributor distributor = new RunCountDistributor(runCount, workers);
-    final List<Integer> chunks = new ArrayList<>(workers);
+    final List<Integer> shares = new ArrayList<>(workers);
     for (int i = 0; i < workers; i++) {
-      chunks.add(distributor.nextRunCount());
+      shares.add(distributor.nextRunCount());
     }
     final List<BattleResult> merged =
-        chunks.parallelStream()
-            .filter(chunk -> chunk > 0 && !cancelled)
-            .flatMap(chunk -> simulateChunk(scenario, chunk).results().stream())
+        shares.parallelStream()
+            .filter(share -> share > 0)
+            .flatMap(share -> simulateShare(scenario, share).stream())
             .collect(Collectors.toList());
     return new SimulationResults(merged);
   }
 
-  private SimulationResults simulateChunk(final BattleScenario scenario, final int chunk) {
-    return new ReferenceBattleSimulator(new VectorizedHitRoller())
-        .simulate(scenario, chunk, new EngineRandomSource(randomSource));
+  /**
+   * Runs one worker's share in cancel-polled sub-batches over a private simulator and dice source.
+   */
+  private List<BattleResult> simulateShare(final BattleScenario scenario, final int share) {
+    final ReferenceBattleSimulator simulator =
+        new ReferenceBattleSimulator(new VectorizedHitRoller());
+    final EngineRandomSource rng = new EngineRandomSource(randomSource);
+    final List<BattleResult> results = new ArrayList<>(share);
+    int remaining = share;
+    while (remaining > 0 && !cancelled) {
+      final int batch = Math.min(CANCEL_POLL_BATCH, remaining);
+      results.addAll(simulator.simulate(scenario, batch, rng).results());
+      remaining -= batch;
+    }
+    return results;
   }
 
   /**

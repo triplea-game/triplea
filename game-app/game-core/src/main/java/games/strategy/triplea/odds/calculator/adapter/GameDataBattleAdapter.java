@@ -54,9 +54,11 @@ public class GameDataBattleAdapter {
 
   /**
    * Bakes a self-contained {@link BattleScenario} without holding any {@code GameData} lock (design
-   * §3). The bake only reads the live game, so its lone hazard is a collection mutating mid-walk;
-   * that surfaces as a {@link ConcurrentModificationException}, which a single retry against a
-   * now-quiescent read clears. A second failure propagates rather than spinning.
+   * §3). The retry-once guards the collection walks: a force or support collection mutating
+   * mid-walk surfaces as a {@link ConcurrentModificationException} that a single retry against a
+   * now-quiescent read clears; a second failure propagates rather than spinning. Scalar property
+   * reads cannot raise a CME, so the guard does not cover them — {@link #bake} snapshots them once
+   * up front to keep them out of the long iteration window instead.
    */
   public BattleScenario toScenario(
       final GamePlayer attacker,
@@ -94,6 +96,12 @@ public class GameDataBattleAdapter {
       final Collection<TerritoryEffect> effects,
       final BattleOptions options) {
     final GameData data = location.getData();
+    // Read the scalar game properties once, up front. Unlike the collection walks below, a racing
+    // mutation of the HashMap-backed GameProperties would not throw a CME the retry could catch, so
+    // snapshotting them here keeps their read out of the long iteration window.
+    final int diceSides = data.getDiceSides();
+    final boolean lowLuck = Properties.getLowLuck(data.getProperties());
+    final RulesProfile rules = rulesProfile(data);
     final List<Unit> attackers = List.copyOf(attacking);
     final List<Unit> defenders = List.copyOf(defending);
     final List<Unit> bombarders = List.copyOf(bombarding);
@@ -104,12 +112,12 @@ public class GameDataBattleAdapter {
         toForce(defenders, defender, Side.DEFENSE, effects, support, seaBattle),
         toForce(bombarders, attacker, Side.OFFENSE, effects, support, seaBattle),
         dependents(attackers, attacker, defenders, defender, seaBattle, effects, support),
-        rulesProfile(data),
+        rules,
         support.rules(),
         costs(data, attacker, defender),
-        anyAmphibious(attackers),
-        data.getDiceSides(),
-        Properties.getLowLuck(data.getProperties()),
+        anyAmphibious(attackers) || options.amphibious(),
+        diceSides,
+        lowLuck,
         // keepOneAttackingLandUnit rides in BattleOptions for interface parity but is not threaded
         // into the scenario — the simulator hardcodes it off (a deferred fidelity item).
         new ReferenceRetreatPolicy(
