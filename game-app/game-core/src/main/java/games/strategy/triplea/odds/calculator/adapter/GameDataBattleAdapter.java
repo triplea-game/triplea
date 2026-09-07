@@ -8,6 +8,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.odds.calculator.context.model.BattleOptions;
 import games.strategy.triplea.odds.calculator.context.model.BattleScenario;
@@ -22,6 +23,7 @@ import games.strategy.triplea.odds.calculator.context.model.Lifecycle;
 import games.strategy.triplea.odds.calculator.context.model.RulesProfile;
 import games.strategy.triplea.odds.calculator.context.model.Side;
 import games.strategy.triplea.odds.calculator.context.model.SupportCategory;
+import games.strategy.triplea.odds.calculator.context.model.SupportRule;
 import games.strategy.triplea.odds.calculator.context.model.UnitTypeId;
 import games.strategy.triplea.odds.calculator.context.reference.OolCasualtyOrder;
 import games.strategy.triplea.odds.calculator.context.reference.ReferenceRetreatPolicy;
@@ -62,18 +64,16 @@ public class GameDataBattleAdapter {
       final Collection<TerritoryEffect> effects,
       final BattleOptions options) {
     final GameData data = location.getData();
+    final SupportModel support = supportModel(data, attacker, defender);
     return new BattleScenario(
-        toForce(attacking, attacker, Side.OFFENSE, effects),
-        toForce(defending, defender, Side.DEFENSE, effects),
-        toForce(bombarding, attacker, Side.OFFENSE, effects),
+        toForce(attacking, attacker, Side.OFFENSE, effects, support),
+        toForce(defending, defender, Side.DEFENSE, effects, support),
+        toForce(bombarding, attacker, Side.OFFENSE, effects, support),
         // TODO(adapter): transport/carrier cargo cascade — build from Unit#getTransporting once the
         // allocator's dependent handling is exercised by a test.
         new Dependents(Map.of()),
         rulesProfile(data),
-        // TODO(adapter): SupportRules from UnitSupportAttachment, honoring AvailableSupports'
-        // consume/sort order; deferred until a support scenario is under test (and paired with the
-        // gives/receives categories left NONE on the profiles below).
-        List.of(),
+        support.rules(),
         costs(data, attacker, defender),
         anyAmphibious(attacking),
         data.getDiceSides(),
@@ -91,11 +91,12 @@ public class GameDataBattleAdapter {
       final Collection<Unit> units,
       final GamePlayer player,
       final Side side,
-      final Collection<TerritoryEffect> effects) {
+      final Collection<TerritoryEffect> effects,
+      final SupportModel support) {
     final Map<Key, Integer> counts = new LinkedHashMap<>();
     for (final Unit unit : units) {
       final CombatProfile profile =
-          profileFor(unit.getType(), player, side, effects, unit.getHits());
+          profileFor(unit.getType(), player, side, effects, unit.getHits(), support);
       final Key key = new Key(profile, Lifecycle.ACTIVE);
       counts.merge(key, 1, Integer::sum);
     }
@@ -119,7 +120,8 @@ public class GameDataBattleAdapter {
       final GamePlayer player,
       final Side side,
       final Collection<TerritoryEffect> effects,
-      final int hits) {
+      final int hits,
+      final SupportModel support) {
     final UnitAttachment ua = type.getUnitAttachment();
     final int remaining = ua.getHitPoints() - hits;
     return new CombatProfile(
@@ -130,10 +132,10 @@ public class GameDataBattleAdapter {
         remaining,
         domainOf(ua),
         new DamageState(hits),
-        SupportCategory.NONE,
-        SupportCategory.NONE,
+        support.gives().getOrDefault(type.getName(), SupportCategory.NONE),
+        support.receives().getOrDefault(type.getName(), SupportCategory.NONE),
         flagsOf(ua),
-        successor(type, player, side, effects, hits, remaining));
+        successor(type, player, side, effects, hits, remaining, support));
   }
 
   private static CombatProfile successor(
@@ -142,7 +144,8 @@ public class GameDataBattleAdapter {
       final Side side,
       final Collection<TerritoryEffect> effects,
       final int hits,
-      final int remaining) {
+      final int remaining,
+      final SupportModel support) {
     if (remaining <= 1) {
       return null;
     }
@@ -153,7 +156,7 @@ public class GameDataBattleAdapter {
     // its type and stats change.
     final UnitType nextType =
         changesInto.containsKey(nextHits) ? changesInto.get(nextHits).getSecond() : type;
-    return profileFor(nextType, player, side, effects, nextHits);
+    return profileFor(nextType, player, side, effects, nextHits, support);
   }
 
   private static Domain domainOf(final UnitAttachment ua) {
@@ -201,6 +204,81 @@ public class GameDataBattleAdapter {
   private static boolean anyAmphibious(final Collection<Unit> attacking) {
     return attacking.stream().anyMatch(Unit::getWasAmphibious);
   }
+
+  /**
+   * Bakes the map's friendly strength/roll support into the calc's {@link SupportRule} model plus
+   * the per-unit-type give/receive categories the resolver keys on. Each {@link
+   * UnitSupportAttachment} becomes one rule per battle side it applies to, gated to the side whose
+   * owner ({@code attacker} or {@code defender}) the attachment lists — mirroring the engine's
+   * {@code SupportCalculator} owner match.
+   *
+   * <p>v1 scope, bounded by the singular {@link CombatProfile#gives()}/{@link
+   * CombatProfile#receives()} fields: only friendly ({@code allied}) strength/roll support is
+   * modeled. Deliberately unmodeled, each needing a multi-category profile the design defers: enemy
+   * ({@code enemy}) debuff support, per-{@code bonusType} stacking caps, a unit that gives or
+   * receives more than one distinct support (first attachment wins), Improved-Artillery tech
+   * doubling, allied support beyond the two calc players, a rule that is both strength and roll
+   * (strength wins), and AA support.
+   */
+  private static SupportModel supportModel(
+      final GameData data, final GamePlayer attacker, final GamePlayer defender) {
+    final List<SupportRule> rules = new ArrayList<>();
+    final Map<String, SupportCategory> gives = new LinkedHashMap<>();
+    final Map<String, SupportCategory> receives = new LinkedHashMap<>();
+    for (final UnitSupportAttachment attachment : data.getUnitTypeList().getSupportRules()) {
+      if (!attachment.getAllied()) {
+        continue;
+      }
+      final UnitType giver = (UnitType) attachment.getAttachedTo();
+      final SupportCategory category =
+          new SupportCategory("support:" + giver.getName() + "/" + attachment.getName());
+      final boolean appliesToStrength = attachment.getStrength();
+      if (attachment.getOffence() && attachment.getPlayers().contains(attacker)) {
+        rules.add(supportRule(attachment, category, appliesToStrength, Side.OFFENSE));
+        register(gives, receives, giver, attachment, category);
+      }
+      if (attachment.getDefence() && attachment.getPlayers().contains(defender)) {
+        rules.add(supportRule(attachment, category, appliesToStrength, Side.DEFENSE));
+        register(gives, receives, giver, attachment, category);
+      }
+    }
+    return new SupportModel(rules, gives, receives);
+  }
+
+  private static SupportRule supportRule(
+      final UnitSupportAttachment attachment,
+      final SupportCategory category,
+      final boolean appliesToStrength,
+      final Side side) {
+    // firstRoundOnly is always false: the engine's support model has no first-round-only flag.
+    return new SupportRule(
+        category,
+        category,
+        attachment.getBonus(),
+        appliesToStrength,
+        attachment.getNumber(),
+        side,
+        false);
+  }
+
+  /** Records the giver's emitted category and each receiver type's consumed one (first wins). */
+  private static void register(
+      final Map<String, SupportCategory> gives,
+      final Map<String, SupportCategory> receives,
+      final UnitType giver,
+      final UnitSupportAttachment attachment,
+      final SupportCategory category) {
+    gives.putIfAbsent(giver.getName(), category);
+    for (final UnitType receiver : attachment.getUnitType()) {
+      receives.putIfAbsent(receiver.getName(), category);
+    }
+  }
+
+  /** The baked support: the rules plus the per-unit-type give/receive categories they key on. */
+  private record SupportModel(
+      List<SupportRule> rules,
+      Map<String, SupportCategory> gives,
+      Map<String, SupportCategory> receives) {}
 
   // TODO(adapter): a curated slice of the ~60-70 combat flags (design §3.1). The full port is
   // enumerated as the differential harness lights up rules that read them.
