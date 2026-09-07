@@ -85,8 +85,8 @@ public class DiceHitRoller implements HitRoller {
       final int rolls = profile.rolls();
       final int count = entry.getValue();
       if (rolls > 1 && profile.flags().contains(CombatFlag.CHOOSE_BEST_ROLL)) {
-        // Best-of-rolls has no meaning under low luck, so the engine (PowerCalculator) instead adds
-        // one bonus per extra roll rather than multiplying — capped at diceSides.
+        // Under low luck the engine (PowerCalculator) approximates best-of-rolls as the unit's
+        // strength plus one bonus per extra roll, capped at diceSides.
         final int bonus = Math.max(1, ctx.diceSides() / 6);
         power += Math.min(strengthOf(profile, ctx) + bonus * (rolls - 1), ctx.diceSides()) * count;
       } else {
