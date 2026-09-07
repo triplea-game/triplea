@@ -51,11 +51,7 @@ public abstract class AbstractBasePlayer implements Player {
    * dispatch to the matching phase handler; the base implementation is an empty hook.
    */
   @Override
-  public void start(final String stepName) {
-    // 'ServerGame.waitForPlayerToFinishStep' and 'ClientGame.gameStepAdvancer' advance the game
-    // sequence to 'stepName' before calling start(), so the bridge's live read of 'gameData'
-    // already reflects this step.
-  }
+  public void start(final String stepName) {}
 
   @Override
   public void stopGame() {}
