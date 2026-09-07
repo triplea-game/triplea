@@ -46,12 +46,15 @@ public abstract class AbstractBasePlayer implements Player {
     return playerBridge.getGameData();
   }
 
-  /** The given phase has started. We parse the phase name and call the appropriate method. */
+  /**
+   * Invoked when the game sequence reaches the given step. Subclasses parse {@code stepName} and
+   * dispatch to the matching phase handler; the base implementation is an empty hook.
+   */
   @Override
   public void start(final String stepName) {
-    // The caller (ServerGame.waitForPlayerToFinishStep / ClientGame.gameStepAdvancer) only
-    // invokes start() once the game sequence has already advanced to stepName, so the bridge's
-    // live view of gameData is guaranteed to be in sync. No wait is needed here.
+    // 'ServerGame.waitForPlayerToFinishStep' and 'ClientGame.gameStepAdvancer' advance the game
+    // sequence to 'stepName' before calling start(), so the bridge's live read of 'gameData'
+    // already reflects this step.
   }
 
   @Override
