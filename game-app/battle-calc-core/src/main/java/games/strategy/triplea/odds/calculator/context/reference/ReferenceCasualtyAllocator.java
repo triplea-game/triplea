@@ -48,7 +48,7 @@ public class ReferenceCasualtyAllocator implements CasualtyAllocator {
       }
       final CombatProfile target =
           order.next(selectable(candidates, working, constraints), stats, side);
-      applyHit(working, target, deps, firingMode);
+      applyHit(working, target, deps);
     }
     return new Force(working);
   }
@@ -102,32 +102,26 @@ public class ReferenceCasualtyAllocator implements CasualtyAllocator {
   }
 
   private void applyHit(
-      final Map<Key, Integer> working,
-      final CombatProfile target,
-      final Dependents deps,
-      final FiringMode firingMode) {
+      final Map<Key, Integer> working, final CombatProfile target, final Dependents deps) {
     remove(working, new Key(target, Lifecycle.ACTIVE), 1);
     final Optional<CombatProfile> damaged = target.onHit();
     if (damaged.isPresent()) {
       add(working, new Key(damaged.get(), Lifecycle.ACTIVE), 1);
     } else {
       add(working, new Key(target, Lifecycle.DEAD), 1);
-      cascade(working, target, deps, firingMode);
+      cascade(working, target, deps);
     }
   }
 
   /**
-   * A killed carrier takes its cargo down. IMMEDIATE removes the cargo in this allocation; DEFERRED
-   * leaves it ACTIVE so it still fires this round, dying only at the reconcile this call never
-   * runs.
+   * A killed carrier takes its cargo down in the same allocation. Cargo is a non-combatant that
+   * never fires, so its removal does not wait on firing-mode timing — a sunk carrier sheds its cargo
+   * at once, capped at the carrier's capacity and matched by cargo type.
    */
   private void cascade(
-      final Map<Key, Integer> working,
-      final CombatProfile carrier,
-      final Dependents deps,
-      final FiringMode firingMode) {
+      final Map<Key, Integer> working, final CombatProfile carrier, final Dependents deps) {
     final CargoRule rule = deps.rules().get(carrier);
-    if (rule == null || firingMode == FiringMode.DEFERRED) {
+    if (rule == null) {
       return;
     }
     int toRemove = rule.capacity();

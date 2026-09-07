@@ -19,5 +19,9 @@ public enum CombatFlag {
   CANNOT_BE_TARGETED_BY_ALL,
   // Baked from GameData by the adapter and consumed by CombatRelations, eg to deny a facing sub its
   // first-strike/submerge — intrinsic identity, never string-parsed in the core.
-  IS_DESTROYER
+  IS_DESTROYER,
+  // Marks a non-combatant cargo profile, eg a land unit carried by a transport in a sea battle.
+  // CombatRelations excludes it from targeting and RollGroupResolver from firing, so it leaves the
+  // battle only through the dependent cascade when its carrier is killed.
+  IS_DEPENDENT
 }

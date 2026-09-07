@@ -1,6 +1,7 @@
 package games.strategy.triplea.odds.calculator.context;
 
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.aa;
+import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.cargo;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.firstStrikeSea;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.land;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.sea;
@@ -229,6 +230,28 @@ class ReferenceRollGroupResolverTest {
     assertThat(plan.firing().sequencedKeySet()).isNotEmpty();
     assertThat(plan.firing().sequencedKeySet())
         .allMatch(group -> group.target().equals(onlyDefendingInfantry));
+  }
+
+  /**
+   * Dependent cargo is a non-combatant: the resolver keeps it out of every firing partition, so no
+   * planned group fires it while the ordinary combatant beside it still does.
+   */
+  @Test
+  void dependentCargoNeverJoinsAFiringGroup() {
+    final CombatProfile infantry = land("infantry", 1, 2, 1);
+    final CombatProfile cargoInfantry = cargo("cargo", 1, 2, 1);
+    final Force attackers = forceOf(infantry, 3, cargoInfantry, 2);
+    final Force defenders = forceOf(land("defendingInfantry", 1, 2, 1), 2);
+    final RollGroupResolver resolver =
+        new ReferenceRollGroupResolver(
+            (force, enemy, side, rules, round) -> rawCounts(force), new FakeCombatRelations(false));
+
+    final BattleRound plan =
+        resolver.plan(attackers, defenders, new RulesProfile(Map.of()), List.of(), 1);
+
+    assertThat(groupFiring(plan, infantry).firing()).containsKey(infantry);
+    assertThat(plan.firing().sequencedKeySet())
+        .noneMatch(group -> group.firing().containsKey(cargoInfantry));
   }
 
   /**

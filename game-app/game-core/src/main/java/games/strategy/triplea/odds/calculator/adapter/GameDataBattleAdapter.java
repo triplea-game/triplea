@@ -12,6 +12,7 @@ import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.odds.calculator.context.model.BattleOptions;
 import games.strategy.triplea.odds.calculator.context.model.BattleScenario;
+import games.strategy.triplea.odds.calculator.context.model.CargoRule;
 import games.strategy.triplea.odds.calculator.context.model.CombatFlag;
 import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
 import games.strategy.triplea.odds.calculator.context.model.DamageState;
@@ -32,8 +33,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
 
@@ -65,20 +68,12 @@ public class GameDataBattleAdapter {
       final BattleOptions options) {
     final GameData data = location.getData();
     final SupportModel support = supportModel(data, attacker, defender);
+    final boolean seaBattle = location.isWater();
     return new BattleScenario(
-        toForce(attacking, attacker, Side.OFFENSE, effects, support),
-        toForce(defending, defender, Side.DEFENSE, effects, support),
-        toForce(bombarding, attacker, Side.OFFENSE, effects, support),
-        // TODO(adapter): transport/carrier cargo cascade. The allocator cascade is already built
-        // and tested, but baking Dependents from Unit#getTransporting is not enough on its own:
-        // cargo must sit in the Force for the cascade to remove it, yet the model has no
-        // non-combatant dependent concept, so ReferenceCombatRelations would let cargo (eg a land
-        // unit in a sea battle) both fire and be targeted. Correct handling needs a dependent
-        // marker
-        // spanning CombatFlag + relations (exclude from targeting) + resolver (exclude from firing)
-        // + cascade profile-matching — a core-model change, not adapter-only. Deferred to a
-        // follow-up.
-        new Dependents(Map.of()),
+        toForce(attacking, attacker, Side.OFFENSE, effects, support, seaBattle),
+        toForce(defending, defender, Side.DEFENSE, effects, support, seaBattle),
+        toForce(bombarding, attacker, Side.OFFENSE, effects, support, seaBattle),
+        dependents(attacking, attacker, defending, defender, seaBattle, effects, support),
         rulesProfile(data),
         support.rules(),
         costs(data, attacker, defender),
@@ -93,21 +88,36 @@ public class GameDataBattleAdapter {
         new OolCasualtyOrder(options.defenderOol()));
   }
 
-  /** Groups a side's units into merged {@code (profile, ACTIVE)} buckets with summed counts. */
+  /**
+   * Groups a side's units into merged {@code (profile, ACTIVE)} buckets with summed counts. In a sea
+   * battle a side's land units are non-combatant cargo, marked {@code IS_DEPENDENT} so they neither
+   * fire nor are targeted and leave only through the carrier cascade — but only when the side
+   * actually fields a carrier to tie them to, so a stray land unit with no transport is not left an
+   * un-killable dependent.
+   */
   private static Force toForce(
       final Collection<Unit> units,
       final GamePlayer player,
       final Side side,
       final Collection<TerritoryEffect> effects,
-      final SupportModel support) {
+      final SupportModel support,
+      final boolean seaBattle) {
+    final boolean hasCarrier = seaBattle && anyCarrier(units);
     final Map<Key, Integer> counts = new LinkedHashMap<>();
     for (final Unit unit : units) {
+      final boolean dependent =
+          hasCarrier && domainOf(unit.getType().getUnitAttachment()) == Domain.LAND;
       final CombatProfile profile =
-          profileFor(unit.getType(), player, side, effects, unit.getHits(), support);
+          profileFor(unit.getType(), player, side, effects, unit.getHits(), support, dependent);
       final Key key = new Key(profile, Lifecycle.ACTIVE);
       counts.merge(key, 1, Integer::sum);
     }
     return new Force(counts);
+  }
+
+  private static boolean anyCarrier(final Collection<Unit> units) {
+    return units.stream()
+        .anyMatch(unit -> unit.getType().getUnitAttachment().getTransportCapacity() > 0);
   }
 
   /**
@@ -128,7 +138,8 @@ public class GameDataBattleAdapter {
       final Side side,
       final Collection<TerritoryEffect> effects,
       final int hits,
-      final SupportModel support) {
+      final SupportModel support,
+      final boolean dependent) {
     final UnitAttachment ua = type.getUnitAttachment();
     final int remaining = ua.getHitPoints() - hits;
     return new CombatProfile(
@@ -141,8 +152,8 @@ public class GameDataBattleAdapter {
         new DamageState(hits),
         support.gives().getOrDefault(type.getName(), SupportCategory.NONE),
         support.receives().getOrDefault(type.getName(), SupportCategory.NONE),
-        flagsOf(ua),
-        successor(type, player, side, effects, hits, remaining, support));
+        flagsOf(ua, dependent),
+        successor(type, player, side, effects, hits, remaining, support, dependent));
   }
 
   private static CombatProfile successor(
@@ -152,7 +163,8 @@ public class GameDataBattleAdapter {
       final Collection<TerritoryEffect> effects,
       final int hits,
       final int remaining,
-      final SupportModel support) {
+      final SupportModel support,
+      final boolean dependent) {
     if (remaining <= 1) {
       return null;
     }
@@ -163,7 +175,7 @@ public class GameDataBattleAdapter {
     // its type and stats change.
     final UnitType nextType =
         changesInto.containsKey(nextHits) ? changesInto.get(nextHits).getSecond() : type;
-    return profileFor(nextType, player, side, effects, nextHits, support);
+    return profileFor(nextType, player, side, effects, nextHits, support, dependent);
   }
 
   private static Domain domainOf(final UnitAttachment ua) {
@@ -185,7 +197,7 @@ public class GameDataBattleAdapter {
    * {@code canEvade} — see {@code AirVsNonSubsStep#airWillMissSubs} and {@code
    * DummyPlayer#retreatQuery}.
    */
-  private static EnumSet<CombatFlag> flagsOf(final UnitAttachment ua) {
+  private static EnumSet<CombatFlag> flagsOf(final UnitAttachment ua, final boolean dependent) {
     final EnumSet<CombatFlag> flags = EnumSet.noneOf(CombatFlag.class);
     if (ua.getIsFirstStrike()) {
       flags.add(CombatFlag.FIRST_STRIKE);
@@ -205,11 +217,77 @@ public class GameDataBattleAdapter {
     if (ua.isDestroyer()) {
       flags.add(CombatFlag.IS_DESTROYER);
     }
+    if (dependent) {
+      flags.add(CombatFlag.IS_DEPENDENT);
+    }
     return flags;
   }
 
   private static boolean anyAmphibious(final Collection<Unit> attacking) {
     return attacking.stream().anyMatch(Unit::getWasAmphibious);
+  }
+
+  /**
+   * The cargo cascade for a sea battle: each side's transports become {@link CargoRule}s keyed by
+   * the transport's own {@link CombatProfile}, so a sunk transport sheds the land units it carried.
+   * A land battle carries no sea cargo, so it gets an empty map.
+   *
+   * <p>Compact loading: capacity is a transport's full load, and a side's land cargo is one pool the
+   * greedy cascade empties transport-load by transport-load — early transport losses take a full
+   * load rather than one unit spread across the fleet.
+   *
+   * <p>v1 scope: one cargo type per side (the first land type present), keyed to undamaged transport
+   * profiles. Mixed loads, per-unit cargo linkage, and damaged transports are unmodeled follow-ups.
+   */
+  private static Dependents dependents(
+      final Collection<Unit> attacking,
+      final GamePlayer attacker,
+      final Collection<Unit> defending,
+      final GamePlayer defender,
+      final boolean seaBattle,
+      final Collection<TerritoryEffect> effects,
+      final SupportModel support) {
+    if (!seaBattle) {
+      return new Dependents(Map.of());
+    }
+    final Map<CombatProfile, CargoRule> rules = new LinkedHashMap<>();
+    addCarrierRules(rules, attacking, attacker, Side.OFFENSE, effects, support);
+    addCarrierRules(rules, defending, defender, Side.DEFENSE, effects, support);
+    return new Dependents(rules);
+  }
+
+  private static void addCarrierRules(
+      final Map<CombatProfile, CargoRule> rules,
+      final Collection<Unit> units,
+      final GamePlayer player,
+      final Side side,
+      final Collection<TerritoryEffect> effects,
+      final SupportModel support) {
+    UnitType cargoType = null;
+    for (final Unit unit : units) {
+      if (domainOf(unit.getType().getUnitAttachment()) == Domain.LAND) {
+        cargoType = unit.getType();
+        break;
+      }
+    }
+    if (cargoType == null) {
+      return;
+    }
+    final int cargoCost = Math.max(1, cargoType.getUnitAttachment().getTransportCost());
+    final UnitTypeId cargoId = new UnitTypeId(cargoType.getName());
+    final Set<UnitType> carrierTypes = new LinkedHashSet<>();
+    for (final Unit unit : units) {
+      if (unit.getType().getUnitAttachment().getTransportCapacity() > 0) {
+        carrierTypes.add(unit.getType());
+      }
+    }
+    for (final UnitType carrierType : carrierTypes) {
+      final int capacity =
+          Math.max(1, carrierType.getUnitAttachment().getTransportCapacity() / cargoCost);
+      final CombatProfile carrier =
+          profileFor(carrierType, player, side, effects, 0, support, false);
+      rules.put(carrier, new CargoRule(cargoId, capacity));
+    }
   }
 
   /**

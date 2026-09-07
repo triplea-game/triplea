@@ -102,10 +102,15 @@ public class ReferenceRollGroupResolver implements RollGroupResolver {
     firing.put(new RollGroup(side, fired, target, mode, DiceMode.NORMAL), Set.of());
   }
 
+  /**
+   * The firing side's active profiles. Dependent cargo is a non-combatant and is dropped here, so it
+   * never joins an AA, first-strike, or main partition and thus never fires.
+   */
   private static Map<CombatProfile, Integer> activeProfileCounts(final Force force) {
     final Map<CombatProfile, Integer> counts = new LinkedHashMap<>();
     for (final Map.Entry<Key, Integer> entry : force.counts().entrySet()) {
-      if (entry.getKey().state() == Lifecycle.ACTIVE) {
+      if (entry.getKey().state() == Lifecycle.ACTIVE
+          && !entry.getKey().profile().flags().contains(CombatFlag.IS_DEPENDENT)) {
         counts.merge(entry.getKey().profile(), entry.getValue(), Integer::sum);
       }
     }
