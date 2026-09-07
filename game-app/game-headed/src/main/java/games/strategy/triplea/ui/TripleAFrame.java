@@ -96,6 +96,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
@@ -392,7 +393,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             .build(),
         BorderLayout.SOUTH);
 
-    mapPanel.addKeyListener(getArrowKeyListener());
+    final ArrowKeyScroller arrowKeyScroller = new ArrowKeyScroller();
+    mapPanel.addKeyListener(arrowKeyScroller);
+    mapPanel.addFocusListener(arrowKeyScroller);
 
     actionButtonsPanel.setBorder(null);
     statsPanel = new StatPanel(data, uiContext);
@@ -1792,28 +1795,65 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     return "";
   }
 
-  private KeyListener getArrowKeyListener() {
-    return new ArrowKeyScroller();
-  }
-
   private int computeScrollSpeed() {
     return ClientSetting.arrowKeyScrollSpeed.getValueOrThrow()
         * (isCtrlPressed ? ClientSetting.fasterArrowKeyScrollMultiplier.getValueOrThrow() : 1);
   }
 
+  /** One animation tick's integer pan and the sub-pixel remainder carried to the next tick. */
+  record ScrollStep(int stepX, int stepY, double residualX, double residualY) {}
+
+  /**
+   * Adds this frame's pan distance for each held arrow key onto the carried sub-pixel residual,
+   * then splits the total into an integer step and the leftover fraction, so fractional velocity
+   * survives integer rounding instead of being dropped each frame.
+   */
+  static ScrollStep computeScrollStep(
+      final double residualX,
+      final double residualY,
+      final double distance,
+      final Set<Integer> heldKeys) {
+    double x = residualX;
+    double y = residualY;
+    if (heldKeys.contains(KeyEvent.VK_RIGHT)) {
+      x += distance;
+    }
+    if (heldKeys.contains(KeyEvent.VK_LEFT)) {
+      x -= distance;
+    }
+    if (heldKeys.contains(KeyEvent.VK_DOWN)) {
+      y += distance;
+    }
+    if (heldKeys.contains(KeyEvent.VK_UP)) {
+      y -= distance;
+    }
+    final int stepX = (int) x;
+    final int stepY = (int) y;
+    return new ScrollStep(stepX, stepY, x - stepX, y - stepY);
+  }
+
+  /**
+   * Clamps a display refresh rate to the 8-16 ms timer-interval band (~60-125 fps), treating a
+   * non-positive (unknown) rate as ~100 fps.
+   */
+  static int clampFrameIntervalMs(final int refreshHz) {
+    final int hz = refreshHz <= 0 ? 100 : refreshHz;
+    return Math.max(8, Math.min(16, Math.round(1000f / hz)));
+  }
+
   /**
    * Pans the map while an arrow key is held using a fixed-rate animation timer, so motion is smooth
-   * regardless of the operating system's key-repeat rate. Driving the pan off {@code keyPressed}
-   * events directly (as before) produced jagged jumps, because those events arrive on the OS repeat
-   * cadence — a long initial delay followed by chunky, uneven repeats.
+   * regardless of the operating system's key-repeat rate. A {@code keyPressed}-driven pan instead
+   * follows the OS key-repeat cadence — a long initial delay then chunky, uneven repeats — which
+   * reads as jagged jumps; the fixed-rate timer decouples motion from that cadence.
    *
    * <p>Holding two arrow keys pans diagonally. The Ctrl multiplier from {@link
    * #computeScrollSpeed()} still applies and takes effect live while held.
    */
-  private final class ArrowKeyScroller implements KeyListener {
+  private final class ArrowKeyScroller implements KeyListener, FocusListener {
     // computeScrollSpeed() is calibrated as pixels per 50ms tick by MapPanel's button-drag scroll
     // loop; reusing that cadence here keeps the arrowKeyScrollSpeed setting feeling the same.
-    private static final double LEGACY_TICKS_PER_SECOND = 20.0;
+    private static final double DRAG_SCROLL_TICKS_PER_SECOND = 20.0;
 
     private final Set<Integer> heldKeys = new HashSet<>();
     // Keys whose keyReleased is awaiting confirmation; an X11 auto-repeat fires a phantom
@@ -1861,8 +1901,18 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     }
 
     @Override
-    public void keyTyped(final KeyEvent e) {
-      // not needed interface method
+    public void keyTyped(final KeyEvent e) {}
+
+    @Override
+    public void focusGained(final FocusEvent e) {}
+
+    @Override
+    public void focusLost(final FocusEvent e) {
+      // A key released while mapPanel lacks focus never reaches keyReleased, so held state would
+      // leak and pan the map forever; dropping it on focus loss ends the scroll instead.
+      heldKeys.clear();
+      pendingRelease.clear();
+      timer.stop();
     }
 
     private void tick() {
@@ -1873,25 +1923,13 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       final long now = System.nanoTime();
       final double dtSeconds = (now - lastTickNanos) / 1_000_000_000.0;
       lastTickNanos = now;
-      final double distance = computeScrollSpeed() * LEGACY_TICKS_PER_SECOND * dtSeconds;
-      if (heldKeys.contains(KeyEvent.VK_RIGHT)) {
-        residualX += distance;
-      }
-      if (heldKeys.contains(KeyEvent.VK_LEFT)) {
-        residualX -= distance;
-      }
-      if (heldKeys.contains(KeyEvent.VK_DOWN)) {
-        residualY += distance;
-      }
-      if (heldKeys.contains(KeyEvent.VK_UP)) {
-        residualY -= distance;
-      }
-      final int stepX = (int) residualX;
-      final int stepY = (int) residualY;
-      residualX -= stepX;
-      residualY -= stepY;
-      if (stepX != 0 || stepY != 0) {
-        getMapPanel().setTopLeft(mapPanel.getXOffset() + stepX, mapPanel.getYOffset() + stepY);
+      final double distance = computeScrollSpeed() * DRAG_SCROLL_TICKS_PER_SECOND * dtSeconds;
+      final ScrollStep step = computeScrollStep(residualX, residualY, distance, heldKeys);
+      residualX = step.residualX();
+      residualY = step.residualY();
+      if (step.stepX() != 0 || step.stepY() != 0) {
+        getMapPanel()
+            .setTopLeft(mapPanel.getXOffset() + step.stepX(), mapPanel.getYOffset() + step.stepY());
       }
     }
 
@@ -1906,7 +1944,8 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
      * Frame interval matched to the display's refresh rate, so a panned frame is never held on
      * screen longer than the monitor shows it — that hold is what smears map motion on a
      * sample-and-hold display, and running slower than the refresh only adds judder on top of it.
-     * Clamped to 60-120 fps, and falls back to ~100 fps when the driver reports an unknown rate.
+     * Clamped to an 8-16 ms interval (~60-125 fps), and falls back to ~100 fps when the driver
+     * reports an unknown rate.
      */
     private int computeFrameIntervalMs() {
       int refreshHz = 0;
@@ -1916,13 +1955,10 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                 .getDefaultScreenDevice()
                 .getDisplayMode()
                 .getRefreshRate();
-      } catch (final HeadlessException ignored) {
-        // no display available; the fallback below applies
+      } catch (final HeadlessException | NullPointerException ignored) {
+        // no display available, or the driver reports no display mode; the fallback applies
       }
-      if (refreshHz <= 0) {
-        refreshHz = 100;
-      }
-      return Math.max(8, Math.min(16, Math.round(1000f / refreshHz)));
+      return clampFrameIntervalMs(refreshHz);
     }
   }
 
