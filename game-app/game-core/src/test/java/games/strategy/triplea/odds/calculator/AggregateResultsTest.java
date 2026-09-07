@@ -19,7 +19,7 @@ import org.triplea.util.Tuple;
 public class AggregateResultsTest {
   @Test
   void testNoResultsAdded() {
-    final AggregateResults results = new AggregateResults(1);
+    final AggregateResults results = new ListBackedAggregateResults(1);
 
     // The methods for the TUV need some additional objects.  Note that even in an zero-result TUV
     // swing simulation, some pre-computation is done with this objects, i.e. they must be non-null.

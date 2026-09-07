@@ -431,27 +431,4 @@ public class GameDataBattleAdapter {
       cost.putIfAbsent(new UnitTypeId(type.getName()), schedule.getInt(type));
     }
   }
-
-  /**
-   * Survivor counts back to concrete units for the UI's "average units remaining". Fungible by
-   * profile incl. damage, so any units matching the counts will do; dead buckets are dropped.
-   *
-   * <p>The {@link Force} carries no owner, so representatives are created under the game's null
-   * player — adequate for a display count, but a caller that needs owned units must remap. TODO
-   * (adapter): thread the surviving side's {@link GamePlayer} through if owned representatives are
-   * ever required.
-   */
-  public Collection<Unit> toRepresentativeUnits(final Force survivors, final GameData data) {
-    final GamePlayer owner = data.getPlayerList().getNullPlayer();
-    final List<Unit> units = new ArrayList<>();
-    for (final Map.Entry<Key, Integer> entry : survivors.counts().entrySet()) {
-      if (entry.getKey().state() == Lifecycle.DEAD) {
-        continue;
-      }
-      final CombatProfile profile = entry.getKey().profile();
-      final UnitType type = data.getUnitTypeList().getUnitTypeOrThrow(profile.type().name());
-      units.addAll(type.create(entry.getValue(), owner, true, profile.damage().hitsTaken(), 0));
-    }
-    return units;
-  }
 }
