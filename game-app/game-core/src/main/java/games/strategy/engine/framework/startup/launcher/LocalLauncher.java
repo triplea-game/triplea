@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
+import org.triplea.swing.SwingComponents;
 
 /** Implementation of {@link ILauncher} for a headed local or network client game. */
 @Slf4j
