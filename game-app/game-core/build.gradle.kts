@@ -33,3 +33,27 @@ dependencies {
     testFixturesCompileOnly(libs.lombok)
     testFixturesAnnotationProcessor(libs.lombok)
 }
+
+// The fuzzed battle-calc differential harness is @Tag("fuzz"): it reports expected drift and would be
+// RED, so it must stay out of the blocking `check`/`./verify` gate. The default `test` task excludes
+// it; the dedicated `fuzzTest` task below is the on-demand way to run it.
+tasks.named<Test>("test") {
+    useJUnitPlatform {
+        excludeTags("fuzz")
+    }
+}
+
+tasks.register<Test>("fuzzTest") {
+    description = "Runs the map-XML-fuzzed battle-calc differential drift harness (not part of check)."
+    group = "verification"
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
+    shouldRunAfter(tasks.named("test"))
+    useJUnitPlatform {
+        includeTags("fuzz")
+    }
+    // The harness prints its drift summary to stdout; surface it when run directly.
+    testLogging {
+        showStandardStreams = true
+    }
+}
