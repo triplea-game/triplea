@@ -6,6 +6,7 @@ import games.strategy.triplea.odds.calculator.context.model.DamageState;
 import games.strategy.triplea.odds.calculator.context.model.Domain;
 import games.strategy.triplea.odds.calculator.context.model.SupportCategory;
 import games.strategy.triplea.odds.calculator.context.model.UnitTypeId;
+import java.util.Arrays;
 import java.util.EnumSet;
 
 /**
@@ -49,6 +50,58 @@ public final class CombatProfileFixtures {
     return chain;
   }
 
+  /** A first-strike sea unit (eg a submarine's sneak attack), FIRST_STRIKE flag set. */
+  public static CombatProfile firstStrikeSea(
+      final String name, final int attack, final int defense, final int hitPoints) {
+    return withFlags(sea(name, attack, defense, hitPoints), CombatFlag.FIRST_STRIKE);
+  }
+
+  /** An AA gun (fires only at air), IS_AA flag set. */
+  public static CombatProfile aa(
+      final String name, final int attack, final int defense, final int hitPoints) {
+    return withFlags(land(name, attack, defense, hitPoints), CombatFlag.IS_AA);
+  }
+
+  /** A submarine eligible to submerge, CAN_SUBMERGE flag set. */
+  public static CombatProfile submarine(
+      final String name, final int attack, final int defense, final int hitPoints) {
+    return withFlags(sea(name, attack, defense, hitPoints), CombatFlag.CAN_SUBMERGE);
+  }
+
+  /** Copies {@code profile} firing {@code rolls} dice per body instead of the default one. */
+  public static CombatProfile rolls(final CombatProfile profile, final int rolls) {
+    return new CombatProfile(
+        profile.type(),
+        profile.attack(),
+        profile.defense(),
+        rolls,
+        profile.hitPoints(),
+        profile.domain(),
+        profile.damage(),
+        profile.gives(),
+        profile.receives(),
+        profile.flags(),
+        profile.next());
+  }
+
+  /** Copies {@code profile} carrying exactly {@code flags}. */
+  public static CombatProfile withFlags(final CombatProfile profile, final CombatFlag... flags) {
+    final EnumSet<CombatFlag> flagSet = EnumSet.noneOf(CombatFlag.class);
+    flagSet.addAll(Arrays.asList(flags));
+    return new CombatProfile(
+        profile.type(),
+        profile.attack(),
+        profile.defense(),
+        profile.rolls(),
+        profile.hitPoints(),
+        profile.domain(),
+        profile.damage(),
+        profile.gives(),
+        profile.receives(),
+        flagSet,
+        profile.next());
+  }
+
   /** Copies {@code profile} with a support bonus it emits. */
   public static CombatProfile gives(final CombatProfile profile, final SupportCategory category) {
     return new CombatProfile(
@@ -66,7 +119,8 @@ public final class CombatProfileFixtures {
   }
 
   /** Copies {@code profile} with a support bonus it consumes. */
-  public static CombatProfile receives(final CombatProfile profile, final SupportCategory category) {
+  public static CombatProfile receives(
+      final CombatProfile profile, final SupportCategory category) {
     return new CombatProfile(
         profile.type(),
         profile.attack(),
