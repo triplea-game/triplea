@@ -38,7 +38,7 @@ dependencies {
 // it; the dedicated `fuzzTest` task below is the on-demand way to run it.
 tasks.named<Test>("test") {
     useJUnitPlatform {
-        excludeTags("fuzz")
+        excludeTags("fuzz", "bench")
     }
 }
 
@@ -52,6 +52,23 @@ tasks.register<Test>("fuzzTest") {
         includeTags("fuzz")
     }
     // The harness prints its drift summary to stdout; surface it when run directly.
+    testLogging {
+        showStandardStreams = true
+    }
+}
+
+// A throwaway profiling spike (@Tag("bench")): it prints ns/run, bytes/run, and engine-vs-bounded
+// wall-clock rather than asserting, so it must stay out of `check`/`./verify`. Run on demand to
+// gate whether the stage-1b batched simulator is worth building.
+tasks.register<Test>("benchTest") {
+    description = "Runs the battle-calc profiling spike (not part of check)."
+    group = "verification"
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
+    shouldRunAfter(tasks.named("test"))
+    useJUnitPlatform {
+        includeTags("bench")
+    }
     testLogging {
         showStandardStreams = true
     }
