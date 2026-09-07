@@ -18,11 +18,12 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.odds.calculator.adapter.EngineRandomSource;
+import games.strategy.triplea.odds.calculator.adapter.GameDataBattleAdapter;
 import games.strategy.triplea.odds.calculator.context.model.BattleOptions;
 import games.strategy.triplea.odds.calculator.context.model.BattleResult;
 import games.strategy.triplea.odds.calculator.context.model.BattleScenario;
 import games.strategy.triplea.odds.calculator.context.model.Force;
-import games.strategy.triplea.odds.calculator.context.reference.GameDataBattleAdapter;
 import games.strategy.triplea.odds.calculator.context.reference.ReferenceBattleSimulator;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.xml.TestMapGameData;
@@ -107,9 +108,11 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
                 List.of(),
                 TerritoryEffectHelper.getEffects(germany),
                 new BattleOptions(false, List.of(), List.of()));
+    // Separate same-seed source per side: the oracle exhausts its 500 runs before the new path
+    // starts, so a shared instance would diverge — same seed keeps both sequences identical.
     final double newWinPercent =
         new ReferenceBattleSimulator()
-            .simulate(scenario, 500, new PlainRandomSource(SEED))
+            .simulate(scenario, 500, new EngineRandomSource(new PlainRandomSource(SEED)))
             .attackerWinPercent();
 
     assertThat(newWinPercent).isCloseTo(oracleWinPercent, within(0.1));
@@ -172,8 +175,11 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
       final Territory location,
       final Collection<Unit> attacking,
       final Collection<Unit> defending) {
+    // One shared alwaysHits source feeds both sides through the bridge, so the oracle and the new
+    // path draw from identical dice; safe to share because every roll is a deterministic 0.
+    final ScriptedRandomSource dice = ScriptedRandomSource.alwaysHits();
     final BattleCalculator oracle = new BattleCalculator(gameData);
-    oracle.setRandomSource(ScriptedRandomSource.alwaysHits());
+    oracle.setRandomSource(dice);
     final var oracleResult =
         oracle
             .calculate(
@@ -202,7 +208,7 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
                 new BattleOptions(false, List.of(), List.of()));
     final BattleResult newResult =
         new ReferenceBattleSimulator()
-            .simulate(scenario, 1, ScriptedRandomSource.alwaysHits())
+            .simulate(scenario, 1, new EngineRandomSource(dice))
             .results()
             .get(0);
 

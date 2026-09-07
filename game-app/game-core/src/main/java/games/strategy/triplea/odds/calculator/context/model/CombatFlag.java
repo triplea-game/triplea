@@ -9,5 +9,8 @@ public enum CombatFlag {
   CHOOSE_BEST_ROLL,
   // Intrinsic eligibility to submerge; whether it may actually submerge is relational (no blocking
   // enemy destroyer) and lives in CombatRelations, not here.
-  CAN_SUBMERGE
+  CAN_SUBMERGE,
+  // Baked from GameData by the adapter and consumed by CombatRelations, eg to deny a facing sub its
+  // first-strike/submerge — intrinsic identity, never string-parsed in the core.
+  IS_DESTROYER
 }

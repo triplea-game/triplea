@@ -1,4 +1,4 @@
-package games.strategy.triplea.odds.calculator.context.reference;
+package games.strategy.triplea.odds.calculator.adapter;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -11,15 +11,15 @@ import games.strategy.triplea.odds.calculator.context.model.Force;
 import java.util.Collection;
 
 /**
- * The anti-corruption layer — the ONLY context class permitted to import {@code
- * games.strategy.engine.data.*} (design §9, invariant 4). Bakes a fully self-contained {@link
- * BattleScenario} in, and maps survivor counts back to representative units for the UI out.
+ * The anti-corruption layer, living outside the engine-free calc core — the one seam that imports
+ * {@code games.strategy.engine.data.*} (design §9, invariant 4). Bakes a fully self-contained
+ * {@link BattleScenario} in, and maps survivor counts back to representative units for the UI out.
  */
 public class GameDataBattleAdapter {
 
   /**
-   * Bakes a self-contained {@link BattleScenario}; Phase 1 derives its {@code
-   * attackerOrder}/{@code defenderOrder} from {@code options}' order-of-loss lists.
+   * Bakes a self-contained {@link BattleScenario}; Phase 1 derives its {@code attackerOrder}/{@code
+   * defenderOrder} from {@code options}' order-of-loss lists.
    */
   public BattleScenario toScenario(
       final GamePlayer attacker,

@@ -6,7 +6,6 @@ import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtur
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.receives;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.odds.calculator.context.model.BattleResult;
 import games.strategy.triplea.odds.calculator.context.model.BattleScenario;
 import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
@@ -33,8 +32,8 @@ import org.junit.jupiter.api.Test;
  * North-star acceptance test (design §9): a battle described entirely by hand-written value
  * literals — no {@code GameData}, no map XML, no adapter — driven through the {@link
  * ReferenceBattleSimulator} to odds out. When this passes, the calc is proven isolated from the
- * engine: the one and only import from {@code games.strategy.*} here is the reused {@code
- * IRandomSource} test double.
+ * engine: nothing here imports {@code games.strategy.engine.*} — even the dice come from the core's
+ * own {@link FakeRandomSource}.
  *
  * <p>RED until Phase 1/2: every seam the simulator drives is still a throwing stub, so {@code
  * simulate} raises {@code UnsupportedOperationException}. The scenario construction itself is the
@@ -100,7 +99,7 @@ class ScenarioFromLiteralsTest {
             new OolCasualtyOrder(List.of()));
 
     final SimulationResults results =
-        new ReferenceBattleSimulator().simulate(scenario, 1, ScriptedRandomSource.alwaysHits());
+        new ReferenceBattleSimulator().simulate(scenario, 1, FakeRandomSource.alwaysHits());
 
     assertThat(results.results()).hasSize(1);
     final BattleResult only = results.results().get(0);
