@@ -61,7 +61,7 @@ class PlayerBridgeTest {
   }
 
   @Test
-  void getRemoteDelegateThrowsIllegalStateWhenSequenceHasNoDelegate() {
+  void getRemoteDelegateThrowsIllegalStateWhenSequenceStepIsNull() {
     final PlayerBridge bridge = newBridgeReadingLiveData();
     gameData.getSequence().addStep(null);
 
