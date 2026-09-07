@@ -11,7 +11,9 @@ import games.strategy.triplea.odds.calculator.context.model.Lifecycle;
 import games.strategy.triplea.odds.calculator.context.model.Outcome;
 import games.strategy.triplea.odds.calculator.context.model.SimulationResults;
 import games.strategy.triplea.odds.calculator.context.model.UnitTypeId;
+import games.strategy.triplea.util.TuvCostsCalculator;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -22,26 +24,22 @@ import org.triplea.util.Tuple;
 
 /**
  * The count-backed {@link AggregateResults}: every statistic is computed straight from the
- * simulator's per-run survivor counts and the baked per-type cost, never from materialized {@code
- * Unit} objects. TUV therefore comes from {@code BattleScenario.cost()} (keyed by {@link
- * UnitTypeId}), so the {@code GameData}/player and cost-map parameters the old signatures carried
- * are unused here; they stay only for source compatibility.
+ * simulator's per-run survivor counts, never from materialized {@code Unit} objects. TUV is valued
+ * per side by that side's own cost schedule — matching the old path — so a map with per-nation or
+ * XML-overridden costs is scored correctly rather than collapsing both sides onto one merged map.
  *
  * <p>Survivor <em>identity</em> — the caller's own units for "average units remaining" — is the one
  * thing counts cannot supply, so those two accessors delegate to {@link SurvivorMapper}.
  */
 public class BoundedContextAggregateResults extends AggregateResults {
   private final List<BattleResult> runs;
-  private final Map<UnitTypeId, Integer> cost;
   private final SurvivorMapper survivors;
 
   public BoundedContextAggregateResults(
       final SimulationResults results,
-      final Map<UnitTypeId, Integer> cost,
       final Collection<Unit> attacking,
       final Collection<Unit> defending) {
     this.runs = results.results();
-    this.cost = cost;
     this.survivors = new SurvivorMapper(results, attacking, defending);
   }
 
@@ -108,8 +106,10 @@ public class BoundedContextAggregateResults extends AggregateResults {
   public Tuple<Double, Double> getAverageTuvOfUnitsLeftOver(
       final IntegerMap<UnitType> attackerCostsForTuv,
       final IntegerMap<UnitType> defenderCostsForTuv) {
-    final double attacker = mean(run -> true, run -> tuvOf(run.attackerSurvivors()));
-    final double defender = mean(run -> true, run -> tuvOf(run.defenderSurvivors()));
+    final Map<UnitTypeId, Integer> attackerCost = byTypeId(attackerCostsForTuv);
+    final Map<UnitTypeId, Integer> defenderCost = byTypeId(defenderCostsForTuv);
+    final double attacker = mean(run -> true, run -> tuvOf(run.attackerSurvivors(), attackerCost));
+    final double defender = mean(run -> true, run -> tuvOf(run.defenderSurvivors(), defenderCost));
     return Tuple.of(attacker, defender);
   }
 
@@ -120,10 +120,17 @@ public class BoundedContextAggregateResults extends AggregateResults {
       final GamePlayer defender,
       final Collection<Unit> defenders,
       final GameData data) {
-    final int attackerStartingTuv = startingTuv(attackers);
-    final int defenderStartingTuv = startingTuv(defenders);
+    final TuvCostsCalculator tuvCalculator = new TuvCostsCalculator();
+    final Map<UnitTypeId, Integer> attackerCost = byTypeId(tuvCalculator.getCostsForTuv(attacker));
+    final Map<UnitTypeId, Integer> defenderCost = byTypeId(tuvCalculator.getCostsForTuv(defender));
+    final int attackerStartingTuv = startingTuv(attackers, attackerCost);
+    final int defenderStartingTuv = startingTuv(defenders, defenderCost);
     final double meanRemainingSwing =
-        mean(run -> true, run -> tuvOf(run.attackerSurvivors()) - tuvOf(run.defenderSurvivors()));
+        mean(
+            run -> true,
+            run ->
+                tuvOf(run.attackerSurvivors(), attackerCost)
+                    - tuvOf(run.defenderSurvivors(), defenderCost));
     return defenderStartingTuv - attackerStartingTuv + meanRemainingSwing;
   }
 
@@ -138,14 +145,15 @@ public class BoundedContextAggregateResults extends AggregateResults {
     return new Mean().evaluate(runs.stream().filter(filter).mapToDouble(value).toArray());
   }
 
-  private int tuvOf(final Force force) {
+  private static int tuvOf(final Force force, final Map<UnitTypeId, Integer> cost) {
     return force.counts().entrySet().stream()
         .filter(entry -> entry.getKey().state() != Lifecycle.DEAD)
         .mapToInt(entry -> cost.getOrDefault(entry.getKey().profile().type(), 0) * entry.getValue())
         .sum();
   }
 
-  private int startingTuv(final Collection<Unit> units) {
+  private static int startingTuv(
+      final Collection<Unit> units, final Map<UnitTypeId, Integer> cost) {
     return units.stream()
         .mapToInt(unit -> cost.getOrDefault(new UnitTypeId(unit.getType().getName()), 0))
         .sum();
@@ -156,5 +164,14 @@ public class BoundedContextAggregateResults extends AggregateResults {
         .filter(entry -> entry.getKey().state() != Lifecycle.DEAD)
         .mapToInt(Map.Entry::getValue)
         .sum();
+  }
+
+  /** Re-keys an engine {@code UnitType -> cost} schedule onto the calc's {@link UnitTypeId}. */
+  private static Map<UnitTypeId, Integer> byTypeId(final IntegerMap<UnitType> costs) {
+    final Map<UnitTypeId, Integer> byType = new HashMap<>();
+    for (final UnitType type : costs.keySet()) {
+      byType.put(new UnitTypeId(type.getName()), costs.getInt(type));
+    }
+    return byType;
   }
 }
