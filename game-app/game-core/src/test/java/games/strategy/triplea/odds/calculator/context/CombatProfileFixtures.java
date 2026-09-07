@@ -62,8 +62,21 @@ public final class CombatProfileFixtures {
     return withFlags(land(name, attack, defense, hitPoints), CombatFlag.IS_AA);
   }
 
-  /** A submarine eligible to submerge, CAN_SUBMERGE flag set. */
+  /**
+   * A classic air-immune submarine: eligible to submerge (CAN_SUBMERGE) and untargetable by
+   * aircraft without a friendly destroyer (CANNOT_BE_TARGETED_BY_ALL). A Revised sub carries only
+   * the former — see {@code submarineTargetableByAir}.
+   */
   public static CombatProfile submarine(
+      final String name, final int attack, final int defense, final int hitPoints) {
+    return withFlags(
+        sea(name, attack, defense, hitPoints),
+        CombatFlag.CAN_SUBMERGE,
+        CombatFlag.CANNOT_BE_TARGETED_BY_ALL);
+  }
+
+  /** A Revised-style submarine: evades (CAN_SUBMERGE) yet is still targetable by aircraft. */
+  public static CombatProfile submarineTargetableByAir(
       final String name, final int attack, final int defense, final int hitPoints) {
     return withFlags(sea(name, attack, defense, hitPoints), CombatFlag.CAN_SUBMERGE);
   }

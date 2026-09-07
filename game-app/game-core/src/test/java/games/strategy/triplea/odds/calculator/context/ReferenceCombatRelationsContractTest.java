@@ -5,6 +5,7 @@ import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtur
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.land;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.sea;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.submarine;
+import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.submarineTargetableByAir;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.withFlags;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -112,6 +113,37 @@ class ReferenceCombatRelationsContractTest {
     final TargetFilter eligible =
         relations.eligibleTargets(
             airGroup, forceOf(fighter, 2, destroyer, 1), forceOf(enemySub, 2));
+
+    assertThat(eligible.eligibleTargets()).contains(enemySub);
+  }
+
+  /** A submarine's own fire cannot touch aircraft: planes are never eligible targets for it. */
+  @Test
+  void aSubmarineCannotTargetAircraft() {
+    final CombatProfile sub = submarine("uboat", 2, 1, 1);
+    final CombatProfile enemyFighter = air("fighter", 3, 4, 1);
+    final CombatProfile enemyCruiser = sea("cruiser", 3, 3, 1);
+    final RollGroup subGroup = groupOf(sub, 2);
+
+    final TargetFilter eligible =
+        relations.eligibleTargets(
+            subGroup, forceOf(sub, 2), forceOf(enemyFighter, 2, enemyCruiser, 1));
+
+    assertThat(eligible.eligibleTargets()).containsExactly(enemyCruiser);
+  }
+
+  /**
+   * A Revised-style sub evades but is not air-immune, so air still targets it with no destroyer
+   * present — the air-miss rule keys on {@code canNotBeTargetedByAll}, not on the evade ability.
+   */
+  @Test
+  void airCanTargetAnEvadingButTargetableSubmarine() {
+    final CombatProfile fighter = air("fighter", 3, 4, 1);
+    final CombatProfile enemySub = submarineTargetableByAir("uboat", 2, 1, 1);
+    final RollGroup airGroup = groupOf(fighter, 2);
+
+    final TargetFilter eligible =
+        relations.eligibleTargets(airGroup, forceOf(fighter, 2), forceOf(enemySub, 2));
 
     assertThat(eligible.eligibleTargets()).contains(enemySub);
   }
