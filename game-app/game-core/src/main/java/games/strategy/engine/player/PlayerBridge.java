@@ -43,14 +43,10 @@ public class PlayerBridge {
     return game.getData();
   }
 
-  /**
-   * The name of the step the game sequence is currently on, or {@code null} when no step is set.
-   */
-  @Nullable
+  /** The name of the step the game sequence is currently on. */
   public String getStepName() {
     try (GameData.Unlocker ignored = game.getData().acquireReadLock()) {
-      final GameStep step = game.getData().getSequence().getStep();
-      return step == null ? null : step.getName();
+      return game.getData().getSequence().getStep().getName();
     }
   }
 

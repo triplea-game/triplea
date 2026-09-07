@@ -1,8 +1,6 @@
 package games.strategy.engine.player;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -42,22 +40,13 @@ class PlayerBridgeTest {
     gameData.getSequence().addStep(newStep("stepA"));
     gameData.getSequence().addStep(newStep("stepB"));
 
-    assertThat(bridge.getStepName(), is("stepA"));
+    assertThat(bridge.getStepName()).isEqualTo("stepA");
 
     gameData.getSequence().next();
 
-    assertThat(
-        "advancing the sequence must change what getStepName reports",
-        bridge.getStepName(),
-        is("stepB"));
-  }
-
-  @Test
-  void getStepNameIsNullWhenSequenceStepIsNull() {
-    final PlayerBridge bridge = newBridgeReadingLiveData();
-    gameData.getSequence().addStep(null);
-
-    assertThat(bridge.getStepName(), is(nullValue()));
+    assertThat(bridge.getStepName())
+        .as("advancing the sequence must change what getStepName reports")
+        .isEqualTo("stepB");
   }
 
   @Test
