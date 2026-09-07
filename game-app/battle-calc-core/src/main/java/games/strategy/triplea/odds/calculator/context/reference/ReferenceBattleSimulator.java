@@ -17,6 +17,7 @@ import games.strategy.triplea.odds.calculator.context.model.Phase;
 import games.strategy.triplea.odds.calculator.context.model.ProfileStats;
 import games.strategy.triplea.odds.calculator.context.model.RetreatCheckpoint;
 import games.strategy.triplea.odds.calculator.context.model.RollGroup;
+import games.strategy.triplea.odds.calculator.context.model.RulesProfile;
 import games.strategy.triplea.odds.calculator.context.model.Side;
 import games.strategy.triplea.odds.calculator.context.model.SimulationResults;
 import games.strategy.triplea.odds.calculator.context.seam.BattleSimulator;
@@ -132,13 +133,13 @@ public class ReferenceBattleSimulator implements BattleSimulator {
     final List<FireStep> aa = new ArrayList<>();
     final List<FireStep> firstStrike = new ArrayList<>();
     collectPhases(
-        plan(scenario, attackers, defenders, round),
+        plan(scenario, Side.OFFENSE, attackers, defenders, round),
         true,
         EnumSet.of(Phase.AA, Phase.FIRST_STRIKE),
         aa,
         firstStrike);
     collectPhases(
-        plan(scenario, defenders, attackers, round),
+        plan(scenario, Side.DEFENSE, defenders, attackers, round),
         false,
         EnumSet.of(Phase.AA, Phase.FIRST_STRIKE),
         aa,
@@ -154,17 +155,25 @@ public class ReferenceBattleSimulator implements BattleSimulator {
     // Submerge is a post-first-strike checkpoint (design §5): subs that took their sneak attack now
     // dive if no enemy destroyer pins them, migrating ACTIVE -> WITHDRAWN so main combat cannot
     // touch them. Gated relationally by CombatRelations, not by the retreat preference alone.
-    submerge(scenario.attackerRetreat(), attackers, defenders, round);
-    submerge(scenario.defenderRetreat(), defenders, attackers, round);
+    submerge(
+        Side.OFFENSE, scenario.attackerRetreat(), attackers, defenders, scenario.rules(), round);
+    submerge(
+        Side.DEFENSE, scenario.defenderRetreat(), defenders, attackers, scenario.rules(), round);
 
     // Re-plan main off the post-first-strike forces: the fresh evaluated vectors are the shared
     // exchange-start snapshot both sides' main groups roll from, now free of first-strike
     // casualties.
     final List<FireStep> main = new ArrayList<>();
     collectPhases(
-        plan(scenario, attackers, defenders, round), true, EnumSet.of(Phase.GENERAL), main);
+        plan(scenario, Side.OFFENSE, attackers, defenders, round),
+        true,
+        EnumSet.of(Phase.GENERAL),
+        main);
     collectPhases(
-        plan(scenario, defenders, attackers, round), false, EnumSet.of(Phase.GENERAL), main);
+        plan(scenario, Side.DEFENSE, defenders, attackers, round),
+        false,
+        EnumSet.of(Phase.GENERAL),
+        main);
     for (final FireStep step : main) {
       fire(step, scenario, attackers, defenders, round, stats, rng);
     }
@@ -177,11 +186,12 @@ public class ReferenceBattleSimulator implements BattleSimulator {
 
   private BattleRound plan(
       final BattleScenario scenario,
+      final Side side,
       final Map<Key, Integer> firing,
       final Map<Key, Integer> enemy,
       final int round) {
     return resolver.plan(
-        new Force(firing), new Force(enemy), scenario.rules(), scenario.support(), round);
+        side, new Force(firing), new Force(enemy), scenario.rules(), scenario.support(), round);
   }
 
   /** Bins the planned groups whose phase is in {@code wanted} into the matching output lists. */
@@ -276,19 +286,21 @@ public class ReferenceBattleSimulator implements BattleSimulator {
     targetForce.putAll(after.counts());
   }
 
-  /** Dives the submergeable slice of a side when no enemy destroyer pins it. */
+  /** Dives the submergeable slice of a side when the rules and enemy composition allow it. */
   private void submerge(
+      final Side side,
       final RetreatPolicy policy,
-      final Map<Key, Integer> side,
+      final Map<Key, Integer> working,
       final Map<Key, Integer> enemy,
+      final RulesProfile rules,
       final int round) {
-    final Map<CombatProfile, Integer> cohort = activeProfileCounts(side);
-    if (!relations.canSubmerge(cohort, new Force(enemy))) {
+    final Map<CombatProfile, Integer> cohort = activeProfileCounts(working);
+    if (!relations.canSubmerge(side, cohort, new Force(enemy), rules)) {
       return;
     }
     final Map<CombatProfile, Integer> diving =
-        policy.withdraw(cohort, RetreatCheckpoint.SUBMERGE, viewFor(side, enemy, round));
-    migrate(side, diving);
+        policy.withdraw(cohort, RetreatCheckpoint.SUBMERGE, viewFor(working, enemy, round));
+    migrate(working, diving);
   }
 
   /** Withdraws a side at round end per its policy; returns whether anything withdrew. */

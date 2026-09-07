@@ -7,6 +7,7 @@ import games.strategy.triplea.odds.calculator.context.model.Force;
 import games.strategy.triplea.odds.calculator.context.model.Key;
 import games.strategy.triplea.odds.calculator.context.model.Lifecycle;
 import games.strategy.triplea.odds.calculator.context.model.RollGroup;
+import games.strategy.triplea.odds.calculator.context.model.RulesProfile;
 import games.strategy.triplea.odds.calculator.context.model.Side;
 import games.strategy.triplea.odds.calculator.context.model.TargetFilter;
 import games.strategy.triplea.odds.calculator.context.seam.CombatRelations;
@@ -64,7 +65,8 @@ public class ReferenceCombatRelations implements CombatRelations {
 
   /** A first-strike capability is stripped when the enemy fields a destroyer to pin it. */
   @Override
-  public boolean firstStrikeNegated(final Side side, final Force friendly, final Force enemy) {
+  public boolean firstStrikeNegated(
+      final Side side, final Force friendly, final Force enemy, final RulesProfile rules) {
     return hasDestroyer(enemy);
   }
 
@@ -75,7 +77,11 @@ public class ReferenceCombatRelations implements CombatRelations {
    * than diving on a bare no-destroyer check.
    */
   @Override
-  public boolean canSubmerge(final Map<CombatProfile, Integer> cohort, final Force enemy) {
+  public boolean canSubmerge(
+      final Side side,
+      final Map<CombatProfile, Integer> cohort,
+      final Force enemy,
+      final RulesProfile rules) {
     if (cohort.isEmpty()) {
       return false;
     }

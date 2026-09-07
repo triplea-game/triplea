@@ -3,6 +3,7 @@ package games.strategy.triplea.odds.calculator.context.seam;
 import games.strategy.triplea.odds.calculator.context.model.BattleRound;
 import games.strategy.triplea.odds.calculator.context.model.Force;
 import games.strategy.triplea.odds.calculator.context.model.RulesProfile;
+import games.strategy.triplea.odds.calculator.context.model.Side;
 import games.strategy.triplea.odds.calculator.context.model.SupportRule;
 import java.util.List;
 
@@ -12,5 +13,10 @@ import java.util.List;
  */
 public interface RollGroupResolver {
   BattleRound plan(
-      Force attackers, Force defenders, RulesProfile rules, List<SupportRule> support, int round);
+      Side side,
+      Force friendly,
+      Force enemy,
+      RulesProfile rules,
+      List<SupportRule> support,
+      int round);
 }

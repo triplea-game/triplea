@@ -39,20 +39,20 @@ public class ReferenceRollGroupResolver implements RollGroupResolver {
   }
 
   /**
-   * Plans the firing side ({@code attackers}) for one round; first-strike eligibility is recomputed
+   * Plans the firing side ({@code friendly}) for one round; first-strike eligibility is recomputed
    * from {@link CombatRelations} every call, so a round whose enemy destroyer has died restores the
    * IMMEDIATE first strike the previous round denied.
    */
   @Override
   public BattleRound plan(
-      final Force attackers,
-      final Force defenders,
+      final Side side,
+      final Force friendly,
+      final Force enemy,
       final RulesProfile rules,
       final List<SupportRule> support,
       final int round) {
-    final Side side = Side.OFFENSE;
-    final Map<CombatProfile, Integer> active = activeProfileCounts(attackers);
-    final boolean firstStrikeNegated = relations.firstStrikeNegated(side, attackers, defenders);
+    final Map<CombatProfile, Integer> active = activeProfileCounts(friendly);
+    final boolean firstStrikeNegated = relations.firstStrikeNegated(side, friendly, enemy, rules);
 
     final Map<CombatProfile, Integer> aa = new LinkedHashMap<>();
     final Map<CombatProfile, Integer> firstStrike = new LinkedHashMap<>();
@@ -70,9 +70,9 @@ public class ReferenceRollGroupResolver implements RollGroupResolver {
     }
 
     final SequencedMap<RollGroup, Set<RollGroup>> firing = new LinkedHashMap<>();
-    addGroup(firing, side, attackers, defenders, aa, support, FiringMode.IMMEDIATE, round);
-    addGroup(firing, side, attackers, defenders, firstStrike, support, FiringMode.IMMEDIATE, round);
-    addGroup(firing, side, attackers, defenders, main, support, FiringMode.DEFERRED, round);
+    addGroup(firing, side, friendly, enemy, aa, support, FiringMode.IMMEDIATE, round);
+    addGroup(firing, side, friendly, enemy, firstStrike, support, FiringMode.IMMEDIATE, round);
+    addGroup(firing, side, friendly, enemy, main, support, FiringMode.DEFERRED, round);
     return new BattleRound(firing);
   }
 

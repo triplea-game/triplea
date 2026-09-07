@@ -3,6 +3,7 @@ package games.strategy.triplea.odds.calculator.context.seam;
 import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
 import games.strategy.triplea.odds.calculator.context.model.Force;
 import games.strategy.triplea.odds.calculator.context.model.RollGroup;
+import games.strategy.triplea.odds.calculator.context.model.RulesProfile;
 import games.strategy.triplea.odds.calculator.context.model.Side;
 import games.strategy.triplea.odds.calculator.context.model.TargetFilter;
 import java.util.Map;
@@ -15,7 +16,8 @@ import java.util.Map;
 public interface CombatRelations {
   TargetFilter eligibleTargets(RollGroup group, Force friendly, Force enemy);
 
-  boolean firstStrikeNegated(Side side, Force friendly, Force enemy);
+  boolean firstStrikeNegated(Side side, Force friendly, Force enemy, RulesProfile rules);
 
-  boolean canSubmerge(Map<CombatProfile, Integer> cohort, Force enemy);
+  boolean canSubmerge(
+      Side side, Map<CombatProfile, Integer> cohort, Force enemy, RulesProfile rules);
 }
