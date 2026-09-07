@@ -4,6 +4,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.americans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
 import static games.strategy.triplea.delegate.GameDataTestUtil.artillery;
 import static games.strategy.triplea.delegate.GameDataTestUtil.battleship;
+import static games.strategy.triplea.delegate.GameDataTestUtil.carrier;
 import static games.strategy.triplea.delegate.GameDataTestUtil.destroyer;
 import static games.strategy.triplea.delegate.GameDataTestUtil.fighter;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
@@ -284,6 +285,68 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
           seaZone,
           fighter(gameData).create(2, americans(gameData)),
           submarine(gameData).create(2, germans(gameData)));
+    }
+
+    /**
+     * WW2V2 gives a defending sub a sneak attack: with no attacking destroyer, the defending sub
+     * fires in the sub phase and sinks the lone attacking carrier before it returns fire, so the
+     * sub survives untouched. REVISED runs WW2V2 on by default.
+     */
+    @Test
+    void ww2v2GivesADefendingSubASneakAttack() {
+      final GameData gameData = TestMapGameData.REVISED.getGameData();
+      final Territory seaZone = territory("1 Sea Zone", gameData);
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          seaZone,
+          carrier(gameData).create(1, americans(gameData)),
+          submarine(gameData).create(1, germans(gameData)));
+    }
+
+    /**
+     * The defendingSubsSneakAttack rule grants the same sneak with WW2V2 off: the defending sub
+     * still opens fire in the sub phase and survives. Contrast {@link
+     * #withoutTheSneakRulesADefendingSubFiresInMainCombat}, the identical fight with neither rule.
+     */
+    @Test
+    void defendingSubsSneakAttackGivesADefendingSubASneakWithoutWw2v2() {
+      final GameData gameData = TestMapGameData.REVISED.getGameData();
+      setBooleanProperty(gameData, Constants.WW2V2, false);
+      setBooleanProperty(gameData, Constants.DEFENDING_SUBS_SNEAK_ATTACK, true);
+      final Territory seaZone = territory("1 Sea Zone", gameData);
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          seaZone,
+          carrier(gameData).create(1, americans(gameData)),
+          submarine(gameData).create(1, germans(gameData)));
+    }
+
+    /**
+     * With neither WW2V2 nor defendingSubsSneakAttack, a defending sub has no sneak — it fires in
+     * main combat, trading simultaneously with the carrier, so the carrier takes the sub down with
+     * it and neither survives. This is the live-bug pin: a defender-blind first-strike rule would
+     * wrongly let the sub open fire and spare it.
+     */
+    @Test
+    void withoutTheSneakRulesADefendingSubFiresInMainCombat() {
+      final GameData gameData = TestMapGameData.REVISED.getGameData();
+      setBooleanProperty(gameData, Constants.WW2V2, false);
+      setBooleanProperty(gameData, Constants.DEFENDING_SUBS_SNEAK_ATTACK, false);
+      final Territory seaZone = territory("1 Sea Zone", gameData);
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          seaZone,
+          carrier(gameData).create(1, americans(gameData)),
+          submarine(gameData).create(1, germans(gameData)));
     }
 
     /**
