@@ -4,6 +4,7 @@ import games.strategy.triplea.odds.calculator.context.model.Constraints;
 import games.strategy.triplea.odds.calculator.context.model.Dependents;
 import games.strategy.triplea.odds.calculator.context.model.FiringMode;
 import games.strategy.triplea.odds.calculator.context.model.Force;
+import games.strategy.triplea.odds.calculator.context.model.Side;
 import games.strategy.triplea.odds.calculator.context.model.TargetFilter;
 
 /**
@@ -14,11 +15,12 @@ import games.strategy.triplea.odds.calculator.context.model.TargetFilter;
  */
 public interface CasualtyAllocator {
   Force allocate(
-      Force side,
+      Force force,
       int hits,
       TargetFilter eligible,
       Dependents deps,
       Constraints constraints,
       CasualtyOrder order,
-      FiringMode firingMode);
+      FiringMode firingMode,
+      Side side);
 }
