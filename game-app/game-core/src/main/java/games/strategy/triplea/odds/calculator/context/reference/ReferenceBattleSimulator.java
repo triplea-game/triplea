@@ -59,9 +59,18 @@ public class ReferenceBattleSimulator implements BattleSimulator {
   private final CombatRelations relations;
 
   public ReferenceBattleSimulator() {
+    this(new DiceHitRoller());
+  }
+
+  /**
+   * Runs the fixed reference pipeline against the given roller — the seam where dice vs low-luck vs
+   * a batched-vector impl diverge — so the hit-rolling strategy can be swapped without disturbing
+   * resolver, allocator, or retreat wiring.
+   */
+  public ReferenceBattleSimulator(final HitRoller roller) {
     this.relations = new ReferenceCombatRelations();
     this.resolver = new ReferenceRollGroupResolver(new ReferenceSupportResolver(), relations);
-    this.roller = new DiceHitRoller();
+    this.roller = roller;
     this.allocator = new ReferenceCasualtyAllocator();
   }
 

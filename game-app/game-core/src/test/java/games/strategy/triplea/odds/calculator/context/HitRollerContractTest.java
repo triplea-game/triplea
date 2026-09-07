@@ -8,19 +8,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
 import games.strategy.triplea.odds.calculator.context.model.FireContext;
 import games.strategy.triplea.odds.calculator.context.model.Phase;
-import games.strategy.triplea.odds.calculator.context.reference.DiceHitRoller;
 import games.strategy.triplea.odds.calculator.context.seam.HitRoller;
 import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
  * Contract test for {@link HitRoller}: pins the dice/low-luck hit rule every implementation (dice,
- * low-luck, analytic, batched-vector) must honor, run here against the reference {@link
- * DiceHitRoller}.
+ * low-luck, analytic, batched-vector) must honor. One concrete subclass binds each roller, so the
+ * same cases run against every implementation.
  */
-class HitRollerContractTest {
+abstract class HitRollerContractTest {
 
-  private final HitRoller hitRoller = new DiceHitRoller();
+  private HitRoller hitRoller;
+
+  /** The roller under test — one concrete subclass per {@link HitRoller} implementation. */
+  protected abstract HitRoller newHitRoller();
+
+  @BeforeEach
+  void setUp() {
+    hitRoller = newHitRoller();
+  }
 
   @Test
   void alwaysHitsMakesHitsEqualTheTotalNumberOfDiceRolled() {
