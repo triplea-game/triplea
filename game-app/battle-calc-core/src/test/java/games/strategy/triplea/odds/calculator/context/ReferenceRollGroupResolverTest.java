@@ -104,7 +104,7 @@ class ReferenceRollGroupResolverTest {
             (force, enemy, side, rules, round) -> rawCounts(force), new FakeCombatRelations(false));
 
     final BattleRound plan =
-        resolver.plan(attackers, defenders, RulesProfile.standard(), List.of(), 1);
+        resolver.plan(Side.OFFENSE, attackers, defenders, RulesProfile.standard(), List.of(), 1);
 
     final List<RollGroup> sequence = plan.firing().sequencedKeySet().stream().toList();
     assertThat(sequence).hasSize(3);
@@ -137,13 +137,13 @@ class ReferenceRollGroupResolverTest {
 
     final Force defendersWithDestroyer = forceOf(destroyer, 1, defendingInfantry, 1);
     final BattleRound roundWithDestroyer =
-        resolver.plan(attackers, defendersWithDestroyer, rules, List.of(), 1);
+        resolver.plan(Side.OFFENSE, attackers, defendersWithDestroyer, rules, List.of(), 1);
     assertThat(groupFiring(roundWithDestroyer, sub).firingMode()).isEqualTo(FiringMode.DEFERRED);
 
     relations.firstStrikeNegated = false;
     final Force defendersWithoutDestroyer = forceOf(defendingInfantry, 1);
     final BattleRound roundWithoutDestroyer =
-        resolver.plan(attackers, defendersWithoutDestroyer, rules, List.of(), 2);
+        resolver.plan(Side.OFFENSE, attackers, defendersWithoutDestroyer, rules, List.of(), 2);
     assertThat(groupFiring(roundWithoutDestroyer, sub).firingMode())
         .isEqualTo(FiringMode.IMMEDIATE);
   }
@@ -170,7 +170,7 @@ class ReferenceRollGroupResolverTest {
             (force, enemy, side, rules, round) -> Map.of(), new FakeCombatRelations(false));
 
     final BattleRound plan =
-        resolver.plan(attackers, defenders, RulesProfile.standard(), List.of(), 1);
+        resolver.plan(Side.OFFENSE, attackers, defenders, RulesProfile.standard(), List.of(), 1);
 
     assertThat(groupFiring(plan, sub).firingMode()).isEqualTo(FiringMode.IMMEDIATE);
     assertThat(groupFiring(plan, infantry).firingMode()).isEqualTo(FiringMode.DEFERRED);
@@ -197,7 +197,7 @@ class ReferenceRollGroupResolverTest {
             (force, enemy, side, rules, round) -> fakeEvaluation, new FakeCombatRelations(false));
 
     final BattleRound plan =
-        resolver.plan(attackers, defenders, RulesProfile.standard(), List.of(), 1);
+        resolver.plan(Side.OFFENSE, attackers, defenders, RulesProfile.standard(), List.of(), 1);
 
     final boolean anyGroupUsesTheFakeEvaluation =
         plan.firing().sequencedKeySet().stream()
@@ -225,7 +225,7 @@ class ReferenceRollGroupResolverTest {
             (force, enemy, side, rules, round) -> rawCounts(force), relations);
 
     final BattleRound plan =
-        resolver.plan(attackers, defenders, RulesProfile.standard(), List.of(), 1);
+        resolver.plan(Side.OFFENSE, attackers, defenders, RulesProfile.standard(), List.of(), 1);
 
     assertThat(plan.firing().sequencedKeySet()).isNotEmpty();
     assertThat(plan.firing().sequencedKeySet())
@@ -247,7 +247,7 @@ class ReferenceRollGroupResolverTest {
             (force, enemy, side, rules, round) -> rawCounts(force), new FakeCombatRelations(false));
 
     final BattleRound plan =
-        resolver.plan(attackers, defenders, RulesProfile.standard(), List.of(), 1);
+        resolver.plan(Side.OFFENSE, attackers, defenders, RulesProfile.standard(), List.of(), 1);
 
     assertThat(groupFiring(plan, infantry).firing()).containsKey(infantry);
     assertThat(plan.firing().sequencedKeySet())
@@ -268,7 +268,8 @@ class ReferenceRollGroupResolverTest {
     }
 
     @Override
-    public boolean firstStrikeNegated(final Side side, final Force friendly, final Force enemy) {
+    public boolean firstStrikeNegated(
+        final Side side, final Force friendly, final Force enemy, final RulesProfile rules) {
       return firstStrikeNegated;
     }
 
@@ -279,7 +280,11 @@ class ReferenceRollGroupResolverTest {
     }
 
     @Override
-    public boolean canSubmerge(final Map<CombatProfile, Integer> cohort, final Force enemy) {
+    public boolean canSubmerge(
+        final Side side,
+        final Map<CombatProfile, Integer> cohort,
+        final Force enemy,
+        final RulesProfile rules) {
       throw new UnsupportedOperationException("not exercised by this test");
     }
   }

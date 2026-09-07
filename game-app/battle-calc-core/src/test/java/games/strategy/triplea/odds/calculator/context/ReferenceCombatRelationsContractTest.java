@@ -18,6 +18,7 @@ import games.strategy.triplea.odds.calculator.context.model.Force;
 import games.strategy.triplea.odds.calculator.context.model.Key;
 import games.strategy.triplea.odds.calculator.context.model.Lifecycle;
 import games.strategy.triplea.odds.calculator.context.model.RollGroup;
+import games.strategy.triplea.odds.calculator.context.model.RulesProfile;
 import games.strategy.triplea.odds.calculator.context.model.Side;
 import games.strategy.triplea.odds.calculator.context.model.TargetFilter;
 import games.strategy.triplea.odds.calculator.context.reference.ReferenceCombatRelations;
@@ -43,6 +44,11 @@ import org.junit.jupiter.api.Test;
 class ReferenceCombatRelationsContractTest {
 
   private static final CombatRelations relations = new ReferenceCombatRelations();
+
+  // Offense submerge is gated on 'submersibleSubs'; these cases isolate the enemy-composition side
+  // of the rule, so they run with that property on.
+  private static final RulesProfile SUBMERSIBLE_ON =
+      new RulesProfile(false, false, false, true, false, false);
 
   private static Force forceOf(final CombatProfile profile, final int count) {
     return new Force(Map.of(new Key(profile, Lifecycle.ACTIVE), count));
@@ -155,7 +161,10 @@ class ReferenceCombatRelationsContractTest {
     final CombatProfile sub = submarine("uboat", 2, 1, 1);
     final CombatProfile enemyFighter = air("fighter", 3, 4, 1);
 
-    assertThat(relations.canSubmerge(Map.of(sub, 2), forceOf(enemyFighter, 2))).isTrue();
+    assertThat(
+            relations.canSubmerge(
+                Side.OFFENSE, Map.of(sub, 2), forceOf(enemyFighter, 2), SUBMERSIBLE_ON))
+        .isTrue();
   }
 
   /** A single enemy destroyer denies the whole submerge — the cohort cannot slip away. */
@@ -165,7 +174,10 @@ class ReferenceCombatRelationsContractTest {
     final CombatProfile enemyDestroyer =
         withFlags(sea("destroyer", 2, 2, 1), CombatFlag.IS_DESTROYER);
 
-    assertThat(relations.canSubmerge(Map.of(sub, 2), forceOf(enemyDestroyer, 1))).isFalse();
+    assertThat(
+            relations.canSubmerge(
+                Side.OFFENSE, Map.of(sub, 2), forceOf(enemyDestroyer, 1), SUBMERSIBLE_ON))
+        .isFalse();
   }
 
   /**
