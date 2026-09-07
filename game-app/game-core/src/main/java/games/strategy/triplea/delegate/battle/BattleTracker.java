@@ -102,7 +102,7 @@ public class BattleTracker implements Serializable {
           Tuple<Tuple<GamePlayer, GamePlayer>, Tuple<RelationshipType, RelationshipType>>>
       relationshipChangesThisTurn = new ArrayList<>();
 
-  @Getter private Map<Territory, Collection<Unit>> defendingUnitsAtStartOfBattle = new HashMap<>();
+  private Map<Territory, Collection<Unit>> defendingUnitsAtStartOfBattle = new HashMap<>();
 
   public Collection<Unit> getDefendingUnitsAtStartOfBattle(final Territory t) {
     return defendingUnitsAtStartOfBattle.getOrDefault(t, List.of());
