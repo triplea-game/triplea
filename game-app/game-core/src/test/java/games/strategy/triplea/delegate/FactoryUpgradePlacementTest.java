@@ -23,8 +23,9 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Verifies that a construction upgrade that consumes an existing construction of the same
- * constructionType can be placed even when the maxConstructionsPerTerrPerTurn cap would otherwise block it
- * (e.g. factory_upgrade consumes factory_minor in Global 1940 and maxFactoriesPerTerr is set to 1 in the XML).
+ * constructionType can be placed even when the maxConstructionsPerTerrPerTurn cap would otherwise
+ * block it (e.g. factory_upgrade consumes factory_minor in Global 1940 and maxFactoriesPerTerr is
+ * set to 1 in the XML).
  */
 class FactoryUpgradePlacementTest {
   private final GameData gameData = TestMapGameData.GLOBAL1940.getGameData();
@@ -66,11 +67,17 @@ class FactoryUpgradePlacementTest {
         placeResult.isEmpty(),
         () -> "Expected placeUnits to succeed but got error: " + placeResult.get());
 
-    assertTrue(!target.getUnits().contains("factory_minor"), () -> "Expected consumed unit factory_minor to be removed from the territory after placement");
-    assertTrue(target.getUnits().stream().filter(
-                            unit ->
-                                    "factory".equals(
-                                            unit.getType().getUnitAttachment().getConstructionType()))
-                    .count() == 1, () -> "Expected exactly one factory construction left after placement (factory_upgrade)");
+    assertTrue(
+        !target.getUnits().contains("factory_minor"),
+        () ->
+            "Expected consumed unit factory_minor to be removed from the territory after placement");
+    assertTrue(
+        target.getUnits().stream()
+                .filter(
+                    unit ->
+                        "factory".equals(unit.getType().getUnitAttachment().getConstructionType()))
+                .count()
+            == 1,
+        () -> "Expected exactly one factory construction left after placement (factory_upgrade)");
   }
 }
