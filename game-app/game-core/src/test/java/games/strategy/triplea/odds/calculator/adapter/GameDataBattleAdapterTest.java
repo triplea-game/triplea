@@ -10,6 +10,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.odds.calculator.context.model.BattleOptions;
 import games.strategy.triplea.odds.calculator.context.model.BattleScenario;
@@ -19,6 +20,7 @@ import games.strategy.triplea.odds.calculator.context.model.Domain;
 import games.strategy.triplea.odds.calculator.context.model.Force;
 import games.strategy.triplea.odds.calculator.context.model.Key;
 import games.strategy.triplea.odds.calculator.context.model.Lifecycle;
+import games.strategy.triplea.odds.calculator.context.model.RulesProfile;
 import games.strategy.triplea.odds.calculator.context.model.Side;
 import games.strategy.triplea.odds.calculator.context.model.SupportCategory;
 import games.strategy.triplea.odds.calculator.context.model.SupportRule;
@@ -231,6 +233,73 @@ class GameDataBattleAdapterTest {
   }
 
   /**
+   * {@code rulesProfile()} bakes each of the six {@link Properties} rule-flag getters onto the
+   * matching {@link RulesProfile} field — a straight field-for-field map, pinned here at the
+   * adapter altitude since nothing exercised it directly before. Every flag is flipped off its
+   * REVISED default so each case proves the getter is actually read, not that a default happens to
+   * agree: {@code WW2V2} and {@code Submersible Subs} default {@code true} (both {@code
+   * editable="false"}, so flipped through the editable store), the other four default {@code false}.
+   */
+  @Test
+  void bakesWw2v2FromProperties() {
+    final GameData revised = TestMapGameData.REVISED.getGameData();
+    setBooleanProperty(revised, Constants.WW2V2, false);
+    assertThat(scenarioOn(revised).rules().ww2v2()).isFalse();
+  }
+
+  @Test
+  void bakesDefendingSubsSneakAttackFromProperties() {
+    final GameData revised = TestMapGameData.REVISED.getGameData();
+    revised.getProperties().set(Constants.DEFENDING_SUBS_SNEAK_ATTACK, true);
+    assertThat(scenarioOn(revised).rules().defendingSubsSneakAttack()).isTrue();
+  }
+
+  @Test
+  void bakesTransportCasualtiesRestrictedFromProperties() {
+    final GameData revised = TestMapGameData.REVISED.getGameData();
+    revised.getProperties().set(Constants.TRANSPORT_CASUALTIES_RESTRICTED, true);
+    assertThat(scenarioOn(revised).rules().transportCasualtiesRestricted()).isTrue();
+  }
+
+  @Test
+  void bakesSubmersibleSubsFromProperties() {
+    final GameData revised = TestMapGameData.REVISED.getGameData();
+    setBooleanProperty(revised, Constants.SUBMERSIBLE_SUBS, false);
+    assertThat(scenarioOn(revised).rules().submersibleSubs()).isFalse();
+  }
+
+  @Test
+  void bakesSubmarinesDefendingMaySubmergeOrRetreatFromProperties() {
+    final GameData revised = TestMapGameData.REVISED.getGameData();
+    revised.getProperties().set(Constants.SUBMARINES_DEFENDING_MAY_SUBMERGE_OR_RETREAT, true);
+    assertThat(scenarioOn(revised).rules().submarinesDefendingMaySubmergeOrRetreat()).isTrue();
+  }
+
+  @Test
+  void bakesLhtrHeavyBombersFromProperties() {
+    final GameData revised = TestMapGameData.REVISED.getGameData();
+    enableLhtrHeavyBombers(revised);
+    assertThat(scenarioOn(revised).rules().lhtrHeavyBombers()).isTrue();
+  }
+
+  private BattleScenario scenarioOn(final GameData revised) {
+    final GamePlayer russians = GameDataTestUtil.russians(revised);
+    final GamePlayer germans = GameDataTestUtil.germans(revised);
+    final Territory germany = GameDataTestUtil.territory("Germany", revised);
+    final Collection<Unit> attacking = GameDataTestUtil.infantry(revised).create(1, russians);
+    final Collection<Unit> defending = GameDataTestUtil.infantry(revised).create(1, germans);
+    return adapter.toScenario(
+        russians,
+        germans,
+        germany,
+        attacking,
+        defending,
+        List.of(),
+        List.of(),
+        new BattleOptions(false, List.of(), List.of()));
+  }
+
+  /**
    * The LHTR heavy-bombers property is a map-level rule, not a unit attribute, so the adapter bakes
    * {@code CHOOSE_BEST_ROLL} onto a non-AA profile from the property — mirroring {@code
    * MainOffenseCombatValue#chooseBestRoll}. An AA gun is exempt: {@code AaOffenseCombatValue} and
@@ -289,6 +358,20 @@ class GameDataBattleAdapterTest {
       }
     }
     throw new IllegalStateException("LHTR Heavy Bombers property not found");
+  }
+
+  // An editable rule flag is read from the editable-property store before the map that set(String,
+  // Object) writes, so it must be flipped in place; a non-editable flag lives only in that map, so
+  // it falls through to set(). This override handles either kind.
+  private static void setBooleanProperty(
+      final GameData data, final String propertyName, final boolean value) {
+    for (final IEditableProperty<?> property : data.getProperties().getEditableProperties()) {
+      if (property.getName().equals(propertyName)) {
+        ((BooleanProperty) property).setValue(value);
+        return;
+      }
+    }
+    data.getProperties().set(propertyName, value);
   }
 
   private static CombatProfile profileOf(final Force force, final String typeName) {
