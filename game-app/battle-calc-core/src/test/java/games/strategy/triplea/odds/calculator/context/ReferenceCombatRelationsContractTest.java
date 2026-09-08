@@ -248,6 +248,7 @@ class ReferenceCombatRelationsContractTest {
     final RulesProfile none = RulesProfile.standard();
     final RulesProfile ww2v2 = new RulesProfile(true, false, false, false, false, false);
     final RulesProfile defendingSneak = new RulesProfile(false, true, false, false, false, false);
+    final RulesProfile bothSneakRules = new RulesProfile(true, true, false, false, false, false);
 
     // An enemy destroyer pins the sneak on either side, whatever the rules.
     assertThat(relations.firstStrikeNegated(Side.OFFENSE, friendly, withDestroyer, none)).isTrue();
@@ -260,6 +261,11 @@ class ReferenceCombatRelationsContractTest {
     assertThat(relations.firstStrikeNegated(Side.DEFENSE, friendly, noDestroyer, none)).isTrue();
     assertThat(relations.firstStrikeNegated(Side.DEFENSE, friendly, noDestroyer, ww2v2)).isFalse();
     assertThat(relations.firstStrikeNegated(Side.DEFENSE, friendly, noDestroyer, defendingSneak))
+        .isFalse();
+
+    // Both sneak rules on at once negate the sneak the same as either alone (the check is a bare
+    // OR of the two flags), but that combination isn't exercised above.
+    assertThat(relations.firstStrikeNegated(Side.DEFENSE, friendly, noDestroyer, bothSneakRules))
         .isFalse();
   }
 }
