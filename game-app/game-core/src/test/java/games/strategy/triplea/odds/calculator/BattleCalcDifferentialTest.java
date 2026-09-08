@@ -696,6 +696,52 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
     }
 
     /**
+     * An infrastructure-only defender is no battle at all. A lone AA gun is infrastructure ({@code
+     * isAA} sets {@code isInfrastructure}), so the engine ({@code MustFightBattle.fight}) ends the
+     * battle for the attacker before any AA step: the gun never fires and, headless, is captured
+     * rather than shot, so it stays a defender survivor. Without the same short-circuit the sim
+     * fired the infinite AA gun once per air target and killed both fighters. The guard makes both
+     * fighters pass through unharmed and the gun survive. The sibling AA tests add a defending
+     * infantry precisely to avoid this rule so the gun actually fires.
+     */
+    @Test
+    void infrastructureOnlyDefenderIsNoBattleSoAirAttackersPassUnharmed() {
+      final GameData gameData = TestMapGameData.REVISED.getGameData();
+      final Territory germany = territory("Germany", gameData);
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          russians(gameData),
+          germans(gameData),
+          germany,
+          fighter(gameData).create(2, russians(gameData)),
+          aaGun(gameData).create(1, germans(gameData)));
+    }
+
+    /**
+     * The no-battle short-circuit holds for a mixed air-and-land attack, exercising the engine's
+     * other survivor branch. With a non-air attacker present, {@code getRemainingDefendingUnits}
+     * keeps the AA gun a survivor without re-adding territory units, and every attacker passes
+     * through — the land unit captures the gun at battle end rather than shooting it (headless, so
+     * the gun still shows as a survivor). Before the guard the sim killed the fighter in AA and let
+     * the infantry sink the gun in main combat.
+     */
+    @Test
+    void infrastructureOnlyDefenderIsNoBattleForMixedAirAndLandAttackers() {
+      final GameData gameData = TestMapGameData.REVISED.getGameData();
+      final Territory germany = territory("Germany", gameData);
+      final Collection<Unit> attackers =
+          new ArrayList<>(fighter(gameData).create(1, russians(gameData)));
+      attackers.addAll(infantry(gameData).create(1, russians(gameData)));
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          russians(gameData),
+          germans(gameData),
+          germany,
+          attackers,
+          aaGun(gameData).create(1, germans(gameData)));
+    }
+
+    /**
      * A regression pin on the oracle's real pre-battle-submerge behavior — NOT evidence the engine
      * retreats here. With {@code subRetreatBeforeBattle} on and no defending destroyer the engine
      * does reach a pre-battle submerge check, but its headless AI ({@code
