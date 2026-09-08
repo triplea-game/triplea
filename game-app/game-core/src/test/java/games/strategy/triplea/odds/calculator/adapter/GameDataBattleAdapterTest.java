@@ -240,7 +240,8 @@ class GameDataBattleAdapterTest {
    * adapter altitude since nothing exercised it directly before. Every flag is flipped off its
    * REVISED default so each case proves the getter is actually read, not that a default happens to
    * agree: {@code WW2V2} and {@code Submersible Subs} default {@code true} (both {@code
-   * editable="false"}, so flipped through the editable store), the other four default {@code false}.
+   * editable="false"}, so flipped through the editable store), the other four default {@code
+   * false}.
    */
   @Test
   void bakesWw2v2FromProperties() {
@@ -338,9 +339,9 @@ class GameDataBattleAdapterTest {
    * strength from the normal {@code getAttack} family, so an {@code isAaForCombatOnly} gun gets its
    * near-zero normal attack rather than its AA firepower. The engine draws offensive AA from a
    * disjoint getter, {@code getOffensiveAttackAa}. A pure aaGun has {@code offensiveAttackAa == 0},
-   * indistinguishable from its {@code attack == 0}, so the fixture raises the AA value to 2 — the two
-   * sources then disagree and the baked {@code attack()} must track the AA source, not the normal
-   * one.
+   * indistinguishable from its {@code attack == 0}, so the fixture raises the AA value to 2 — the
+   * two sources then disagree and the baked {@code attack()} must track the AA source, not the
+   * normal one.
    *
    * <p>{@link CombatProfile} carries no die-sides field, so the {@code *MaxDieSides} half of the AA
    * stat family is not representable today and is not asserted here — only the strength source is
@@ -380,10 +381,10 @@ class GameDataBattleAdapterTest {
   }
 
   /**
-   * The defensive half of scope §2a bug 1: a defending aaGun's baked {@code defense()} must come from
-   * {@code getAttackAa} (its value against attacking air, 1 for a standard gun), not its 0 normal
-   * defense. {@link CombatProfile} carries no die-sides field, so only the strength source is pinned;
-   * the AA-specific {@code maxDieSides} denominator is unrepresentable and out of scope.
+   * The defensive half of scope §2a bug 1: a defending aaGun's baked {@code defense()} must come
+   * from {@code getAttackAa} (its value against attacking air, 1 for a standard gun), not its 0
+   * normal defense. {@link CombatProfile} carries no die-sides field, so only the strength source
+   * is pinned; the AA-specific {@code maxDieSides} denominator is unrepresentable and out of scope.
    */
   @Test
   void aaUnitDefenseProfileUsesAttackAaNotNormalDefense() {
@@ -438,12 +439,7 @@ class GameDataBattleAdapterTest {
         .isEqualTo(-1);
     assertThat(
             profileOf(
-                    scenarioFor(
-                            russians,
-                            germans,
-                            germany,
-                            aaGun.create(1, russians),
-                            defending)
+                    scenarioFor(russians, germans, germany, aaGun.create(1, russians), defending)
                         .attackers(),
                     "aaGun")
                 .rolls())
@@ -453,16 +449,46 @@ class GameDataBattleAdapterTest {
     aa.setMaxAaAttacks(3);
     assertThat(
             profileOf(
-                    scenarioFor(
-                            russians,
-                            germans,
-                            germany,
-                            aaGun.create(1, russians),
-                            defending)
+                    scenarioFor(russians, germans, germany, aaGun.create(1, russians), defending)
                         .attackers(),
                     "aaGun")
                 .rolls())
         .as("a map-set finite maxAaAttacks is baked verbatim as the AA roll count")
+        .isEqualTo(3);
+  }
+
+  /**
+   * The per-round AA dice cap needs the raw per-gun {@code getMaxAaAttacks} (-1 = infinite), which
+   * {@code rolls} discards by collapsing -1 to 1; the profile carries it verbatim so the fire-time
+   * cap can distinguish an infinite gun from a one-shot gun. A map-set finite value is baked as-is.
+   */
+  @Test
+  void aaUnitProfileCarriesRawMaxAaAttacksForThePerRoundCap() {
+    final GameData revised = TestMapGameData.REVISED.getGameData();
+    final GamePlayer russians = GameDataTestUtil.russians(revised);
+    final GamePlayer germans = GameDataTestUtil.germans(revised);
+    final Territory germany = GameDataTestUtil.territory("Germany", revised);
+    final UnitType aaGun = GameDataTestUtil.aaGun(revised);
+    final UnitAttachment aa = aaGun.getUnitAttachment();
+    final Collection<Unit> defending = GameDataTestUtil.infantry(revised).create(1, germans);
+
+    assertThat(
+            profileOf(
+                    scenarioFor(russians, germans, germany, aaGun.create(1, russians), defending)
+                        .attackers(),
+                    "aaGun")
+                .maxAaAttacks())
+        .as("a stock infinite gun keeps its raw -1, not the roll-count's collapsed 1")
+        .isEqualTo(-1);
+
+    aa.setMaxAaAttacks(3);
+    assertThat(
+            profileOf(
+                    scenarioFor(russians, germans, germany, aaGun.create(1, russians), defending)
+                        .attackers(),
+                    "aaGun")
+                .maxAaAttacks())
+        .as("a map-set finite per-gun cap is baked verbatim")
         .isEqualTo(3);
   }
 

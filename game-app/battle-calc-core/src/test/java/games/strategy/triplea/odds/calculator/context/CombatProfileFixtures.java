@@ -95,6 +95,7 @@ public final class CombatProfileFixtures {
         profile.defense(),
         rolls,
         profile.maxRoundsAa(),
+        profile.maxAaAttacks(),
         profile.hitPoints(),
         profile.domain(),
         profile.damage(),
@@ -112,6 +113,26 @@ public final class CombatProfileFixtures {
         profile.defense(),
         profile.rolls(),
         maxRoundsAa,
+        profile.maxAaAttacks(),
+        profile.hitPoints(),
+        profile.domain(),
+        profile.damage(),
+        profile.gives(),
+        profile.receives(),
+        profile.flags(),
+        profile.next());
+  }
+
+  /** Copies {@code profile} with a raw per-gun AA dice cap (-1 = infinite, else the finite cap). */
+  public static CombatProfile withMaxAaAttacks(
+      final CombatProfile profile, final int maxAaAttacks) {
+    return new CombatProfile(
+        profile.type(),
+        profile.attack(),
+        profile.defense(),
+        profile.rolls(),
+        profile.maxRoundsAa(),
+        maxAaAttacks,
         profile.hitPoints(),
         profile.domain(),
         profile.damage(),
@@ -131,6 +152,7 @@ public final class CombatProfileFixtures {
         profile.defense(),
         profile.rolls(),
         profile.maxRoundsAa(),
+        profile.maxAaAttacks(),
         profile.hitPoints(),
         profile.domain(),
         profile.damage(),
@@ -148,6 +170,7 @@ public final class CombatProfileFixtures {
         profile.defense(),
         profile.rolls(),
         profile.maxRoundsAa(),
+        profile.maxAaAttacks(),
         profile.hitPoints(),
         profile.domain(),
         profile.damage(),
@@ -166,6 +189,7 @@ public final class CombatProfileFixtures {
         profile.defense(),
         profile.rolls(),
         profile.maxRoundsAa(),
+        profile.maxAaAttacks(),
         profile.hitPoints(),
         profile.domain(),
         profile.damage(),
@@ -187,6 +211,7 @@ public final class CombatProfileFixtures {
         attack,
         defense,
         1,
+        -1,
         -1,
         hitPoints,
         domain,

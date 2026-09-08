@@ -246,7 +246,8 @@ public class GameDataBattleAdapter {
             ? ua.getAttackAa(player)
             : ua.getDefense(player)
                 + TerritoryEffectHelper.getTerritoryCombatBonus(type, effects, true);
-    // 'maxAaAttacks' defaults to -1 (infinite), not a representable static die count, so both -1 and
+    // 'maxAaAttacks' defaults to -1 (infinite), not a representable static die count, so both -1
+    // and
     // 0 collapse to 1; a map-set finite value (eg 3) is preserved.
     final int rolls =
         aa
@@ -257,9 +258,16 @@ public class GameDataBattleAdapter {
         attack,
         defense,
         rolls,
-        // AA fires only through 'maxRoundsAa' (default 1 = round 1 only); -1 for non-AA units, which
+        // AA fires only through 'maxRoundsAa' (default 1 = round 1 only); -1 for non-AA units,
+        // which
         // the resolver never reads. Gates the temporal AA re-fire the engine bounds per round.
         aa ? ua.getMaxRoundsAa() : -1,
+        // Raw per-gun AA dice cap (-1 = infinite); the per-round cap against the live air count is
+        // applied at fire time. Static per unit-type so identical guns still merge; non-AA units
+        // bake
+        // a constant -1, matching maxRoundsAa so no fungible profiles split on this merge-key
+        // field.
+        aa ? ua.getMaxAaAttacks() : -1,
         remaining,
         domainOf(ua),
         new DamageState(hits),
@@ -339,8 +347,10 @@ public class GameDataBattleAdapter {
     if (ua.isDestroyer()) {
       flags.add(CombatFlag.IS_DESTROYER);
     }
-    // Mirrors Matches.unitIsSeaTransportButNotCombatSeaTransport: transportCapacity != -1 (a carrier
-    // uses carrierCapacity and stays at -1) and not a combat transport, which fights and so is never
+    // Mirrors Matches.unitIsSeaTransportButNotCombatSeaTransport: transportCapacity != -1 (a
+    // carrier
+    // uses carrierCapacity and stays at -1) and not a combat transport, which fights and so is
+    // never
     // the protected casualty class. Distinct from the anyCarrier '> 0' cargo-cascade predicate.
     if (ua.getTransportCapacity() != -1 && ua.isSea() && !ua.isCombatTransport()) {
       flags.add(CombatFlag.IS_TRANSPORT);
