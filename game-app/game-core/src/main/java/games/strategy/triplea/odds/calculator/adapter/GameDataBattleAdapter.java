@@ -225,11 +225,41 @@ public class GameDataBattleAdapter {
       final boolean lhtrHeavyBombers) {
     final UnitAttachment ua = type.getUnitAttachment();
     final int remaining = ua.getHitPoints() - hits;
+    // AA fire draws from a stat family disjoint from normal combat: offensive AA from
+    // 'getOffensiveAttackAa', defensive AA from 'getAttackAa', dice from 'getMaxAaAttacks' — never
+    // the 'getAttack'/'getAttackRolls' family a pure gun would read as near-zero. Both AA strength
+    // getters already fold the tech bonus and clamp to the AA die-sides, and no AA territory-combat
+    // bonus exists, so the normal territory bonus is omitted. Standard AA leaves *AaMaxDieSides at
+    // the game diceSides the single-scalar roller divides by, so strength/diceSides matches the
+    // engine's probability; a map-set non-standard denominator is an unrepresentable, deferred gap.
+    // One-profile-per-unit limit: an AA unit takes the AA family for its whole profile, so a
+    // dual-role unit that is both AA and a real combatant loses its normal main-phase fire here. No
+    // stock unit is both (stock guns are attack-0 infrastructure), so this is an accepted gap.
+    final boolean aa = ua.isAaForCombatOnly();
+    final int attack =
+        aa
+            ? ua.getOffensiveAttackAa(player)
+            : ua.getAttack(player)
+                + TerritoryEffectHelper.getTerritoryCombatBonus(type, effects, false);
+    final int defense =
+        aa
+            ? ua.getAttackAa(player)
+            : ua.getDefense(player)
+                + TerritoryEffectHelper.getTerritoryCombatBonus(type, effects, true);
+    // 'maxAaAttacks' defaults to -1 (infinite), not a representable static die count, so both -1 and
+    // 0 collapse to 1; a map-set finite value (eg 3) is preserved.
+    final int rolls =
+        aa
+            ? Math.max(1, ua.getMaxAaAttacks())
+            : side == Side.OFFENSE ? ua.getAttackRolls(player) : ua.getDefenseRolls(player);
     return new CombatProfile(
         new UnitTypeId(type.getName()),
-        ua.getAttack(player) + TerritoryEffectHelper.getTerritoryCombatBonus(type, effects, false),
-        ua.getDefense(player) + TerritoryEffectHelper.getTerritoryCombatBonus(type, effects, true),
-        side == Side.OFFENSE ? ua.getAttackRolls(player) : ua.getDefenseRolls(player),
+        attack,
+        defense,
+        rolls,
+        // AA fires only through 'maxRoundsAa' (default 1 = round 1 only); -1 for non-AA units, which
+        // the resolver never reads. Gates the temporal AA re-fire the engine bounds per round.
+        aa ? ua.getMaxRoundsAa() : -1,
         remaining,
         domainOf(ua),
         new DamageState(hits),

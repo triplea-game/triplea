@@ -1,5 +1,6 @@
 package games.strategy.triplea.odds.calculator;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.aaGun;
 import static games.strategy.triplea.delegate.GameDataTestUtil.americans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
 import static games.strategy.triplea.delegate.GameDataTestUtil.artillery;
@@ -607,6 +608,109 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
           seaZone,
           fighter(gameData).create(3, americans(gameData)),
           battleship(gameData).create(1, germans(gameData)));
+    }
+
+    /**
+     * The AA stat-source gap (scope §2a bug 1) where it bites hardest: a defending aaGun with 0
+     * normal defense but a real {@code getAttackAa} of 1. Under {@code alwaysHits} the engine's AA
+     * fire kills the lone attacking fighter before it reaches the gun and its escorting infantry, so
+     * both defenders survive; the sim bakes the gun's 0 normal defense as its firepower, so its AA
+     * fire hits on {@code 0 < 0}, ie never — the fighter survives AA, trades in main combat, and a
+     * defender dies. The fixture discriminates only because the gun's normal defense (0) and its AA
+     * value (1) disagree; a same-stats bake would pass even under the bug.
+     */
+    @Test
+    void aaGunWithZeroNormalAttackStillDamagesAirAttackers() {
+      final GameData gameData = TestMapGameData.REVISED.getGameData();
+      final Territory germany = territory("Germany", gameData);
+      final Collection<Unit> defenders =
+          new ArrayList<>(aaGun(gameData).create(1, germans(gameData)));
+      defenders.addAll(infantry(gameData).create(1, germans(gameData)));
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          russians(gameData),
+          germans(gameData),
+          germany,
+          fighter(gameData).create(1, russians(gameData)),
+          defenders);
+    }
+
+    /**
+     * The stacked-AA over-count (scope §2a bug 2), and why it stays invisible to this oracle. The
+     * strength fix bakes each AA gun's real firepower with no total-dice cap, so three defending guns
+     * roll three AA dice where the engine ({@code AaPowerStrengthAndRolls}) caps total AA dice at the
+     * live air-target count — here one. That divergence is purely probabilistic: under {@code
+     * alwaysHits} both paths land at least one hit on the lone fighter, and neither can kill more air
+     * than exists, so the excess sim dice are absorbed and survivors match exactly. The infantry is
+     * load-bearing — it forces a real battle so AA actually fires; a gun-only defender would trip the
+     * engine's separate no-battle-against-infrastructure rule instead. Pins that the stat-source fix
+     * does not over-kill under the exact-equality oracle; the dynamic AA dice cap is deferred as the
+     * bug-2 follow-up, not reachable by a localized clamp (it needs the engine's per-round
+     * strongest-first dice allocation and AA casualty selection).
+     */
+    @Test
+    void stackedAaGunsOverCountDiceButSurvivorsStillMatchUnderAlwaysHits() {
+      final GameData gameData = TestMapGameData.REVISED.getGameData();
+      final Territory germany = territory("Germany", gameData);
+      final Collection<Unit> defenders =
+          new ArrayList<>(aaGun(gameData).create(3, germans(gameData)));
+      defenders.addAll(infantry(gameData).create(1, germans(gameData)));
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          russians(gameData),
+          germans(gameData),
+          germany,
+          fighter(gameData).create(1, russians(gameData)),
+          defenders);
+    }
+
+    /**
+     * A regression pin on the oracle's real pre-battle-submerge behavior — NOT evidence the engine
+     * retreats here. With {@code subRetreatBeforeBattle} on and no defending destroyer the engine
+     * does reach a pre-battle submerge check, but its headless AI ({@code DummyPlayer#retreatQuery})
+     * approves a submerge only when every enemy is a non-destroyer plane; a surface carrier is not,
+     * so it declines. The sub stays, fires its first strike, and sinks the 1-HP carrier — exactly
+     * what the sim does, since the sim has no pre-battle checkpoint either. The property moves only
+     * <em>when</em> the doomed submerge is evaluated, not whether it succeeds, so both paths agree. A
+     * general BEFORE_BATTLE retreat is deliberately not modeled: it would be more permissive than the
+     * oracle, which has no all-arms pre-battle evasion.
+     */
+    @Test
+    void subDeclinesPreBattleSubmergeAgainstSurfaceDefender() {
+      final GameData gameData = TestMapGameData.REVISED.getGameData();
+      setBooleanProperty(gameData, Constants.SUB_RETREAT_BEFORE_BATTLE, true);
+      final Territory seaZone = territory("1 Sea Zone", gameData);
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          seaZone,
+          submarine(gameData).create(1, americans(gameData)),
+          carrier(gameData).create(1, germans(gameData)));
+    }
+
+    /**
+     * The destroyer block on pre-battle sub evasion: {@code subRetreatBeforeBattle} is on, but a
+     * defending destroyer trips {@code isDestroyerPresent} before any submerge query runs, so the
+     * engine cannot evade the attacking sub before battle — a static structural rule both paths
+     * honor, so they fight and agree. The destroyer also negates the sub's first strike, so under
+     * {@code alwaysHits} the two trade simultaneously and neither survives.
+     */
+    @Test
+    void defendingDestroyerBlocksPreBattleSubEvasion() {
+      final GameData gameData = TestMapGameData.REVISED.getGameData();
+      setBooleanProperty(gameData, Constants.SUB_RETREAT_BEFORE_BATTLE, true);
+      final Territory seaZone = territory("1 Sea Zone", gameData);
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          seaZone,
+          submarine(gameData).create(1, americans(gameData)),
+          destroyer(gameData).create(1, germans(gameData)));
     }
   }
 

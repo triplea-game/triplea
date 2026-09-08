@@ -13,6 +13,10 @@ public record CombatProfile(
     int attack,
     int defense,
     int rolls,
+    // The last round through which an IS_AA unit fires ('maxRoundsAa'; -1 = every round), mirroring
+    // the engine's Matches.unitIsAaThatCanFireOnRound gate — a standard gun fires round 1 only.
+    // Read only for AA profiles; baked -1 for every non-AA unit, which never consults it.
+    int maxRoundsAa,
     int hitPoints,
     Domain domain,
     DamageState damage,
