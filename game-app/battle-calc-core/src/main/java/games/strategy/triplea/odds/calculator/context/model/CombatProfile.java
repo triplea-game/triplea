@@ -17,6 +17,12 @@ public record CombatProfile(
     // the engine's Matches.unitIsAaThatCanFireOnRound gate — a standard gun fires round 1 only.
     // Read only for AA profiles; baked -1 for every non-AA unit, which never consults it.
     int maxRoundsAa,
+    // The raw per-gun AA dice cap ('getMaxAaAttacks'; -1 = infinite, else the finite per-gun roll
+    // count). Static per unit-type, so identical guns still merge on this component; the per-round
+    // total-dice cap against the live air-target count is applied at fire time, mirroring the
+    // engine's AaPowerStrengthAndRolls. Non-AA units bake a constant -1, so no fungible profiles
+    // split on it.
+    int maxAaAttacks,
     int hitPoints,
     Domain domain,
     DamageState damage,

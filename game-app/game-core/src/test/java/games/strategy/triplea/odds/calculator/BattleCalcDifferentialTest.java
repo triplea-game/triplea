@@ -461,11 +461,11 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
 
     /**
      * The off-case contrast to {@link #restrictedTransportIsNotACasualtyWhileItsEscortLives} — the
-     * same one-sub fixture with the restriction flipped off. The single hit now falls to the cheaper
-     * transport under ordinary cost order, so the destroyer survives ({@code {destroyer=1}}), the
-     * mirror of A1's flag-on {@code {transport=1}}. Because the ordering is decisive it is a true
-     * guard: an over-restriction that wrongly protected the transport when the flag is off would
-     * leave {@code {transport=1}} and diverge from the engine here.
+     * same one-sub fixture with the restriction flipped off. The single hit now falls to the
+     * cheaper transport under ordinary cost order, so the destroyer survives ({@code
+     * {destroyer=1}}), the mirror of A1's flag-on {@code {transport=1}}. Because the ordering is
+     * decisive it is a true guard: an over-restriction that wrongly protected the transport when
+     * the flag is off would leave {@code {transport=1}} and diverge from the engine here.
      */
     @Test
     void unrestrictedTransportIsAnOrdinaryCasualtyAlongsideItsEscort() {
@@ -491,8 +491,8 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
      * is dead the engine sweeps the now-defenseless transports off the board at round end even
      * though no hit was scored on them ({@code RemoveUnprotectedUnits} / {@code
      * RetreatChecks#onlyDefenselessTransportsLeft}). The sim has no such end-of-round step and no
-     * consumer of the flag, so it keeps trading against the escort under ordinary casualty order and
-     * diverges on who is left standing. Red until the removal step exists.
+     * consumer of the flag, so it keeps trading against the escort under ordinary casualty order
+     * and diverges on who is left standing. Red until the removal step exists.
      */
     @Test
     void unescortedTransportsAreSweptAtRoundEndUnderTheRestriction() {
@@ -514,14 +514,14 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
     }
 
     /**
-     * The restriction composed with the eligibility-overflow cargo cascade: two subs put two hits on
-     * a destroyer plus two transports, all cargo loaded on the first transport. The escort saturates
-     * the first hit; the second overflows onto a transport, and when that transport dies its {@code
-     * IS_DEPENDENT} cargo must cascade off with it while the surviving transport is left — restricted
-     * {@code {transport=1}} versus the unrestricted counterfactual that kills the two cheaper
-     * transports and spares the destroyer ({@code {destroyer=1}}). Pins that overflow onto a
-     * transport still cascades its cargo and that cargo never itself soaks the restriction; red until
-     * the restriction is wired, green with it.
+     * The restriction composed with the eligibility-overflow cargo cascade: two subs put two hits
+     * on a destroyer plus two transports, all cargo loaded on the first transport. The escort
+     * saturates the first hit; the second overflows onto a transport, and when that transport dies
+     * its {@code IS_DEPENDENT} cargo must cascade off with it while the surviving transport is left
+     * — restricted {@code {transport=1}} versus the unrestricted counterfactual that kills the two
+     * cheaper transports and spares the destroyer ({@code {destroyer=1}}). Pins that overflow onto
+     * a transport still cascades its cargo and that cargo never itself soaks the restriction; red
+     * until the restriction is wired, green with it.
      */
     @Test
     void restrictedTransportStillCascadesItsCargoOnceItsEscortDies() {
@@ -532,7 +532,8 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
       final List<Unit> transportUnit = transport(gameData).create(2, germans(gameData));
       final Collection<Unit> cargo = infantry(gameData).create(2, germans(gameData));
       // Green is fixture-dependent: all cargo rides transportUnit[0], the transport the engine's
-      // limitTransportsToSelect().limit(1) picks first, so its cargo cascades on both paths. Loading
+      // limitTransportsToSelect().limit(1) picks first, so its cargo cascades on both paths.
+      // Loading
       // transportUnit[1] instead would diverge — the adapter pools cargo per side while the engine
       // links it per unit (the §E.1 v1 gap), so the pooled cascade would sink the wrong transport's
       // cargo.
@@ -588,11 +589,11 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
 
     /**
      * Characterization of the pre-existing lone-multi-HP hit-drop in {@code
-     * ReferenceCasualtyAllocator}: a single 2-HP battleship absorbing two hits from one volley loses
-     * a hit the engine lands, so the sim over-reports its survival. Three fighters put two
-     * guaranteed hits on a lone defending battleship under {@code alwaysHits} — the engine sinks it,
-     * the sim spares it damaged. Disabled as a documentation pin of a gap that predates the flag
-     * port, not a defect fixed here; kept so the drop cannot silently change (mirrors {@link
+     * ReferenceCasualtyAllocator}: a single 2-HP battleship absorbing two hits from one volley
+     * loses a hit the engine lands, so the sim over-reports its survival. Three fighters put two
+     * guaranteed hits on a lone defending battleship under {@code alwaysHits} — the engine sinks
+     * it, the sim spares it damaged. Disabled as a documentation pin of a gap that predates the
+     * flag port, not a defect fixed here; kept so the drop cannot silently change (mirrors {@link
      * #ww2v2DestroyerPinnedFirstStrikeStillTradesInTheSubPhase}).
      */
     @Test
@@ -613,11 +614,11 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
     /**
      * The AA stat-source gap (scope §2a bug 1) where it bites hardest: a defending aaGun with 0
      * normal defense but a real {@code getAttackAa} of 1. Under {@code alwaysHits} the engine's AA
-     * fire kills the lone attacking fighter before it reaches the gun and its escorting infantry, so
-     * both defenders survive; the sim bakes the gun's 0 normal defense as its firepower, so its AA
-     * fire hits on {@code 0 < 0}, ie never — the fighter survives AA, trades in main combat, and a
-     * defender dies. The fixture discriminates only because the gun's normal defense (0) and its AA
-     * value (1) disagree; a same-stats bake would pass even under the bug.
+     * fire kills the lone attacking fighter before it reaches the gun and its escorting infantry,
+     * so both defenders survive; the sim bakes the gun's 0 normal defense as its firepower, so its
+     * AA fire hits on {@code 0 < 0}, ie never — the fighter survives AA, trades in main combat, and
+     * a defender dies. The fixture discriminates only because the gun's normal defense (0) and its
+     * AA value (1) disagree; a same-stats bake would pass even under the bug.
      */
     @Test
     void aaGunWithZeroNormalAttackStillDamagesAirAttackers() {
@@ -637,17 +638,46 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
     }
 
     /**
-     * The stacked-AA over-count (scope §2a bug 2), and why it stays invisible to this oracle. The
-     * strength fix bakes each AA gun's real firepower with no total-dice cap, so three defending guns
-     * roll three AA dice where the engine ({@code AaPowerStrengthAndRolls}) caps total AA dice at the
-     * live air-target count — here one. That divergence is purely probabilistic: under {@code
-     * alwaysHits} both paths land at least one hit on the lone fighter, and neither can kill more air
-     * than exists, so the excess sim dice are absorbed and survivors match exactly. The infantry is
-     * load-bearing — it forces a real battle so AA actually fires; a gun-only defender would trip the
-     * engine's separate no-battle-against-infrastructure rule instead. Pins that the stat-source fix
-     * does not over-kill under the exact-equality oracle; the dynamic AA dice cap is deferred as the
-     * bug-2 follow-up, not reachable by a localized clamp (it needs the engine's per-round
-     * strongest-first dice allocation and AA casualty selection).
+     * The infinite-gun under-count (scope §2a bug 2), the face this oracle does see. REVISED's
+     * aaGun has an infinite {@code maxAaAttacks}, so the engine ({@code AaPowerStrengthAndRolls})
+     * fires one die per live air target — two dice against two fighters — killing both in AA under
+     * {@code alwaysHits}; no attacker reaches main combat, so both defenders survive. Before the
+     * per-round dice cap the sim baked a single static AA die regardless of air count, so it killed
+     * one fighter and spared the other into main combat where it could kill the infantry — a
+     * composition divergence the exact-equality oracle catches. The infantry forces a real battle
+     * so the gun actually fires (a gun-only defender trips the engine's
+     * no-battle-against-infrastructure rule). Complements {@link
+     * #stackedAaGunsOverCountDiceButSurvivorsStillMatchUnderAlwaysHits}, whose over-count face
+     * stays hidden from this oracle.
+     */
+    @Test
+    void infiniteAaGunFiresOncePerAirTargetSoBothFightersDieInAa() {
+      final GameData gameData = TestMapGameData.REVISED.getGameData();
+      final Territory germany = territory("Germany", gameData);
+      final Collection<Unit> defenders =
+          new ArrayList<>(aaGun(gameData).create(1, germans(gameData)));
+      defenders.addAll(infantry(gameData).create(1, germans(gameData)));
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          russians(gameData),
+          germans(gameData),
+          germany,
+          fighter(gameData).create(2, russians(gameData)),
+          defenders);
+    }
+
+    /**
+     * The stacked-AA over-count (scope §2a bug 2), and why it stays invisible to this oracle. Each
+     * AA gun bakes its real firepower, and the per-round cap now clamps total AA dice at the live
+     * air-target count — here one — so three defending guns roll one die, matching the engine
+     * ({@code AaPowerStrengthAndRolls}) rather than three. The cap change is nonetheless invisible
+     * to this oracle: under {@code alwaysHits} the pre-cap three dice and the engine's one both
+     * land at least one hit on the lone fighter, and neither can kill more air than exists, so
+     * survivors matched exactly before and after. The infantry is load-bearing — it forces a real
+     * battle so AA actually fires; a gun-only defender would trip the engine's separate
+     * no-battle-against-infrastructure rule instead. The over-count only moves the seeded win%, so
+     * this pins that the cap does not regress the exact-equality survivors; its distributional
+     * effect is a fuzz-pass concern.
      */
     @Test
     void stackedAaGunsOverCountDiceButSurvivorsStillMatchUnderAlwaysHits() {
@@ -668,13 +698,14 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
     /**
      * A regression pin on the oracle's real pre-battle-submerge behavior — NOT evidence the engine
      * retreats here. With {@code subRetreatBeforeBattle} on and no defending destroyer the engine
-     * does reach a pre-battle submerge check, but its headless AI ({@code DummyPlayer#retreatQuery})
-     * approves a submerge only when every enemy is a non-destroyer plane; a surface carrier is not,
-     * so it declines. The sub stays, fires its first strike, and sinks the 1-HP carrier — exactly
-     * what the sim does, since the sim has no pre-battle checkpoint either. The property moves only
-     * <em>when</em> the doomed submerge is evaluated, not whether it succeeds, so both paths agree. A
-     * general BEFORE_BATTLE retreat is deliberately not modeled: it would be more permissive than the
-     * oracle, which has no all-arms pre-battle evasion.
+     * does reach a pre-battle submerge check, but its headless AI ({@code
+     * DummyPlayer#retreatQuery}) approves a submerge only when every enemy is a non-destroyer
+     * plane; a surface carrier is not, so it declines. The sub stays, fires its first strike, and
+     * sinks the 1-HP carrier — exactly what the sim does, since the sim has no pre-battle
+     * checkpoint either. The property moves only <em>when</em> the doomed submerge is evaluated,
+     * not whether it succeeds, so both paths agree. A general BEFORE_BATTLE retreat is deliberately
+     * not modeled: it would be more permissive than the oracle, which has no all-arms pre-battle
+     * evasion.
      */
     @Test
     void subDeclinesPreBattleSubmergeAgainstSurfaceDefender() {
@@ -759,9 +790,9 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
     }
 
     /**
-     * A destroyer on the firing side strips the immunity side-wide, so the fighter beside it may hit
-     * the protected sub — matching the engine's once-per-step {@code destroyerPresent}. Both paths
-     * sink the sub.
+     * A destroyer on the firing side strips the immunity side-wide, so the fighter beside it may
+     * hit the protected sub — matching the engine's once-per-step {@code destroyerPresent}. Both
+     * paths sink the sub.
      */
     @Test
     void anAttackingDestroyerLetsAirHitTheProtectedSub() {

@@ -35,6 +35,7 @@ import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The reference per-round battle pipeline (design §5): composes the reference resolver, roller,
@@ -259,9 +260,24 @@ public class ReferenceBattleSimulator implements BattleSimulator {
     // re-planned post-first-strike counts. Both sides thus roll off a frozen exchange snapshot
     // while
     // casualties land per hit on the live target map.
-    final Map<CombatProfile, Integer> firing = step.group().firing();
+    Map<CombatProfile, Integer> firing = step.group().firing();
     if (firing.isEmpty()) {
       return;
+    }
+    // AA caps its total dice at the live air-target count each round (engine
+    // AaPowerStrengthAndRolls): rebuild the firing vector so each gun carries its capped share as
+    // its roll count, letting the ordinary roller roll the capped total. An infinite gun that
+    // stably
+    // baked one static die otherwise under-fires; a many-guns-vs-few-air stack over-fires.
+    if (step.phase() == Phase.AA) {
+      final int airTargets =
+          liveAirTargetCount(targetForce, step.group().target().eligibleTargets());
+      firing =
+          AaFireCap.cappedFiring(
+              firing, airTargets, p -> step.offense() ? p.attack() : p.defense());
+      if (firing.isEmpty()) {
+        return;
+      }
     }
     final FireContext ctx =
         new FireContext(
@@ -496,6 +512,19 @@ public class ReferenceBattleSimulator implements BattleSimulator {
       }
     }
     return byProfile;
+  }
+
+  /** Live count of ACTIVE enemy units this AA group may target — the round's air-target cap. */
+  private static int liveAirTargetCount(
+      final Map<Key, Integer> targetForce, final Set<CombatProfile> eligible) {
+    int count = 0;
+    for (final Map.Entry<Key, Integer> entry : targetForce.entrySet()) {
+      if (entry.getKey().state() == Lifecycle.ACTIVE
+          && eligible.contains(entry.getKey().profile())) {
+        count += entry.getValue();
+      }
+    }
+    return count;
   }
 
   private static Map<CombatProfile, Integer> activeProfileCounts(final Map<Key, Integer> working) {
