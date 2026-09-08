@@ -27,7 +27,13 @@ public enum CombatFlag {
   // CombatRelations excludes it from targeting and RollGroupResolver from firing, so it leaves the
   // battle only through the dependent cascade when its carrier is killed.
   IS_DEPENDENT,
-  // Marks a non-combat sea transport: protected as a casualty class while a combatant can still soak
+  // Marks a non-combat sea transport: protected as a casualty class while a combatant can still
+  // soak
   // a hit under 'transportCasualtiesRestricted', and swept off the board once left unescorted.
-  IS_TRANSPORT
+  IS_TRANSPORT,
+  // Marks a unit captured at battle end rather than taken as a combat casualty (AA gun, factory,
+  // other construction), baked from UnitAttachment#isInfrastructure. A side whose units are all
+  // infrastructure is no battle: the engine skips straight to the other side taking the territory,
+  // so the simulator short-circuits before any AA fires.
+  IS_INFRASTRUCTURE
 }

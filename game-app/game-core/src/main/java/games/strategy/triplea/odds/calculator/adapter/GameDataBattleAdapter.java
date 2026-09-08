@@ -358,6 +358,12 @@ public class GameDataBattleAdapter {
     if (dependent) {
       flags.add(CombatFlag.IS_DEPENDENT);
     }
+    // Mirrors Matches.unitIsInfrastructure: a side that is all infrastructure is no battle, so the
+    // simulator skips it before any AA fires (isAA sets isInfrastructure, so a stock AA gun carries
+    // both).
+    if (ua.isInfrastructure()) {
+      flags.add(CombatFlag.IS_INFRASTRUCTURE);
+    }
     return flags;
   }
 

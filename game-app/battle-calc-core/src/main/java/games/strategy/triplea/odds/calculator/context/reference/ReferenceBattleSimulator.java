@@ -94,6 +94,17 @@ public class ReferenceBattleSimulator implements BattleSimulator {
       final BattleScenario scenario, final ProfileStats stats, final RandomSource rng) {
     final Map<Key, Integer> attackers = new LinkedHashMap<>(scenario.attackers().counts());
     final Map<Key, Integer> defenders = new LinkedHashMap<>(scenario.defenders().counts());
+    // No-battle short-circuit (engine MustFightBattle.fight): a side whose units are all
+    // infrastructure cannot be taken as a combat casualty, so the engine skips the battle entirely
+    // — no AA fires — and the other side takes the territory untouched. The engine tests the
+    // attacker first, so an all-infrastructure attacker resolves as a defender win even against an
+    // all-infrastructure defender.
+    if (allInfrastructure(attackers)) {
+      return noBattle(attackers, defenders, Outcome.DEFENDER_WINS);
+    }
+    if (allInfrastructure(defenders)) {
+      return noBattle(attackers, defenders, Outcome.ATTACKER_WINS);
+    }
     int round = 0;
     boolean withdrew = false;
     while (round < MAX_ROUNDS
@@ -496,6 +507,35 @@ public class ReferenceBattleSimulator implements BattleSimulator {
       return Outcome.DEFENDER_WINS;
     }
     return Outcome.DRAW;
+  }
+
+  /** Both sides pass through untouched with the given verdict and no rounds fought. */
+  private static BattleResult noBattle(
+      final Map<Key, Integer> attackers, final Map<Key, Integer> defenders, final Outcome outcome) {
+    return new BattleResult(
+        new Force(new LinkedHashMap<>(attackers)),
+        new Force(new LinkedHashMap<>(defenders)),
+        0,
+        outcome);
+  }
+
+  /**
+   * Whether a side fields at least one unit and every one is infrastructure — the engine's
+   * no-battle trigger (all defenders match {@code Matches.unitIsInfrastructure}). An empty side
+   * falls through to the ordinary outcome instead.
+   */
+  private static boolean allInfrastructure(final Map<Key, Integer> side) {
+    boolean any = false;
+    for (final Map.Entry<Key, Integer> entry : side.entrySet()) {
+      if (entry.getKey().state() != Lifecycle.ACTIVE || entry.getValue() <= 0) {
+        continue;
+      }
+      any = true;
+      if (!entry.getKey().profile().flags().contains(CombatFlag.IS_INFRASTRUCTURE)) {
+        return false;
+      }
+    }
+    return any;
   }
 
   /**
