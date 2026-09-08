@@ -1,7 +1,6 @@
 package games.strategy.engine.data.util;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
@@ -24,13 +23,13 @@ public class BreadthFirstSearchTest {
 
   @Test
   void testLandDistance() {
-    assertThat(getLandDistance(caucasus, russia), is(1));
-    assertThat(getLandDistance(caucasus, germany), is(3));
+    assertThat(getLandDistance(caucasus, russia)).isEqualTo(1);
+    assertThat(getLandDistance(caucasus, germany)).isEqualTo(3);
   }
 
   @Test
   void testLandDistanceNotFound() {
-    assertThat(getLandDistance(caucasus, uk), is(-1));
+    assertThat(getLandDistance(caucasus, uk)).isEqualTo(-1);
   }
 
   @Test
@@ -38,6 +37,6 @@ public class BreadthFirstSearchTest {
     // Note: This is testing the limitation described in the API doc.
     // This is a test for the low-level helper class, but the high level API, which is tested by
     // GameMapTest.testLandDistanceSameTerritory() returns the expected result of 0.
-    assertThat(getLandDistance(caucasus, caucasus), is(-1));
+    assertThat(getLandDistance(caucasus, caucasus)).isEqualTo(-1);
   }
 }

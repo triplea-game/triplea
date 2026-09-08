@@ -1,7 +1,6 @@
 package games.strategy.engine.lobby.moderator.toolbox.tabs.moderators;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -49,7 +48,8 @@ class ModeratorsTabModelTest {
 
       moderatorsTabModel = new ModeratorsTabModel(toolboxModeratorManagementClient);
 
-      assertThat(moderatorsTabModel.fetchTableHeaders(), is(ModeratorsTabModel.HEADERS_FOR_ADMIN));
+      assertThat(moderatorsTabModel.fetchTableHeaders())
+          .isEqualTo(ModeratorsTabModel.HEADERS_FOR_ADMIN);
     }
 
     @Test
@@ -58,7 +58,7 @@ class ModeratorsTabModelTest {
 
       moderatorsTabModel = new ModeratorsTabModel(toolboxModeratorManagementClient);
 
-      assertThat(moderatorsTabModel.fetchTableHeaders(), is(ModeratorsTabModel.HEADERS));
+      assertThat(moderatorsTabModel.fetchTableHeaders()).isEqualTo(ModeratorsTabModel.HEADERS);
     }
   }
 
@@ -129,18 +129,16 @@ class ModeratorsTabModelTest {
     void checkUserExistsPositiveCase() {
       when(toolboxModeratorManagementClient.checkUserExists(USERNAME)).thenReturn(false);
 
-      assertThat(
-          new ModeratorsTabModel(toolboxModeratorManagementClient).checkUserExists(USERNAME),
-          is(false));
+      assertThat(new ModeratorsTabModel(toolboxModeratorManagementClient).checkUserExists(USERNAME))
+          .isFalse();
     }
 
     @Test
     void checkUserExistsNegativeCase() {
       when(toolboxModeratorManagementClient.checkUserExists(USERNAME)).thenReturn(false);
 
-      assertThat(
-          new ModeratorsTabModel(toolboxModeratorManagementClient).checkUserExists(USERNAME),
-          is(false));
+      assertThat(new ModeratorsTabModel(toolboxModeratorManagementClient).checkUserExists(USERNAME))
+          .isFalse();
     }
   }
 

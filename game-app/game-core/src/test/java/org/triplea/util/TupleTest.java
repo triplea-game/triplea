@@ -1,10 +1,6 @@
 package org.triplea.util;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Nested;
@@ -15,23 +11,23 @@ class TupleTest {
 
   @Test
   void basicUsage() {
-    assertThat(testObj.getFirst(), is("hi"));
-    assertThat(testObj.getSecond(), is(123));
+    assertThat(testObj.getFirst()).isEqualTo("hi");
+    assertThat(testObj.getSecond()).isEqualTo(123);
   }
 
   @Test
   void verifyToString() {
-    assertThat(testObj.toString(), containsString(testObj.getFirst()));
-    assertThat(testObj.toString(), containsString(String.valueOf(testObj.getSecond())));
+    assertThat(testObj.toString()).contains(testObj.getFirst());
+    assertThat(testObj.toString()).contains(String.valueOf(testObj.getSecond()));
   }
 
   @Test
   void checkStoringNullCase() {
     final Tuple<String, String> nullTuple = Tuple.of(null, null);
 
-    assertThat(nullTuple.getFirst(), nullValue());
-    assertThat(nullTuple.getSecond(), nullValue());
-    assertThat(nullTuple, not(Tuple.of("something else", (String) null)));
+    assertThat(nullTuple.getFirst()).isNull();
+    assertThat(nullTuple.getSecond()).isNull();
+    assertThat(nullTuple).isNotEqualTo(Tuple.of("something else", (String) null));
   }
 
   @Nested

@@ -1,9 +1,6 @@
 package games.strategy.triplea.ui.mapdata;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsMapContaining.hasEntry;
-import static org.hamcrest.collection.IsMapWithSize.aMapWithSize;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.awt.Polygon;
 import java.util.List;
@@ -61,16 +58,16 @@ final class IslandTerritoryFinderTest {
         IslandTerritoryFinder.findIslands(
             Map.of(SEA_TERR, List.of(outer), LAND_TERR, List.of(inner)));
 
-    assertThat(seaToIslands, is(aMapWithSize(1)));
-    assertThat(seaToIslands, hasEntry(SEA_TERR, Set.of(LAND_TERR)));
+    assertThat(seaToIslands).hasSize(1);
+    assertThat(seaToIslands).containsEntry(SEA_TERR, Set.of(LAND_TERR));
 
     // inversion of land and sea should yield an empty map
     final Map<String, Set<String>> inversion =
         IslandTerritoryFinder.findIslands(
             Map.of(SEA_TERR, List.of(inner), LAND_TERR, List.of(outer)));
 
-    assertThat(inversion, is(aMapWithSize(1)));
-    assertThat(inversion, hasEntry(SEA_TERR, Set.of()));
+    assertThat(inversion).hasSize(1);
+    assertThat(inversion).containsEntry(SEA_TERR, Set.of());
   }
 
   @Test
@@ -80,8 +77,8 @@ final class IslandTerritoryFinderTest {
         IslandTerritoryFinder.findIslands(
             Map.of(SEA_TERR, List.of(inner), LAND_TERR, List.of(inner)));
 
-    assertThat(seaToIslands, is(aMapWithSize(1)));
-    assertThat(seaToIslands, hasEntry(SEA_TERR, Set.of(LAND_TERR)));
+    assertThat(seaToIslands).hasSize(1);
+    assertThat(seaToIslands).containsEntry(SEA_TERR, Set.of(LAND_TERR));
   }
 
   @Test
@@ -97,8 +94,8 @@ final class IslandTerritoryFinderTest {
                 LAND_TERR_1,
                 List.of(adjacentInner)));
 
-    assertThat(seaToIslands, is(aMapWithSize(1)));
-    assertThat(seaToIslands, hasEntry(SEA_TERR, Set.of(LAND_TERR, LAND_TERR_1)));
+    assertThat(seaToIslands).hasSize(1);
+    assertThat(seaToIslands).containsEntry(SEA_TERR, Set.of(LAND_TERR, LAND_TERR_1));
   }
 
   @Test
@@ -114,9 +111,9 @@ final class IslandTerritoryFinderTest {
                 LAND_TERR,
                 List.of(adjacentInner)));
 
-    assertThat(seaToIslands, is(aMapWithSize(2)));
-    assertThat(seaToIslands, hasEntry(SEA_TERR, Set.of(LAND_TERR)));
-    assertThat(seaToIslands, hasEntry(SEA_TERR_1, Set.of(LAND_TERR)));
+    assertThat(seaToIslands).hasSize(2);
+    assertThat(seaToIslands).containsEntry(SEA_TERR, Set.of(LAND_TERR));
+    assertThat(seaToIslands).containsEntry(SEA_TERR_1, Set.of(LAND_TERR));
   }
 
   @Test
@@ -126,8 +123,8 @@ final class IslandTerritoryFinderTest {
         IslandTerritoryFinder.findIslands(
             Map.of(SEA_TERR, List.of(inner), LAND_TERR, List.of(adjacentInner)));
 
-    assertThat(seaToIslands, is(aMapWithSize(1)));
-    assertThat(seaToIslands, hasEntry(SEA_TERR, Set.of()));
+    assertThat(seaToIslands).hasSize(1);
+    assertThat(seaToIslands).containsEntry(SEA_TERR, Set.of());
   }
 
   @Test
@@ -143,7 +140,7 @@ final class IslandTerritoryFinderTest {
                 LAND_TERR_1,
                 List.of(inner)));
 
-    assertThat(seaToIslands, is(aMapWithSize(1)));
-    assertThat(seaToIslands, hasEntry(SEA_TERR, Set.of(LAND_TERR)));
+    assertThat(seaToIslands).hasSize(1);
+    assertThat(seaToIslands).containsEntry(SEA_TERR, Set.of(LAND_TERR));
   }
 }

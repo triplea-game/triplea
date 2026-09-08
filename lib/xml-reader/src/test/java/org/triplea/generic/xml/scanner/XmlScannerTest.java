@@ -1,8 +1,6 @@
 package org.triplea.generic.xml.scanner;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.InputStream;
 import java.util.List;
@@ -38,7 +36,7 @@ class XmlScannerTest {
                 AttributeScannerParameters.builder().tag("info").attributeName("name").build())
             .orElseThrow();
 
-    assertThat(result, is("World At War"));
+    assertThat(result).isEqualTo("World At War");
   }
 
   @ParameterizedTest
@@ -47,7 +45,7 @@ class XmlScannerTest {
       throws Exception {
     final Optional<String> result = xmlScanner.scanForAttributeValue(parameters);
 
-    assertThat(result, isEmpty());
+    assertThat(result).isEmpty();
   }
 
   @SuppressWarnings("unused")

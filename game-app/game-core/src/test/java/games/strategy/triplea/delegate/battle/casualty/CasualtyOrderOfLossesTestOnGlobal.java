@@ -2,9 +2,7 @@ package games.strategy.triplea.delegate.battle.casualty;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -129,7 +127,7 @@ class CasualtyOrderOfLossesTestOnGlobal {
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(
             attackingWith(DataFactory.britishInfantry(infantryCount)));
 
-    assertThat(result, hasSize(infantryCount));
+    assertThat(result).hasSize(infantryCount);
   }
 
   private CasualtyOrderOfLosses.Parameters attackingWith(final Collection<Unit> units) {
@@ -162,12 +160,11 @@ class CasualtyOrderOfLossesTestOnGlobal {
     final List<Unit> result =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(attackingWith(attackingUnits));
 
-    assertThat(result, hasSize(2));
-    assertThat(
-        "infantry has a weaker attack and should be removed first",
-        result.get(0).getType(),
-        is(INFANTRY));
-    assertThat(result.get(1).getType(), is(TANK));
+    assertThat(result).hasSize(2);
+    assertThat(result.get(0).getType())
+        .as("infantry has a weaker attack and should be removed first")
+        .isEqualTo(INFANTRY);
+    assertThat(result.get(1).getType()).isEqualTo(TANK);
   }
 
   @Test
@@ -181,14 +178,14 @@ class CasualtyOrderOfLossesTestOnGlobal {
     final List<Unit> result =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(attackingWith(attackingUnits));
 
-    assertThat(result, hasSize(4));
+    assertThat(result).hasSize(4);
 
     // Note: It's a bug we take marine first, artillery can support the marine instead
     // of infantry, would be better to kill infantry first as it is lower cost
-    assertThat(result.get(0).getType(), is(MARINE));
-    assertThat(result.get(1).getType(), is(INFANTRY));
-    assertThat(result.get(2).getType(), is(ARTILLERY));
-    assertThat(result.get(3).getType(), is(TANK));
+    assertThat(result.get(0).getType()).isEqualTo(MARINE);
+    assertThat(result.get(1).getType()).isEqualTo(INFANTRY);
+    assertThat(result.get(2).getType()).isEqualTo(ARTILLERY);
+    assertThat(result.get(3).getType()).isEqualTo(TANK);
   }
 
   @Test
@@ -202,13 +199,13 @@ class CasualtyOrderOfLossesTestOnGlobal {
     final List<Unit> result =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(amphibAssault(attackingUnits));
 
-    assertThat(result, hasSize(6));
-    assertThat(result.get(0).getType(), is(INFANTRY));
-    assertThat(result.get(1).getType(), is(INFANTRY));
-    assertThat(result.get(2).getType(), is(ARTILLERY));
-    assertThat(result.get(3).getType(), is(ARTILLERY));
-    assertThat(result.get(4).getType(), is(MARINE));
-    assertThat(result.get(5).getType(), is(MARINE));
+    assertThat(result).hasSize(6);
+    assertThat(result.get(0).getType()).isEqualTo(INFANTRY);
+    assertThat(result.get(1).getType()).isEqualTo(INFANTRY);
+    assertThat(result.get(2).getType()).isEqualTo(ARTILLERY);
+    assertThat(result.get(3).getType()).isEqualTo(ARTILLERY);
+    assertThat(result.get(4).getType()).isEqualTo(MARINE);
+    assertThat(result.get(5).getType()).isEqualTo(MARINE);
   }
 
   private CasualtyOrderOfLosses.Parameters amphibAssault(final Collection<Unit> amphibUnits) {
@@ -252,13 +249,13 @@ class CasualtyOrderOfLossesTestOnGlobal {
     final List<Unit> result =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(amphibAssault(attackingUnits));
 
-    assertThat(result, hasSize(6));
-    assertThat(result.get(0).getType(), is(ARTILLERY));
-    assertThat(result.get(1).getType(), is(ARTILLERY));
-    assertThat(result.get(2).getType(), is(ARTILLERY));
-    assertThat(result.get(3).getType(), is(MARINE));
-    assertThat(result.get(4).getType(), is(MARINE));
-    assertThat(result.get(5).getType(), is(MARINE));
+    assertThat(result).hasSize(6);
+    assertThat(result.get(0).getType()).isEqualTo(ARTILLERY);
+    assertThat(result.get(1).getType()).isEqualTo(ARTILLERY);
+    assertThat(result.get(2).getType()).isEqualTo(ARTILLERY);
+    assertThat(result.get(3).getType()).isEqualTo(MARINE);
+    assertThat(result.get(4).getType()).isEqualTo(MARINE);
+    assertThat(result.get(5).getType()).isEqualTo(MARINE);
   }
 
   @Test
@@ -270,12 +267,13 @@ class CasualtyOrderOfLossesTestOnGlobal {
     final List<Unit> result =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(amphibAssault(attackingUnits));
 
-    assertThat(result, hasSize(5));
-    assertThat(
-        "First artillery is not providing support, power of 2",
-        result.get(0).getType(),
-        is(ARTILLERY));
-    assertThat("Marine must be the last to be chosen", result.get(4).getType(), is(MARINE));
+    assertThat(result).hasSize(5);
+    assertThat(result.get(0).getType())
+        .as("First artillery is not providing support, power of 2")
+        .isEqualTo(ARTILLERY);
+    assertThat(result.get(4).getType())
+        .as("Marine must be the last to be chosen")
+        .isEqualTo(MARINE);
   }
 
   @Test
@@ -288,10 +286,10 @@ class CasualtyOrderOfLossesTestOnGlobal {
     final List<Unit> result =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(attackingWith(attackingUnits));
 
-    assertThat(result, hasSize(3));
-    assertThat(result.get(0).getType(), is(CARRIER));
-    assertThat(result.get(1).getType(), is(SUBMARINE));
-    assertThat(result.get(2).getType(), is(DESTROYER));
+    assertThat(result).hasSize(3);
+    assertThat(result.get(0).getType()).isEqualTo(CARRIER);
+    assertThat(result.get(1).getType()).isEqualTo(SUBMARINE);
+    assertThat(result.get(2).getType()).isEqualTo(DESTROYER);
   }
 
   @Test
@@ -304,10 +302,10 @@ class CasualtyOrderOfLossesTestOnGlobal {
     final List<Unit> result =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(defendingWith(attackingUnits));
 
-    assertThat(result, hasSize(3));
-    assertThat(result.get(0).getType(), is(SUBMARINE));
-    assertThat(result.get(1).getType(), is(DESTROYER));
-    assertThat(result.get(2).getType(), is(CARRIER));
+    assertThat(result).hasSize(3);
+    assertThat(result.get(0).getType()).isEqualTo(SUBMARINE);
+    assertThat(result.get(1).getType()).isEqualTo(DESTROYER);
+    assertThat(result.get(2).getType()).isEqualTo(CARRIER);
   }
 
   private CasualtyOrderOfLosses.Parameters defendingWith(final Collection<Unit> units) {
@@ -343,9 +341,9 @@ class CasualtyOrderOfLossesTestOnGlobal {
     final List<Unit> result =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(attackingWith(attackingUnits));
 
-    assertThat(result, hasSize(2));
-    assertThat(result.get(0).getType(), is(BATTLESHIP));
-    assertThat(result.get(1).getType(), is(BOMBER));
+    assertThat(result).hasSize(2);
+    assertThat(result.get(0).getType()).isEqualTo(BATTLESHIP);
+    assertThat(result.get(1).getType()).isEqualTo(BOMBER);
   }
 
   private void givenHeavyBombers() {
@@ -370,9 +368,9 @@ class CasualtyOrderOfLossesTestOnGlobal {
     final List<Unit> result =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(attackingWith(attackingUnits));
 
-    assertThat(result, hasSize(2));
-    assertThat(result.get(0).getType(), is(BOMBER));
-    assertThat(result.get(1).getType(), is(BATTLESHIP));
+    assertThat(result).hasSize(2);
+    assertThat(result.get(0).getType()).isEqualTo(BOMBER);
+    assertThat(result.get(1).getType()).isEqualTo(BATTLESHIP);
   }
 
   @Test
@@ -388,10 +386,10 @@ class CasualtyOrderOfLossesTestOnGlobal {
     final List<Unit> result =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(amphibAssault(attackingUnits));
 
-    assertThat(result, hasSize(4));
-    assertThat(result.get(0).getType(), is(MARINE));
-    assertThat(result.get(1).getType(), is(MARINE));
-    assertThat(result.get(2).getType(), is(ARTILLERY));
-    assertThat(result.get(3).getType(), is(TANK)); // attack at 3
+    assertThat(result).hasSize(4);
+    assertThat(result.get(0).getType()).isEqualTo(MARINE);
+    assertThat(result.get(1).getType()).isEqualTo(MARINE);
+    assertThat(result.get(2).getType()).isEqualTo(ARTILLERY);
+    assertThat(result.get(3).getType()).isEqualTo(TANK); // attack at 3
   }
 }

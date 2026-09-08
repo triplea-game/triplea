@@ -1,7 +1,6 @@
 package games.strategy.engine.message;
 
 import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -143,7 +142,7 @@ class RemoteMessengerTest {
       serverRemoteMessenger.registerRemote(testRemote, test);
       // since the registration must go over a socket and through a couple threads, wait for the
       // client to get it
-      await().until(() -> unifiedMessengerHub.hasImplementors(test.getName()), is(true));
+      await().until(() -> unifiedMessengerHub.hasImplementors(test.getName()));
       // call it on the client
       final int incrementedValue =
           ((ITestRemote) clientRemoteMessenger.getRemote(test)).increment(1);
@@ -207,11 +206,9 @@ class RemoteMessengerTest {
       final RemoteMessenger clientRemoteMessenger =
           new RemoteMessenger(new UnifiedMessenger(client));
       clientRemoteMessenger.registerRemote(new TestRemote(), test);
-      await()
-          .until(() -> serverUnifiedMessenger.getHub().hasImplementors(test.getName()), is(true));
+      await().until(() -> serverUnifiedMessenger.getHub().hasImplementors(test.getName()));
       client.shutDown();
-      await()
-          .until(() -> serverUnifiedMessenger.getHub().hasImplementors(test.getName()), is(false));
+      await().until(() -> !serverUnifiedMessenger.getHub().hasImplementors(test.getName()));
     } finally {
       shutdownServerAndClient(server, client);
     }
@@ -240,8 +237,7 @@ class RemoteMessengerTest {
             Interruptibles.await(testCompleteSignal);
           };
       clientRemoteMessenger.registerRemote(foo, test);
-      await()
-          .until(() -> serverUnifiedMessenger.getHub().hasImplementors(test.getName()), is(true));
+      await().until(() -> serverUnifiedMessenger.getHub().hasImplementors(test.getName()));
       final CompletableFuture<Void> future =
           CompletableFuture.runAsync(
               () -> {

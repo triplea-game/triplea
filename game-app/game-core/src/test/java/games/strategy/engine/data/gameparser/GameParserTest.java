@@ -1,8 +1,6 @@
 package games.strategy.engine.data.gameparser;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -32,31 +30,30 @@ final class GameParserTest {
 
   /** Asserts that we loaded a relatively complete looking game data. */
   private void assertNotNullGameData(final GameData gameData) {
-    assertThat(gameData.getAttachmentOrderAndValues(), is(notNullValue()));
-    assertThat(gameData.getAllianceTracker().getAlliances(), is(notNullValue()));
-    assertThat(gameData.getBattleRecordsList(), is(notNullValue()));
-    assertThat(gameData.getDelegates(), is(notNullValue()));
-    assertThat(gameData.getDiceSides(), is(notNullValue()));
-    assertThat(gameData.getGameLoader(), is(notNullValue()));
-    assertThat(gameData.getGameName(), is(notNullValue()));
-    assertThat(gameData.getHistory().getLastNode(), is(notNullValue()));
-    assertThat(gameData.getMap().getTerritories(), is(notNullValue()));
-    assertThat(gameData.getPlayerList().getPlayers(), is(notNullValue()));
-    assertThat(
-        gameData.getProductionFrontierList().getProductionFrontierNames(), is(notNullValue()));
-    assertThat(gameData.getProductionRuleList().getProductionRules(), is(notNullValue()));
-    assertThat(gameData.getProperties(), is(notNullValue()));
-    assertThat(gameData.getRelationshipTracker(), is(notNullValue()));
-    assertThat(gameData.getRelationshipTypeList().getAllRelationshipTypes(), is(notNullValue()));
-    assertThat(gameData.getRepairFrontierList().getRepairFrontierNames(), is(notNullValue()));
-    assertThat(gameData.getResourceList().getResources(), is(notNullValue()));
-    assertThat(gameData.getSaveGameFileName(), is(notNullValue()));
-    assertThat(gameData.getSequence().getRound(), is(notNullValue()));
-    assertThat(gameData.getSequence().getStep(), is(notNullValue()));
-    assertThat(gameData.getTechnologyFrontier().getTechs(), is(notNullValue()));
-    assertThat(gameData.getTerritoryEffectList(), is(notNullValue()));
-    assertThat(gameData.getUnits().getUnits(), is(notNullValue()));
-    assertThat(gameData.getUnitTypeList().getAllUnitTypes(), is(notNullValue()));
+    assertThat(gameData.getAttachmentOrderAndValues()).isNotNull();
+    assertThat(gameData.getAllianceTracker().getAlliances()).isNotNull();
+    assertThat(gameData.getBattleRecordsList()).isNotNull();
+    assertThat(gameData.getDelegates()).isNotNull();
+    assertThat(gameData.getDiceSides()).isNotNull();
+    assertThat(gameData.getGameLoader()).isNotNull();
+    assertThat(gameData.getGameName()).isNotNull();
+    assertThat(gameData.getHistory().getLastNode()).isNotNull();
+    assertThat(gameData.getMap().getTerritories()).isNotNull();
+    assertThat(gameData.getPlayerList().getPlayers()).isNotNull();
+    assertThat(gameData.getProductionFrontierList().getProductionFrontierNames()).isNotNull();
+    assertThat(gameData.getProductionRuleList().getProductionRules()).isNotNull();
+    assertThat(gameData.getProperties()).isNotNull();
+    assertThat(gameData.getRelationshipTracker()).isNotNull();
+    assertThat(gameData.getRelationshipTypeList().getAllRelationshipTypes()).isNotNull();
+    assertThat(gameData.getRepairFrontierList().getRepairFrontierNames()).isNotNull();
+    assertThat(gameData.getResourceList().getResources()).isNotNull();
+    assertThat(gameData.getSaveGameFileName()).isNotNull();
+    assertThat(gameData.getSequence().getRound()).isNotNull();
+    assertThat(gameData.getSequence().getStep()).isNotNull();
+    assertThat(gameData.getTechnologyFrontier().getTechs()).isNotNull();
+    assertThat(gameData.getTerritoryEffectList()).isNotNull();
+    assertThat(gameData.getUnits().getUnits()).isNotNull();
+    assertThat(gameData.getUnitTypeList().getAllUnitTypes()).isNotNull();
   }
 
   /**
@@ -64,11 +61,10 @@ final class GameParserTest {
    * those legacy values have been forward-ported to their new, non-legacy values.
    */
   private void verifyLegacyPropertiesAreUpdated(final GameState gameData) {
-    assertThat(
-        gameData.getProperties().get(Constants.TWO_HIT_BATTLESHIPS_REPAIR_END_OF_TURN), is(true));
-    assertThat(
-        gameData.getProperties().get(Constants.TWO_HIT_BATTLESHIPS_REPAIR_BEGINNING_OF_TURN),
-        is(true));
+    assertThat(gameData.getProperties().get(Constants.TWO_HIT_BATTLESHIPS_REPAIR_END_OF_TURN))
+        .isEqualTo(true);
+    assertThat(gameData.getProperties().get(Constants.TWO_HIT_BATTLESHIPS_REPAIR_BEGINNING_OF_TURN))
+        .isEqualTo(true);
 
     final var spartaTerritoryAttachment =
         (TerritoryAttachment)
@@ -77,11 +73,10 @@ final class GameParserTest {
                 .getTerritoryOrNull("Sparta")
                 .getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
 
-    assertThat(spartaTerritoryAttachment.getVictoryCity(), is(1));
-    assertThat(
-        spartaTerritoryAttachment.getOriginalOwner().map(GamePlayer::getName).orElse(""),
-        is("RomanRepublic"));
-    assertThat(spartaTerritoryAttachment.getIsImpassable(), is(true));
+    assertThat(spartaTerritoryAttachment.getVictoryCity()).isEqualTo(1);
+    assertThat(spartaTerritoryAttachment.getOriginalOwner().map(GamePlayer::getName).orElse(""))
+        .isEqualTo("RomanRepublic");
+    assertThat(spartaTerritoryAttachment.getIsImpassable()).isTrue();
 
     final var romaTerritoryAttachment =
         (TerritoryAttachment)
@@ -90,7 +85,7 @@ final class GameParserTest {
                 .getTerritoryOrNull("Roma")
                 .getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
 
-    assertThat(romaTerritoryAttachment.getVictoryCity(), is(0));
+    assertThat(romaTerritoryAttachment.getVictoryCity()).isEqualTo(0);
 
     final var archerUnitAttachment =
         (UnitAttachment)
@@ -99,14 +94,15 @@ final class GameParserTest {
                 .getUnitTypeOrThrow("archer")
                 .getAttachment(Constants.UNIT_ATTACHMENT_NAME);
 
-    assertThat(
-        "Verify isTwoHitPoint=true is converted to hitPoints = 2",
-        archerUnitAttachment.getHitPoints(),
-        is(2));
-    assertThat(
-        "Verify is paratroop is converted", archerUnitAttachment.isAirTransportable(), is(true));
-    assertThat(
-        "Verify isMechanized is converted", archerUnitAttachment.isLandTransportable(), is(true));
+    assertThat(archerUnitAttachment.getHitPoints())
+        .as("Verify isTwoHitPoint=true is converted to hitPoints = 2")
+        .isEqualTo(2);
+    assertThat(archerUnitAttachment.isAirTransportable())
+        .as("Verify is paratroop is converted")
+        .isTrue();
+    assertThat(archerUnitAttachment.isLandTransportable())
+        .as("Verify isMechanized is converted")
+        .isTrue();
 
     final var axemanUnitAttachment =
         ((UnitAttachment)
@@ -115,17 +111,18 @@ final class GameParserTest {
                 .getUnitTypeOrThrow("axeman")
                 .getAttachment(Constants.UNIT_ATTACHMENT_NAME));
 
-    assertThat(
-        "Verify isInfantry is converted", axemanUnitAttachment.isLandTransportable(), is(true));
+    assertThat(axemanUnitAttachment.isLandTransportable())
+        .as("Verify isInfantry is converted")
+        .isTrue();
 
     assertThat(
-        ((RulesAttachment)
-                gameData
-                    .getPlayerList()
-                    .getPlayerId("Carthage")
-                    .getAttachment("conditionAttachmentAntiRomanVictory8"))
-            .getRounds(),
-        is(Map.of(1, 1, 2, 2)));
+            ((RulesAttachment)
+                    gameData
+                        .getPlayerList()
+                        .getPlayerId("Carthage")
+                        .getAttachment("conditionAttachmentAntiRomanVictory8"))
+                .getRounds())
+        .isEqualTo(Map.of(1, 1, 2, 2));
   }
 
   @Nested
@@ -142,10 +139,9 @@ final class GameParserTest {
               t -> {
                 final String value = t.getFirst();
                 final String decapitalizedValue = t.getSecond();
-                assertThat(
-                    String.format("wrong decapitalization for '%s'", value),
-                    GameParser.decapitalize(value),
-                    is(decapitalizedValue));
+                assertThat(GameParser.decapitalize(value))
+                    .as(String.format("wrong decapitalization for '%s'", value))
+                    .isEqualTo(decapitalizedValue);
               });
     }
   }

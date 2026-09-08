@@ -3,8 +3,7 @@ package games.strategy.triplea.delegate.power.calculator;
 import static games.strategy.triplea.Constants.TERRITORYEFFECT_ATTACHMENT_NAME;
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -75,10 +74,9 @@ class MainDefenseCombatValueTest {
 
       final MainDefenseCombatValue.MainDefenseRoll roll =
           new MainDefenseCombatValue.MainDefenseRoll(friendlySupport, enemySupport);
-      assertThat(
-          "Roll starts at 3, friendly adds 2, enemy removes 1: total 4",
-          roll.getRoll(unit).getValue(),
-          is(4));
+      assertThat(roll.getRoll(unit).getValue())
+          .as("Roll starts at 3, friendly adds 2, enemy removes 1: total 4")
+          .isEqualTo(4);
     }
 
     UnitSupportAttachment givenUnitOffenseSupportAttachment(
@@ -150,15 +148,14 @@ class MainDefenseCombatValueTest {
       final MainDefenseCombatValue.MainDefenseRoll roll =
           new MainDefenseCombatValue.MainDefenseRoll(friendlySupport, enemySupport);
       roll.getRoll(unit);
-      assertThat(
-          "Friendly gave 2 and enemy gave -1",
-          roll.getSupportGiven(),
-          is(
+      assertThat(roll.getSupportGiven())
+          .as("Friendly gave 2 and enemy gave -1")
+          .isEqualTo(
               Map.of(
                   supportUnit,
                   IntegerMap.of(Map.of(unit, 2)),
                   enemySupportUnit,
-                  IntegerMap.of(Map.of(unit, -1)))));
+                  IntegerMap.of(Map.of(unit, -1))));
     }
   }
 
@@ -216,10 +213,9 @@ class MainDefenseCombatValueTest {
       final MainDefenseCombatValue.MainDefenseStrength strength =
           new MainDefenseCombatValue.MainDefenseStrength(
               gameData.getSequence(), 6, List.of(territoryEffect), friendlySupport, enemySupport);
-      assertThat(
-          "Strength starts at 3, friendly adds 3, enemy removes 2, territory adds 1: total 5",
-          strength.getStrength(unit).getValue(),
-          is(5));
+      assertThat(strength.getStrength(unit).getValue())
+          .as("Strength starts at 3, friendly adds 3, enemy removes 2, territory adds 1: total 5")
+          .isEqualTo(5);
     }
 
     UnitSupportAttachment givenUnitSupportAttachment(
@@ -290,11 +286,11 @@ class MainDefenseCombatValueTest {
       final MainDefenseCombatValue.MainDefenseStrength strength =
           new MainDefenseCombatValue.MainDefenseStrength(
               gameData.getSequence(), 6, List.of(territoryEffect), friendlySupport, enemySupport);
-      assertThat(
-          "Strength is limited to 1, friendly is not used, "
-              + "enemy removes 2, territory adds 3: total 1",
-          strength.getStrength(unit).getValue(),
-          is(2));
+      assertThat(strength.getStrength(unit).getValue())
+          .as(
+              "Strength is limited to 1, friendly is not used, "
+                  + "enemy removes 2, territory adds 3: total 1")
+          .isEqualTo(2);
     }
 
     @Test
@@ -343,15 +339,14 @@ class MainDefenseCombatValueTest {
           new MainDefenseCombatValue.MainDefenseStrength(
               gameData.getSequence(), 6, List.of(), friendlySupport, enemySupport);
       strength.getStrength(unit);
-      assertThat(
-          "Friendly gave 2 and enemy gave -1",
-          strength.getSupportGiven(),
-          is(
+      assertThat(strength.getSupportGiven())
+          .as("Friendly gave 2 and enemy gave -1")
+          .isEqualTo(
               Map.of(
                   supportUnit,
                   IntegerMap.of(Map.of(unit, 2)),
                   enemySupportUnit,
-                  IntegerMap.of(Map.of(unit, -1)))));
+                  IntegerMap.of(Map.of(unit, -1))));
     }
   }
 }

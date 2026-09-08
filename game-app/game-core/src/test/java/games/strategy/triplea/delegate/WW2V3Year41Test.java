@@ -39,9 +39,7 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.ATTACKER_
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_CASUALTIES;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_SNEAK_ATTACK_CASUALTIES;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_SUBMERGE;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -706,9 +704,9 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     final int preCountIntBelorussia = belorussia.getUnitCollection().size();
     // Try a move with 3 infantry and 2 land transports (1 infantry can't be land transported).
     final Collection<Unit> moveUnits = poland.getUnitCollection().getUnits(infantryType, 3);
-    assertThat(moveUnits, hasSize(3));
+    assertThat(moveUnits).hasSize(3);
     moveUnits.addAll(poland.getUnitCollection().getMatches(Matches.unitCanBlitz()));
-    assertThat(moveUnits, hasSize(5));
+    assertThat(moveUnits).hasSize(5);
     // add a INVALID blitz attack
     final Optional<String> errorResults =
         moveDelegate.move(moveUnits, new Route(poland, eastPoland, belorussia));
@@ -717,7 +715,7 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     moveUnits.clear();
     moveUnits.addAll(poland.getUnitCollection().getUnits(infantryType, 2));
     moveUnits.addAll(poland.getUnitCollection().getMatches(Matches.unitCanBlitz()));
-    assertThat(moveUnits, hasSize(4));
+    assertThat(moveUnits).hasSize(4);
     // add a VALID blitz attack
     final Optional<String> validResults =
         moveDelegate.move(moveUnits, new Route(poland, eastPoland, belorussia));
@@ -1480,9 +1478,9 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
       // 1 armour and 1 infantry
       final UnitCollection franceUnits = france.getUnitCollection();
       final List<Unit> toMove = new ArrayList<>(franceUnits.getMatches(Matches.unitCanBlitz()));
-      assertThat(toMove, hasSize(1)); // ensure transporting unit was added
+      assertThat(toMove).hasSize(1); // ensure transporting unit was added
       toMove.add(franceUnits.getMatches(Matches.unitIsLandTransportable()).get(0));
-      assertThat(toMove, hasSize(2)); // ensure Mech infantry unit was added
+      assertThat(toMove).hasSize(2); // ensure Mech infantry unit was added
       move(toMove, new Route(france, germany, poland));
       assertTrue(poland.getUnits().containsAll(toMove));
     }
@@ -1644,10 +1642,10 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
       // make sure only 1 paratroop per bomber can be moved
       final List<Unit> units = new ArrayList<>();
       units.addAll(germany.getUnitCollection().getMatches(Matches.unitIsAirTransport()));
-      assertThat(units, hasSize(1));
+      assertThat(units).hasSize(1);
       // add 2 infantry
       units.addAll(germany.getUnitCollection().getUnits(infantry(gameData), 2));
-      assertThat(units, hasSize(3));
+      assertThat(units).hasSize(3);
       // move the units to east poland
       Route route = new Route(germany, poland, eastPoland);
       // It should be an error with an empty dependents map.
@@ -1775,8 +1773,9 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
 
       Map<Unit, Collection<Unit>> dependents = Map.of(airTransport1, List.of(infantry1));
       var details = MoveValidator.getMustMoveWith(germany, dependents, germans);
-      assertThat(details.getMustMoveWith().keySet(), hasSize(1));
-      assertThat(details.getMustMoveWithForUnit(airTransport1), containsInAnyOrder(infantry1));
+      assertThat(details.getMustMoveWith().keySet()).hasSize(1);
+      assertThat(details.getMustMoveWithForUnit(airTransport1))
+          .containsExactlyInAnyOrder(infantry1);
     }
   }
 

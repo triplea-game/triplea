@@ -1,7 +1,6 @@
 package org.triplea.web.socket;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
@@ -84,14 +83,13 @@ class GenericWebSocketTest {
     genericWebSocket.onMessage(session, "message", cache);
 
     verify(messageSender).accept(eq(session), messageCaptor.capture());
-    assertThat(
-        "Server should responsd back with an error message, while under the bad message burn limit",
-        messageCaptor.getValue().getMessageTypeId(),
-        is(ServerErrorMessage.TYPE.getMessageTypeId()));
-    assertThat(
-        "Verify cache has been populated and incremented",
-        cache.getIfPresent(IpAddressParser.fromString("1.1.1.1")).get(),
-        is(1));
+    assertThat(messageCaptor.getValue().getMessageTypeId())
+        .as(
+            "Server should responsd back with an error message, while under the bad message burn limit")
+        .isEqualTo(ServerErrorMessage.TYPE.getMessageTypeId());
+    assertThat(cache.getIfPresent(IpAddressParser.fromString("1.1.1.1")).get())
+        .as("Verify cache has been populated and incremented")
+        .isEqualTo(1);
   }
 
   @Test
@@ -101,10 +99,9 @@ class GenericWebSocketTest {
 
     genericWebSocket.onMessage(session, "message", cache);
 
-    assertThat(
-        "Verify cache has been incremented",
-        cache.getIfPresent(IpAddressParser.fromString("1.1.1.1")).get(),
-        is(2));
+    assertThat(cache.getIfPresent(IpAddressParser.fromString("1.1.1.1")).get())
+        .as("Verify cache has been incremented")
+        .isEqualTo(2);
   }
 
   private void givenIpInSession(final String ip) {
@@ -139,7 +136,7 @@ class GenericWebSocketTest {
     givenIpInSession("1.1.1.1");
     givenIpHasBadMessageCount("1.1.1.1", 1);
     //noinspection ConstantConditions
-    assertThat("Verify test assumptions", 1 < GenericWebSocket.MAX_BAD_MESSAGES, is(true));
+    assertThat(1 < GenericWebSocket.MAX_BAD_MESSAGES).as("Verify test assumptions").isTrue();
 
     final var messageEnvelope = new ExampleMessage("status").toEnvelope();
 

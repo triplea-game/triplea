@@ -17,8 +17,6 @@ import games.strategy.triplea.ui.panels.map.MapPanel;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +37,7 @@ import org.triplea.swing.EventThreadJOptionPane.ConfirmDialogType;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.WindowAdapterFactory;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
 /** UI for fighting battles. */
@@ -47,6 +46,8 @@ public final class BattlePanel extends ActionPanel {
   private static final long serialVersionUID = 5304208569738042592L;
 
   private static final long ENSURE_BATTLE_DISPLAYED_TIMEOUT_MS = 45_000;
+  static final int MINIMUM_BATTLE_WINDOW_DEFAULT_WIDTH = 800;
+  static final int MINIMUM_BATTLE_WINDOW_DEFAULT_HEIGHT = 600;
 
   private FightBattleDetails fightBattleMessage;
   private volatile BattleDisplay battleDisplay;
@@ -62,14 +63,8 @@ public final class BattlePanel extends ActionPanel {
     battleWindow = new JDialog(frame);
     battleWindow.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     battleWindow.addWindowListener(
-        new WindowAdapter() {
-          @Override
-          public void windowActivated(final WindowEvent e) {
-            SwingUtilities.invokeLater(
-                () -> Optional.ofNullable(battleDisplay).ifPresent(BattleDisplay::takeFocus));
-          }
-        });
-    getMap().getUiContext().addShutdownWindow(battleWindow);
+        WindowAdapterFactory.activatedAndClosed(
+            () -> Optional.ofNullable(battleDisplay).ifPresent(BattleDisplay::takeFocus), null));
   }
 
   /**
@@ -98,12 +93,19 @@ public final class BattlePanel extends ActionPanel {
     final int targetWidth = Math.min(desiredWidth, (int) (screenSize.width * 0.95));
     final int targetHeight = Math.min(desiredHeight, (int) (screenSize.height * 0.95));
 
-    battleWindow.setMinimumSize(new Dimension(targetWidth, targetHeight));
+    battleWindow.setMinimumSize(
+        getMinimumBattleWindowSize(new Dimension(targetWidth, targetHeight)));
     final Dimension currentSize = battleWindow.getSize();
     if (currentSize.width < targetWidth || currentSize.height < targetHeight) {
       battleWindow.setSize(
           Math.max(currentSize.width, targetWidth), Math.max(currentSize.height, targetHeight));
     }
+  }
+
+  static Dimension getMinimumBattleWindowSize(final Dimension contentFitSize) {
+    return new Dimension(
+        Math.min(MINIMUM_BATTLE_WINDOW_DEFAULT_WIDTH, contentFitSize.width),
+        Math.min(MINIMUM_BATTLE_WINDOW_DEFAULT_HEIGHT, contentFitSize.height));
   }
 
   void setBattlesAndBombing(final BattleListing battleListing) {

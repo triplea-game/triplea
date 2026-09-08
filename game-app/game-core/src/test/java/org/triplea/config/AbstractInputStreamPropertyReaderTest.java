@@ -1,8 +1,6 @@
 package org.triplea.config;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.sameInstance;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -42,8 +40,8 @@ final class AbstractInputStreamPropertyReaderTest {
 
       final Exception e =
           assertThrows(IllegalStateException.class, () -> propertyReader.readProperty("key"));
-      assertThat(e.getMessage(), is("Property source not found: " + PROPERTY_SOURCE_NAME));
-      assertThat(e.getCause(), is(sameInstance(expectedCause)));
+      assertThat(e.getMessage()).isEqualTo("Property source not found: " + PROPERTY_SOURCE_NAME);
+      assertThat(e.getCause()).isSameAs(expectedCause);
     }
 
     @Test
@@ -56,8 +54,9 @@ final class AbstractInputStreamPropertyReaderTest {
 
       final Exception e =
           assertThrows(IllegalStateException.class, () -> propertyReader.readProperty("key"));
-      assertThat(e.getMessage(), is("Failed to read property source: " + PROPERTY_SOURCE_NAME));
-      assertThat(e.getCause(), is(sameInstance(expectedCause)));
+      assertThat(e.getMessage())
+          .isEqualTo("Failed to read property source: " + PROPERTY_SOURCE_NAME);
+      assertThat(e.getCause()).isSameAs(expectedCause);
     }
   }
 }

@@ -1,8 +1,6 @@
 package games.strategy.triplea.odds.calculator;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.stream.IntStream;
@@ -14,28 +12,28 @@ public class RunCountDistributorTest {
   void verifyEvenDistributionWhenCleanlyDividable() {
     final var runCountDistributor = new RunCountDistributor(20, 4);
 
-    assertThat(runCountDistributor.nextRunCount(), is(equalTo(5)));
-    assertThat(runCountDistributor.nextRunCount(), is(equalTo(5)));
-    assertThat(runCountDistributor.nextRunCount(), is(equalTo(5)));
-    assertThat(runCountDistributor.nextRunCount(), is(equalTo(5)));
+    assertThat(runCountDistributor.nextRunCount()).isEqualTo(5);
+    assertThat(runCountDistributor.nextRunCount()).isEqualTo(5);
+    assertThat(runCountDistributor.nextRunCount()).isEqualTo(5);
+    assertThat(runCountDistributor.nextRunCount()).isEqualTo(5);
   }
 
   @Test
   void verifyDistributionWhenNotCleanlyDividable() {
     final var runCountDistributor = new RunCountDistributor(13, 3);
 
-    assertThat(runCountDistributor.nextRunCount(), is(equalTo(5)));
-    assertThat(runCountDistributor.nextRunCount(), is(equalTo(4)));
-    assertThat(runCountDistributor.nextRunCount(), is(equalTo(4)));
+    assertThat(runCountDistributor.nextRunCount()).isEqualTo(5);
+    assertThat(runCountDistributor.nextRunCount()).isEqualTo(4);
+    assertThat(runCountDistributor.nextRunCount()).isEqualTo(4);
   }
 
   @Test
   void verifyDistributionWhenParallelismTooHigh() {
     final var runCountDistributor = new RunCountDistributor(1, 3);
 
-    assertThat(runCountDistributor.nextRunCount(), is(equalTo(1)));
-    assertThat(runCountDistributor.nextRunCount(), is(equalTo(0)));
-    assertThat(runCountDistributor.nextRunCount(), is(equalTo(0)));
+    assertThat(runCountDistributor.nextRunCount()).isEqualTo(1);
+    assertThat(runCountDistributor.nextRunCount()).isEqualTo(0);
+    assertThat(runCountDistributor.nextRunCount()).isEqualTo(0);
   }
 
   @Test
@@ -48,7 +46,7 @@ public class RunCountDistributorTest {
   void verifyExceptionWhenCallingNextRunCountTooOften() {
     final var runCountDistributor = new RunCountDistributor(1, 1);
 
-    assertThat(runCountDistributor.nextRunCount(), is(equalTo(1)));
+    assertThat(runCountDistributor.nextRunCount()).isEqualTo(1);
 
     assertThrows(IllegalStateException.class, runCountDistributor::nextRunCount);
   }
@@ -69,6 +67,6 @@ public class RunCountDistributorTest {
             .map(i -> runCountDistributor.nextRunCount())
             .sum();
 
-    assertThat(summedRunCount, is(runCount));
+    assertThat(summedRunCount).isEqualTo(runCount);
   }
 }

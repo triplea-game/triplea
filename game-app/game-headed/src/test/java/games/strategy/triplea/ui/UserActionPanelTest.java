@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import games.strategy.engine.data.Attachable;
@@ -59,7 +58,7 @@ final class UserActionPanelTest {
       final boolean canAffordUserAction =
           UserActionPanel.canPlayerAffordUserAction(player, userAction);
 
-      assertThat(canAffordUserAction, is(false));
+      assertThat(canAffordUserAction).isFalse();
     }
 
     @Test
@@ -71,7 +70,7 @@ final class UserActionPanelTest {
       final boolean canAffordUserAction =
           UserActionPanel.canPlayerAffordUserAction(player, userAction);
 
-      assertThat(canAffordUserAction, is(true));
+      assertThat(canAffordUserAction).isTrue();
     }
 
     @Test
@@ -83,7 +82,7 @@ final class UserActionPanelTest {
       final boolean canAffordUserAction =
           UserActionPanel.canPlayerAffordUserAction(player, userAction);
 
-      assertThat(canAffordUserAction, is(true));
+      assertThat(canAffordUserAction).isTrue();
     }
 
     @Test
@@ -94,7 +93,7 @@ final class UserActionPanelTest {
       final boolean canAffordUserAction =
           UserActionPanel.canPlayerAffordUserAction(player, userAction);
 
-      assertThat(canAffordUserAction, is(true));
+      assertThat(canAffordUserAction).isTrue();
     }
   }
 
@@ -106,7 +105,7 @@ final class UserActionPanelTest {
 
       final boolean canSpendResources = UserActionPanel.canSpendResourcesOnUserActions(userActions);
 
-      assertThat(canSpendResources, is(false));
+      assertThat(canSpendResources).isFalse();
     }
 
     @Test
@@ -116,7 +115,7 @@ final class UserActionPanelTest {
 
       final boolean canSpendResources = UserActionPanel.canSpendResourcesOnUserActions(userActions);
 
-      assertThat(canSpendResources, is(false));
+      assertThat(canSpendResources).isFalse();
     }
 
     @Test
@@ -126,7 +125,7 @@ final class UserActionPanelTest {
 
       final boolean canSpendResources = UserActionPanel.canSpendResourcesOnUserActions(userActions);
 
-      assertThat(canSpendResources, is(true));
+      assertThat(canSpendResources).isTrue();
     }
   }
 }

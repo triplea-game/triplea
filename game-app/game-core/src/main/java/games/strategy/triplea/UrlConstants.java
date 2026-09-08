@@ -9,7 +9,7 @@ public final class UrlConstants {
   public static final String DOWNLOAD_WEBSITE = "https://triplea-game.org/download/";
   public static final String GITHUB_ISSUES = "https://github.com/triplea-game/triplea/issues/new";
   public static final String LICENSE_NOTICE =
-      "https://github.com/triplea-game/triplea/blob/master/README.md#license";
+      "https://github.com/triplea-game/triplea/blob/main/README.md#license";
   public static final String MAP_MAKER_HELP =
       "https://github.com/triplea-game/triplea/wiki/How-to-create-custom-maps";
   public static final String PAYPAL_DONATE =

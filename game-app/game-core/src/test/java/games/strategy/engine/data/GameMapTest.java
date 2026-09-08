@@ -1,7 +1,6 @@
 package games.strategy.engine.data;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.triplea.xml.TestMapGameData;
 import org.junit.jupiter.api.Test;
@@ -19,17 +18,17 @@ public class GameMapTest {
 
   @Test
   void testLandDistance() {
-    assertThat(getLandDistance(caucasus, russia), is(1));
-    assertThat(getLandDistance(caucasus, germany), is(3));
+    assertThat(getLandDistance(caucasus, russia)).isEqualTo(1);
+    assertThat(getLandDistance(caucasus, germany)).isEqualTo(3);
   }
 
   @Test
   void testLandDistanceNotFound() {
-    assertThat(getLandDistance(caucasus, uk), is(-1));
+    assertThat(getLandDistance(caucasus, uk)).isEqualTo(-1);
   }
 
   @Test
   void testLandDistanceSameTerritory() {
-    assertThat(getLandDistance(caucasus, caucasus), is(0));
+    assertThat(getLandDistance(caucasus, caucasus)).isEqualTo(0);
   }
 }

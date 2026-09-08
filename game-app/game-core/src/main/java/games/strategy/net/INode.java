@@ -18,7 +18,7 @@ public interface INode extends Serializable, Comparable<INode> {
   /** Returns the display/user name for the node. */
   String getName();
 
-  default UserName getPlayerName() {
+  default UserName getPlayerUserName() {
     return UserName.of(getName());
   }
 

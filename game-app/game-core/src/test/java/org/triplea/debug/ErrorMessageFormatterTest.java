@@ -1,8 +1,6 @@
 package org.triplea.debug;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.StringContains.containsString;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.lenient;
 
 import games.strategy.triplea.UrlConstants;
@@ -30,7 +28,7 @@ class ErrorMessageFormatterTest {
 
     final String result = errorMessageFormatter.apply(logRecord);
 
-    assertThat(result, is("<html><b>" + LOG_MESSAGE + "</b></html>"));
+    assertThat(result).isEqualTo("<html><b>" + LOG_MESSAGE + "</b></html>");
   }
 
   @Test
@@ -48,12 +46,11 @@ class ErrorMessageFormatterTest {
 
     final String result = errorMessageFormatter.apply(logRecord);
 
-    assertThat(
-        result,
-        is(
+    assertThat(result)
+        .isEqualTo(
             "<html><b>"
                 + ErrorMessageFormatter.UNEXPECTED_ERROR_TEXT
-                + "</b><br/><br/>NullPointerException</html>"));
+                + "</b><br/><br/>NullPointerException</html>");
   }
 
   @Test
@@ -71,12 +68,11 @@ class ErrorMessageFormatterTest {
 
     final String result = errorMessageFormatter.apply(logRecord);
 
-    assertThat(
-        result,
-        is(
+    assertThat(result)
+        .isEqualTo(
             "<html><b>"
                 + LOG_MESSAGE
-                + "</b><br/><br/>NullPointerException222: message from exception222</html>"));
+                + "</b><br/><br/>NullPointerException222: message from exception222</html>");
   }
 
   @Test
@@ -94,17 +90,17 @@ class ErrorMessageFormatterTest {
 
     final String result = errorMessageFormatter.apply(logRecord);
 
-    assertThat(
-        "exception has a duplicate message as the log statement, this indicates the"
-            + "log message was derived from the exception and we are looking "
-            + "at an uncaught exception.",
-        result,
-        is(
+    assertThat(result)
+        .as(
+            "exception has a duplicate message as the log statement, this indicates the"
+                + "log message was derived from the exception and we are looking "
+                + "at an uncaught exception.")
+        .isEqualTo(
             "<html><b>"
                 + ErrorMessageFormatter.UNEXPECTED_ERROR_TEXT
                 + "</b><br/><br/>exceptionClass: "
                 + LOG_MESSAGE
-                + "</html>"));
+                + "</html>");
   }
 
   @Test
@@ -119,8 +115,8 @@ class ErrorMessageFormatterTest {
 
     final String result = errorMessageFormatter.apply(logRecord);
 
-    assertThat(
-        result, is("<html><b>" + LOG_MESSAGE + "</b><br/><br/>NullPointerException4444</html>"));
+    assertThat(result)
+        .isEqualTo("<html><b>" + LOG_MESSAGE + "</b><br/><br/>NullPointerException4444</html>");
   }
 
   @Test
@@ -136,6 +132,6 @@ class ErrorMessageFormatterTest {
 
     final String result = errorMessageFormatter.apply(logRecord);
 
-    assertThat(result, containsString(UrlConstants.GITHUB_ISSUES));
+    assertThat(result).contains(UrlConstants.GITHUB_ISSUES);
   }
 }

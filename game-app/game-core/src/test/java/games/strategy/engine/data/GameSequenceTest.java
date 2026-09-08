@@ -1,7 +1,6 @@
 package games.strategy.engine.data;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.delegate.TestDelegate;
@@ -34,7 +33,7 @@ final class GameSequenceTest {
       final int round = 42;
       gameSequence.setRoundAndStep(round, null, null);
 
-      assertThat(gameSequence.getRound(), is(round));
+      assertThat(gameSequence.getRound()).isEqualTo(round);
     }
 
     @Test
@@ -44,7 +43,7 @@ final class GameSequenceTest {
 
       gameSequence.setRoundAndStep(1, OTHER_GAME_STEP_NAME, null);
 
-      assertThat(gameSequence.getStepIndex(), is(1));
+      assertThat(gameSequence.getStepIndex()).isEqualTo(1);
     }
 
     @Test
@@ -53,7 +52,7 @@ final class GameSequenceTest {
 
       gameSequence.setRoundAndStep(1, OTHER_GAME_STEP_NAME, null);
 
-      assertThat(gameSequence.getStepIndex(), is(0));
+      assertThat(gameSequence.getStepIndex()).isEqualTo(0);
     }
 
     @Test
@@ -63,7 +62,7 @@ final class GameSequenceTest {
 
       gameSequence.setRoundAndStep(1, OTHER_GAME_STEP_NAME, player);
 
-      assertThat(gameSequence.getStepIndex(), is(1));
+      assertThat(gameSequence.getStepIndex()).isEqualTo(1);
     }
 
     @Test
@@ -72,7 +71,7 @@ final class GameSequenceTest {
 
       gameSequence.setRoundAndStep(1, GAME_STEP_NAME, player);
 
-      assertThat(gameSequence.getStepIndex(), is(0));
+      assertThat(gameSequence.getStepIndex()).isEqualTo(0);
     }
   }
 }

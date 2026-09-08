@@ -45,7 +45,7 @@ We welcome contributions from the community! Whether you're a developer, designe
 
 TripleA is open-source software licensed under the GNU General Public License v3.0.
 
-[![TripleA license](https://img.shields.io/github/license/triplea-game/triplea.svg?style=flat-square)](https://github.com/triplea-game/triplea/blob/master/LICENSE)
+[![TripleA license](https://img.shields.io/github/license/triplea-game/triplea.svg?style=flat-square)](https://github.com/triplea-game/triplea/blob/main/LICENSE)
 
 ### Additional Permissions
 

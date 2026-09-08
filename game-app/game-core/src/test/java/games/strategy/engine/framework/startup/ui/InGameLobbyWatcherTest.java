@@ -2,9 +2,7 @@ package games.strategy.engine.framework.startup.ui;
 
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
 import static games.strategy.engine.framework.startup.ui.InGameLobbyWatcher.getLobbySystemProperty;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -165,7 +163,7 @@ final class InGameLobbyWatcherTest {
     void shouldReturnPrimaryValueWhenPrimaryValueSet() {
       givenPrimaryValueSet();
 
-      assertThat(getLobbySystemProperty(KEY), is(VALUE));
+      assertThat(getLobbySystemProperty(KEY)).isEqualTo(VALUE);
     }
 
     @Test
@@ -174,7 +172,7 @@ final class InGameLobbyWatcherTest {
 
       getLobbySystemProperty(KEY);
 
-      assertThat(System.getProperty(BACKUP_KEY), is(VALUE));
+      assertThat(System.getProperty(BACKUP_KEY)).isEqualTo(VALUE);
     }
 
     @Test
@@ -182,7 +180,7 @@ final class InGameLobbyWatcherTest {
       givenPrimaryValueNotSet();
       givenBackupValueSet();
 
-      assertThat(getLobbySystemProperty(KEY), is(BACKUP_VALUE));
+      assertThat(getLobbySystemProperty(KEY)).isEqualTo(BACKUP_VALUE);
     }
 
     @Test
@@ -190,7 +188,7 @@ final class InGameLobbyWatcherTest {
       givenPrimaryValueNotSet();
       givenBackupValueNotSet();
 
-      assertThat(getLobbySystemProperty(KEY), is(nullValue()));
+      assertThat(getLobbySystemProperty(KEY)).isNull();
     }
   }
 }

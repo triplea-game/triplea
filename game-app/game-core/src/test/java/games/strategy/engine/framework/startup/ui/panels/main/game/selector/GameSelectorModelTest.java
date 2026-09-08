@@ -1,9 +1,6 @@
 package games.strategy.engine.framework.startup.ui.panels.main.game.selector;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.sameInstance;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -39,19 +36,19 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
   @Mock private ClientModel mockClientModel;
 
   private static void assertHasEmptyData(final GameSelectorModel objectToCheck) {
-    assertThat(objectToCheck.getGameData(), nullValue());
+    assertThat(objectToCheck.getGameData()).isNull();
     assertHasEmptyDisplayData(objectToCheck);
   }
 
   private static void assertHasEmptyDisplayData(final GameSelectorModel objectToCheck) {
-    assertThat(objectToCheck.getFileName(), is("-"));
-    assertThat(objectToCheck.getGameName(), is("-"));
-    assertThat(objectToCheck.getGameRound(), is("-"));
+    assertThat(objectToCheck.getFileName()).isEqualTo("-");
+    assertThat(objectToCheck.getGameName()).isEqualTo("-");
+    assertThat(objectToCheck.getGameRound()).isEqualTo("-");
   }
 
   private static void assertHasFakeTestData(final GameSelectorModel objectToCheck) {
-    assertThat(objectToCheck.getGameName(), is(fakeGameName));
-    assertThat(objectToCheck.getGameRound(), is(fakeGameRound));
+    assertThat(objectToCheck.getGameName()).isEqualTo(fakeGameName);
+    assertThat(objectToCheck.getGameRound()).isEqualTo(fakeGameRound);
   }
 
   @BeforeEach
@@ -75,7 +72,7 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
   private void testObjectSetMockGameData() {
     prepareMockGameDataExpectations();
     testObj.setGameData(mockGameData);
-    assertThat(testObj.getGameData(), sameInstance(mockGameData));
+    assertThat(testObj.getGameData()).isSameAs(mockGameData);
     assertHasFakeTestData(testObj);
     this.verifyTestObjectObserverUpdateSent();
   }
@@ -93,11 +90,11 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
 
   @Test
   void testCanSelect() {
-    assertThat(testObj.isCanSelect(), is(true));
+    assertThat(testObj.isCanSelect()).isTrue();
     testObj.setCanSelect(false);
-    assertThat(testObj.isCanSelect(), is(false));
+    assertThat(testObj.isCanSelect()).isFalse();
     testObj.setCanSelect(true);
-    assertThat(testObj.isCanSelect(), is(true));
+    assertThat(testObj.isCanSelect()).isTrue();
   }
 
   @Test
@@ -109,46 +106,46 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
 
     testObj.clearDataButKeepGameInfo(newGameName, newGameRound);
     verifyTestObjectObserverUpdateSent();
-    assertThat(testObj.getGameData(), nullValue());
-    assertThat(testObj.getGameName(), is(newGameName));
-    assertThat(testObj.getGameRound(), is(newGameRound));
+    assertThat(testObj.getGameData()).isNull();
+    assertThat(testObj.getGameName()).isEqualTo(newGameName);
+    assertThat(testObj.getGameRound()).isEqualTo(newGameRound);
   }
 
   @Test
   void testGetGameData() {
-    assertThat(testObj.getGameData(), nullValue());
+    assertThat(testObj.getGameData()).isNull();
     prepareMockGameDataExpectations();
     testObj.setGameData(mockGameData);
-    assertThat(testObj.getGameData(), sameInstance(mockGameData));
+    assertThat(testObj.getGameData()).isSameAs(mockGameData);
   }
 
   @Test
   void testSetAndGetIsHostHeadlessBot() {
-    assertThat(testObj.isHostIsHeadlessBot(), is(false));
+    assertThat(testObj.isHostIsHeadlessBot()).isFalse();
     testObj.setIsHostHeadlessBot(true);
-    assertThat(testObj.isHostIsHeadlessBot(), is(true));
+    assertThat(testObj.isHostIsHeadlessBot()).isTrue();
     testObj.setIsHostHeadlessBot(false);
-    assertThat(testObj.isHostIsHeadlessBot(), is(false));
+    assertThat(testObj.isHostIsHeadlessBot()).isFalse();
   }
 
   @Test
   void testSetAndGetClientModelForHostBots() {
-    assertThat(testObj.getClientModelForHostBots(), nullValue());
+    assertThat(testObj.getClientModelForHostBots()).isNull();
     testObj.setClientModelForHostBots(mockClientModel);
-    assertThat(testObj.getClientModelForHostBots(), sameInstance(mockClientModel));
+    assertThat(testObj.getClientModelForHostBots()).isSameAs(mockClientModel);
     testObj.setClientModelForHostBots(null);
-    assertThat(testObj.getClientModelForHostBots(), nullValue());
+    assertThat(testObj.getClientModelForHostBots()).isNull();
   }
 
   @Test
   void testGetGameName() {
     this.testObjectSetMockGameData();
-    assertThat(testObj.getGameName(), is(fakeGameName));
+    assertThat(testObj.getGameName()).isEqualTo(fakeGameName);
   }
 
   @Test
   void testGetGameRound() {
     this.testObjectSetMockGameData();
-    assertThat(testObj.getGameRound(), is(fakeGameRound));
+    assertThat(testObj.getGameRound()).isEqualTo(fakeGameRound);
   }
 }

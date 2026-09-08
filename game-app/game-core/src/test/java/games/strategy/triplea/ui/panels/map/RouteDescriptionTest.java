@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui.panels.map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Route;
@@ -28,7 +27,7 @@ final class RouteDescriptionTest {
     void shouldReturnFalseWhenOtherIsNotInstanceOfRouteDescription() {
       final RouteDescription reference = new RouteDescription(route, start, end, image);
 
-      assertThat(reference.equals(new Object()), is(false));
+      assertThat(reference.equals(new Object())).isFalse();
     }
 
     @Test
@@ -36,7 +35,7 @@ final class RouteDescriptionTest {
       final RouteDescription reference = new RouteDescription(null, start, end, image);
       final RouteDescription other = new RouteDescription(route, start, end, image);
 
-      assertThat(reference.equals(other), is(false));
+      assertThat(reference.equals(other)).isFalse();
     }
 
     @Test
@@ -44,7 +43,7 @@ final class RouteDescriptionTest {
       final RouteDescription reference = new RouteDescription(route, start, end, image);
       final RouteDescription other = new RouteDescription(null, start, end, image);
 
-      assertThat(reference.equals(other), is(false));
+      assertThat(reference.equals(other)).isFalse();
     }
 
     @Test
@@ -53,7 +52,7 @@ final class RouteDescriptionTest {
       final Route otherRoute = new Route(new Territory("territoryName", new GameData()));
       final RouteDescription other = new RouteDescription(otherRoute, start, end, image);
 
-      assertThat(reference.equals(other), is(false));
+      assertThat(reference.equals(other)).isFalse();
     }
 
     @Test
@@ -61,7 +60,7 @@ final class RouteDescriptionTest {
       final RouteDescription reference = new RouteDescription(route, null, end, image);
       final RouteDescription other = new RouteDescription(route, start, end, image);
 
-      assertThat(reference.equals(other), is(false));
+      assertThat(reference.equals(other)).isFalse();
     }
 
     @Test
@@ -69,7 +68,7 @@ final class RouteDescriptionTest {
       final RouteDescription reference = new RouteDescription(route, start, end, image);
       final RouteDescription other = new RouteDescription(route, null, end, image);
 
-      assertThat(reference.equals(other), is(false));
+      assertThat(reference.equals(other)).isFalse();
     }
 
     @Test
@@ -78,7 +77,7 @@ final class RouteDescriptionTest {
       final Point otherStart = new Point(start.x + 1, start.y);
       final RouteDescription other = new RouteDescription(route, otherStart, end, image);
 
-      assertThat(reference.equals(other), is(false));
+      assertThat(reference.equals(other)).isFalse();
     }
   }
 }

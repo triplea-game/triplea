@@ -5,8 +5,7 @@ import static games.strategy.triplea.Constants.UNIT_PLACEMENT_RESTRICTIONS;
 import static games.strategy.triplea.delegate.GameDataTestUtil.unitType;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate.BidMode.BID;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -65,7 +64,7 @@ class BidPlaceDelegateTest extends PlaceDelegateTestCommon {
     assertValid(delegate.canUnitsBePlaced(northSea, threeSub2, british));
     assertValid(delegate.canUnitsBePlaced(northSea, fourSub2, british));
     final PlaceableUnits response = delegate.getPlaceableUnits(fourSub2, northSea);
-    assertThat(response.getUnits(), hasSize(4));
+    assertThat(response.getUnits()).hasSize(4);
     // We also can't place the subs in UK since they're sea units. :)
     assertError(delegate.canUnitsBePlaced(uk, threeSub2, british));
   }
@@ -83,7 +82,7 @@ class BidPlaceDelegateTest extends PlaceDelegateTestCommon {
     assertValid(delegate.canUnitsBePlaced(uk, threeInfantry2, british));
     assertValid(delegate.canUnitsBePlaced(uk, fourInfantry2, british));
     final PlaceableUnits response = delegate.getPlaceableUnits(fourInfantry2, uk);
-    assertThat(response.getUnits(), hasSize(4));
+    assertThat(response.getUnits()).hasSize(4);
   }
 
   @Test

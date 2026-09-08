@@ -1,9 +1,8 @@
 package org.triplea.java;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +27,7 @@ class PostconditionsTest {
     void assertionFailsWithMessage() {
       final Throwable thrown =
           assertThrows(AssertionError.class, () -> Postconditions.assertState(false, MESSAGE));
-      assertThat(thrown.getMessage(), StringContains.containsString(MESSAGE));
+      assertThat(thrown.getMessage()).contains(MESSAGE);
     }
   }
 
@@ -44,7 +43,7 @@ class PostconditionsTest {
       final Throwable thrown =
           assertThrows(AssertionError.class, () -> Postconditions.assertNotNull(null, MESSAGE));
 
-      assertThat(thrown.getMessage(), StringContains.containsString(MESSAGE));
+      assertThat(thrown.getMessage()).contains(MESSAGE);
     }
   }
 }

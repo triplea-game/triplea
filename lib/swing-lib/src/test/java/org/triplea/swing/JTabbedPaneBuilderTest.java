@@ -1,8 +1,6 @@
 package org.triplea.swing;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -18,10 +16,12 @@ class JTabbedPaneBuilderTest {
     final JTabbedPane pane =
         JTabbedPaneBuilder.builder().addTab("tab", label).addTab("second tab", component).build();
 
-    assertThat("we added two tabs", pane.getTabCount(), is(2));
-    assertThat(
-        "first tab we added was a label", pane.getTabComponentAt(0), instanceOf(JLabel.class));
-    assertThat(
-        "second tab had a component", pane.getTabComponentAt(1), instanceOf(JComponent.class));
+    assertThat(pane.getTabCount()).as("we added two tabs").isEqualTo(2);
+    assertThat(pane.getTabComponentAt(0))
+        .as("first tab we added was a label")
+        .isInstanceOf(JLabel.class);
+    assertThat(pane.getTabComponentAt(1))
+        .as("second tab had a component")
+        .isInstanceOf(JComponent.class);
   }
 }

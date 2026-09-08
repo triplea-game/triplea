@@ -1,7 +1,6 @@
 package org.triplea.java;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.awt.Color;
@@ -13,8 +12,8 @@ class ColorUtilsTest {
 
   @Test
   void verifyColorConstruction() {
-    assertThat(ColorUtils.fromHexString("000000"), is(Color.BLACK));
-    assertThat(ColorUtils.fromHexString("FFFFFF"), is(Color.WHITE));
+    assertThat(ColorUtils.fromHexString("000000")).isEqualTo(Color.BLACK);
+    assertThat(ColorUtils.fromHexString("FFFFFF")).isEqualTo(Color.WHITE);
   }
 
   @ParameterizedTest

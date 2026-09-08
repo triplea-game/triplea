@@ -21,7 +21,7 @@ class StackTraceReportSwingView implements StackTraceReportView {
   private static final String HELP_TEXT =
       "<html>Any data entered is optional, please use<br/>"
           + "this form to help TripleA support know<br/>"
-          + "where and how the error occurred.<br/><br/>"
+          + "precisely where and how the error occurred.<br/><br/>"
           + "Uploaded data will be used to create a publicly visible bug report";
 
   private final JFrame window =

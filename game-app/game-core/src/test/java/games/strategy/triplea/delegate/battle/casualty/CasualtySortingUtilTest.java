@@ -2,8 +2,7 @@ package games.strategy.triplea.delegate.battle.casualty;
 
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -41,7 +40,7 @@ class CasualtySortingUtilTest {
 
     CasualtySortingUtil.sortPreBattle(units);
 
-    assertThat(units, is(List.of(unitA, unitB)));
+    assertThat(units).isEqualTo(List.of(unitA, unitB));
   }
 
   @Test
@@ -64,7 +63,7 @@ class CasualtySortingUtilTest {
 
     CasualtySortingUtil.sortPreBattle(units);
 
-    assertThat(units, is(List.of(unitWith1Movement, unitWith2Movement)));
+    assertThat(units).isEqualTo(List.of(unitWith1Movement, unitWith2Movement));
   }
 
   @Test
@@ -100,7 +99,7 @@ class CasualtySortingUtilTest {
 
     CasualtySortingUtil.sortPreBattle(units);
 
-    assertThat(units, is(List.of(unitWithNoMarine, unitWith1Marine, unitWith2Marine)));
+    assertThat(units).isEqualTo(List.of(unitWithNoMarine, unitWith1Marine, unitWith2Marine));
   }
 
   @Test
@@ -148,13 +147,12 @@ class CasualtySortingUtilTest {
 
     CasualtySortingUtil.sortPreBattle(units);
 
-    assertThat(
-        units,
-        is(
+    assertThat(units)
+        .isEqualTo(
             List.of(
                 unitWith3MarineButNotAmphibious,
                 unitWithNoMarine,
                 unitWith1Marine,
-                unitWith2Marine)));
+                unitWith2Marine));
   }
 }

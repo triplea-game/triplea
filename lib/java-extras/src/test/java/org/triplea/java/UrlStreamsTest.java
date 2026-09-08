@@ -1,9 +1,6 @@
 package org.triplea.java;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -42,8 +39,8 @@ class UrlStreamsTest {
   void cacheIsOff() {
     final URLConnection connection = testObj.newUrlConnection(fakeUrl);
 
-    assertThat(connection.getUseCaches(), is(false));
-    assertThat(connection.getDefaultUseCaches(), is(false));
+    assertThat(connection.getUseCaches()).isFalse();
+    assertThat(connection.getDefaultUseCaches()).isFalse();
   }
 
   @Test
@@ -63,7 +60,7 @@ class UrlStreamsTest {
 
     final Optional<InputStream> stream = testObj.newStream(fakeUrl);
 
-    assertThat("No issues connecting, we should have an input stream back.", stream, isPresent());
+    assertThat(stream).as("No issues connecting, we should have an input stream back.").isPresent();
   }
 
   @Test
@@ -83,9 +80,8 @@ class UrlStreamsTest {
 
     final Optional<InputStream> stream = testObj.newStream(fakeUrl);
 
-    assertThat(
-        "No exceptions expected, but a failure to connect should return an empty object.",
-        stream,
-        isEmpty());
+    assertThat(stream)
+        .as("No exceptions expected, but a failure to connect should return an empty object.")
+        .isEmpty();
   }
 }

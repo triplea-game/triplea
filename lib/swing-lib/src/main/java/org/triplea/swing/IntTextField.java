@@ -18,7 +18,7 @@ public class IntTextField extends JTextField {
   private static final long serialVersionUID = -7993942326354823887L;
   @Getter private int max = Integer.MAX_VALUE;
   @Getter private int min = Integer.MIN_VALUE;
-  @Getter private String terr;
+  @Deprecated private String terr;
   private final List<IntTextFieldChangeListener> listeners = new ArrayList<>();
 
   public IntTextField() {
@@ -66,27 +66,24 @@ public class IntTextField extends JTextField {
   }
 
   /**
-   * Sets max length, number of characters of the text field, must be greater than the configured
-   * min.
+   * Sets max value and adjusts the text field's text accordingly.
+   *
+   * @throws IllegalArgumentException When new max value is less than current min value.
    */
   public void setMax(final int max) {
     if (max < min) {
       throw new IllegalArgumentException(
-          "Max cant be less than min. Current Min: "
+          "Max value cannot be less than min value. Current min value: "
               + min
-              + ", Current Max: "
+              + ", Current max value: "
               + this.max
-              + ", New Max: "
+              + ", New max value: "
               + max);
     }
     this.max = max;
     if (getValue() > this.max) {
       setText(String.valueOf(max));
     }
-  }
-
-  public void setTerr(final String terr) {
-    this.terr = terr;
   }
 
   /** Updates the min length of the text field. Must be set to less than the max length. */
@@ -110,7 +107,7 @@ public class IntTextField extends JTextField {
     return value <= max && value >= min;
   }
 
-  /** Make sure that no non numeric data is typed. */
+  /** Make sure that no non-numeric data is typed. */
   private class IntegerDocument extends PlainDocument {
     private static final long serialVersionUID = 135871239193051281L;
 
@@ -128,7 +125,7 @@ public class IntTextField extends JTextField {
         checkValue();
         notifyListeners();
       } catch (final NumberFormatException e) {
-        // if an error dont insert
+        // if an error don't insert
         // allow start of negative numbers
         if (offs == 0 && min < 0 && str.equals("-")) {
           super.insertString(0, str, a);
@@ -139,7 +136,7 @@ public class IntTextField extends JTextField {
     @Override
     public void remove(final int offs, final int len) throws BadLocationException {
       super.remove(offs, len);
-      // if its a valid number we've changed
+      // if it's a valid number we've changed
       try {
         Integer.parseInt(IntTextField.this.getText());
         notifyListeners();

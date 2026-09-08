@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.startup.login;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.framework.startup.login.ClientLoginValidator.ErrorMessages;
 import java.util.Map;
@@ -25,7 +24,7 @@ final class ClientLoginValidatorTest {
 
       final String errorMessage = ClientLoginValidator.authenticate(challenge, response, PASSWORD);
 
-      assertThat(errorMessage, is(ErrorMessages.NO_ERROR));
+      assertThat(errorMessage).isEqualTo(ErrorMessages.NO_ERROR);
     }
 
     @Test
@@ -36,7 +35,7 @@ final class ClientLoginValidatorTest {
 
       final String errorMessage = ClientLoginValidator.authenticate(challenge, response, PASSWORD);
 
-      assertThat(errorMessage, is(ErrorMessages.INVALID_PASSWORD));
+      assertThat(errorMessage).isEqualTo(ErrorMessages.INVALID_PASSWORD);
     }
   }
 }

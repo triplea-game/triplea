@@ -2,8 +2,7 @@ package org.triplea.ai.flowfield.odds;
 
 import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -59,8 +58,8 @@ class LanchesterBattleCalculatorTest {
                     .build()),
             GLOBAL1940_ATTRITION_ORDER);
 
-    assertThat(calculator.getWon(), is(DEFENSE));
-    assertThat(calculator.getRemainingUnits(), is(1L));
+    assertThat(calculator.getWon()).isEqualTo(DEFENSE);
+    assertThat(calculator.getRemainingUnits()).isEqualTo(1L);
   }
 
   @Test
@@ -95,8 +94,8 @@ class LanchesterBattleCalculatorTest {
                     .build()),
             GLOBAL1940_ATTRITION_ORDER);
 
-    assertThat(calculator.getWon(), is(OFFENSE));
-    assertThat(calculator.getRemainingUnits(), is(2L));
+    assertThat(calculator.getWon()).isEqualTo(OFFENSE);
+    assertThat(calculator.getRemainingUnits()).isEqualTo(2L);
   }
 
   @Test
@@ -133,7 +132,7 @@ class LanchesterBattleCalculatorTest {
                     .build()),
             GLOBAL1940_ATTRITION_ORDER);
 
-    assertThat(calculator.getWon(), is(DEFENSE));
-    assertThat(calculator.getRemainingUnits(), is(13L));
+    assertThat(calculator.getWon()).isEqualTo(DEFENSE);
+    assertThat(calculator.getRemainingUnits()).isEqualTo(13L);
   }
 }

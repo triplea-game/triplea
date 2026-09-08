@@ -1,8 +1,6 @@
 package games.strategy.engine.data;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import games.strategy.engine.data.MutableProperty.InvalidValueException;
@@ -19,7 +17,7 @@ final class MutablePropertyTest {
 
       final Exception e =
           assertThrows(InvalidValueException.class, () -> mutableProperty.setValue(new Object()));
-      assertThat(e.getCause(), is(instanceOf(ClassCastException.class)));
+      assertThat(e.getCause()).isInstanceOf(ClassCastException.class);
     }
   }
 }

@@ -2,9 +2,7 @@ package org.triplea.ai.flowfield.influence;
 
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.anEmptyMap;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,16 +38,15 @@ class InfluenceMapTest {
             });
     final InfluenceMap influenceMap =
         new InfluenceMap("Test", 0.5, Map.of(territories.get(0), 100L), mapWithNeighbors);
-    assertThat(
-        "First territory has the initial value of 100.0",
-        influenceMap.getTerritories().get(territories.get(0)).getInfluence(),
-        is(100L));
-    assertThat(
-        "Middle territory has 50% of the initial value",
-        influenceMap.getTerritories().get(territories.get(1)).getInfluence(), is(50L));
-    assertThat(
-        "Last territory has 50% * 50% (or 25%) of the initial value",
-        influenceMap.getTerritories().get(territories.get(2)).getInfluence(), is(25L));
+    assertThat(influenceMap.getTerritories().get(territories.get(0)).getInfluence())
+        .as("First territory has the initial value of 100.0")
+        .isEqualTo(100L);
+    assertThat(influenceMap.getTerritories().get(territories.get(1)).getInfluence())
+        .as("Middle territory has 50% of the initial value")
+        .isEqualTo(50L);
+    assertThat(influenceMap.getTerritories().get(territories.get(2)).getInfluence())
+        .as("Last territory has 50% * 50% (or 25%) of the initial value")
+        .isEqualTo(25L);
   }
 
   @Test
@@ -80,22 +77,18 @@ class InfluenceMapTest {
             0.5,
             Map.of(territories.get(0), 100L, territories.get(3), 100L),
             mapWithNeighbors);
-    assertThat(
-        "First territory has the initial value of 100 + 12 (diffused from the last)",
-        influenceMap.getTerritories().get(territories.get(0)).getInfluence(),
-        is(112L));
-    assertThat(
-        "2nd territory has 50 (diffused from the first) + 25 (diffused from the last)",
-        influenceMap.getTerritories().get(territories.get(1)).getInfluence(),
-        is(75L));
-    assertThat(
-        "3nd territory has 50 (diffused from the last) + 25 (diffused from the first)",
-        influenceMap.getTerritories().get(territories.get(2)).getInfluence(),
-        is(75L));
-    assertThat(
-        "Last territory has the initial value of 100 + 12 (diffused from the first)",
-        influenceMap.getTerritories().get(territories.get(3)).getInfluence(),
-        is(112L));
+    assertThat(influenceMap.getTerritories().get(territories.get(0)).getInfluence())
+        .as("First territory has the initial value of 100 + 12 (diffused from the last)")
+        .isEqualTo(112L);
+    assertThat(influenceMap.getTerritories().get(territories.get(1)).getInfluence())
+        .as("2nd territory has 50 (diffused from the first) + 25 (diffused from the last)")
+        .isEqualTo(75L);
+    assertThat(influenceMap.getTerritories().get(territories.get(2)).getInfluence())
+        .as("3nd territory has 50 (diffused from the last) + 25 (diffused from the first)")
+        .isEqualTo(75L);
+    assertThat(influenceMap.getTerritories().get(territories.get(3)).getInfluence())
+        .as("Last territory has the initial value of 100 + 12 (diffused from the first)")
+        .isEqualTo(112L);
   }
 
   @Test
@@ -135,22 +128,22 @@ class InfluenceMapTest {
                 200L),
             mapWithNeighbors);
 
-    assertThat(
-        "1st territory has initial value of 25 + 25 from second + 25 from third + 25 from fourth",
-        influenceMap.getTerritories().get(territories.get(0)).getInfluence(),
-        is(100L));
-    assertThat(
-        "2nd territory has initial value of 50 + 12 from first + 50 from third + 50 from fourth",
-        influenceMap.getTerritories().get(territories.get(1)).getInfluence(),
-        is(162L));
-    assertThat(
-        "3nd territory has initial value of 100 + 6 from first + 25 from second + 100 from fourth",
-        influenceMap.getTerritories().get(territories.get(2)).getInfluence(),
-        is(231L));
-    assertThat(
-        "4th territory has initial value of 200 + 3 from first + 12 from second + 50 from third",
-        influenceMap.getTerritories().get(territories.get(3)).getInfluence(),
-        is(265L));
+    assertThat(influenceMap.getTerritories().get(territories.get(0)).getInfluence())
+        .as(
+            "1st territory has initial value of 25 + 25 from second + 25 from third + 25 from fourth")
+        .isEqualTo(100L);
+    assertThat(influenceMap.getTerritories().get(territories.get(1)).getInfluence())
+        .as(
+            "2nd territory has initial value of 50 + 12 from first + 50 from third + 50 from fourth")
+        .isEqualTo(162L);
+    assertThat(influenceMap.getTerritories().get(territories.get(2)).getInfluence())
+        .as(
+            "3nd territory has initial value of 100 + 6 from first + 25 from second + 100 from fourth")
+        .isEqualTo(231L);
+    assertThat(influenceMap.getTerritories().get(territories.get(3)).getInfluence())
+        .as(
+            "4th territory has initial value of 200 + 3 from first + 12 from second + 50 from third")
+        .isEqualTo(265L);
   }
 
   @Test
@@ -206,25 +199,24 @@ class InfluenceMapTest {
               }
             });
 
-    assertThat(
-        "1st territory's battle details by distance should be empty as the "
-            + "2nd territory's details should not diffuse back towards it.",
-        influenceMap.getTerritories().get(territories.get(0)).getBattleDetailsByDistance(),
-        anEmptyMap());
-    assertThat(
-        "2nd territory's battle details by distance should also be empty since "
-            + "none of the other territories have a battle distance",
-        influenceMap.getTerritories().get(territories.get(1)).getBattleDetailsByDistance(),
-        anEmptyMap());
-    assertThat(
-        "2nd territory should have the mocked battle details",
-        influenceMap.getTerritories().get(territories.get(1)).getBattleDetails(),
-        is(battleDetails));
-    assertThat(
-        "3th territory's battle details should have the 2nd territory's battle details "
-            + "with a distance of 1",
-        influenceMap.getTerritories().get(territories.get(2)).getBattleDetailsByDistance(),
-        is(Map.of(battleDetails, 1)));
+    assertThat(influenceMap.getTerritories().get(territories.get(0)).getBattleDetailsByDistance())
+        .as(
+            "1st territory's battle details by distance should be empty as the "
+                + "2nd territory's details should not diffuse back towards it.")
+        .isEmpty();
+    assertThat(influenceMap.getTerritories().get(territories.get(1)).getBattleDetailsByDistance())
+        .as(
+            "2nd territory's battle details by distance should also be empty since "
+                + "none of the other territories have a battle distance")
+        .isEmpty();
+    assertThat(influenceMap.getTerritories().get(territories.get(1)).getBattleDetails())
+        .as("2nd territory should have the mocked battle details")
+        .isEqualTo(battleDetails);
+    assertThat(influenceMap.getTerritories().get(territories.get(2)).getBattleDetailsByDistance())
+        .as(
+            "3th territory's battle details should have the 2nd territory's battle details "
+                + "with a distance of 1")
+        .isEqualTo(Map.of(battleDetails, 1));
   }
 
   @Test
@@ -281,17 +273,18 @@ class InfluenceMapTest {
             });
 
     assertThat(
-        "1st territory's distance from initial territory is 0 since it is the initial territory",
-        influenceMap.getTerritories().get(territories.get(0)).getDistanceFromInitialTerritory(),
-        is(0));
+            influenceMap.getTerritories().get(territories.get(0)).getDistanceFromInitialTerritory())
+        .as(
+            "1st territory's distance from initial territory is 0 since it is the initial territory")
+        .isEqualTo(0);
     assertThat(
-        "2nd territory's distance from initial territory is 1",
-        influenceMap.getTerritories().get(territories.get(1)).getDistanceFromInitialTerritory(),
-        is(1));
+            influenceMap.getTerritories().get(territories.get(1)).getDistanceFromInitialTerritory())
+        .as("2nd territory's distance from initial territory is 1")
+        .isEqualTo(1);
     assertThat(
-        "3nd territory's distance from initial territory is 2",
-        influenceMap.getTerritories().get(territories.get(2)).getDistanceFromInitialTerritory(),
-        is(2));
+            influenceMap.getTerritories().get(territories.get(2)).getDistanceFromInitialTerritory())
+        .as("3nd territory's distance from initial territory is 2")
+        .isEqualTo(2);
   }
 
   @Test
@@ -384,22 +377,18 @@ class InfluenceMapTest {
               }
             });
 
-    assertThat(
-        "C's battle details by distance should contain battle details from E",
-        influenceMap.getTerritories().get(territoryC).getBattleDetailsByDistance(),
-        is(Map.of(battleDetailsE, 1)));
-    assertThat(
-        "C's influence value should still be 25 because of the ABC path.",
-        influenceMap.getTerritories().get(territoryC).getInfluence(),
-        is(25L));
-    assertThat(
-        "D's battle details by distance should contain battle details from E",
-        influenceMap.getTerritories().get(territoryC).getBattleDetailsByDistance(),
-        is(Map.of(battleDetailsE, 1)));
-    assertThat(
-        "D's influence value should still be 12 because of the ABCD path.",
-        influenceMap.getTerritories().get(territoryD).getInfluence(),
-        is(12L));
+    assertThat(influenceMap.getTerritories().get(territoryC).getBattleDetailsByDistance())
+        .as("C's battle details by distance should contain battle details from E")
+        .isEqualTo(Map.of(battleDetailsE, 1));
+    assertThat(influenceMap.getTerritories().get(territoryC).getInfluence())
+        .as("C's influence value should still be 25 because of the ABC path.")
+        .isEqualTo(25L);
+    assertThat(influenceMap.getTerritories().get(territoryC).getBattleDetailsByDistance())
+        .as("D's battle details by distance should contain battle details from E")
+        .isEqualTo(Map.of(battleDetailsE, 1));
+    assertThat(influenceMap.getTerritories().get(territoryD).getInfluence())
+        .as("D's influence value should still be 12 because of the ABCD path.")
+        .isEqualTo(12L);
   }
 
   @Test
@@ -496,14 +485,13 @@ class InfluenceMapTest {
               }
             });
 
-    assertThat(
-        "D's battle details by distance should contain battle details from E",
-        influenceMap.getTerritories().get(territoryD).getBattleDetailsByDistance(),
-        is(Map.of(battleDetailsE, 1)));
-    assertThat(
-        "C's battle details by distance should not be updated from E and "
-            + "should still contain battle details from B",
-        influenceMap.getTerritories().get(territoryC).getBattleDetailsByDistance(),
-        is(Map.of(battleDetailsB, 1)));
+    assertThat(influenceMap.getTerritories().get(territoryD).getBattleDetailsByDistance())
+        .as("D's battle details by distance should contain battle details from E")
+        .isEqualTo(Map.of(battleDetailsE, 1));
+    assertThat(influenceMap.getTerritories().get(territoryC).getBattleDetailsByDistance())
+        .as(
+            "C's battle details by distance should not be updated from E and "
+                + "should still contain battle details from B")
+        .isEqualTo(Map.of(battleDetailsB, 1));
   }
 }

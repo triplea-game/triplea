@@ -1,7 +1,6 @@
 package games.strategy.engine.data;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -16,38 +15,38 @@ final class RouteTest {
 
     @Test
     void shouldReturnTrueWhenOtherIsSameInstance() {
-      assertThat(reference.equals(reference), is(true));
+      assertThat(reference.equals(reference)).isTrue();
     }
 
     @Test
     void shouldReturnTrueWhenOtherIsEqual() {
       final Route other = new Route(territory1, territory2);
 
-      assertThat(reference.equals(other), is(true));
+      assertThat(reference.equals(other)).isTrue();
     }
 
     @Test
     void shouldReturnFalseWhenOtherIsNull() {
-      assertThat(reference.equals(null), is(false));
+      assertThat(reference.equals(null)).isFalse();
     }
 
     @Test
     void shouldReturnFalseWhenOtherIsNotInstanceOfRoute() {
-      assertThat(reference.equals(new Object()), is(false));
+      assertThat(reference.equals(new Object())).isFalse();
     }
 
     @Test
     void shouldReturnFalseWhenOtherHasDifferentStepCount() {
       final Route other = new Route(territory1);
 
-      assertThat(reference.equals(other), is(false));
+      assertThat(reference.equals(other)).isFalse();
     }
 
     @Test
     void shouldReturnFalseWhenOtherHasSameStepCountButHasDifferentStartTerritory() {
       final Route other = new Route(territory2, territory1);
 
-      assertThat(reference.equals(other), is(false));
+      assertThat(reference.equals(other)).isFalse();
     }
 
     @Test
@@ -55,7 +54,7 @@ final class RouteTest {
         shouldReturnFalseWhenOtherHasSameStepCountAndSameStartTerritoryButDifferentTerritoryList() {
       final Route other = new Route(territory1, new Territory("territory3", gameData));
 
-      assertThat(reference.equals(other), is(false));
+      assertThat(reference.equals(other)).isFalse();
     }
   }
 }

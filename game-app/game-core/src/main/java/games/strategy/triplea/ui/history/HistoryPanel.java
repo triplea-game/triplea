@@ -176,10 +176,10 @@ public class HistoryPanel extends JPanel {
         });
     tree.addTreeSelectionListener(this::treeSelectionChanged);
 
+    // initialize tree by ensured EDT (for History.getLastNode call inside)
+    final TreePath nodeTreePath = new TreePath(data.getHistory().enableSeeking(this).getPath());
     SwingUtilities.invokeLater(
         () -> {
-          // initialize tree by ensured EDT (for History.getLastNode call inside)
-          TreePath nodeTreePath = new TreePath(data.getHistory().enableSeeking(this).getPath());
           tree.expandPath(nodeTreePath);
           tree.setSelectionPath(nodeTreePath);
         });
@@ -259,14 +259,15 @@ public class HistoryPanel extends JPanel {
 
   private void gotoNode(final HistoryNode node) {
     Util.ensureOnEventDispatchThread();
-    if (details != null) {
-      details.render(node);
-    }
     // If this is not a leaf node, set the game state to the last leaf node before it. This way,
     // selecting something like "Round 3" shows the state at the start of the round, which ensures
     // chronological order when moving up/down the nodes using arrow keys even if some are expanded.
     Optional<HistoryNode> target = data.getHistory().getNearestLeafAtOrBefore(node);
     data.getHistory().gotoNode(target.orElse((HistoryNode) node.getRoot()));
+
+    if (details != null) {
+      details.render(node);
+    }
   }
 
   public HistoryNode getCurrentNode() {

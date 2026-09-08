@@ -1,8 +1,7 @@
 package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
@@ -26,10 +25,9 @@ class TerritoryEffectHelperTest extends AbstractDelegateTestCase {
         TerritoryEffectHelper.getMaxMovementCost(
             sicily,
             GameDataTestUtil.unitType("germanInfantry", twwGameData).create(1, germanPlayer));
-    assertThat(
-        "Expect German infantry to have 0 movement cost for Sicily island territory effect",
-        result.compareTo(BigDecimal.ZERO),
-        is(0));
+    assertThat(result.compareTo(BigDecimal.ZERO))
+        .as("Expect German infantry to have 0 movement cost for Sicily island territory effect")
+        .isEqualTo(0);
   }
 
   @Test
@@ -38,10 +36,9 @@ class TerritoryEffectHelperTest extends AbstractDelegateTestCase {
         TerritoryEffectHelper.getMaxMovementCost(
             sicily,
             GameDataTestUtil.unitType("germanAlpineInfantry", twwGameData).create(1, germanPlayer));
-    assertThat(
-        "Expect German alpine to have 0.5 movement cost for Sicily island territory effect",
-        result.compareTo(new BigDecimal("0.5")),
-        is(0));
+    assertThat(result.compareTo(new BigDecimal("0.5")))
+        .as("Expect German alpine to have 0.5 movement cost for Sicily island territory effect")
+        .isEqualTo(0);
   }
 
   @Test
@@ -50,10 +47,11 @@ class TerritoryEffectHelperTest extends AbstractDelegateTestCase {
         TerritoryEffectHelper.getMaxMovementCost(
             sicily,
             GameDataTestUtil.unitType("germanCombatEngineer", twwGameData).create(1, germanPlayer));
-    assertThat(
-        "Expect German combat engineer to have 2 movement cost for Sicily island territory effect",
-        result.compareTo(new BigDecimal("2")),
-        is(0));
+    assertThat(result.compareTo(new BigDecimal("2")))
+        .as(
+            "Expect German combat engineer to have 2 movement cost for Sicily island territory"
+                + " effect")
+        .isEqualTo(0);
   }
 
   @Test
@@ -61,10 +59,9 @@ class TerritoryEffectHelperTest extends AbstractDelegateTestCase {
     final BigDecimal result =
         TerritoryEffectHelper.getMaxMovementCost(
             sicily, GameDataTestUtil.unitType("germanMarine", twwGameData).create(1, germanPlayer));
-    assertThat(
-        "Expect German marine to have 1 movement cost for no territory effects",
-        result.compareTo(BigDecimal.ONE),
-        is(0));
+    assertThat(result.compareTo(BigDecimal.ONE))
+        .as("Expect German marine to have 1 movement cost for no territory effects")
+        .isEqualTo(0);
   }
 
   @Test
@@ -77,18 +74,16 @@ class TerritoryEffectHelperTest extends AbstractDelegateTestCase {
         GameDataTestUtil.unitType("germanCombatEngineer", twwGameData).create(1, germanPlayer));
     units.addAll(GameDataTestUtil.unitType("germanMarine", twwGameData).create(1, germanPlayer));
     final BigDecimal result = TerritoryEffectHelper.getMaxMovementCost(sicily, units);
-    assertThat(
-        "Expect German units to have 2 movement cost as that is max across all units",
-        result.compareTo(new BigDecimal("2")),
-        is(0));
+    assertThat(result.compareTo(new BigDecimal("2")))
+        .as("Expect German units to have 2 movement cost as that is max across all units")
+        .isEqualTo(0);
   }
 
   @Test
   void testGetMaxMovementCostForNoUnits() {
     final BigDecimal result = TerritoryEffectHelper.getMaxMovementCost(sicily, Set.of());
-    assertThat(
-        "Expect 1 movement cost when no units are passed in",
-        result.compareTo(BigDecimal.ONE),
-        is(0));
+    assertThat(result.compareTo(BigDecimal.ONE))
+        .as("Expect 1 movement cost when no units are passed in")
+        .isEqualTo(0);
   }
 }

@@ -1,9 +1,7 @@
 package games.strategy.triplea.ai.pro.util;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
@@ -28,12 +26,12 @@ public class ProTerritoryValueUtilsTest {
     final var toFind = Set.of(swUsa, northJapan);
     final Collection<Territory> result =
         ProTerritoryValueUtils.findNearbyEnemyCapitalsAndFactories(newSouthWales, toFind);
-    assertThat(
-        "swUsa and northJapan are both found as they are within the min distance ("
-            + ProTerritoryValueUtils.MIN_FACTORY_CHECK_DISTANCE
-            + ") of newSouthWales:",
-        result,
-        containsInAnyOrder(swUsa, northJapan));
+    assertThat(result)
+        .as(
+            "swUsa and northJapan are both found as they are within the min distance ("
+                + ProTerritoryValueUtils.MIN_FACTORY_CHECK_DISTANCE
+                + ") of newSouthWales:")
+        .containsExactlyInAnyOrder(swUsa, northJapan);
   }
 
   @Test
@@ -42,12 +40,12 @@ public class ProTerritoryValueUtilsTest {
     final var toFind = Set.of(swUsa, england, northJapan, moscow);
     final Collection<Territory> result =
         ProTerritoryValueUtils.findNearbyEnemyCapitalsAndFactories(newSouthWales, toFind);
-    assertThat(
-        "only swUsa and northJapan are found since they are within the min distance ("
-            + ProTerritoryValueUtils.MIN_FACTORY_CHECK_DISTANCE
-            + ") of newSouthWales:",
-        result,
-        containsInAnyOrder(swUsa, northJapan));
+    assertThat(result)
+        .as(
+            "only swUsa and northJapan are found since they are within the min distance ("
+                + ProTerritoryValueUtils.MIN_FACTORY_CHECK_DISTANCE
+                + ") of newSouthWales:")
+        .containsExactlyInAnyOrder(swUsa, northJapan);
   }
 
   @Test
@@ -56,13 +54,13 @@ public class ProTerritoryValueUtilsTest {
     final var toFind = Set.of(england, northJapan);
     final Collection<Territory> result =
         ProTerritoryValueUtils.findNearbyEnemyCapitalsAndFactories(newSouthWales, toFind);
-    assertThat(
-        "only the closest target (northJapan) is found, when no targets are within "
-            + "the min distance ("
-            + ProTerritoryValueUtils.MIN_FACTORY_CHECK_DISTANCE
-            + ") of newSouthWales:",
-        result,
-        containsInAnyOrder(northJapan));
+    assertThat(result)
+        .as(
+            "only the closest target (northJapan) is found, when no targets are within "
+                + "the min distance ("
+                + ProTerritoryValueUtils.MIN_FACTORY_CHECK_DISTANCE
+                + ") of newSouthWales:")
+        .containsExactlyInAnyOrder(northJapan);
   }
 
   @Test
@@ -71,7 +69,7 @@ public class ProTerritoryValueUtilsTest {
     // The result should be the same for each player since territoryCanPotentiallyMoveLandUnits()
     // should be the same for all players.
     for (final GamePlayer player : gameData.getPlayerList().getPlayers()) {
-      assertThat(ProTerritoryValueUtils.findMaxLandMassSize(player), is(89));
+      assertThat(ProTerritoryValueUtils.findMaxLandMassSize(player)).isEqualTo(89);
     }
   }
 
@@ -80,7 +78,7 @@ public class ProTerritoryValueUtilsTest {
   void testFindMaxLandSizeRevised() {
     final GameState gameData = TestMapGameData.REVISED.getGameData();
     for (final GamePlayer player : gameData.getPlayerList().getPlayers()) {
-      assertThat(ProTerritoryValueUtils.findMaxLandMassSize(player), is(37));
+      assertThat(ProTerritoryValueUtils.findMaxLandMassSize(player)).isEqualTo(37);
     }
   }
 
@@ -89,7 +87,7 @@ public class ProTerritoryValueUtilsTest {
   void testFindMaxLandSizeMinimap() {
     final GameState gameData = TestMapGameData.MINIMAP.getGameData();
     for (final GamePlayer player : gameData.getPlayerList().getPlayers()) {
-      assertThat(ProTerritoryValueUtils.findMaxLandMassSize(player), is(14));
+      assertThat(ProTerritoryValueUtils.findMaxLandMassSize(player)).isEqualTo(14);
     }
   }
 }

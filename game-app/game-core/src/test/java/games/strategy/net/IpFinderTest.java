@@ -1,7 +1,6 @@
 package games.strategy.net;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -63,15 +62,15 @@ final class IpFinderTest {
 
   @BeforeAll
   static void checkInvariants() {
-    assertThat(INET4_LINK_LOCAL_ADDRESS.isLinkLocalAddress(), is(true));
-    assertThat(INET4_PUBLIC_ADDRESS.isLinkLocalAddress(), is(false));
-    assertThat(INET4_PUBLIC_ADDRESS.isSiteLocalAddress(), is(false));
-    assertThat(INET4_SITE_LOCAL_ADDRESS.isSiteLocalAddress(), is(true));
+    assertThat(INET4_LINK_LOCAL_ADDRESS.isLinkLocalAddress()).isTrue();
+    assertThat(INET4_PUBLIC_ADDRESS.isLinkLocalAddress()).isFalse();
+    assertThat(INET4_PUBLIC_ADDRESS.isSiteLocalAddress()).isFalse();
+    assertThat(INET4_SITE_LOCAL_ADDRESS.isSiteLocalAddress()).isTrue();
 
-    assertThat(INET6_LINK_LOCAL_ADDRESS.isLinkLocalAddress(), is(true));
-    assertThat(INET6_PUBLIC_ADDRESS.isLinkLocalAddress(), is(false));
-    assertThat(INET6_PUBLIC_ADDRESS.isSiteLocalAddress(), is(false));
-    assertThat(INET6_SITE_LOCAL_ADDRESS.isSiteLocalAddress(), is(true));
+    assertThat(INET6_LINK_LOCAL_ADDRESS.isLinkLocalAddress()).isTrue();
+    assertThat(INET6_PUBLIC_ADDRESS.isLinkLocalAddress()).isFalse();
+    assertThat(INET6_PUBLIC_ADDRESS.isSiteLocalAddress()).isFalse();
+    assertThat(INET6_SITE_LOCAL_ADDRESS.isSiteLocalAddress()).isTrue();
   }
 
   @Nested
@@ -84,50 +83,42 @@ final class IpFinderTest {
 
     @Test
     void shouldSelectInet4PublicAddressBeforeInet6PublicAddress() {
-      assertThat(
-          selectInetAddress(INET6_PUBLIC_ADDRESS, INET4_PUBLIC_ADDRESS), is(INET4_PUBLIC_ADDRESS));
-      assertThat(
-          selectInetAddress(INET4_PUBLIC_ADDRESS, INET6_PUBLIC_ADDRESS), is(INET4_PUBLIC_ADDRESS));
+      assertThat(selectInetAddress(INET6_PUBLIC_ADDRESS, INET4_PUBLIC_ADDRESS))
+          .isEqualTo(INET4_PUBLIC_ADDRESS);
+      assertThat(selectInetAddress(INET4_PUBLIC_ADDRESS, INET6_PUBLIC_ADDRESS))
+          .isEqualTo(INET4_PUBLIC_ADDRESS);
     }
 
     @Test
     void shouldSelectInet6PublicAddressBeforeInet4LinkLocalAddress() {
-      assertThat(
-          selectInetAddress(INET4_LINK_LOCAL_ADDRESS, INET6_PUBLIC_ADDRESS),
-          is(INET6_PUBLIC_ADDRESS));
-      assertThat(
-          selectInetAddress(INET6_PUBLIC_ADDRESS, INET4_LINK_LOCAL_ADDRESS),
-          is(INET6_PUBLIC_ADDRESS));
+      assertThat(selectInetAddress(INET4_LINK_LOCAL_ADDRESS, INET6_PUBLIC_ADDRESS))
+          .isEqualTo(INET6_PUBLIC_ADDRESS);
+      assertThat(selectInetAddress(INET6_PUBLIC_ADDRESS, INET4_LINK_LOCAL_ADDRESS))
+          .isEqualTo(INET6_PUBLIC_ADDRESS);
     }
 
     @Test
     void shouldSelectInet6PublicAddressBeforeInet4SiteLocalAddress() {
-      assertThat(
-          selectInetAddress(INET4_SITE_LOCAL_ADDRESS, INET6_PUBLIC_ADDRESS),
-          is(INET6_PUBLIC_ADDRESS));
-      assertThat(
-          selectInetAddress(INET6_PUBLIC_ADDRESS, INET4_SITE_LOCAL_ADDRESS),
-          is(INET6_PUBLIC_ADDRESS));
+      assertThat(selectInetAddress(INET4_SITE_LOCAL_ADDRESS, INET6_PUBLIC_ADDRESS))
+          .isEqualTo(INET6_PUBLIC_ADDRESS);
+      assertThat(selectInetAddress(INET6_PUBLIC_ADDRESS, INET4_SITE_LOCAL_ADDRESS))
+          .isEqualTo(INET6_PUBLIC_ADDRESS);
     }
 
     @Test
     void shouldSelectInet4SiteLocalAddressBeforeInet4LinkLocalAddress() {
-      assertThat(
-          selectInetAddress(INET4_LINK_LOCAL_ADDRESS, INET4_SITE_LOCAL_ADDRESS),
-          is(INET4_SITE_LOCAL_ADDRESS));
-      assertThat(
-          selectInetAddress(INET4_SITE_LOCAL_ADDRESS, INET4_LINK_LOCAL_ADDRESS),
-          is(INET4_SITE_LOCAL_ADDRESS));
+      assertThat(selectInetAddress(INET4_LINK_LOCAL_ADDRESS, INET4_SITE_LOCAL_ADDRESS))
+          .isEqualTo(INET4_SITE_LOCAL_ADDRESS);
+      assertThat(selectInetAddress(INET4_SITE_LOCAL_ADDRESS, INET4_LINK_LOCAL_ADDRESS))
+          .isEqualTo(INET4_SITE_LOCAL_ADDRESS);
     }
 
     @Test
     void shouldSelectInet6SiteLocalAddressBeforeInet6LinkLocalAddress() {
-      assertThat(
-          selectInetAddress(INET6_LINK_LOCAL_ADDRESS, INET6_SITE_LOCAL_ADDRESS),
-          is(INET6_SITE_LOCAL_ADDRESS));
-      assertThat(
-          selectInetAddress(INET6_SITE_LOCAL_ADDRESS, INET6_LINK_LOCAL_ADDRESS),
-          is(INET6_SITE_LOCAL_ADDRESS));
+      assertThat(selectInetAddress(INET6_LINK_LOCAL_ADDRESS, INET6_SITE_LOCAL_ADDRESS))
+          .isEqualTo(INET6_SITE_LOCAL_ADDRESS);
+      assertThat(selectInetAddress(INET6_SITE_LOCAL_ADDRESS, INET6_LINK_LOCAL_ADDRESS))
+          .isEqualTo(INET6_SITE_LOCAL_ADDRESS);
     }
   }
 }

@@ -1,7 +1,6 @@
 package games.strategy.engine.lobby.moderator.toolbox.tabs.access.log;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -79,7 +78,7 @@ class AccessLogTabModelTest {
 
     final List<List<String>> tableData = accessLogTabModel.fetchTableData(PAGING_PARAMS);
 
-    assertThat(tableData, hasSize(2));
+    assertThat(tableData).hasSize(2);
 
     ToolboxTabModelTestUtil.verifyTableDimensions(tableData, AccessLogTabModel.fetchTableHeaders());
 

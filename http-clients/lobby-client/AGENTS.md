@@ -152,7 +152,7 @@ Facade combining `HttpLobbyClient` + `LobbyWatcherClient` + WebSocket on `Websoc
 
 ## Tests
 
-Tests use JUnit 5 with Hamcrest matchers. Key test classes:
+Tests use JUnit 5 with AssertJ assertions. Key test classes:
 - `BanDurationFormatterTest` — parameterized tests for duration formatting
 - `ErrorReportRequestTest` — version string parsing regex validation
 - `ChatReceivedMessageTest` — message truncation at 240-char boundary

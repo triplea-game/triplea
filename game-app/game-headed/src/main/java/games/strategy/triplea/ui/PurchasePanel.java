@@ -18,6 +18,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.panels.map.MapPanel;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
+import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -132,14 +133,16 @@ public class PurchasePanel extends ActionPanel {
           purchasedUnits.setUnitsFromProductionRuleMap(new IntegerMap<>(), gamePlayer);
           add(SwingComponents.leftBox(purchasedUnits));
 
+          final Collection<Unit> playerUnits;
           try (GameData.Unlocker ignored = getData().acquireReadLock()) {
-            purchasedPreviousRoundsUnits.setUnits(gamePlayer.getUnits());
-            add(Box.createVerticalStrut(4));
-            if (!gamePlayer.getUnitCollection().isEmpty()) {
-              add(SwingComponents.leftBox(purchasedPreviousRoundsLabel));
-            }
-            add(SwingComponents.leftBox(purchasedPreviousRoundsUnits));
+            playerUnits = List.copyOf(gamePlayer.getUnits());
           }
+          purchasedPreviousRoundsUnits.setUnits(playerUnits);
+          add(Box.createVerticalStrut(4));
+          if (!playerUnits.isEmpty()) {
+            add(SwingComponents.leftBox(purchasedPreviousRoundsLabel));
+          }
+          add(SwingComponents.leftBox(purchasedPreviousRoundsUnits));
           add(Box.createVerticalGlue());
           refresh.run();
         });

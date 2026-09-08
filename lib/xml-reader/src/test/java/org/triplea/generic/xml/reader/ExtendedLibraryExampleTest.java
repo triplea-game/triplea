@@ -1,9 +1,6 @@
 package org.triplea.generic.xml.reader;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import lombok.Getter;
@@ -78,35 +75,35 @@ public class ExtendedLibraryExampleTest extends AbstractXmlMapperTest {
   @Test
   void verifyExtendedExample() throws Exception {
     final Library library = xmlMapper.mapXmlToObject(Library.class);
-    assertThat(library, is(notNullValue()));
+    assertThat(library).isNotNull();
 
-    assertThat(library.name, is(notNullValue()));
-    assertThat(library.name.libraryName, is("Central Library"));
+    assertThat(library.name).isNotNull();
+    assertThat(library.name.libraryName).isEqualTo("Central Library");
 
-    assertThat(library.mostRead, is(notNullValue()));
-    assertThat(library.mostRead.magazine, is(notNullValue()));
-    assertThat(library.mostRead.magazine.title, is("War Gaming"));
-    assertThat(library.mostRead.magazine.isbn, is("123"));
-    assertThat(library.mostRead.book, is(notNullValue()));
-    assertThat(library.mostRead.book.title, is("Strategy"));
-    assertThat(library.mostRead.book.isbn, is("789"));
+    assertThat(library.mostRead).isNotNull();
+    assertThat(library.mostRead.magazine).isNotNull();
+    assertThat(library.mostRead.magazine.title).isEqualTo("War Gaming");
+    assertThat(library.mostRead.magazine.isbn).isEqualTo("123");
+    assertThat(library.mostRead.book).isNotNull();
+    assertThat(library.mostRead.book.title).isEqualTo("Strategy");
+    assertThat(library.mostRead.book.isbn).isEqualTo("789");
 
-    assertThat(library.inventory, is(notNullValue()));
-    assertThat(library.inventory.books, hasSize(2));
-    assertThat(library.inventory.books.get(0).name, is("Crossing the Atlantic"));
-    assertThat(library.inventory.books.get(1).name, is("The Battle of the Bulge"));
+    assertThat(library.inventory).isNotNull();
+    assertThat(library.inventory.books).hasSize(2);
+    assertThat(library.inventory.books.get(0).name).isEqualTo("Crossing the Atlantic");
+    assertThat(library.inventory.books.get(1).name).isEqualTo("The Battle of the Bulge");
 
-    assertThat(library.inventory.cdrom, is(notNullValue()));
-    assertThat(library.inventory.cdrom.name, is("Pacific Conflict"));
+    assertThat(library.inventory.cdrom).isNotNull();
+    assertThat(library.inventory.cdrom.name).isEqualTo("Pacific Conflict");
 
-    assertThat(library.inventory.gaming, is(notNullValue()));
-    assertThat(library.inventory.gaming.dvds, is(notNullValue()));
-    assertThat(library.inventory.gaming.dvds, hasSize(2));
-    assertThat(library.inventory.gaming.dvds.get(0).name, is("How to Win Revised"));
-    assertThat(library.inventory.gaming.dvds.get(1).name, is("Game of TripleA"));
+    assertThat(library.inventory.gaming).isNotNull();
+    assertThat(library.inventory.gaming.dvds).isNotNull();
+    assertThat(library.inventory.gaming.dvds).hasSize(2);
+    assertThat(library.inventory.gaming.dvds.get(0).name).isEqualTo("How to Win Revised");
+    assertThat(library.inventory.gaming.dvds.get(1).name).isEqualTo("Game of TripleA");
 
-    assertThat(library.inventory.gaming.bluRays, is(notNullValue()));
-    assertThat(library.inventory.gaming.bluRays, hasSize(1));
-    assertThat(library.inventory.gaming.bluRays.get(0).name, is("NWO Lebowski"));
+    assertThat(library.inventory.gaming.bluRays).isNotNull();
+    assertThat(library.inventory.gaming.bluRays).hasSize(1);
+    assertThat(library.inventory.gaming.bluRays.get(0).name).isEqualTo("NWO Lebowski");
   }
 }

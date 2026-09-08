@@ -6,6 +6,5 @@ description = "Test utility library, generic test utilities useful for TripleA p
 
 dependencies {
     implementation(libs.jackson.datatype.jsr310)
-    implementation(libs.hamcrest)
     implementation(libs.junit.jupiter.api)
 }

@@ -214,23 +214,32 @@ public abstract class AbstractMovePanel extends ActionPanel {
   /** Subclasses method for undo handling. */
   protected abstract void undoMoveSpecific();
 
-  final void cleanUp() {
-    SwingUtilities.invokeLater(
-        () -> {
-          if (!listening) {
-            throw new IllegalStateException("Not listening");
-          }
-          listening = false;
-          cleanUpSpecific();
-          playerBridge = null;
-          disableCancelButton();
-          removeAll();
-          refresh.run();
-        });
+  public final MoveDescription waitForMove(final PlayerBridge bridge) {
+    setUpOffEdt(bridge);
+    waitForRelease();
+    cleanUpOffEdt();
+    final MoveDescription returnValue = moveMessage;
+    moveMessage = null;
+    return returnValue;
   }
 
-  /** Subclasses method for clean-up */
-  protected abstract void cleanUpSpecific();
+  protected final void setUpOffEdt(final PlayerBridge bridge) {
+    SwingUtilities.invokeLater(
+        () -> {
+          setUpSpecific();
+          this.playerBridge = bridge;
+          AsyncRunner.runAsync(this::updateMoves)
+              .exceptionally(e -> log.warn("Failed to receive move updates", e));
+
+          if (listening) {
+            throw new IllegalStateException("Not listening");
+          }
+          listening = true;
+          if (getRootPane() != null) {
+            SwingKeyBinding.addKeyBinding(getRootPane(), KeyCode.ESCAPE, this::cancelMove);
+          }
+        });
+  }
 
   @Override
   public final void setActive(final boolean active) {
@@ -277,33 +286,24 @@ public abstract class AbstractMovePanel extends ActionPanel {
     return movedUnitsPanel;
   }
 
-  protected final void setUp(final PlayerBridge bridge) {
+  final void cleanUpOffEdt() {
     SwingUtilities.invokeLater(
         () -> {
-          setUpSpecific();
-          this.playerBridge = bridge;
-          AsyncRunner.runAsync(this::updateMoves)
-              .exceptionally(e -> log.warn("Failed to receive move updates", e));
-
-          if (listening) {
+          if (!listening) {
             throw new IllegalStateException("Not listening");
           }
-          listening = true;
-          if (getRootPane() != null) {
-            SwingKeyBinding.addKeyBinding(getRootPane(), KeyCode.ESCAPE, this::cancelMove);
-          }
+          listening = false;
+          cleanUpSpecific();
+          playerBridge = null;
+          disableCancelButton();
+          removeAll();
+          refresh.run();
         });
   }
 
   /** Subclasses method for set-up */
   protected abstract void setUpSpecific();
 
-  public final MoveDescription waitForMove(final PlayerBridge bridge) {
-    setUp(bridge);
-    waitForRelease();
-    cleanUp();
-    final MoveDescription returnValue = moveMessage;
-    moveMessage = null;
-    return returnValue;
-  }
+  /** Subclasses method for cleanup */
+  protected abstract void cleanUpSpecific();
 }

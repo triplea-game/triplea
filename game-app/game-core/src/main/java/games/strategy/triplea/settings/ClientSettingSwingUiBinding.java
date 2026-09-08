@@ -277,6 +277,16 @@ All players in the same game must have it set to the same value. Restart to full
     }
   },
 
+  DO_NOT_REDRAW_MAP(
+      "Do Not Redraw Map",
+      SettingType.TESTING,
+      "Toggles whether to completely redraw the map when a technology is discovered. Default is fully redraw. No redraw makes the \"flash\" you see disappear when a tech is added.") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return booleanRadioButtons(ClientSetting.doNotRedrawMap);
+    }
+  },
+
   LOBBY_URI_OVERRIDE_BINDING("Lobby URI Override", SettingType.TESTING, "Overrides the lobby URI") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {

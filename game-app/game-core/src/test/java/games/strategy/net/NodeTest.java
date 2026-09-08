@@ -1,7 +1,6 @@
 package games.strategy.net;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.InetSocketAddress;
 import org.jetbrains.annotations.NonNls;
@@ -20,10 +19,10 @@ class NodeTest {
   void verifyConstructionUsingInetSocketAddress() {
     final Node node = new Node(NAME, InetSocketAddress.createUnresolved(IP, PORT));
 
-    assertThat(node.getName(), is(NAME));
-    assertThat(node.getAddress(), is(IpAddressParser.fromString(IP)));
-    assertThat(node.getIpAddress(), is(IP));
-    assertThat(node.getPort(), is(PORT));
+    assertThat(node.getName()).isEqualTo(NAME);
+    assertThat(node.getAddress()).isEqualTo(IpAddressParser.fromString(IP));
+    assertThat(node.getIpAddress()).isEqualTo(IP);
+    assertThat(node.getPort()).isEqualTo(PORT);
   }
 
   @Test
@@ -31,7 +30,7 @@ class NodeTest {
   void verifyConstructionUsingHostName() {
     final Node node = new Node(NAME, InetSocketAddress.createUnresolved("localhost", PORT));
 
-    assertThat(node.getAddress(), is(IpAddressParser.fromString("localhost")));
+    assertThat(node.getAddress()).isEqualTo(IpAddressParser.fromString("localhost"));
   }
 
   @Test
@@ -40,7 +39,7 @@ class NodeTest {
     final InetSocketAddress address =
         new Node(NAME, InetSocketAddress.createUnresolved(IP, PORT)).getSocketAddress();
 
-    assertThat(address.getAddress(), is(IpAddressParser.fromString(IP)));
-    assertThat(address.getPort(), is(PORT));
+    assertThat(address.getAddress()).isEqualTo(IpAddressParser.fromString(IP));
+    assertThat(address.getPort()).isEqualTo(PORT);
   }
 }

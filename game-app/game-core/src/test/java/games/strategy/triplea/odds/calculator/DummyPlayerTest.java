@@ -1,12 +1,7 @@
 package games.strategy.triplea.odds.calculator;
 
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNull.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -53,8 +48,8 @@ class DummyPlayerTest {
     }
 
     private void assertCommonCasualtyDetails(final CasualtyDetails details) {
-      assertThat(details.getDamaged(), is(damaged));
-      assertThat(details.getAutoCalculated(), is(false));
+      assertThat(details.getDamaged()).isEqualTo(damaged);
+      assertThat(details.getAutoCalculated()).isFalse();
     }
 
     @Nested
@@ -100,9 +95,9 @@ class DummyPlayerTest {
                 null,
                 null,
                 false);
-        assertThat(details.getDamaged(), is(damaged));
-        assertThat(details.getKilled(), is(List.of(unitPool.get(1), unitPool.get(2))));
-        assertThat(details.getAutoCalculated(), is(false));
+        assertThat(details.getDamaged()).isEqualTo(damaged);
+        assertThat(details.getKilled()).isEqualTo(List.of(unitPool.get(1), unitPool.get(2)));
+        assertThat(details.getAutoCalculated()).isFalse();
       }
 
       /**
@@ -131,7 +126,7 @@ class DummyPlayerTest {
                 null,
                 false);
         assertCommonCasualtyDetails(details);
-        assertThat(details.getKilled(), is(List.of(unitPool.get(2), unitPool.get(0))));
+        assertThat(details.getKilled()).isEqualTo(List.of(unitPool.get(2), unitPool.get(0)));
       }
     }
 
@@ -159,7 +154,7 @@ class DummyPlayerTest {
               null,
               false);
       assertCommonCasualtyDetails(details);
-      assertThat(details.getKilled(), is(killed));
+      assertThat(details.getKilled()).isEqualTo(killed);
     }
 
     /**
@@ -188,7 +183,7 @@ class DummyPlayerTest {
               null,
               false);
       assertCommonCasualtyDetails(details);
-      assertThat(details.getKilled(), is(List.of(unitPool.get(2), unitPool.get(0))));
+      assertThat(details.getKilled()).isEqualTo(List.of(unitPool.get(2), unitPool.get(0)));
     }
 
     /**
@@ -217,7 +212,7 @@ class DummyPlayerTest {
               null,
               false);
       assertCommonCasualtyDetails(details);
-      assertThat(details.getKilled(), is(List.of(unitPool.get(0), unitPool.get(1))));
+      assertThat(details.getKilled()).isEqualTo(List.of(unitPool.get(0), unitPool.get(1)));
     }
   }
 
@@ -246,32 +241,32 @@ class DummyPlayerTest {
 
     @Test
     void getOurUnits() {
-      assertThat(attacker.getOurUnits(), is(nullValue()));
-      assertThat(defender.getOurUnits(), is(nullValue()));
+      assertThat(attacker.getOurUnits()).isNull();
+      assertThat(defender.getOurUnits()).isNull();
 
       when(bridge.getBattle()).thenReturn(battle);
 
-      assertThat(attacker.getOurUnits(), is(equalTo(attackers)));
-      assertThat(defender.getOurUnits(), is(equalTo(defenders)));
+      assertThat(attacker.getOurUnits()).isEqualTo(attackers);
+      assertThat(defender.getOurUnits()).isEqualTo(defenders);
 
       // Test if we get a copy
-      assertThat(attacker.getOurUnits(), is(not(sameInstance(attackers))));
-      assertThat(defender.getOurUnits(), is(not(sameInstance(defenders))));
+      assertThat(attacker.getOurUnits()).isNotSameAs(attackers);
+      assertThat(defender.getOurUnits()).isNotSameAs(defenders);
     }
 
     @Test
     void getEnemyUnits() {
-      assertThat(attacker.getEnemyUnits(), is(nullValue()));
-      assertThat(defender.getEnemyUnits(), is(nullValue()));
+      assertThat(attacker.getEnemyUnits()).isNull();
+      assertThat(defender.getEnemyUnits()).isNull();
 
       when(bridge.getBattle()).thenReturn(battle);
 
-      assertThat(attacker.getEnemyUnits(), is(equalTo(defenders)));
-      assertThat(defender.getEnemyUnits(), is(equalTo(attackers)));
+      assertThat(attacker.getEnemyUnits()).isEqualTo(defenders);
+      assertThat(defender.getEnemyUnits()).isEqualTo(attackers);
 
       // Test if we get a copy
-      assertThat(attacker.getEnemyUnits(), is(not(sameInstance(defenders))));
-      assertThat(defender.getEnemyUnits(), is(not(sameInstance(attackers))));
+      assertThat(attacker.getEnemyUnits()).isNotSameAs(defenders);
+      assertThat(defender.getEnemyUnits()).isNotSameAs(attackers);
     }
   }
 }

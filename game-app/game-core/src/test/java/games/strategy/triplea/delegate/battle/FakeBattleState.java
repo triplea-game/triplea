@@ -10,6 +10,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.delegate.IDelegateBridge;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -183,6 +184,9 @@ public class FakeBattleState implements BattleState {
   public Optional<String> findStepNameForFiringUnits(final Collection<Unit> firingUnits) {
     return Optional.empty();
   }
+
+  @Override
+  public void refreshStepStringsAndNotifyDisplay(final IDelegateBridge bridge) {}
 
   public static FakeBattleState.FakeBattleStateBuilder givenBattleStateBuilder(
       final GamePlayer attacker, final GamePlayer defender) {

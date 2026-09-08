@@ -1,8 +1,6 @@
 package org.triplea.swing;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.sameInstance;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -19,22 +17,22 @@ final class JScrollPaneBuilderTest {
 
     final JScrollPane scrollPane = builder.border(border).build();
 
-    assertThat(scrollPane.getBorder(), is(sameInstance(border)));
+    assertThat(scrollPane.getBorder()).isSameAs(border);
   }
 
   @Test
   void maxSize() {
     final JScrollPane scrollPane = builder.maxSize(100, 200).build();
 
-    assertThat(scrollPane.getMaximumSize().width, is(100));
-    assertThat(scrollPane.getMaximumSize().height, is(200));
+    assertThat(scrollPane.getMaximumSize().width).isEqualTo(100);
+    assertThat(scrollPane.getMaximumSize().height).isEqualTo(200);
   }
 
   @Test
   void preferredSize() {
     final JScrollPane scrollPane = builder.preferredSize(300, 500).build();
 
-    assertThat(scrollPane.getPreferredSize().width, is(300));
-    assertThat(scrollPane.getPreferredSize().height, is(500));
+    assertThat(scrollPane.getPreferredSize().width).isEqualTo(300);
+    assertThat(scrollPane.getPreferredSize().height).isEqualTo(500);
   }
 }

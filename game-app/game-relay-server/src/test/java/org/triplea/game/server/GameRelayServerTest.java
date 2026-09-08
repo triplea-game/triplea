@@ -1,8 +1,6 @@
 package org.triplea.game.server;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.URI;
 import java.time.Duration;
@@ -52,8 +50,8 @@ class GameRelayServerTest {
     webSocketClient.sendMessage(new SampleMessage("test message"));
 
     Awaitility.await().atMost(Duration.ofSeconds(3)).until(() -> !receivedMessages.isEmpty());
-    assertThat(receivedMessages.get(0).getContents(), is("test message"));
-    assertThat(receivedMessages, hasSize(1));
+    assertThat(receivedMessages.get(0).getContents()).isEqualTo("test message");
+    assertThat(receivedMessages).hasSize(1);
   }
 
   private GenericWebSocketClient createClientWithReceivedMessageQueue(
@@ -90,8 +88,8 @@ class GameRelayServerTest {
                     && !receivedMessages2.isEmpty()
                     && !receivedMessages3.isEmpty());
 
-    assertThat(receivedMessages1, hasSize(1));
-    assertThat(receivedMessages2, hasSize(1));
-    assertThat(receivedMessages3, hasSize(1));
+    assertThat(receivedMessages1).hasSize(1);
+    assertThat(receivedMessages2).hasSize(1);
+    assertThat(receivedMessages3).hasSize(1);
   }
 }

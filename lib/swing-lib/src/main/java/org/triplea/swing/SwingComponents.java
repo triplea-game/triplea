@@ -11,8 +11,6 @@ import java.awt.Window;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
@@ -44,6 +42,7 @@ import javax.swing.UIManager;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.experimental.UtilityClass;
+import org.intellij.lang.annotations.MagicConstant;
 import org.triplea.awt.OpenFileUtility;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
@@ -152,10 +151,6 @@ public final class SwingComponents {
     }
   }
 
-  public static void newMessageDialog(final Component parent, final String msg) {
-    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(parent, msg));
-  }
-
   /**
    * Executes the specified action when the specified window is in the process of being closed.
    *
@@ -166,13 +161,7 @@ public final class SwingComponents {
     checkNotNull(window);
     checkNotNull(action);
 
-    window.addWindowListener(
-        new WindowAdapter() {
-          @Override
-          public void windowClosing(final WindowEvent e) {
-            action.run();
-          }
-        });
+    window.addWindowListener(WindowAdapterFactory.closing(action));
   }
 
   /**
@@ -185,13 +174,7 @@ public final class SwingComponents {
     checkNotNull(window);
     checkNotNull(action);
 
-    window.addWindowListener(
-        new WindowAdapter() {
-          @Override
-          public void windowClosed(final WindowEvent e) {
-            action.run();
-          }
-        });
+    window.addWindowListener(WindowAdapterFactory.activatedAndClosed(null, action));
   }
 
   /**
@@ -239,12 +222,6 @@ public final class SwingComponents {
         "Open external URL?", msg, () -> OpenFileUtility.openUrl(parentComponent, url));
   }
 
-  public static void showDialog(final Component parent, final String title, final String message) {
-    SwingUtilities.invokeLater(
-        () ->
-            JOptionPane.showMessageDialog(parent, message, title, JOptionPane.INFORMATION_MESSAGE));
-  }
-
   /**
    * Flag for file selection component, whether to allow selection of files only or folders only.
    */
@@ -253,12 +230,66 @@ public final class SwingComponents {
     DIRECTORIES
   }
 
+  public static void setFrameFromComponentVisible(Component component) {
+    SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(component).setVisible(true));
+  }
+
+  public static void newMessageDialog(final Component parent, final String msg) {
+    showDialog(
+        parent, msg, UIManager.getString("OptionPane.messageDialogTitle", parent.getLocale()));
+  }
+
+  public static void showDialog(final Component parent, final String title, final String message) {
+    showMessage(parent, message, title, JOptionPane.INFORMATION_MESSAGE);
+  }
+
+  private static void showMessage(
+      final Component parentWindow,
+      final String title,
+      final String message,
+      @MagicConstant(
+              intValues = {
+                JOptionPane.ERROR_MESSAGE,
+                JOptionPane.INFORMATION_MESSAGE,
+                JOptionPane.WARNING_MESSAGE,
+                JOptionPane.QUESTION_MESSAGE,
+                JOptionPane.PLAIN_MESSAGE
+              })
+          int messageType) {
+    SwingUtilities.invokeLater(
+        () -> JOptionPane.showMessageDialog(parentWindow, message, title, messageType));
+  }
+
+  public static void showWarning(
+      final Component parentWindow, final String title, final String message) {
+    showMessage(parentWindow, message, title, JOptionPane.WARNING_MESSAGE);
+  }
+
+  public static void showError(
+      final Component parentWindow, final String title, final String message) {
+    showMessage(parentWindow, message, title, JOptionPane.ERROR_MESSAGE);
+  }
+
+  /** Displays a pop-up dialog with clickable HTML links. */
+  public static void showDialogWithLinks(final DialogWithLinksParams params) {
+    final JEditorPane editorPane = new JEditorPaneWithClickableLinks(params.dialogText);
+
+    final JPanel messageToShow = new JPanelBuilder().border(10).add(editorPane).build();
+
+    // parentComponent == null to avoid pop-up from appearing behind other windows
+    showMessage(
+        null,
+        messageToShow.toString(),
+        params.title,
+        Optional.ofNullable(params.dialogType).orElse(DialogWithLinksTypes.INFO).optionPaneFlag);
+  }
+
   /**
    * Shows a dialog the user can use to select a folder or file.
    *
    * @param folderSelectionMode Flag controlling whether files or folders are available for
    *     selection.
-   * @return Empty if the user selects nothing, otherwise the users selection.
+   * @return Empty if the user selects nothing, otherwise the user's selection.
    */
   public static Optional<Path> showJFileChooser(final FolderSelectionMode folderSelectionMode) {
     return showJFileChooser(newJFileChooser(folderSelectionMode));
@@ -341,37 +372,12 @@ public final class SwingComponents {
     return b;
   }
 
-  public static void showError(
-      final Component parentWindow, final String title, final String message) {
-    SwingUtilities.invokeLater(
-        () ->
-            JOptionPane.showMessageDialog(parentWindow, message, title, JOptionPane.ERROR_MESSAGE));
-  }
-
-  /** Displays a pop-up dialog with clickable HTML links. */
-  public static void showDialogWithLinks(final DialogWithLinksParams params) {
-    final JEditorPane editorPane = new JEditorPaneWithClickableLinks(params.dialogText);
-
-    final JPanel messageToShow = new JPanelBuilder().border(10).add(editorPane).build();
-
-    // parentComponent == null to avoid pop-up from appearing behind other windows
-    final Component parentComponent = null;
-    SwingUtilities.invokeLater(
-        () ->
-            JOptionPane.showMessageDialog(
-                parentComponent,
-                messageToShow,
-                params.title,
-                Optional.ofNullable(params.dialogType)
-                    .orElse(DialogWithLinksTypes.INFO)
-                    .optionPaneFlag));
-  }
-
-  @Builder
-  public static class DialogWithLinksParams {
-    @Nonnull private final String title;
-    @Nonnull private final String dialogText;
-    private DialogWithLinksTypes dialogType;
+  /**
+   * Checks if the current font can display a given character. Not all fonts can display all Unicode
+   * characters. EG: not all fonts can display '►'.
+   */
+  public static boolean canDisplayCharacter(final char character) {
+    return new JLabel().getFont().canDisplay(character);
   }
 
   @AllArgsConstructor
@@ -379,15 +385,15 @@ public final class SwingComponents {
     INFO(JOptionPane.INFORMATION_MESSAGE),
     ERROR(JOptionPane.ERROR_MESSAGE);
 
+    @MagicConstant(intValues = {JOptionPane.ERROR_MESSAGE, JOptionPane.INFORMATION_MESSAGE})
     private final int optionPaneFlag;
   }
 
-  /**
-   * Checks if the current font can display a given character. Not all fonts can display all unicode
-   * characters. EG: not all fonts can display '►'.
-   */
-  public static boolean canDisplayCharacter(final char character) {
-    return new JLabel().getFont().canDisplay(character);
+  @Builder
+  public static class DialogWithLinksParams {
+    @Nonnull private final String title;
+    @Nonnull private final String dialogText;
+    private DialogWithLinksTypes dialogType;
   }
 
   /** Whether the current look and feel is the platform "native" one. */

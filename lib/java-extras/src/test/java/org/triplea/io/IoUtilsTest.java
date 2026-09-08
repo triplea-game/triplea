@@ -1,7 +1,6 @@
 package org.triplea.io;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
@@ -23,8 +22,8 @@ final class IoUtilsTest {
   private void thenStreamContainsExpectedBytes(final InputStream is) throws Exception {
     final byte[] bytesRead = new byte[bytes.length];
     is.read(bytesRead, 0, bytesRead.length);
-    assertThat(bytesRead, is(bytes));
-    assertThat(is.read(), is(-1));
+    assertThat(bytesRead).isEqualTo(bytes);
+    assertThat(is.read()).isEqualTo(-1);
   }
 
   @Test
@@ -51,11 +50,12 @@ final class IoUtilsTest {
   void readFromMemoryShouldReturnFunctionResult() throws Exception {
     final Object result = new Object();
 
-    assertThat(IoUtils.readFromMemory(bytes, is -> result), is(result));
+    final Object actual = IoUtils.readFromMemory(bytes, is -> result);
+    assertThat(actual).isEqualTo(result);
   }
 
   @Test
   void writeToMemoryShouldReturnBytesWrittenByConsumer() throws Exception {
-    assertThat(IoUtils.writeToMemory(os -> os.write(bytes)), is(bytes));
+    assertThat(IoUtils.writeToMemory(os -> os.write(bytes))).isEqualTo(bytes);
   }
 }

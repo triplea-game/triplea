@@ -1,7 +1,6 @@
 package org.triplea.http.client.error.report;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,7 +21,7 @@ class ErrorReportRequestTest {
             .build();
     String result = errorReportRequest.getSimpleGameVersion();
 
-    assertThat(result, is(expectedOutput));
+    assertThat(result).isEqualTo(expectedOutput);
   }
 
   @SuppressWarnings("unused")

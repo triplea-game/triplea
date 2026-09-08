@@ -512,7 +512,8 @@ public class BattleTracker implements Serializable {
       // if we have a preceding battle, then we must use a non-fighting-battle
       // if we have scrambling on, and this is an amphibious attack,
       // we may wish to scramble to kill the transports, so must use non-fighting-battle also
-      if (precede != null || (scramblingEnabled && route.isUnload() && route.hasExactlyOneStep())) {
+      if (precede != null
+          || (scramblingEnabled && route.isSeaUnload() && route.hasExactlyOneStep())) {
         IBattle nonFight = getPendingBattle(route.getEnd(), BattleType.NORMAL);
         if (nonFight == null) {
           nonFight = new NonFightingBattle(route.getEnd(), gamePlayer, this, data);
@@ -1133,7 +1134,7 @@ public class BattleTracker implements Serializable {
   }
 
   private IBattle getDependentAmphibiousAssault(final Route route) {
-    if (!route.isUnload()) {
+    if (!route.isSeaUnload()) {
       return null;
     }
     return getPendingBattle(route.getStart(), BattleType.NORMAL);

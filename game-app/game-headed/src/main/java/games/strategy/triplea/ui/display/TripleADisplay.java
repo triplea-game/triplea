@@ -166,7 +166,7 @@ public class TripleADisplay implements IDisplay {
         return;
       }
     }
-    ui.notifyMessage(message, title);
+    ui.notifyMessageOffEdt(message, title);
   }
 
   @Override
@@ -193,7 +193,7 @@ public class TripleADisplay implements IDisplay {
       }
     }
     if (isPlaying) {
-      ui.notifyMessage(message, title);
+      ui.notifyMessageOffEdt(message, title);
     }
   }
 }

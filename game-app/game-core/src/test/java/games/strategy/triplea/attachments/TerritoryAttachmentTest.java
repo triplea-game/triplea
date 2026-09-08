@@ -1,9 +1,6 @@
 package games.strategy.triplea.attachments;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -35,16 +32,15 @@ final class TerritoryAttachmentTest {
 
     @Test
     void shouldReturnEmptyCollectionWhenZeroCaptureOwnershipChangesExist() {
-      assertThat(territoryAttachment.getCaptureOwnershipChanges(), is(empty()));
+      assertThat(territoryAttachment.getCaptureOwnershipChanges()).isEmpty();
     }
 
     @Test
     void shouldReturnCollectionOfSizeOneWhenOneCaptureOwnershipChangeExists() throws Exception {
       territoryAttachment.setWhenCapturedByGoesTo(join(player1.getName(), player2.getName()));
 
-      assertThat(
-          territoryAttachment.getCaptureOwnershipChanges(),
-          contains(new TerritoryAttachment.CaptureOwnershipChange(player1, player2)));
+      assertThat(territoryAttachment.getCaptureOwnershipChanges())
+          .containsExactly(new TerritoryAttachment.CaptureOwnershipChange(player1, player2));
     }
 
     @Test
@@ -52,11 +48,10 @@ final class TerritoryAttachmentTest {
       territoryAttachment.setWhenCapturedByGoesTo(join(player1.getName(), player3.getName()));
       territoryAttachment.setWhenCapturedByGoesTo(join(player2.getName(), player3.getName()));
 
-      assertThat(
-          territoryAttachment.getCaptureOwnershipChanges(),
-          contains(
+      assertThat(territoryAttachment.getCaptureOwnershipChanges())
+          .containsExactly(
               new TerritoryAttachment.CaptureOwnershipChange(player1, player3),
-              new TerritoryAttachment.CaptureOwnershipChange(player2, player3)));
+              new TerritoryAttachment.CaptureOwnershipChange(player2, player3));
     }
   }
 

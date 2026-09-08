@@ -1,8 +1,6 @@
 package org.triplea.map.data.elements;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.triplea.map.data.elements.GamePlay.Offset;
 import static org.triplea.map.data.elements.GamePlay.Sequence;
 import static org.triplea.map.data.elements.XmlReaderTestUtils.parseMapXml;
@@ -18,38 +16,38 @@ class GamePlayTest {
   void readGamePlayTag() {
     final GamePlay gamePlay = parseMapXml("game-play.xml").getGamePlay();
     final List<Delegate> delegates = gamePlay.getDelegates();
-    assertThat(delegates, hasSize(2));
-    assertThat(delegates.get(0).getName(), is("delegate1"));
-    assertThat(delegates.get(0).getJavaClass(), is("javaDelegate1"));
-    assertThat(delegates.get(0).getDisplay(), is("display1"));
+    assertThat(delegates).hasSize(2);
+    assertThat(delegates.get(0).getName()).isEqualTo("delegate1");
+    assertThat(delegates.get(0).getJavaClass()).isEqualTo("javaDelegate1");
+    assertThat(delegates.get(0).getDisplay()).isEqualTo("display1");
 
-    assertThat(delegates.get(1).getName(), is("delegate2"));
-    assertThat(delegates.get(1).getJavaClass(), is("javaDelegate2"));
+    assertThat(delegates.get(1).getName()).isEqualTo("delegate2");
+    assertThat(delegates.get(1).getJavaClass()).isEqualTo("javaDelegate2");
 
     final Sequence sequence = gamePlay.getSequence();
     final List<Step> steps = sequence.getSteps();
-    assertThat(steps, hasSize(3));
-    assertThat(steps.get(0).getName(), is("step1"));
-    assertThat(steps.get(0).getDelegate(), is("stepDelegate1"));
-    assertThat(steps.get(0).getPlayer(), is("player1"));
-    assertThat(steps.get(0).getMaxRunCount(), is(1));
-    assertThat(steps.get(0).getDisplay(), is("stepDisplay"));
+    assertThat(steps).hasSize(3);
+    assertThat(steps.get(0).getName()).isEqualTo("step1");
+    assertThat(steps.get(0).getDelegate()).isEqualTo("stepDelegate1");
+    assertThat(steps.get(0).getPlayer()).isEqualTo("player1");
+    assertThat(steps.get(0).getMaxRunCount()).isEqualTo(1);
+    assertThat(steps.get(0).getDisplay()).isEqualTo("stepDisplay");
 
-    assertThat(steps.get(1).getName(), is("step2"));
-    assertThat(steps.get(1).getDelegate(), is("stepDelegate2"));
+    assertThat(steps.get(1).getName()).isEqualTo("step2");
+    assertThat(steps.get(1).getDelegate()).isEqualTo("stepDelegate2");
 
-    assertThat(steps.get(2).getName(), is("step3"));
-    assertThat(steps.get(2).getDelegate(), is("stepDelegate3"));
+    assertThat(steps.get(2).getName()).isEqualTo("step3");
+    assertThat(steps.get(2).getDelegate()).isEqualTo("stepDelegate3");
 
     final List<Step.StepProperty> stepProperties = steps.get(2).getStepProperties();
-    assertThat(stepProperties, hasSize(2));
-    assertThat(stepProperties.get(0).getName(), is("stepProp1"));
-    assertThat(stepProperties.get(0).getValue(), is("stepValue1"));
+    assertThat(stepProperties).hasSize(2);
+    assertThat(stepProperties.get(0).getName()).isEqualTo("stepProp1");
+    assertThat(stepProperties.get(0).getValue()).isEqualTo("stepValue1");
 
-    assertThat(stepProperties.get(1).getName(), is("stepProp2"));
-    assertThat(stepProperties.get(1).getValue(), is("stepValue2"));
+    assertThat(stepProperties.get(1).getName()).isEqualTo("stepProp2");
+    assertThat(stepProperties.get(1).getValue()).isEqualTo("stepValue2");
 
     final Offset offset = gamePlay.getOffset();
-    assertThat(offset.getRound(), is(3));
+    assertThat(offset.getRound()).isEqualTo(3);
   }
 }

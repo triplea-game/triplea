@@ -1,8 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
@@ -23,7 +21,7 @@ class ContentDownloaderIntegrationTest extends AbstractClientSettingTestCase {
       final List<String> content =
           IOUtils.readLines(contentDownloader.getStream(), StandardCharsets.UTF_8);
 
-      assertThat(content, not(empty()));
+      assertThat(content).isNotEmpty();
     }
   }
 }

@@ -446,7 +446,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       // included as
       // dependencies
       final Map<Unit, Collection<Unit>> transportMap =
-          TransportTracker.transporting(territory.getUnitCollection());
+          TransportTracker.getTransportingInTerritory(territory);
       final Set<Unit> dependants = new HashSet<>();
       for (final Entry<Unit, Collection<Unit>> entry : transportMap.entrySet()) {
         // only consider those transports that we are attacking with. allied and enemy transports
@@ -457,6 +457,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       // no duplicates
       dependants.removeAll(attackingUnits);
+      // Exclude transported units that are now enemies (e.g. after a war declaration). If included,
+      // they would appear in both the attacker dependants and the defender list of MustFightBattle,
+      // since MustFightBattle initialises defendingUnits with all enemyUnit(player) in the site.
+      dependants.removeIf(Matches.enemyUnit(player));
       // add the dependants to the attacking list
       attackingUnits.addAll(dependants);
       final List<Unit> enemyUnits =
@@ -648,7 +652,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       // now make sure to add any units that must move with these units, so that they get included
       // as dependencies
       final Map<Unit, Collection<Unit>> transportMap =
-          TransportTracker.transporting(territory.getUnitCollection());
+          TransportTracker.getTransportingInTerritory(territory);
 
       abandonedToUnits.addAll(
           transportMap.entrySet().stream()

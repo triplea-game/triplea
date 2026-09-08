@@ -1,7 +1,6 @@
 package tools.util;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import games.strategy.engine.data.Attachable;
@@ -19,8 +18,8 @@ final class MapPropertyWrapperTest {
       final Field field =
           MapPropertyWrapper.getPropertyField("doubleValue", ExampleChildAttachment.class);
 
-      assertThat(field.getName(), is("doubleValue"));
-      assertThat(field.getDeclaringClass(), is(ExampleChildAttachment.class));
+      assertThat(field.getName()).isEqualTo("doubleValue");
+      assertThat(field.getDeclaringClass()).isEqualTo(ExampleChildAttachment.class);
     }
 
     @Test
@@ -28,8 +27,8 @@ final class MapPropertyWrapperTest {
       final Field field =
           MapPropertyWrapper.getPropertyField("intValue", ExampleChildAttachment.class);
 
-      assertThat(field.getName(), is("intValue"));
-      assertThat(field.getDeclaringClass(), is(ExampleParentAttachment.class));
+      assertThat(field.getName()).isEqualTo("intValue");
+      assertThat(field.getDeclaringClass()).isEqualTo(ExampleParentAttachment.class);
     }
 
     @Test

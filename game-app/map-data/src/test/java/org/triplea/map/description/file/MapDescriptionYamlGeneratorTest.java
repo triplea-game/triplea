@@ -1,8 +1,6 @@
 package org.triplea.map.description.file;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Path;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,27 +35,27 @@ class MapDescriptionYamlGeneratorTest {
   void verifyGeneration() {
     final MapDescriptionYaml mapDescriptionYaml = generateAndReadDescriptionYamlFile();
 
-    assertThat(mapDescriptionYaml.getMapName(), is("example-map"));
-    assertThat(mapDescriptionYaml.getMapGameList(), hasSize(2));
+    assertThat(mapDescriptionYaml.getMapName()).isEqualTo("example-map");
+    assertThat(mapDescriptionYaml.getMapGameList()).hasSize(2);
 
     assertThat(
-        mapDescriptionYaml.getMapGameList().stream()
-            .anyMatch(g -> g.getGameName().equals("example game")),
-        is(true));
+            mapDescriptionYaml.getMapGameList().stream()
+                .anyMatch(g -> g.getGameName().equals("example game")))
+        .isTrue();
 
     assertThat(
-        mapDescriptionYaml.getMapGameList().stream()
-            .anyMatch(g -> g.getGameName().equals("example game 2")),
-        is(true));
+            mapDescriptionYaml.getMapGameList().stream()
+                .anyMatch(g -> g.getGameName().equals("example game 2")))
+        .isTrue();
 
     assertThat(
-        mapDescriptionYaml.getMapGameList().stream()
-            .anyMatch(g -> g.getXmlFileName().equals("game.xml")),
-        is(true));
+            mapDescriptionYaml.getMapGameList().stream()
+                .anyMatch(g -> g.getXmlFileName().equals("game.xml")))
+        .isTrue();
 
     assertThat(
-        mapDescriptionYaml.getMapGameList().stream()
-            .anyMatch(g -> g.getXmlFileName().equals("game2.xml")),
-        is(true));
+            mapDescriptionYaml.getMapGameList().stream()
+                .anyMatch(g -> g.getXmlFileName().equals("game2.xml")))
+        .isTrue();
   }
 }

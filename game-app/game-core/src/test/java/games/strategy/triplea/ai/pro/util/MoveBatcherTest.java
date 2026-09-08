@@ -5,9 +5,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MoveDescription;
@@ -69,7 +67,7 @@ public class MoveBatcherTest {
     //   Move to load all the land units onto transports.
     //   Move transporting all the units.
     //   Move unloading the land units from the transports.
-    assertThat(moves, hasSize(3));
+    assertThat(moves).hasSize(3);
 
     // Check move to load all the land units onto transports.
     var expected =
@@ -77,16 +75,16 @@ public class MoveBatcherTest {
             List.of(inf1, tank1, tank2, inf2),
             brazilToSz18,
             Map.of(inf1, transport1, tank1, transport1, inf2, transport2, tank2, transport2));
-    assertThat(moves.get(0), is(expected));
+    assertThat(moves.get(0)).isEqualTo(expected);
 
     // Check move transporting all the units.
     expected =
         new MoveDescription(List.of(transport1, tank1, inf1, transport2, inf2, tank2), sz18ToSz12);
-    assertThat(moves.get(1), is(expected));
+    assertThat(moves.get(1)).isEqualTo(expected);
 
     // Check move unloading the land units from the transports.
     expected = new MoveDescription(List.of(tank1, inf1, inf2, tank2), sz12ToAlgeria);
-    assertThat(moves.get(2), is(expected));
+    assertThat(moves.get(2)).isEqualTo(expected);
   }
 
   @Test
@@ -116,11 +114,11 @@ public class MoveBatcherTest {
     //   Load tank and two infantry onto the transports.
     //   Move transporting all the units together.
     //   Move to unload the loaded units from the transports.
-    assertThat(moves, hasSize(4));
+    assertThat(moves).hasSize(4);
 
     // Check move of transports 1 and 2 into position.
     var expected = new MoveDescription(List.of(transport1, transport2), sz19ToSz18);
-    assertThat(moves.get(0), is(expected));
+    assertThat(moves.get(0)).isEqualTo(expected);
 
     // Check load of tank and two infantry onto the transports.
     expected =
@@ -128,14 +126,14 @@ public class MoveBatcherTest {
             List.of(tank1, inf1, inf2),
             brazilToSz18,
             Map.of(tank1, transport1, inf1, transport2, inf2, transport2));
-    assertThat(moves.get(1), is(expected));
+    assertThat(moves.get(1)).isEqualTo(expected);
 
     // Check move transporting all the units together.
     expected = new MoveDescription(List.of(transport1, tank1, transport2, inf1, inf2), sz18ToSz12);
-    assertThat(moves.get(2), is(expected));
+    assertThat(moves.get(2)).isEqualTo(expected);
 
     // Check move to unload the loaded units from the transports.
     expected = new MoveDescription(List.of(tank1, inf1, inf2), sz12ToAlgeria);
-    assertThat(moves.get(3), is(expected));
+    assertThat(moves.get(3)).isEqualTo(expected);
   }
 }

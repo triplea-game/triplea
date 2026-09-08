@@ -1,10 +1,6 @@
 package games.strategy.engine.data.gameparser;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.TestAttachment;
@@ -26,8 +22,8 @@ final class XmlGameElementMapperTest {
     void shouldReturnDelegateWhenNamePresent() {
       final Optional<IDelegate> result = xmlGameElementMapper.newDelegate("BattleDelegate");
 
-      assertThat(result, isPresent());
-      assertThat(result.get(), is(instanceOf(BattleDelegate.class)));
+      assertThat(result).isPresent();
+      assertThat(result.get()).isInstanceOf(BattleDelegate.class);
     }
 
     @Test
@@ -35,8 +31,8 @@ final class XmlGameElementMapperTest {
       final Optional<IDelegate> result =
           xmlGameElementMapper.newDelegate("games.strategy.triplea.delegate.BattleDelegate");
 
-      assertThat(result, isPresent());
-      assertThat(result.get(), is(instanceOf(BattleDelegate.class)));
+      assertThat(result).isPresent();
+      assertThat(result.get()).isInstanceOf(BattleDelegate.class);
     }
 
     @Test
@@ -47,13 +43,13 @@ final class XmlGameElementMapperTest {
 
       final Optional<IDelegate> result = xmlGameElementMapper.newDelegate(typeName);
 
-      assertThat(result, isPresent());
-      assertThat(result.get(), is(instanceOf(TestDelegate.class)));
+      assertThat(result).isPresent();
+      assertThat(result.get()).isInstanceOf(TestDelegate.class);
     }
 
     @Test
     void shouldReturnEmptyWhenNameAbsent() {
-      assertThat(xmlGameElementMapper.newDelegate("__unknown__"), isEmpty());
+      assertThat(xmlGameElementMapper.newDelegate("__unknown__")).isEmpty();
     }
   }
 
@@ -64,8 +60,8 @@ final class XmlGameElementMapperTest {
       final Optional<IAttachment> result =
           xmlGameElementMapper.newAttachment("CanalAttachment", "", null, null);
 
-      assertThat(result, isPresent());
-      assertThat(result.get(), is(instanceOf(CanalAttachment.class)));
+      assertThat(result).isPresent();
+      assertThat(result.get()).isInstanceOf(CanalAttachment.class);
     }
 
     @Test
@@ -74,8 +70,8 @@ final class XmlGameElementMapperTest {
           xmlGameElementMapper.newAttachment(
               "games.strategy.triplea.attachments.CanalAttachment", "", null, null);
 
-      assertThat(result, isPresent());
-      assertThat(result.get(), is(instanceOf(CanalAttachment.class)));
+      assertThat(result).isPresent();
+      assertThat(result.get()).isInstanceOf(CanalAttachment.class);
     }
 
     @Test
@@ -87,13 +83,13 @@ final class XmlGameElementMapperTest {
       final Optional<IAttachment> result =
           xmlGameElementMapper.newAttachment(typeName, "", null, null);
 
-      assertThat(result, isPresent());
-      assertThat(result.get(), is(instanceOf(TestAttachment.class)));
+      assertThat(result).isPresent();
+      assertThat(result.get()).isInstanceOf(TestAttachment.class);
     }
 
     @Test
     void shouldReturnEmptyWhenNameAbsent() {
-      assertThat(xmlGameElementMapper.newAttachment("__unknown__", "", null, null), isEmpty());
+      assertThat(xmlGameElementMapper.newAttachment("__unknown__", "", null, null)).isEmpty();
     }
   }
 }

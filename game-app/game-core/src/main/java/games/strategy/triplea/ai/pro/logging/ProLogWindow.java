@@ -9,8 +9,6 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.logging.Level;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -29,6 +27,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.swing.WindowAdapterFactory;
 
 /** GUI class used to display logging window and logging settings. */
 @Slf4j
@@ -64,17 +63,7 @@ class ProLogWindow extends JDialog {
     setTitle("Hard AI Settings");
     setMinimumSize(new Dimension(775, 400));
     addWindowListener(
-        new WindowAdapter() {
-          @Override
-          public void windowClosing(final WindowEvent evt) {
-            formWindowClosing();
-          }
-
-          @Override
-          public void windowOpened(final WindowEvent evt) {
-            formWindowOpened();
-          }
-        });
+        WindowAdapterFactory.openedAndClosing(this::formWindowOpened, this::formWindowClosing));
     getContentPane().setLayout(new GridBagLayout());
     panel7.setName("panel7");
     panel7.setPreferredSize(new Dimension(600, 45));

@@ -6,10 +6,7 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitDestroyer;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static games.strategy.triplea.delegate.battle.steps.retreat.OffensiveSubsRetreatTest.givenRealUnitCanEvade;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -69,7 +66,7 @@ class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(defensiveSubsRetreat.getAllStepDetails(), hasSize(1));
+    assertThat(defensiveSubsRetreat.getAllStepDetails()).hasSize(1);
   }
 
   @Test
@@ -82,7 +79,7 @@ class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(defensiveSubsRetreat.getAllStepDetails(), hasSize(1));
+    assertThat(defensiveSubsRetreat.getAllStepDetails()).hasSize(1);
   }
 
   @Test
@@ -97,7 +94,7 @@ class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(defensiveSubsRetreat.getAllStepDetails(), hasSize(1));
+    assertThat(defensiveSubsRetreat.getAllStepDetails()).hasSize(1);
   }
 
   @Test
@@ -111,7 +108,7 @@ class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(defensiveSubsRetreat.getAllStepDetails(), hasSize(1));
+    assertThat(defensiveSubsRetreat.getAllStepDetails()).hasSize(1);
   }
 
   @Test
@@ -121,7 +118,7 @@ class DefensiveSubsRetreatTest extends AbstractClientSettingTestCase {
     final DefensiveSubsRetreat defensiveSubsRetreat =
         new DefensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(defensiveSubsRetreat.getAllStepDetails(), is(empty()));
+    assertThat(defensiveSubsRetreat.getAllStepDetails()).isEmpty();
   }
 
   @Nested

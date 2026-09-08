@@ -17,6 +17,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -119,7 +120,7 @@ public class HistoryDetailsPanel extends JPanel {
 
   private void renderUnits(final GridBagConstraints mainConstraints, final Collection<Unit> units) {
     final SimpleUnitPanel unitsPanel = new SimpleUnitPanel(mapPanel.getUiContext());
-    unitsPanel.setUnits(units);
+    unitsPanel.setUnits(List.copyOf(units));
     content.add(unitsPanel, mainConstraints);
   }
 }

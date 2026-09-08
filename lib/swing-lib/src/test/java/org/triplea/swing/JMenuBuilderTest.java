@@ -1,7 +1,6 @@
 package org.triplea.swing;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -19,13 +18,13 @@ class JMenuBuilderTest {
   @Test
   void verifyTitle() {
     final JMenu menu = new JMenuBuilder(TITLE, MENU_MNEMONIC).build();
-    assertThat(menu.getText(), is(TITLE));
+    assertThat(menu.getText()).isEqualTo(TITLE);
   }
 
   @Test
   void verifyMnemonic() {
     final JMenu menu = new JMenuBuilder(TITLE, KeyCode.M).build();
-    assertThat(menu.getMnemonic(), is(KeyCode.M.getInputEventCode()));
+    assertThat(menu.getMnemonic()).isEqualTo(KeyCode.M.getInputEventCode());
   }
 
   @Test
@@ -33,8 +32,8 @@ class JMenuBuilderTest {
     final JMenu menu =
         new JMenuBuilder(TITLE, MENU_MNEMONIC).addMenuItem(new JMenuItem(MENU_ITEM_TITLE)).build();
 
-    assertThat(menu.getItemCount(), is(1));
-    assertThat(menu.getItem(0).getText(), is(MENU_ITEM_TITLE));
+    assertThat(menu.getItemCount()).isEqualTo(1);
+    assertThat(menu.getItem(0).getText()).isEqualTo(MENU_ITEM_TITLE);
   }
 
   @Test
@@ -43,8 +42,8 @@ class JMenuBuilderTest {
         new JMenuBuilder(TITLE, MENU_MNEMONIC)
             .addMenuItem(MENU_ITEM_TITLE, KeyCode.A, () -> {})
             .build();
-    assertThat(menu.getItemCount(), is(1));
-    assertThat(menu.getItem(0).getText(), is(MENU_ITEM_TITLE));
-    assertThat(menu.getItem(0).getMnemonic(), is(KeyCode.A.getInputEventCode()));
+    assertThat(menu.getItemCount()).isEqualTo(1);
+    assertThat(menu.getItem(0).getText()).isEqualTo(MENU_ITEM_TITLE);
+    assertThat(menu.getItem(0).getMnemonic()).isEqualTo(KeyCode.A.getInputEventCode());
   }
 }

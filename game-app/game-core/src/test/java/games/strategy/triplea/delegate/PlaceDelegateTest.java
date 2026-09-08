@@ -7,15 +7,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.unitType;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate.BidMode.NOT_BID;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -84,7 +76,7 @@ class PlaceDelegateTest extends PlaceDelegateTestCommon {
     assertValid(delegate.canUnitsBePlaced(uk, threeInfantry2, british));
     assertError(delegate.canUnitsBePlaced(uk, fourInfantry2, british));
     final PlaceableUnits response = delegate.getPlaceableUnits(fourInfantry2, uk);
-    assertThat(response.getUnits(), hasSize(3));
+    assertThat(response.getUnits()).hasSize(3);
   }
 
   @Test
@@ -104,7 +96,7 @@ class PlaceDelegateTest extends PlaceDelegateTestCommon {
     assertValid(delegate.canUnitsBePlaced(northSea, threeSub2, british));
     assertError(delegate.canUnitsBePlaced(northSea, fourSub2, british));
     final PlaceableUnits response = delegate.getPlaceableUnits(fourSub2, northSea);
-    assertThat(response.getUnits(), hasSize(3));
+    assertThat(response.getUnits()).hasSize(3);
     // We also can't place the subs in UK since they're sea units. :)
     assertError(delegate.canUnitsBePlaced(uk, threeSub2, british));
   }
@@ -137,34 +129,35 @@ class PlaceDelegateTest extends PlaceDelegateTestCommon {
     assertValid(delegate.placeUnits(carriers, northSea, NOT_BID));
 
     // Sanity check: the fighter has been moved from UK to the North Sea Zone (onto the carrier).
-    assertThat(uk.getMatches(Matches.unitIsOfType(fighter)), is(empty()));
-    assertThat(northSea.getMatches(Matches.unitIsOfType(fighter)), contains(fighters.toArray()));
+    assertThat(uk.getMatches(Matches.unitIsOfType(fighter))).isEmpty();
+    assertThat(northSea.getMatches(Matches.unitIsOfType(fighter)))
+        .containsExactlyElementsOf(fighters);
 
     final List<UndoablePlacement> placements = delegate.getMovesMade();
-    assertThat(placements, hasSize(2));
+    assertThat(placements).hasSize(2);
     final UndoablePlacement fighterPlacement = placements.get(0);
     final UndoablePlacement carrierPlacement = placements.get(1);
-    assertThat(fighterPlacement.getCanUndo(), is(false));
-    assertThat(carrierPlacement.getCanUndo(), is(true));
+    assertThat(fighterPlacement.getCanUndo()).isFalse();
+    assertThat(carrierPlacement.getCanUndo()).isTrue();
 
     // Attempting to undo the fighter placement first must fail with an informative reason rather
     // than corrupt the unit collection.
     final String reason = delegate.undoMove(fighterPlacement.getIndex());
-    assertThat(reason, is(notNullValue()));
-    assertThat(reason, containsString("must be undone first"));
-    assertThat(delegate.getMovesMade(), hasSize(2));
+    assertThat(reason).isNotNull();
+    assertThat(reason).contains("must be undone first");
+    assertThat(delegate.getMovesMade()).hasSize(2);
 
     // Undoing the carrier first puts the fighter back in UK and clears the dependency.
-    assertThat(delegate.undoMove(carrierPlacement.getIndex()), is(nullValue()));
-    assertThat(uk.getMatches(Matches.unitIsOfType(fighter)), contains(fighters.toArray()));
-    assertThat(northSea.getMatches(Matches.unitIsOfType(carrier)), is(empty()));
-    assertThat(delegate.getMovesMade(), hasSize(1));
-    assertThat(delegate.getMovesMade().get(0).getCanUndo(), is(true));
+    assertThat(delegate.undoMove(carrierPlacement.getIndex())).isNull();
+    assertThat(uk.getMatches(Matches.unitIsOfType(fighter))).containsExactlyElementsOf(fighters);
+    assertThat(northSea.getMatches(Matches.unitIsOfType(carrier))).isEmpty();
+    assertThat(delegate.getMovesMade()).hasSize(1);
+    assertThat(delegate.getMovesMade().get(0).getCanUndo()).isTrue();
 
     // Now the fighter placement undoes cleanly.
-    assertThat(delegate.undoMove(fighterPlacement.getIndex()), is(nullValue()));
-    assertThat(uk.getMatches(Matches.unitIsOfType(fighter)), is(empty()));
-    assertThat(delegate.getMovesMade(), is(empty()));
+    assertThat(delegate.undoMove(fighterPlacement.getIndex())).isNull();
+    assertThat(uk.getMatches(Matches.unitIsOfType(fighter))).isEmpty();
+    assertThat(delegate.getMovesMade()).isEmpty();
   }
 
   // Regression test for https://github.com/triplea-game/triplea/issues/9165.
@@ -176,7 +169,7 @@ class PlaceDelegateTest extends PlaceDelegateTestCommon {
     advanceToStep(delegate.getBridge(), "britishPlace");
     final Territory eastCanadaSeaZone =
         gameData.getMap().getTerritoryOrNull("East Canada Sea Zone");
-    assertThat(eastCanadaSeaZone, is(notNullValue()));
+    assertThat(eastCanadaSeaZone).isNotNull();
 
     eastCanada.getUnitCollection().addAll(create(british, factory, 1));
     // Seed East Canada at 1 of 2 capacity so a 2-transport placement won't fit whole and falls
@@ -185,9 +178,9 @@ class PlaceDelegateTest extends PlaceDelegateTestCommon {
 
     assertValid(delegate.placeUnits(create(british, transport, 2), eastCanadaSeaZone, NOT_BID));
     final List<UndoablePlacement> afterTransports = delegate.getMovesMade();
-    assertThat(afterTransports, hasSize(1));
-    assertThat(afterTransports.get(0).getProducerTerritory(), is(westCanada));
-    assertThat(afterTransports.get(0).getUnits(), hasSize(2));
+    assertThat(afterTransports).hasSize(1);
+    assertThat(afterTransports.get(0).getProducerTerritory()).isEqualTo(westCanada);
+    assertThat(afterTransports.get(0).getUnits()).hasSize(2);
 
     final PlaceableUnits placeable =
         delegate.getPlaceableUnits(create(british, infantry, 1), westCanada);
@@ -195,17 +188,17 @@ class PlaceDelegateTest extends PlaceDelegateTestCommon {
 
     assertValid(delegate.placeUnits(create(british, infantry, 1), westCanada, NOT_BID));
 
-    assertThat(westCanada.getMatches(Matches.unitIsOfType(infantry)), hasSize(1));
+    assertThat(westCanada.getMatches(Matches.unitIsOfType(infantry))).hasSize(1);
 
     final List<UndoablePlacement> seaPlacementsAfter =
         delegate.getMovesMade().stream()
             .filter(p -> p.getPlaceTerritory().equals(eastCanadaSeaZone))
             .collect(Collectors.toList());
-    assertThat(seaPlacementsAfter, hasSize(2));
+    assertThat(seaPlacementsAfter).hasSize(2);
     final Set<Territory> producers =
         seaPlacementsAfter.stream()
             .map(UndoablePlacement::getProducerTerritory)
             .collect(Collectors.toSet());
-    assertThat(producers, containsInAnyOrder(westCanada, eastCanada));
+    assertThat(producers).containsExactlyInAnyOrder(westCanada, eastCanada);
   }
 }

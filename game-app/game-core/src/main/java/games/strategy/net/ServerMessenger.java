@@ -142,7 +142,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   }
 
   private void notifyPlayerRemoval(final INode node) {
-    cachedMacAddresses.remove(node.getPlayerName());
+    cachedMacAddresses.remove(node.getPlayerUserName());
   }
 
   @Override

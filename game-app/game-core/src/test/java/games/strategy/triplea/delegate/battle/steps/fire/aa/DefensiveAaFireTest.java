@@ -5,10 +5,7 @@ import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattle
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsCombatAa;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -54,14 +51,14 @@ class DefensiveAaFireTest {
               .defendingUnits(List.of(aaUnit))
               .build();
       final DefensiveAaFire defensiveAaFire = new DefensiveAaFire(battleState, battleActions);
-      assertThat(defensiveAaFire.getAllStepDetails(), hasSize(3));
+      assertThat(defensiveAaFire.getAllStepDetails()).hasSize(3);
     }
 
     @Test
     void hasNoNamesIfNoAaIsAvailable() {
       final BattleState battleState = givenBattleStateBuilder().defendingUnits(List.of()).build();
       final DefensiveAaFire defensiveAaFire = new DefensiveAaFire(battleState, battleActions);
-      assertThat(defensiveAaFire.getAllStepDetails(), is(empty()));
+      assertThat(defensiveAaFire.getAllStepDetails()).isEmpty();
     }
   }
 

@@ -1,7 +1,6 @@
 package org.triplea.map.game.notes;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.nio.file.Path;
@@ -24,13 +23,15 @@ class GameNotesTest {
 
     final String result = GameNotes.loadGameNotes(gameXmlPath);
 
-    assertThat(result, is("<blink>Game notes!</blink>"));
+    assertThat(result).isEqualTo("<blink>Game notes!</blink>");
   }
 
   @Test
   void createExpectedNotesFileName() {
-    assertThat(GameNotes.createExpectedNotesFileName(Path.of("game.xml")), is("game.notes.html"));
-    assertThat(GameNotes.createExpectedNotesFileName(Path.of("xml.xml")), is("xml.notes.html"));
+    assertThat(GameNotes.createExpectedNotesFileName(Path.of("game.xml")))
+        .isEqualTo("game.notes.html");
+    assertThat(GameNotes.createExpectedNotesFileName(Path.of("xml.xml")))
+        .isEqualTo("xml.notes.html");
 
     assertThrows(
         IllegalArgumentException.class,
@@ -43,7 +44,7 @@ class GameNotesTest {
     FileUtils.writeToFile(gameXmlPath, "dummy content");
     gameXmlPath.toFile().deleteOnExit();
 
-    assertThat(GameNotes.gameNotesFileExistsForGameXmlFile(gameXmlPath), is(false));
+    assertThat(GameNotes.gameNotesFileExistsForGameXmlFile(gameXmlPath)).isFalse();
   }
 
   @Test
@@ -56,6 +57,6 @@ class GameNotesTest {
     FileUtils.writeToFile(notesFile, "dummy content");
     notesFile.toFile().deleteOnExit();
 
-    assertThat(GameNotes.gameNotesFileExistsForGameXmlFile(gameXmlPath), is(true));
+    assertThat(GameNotes.gameNotesFileExistsForGameXmlFile(gameXmlPath)).isTrue();
   }
 }

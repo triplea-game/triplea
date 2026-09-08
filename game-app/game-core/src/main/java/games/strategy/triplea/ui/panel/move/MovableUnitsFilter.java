@@ -171,7 +171,9 @@ final class MovableUnitsFilter {
   }
 
   private boolean isInvading() {
-    return !nonCombat && route.isUnload() && Matches.isTerritoryEnemy(player).test(route.getEnd());
+    return !nonCombat
+        && route.isSeaUnload()
+        && Matches.isTerritoryEnemy(player).test(route.getEnd());
   }
 
   // Whether the two units are equivalent for the purposes of movement.
@@ -194,10 +196,10 @@ final class MovableUnitsFilter {
     List<Unit> best = new ArrayList<>(units);
     // if the player selects a land unit and other units then
     // only consider the non land units
-    if (route.getStart().isWater() && route.getEnd().isWater() && !route.isLoad()) {
+    if (route.getStart().isWater() && route.getEnd().isWater() && !route.isSeaLoad()) {
       best = CollectionUtils.getMatches(best, Matches.unitIsLand().negate());
     }
-    if (route.isUnload()) {
+    if (route.isSeaUnload()) {
       best = CollectionUtils.getMatches(best, Matches.unitIsNotSea());
     }
     return best;
@@ -205,7 +207,7 @@ final class MovableUnitsFilter {
 
   private Comparator<Unit> getUnitComparator(final List<Unit> units) {
     // sort units based on which transports are allowed to unload
-    if (route.isUnload() && units.stream().anyMatch(Matches.unitIsLand())) {
+    if (route.isSeaUnload() && units.stream().anyMatch(Matches.unitIsLand())) {
       return UnitComparator.getUnloadableUnitsComparator(units, route, player);
     } else {
       return UnitComparator.getMovableUnitsComparator(units, route);
