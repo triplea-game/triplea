@@ -49,6 +49,9 @@ tasks.register<Test>("fuzzTest") {
     testClassesDirs = sourceSets["test"].output.classesDirs
     classpath = sourceSets["test"].runtimeClasspath
     shouldRunAfter(tasks.named("test"))
+    // The alwaysHits pass rebuilds a serialize-cloned GameData oracle per scenario over the large TWW
+    // map, which OOMs the default heap; raise it for this task alone.
+    maxHeapSize = "6g"
     useJUnitPlatform {
         includeTags("fuzz")
     }

@@ -1,12 +1,17 @@
 package games.strategy.triplea.odds.calculator;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.properties.BooleanProperty;
+import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.engine.random.ScriptedRandomSource;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -79,10 +84,16 @@ class FuzzedBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
   /**
    * The maps to fuzz. REVISED is the proven baseline the hand-picked differential already uses;
    * WW2V3_1942 and LHTR add support-giving artillery and richer unit rosters so the by-tag
-   * breakdown has something to concentrate in.
+   * breakdown has something to concentrate in. TWW ({@code Total_World_War_Dec1941.xml}) carries a
+   * negative support {@code bonus} and capped {@code bonusType}s, so it is the only map here that
+   * exercises the negative-bonus / bonusType-cap support paths against a real oracle.
    */
   private static final List<TestMapGameData> MAPS =
-      List.of(TestMapGameData.REVISED, TestMapGameData.WW2V3_1942, TestMapGameData.LHTR);
+      List.of(
+          TestMapGameData.REVISED,
+          TestMapGameData.WW2V3_1942,
+          TestMapGameData.LHTR,
+          TestMapGameData.TWW);
 
   @Test
   void fuzzRealMapsAndReportDriftAgainstTheEngineOracle() {
@@ -93,9 +104,20 @@ class FuzzedBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
     }
     report.print();
 
-    // The only hard bar: the harness actually exercised both calcs. Drift itself is reported, never
-    // asserted — a green fuzz run means "the meter ran", not "the calc agrees".
-    org.assertj.core.api.Assertions.assertThat(report.total()).isPositive();
+    // The harness actually exercised both calcs.
+    assertThat(report.total()).isPositive();
+    // Per-flag drift stays reported-not-gated (it carries known capability residuals), but the
+    // vanilla bucket — no stubbed feature engaged — must match the engine exactly under alwaysHits,
+    // where every modeled rule is exact. A vanilla mismatch is a real core regression, not drift, so
+    // it is the one invariant worth failing on. Deterministic under the fixed seed, so it cannot
+    // flake.
+    final int[] vanilla = report.tagCell("vanilla");
+    assertThat(vanilla[1])
+        .as("fuzz must produce vanilla scenarios to hold to the bar")
+        .isPositive();
+    assertThat(vanilla[0])
+        .as("vanilla (no stubbed feature) scenarios must match the engine exactly under alwaysHits")
+        .isEqualTo(vanilla[1]);
   }
 
   /**
@@ -105,8 +127,9 @@ class FuzzedBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
    * reports 100% for support not because support is modeled but because it cannot matter there).
    * This pass runs both calcs over a seeded {@code PlainRandomSource} for many runs and compares
    * attacker win% within a tolerance, so strength-driven drift finally shows. Fewer scenarios and a
-   * bounded run count keep it inside the runtime budget. Reported, never asserted — same contract
-   * as the primary pass.
+   * bounded run count keep it inside the runtime budget. Drift stays diagnostic here — unlike the
+   * alwaysHits pass, which additionally holds the vanilla bucket to an exact match, this
+   * distributional pass has no exact invariant and too small a vanilla sample to gate on tolerance.
    */
   @Test
   void seededFuzzRealMapsAndReportWinPercentDrift() {
@@ -117,7 +140,47 @@ class FuzzedBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
     }
     report.print();
 
-    org.assertj.core.api.Assertions.assertThat(report.total()).isPositive();
+    // Distributional pass: exact-match has no meaning under a seeded source, and the vanilla sample
+    // is too small to gate on a win% tolerance without risking flake, so drift stays diagnostic here
+    // — the alwaysHits pass owns the vanilla-exact invariant.
+    assertThat(report.total()).isPositive();
+  }
+
+  /**
+   * The flag sampler is reproducible: two samplers seeded alike draw an identical combination, so a
+   * flaky fuzz report can never be blamed on the sampler injecting different flags between runs.
+   * Uses the run's frozen {@code SEED} rather than a fresh {@code Random} because that is the exact
+   * seed the fuzz passes draw from.
+   */
+  @Test
+  void ruleFlagSampleIsReproducibleForAGivenSeed() {
+    final RuleFlagSample first = RuleFlagSample.sample(new Random(SEED));
+    final RuleFlagSample second = RuleFlagSample.sample(new Random(SEED));
+
+    org.assertj.core.api.Assertions.assertThat(second).isEqualTo(first);
+  }
+
+  /**
+   * Each of the six sampled flags maps to its own distinct by-tag label — {@code
+   * transportCasualtiesRestricted} included as a first-class member, not folded anonymously into
+   * "the six flags" — so the by-tag report attributes drift to the exact flag value that caused it.
+   * Turning one flag on at a time pins the {@code onTags()} mapping and guards a copy-paste that
+   * would give two flags the same label.
+   */
+  @Test
+  void eachRuleFlagMapsToItsOwnByTagLabel() {
+    assertThat(new RuleFlagSample(true, false, false, false, false, false).onTags())
+        .containsExactly("ww2v2-on");
+    assertThat(new RuleFlagSample(false, true, false, false, false, false).onTags())
+        .containsExactly("defending-subs-sneak-on");
+    assertThat(new RuleFlagSample(false, false, true, false, false, false).onTags())
+        .containsExactly("transport-restricted");
+    assertThat(new RuleFlagSample(false, false, false, true, false, false).onTags())
+        .containsExactly("submersible-subs-on");
+    assertThat(new RuleFlagSample(false, false, false, false, true, false).onTags())
+        .containsExactly("def-subs-submerge-on");
+    assertThat(new RuleFlagSample(false, false, false, false, false, true).onTags())
+        .containsExactly("lhtr-heavy-bombers-on");
   }
 
   private void seededFuzzMap(
@@ -138,7 +201,6 @@ class FuzzedBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
     if (players.size() < 2 || landTerritories.isEmpty()) {
       return;
     }
-    final BattleCalculator oracle = new BattleCalculator(gameData);
 
     for (int i = 0; i < SEEDED_SCENARIOS_PER_MAP; i++) {
       final boolean sea = !seaZones.isEmpty() && rng.nextBoolean();
@@ -154,7 +216,13 @@ class FuzzedBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
       if (attacking.isEmpty() || defending.isEmpty()) {
         continue;
       }
-      final Set<String> tags = tagsFor(attacking, defending);
+      // Set the sampled flags before building the oracle: BattleCalculator clones the
+      // GameData in its constructor, so a later write never reaches the oracle's copy.
+      // The adapter reads them live when it bakes the scenario, so one write feeds both.
+      final RuleFlagSample flags = RuleFlagSample.sample(rng);
+      flags.applyTo(gameData);
+      final BattleCalculator oracle = new BattleCalculator(gameData);
+      final Set<String> tags = tagsFor(attacking, defending, flags);
       final ScenarioKey key =
           new ScenarioKey(
               map.name(),
@@ -221,11 +289,6 @@ class FuzzedBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
       return;
     }
 
-    // One oracle per map amortizes its constructor's full GameData clone across every scenario; the
-    // deterministic source is set once and each calculate() call translates fresh unit collections.
-    final BattleCalculator oracle = new BattleCalculator(gameData);
-    oracle.setRandomSource(ScriptedRandomSource.alwaysHits());
-
     for (int i = 0; i < SCENARIOS_PER_MAP; i++) {
       final boolean sea = !seaZones.isEmpty() && rng.nextBoolean();
       final Territory location = sea ? pick(seaZones, rng) : pick(landTerritories, rng);
@@ -240,8 +303,15 @@ class FuzzedBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
       if (attacking.isEmpty() || defending.isEmpty()) {
         continue;
       }
+      // Set the sampled flags before building the oracle: BattleCalculator clones the
+      // GameData in its constructor, so a later write never reaches the oracle's copy.
+      // The adapter reads them live when it bakes the scenario, so one write feeds both.
+      // A fresh oracle per scenario is the cost of a per-scenario flag combination.
+      final RuleFlagSample flags = RuleFlagSample.sample(rng);
+      flags.applyTo(gameData);
+      final BattleCalculator oracle = new BattleCalculator(gameData);
       runScenario(
-          map, gameData, oracle, attacker, defender, location, attacking, defending, report);
+          map, gameData, oracle, flags, attacker, defender, location, attacking, defending, report);
     }
   }
 
@@ -255,13 +325,14 @@ class FuzzedBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
       final TestMapGameData map,
       final GameData gameData,
       final BattleCalculator oracle,
+      final RuleFlagSample flags,
       final GamePlayer attacker,
       final GamePlayer defender,
       final Territory location,
       final Collection<Unit> attacking,
       final Collection<Unit> defending,
       final Report report) {
-    final Set<String> tags = tagsFor(attacking, defending);
+    final Set<String> tags = tagsFor(attacking, defending, flags);
     final ScenarioKey key =
         new ScenarioKey(
             map.name(),
@@ -370,10 +441,15 @@ class FuzzedBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
   }
 
   /**
-   * Which known-incomplete features the union of both forces exercises; drives the by-tag report.
+   * Which known-incomplete features the union of both forces exercises, plus which non-default rule
+   * flags this scenario sampled; drives the by-tag report. The flag tags are what make drift
+   * attributable to a specific flag <em>value</em> — without them a {@code ww2v2=true} run and a
+   * {@code ww2v2=false} run of the same forces land in identical buckets.
    */
   private static Set<String> tagsFor(
-      final Collection<Unit> attacking, final Collection<Unit> defending) {
+      final Collection<Unit> attacking,
+      final Collection<Unit> defending,
+      final RuleFlagSample flags) {
     final Set<String> tags = new java.util.TreeSet<>();
     final List<Unit> all = new ArrayList<>(attacking);
     all.addAll(defending);
@@ -408,23 +484,31 @@ class FuzzedBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
         tags.add("air");
       }
     }
+    tags.addAll(flags.onTags());
     if (STUBBED_FEATURE_TAGS.stream().noneMatch(tags::contains)) {
       tags.add("vanilla");
     }
     return tags;
   }
 
-  /** The tags that touch adapter/model stubs; a scenario clear of all of them is "vanilla". */
+  /**
+   * The tags that touch adapter/model stubs; a scenario clear of all of them is "vanilla". The
+   * flag-on tags are included so a non-default flag keeps a fight out of the vanilla bucket —
+   * vanilla must stay a clean baseline, so flag-driven drift never hides there.
+   */
   private static final List<String> STUBBED_FEATURE_TAGS =
-      List.of(
-          "support-giver",
-          "support-receiver",
-          "transport",
-          "aa",
-          "first-strike",
-          "submarine-evade",
-          "cannot-be-targeted",
-          "multi-hitpoint");
+      java.util.stream.Stream.concat(
+              java.util.stream.Stream.of(
+                  "support-giver",
+                  "support-receiver",
+                  "transport",
+                  "aa",
+                  "first-strike",
+                  "submarine-evade",
+                  "cannot-be-targeted",
+                  "multi-hitpoint"),
+              RuleFlagSample.ALL_TAGS.stream())
+          .collect(Collectors.toList());
 
   private static <T> T pick(final List<T> items, final Random rng) {
     return items.get(rng.nextInt(items.size()));
@@ -437,6 +521,20 @@ class FuzzedBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
       candidate = pick(players, rng);
     } while (candidate.equals(other));
     return candidate;
+  }
+
+  // An editable rule flag is read from the editable-property store before the map that set(String,
+  // Object) writes, so it must be flipped in place; a non-editable flag lives only in that map, so
+  // it falls through to set(). This override handles either kind.
+  private static void setBooleanProperty(
+      final GameData gameData, final String propertyName, final boolean value) {
+    for (final IEditableProperty<?> property : gameData.getProperties().getEditableProperties()) {
+      if (property.getName().equals(propertyName)) {
+        ((BooleanProperty) property).setValue(value);
+        return;
+      }
+    }
+    gameData.getProperties().set(propertyName, value);
   }
 
   private static int compositionDistance(
@@ -464,6 +562,86 @@ class FuzzedBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
         .counts()
         .forEach((key, count) -> counts.merge(key.profile().type().name(), count, Integer::sum));
     return counts;
+  }
+
+  /**
+   * A sampled combination of the six {@code RulesProfile} rule flags for one fuzz scenario. Drawn
+   * from the run's seeded {@code Random}, so the flag stream is reproducible from {@code SEED}
+   * alone — a re-run cannot pin drift on a different flag draw. Exactly the six flags {@code
+   * RulesProfile} models are here; {@code twoHitBattleships} and {@code superSubDefenseBonus} are
+   * deliberately absent because they are baked into unit hit-points/defense elsewhere and would
+   * double-count.
+   */
+  private record RuleFlagSample(
+      boolean ww2v2,
+      boolean defendingSubsSneakAttack,
+      boolean transportCasualtiesRestricted,
+      boolean submersibleSubs,
+      boolean submarinesDefendingMaySubmergeOrRetreat,
+      boolean lhtrHeavyBombers) {
+
+    /** Every by-tag label the sampler can emit, so "vanilla" can exclude all of them. */
+    static final List<String> ALL_TAGS =
+        List.of(
+            "ww2v2-on",
+            "defending-subs-sneak-on",
+            "transport-restricted",
+            "submersible-subs-on",
+            "def-subs-submerge-on",
+            "lhtr-heavy-bombers-on");
+
+    /** Draws each of the six flags independently; six {@code rng} draws per scenario. */
+    static RuleFlagSample sample(final Random rng) {
+      return new RuleFlagSample(
+          rng.nextBoolean(),
+          rng.nextBoolean(),
+          rng.nextBoolean(),
+          rng.nextBoolean(),
+          rng.nextBoolean(),
+          rng.nextBoolean());
+    }
+
+    /**
+     * Writes all six flags onto {@code gameData} — every flag explicitly, not left at the map
+     * default — so the sampled value is what both paths see. Must run before the oracle is
+     * constructed (it clones the data) and before the adapter bakes the scenario (it reads live).
+     */
+    void applyTo(final GameData gameData) {
+      setBooleanProperty(gameData, Constants.WW2V2, ww2v2);
+      setBooleanProperty(gameData, Constants.DEFENDING_SUBS_SNEAK_ATTACK, defendingSubsSneakAttack);
+      setBooleanProperty(
+          gameData, Constants.TRANSPORT_CASUALTIES_RESTRICTED, transportCasualtiesRestricted);
+      setBooleanProperty(gameData, Constants.SUBMERSIBLE_SUBS, submersibleSubs);
+      setBooleanProperty(
+          gameData,
+          Constants.SUBMARINES_DEFENDING_MAY_SUBMERGE_OR_RETREAT,
+          submarinesDefendingMaySubmergeOrRetreat);
+      setBooleanProperty(gameData, Constants.LHTR_HEAVY_BOMBERS, lhtrHeavyBombers);
+    }
+
+    /** The by-tag report labels for whichever flags this sample turned on. */
+    Set<String> onTags() {
+      final Set<String> tags = new java.util.TreeSet<>();
+      if (ww2v2) {
+        tags.add("ww2v2-on");
+      }
+      if (defendingSubsSneakAttack) {
+        tags.add("defending-subs-sneak-on");
+      }
+      if (transportCasualtiesRestricted) {
+        tags.add("transport-restricted");
+      }
+      if (submersibleSubs) {
+        tags.add("submersible-subs-on");
+      }
+      if (submarinesDefendingMaySubmergeOrRetreat) {
+        tags.add("def-subs-submerge-on");
+      }
+      if (lhtrHeavyBombers) {
+        tags.add("lhtr-heavy-bombers-on");
+      }
+      return tags;
+    }
   }
 
   /** Immutable description of one fuzzed setup — enough to reproduce and to print. */
@@ -506,6 +684,11 @@ class FuzzedBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
 
     int total() {
       return comparisons.size();
+    }
+
+    /** {matched, total} for one feature tag, {@code {0, 0}} if no scenario touched it. */
+    int[] tagCell(final String tag) {
+      return byTag.getOrDefault(tag, new int[2]);
     }
 
     void record(final Comparison comparison) {
