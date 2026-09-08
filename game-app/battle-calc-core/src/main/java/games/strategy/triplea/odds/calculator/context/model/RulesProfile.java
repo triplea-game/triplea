@@ -8,7 +8,6 @@ package games.strategy.triplea.odds.calculator.context.model;
 public record RulesProfile(
     boolean ww2v2,
     boolean defendingSubsSneakAttack,
-    // TODO(seam-phase2b): transport casualty restriction consumer not yet wired
     boolean transportCasualtiesRestricted,
     boolean submersibleSubs,
     boolean submarinesDefendingMaySubmergeOrRetreat,

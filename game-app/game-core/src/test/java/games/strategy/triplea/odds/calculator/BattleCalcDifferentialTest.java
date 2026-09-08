@@ -428,6 +428,186 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
           submarine(gameData).create(2, americans(gameData)),
           defending);
     }
+
+    /**
+     * The transport-casualty restriction as a targeting gate: with {@code Transport Casualties
+     * Restricted} on, the engine bars the lone transport from being a casualty while its destroyer
+     * escort is still alive, so the escort must die before the transport can ever be reached
+     * (mirrors {@code CasualtySelector} line 77). A single attacking sub scores exactly one hit, so
+     * the ordering is decisive: restricted the destroyer dies and the transport lives ({@code
+     * {transport=1}}), unrestricted the cheaper transport dies instead ({@code {destroyer=1}}). Red
+     * until the restriction is wired into casualty eligibility; the destroyer negates first strike,
+     * so the exchange is simultaneous and the lone sub still trades away.
+     */
+    @Test
+    void restrictedTransportIsNotACasualtyWhileItsEscortLives() {
+      final GameData gameData = TestMapGameData.REVISED.getGameData();
+      setBooleanProperty(gameData, Constants.TRANSPORT_CASUALTIES_RESTRICTED, true);
+      final Territory seaZone = territory("1 Sea Zone", gameData);
+
+      final Collection<Unit> defenders =
+          new ArrayList<>(transport(gameData).create(1, germans(gameData)));
+      defenders.addAll(destroyer(gameData).create(1, germans(gameData)));
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          seaZone,
+          submarine(gameData).create(1, americans(gameData)),
+          defenders);
+    }
+
+    /**
+     * The off-case contrast to {@link #restrictedTransportIsNotACasualtyWhileItsEscortLives} — the
+     * same one-sub fixture with the restriction flipped off. The single hit now falls to the cheaper
+     * transport under ordinary cost order, so the destroyer survives ({@code {destroyer=1}}), the
+     * mirror of A1's flag-on {@code {transport=1}}. Because the ordering is decisive it is a true
+     * guard: an over-restriction that wrongly protected the transport when the flag is off would
+     * leave {@code {transport=1}} and diverge from the engine here.
+     */
+    @Test
+    void unrestrictedTransportIsAnOrdinaryCasualtyAlongsideItsEscort() {
+      final GameData gameData = TestMapGameData.REVISED.getGameData();
+      setBooleanProperty(gameData, Constants.TRANSPORT_CASUALTIES_RESTRICTED, false);
+      final Territory seaZone = territory("1 Sea Zone", gameData);
+
+      final Collection<Unit> defenders =
+          new ArrayList<>(transport(gameData).create(1, germans(gameData)));
+      defenders.addAll(destroyer(gameData).create(1, germans(gameData)));
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          seaZone,
+          submarine(gameData).create(1, americans(gameData)),
+          defenders);
+    }
+
+    /**
+     * End-of-round force removal of unescorted transports: with the restriction on, once the escort
+     * is dead the engine sweeps the now-defenseless transports off the board at round end even
+     * though no hit was scored on them ({@code RemoveUnprotectedUnits} / {@code
+     * RetreatChecks#onlyDefenselessTransportsLeft}). The sim has no such end-of-round step and no
+     * consumer of the flag, so it keeps trading against the escort under ordinary casualty order and
+     * diverges on who is left standing. Red until the removal step exists.
+     */
+    @Test
+    void unescortedTransportsAreSweptAtRoundEndUnderTheRestriction() {
+      final GameData gameData = TestMapGameData.REVISED.getGameData();
+      setBooleanProperty(gameData, Constants.TRANSPORT_CASUALTIES_RESTRICTED, true);
+      final Territory seaZone = territory("1 Sea Zone", gameData);
+
+      final Collection<Unit> defenders =
+          new ArrayList<>(transport(gameData).create(2, germans(gameData)));
+      defenders.addAll(destroyer(gameData).create(1, germans(gameData)));
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          seaZone,
+          submarine(gameData).create(2, americans(gameData)),
+          defenders);
+    }
+
+    /**
+     * The restriction composed with the eligibility-overflow cargo cascade: two subs put two hits on
+     * a destroyer plus two transports, all cargo loaded on the first transport. The escort saturates
+     * the first hit; the second overflows onto a transport, and when that transport dies its {@code
+     * IS_DEPENDENT} cargo must cascade off with it while the surviving transport is left — restricted
+     * {@code {transport=1}} versus the unrestricted counterfactual that kills the two cheaper
+     * transports and spares the destroyer ({@code {destroyer=1}}). Pins that overflow onto a
+     * transport still cascades its cargo and that cargo never itself soaks the restriction; red until
+     * the restriction is wired, green with it.
+     */
+    @Test
+    void restrictedTransportStillCascadesItsCargoOnceItsEscortDies() {
+      final GameData gameData = TestMapGameData.REVISED.getGameData();
+      setBooleanProperty(gameData, Constants.TRANSPORT_CASUALTIES_RESTRICTED, true);
+      final Territory seaZone = territory("1 Sea Zone", gameData);
+
+      final List<Unit> transportUnit = transport(gameData).create(2, germans(gameData));
+      final Collection<Unit> cargo = infantry(gameData).create(2, germans(gameData));
+      // Green is fixture-dependent: all cargo rides transportUnit[0], the transport the engine's
+      // limitTransportsToSelect().limit(1) picks first, so its cargo cascades on both paths. Loading
+      // transportUnit[1] instead would diverge — the adapter pools cargo per side while the engine
+      // links it per unit (the §E.1 v1 gap), so the pooled cascade would sink the wrong transport's
+      // cargo.
+      cargo.forEach(unit -> unit.setTransportedBy(transportUnit.get(0)));
+      final Collection<Unit> defenders = new ArrayList<>(transportUnit);
+      defenders.addAll(cargo);
+      defenders.addAll(destroyer(gameData).create(1, germans(gameData)));
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          seaZone,
+          submarine(gameData).create(2, americans(gameData)),
+          defenders);
+    }
+
+    /**
+     * The end-of-round unescorted-transport sweep against the engine — four destroyers exactly
+     * saturate two 2-HP battleships so the transport survives the firing, then the restriction
+     * sweeps the now-unescorted transport at round end ({@code
+     * RemoveUnprotectedUnits#checkUndefendedTransports}), leaving the attacker its destroyer.
+     *
+     * <p>Disabled: the alwaysHits engine forces the attacker to out-hit-point the defenders to
+     * survive the round, which means the escort must be a multi-HP unit the attacker concentrates
+     * two hits on — squarely the pre-existing {@code loneMultiHitBattleship} drop ({@link
+     * #loneMultiHitBattleshipDropsAHitUnderConcentratedFire}), so the sim spares a battleship the
+     * engine sinks and the divergence is that drop, not the sweep. The sweep itself is pinned in
+     * isolation by {@code TransportSweepTest} in {@code battle-calc-core}; kept here so a clean
+     * differential lands the day the multi-HP drop is fixed.
+     */
+    @Test
+    @Disabled(
+        "blocked by the lone-multi-HP hit-drop, see loneMultiHitBattleship; sweep pinned by"
+            + " TransportSweepTest")
+    void unescortedTransportIsSweptAtRoundEndLeavingTheAttackerStanding() {
+      final GameData gameData = TestMapGameData.REVISED.getGameData();
+      setBooleanProperty(gameData, Constants.TRANSPORT_CASUALTIES_RESTRICTED, true);
+      final Territory seaZone = territory("1 Sea Zone", gameData);
+
+      final Collection<Unit> defenders =
+          new ArrayList<>(battleship(gameData).create(2, germans(gameData)));
+      defenders.addAll(transport(gameData).create(1, germans(gameData)));
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          seaZone,
+          destroyer(gameData).create(4, americans(gameData)),
+          defenders);
+    }
+
+    /**
+     * Characterization of the pre-existing lone-multi-HP hit-drop in {@code
+     * ReferenceCasualtyAllocator}: a single 2-HP battleship absorbing two hits from one volley loses
+     * a hit the engine lands, so the sim over-reports its survival. Three fighters put two
+     * guaranteed hits on a lone defending battleship under {@code alwaysHits} — the engine sinks it,
+     * the sim spares it damaged. Disabled as a documentation pin of a gap that predates the flag
+     * port, not a defect fixed here; kept so the drop cannot silently change (mirrors {@link
+     * #ww2v2DestroyerPinnedFirstStrikeStillTradesInTheSubPhase}).
+     */
+    @Test
+    @Disabled("phase-2b: pre-existing lone-multi-HP hit-drop in ReferenceCasualtyAllocator")
+    void loneMultiHitBattleshipDropsAHitUnderConcentratedFire() {
+      final GameData gameData = TestMapGameData.REVISED.getGameData();
+      final Territory seaZone = territory("1 Sea Zone", gameData);
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          seaZone,
+          fighter(gameData).create(3, americans(gameData)),
+          battleship(gameData).create(1, germans(gameData)));
+    }
   }
 
   /**
