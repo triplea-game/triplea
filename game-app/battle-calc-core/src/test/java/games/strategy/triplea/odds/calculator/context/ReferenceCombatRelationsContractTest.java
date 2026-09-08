@@ -12,19 +12,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.triplea.odds.calculator.context.model.CombatFlag;
 import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
-import games.strategy.triplea.odds.calculator.context.model.DiceMode;
-import games.strategy.triplea.odds.calculator.context.model.FiringMode;
 import games.strategy.triplea.odds.calculator.context.model.Force;
 import games.strategy.triplea.odds.calculator.context.model.Key;
 import games.strategy.triplea.odds.calculator.context.model.Lifecycle;
-import games.strategy.triplea.odds.calculator.context.model.RollGroup;
 import games.strategy.triplea.odds.calculator.context.model.RulesProfile;
 import games.strategy.triplea.odds.calculator.context.model.Side;
 import games.strategy.triplea.odds.calculator.context.model.TargetFilter;
 import games.strategy.triplea.odds.calculator.context.reference.ReferenceCombatRelations;
 import games.strategy.triplea.odds.calculator.context.seam.CombatRelations;
 import java.util.Map;
-import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -64,27 +60,16 @@ class ReferenceCombatRelationsContractTest {
             new Key(second, Lifecycle.ACTIVE), secondCount));
   }
 
-  private static RollGroup groupOf(final CombatProfile firer, final int count) {
-    // The group's own target field is a placeholder; eligibleTargets recomputes it from the forces.
-    return new RollGroup(
-        Side.DEFENSE,
-        Map.of(firer, count),
-        new TargetFilter(Set.of()),
-        FiringMode.IMMEDIATE,
-        DiceMode.NORMAL);
-  }
-
   /** An AA gun's hits may only land on air; ground and sea profiles are never eligible. */
   @Test
   void anAaGroupCanTargetOnlyAirUnits() {
     final CombatProfile aaGun = aa("flak", 0, 1, 1);
     final CombatProfile enemyFighter = air("fighter", 3, 4, 1);
     final CombatProfile enemyInfantry = land("infantry", 1, 2, 1);
-    final RollGroup aaGroup = groupOf(aaGun, 1);
 
     final TargetFilter eligible =
         relations.eligibleTargets(
-            aaGroup, forceOf(aaGun, 1), forceOf(enemyFighter, 2, enemyInfantry, 2));
+            aaGun, forceOf(aaGun, 1), forceOf(enemyFighter, 2, enemyInfantry, 2));
 
     assertThat(eligible.eligibleTargets()).containsExactly(enemyFighter);
   }
@@ -97,10 +82,9 @@ class ReferenceCombatRelationsContractTest {
   void airCannotTargetAnEvadingSubmarineWithoutAFriendlyDestroyer() {
     final CombatProfile fighter = air("fighter", 3, 4, 1);
     final CombatProfile enemySub = submarine("uboat", 2, 1, 1);
-    final RollGroup airGroup = groupOf(fighter, 2);
 
     final TargetFilter eligible =
-        relations.eligibleTargets(airGroup, forceOf(fighter, 2), forceOf(enemySub, 2));
+        relations.eligibleTargets(fighter, forceOf(fighter, 2), forceOf(enemySub, 2));
 
     assertThat(eligible.eligibleTargets()).doesNotContain(enemySub);
   }
@@ -114,11 +98,9 @@ class ReferenceCombatRelationsContractTest {
     final CombatProfile fighter = air("fighter", 3, 4, 1);
     final CombatProfile destroyer = withFlags(sea("destroyer", 2, 2, 1), CombatFlag.IS_DESTROYER);
     final CombatProfile enemySub = submarine("uboat", 2, 1, 1);
-    final RollGroup airGroup = groupOf(fighter, 2);
 
     final TargetFilter eligible =
-        relations.eligibleTargets(
-            airGroup, forceOf(fighter, 2, destroyer, 1), forceOf(enemySub, 2));
+        relations.eligibleTargets(fighter, forceOf(fighter, 2, destroyer, 1), forceOf(enemySub, 2));
 
     assertThat(eligible.eligibleTargets()).contains(enemySub);
   }
@@ -129,11 +111,9 @@ class ReferenceCombatRelationsContractTest {
     final CombatProfile sub = submarine("uboat", 2, 1, 1);
     final CombatProfile enemyFighter = air("fighter", 3, 4, 1);
     final CombatProfile enemyCruiser = sea("cruiser", 3, 3, 1);
-    final RollGroup subGroup = groupOf(sub, 2);
 
     final TargetFilter eligible =
-        relations.eligibleTargets(
-            subGroup, forceOf(sub, 2), forceOf(enemyFighter, 2, enemyCruiser, 1));
+        relations.eligibleTargets(sub, forceOf(sub, 2), forceOf(enemyFighter, 2, enemyCruiser, 1));
 
     assertThat(eligible.eligibleTargets()).containsExactly(enemyCruiser);
   }
@@ -146,12 +126,51 @@ class ReferenceCombatRelationsContractTest {
   void airCanTargetAnEvadingButTargetableSubmarine() {
     final CombatProfile fighter = air("fighter", 3, 4, 1);
     final CombatProfile enemySub = submarineTargetableByAir("uboat", 2, 1, 1);
-    final RollGroup airGroup = groupOf(fighter, 2);
 
     final TargetFilter eligible =
-        relations.eligibleTargets(airGroup, forceOf(fighter, 2), forceOf(enemySub, 2));
+        relations.eligibleTargets(fighter, forceOf(fighter, 2), forceOf(enemySub, 2));
 
     assertThat(eligible.eligibleTargets()).contains(enemySub);
+  }
+
+  /**
+   * Air-vs-sub eligibility is per firer, not per group: firing the same round against an air-immune
+   * sub with no friendly destroyer, the fighter is denied the sub while a surface battleship beside
+   * it still targets it. Group-wide resolution wrongly stripped the battleship's target — the
+   * invincible-sub bug.
+   */
+  @Test
+  void aSurfaceFirerKeepsAProtectedSubTargetThatAnAirFirerBesideItLoses() {
+    final CombatProfile fighter = air("fighter", 3, 4, 1);
+    final CombatProfile battleship = sea("battleship", 4, 4, 2);
+    final CombatProfile enemySub = submarine("uboat", 2, 1, 1);
+    final Force friendly = forceOf(fighter, 1, battleship, 1);
+    final Force enemy = forceOf(enemySub, 1);
+
+    assertThat(relations.eligibleTargets(fighter, friendly, enemy).eligibleTargets())
+        .doesNotContain(enemySub);
+    assertThat(relations.eligibleTargets(battleship, friendly, enemy).eligibleTargets())
+        .contains(enemySub);
+  }
+
+  /**
+   * The sub-vs-air direction is per firer too: a submerge-capable sub cannot target enemy air, but
+   * a surface cruiser firing the same round still can. Group-wide resolution wrongly denied the
+   * cruiser its air target.
+   */
+  @Test
+  void aSurfaceFirerKeepsAnAirTargetThatASubmergeCapableFirerBesideItLoses() {
+    final CombatProfile sub = submarine("uboat", 2, 1, 1);
+    final CombatProfile cruiser = sea("cruiser", 3, 3, 1);
+    final CombatProfile enemyFighter = air("fighter", 3, 4, 1);
+    final CombatProfile enemyCruiser = sea("enemyCruiser", 3, 3, 1);
+    final Force friendly = forceOf(sub, 1, cruiser, 1);
+    final Force enemy = forceOf(enemyFighter, 1, enemyCruiser, 1);
+
+    assertThat(relations.eligibleTargets(sub, friendly, enemy).eligibleTargets())
+        .doesNotContain(enemyFighter);
+    assertThat(relations.eligibleTargets(cruiser, friendly, enemy).eligibleTargets())
+        .contains(enemyFighter);
   }
 
   /** A submerge-capable cohort may submerge when the enemy fields no destroyer to pin it. */
@@ -221,11 +240,10 @@ class ReferenceCombatRelationsContractTest {
     final CombatProfile cruiser = sea("cruiser", 3, 3, 1);
     final CombatProfile enemyCruiser = sea("enemyCruiser", 3, 3, 1);
     final CombatProfile cargoInfantry = cargo("infantry", 1, 2, 1);
-    final RollGroup seaGroup = groupOf(cruiser, 1);
 
     final TargetFilter eligible =
         relations.eligibleTargets(
-            seaGroup, forceOf(cruiser, 1), forceOf(enemyCruiser, 1, cargoInfantry, 2));
+            cruiser, forceOf(cruiser, 1), forceOf(enemyCruiser, 1, cargoInfantry, 2));
 
     assertThat(eligible.eligibleTargets()).containsExactly(enemyCruiser);
   }
