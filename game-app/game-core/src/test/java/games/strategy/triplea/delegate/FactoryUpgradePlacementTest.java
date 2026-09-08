@@ -24,10 +24,8 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Verifies that a construction upgrade that consumes an existing construction of the same
- * constructionType can be placed even when the per-type cap would otherwise block it
- * (factory_upgrade consumes factory_minor). maxFactoriesPerTerr is forced to 1 so the existing
- * minor factory already fills the cap, making this a meaningful test of the consumption logic
- * rather than a no-op.
+ * constructionType can be placed even when the maxConstructionsPerTerrPerTurn cap would otherwise block it
+ * (e.g. factory_upgrade consumes factory_minor in Global 1940 and maxFactoriesPerTerr is set to 1 in the XML).
  */
 class FactoryUpgradePlacementTest {
   private final GameData gameData = TestMapGameData.GLOBAL1940.getGameData();
@@ -35,12 +33,12 @@ class FactoryUpgradePlacementTest {
 
   @Test
   void factoryUpgradeCanBePlacedWhenItConsumesExistingMinorFactory() {
+    // This territory contains a factory_minor at game start
     final Territory target = territory("Western United States", gameData);
 
     final UnitType factoryUpgrade = unitType("factory_upgrade", gameData);
 
-    assertNotNull(factoryUpgrade, "factory_upgrade unit type must exist in map");
-
+    // Force the cap to be 1 for the test to be relevant.
     gameData.getProperties().set(Constants.FACTORIES_PER_COUNTRY_PROPERTY, 1);
 
     // Create the held upgrade unit and add it to the player's pool
@@ -68,5 +66,12 @@ class FactoryUpgradePlacementTest {
     assertTrue(
         placeResult.isEmpty(),
         () -> "Expected placeUnits to succeed but got error: " + placeResult.get());
+
+    assertTrue(!target.getUnits().contains("factory_minor"), () -> "Expected consumed unit factory_minor to be removed from the territory after placement");
+    assertTrue(target.getUnits().stream().filter(
+                            unit ->
+                                    "factory".equals(
+                                            unit.getType().getUnitAttachment().getConstructionType()))
+                    .count() == 1, () -> "Expected exactly one factory construction left after placement (factory_upgrade)");
   }
 }
