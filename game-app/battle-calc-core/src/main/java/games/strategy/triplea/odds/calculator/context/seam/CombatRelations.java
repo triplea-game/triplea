@@ -2,7 +2,6 @@ package games.strategy.triplea.odds.calculator.context.seam;
 
 import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
 import games.strategy.triplea.odds.calculator.context.model.Force;
-import games.strategy.triplea.odds.calculator.context.model.RollGroup;
 import games.strategy.triplea.odds.calculator.context.model.RulesProfile;
 import games.strategy.triplea.odds.calculator.context.model.Side;
 import games.strategy.triplea.odds.calculator.context.model.TargetFilter;
@@ -14,7 +13,12 @@ import java.util.Map;
  * AA gun that only targets air, a submerge gate all read the enemy, not the profile alone.
  */
 public interface CombatRelations {
-  TargetFilter eligibleTargets(RollGroup group, Force friendly, Force enemy);
+  /**
+   * The enemy profiles a single firing {@code firer} may hit — resolved per firer, not per group,
+   * so a surface unit and an air unit firing the same round get their own eligibility (the engine's
+   * per-{@code unitType} {@code TargetGroup.findTargets}). The resolver buckets firers by this set.
+   */
+  TargetFilter eligibleTargets(CombatProfile firer, Force friendly, Force enemy);
 
   boolean firstStrikeNegated(Side side, Force friendly, Force enemy, RulesProfile rules);
 

@@ -6,7 +6,6 @@ import games.strategy.triplea.odds.calculator.context.model.Domain;
 import games.strategy.triplea.odds.calculator.context.model.Force;
 import games.strategy.triplea.odds.calculator.context.model.Key;
 import games.strategy.triplea.odds.calculator.context.model.Lifecycle;
-import games.strategy.triplea.odds.calculator.context.model.RollGroup;
 import games.strategy.triplea.odds.calculator.context.model.RulesProfile;
 import games.strategy.triplea.odds.calculator.context.model.Side;
 import games.strategy.triplea.odds.calculator.context.model.TargetFilter;
@@ -23,17 +22,22 @@ import java.util.Set;
 public class ReferenceCombatRelations implements CombatRelations {
 
   /**
-   * The raw enemy profiles a group's hits may kill: an AA group reaches only air; a submarine
-   * reaches only non-air (it cannot target planes); otherwise every active enemy profile, minus an
-   * evading submarine that air cannot touch unless a destroyer stands with the firing side to strip
-   * its evade.
+   * The raw enemy profiles a single {@code firer}'s hits may kill: an AA gun reaches only air; a
+   * submarine reaches only non-air (it cannot target planes); otherwise every active enemy profile,
+   * minus an evading submarine that air cannot touch unless a destroyer stands with the firing side
+   * to strip its evade.
+   *
+   * <p>Eligibility is computed off the one firer, mirroring the engine's per-{@code unitType} {@code
+   * TargetGroup.findTargets} — a lone air firer no longer denies a surface unit beside it its
+   * protected-sub target, nor a lone submarine deny a surface unit its air target. {@code
+   * hasDestroyer} stays side-wide, matching the engine's once-per-step {@code destroyerPresent}.
    */
   @Override
   public TargetFilter eligibleTargets(
-      final RollGroup group, final Force friendly, final Force enemy) {
+      final CombatProfile firer, final Force friendly, final Force enemy) {
     final Set<CombatProfile> enemyProfiles = activeProfiles(enemy);
     final Set<CombatProfile> eligible = new LinkedHashSet<>();
-    if (groupHasFlag(group, CombatFlag.IS_AA)) {
+    if (firer.flags().contains(CombatFlag.IS_AA)) {
       for (final CombatProfile candidate : enemyProfiles) {
         if (candidate.domain() == Domain.AIR) {
           eligible.add(candidate);
@@ -41,15 +45,18 @@ public class ReferenceCombatRelations implements CombatRelations {
       }
       return new TargetFilter(eligible);
     }
-    // Mutual sub/air non-targeting: a submarine cannot fire on aircraft, and aircraft cannot fire
-    // on
+    // Mutual sub/air non-targeting: a submarine cannot fire on aircraft, and aircraft cannot fire on
     // a sub that canNotBeTargetedByAll unless a destroyer on the firing side strips the immunity.
-    // The
-    // two are asymmetric — a Revised sub still gets hit by air (it lacks the immunity flag) yet
-    // still
-    // cannot target the planes back.
-    final boolean subCannotHitAir = groupHasFlag(group, CombatFlag.CAN_SUBMERGE);
-    final boolean airCannotHitProtectedSubs = groupFiresFromAir(group) && !hasDestroyer(friendly);
+    // The two are asymmetric — a Revised sub still gets hit by air (it lacks the immunity flag) yet
+    // still cannot target the planes back.
+    final boolean subCannotHitAir = firer.flags().contains(CombatFlag.CAN_SUBMERGE);
+    // 'hasDestroyer' is scoped over the whole friendly side, a deliberate simplification of the
+    // engine's per-splitter 'destroyerPresent' (computed over only that splitter's firing units).
+    // They diverge only in the exotic air-first-striker-vs-immune-sub case, where a non-first-
+    // striking destroyer would not strip immunity inside the first-strike splitter — a known
+    // simplification.
+    final boolean airCannotHitProtectedSubs =
+        firer.domain() == Domain.AIR && !hasDestroyer(friendly);
     for (final CombatProfile candidate : enemyProfiles) {
       if (subCannotHitAir && candidate.domain() == Domain.AIR) {
         continue;
@@ -131,14 +138,6 @@ public class ReferenceCombatRelations implements CombatRelations {
         && profiles.stream()
             .allMatch(
                 p -> p.domain() == Domain.AIR && !p.flags().contains(CombatFlag.IS_DESTROYER));
-  }
-
-  private static boolean groupHasFlag(final RollGroup group, final CombatFlag flag) {
-    return group.firing().keySet().stream().anyMatch(p -> p.flags().contains(flag));
-  }
-
-  private static boolean groupFiresFromAir(final RollGroup group) {
-    return group.firing().keySet().stream().anyMatch(p -> p.domain() == Domain.AIR);
   }
 
   private static boolean hasDestroyer(final Force force) {

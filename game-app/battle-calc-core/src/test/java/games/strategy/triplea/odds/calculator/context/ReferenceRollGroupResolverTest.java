@@ -6,6 +6,7 @@ import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtur
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.firstStrikeSea;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.land;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.sea;
+import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.submarine;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.withMaxRoundsAa;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,10 +20,12 @@ import games.strategy.triplea.odds.calculator.context.model.RollGroup;
 import games.strategy.triplea.odds.calculator.context.model.RulesProfile;
 import games.strategy.triplea.odds.calculator.context.model.Side;
 import games.strategy.triplea.odds.calculator.context.model.TargetFilter;
+import games.strategy.triplea.odds.calculator.context.reference.ReferenceCombatRelations;
 import games.strategy.triplea.odds.calculator.context.reference.ReferenceRollGroupResolver;
 import games.strategy.triplea.odds.calculator.context.seam.CombatRelations;
 import games.strategy.triplea.odds.calculator.context.seam.RollGroupResolver;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -291,13 +294,70 @@ class ReferenceRollGroupResolverTest {
   }
 
   /**
+   * The load-bearing no-op: a homogeneous partition — every firer reaching the same targets —
+   * collapses to exactly ONE RollGroup, so the split leaves dice and casualty flow untouched
+   * wherever no sub/air asymmetry applies. Uses the real {@link ReferenceCombatRelations} so the
+   * eligible sets are the genuine ones, not a fake's single answer.
+   */
+  @Test
+  void homogeneousPartitionStaysASingleGroup() {
+    final CombatProfile cruiser = sea("cruiser", 3, 3, 1);
+    final CombatProfile battleship = sea("battleship", 4, 4, 1);
+    final Force attackers = forceOf(cruiser, 1, battleship, 1);
+    final Force defenders = forceOf(sea("enemyCruiser", 3, 3, 1), 1);
+    final RollGroupResolver resolver =
+        new ReferenceRollGroupResolver(
+            (force, enemy, side, rules, round) -> rawCounts(force), new ReferenceCombatRelations());
+
+    final BattleRound plan =
+        resolver.plan(Side.OFFENSE, attackers, defenders, RulesProfile.standard(), List.of(), 1);
+
+    assertThat(plan.firing().sequencedKeySet()).hasSize(1);
+    assertThat(plan.firing().sequencedKeySet().iterator().next().firing())
+        .containsKeys(cruiser, battleship);
+  }
+
+  /**
+   * A mixed air+surface main partition splits per firer by eligible-target set, mirroring {@code
+   * TargetGroup.newTargetGroups}: against an air-immune sub with no destroyer, the air firer's group
+   * excludes the sub while the surface firer's retains it, emitted fewest-targets-first.
+   */
+  @Test
+  void mainPartitionSplitsIntoOneGroupPerDistinctEligibleTargetSet() {
+    final CombatProfile fighter = air("fighter", 3, 4, 1);
+    final CombatProfile battleship = sea("battleship", 4, 4, 1);
+    final CombatProfile enemySub = submarine("uboat", 2, 1, 1);
+    final CombatProfile enemyCruiser = sea("enemyCruiser", 3, 3, 1);
+    final Force attackers = forceOf(fighter, 1, battleship, 1);
+    final Force defenders = forceOf(enemySub, 1, enemyCruiser, 1);
+    final RollGroupResolver resolver =
+        new ReferenceRollGroupResolver(
+            (force, enemy, side, rules, round) -> rawCounts(force), new ReferenceCombatRelations());
+
+    final BattleRound plan =
+        resolver.plan(Side.OFFENSE, attackers, defenders, RulesProfile.standard(), List.of(), 1);
+
+    final List<RollGroup> groups = plan.firing().sequencedKeySet().stream().toList();
+    assertThat(groups).hasSize(2);
+    // Fewest-targets-first: the air firer reaches only the cruiser; the surface firer also the sub.
+    assertThat(groups.get(0).firing()).containsKey(fighter);
+    assertThat(groups.get(0).target().eligibleTargets()).containsExactly(enemyCruiser);
+    assertThat(groups.get(1).firing()).containsKey(battleship);
+    assertThat(groups.get(1).target().eligibleTargets())
+        .containsExactlyInAnyOrder(enemySub, enemyCruiser);
+  }
+
+  /**
    * In-test {@link CombatRelations} whose {@code firstStrikeNegated} answer and {@code
    * eligibleTargets} filter the test controls directly; the submerge method is outside these tests'
    * intent and rejects calls.
    */
   private static final class FakeCombatRelations implements CombatRelations {
     private boolean firstStrikeNegated;
-    private TargetFilter targets = new TargetFilter(Set.of());
+    // Null means "every enemy is targetable" — the non-empty default the partition/ordering tests
+    // need, since the resolver drops a firer whose eligible set is empty. A test that cares about
+    // the filter's content sets this directly.
+    private TargetFilter targets;
 
     FakeCombatRelations(final boolean firstStrikeNegated) {
       this.firstStrikeNegated = firstStrikeNegated;
@@ -311,8 +371,13 @@ class ReferenceRollGroupResolverTest {
 
     @Override
     public TargetFilter eligibleTargets(
-        final RollGroup group, final Force friendly, final Force enemy) {
-      return targets;
+        final CombatProfile firer, final Force friendly, final Force enemy) {
+      if (targets != null) {
+        return targets;
+      }
+      final Set<CombatProfile> allEnemies = new LinkedHashSet<>();
+      enemy.counts().forEach((key, count) -> allEnemies.add(key.profile()));
+      return new TargetFilter(allEnemies);
     }
 
     @Override

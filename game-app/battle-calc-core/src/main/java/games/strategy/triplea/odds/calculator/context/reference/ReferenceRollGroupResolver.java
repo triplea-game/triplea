@@ -16,6 +16,7 @@ import games.strategy.triplea.odds.calculator.context.model.TargetFilter;
 import games.strategy.triplea.odds.calculator.context.seam.CombatRelations;
 import games.strategy.triplea.odds.calculator.context.seam.RollGroupResolver;
 import games.strategy.triplea.odds.calculator.context.seam.SupportResolver;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,12 +100,45 @@ public class ReferenceRollGroupResolver implements RollGroupResolver {
     // An empty evaluation means the support resolver applied nothing — eg no rule matched — so the
     // group falls back to its base counts.
     final Map<CombatProfile, Integer> fired = evaluated.isEmpty() ? partition : evaluated;
-    // Targeting reads the enemy composition, so the filter is derived from CombatRelations off a
-    // preliminary group rather than left empty; the fired group carries the resulting TargetFilter.
-    final RollGroup unfiltered =
-        new RollGroup(side, fired, new TargetFilter(Set.of()), mode, DiceMode.NORMAL);
-    final TargetFilter target = relations.eligibleTargets(unfiltered, friendly, enemy);
-    firing.put(new RollGroup(side, fired, target, mode, DiceMode.NORMAL), Set.of());
+
+    // Split the partition per firer by its eligible-target set, mirroring
+    // TargetGroup.newTargetGroups: firers that reach the same enemy profiles share one RollGroup.
+    // The load-bearing invariant is collapse — a homogeneous partition, every firer eligible for the
+    // same targets, yields exactly ONE group identical to the pre-split plan, so dice and casualty
+    // flow are unchanged wherever no sub/air asymmetry applies; fragmentation here would perturb
+    // every scenario, not just the immunity ones. A firer whose eligible set is empty shoots nothing
+    // this round and contributes no group (the engine's 'if (targets.isEmpty()) continue').
+    final Map<Set<CombatProfile>, Map<CombatProfile, Integer>> buckets = new LinkedHashMap<>();
+    for (final Map.Entry<CombatProfile, Integer> entry : fired.entrySet()) {
+      final Set<CombatProfile> eligible =
+          relations.eligibleTargets(entry.getKey(), friendly, enemy).eligibleTargets();
+      if (eligible.isEmpty()) {
+        continue;
+      }
+      buckets
+          .computeIfAbsent(eligible, key -> new LinkedHashMap<>())
+          .put(entry.getKey(), entry.getValue());
+    }
+
+    // Fewest-targets-first. Sub-group order is observable through target depletion as casualties
+    // land on the live map, so it must match the engine — but the engine's key is not size:
+    // 'FiringGroupSplitterGeneral' fires the air-vs-sub group ('AIR_FIRE_NON_SUBS') first, then the
+    // rest. Fewest-first coincides with that only because the air group's target set is always a
+    // subset of every surface firer's (air targets = all enemies minus immune subs), so "air-first"
+    // and "fewest-first" pick the same order in any air+surface partition; this relies on that
+    // subset coincidence, not on size being the engine's ordering key.
+    buckets.entrySet().stream()
+        .sorted(Comparator.comparingInt(bucket -> bucket.getKey().size()))
+        .forEach(
+            bucket ->
+                firing.put(
+                    new RollGroup(
+                        side,
+                        bucket.getValue(),
+                        new TargetFilter(bucket.getKey()),
+                        mode,
+                        DiceMode.NORMAL),
+                    Set.of()));
   }
 
   /**

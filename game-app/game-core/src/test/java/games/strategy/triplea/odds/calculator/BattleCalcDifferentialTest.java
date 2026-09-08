@@ -712,6 +712,73 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
           submarine(gameData).create(1, americans(gameData)),
           destroyer(gameData).create(1, germans(gameData)));
     }
+
+    /**
+     * The invincible-sub bug: on WW2V3 ({@code Air Attack Sub Restricted} on, so the sub bakes
+     * {@code CANNOT_BE_TARGETED_BY_ALL}), a fighter escorting a battleship against a lone protected
+     * sub with no destroyer must NOT rob the battleship of its target. The engine resolves
+     * eligibility per firing unit type, so the battleship sinks the sub even though the fighter
+     * cannot touch it; group-wide resolution made the sub untargetable by both and thus immortal.
+     * Run to resolution — the sub sneak-fires round 1, and the battleship only finishes it in main
+     * combat, so the divergence shows across rounds, not in one.
+     */
+    @Test
+    void mixedAirAndSurfaceAttackLetsTheSurfaceUnitSinkTheProtectedSub() {
+      final GameData gameData = TestMapGameData.WW2V3_1942.getGameData();
+      final Territory seaZone = territory("1 Sea Zone", gameData);
+
+      final Collection<Unit> attackers = fighter(gameData).create(1, americans(gameData));
+      attackers.addAll(battleship(gameData).create(1, americans(gameData)));
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          seaZone,
+          attackers,
+          submarine(gameData).create(1, germans(gameData)));
+    }
+
+    /**
+     * The immunity itself survives the per-firer split: a pure-air attack on the protected sub with
+     * no destroyer still cannot hit it, so the sub lives on both paths. Guards against the split
+     * accidentally handing air a target it should never have.
+     */
+    @Test
+    void pureAirStillCannotHitAProtectedSubWithoutADestroyer() {
+      final GameData gameData = TestMapGameData.WW2V3_1942.getGameData();
+      final Territory seaZone = territory("1 Sea Zone", gameData);
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          seaZone,
+          fighter(gameData).create(2, americans(gameData)),
+          submarine(gameData).create(1, germans(gameData)));
+    }
+
+    /**
+     * A destroyer on the firing side strips the immunity side-wide, so the fighter beside it may hit
+     * the protected sub — matching the engine's once-per-step {@code destroyerPresent}. Both paths
+     * sink the sub.
+     */
+    @Test
+    void anAttackingDestroyerLetsAirHitTheProtectedSub() {
+      final GameData gameData = TestMapGameData.WW2V3_1942.getGameData();
+      final Territory seaZone = territory("1 Sea Zone", gameData);
+
+      final Collection<Unit> attackers = fighter(gameData).create(1, americans(gameData));
+      attackers.addAll(destroyer(gameData).create(1, americans(gameData)));
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          seaZone,
+          attackers,
+          submarine(gameData).create(1, germans(gameData)));
+    }
   }
 
   /**
