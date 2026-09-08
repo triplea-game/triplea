@@ -1,6 +1,7 @@
 package games.strategy.triplea.odds.calculator.context.reference;
 
 import games.strategy.triplea.odds.calculator.context.model.CargoRule;
+import games.strategy.triplea.odds.calculator.context.model.CombatFlag;
 import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
 import games.strategy.triplea.odds.calculator.context.model.Constraints;
 import games.strategy.triplea.odds.calculator.context.model.Dependents;
@@ -43,11 +44,15 @@ public class ReferenceCasualtyAllocator implements CasualtyAllocator {
     final Map<Key, Integer> working = new LinkedHashMap<>(force.counts());
     for (int hit = 0; hit < hits; hit++) {
       final Set<CombatProfile> candidates = targetableProfiles(working, eligible);
-      if (candidates.isEmpty()) {
+      final Set<CombatProfile> allowed = selectable(candidates, working, constraints);
+      // No allowed target means a constraint withholds every remaining candidate — the transport
+      // restriction protecting the last transports while a combatant can still soak the hit. The
+      // hit lands on nothing this volley (the accepted lone-multi-HP drop) rather than spilling onto
+      // a protected transport.
+      if (allowed.isEmpty()) {
         continue;
       }
-      final CombatProfile target =
-          order.next(selectable(candidates, working, constraints), stats, side);
+      final CombatProfile target = order.next(allowed, stats, side);
       applyHit(working, target, deps);
     }
     return new Force(working);
@@ -68,11 +73,23 @@ public class ReferenceCasualtyAllocator implements CasualtyAllocator {
   }
 
   /**
+   * Narrows the preference's candidate set by the hard eligibility constraints, each applied
+   * independently: keep-one-land withholds the final land unit, and the transport restriction
+   * withholds transports while any combatant can still soak the hit.
+   */
+  private static Set<CombatProfile> selectable(
+      final Set<CombatProfile> candidates,
+      final Map<Key, Integer> working,
+      final Constraints constraints) {
+    return restrictTransports(keepOneLand(candidates, working, constraints), working, constraints);
+  }
+
+  /**
    * keep-one-land protects only the final land unit: when exactly one land unit remains and a
    * non-land alternative is eligible, land is withheld from the preference so the hit lands
    * elsewhere. With two or more land units, or no alternative, the preference decides freely.
    */
-  private static Set<CombatProfile> selectable(
+  private static Set<CombatProfile> keepOneLand(
       final Set<CombatProfile> candidates,
       final Map<Key, Integer> working,
       final Constraints constraints) {
@@ -97,6 +114,56 @@ public class ReferenceCasualtyAllocator implements CasualtyAllocator {
     return withoutLand;
   }
 
+  /**
+   * Under {@code transportCasualtiesRestricted} a transport is not a legal casualty while a
+   * non-transport combatant can still take the hit; only once every combatant is dead do transports
+   * become selectable and absorb the overflow. Re-derived per hit, this reproduces the engine's
+   * saturate-combat-HP-then-spill accounting ({@code SelectMainBattleCasualties#apply}) without a
+   * pending-hit bucket. Dependent cargo is already excluded upstream, so the candidate set is only
+   * {combatants, transports}.
+   */
+  private static Set<CombatProfile> restrictTransports(
+      final Set<CombatProfile> candidates,
+      final Map<Key, Integer> working,
+      final Constraints constraints) {
+    if (!constraints.transportCasualtiesRestricted()) {
+      return candidates;
+    }
+    // Whether a combatant can still soak the hit is read from the live working map, not from
+    // 'candidates': 'candidates' is the plan-time eligibility filter over undamaged profiles, so a
+    // multi-HP combatant damaged mid-volley has migrated to an onHit() successor that never entered
+    // that filter — it is still alive and must keep the transports protected until it is fully dead.
+    if (!anyActiveCombatant(working)) {
+      return candidates;
+    }
+    final Set<CombatProfile> withoutTransports = new LinkedHashSet<>();
+    for (final CombatProfile profile : candidates) {
+      if (!isTransport(profile)) {
+        withoutTransports.add(profile);
+      }
+    }
+    return withoutTransports;
+  }
+
+  /** An ACTIVE non-transport, non-dependent unit still on the map — one that can absorb a hit. */
+  private static boolean anyActiveCombatant(final Map<Key, Integer> working) {
+    return working.entrySet().stream()
+        .anyMatch(
+            entry ->
+                entry.getKey().state() == Lifecycle.ACTIVE
+                    && entry.getValue() > 0
+                    && !isTransport(entry.getKey().profile())
+                    && !isDependent(entry.getKey().profile()));
+  }
+
+  private static boolean isTransport(final CombatProfile profile) {
+    return profile.flags().contains(CombatFlag.IS_TRANSPORT);
+  }
+
+  private static boolean isDependent(final CombatProfile profile) {
+    return profile.flags().contains(CombatFlag.IS_DEPENDENT);
+  }
+
   private static boolean isLand(final CombatProfile profile) {
     return profile.domain() == Domain.LAND;
   }
@@ -116,9 +183,10 @@ public class ReferenceCasualtyAllocator implements CasualtyAllocator {
   /**
    * A killed carrier takes its cargo down in the same allocation. Cargo is a non-combatant that
    * never fires, so its removal does not wait on firing-mode timing — a sunk carrier sheds its
-   * cargo at once, capped at the carrier's capacity and matched by cargo type.
+   * cargo at once, capped at the carrier's capacity and matched by cargo type. Package-private so
+   * the round-end transport sweep in {@link ReferenceBattleSimulator} sheds cargo the same way.
    */
-  private void cascade(
+  static void cascade(
       final Map<Key, Integer> working, final CombatProfile carrier, final Dependents deps) {
     final CargoRule rule = deps.rules().get(carrier);
     if (rule == null) {

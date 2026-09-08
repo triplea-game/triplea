@@ -26,5 +26,8 @@ public enum CombatFlag {
   // Marks a non-combatant cargo profile, eg a land unit carried by a transport in a sea battle.
   // CombatRelations excludes it from targeting and RollGroupResolver from firing, so it leaves the
   // battle only through the dependent cascade when its carrier is killed.
-  IS_DEPENDENT
+  IS_DEPENDENT,
+  // Marks a non-combat sea transport: protected as a casualty class while a combatant can still soak
+  // a hit under 'transportCasualtiesRestricted', and swept off the board once left unescorted.
+  IS_TRANSPORT
 }

@@ -4,9 +4,11 @@ import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtur
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.land;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.multiHp;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.sea;
+import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.withFlags;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.triplea.odds.calculator.context.model.CargoRule;
+import games.strategy.triplea.odds.calculator.context.model.CombatFlag;
 import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
 import games.strategy.triplea.odds.calculator.context.model.Constraints;
 import games.strategy.triplea.odds.calculator.context.model.Dependents;
@@ -77,7 +79,7 @@ class CasualtyAllocatorContractTest {
                 2,
                 eligible,
                 new Dependents(Map.of()),
-                new Constraints(false),
+                new Constraints(false, false),
                 PREFERS_LAND,
                 FiringMode.IMMEDIATE,
                 Side.OFFENSE,
@@ -114,7 +116,7 @@ class CasualtyAllocatorContractTest {
                 2,
                 eligible,
                 new Dependents(Map.of()),
-                new Constraints(true),
+                new Constraints(true, false),
                 PREFERS_LAND,
                 FiringMode.IMMEDIATE,
                 Side.DEFENSE,
@@ -153,7 +155,7 @@ class CasualtyAllocatorContractTest {
                 1,
                 eligible,
                 deps,
-                new Constraints(false),
+                new Constraints(false, false),
                 PREFERS_LAND,
                 FiringMode.IMMEDIATE,
                 Side.OFFENSE,
@@ -192,7 +194,7 @@ class CasualtyAllocatorContractTest {
                 1,
                 eligible,
                 deps,
-                new Constraints(false),
+                new Constraints(false, false),
                 PREFERS_LAND,
                 FiringMode.DEFERRED,
                 Side.OFFENSE,
@@ -228,7 +230,7 @@ class CasualtyAllocatorContractTest {
                 3,
                 aaEligible,
                 new Dependents(Map.of()),
-                new Constraints(false),
+                new Constraints(false, false),
                 PREFERS_LAND,
                 FiringMode.IMMEDIATE,
                 Side.DEFENSE,
@@ -236,5 +238,93 @@ class CasualtyAllocatorContractTest {
 
     assertThat(countAt(result, infantry, Lifecycle.ACTIVE)).isEqualTo(1);
     assertThat(countAt(result, infantry, Lifecycle.DEAD)).isZero();
+  }
+
+  /**
+   * The transport restriction as a hard eligibility rule: while a non-transport combatant is
+   * eligible the transport is withheld from the preference, and it becomes a legal casualty only
+   * once every combatant is dead — one hit kills the destroyer and spares the transport, a second
+   * then falls to the now-unprotected transport. Mirrors {@code SelectMainBattleCasualties#apply}'s
+   * saturate-then-overflow accounting.
+   */
+  @Test
+  void restrictedTransportIsWithheldUntilEveryCombatantIsDead() {
+    final CombatProfile destroyer = sea("destroyer", 3, 3, 1);
+    final CombatProfile transport = withFlags(sea("transport", 0, 1, 1), CombatFlag.IS_TRANSPORT);
+    final Force side =
+        new Force(
+            Map.of(
+                new Key(destroyer, Lifecycle.ACTIVE), 1,
+                new Key(transport, Lifecycle.ACTIVE), 1));
+    final TargetFilter eligible = new TargetFilter(Set.of(destroyer, transport));
+
+    final Force oneHit =
+        new ReferenceCasualtyAllocator()
+            .allocate(
+                side,
+                1,
+                eligible,
+                new Dependents(Map.of()),
+                new Constraints(false, true),
+                PREFERS_LAND,
+                FiringMode.IMMEDIATE,
+                Side.OFFENSE,
+                new ProfileStats(Map.of()));
+    assertThat(countAt(oneHit, destroyer, Lifecycle.DEAD)).isOne();
+    assertThat(countAt(oneHit, transport, Lifecycle.ACTIVE)).isOne();
+
+    final Force twoHits =
+        new ReferenceCasualtyAllocator()
+            .allocate(
+                side,
+                2,
+                eligible,
+                new Dependents(Map.of()),
+                new Constraints(false, true),
+                PREFERS_LAND,
+                FiringMode.IMMEDIATE,
+                Side.OFFENSE,
+                new ProfileStats(Map.of()));
+    assertThat(countAt(twoHits, destroyer, Lifecycle.DEAD)).isOne();
+    assertThat(countAt(twoHits, transport, Lifecycle.DEAD)).isOne();
+  }
+
+  /**
+   * Regression pin for the frozen-eligibility bug: the "is a combatant still alive?" test must read
+   * the live working map, not the plan-time eligibility filter. A 2-HP battleship damaged by the
+   * first hit migrates to a successor absent from the (undamaged-only) filter; reading the filter
+   * would see "no combatant left" and sink the protected transport. Reading the live map keeps the
+   * damaged battleship counted, so the second hit is dropped — the accepted lone-multi-HP gap — and
+   * the transport survives. Survivors must NOT be {@code {battleship-damaged, transport-dead}}.
+   */
+  @Test
+  void restrictedTransportSurvivesWhileADamagedMultiHpCombatantIsStillActive() {
+    final CombatProfile battleship = multiHp("battleship", 4, 4, 2, Domain.SEA);
+    final CombatProfile damagedBattleship = battleship.onHit().orElseThrow();
+    final CombatProfile transport = withFlags(sea("transport", 0, 1, 1), CombatFlag.IS_TRANSPORT);
+    final Force side =
+        new Force(
+            Map.of(
+                new Key(battleship, Lifecycle.ACTIVE), 1,
+                new Key(transport, Lifecycle.ACTIVE), 1));
+    // Eligibility is frozen from undamaged profiles, so the damaged successor is deliberately absent.
+    final TargetFilter eligible = new TargetFilter(Set.of(battleship, transport));
+
+    final Force result =
+        new ReferenceCasualtyAllocator()
+            .allocate(
+                side,
+                2,
+                eligible,
+                new Dependents(Map.of()),
+                new Constraints(false, true),
+                PREFERS_LAND,
+                FiringMode.IMMEDIATE,
+                Side.OFFENSE,
+                new ProfileStats(Map.of()));
+
+    assertThat(countAt(result, transport, Lifecycle.ACTIVE)).isOne();
+    assertThat(countAt(result, transport, Lifecycle.DEAD)).isZero();
+    assertThat(countAt(result, damagedBattleship, Lifecycle.ACTIVE)).isOne();
   }
 }

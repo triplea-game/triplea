@@ -309,6 +309,12 @@ public class GameDataBattleAdapter {
     if (ua.isDestroyer()) {
       flags.add(CombatFlag.IS_DESTROYER);
     }
+    // Mirrors Matches.unitIsSeaTransportButNotCombatSeaTransport: transportCapacity != -1 (a carrier
+    // uses carrierCapacity and stays at -1) and not a combat transport, which fights and so is never
+    // the protected casualty class. Distinct from the anyCarrier '> 0' cargo-cascade predicate.
+    if (ua.getTransportCapacity() != -1 && ua.isSea() && !ua.isCombatTransport()) {
+      flags.add(CombatFlag.IS_TRANSPORT);
+    }
     if (dependent) {
       flags.add(CombatFlag.IS_DEPENDENT);
     }

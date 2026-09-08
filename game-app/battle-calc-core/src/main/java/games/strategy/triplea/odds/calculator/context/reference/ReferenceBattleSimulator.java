@@ -7,6 +7,8 @@ import games.strategy.triplea.odds.calculator.context.model.BattleView;
 import games.strategy.triplea.odds.calculator.context.model.CombatFlag;
 import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
 import games.strategy.triplea.odds.calculator.context.model.Constraints;
+import games.strategy.triplea.odds.calculator.context.model.Dependents;
+import games.strategy.triplea.odds.calculator.context.model.Domain;
 import games.strategy.triplea.odds.calculator.context.model.FireContext;
 import games.strategy.triplea.odds.calculator.context.model.FiringMode;
 import games.strategy.triplea.odds.calculator.context.model.Force;
@@ -99,6 +101,9 @@ public class ReferenceBattleSimulator implements BattleSimulator {
         && !withdrew) {
       round++;
       withdrew = fightRound(scenario, attackers, defenders, round, stats, rng);
+      // A side left with only unescorted transports loses them at round end under the restriction,
+      // before the DEAD reconcile so their cargo cascades into the same drop.
+      sweepUnescortedTransports(scenario, attackers, defenders);
       // Reconcile: the working map is the next round's force — DEAD buckets drop, ACTIVE and
       // WITHDRAWN survive; support and stats re-evaluate next round off the reduced force.
       dropDead(attackers);
@@ -270,7 +275,8 @@ public class ReferenceBattleSimulator implements BattleSimulator {
         step.offense() ? scenario.defenderOrder() : scenario.attackerOrder();
     // keep-one-land gating (amphibious/retreat-aware) is a deferred fidelity item; a bare false
     // never withholds the last land unit, which is correct wherever no non-land alternative exists.
-    final Constraints constraints = new Constraints(false);
+    final Constraints constraints =
+        new Constraints(false, scenario.rules().transportCasualtiesRestricted());
     final Force after =
         allocator.allocate(
             new Force(targetForce),
@@ -343,6 +349,119 @@ public class ReferenceBattleSimulator implements BattleSimulator {
   private static BattleView viewFor(
       final Map<Key, Integer> side, final Map<Key, Integer> enemy, final int round) {
     return new BattleView(new Force(side), new Force(enemy), round);
+  }
+
+  /**
+   * Round-end removal of a side left with only unescorted transports while the enemy can still
+   * fire, cascading each swept transport's cargo. Mirrors {@code RemoveUnprotectedUnits}: gated on
+   * the restriction, run DEFENSE then OFFENSE.
+   *
+   * <p>Three v1 fidelity gaps, all unobserved in the harness: only the transport-only case is
+   * modeled, not the broad unprotected-units removal ({@code
+   * RemoveUnprotectedUnits#checkUnprotectedUnits}); this runs after the round's retreat/submerge
+   * whereas the engine removes transports (Order 72) before retreat (Order 75); and the OFFENSE
+   * exemption keys on air alone whereas the engine also exempts an attacker with a retreat
+   * territory. The last two are masked because the harness has no movement routes, so no retreat
+   * territory exists.
+   */
+  private void sweepUnescortedTransports(
+      final BattleScenario scenario,
+      final Map<Key, Integer> attackers,
+      final Map<Key, Integer> defenders) {
+    if (!scenario.rules().transportCasualtiesRestricted()) {
+      return;
+    }
+    sweepSide(Side.DEFENSE, defenders, attackers, scenario.dependents());
+    sweepSide(Side.OFFENSE, attackers, defenders, scenario.dependents());
+  }
+
+  private void sweepSide(
+      final Side side,
+      final Map<Key, Integer> working,
+      final Map<Key, Integer> enemy,
+      final Dependents deps) {
+    // The attacker can retreat rather than die, so an OFFENSE side still holding air is exempt
+    // (RemoveUnprotectedUnits#attackerHasRetreat); retreat-territory availability is not modeled.
+    if (side == Side.OFFENSE && hasActiveAir(working)) {
+      return;
+    }
+    if (!onlyUnescortedTransportsLeft(working) || !enemyHasActiveFirepower(enemy)) {
+      return;
+    }
+    for (final CombatProfile transport : activeTransports(working)) {
+      final int count = working.remove(new Key(transport, Lifecycle.ACTIVE));
+      working.merge(new Key(transport, Lifecycle.DEAD), count, Integer::sum);
+      for (int shed = 0; shed < count; shed++) {
+        ReferenceCasualtyAllocator.cascade(working, transport, deps);
+      }
+    }
+  }
+
+  /**
+   * A side is sweepable when it holds at least one ACTIVE transport and no other ACTIVE fighter.
+   * Package-private so {@code TransportSweepTest} can pin the trigger in isolation.
+   */
+  static boolean onlyUnescortedTransportsLeft(final Map<Key, Integer> working) {
+    boolean anyTransport = false;
+    for (final Map.Entry<Key, Integer> entry : working.entrySet()) {
+      if (entry.getKey().state() != Lifecycle.ACTIVE || entry.getValue() <= 0) {
+        continue;
+      }
+      final CombatProfile profile = entry.getKey().profile();
+      if (isDependent(profile)) {
+        continue;
+      }
+      if (isTransport(profile)) {
+        anyTransport = true;
+      } else {
+        return false;
+      }
+    }
+    return anyTransport;
+  }
+
+  // Approximates the engine's getEnemyUnitsThatCanFire: an active non-transport combatant. A
+  // transport's attack of 0 makes it unable to shoot the swept fleet, so it is not firepower here.
+  // Over-counts vs the engine, which also requires movement > 0 and a positive attack — a pure
+  // attack-0 or immobile sea unit would be excluded there but is counted here; REVISED fields no
+  // such unit, so the divergence is unobserved (a v1 gap).
+  private static boolean enemyHasActiveFirepower(final Map<Key, Integer> enemy) {
+    return enemy.entrySet().stream()
+        .anyMatch(
+            entry ->
+                entry.getKey().state() == Lifecycle.ACTIVE
+                    && entry.getValue() > 0
+                    && !isTransport(entry.getKey().profile())
+                    && !isDependent(entry.getKey().profile()));
+  }
+
+  private static boolean hasActiveAir(final Map<Key, Integer> working) {
+    return working.entrySet().stream()
+        .anyMatch(
+            entry ->
+                entry.getKey().state() == Lifecycle.ACTIVE
+                    && entry.getValue() > 0
+                    && entry.getKey().profile().domain() == Domain.AIR);
+  }
+
+  private static List<CombatProfile> activeTransports(final Map<Key, Integer> working) {
+    final List<CombatProfile> transports = new ArrayList<>();
+    for (final Map.Entry<Key, Integer> entry : working.entrySet()) {
+      if (entry.getKey().state() == Lifecycle.ACTIVE
+          && entry.getValue() > 0
+          && isTransport(entry.getKey().profile())) {
+        transports.add(entry.getKey().profile());
+      }
+    }
+    return transports;
+  }
+
+  private static boolean isTransport(final CombatProfile profile) {
+    return profile.flags().contains(CombatFlag.IS_TRANSPORT);
+  }
+
+  private static boolean isDependent(final CombatProfile profile) {
+    return profile.flags().contains(CombatFlag.IS_DEPENDENT);
   }
 
   /**
