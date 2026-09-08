@@ -46,7 +46,8 @@ public class MapRouteDrawer {
   private static final int MESSAGE_TEXT_SPACING = 6;
   private static final Font MESSAGE_FONT = new Font("Dialog", Font.BOLD, 16);
   // Offset the cursor to prevent it from obscuring UI elements
-  private static final double CURSOR_OFFSET_X = 25;
+  // TODO: Derive these values dynamically rather than using hardcoded values.
+  private static final double CURSOR_OFFSET_X = 20;
   private static final double CURSOR_OFFSET_Y = 10;
 
   private final RouteCalculator routeCalculator;
