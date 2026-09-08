@@ -60,7 +60,12 @@ public class ReferenceRollGroupResolver implements RollGroupResolver {
     for (final Map.Entry<CombatProfile, Integer> entry : active.entrySet()) {
       final CombatProfile profile = entry.getKey();
       if (profile.flags().contains(CombatFlag.IS_AA)) {
-        aa.put(profile, entry.getValue());
+        // AA fires only through its 'maxRoundsAa' round (default 1); past it the gun drops out of
+        // every partition — it neither re-fires (the engine's per-round gate) nor joins main, since
+        // a pure gun has no main-phase attack. -1 means it fires every round.
+        if (profile.maxRoundsAa() < 0 || round <= profile.maxRoundsAa()) {
+          aa.put(profile, entry.getValue());
+        }
       } else if (profile.flags().contains(CombatFlag.FIRST_STRIKE) && !firstStrikeNegated) {
         firstStrike.put(profile, entry.getValue());
       } else {

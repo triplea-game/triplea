@@ -1,10 +1,12 @@
 package games.strategy.triplea.odds.calculator.context;
 
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.aa;
+import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.air;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.cargo;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.firstStrikeSea;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.land;
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.sea;
+import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.withMaxRoundsAa;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.triplea.odds.calculator.context.model.BattleRound;
@@ -229,6 +231,41 @@ class ReferenceRollGroupResolverTest {
     assertThat(plan.firing().sequencedKeySet()).isNotEmpty();
     assertThat(plan.firing().sequencedKeySet())
         .allMatch(group -> group.target().equals(onlyDefendingInfantry));
+  }
+
+  /**
+   * The engine fires AA only through its {@code maxRoundsAa} round (default 1), so a standard gun
+   * fires round 1 and never again — mirroring {@code Matches.unitIsAaThatCanFireOnRound}. Because
+   * {@code plan} is per-round, the resolver must gate the AA partition on the round: an AA gun past
+   * its firing rounds drops out of every group (a pure gun has no main fire to fall through to),
+   * while a non-AA unit beside it still fires. This is what stops the newly-real AA strength from
+   * re-firing every round.
+   */
+  @Test
+  void aaFiresThroughItsMaxRoundsAaRoundThenNeverAgain() {
+    final CombatProfile aaGun = withMaxRoundsAa(aa("aaGun", 0, 1, 1), 1);
+    final CombatProfile infantry = land("infantry", 1, 2, 1);
+    final Force firing = forceOf(aaGun, 1, infantry, 2);
+    final Force enemyAir = forceOf(air("fighter", 3, 4, 1), 2);
+    final RollGroupResolver resolver =
+        new ReferenceRollGroupResolver(
+            (force, enemy, side, rules, round) -> rawCounts(force), new FakeCombatRelations(false));
+
+    final BattleRound round1 =
+        resolver.plan(Side.DEFENSE, firing, enemyAir, RulesProfile.standard(), List.of(), 1);
+    assertThat(fires(round1, aaGun)).as("AA fires on round 1").isTrue();
+
+    final BattleRound round2 =
+        resolver.plan(Side.DEFENSE, firing, enemyAir, RulesProfile.standard(), List.of(), 2);
+    assertThat(fires(round2, aaGun)).as("AA does not re-fire past maxRoundsAa").isFalse();
+    assertThat(fires(round2, infantry))
+        .as("the round gate is AA-specific: the infantry still fires")
+        .isTrue();
+  }
+
+  private static boolean fires(final BattleRound round, final CombatProfile profile) {
+    return round.firing().sequencedKeySet().stream()
+        .anyMatch(group -> group.firing().containsKey(profile));
   }
 
   /**

@@ -7,10 +7,12 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.odds.calculator.context.model.BattleOptions;
 import games.strategy.triplea.odds.calculator.context.model.BattleScenario;
@@ -329,6 +331,139 @@ class GameDataBattleAdapterTest {
     assertThat(profileOf(withLhtr.defenders(), "aaGun").flags())
         .as("AA fire never takes its best roll, so it stays off even under LHTR")
         .doesNotContain(CombatFlag.CHOOSE_BEST_ROLL);
+  }
+
+  /**
+   * Bug 1 of the AA stat-source gap (scope §2a): {@code profileFor} bakes every unit's offensive
+   * strength from the normal {@code getAttack} family, so an {@code isAaForCombatOnly} gun gets its
+   * near-zero normal attack rather than its AA firepower. The engine draws offensive AA from a
+   * disjoint getter, {@code getOffensiveAttackAa}. A pure aaGun has {@code offensiveAttackAa == 0},
+   * indistinguishable from its {@code attack == 0}, so the fixture raises the AA value to 2 — the two
+   * sources then disagree and the baked {@code attack()} must track the AA source, not the normal
+   * one.
+   *
+   * <p>{@link CombatProfile} carries no die-sides field, so the {@code *MaxDieSides} half of the AA
+   * stat family is not representable today and is not asserted here — only the strength source is
+   * pinned.
+   */
+  @Test
+  void aaUnitProfileUsesAaAttackNotNormalAttack() {
+    final GameData revised = TestMapGameData.REVISED.getGameData();
+    final GamePlayer russians = GameDataTestUtil.russians(revised);
+    final GamePlayer germans = GameDataTestUtil.germans(revised);
+    final Territory germany = GameDataTestUtil.territory("Germany", revised);
+    final UnitType aaGun = GameDataTestUtil.aaGun(revised);
+    final UnitAttachment aa = aaGun.getUnitAttachment();
+    // Give the gun a real offensive-AA value so the AA source and the 0 normal attack disagree — a
+    // same-stats gun could not tell which getter the adapter read.
+    aa.setOffensiveAttackAa(2);
+    final Collection<Unit> attacking = aaGun.create(1, russians);
+    final Collection<Unit> defending = GameDataTestUtil.infantry(revised).create(1, germans);
+
+    final BattleScenario scenario =
+        adapter.toScenario(
+            russians,
+            germans,
+            germany,
+            attacking,
+            defending,
+            List.of(),
+            List.of(),
+            new BattleOptions(false, List.of(), List.of()));
+
+    assertThat(aa.getAttack(russians))
+        .as("fixture guard: the normal attack is 0, distinct from the AA value")
+        .isEqualTo(0);
+    assertThat(profileOf(scenario.attackers(), "aaGun").attack())
+        .as("offensive AA firepower from getOffensiveAttackAa, not the 0 normal attack")
+        .isEqualTo(aa.getOffensiveAttackAa(russians));
+  }
+
+  /**
+   * The defensive half of scope §2a bug 1: a defending aaGun's baked {@code defense()} must come from
+   * {@code getAttackAa} (its value against attacking air, 1 for a standard gun), not its 0 normal
+   * defense. {@link CombatProfile} carries no die-sides field, so only the strength source is pinned;
+   * the AA-specific {@code maxDieSides} denominator is unrepresentable and out of scope.
+   */
+  @Test
+  void aaUnitDefenseProfileUsesAttackAaNotNormalDefense() {
+    final GameData revised = TestMapGameData.REVISED.getGameData();
+    final GamePlayer russians = GameDataTestUtil.russians(revised);
+    final GamePlayer germans = GameDataTestUtil.germans(revised);
+    final Territory germany = GameDataTestUtil.territory("Germany", revised);
+    final UnitType aaGun = GameDataTestUtil.aaGun(revised);
+    final UnitAttachment aa = aaGun.getUnitAttachment();
+    final Collection<Unit> attacking = GameDataTestUtil.infantry(revised).create(1, russians);
+    final Collection<Unit> defending = aaGun.create(1, germans);
+
+    final BattleScenario scenario =
+        adapter.toScenario(
+            russians,
+            germans,
+            germany,
+            attacking,
+            defending,
+            List.of(),
+            List.of(),
+            new BattleOptions(false, List.of(), List.of()));
+
+    assertThat(aa.getDefense(germans))
+        .as("fixture guard: the normal defense is 0, distinct from the AA value")
+        .isEqualTo(0);
+    assertThat(profileOf(scenario.defenders(), "aaGun").defense())
+        .as("defensive AA firepower from getAttackAa, not the 0 normal defense")
+        .isEqualTo(aa.getAttackAa(germans));
+  }
+
+  /**
+   * The roll-family twin of bug 1: an AA profile's {@code rolls()} must come from {@code
+   * getMaxAaAttacks}, not the normal {@code getAttackRolls} family. A default gun's {@code
+   * maxAaAttacks} is {@code -1} (infinite), which is not a representable static die count and so
+   * collapses to 1; a map-set finite value is preserved verbatim. Only strength is pinned by the
+   * two reds above — this pins the roll source, which coincides with normal {@code attackRolls} at
+   * 1 for a stock gun and would otherwise go uncovered.
+   */
+  @Test
+  void aaUnitProfileRollsComeFromMaxAaAttacksNotAttackRolls() {
+    final GameData revised = TestMapGameData.REVISED.getGameData();
+    final GamePlayer russians = GameDataTestUtil.russians(revised);
+    final GamePlayer germans = GameDataTestUtil.germans(revised);
+    final Territory germany = GameDataTestUtil.territory("Germany", revised);
+    final UnitType aaGun = GameDataTestUtil.aaGun(revised);
+    final UnitAttachment aa = aaGun.getUnitAttachment();
+    final Collection<Unit> defending = GameDataTestUtil.infantry(revised).create(1, germans);
+
+    assertThat(aa.getMaxAaAttacks())
+        .as("fixture guard: a stock gun's maxAaAttacks is -1 (infinite)")
+        .isEqualTo(-1);
+    assertThat(
+            profileOf(
+                    scenarioFor(
+                            russians,
+                            germans,
+                            germany,
+                            aaGun.create(1, russians),
+                            defending)
+                        .attackers(),
+                    "aaGun")
+                .rolls())
+        .as("infinite maxAaAttacks collapses to a single static die")
+        .isEqualTo(1);
+
+    aa.setMaxAaAttacks(3);
+    assertThat(
+            profileOf(
+                    scenarioFor(
+                            russians,
+                            germans,
+                            germany,
+                            aaGun.create(1, russians),
+                            defending)
+                        .attackers(),
+                    "aaGun")
+                .rolls())
+        .as("a map-set finite maxAaAttacks is baked verbatim as the AA roll count")
+        .isEqualTo(3);
   }
 
   private BattleScenario scenarioFor(

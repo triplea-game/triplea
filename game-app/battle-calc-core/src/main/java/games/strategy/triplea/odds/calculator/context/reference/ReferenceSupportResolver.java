@@ -115,6 +115,7 @@ public class ReferenceSupportResolver implements SupportResolver {
         attack,
         defense,
         rolls,
+        base.maxRoundsAa(),
         base.hitPoints(),
         base.domain(),
         base.damage(),

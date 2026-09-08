@@ -94,6 +94,24 @@ public final class CombatProfileFixtures {
         profile.attack(),
         profile.defense(),
         rolls,
+        profile.maxRoundsAa(),
+        profile.hitPoints(),
+        profile.domain(),
+        profile.damage(),
+        profile.gives(),
+        profile.receives(),
+        profile.flags(),
+        profile.next());
+  }
+
+  /** Copies {@code profile} firing AA only through {@code maxRoundsAa} (-1 = every round). */
+  public static CombatProfile withMaxRoundsAa(final CombatProfile profile, final int maxRoundsAa) {
+    return new CombatProfile(
+        profile.type(),
+        profile.attack(),
+        profile.defense(),
+        profile.rolls(),
+        maxRoundsAa,
         profile.hitPoints(),
         profile.domain(),
         profile.damage(),
@@ -112,6 +130,7 @@ public final class CombatProfileFixtures {
         profile.attack(),
         profile.defense(),
         profile.rolls(),
+        profile.maxRoundsAa(),
         profile.hitPoints(),
         profile.domain(),
         profile.damage(),
@@ -128,6 +147,7 @@ public final class CombatProfileFixtures {
         profile.attack(),
         profile.defense(),
         profile.rolls(),
+        profile.maxRoundsAa(),
         profile.hitPoints(),
         profile.domain(),
         profile.damage(),
@@ -145,6 +165,7 @@ public final class CombatProfileFixtures {
         profile.attack(),
         profile.defense(),
         profile.rolls(),
+        profile.maxRoundsAa(),
         profile.hitPoints(),
         profile.domain(),
         profile.damage(),
@@ -166,6 +187,7 @@ public final class CombatProfileFixtures {
         attack,
         defense,
         1,
+        -1,
         hitPoints,
         domain,
         new DamageState(0),
