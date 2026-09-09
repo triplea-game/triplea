@@ -19,18 +19,13 @@ import org.junit.jupiter.api.Test;
  * to the engine default order. RED at runtime by design — the impl is still a throwing "phase 1"
  * stub.
  *
- * <p>The listed-order behavior is pinned crisply here. The non-OOL <em>fallback</em> is not: the
- * engine default is NOT cost-ascending. It is {@code CasualtyOrderOfLosses}, a power/TUV-efficiency
- * sort — it repeatedly takes the lowest-combat-power unit (including the support power that unit
- * grants others), breaking ties by {@code UnitBattleComparator} (cost among them), interleaving
- * types so support is preserved. So this test asserts only what is rule-true of the fallback (it
- * returns an eligible bucket, totally and deterministically); the exact fallback ordering is owned
- * by the differential harness ({@code BattleCalcDifferentialTest}, the mixed-type no-OOL {@code
- * alwaysHits} case), not pinned to a cost guess here.
- *
- * <p>{@code next} now takes the battle {@link Side} so the default order can rank by side-relative
- * power (attack on offense, defense on defense); the remaining gap is the engine's support-power
- * interleave, still owned by the differential harness.
+ * <p>The listed-order behavior is pinned crisply here. The non-OOL <em>fallback</em> ranks by the
+ * support-adjusted power the caller supplies in {@link ProfileStats#effectivePower()} — the power a
+ * unit's side loses when it dies, including the support it receives and gives (engine {@code
+ * CasualtyOrderOfLosses}) — falling back to the base side-relative stat when none is supplied, with
+ * cost as the tiebreak. The unit-level ranking is pinned here; the marginal-power figure itself,
+ * and its per-exchange (not per-hit) recomputation, are exercised end-to-end by the differential
+ * harness ({@code BattleCalcDifferentialTest}'s support-adjusted casualty-order case).
  */
 class OolCasualtyOrderTest {
 
@@ -49,11 +44,30 @@ class OolCasualtyOrderTest {
   }
 
   /**
+   * The support-adjusted fallback: when {@link ProfileStats#effectivePower()} supplies a
+   * per-profile figure, the default order sheds the lowest-effective-power bucket even when its
+   * base stat is the higher one — a supported infantry (worth 5 to its force) outlives an armour
+   * (worth 3) whose base attack of 3 beats the infantry's 1.
+   */
+  @Test
+  void nextShedsTheLowestSupportAdjustedPowerBucketOverAHigherBaseStatBucket() {
+    final CombatProfile infantry = land("infantry", 1, 2, 1);
+    final CombatProfile armour = land("armour", 3, 3, 1);
+    final OolCasualtyOrder order = new OolCasualtyOrder(List.of());
+    final ProfileStats supportAdjusted =
+        new ProfileStats(Map.of(infantry, 4, armour, 5), Map.of(infantry, 5, armour, 3));
+
+    final CombatProfile chosen =
+        order.next(Set.of(infantry, armour), supportAdjusted, Side.OFFENSE);
+
+    assertThat(chosen).isEqualTo(armour);
+  }
+
+  /**
    * Neither eligible type appears in the OOL list, so the order must fall back to the engine
-   * default rather than throwing or returning something outside the eligible set. This asserts only
-   * the total-function contract (the pick is one of the eligible buckets); it deliberately does NOT
-   * assert which one, because the real default is a power/TUV sort the cost-only seam cannot yet
-   * reproduce — the differential harness owns that ordering (see the class note).
+   * default rather than throwing or returning something outside the eligible set. With no
+   * support-adjusted power supplied it ranks by base side power, so this asserts the total-function
+   * contract (the pick is one of the eligible buckets) and that the weaker base stat is taken.
    */
   @Test
   void nextFallsBackToAnEligibleBucketWhenNoEligibleTypeIsInTheOol() {
