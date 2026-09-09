@@ -439,18 +439,18 @@ public class GameDataBattleAdapter {
   }
 
   /**
-   * Bakes the map's friendly strength/roll support into the calc's {@link SupportRule} model plus
-   * the per-unit-type give/receive categories the resolver keys on. Each {@link
-   * UnitSupportAttachment} becomes one rule per battle side it applies to, gated to the side whose
-   * owner ({@code attacker} or {@code defender}) the attachment lists — mirroring the engine's
-   * {@code SupportCalculator} owner match.
+   * Bakes the map's strength/roll support into the calc's {@link SupportRule} model plus the
+   * per-unit-type give/receive categories the resolver keys on. Each {@link UnitSupportAttachment}
+   * becomes one rule per battle side it applies to, gated to the side whose owner ({@code attacker}
+   * or {@code defender}) the attachment lists — mirroring the engine's {@code SupportCalculator}
+   * owner match. An {@code enemy} (debuff) attachment emits on the <em>opposite</em> side from the
+   * giver, since the engine builds its enemy pool with {@code side.getOpposite()} and the
+   * supporters come from the other force.
    *
-   * <p>Only friendly ({@code allied}) strength/roll support is modeled. A unit carries every
-   * support category it gives or receives, and each rule records its {@code bonusType}/{@code
-   * count} so the resolver caps a recipient's stacked support the way the engine does. Deliberately
-   * unmodeled: enemy ({@code enemy}) debuff support, Improved-Artillery tech doubling, allied
-   * support beyond the two calc players, a rule that is both strength and roll (strength wins), and
-   * AA support.
+   * <p>A unit carries every support category it gives or receives, and each rule records its {@code
+   * bonusType}/{@code count} so the resolver caps a recipient's stacked support the way the engine
+   * does. Deliberately unmodeled: Improved-Artillery tech doubling, allied support beyond the two
+   * calc players, a rule that is both strength and roll (strength wins), and AA support.
    */
   private static SupportModel supportModel(
       final GameData data, final GamePlayer attacker, final GamePlayer defender) {
@@ -459,20 +459,31 @@ public class GameDataBattleAdapter {
     final Map<String, Set<SupportCategory>> receives = new LinkedHashMap<>();
     for (final UnitSupportAttachment attachment :
         Set.copyOf(data.getUnitTypeList().getSupportRules())) {
-      if (!attachment.getAllied()) {
-        continue;
-      }
       final UnitType giver = (UnitType) attachment.getAttachedTo();
       final SupportCategory category =
           new SupportCategory("support:" + giver.getName() + "/" + attachment.getName());
       final boolean appliesToStrength = attachment.getStrength();
-      if (attachment.getOffence() && attachment.getPlayers().contains(attacker)) {
-        rules.add(supportRule(attachment, category, appliesToStrength, Side.OFFENSE));
-        register(gives, receives, giver, attachment, category);
+      if (attachment.getAllied()) {
+        if (attachment.getOffence() && attachment.getPlayers().contains(attacker)) {
+          rules.add(supportRule(attachment, category, appliesToStrength, Side.OFFENSE, false));
+          register(gives, receives, giver, attachment, category);
+        }
+        if (attachment.getDefence() && attachment.getPlayers().contains(defender)) {
+          rules.add(supportRule(attachment, category, appliesToStrength, Side.DEFENSE, false));
+          register(gives, receives, giver, attachment, category);
+        }
       }
-      if (attachment.getDefence() && attachment.getPlayers().contains(defender)) {
-        rules.add(supportRule(attachment, category, appliesToStrength, Side.DEFENSE));
-        register(gives, receives, giver, attachment, category);
+      if (attachment.getEnemy()) {
+        // An attacking giver debuffs the defender, so the rule fires when the defender is the
+        // evaluated side (and vice versa) — the engine's side.getOpposite() for the enemy pool.
+        if (attachment.getOffence() && attachment.getPlayers().contains(attacker)) {
+          rules.add(supportRule(attachment, category, appliesToStrength, Side.DEFENSE, true));
+          register(gives, receives, giver, attachment, category);
+        }
+        if (attachment.getDefence() && attachment.getPlayers().contains(defender)) {
+          rules.add(supportRule(attachment, category, appliesToStrength, Side.OFFENSE, true));
+          register(gives, receives, giver, attachment, category);
+        }
       }
     }
     return new SupportModel(List.copyOf(rules), gives, receives);
@@ -482,7 +493,8 @@ public class GameDataBattleAdapter {
       final UnitSupportAttachment attachment,
       final SupportCategory category,
       final boolean appliesToStrength,
-      final Side side) {
+      final Side side,
+      final boolean fromEnemy) {
     final UnitSupportAttachment.BonusType bonusType = attachment.getBonusType();
     // firstRoundOnly is always false: the engine's support model has no first-round-only flag. A
     // missing bonusType (the engine would reject it) is treated as its own uncappable-but-single
@@ -497,7 +509,8 @@ public class GameDataBattleAdapter {
         false,
         new BonusTypeId(bonusType != null ? bonusType.getName() : category.name()),
         bonusType != null ? bonusType.getCount() : 1,
-        attachment.getUnitType().size());
+        attachment.getUnitType().size(),
+        fromEnemy);
   }
 
   /**

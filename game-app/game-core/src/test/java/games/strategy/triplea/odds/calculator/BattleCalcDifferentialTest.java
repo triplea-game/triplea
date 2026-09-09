@@ -22,11 +22,14 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.odds.calculator.adapter.EngineRandomSource;
 import games.strategy.triplea.odds.calculator.adapter.GameDataBattleAdapter;
@@ -42,6 +45,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -158,6 +162,38 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
         germans(gameData),
         germany,
         attacking,
+        infantry(gameData).create(3, germans(gameData)));
+  }
+
+  /**
+   * Enemy (debuff) support fidelity, the §5.5 headline. No bundled map carries a normal-combat
+   * enemy support — TWW's only one is AA — so an enemy strength rule is synthesized onto a loaded
+   * REVISED the same way REVISED's own old-artillery support is synthesized: russian armour cuts
+   * german infantry defense by two, to zero. Under low luck plus {@code alwaysHits} the debuffed
+   * defenders score no hits, so the attacker keeps all four armour; the old allied-only gate
+   * dropped enemy support entirely and would leave the defenders defending at two, scoring a hit
+   * that costs the attacker an armour — so identical survivors pin that the adapter now bakes the
+   * enemy debuff the engine applies.
+   */
+  @Test
+  void alwaysHitsUnderLowLuckWithEnemyStrengthDebuffMatchesTheEngine() throws GameParseException {
+    final GameData gameData = TestMapGameData.REVISED.getGameData();
+    makeGameLowLuck(gameData);
+    injectEnemyStrengthDebuff(
+        gameData, armour(gameData), infantry(gameData), russians(gameData), -2);
+    // Compute the lazily-cached support list now, so the oracle and the new path both read the
+    // injected rule, and guard against a silent no-op where the debuff reaches neither calculator.
+    assertThat(gameData.getUnitTypeList().getSupportRules())
+        .anyMatch(UnitSupportAttachment::getEnemy);
+
+    final Territory germany = territory("Germany", gameData);
+
+    assertIdenticalSurvivorsUnderAlwaysHits(
+        gameData,
+        russians(gameData),
+        germans(gameData),
+        germany,
+        armour(gameData).create(4, russians(gameData)),
         infantry(gameData).create(3, germans(gameData)));
   }
 
@@ -931,6 +967,33 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
       }
     }
     gameData.getProperties().set(propertyName, value);
+  }
+
+  /**
+   * Synthesizes an enemy strength support: {@code giver} (owned by {@code giverOwner}) cuts {@code
+   * target}'s combat strength by {@code bonus} whenever the giver attacks. Attached to the loaded
+   * data before the support list is cached, so both the engine and the adapter read it — the only
+   * way to exercise normal-combat enemy support, since no bundled test map declares one.
+   */
+  private static void injectEnemyStrengthDebuff(
+      final GameData gameData,
+      final UnitType giver,
+      final UnitType target,
+      final GamePlayer giverOwner,
+      final int bonus)
+      throws GameParseException {
+    final UnitSupportAttachment rule =
+        new UnitSupportAttachment(
+            Constants.SUPPORT_ATTACHMENT_PREFIX + "EnemyDebuffTest", giver, gameData);
+    rule.setDice("strength");
+    rule.setFaction("enemy");
+    rule.setSide("offence");
+    rule.setBonus(bonus);
+    rule.setBonusType("enemyDebuff");
+    rule.setNumber(3);
+    rule.setUnitType(Set.of(target));
+    rule.setPlayers(List.of(giverOwner));
+    giver.addAttachment(rule.getName(), rule);
   }
 
   private static Map<String, Integer> countByType(final Collection<Unit> units) {

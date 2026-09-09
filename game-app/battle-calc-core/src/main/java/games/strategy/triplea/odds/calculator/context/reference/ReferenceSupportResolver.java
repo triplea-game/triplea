@@ -24,20 +24,29 @@ import java.util.Map;
  * independently (separate pools and caps), exactly as the engine builds separate {@code
  * AvailableSupports} for each. A boosted recipient migrates to a distinct evaluated profile with
  * the bonus baked into its stat or roll count.
+ *
+ * <p>Enemy (debuff) support is allocated alongside friendly support but from the opposing force's
+ * supporters and with its own caps, and within a bonus-type group its rules apply worst (most
+ * negative) first — mirroring the engine's separate friendly/enemy {@code AvailableSupports} and
+ * its reversed {@code SupportRuleSort}. A recipient's total delta is the sum of both.
  */
 public class ReferenceSupportResolver implements SupportResolver {
 
-  // The engine's SupportRuleSort for allied support, restricted to the ordering that changes how
-  // much support a capped receiver gets: highest bonus first, then fewest target unit-types first
-  // (so a narrowly-targeted rule acts before a broad one consumes the shared supporters). The
-  // giver-power tiebreak only steers casualty selection, so a stable category-name tiebreak stands
-  // in for it and keeps the order deterministic.
-  private static final Comparator<SupportRule> WITHIN_BONUS_TYPE =
-      Comparator.comparingInt(SupportRule::bonus)
-          .reversed()
-          .thenComparingInt(SupportRule::targetTypeCount)
+  // The engine's SupportRuleSort, restricted to the ordering that changes how much support a capped
+  // receiver gets: the strongest bonus first, then fewest target unit-types first (so a
+  // narrowly-targeted rule acts before a broad one consumes the shared supporters). The giver-power
+  // tiebreak only steers casualty selection, so a stable category-name tiebreak stands in for it
+  // and
+  // keeps the order deterministic. Friendly orders highest-bonus first; enemy orders worst (most
+  // negative) first, since the engine reverses the bonus comparison for the debuff pool.
+  private static final Comparator<SupportRule> BY_TARGET_THEN_NAME =
+      Comparator.comparingInt(SupportRule::targetTypeCount)
           .thenComparing(rule -> rule.from().name())
           .thenComparing(rule -> rule.to().name());
+  private static final Comparator<SupportRule> WITHIN_BONUS_TYPE_FRIENDLY =
+      Comparator.comparingInt(SupportRule::bonus).reversed().thenComparing(BY_TARGET_THEN_NAME);
+  private static final Comparator<SupportRule> WITHIN_BONUS_TYPE_ENEMY =
+      Comparator.comparingInt(SupportRule::bonus).thenComparing(BY_TARGET_THEN_NAME);
 
   @Override
   public Map<CombatProfile, Integer> resolve(
@@ -52,8 +61,21 @@ public class ReferenceSupportResolver implements SupportResolver {
     if (applicable.isEmpty()) {
       return base;
     }
-    final Allocation strength = allocationFor(base, applicable, true);
-    final Allocation rolls = allocationFor(base, applicable, false);
+    final List<SupportRule> friendlyRules =
+        applicable.stream().filter(r -> !r.fromEnemy()).toList();
+    final List<SupportRule> enemyRules =
+        applicable.stream().filter(SupportRule::fromEnemy).toList();
+    // Enemy (debuff) supporters come from the opposing force; the engine builds a separate
+    // AvailableSupports for each relationship, so friendly and enemy caps never share counters.
+    final Map<CombatProfile, Integer> enemyBase = activeProfileCounts(enemy);
+    final Allocation friendlyStrength =
+        allocationFor(base, friendlyRules, true, WITHIN_BONUS_TYPE_FRIENDLY);
+    final Allocation friendlyRolls =
+        allocationFor(base, friendlyRules, false, WITHIN_BONUS_TYPE_FRIENDLY);
+    final Allocation enemyStrength =
+        allocationFor(enemyBase, enemyRules, true, WITHIN_BONUS_TYPE_ENEMY);
+    final Allocation enemyRolls =
+        allocationFor(enemyBase, enemyRules, false, WITHIN_BONUS_TYPE_ENEMY);
 
     final Map<CombatProfile, Integer> evaluated = new LinkedHashMap<>();
     final List<CombatProfile> receivers = new ArrayList<>();
@@ -68,8 +90,9 @@ public class ReferenceSupportResolver implements SupportResolver {
     for (final CombatProfile receiver : receivers) {
       final int count = base.get(receiver);
       for (int i = 0; i < count; i++) {
-        final int strengthBonus = strength.giveTo(receiver);
-        final int rollBonus = rolls.giveTo(receiver);
+        final int strengthBonus =
+            friendlyStrength.giveTo(receiver) + enemyStrength.giveTo(receiver);
+        final int rollBonus = friendlyRolls.giveTo(receiver) + enemyRolls.giveTo(receiver);
         evaluated.merge(boost(receiver, strengthBonus, rollBonus, side), 1, Integer::sum);
       }
     }
@@ -129,16 +152,17 @@ public class ReferenceSupportResolver implements SupportResolver {
   }
 
   private static Allocation allocationFor(
-      final Map<CombatProfile, Integer> base,
+      final Map<CombatProfile, Integer> giverBase,
       final List<SupportRule> applicable,
-      final boolean strength) {
+      final boolean strength,
+      final Comparator<SupportRule> order) {
     final Map<BonusTypeId, List<SupportRule>> byBonusType = new LinkedHashMap<>();
     final Map<SupportRule, int[]> pool = new LinkedHashMap<>();
     for (final SupportRule rule : applicable) {
       if (rule.appliesToStrength() != strength) {
         continue;
       }
-      final int givers = giverCount(base, rule);
+      final int givers = giverCount(giverBase, rule);
       if (givers == 0) {
         continue;
       }
@@ -147,7 +171,7 @@ public class ReferenceSupportResolver implements SupportResolver {
       pool.put(rule, points);
       byBonusType.computeIfAbsent(rule.bonusType(), key -> new ArrayList<>()).add(rule);
     }
-    byBonusType.values().forEach(group -> group.sort(WITHIN_BONUS_TYPE));
+    byBonusType.values().forEach(group -> group.sort(order));
     return new Allocation(byBonusType, pool);
   }
 
@@ -206,6 +230,9 @@ public class ReferenceSupportResolver implements SupportResolver {
    * The evaluated profile a supported recipient becomes: strength support bumps the side-relevant
    * stat (attack on offense, defense on defense) and roll support adds firing rolls. A zero/zero
    * bonus yields a profile equal to the base, so unsupported recipients stay in their bucket.
+   * Strength may go negative from enemy debuffs — the hit roller floors it at fire time (engine
+   * {@code StrengthValue}) — but roll count is clamped at 0 here, mirroring {@code RollValue},
+   * since a negative roll count is meaningless to every downstream consumer.
    */
   private static CombatProfile boost(
       final CombatProfile base, final int strengthBonus, final int rollBonus, final Side side) {
@@ -215,7 +242,7 @@ public class ReferenceSupportResolver implements SupportResolver {
         base.type(),
         attack,
         defense,
-        base.rolls() + rollBonus,
+        Math.max(0, base.rolls() + rollBonus),
         base.maxRoundsAa(),
         base.maxAaAttacks(),
         base.hitPoints(),

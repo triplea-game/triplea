@@ -20,9 +20,8 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Pins the Support Rule (design §2/§4) against {@link ReferenceSupportResolver}: capacity-limited
- * allocation honoring {@code usesPerGiver}, {@code firstRoundOnly} expiry, and {@code Side}
- * isolation between the offense and defense forces. RED: the reference resolver is still a throwing
- * {@code "phase 1"} stub, so every case here fails on the call, not the assertion.
+ * allocation honoring {@code usesPerGiver}, {@code firstRoundOnly} expiry, {@code Side} isolation
+ * between the offense and defense forces, and enemy (debuff) support drawn from the opposing force.
  */
 class ReferenceSupportResolverTest {
 
@@ -30,6 +29,10 @@ class ReferenceSupportResolverTest {
   private static final SupportCategory ARTILLERY_RECEIVES =
       new SupportCategory("receives:artillery");
   private static final BonusTypeId ARTILLERY_BONUS = new BonusTypeId("artillery");
+  private static final SupportCategory SNIPER_GIVES = new SupportCategory("gives:sniper");
+  private static final SupportCategory HEAVY_GIVES = new SupportCategory("gives:heavy");
+  private static final BonusTypeId ENEMY_BONUS = new BonusTypeId("snipe");
+  private static final BonusTypeId COMBO_BONUS = new BonusTypeId("combo");
 
   /**
    * Two artillery x {@code usesPerGiver=2} = 4 uses of support against 5 infantry: capacity falls
@@ -251,6 +254,172 @@ class ReferenceSupportResolverTest {
             .resolve(attackers, emptyForce(), Side.OFFENSE, List.of(rule), 1);
 
     assertThat(evaluated).isEqualTo(Map.of(artillery, 1, boostedAttack(marine, 1), 1, infantry, 1));
+  }
+
+  /**
+   * Enemy (debuff) support draws its givers from the opposing force and carries a negative bonus.
+   * The resolver leaves the receiver's strength raw even when it goes negative — the hit roller
+   * floors it at fire time (engine {@code StrengthValue}), so a copy that clamped here would hide
+   * the real debuff from stacking math.
+   */
+  @Test
+  void enemyStrengthDebuffFromTheOpposingForceCanDriveTheReceiverNegative() {
+    final CombatProfile infantry = receives(land("infantry", 2, 2, 1), ARTILLERY_RECEIVES);
+    final CombatProfile sniper = gives(land("sniper", 1, 1, 1), SNIPER_GIVES);
+    final Force attackers = new Force(Map.of(new Key(infantry, Lifecycle.ACTIVE), 1));
+    final Force defenders = new Force(Map.of(new Key(sniper, Lifecycle.ACTIVE), 1));
+    final SupportRule debuff =
+        new SupportRule(
+            SNIPER_GIVES,
+            ARTILLERY_RECEIVES,
+            -3,
+            true,
+            1,
+            Side.OFFENSE,
+            false,
+            ENEMY_BONUS,
+            1,
+            1,
+            true);
+
+    final Map<CombatProfile, Integer> evaluated =
+        new ReferenceSupportResolver()
+            .resolve(attackers, defenders, Side.OFFENSE, List.of(debuff), 1);
+
+    assertThat(evaluated).isEqualTo(Map.of(boostedAttack(infantry, -3), 1));
+  }
+
+  /**
+   * Friendly and enemy support are separate pools with separate caps — a receiver takes the full
+   * friendly cap AND the full enemy cap on the same bonus type, netting both deltas. Here one
+   * friendly +2 and one enemy -1 share a cap-1 bonus type; a shared counter would let only one
+   * land, so the net +1 pins their independence.
+   */
+  @Test
+  void friendlyBuffAndEnemyDebuffStackIndependentlyOnOneBonusTypeCap() {
+    final CombatProfile infantry = receives(land("infantry", 2, 2, 1), ARTILLERY_RECEIVES);
+    final CombatProfile artillery = gives(land("artillery", 2, 2, 1), ARTILLERY_GIVES);
+    final CombatProfile sniper = gives(land("sniper", 1, 1, 1), SNIPER_GIVES);
+    final Force attackers =
+        new Force(
+            Map.of(
+                new Key(infantry, Lifecycle.ACTIVE), 1,
+                new Key(artillery, Lifecycle.ACTIVE), 1));
+    final Force defenders = new Force(Map.of(new Key(sniper, Lifecycle.ACTIVE), 1));
+    final SupportRule buff =
+        new SupportRule(
+            ARTILLERY_GIVES,
+            ARTILLERY_RECEIVES,
+            2,
+            true,
+            1,
+            Side.OFFENSE,
+            false,
+            COMBO_BONUS,
+            1,
+            1);
+    final SupportRule debuff =
+        new SupportRule(
+            SNIPER_GIVES,
+            ARTILLERY_RECEIVES,
+            -1,
+            true,
+            1,
+            Side.OFFENSE,
+            false,
+            COMBO_BONUS,
+            1,
+            1,
+            true);
+
+    final Map<CombatProfile, Integer> evaluated =
+        new ReferenceSupportResolver()
+            .resolve(attackers, defenders, Side.OFFENSE, List.of(buff, debuff), 1);
+
+    assertThat(evaluated).isEqualTo(Map.of(boostedAttack(infantry, 1), 1, artillery, 1));
+  }
+
+  /**
+   * Within a shared-bonus-type enemy group the engine applies the worst (most negative) bonus
+   * first, the reverse of the friendly order. With a cap of one across two distinct enemy
+   * supporters, the -3 rule wins the slot and the milder -1 is left unused, even when the mild rule
+   * is listed first.
+   */
+  @Test
+  void enemyDebuffGroupAppliesTheWorstBonusFirst() {
+    final CombatProfile infantry = receives(land("infantry", 2, 2, 1), ARTILLERY_RECEIVES);
+    final CombatProfile sniper = gives(land("sniper", 1, 1, 1), SNIPER_GIVES);
+    final CombatProfile heavy = gives(land("heavy", 1, 1, 1), HEAVY_GIVES);
+    final Force attackers = new Force(Map.of(new Key(infantry, Lifecycle.ACTIVE), 1));
+    final Force defenders =
+        new Force(
+            Map.of(
+                new Key(sniper, Lifecycle.ACTIVE), 1,
+                new Key(heavy, Lifecycle.ACTIVE), 1));
+    final SupportRule mild =
+        new SupportRule(
+            SNIPER_GIVES,
+            ARTILLERY_RECEIVES,
+            -1,
+            true,
+            1,
+            Side.OFFENSE,
+            false,
+            ENEMY_BONUS,
+            1,
+            1,
+            true);
+    final SupportRule worst =
+        new SupportRule(
+            HEAVY_GIVES,
+            ARTILLERY_RECEIVES,
+            -3,
+            true,
+            1,
+            Side.OFFENSE,
+            false,
+            ENEMY_BONUS,
+            1,
+            1,
+            true);
+
+    final Map<CombatProfile, Integer> evaluated =
+        new ReferenceSupportResolver()
+            .resolve(attackers, defenders, Side.OFFENSE, List.of(mild, worst), 1);
+
+    assertThat(evaluated).isEqualTo(Map.of(boostedAttack(infantry, -3), 1));
+  }
+
+  /**
+   * An enemy roll debuff is clamped at zero rolls (engine {@code RollValue}), not driven negative:
+   * a -2 roll debuff on a one-roll unit leaves it firing zero dice, not minus one.
+   */
+  @Test
+  void enemyRollDebuffClampsRollsAtZero() {
+    final CombatProfile infantry = receives(land("infantry", 2, 2, 1), ARTILLERY_RECEIVES);
+    final CombatProfile sniper = gives(land("sniper", 1, 1, 1), SNIPER_GIVES);
+    final Force attackers = new Force(Map.of(new Key(infantry, Lifecycle.ACTIVE), 1));
+    final Force defenders = new Force(Map.of(new Key(sniper, Lifecycle.ACTIVE), 1));
+    final SupportRule rollDebuff =
+        new SupportRule(
+            SNIPER_GIVES,
+            ARTILLERY_RECEIVES,
+            -2,
+            false,
+            1,
+            Side.OFFENSE,
+            false,
+            ENEMY_BONUS,
+            1,
+            1,
+            true);
+
+    final Map<CombatProfile, Integer> evaluated =
+        new ReferenceSupportResolver()
+            .resolve(attackers, defenders, Side.OFFENSE, List.of(rollDebuff), 1);
+
+    // boostedRolls(infantry, -1) is the rolls-0 profile; the raw -2 debuff clamps up to it.
+    assertThat(evaluated).isEqualTo(Map.of(boostedRolls(infantry, -1), 1));
   }
 
   private static Force emptyForce() {
