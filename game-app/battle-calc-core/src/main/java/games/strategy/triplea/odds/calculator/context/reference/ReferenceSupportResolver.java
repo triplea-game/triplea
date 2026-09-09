@@ -48,7 +48,7 @@ public class ReferenceSupportResolver implements SupportResolver {
       final Map<CombatProfile, Integer> evaluated, final SupportRule rule, final Side side) {
     final int givers =
         evaluated.entrySet().stream()
-            .filter(e -> e.getKey().gives().equals(rule.from()))
+            .filter(e -> e.getKey().gives().contains(rule.from()))
             .mapToInt(Map.Entry::getValue)
             .sum();
     int uses = rule.usesPerGiver() * givers;
@@ -59,7 +59,7 @@ public class ReferenceSupportResolver implements SupportResolver {
     // and consume strongest-base-first so scarce support lands on the best units.
     final List<CombatProfile> recipients =
         evaluated.keySet().stream()
-            .filter(profile -> profile.receives().equals(rule.to()))
+            .filter(profile -> profile.receives().contains(rule.to()))
             .sorted(strongestFirst(side))
             .toList();
     for (final CombatProfile recipient : recipients) {
