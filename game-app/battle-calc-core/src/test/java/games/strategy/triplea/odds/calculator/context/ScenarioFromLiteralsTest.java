@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.triplea.odds.calculator.context.model.BattleResult;
 import games.strategy.triplea.odds.calculator.context.model.BattleScenario;
+import games.strategy.triplea.odds.calculator.context.model.BonusTypeId;
 import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
 import games.strategy.triplea.odds.calculator.context.model.Dependents;
 import games.strategy.triplea.odds.calculator.context.model.Domain;
@@ -89,7 +90,16 @@ class ScenarioFromLiteralsTest {
             RulesProfile.standard(),
             List.of(
                 new SupportRule(
-                    ARTILLERY_GIVES, ARTILLERY_RECEIVES, 1, true, 1, Side.OFFENSE, false)),
+                    ARTILLERY_GIVES,
+                    ARTILLERY_RECEIVES,
+                    1,
+                    true,
+                    1,
+                    Side.OFFENSE,
+                    false,
+                    new BonusTypeId("artillery"),
+                    1,
+                    1)),
             Map.of(
                 new UnitTypeId("infantry"), 3,
                 new UnitTypeId("artillery"), 4,

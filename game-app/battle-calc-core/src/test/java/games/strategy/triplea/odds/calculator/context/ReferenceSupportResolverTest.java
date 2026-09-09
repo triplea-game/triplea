@@ -5,6 +5,7 @@ import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtur
 import static games.strategy.triplea.odds.calculator.context.CombatProfileFixtures.receives;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import games.strategy.triplea.odds.calculator.context.model.BonusTypeId;
 import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
 import games.strategy.triplea.odds.calculator.context.model.Force;
 import games.strategy.triplea.odds.calculator.context.model.Key;
@@ -28,6 +29,7 @@ class ReferenceSupportResolverTest {
   private static final SupportCategory ARTILLERY_GIVES = new SupportCategory("gives:artillery");
   private static final SupportCategory ARTILLERY_RECEIVES =
       new SupportCategory("receives:artillery");
+  private static final BonusTypeId ARTILLERY_BONUS = new BonusTypeId("artillery");
 
   /**
    * Two artillery x {@code usesPerGiver=2} = 4 uses of support against 5 infantry: capacity falls
@@ -49,7 +51,17 @@ class ReferenceSupportResolverTest {
                 new Key(artillery, Lifecycle.ACTIVE), 2,
                 new Key(infantry, Lifecycle.ACTIVE), 5));
     final SupportRule rule =
-        new SupportRule(ARTILLERY_GIVES, ARTILLERY_RECEIVES, 1, true, 2, Side.OFFENSE, false);
+        new SupportRule(
+            ARTILLERY_GIVES,
+            ARTILLERY_RECEIVES,
+            1,
+            true,
+            2,
+            Side.OFFENSE,
+            false,
+            ARTILLERY_BONUS,
+            1,
+            1);
 
     final Map<CombatProfile, Integer> evaluated =
         new ReferenceSupportResolver()
@@ -73,7 +85,17 @@ class ReferenceSupportResolverTest {
                 new Key(artillery, Lifecycle.ACTIVE), 1,
                 new Key(infantry, Lifecycle.ACTIVE), 1));
     final SupportRule rule =
-        new SupportRule(ARTILLERY_GIVES, ARTILLERY_RECEIVES, 1, true, 1, Side.OFFENSE, true);
+        new SupportRule(
+            ARTILLERY_GIVES,
+            ARTILLERY_RECEIVES,
+            1,
+            true,
+            1,
+            Side.OFFENSE,
+            true,
+            ARTILLERY_BONUS,
+            1,
+            1);
     final List<SupportRule> rules = List.of(rule);
 
     final Map<CombatProfile, Integer> round1 =
@@ -101,7 +123,17 @@ class ReferenceSupportResolverTest {
                 new Key(artillery, Lifecycle.ACTIVE), 1,
                 new Key(infantry, Lifecycle.ACTIVE), 1));
     final SupportRule offenseOnlyRule =
-        new SupportRule(ARTILLERY_GIVES, ARTILLERY_RECEIVES, 1, true, 1, Side.OFFENSE, false);
+        new SupportRule(
+            ARTILLERY_GIVES,
+            ARTILLERY_RECEIVES,
+            1,
+            true,
+            1,
+            Side.OFFENSE,
+            false,
+            ARTILLERY_BONUS,
+            1,
+            1);
 
     final Map<CombatProfile, Integer> evaluated =
         new ReferenceSupportResolver()
@@ -125,7 +157,17 @@ class ReferenceSupportResolverTest {
                 new Key(artillery, Lifecycle.ACTIVE), 1,
                 new Key(infantry, Lifecycle.ACTIVE), 1));
     final SupportRule rule =
-        new SupportRule(ARTILLERY_GIVES, ARTILLERY_RECEIVES, 1, true, 1, Side.DEFENSE, false);
+        new SupportRule(
+            ARTILLERY_GIVES,
+            ARTILLERY_RECEIVES,
+            1,
+            true,
+            1,
+            Side.DEFENSE,
+            false,
+            ARTILLERY_BONUS,
+            1,
+            1);
 
     final Map<CombatProfile, Integer> evaluated =
         new ReferenceSupportResolver()
@@ -148,7 +190,17 @@ class ReferenceSupportResolverTest {
                 new Key(artillery, Lifecycle.ACTIVE), 1,
                 new Key(infantry, Lifecycle.ACTIVE), 1));
     final SupportRule rule =
-        new SupportRule(ARTILLERY_GIVES, ARTILLERY_RECEIVES, 1, false, 1, Side.OFFENSE, false);
+        new SupportRule(
+            ARTILLERY_GIVES,
+            ARTILLERY_RECEIVES,
+            1,
+            false,
+            1,
+            Side.OFFENSE,
+            false,
+            ARTILLERY_BONUS,
+            1,
+            1);
 
     final Map<CombatProfile, Integer> evaluated =
         new ReferenceSupportResolver()
@@ -182,7 +234,17 @@ class ReferenceSupportResolverTest {
                 new Key(marine, Lifecycle.ACTIVE), 1,
                 new Key(infantry, Lifecycle.ACTIVE), 1));
     final SupportRule rule =
-        new SupportRule(ARTILLERY_GIVES, ARTILLERY_RECEIVES, 1, true, 1, Side.OFFENSE, false);
+        new SupportRule(
+            ARTILLERY_GIVES,
+            ARTILLERY_RECEIVES,
+            1,
+            true,
+            1,
+            Side.OFFENSE,
+            false,
+            ARTILLERY_BONUS,
+            1,
+            1);
 
     final Map<CombatProfile, Integer> evaluated =
         new ReferenceSupportResolver()
