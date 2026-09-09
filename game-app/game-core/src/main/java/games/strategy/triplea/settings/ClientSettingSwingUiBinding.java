@@ -277,6 +277,17 @@ All players in the same game must have it set to the same value. Restart to full
     }
   },
 
+  USE_BOUNDED_CONTEXT_BATTLE_CALC(
+      "Use bounded-context battle calculator (Beta)",
+      SettingType.TESTING,
+      "Toggles the in-development engine-free battle odds calculator. Off by default; still under "
+          + "development. Takes effect the next time the battle calculator is opened.") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return booleanRadioButtons(ClientSetting.useBoundedContextBattleCalc);
+    }
+  },
+
   DO_NOT_REDRAW_MAP(
       "Do Not Redraw Map",
       SettingType.TESTING,
