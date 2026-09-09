@@ -8,11 +8,13 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.odds.calculator.context.model.BattleOptions;
 import games.strategy.triplea.odds.calculator.context.model.BattleScenario;
@@ -31,6 +33,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -231,6 +234,59 @@ class GameDataBattleAdapterTest {
     assertThat(rule.bonus()).isEqualTo(1);
     assertThat(rule.usesPerGiver()).as("one artillery supports one infantry").isEqualTo(1);
     assertThat(rule.firstRoundOnly()).isFalse();
+  }
+
+  /**
+   * A {@link UnitSupportAttachment} whose dice is both roll and strength ({@code
+   * dice="roll:strength"}) feeds the engine's strength pool and its roll pool independently —
+   * {@code CombatValueBuilder} builds one {@code SupportCalculator} and filters it by {@code
+   * getStrength()} and by {@code getRoll()}. The adapter mirrors that by baking two {@link
+   * SupportRule}s from the one attachment, one per partition; the older adapter filed it under a
+   * single {@code appliesToStrength} flag and dropped the roll half. Injected onto Revised (no
+   * bundled map declares a dual support) as russian armour lending infantry both attack and rolls.
+   */
+  @Test
+  void dualStrengthAndRollAttachmentEmitsARuleForEachPartition() throws GameParseException {
+    final GameData revised = TestMapGameData.REVISED.getGameData();
+    final GamePlayer russians = GameDataTestUtil.russians(revised);
+    final GamePlayer germans = GameDataTestUtil.germans(revised);
+    final Territory germany = GameDataTestUtil.territory("Germany", revised);
+    final UnitType armour = GameDataTestUtil.armour(revised);
+    injectDualSupport(revised, armour, GameDataTestUtil.infantry(revised), russians, 2);
+
+    final Collection<Unit> attacking = armour.create(1, russians);
+    attacking.addAll(GameDataTestUtil.infantry(revised).create(1, russians));
+    final Collection<Unit> defending = GameDataTestUtil.infantry(revised).create(1, germans);
+
+    final BattleScenario scenario =
+        adapter.toScenario(
+            russians,
+            germans,
+            germany,
+            attacking,
+            defending,
+            List.of(),
+            List.of(),
+            new BattleOptions(false, List.of(), List.of()));
+
+    final CombatProfile armourProfile = profileOf(scenario.attackers(), "armour");
+    final List<SupportRule> emitted =
+        scenario.support().stream()
+            .filter(rule -> armourProfile.gives().contains(rule.from()))
+            .toList();
+    assertThat(emitted)
+        .as("one attachment that is both strength and roll bakes into two rules")
+        .hasSize(2);
+    assertThat(emitted)
+        .extracting(SupportRule::appliesToStrength)
+        .containsExactlyInAnyOrder(true, false);
+    assertThat(emitted)
+        .allSatisfy(
+            rule -> {
+              assertThat(rule.bonus()).isEqualTo(2);
+              assertThat(rule.side()).isEqualTo(Side.OFFENSE);
+              assertThat(rule.fromEnemy()).isFalse();
+            });
   }
 
   /**
@@ -532,6 +588,32 @@ class GameDataBattleAdapterTest {
       }
     }
     data.getProperties().set(propertyName, value);
+  }
+
+  /**
+   * Attaches an allied support that is both strength and roll ({@code dice="roll:strength"}):
+   * {@code giver} lends {@code target} {@code bonus} attack and {@code bonus} rolls when attacking.
+   * Injected before the support list is cached so the adapter reads it, the way Revised's
+   * old-artillery support is synthesized.
+   */
+  private static void injectDualSupport(
+      final GameData data,
+      final UnitType giver,
+      final UnitType target,
+      final GamePlayer giverOwner,
+      final int bonus)
+      throws GameParseException {
+    final UnitSupportAttachment rule =
+        new UnitSupportAttachment(Constants.SUPPORT_ATTACHMENT_PREFIX + "DualTest", giver, data);
+    rule.setDice("roll:strength");
+    rule.setFaction("allied");
+    rule.setSide("offence");
+    rule.setBonus(bonus);
+    rule.setBonusType("dualTest");
+    rule.setNumber(2);
+    rule.setUnitType(Set.of(target));
+    rule.setPlayers(List.of(giverOwner));
+    giver.addAttachment(rule.getName(), rule);
   }
 
   private static CombatProfile profileOf(final Force force, final String typeName) {
