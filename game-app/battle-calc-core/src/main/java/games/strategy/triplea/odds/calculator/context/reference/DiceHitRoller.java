@@ -84,15 +84,22 @@ public class DiceHitRoller implements HitRoller {
       final CombatProfile profile = entry.getKey();
       final int rolls = profile.rolls();
       final int count = entry.getValue();
+      final int rawStrength = strengthOf(profile, ctx);
+      // Engine PowerCalculator#getValue short-circuits a unit whose raw strength or roll count is
+      // zero to no power — the best-of-rolls bonus below never revives a zero-strength unit.
+      if (rawStrength == 0 || rolls == 0) {
+        continue;
+      }
+      // Engine StrengthValue floors each unit's strength at 0 then caps it at diceSides before
+      // summing, so an enemy-debuffed unit contributes nothing rather than subtracting from the
+      // vector's power, and no unit beats one guaranteed hit per die.
+      final int strength = Math.min(Math.max(rawStrength, 0), ctx.diceSides());
       if (rolls > 1 && profile.flags().contains(CombatFlag.CHOOSE_BEST_ROLL)) {
         // Under low luck the engine (PowerCalculator) approximates best-of-rolls as the unit's
         // strength plus one bonus per extra roll, capped at diceSides.
         final int bonus = Math.max(1, ctx.diceSides() / 6);
-        power += Math.min(strengthOf(profile, ctx) + bonus * (rolls - 1), ctx.diceSides()) * count;
+        power += Math.min(strength + bonus * (rolls - 1), ctx.diceSides()) * count;
       } else {
-        // Engine caps each unit's low-luck strength at diceSides (StrengthValue) before summing —
-        // a unit can't contribute better than one guaranteed hit per die.
-        final int strength = Math.min(strengthOf(profile, ctx), ctx.diceSides());
         power += strength * rolls * count;
       }
     }
