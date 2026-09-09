@@ -150,27 +150,6 @@ public final class GameDataManager {
     }
   }
 
-  @Builder
-  public static class Options {
-    @Builder.Default boolean withDelegates = false;
-    @Builder.Default boolean withHistory = false;
-    @Builder.Default boolean withAttachmentXmlData = false;
-
-    public static Options withEverything() {
-      return builder().withDelegates(true).withHistory(true).withAttachmentXmlData(true).build();
-    }
-
-    public static Options forSaveGame() {
-      // Omit attachment data as it uses a lot of memory and is only needed for XML exports, which
-      // now reads it from the original XML instead.
-      return builder().withDelegates(true).withHistory(true).withAttachmentXmlData(false).build();
-    }
-
-    public static Options forBattleCalculator() {
-      return builder().build();
-    }
-  }
-
   public static void saveGameUncompressed(
       final OutputStream sink, final GameData data, final Options options) throws IOException {
     // write to temporary file first in case of error
@@ -178,7 +157,9 @@ public final class GameDataManager {
       outStream.writeObject(ProductVersionReader.getCurrentVersion());
       try (GameData.Unlocker ignored = data.acquireWriteLock()) {
         final var history = data.getHistory();
-        if (!options.withHistory) {
+        boolean clearHistoryForUncompressing =
+            options.withHistoryCopyMode == Options.HistoryCopyMode.NONE;
+        if (clearHistoryForUncompressing) {
           data.resetHistory();
         }
         final var attachments = data.getAttachmentOrderAndValues();
@@ -189,8 +170,8 @@ public final class GameDataManager {
         if (!options.withAttachmentXmlData) {
           data.setAttachmentOrderAndValues(attachments);
         }
-        if (!options.withHistory) {
-          data.setHistory(history);
+        if (clearHistoryForUncompressing) {
+          data.setHistory(history); // restore history again after previous reset
         }
         if (options.withDelegates) {
           writeDelegates(data, outStream);
@@ -198,6 +179,34 @@ public final class GameDataManager {
           outStream.writeObject(DELEGATE_LIST_END);
         }
       }
+    }
+  }
+
+  @Builder
+  public static class Options {
+
+    @Builder.Default boolean withDelegates = false;
+    @Builder.Default HistoryCopyMode withHistoryCopyMode = HistoryCopyMode.NONE;
+    @Builder.Default boolean withAttachmentXmlData = false;
+
+    public static Options forSaveGame() {
+      // Omit attachment data as it uses a lot of memory and is only needed for XML exports, which
+      // now reads it from the original XML instead.
+      return builder()
+          .withDelegates(true)
+          .withHistoryCopyMode(HistoryCopyMode.REFERENCE)
+          .withAttachmentXmlData(false)
+          .build();
+    }
+
+    public static Options forBattleCalculator() {
+      return builder().build();
+    }
+
+    public enum HistoryCopyMode {
+      DEEP,
+      REFERENCE,
+      NONE
     }
   }
 
