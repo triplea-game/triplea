@@ -12,6 +12,7 @@ import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.odds.calculator.context.model.BattleOptions;
 import games.strategy.triplea.odds.calculator.context.model.BattleScenario;
+import games.strategy.triplea.odds.calculator.context.model.BonusTypeId;
 import games.strategy.triplea.odds.calculator.context.model.CargoRule;
 import games.strategy.triplea.odds.calculator.context.model.CombatFlag;
 import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
@@ -444,11 +445,10 @@ public class GameDataBattleAdapter {
    * owner ({@code attacker} or {@code defender}) the attachment lists — mirroring the engine's
    * {@code SupportCalculator} owner match.
    *
-   * <p>Only friendly ({@code allied}) strength/roll support is modeled, one category per unit: the
-   * {@link CombatProfile} give/receive fields are sets so a unit can carry several matched
-   * independently, but the adapter records only the first matching attachment. Deliberately
-   * unmodeled: enemy ({@code enemy}) debuff support, per-{@code bonusType} stacking caps, a unit
-   * giving or receiving more than one distinct support, Improved-Artillery tech doubling, allied
+   * <p>Only friendly ({@code allied}) strength/roll support is modeled. A unit carries every
+   * support category it gives or receives, and each rule records its {@code bonusType}/{@code
+   * count} so the resolver caps a recipient's stacked support the way the engine does. Deliberately
+   * unmodeled: enemy ({@code enemy}) debuff support, Improved-Artillery tech doubling, allied
    * support beyond the two calc players, a rule that is both strength and roll (strength wins), and
    * AA support.
    */
@@ -483,7 +483,10 @@ public class GameDataBattleAdapter {
       final SupportCategory category,
       final boolean appliesToStrength,
       final Side side) {
-    // firstRoundOnly is always false: the engine's support model has no first-round-only flag.
+    final UnitSupportAttachment.BonusType bonusType = attachment.getBonusType();
+    // firstRoundOnly is always false: the engine's support model has no first-round-only flag. A
+    // missing bonusType (the engine would reject it) is treated as its own uncappable-but-single
+    // group: a distinct name so it never shares a cap, count 1 as the standard-support default.
     return new SupportRule(
         category,
         category,
@@ -491,19 +494,24 @@ public class GameDataBattleAdapter {
         appliesToStrength,
         attachment.getNumber(),
         side,
-        false);
+        false,
+        new BonusTypeId(bonusType != null ? bonusType.getName() : category.name()),
+        bonusType != null ? bonusType.getCount() : 1,
+        attachment.getUnitType().size());
   }
 
-  /** Records the giver's emitted category and each receiver type's consumed one (first wins). */
+  /**
+   * Adds the giver's emitted category and each receiver type's consumed one to its category set.
+   */
   private static void register(
       final Map<String, Set<SupportCategory>> gives,
       final Map<String, Set<SupportCategory>> receives,
       final UnitType giver,
       final UnitSupportAttachment attachment,
       final SupportCategory category) {
-    gives.putIfAbsent(giver.getName(), Set.of(category));
+    gives.computeIfAbsent(giver.getName(), name -> new LinkedHashSet<>()).add(category);
     for (final UnitType receiver : attachment.getUnitType()) {
-      receives.putIfAbsent(receiver.getName(), Set.of(category));
+      receives.computeIfAbsent(receiver.getName(), name -> new LinkedHashSet<>()).add(category);
     }
   }
 
