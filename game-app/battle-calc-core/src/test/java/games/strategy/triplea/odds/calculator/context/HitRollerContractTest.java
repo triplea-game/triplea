@@ -208,4 +208,42 @@ abstract class HitRollerContractTest {
 
     assertThat(hits).isEqualTo(1);
   }
+
+  /**
+   * Low-luck floors each unit's strength at 0 before summing (engine {@code StrengthValue}), so a
+   * debuffed-below-zero unit adds nothing rather than subtracting from the vector's power. A lone
+   * negative unit would already truncate to zero hits; pairing it with a positive unit is what
+   * reveals the subtraction — a floor-blind impl would cancel two of the armor's hits against the
+   * cursed unit's negative power.
+   */
+  @Test
+  void lowLuckFloorsNegativeStrengthSoItAddsNoPowerToTheVector() {
+    final CombatProfile armor = land("armor", 6, 6, 1);
+    final CombatProfile cursed = land("cursed", -6, -6, 1);
+    final FireContext lowLuckOffense = new FireContext(1, Phase.GENERAL, true, true, 6);
+
+    // 2 armor x strength 6 = 12; the cursed unit floors to 0, not -6. 12 / 6 = 2, no remainder.
+    final int hits =
+        hitRoller.roll(Map.of(armor, 2, cursed, 1), lowLuckOffense, FakeRandomSource.alwaysHits());
+
+    assertThat(hits).isEqualTo(2);
+  }
+
+  /**
+   * A zero-strength unit contributes no power even with extra rolls (engine {@code
+   * PowerCalculator#getValue} short-circuits on {@code StrengthValue.isZero}). Without that
+   * short-circuit the best-of-rolls bonus would revive the dead bomber into a phantom remainder die
+   * and a spurious hit.
+   */
+  @Test
+  void lowLuckZeroStrengthBestOfRollsUnitContributesNoPower() {
+    final CombatProfile deadBomber =
+        withFlags(rolls(air("bomber", 0, 0, 1), 2), CombatFlag.CHOOSE_BEST_ROLL);
+    final FireContext lowLuckOffense = new FireContext(1, Phase.GENERAL, true, true, 6);
+
+    final int hits =
+        hitRoller.roll(Map.of(deadBomber, 1), lowLuckOffense, FakeRandomSource.alwaysHits());
+
+    assertThat(hits).isZero();
+  }
 }
