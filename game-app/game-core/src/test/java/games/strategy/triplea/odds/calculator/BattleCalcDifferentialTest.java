@@ -231,6 +231,37 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
         infantry(gameData).create(3, germans(gameData)));
   }
 
+  /**
+   * §5.7 probe — support-adjusted casualty ordering. The engine ranks casualties by
+   * support-adjusted power ({@code CasualtyOrderOfLosses}): a heavily supported infantry outranks
+   * an armour, so the engine sheds the armour first, whereas the bounded calc ranks by base attack
+   * and sheds the infantry. A synthesized artillery->infantry +3 attack support lifts the one
+   * attacking infantry's attack to 5, above the armour's 3; the attacker takes exactly one casualty
+   * (one defending infantry scores one low-luck hit, then dies), so the surviving TYPE differs —
+   * engine keeps the infantry, base-order bounded keeps the armour. Pins whether §5.7 is
+   * observable.
+   */
+  @Test
+  void alwaysHitsUnderLowLuckSupportAdjustsCasualtyOrderLikeTheEngine() throws GameParseException {
+    final GameData gameData = TestMapGameData.REVISED.getGameData();
+    makeGameLowLuck(gameData);
+    injectStrongOffenseSupport(
+        gameData, artillery(gameData), infantry(gameData), russians(gameData), 3);
+
+    final Territory germany = territory("Germany", gameData);
+    final Collection<Unit> attacking = artillery(gameData).create(1, russians(gameData));
+    attacking.addAll(infantry(gameData).create(1, russians(gameData)));
+    attacking.addAll(armour(gameData).create(1, russians(gameData)));
+
+    assertIdenticalSurvivorsUnderAlwaysHits(
+        gameData,
+        russians(gameData),
+        germans(gameData),
+        germany,
+        attacking,
+        infantry(gameData).create(1, germans(gameData)));
+  }
+
   @Test
   void seededRunsAgreeOnAttackerWinPercentWithinTolerance() {
     final GameData gameData = TestMapGameData.REVISED.getGameData();
@@ -1052,6 +1083,32 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
     rule.setSide("offence");
     rule.setBonus(bonus);
     rule.setBonusType("dualSupport");
+    rule.setNumber(10);
+    rule.setUnitType(Set.of(target));
+    rule.setPlayers(List.of(giverOwner));
+    giver.addAttachment(rule.getName(), rule);
+  }
+
+  /**
+   * Synthesizes a strong allied offense strength support: {@code giver} lends {@code target} {@code
+   * bonus} attack when attacking. Used to lift a supported unit's power above a normally-stronger
+   * type so support-adjusted casualty ordering (§5.7) becomes observable.
+   */
+  private static void injectStrongOffenseSupport(
+      final GameData gameData,
+      final UnitType giver,
+      final UnitType target,
+      final GamePlayer giverOwner,
+      final int bonus)
+      throws GameParseException {
+    final UnitSupportAttachment rule =
+        new UnitSupportAttachment(
+            Constants.SUPPORT_ATTACHMENT_PREFIX + "OolSupportTest", giver, gameData);
+    rule.setDice("strength");
+    rule.setFaction("allied");
+    rule.setSide("offence");
+    rule.setBonus(bonus);
+    rule.setBonusType("oolSupport");
     rule.setNumber(10);
     rule.setUnitType(Set.of(target));
     rule.setPlayers(List.of(giverOwner));

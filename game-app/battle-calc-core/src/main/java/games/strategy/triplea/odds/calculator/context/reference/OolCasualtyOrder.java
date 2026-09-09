@@ -33,15 +33,25 @@ public class OolCasualtyOrder implements CasualtyOrder {
   }
 
   /**
-   * The engine default when no eligible type is in the OOL: weakest first by side-relative power
-   * (attack on offense, defense on defense), cost as tiebreak — mirrors {@code
-   * DummyPlayer#selectCasualties}'s fall-through to {@code defaultCasualties}. The engine's
-   * support-power interleave in that sort is a deferred fidelity item the differential harness
-   * owns.
+   * The engine default when no eligible type is in the OOL: weakest first by support-adjusted
+   * power, cost as tiebreak — mirrors {@code DummyPlayer#selectCasualties}'s fall-through to {@code
+   * CasualtyOrderOfLosses}, which ranks each unit by the power its force loses when it dies (the
+   * support it receives and the support it gives others), not its raw stat. When {@link
+   * ProfileStats#effectivePower()} carries no entry for a profile — no support in play, or a
+   * damaged successor the exchange-start map never saw — it falls back to the profile's base
+   * side-relative stat (attack on offense, defense on defense).
    */
   private static Comparator<CombatProfile> defaultOrder(final Side side, final ProfileStats stats) {
-    return Comparator.comparingInt(
-            (final CombatProfile p) -> side == Side.OFFENSE ? p.attack() : p.defense())
+    return Comparator.comparingInt((final CombatProfile p) -> effectivePower(p, side, stats))
         .thenComparingInt(p -> stats.cost().getOrDefault(p, 0));
+  }
+
+  private static int effectivePower(
+      final CombatProfile profile, final Side side, final ProfileStats stats) {
+    final Integer supported = stats.effectivePower().get(profile);
+    if (supported != null) {
+      return supported;
+    }
+    return side == Side.OFFENSE ? profile.attack() : profile.defense();
   }
 }

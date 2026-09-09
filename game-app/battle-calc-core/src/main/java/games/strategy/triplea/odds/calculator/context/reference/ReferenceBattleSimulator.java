@@ -22,6 +22,7 @@ import games.strategy.triplea.odds.calculator.context.model.RollGroup;
 import games.strategy.triplea.odds.calculator.context.model.RulesProfile;
 import games.strategy.triplea.odds.calculator.context.model.Side;
 import games.strategy.triplea.odds.calculator.context.model.SimulationResults;
+import games.strategy.triplea.odds.calculator.context.model.SupportRule;
 import games.strategy.triplea.odds.calculator.context.seam.BattleSimulator;
 import games.strategy.triplea.odds.calculator.context.seam.CasualtyAllocator;
 import games.strategy.triplea.odds.calculator.context.seam.CasualtyOrder;
@@ -30,6 +31,7 @@ import games.strategy.triplea.odds.calculator.context.seam.HitRoller;
 import games.strategy.triplea.odds.calculator.context.seam.RandomSource;
 import games.strategy.triplea.odds.calculator.context.seam.RetreatPolicy;
 import games.strategy.triplea.odds.calculator.context.seam.RollGroupResolver;
+import games.strategy.triplea.odds.calculator.context.seam.SupportResolver;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
@@ -58,6 +60,7 @@ public class ReferenceBattleSimulator implements BattleSimulator {
   private static final int MAX_ROUNDS = 100;
 
   private final RollGroupResolver resolver;
+  private final SupportResolver supportResolver;
   private final HitRoller roller;
   private final CasualtyAllocator allocator;
   private final CombatRelations relations;
@@ -73,7 +76,8 @@ public class ReferenceBattleSimulator implements BattleSimulator {
    */
   public ReferenceBattleSimulator(final HitRoller roller) {
     this.relations = new ReferenceCombatRelations();
-    this.resolver = new ReferenceRollGroupResolver(new ReferenceSupportResolver(), relations);
+    this.supportResolver = new ReferenceSupportResolver();
+    this.resolver = new ReferenceRollGroupResolver(supportResolver, relations);
     this.roller = roller;
     this.allocator = new ReferenceCasualtyAllocator();
   }
@@ -304,6 +308,20 @@ public class ReferenceBattleSimulator implements BattleSimulator {
     // never withholds the last land unit, which is correct wherever no non-land alternative exists.
     final Constraints constraints =
         new Constraints(false, scenario.rules().transportCasualtiesRestricted());
+    // Support-adjusted casualty order (engine CasualtyOrderOfLosses): rank the taking side by the
+    // power its force loses when each unit dies, so a supported unit and a supporter both cost more
+    // to lose than their bare stat. Computed off this exchange's live target force with the firing
+    // side as its enemy (for enemy-debuff support), then handed to the order as effective power.
+    final ProfileStats fireStats =
+        new ProfileStats(
+            stats.cost(),
+            marginalPowerLoss(
+                activeProfileCounts(targetForce),
+                new Force(step.offense() ? attackers : defenders),
+                targetSide,
+                scenario.support(),
+                round,
+                scenario.diceSides()));
     final Force after =
         allocator.allocate(
             new Force(targetForce),
@@ -314,7 +332,7 @@ public class ReferenceBattleSimulator implements BattleSimulator {
             order,
             step.group().firingMode(),
             targetSide,
-            stats);
+            fireStats);
     targetForce.clear();
     targetForce.putAll(after.counts());
   }
@@ -552,6 +570,73 @@ public class ReferenceBattleSimulator implements BattleSimulator {
       }
     }
     return byProfile;
+  }
+
+  /**
+   * The support-adjusted worth of each target profile: the side-relative power its force loses when
+   * one such unit dies, re-resolving support with the unit removed. This folds both channels the
+   * engine's {@code CasualtyOrderOfLosses} uses — the support a unit receives (its own boosted
+   * power) and the support it gives others (their power drops when it is gone) — into one figure
+   * the casualty order can rank on. Computed once per firing exchange; a supporter killed
+   * mid-exchange is not re-scored until the next round (the engine re-scores per hit — a documented
+   * v1 gap).
+   */
+  private Map<CombatProfile, Integer> marginalPowerLoss(
+      final Map<CombatProfile, Integer> target,
+      final Force enemy,
+      final Side side,
+      final List<SupportRule> support,
+      final int round,
+      final int diceSides) {
+    if (target.isEmpty()) {
+      return Map.of();
+    }
+    final int full = resolvedPower(target, enemy, side, support, round, diceSides);
+    final Map<CombatProfile, Integer> marginal = new LinkedHashMap<>();
+    for (final CombatProfile profile : target.keySet()) {
+      final Map<CombatProfile, Integer> without = new LinkedHashMap<>(target);
+      final int count = without.get(profile);
+      if (count <= 1) {
+        without.remove(profile);
+      } else {
+        without.put(profile, count - 1);
+      }
+      marginal.put(profile, full - resolvedPower(without, enemy, side, support, round, diceSides));
+    }
+    return marginal;
+  }
+
+  /** Total side-relative firing power of a profile cohort after support is resolved onto it. */
+  private int resolvedPower(
+      final Map<CombatProfile, Integer> cohort,
+      final Force enemy,
+      final Side side,
+      final List<SupportRule> support,
+      final int round,
+      final int diceSides) {
+    if (cohort.isEmpty()) {
+      return 0;
+    }
+    final Map<CombatProfile, Integer> resolved =
+        supportResolver.resolve(activeForceOf(cohort), enemy, side, support, round);
+    int power = 0;
+    for (final Map.Entry<CombatProfile, Integer> entry : resolved.entrySet()) {
+      final CombatProfile profile = entry.getKey();
+      final int stat = side == Side.OFFENSE ? profile.attack() : profile.defense();
+      power += Math.min(Math.max(stat, 0), diceSides) * profile.rolls() * entry.getValue();
+    }
+    return power;
+  }
+
+  private static Force activeForceOf(final Map<CombatProfile, Integer> profiles) {
+    final Map<Key, Integer> counts = new LinkedHashMap<>();
+    profiles.forEach(
+        (profile, count) -> {
+          if (count > 0) {
+            counts.put(new Key(profile, Lifecycle.ACTIVE), count);
+          }
+        });
+    return new Force(counts);
   }
 
   /** Live count of ACTIVE enemy units this AA group may target — the round's air-target cap. */
