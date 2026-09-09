@@ -8,6 +8,7 @@ import games.strategy.triplea.odds.calculator.context.model.SupportCategory;
 import games.strategy.triplea.odds.calculator.context.model.UnitTypeId;
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.Set;
 
 /**
  * The one place tests build a {@link CombatProfile}, so each call site shows only the stats that
@@ -174,7 +175,7 @@ public final class CombatProfileFixtures {
         profile.hitPoints(),
         profile.domain(),
         profile.damage(),
-        category,
+        Set.of(category),
         profile.receives(),
         profile.flags(),
         profile.next());
@@ -194,7 +195,7 @@ public final class CombatProfileFixtures {
         profile.domain(),
         profile.damage(),
         profile.gives(),
-        category,
+        Set.of(category),
         profile.flags(),
         profile.next());
   }
@@ -216,8 +217,8 @@ public final class CombatProfileFixtures {
         hitPoints,
         domain,
         new DamageState(0),
-        SupportCategory.NONE,
-        SupportCategory.NONE,
+        Set.of(),
+        Set.of(),
         EnumSet.noneOf(CombatFlag.class),
         next);
   }

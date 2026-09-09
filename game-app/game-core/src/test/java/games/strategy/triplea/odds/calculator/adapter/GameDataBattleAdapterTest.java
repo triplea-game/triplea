@@ -24,7 +24,6 @@ import games.strategy.triplea.odds.calculator.context.model.Key;
 import games.strategy.triplea.odds.calculator.context.model.Lifecycle;
 import games.strategy.triplea.odds.calculator.context.model.RulesProfile;
 import games.strategy.triplea.odds.calculator.context.model.Side;
-import games.strategy.triplea.odds.calculator.context.model.SupportCategory;
 import games.strategy.triplea.odds.calculator.context.model.SupportRule;
 import games.strategy.triplea.odds.calculator.context.model.UnitTypeId;
 import games.strategy.triplea.xml.TestMapGameData;
@@ -216,17 +215,17 @@ class GameDataBattleAdapterTest {
 
     final CombatProfile artilleryProfile = profileOf(scenario.attackers(), "artillery");
     final CombatProfile infantryProfile = profileOf(scenario.attackers(), "infantry");
-    assertThat(artilleryProfile.gives()).isNotEqualTo(SupportCategory.NONE);
-    assertThat(artilleryProfile.receives()).isEqualTo(SupportCategory.NONE);
-    assertThat(infantryProfile.gives()).isEqualTo(SupportCategory.NONE);
-    assertThat(infantryProfile.receives()).isNotEqualTo(SupportCategory.NONE);
+    assertThat(artilleryProfile.gives()).isNotEmpty();
+    assertThat(artilleryProfile.receives()).isEmpty();
+    assertThat(infantryProfile.gives()).isEmpty();
+    assertThat(infantryProfile.receives()).isNotEmpty();
 
     final SupportRule rule =
         scenario.support().stream()
-            .filter(r -> r.from().equals(artilleryProfile.gives()))
+            .filter(r -> artilleryProfile.gives().contains(r.from()))
             .findFirst()
             .orElseThrow();
-    assertThat(rule.to()).isEqualTo(infantryProfile.receives());
+    assertThat(infantryProfile.receives()).contains(rule.to());
     assertThat(rule.side()).isEqualTo(Side.OFFENSE);
     assertThat(rule.appliesToStrength()).as("classic artillery boosts attack strength").isTrue();
     assertThat(rule.bonus()).isEqualTo(1);

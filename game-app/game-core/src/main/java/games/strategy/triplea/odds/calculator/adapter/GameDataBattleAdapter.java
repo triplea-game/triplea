@@ -271,8 +271,8 @@ public class GameDataBattleAdapter {
         remaining,
         domainOf(ua),
         new DamageState(hits),
-        support.gives().getOrDefault(type.getName(), SupportCategory.NONE),
-        support.receives().getOrDefault(type.getName(), SupportCategory.NONE),
+        Set.copyOf(support.gives().getOrDefault(type.getName(), Set.of())),
+        Set.copyOf(support.receives().getOrDefault(type.getName(), Set.of())),
         flagsOf(ua, dependent, lhtrHeavyBombers),
         successor(
             type, player, side, effects, hits, remaining, support, dependent, lhtrHeavyBombers));
@@ -444,19 +444,19 @@ public class GameDataBattleAdapter {
    * owner ({@code attacker} or {@code defender}) the attachment lists — mirroring the engine's
    * {@code SupportCalculator} owner match.
    *
-   * <p>v1 scope, bounded by the singular {@link CombatProfile#gives()}/{@link
-   * CombatProfile#receives()} fields: only friendly ({@code allied}) strength/roll support is
-   * modeled. Deliberately unmodeled, each needing a multi-category profile the design defers: enemy
-   * ({@code enemy}) debuff support, per-{@code bonusType} stacking caps, a unit that gives or
-   * receives more than one distinct support (first attachment wins), Improved-Artillery tech
-   * doubling, allied support beyond the two calc players, a rule that is both strength and roll
-   * (strength wins), and AA support.
+   * <p>Only friendly ({@code allied}) strength/roll support is modeled, one category per unit: the
+   * {@link CombatProfile} give/receive fields are sets so a unit can carry several matched
+   * independently, but the adapter records only the first matching attachment. Deliberately
+   * unmodeled: enemy ({@code enemy}) debuff support, per-{@code bonusType} stacking caps, a unit
+   * giving or receiving more than one distinct support, Improved-Artillery tech doubling, allied
+   * support beyond the two calc players, a rule that is both strength and roll (strength wins), and
+   * AA support.
    */
   private static SupportModel supportModel(
       final GameData data, final GamePlayer attacker, final GamePlayer defender) {
     final List<SupportRule> rules = new ArrayList<>();
-    final Map<String, SupportCategory> gives = new LinkedHashMap<>();
-    final Map<String, SupportCategory> receives = new LinkedHashMap<>();
+    final Map<String, Set<SupportCategory>> gives = new LinkedHashMap<>();
+    final Map<String, Set<SupportCategory>> receives = new LinkedHashMap<>();
     for (final UnitSupportAttachment attachment :
         Set.copyOf(data.getUnitTypeList().getSupportRules())) {
       if (!attachment.getAllied()) {
@@ -496,22 +496,22 @@ public class GameDataBattleAdapter {
 
   /** Records the giver's emitted category and each receiver type's consumed one (first wins). */
   private static void register(
-      final Map<String, SupportCategory> gives,
-      final Map<String, SupportCategory> receives,
+      final Map<String, Set<SupportCategory>> gives,
+      final Map<String, Set<SupportCategory>> receives,
       final UnitType giver,
       final UnitSupportAttachment attachment,
       final SupportCategory category) {
-    gives.putIfAbsent(giver.getName(), category);
+    gives.putIfAbsent(giver.getName(), Set.of(category));
     for (final UnitType receiver : attachment.getUnitType()) {
-      receives.putIfAbsent(receiver.getName(), category);
+      receives.putIfAbsent(receiver.getName(), Set.of(category));
     }
   }
 
   /** The baked support: the rules plus the per-unit-type give/receive categories they key on. */
   private record SupportModel(
       List<SupportRule> rules,
-      Map<String, SupportCategory> gives,
-      Map<String, SupportCategory> receives) {}
+      Map<String, Set<SupportCategory>> gives,
+      Map<String, Set<SupportCategory>> receives) {}
 
   private static RulesProfile rulesProfile(final GameData data) {
     final var properties = data.getProperties();

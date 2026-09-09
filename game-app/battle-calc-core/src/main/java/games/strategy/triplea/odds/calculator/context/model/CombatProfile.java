@@ -2,6 +2,7 @@ package games.strategy.triplea.odds.calculator.context.model;
 
 import java.util.EnumSet;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * The board-counter identity: the pure combat stats a unit carries into battle, and the merge key
@@ -26,8 +27,11 @@ public record CombatProfile(
     int hitPoints,
     Domain domain,
     DamageState damage,
-    SupportCategory gives,
-    SupportCategory receives,
+    // The support categories this unit emits and consumes; empty means neither. Sets so a unit can
+    // carry several, each matched independently against a rule; value-based Set equality keeps them
+    // in the merge key without depending on order.
+    Set<SupportCategory> gives,
+    Set<SupportCategory> receives,
     // Effectively immutable: populated once at construction and only read thereafter, so the
     // profile
     // is safe to share across the simulator threads that read one scenario.
