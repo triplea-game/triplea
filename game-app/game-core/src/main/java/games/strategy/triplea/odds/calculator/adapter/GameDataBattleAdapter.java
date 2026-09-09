@@ -449,8 +449,10 @@ public class GameDataBattleAdapter {
    *
    * <p>A unit carries every support category it gives or receives, and each rule records its {@code
    * bonusType}/{@code count} so the resolver caps a recipient's stacked support the way the engine
-   * does. Deliberately unmodeled: Improved-Artillery tech doubling, allied support beyond the two
-   * calc players, a rule that is both strength and roll (strength wins), and AA support.
+   * does. A single attachment that is both a strength and a roll support emits one rule for each,
+   * mirroring the engine filtering its one {@code SupportCalculator} into independent strength and
+   * roll pools. Deliberately unmodeled: Improved-Artillery tech doubling, allied support beyond the
+   * two calc players, and AA support.
    */
   private static SupportModel supportModel(
       final GameData data, final GamePlayer attacker, final GamePlayer defender) {
@@ -462,14 +464,13 @@ public class GameDataBattleAdapter {
       final UnitType giver = (UnitType) attachment.getAttachedTo();
       final SupportCategory category =
           new SupportCategory("support:" + giver.getName() + "/" + attachment.getName());
-      final boolean appliesToStrength = attachment.getStrength();
       if (attachment.getAllied()) {
         if (attachment.getOffence() && attachment.getPlayers().contains(attacker)) {
-          rules.add(supportRule(attachment, category, appliesToStrength, Side.OFFENSE, false));
+          addRules(rules, attachment, category, Side.OFFENSE, false);
           register(gives, receives, giver, attachment, category);
         }
         if (attachment.getDefence() && attachment.getPlayers().contains(defender)) {
-          rules.add(supportRule(attachment, category, appliesToStrength, Side.DEFENSE, false));
+          addRules(rules, attachment, category, Side.DEFENSE, false);
           register(gives, receives, giver, attachment, category);
         }
       }
@@ -477,16 +478,37 @@ public class GameDataBattleAdapter {
         // An attacking giver debuffs the defender, so the rule fires when the defender is the
         // evaluated side (and vice versa) — the engine's side.getOpposite() for the enemy pool.
         if (attachment.getOffence() && attachment.getPlayers().contains(attacker)) {
-          rules.add(supportRule(attachment, category, appliesToStrength, Side.DEFENSE, true));
+          addRules(rules, attachment, category, Side.DEFENSE, true);
           register(gives, receives, giver, attachment, category);
         }
         if (attachment.getDefence() && attachment.getPlayers().contains(defender)) {
-          rules.add(supportRule(attachment, category, appliesToStrength, Side.OFFENSE, true));
+          addRules(rules, attachment, category, Side.OFFENSE, true);
           register(gives, receives, giver, attachment, category);
         }
       }
     }
     return new SupportModel(List.copyOf(rules), gives, receives);
+  }
+
+  /**
+   * Emits a rule for each firing partition the attachment feeds: a strength rule when it is a
+   * strength support and a roll rule when it is a roll support. An attachment that is both (dice
+   * {@code "roll:strength"}) emits both — the engine builds one {@code SupportCalculator} and
+   * filters it by {@code getStrength()} and {@code getRoll()} into two pools with independent caps,
+   * so filing the rule into a single partition would silently drop the other half.
+   */
+  private static void addRules(
+      final List<SupportRule> rules,
+      final UnitSupportAttachment attachment,
+      final SupportCategory category,
+      final Side side,
+      final boolean fromEnemy) {
+    if (attachment.getStrength()) {
+      rules.add(supportRule(attachment, category, true, side, fromEnemy));
+    }
+    if (attachment.getRoll()) {
+      rules.add(supportRule(attachment, category, false, side, fromEnemy));
+    }
   }
 
   private static SupportRule supportRule(

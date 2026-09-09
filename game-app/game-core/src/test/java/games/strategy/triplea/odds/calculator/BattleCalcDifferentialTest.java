@@ -197,6 +197,40 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
         infantry(gameData).create(3, germans(gameData)));
   }
 
+  /**
+   * A support that is both strength and roll ({@code dice="roll:strength"}) must apply in both the
+   * engine's strength and roll pools. No bundled map declares one, so an allied dual support is
+   * synthesized onto REVISED: russian armour lends each attacking infantry +1 attack and +1 roll.
+   * Under low luck the roll half turns each supported infantry's single die into two, so the
+   * attacker scores an extra hit and wipes the defenders a round sooner; the old adapter filed the
+   * attachment as strength-only and dropped the roll half, losing that hit and an extra attacker —
+   * so identical survivors pin that both halves are now baked.
+   */
+  @Test
+  void alwaysHitsUnderLowLuckWithDualStrengthAndRollSupportMatchesTheEngine()
+      throws GameParseException {
+    final GameData gameData = TestMapGameData.REVISED.getGameData();
+    makeGameLowLuck(gameData);
+    injectDualStrengthAndRollSupport(
+        gameData, armour(gameData), infantry(gameData), russians(gameData), 1);
+    // Compute the lazily-cached support list now, so the oracle and the new path both read the
+    // injected rule, and guard against a silent no-op where the dual support never reaches either.
+    assertThat(gameData.getUnitTypeList().getSupportRules())
+        .anyMatch(rule -> rule.getStrength() && rule.getRoll());
+
+    final Territory germany = territory("Germany", gameData);
+    final Collection<Unit> attacking = infantry(gameData).create(3, russians(gameData));
+    attacking.addAll(armour(gameData).create(1, russians(gameData)));
+
+    assertIdenticalSurvivorsUnderAlwaysHits(
+        gameData,
+        russians(gameData),
+        germans(gameData),
+        germany,
+        attacking,
+        infantry(gameData).create(3, germans(gameData)));
+  }
+
   @Test
   void seededRunsAgreeOnAttackerWinPercentWithinTolerance() {
     final GameData gameData = TestMapGameData.REVISED.getGameData();
@@ -991,6 +1025,34 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
     rule.setBonus(bonus);
     rule.setBonusType("enemyDebuff");
     rule.setNumber(3);
+    rule.setUnitType(Set.of(target));
+    rule.setPlayers(List.of(giverOwner));
+    giver.addAttachment(rule.getName(), rule);
+  }
+
+  /**
+   * Synthesizes an allied support that is both strength and roll: {@code giver} (owned by {@code
+   * giverOwner}) lends {@code target} {@code bonus} attack and {@code bonus} rolls whenever it
+   * attacks. {@code dice="roll:strength"} is the one shape no bundled test map declares, so it is
+   * attached before the support list is cached, the way REVISED's old-artillery support is
+   * synthesized.
+   */
+  private static void injectDualStrengthAndRollSupport(
+      final GameData gameData,
+      final UnitType giver,
+      final UnitType target,
+      final GamePlayer giverOwner,
+      final int bonus)
+      throws GameParseException {
+    final UnitSupportAttachment rule =
+        new UnitSupportAttachment(
+            Constants.SUPPORT_ATTACHMENT_PREFIX + "DualSupportTest", giver, gameData);
+    rule.setDice("roll:strength");
+    rule.setFaction("allied");
+    rule.setSide("offence");
+    rule.setBonus(bonus);
+    rule.setBonusType("dualSupport");
+    rule.setNumber(10);
     rule.setUnitType(Set.of(target));
     rule.setPlayers(List.of(giverOwner));
     giver.addAttachment(rule.getName(), rule);
