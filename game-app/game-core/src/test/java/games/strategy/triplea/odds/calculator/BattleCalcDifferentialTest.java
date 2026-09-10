@@ -653,22 +653,22 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
     }
 
     /**
-     * The end-of-round unescorted-transport sweep against the engine — four destroyers exactly
-     * saturate two 2-HP battleships so the transport survives the firing, then the restriction
-     * sweeps the now-unescorted transport at round end ({@code
-     * RemoveUnprotectedUnits#checkUndefendedTransports}), leaving the attacker its destroyer.
+     * The end-of-round unescorted-transport sweep against the engine: four destroyers face two 2-HP
+     * battleships escorting a transport, and once the escorts die the restriction sweeps the
+     * now-unescorted transport at round end ({@code
+     * RemoveUnprotectedUnits#checkUndefendedTransports}).
      *
-     * <p>Disabled: the alwaysHits engine forces the attacker to out-hit-point the defenders to
-     * survive the round, which means the escort must be a multi-HP unit the attacker concentrates
-     * two hits on — squarely the pre-existing {@code loneMultiHitBattleship} drop ({@link
-     * #loneMultiHitBattleshipDropsAHitUnderConcentratedFire}), so the sim spares a battleship the
-     * engine sinks and the divergence is that drop, not the sweep. The sweep itself is pinned in
-     * isolation by {@code TransportSweepTest} in {@code battle-calc-core}; kept here so a clean
-     * differential lands the day the multi-HP drop is fixed.
+     * <p>Still disabled after the lone-multi-HP drop is closed: this fixture also trips a distinct
+     * multi-HP hit-accounting divergence — under {@code alwaysHits} the engine eliminates the
+     * entire attacking force (attacker survivors empty), while the bounded sim keeps a destroyer,
+     * so the two paths disagree on how many rounds the 2-HP escorts survive independently of the
+     * sweep. The sweep itself is pinned in isolation by {@code TransportSweepTest} in {@code
+     * battle-calc-core}; kept here so a clean differential lands the day that multi-HP accounting
+     * gap closes.
      */
     @Test
     @Disabled(
-        "blocked by the lone-multi-HP hit-drop, see loneMultiHitBattleship; sweep pinned by"
+        "distinct multi-HP hit-accounting divergence beyond the lone-multi-HP drop; sweep pinned by"
             + " TransportSweepTest")
     void unescortedTransportIsSweptAtRoundEndLeavingTheAttackerStanding() {
       final GameData gameData = TestMapGameData.REVISED.getGameData();
@@ -689,17 +689,15 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
     }
 
     /**
-     * Characterization of the pre-existing lone-multi-HP hit-drop in {@code
-     * ReferenceCasualtyAllocator}: a single 2-HP battleship absorbing two hits from one volley
-     * loses a hit the engine lands, so the sim over-reports its survival. Three fighters put two
-     * guaranteed hits on a lone defending battleship under {@code alwaysHits} — the engine sinks
-     * it, the sim spares it damaged. Disabled as a documentation pin of a gap that predates the
-     * flag port, not a defect fixed here; kept so the drop cannot silently change (mirrors {@link
-     * #ww2v2DestroyerPinnedFirstStrikeStillTradesInTheSubPhase}).
+     * Concentrated fire sinks a lone multi-HP unit exactly like the engine. Three fighters land two
+     * guaranteed hits on a single defending battleship under {@code alwaysHits}; the second hit
+     * follows the battleship onto its damaged {@code onHit()} successor rather than dropping, so
+     * the sim sinks it as the engine does. Pins the onHit-closure in {@code
+     * ReferenceCasualtyAllocator} that keeps a damaged successor a legal casualty though it is
+     * absent from the undamaged-only eligibility filter.
      */
     @Test
-    @Disabled("phase-2b: pre-existing lone-multi-HP hit-drop in ReferenceCasualtyAllocator")
-    void loneMultiHitBattleshipDropsAHitUnderConcentratedFire() {
+    void loneMultiHitBattleshipSinksUnderConcentratedFire() {
       final GameData gameData = TestMapGameData.REVISED.getGameData();
       final Territory seaZone = territory("1 Sea Zone", gameData);
 

@@ -290,15 +290,16 @@ class CasualtyAllocatorContractTest {
   }
 
   /**
-   * Regression pin for the frozen-eligibility bug: the "is a combatant still alive?" test must read
-   * the live working map, not the plan-time eligibility filter. A 2-HP battleship damaged by the
-   * first hit migrates to a successor absent from the (undamaged-only) filter; reading the filter
-   * would see "no combatant left" and sink the protected transport. Reading the live map keeps the
-   * damaged battleship counted, so the second hit is dropped — the accepted lone-multi-HP gap — and
-   * the transport survives. Survivors must NOT be {@code {battleship-damaged, transport-dead}}.
+   * The transport restriction reads live unit state while concentrated fire fully sinks a multi-HP
+   * combatant. A 2-HP battleship damaged by the first hit migrates to an {@code onHit()} successor
+   * absent from the frozen (undamaged-only) eligibility filter; the allocator keeps it targetable
+   * through the filter's onHit-closure, so the second hit sinks it instead of dropping, and {@code
+   * restrictTransports} still reads the live map — not the plan-time filter — to hold the transport
+   * protected while any combatant, damaged or not, can soak a hit. Survivors: transport active,
+   * battleship sunk; never {@code {battleship-damaged, transport-dead}}.
    */
   @Test
-  void restrictedTransportSurvivesWhileADamagedMultiHpCombatantIsStillActive() {
+  void restrictedTransportSurvivesWhileConcentratedFireSinksAMultiHpCombatant() {
     final CombatProfile battleship = multiHp("battleship", 4, 4, 2, Domain.SEA);
     final CombatProfile damagedBattleship = battleship.onHit().orElseThrow();
     final CombatProfile transport = withFlags(sea("transport", 0, 1, 1), CombatFlag.IS_TRANSPORT);
@@ -307,7 +308,8 @@ class CasualtyAllocatorContractTest {
             Map.of(
                 new Key(battleship, Lifecycle.ACTIVE), 1,
                 new Key(transport, Lifecycle.ACTIVE), 1));
-    // Eligibility is frozen from undamaged profiles, so the damaged successor is deliberately absent.
+    // Eligibility is frozen from undamaged profiles, so the damaged successor is deliberately
+    // absent.
     final TargetFilter eligible = new TargetFilter(Set.of(battleship, transport));
 
     final Force result =
@@ -325,6 +327,7 @@ class CasualtyAllocatorContractTest {
 
     assertThat(countAt(result, transport, Lifecycle.ACTIVE)).isOne();
     assertThat(countAt(result, transport, Lifecycle.DEAD)).isZero();
-    assertThat(countAt(result, damagedBattleship, Lifecycle.ACTIVE)).isOne();
+    assertThat(countAt(result, damagedBattleship, Lifecycle.ACTIVE)).isZero();
+    assertThat(countAt(result, damagedBattleship, Lifecycle.DEAD)).isOne();
   }
 }
