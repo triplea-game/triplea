@@ -297,9 +297,22 @@ public class UnitAttachment extends DefaultAttachment {
   // this unit to move into a territory. (units must be owned by player, not be disabled)
   private @Nullable List<String[]> requiresUnitsToMove = null;
   // a colon delimited list of territories where this unit may not be placed
-  // also an allowed setter is "setUnitPlacementOnlyAllowedIn",
-  // which just creates unitPlacementRestrictions with an inverted list of territories
   @Getter private @Nullable String[] unitPlacementRestrictions = null;
+
+  // a colon delimited list of territories where this unit may only be placed. Essentially the
+  // inverse of unitPlacementRestrictions
+  private String[] getUnitPlacementOnlyAllowedIn() {
+    final Set<String> restrictedTerritories =
+        unitPlacementRestrictions == null
+            ? Set.of()
+            : new HashSet<>(Arrays.asList(unitPlacementRestrictions));
+
+    return getData().getMap().getTerritories().stream()
+        .map(Territory::getName)
+        .filter(name -> !restrictedTerritories.contains(name))
+        .toArray(String[]::new);
+  }
+
   // -1 if infinite (infinite is default)
   @Getter private int maxBuiltPerPlayer = -1;
   private @Nullable Tuple<Integer, String> placementLimit = null;
@@ -970,8 +983,6 @@ public class UnitAttachment extends DefaultAttachment {
     unitPlacementRestrictions = null;
   }
 
-  // no field for this, since it is the inverse of unitPlacementRestrictions
-  // we might as well just use unitPlacementRestrictions
   private void setUnitPlacementOnlyAllowedIn(final String value) throws GameParseException {
     final Collection<Territory> allowedTerritories = getListedTerritories(splitOnColon(value));
     final Collection<Territory> restrictedTerritories =
@@ -979,6 +990,21 @@ public class UnitAttachment extends DefaultAttachment {
     restrictedTerritories.removeAll(allowedTerritories);
     unitPlacementRestrictions =
         restrictedTerritories.stream().map(Territory::getName).toArray(String[]::new);
+  }
+
+  private void setUnitPlacementOnlyAllowedIn(final String[] value) throws GameParseException {
+    final Collection<Territory> allowedTerritories = getListedTerritories(value);
+    final Collection<Territory> restrictedTerritories =
+        new HashSet<>(getData().getMap().getTerritories());
+
+    restrictedTerritories.removeAll(allowedTerritories);
+
+    unitPlacementRestrictions =
+        restrictedTerritories.stream().map(Territory::getName).toArray(String[]::new);
+  }
+
+  private void resetUnitPlacementOnlyAllowedIn() {
+    unitPlacementRestrictions = null;
   }
 
   private void setRepairsUnits(final String value) throws GameParseException {
@@ -3996,6 +4022,14 @@ public class UnitAttachment extends DefaultAttachment {
                   this::setUnitPlacementRestrictions,
                   this::getUnitPlacementRestrictions,
                   this::resetUnitPlacementRestrictions));
+      case "unitPlacementOnlyAllowedIn" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setUnitPlacementOnlyAllowedIn,
+                  this::setUnitPlacementOnlyAllowedIn,
+                  this::getUnitPlacementOnlyAllowedIn,
+                  this::resetUnitPlacementOnlyAllowedIn));
+
       case "maxBuiltPerPlayer" ->
           Optional.of(
               MutableProperty.of(
@@ -4135,8 +4169,6 @@ public class UnitAttachment extends DefaultAttachment {
           Optional.of(MutableProperty.<Boolean>ofWriteOnly(this::setIsAa, this::setIsAa));
       case "destroyedWhenCapturedFrom" ->
           Optional.of(MutableProperty.ofWriteOnlyString(this::setDestroyedWhenCapturedFrom));
-      case "unitPlacementOnlyAllowedIn" ->
-          Optional.of(MutableProperty.ofWriteOnlyString(this::setUnitPlacementOnlyAllowedIn));
       case "isAAmovement" ->
           Optional.of(
               MutableProperty.<Boolean>ofWriteOnly(this::setIsAaMovement, this::setIsAaMovement));
