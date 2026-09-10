@@ -960,16 +960,24 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
    * unmodeled, so TWW submarine fights that genuinely need it still diverge. The case below needs
    * none of that — a lone protected sub versus pure air is fully covered by the blanket air-immunity
    * flag — and it matches once the adapter stops baking a combat-AA sub as an anti-air gun, so the
-   * sub no longer fires back at the planes.
+   * sub no longer fires back at the planes. The destroyer relationship is pinned on WW2V3 in
+   * both directions: {@link ReshapingMatrix#pureAirStillCannotHitAProtectedSubWithoutADestroyer}
+   * holds the no-destroyer case, where air still cannot reach the sub (the same direction as this
+   * gate's TWW case), and {@link ReshapingMatrix#anAttackingDestroyerLetsAirHitTheProtectedSub}
+   * the destroyer-present case, where an escorting destroyer strips the blanket immunity so air
+   * can hit it. Owner and sea-zone choices are
+   * incidental: TWW unit types are ownable by any player, and the sea zone contributes only the
+   * {@code Sea} territory effect, applied identically to the oracle and the adapter.
    */
   @Nested
   class CannotBeTargetedCompletionGate {
 
     /**
      * Pure air versus a TWW protected submarine, no destroyer: the engine resolves mutual
-     * non-targeting — the air cannot reach the restricted sub and the sub cannot fire on air — so
-     * both stand. Isolates targeting eligibility: the fighter's inability to hit the sub and the
-     * sub's inability to hit the fighter must both hold.
+     * non-targeting — the air cannot reach the restricted sub, and the sub does not fire on the air
+     * because the adapter no longer bakes its combat AA as an anti-air gun — so both stand. The
+     * fighter's inability to hit the sub is targeting eligibility, carried by the blanket
+     * air-immunity flag; the sub's silence on air is the anti-air-gun gating this change adds.
      */
     @Test
     void airCannotReachATwwProtectedSubAndTheSubCannotFireBack() {
@@ -994,6 +1002,11 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
    * so the sub fires its real attack through the ordinary first-strike and main phases. TWW is not
    * ww2v2, so none of these need the waiting-to-die work tracked by {@link
    * ReshapingMatrix#ww2v2DestroyerPinnedFirstStrikeStillTradesInTheSubPhase}, which stays disabled.
+   * The enabled cases pin first strike and its destroyer-negation; {@code canEvade} is part of the
+   * feature cluster this gate tracks but is not yet exercised by an asserted submerge or retreat
+   * outcome. Owners and sea zones are incidental: TWW unit types are ownable by any player, and
+   * each sea zone contributes only the {@code Sea} territory effect, applied identically to the
+   * oracle and the adapter.
    */
   @Nested
   class FirstStrikeAndSubmarineEvadeCompletionGate {
