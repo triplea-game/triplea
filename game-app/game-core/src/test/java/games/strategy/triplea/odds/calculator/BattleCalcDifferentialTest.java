@@ -951,6 +951,127 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
   }
 
   /**
+   * Next-step #1 completion gate — general {@code canNotBeTargetedBy} targeting eligibility. The
+   * WW2V3 protected-sub cases above already pass because the adapter bakes a non-empty {@code
+   * getCanNotBeTargetedBy} as the single {@code CANNOT_BE_TARGETED_BY_ALL} flag and {@code
+   * ReferenceCombatRelations} applies it as blanket air-immunity. TWW is where that flattening
+   * bites: its submarines carry a type-specific restriction that the flag cannot represent, so the
+   * per-type targeting matrix ({@code TargetFilter}'s deferred "canNotTarget matrices") is
+   * unmodeled and TWW submarine fights diverge. These cases are confirmed RED against the real
+   * engine; disabled until the per-type targeting eligibility lands.
+   */
+  @Nested
+  class CannotBeTargetedCompletionGate {
+
+    /**
+     * Pure air versus a TWW protected submarine, no destroyer: the engine resolves mutual
+     * non-targeting — the air cannot reach the restricted sub and the sub cannot fire on air — so
+     * both stand. The sim instead destroys the air attacker, so the surviving attacker diverges.
+     * Isolates targeting eligibility: the fighter's inability to hit the sub and the sub's
+     * inability to hit the fighter must both hold.
+     */
+    @Test
+    @Disabled(
+        "next-phase: per-type canNotBeTargetedBy, see ReferenceCombatRelations#eligibleTargets")
+    void airCannotReachATwwProtectedSubAndTheSubCannotFireBack() {
+      final GameData gameData = TestMapGameData.TWW.getGameData();
+      final Territory seaZone = territory("1 Sea Zone", gameData);
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          player(gameData, "Turkey"),
+          player(gameData, "Canada"),
+          seaZone,
+          units(gameData, "russianFighter", 1, player(gameData, "Turkey")),
+          units(gameData, "americanSubmarine", 1, player(gameData, "Canada")));
+    }
+  }
+
+  /**
+   * Next-step #2 completion gate — submarine first strike and evade on TWW, where the remaining
+   * exact-match deficit concentrates. REVISED/WW2V3 sub fights already match (see {@code
+   * ReshapingMatrix}); the open divergences are TWW submarine engagements, whose units bundle first
+   * strike, {@code canEvade}, and {@code canNotBeTargetedBy} on the same hull. Each case is
+   * confirmed RED against the real engine and disabled until the sub-phase fidelity lands (it
+   * shares the waiting-to-die work tracked by {@link
+   * ReshapingMatrix#ww2v2DestroyerPinnedFirstStrikeStillTradesInTheSubPhase}).
+   */
+  @Nested
+  class FirstStrikeAndSubmarineEvadeCompletionGate {
+
+    /**
+     * Offensive first strike with no enemy destroyer: an attacking TWW submarine sneak-fires and
+     * sinks the lone defending carrier before it can answer, surviving untouched. The sim inverts
+     * the result — it loses the sub and leaves the carrier — so neither side's survivors match.
+     */
+    @Test
+    @Disabled("next-phase: TWW sub first strike, see ReferenceCombatRelations#firstStrikeNegated")
+    void attackingSubSneaksAndSinksACarrierBeforeItAnswers() {
+      final GameData gameData = TestMapGameData.TWW.getGameData();
+      final Territory seaZone = territory("116 Sea Zone", gameData);
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          player(gameData, "VichyFrance"),
+          player(gameData, "Manchuria"),
+          seaZone,
+          units(gameData, "russianAdvancedSubmarine", 1, player(gameData, "VichyFrance")),
+          units(gameData, "italianCarrier", 1, player(gameData, "Manchuria")));
+    }
+
+    /**
+     * Defensive first strike with no attacking destroyer: a defending TWW submarine sneak-fires and
+     * sinks the attacking cruiser before it answers, surviving untouched. The sim inverts the
+     * result — it keeps the cruiser and loses the sub — so neither side's survivors match.
+     */
+    @Test
+    @Disabled(
+        "next-phase: TWW defensive sub first strike, see ReferenceCombatRelations#firstStrikeNegated")
+    void defendingSubSneaksAndSinksACruiserBeforeItAnswers() {
+      final GameData gameData = TestMapGameData.TWW.getGameData();
+      final Territory seaZone = territory("152 Sea Zone", gameData);
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          player(gameData, "Italy"),
+          player(gameData, "Spain"),
+          seaZone,
+          units(gameData, "japaneseCruiser", 1, player(gameData, "Italy")),
+          units(gameData, "spanishSubmarine", 1, player(gameData, "Spain")));
+    }
+
+    /**
+     * A defending destroyer negates the attacking submarine's first strike, so the engine has them
+     * trade simultaneously under {@code alwaysHits} and both sink. The sim spares the destroyer,
+     * leaving the defender standing — the destroyer-pinned sub fails to trade its shot.
+     */
+    @Test
+    @Disabled(
+        "next-phase: destroyer-negated sub trade, see ReferenceCombatRelations#firstStrikeNegated")
+    void destroyerNegatedAttackingSubStillTradesWithTheDestroyer() {
+      final GameData gameData = TestMapGameData.TWW.getGameData();
+      final Territory seaZone = territory("60 Sea Zone", gameData);
+
+      assertIdenticalSurvivorsUnderAlwaysHits(
+          gameData,
+          player(gameData, "Turkey"),
+          player(gameData, "VichyFrance"),
+          seaZone,
+          units(gameData, "japaneseSubmarine", 1, player(gameData, "Turkey")),
+          units(gameData, "russianHeavyDestroyer", 1, player(gameData, "VichyFrance")));
+    }
+  }
+
+  private static GamePlayer player(final GameData gameData, final String name) {
+    return gameData.getPlayerList().getPlayerId(name);
+  }
+
+  private static Collection<Unit> units(
+      final GameData gameData, final String type, final int count, final GamePlayer owner) {
+    return gameData.getUnitTypeList().getUnitTypeOrThrow(type).create(count, owner);
+  }
+
+  /**
    * The exact-equality oracle: one {@code alwaysHits} run through both paths must leave the same
    * per-unit-type survivor counts on each side. Single-type or engine-default-order fights are used
    * so the casualty <em>order</em> is not itself a variable — see the class note on OOL injection.
