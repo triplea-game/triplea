@@ -25,11 +25,11 @@ import org.junit.jupiter.api.Test;
 /**
  * Pins the round-end unescorted-transport sweep ({@link ReferenceBattleSimulator}) in isolation:
  * the {@code onlyUnescortedTransportsLeft} trigger at the predicate level, and the removal itself
- * end-to-end. The escort defends at 0 so the attacker never takes a hit — this keeps the fixture off
- * the multi-hit-point concentration path (the {@code loneMultiHitBattleship} drop) so the sweep,
- * not the allocator's hit accounting, is what the assertion sees. With the restriction on the
- * transport is removed the same round its escort dies; with it off the sweep is a no-op and the
- * attacker must spend a second round shooting the transport down.
+ * end-to-end. The escort defends at 0 so the attacker never takes a hit — this keeps the fixture
+ * off the multi-hit-point concentration path so the sweep, not the allocator's hit accounting, is
+ * what the assertion sees. With the restriction on the transport is removed the same round its
+ * escort dies; with it off the sweep is a no-op and the attacker must spend a second round shooting
+ * the transport down.
  */
 class TransportSweepTest {
 

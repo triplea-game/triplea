@@ -15,7 +15,9 @@ import games.strategy.triplea.odds.calculator.context.model.Side;
 import games.strategy.triplea.odds.calculator.context.model.TargetFilter;
 import games.strategy.triplea.odds.calculator.context.seam.CasualtyAllocator;
 import games.strategy.triplea.odds.calculator.context.seam.CasualtyOrder;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -42,13 +44,13 @@ public class ReferenceCasualtyAllocator implements CasualtyAllocator {
       final Side side,
       final ProfileStats stats) {
     final Map<Key, Integer> working = new LinkedHashMap<>(force.counts());
+    final Set<CombatProfile> targets = targetClosure(eligible);
     for (int hit = 0; hit < hits; hit++) {
-      final Set<CombatProfile> candidates = targetableProfiles(working, eligible);
+      final Set<CombatProfile> candidates = targetableProfiles(working, targets);
       final Set<CombatProfile> allowed = selectable(candidates, working, constraints);
       // No allowed target means a constraint withholds every remaining candidate — the transport
       // restriction protecting the last transports while a combatant can still soak the hit. The
-      // hit lands on nothing this volley (the accepted lone-multi-HP drop) rather than spilling onto
-      // a protected transport.
+      // hit lands on nothing this volley rather than spilling onto a protected transport.
       if (allowed.isEmpty()) {
         continue;
       }
@@ -58,14 +60,38 @@ public class ReferenceCasualtyAllocator implements CasualtyAllocator {
     return new Force(working);
   }
 
-  /** ACTIVE buckets the filter allows this firing group to kill. */
+  /**
+   * The eligible targets plus every damaged {@code onHit()} successor reachable from them. The
+   * filter is frozen over undamaged profiles, but a multi-HP unit migrates to a distinct successor
+   * profile as it takes hits; that successor is the same unit and stays a legal casualty (the
+   * engine never re-evaluates targetability on damage). Without the closure a lone damaged
+   * combatant leaves no targetable profile and the concentrating hit is silently dropped.
+   */
+  private static Set<CombatProfile> targetClosure(final TargetFilter eligible) {
+    final Set<CombatProfile> closure = new LinkedHashSet<>(eligible.eligibleTargets());
+    final Deque<CombatProfile> pending = new ArrayDeque<>(closure);
+    while (!pending.isEmpty()) {
+      pending
+          .poll()
+          .onHit()
+          .ifPresent(
+              successor -> {
+                if (closure.add(successor)) {
+                  pending.add(successor);
+                }
+              });
+    }
+    return closure;
+  }
+
+  /** ACTIVE buckets the closure allows this firing group to kill. */
   private static Set<CombatProfile> targetableProfiles(
-      final Map<Key, Integer> working, final TargetFilter eligible) {
+      final Map<Key, Integer> working, final Set<CombatProfile> targets) {
     final Set<CombatProfile> targetable = new LinkedHashSet<>();
     for (final Map.Entry<Key, Integer> entry : working.entrySet()) {
       if (entry.getKey().state() == Lifecycle.ACTIVE
           && entry.getValue() > 0
-          && eligible.eligibleTargets().contains(entry.getKey().profile())) {
+          && targets.contains(entry.getKey().profile())) {
         targetable.add(entry.getKey().profile());
       }
     }
@@ -132,7 +158,8 @@ public class ReferenceCasualtyAllocator implements CasualtyAllocator {
     // Whether a combatant can still soak the hit is read from the live working map, not from
     // 'candidates': 'candidates' is the plan-time eligibility filter over undamaged profiles, so a
     // multi-HP combatant damaged mid-volley has migrated to an onHit() successor that never entered
-    // that filter — it is still alive and must keep the transports protected until it is fully dead.
+    // that filter — it is still alive and must keep the transports protected until it is fully
+    // dead.
     if (!anyActiveCombatant(working)) {
       return candidates;
     }
