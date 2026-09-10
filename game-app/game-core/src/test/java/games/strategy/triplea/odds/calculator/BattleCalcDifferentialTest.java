@@ -956,9 +956,11 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
    * getCanNotBeTargetedBy} as the single {@code CANNOT_BE_TARGETED_BY_ALL} flag and {@code
    * ReferenceCombatRelations} applies it as blanket air-immunity. TWW is where that flattening
    * bites: its submarines carry a type-specific restriction that the flag cannot represent, so the
-   * per-type targeting matrix ({@code TargetFilter}'s deferred "canNotTarget matrices") is
-   * unmodeled and TWW submarine fights diverge. These cases are confirmed RED against the real
-   * engine; disabled until the per-type targeting eligibility lands.
+   * per-type targeting matrix ({@code TargetFilter}'s deferred "canNotTarget matrices") stays
+   * unmodeled, so TWW submarine fights that genuinely need it still diverge. The case below needs
+   * none of that — a lone protected sub versus pure air is fully covered by the blanket air-immunity
+   * flag — and it matches once the adapter stops baking a combat-AA sub as an anti-air gun, so the
+   * sub no longer fires back at the planes.
    */
   @Nested
   class CannotBeTargetedCompletionGate {
@@ -966,13 +968,10 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
     /**
      * Pure air versus a TWW protected submarine, no destroyer: the engine resolves mutual
      * non-targeting — the air cannot reach the restricted sub and the sub cannot fire on air — so
-     * both stand. The sim instead destroys the air attacker, so the surviving attacker diverges.
-     * Isolates targeting eligibility: the fighter's inability to hit the sub and the sub's
-     * inability to hit the fighter must both hold.
+     * both stand. Isolates targeting eligibility: the fighter's inability to hit the sub and the
+     * sub's inability to hit the fighter must both hold.
      */
     @Test
-    @Disabled(
-        "next-phase: per-type canNotBeTargetedBy, see ReferenceCombatRelations#eligibleTargets")
     void airCannotReachATwwProtectedSubAndTheSubCannotFireBack() {
       final GameData gameData = TestMapGameData.TWW.getGameData();
       final Territory seaZone = territory("1 Sea Zone", gameData);
@@ -988,24 +987,23 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
   }
 
   /**
-   * Next-step #2 completion gate — submarine first strike and evade on TWW, where the remaining
-   * exact-match deficit concentrates. REVISED/WW2V3 sub fights already match (see {@code
-   * ReshapingMatrix}); the open divergences are TWW submarine engagements, whose units bundle first
-   * strike, {@code canEvade}, and {@code canNotBeTargetedBy} on the same hull. Each case is
-   * confirmed RED against the real engine and disabled until the sub-phase fidelity lands (it
-   * shares the waiting-to-die work tracked by {@link
-   * ReshapingMatrix#ww2v2DestroyerPinnedFirstStrikeStillTradesInTheSubPhase}).
+   * Submarine first strike and evade on TWW, whose units bundle first strike, {@code canEvade}, and
+   * {@code canNotBeTargetedBy} on the same hull (REVISED/WW2V3 sub fights already match, see {@code
+   * ReshapingMatrix}). These engagements match once the adapter stops baking a TWW combat-AA
+   * submarine — a Substrike hull whose "AA" strikes enemy destroyers, not air — as an anti-air gun,
+   * so the sub fires its real attack through the ordinary first-strike and main phases. TWW is not
+   * ww2v2, so none of these need the waiting-to-die work tracked by {@link
+   * ReshapingMatrix#ww2v2DestroyerPinnedFirstStrikeStillTradesInTheSubPhase}, which stays disabled.
    */
   @Nested
   class FirstStrikeAndSubmarineEvadeCompletionGate {
 
     /**
      * Offensive first strike with no enemy destroyer: an attacking TWW submarine sneak-fires and
-     * sinks the lone defending carrier before it can answer, surviving untouched. The sim inverts
-     * the result — it loses the sub and leaves the carrier — so neither side's survivors match.
+     * sinks the lone defending carrier before it can answer, surviving untouched. The carrier dies
+     * in the sub phase and never fires back, so only the sub remains.
      */
     @Test
-    @Disabled("next-phase: TWW sub first strike, see ReferenceCombatRelations#firstStrikeNegated")
     void attackingSubSneaksAndSinksACarrierBeforeItAnswers() {
       final GameData gameData = TestMapGameData.TWW.getGameData();
       final Territory seaZone = territory("116 Sea Zone", gameData);
@@ -1021,12 +1019,10 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
 
     /**
      * Defensive first strike with no attacking destroyer: a defending TWW submarine sneak-fires and
-     * sinks the attacking cruiser before it answers, surviving untouched. The sim inverts the
-     * result — it keeps the cruiser and loses the sub — so neither side's survivors match.
+     * sinks the attacking cruiser before it answers, surviving untouched. The cruiser dies in the
+     * sub phase and never fires back, so only the sub remains.
      */
     @Test
-    @Disabled(
-        "next-phase: TWW defensive sub first strike, see ReferenceCombatRelations#firstStrikeNegated")
     void defendingSubSneaksAndSinksACruiserBeforeItAnswers() {
       final GameData gameData = TestMapGameData.TWW.getGameData();
       final Territory seaZone = territory("152 Sea Zone", gameData);
@@ -1041,13 +1037,12 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
     }
 
     /**
-     * A defending destroyer negates the attacking submarine's first strike, so the engine has them
-     * trade simultaneously under {@code alwaysHits} and both sink. The sim spares the destroyer,
-     * leaving the defender standing — the destroyer-pinned sub fails to trade its shot.
+     * A defending destroyer negates the attacking submarine's first strike, so the negated sub
+     * drops into general combat and trades simultaneously with the destroyer under {@code
+     * alwaysHits} — both sink. TWW is not ww2v2, so this is the ordinary negated-first-striker-
+     * fires-in-main path, not the ww2v2 waiting-to-die case.
      */
     @Test
-    @Disabled(
-        "next-phase: destroyer-negated sub trade, see ReferenceCombatRelations#firstStrikeNegated")
     void destroyerNegatedAttackingSubStillTradesWithTheDestroyer() {
       final GameData gameData = TestMapGameData.TWW.getGameData();
       final Territory seaZone = territory("60 Sea Zone", gameData);

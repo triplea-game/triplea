@@ -6,6 +6,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.UnitTypeList;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
@@ -233,10 +234,14 @@ public class GameDataBattleAdapter {
     // bonus exists, so the normal territory bonus is omitted. Standard AA leaves *AaMaxDieSides at
     // the game diceSides the single-scalar roller divides by, so strength/diceSides matches the
     // engine's probability; a map-set non-standard denominator is an unrepresentable, deferred gap.
-    // One-profile-per-unit limit: an AA unit takes the AA family for its whole profile, so a
-    // dual-role unit that is both AA and a real combatant loses its normal main-phase fire here. No
-    // stock unit is both (stock guns are attack-0 infrastructure), so this is an accepted gap.
-    final boolean aa = ua.isAaForCombatOnly();
+    // A unit is modeled as an anti-air gun only when its combat AA can reach an air unit, since the
+    // AA phase fires exclusively at air. A combat-AA unit whose targetsAa names no air type keeps
+    // its ordinary combat profile and fires through the normal first-strike and main phases — a TWW
+    // Substrike submarine, whose "AA" strikes enemy destroyers, is a first-strike combatant first.
+    // Its destroyer-targeting AA is a deferred gap: the AA phase has no sea-target mode, so that
+    // strike is unmodeled (unobserved in survivors — the engine does not clear the destroyer before
+    // the sub trades with it in general combat).
+    final boolean aa = isAntiAirGun(ua, type.getData().getUnitTypeList());
     final int attack =
         aa
             ? ua.getOffensiveAttackAa(player)
@@ -274,7 +279,7 @@ public class GameDataBattleAdapter {
         new DamageState(hits),
         Set.copyOf(support.gives().getOrDefault(type.getName(), Set.of())),
         Set.copyOf(support.receives().getOrDefault(type.getName(), Set.of())),
-        flagsOf(ua, dependent, lhtrHeavyBombers),
+        flagsOf(ua, aa, dependent, lhtrHeavyBombers),
         successor(
             type, player, side, effects, hits, remaining, support, dependent, lhtrHeavyBombers));
   }
@@ -314,6 +319,18 @@ public class GameDataBattleAdapter {
   }
 
   /**
+   * Whether a combat-AA unit belongs in the AA phase, which fires only at air. True when the unit is
+   * {@code isAaForCombatOnly} and its {@code targetsAa} reaches at least one air unit type; an unset
+   * {@code targetsAa} defaults to all air, so a stock gun stays AA. A combat-AA unit aimed solely at
+   * non-air targets is a combatant whose AA the air-only phase cannot represent.
+   */
+  private static boolean isAntiAirGun(final UnitAttachment ua, final UnitTypeList unitTypeList) {
+    return ua.isAaForCombatOnly()
+        && ua.getTargetsAa(unitTypeList).stream()
+            .anyMatch(target -> target.getUnitAttachment().isAir());
+  }
+
+  /**
    * The intrinsic combat abilities baked from GameData, never string-matched in the core. {@code
    * CAN_SUBMERGE} tracks {@code canEvade} — the eligibility to submerge; whether it may actually do
    * so is relational (a blocking enemy destroyer) and computed downstream. {@code
@@ -323,12 +340,15 @@ public class GameDataBattleAdapter {
    * DummyPlayer#retreatQuery}.
    */
   private static EnumSet<CombatFlag> flagsOf(
-      final UnitAttachment ua, final boolean dependent, final boolean lhtrHeavyBombers) {
+      final UnitAttachment ua,
+      final boolean antiAir,
+      final boolean dependent,
+      final boolean lhtrHeavyBombers) {
     final EnumSet<CombatFlag> flags = EnumSet.noneOf(CombatFlag.class);
     if (ua.getIsFirstStrike()) {
       flags.add(CombatFlag.FIRST_STRIKE);
     }
-    if (ua.isAaForCombatOnly()) {
+    if (antiAir) {
       flags.add(CombatFlag.IS_AA);
     }
     // LHTR heavy bombers make a multi-roll unit take its best die, so the flag rides the map
