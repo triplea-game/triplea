@@ -322,7 +322,9 @@ public class GameDataBattleAdapter {
    * Whether a combat-AA unit belongs in the AA phase, which fires only at air. True when the unit is
    * {@code isAaForCombatOnly} and its {@code targetsAa} reaches at least one air unit type; an unset
    * {@code targetsAa} defaults to all air, so a stock gun stays AA. A combat-AA unit aimed solely at
-   * non-air targets is a combatant whose AA the air-only phase cannot represent.
+   * non-air targets is a combatant whose AA the air-only phase cannot represent. A unit that
+   * targets both air and non-air types still bakes as AA — any air target qualifies — and drops its
+   * non-air strike as the same deferred gap.
    */
   private static boolean isAntiAirGun(final UnitAttachment ua, final UnitTypeList unitTypeList) {
     return ua.isAaForCombatOnly()
