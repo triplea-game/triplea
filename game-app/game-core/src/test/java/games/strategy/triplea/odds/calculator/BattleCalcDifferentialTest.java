@@ -262,6 +262,38 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
         infantry(gameData).create(1, germans(gameData)));
   }
 
+  /**
+   * chooseBestRoll fidelity for a combat-AA unit that reaches no air. The engine fires such a unit
+   * through the main phase ({@code MainOffenseCombatValue} honors chooseBestRoll irrespective of
+   * {@code isAaForCombatOnly} — only {@code Aa*CombatValue} force it off), so its multi-roll power
+   * is the best-of-dice value, not the summed value. A synthesized attacking armour is made
+   * combat-AA with a non-air {@code targetsAa} and a zero {@code offensiveAttackAa} — so the engine
+   * fires no AA strike and only the main-combat roll distinguishes — and given three attack rolls
+   * with chooseBestRoll on. Under low luck the best-of-rolls power is {@code min(3 + (3 - 1), 6) =
+   * 5} (one guaranteed hit), against the summed {@code 3 * 3 = 9} (two hits); the two defending
+   * infantry trade their one low-luck hit to sink the lone armour either way, so the surviving
+   * defender count is the discriminator — one infantry lives under best-of-rolls, none under summed.
+   * A guard that suppressed chooseBestRoll for every {@code isAaForCombatOnly} unit would sum the
+   * rolls, kill both defenders, and diverge from the engine here.
+   */
+  @Test
+  void alwaysHitsUnderLowLuckCombatAaWithNoAirTargetHonorsChooseBestRoll() {
+    final GameData gameData = TestMapGameData.REVISED.getGameData();
+    makeGameLowLuck(gameData);
+    injectCombatAaWithNoAirTargetAndBestRoll(
+        gameData, armour(gameData), artillery(gameData), 3, 3);
+
+    final Territory germany = territory("Germany", gameData);
+
+    assertIdenticalSurvivorsUnderAlwaysHits(
+        gameData,
+        russians(gameData),
+        germans(gameData),
+        germany,
+        armour(gameData).create(1, russians(gameData)),
+        infantry(gameData).create(2, germans(gameData)));
+  }
+
   @Test
   void seededRunsAgreeOnAttackerWinPercentWithinTolerance() {
     final GameData gameData = TestMapGameData.REVISED.getGameData();
@@ -1233,6 +1265,29 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
     rule.setUnitType(Set.of(target));
     rule.setPlayers(List.of(giverOwner));
     giver.addAttachment(rule.getName(), rule);
+  }
+
+  /**
+   * Turns {@code unitType} into a combat-AA unit that reaches no air: {@code isAaForCombatOnly} with
+   * its {@code targetsAa} set to a single non-air {@code nonAirTarget} and a zero {@code
+   * offensiveAttackAa}, so the engine fires no AA strike and the unit fights only through the main
+   * phase. It is given {@code attack}/{@code attackRolls} and chooseBestRoll on, so its multi-roll
+   * main-combat power is the best-of-dice value. Mutated on the loaded data before the battle runs,
+   * the way the support helpers synthesize rules no bundled map declares.
+   */
+  private static void injectCombatAaWithNoAirTargetAndBestRoll(
+      final GameData gameData,
+      final UnitType unitType,
+      final UnitType nonAirTarget,
+      final int attack,
+      final int attackRolls) {
+    final var ua = unitType.getUnitAttachment();
+    ua.setAttack(attack);
+    ua.setAttackRolls(attackRolls);
+    ua.setChooseBestRoll(true);
+    ua.setIsAaForCombatOnly(true);
+    ua.setOffensiveAttackAa(0);
+    ua.setTargetsAa(Set.of(nonAirTarget));
   }
 
   private static Map<String, Integer> countByType(final Collection<Unit> units) {
