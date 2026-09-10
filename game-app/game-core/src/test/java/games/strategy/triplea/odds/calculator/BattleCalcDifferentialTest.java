@@ -653,24 +653,17 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
     }
 
     /**
-     * The end-of-round unescorted-transport sweep against the engine: four destroyers face two 2-HP
-     * battleships escorting a transport, and once the escorts die the restriction sweeps the
-     * now-unescorted transport at round end ({@code
-     * RemoveUnprotectedUnits#checkUndefendedTransports}).
-     *
-     * <p>Still disabled after the lone-multi-HP drop is closed: this fixture also trips a distinct
-     * multi-HP hit-accounting divergence — under {@code alwaysHits} the engine eliminates the
-     * entire attacking force (attacker survivors empty), while the bounded sim keeps a destroyer,
-     * so the two paths disagree on how many rounds the 2-HP escorts survive independently of the
-     * sweep. The sweep itself is pinned in isolation by {@code TransportSweepTest} in {@code
-     * battle-calc-core}; kept here so a clean differential lands the day that multi-HP accounting
-     * gap closes.
+     * A restricted transport outlives its escorts by a round against the engine: four destroyers
+     * face two 2-HP battleships escorting a transport. Under {@code alwaysHits} the attacker's four
+     * round-one hits sink both battleships, but the engine does not sweep the now-unescorted
+     * transport that round — {@code RemoveUnprotectedUnits#checkUndefendedTransports} counts the
+     * escorts still waiting to die, so the transport survives to fire (defence 1) a second round,
+     * trading its last shot with the final destroyer. Both sides are annihilated; the attacker does
+     * not stand. Pins that the sweep is deferred a round rather than firing the round the escorts
+     * die — without the deferral the sim sweeps the transport early and a destroyer survives.
      */
     @Test
-    @Disabled(
-        "distinct multi-HP hit-accounting divergence beyond the lone-multi-HP drop; sweep pinned by"
-            + " TransportSweepTest")
-    void unescortedTransportIsSweptAtRoundEndLeavingTheAttackerStanding() {
+    void restrictedTransportOutlivesItsEscortsByARoundThenTradesWithTheLastAttacker() {
       final GameData gameData = TestMapGameData.REVISED.getGameData();
       setBooleanProperty(gameData, Constants.TRANSPORT_CASUALTIES_RESTRICTED, true);
       final Territory seaZone = territory("1 Sea Zone", gameData);

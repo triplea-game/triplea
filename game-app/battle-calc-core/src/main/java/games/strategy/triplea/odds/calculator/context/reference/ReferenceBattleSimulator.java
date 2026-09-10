@@ -433,6 +433,15 @@ public class ReferenceBattleSimulator implements BattleSimulator {
     if (!onlyUnescortedTransportsLeft(working) || !enemyHasActiveFirepower(enemy)) {
       return;
     }
+    // Engine parity (RemoveUnprotectedUnits#checkUndefendedTransports counts
+    // getBattleSite().getUnits()): the territory still holds escorts killed this round but not yet
+    // removed, so a transport is never swept the round its last escort dies — it outlives the escort
+    // by a round, firing once more, and is swept only the following round (or falls to fire first).
+    // This map is read before the round's dead are dropped, so those just-killed escorts are still
+    // present as DEAD; defer while any non-transport combatant among them remains.
+    if (nonTransportCombatantDiedThisRound(working)) {
+      return;
+    }
     for (final CombatProfile transport : activeTransports(working)) {
       final int count = working.remove(new Key(transport, Lifecycle.ACTIVE));
       working.merge(new Key(transport, Lifecycle.DEAD), count, Integer::sum);
@@ -475,6 +484,16 @@ public class ReferenceBattleSimulator implements BattleSimulator {
         .anyMatch(
             entry ->
                 entry.getKey().state() == Lifecycle.ACTIVE
+                    && entry.getValue() > 0
+                    && !isTransport(entry.getKey().profile())
+                    && !isDependent(entry.getKey().profile()));
+  }
+
+  private static boolean nonTransportCombatantDiedThisRound(final Map<Key, Integer> working) {
+    return working.entrySet().stream()
+        .anyMatch(
+            entry ->
+                entry.getKey().state() == Lifecycle.DEAD
                     && entry.getValue() > 0
                     && !isTransport(entry.getKey().profile())
                     && !isDependent(entry.getKey().profile()));

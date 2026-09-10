@@ -27,9 +27,11 @@ import org.junit.jupiter.api.Test;
  * the {@code onlyUnescortedTransportsLeft} trigger at the predicate level, and the removal itself
  * end-to-end. The escort defends at 0 so the attacker never takes a hit — this keeps the fixture
  * off the multi-hit-point concentration path so the sweep, not the allocator's hit accounting, is
- * what the assertion sees. With the restriction on the transport is removed the same round its
- * escort dies; with it off the sweep is a no-op and the attacker must spend a second round shooting
- * the transport down.
+ * what the assertion sees. Matching the engine ({@code
+ * RemoveUnprotectedUnits#checkUndefendedTransports} counts the escorts still waiting to die), the
+ * sweep is deferred a round: the transport survives the round its escort dies and is swept the
+ * following round, once the raider's fire has missed it. With the restriction off the sweep is a
+ * no-op and the attacker simply shoots the transport down the next round instead.
  */
 class TransportSweepTest {
 
@@ -70,17 +72,22 @@ class TransportSweepTest {
   }
 
   /**
-   * A raider clears the escort in round one and, with the restriction on, the now-unescorted
-   * transport is swept off at that round's end while the enemy raider can still fire — a one-round
-   * attacker win rather than a second round of shooting.
+   * A raider clears the escort in round one; the now-unescorted transport is not swept that round
+   * (the escort is still waiting to die) but survives into round two, and once the raider's round-
+   * two shot misses it the restriction sweeps it off while the raider can still fire — a two-round
+   * attacker win. Only the first die — the raider's opening shot, fired before any defender — lands;
+   * every later roll misses (the 0-defence escort and transport still draw dice that cannot hit), so
+   * the raider kills the escort in round one and misses the transport in round two, leaving the
+   * sweep, not fire, to remove it.
    */
   @Test
-  void restrictionSweepsAnUnescortedTransportTheSameRoundTheEscortDies() {
+  void restrictionSweepsAnUnescortedTransportTheRoundAfterItsEscortDies() {
     final BattleResult result =
-        runRaiderVersusEscortedTransport(restricted(), new Dependents(Map.of()));
+        runRaiderVersusEscortedTransport(
+            FakeRandomSource.scripted(0, 5, 5, 5, 5, 5), restricted(), new Dependents(Map.of()));
 
     assertThat(result.outcome()).isEqualTo(Outcome.ATTACKER_WINS);
-    assertThat(result.roundsFought()).isEqualTo(1);
+    assertThat(result.roundsFought()).isEqualTo(2);
     assertThat(total(result.defenderSurvivors())).isZero();
     assertThat(total(result.attackerSurvivors())).isEqualTo(1);
   }
@@ -92,7 +99,8 @@ class TransportSweepTest {
   @Test
   void withoutTheRestrictionTheTransportIsNotSweptAndFallsToFiringNextRound() {
     final BattleResult result =
-        runRaiderVersusEscortedTransport(RulesProfile.standard(), new Dependents(Map.of()));
+        runRaiderVersusEscortedTransport(
+            FakeRandomSource.alwaysHits(), RulesProfile.standard(), new Dependents(Map.of()));
 
     assertThat(result.outcome()).isEqualTo(Outcome.ATTACKER_WINS);
     assertThat(result.roundsFought()).isEqualTo(2);
@@ -101,22 +109,29 @@ class TransportSweepTest {
 
   /**
    * The sweep path sheds cargo exactly as the firing path does: a swept transport carrying two cargo
-   * takes them down with it, so nothing dependent is left as a phantom survivor.
+   * takes them down with it, so nothing dependent is left as a phantom survivor. The raider misses
+   * its round-two shot so the transport falls to the sweep, not to fire, exercising the sweep's own
+   * cargo cascade.
    */
   @Test
   void sweptTransportCascadesItsCargo() {
     final Dependents deps =
         new Dependents(Map.of(TRANSPORT, new CargoRule(new UnitTypeId("cargo"), 2)));
-    final BattleResult result = runRaiderVersusEscortedTransport(restricted(), deps, CARGO);
+    final BattleResult result =
+        runRaiderVersusEscortedTransport(
+            FakeRandomSource.scripted(0, 5, 5, 5, 5, 5), restricted(), deps, CARGO);
 
-    assertThat(result.roundsFought()).isEqualTo(1);
+    assertThat(result.roundsFought()).isEqualTo(2);
     assertThat(total(result.defenderSurvivors())).isZero();
     assertThat(result.defenderSurvivors().counts())
         .doesNotContainKey(new Key(CARGO, Lifecycle.ACTIVE));
   }
 
   private static BattleResult runRaiderVersusEscortedTransport(
-      final RulesProfile rules, final Dependents deps, final CombatProfile... extraDefenders) {
+      final FakeRandomSource rng,
+      final RulesProfile rules,
+      final Dependents deps,
+      final CombatProfile... extraDefenders) {
     final CombatProfile raider = sea("raider", 3, 3, 1);
     // Escort defends at 0, so it fires nothing and the raider survives untouched; it is still a
     // non-transport combatant that must clear before the transport is unescorted.
@@ -144,10 +159,7 @@ class TransportSweepTest {
             new ReferenceRetreatPolicy(-1, -1, false),
             new OolCasualtyOrder(List.of()),
             new OolCasualtyOrder(List.of()));
-    return new ReferenceBattleSimulator()
-        .simulate(scenario, 1, FakeRandomSource.alwaysHits())
-        .results()
-        .get(0);
+    return new ReferenceBattleSimulator().simulate(scenario, 1, rng).results().get(0);
   }
 
   private static RulesProfile restricted() {
