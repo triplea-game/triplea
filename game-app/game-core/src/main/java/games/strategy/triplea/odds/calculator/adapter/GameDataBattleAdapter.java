@@ -356,9 +356,12 @@ public class GameDataBattleAdapter {
     // LHTR heavy bombers make a multi-roll unit take its best die, so the flag rides the map
     // property as well as the unit's own attribute — mirroring
     // MainOffenseCombatValue#chooseBestRoll.
-    // AA fire is exempt: AaOffenseCombatValue and AaDefenseCombatValue force chooseBestRoll off, so
-    // an AA gun rolls all its dice; the flag is baked for non-AA units only.
-    if ((lhtrHeavyBombers || ua.getChooseBestRoll()) && !ua.isAaForCombatOnly()) {
+    // Only AA fire is exempt: AaOffenseCombatValue and AaDefenseCombatValue force chooseBestRoll
+    // off, while MainOffenseCombatValue and MainDefenseCombatValue honor it regardless of
+    // isAaForCombatOnly. The exemption therefore keys on 'antiAir' (the air-reaching AA gate), not
+    // isAaForCombatOnly: a combat-AA unit whose targetsAa names no air type is baked as an ordinary
+    // combatant firing through the main phase, so it honors chooseBestRoll like the engine does.
+    if ((lhtrHeavyBombers || ua.getChooseBestRoll()) && !antiAir) {
       flags.add(CombatFlag.CHOOSE_BEST_ROLL);
     }
     if (ua.getCanEvade()) {
