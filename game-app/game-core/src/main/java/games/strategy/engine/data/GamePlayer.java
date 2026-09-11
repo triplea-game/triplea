@@ -128,8 +128,8 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
   }
 
   @Override
-  public String getType() {
-    return UnitHolder.PLAYER;
+  public UnitHolderType getType() {
+    return UnitHolderType.PLAYER;
   }
 
   /**
