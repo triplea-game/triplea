@@ -1334,6 +1334,19 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     return Math.max(0, production - unitCountHaveToAndHaveBeenBeProducedHere);
   }
 
+  /**
+   * @param constructionType the construction type whose cap is being evaluated
+   * @param existingByType count of each existing unit type already present in the territory
+   * @param existingTypeToConstructionType maps the unit type to the construction type of each unit
+   *     type in {@code existingByType}
+   * @param heldByType count of each unit type the player has in its pool that is placeable
+   * @param heldTypeToConstructionType maps the unit type to the construction type of each unit type
+   *     in {@code heldByType}
+   * @param consumesUnitsByType for each held unit type, the unit types and counts it consumes on
+   *     placement
+   * @return the amount by which the construction cap for {@code constructionType} should be
+   *     increased in this territory
+   */
   private int getConstructionConsumptionBonus(
       final String constructionType,
       final IntegerMap<UnitType> existingByType,
@@ -1342,27 +1355,29 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       final Map<UnitType, String> heldTypeToConstructionType,
       final Map<UnitType, IntegerMap<UnitType>> consumesUnitsByType) {
     int consumptionBonus = 0;
-
+    // Filter existing units down to the ones that have the same constructionType we are evaluating
     for (final UnitType consumedType : existingByType.keySet()) {
       if (!constructionType.equals(existingTypeToConstructionType.get(consumedType))) {
         continue;
       }
-
       int potentialConsumption = 0;
+      // Filter held units down to the ones that have the same constructionType we are evaluating
       for (final UnitType heldType : heldByType.keySet()) {
         if (!constructionType.equals(heldTypeToConstructionType.get(heldType))) {
           continue;
         }
-
         final IntegerMap<UnitType> consumesUnits = consumesUnitsByType.get(heldType);
         if (consumesUnits != null) {
+          // Each held unit of heldType consumes consumesUnits.getInt(consumedType) number of units
+          // of consumedType, so multiply by how many of heldType could be placed
           potentialConsumption += heldByType.getInt(heldType) * consumesUnits.getInt(consumedType);
         }
       }
-
+      // The bonus from this existing type can't exceed what's actually present
+      // (existingByType.getInt(consumedType)) — you can't consume more than exists —
+      // nor exceed what placement could actually consume (potentialConsumption)
       consumptionBonus += Math.min(potentialConsumption, existingByType.getInt(consumedType));
     }
-
     return consumptionBonus;
   }
 
@@ -1393,7 +1408,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     final IntegerMap<String> unitMapHeld = new IntegerMap<>();
     final IntegerMap<String> unitMapMaxType = new IntegerMap<>();
     final IntegerMap<String> unitMapTypePerTurn = new IntegerMap<>();
-    // per-unit-type breakdown of held (candidate) units, so we can work out exactly how many
+    // per-unit-type breakdown of held units, so we can work out exactly how many
     // existing units of the same constructionType would be consumed on placement
     final IntegerMap<UnitType> heldByType = new IntegerMap<>();
     final Map<UnitType, String> heldTypeToConstructionType = new HashMap<>();
@@ -1464,7 +1479,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
           unitMax = Math.max(Math.max(unitMax, production), (unlimitedConstructions ? 10_000 : 0));
         }
         final int existingCount = unitMapTo.getInt(constructionType);
-
         // Work out how many existing units of this constructionType would actually be consumed
         // by the units we're trying to place, so placement can (temporarily) exceed the
         // per-type max as long as it's back within the limit once consumption happens.
@@ -1478,7 +1492,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
                 heldByType,
                 heldTypeToConstructionType,
                 consumesUnitsByType);
-
         final int value =
             Math.min(
                 unitMax - existingCount + consumptionBonus, unitMapHeld.getInt(constructionType));
