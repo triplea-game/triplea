@@ -1335,6 +1335,17 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
   }
 
   /**
+   * Calculates the amount by which the construction cap for {@code constructionType} should be
+   * temporarily increased in a territory, to account for existing constructions that will be
+   * consumed by the units being placed.
+   *
+   * <p>Note: This method can raise the effective limit above maxConstructionsPerTypePerTerr. That's
+   * safe because canUnitsBePlaced() redoes this same calculation using the units actually being
+   * placed, and then cuts the combined per-type total back down to the real cap.
+   * canWeConsumeUnits() double-checks that against the units that existed at the start of the turn,
+   * so the temporary increase can never be exploited. Don't change this method without re-checking
+   * those other two.
+   *
    * @param constructionType the construction type whose cap is being evaluated
    * @param existingByType count of each existing unit type already present in the territory
    * @param existingTypeToConstructionType maps the unit type to the construction type of each unit
