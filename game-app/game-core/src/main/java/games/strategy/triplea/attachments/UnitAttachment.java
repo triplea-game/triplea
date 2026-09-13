@@ -984,23 +984,28 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setUnitPlacementOnlyAllowedIn(final String value) throws GameParseException {
-    final Collection<Territory> allowedTerritories = getListedTerritories(splitOnColon(value));
-    final Collection<Territory> restrictedTerritories =
-        new HashSet<>(getData().getMap().getTerritories());
-    restrictedTerritories.removeAll(allowedTerritories);
-    unitPlacementRestrictions =
-        restrictedTerritories.stream().map(Territory::getName).toArray(String[]::new);
+    setUnitPlacementOnlyAllowedIn(
+        getListedTerritories(splitOnColon(value)).stream()
+            .map(Territory::getName)
+            .toArray(String[]::new));
   }
 
   private void setUnitPlacementOnlyAllowedIn(final String[] value) throws GameParseException {
     final Collection<Territory> allowedTerritories = getListedTerritories(value);
-    final Collection<Territory> restrictedTerritories =
+    Collection<Territory> restrictedTerritories =
         new HashSet<>(getData().getMap().getTerritories());
-
     restrictedTerritories.removeAll(allowedTerritories);
 
+    // When empty [], the collection is set to null to preserve the original unset state of
+    // unitPlacementRestrictions - see PR #14870
+    if (restrictedTerritories.isEmpty()) {
+      restrictedTerritories = null;
+    }
+
     unitPlacementRestrictions =
-        restrictedTerritories.stream().map(Territory::getName).toArray(String[]::new);
+        restrictedTerritories == null
+            ? null
+            : restrictedTerritories.stream().map(Territory::getName).toArray(String[]::new);
   }
 
   private void resetUnitPlacementOnlyAllowedIn() {
