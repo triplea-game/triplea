@@ -1,7 +1,6 @@
 package org.triplea.debug.error.reporting.formatting;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.when;
 
@@ -32,7 +31,7 @@ class ErrorReportTitleFormatterTest {
 
     final String title = ErrorReportTitleFormatter.createTitle(logRecord);
 
-    assertThat(title, is("ClassName - " + LOG_MESSAGE));
+    assertThat(title).isEqualTo("ClassName - " + LOG_MESSAGE);
   }
 
   @Test
@@ -42,7 +41,7 @@ class ErrorReportTitleFormatterTest {
 
     final String title = ErrorReportTitleFormatter.createTitle(logRecord);
 
-    assertThat(title, is("ClassName - " + LOG_MESSAGE));
+    assertThat(title).isEqualTo("ClassName - " + LOG_MESSAGE);
   }
 
   @Test
@@ -57,14 +56,13 @@ class ErrorReportTitleFormatterTest {
 
     final String title = ErrorReportTitleFormatter.createTitle(logRecord);
 
-    assertThat(
-        title,
-        is(
+    assertThat(title)
+        .isEqualTo(
             ErrorReportTitleFormatterTest.class.getSimpleName()
                 + "#<clinit>:"
                 + EXCEPTION_WITH_NO_MESSAGE.getStackTrace()[0].getLineNumber()
                 + " - "
-                + EXCEPTION_WITH_NO_MESSAGE.getClass().getSimpleName()));
+                + EXCEPTION_WITH_NO_MESSAGE.getClass().getSimpleName());
   }
 
   @Test
@@ -87,13 +85,12 @@ class ErrorReportTitleFormatterTest {
 
     final String title = ErrorReportTitleFormatter.createTitle(logRecord);
 
-    assertThat(
-        title,
-        is(
+    assertThat(title)
+        .isEqualTo(
             ErrorReportTitleFormatterTest.class.getSimpleName()
                 + "#<clinit>:"
                 + EXCEPTION_WITH_CAUSE.getCause().getStackTrace()[0].getLineNumber()
                 + " - "
-                + EXCEPTION_WITH_CAUSE.getCause().getClass().getSimpleName()));
+                + EXCEPTION_WITH_CAUSE.getCause().getClass().getSimpleName());
   }
 }

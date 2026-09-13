@@ -1,9 +1,6 @@
 package games.strategy.triplea.ui;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -91,9 +88,9 @@ final class UnitIconPropertiesTest {
           new UnitIconProperties(properties, gameData, conditionSupplier);
 
       assertThat(
-          unitIconProperties.getImagePaths(
-              PLAYER_NAME, UNIT_TYPE_NAME, gameData, conditionSupplier),
-          contains(ICON_1_PATH, ICON_3_PATH));
+              unitIconProperties.getImagePaths(
+                  PLAYER_NAME, UNIT_TYPE_NAME, gameData, conditionSupplier))
+          .containsExactly(ICON_1_PATH, ICON_3_PATH);
     }
 
     @Test
@@ -109,9 +106,9 @@ final class UnitIconPropertiesTest {
           new UnitIconProperties(properties, gameData, conditionSupplier);
 
       assertThat(
-          unitIconProperties.getImagePaths(
-              PLAYER_NAME, UNIT_TYPE_NAME, gameData, conditionSupplier),
-          is(empty()));
+              unitIconProperties.getImagePaths(
+                  PLAYER_NAME, UNIT_TYPE_NAME, gameData, conditionSupplier))
+          .isEmpty();
     }
   }
 
@@ -130,15 +127,14 @@ final class UnitIconPropertiesTest {
 
     @Test
     void shouldParseUnitIconDescriptorWithCondition() {
-      assertThat(
-          parseUnitIconDescriptorWithCondition(CONDITION_1_NAME),
-          is(newUnitIconDescriptorWithCondition(CONDITION_1_NAME)));
+      assertThat(parseUnitIconDescriptorWithCondition(CONDITION_1_NAME))
+          .isEqualTo(newUnitIconDescriptorWithCondition(CONDITION_1_NAME));
     }
 
     @Test
     void shouldParseUnitIconDescriptorWithoutCondition() {
-      assertThat(
-          parseUnitIconDescriptorWithCondition(null), is(newUnitIconDescriptorWithCondition(null)));
+      assertThat(parseUnitIconDescriptorWithCondition(null))
+          .isEqualTo(newUnitIconDescriptorWithCondition(null));
     }
 
     @Test
@@ -177,12 +173,12 @@ final class UnitIconPropertiesTest {
 
       @Test
       void shouldReturnTrueWhenGameNameMatches() {
-        assertThat(unitIconDescriptor.matches(GAME_NAME), is(true));
+        assertThat(unitIconDescriptor.matches(GAME_NAME)).isTrue();
       }
 
       @Test
       void shouldReturnFalseWhenGameNameDoesNotMatch() {
-        assertThat(unitIconDescriptor.matches("otherGameName"), is(false));
+        assertThat(unitIconDescriptor.matches("otherGameName")).isFalse();
       }
     }
 
@@ -194,17 +190,17 @@ final class UnitIconPropertiesTest {
 
       @Test
       void shouldReturnTrueWhenGameNameAndPlayerNameAndUnitTypeNameMatches() {
-        assertThat(unitIconDescriptor.matches(GAME_NAME, PLAYER_NAME, UNIT_TYPE_NAME), is(true));
+        assertThat(unitIconDescriptor.matches(GAME_NAME, PLAYER_NAME, UNIT_TYPE_NAME)).isTrue();
       }
 
       @Test
       void shouldReturnFalseWhenGameNameOrPlayerNameOrUnitTypeNameDoesNotMatch() {
-        assertThat(
-            unitIconDescriptor.matches("otherGameName", PLAYER_NAME, UNIT_TYPE_NAME), is(false));
-        assertThat(
-            unitIconDescriptor.matches(GAME_NAME, "otherPlayerName", UNIT_TYPE_NAME), is(false));
-        assertThat(
-            unitIconDescriptor.matches(GAME_NAME, PLAYER_NAME, "otherUnitTypeName"), is(false));
+        assertThat(unitIconDescriptor.matches("otherGameName", PLAYER_NAME, UNIT_TYPE_NAME))
+            .isFalse();
+        assertThat(unitIconDescriptor.matches(GAME_NAME, "otherPlayerName", UNIT_TYPE_NAME))
+            .isFalse();
+        assertThat(unitIconDescriptor.matches(GAME_NAME, PLAYER_NAME, "otherUnitTypeName"))
+            .isFalse();
       }
     }
   }

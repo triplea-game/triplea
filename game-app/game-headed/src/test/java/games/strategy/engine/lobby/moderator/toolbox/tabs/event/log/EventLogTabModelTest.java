@@ -1,7 +1,6 @@
 package games.strategy.engine.lobby.moderator.toolbox.tabs.event.log;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import games.strategy.engine.lobby.moderator.toolbox.tabs.ToolboxTabModelTestUtil;
@@ -66,7 +65,7 @@ class EventLogTabModelTest {
 
     final List<List<String>> tableData = eventLogTabModel.fetchTableData(PAGING_PARAMS);
 
-    assertThat(tableData, hasSize(2));
+    assertThat(tableData).hasSize(2);
 
     ToolboxTabModelTestUtil.verifyTableDimensions(tableData, EventLogTabModel.fetchTableHeaders());
 

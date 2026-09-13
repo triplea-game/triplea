@@ -1,8 +1,6 @@
 package games.strategy.triplea.ui.unit.scroller;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.awt.Point;
 import java.util.List;
@@ -35,12 +33,11 @@ class AvatarCoordinateCalculatorTest {
 
       final List<Point> points = input.computeDrawCoordinates();
 
-      assertThat(
-          String.format(
+      assertThat(points)
+          .as(
               "Input: %s, with %s units, should have computed as many points as there are units",
-              input, unitCount),
-          points,
-          hasSize(unitCount));
+              input, unitCount)
+          .hasSize(unitCount);
     }
   }
 
@@ -61,7 +58,7 @@ class AvatarCoordinateCalculatorTest {
 
       final int midpoint = 100 / 2;
       final int halfImageWidth = 20 / 2;
-      assertThat(points.get(0).x, is(midpoint - halfImageWidth));
+      assertThat(points.get(0).x).isEqualTo(midpoint - halfImageWidth);
     }
 
     @Test
@@ -79,7 +76,7 @@ class AvatarCoordinateCalculatorTest {
 
       final int midpoint = 30 / 2;
       final int halfImageWidth = 10 / 2;
-      assertThat(points.get(0).x, is(midpoint - halfImageWidth));
+      assertThat(points.get(0).x).isEqualTo(midpoint - halfImageWidth);
     }
 
     @Test
@@ -98,8 +95,8 @@ class AvatarCoordinateCalculatorTest {
       final int spacing = 100 / 3;
       final int halfImageWidth = (10 / 2);
 
-      assertThat(points.get(0).x, is(spacing - halfImageWidth));
-      assertThat(points.get(1).x, is((2 * spacing) - halfImageWidth));
+      assertThat(points.get(0).x).isEqualTo(spacing - halfImageWidth);
+      assertThat(points.get(1).x).isEqualTo((2 * spacing) - halfImageWidth);
     }
 
     @Test
@@ -118,10 +115,10 @@ class AvatarCoordinateCalculatorTest {
       final int spacing = 100 / 5;
       final int halfImageWidth = (10 / 2);
 
-      assertThat(points.get(0).x, is(spacing - halfImageWidth));
-      assertThat(points.get(1).x, is((2 * spacing) - halfImageWidth));
-      assertThat(points.get(2).x, is((3 * spacing) - halfImageWidth));
-      assertThat(points.get(3).x, is((4 * spacing) - halfImageWidth));
+      assertThat(points.get(0).x).isEqualTo(spacing - halfImageWidth);
+      assertThat(points.get(1).x).isEqualTo((2 * spacing) - halfImageWidth);
+      assertThat(points.get(2).x).isEqualTo((3 * spacing) - halfImageWidth);
+      assertThat(points.get(3).x).isEqualTo((4 * spacing) - halfImageWidth);
     }
 
     @Test
@@ -140,11 +137,11 @@ class AvatarCoordinateCalculatorTest {
       final int spacing = 100 / 6;
       final int halfImageWidth = (10 / 2);
 
-      assertThat(points.get(0).x, is(spacing - halfImageWidth));
-      assertThat(points.get(1).x, is((2 * spacing) - halfImageWidth));
-      assertThat(points.get(2).x, is((3 * spacing) - halfImageWidth));
-      assertThat(points.get(3).x, is((4 * spacing) - halfImageWidth));
-      assertThat(points.get(4).x, is((5 * spacing) - halfImageWidth));
+      assertThat(points.get(0).x).isEqualTo(spacing - halfImageWidth);
+      assertThat(points.get(1).x).isEqualTo((2 * spacing) - halfImageWidth);
+      assertThat(points.get(2).x).isEqualTo((3 * spacing) - halfImageWidth);
+      assertThat(points.get(3).x).isEqualTo((4 * spacing) - halfImageWidth);
+      assertThat(points.get(4).x).isEqualTo((5 * spacing) - halfImageWidth);
     }
   }
 
@@ -173,7 +170,7 @@ class AvatarCoordinateCalculatorTest {
             .computeDrawCoordinates();
 
     for (int i = 0; i < unitCount; i++) {
-      assertThat(points.get(i).y, is(height - imageHeight));
+      assertThat(points.get(i).y).isEqualTo(height - imageHeight);
     }
   }
 }

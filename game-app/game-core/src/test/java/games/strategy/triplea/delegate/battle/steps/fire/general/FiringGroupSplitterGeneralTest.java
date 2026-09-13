@@ -11,12 +11,7 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsSea;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -67,11 +62,11 @@ class FiringGroupSplitterGeneralTest {
                     .defendingUnits(List.of(targetUnit))
                     .build());
 
-    assertThat(firingGroups, hasSize(1));
-    assertThat(firingGroups.get(0).getDisplayName(), is(UNITS));
-    assertThat(firingGroups.get(0).getFiringUnits(), contains(fireUnit));
-    assertThat(firingGroups.get(0).getTargetUnits(), contains(targetUnit));
-    assertThat(firingGroups.get(0).isSuicideOnHit(), is(false));
+    assertThat(firingGroups).hasSize(1);
+    assertThat(firingGroups.get(0).getDisplayName()).isEqualTo(UNITS);
+    assertThat(firingGroups.get(0).getFiringUnits()).containsExactly(fireUnit);
+    assertThat(firingGroups.get(0).getTargetUnits()).containsExactly(targetUnit);
+    assertThat(firingGroups.get(0).isSuicideOnHit()).isFalse();
   }
 
   @Test
@@ -91,10 +86,10 @@ class FiringGroupSplitterGeneralTest {
                     .defendingWaitingToDie(List.of(mock(Unit.class)))
                     .build());
 
-    assertThat(firingGroups, hasSize(1));
-    assertThat(firingGroups.get(0).getFiringUnits(), contains(fireUnit));
-    assertThat(firingGroups.get(0).getTargetUnits(), contains(targetUnit));
-    assertThat(firingGroups.get(0).isSuicideOnHit(), is(false));
+    assertThat(firingGroups).hasSize(1);
+    assertThat(firingGroups.get(0).getFiringUnits()).containsExactly(fireUnit);
+    assertThat(firingGroups.get(0).getTargetUnits()).containsExactly(targetUnit);
+    assertThat(firingGroups.get(0).isSuicideOnHit()).isFalse();
   }
 
   @Test
@@ -114,8 +109,8 @@ class FiringGroupSplitterGeneralTest {
                     .defendingUnits(List.of(targetUnit))
                     .build());
 
-    assertThat(firingGroups, hasSize(1));
-    assertThat(firingGroups.get(0).getFiringUnits(), contains(fireUnit));
+    assertThat(firingGroups).hasSize(1);
+    assertThat(firingGroups.get(0).getFiringUnits()).containsExactly(fireUnit);
   }
 
   @Test
@@ -135,8 +130,8 @@ class FiringGroupSplitterGeneralTest {
                     .defendingUnits(List.of(fireUnit, fireUnit2))
                     .build());
 
-    assertThat(firingGroups, hasSize(1));
-    assertThat(firingGroups.get(0).getFiringUnits(), contains(fireUnit));
+    assertThat(firingGroups).hasSize(1);
+    assertThat(firingGroups.get(0).getFiringUnits()).containsExactly(fireUnit);
   }
 
   @Test
@@ -156,8 +151,8 @@ class FiringGroupSplitterGeneralTest {
                     .defendingUnits(List.of(targetUnit))
                     .build());
 
-    assertThat(firingGroups, hasSize(1));
-    assertThat(firingGroups.get(0).getFiringUnits(), contains(fireUnit));
+    assertThat(firingGroups).hasSize(1);
+    assertThat(firingGroups.get(0).getFiringUnits()).containsExactly(fireUnit);
   }
 
   @Test
@@ -177,8 +172,8 @@ class FiringGroupSplitterGeneralTest {
                     .defendingUnits(List.of(fireUnit, fireUnit2))
                     .build());
 
-    assertThat(firingGroups, hasSize(1));
-    assertThat(firingGroups.get(0).getFiringUnits(), contains(fireUnit));
+    assertThat(firingGroups).hasSize(1);
+    assertThat(firingGroups.get(0).getFiringUnits()).containsExactly(fireUnit);
   }
 
   @Test
@@ -200,10 +195,10 @@ class FiringGroupSplitterGeneralTest {
                     .defendingUnits(List.of(targetUnit))
                     .build());
 
-    assertThat(firingGroups, hasSize(1));
-    assertThat(firingGroups.get(0).getFiringUnits(), contains(fireUnit));
-    assertThat(firingGroups.get(0).getTargetUnits(), contains(targetUnit));
-    assertThat(firingGroups.get(0).isSuicideOnHit(), is(false));
+    assertThat(firingGroups).hasSize(1);
+    assertThat(firingGroups.get(0).getFiringUnits()).containsExactly(fireUnit);
+    assertThat(firingGroups.get(0).getTargetUnits()).containsExactly(targetUnit);
+    assertThat(firingGroups.get(0).isSuicideOnHit()).isFalse();
   }
 
   @Test
@@ -223,10 +218,10 @@ class FiringGroupSplitterGeneralTest {
                     .defendingUnits(List.of(fireUnit, fireUnit2))
                     .build());
 
-    assertThat(firingGroups, hasSize(1));
-    assertThat(firingGroups.get(0).getFiringUnits(), contains(fireUnit, fireUnit2));
-    assertThat(firingGroups.get(0).getTargetUnits(), contains(targetUnit));
-    assertThat(firingGroups.get(0).isSuicideOnHit(), is(false));
+    assertThat(firingGroups).hasSize(1);
+    assertThat(firingGroups.get(0).getFiringUnits()).containsExactly(fireUnit, fireUnit2);
+    assertThat(firingGroups.get(0).getTargetUnits()).containsExactly(targetUnit);
+    assertThat(firingGroups.get(0).isSuicideOnHit()).isFalse();
   }
 
   @Test
@@ -252,10 +247,10 @@ class FiringGroupSplitterGeneralTest {
                     .defendingUnits(List.of(targetUnit, suicideUnit))
                     .build());
 
-    assertThat(firingGroups, hasSize(1));
-    assertThat(firingGroups.get(0).getFiringUnits(), contains(fireUnit));
-    assertThat(firingGroups.get(0).getTargetUnits(), contains(targetUnit));
-    assertThat(firingGroups.get(0).isSuicideOnHit(), is(false));
+    assertThat(firingGroups).hasSize(1);
+    assertThat(firingGroups.get(0).getFiringUnits()).containsExactly(fireUnit);
+    assertThat(firingGroups.get(0).getTargetUnits()).containsExactly(targetUnit);
+    assertThat(firingGroups.get(0).isSuicideOnHit()).isFalse();
   }
 
   @Test
@@ -281,10 +276,10 @@ class FiringGroupSplitterGeneralTest {
                     .defendingUnits(List.of(fireUnit))
                     .build());
 
-    assertThat(firingGroups, hasSize(1));
-    assertThat(firingGroups.get(0).getFiringUnits(), contains(fireUnit));
-    assertThat(firingGroups.get(0).getTargetUnits(), contains(targetUnit));
-    assertThat(firingGroups.get(0).isSuicideOnHit(), is(false));
+    assertThat(firingGroups).hasSize(1);
+    assertThat(firingGroups.get(0).getFiringUnits()).containsExactly(fireUnit);
+    assertThat(firingGroups.get(0).getTargetUnits()).containsExactly(targetUnit);
+    assertThat(firingGroups.get(0).isSuicideOnHit()).isFalse();
   }
 
   @Test
@@ -314,10 +309,10 @@ class FiringGroupSplitterGeneralTest {
                     .defendingUnits(List.of(targetUnit, infrastructureUnit))
                     .build());
 
-    assertThat(firingGroups, hasSize(1));
-    assertThat(firingGroups.get(0).getFiringUnits(), contains(fireUnit));
-    assertThat(firingGroups.get(0).getTargetUnits(), contains(targetUnit));
-    assertThat(firingGroups.get(0).isSuicideOnHit(), is(false));
+    assertThat(firingGroups).hasSize(1);
+    assertThat(firingGroups.get(0).getFiringUnits()).containsExactly(fireUnit);
+    assertThat(firingGroups.get(0).getTargetUnits()).containsExactly(targetUnit);
+    assertThat(firingGroups.get(0).isSuicideOnHit()).isFalse();
   }
 
   @Test
@@ -342,7 +337,7 @@ class FiringGroupSplitterGeneralTest {
                     .defendingUnits(List.of(targetUnit))
                     .build());
 
-    assertThat(firingGroups, is(empty()));
+    assertThat(firingGroups).isEmpty();
   }
 
   private Unit givenUnitWithCannotTarget(String name, Set<UnitType> cannotTarget) {
@@ -383,16 +378,17 @@ class FiringGroupSplitterGeneralTest {
                       .defendingUnits(List.of(targetUnit, targetUnit2, targetUnit3))
                       .build());
 
-      assertThat(firingGroups, hasSize(2));
-      assertThat(firingGroups.get(0).getDisplayName(), is(UNITS + " fireUnit"));
-      assertThat(firingGroups.get(0).getFiringUnits(), contains(fireUnit));
-      assertThat(firingGroups.get(0).getTargetUnits(), contains(targetUnit));
-      assertThat(firingGroups.get(0).isSuicideOnHit(), is(false));
+      assertThat(firingGroups).hasSize(2);
+      assertThat(firingGroups.get(0).getDisplayName()).isEqualTo(UNITS + " fireUnit");
+      assertThat(firingGroups.get(0).getFiringUnits()).containsExactly(fireUnit);
+      assertThat(firingGroups.get(0).getTargetUnits()).containsExactly(targetUnit);
+      assertThat(firingGroups.get(0).isSuicideOnHit()).isFalse();
 
-      assertThat(firingGroups.get(1).getDisplayName(), is(UNITS + " fireUnit2"));
-      assertThat(firingGroups.get(1).getFiringUnits(), containsInAnyOrder(fireUnit2, fireUnit3));
-      assertThat(firingGroups.get(1).getTargetUnits(), contains(targetUnit2, targetUnit3));
-      assertThat(firingGroups.get(1).isSuicideOnHit(), is(false));
+      assertThat(firingGroups.get(1).getDisplayName()).isEqualTo(UNITS + " fireUnit2");
+      assertThat(firingGroups.get(1).getFiringUnits())
+          .containsExactlyInAnyOrder(fireUnit2, fireUnit3);
+      assertThat(firingGroups.get(1).getTargetUnits()).containsExactly(targetUnit2, targetUnit3);
+      assertThat(firingGroups.get(1).isSuicideOnHit()).isFalse();
     }
   }
 
@@ -420,15 +416,15 @@ class FiringGroupSplitterGeneralTest {
                     .battleSite(givenSeaBattleSite())
                     .build());
 
-    assertThat(firingGroups, hasSize(2));
-    assertThat(firingGroups.get(0).getDisplayName(), is(AIR_FIRE_NON_SUBS));
-    assertThat(firingGroups.get(0).getFiringUnits(), contains(airUnit));
-    assertThat(firingGroups.get(0).getTargetUnits(), contains(defendingSeaUnit));
-    assertThat(firingGroups.get(0).isSuicideOnHit(), is(false));
+    assertThat(firingGroups).hasSize(2);
+    assertThat(firingGroups.get(0).getDisplayName()).isEqualTo(AIR_FIRE_NON_SUBS);
+    assertThat(firingGroups.get(0).getFiringUnits()).containsExactly(airUnit);
+    assertThat(firingGroups.get(0).getTargetUnits()).containsExactly(defendingSeaUnit);
+    assertThat(firingGroups.get(0).isSuicideOnHit()).isFalse();
 
-    assertThat(firingGroups.get(1).getDisplayName(), is(UNITS));
-    assertThat(firingGroups.get(1).getFiringUnits(), contains(attackingSeaUnit));
-    assertThat(firingGroups.get(1).getTargetUnits(), contains(subUnit, defendingSeaUnit));
-    assertThat(firingGroups.get(1).isSuicideOnHit(), is(false));
+    assertThat(firingGroups.get(1).getDisplayName()).isEqualTo(UNITS);
+    assertThat(firingGroups.get(1).getFiringUnits()).containsExactly(attackingSeaUnit);
+    assertThat(firingGroups.get(1).getTargetUnits()).containsExactly(subUnit, defendingSeaUnit);
+    assertThat(firingGroups.get(1).isSuicideOnHit()).isFalse();
   }
 }

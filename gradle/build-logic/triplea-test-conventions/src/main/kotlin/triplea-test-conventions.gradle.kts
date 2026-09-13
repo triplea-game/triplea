@@ -4,6 +4,7 @@ plugins {
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform() {}
+    maxParallelForks = Runtime.getRuntime().availableProcessors()
     testLogging {
         setExceptionFormat("full")
         events("skipped", "failed")

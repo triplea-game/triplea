@@ -4,11 +4,7 @@ import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -95,7 +91,7 @@ class AaCasualtySelectorTest {
             UUID.randomUUID(),
             mock(Territory.class));
 
-    assertThat("No hits so no kills or damaged", details.size(), is(0));
+    assertThat(details.size()).as("No hits so no kills or damaged").isEqualTo(0);
   }
 
   @Nested
@@ -147,8 +143,8 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat("One plane was hit and killed", details.getKilled(), hasSize(1));
-      assertThat(details.getDamaged(), is(empty()));
+      assertThat(details.getKilled()).as("One plane was hit and killed").hasSize(1);
+      assertThat(details.getDamaged()).isEmpty();
     }
 
     @Test
@@ -167,8 +163,8 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat("The plane was hit and killed", details.getKilled(), hasSize(1));
-      assertThat("Plane only had 1 hit point so no damages", details.getDamaged(), is(empty()));
+      assertThat(details.getKilled()).as("The plane was hit and killed").hasSize(1);
+      assertThat(details.getDamaged()).as("Plane only had 1 hit point so no damages").isEmpty();
     }
 
     @Test
@@ -195,8 +191,8 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat("One of the two planes are killed", details.getKilled(), hasSize(1));
-      assertThat(details.getDamaged(), is(empty()));
+      assertThat(details.getKilled()).as("One of the two planes are killed").hasSize(1);
+      assertThat(details.getDamaged()).isEmpty();
       verify(bridge, description("2 planes with only 1 hit"))
           .getRandom(eq(2), eq(1), any(), any(), anyString());
     }
@@ -227,9 +223,10 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat(
-          "5 planes are killed even though the dice were all 9s", details.getKilled(), hasSize(5));
-      assertThat(details.getDamaged(), is(empty()));
+      assertThat(details.getKilled())
+          .as("5 planes are killed even though the dice were all 9s")
+          .hasSize(5);
+      assertThat(details.getDamaged()).isEmpty();
       verify(bridge, description("10 planes with only 5 hits"))
           .getRandom(eq(10), eq(5), any(), any(), anyString());
     }
@@ -250,9 +247,10 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat(
-          "The damage is equal to the plane hp so it is killed", details.getKilled(), hasSize(1));
-      assertThat("The damage to the plane should be tracked", details.getDamaged(), hasSize(1));
+      assertThat(details.getKilled())
+          .as("The damage is equal to the plane hp so it is killed")
+          .hasSize(1);
+      assertThat(details.getDamaged()).as("The damage to the plane should be tracked").hasSize(1);
     }
 
     @Test
@@ -271,8 +269,8 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat("More than enough damage to kill the plane", details.getKilled(), hasSize(1));
-      assertThat("The damage to the plane should be tracked", details.getDamaged(), hasSize(1));
+      assertThat(details.getKilled()).as("More than enough damage to kill the plane").hasSize(1);
+      assertThat(details.getDamaged()).as("The damage to the plane should be tracked").hasSize(1);
     }
 
     @Test
@@ -293,8 +291,8 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat("Plane has extra hp so it isn't killed", details.getKilled(), is(empty()));
-      assertThat("Plane is damaged", details.getDamaged(), hasSize(1));
+      assertThat(details.getKilled()).as("Plane has extra hp so it isn't killed").isEmpty();
+      assertThat(details.getDamaged()).as("Plane is damaged").hasSize(1);
     }
 
     @Test
@@ -315,14 +313,12 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat(
-          "3 hits against 2 planes with 2 hp each is guaranteed to kill one of them",
-          details.getKilled(),
-          hasSize(1));
-      assertThat(
-          "3 hits against 2 planes with 2 hp each will damage both of them.",
-          details.getDamaged(),
-          hasSize(2));
+      assertThat(details.getKilled())
+          .as("3 hits against 2 planes with 2 hp each is guaranteed to kill one of them")
+          .hasSize(1);
+      assertThat(details.getDamaged())
+          .as("3 hits against 2 planes with 2 hp each will damage both of them.")
+          .hasSize(2);
     }
 
     @Test
@@ -343,7 +339,7 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat("5 planes should be killed or damaged", details.size(), is(5));
+      assertThat(details.size()).as("5 planes should be killed or damaged").isEqualTo(5);
     }
   }
 
@@ -396,8 +392,8 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat("One plane was hit and killed", details.getKilled(), hasSize(1));
-      assertThat(details.getDamaged(), is(empty()));
+      assertThat(details.getKilled()).as("One plane was hit and killed").hasSize(1);
+      assertThat(details.getDamaged()).isEmpty();
     }
 
     @Test
@@ -418,10 +414,9 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat(
-          "1st, 3rd, and 5th plane were killed",
-          details.getKilled(),
-          is(List.of(planes.get(0), planes.get(2), planes.get(4))));
+      assertThat(details.getKilled())
+          .as("1st, 3rd, and 5th plane were killed")
+          .isEqualTo(List.of(planes.get(0), planes.get(2), planes.get(4)));
     }
   }
 
@@ -509,11 +504,10 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat(details.getKilled(), hasSize(1));
-      assertThat(
-          "The planes have 1 hp so there can't be damaged planes",
-          details.getDamaged(),
-          is(empty()));
+      assertThat(details.getKilled()).hasSize(1);
+      assertThat(details.getDamaged())
+          .as("The planes have 1 hp so there can't be damaged planes")
+          .isEmpty();
     }
 
     private DiceRoll givenLowLuckDiceRoll(final List<Unit> aaUnits, final List<Unit> planes) {
@@ -577,16 +571,14 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat(details.getKilled(), hasSize(2));
-      assertThat(
-          "One of each plane type should be killed",
-          details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()),
-          containsInAnyOrder(planeUnitType, otherPlaneUnitType));
+      assertThat(details.getKilled()).hasSize(2);
+      assertThat(details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()))
+          .as("One of each plane type should be killed")
+          .containsExactlyInAnyOrder(planeUnitType, otherPlaneUnitType);
 
-      assertThat(
-          "The planes have 1 hp so there can't be damaged planes",
-          details.getDamaged(),
-          is(empty()));
+      assertThat(details.getDamaged())
+          .as("The planes have 1 hp so there can't be damaged planes")
+          .isEmpty();
     }
 
     @Test
@@ -612,16 +604,14 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat(details.getKilled(), hasSize(1));
-      assertThat(
-          "The 2nd plane was randomly selected and it is a planeUnitType.",
-          details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()),
-          containsInAnyOrder(planeUnitType));
+      assertThat(details.getKilled()).hasSize(1);
+      assertThat(details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()))
+          .as("The 2nd plane was randomly selected and it is a planeUnitType.")
+          .containsExactlyInAnyOrder(planeUnitType);
 
-      assertThat(
-          "The planes have 1 hp so there can't be damaged planes",
-          details.getDamaged(),
-          is(empty()));
+      assertThat(details.getDamaged())
+          .as("The planes have 1 hp so there can't be damaged planes")
+          .isEmpty();
     }
 
     @Test
@@ -645,11 +635,10 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat(
-          "Only one hit and the plane has 2 hp so it can withstand it",
-          details.getKilled(),
-          is(empty()));
-      assertThat("The planes have 2 hp so the hit damages it", details.getDamaged(), hasSize(1));
+      assertThat(details.getKilled())
+          .as("Only one hit and the plane has 2 hp so it can withstand it")
+          .isEmpty();
+      assertThat(details.getDamaged()).as("The planes have 2 hp so the hit damages it").hasSize(1);
     }
 
     @Test
@@ -674,16 +663,14 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat(
-          "Only two hits and the planes have 2 hp so they can withstand it",
-          details.getKilled(),
-          is(empty()));
+      assertThat(details.getKilled())
+          .as("Only two hits and the planes have 2 hp so they can withstand it")
+          .isEmpty();
 
-      assertThat(details.getDamaged(), hasSize(2));
-      assertThat(
-          "One of each plane type should be damaged",
-          details.getDamaged().stream().map(Unit::getType).collect(Collectors.toList()),
-          containsInAnyOrder(planeMultiHpUnitType, otherPlaneMultiHpUnitType));
+      assertThat(details.getDamaged()).hasSize(2);
+      assertThat(details.getDamaged().stream().map(Unit::getType).collect(Collectors.toList()))
+          .as("One of each plane type should be damaged")
+          .containsExactlyInAnyOrder(planeMultiHpUnitType, otherPlaneMultiHpUnitType);
     }
 
     @Test
@@ -708,11 +695,10 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat(details.getKilled(), hasSize(1));
-      assertThat(
-          "The planes have 1 hp so there can't be damaged planes",
-          details.getDamaged(),
-          is(empty()));
+      assertThat(details.getKilled()).hasSize(1);
+      assertThat(details.getDamaged())
+          .as("The planes have 1 hp so there can't be damaged planes")
+          .isEmpty();
     }
 
     @Test
@@ -738,16 +724,14 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat(details.getKilled(), hasSize(1));
-      assertThat(
-          "The 2nd plane was randomly selected and it is a planeUnitType.",
-          details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()),
-          containsInAnyOrder(planeUnitType));
+      assertThat(details.getKilled()).hasSize(1);
+      assertThat(details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()))
+          .as("The 2nd plane was randomly selected and it is a planeUnitType.")
+          .containsExactlyInAnyOrder(planeUnitType);
 
-      assertThat(
-          "The planes have 1 hp so there can't be damaged planes",
-          details.getDamaged(),
-          is(empty()));
+      assertThat(details.getDamaged())
+          .as("The planes have 1 hp so there can't be damaged planes")
+          .isEmpty();
     }
 
     @Test
@@ -769,11 +753,10 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat(details.getKilled(), hasSize(1));
-      assertThat(
-          "The planes have 1 hp so there can't be damaged planes",
-          details.getDamaged(),
-          is(empty()));
+      assertThat(details.getKilled()).hasSize(1);
+      assertThat(details.getDamaged())
+          .as("The planes have 1 hp so there can't be damaged planes")
+          .isEmpty();
     }
 
     @Test
@@ -796,18 +779,17 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat(details.getKilled(), hasSize(2));
-      assertThat(
-          "Both types of planes are killed because the first plane from each group is added "
-              + "to the selection and then one extra plane is added from the remainder. Then the "
-              + "'random' selects the 1st and 2nd plane which are the first from both groups.",
-          details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()),
-          containsInAnyOrder(planeUnitType, otherPlaneUnitType));
+      assertThat(details.getKilled()).hasSize(2);
+      assertThat(details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()))
+          .as(
+              "Both types of planes are killed because the first plane from each group is added "
+                  + "to the selection and then one extra plane is added from the remainder. Then the "
+                  + "'random' selects the 1st and 2nd plane which are the first from both groups.")
+          .containsExactlyInAnyOrder(planeUnitType, otherPlaneUnitType);
 
-      assertThat(
-          "The planes have 1 hp so there can't be damaged planes",
-          details.getDamaged(),
-          is(empty()));
+      assertThat(details.getDamaged())
+          .as("The planes have 1 hp so there can't be damaged planes")
+          .isEmpty();
     }
 
     @Test
@@ -833,16 +815,14 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat(details.getKilled(), hasSize(1));
-      assertThat(
-          "The 2nd plane was randomly selected and it is planeUnitType.",
-          details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()),
-          containsInAnyOrder(planeUnitType));
+      assertThat(details.getKilled()).hasSize(1);
+      assertThat(details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()))
+          .as("The 2nd plane was randomly selected and it is planeUnitType.")
+          .containsExactlyInAnyOrder(planeUnitType);
 
-      assertThat(
-          "The planes have 1 hp so there can't be damaged planes",
-          details.getDamaged(),
-          is(empty()));
+      assertThat(details.getDamaged())
+          .as("The planes have 1 hp so there can't be damaged planes")
+          .isEmpty();
     }
 
     @Test
@@ -867,11 +847,10 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat(details.getKilled(), hasSize(2));
-      assertThat(
-          "The planes have 1 hp so there can't be damaged planes",
-          details.getDamaged(),
-          is(empty()));
+      assertThat(details.getKilled()).hasSize(2);
+      assertThat(details.getDamaged())
+          .as("The planes have 1 hp so there can't be damaged planes")
+          .isEmpty();
     }
 
     @Test
@@ -893,11 +872,10 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat(details.getKilled(), hasSize(2));
-      assertThat(
-          "The planes have 1 hp so there can't be damaged planes",
-          details.getDamaged(),
-          is(empty()));
+      assertThat(details.getKilled()).hasSize(2);
+      assertThat(details.getDamaged())
+          .as("The planes have 1 hp so there can't be damaged planes")
+          .isEmpty();
     }
 
     @Test
@@ -923,18 +901,17 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat(details.getKilled(), hasSize(3));
-      assertThat(
-          "The first of each unit type is selected and then the third hit is randomly "
-              + "selected, which this test forces it to be the first one in the list and that is "
-              + "the otherPlaneUnitType",
-          details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()),
-          containsInAnyOrder(planeUnitType, otherPlaneUnitType, otherPlaneUnitType));
+      assertThat(details.getKilled()).hasSize(3);
+      assertThat(details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()))
+          .as(
+              "The first of each unit type is selected and then the third hit is randomly "
+                  + "selected, which this test forces it to be the first one in the list and that is "
+                  + "the otherPlaneUnitType")
+          .containsExactlyInAnyOrder(planeUnitType, otherPlaneUnitType, otherPlaneUnitType);
 
-      assertThat(
-          "The planes have 1 hp so there can't be damaged planes",
-          details.getDamaged(),
-          is(empty()));
+      assertThat(details.getDamaged())
+          .as("The planes have 1 hp so there can't be damaged planes")
+          .isEmpty();
     }
 
     @Test
@@ -957,17 +934,16 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat(details.getKilled(), hasSize(3));
-      assertThat(
-          "The first of each unit type is selected and then the third hit is picked from "
-              + "the remainder list which only contains 1 otherPlaneUnitType.",
-          details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()),
-          containsInAnyOrder(planeUnitType, otherPlaneUnitType, otherPlaneUnitType));
+      assertThat(details.getKilled()).hasSize(3);
+      assertThat(details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()))
+          .as(
+              "The first of each unit type is selected and then the third hit is picked from "
+                  + "the remainder list which only contains 1 otherPlaneUnitType.")
+          .containsExactlyInAnyOrder(planeUnitType, otherPlaneUnitType, otherPlaneUnitType);
 
-      assertThat(
-          "The planes have 1 hp so there can't be damaged planes",
-          details.getDamaged(),
-          is(empty()));
+      assertThat(details.getDamaged())
+          .as("The planes have 1 hp so there can't be damaged planes")
+          .isEmpty();
     }
 
     @Test
@@ -993,16 +969,14 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat(details.getKilled(), hasSize(2));
-      assertThat(
-          "The 2nd and 4th plane were randomly selected and they are both planeUnitType.",
-          details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()),
-          containsInAnyOrder(planeUnitType, planeUnitType));
+      assertThat(details.getKilled()).hasSize(2);
+      assertThat(details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()))
+          .as("The 2nd and 4th plane were randomly selected and they are both planeUnitType.")
+          .containsExactlyInAnyOrder(planeUnitType, planeUnitType);
 
-      assertThat(
-          "The planes have 1 hp so there can't be damaged planes",
-          details.getDamaged(),
-          is(empty()));
+      assertThat(details.getDamaged())
+          .as("The planes have 1 hp so there can't be damaged planes")
+          .isEmpty();
     }
 
     @Test
@@ -1028,16 +1002,14 @@ class AaCasualtySelectorTest {
               UUID.randomUUID(),
               mock(Territory.class));
 
-      assertThat(details.getKilled(), hasSize(2));
-      assertThat(
-          "The 2nd and 4th plane were randomly selected and both are planeUnitType.",
-          details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()),
-          containsInAnyOrder(planeUnitType, planeUnitType));
+      assertThat(details.getKilled()).hasSize(2);
+      assertThat(details.getKilled().stream().map(Unit::getType).collect(Collectors.toList()))
+          .as("The 2nd and 4th plane were randomly selected and both are planeUnitType.")
+          .containsExactlyInAnyOrder(planeUnitType, planeUnitType);
 
-      assertThat(
-          "The planes have 1 hp so there can't be damaged planes",
-          details.getDamaged(),
-          is(empty()));
+      assertThat(details.getDamaged())
+          .as("The planes have 1 hp so there can't be damaged planes")
+          .isEmpty();
     }
   }
 }

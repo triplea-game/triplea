@@ -1,9 +1,6 @@
 package org.triplea.map.description.file;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -28,7 +25,7 @@ public class MapDescriptionYamlReaderTest {
     final MapDescriptionYaml mapDescriptionYaml =
         MapDescriptionYamlReader.readFromMap(Path.of(sampleFolderUri)).orElseThrow();
 
-    assertThat(mapDescriptionYaml.isValid(Path.of("")), is(true));
+    assertThat(mapDescriptionYaml.isValid(Path.of(""))).isTrue();
   }
 
   @Test
@@ -42,7 +39,7 @@ public class MapDescriptionYamlReaderTest {
     final Optional<MapDescriptionYaml> mapDescription =
         MapDescriptionYamlReader.readFromMap(Path.of(sampleFolderUri));
 
-    assertThat(mapDescription, isEmpty());
+    assertThat(mapDescription).isEmpty();
   }
 
   @Test
@@ -58,14 +55,14 @@ public class MapDescriptionYamlReaderTest {
                   Path.of("map_description_yml_parsing/sample_map_description.yml"), stream)
               .orElseThrow();
 
-      assertThat(mapDescriptionYaml.getMapName(), is("MapName"));
-      assertThat(mapDescriptionYaml.getMapGameList(), hasSize(2));
-      assertThat(mapDescriptionYaml.getMapGameList().get(0).getGameName(), is("GameName0"));
-      assertThat(
-          mapDescriptionYaml.getMapGameList().get(0).getXmlFileName(), is("XmlGameFile0.xml"));
-      assertThat(mapDescriptionYaml.getMapGameList().get(1).getGameName(), is("GameName1"));
-      assertThat(
-          mapDescriptionYaml.getMapGameList().get(1).getXmlFileName(), is("XmlGameFile1.xml"));
+      assertThat(mapDescriptionYaml.getMapName()).isEqualTo("MapName");
+      assertThat(mapDescriptionYaml.getMapGameList()).hasSize(2);
+      assertThat(mapDescriptionYaml.getMapGameList().get(0).getGameName()).isEqualTo("GameName0");
+      assertThat(mapDescriptionYaml.getMapGameList().get(0).getXmlFileName())
+          .isEqualTo("XmlGameFile0.xml");
+      assertThat(mapDescriptionYaml.getMapGameList().get(1).getGameName()).isEqualTo("GameName1");
+      assertThat(mapDescriptionYaml.getMapGameList().get(1).getXmlFileName())
+          .isEqualTo("XmlGameFile1.xml");
     }
   }
 
@@ -83,7 +80,7 @@ public class MapDescriptionYamlReaderTest {
       final Optional<MapDescriptionYaml> result =
           MapDescriptionYamlReader.parse(Path.of(inputFile), stream);
 
-      assertThat(result, isEmpty());
+      assertThat(result).isEmpty();
     }
   }
 }

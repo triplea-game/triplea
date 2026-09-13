@@ -1,8 +1,6 @@
 package org.triplea.test.common;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.IsNull.notNullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.jetbrains.annotations.NonNls;
@@ -27,13 +25,13 @@ class TestDataFileReaderTest {
   void readSampleFileFromResources() {
     final String content = TestDataFileReader.readContents(SAMPLE_FILE_PATH);
 
-    assertThat(content, is(EXPECTED_CONTENT));
+    assertThat(content).isEqualTo(EXPECTED_CONTENT);
   }
 
   @Test
   void readSampleFileFromProjectRoot() {
     final String content = TestDataFileReader.readContents("LICENSE");
 
-    assertThat(content, notNullValue());
+    assertThat(content).isNotNull();
   }
 }

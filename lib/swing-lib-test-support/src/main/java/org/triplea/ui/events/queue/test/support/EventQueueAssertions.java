@@ -1,8 +1,7 @@
 package org.triplea.ui.events.queue.test.support;
 
 import com.google.common.base.Preconditions;
-import org.hamcrest.Matcher;
-import org.triplea.test.common.CustomMatcher;
+import org.assertj.core.api.Condition;
 import org.triplea.ui.events.queue.ViewData;
 
 /**
@@ -14,15 +13,14 @@ import org.triplea.ui.events.queue.ViewData;
 public class EventQueueAssertions {
 
   /**
-   * Asserts that a given controller event has:<br>
+   * A condition that a given controller event has:<br>
    * A) a given event-type <br>
    * B) the data transform payload when given an input data will produce an expected output data.
    *
    * <p>Example usage: <code>
    *   <pre>
-   * assertThat(
-   *    eventQueueTestSupport.popFirstControllerEvent(),
-   *    controllerEventIs(
+   * assertThat(eventQueueTestSupport.popFirstControllerEvent())
+   *    .is(controllerEventIs(
    *         ControllerEvents.EVENT_TYPE,
    *         inputData,
    *         expectedOutputData));
@@ -30,34 +28,18 @@ public class EventQueueAssertions {
    * </code>
    */
   public static <ControllerEventTypeT, ViewDataT extends ViewData>
-      Matcher<ControllerEvent<ControllerEventTypeT, ViewDataT>> controllerEventIs(
+      Condition<ControllerEvent<ControllerEventTypeT, ViewDataT>> controllerEventIs(
           final ControllerEventTypeT expectedEventType,
           final ViewDataT inputData,
           final ViewDataT expectedOutputData) {
 
     Preconditions.checkNotNull(expectedEventType);
-    return CustomMatcher.<ControllerEvent<ControllerEventTypeT, ViewDataT>>builder()
-        .debug(
-            controllerEvent ->
-                String.format(
-"""
-Type received: %s, data change operation yielded (input -> output):
-%s
-->
-%s""",
-                    controllerEvent.getEventType(),
-                    inputData,
-                    controllerEvent.getViewDataUpdate().apply(expectedOutputData)))
-        .description(
-            String.format(
-                "Expected event type %s with output:\n%s", expectedEventType, expectedOutputData))
-        .checkCondition(
-            controllerEvent ->
-                controllerEvent.getEventType() == expectedEventType
-                    && controllerEvent
-                        .getViewDataUpdate()
-                        .apply(inputData)
-                        .equals(expectedOutputData))
-        .build();
+    return new Condition<>(
+        controllerEvent ->
+            controllerEvent.getEventType() == expectedEventType
+                && controllerEvent.getViewDataUpdate().apply(inputData).equals(expectedOutputData),
+        "event type %s with output:%n%s",
+        expectedEventType,
+        expectedOutputData);
   }
 }

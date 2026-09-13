@@ -1,7 +1,6 @@
 package org.triplea.game.server;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -26,7 +25,7 @@ public class HeadlessServerSetupTest {
   void verifyCancelDoesMakeWaitNonBlocking() throws Exception {
     headlessServerSetup.cancel();
     final var future = CompletableFuture.supplyAsync(headlessServerSetup::waitUntilStart);
-    assertThat(future.get(1, TimeUnit.SECONDS), is(false));
+    assertThat(future.get(1, TimeUnit.SECONDS)).isFalse();
   }
 
   @Test
@@ -40,7 +39,7 @@ public class HeadlessServerSetupTest {
             });
     countDownLatch.await();
     headlessServerSetup.cancel();
-    assertThat(future.get(1, TimeUnit.SECONDS), is(false));
+    assertThat(future.get(1, TimeUnit.SECONDS)).isFalse();
   }
 
   private void fulfillCondition() {
@@ -56,7 +55,7 @@ public class HeadlessServerSetupTest {
   void verifyFulfilledConditionDoesMakeWaitNonBlocking() throws Exception {
     fulfillCondition();
     final var future = CompletableFuture.supplyAsync(headlessServerSetup::waitUntilStart);
-    assertThat(future.get(1, TimeUnit.SECONDS), is(true));
+    assertThat(future.get(1, TimeUnit.SECONDS)).isTrue();
   }
 
   @Test
@@ -71,7 +70,7 @@ public class HeadlessServerSetupTest {
             });
     countDownLatch.await();
     headlessServerSetup.playerListChanged();
-    assertThat(future.get(1, TimeUnit.SECONDS), is(true));
+    assertThat(future.get(1, TimeUnit.SECONDS)).isTrue();
   }
 
   @Test
@@ -86,7 +85,7 @@ public class HeadlessServerSetupTest {
             });
     countDownLatch.await();
     headlessServerSetup.playersTakenChanged();
-    assertThat(future.get(1, TimeUnit.SECONDS), is(true));
+    assertThat(future.get(1, TimeUnit.SECONDS)).isTrue();
   }
 
   @Test
@@ -102,7 +101,7 @@ public class HeadlessServerSetupTest {
             });
     countDownLatch.await();
     thread.get().interrupt();
-    assertThat(future.get(1, TimeUnit.SECONDS), is(false));
+    assertThat(future.get(1, TimeUnit.SECONDS)).isFalse();
   }
 
   @Test
@@ -111,6 +110,6 @@ public class HeadlessServerSetupTest {
     headlessServerSetup.playersTakenChanged();
     headlessServerSetup.playerListChanged();
     final var future = CompletableFuture.supplyAsync(headlessServerSetup::waitUntilStart);
-    assertThat(future.get(1, TimeUnit.SECONDS), is(false));
+    assertThat(future.get(1, TimeUnit.SECONDS)).isFalse();
   }
 }

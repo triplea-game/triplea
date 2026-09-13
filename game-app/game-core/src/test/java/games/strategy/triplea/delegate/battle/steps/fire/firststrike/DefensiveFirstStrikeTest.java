@@ -1,10 +1,7 @@
 package games.strategy.triplea.delegate.battle.steps.fire.firststrike;
 
 import static games.strategy.triplea.delegate.battle.steps.fire.firststrike.BattleStateBuilder.givenBattleState;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -40,7 +37,7 @@ class DefensiveFirstStrikeTest {
 
     final DefensiveFirstStrike defensiveFirstStrike =
         new DefensiveFirstStrike(battleState, battleActions);
-    assertThat(defensiveFirstStrike.getAllStepDetails(), is(empty()));
+    assertThat(defensiveFirstStrike.getAllStepDetails()).isEmpty();
 
     defensiveFirstStrike.execute(executionStack, delegateBridge);
     verify(executionStack, never()).push(any());
@@ -54,8 +51,8 @@ class DefensiveFirstStrikeTest {
 
     final DefensiveFirstStrike defensiveFirstStrike =
         new DefensiveFirstStrike(battleState, battleActions);
-    assertThat(defensiveFirstStrike.getAllStepDetails(), hasSize(3));
-    assertThat(defensiveFirstStrike.getOrder(), is(stepOrder));
+    assertThat(defensiveFirstStrike.getAllStepDetails()).hasSize(3);
+    assertThat(defensiveFirstStrike.getOrder()).isEqualTo(stepOrder);
 
     defensiveFirstStrike.execute(executionStack, delegateBridge);
     verify(executionStack, times(3)).push(any());

@@ -1,8 +1,7 @@
 package games.strategy.triplea.delegate.power.calculator;
 
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -39,8 +38,8 @@ class SupportCalculatorTest {
 
     final SupportCalculator tracker =
         new SupportCalculator(List.of(unit), List.of(rule), BattleState.Side.OFFENSE, false);
-    assertThat("There is only one bonus type", tracker.getSupportRules().size(), is(1));
-    assertThat("The rule only has one support available", tracker.getSupport(rule), is(1));
+    assertThat(tracker.getSupportRules().size()).as("There is only one bonus type").isEqualTo(1);
+    assertThat(tracker.getSupport(rule)).as("The rule only has one support available").isEqualTo(1);
   }
 
   @Test
@@ -71,8 +70,8 @@ class SupportCalculatorTest {
 
     final SupportCalculator tracker =
         new SupportCalculator(List.of(unit), List.of(rule, rule2), BattleState.Side.OFFENSE, false);
-    assertThat("Rule with players is added", tracker.getSupport(rule), is(1));
-    assertThat("Rule without players is not added", tracker.getSupport(rule2), is(0));
+    assertThat(tracker.getSupport(rule)).as("Rule with players is added").isEqualTo(1);
+    assertThat(tracker.getSupport(rule2)).as("Rule without players is not added").isEqualTo(0);
   }
 
   @Test
@@ -103,8 +102,8 @@ class SupportCalculatorTest {
 
     final SupportCalculator tracker =
         new SupportCalculator(List.of(unit), List.of(rule, rule2), BattleState.Side.OFFENSE, false);
-    assertThat("Rule with unit types is added", tracker.getSupport(rule), is(1));
-    assertThat("Rule without unit types is not added", tracker.getSupport(rule2), is(0));
+    assertThat(tracker.getSupport(rule)).as("Rule with unit types is added").isEqualTo(1);
+    assertThat(tracker.getSupport(rule2)).as("Rule without unit types is not added").isEqualTo(0);
   }
 
   @Test
@@ -135,8 +134,8 @@ class SupportCalculatorTest {
 
     final SupportCalculator tracker =
         new SupportCalculator(List.of(unit), List.of(rule, rule2), BattleState.Side.OFFENSE, false);
-    assertThat("Rule with unit types is added", tracker.getSupport(rule), is(1));
-    assertThat("Rule without unit types is not added", tracker.getSupport(rule2), is(0));
+    assertThat(tracker.getSupport(rule)).as("Rule with unit types is added").isEqualTo(1);
+    assertThat(tracker.getSupport(rule2)).as("Rule without unit types is not added").isEqualTo(0);
   }
 
   @Test
@@ -167,8 +166,8 @@ class SupportCalculatorTest {
 
     final SupportCalculator tracker =
         new SupportCalculator(List.of(unit), List.of(rule, rule2), BattleState.Side.OFFENSE, false);
-    assertThat("Offence rule has support", tracker.getSupport(rule), is(1));
-    assertThat("Defence rule is ignored", tracker.getSupport(rule2), is(0));
+    assertThat(tracker.getSupport(rule)).as("Offence rule has support").isEqualTo(1);
+    assertThat(tracker.getSupport(rule2)).as("Defence rule is ignored").isEqualTo(0);
   }
 
   @Test
@@ -199,8 +198,8 @@ class SupportCalculatorTest {
 
     final SupportCalculator tracker =
         new SupportCalculator(List.of(unit), List.of(rule, rule2), BattleState.Side.DEFENSE, false);
-    assertThat("Defence rule has support", tracker.getSupport(rule), is(1));
-    assertThat("Offence rule is ignored", tracker.getSupport(rule2), is(0));
+    assertThat(tracker.getSupport(rule)).as("Defence rule has support").isEqualTo(1);
+    assertThat(tracker.getSupport(rule2)).as("Offence rule is ignored").isEqualTo(0);
   }
 
   @Test
@@ -231,8 +230,8 @@ class SupportCalculatorTest {
 
     final SupportCalculator tracker =
         new SupportCalculator(List.of(unit), List.of(rule, rule2), BattleState.Side.OFFENSE, false);
-    assertThat("Enemy rule has support", tracker.getSupport(rule), is(1));
-    assertThat("Allied rule is ignored", tracker.getSupport(rule2), is(0));
+    assertThat(tracker.getSupport(rule)).as("Enemy rule has support").isEqualTo(1);
+    assertThat(tracker.getSupport(rule2)).as("Allied rule is ignored").isEqualTo(0);
   }
 
   @Test
@@ -263,8 +262,8 @@ class SupportCalculatorTest {
 
     final SupportCalculator tracker =
         new SupportCalculator(List.of(unit), List.of(rule, rule2), BattleState.Side.OFFENSE, true);
-    assertThat("Allied rule has support", tracker.getSupport(rule), is(1));
-    assertThat("Enemy rule is ignored", tracker.getSupport(rule2), is(0));
+    assertThat(tracker.getSupport(rule)).as("Allied rule has support").isEqualTo(1);
+    assertThat(tracker.getSupport(rule2)).as("Enemy rule is ignored").isEqualTo(0);
   }
 
   @Test
@@ -297,8 +296,8 @@ class SupportCalculatorTest {
 
     final SupportCalculator tracker =
         new SupportCalculator(List.of(unit), List.of(rule, rule2), BattleState.Side.OFFENSE, true);
-    assertThat("Rule with a supporter is added", tracker.getSupport(rule), is(1));
-    assertThat("Rule without a supporter is ignored", tracker.getSupport(rule2), is(0));
+    assertThat(tracker.getSupport(rule)).as("Rule with a supporter is added").isEqualTo(1);
+    assertThat(tracker.getSupport(rule2)).as("Rule without a supporter is ignored").isEqualTo(0);
   }
 
   @Test
@@ -326,11 +325,11 @@ class SupportCalculatorTest {
 
     final SupportCalculator tracker =
         new SupportCalculator(List.of(unit), List.of(rule), BattleState.Side.OFFENSE, true);
-    assertThat(
-        "Rule for improved artillery gives double the support "
-            + "when the unit has improved artillery",
-        tracker.getSupport(rule),
-        is(2));
+    assertThat(tracker.getSupport(rule))
+        .as(
+            "Rule for improved artillery gives double the support "
+                + "when the unit has improved artillery")
+        .isEqualTo(2);
   }
 
   @Test
@@ -356,11 +355,11 @@ class SupportCalculatorTest {
 
     final SupportCalculator tracker =
         new SupportCalculator(List.of(unit), List.of(rule), BattleState.Side.OFFENSE, true);
-    assertThat(
-        "Rule that doesn't use improved artillery doesn't give double the support "
-            + "when the unit has improved artillery",
-        tracker.getSupport(rule),
-        is(1));
+    assertThat(tracker.getSupport(rule))
+        .as(
+            "Rule that doesn't use improved artillery doesn't give double the support "
+                + "when the unit has improved artillery")
+        .isEqualTo(1);
   }
 
   @Test
@@ -395,9 +394,9 @@ class SupportCalculatorTest {
             List.of(rule),
             BattleState.Side.OFFENSE,
             true);
-    assertThat(
-        "Unit with improved technology has a value of 2 while the unit without has a value of 1",
-        tracker.getSupport(rule),
-        is(3));
+    assertThat(tracker.getSupport(rule))
+        .as(
+            "Unit with improved technology has a value of 2 while the unit without has a value of 1")
+        .isEqualTo(3);
   }
 }

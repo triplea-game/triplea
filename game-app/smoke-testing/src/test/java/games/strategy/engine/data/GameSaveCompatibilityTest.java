@@ -1,8 +1,6 @@
 package games.strategy.engine.data;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.framework.GameDataManager;
 import java.io.IOException;
@@ -23,31 +21,30 @@ class GameSaveCompatibilityTest {
       gameData = GameDataManager.loadGame(inputStream).orElseThrow();
     }
 
-    assertThat(gameData.getAttachmentOrderAndValues(), is(notNullValue()));
-    assertThat(gameData.getAllianceTracker().getAlliances(), is(notNullValue()));
-    assertThat(gameData.getBattleRecordsList(), is(notNullValue()));
-    assertThat(gameData.getDelegates(), is(notNullValue()));
-    assertThat(gameData.getDiceSides(), is(notNullValue()));
-    assertThat(gameData.getGameLoader(), is(notNullValue()));
-    assertThat(gameData.getGameName(), is(notNullValue()));
-    assertThat(gameData.getHistory().getLastNode(), is(notNullValue()));
-    assertThat(gameData.getMap().getTerritories(), is(notNullValue()));
-    assertThat(gameData.getPlayerList().getPlayers(), is(notNullValue()));
-    assertThat(
-        gameData.getProductionFrontierList().getProductionFrontierNames(), is(notNullValue()));
-    assertThat(gameData.getProductionRuleList().getProductionRules(), is(notNullValue()));
-    assertThat(gameData.getProperties(), is(notNullValue()));
-    assertThat(gameData.getRelationshipTracker(), is(notNullValue()));
-    assertThat(gameData.getRelationshipTypeList().getAllRelationshipTypes(), is(notNullValue()));
-    assertThat(gameData.getRepairFrontierList().getRepairFrontierNames(), is(notNullValue()));
-    assertThat(gameData.getResourceList().getResources(), is(notNullValue()));
-    assertThat(gameData.getSaveGameFileName(), is(notNullValue()));
-    assertThat(gameData.getSequence().getRound(), is(notNullValue()));
-    assertThat(gameData.getSequence().getStep(), is(notNullValue()));
-    assertThat(gameData.getTechnologyFrontier().getTechs(), is(notNullValue()));
-    assertThat(gameData.getTerritoryEffectList(), is(notNullValue()));
-    assertThat(gameData.getUnits().getUnits(), is(notNullValue()));
-    assertThat(gameData.getUnitTypeList().getAllUnitTypes(), is(notNullValue()));
+    assertThat(gameData.getAttachmentOrderAndValues()).isNotNull();
+    assertThat(gameData.getAllianceTracker().getAlliances()).isNotNull();
+    assertThat(gameData.getBattleRecordsList()).isNotNull();
+    assertThat(gameData.getDelegates()).isNotNull();
+    assertThat(gameData.getDiceSides()).isNotNull();
+    assertThat(gameData.getGameLoader()).isNotNull();
+    assertThat(gameData.getGameName()).isNotNull();
+    assertThat(gameData.getHistory().getLastNode()).isNotNull();
+    assertThat(gameData.getMap().getTerritories()).isNotNull();
+    assertThat(gameData.getPlayerList().getPlayers()).isNotNull();
+    assertThat(gameData.getProductionFrontierList().getProductionFrontierNames()).isNotNull();
+    assertThat(gameData.getProductionRuleList().getProductionRules()).isNotNull();
+    assertThat(gameData.getProperties()).isNotNull();
+    assertThat(gameData.getRelationshipTracker()).isNotNull();
+    assertThat(gameData.getRelationshipTypeList().getAllRelationshipTypes()).isNotNull();
+    assertThat(gameData.getRepairFrontierList().getRepairFrontierNames()).isNotNull();
+    assertThat(gameData.getResourceList().getResources()).isNotNull();
+    assertThat(gameData.getSaveGameFileName()).isNotNull();
+    assertThat(gameData.getSequence().getRound()).isNotNull();
+    assertThat(gameData.getSequence().getStep()).isNotNull();
+    assertThat(gameData.getTechnologyFrontier().getTechs()).isNotNull();
+    assertThat(gameData.getTerritoryEffectList()).isNotNull();
+    assertThat(gameData.getUnits().getUnits()).isNotNull();
+    assertThat(gameData.getUnitTypeList().getAllUnitTypes()).isNotNull();
   }
 
   @SuppressWarnings("unused")

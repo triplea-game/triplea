@@ -1,9 +1,6 @@
 package org.triplea.java.collections;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -29,7 +26,7 @@ class IntegerMapTest {
 
     final IntegerMap<Object> actual = new IntegerMap<>(ImmutableMap.of(k1, 1, k2, 2, k3, 3));
 
-    assertThat(actual, is(expected));
+    assertThat(actual).isEqualTo(expected);
   }
 
   @Nested
@@ -39,7 +36,7 @@ class IntegerMapTest {
       final IntegerMap<String> map1 = new IntegerMap<>();
       final IntegerMap<String> map2 = new IntegerMap<>();
 
-      assertThat(map1, equalTo(map2));
+      assertThat(map1).isEqualTo(map2);
     }
 
     @Test
@@ -47,7 +44,7 @@ class IntegerMapTest {
       final IntegerMap<String> map1 = new IntegerMap<>();
       final IntegerMap<Integer> map2 = new IntegerMap<>();
 
-      assertThat(map1, equalTo(map2));
+      assertThat(map1).isEqualTo(map2);
     }
 
     @Test
@@ -56,7 +53,7 @@ class IntegerMapTest {
       final IntegerMap<String> map2 = new IntegerMap<>();
       map1.put("key", 2);
       map2.put("key", 2);
-      assertThat(map1, equalTo(map2));
+      assertThat(map1).isEqualTo(map2);
     }
 
     @Test
@@ -67,7 +64,7 @@ class IntegerMapTest {
       map1.put("key2", 2);
       map2.put("key2", 2);
       map2.put("key1", 2);
-      assertThat(map1, equalTo(map2));
+      assertThat(map1).isEqualTo(map2);
     }
 
     @Test
@@ -75,7 +72,7 @@ class IntegerMapTest {
       final IntegerMap<String> map1 = new IntegerMap<>();
       final IntegerMap<String> map2 = new IntegerMap<>();
       map1.put("key", 2);
-      assertThat(map1, not(equalTo(map2)));
+      assertThat(map1).isNotEqualTo(map2);
     }
 
     @Test
@@ -84,7 +81,7 @@ class IntegerMapTest {
       final IntegerMap<String> map2 = new IntegerMap<>();
       map1.put("key", 2);
       map2.put("key", 0);
-      assertThat(map1, not(equalTo(map2)));
+      assertThat(map1).isNotEqualTo(map2);
     }
   }
 

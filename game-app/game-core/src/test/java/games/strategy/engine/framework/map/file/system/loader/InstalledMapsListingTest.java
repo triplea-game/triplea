@@ -1,11 +1,6 @@
 package games.strategy.engine.framework.map.file.system.loader;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsCollectionContaining.hasItems;
-import static org.triplea.test.common.matchers.CollectionMatchers.containsMappedItem;
-import static org.triplea.test.common.matchers.CollectionMatchers.doesNotContainMappedItem;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Path;
 import java.time.Instant;
@@ -59,8 +54,8 @@ class InstalledMapsListingTest {
   void getSortedGamesList() {
     final List<String> sortedGameNames = installedMapsListing.getSortedGameList();
 
-    assertThat(sortedGameNames, hasSize(3));
-    assertThat(sortedGameNames, hasItems("aGame0", "gameName0", "gameName1"));
+    assertThat(sortedGameNames).hasSize(3);
+    assertThat(sortedGameNames).contains("aGame0", "gameName0", "gameName1");
   }
 
   @ParameterizedTest
@@ -74,7 +69,7 @@ class InstalledMapsListingTest {
         "name0"
       })
   void isMapInstalled_NegativeCases(final String mapName) {
-    assertThat(installedMapsListing.isMapInstalled(mapName), is(false));
+    assertThat(installedMapsListing.isMapInstalled(mapName)).isFalse();
   }
 
   /** Verify match is not case sensitive with insignificant characters ignored */
@@ -91,7 +86,7 @@ class InstalledMapsListingTest {
         "MAPNAME0"
       })
   void isMapInstalled_PositiveCases(final String mapName) {
-    assertThat(installedMapsListing.isMapInstalled(mapName), is(true));
+    assertThat(installedMapsListing.isMapInstalled(mapName)).isTrue();
   }
 
   /**
@@ -127,7 +122,7 @@ class InstalledMapsListingTest {
                     .downloadSizeInBytes(888L)
                     .build()));
 
-    assertThat(results.values(), doesNotContainMappedItem(InstalledMap::getMapName, "map-name0"));
-    assertThat(results.values(), containsMappedItem(InstalledMap::getMapName, "map-name1"));
+    assertThat(results.values()).extracting(InstalledMap::getMapName).doesNotContain("map-name0");
+    assertThat(results.values()).extracting(InstalledMap::getMapName).contains("map-name1");
   }
 }

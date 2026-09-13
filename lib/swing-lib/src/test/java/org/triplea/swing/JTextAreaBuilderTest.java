@@ -1,7 +1,6 @@
 package org.triplea.swing;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import javax.swing.JTextArea;
@@ -13,22 +12,22 @@ class JTextAreaBuilderTest {
   void defaultValues() {
     final JTextArea area = JTextAreaBuilder.builder().build();
 
-    assertThat(area.getWrapStyleWord(), is(true));
-    assertThat(area.isEditable(), is(true));
+    assertThat(area.getWrapStyleWord()).isTrue();
+    assertThat(area.isEditable()).isTrue();
   }
 
   @Test
   void text() {
     final JTextArea area = JTextAreaBuilder.builder().text("value").build();
 
-    assertThat(area.getText(), is("value"));
+    assertThat(area.getText()).isEqualTo("value");
   }
 
   @Test
   void rows() {
     final JTextArea area = JTextAreaBuilder.builder().rows(5).build();
 
-    assertThat(area.getRows(), is(5));
+    assertThat(area.getRows()).isEqualTo(5);
   }
 
   @Test
@@ -40,7 +39,7 @@ class JTextAreaBuilderTest {
   void columns() {
     final JTextArea area = JTextAreaBuilder.builder().columns(20).build();
 
-    assertThat(area.getColumns(), is(20));
+    assertThat(area.getColumns()).isEqualTo(20);
   }
 
   @Test
@@ -51,6 +50,6 @@ class JTextAreaBuilderTest {
   @Test
   void readOnly() {
     final JTextArea area = JTextAreaBuilder.builder().readOnly().build();
-    assertThat(area.isEditable(), is(false));
+    assertThat(area.isEditable()).isFalse();
   }
 }

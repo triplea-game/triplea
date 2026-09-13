@@ -5,8 +5,7 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenSeaUnitCanNotBeTargetedBy;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitDestroyer;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitIsAir;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import games.strategy.engine.data.Unit;
@@ -26,7 +25,7 @@ class AirAttackVsNonSubsStepTest {
   @MethodSource
   void stepName(final String displayName, final BattleState battleState, final boolean expected) {
     final AirAttackVsNonSubsStep airAttackVsNonSubsStep = new AirAttackVsNonSubsStep(battleState);
-    assertThat(airAttackVsNonSubsStep.getAllStepDetails(), hasSize(expected ? 1 : 0));
+    assertThat(airAttackVsNonSubsStep.getAllStepDetails()).hasSize(expected ? 1 : 0);
   }
 
   static List<Arguments> stepName() {

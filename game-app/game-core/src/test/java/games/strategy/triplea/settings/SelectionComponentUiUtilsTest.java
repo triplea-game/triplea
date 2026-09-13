@@ -1,8 +1,6 @@
 package games.strategy.triplea.settings;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.emptyString;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Path;
 import java.util.Optional;
@@ -16,14 +14,13 @@ final class SelectionComponentUiUtilsTest {
     void shouldReturnAbsolutePathWhenPresent() {
       final Path path = Path.of(".");
 
-      assertThat(
-          SelectionComponentUiUtils.toString(Optional.of(path)),
-          is(path.toAbsolutePath().toString()));
+      assertThat(SelectionComponentUiUtils.toString(Optional.of(path)))
+          .isEqualTo(path.toAbsolutePath().toString());
     }
 
     @Test
     void shouldReturnEmptyStringWhenAbsent() {
-      assertThat(SelectionComponentUiUtils.toString(Optional.empty()), is(emptyString()));
+      assertThat(SelectionComponentUiUtils.toString(Optional.empty())).isEmpty();
     }
   }
 }

@@ -1,9 +1,6 @@
 package games.strategy.triplea.ui.mapdata;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.notNullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.awt.Color;
@@ -23,7 +20,7 @@ final class PlayerColorsTest {
 
       final Color playerColor = playerColors.getPlayerColor("player");
 
-      assertThat(playerColor, is(notNullValue()));
+      assertThat(playerColor).isNotNull();
     }
 
     @Test
@@ -34,10 +31,9 @@ final class PlayerColorsTest {
       final Color playerColor = playerColors.getPlayerColor("player");
       final Color playerColorSecondTime = playerColors.getPlayerColor("player");
 
-      assertThat(
-          "Color should remain the same when requesting player color a second time",
-          playerColorSecondTime,
-          is(playerColor));
+      assertThat(playerColorSecondTime)
+          .as("Color should remain the same when requesting player color a second time")
+          .isEqualTo(playerColor);
     }
 
     @Test
@@ -54,7 +50,7 @@ final class PlayerColorsTest {
       final Color playerColor0 = playerColors0.getPlayerColor("player");
       final Color playerColor1 = playerColors1.getPlayerColor("player");
 
-      assertThat(playerColor0, is(playerColor1));
+      assertThat(playerColor0).isEqualTo(playerColor1);
     }
 
     private void useUpAllDefaultColors(final PlayerColors playerColors) {
@@ -76,10 +72,9 @@ final class PlayerColorsTest {
       final Color playerColor0 = playerColors0.getPlayerColor("player0");
       final Color playerColor1 = playerColors1.getPlayerColor("player1");
 
-      assertThat(
-          "player0 and player1 should have been assigned different, random, default colors",
-          playerColor0,
-          is(not(playerColor1)));
+      assertThat(playerColor0)
+          .as("player0 and player1 should have been assigned different, random, default colors")
+          .isNotEqualTo(playerColor1);
     }
 
     @Test
@@ -88,7 +83,7 @@ final class PlayerColorsTest {
       final var playerColors = new PlayerColors(new Properties());
 
       for (int i = 0; i < 100; i++) {
-        assertThat(playerColors.getPlayerColor("player" + i), is(notNullValue()));
+        assertThat(playerColors.getPlayerColor("player" + i)).isNotNull();
       }
     }
   }
@@ -103,7 +98,7 @@ final class PlayerColorsTest {
 
       final Color playerColor = playerColors.getPlayerColor("player");
 
-      assertThat(playerColor, is(Color.GREEN));
+      assertThat(playerColor).isEqualTo(Color.GREEN);
     }
   }
 
@@ -129,7 +124,7 @@ final class PlayerColorsTest {
       final var playerColors = new PlayerColors(properties);
 
       final Color impassable = playerColors.getImpassableColor();
-      assertThat(impassable, is(Color.BLACK));
+      assertThat(impassable).isEqualTo(Color.BLACK);
     }
 
     @Test
@@ -142,7 +137,7 @@ final class PlayerColorsTest {
 
       final Color impassable = playerColors.getImpassableColor();
 
-      assertThat(impassable, is(Color.WHITE));
+      assertThat(impassable).isEqualTo(Color.WHITE);
     }
 
     @Test
@@ -152,7 +147,7 @@ final class PlayerColorsTest {
 
       final Color impassable = playerColors.getImpassableColor();
 
-      assertThat(impassable, is(PlayerColors.DEFAULT_IMPASSABLE_COLOR));
+      assertThat(impassable).isEqualTo(PlayerColors.DEFAULT_IMPASSABLE_COLOR);
     }
   }
 }

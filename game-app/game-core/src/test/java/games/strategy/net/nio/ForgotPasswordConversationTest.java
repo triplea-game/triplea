@@ -1,8 +1,6 @@
 package games.strategy.net.nio;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNot.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -45,7 +43,7 @@ class ForgotPasswordConversationTest {
 
     final String result = forgotPasswordConversation.handle(address, USERNAME);
 
-    assertThat(result, is(not(ForgotPasswordConversation.TEMP_PASSWORD_GENERATED_RESPONSE)));
+    assertThat(result).isNotEqualTo(ForgotPasswordConversation.TEMP_PASSWORD_GENERATED_RESPONSE);
 
     verify(forgotPasswordModule, never()).test(any());
     verify(tempPasswordHistory, never()).recordTempPasswordRequest(any(), any());
@@ -58,7 +56,7 @@ class ForgotPasswordConversationTest {
 
     final String result = forgotPasswordConversation.handle(address, USERNAME);
 
-    assertThat(result, is(not(ForgotPasswordConversation.TEMP_PASSWORD_GENERATED_RESPONSE)));
+    assertThat(result).isNotEqualTo(ForgotPasswordConversation.TEMP_PASSWORD_GENERATED_RESPONSE);
     verify(tempPasswordHistory, never()).recordTempPasswordRequest(any(), any());
   }
 
@@ -69,7 +67,7 @@ class ForgotPasswordConversationTest {
 
     final String result = forgotPasswordConversation.handle(address, USERNAME);
 
-    assertThat(result, is(ForgotPasswordConversation.TEMP_PASSWORD_GENERATED_RESPONSE));
+    assertThat(result).isEqualTo(ForgotPasswordConversation.TEMP_PASSWORD_GENERATED_RESPONSE);
     verify(tempPasswordHistory).recordTempPasswordRequest(address, USERNAME);
   }
 }

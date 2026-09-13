@@ -1,10 +1,6 @@
 package games.strategy.engine.data;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.triplea.delegate.EndRoundDelegate;
@@ -37,10 +33,10 @@ public class AiGameTest {
       }
       game.runNextStep();
     }
-    assertThat(game.isGameOver(), is(true));
-    assertThat(game.getData().getSequence().getRound(), greaterThan(2));
+    assertThat(game.isGameOver()).isTrue();
+    assertThat(game.getData().getSequence().getRound()).isGreaterThan(2);
     EndRoundDelegate endDelegate = (EndRoundDelegate) game.getData().getEndRoundDelegate();
-    assertThat(endDelegate.getWinners(), not(empty()));
+    assertThat(endDelegate.getWinners()).isNotEmpty();
     log.info("Game completed at round: " + game.getData().getSequence().getRound());
     log.info("Game winners: " + endDelegate.getWinners());
   }
@@ -54,10 +50,11 @@ public class AiGameTest {
       game.runNextStep();
     }
     log.debug("First round stats: " + getResourceSummary(game.getData()));
-    assertThat(
-        "Expecting first round game to not be over so early: " + getResourceSummary(game.getData()),
-        game.isGameOver(),
-        is(false));
+    assertThat(game.isGameOver())
+        .as(
+            "Expecting first round game to not be over so early: "
+                + getResourceSummary(game.getData()))
+        .isFalse();
     // Need to call stopGame() to ensure ProAI resets its static ConcurrentBattleCalculator, else
     // the next test will use the wrong GameData for simulation.
     game.stopGame();
@@ -70,18 +67,18 @@ public class AiGameTest {
     game.setUpGameForRunningSteps();
 
     GamePlayer blue = game.getData().getPlayerList().getPlayerId("Blue");
-    assertThat(blue.isNull(), is(false));
+    assertThat(blue.isNull()).isFalse();
     // Check that after wealth place, we have 1 wealth and 10 armies.
     GameTestUtils.runStepsUntil(game, "BlueWealthPlace");
-    assertThat(GameTestUtils.countUnitsOfType(blue, "wealth"), is(1));
-    assertThat(GameTestUtils.countUnitsOfType(blue, "new_army"), is(0));
-    assertThat(GameTestUtils.countUnitsOfType(blue, "army"), is(10));
+    assertThat(GameTestUtils.countUnitsOfType(blue, "wealth")).isEqualTo(1);
+    assertThat(GameTestUtils.countUnitsOfType(blue, "new_army")).isEqualTo(0);
+    assertThat(GameTestUtils.countUnitsOfType(blue, "army")).isEqualTo(10);
     // Now, execute steps until Place, which includes Purchase.
     GameTestUtils.runStepsUntil(game, "BluePlace");
     // Check that the AI has built a new army using a wealth unit.
-    assertThat(GameTestUtils.countUnitsOfType(blue, "wealth"), is(0));
-    assertThat(GameTestUtils.countUnitsOfType(blue, "new_army"), is(1));
-    assertThat(GameTestUtils.countUnitsOfType(blue, "army"), is(10));
+    assertThat(GameTestUtils.countUnitsOfType(blue, "wealth")).isEqualTo(0);
+    assertThat(GameTestUtils.countUnitsOfType(blue, "new_army")).isEqualTo(1);
+    assertThat(GameTestUtils.countUnitsOfType(blue, "army")).isEqualTo(10);
   }
 
   @Test
@@ -92,7 +89,7 @@ public class AiGameTest {
     game.setUpGameForRunningSteps();
 
     GamePlayer blue = gameData.getPlayerList().getPlayerId("Blue");
-    assertThat(blue.isNull(), is(false));
+    assertThat(blue.isNull()).isFalse();
     GameTestUtils.runStepsUntil(game, "BlueWealthPlace");
 
     // Now, set up some units on another continent to verify how the AI will handle them.
@@ -111,11 +108,11 @@ public class AiGameTest {
 
     GameTestUtils.runStepsUntil(game, "BlueEndTurn");
     // Verify that the St Lucia wealth was moved to Andres (on the way to Oaxaca that has a port).
-    assertThat(GameTestUtils.countUnitsOfType(andres, blue, "wealth"), is(1));
-    assertThat(GameTestUtils.countUnitsOfType(stLucia, blue, "wealth"), is(0));
+    assertThat(GameTestUtils.countUnitsOfType(andres, blue, "wealth")).isEqualTo(1);
+    assertThat(GameTestUtils.countUnitsOfType(stLucia, blue, "wealth")).isEqualTo(0);
     // Verify that the Culiacan wealth was moved to Oaxaca (that has a port).
-    assertThat(GameTestUtils.countUnitsOfType(oaxaca, blue, "wealth"), is(1));
-    assertThat(GameTestUtils.countUnitsOfType(culiacan, blue, "wealth"), is(0));
+    assertThat(GameTestUtils.countUnitsOfType(oaxaca, blue, "wealth")).isEqualTo(1);
+    assertThat(GameTestUtils.countUnitsOfType(culiacan, blue, "wealth")).isEqualTo(0);
   }
 
   private String getResourceSummary(GameData gameData) {

@@ -1,7 +1,6 @@
 package org.triplea.io;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsSame.sameInstance;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -77,7 +76,7 @@ class ContentDownloaderTest {
     final InputStream inputStream =
         new ContentDownloader(httpClient, FAKE_URI, proxySettings).getStream();
 
-    assertThat(inputStream, sameInstance(inputStream));
+    assertThat(inputStream).isSameAs(inputStream);
   }
 
   void givenEntityContent() throws Exception {

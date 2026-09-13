@@ -1,7 +1,6 @@
 package org.triplea.swing;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.triplea.swing.AutoCompletion.startsWith;
 
 import org.junit.jupiter.api.Nested;
@@ -12,31 +11,31 @@ final class AutoCompletionTest {
   final class StartsWithTest {
     @Test
     void shouldReturnTrueWhenFirstStartsWithSecond() {
-      assertThat(startsWith("Mongolia", "M"), is(true));
-      assertThat(startsWith("Mongolia", "Mong"), is(true));
-      assertThat(startsWith("Mongolia", "Mongolia"), is(true));
+      assertThat(startsWith("Mongolia", "M")).isTrue();
+      assertThat(startsWith("Mongolia", "Mong")).isTrue();
+      assertThat(startsWith("Mongolia", "Mongolia")).isTrue();
     }
 
     @Test
     void shouldReturnTrueWhenFirstStartsWithSecondIgnoringCase() {
-      assertThat(startsWith("Mongolia", "m"), is(true));
-      assertThat(startsWith("Mongolia", "mong"), is(true));
-      assertThat(startsWith("Mongolia", "monGOLia"), is(true));
+      assertThat(startsWith("Mongolia", "m")).isTrue();
+      assertThat(startsWith("Mongolia", "mong")).isTrue();
+      assertThat(startsWith("Mongolia", "monGOLia")).isTrue();
     }
 
     @Test
     void shouldReturnTrueWhenFirstStartsWithSecondIgnoringCombiningMarks() {
-      assertThat(startsWith("Lhûn", "Lhûn"), is(true));
-      assertThat(startsWith("Lhûn", "Lhu"), is(true));
-      assertThat(startsWith("Lhûn", "Lhun"), is(true));
+      assertThat(startsWith("Lhûn", "Lhûn")).isTrue();
+      assertThat(startsWith("Lhûn", "Lhu")).isTrue();
+      assertThat(startsWith("Lhûn", "Lhun")).isTrue();
     }
 
     @Test
     void shouldReturnFalseWhenFirstDoesNotStartWithSecond() {
-      assertThat(startsWith("Mongolia", "N"), is(false));
-      assertThat(startsWith("Mongolia", "Mont"), is(false));
-      assertThat(startsWith("Mongolia", "mont"), is(false));
-      assertThat(startsWith("Mongolia", "Mongoliaa"), is(false));
+      assertThat(startsWith("Mongolia", "N")).isFalse();
+      assertThat(startsWith("Mongolia", "Mont")).isFalse();
+      assertThat(startsWith("Mongolia", "mont")).isFalse();
+      assertThat(startsWith("Mongolia", "Mongoliaa")).isFalse();
     }
   }
 }

@@ -1,10 +1,6 @@
 package games.strategy.engine.framework.startup.ui.posted.game.pbf;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.text.IsEmptyString.emptyString;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
@@ -13,7 +9,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.github.npathai.hamcrestopt.OptionalMatchers;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.GameProperties;
@@ -49,7 +44,7 @@ class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
   void initializationSetsForumSelection() {
     final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(() -> {});
 
-    assertThat(viewModel.getForumSelection(), is(notNullValue()));
+    assertThat(viewModel.getForumSelection()).isNotNull();
   }
 
   @Test
@@ -64,11 +59,11 @@ class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
     final ForumPosterEditorViewModel viewModel =
         new ForumPosterEditorViewModel(() -> {}, gameProperties);
 
-    assertThat(viewModel.getForumSelection(), is("forumName"));
-    assertThat(viewModel.getTopicId(), is("topicId"));
-    assertThat("topic id is not numeric => not valid", viewModel.isTopicIdValid(), is(false));
-    assertThat(viewModel.isAlsoPostAfterCombatMove(), is(true));
-    assertThat(viewModel.isAttachSaveGameToSummary(), is(false));
+    assertThat(viewModel.getForumSelection()).isEqualTo("forumName");
+    assertThat(viewModel.getTopicId()).isEqualTo("topicId");
+    assertThat(viewModel.isTopicIdValid()).as("topic id is not numeric => not valid").isFalse();
+    assertThat(viewModel.isAlsoPostAfterCombatMove()).isTrue();
+    assertThat(viewModel.isAttachSaveGameToSummary()).isFalse();
   }
 
   @Test
@@ -80,23 +75,20 @@ class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
     final ForumPosterEditorViewModel viewModel =
         new ForumPosterEditorViewModel(() -> {}, gameProperties);
 
-    assertThat(
-        "Default forum should be first NodeBB forum when not otherwise specified",
-        viewModel.getForumSelection(),
-        is(NodeBbForumPoster.availablePosters().iterator().next()));
-    assertThat(
-        "Expecting default empty topic id string when not specified in game properties",
-        viewModel.getTopicId(),
-        is(emptyString()));
-    assertThat(
-        "We specified this value in game properties, should be true",
-        viewModel.isAlsoPostAfterCombatMove(),
-        is(true));
-    assertThat(
-        "Attach save game summary defaults to true, when not specified in game properties, "
-            + "we expect the default value",
-        viewModel.isAttachSaveGameToSummary(),
-        is(true));
+    assertThat(viewModel.getForumSelection())
+        .as("Default forum should be first NodeBB forum when not otherwise specified")
+        .isEqualTo(NodeBbForumPoster.availablePosters().iterator().next());
+    assertThat(viewModel.getTopicId())
+        .as("Expecting default empty topic id string when not specified in game properties")
+        .isEmpty();
+    assertThat(viewModel.isAlsoPostAfterCombatMove())
+        .as("We specified this value in game properties, should be true")
+        .isTrue();
+    assertThat(viewModel.isAttachSaveGameToSummary())
+        .as(
+            "Attach save game summary defaults to true, when not specified in game properties, "
+                + "we expect the default value")
+        .isTrue();
   }
 
   @DisplayName("Topic ID should only be valid for positive numbers")
@@ -106,7 +98,7 @@ class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
     final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(() -> {});
     viewModel.setForumSelection(invalidValue);
 
-    assertThat(viewModel.isTopicIdValid(), is(false));
+    assertThat(viewModel.isTopicIdValid()).isFalse();
   }
 
   @Test
@@ -168,7 +160,7 @@ class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
     final ForumPosterEditorViewModel viewModel =
         givenViewModelWithInvalidFieldSettings(topicId, username, password);
 
-    assertThat(viewModel.areFieldsValid(), is(false));
+    assertThat(viewModel.areFieldsValid()).isFalse();
   }
 
   @DisplayName("Ensure test post button is no-op if fields are not valid")
@@ -218,7 +210,7 @@ class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
     Preconditions.checkState(
         viewModel.isTopicIdValid(), "Test makes sense only if topic id is valid");
 
-    assertThat(viewModel.areFieldsValid(), is(true));
+    assertThat(viewModel.areFieldsValid()).isTrue();
   }
 
   @Test
@@ -273,27 +265,27 @@ class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
   @Test
   void initiallyUsernameIsInvalidDueToBeingBlank() {
     final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
-    assertThat(viewModel.isForumUsernameValid(), is(false));
+    assertThat(viewModel.isForumUsernameValid()).isFalse();
   }
 
   @Test
   void nonBlankUsernameIsValid() {
     final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
     viewModel.setForumUsername("name");
-    assertThat(viewModel.isForumUsernameValid(), is(true));
+    assertThat(viewModel.isForumUsernameValid()).isTrue();
   }
 
   @Test
   void initiallyPasswordIsInvalidDueToBeingBlank() {
     final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
-    assertThat(viewModel.isForumPasswordValid(), is(false));
+    assertThat(viewModel.isForumPasswordValid()).isFalse();
   }
 
   @Test
   void nonBlankPasswordIsValid() {
     final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
     viewModel.setForumPassword(new char[] {'a'});
-    assertThat(viewModel.isForumPasswordValid(), is(true));
+    assertThat(viewModel.isForumPasswordValid()).isTrue();
   }
 
   @Test
@@ -304,13 +296,10 @@ class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
     viewModel.setForumSelection(NodeBbForumPoster.AXIS_AND_ALLIES_ORG_DISPLAY_NAME);
     viewModel.setForumPassword(new char[] {'*', '*'});
 
-    assertThat(
-        "No password shoudl be set on the model, the dummy password is rejected",
-        viewModel.getForumPassword(),
-        is(emptyString()));
-    assertThat(
-        ClientSetting.aaForumUsername.getValue(),
-        OptionalMatchers.isPresentAndIs(new char[] {'a'}));
+    assertThat(viewModel.getForumPassword())
+        .as("No password shoudl be set on the model, the dummy password is rejected")
+        .isEmpty();
+    assertThat(ClientSetting.aaForumUsername.getValue()).contains(new char[] {'a'});
   }
 
   @Test
@@ -321,13 +310,13 @@ class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
     final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
     viewModel.setForumSelection(NodeBbForumPoster.AXIS_AND_ALLIES_ORG_DISPLAY_NAME);
 
-    assertThat(viewModel.getForumUsername(), is("a"));
-    assertThat(viewModel.getForumPassword().length(), is(4));
-    assertThat(
-        "we do not store the actual password, we'll set a dummy password in the text field "
-            + "to represent it being set, only a token is stored in ClientSettings.",
-        String.valueOf(viewModel.getForumPassword()),
-        is(not("b")));
+    assertThat(viewModel.getForumUsername()).isEqualTo("a");
+    assertThat(viewModel.getForumPassword().length()).isEqualTo(4);
+    assertThat(String.valueOf(viewModel.getForumPassword()))
+        .as(
+            "we do not store the actual password, we'll set a dummy password in the text field "
+                + "to represent it being set, only a token is stored in ClientSettings.")
+        .isNotEqualTo("b");
   }
 
   @Test
@@ -337,7 +326,7 @@ class ForumPosterEditorViewModelTest extends AbstractClientSettingTestCase {
     final ForumPosterEditorViewModel viewModel = new ForumPosterEditorViewModel(readyCallback);
     viewModel.setForumSelection(NodeBbForumPoster.TRIPLEA_FORUM_DISPLAY_NAME);
 
-    assertThat(viewModel.getForumUsername(), is("c"));
-    assertThat(viewModel.getForumPassword().length(), is(0));
+    assertThat(viewModel.getForumUsername()).isEqualTo("c");
+    assertThat(viewModel.getForumPassword().length()).isEqualTo(0);
   }
 }

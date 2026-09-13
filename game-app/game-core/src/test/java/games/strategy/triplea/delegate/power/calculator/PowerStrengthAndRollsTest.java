@@ -2,8 +2,7 @@ package games.strategy.triplea.delegate.power.calculator;
 
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import games.strategy.engine.data.GameData;
@@ -76,15 +75,15 @@ class PowerStrengthAndRollsTest {
       final int[] dice = {0, 5, 2};
       final List<Die> diceHits = RolledDice.getDiceHits(dice, result.getActiveUnits());
 
-      assertThat(
-          "Unit3 rolls first and hits with 0, unit2 rolls second and misses with 5, unit1 rolls"
-              + "last and misses with 2",
-          diceHits,
-          is(
+      assertThat(diceHits)
+          .as(
+              "Unit3 rolls first and hits with 0, unit2 rolls second and misses with 5, unit1 rolls"
+                  + "last and misses with 2")
+          .isEqualTo(
               List.of(
                   new Die(0, 4, Die.DieType.HIT),
                   new Die(5, 3, Die.DieType.MISS),
-                  new Die(2, 2, Die.DieType.MISS))));
+                  new Die(2, 2, Die.DieType.MISS)));
     }
 
     @Test
@@ -102,17 +101,16 @@ class PowerStrengthAndRollsTest {
       final int[] dice = {0, 5, 2, 1, 4, 3};
       final List<Die> diceHits = RolledDice.getDiceHits(dice, result.getActiveUnits());
 
-      assertThat(
-          "Unit3 rolls first twice, unit2 rolls second twice, and unit 3 rolls last twice",
-          diceHits,
-          is(
+      assertThat(diceHits)
+          .as("Unit3 rolls first twice, unit2 rolls second twice, and unit 3 rolls last twice")
+          .isEqualTo(
               List.of(
                   new Die(0, 4, Die.DieType.HIT),
                   new Die(5, 4, Die.DieType.MISS),
                   new Die(2, 3, Die.DieType.HIT),
                   new Die(1, 3, Die.DieType.HIT),
                   new Die(4, 2, Die.DieType.MISS),
-                  new Die(3, 2, Die.DieType.MISS))));
+                  new Die(3, 2, Die.DieType.MISS)));
     }
 
     @Test
@@ -130,18 +128,18 @@ class PowerStrengthAndRollsTest {
       final int[] dice = {0, 5, 2, 1, 4, 3};
       final List<Die> diceHits = RolledDice.getDiceHits(dice, result.getActiveUnits());
 
-      assertThat(
-          "Unit3 rolls first twice, unit2 rolls second twice, and unit 3 rolls last twice. "
-              + "The best of each pair of rolls is used and the other is IGNORED.",
-          diceHits,
-          is(
+      assertThat(diceHits)
+          .as(
+              "Unit3 rolls first twice, unit2 rolls second twice, and unit 3 rolls last twice. "
+                  + "The best of each pair of rolls is used and the other is IGNORED.")
+          .isEqualTo(
               List.of(
                   new Die(0, 4, Die.DieType.HIT),
                   new Die(5, 4, Die.DieType.IGNORED),
                   new Die(2, 3, Die.DieType.IGNORED),
                   new Die(1, 3, Die.DieType.HIT),
                   new Die(4, 2, Die.DieType.IGNORED),
-                  new Die(3, 2, Die.DieType.MISS))));
+                  new Die(3, 2, Die.DieType.MISS)));
     }
   }
 }

@@ -1,7 +1,6 @@
 package org.triplea.java;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -28,7 +27,7 @@ class DateTimeFormatterUtilTest {
   void verifyFormattingWithTimeZone() {
     final String result =
         DateTimeFormatterUtil.formatInstant(Instant.ofEpochMilli(DEC_FIRST_EPOCH_MILLIS));
-    assertThat(result, is("2000-12-1 15:59 (GMT)"));
+    assertThat(result).isEqualTo("2000-12-1 15:59 (GMT)");
   }
 
   @Test
@@ -36,14 +35,14 @@ class DateTimeFormatterUtilTest {
     final String result =
         DateTimeFormatterUtil.formatEpochMilli(
             DEC_FIRST_EPOCH_MILLIS, FormatOption.WITHOUT_TIMEZONE);
-    assertThat(result, is("2000-12-1 15:59"));
+    assertThat(result).isEqualTo("2000-12-1 15:59");
   }
 
   @Test
   void toDateString() {
     assertThat(
-        DateTimeFormatterUtil.toDateString(
-            LocalDateTime.ofInstant(JAN_FIRST_INSTANT, ZoneOffset.UTC)),
-        is("Wed Jan 01 14:30:00 UTC 2020"));
+            DateTimeFormatterUtil.toDateString(
+                LocalDateTime.ofInstant(JAN_FIRST_INSTANT, ZoneOffset.UTC)))
+        .isEqualTo("Wed Jan 01 14:30:00 UTC 2020");
   }
 }

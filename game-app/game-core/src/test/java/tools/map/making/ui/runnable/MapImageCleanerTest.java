@@ -1,7 +1,6 @@
 package tools.map.making.ui.runnable;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -35,15 +34,15 @@ public class MapImageCleanerTest {
     new MapImageCleaner(image, 2).cleanUpImage();
     // Check that the line splitting the image is still there.
     for (int x = 0; x < image.getWidth(); x++) {
-      assertThat(image.getRGB(x, 4), is(Color.BLACK.getRGB()));
+      assertThat(image.getRGB(x, 4)).isEqualTo(Color.BLACK.getRGB());
     }
     // Check that the incomplete line was removed.
     for (int x = 0; x < image.getWidth() - 1; x++) {
-      assertThat(image.getRGB(x, 7), is(Color.WHITE.getRGB()));
+      assertThat(image.getRGB(x, 7)).isEqualTo(Color.WHITE.getRGB());
     }
     // Check that the corner region has been removed, since it's below the min size.
-    assertThat(image.getRGB(0, 1), is(Color.WHITE.getRGB()));
-    assertThat(image.getRGB(1, 0), is(Color.WHITE.getRGB()));
-    assertThat(image.getRGB(1, 1), is(Color.WHITE.getRGB()));
+    assertThat(image.getRGB(0, 1)).isEqualTo(Color.WHITE.getRGB());
+    assertThat(image.getRGB(1, 0)).isEqualTo(Color.WHITE.getRGB());
+    assertThat(image.getRGB(1, 1)).isEqualTo(Color.WHITE.getRGB());
   }
 }

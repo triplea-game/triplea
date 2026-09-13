@@ -1,8 +1,6 @@
 package org.triplea.config;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.emptyString;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Map;
@@ -62,7 +60,8 @@ public abstract class AbstractPropertyReaderTestCase {
 
     @Test
     public void shouldReturnValueWhenKeyIsPresent() {
-      assertThat(propertyReader.readProperty(PRESENT_PROPERTY_KEY), is(PRESENT_PROPERTY_VALUE));
+      assertThat(propertyReader.readProperty(PRESENT_PROPERTY_KEY))
+          .isEqualTo(PRESENT_PROPERTY_VALUE);
     }
 
     @Test
@@ -71,12 +70,13 @@ public abstract class AbstractPropertyReaderTestCase {
       final PropertyReader propertyReader =
           newSingletonPropertyReader("  " + PRESENT_PROPERTY_VALUE + "  ");
 
-      assertThat(propertyReader.readProperty(PRESENT_PROPERTY_KEY), is(PRESENT_PROPERTY_VALUE));
+      assertThat(propertyReader.readProperty(PRESENT_PROPERTY_KEY))
+          .isEqualTo(PRESENT_PROPERTY_VALUE);
     }
 
     @Test
     public void shouldReturnEmptyWhenKeyIsAbsent() {
-      assertThat(propertyReader.readProperty(ABSENT_PROPERTY_KEY), is(emptyString()));
+      assertThat(propertyReader.readProperty(ABSENT_PROPERTY_KEY)).isEmpty();
     }
   }
 
@@ -88,8 +88,8 @@ public abstract class AbstractPropertyReaderTestCase {
       final String value = "value";
       final PropertyReader propertyReader = newSingletonPropertyReader(value);
 
-      assertThat(
-          propertyReader.readPropertyOrDefault(PRESENT_PROPERTY_KEY, "defaultValue"), is(value));
+      assertThat(propertyReader.readPropertyOrDefault(PRESENT_PROPERTY_KEY, "defaultValue"))
+          .isEqualTo(value);
     }
 
     @Test
@@ -97,9 +97,8 @@ public abstract class AbstractPropertyReaderTestCase {
       final String defaultValue = "defaultValue";
       final PropertyReader propertyReader = newEmptyPropertyReader();
 
-      assertThat(
-          propertyReader.readPropertyOrDefault(ABSENT_PROPERTY_KEY, defaultValue),
-          is(defaultValue));
+      assertThat(propertyReader.readPropertyOrDefault(ABSENT_PROPERTY_KEY, defaultValue))
+          .isEqualTo(defaultValue);
     }
   }
 
@@ -111,8 +110,8 @@ public abstract class AbstractPropertyReaderTestCase {
       final boolean value = true;
       final PropertyReader propertyReader = newSingletonPropertyReader(String.valueOf(value));
 
-      assertThat(
-          propertyReader.readBooleanPropertyOrDefault(PRESENT_PROPERTY_KEY, false), is(value));
+      assertThat(propertyReader.readBooleanPropertyOrDefault(PRESENT_PROPERTY_KEY, false))
+          .isEqualTo(value);
     }
 
     @Test
@@ -120,9 +119,8 @@ public abstract class AbstractPropertyReaderTestCase {
       final boolean defaultValue = true;
       final PropertyReader propertyReader = newEmptyPropertyReader();
 
-      assertThat(
-          propertyReader.readBooleanPropertyOrDefault(ABSENT_PROPERTY_KEY, defaultValue),
-          is(defaultValue));
+      assertThat(propertyReader.readBooleanPropertyOrDefault(ABSENT_PROPERTY_KEY, defaultValue))
+          .isEqualTo(defaultValue);
     }
   }
 
@@ -134,7 +132,8 @@ public abstract class AbstractPropertyReaderTestCase {
       final int value = 42;
       final PropertyReader propertyReader = newSingletonPropertyReader(String.valueOf(value));
 
-      assertThat(propertyReader.readIntegerPropertyOrDefault(PRESENT_PROPERTY_KEY, -1), is(value));
+      assertThat(propertyReader.readIntegerPropertyOrDefault(PRESENT_PROPERTY_KEY, -1))
+          .isEqualTo(value);
     }
 
     @Test
@@ -142,9 +141,8 @@ public abstract class AbstractPropertyReaderTestCase {
       final int defaultValue = 777;
       final PropertyReader propertyReader = newSingletonPropertyReader("other");
 
-      assertThat(
-          propertyReader.readIntegerPropertyOrDefault(PRESENT_PROPERTY_KEY, defaultValue),
-          is(defaultValue));
+      assertThat(propertyReader.readIntegerPropertyOrDefault(PRESENT_PROPERTY_KEY, defaultValue))
+          .isEqualTo(defaultValue);
     }
 
     @Test
@@ -152,9 +150,8 @@ public abstract class AbstractPropertyReaderTestCase {
       final int defaultValue = 777;
       final PropertyReader propertyReader = newEmptyPropertyReader();
 
-      assertThat(
-          propertyReader.readIntegerPropertyOrDefault(ABSENT_PROPERTY_KEY, defaultValue),
-          is(defaultValue));
+      assertThat(propertyReader.readIntegerPropertyOrDefault(ABSENT_PROPERTY_KEY, defaultValue))
+          .isEqualTo(defaultValue);
     }
   }
 }

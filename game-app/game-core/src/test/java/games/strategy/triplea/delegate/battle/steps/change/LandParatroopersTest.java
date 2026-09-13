@@ -3,10 +3,7 @@ package games.strategy.triplea.delegate.battle.steps.change;
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenSeaBattleSite;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitAirTransport;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -42,7 +39,7 @@ class LandParatroopersTest {
     final BattleState battleState = givenBattleStateBuilder().battleRound(2).build();
     final LandParatroopers landParatroopers = new LandParatroopers(battleState, battleActions);
 
-    assertThat(landParatroopers.getAllStepDetails(), is(empty()));
+    assertThat(landParatroopers.getAllStepDetails()).isEmpty();
 
     landParatroopers.execute(executionStack, delegateBridge);
     verify(delegateBridge, never()).addChange(any(Change.class));
@@ -54,7 +51,7 @@ class LandParatroopersTest {
         givenBattleStateBuilder().battleRound(1).battleSite(givenSeaBattleSite()).build();
     final LandParatroopers landParatroopers = new LandParatroopers(battleState, battleActions);
 
-    assertThat(landParatroopers.getAllStepDetails(), is(empty()));
+    assertThat(landParatroopers.getAllStepDetails()).isEmpty();
 
     landParatroopers.execute(executionStack, delegateBridge);
     verify(delegateBridge, never()).addChange(any(Change.class));
@@ -70,7 +67,7 @@ class LandParatroopersTest {
         givenBattleStateBuilder().battleRound(1).attacker(attacker).build();
     final LandParatroopers landParatroopers = new LandParatroopers(battleState, battleActions);
 
-    assertThat(landParatroopers.getAllStepDetails(), is(empty()));
+    assertThat(landParatroopers.getAllStepDetails()).isEmpty();
 
     landParatroopers.execute(executionStack, delegateBridge);
     verify(delegateBridge, never()).addChange(any(Change.class));
@@ -101,7 +98,7 @@ class LandParatroopersTest {
 
     final LandParatroopers landParatroopers = new LandParatroopers(battleState, battleActions);
 
-    assertThat(landParatroopers.getAllStepDetails(), is(empty()));
+    assertThat(landParatroopers.getAllStepDetails()).isEmpty();
 
     landParatroopers.execute(executionStack, delegateBridge);
     verify(delegateBridge, never()).addChange(any(Change.class));
@@ -133,7 +130,7 @@ class LandParatroopersTest {
 
     final LandParatroopers landParatroopers = new LandParatroopers(battleState, battleActions);
 
-    assertThat(landParatroopers.getAllStepDetails(), hasSize(1));
+    assertThat(landParatroopers.getAllStepDetails()).hasSize(1);
 
     landParatroopers.execute(executionStack, delegateBridge);
     verify(delegateBridge).addChange(any(Change.class));

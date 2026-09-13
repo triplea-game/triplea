@@ -1,8 +1,6 @@
 package org.triplea.domain.data;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -33,7 +31,7 @@ class SystemIdLoaderTest {
 
     final SystemId result = SystemIdLoader.load();
 
-    assertThat(result, is(SYSTEM_ID));
+    assertThat(result).isEqualTo(SYSTEM_ID);
   }
 
   @Test
@@ -43,7 +41,7 @@ class SystemIdLoaderTest {
 
     final SystemId result = SystemIdLoader.load();
 
-    assertThat(result, is(notNullValue()));
+    assertThat(result).isNotNull();
     verify(preferencesPersistence).save(anyString());
   }
 }

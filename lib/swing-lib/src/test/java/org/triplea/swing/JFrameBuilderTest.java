@@ -1,9 +1,6 @@
 package org.triplea.swing;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.verify;
 
@@ -30,15 +27,15 @@ class JFrameBuilderTest {
   void title() {
     final JFrame frame = JFrameBuilder.builder().title(TITLE).build();
 
-    assertThat(frame.getTitle(), is(TITLE));
+    assertThat(frame.getTitle()).isEqualTo(TITLE);
   }
 
   @Test
   void minSizeIsSetByDefault() {
     final Dimension minSize = JFrameBuilder.builder().build().getMinimumSize();
 
-    assertThat(minSize.width > 0, is(true));
-    assertThat(minSize.height > 0, is(true));
+    assertThat(minSize.width > 0).isTrue();
+    assertThat(minSize.height > 0).isTrue();
   }
 
   @Test
@@ -46,15 +43,15 @@ class JFrameBuilderTest {
     final Dimension minSize =
         JFrameBuilder.builder().minSize(WIDTH, HEIGHT).build().getMinimumSize();
 
-    assertThat(minSize.width, is(WIDTH));
-    assertThat(minSize.height, is(HEIGHT));
+    assertThat(minSize.width).isEqualTo(WIDTH);
+    assertThat(minSize.height).isEqualTo(HEIGHT);
   }
 
   @Test
   void alwaysOnTop() {
-    assertThat(JFrameBuilder.builder().alwaysOnTop().build().isAlwaysOnTop(), is(true));
+    assertThat(JFrameBuilder.builder().alwaysOnTop().build().isAlwaysOnTop()).isTrue();
 
-    assertThat(JFrameBuilder.builder().build().isAlwaysOnTop(), is(false));
+    assertThat(JFrameBuilder.builder().build().isAlwaysOnTop()).isFalse();
   }
 
   @Test
@@ -67,10 +64,9 @@ class JFrameBuilderTest {
 
     final Point relativeLocation = JFrameBuilder.builder().build().getLocation();
 
-    assertThat(
-        "location should change when setting position relative to another component",
-        defaultLocation,
-        not(equalTo(relativeLocation)));
+    assertThat(defaultLocation)
+        .as("location should change when setting position relative to another component")
+        .isNotEqualTo(relativeLocation);
   }
 
   @Test

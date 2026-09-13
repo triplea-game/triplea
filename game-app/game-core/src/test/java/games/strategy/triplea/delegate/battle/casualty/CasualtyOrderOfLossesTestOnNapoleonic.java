@@ -2,9 +2,7 @@ package games.strategy.triplea.delegate.battle.casualty;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -83,10 +81,10 @@ class CasualtyOrderOfLossesTestOnNapoleonic {
     final List<Unit> result =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(attackingWith(attackingUnits));
 
-    assertThat(result, hasSize(3));
-    assertThat(result.get(0).getType(), is(HOWITZER));
-    assertThat(result.get(1).getType(), is(HOWITZER));
-    assertThat(result.get(2).getType(), is(FUSILIER));
+    assertThat(result).hasSize(3);
+    assertThat(result.get(0).getType()).isEqualTo(HOWITZER);
+    assertThat(result.get(1).getType()).isEqualTo(HOWITZER);
+    assertThat(result.get(2).getType()).isEqualTo(FUSILIER);
   }
 
   private CasualtyOrderOfLosses.Parameters attackingWith(final Collection<Unit> units) {
@@ -119,11 +117,11 @@ class CasualtyOrderOfLossesTestOnNapoleonic {
     final List<Unit> result =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(attackingWith(attackingUnits));
 
-    assertThat(result, hasSize(4));
-    assertThat(result.get(0).getType(), is(HOWITZER));
-    assertThat(result.get(1).getType(), is(HOWITZER));
-    assertThat(result.get(2).getType(), is(FUSILIER));
-    assertThat(result.get(3).getType(), is(FUSILIER));
+    assertThat(result).hasSize(4);
+    assertThat(result.get(0).getType()).isEqualTo(HOWITZER);
+    assertThat(result.get(1).getType()).isEqualTo(HOWITZER);
+    assertThat(result.get(2).getType()).isEqualTo(FUSILIER);
+    assertThat(result.get(3).getType()).isEqualTo(FUSILIER);
   }
 
   @Test
@@ -137,14 +135,14 @@ class CasualtyOrderOfLossesTestOnNapoleonic {
     final List<Unit> result =
         CasualtyOrderOfLosses.sortUnitsForCasualtiesWithSupport(attackingWith(attackingUnits));
 
-    assertThat(result, hasSize(8));
-    assertThat(result.get(0).getType(), is(HOWITZER));
-    assertThat(result.get(1).getType(), is(HOWITZER));
-    assertThat(result.get(2).getType(), is(FUSILIER));
-    assertThat(result.get(3).getType(), is(FUSILIER));
-    assertThat(result.get(4).getType(), is(ARTILLERY));
-    assertThat(result.get(5).getType(), is(ARTILLERY));
-    assertThat(result.get(6).getType(), is(GRENADIERS));
-    assertThat(result.get(7).getType(), is(GRENADIERS));
+    assertThat(result).hasSize(8);
+    assertThat(result.get(0).getType()).isEqualTo(HOWITZER);
+    assertThat(result.get(1).getType()).isEqualTo(HOWITZER);
+    assertThat(result.get(2).getType()).isEqualTo(FUSILIER);
+    assertThat(result.get(3).getType()).isEqualTo(FUSILIER);
+    assertThat(result.get(4).getType()).isEqualTo(ARTILLERY);
+    assertThat(result.get(5).getType()).isEqualTo(ARTILLERY);
+    assertThat(result.get(6).getType()).isEqualTo(GRENADIERS);
+    assertThat(result.get(7).getType()).isEqualTo(GRENADIERS);
   }
 }

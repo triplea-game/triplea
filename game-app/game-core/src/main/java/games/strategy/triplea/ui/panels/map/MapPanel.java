@@ -505,19 +505,19 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   private void notifyTerritorySelected(final Territory t, final MouseDetails me) {
-    for (final MapSelectionListener msl : mapSelectionListeners) {
+    for (final MapSelectionListener msl : new ArrayList<>(mapSelectionListeners)) {
       msl.territorySelected(t, me);
     }
   }
 
   private void notifyMouseMoved(final Territory t, final MouseDetails me) {
-    for (final MapSelectionListener msl : mapSelectionListeners) {
+    for (final MapSelectionListener msl : new ArrayList<>(mapSelectionListeners)) {
       msl.mouseMoved(t, me);
     }
   }
 
   private void notifyMouseEntered(final Territory t) {
-    for (final MapSelectionListener msl : mapSelectionListeners) {
+    for (final MapSelectionListener msl : new ArrayList<>(mapSelectionListeners)) {
       msl.mouseEntered(t);
     }
   }
@@ -532,13 +532,13 @@ public class MapPanel extends ImageScrollerLargeView {
 
   private void notifyUnitSelected(
       final List<Unit> units, @Nullable final Territory territory, final MouseDetails me) {
-    for (final UnitSelectionListener listener : unitSelectionListeners) {
+    for (final UnitSelectionListener listener : new ArrayList<>(unitSelectionListeners)) {
       listener.unitsSelected(units, territory, me);
     }
   }
 
   private void notifyMouseEnterUnit(final List<Unit> units, final Territory t) {
-    for (final MouseOverUnitListener listener : mouseOverUnitsListeners) {
+    for (final MouseOverUnitListener listener : new ArrayList<>(mouseOverUnitsListeners)) {
       listener.mouseEnter(units, t);
     }
   }

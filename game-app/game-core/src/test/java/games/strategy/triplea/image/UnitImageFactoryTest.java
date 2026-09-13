@@ -1,8 +1,7 @@
 package games.strategy.triplea.image;
 
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
@@ -103,7 +102,7 @@ class UnitImageFactoryTest {
               .disabled(disabled)
               .build()
               .getBaseImageName();
-      assertThat(imageName, is(expectedImageName));
+      assertThat(imageName).isEqualTo(expectedImageName);
     }
 
     private UnitType givenUnitTypeWithProperties(

@@ -1,7 +1,6 @@
 package org.triplea.domain.data;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -11,10 +10,9 @@ class PlayerEmailValidationTest {
   @ParameterizedTest
   @ValueSource(strings = {"some@some.com", "some.someMore@some.com", "some@some.some.some.com"})
   void shouldReturnTrueWhenAddressIsValid(final String validEmail) {
-    assertThat(
-        "'" + validEmail + "' should be valid",
-        PlayerEmailValidation.isValid(validEmail),
-        is(true));
+    assertThat(PlayerEmailValidation.isValid(validEmail))
+        .as("'" + validEmail + "' should be valid")
+        .isTrue();
   }
 
   @ParameterizedTest
@@ -32,10 +30,9 @@ class PlayerEmailValidationTest {
             + "@some.com"
       })
   void shouldReturnTrueWhenAddressesAreValid(final String validEmails) {
-    assertThat(
-        "'" + validEmails + "' should be valid",
-        PlayerEmailValidation.areValid(validEmails),
-        is(true));
+    assertThat(PlayerEmailValidation.areValid(validEmails))
+        .as("'" + validEmails + "' should be valid")
+        .isTrue();
   }
 
   @ParameterizedTest
@@ -57,10 +54,9 @@ class PlayerEmailValidationTest {
             + "12345678901234567890123456789012345678901234567890123456789012345678901234567890@some.com"
       })
   void shouldReturnFalseWhenAddressIsInvalid(final String invalidEmail) {
-    assertThat(
-        "'" + invalidEmail + "' should be invalid",
-        PlayerEmailValidation.isValid(invalidEmail),
-        is(false));
+    assertThat(PlayerEmailValidation.isValid(invalidEmail))
+        .as("'" + invalidEmail + "' should be invalid")
+        .isFalse();
   }
 
   @ParameterizedTest
@@ -70,9 +66,8 @@ class PlayerEmailValidationTest {
         "test@ some@some.com",
       })
   void shouldReturnFalseWhenAddressesAreInvalid(final String invalidEmails) {
-    assertThat(
-        "'" + invalidEmails + "' should be invalid",
-        PlayerEmailValidation.areValid(invalidEmails),
-        is(false));
+    assertThat(PlayerEmailValidation.areValid(invalidEmails))
+        .as("'" + invalidEmails + "' should be invalid")
+        .isFalse();
   }
 }

@@ -9,9 +9,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
 import static games.strategy.triplea.util.TransportUtils.findMinTransportsToUnload;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import games.strategy.engine.data.GameData;
@@ -67,7 +65,7 @@ public class TransportUtilsTest {
     final Unit dummyUnit = infantry(transport.getData()).create(transport.getOwner());
     transport.setUnloaded(List.of(dummyUnit));
     dummyUnit.getProperty(Unit.PropertyName.UNLOADED_TO).orElseThrow().setValue(t);
-    assertThat(dummyUnit.getUnloadedTo(), equalTo(t));
+    assertThat(dummyUnit.getUnloadedTo()).isEqualTo(t);
   }
 
   @Test
@@ -89,7 +87,7 @@ public class TransportUtilsTest {
 
       final var units = List.of(infantry1, infantry2, infantry3, tank1);
       final var result = TransportUtils.chooseEquivalentUnitsToUnload(toNorway, units);
-      assertThat(result, containsInAnyOrder(units.toArray()));
+      assertThat(result).containsExactlyInAnyOrderElementsOf(units);
     }
 
     @Test
@@ -100,7 +98,7 @@ public class TransportUtilsTest {
 
       final var units = List.of(infantry2, infantry3);
       final var result = TransportUtils.chooseEquivalentUnitsToUnload(toNorway, units);
-      assertThat(result, containsInAnyOrder(infantry1, infantry2));
+      assertThat(result).containsExactlyInAnyOrder(infantry1, infantry2);
     }
 
     @Test
@@ -113,7 +111,7 @@ public class TransportUtilsTest {
 
       final var units = List.of(infantry3, infantry4);
       final var result = TransportUtils.chooseEquivalentUnitsToUnload(toNorway, units);
-      assertThat(result, containsInAnyOrder(infantry1, infantry2));
+      assertThat(result).containsExactlyInAnyOrder(infantry1, infantry2);
     }
 
     @Test
@@ -127,7 +125,7 @@ public class TransportUtilsTest {
 
       final var units = List.of(infantry1, tank1, infantry3, tank3);
       final var result = TransportUtils.chooseEquivalentUnitsToUnload(toNorway, units);
-      assertThat(result, containsInAnyOrder(infantry1, tank1, infantry2, tank2));
+      assertThat(result).containsExactlyInAnyOrder(infantry1, tank1, infantry2, tank2);
     }
 
     @Test
@@ -136,7 +134,7 @@ public class TransportUtilsTest {
       addTransportedUnits(sz5, transport2, List.of(infantry2, tank2));
       final var units = List.of(transport1, transport2, infantry1, infantry2, tank1, tank2);
       final var result = TransportUtils.chooseEquivalentUnitsToUnload(toSz6, units);
-      assertThat(result, containsInAnyOrder(units.toArray()));
+      assertThat(result).containsExactlyInAnyOrderElementsOf(units);
     }
 
     @Test
@@ -146,7 +144,7 @@ public class TransportUtilsTest {
       final var units = List.of(fighter, bomber);
       addTo(sz5, units);
       final var result = TransportUtils.chooseEquivalentUnitsToUnload(toNorway, units);
-      assertThat(result, containsInAnyOrder(units.toArray()));
+      assertThat(result).containsExactlyInAnyOrderElementsOf(units);
     }
   }
 }

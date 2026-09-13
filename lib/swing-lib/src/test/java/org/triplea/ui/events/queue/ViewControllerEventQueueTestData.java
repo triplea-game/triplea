@@ -1,7 +1,6 @@
 package org.triplea.ui.events.queue;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.UnaryOperator;
@@ -38,7 +37,7 @@ class ViewControllerEventQueueTestData {
         final ExampleViewController.ControllerEventSample controllerEventSample,
         final UnaryOperator<ViewDataSample> dataSampleUpdate) {
       modelEventReceived.set(true);
-      assertThat(SwingUtilities.isEventDispatchThread(), is(true));
+      assertThat(SwingUtilities.isEventDispatchThread()).isTrue();
     }
 
     boolean hasReceivedControllerEvent() {
@@ -66,7 +65,7 @@ class ViewControllerEventQueueTestData {
     public void handleEvent(
         final ExampleViewClass.ViewEventSample viewEventSample, final ViewDataSample dataSample) {
       uiEventReceived.set(true);
-      assertThat(SwingUtilities.isEventDispatchThread(), is(false));
+      assertThat(SwingUtilities.isEventDispatchThread()).isFalse();
     }
 
     boolean hasReceivedUiEvent() {

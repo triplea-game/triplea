@@ -1,7 +1,6 @@
 package org.triplea.java;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -28,16 +27,15 @@ class DateTimeUtilTest {
     @Test
     void localTimeFrance() {
       DateTimeUtil.defaultLocale = Locale.FRANCE;
-      assertThat(DateTimeUtil.getLocalizedTime(), is("14:30:00"));
+      assertThat(DateTimeUtil.getLocalizedTime()).isEqualTo("14:30:00");
     }
   }
 
   @Test
   void utcInstantOf() {
-    assertThat(
-        DateTimeUtil.utcInstantOf(2020, 11, 1, 23, 59),
-        is(
+    assertThat(DateTimeUtil.utcInstantOf(2020, 11, 1, 23, 59))
+        .isEqualTo(
             LocalDateTime.of(2020, 11, 1, 23, 59) //
-                .toInstant(ZoneOffset.UTC)));
+                .toInstant(ZoneOffset.UTC));
   }
 }

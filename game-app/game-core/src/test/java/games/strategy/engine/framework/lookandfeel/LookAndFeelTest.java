@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.lookandfeel;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.awt.Color;
 import org.junit.jupiter.api.Test;
@@ -9,9 +8,9 @@ import org.junit.jupiter.api.Test;
 final class LookAndFeelTest {
   @Test
   void testIsColorDark() {
-    assertThat(LookAndFeel.isColorDark(Color.BLACK), is(true));
-    assertThat(LookAndFeel.isColorDark(Color.DARK_GRAY), is(true));
-    assertThat(LookAndFeel.isColorDark(Color.WHITE), is(false));
-    assertThat(LookAndFeel.isColorDark(Color.YELLOW), is(false));
+    assertThat(LookAndFeel.isColorDark(Color.BLACK)).isTrue();
+    assertThat(LookAndFeel.isColorDark(Color.DARK_GRAY)).isTrue();
+    assertThat(LookAndFeel.isColorDark(Color.WHITE)).isFalse();
+    assertThat(LookAndFeel.isColorDark(Color.YELLOW)).isFalse();
   }
 }

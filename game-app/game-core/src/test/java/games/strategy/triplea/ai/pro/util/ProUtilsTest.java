@@ -4,8 +4,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.japanese;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -48,8 +47,9 @@ class ProUtilsTest {
     units.addAll(infantry(data).create(5, germans(data)));
     units.addAll(armour(data).create(1, germans(data)));
     units.addAll(infantry(data).create(2, japanese(data)));
-    assertThat(
-        ProUtils.summarizeUnits(units),
-        is("[armour owned by Germans, 5 infantry owned by Germans, 2 infantry owned by Japanese]"));
+    assertThat(ProUtils.summarizeUnits(units))
+        .isEqualTo(
+            "[armour owned by Germans, 5 infantry owned by Germans, 2 infantry owned by"
+                + " Japanese]");
   }
 }

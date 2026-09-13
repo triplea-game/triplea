@@ -1,9 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.framework.map.file.system.loader.InstalledMap;
 import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
@@ -38,9 +35,9 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
     final DownloadMapsWindowMapsListing downloadMapsWindowMapsListing =
         new DownloadMapsWindowMapsListing(List.of(TEST_MAP), installedMapsListing);
 
-    assertThat(downloadMapsWindowMapsListing.getAvailable(), hasSize(1));
-    assertThat(downloadMapsWindowMapsListing.getInstalled().entrySet(), is(empty()));
-    assertThat(downloadMapsWindowMapsListing.getOutOfDate().entrySet(), is(empty()));
+    assertThat(downloadMapsWindowMapsListing.getAvailable()).hasSize(1);
+    assertThat(downloadMapsWindowMapsListing.getInstalled().entrySet()).isEmpty();
+    assertThat(downloadMapsWindowMapsListing.getOutOfDate().entrySet()).isEmpty();
   }
 
   @Test
@@ -57,7 +54,7 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
     final List<MapDownloadItem> available =
         downloadMapsWindowMapsListing.getAvailableExcluding(List.of(download1, download3));
 
-    assertThat(available, is(List.of(download2)));
+    assertThat(available).isEqualTo(List.of(download2));
   }
 
   private static MapDownloadItem newDownloadWithUrl(final String url) {
@@ -89,9 +86,9 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
     final DownloadMapsWindowMapsListing downloadMapsWindowMapsListing =
         new DownloadMapsWindowMapsListing(List.of(installed), installedMapsListing);
 
-    assertThat(downloadMapsWindowMapsListing.getAvailable(), is(empty()));
-    assertThat(downloadMapsWindowMapsListing.getInstalled().entrySet(), hasSize(1));
-    assertThat(downloadMapsWindowMapsListing.getOutOfDate().entrySet(), is(empty()));
+    assertThat(downloadMapsWindowMapsListing.getAvailable()).isEmpty();
+    assertThat(downloadMapsWindowMapsListing.getInstalled().entrySet()).hasSize(1);
+    assertThat(downloadMapsWindowMapsListing.getOutOfDate().entrySet()).isEmpty();
   }
 
   private static InstalledMapsListing buildInstalledMapsListing(
@@ -135,15 +132,13 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
     final DownloadMapsWindowMapsListing downloadMapsWindowMapsListing =
         new DownloadMapsWindowMapsListing(List.of(installed), installedMapsListing);
 
-    assertThat(downloadMapsWindowMapsListing.getAvailable(), is(empty()));
-    assertThat(
-        "we expect the one map available for download to be detected as installed",
-        downloadMapsWindowMapsListing.getInstalled().entrySet(),
-        hasSize(1));
-    assertThat(
-        "we expect the one map available for download to be detected as out of date",
-        downloadMapsWindowMapsListing.getOutOfDate().entrySet(),
-        hasSize(1));
+    assertThat(downloadMapsWindowMapsListing.getAvailable()).isEmpty();
+    assertThat(downloadMapsWindowMapsListing.getInstalled().entrySet())
+        .as("we expect the one map available for download to be detected as installed")
+        .hasSize(1);
+    assertThat(downloadMapsWindowMapsListing.getOutOfDate().entrySet())
+        .as("we expect the one map available for download to be detected as out of date")
+        .hasSize(1);
   }
 
   @Test
@@ -166,6 +161,6 @@ class DownloadMapsWindowMapsListingTest extends AbstractClientSettingTestCase {
     final List<MapDownloadItem> outOfDate =
         downloadMapsWindowMapsListing.getOutOfDateExcluding(List.of(download1, download3));
 
-    assertThat(outOfDate, is(List.of(download2)));
+    assertThat(outOfDate).isEqualTo(List.of(download2));
   }
 }

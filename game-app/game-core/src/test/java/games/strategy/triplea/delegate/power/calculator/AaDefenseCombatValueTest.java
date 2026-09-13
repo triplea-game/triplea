@@ -2,8 +2,7 @@ package games.strategy.triplea.delegate.power.calculator;
 
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import games.strategy.engine.data.GameData;
@@ -76,10 +75,9 @@ class AaDefenseCombatValueTest {
               .rollSupportFromEnemies(AvailableSupports.EMPTY_RESULT)
               .build()
               .getStrength();
-      assertThat(
-          "Strength starts at 3, friendly adds 2, enemy removes 1: total 4",
-          strength.getStrength(unit).getValue(),
-          is(4));
+      assertThat(strength.getStrength(unit).getValue())
+          .as("Strength starts at 3, friendly adds 2, enemy removes 1: total 4")
+          .isEqualTo(4);
     }
 
     UnitSupportAttachment givenUnitOffenseSupportAttachment(
@@ -157,15 +155,14 @@ class AaDefenseCombatValueTest {
               .build()
               .getStrength();
       strength.getStrength(unit);
-      assertThat(
-          "Friendly gave 2 and enemy gave -1",
-          strength.getSupportGiven(),
-          is(
+      assertThat(strength.getSupportGiven())
+          .as("Friendly gave 2 and enemy gave -1")
+          .isEqualTo(
               Map.of(
                   supportUnit,
                   IntegerMap.of(Map.of(unit, 2)),
                   enemySupportUnit,
-                  IntegerMap.of(Map.of(unit, -1)))));
+                  IntegerMap.of(Map.of(unit, -1))));
     }
   }
 }
