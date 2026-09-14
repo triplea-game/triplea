@@ -154,7 +154,7 @@ final class ExportMenu {
    */
   private CompletableFuture<GameData> getGameDataCloneWithHistory(final GameData gameData) {
     return CompletableFuture.supplyAsync(
-        () -> GameDataUtils.cloneGameDataWithHistory(gameData, true));
+        () -> GameDataUtils.cloneGameDataKeepSameHistory(gameData, true));
   }
 
   private static void exportUnitCharts(final TripleAFrame frame) {
