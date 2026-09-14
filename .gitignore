@@ -25,6 +25,7 @@ gradle/build-logic/.kotlin/errors/**
 bin/
 build/
 out/
+.serena/
 
 CLAUDE.local.md
 

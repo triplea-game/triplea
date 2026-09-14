@@ -74,9 +74,9 @@ http-clients/lobby-client → domain-data, lib/feign-common, lib/java-extras, li
 
 ## Testing
 
-- JUnit 5 with Hamcrest `assertThat` assertions (preferred for new tests)
+- JUnit 5 with AssertJ `assertThat` assertions (the standard for all tests)
 - Mockito for mocking
-- JUnit assertions and Hamcrest matchers are the primary assertion styles; AssertJ is available but rarely used
+- AssertJ is the standard assertion library; some older tests still use JUnit or Hamcrest matchers, but new tests should use AssertJ
 - WireMock for HTTP stubbing
 - Test fixtures shared from `:game-app:game-core` via `testFixtures` — use `TestMapGameData` enum and
   `TestMapGameDataLoader` to load test map data
