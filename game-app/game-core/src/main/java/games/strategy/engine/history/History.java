@@ -7,9 +7,13 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.ui.Util;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
 import java.io.Serial;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -17,10 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreeNode;
 
 /// A history of the game.
 ///
@@ -38,7 +38,7 @@ public class History extends DefaultTreeModel {
   private final List<Change> changes = new ArrayList<>();
   private final GameData gameData;
   private HistoryPanel panel;
-  // Index at which point we are in history. Only valid if seekingEnabled is true.
+  // Index which will come next in history from where we are. Only valid if seekingEnabled is true.
   private int nextChangeIndex;
   private boolean seekingEnabled = false;
 
@@ -107,36 +107,36 @@ public class History extends DefaultTreeModel {
     return getLastChildInternal((HistoryNode) node.getLastChild());
   }
 
-  private int getNextChange(final HistoryNode node) {
-    int lastChangeIndex;
+  private int getNextChangeIndexAfter(final HistoryNode node) {
+    int changeEndIndex;
     if (node == getRoot()) {
-      lastChangeIndex = 0;
+      changeEndIndex = 0;
     } else if (node instanceof Event event) {
-      lastChangeIndex = event.getChangeEndIndex();
+      changeEndIndex = event.getNextChangeIndexAfter();
     } else if (node instanceof EventChild eventChild) {
-      lastChangeIndex = ((Event) eventChild.getParent()).getChangeEndIndex();
+      changeEndIndex = ((Event) eventChild.getParent()).getNextChangeIndexAfter();
     } else if (node instanceof IndexedHistoryNode indexedHistoryNode) {
-      lastChangeIndex = indexedHistoryNode.getChangeEndIndex();
+      changeEndIndex = indexedHistoryNode.getNextChangeIndexAfter();
       // If this node is still current, or comes from an old save game where we didn't set it, get
       // the last change index from its last child node.
-      if (lastChangeIndex == -1 && indexedHistoryNode.getChildCount() > 0) {
-        lastChangeIndex = getNextChange((HistoryNode) indexedHistoryNode.getLastChild());
+      if (changeEndIndex == -1 && indexedHistoryNode.getChildCount() > 0) {
+        changeEndIndex = getNextChangeIndexAfter((HistoryNode) indexedHistoryNode.getLastChild());
       }
     } else {
-      lastChangeIndex = 0;
+      changeEndIndex = 0;
     }
-    if (lastChangeIndex == -1) {
+    if (changeEndIndex == -1) {
       return changes.size();
     }
-    return lastChangeIndex;
+    return changeEndIndex;
   }
 
-  private Change getDeltaTo(int changeIndex) {
-    final List<Change> deltaChanges =
-        changes.subList(
-            Math.min(nextChangeIndex, changeIndex), Math.max(nextChangeIndex, changeIndex));
+  private Change getDeltaTo(int newNextChangeIndex) {
+    int fromIndexIncluding = Math.min(nextChangeIndex, newNextChangeIndex);
+    int toIndexExcluding = Math.max(nextChangeIndex, newNextChangeIndex);
+    final List<Change> deltaChanges = changes.subList(fromIndexIncluding, toIndexExcluding);
     final Change compositeChange = new CompositeChange(deltaChanges);
-    return (changeIndex >= nextChangeIndex) ? compositeChange : compositeChange.invert();
+    return (newNextChangeIndex >= nextChangeIndex) ? compositeChange : compositeChange.invert();
   }
 
   /// Changes the game state to reflect the historical state at {@code node}. */
@@ -145,10 +145,10 @@ public class History extends DefaultTreeModel {
     Preconditions.checkNotNull(node);
     Preconditions.checkState(seekingEnabled);
     try (GameData.Unlocker ignored = gameData.acquireWriteLock()) {
-      final int nodeChangeIndex = getNextChange(node);
-      if (nodeChangeIndex != nextChangeIndex) {
-        gameData.performChange(getDeltaTo(nodeChangeIndex));
-        nextChangeIndex = nodeChangeIndex;
+      final int nodeNextChangeIndex = getNextChangeIndexAfter(node);
+      if (nodeNextChangeIndex != nextChangeIndex) {
+        gameData.performChange(getDeltaTo(nodeNextChangeIndex));
+        nextChangeIndex = nodeNextChangeIndex;
       }
     }
   }
@@ -184,7 +184,7 @@ public class History extends DefaultTreeModel {
           nodesAfter.add(subIndexNode);
           continue;
         }
-        int changeEndIndex = subIndexNode.getChangeEndIndex();
+        int changeEndIndex = subIndexNode.getNextChangeIndexAfter();
         if (changeEndIndex < 0 || startChangeIndexToCollect < changeEndIndex) {
           nodesAfter.addAll(collectNodesFromChange(subIndexNode, startChangeIndexToCollect));
         }
@@ -235,10 +235,10 @@ public class History extends DefaultTreeModel {
         optionalCurrentPlayer = step.getPlayerId();
       }
       if (node.isLeaf()) {
-        // Don't do this logic on non-leaf nodes as getNextChange() will return
+        // Don't do this logic on non-leaf nodes as getNextChangeIndexAfter() will return
         // the next change after this non-leaf, skipping all the child nodes.
-        int nodeChangeIndex = getNextChange(node);
-        if (seekingEnabled && nodeChangeIndex > nextChangeIndex) {
+        int nodeNextChangeIndex = getNextChangeIndexAfter(node);
+        if (seekingEnabled && nodeNextChangeIndex > nextChangeIndex) {
           break;
         }
       }
@@ -265,8 +265,8 @@ public class History extends DefaultTreeModel {
     return new SerializedHistory(this, gameData, changes);
   }
 
-  List<Change> getChanges() {
-    return Collections.unmodifiableList(changes);
+  int getNextNewChangeIndex() {
+    return changes.size();
   }
 
   GameData getGameData() {
