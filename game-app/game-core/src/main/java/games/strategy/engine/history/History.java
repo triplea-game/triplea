@@ -58,7 +58,7 @@ public class History extends DefaultTreeModel {
 
   public void cloneNodesFromHistory(History baseHistory) {
     HistoryNode root = (HistoryNode) getRoot();
-    root.removeAllChildren(); //
+    root.removeAllChildren();
     ((HistoryNode) baseHistory.getRoot())
         .children()
         .asIterator()
@@ -138,7 +138,7 @@ public class History extends DefaultTreeModel {
     return (newNextChangeIndex >= nextChangeIndex) ? compositeChange : compositeChange.invert();
   }
 
-  /// Changes the game state to reflect the historical state at {@code node}. */
+  /// Changes the game state to reflect the historical state at {@code node}.
   public synchronized void gotoNode(final HistoryNode node) {
     assertCorrectThread();
     Preconditions.checkNotNull(node);
