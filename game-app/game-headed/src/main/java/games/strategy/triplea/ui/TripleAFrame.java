@@ -1895,50 +1895,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                   final Optional<Path> f =
                       GameFileSelector.getSaveGameLocation(TripleAFrame.this, clonedGameData);
                   if (f.isPresent()) {
+                    GameData gameDataForSave =
+                        getGameDataForSave(clonedGameData, popupHistoryPanel.getCurrentPopupNode());
                     try (OutputStream fileOutputStream = Files.newOutputStream(f.get())) {
-                      // the game data for saving needs to allow making changes to it to remove
-                      // later history nodes
-                      final var cloneOptions =
-                          GameDataManager.Options.builder()
-                              .withHistoryCopyMode(GameDataManager.Options.HistoryCopyMode.DEEP)
-                              .withDelegates(true)
-                              .build();
-                      GameData gameDataForSave =
-                          GameDataUtils.cloneGameData(clonedGameData, cloneOptions).orElse(null);
-                      gameDataForSave
-                          .getGameHistory()
-                          .removeAllHistoryAfterNode(popupHistoryPanel.getCurrentPopupNode());
-                      // TODO: the saved current delegate is still the current delegate,
-                      // rather than the delegate at that history popup node
-                      // TODO: it still shows the current round number, rather than the round at
-                      // the history popup node
-                      // TODO: this could be solved easily if rounds/steps were changes,
-                      // but that could greatly increase the file size :(
-                      // TODO: this also does not undo the run count of each delegate step
-                      final Enumeration<?> enumeration =
-                          ((DefaultMutableTreeNode) gameDataForSave.getGameHistory().getRoot())
-                              .preorderEnumeration();
-                      enumeration.nextElement();
-                      int round = 0;
-                      String stepDisplayName =
-                          gameDataForSave.getSequence().getStep(0).getDisplayName();
-                      GamePlayer currentPlayer =
-                          gameDataForSave.getSequence().getStep(0).getPlayerId();
-                      int roundOffset = gameDataForSave.getSequence().getRoundOffset();
-                      while (enumeration.hasMoreElements()) {
-                        final HistoryNode node = (HistoryNode) enumeration.nextElement();
-                        if (node instanceof Round nodeRound) {
-                          round = Math.max(0, nodeRound.getRoundNo() - roundOffset);
-                          currentPlayer = null;
-                          stepDisplayName = nodeRound.getTitle();
-                        } else if (node instanceof Step step) {
-                          currentPlayer = step.getPlayerId().orElse(null);
-                          stepDisplayName = node.getTitle();
-                        }
-                      }
-                      gameDataForSave
-                          .getSequence()
-                          .setRoundAndStep(round, stepDisplayName, currentPlayer);
                       GameDataManager.saveGame(fileOutputStream, gameDataForSave);
                       JOptionPane.showMessageDialog(
                           TripleAFrame.this,
@@ -1955,6 +1914,47 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     popupHistoryPanel.setPopup(popup);
     historyPanel = popupHistoryPanel;
     return historyDetailPanel;
+  }
+
+  @Nonnull
+  private static GameData getGameDataForSave(GameData clonedGameData, HistoryNode newLastNode) {
+    // the game data for saving needs to allow making changes to it to remove
+    // later history nodes
+    final var cloneOptions =
+        GameDataManager.Options.builder()
+            .withHistoryCopyMode(GameDataManager.Options.HistoryCopyMode.DEEP)
+            .withDelegates(true)
+            .build();
+    GameData gameDataForSave =
+        GameDataUtils.cloneGameData(clonedGameData, cloneOptions).orElseThrow();
+    gameDataForSave.getGameHistory().removeAllHistoryAfterNode(newLastNode);
+    // TODO: the saved current delegate is still the current delegate,
+    // rather than the delegate at that history popup node
+    // TODO: it still shows the current round number, rather than the round at
+    // the history popup node
+    // TODO: this could be solved easily if rounds/steps were changes,
+    // but that could greatly increase the file size :(
+    // TODO: this also does not undo the run count of each delegate step
+    final Enumeration<?> enumeration =
+        ((DefaultMutableTreeNode) gameDataForSave.getGameHistory().getRoot()).preorderEnumeration();
+    enumeration.nextElement();
+    int round = 0;
+    String stepDisplayName = gameDataForSave.getSequence().getStep(0).getDisplayName();
+    GamePlayer currentPlayer = gameDataForSave.getSequence().getStep(0).getPlayerId();
+    int roundOffset = gameDataForSave.getSequence().getRoundOffset();
+    while (enumeration.hasMoreElements()) {
+      final HistoryNode node = (HistoryNode) enumeration.nextElement();
+      if (node instanceof Round nodeRound) {
+        round = Math.max(0, nodeRound.getRoundNo() - roundOffset);
+        currentPlayer = null;
+        stepDisplayName = nodeRound.getTitle();
+      } else if (node instanceof Step step) {
+        currentPlayer = step.getPlayerId().orElse(null);
+        stepDisplayName = node.getTitle();
+      }
+    }
+    gameDataForSave.getSequence().setRoundAndStep(round, stepDisplayName, currentPlayer);
+    return gameDataForSave;
   }
 
   private static class HistoryPanelPopupMenuBuilder {
