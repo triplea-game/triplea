@@ -86,6 +86,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -1875,6 +1877,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
       }
       pendingRelease.remove(keyCode);
       if (heldKeys.add(keyCode) && !timer.isRunning()) {
+        // Re-read at scroll start: by now the window is realized and on its actual monitor, so the
+        // interval tracks that monitor's refresh rate even after the window moves between displays.
+        timer.setDelay(computeFrameIntervalMs());
         residualX = 0;
         residualY = 0;
         lastTickNanos = System.nanoTime();
@@ -1941,20 +1946,23 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     }
 
     /**
-     * Frame interval matched to the display's refresh rate, so a panned frame is never held on
-     * screen longer than the monitor shows it — that hold is what smears map motion on a
-     * sample-and-hold display, and running slower than the refresh only adds judder on top of it.
-     * Clamped to an 8-16 ms interval (~60-125 fps), and falls back to ~100 fps when the driver
-     * reports an unknown rate.
+     * Frame interval matched to the refresh rate of the monitor the game window is on, so a panned
+     * frame is never held on screen longer than that monitor shows it — that hold is what smears
+     * map motion on a sample-and-hold display, and running slower than the refresh only adds judder
+     * on top of it. The window's own {@link GraphicsConfiguration} gives the right monitor on a
+     * mixed-refresh multi-monitor setup; it is null until the window is realized, so this falls back
+     * to the primary screen. Clamped to an 8-16 ms interval (~60-125 fps), and falls back to ~100
+     * fps when the driver reports an unknown rate.
      */
     private int computeFrameIntervalMs() {
       int refreshHz = 0;
       try {
-        refreshHz =
-            GraphicsEnvironment.getLocalGraphicsEnvironment()
-                .getDefaultScreenDevice()
-                .getDisplayMode()
-                .getRefreshRate();
+        final GraphicsConfiguration gc = getGraphicsConfiguration();
+        final GraphicsDevice device =
+            gc != null
+                ? gc.getDevice()
+                : GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        refreshHz = device.getDisplayMode().getRefreshRate();
       } catch (final HeadlessException | NullPointerException ignored) {
         // no display available, or the driver reports no display mode; the fallback applies
       }
