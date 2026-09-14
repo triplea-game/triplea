@@ -96,7 +96,7 @@ maintain backward compatibility.
 
 ## Testing
 
-JUnit 5 with Hamcrest matchers. Parameterized tests are common
+JUnit 5 with AssertJ assertions. Parameterized tests are common
 (`@ParameterizedTest` with `@ValueSource` / `@MethodSource`). Test doubles are
 injected via constructor parameters (e.g., `UrlStreams` accepts a connection
 factory, `Retriable` accepts a sleep consumer to avoid real delays in tests).
