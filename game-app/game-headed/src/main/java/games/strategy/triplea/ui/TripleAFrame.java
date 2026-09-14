@@ -1950,9 +1950,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
      * frame is never held on screen longer than that monitor shows it — that hold is what smears
      * map motion on a sample-and-hold display, and running slower than the refresh only adds judder
      * on top of it. The window's own {@link GraphicsConfiguration} gives the right monitor on a
-     * mixed-refresh multi-monitor setup; it is null until the window is realized, so this falls back
-     * to the primary screen. Clamped to an 8-16 ms interval (~60-125 fps), and falls back to ~100
-     * fps when the driver reports an unknown rate.
+     * mixed-refresh multi-monitor setup; it is null until the window is realized, so this falls
+     * back to the primary screen. Clamped to an 8-16 ms interval (~60-125 fps), and falls back to
+     * ~100 fps when the driver reports an unknown rate.
      */
     private int computeFrameIntervalMs() {
       int refreshHz = 0;
