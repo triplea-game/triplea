@@ -287,7 +287,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     // delegate, as long as
     // it gets cleared once per player's turn block, we are fine.
     pusLost.clear();
-    final Change change = getResetUnitStateChange(getData());
+    final Change change = getResetUnitStateChange(getData(), player);
     if (!change.isEmpty()) {
       // if no non-combat occurred, we may have cleanup left from combat that we need to spawn an
       // event for
@@ -300,6 +300,59 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final CompositeChange change = new CompositeChange();
     for (final Unit unit : data.getUnits()) {
       if (unit.getAlreadyMoved().compareTo(BigDecimal.ZERO) != 0) {
+        change.add(
+            ChangeFactory.unitPropertyChange(
+                unit, BigDecimal.ZERO, Unit.PropertyName.ALREADY_MOVED));
+      }
+      if (unit.getWasInCombat()) {
+        change.add(ChangeFactory.unitPropertyChange(unit, false, Unit.PropertyName.WAS_IN_COMBAT));
+      }
+      if (unit.getSubmerged()) {
+        change.add(ChangeFactory.unitPropertyChange(unit, false, Unit.PropertyName.SUBMERGED));
+      }
+      if (unit.getAirborne()) {
+        change.add(ChangeFactory.unitPropertyChange(unit, false, Unit.PropertyName.AIRBORNE));
+      }
+      if (unit.getLaunched() != 0) {
+        change.add(ChangeFactory.unitPropertyChange(unit, 0, Unit.PropertyName.LAUNCHED));
+      }
+      if (!unit.getUnloaded().isEmpty()) {
+        change.add(
+            ChangeFactory.unitPropertyChange(
+                unit, Collections.EMPTY_LIST, Unit.PropertyName.UNLOADED));
+      }
+      if (unit.getWasLoadedThisTurn()) {
+        change.add(
+            ChangeFactory.unitPropertyChange(
+                unit, Boolean.FALSE, Unit.PropertyName.LOADED_THIS_TURN));
+      }
+      if (unit.getUnloadedTo() != null) {
+        change.add(ChangeFactory.unitPropertyChange(unit, null, Unit.PropertyName.UNLOADED_TO));
+      }
+      if (unit.getWasUnloadedInCombatPhase()) {
+        change.add(
+            ChangeFactory.unitPropertyChange(
+                unit, Boolean.FALSE, Unit.PropertyName.UNLOADED_IN_COMBAT_PHASE));
+      }
+      if (unit.getWasAmphibious()) {
+        change.add(
+            ChangeFactory.unitPropertyChange(
+                unit, Boolean.FALSE, Unit.PropertyName.UNLOADED_AMPHIBIOUS));
+      }
+      if (unit.getChargedFlatFuelCost()) {
+        change.add(
+            ChangeFactory.unitPropertyChange(
+                unit, Boolean.FALSE, Unit.PropertyName.CHARGED_FLAT_FUEL_COST));
+      }
+    }
+    return change;
+  }
+
+  // This overload only resets movement for the current player whose turn it is
+  private Change getResetUnitStateChange(final GameState data, GamePlayer player) {
+    final CompositeChange change = new CompositeChange();
+    for (final Unit unit : data.getUnits()) {
+      if (unit.getAlreadyMoved().compareTo(BigDecimal.ZERO) != 0 && (player == unit.getOwner())) {
         change.add(
             ChangeFactory.unitPropertyChange(
                 unit, BigDecimal.ZERO, Unit.PropertyName.ALREADY_MOVED));
@@ -706,6 +759,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
         break;
       }
     }
+
     final AirThatCantLandUtil util = new AirThatCantLandUtil(bridge);
     util.removeAirThatCantLand(player, lhtrCarrierProd && hasProducedCarriers);
 
