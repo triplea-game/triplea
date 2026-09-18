@@ -17,6 +17,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
+import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.List;
 import java.util.Set;
@@ -420,6 +421,95 @@ final class MatchesTest {
               + "it is round 2 can not be in battle",
           Matches.unitCanBeInBattle(true, true, 1, false, List.of(firingUnitType)).test(unit),
           is(true));
+    }
+  }
+
+  /**
+   * Guards the retreat rule behind {@link
+   * games.strategy.triplea.delegate.battle.MustFightBattle#getAttackerRetreatTerritories()}: a sea
+   * zone that was fought over only blocks retreat when a surface warship defended it. Submarines
+   * and (non-combat) transports do not, since neither stops an enemy fleet from passing through.
+   */
+  @Nested
+  @ExtendWith(MockitoExtension.class)
+  final class TerritoryWasFoughtOverBySeaUnitsOtherThanSubsOrTransportsTest {
+    private GameData gameData;
+    private GamePlayer player;
+
+    @Mock private BattleTracker battleTracker;
+    @Mock private Territory territory;
+
+    private Predicate<Territory> newMatch() {
+      return Matches.territoryWasFoughtOverBySeaUnitsOtherThanSubsOrTransports(battleTracker);
+    }
+
+    private Unit submarine() {
+      return GameDataTestUtil.submarine(gameData).create(player);
+    }
+
+    private Unit transport() {
+      return GameDataTestUtil.transport(gameData).create(player);
+    }
+
+    private Unit destroyer() {
+      return GameDataTestUtil.destroyer(gameData).create(player);
+    }
+
+    @BeforeEach
+    void setUp() {
+      gameData = TestMapGameData.REVISED.getGameData();
+      player = GameDataTestUtil.germans(gameData);
+    }
+
+    @Test
+    void doesNotMatchWhenNoBattleWasFoughtOver() {
+      when(battleTracker.wasBattleFought(territory)).thenReturn(false);
+
+      assertThat(newMatch(), notMatches(territory));
+    }
+
+    @Test
+    void matchesWhenFoughtOverButNoDefendersWereRecorded() {
+      when(battleTracker.wasBattleFought(territory)).thenReturn(true);
+      when(battleTracker.getDefendingUnitsAtStartOfBattle(territory)).thenReturn(List.of());
+
+      assertThat(newMatch(), matches(territory));
+    }
+
+    @Test
+    void doesNotMatchWhenDefendedOnlyBySubmarines() {
+      when(battleTracker.wasBattleFought(territory)).thenReturn(true);
+      when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
+          .thenReturn(List.of(submarine()));
+
+      assertThat(newMatch(), notMatches(territory));
+    }
+
+    @Test
+    void doesNotMatchWhenDefendedOnlyByTransports() {
+      when(battleTracker.wasBattleFought(territory)).thenReturn(true);
+      when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
+          .thenReturn(List.of(transport()));
+
+      assertThat(newMatch(), notMatches(territory));
+    }
+
+    @Test
+    void doesNotMatchWhenDefendedOnlyBySubmarinesAndTransports() {
+      when(battleTracker.wasBattleFought(territory)).thenReturn(true);
+      when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
+          .thenReturn(List.of(submarine(), transport()));
+
+      assertThat(newMatch(), notMatches(territory));
+    }
+
+    @Test
+    void matchesWhenAnyDefenderIsASurfaceWarship() {
+      when(battleTracker.wasBattleFought(territory)).thenReturn(true);
+      when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
+          .thenReturn(List.of(submarine(), destroyer()));
+
+      assertThat(newMatch(), matches(territory));
     }
   }
 }
