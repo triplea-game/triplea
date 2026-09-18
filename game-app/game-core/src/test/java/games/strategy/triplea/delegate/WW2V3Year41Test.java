@@ -5,6 +5,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static games.strategy.triplea.delegate.GameDataTestUtil.americans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
 import static games.strategy.triplea.delegate.GameDataTestUtil.battleDelegate;
+import static games.strategy.triplea.delegate.GameDataTestUtil.battleship;
 import static games.strategy.triplea.delegate.GameDataTestUtil.bidPlaceDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
 import static games.strategy.triplea.delegate.GameDataTestUtil.british;
@@ -566,6 +567,58 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
         (MustFightBattle)
             AbstractMoveDelegate.getBattleTracker(gameData).getPendingNonBombingBattle(ukraine);
     assertTrue(battle.getAttackerRetreatTerritories().contains(eastPoland));
+  }
+
+  @Test
+  void testCanRetreatToSeaZoneDefendedOnlyBySubmarines() {
+    // Regression for https://github.com/triplea-game/triplea/issues/3428. Under "Ignore Sub In
+    // Movement" a lone submarine never blocks an enemy fleet from passing through its sea zone, so
+    // after a battle is fought in such a zone the fleet that passed through it to fight an adjacent
+    // naval battle must still be allowed to retreat back into it.
+    final GamePlayer germans = germans(gameData);
+    final GamePlayer british = british(gameData);
+    final Territory from = getTerritory("5 Sea Zone");
+    final Territory foughtOver = getTerritory("6 Sea Zone");
+    final Territory battleSite = getTerritory("7 Sea Zone");
+    removeFrom(from, from.getUnits());
+    removeFrom(foughtOver, foughtOver.getUnits());
+    removeFrom(battleSite, battleSite.getUnits());
+    addTo(foughtOver, submarine(gameData).create(1, british));
+    addTo(battleSite, destroyer(gameData).create(1, british));
+    addTo(from, battleship(gameData).create(1, germans));
+    addTo(from, destroyer(gameData).create(1, germans));
+
+    final IDelegateBridge bridge = newDelegateBridge(germans);
+    advanceToStep(bridge, "CombatMove");
+    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+    moveDelegate(gameData).start();
+    // The battleship passes through the submarine's zone into the adjacent zone, so 6 is recorded
+    // as an "attacked from" territory for the battle in 7. It moves first, while 6 holds only the
+    // submarine and has no pending battle yet.
+    move(
+        from.getUnitCollection().getMatches(Matches.unitIsOfType(battleship(gameData))),
+        new Route(from, foughtOver, battleSite));
+    // The destroyer stops in 6 and fights the submarine there.
+    move(
+        from.getUnitCollection().getMatches(Matches.unitIsOfType(destroyer(gameData))),
+        new Route(from, foughtOver));
+    moveDelegate(gameData).end();
+
+    // Fight the submarine battle first so 6 is recorded as fought-over before 7's retreat is
+    // computed; the destroyer negates the submarine's ability to submerge, so the battle resolves.
+    final MustFightBattle subBattle =
+        (MustFightBattle)
+            AbstractMoveDelegate.getBattleTracker(gameData).getPendingNonBombingBattle(foughtOver);
+    whenGetRandom(bridge).thenAnswer(withValues(0)).thenAnswer(withValues(0));
+    subBattle.fight(bridge);
+    assertTrue(AbstractMoveDelegate.getBattleTracker(gameData).wasBattleFought(foughtOver));
+
+    final MustFightBattle seaBattle =
+        (MustFightBattle)
+            AbstractMoveDelegate.getBattleTracker(gameData).getPendingNonBombingBattle(battleSite);
+    assertTrue(
+        seaBattle.getAttackerRetreatTerritories().contains(foughtOver),
+        "retreat must be allowed into a fought-over sea zone that only submarines defended");
   }
 
   @Test
