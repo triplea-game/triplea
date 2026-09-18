@@ -465,7 +465,7 @@ final class MatchesTest {
     void doesNotMatchWhenNoBattleWasFoughtOver() {
       when(battleTracker.wasBattleFought(territory)).thenReturn(false);
 
-      assertThat(newMatch(), notMatches(territory));
+      assertThat(newMatch(), MatchesTest.notMatches(territory));
     }
 
     @Test
@@ -473,7 +473,7 @@ final class MatchesTest {
       when(battleTracker.wasBattleFought(territory)).thenReturn(true);
       when(battleTracker.getDefendingUnitsAtStartOfBattle(territory)).thenReturn(List.of());
 
-      assertThat(newMatch(), matches(territory));
+      assertThat(newMatch(), MatchesTest.matches(territory));
     }
 
     @Test
@@ -482,7 +482,7 @@ final class MatchesTest {
       when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
           .thenReturn(List.of(submarine()));
 
-      assertThat(newMatch(), notMatches(territory));
+      assertThat(newMatch(), MatchesTest.notMatches(territory));
     }
 
     @Test
@@ -491,7 +491,7 @@ final class MatchesTest {
       when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
           .thenReturn(List.of(transport()));
 
-      assertThat(newMatch(), notMatches(territory));
+      assertThat(newMatch(), MatchesTest.notMatches(territory));
     }
 
     @Test
@@ -500,7 +500,7 @@ final class MatchesTest {
       when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
           .thenReturn(List.of(submarine(), transport()));
 
-      assertThat(newMatch(), notMatches(territory));
+      assertThat(newMatch(), MatchesTest.notMatches(territory));
     }
 
     @Test
@@ -509,7 +509,7 @@ final class MatchesTest {
       when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
           .thenReturn(List.of(submarine(), destroyer()));
 
-      assertThat(newMatch(), matches(territory));
+      assertThat(newMatch(), MatchesTest.matches(territory));
     }
   }
 }
