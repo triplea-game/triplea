@@ -60,7 +60,7 @@ public class SelectCasualties implements BattleStep {
     final DiceRoll diceRoll = fireRoundState.getDice();
     final String stepName =
         MarkCasualties.getPossibleOldNameForNotifyingBattleDisplay(
-            battleState, firingGroup, side, getName());
+            battleState, firingGroup, side, getName(), bridge);
     if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
       bridge.sendMessage(
           new IDisplay.NotifyDiceMessage(diceRoll, stepName, diceRoll.getPlayerName()));

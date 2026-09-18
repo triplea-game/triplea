@@ -457,6 +457,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       // no duplicates
       dependants.removeAll(attackingUnits);
+      // Exclude transported units that are now enemies (e.g. after a war declaration). If included,
+      // they would appear in both the attacker dependants and the defender list of MustFightBattle,
+      // since MustFightBattle initialises defendingUnits with all enemyUnit(player) in the site.
+      dependants.removeIf(Matches.enemyUnit(player));
       // add the dependants to the attacking list
       attackingUnits.addAll(dependants);
       final List<Unit> enemyUnits =

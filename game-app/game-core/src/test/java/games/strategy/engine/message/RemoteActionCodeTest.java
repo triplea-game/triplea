@@ -1,8 +1,6 @@
 package games.strategy.engine.message;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.Method;
 import java.util.stream.IntStream;
@@ -31,12 +29,11 @@ public class RemoteActionCodeTest {
       final int opCode, @AggregateWith(MethodAggregator.class) final Method method) {
     final RemoteActionCode remoteActionCode = method.getAnnotation(RemoteActionCode.class);
 
-    assertThat(
-        "Expected @RemoteActionCode annotation to be present for " + method,
-        remoteActionCode,
-        is(notNullValue()));
+    assertThat(remoteActionCode)
+        .as("Expected @RemoteActionCode annotation to be present for " + method)
+        .isNotNull();
 
-    assertThat("Invalid value for " + method, remoteActionCode.value(), is(opCode));
+    assertThat(remoteActionCode.value()).as("Invalid value for " + method).isEqualTo(opCode);
   }
 
   /**

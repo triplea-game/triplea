@@ -1,10 +1,6 @@
 package org.triplea.web.socket;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsSame.sameInstance;
-import static org.hamcrest.core.StringContains.containsString;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
@@ -81,13 +77,15 @@ class WebSocketMessagingBusTest {
 
       // verify arg values
       final WebSocketMessageContext<BooleanMessage> arg = argumentCaptor.getValue();
-      assertThat("Message received should be equal to message sent", arg.getMessage(), is(message));
-      assertThat(
-          "Expect new object created from JSON string",
-          arg.getMessage(),
-          not(sameInstance(message)));
-      assertThat(
-          "Session should be passed along to the listener", arg.getSenderSession(), is(session));
+      assertThat(arg.getMessage())
+          .as("Message received should be equal to message sent")
+          .isEqualTo(message);
+      assertThat(arg.getMessage())
+          .as("Expect new object created from JSON string")
+          .isNotSameAs(message);
+      assertThat(arg.getSenderSession())
+          .as("Session should be passed along to the listener")
+          .isEqualTo(session);
     }
 
     @DisplayName(
@@ -216,18 +214,21 @@ class WebSocketMessagingBusTest {
           ArgumentCaptor.forClass(MessageEnvelope.class);
       verify(messageSender).accept(eq(session), messageCaptor.capture());
 
-      assertThat(
-          "Make sure message type id is error message",
-          messageCaptor.getValue().getMessageTypeId(),
-          is(ServerErrorMessage.TYPE.getMessageTypeId()));
+      assertThat(messageCaptor.getValue().getMessageTypeId())
+          .as("Make sure message type id is error message")
+          .isEqualTo(ServerErrorMessage.TYPE.getMessageTypeId());
 
       assertThat(
-          "Make sure the return message to the user does *not* contain the "
-              + "error message from the throwable. If a user can craft an interesting error "
-              + "message, it could potentially be used in an attack. Therefore we return an error "
-              + "ID to the user instead of returning the underlying error message",
-          messageCaptor.getValue().getPayload(ServerErrorMessage.TYPE.getPayloadType()).getError(),
-          not(containsString("error message")));
+              messageCaptor
+                  .getValue()
+                  .getPayload(ServerErrorMessage.TYPE.getPayloadType())
+                  .getError())
+          .as(
+              "Make sure the return message to the user does *not* contain the "
+                  + "error message from the throwable. If a user can craft an interesting error "
+                  + "message, it could potentially be used in an attack. Therefore we return an error "
+                  + "ID to the user instead of returning the underlying error message")
+          .doesNotContain("error message");
     }
   }
 }

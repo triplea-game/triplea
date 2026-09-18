@@ -5,8 +5,7 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.UNITS;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.generalFightStepStrings;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenAnyUnit;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.mergeSteps;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -53,7 +52,7 @@ class FireRoundStepsFactoryTest {
                 .build()
                 .createSteps());
 
-    assertThat(names, is(generalFightStepStrings(attacker, defender, "army")));
+    assertThat(names).isEqualTo(generalFightStepStrings(attacker, defender, "army"));
   }
 
   private List<String> getStepNames(final List<BattleStep> steps) {
@@ -96,12 +95,11 @@ class FireRoundStepsFactoryTest {
                 .build()
                 .createSteps());
 
-    assertThat(
-        names,
-        is(
+    assertThat(names)
+        .isEqualTo(
             mergeSteps(
                 generalFightStepStrings(attacker, defender, "army"),
-                generalFightStepStrings(attacker, defender, "spies"))));
+                generalFightStepStrings(attacker, defender, "spies")));
   }
 
   @Test
@@ -132,7 +130,8 @@ class FireRoundStepsFactoryTest {
                 .build()
                 .createSteps());
 
-    assertThat(
-        "units should not be in the name", names, is(generalFightStepStrings(attacker, defender)));
+    assertThat(names)
+        .as("units should not be in the name")
+        .isEqualTo(generalFightStepStrings(attacker, defender));
   }
 }

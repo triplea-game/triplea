@@ -1,16 +1,15 @@
 package org.triplea.java;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
 class UrlUtilsTest {
   @Test
   void urlDecode() {
-    assertThat(UrlUtils.urlDecode(""), is(""));
-    assertThat(UrlUtils.urlDecode("abc"), is("abc"));
-    assertThat(UrlUtils.urlDecode(" "), is(" "));
-    assertThat(UrlUtils.urlDecode("%20"), is(" "));
+    assertThat(UrlUtils.urlDecode("")).isEqualTo("");
+    assertThat(UrlUtils.urlDecode("abc")).isEqualTo("abc");
+    assertThat(UrlUtils.urlDecode(" ")).isEqualTo(" ");
+    assertThat(UrlUtils.urlDecode("%20")).isEqualTo(" ");
   }
 }

@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
@@ -40,7 +39,7 @@ final class ContentReaderTest extends AbstractClientSettingTestCase {
 
       downloadToFile();
 
-      assertThat(fileContent(), is(bytes));
+      assertThat(fileContent()).isEqualTo(bytes);
     }
 
     private byte[] givenEntityContentIs(final byte[] bytes) {

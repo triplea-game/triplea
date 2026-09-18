@@ -9,8 +9,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.moveDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -57,7 +56,7 @@ final class UnitComparatorTest {
           UnitComparator.getUnloadableUnitsComparator(
               units, new Route(seaZone5, kareliaSsr), germans));
 
-      assertThat(sortedUnits.get(0), is(transportedUnits.get(0)));
+      assertThat(sortedUnits.get(0)).isEqualTo(transportedUnits.get(0));
     }
 
     @Test
@@ -86,7 +85,7 @@ final class UnitComparatorTest {
         }
         lastUnit = unit;
       }
-      assertThat("expected 2 transitions between 3 unit types", transitions, is(2));
+      assertThat(transitions).as("expected 2 transitions between 3 unit types").isEqualTo(2);
     }
   }
 }

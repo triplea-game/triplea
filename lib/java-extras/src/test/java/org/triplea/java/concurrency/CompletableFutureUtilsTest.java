@@ -1,9 +1,6 @@
 package org.triplea.java.concurrency;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.hamcrest.core.IsSame.sameInstance;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -23,7 +20,7 @@ final class CompletableFutureUtilsTest {
       CompletableFutureUtils.logExceptionWhenComplete(future, exceptionConsumer);
       future.complete(new Object());
 
-      assertThat(consumedObject, nullValue());
+      assertThat(consumedObject).isNull();
     }
 
     @Test
@@ -33,7 +30,7 @@ final class CompletableFutureUtilsTest {
       final Exception ex = new Exception();
       future.completeExceptionally(ex);
 
-      assertThat(consumedObject, is(sameInstance(ex)));
+      assertThat(consumedObject).isSameAs(ex);
     }
   }
 }

@@ -1,7 +1,6 @@
 package games.strategy.triplea.settings;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -13,8 +12,8 @@ final class BooleanClientSettingTest {
   final class EncodeValueTest {
     @Test
     void shouldReturnEncodedValue() {
-      assertThat(clientSetting.encodeValue(false), is("false"));
-      assertThat(clientSetting.encodeValue(true), is("true"));
+      assertThat(clientSetting.encodeValue(false)).isEqualTo("false");
+      assertThat(clientSetting.encodeValue(true)).isEqualTo("true");
     }
   }
 
@@ -22,16 +21,16 @@ final class BooleanClientSettingTest {
   final class DecodeValueTest {
     @Test
     void shouldReturnTrueWhenEncodedValueIsCaseInsensitiveTrue() {
-      assertThat(clientSetting.decodeValue("true"), is(true));
-      assertThat(clientSetting.decodeValue("TRUE"), is(true));
+      assertThat(clientSetting.decodeValue("true")).isTrue();
+      assertThat(clientSetting.decodeValue("TRUE")).isTrue();
     }
 
     @Test
     void shouldReturnFalseWhenEncodedValueIsNotCaseInsensitiveTrue() {
-      assertThat(clientSetting.decodeValue(""), is(false));
-      assertThat(clientSetting.decodeValue("false"), is(false));
-      assertThat(clientSetting.decodeValue("FALSE"), is(false));
-      assertThat(clientSetting.decodeValue("yes"), is(false));
+      assertThat(clientSetting.decodeValue("")).isFalse();
+      assertThat(clientSetting.decodeValue("false")).isFalse();
+      assertThat(clientSetting.decodeValue("FALSE")).isFalse();
+      assertThat(clientSetting.decodeValue("yes")).isFalse();
     }
   }
 }

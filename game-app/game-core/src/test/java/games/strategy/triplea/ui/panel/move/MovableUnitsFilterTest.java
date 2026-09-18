@@ -1,7 +1,5 @@
 package games.strategy.triplea.ui.panel.move;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
 import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
@@ -10,12 +8,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -31,10 +24,8 @@ import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import org.hamcrest.Matcher;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -42,16 +33,12 @@ import org.triplea.java.collections.CollectionUtils;
 
 class MovableUnitsFilterTest {
 
+  private static final String NOT_ALL_UNITS_HAVE_ENOUGH_MOVEMENT =
+      "Not all units have enough movement";
+  private static final String NOT_ENOUGH_TRANSPORTS = "Not enough transports";
+
   private List<UnitType> getUnitTypes(final FilterOperationResult result) {
     return result.getUnitsWithDependents().stream().map(Unit::getType).collect(Collectors.toList());
-  }
-
-  private Matcher<Optional<String>> isNotAllUnitsHaveEnoughMovement() {
-    return isPresentAndIs("Not all units have enough movement");
-  }
-
-  private Matcher<Optional<String>> isNotEnoughTransports() {
-    return isPresentAndIs("Not enough transports");
   }
 
   private FilterOperationResult filterUnits(
@@ -91,19 +78,19 @@ class MovableUnitsFilterTest {
 
     private Collection<Unit> germanyTanks() {
       final Collection<Unit> units = germanyUnits(Matches.unitIsOfTypes(armourType));
-      assertThat(units, hasSize(2));
+      assertThat(units).hasSize(2);
       return units;
     }
 
     private Collection<Unit> germanyInfantry() {
       final Collection<Unit> units = germanyUnits(Matches.unitIsOfTypes(infantryType));
-      assertThat(units, hasSize(3));
+      assertThat(units).hasSize(3);
       return units;
     }
 
     private Collection<Unit> germanyTanksAndInfantry() {
       final Collection<Unit> units = germanyUnits(Matches.unitIsOfTypes(infantryType, armourType));
-      assertThat(units, hasSize(5));
+      assertThat(units).hasSize(5);
       return units;
     }
 
@@ -115,9 +102,9 @@ class MovableUnitsFilterTest {
       final Collection<Unit> justTanks = germanyTanks();
 
       final var result = filterUnits(gameData, germans, route, units, Map.of());
-      assertThat(result.getStatus(), is(FilterOperationResult.Status.SOME_UNITS_CAN_MOVE));
-      assertThat(result.getWarningOrErrorMessage(), isNotAllUnitsHaveEnoughMovement());
-      assertThat(result.getUnitsWithDependents(), containsInAnyOrder(justTanks.toArray()));
+      assertThat(result.getStatus()).isEqualTo(FilterOperationResult.Status.SOME_UNITS_CAN_MOVE);
+      assertThat(result.getWarningOrErrorMessage()).contains(NOT_ALL_UNITS_HAVE_ENOUGH_MOVEMENT);
+      assertThat(result.getUnitsWithDependents()).containsExactlyInAnyOrderElementsOf(justTanks);
     }
 
     @Test
@@ -127,9 +114,9 @@ class MovableUnitsFilterTest {
       final Collection<Unit> infantry = germanyInfantry();
 
       final var result = filterUnits(gameData, germans, route, infantry, Map.of());
-      assertThat(result.getStatus(), is(FilterOperationResult.Status.NO_UNITS_CAN_MOVE));
-      assertThat(result.getWarningOrErrorMessage(), isNotAllUnitsHaveEnoughMovement());
-      assertThat(result.getUnitsWithDependents(), is(empty()));
+      assertThat(result.getStatus()).isEqualTo(FilterOperationResult.Status.NO_UNITS_CAN_MOVE);
+      assertThat(result.getWarningOrErrorMessage()).contains(NOT_ALL_UNITS_HAVE_ENOUGH_MOVEMENT);
+      assertThat(result.getUnitsWithDependents()).isEmpty();
     }
 
     @Test
@@ -139,9 +126,9 @@ class MovableUnitsFilterTest {
       final Collection<Unit> tanks = germanyTanks();
 
       final var result = filterUnits(gameData, germans, route, tanks, Map.of());
-      assertThat(result.getStatus(), is(FilterOperationResult.Status.ALL_UNITS_CAN_MOVE));
-      assertThat(result.getWarningOrErrorMessage(), not(isPresent()));
-      assertThat(result.getUnitsWithDependents(), containsInAnyOrder(tanks.toArray()));
+      assertThat(result.getStatus()).isEqualTo(FilterOperationResult.Status.ALL_UNITS_CAN_MOVE);
+      assertThat(result.getWarningOrErrorMessage()).isNull();
+      assertThat(result.getUnitsWithDependents()).containsExactlyInAnyOrderElementsOf(tanks);
     }
 
     @Test
@@ -151,9 +138,9 @@ class MovableUnitsFilterTest {
       final Collection<Unit> infantry = germanyInfantry();
 
       final var result = filterUnits(gameData, germans, route, infantry, Map.of());
-      assertThat(result.getStatus(), is(FilterOperationResult.Status.ALL_UNITS_CAN_MOVE));
-      assertThat(result.getWarningOrErrorMessage(), not(isPresent()));
-      assertThat(result.getUnitsWithDependents(), containsInAnyOrder(infantry.toArray()));
+      assertThat(result.getStatus()).isEqualTo(FilterOperationResult.Status.ALL_UNITS_CAN_MOVE);
+      assertThat(result.getWarningOrErrorMessage()).isNull();
+      assertThat(result.getUnitsWithDependents()).containsExactlyInAnyOrderElementsOf(infantry);
     }
 
     @Test
@@ -163,9 +150,9 @@ class MovableUnitsFilterTest {
       final Collection<Unit> units = germanyTanksAndInfantry();
 
       final var result = filterUnits(gameData, germans, route, units, Map.of());
-      assertThat(result.getStatus(), is(FilterOperationResult.Status.SOME_UNITS_CAN_MOVE));
-      assertThat(result.getWarningOrErrorMessage(), isNotEnoughTransports());
-      assertThat(getUnitTypes(result), containsInAnyOrder(infantryType, armourType));
+      assertThat(result.getStatus()).isEqualTo(FilterOperationResult.Status.SOME_UNITS_CAN_MOVE);
+      assertThat(result.getWarningOrErrorMessage()).contains(NOT_ENOUGH_TRANSPORTS);
+      assertThat(getUnitTypes(result)).containsExactlyInAnyOrder(infantryType, armourType);
     }
 
     @Test
@@ -175,9 +162,9 @@ class MovableUnitsFilterTest {
       final Collection<Unit> units = germanyInfantry();
 
       final var result = filterUnits(gameData, germans, route, units, Map.of());
-      assertThat(result.getStatus(), is(FilterOperationResult.Status.SOME_UNITS_CAN_MOVE));
-      assertThat(result.getWarningOrErrorMessage(), isNotEnoughTransports());
-      assertThat(getUnitTypes(result), containsInAnyOrder(infantryType, infantryType));
+      assertThat(result.getStatus()).isEqualTo(FilterOperationResult.Status.SOME_UNITS_CAN_MOVE);
+      assertThat(result.getWarningOrErrorMessage()).contains(NOT_ENOUGH_TRANSPORTS);
+      assertThat(getUnitTypes(result)).containsExactlyInAnyOrder(infantryType, infantryType);
     }
 
     @Test
@@ -187,9 +174,9 @@ class MovableUnitsFilterTest {
       final Collection<Unit> units = germanyTanks();
 
       final var result = filterUnits(gameData, germans, route, units, Map.of());
-      assertThat(result.getStatus(), is(FilterOperationResult.Status.SOME_UNITS_CAN_MOVE));
-      assertThat(result.getWarningOrErrorMessage(), isNotEnoughTransports());
-      assertThat(getUnitTypes(result), containsInAnyOrder(armourType));
+      assertThat(result.getStatus()).isEqualTo(FilterOperationResult.Status.SOME_UNITS_CAN_MOVE);
+      assertThat(result.getWarningOrErrorMessage()).contains(NOT_ENOUGH_TRANSPORTS);
+      assertThat(getUnitTypes(result)).containsExactlyInAnyOrder(armourType);
     }
 
     @Test
@@ -200,9 +187,9 @@ class MovableUnitsFilterTest {
           List.of(germanyTanks().iterator().next(), germanyInfantry().iterator().next());
 
       final var result = filterUnits(gameData, germans, route, units, Map.of());
-      assertThat(result.getStatus(), is(FilterOperationResult.Status.ALL_UNITS_CAN_MOVE));
-      assertThat(result.getWarningOrErrorMessage(), not(isPresent()));
-      assertThat(getUnitTypes(result), containsInAnyOrder(infantryType, armourType));
+      assertThat(result.getStatus()).isEqualTo(FilterOperationResult.Status.ALL_UNITS_CAN_MOVE);
+      assertThat(result.getWarningOrErrorMessage()).isNull();
+      assertThat(getUnitTypes(result)).containsExactlyInAnyOrder(infantryType, armourType);
     }
   }
 
@@ -226,25 +213,26 @@ class MovableUnitsFilterTest {
       final Predicate<Unit> infantryAndTanks = Matches.unitIsOfTypes(infType, tankType);
       final Collection<Unit> units =
           CollectionUtils.getMatches(russia.getUnits(), infantryAndTanks);
-      assertThat(units, hasSize(5));
+      assertThat(units).hasSize(5);
 
       final Route route = new Route(russia, caucasus, persia);
 
       // Without mech infantry tech, only 2 tanks can move.
       {
         final var result = filterUnits(data, russians, route, units, Map.of());
-        assertThat(result.getStatus(), is(FilterOperationResult.Status.SOME_UNITS_CAN_MOVE));
-        assertThat(result.getWarningOrErrorMessage(), isNotAllUnitsHaveEnoughMovement());
-        assertThat(getUnitTypes(result), containsInAnyOrder(tankType, tankType));
+        assertThat(result.getStatus()).isEqualTo(FilterOperationResult.Status.SOME_UNITS_CAN_MOVE);
+        assertThat(result.getWarningOrErrorMessage()).contains(NOT_ALL_UNITS_HAVE_ENOUGH_MOVEMENT);
+        assertThat(getUnitTypes(result)).containsExactlyInAnyOrder(tankType, tankType);
       }
 
       // With mech infantry tech, 2 infantry and 2 tanks can move.
       russians.getTechAttachment().setMechanizedInfantry("true");
       {
         final var result = filterUnits(data, russians, route, units, Map.of());
-        assertThat(result.getStatus(), is(FilterOperationResult.Status.SOME_UNITS_CAN_MOVE));
-        assertThat(result.getWarningOrErrorMessage(), isNotAllUnitsHaveEnoughMovement());
-        assertThat(getUnitTypes(result), containsInAnyOrder(infType, infType, tankType, tankType));
+        assertThat(result.getStatus()).isEqualTo(FilterOperationResult.Status.SOME_UNITS_CAN_MOVE);
+        assertThat(result.getWarningOrErrorMessage()).contains(NOT_ALL_UNITS_HAVE_ENOUGH_MOVEMENT);
+        assertThat(getUnitTypes(result))
+            .containsExactlyInAnyOrder(infType, infType, tankType, tankType);
       }
     }
 
@@ -263,9 +251,9 @@ class MovableUnitsFilterTest {
       russians.getTechAttachment().setParatroopers("true");
       {
         final var result = filterUnits(data, russians, route, List.of(bomber), dependentUnits);
-        assertThat(result.getStatus(), is(FilterOperationResult.Status.ALL_UNITS_CAN_MOVE));
-        assertThat(result.getWarningOrErrorMessage(), not(isPresent()));
-        assertThat(getUnitTypes(result), containsInAnyOrder(infType, bomberType));
+        assertThat(result.getStatus()).isEqualTo(FilterOperationResult.Status.ALL_UNITS_CAN_MOVE);
+        assertThat(result.getWarningOrErrorMessage()).isNull();
+        assertThat(getUnitTypes(result)).containsExactlyInAnyOrder(infType, bomberType);
       }
 
       // Without the tech, only the bomber can move.
@@ -275,9 +263,9 @@ class MovableUnitsFilterTest {
             filterUnits(data, russians, route, List.of(bomber, infantry), dependentUnits);
         // TODO: This should probably be SOME_UNITS_CAN_MOVE, but the UI code never actually passes
         // invalid dependent units when the tech doesn't exist, so this does not matter much.
-        assertThat(result.getStatus(), is(FilterOperationResult.Status.ALL_UNITS_CAN_MOVE));
-        assertThat(result.getWarningOrErrorMessage(), not(isPresent()));
-        assertThat(getUnitTypes(result), containsInAnyOrder(bomberType, infType));
+        assertThat(result.getStatus()).isEqualTo(FilterOperationResult.Status.ALL_UNITS_CAN_MOVE);
+        assertThat(result.getWarningOrErrorMessage()).isNull();
+        assertThat(getUnitTypes(result)).containsExactlyInAnyOrder(bomberType, infType);
       }
     }
   }

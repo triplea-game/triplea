@@ -5,8 +5,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.americans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
@@ -36,15 +35,15 @@ class TransportTrackerTest {
 
   @Test
   void testIsTransporting() {
-    assertThat(transport.isTransporting(), is(false));
+    assertThat(transport.isTransporting()).isFalse();
     loadTankToTransport();
-    assertThat(transport.isTransporting(), is(true));
+    assertThat(transport.isTransporting()).isTrue();
   }
 
   @Test
   void testIsTransportingWithTerritory() {
-    assertThat(transport.isTransporting(sz18), is(false));
+    assertThat(transport.isTransporting(sz18)).isFalse();
     loadTankToTransport();
-    assertThat(transport.isTransporting(sz18), is(true));
+    assertThat(transport.isTransporting(sz18)).isTrue();
   }
 }

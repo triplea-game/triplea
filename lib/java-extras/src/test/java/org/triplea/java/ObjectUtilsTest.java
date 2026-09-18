@@ -1,7 +1,6 @@
 package org.triplea.java;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -13,8 +12,8 @@ final class ObjectUtilsTest {
     void shouldReturnTrueWhenReferencesAreSame() {
       final Object a = new Object();
 
-      assertThat(ObjectUtils.referenceEquals(null, null), is(true));
-      assertThat(ObjectUtils.referenceEquals(a, a), is(true));
+      assertThat(ObjectUtils.referenceEquals(null, null)).isTrue();
+      assertThat(ObjectUtils.referenceEquals(a, a)).isTrue();
     }
 
     @Test
@@ -22,9 +21,9 @@ final class ObjectUtilsTest {
       final Object a = new Object();
       final Object b = new Object();
 
-      assertThat(ObjectUtils.referenceEquals(a, null), is(false));
-      assertThat(ObjectUtils.referenceEquals(null, a), is(false));
-      assertThat(ObjectUtils.referenceEquals(a, b), is(false));
+      assertThat(ObjectUtils.referenceEquals(a, null)).isFalse();
+      assertThat(ObjectUtils.referenceEquals(null, a)).isFalse();
+      assertThat(ObjectUtils.referenceEquals(a, b)).isFalse();
     }
   }
 }

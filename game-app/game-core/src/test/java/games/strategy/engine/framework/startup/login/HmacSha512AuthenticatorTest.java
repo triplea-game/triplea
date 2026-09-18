@@ -1,14 +1,6 @@
 package games.strategy.engine.framework.startup.login;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.emptyString;
-import static org.hamcrest.Matchers.hasKey;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.collection.IsMapContaining.hasEntry;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -38,8 +30,11 @@ final class HmacSha512AuthenticatorTest {
     void shouldIncludeNonceAndSalt() {
       final Map<String, String> challenge = HmacSha512Authenticator.newChallenge();
 
-      assertThat(challenge, hasEntry(is(ChallengePropertyNames.NONCE), is(not(emptyString()))));
-      assertThat(challenge, hasEntry(is(ChallengePropertyNames.SALT), is(not(emptyString()))));
+      assertThat(challenge)
+          .hasEntrySatisfying(
+              ChallengePropertyNames.NONCE, value -> assertThat(value).isNotEmpty());
+      assertThat(challenge)
+          .hasEntrySatisfying(ChallengePropertyNames.SALT, value -> assertThat(value).isNotEmpty());
     }
   }
 
@@ -54,7 +49,9 @@ final class HmacSha512AuthenticatorTest {
 
       final Map<String, String> response = HmacSha512Authenticator.newResponse(PASSWORD, challenge);
 
-      assertThat(response, hasEntry(is(ResponsePropertyNames.DIGEST), is(not(emptyString()))));
+      assertThat(response)
+          .hasEntrySatisfying(
+              ResponsePropertyNames.DIGEST, value -> assertThat(value).isNotEmpty());
     }
 
     @Test
@@ -64,7 +61,7 @@ final class HmacSha512AuthenticatorTest {
 
       final Map<String, String> response = HmacSha512Authenticator.newResponse(PASSWORD, challenge);
 
-      assertThat(response, not(hasKey(ResponsePropertyNames.DIGEST)));
+      assertThat(response).doesNotContainKey(ResponsePropertyNames.DIGEST);
     }
 
     @Test
@@ -74,7 +71,7 @@ final class HmacSha512AuthenticatorTest {
 
       final Map<String, String> response = HmacSha512Authenticator.newResponse(PASSWORD, challenge);
 
-      assertThat(response, not(hasKey(ResponsePropertyNames.DIGEST)));
+      assertThat(response).doesNotContainKey(ResponsePropertyNames.DIGEST);
     }
   }
 
@@ -88,7 +85,7 @@ final class HmacSha512AuthenticatorTest {
 
       final byte[] actualValue = HmacSha512Authenticator.decodeOptionalProperty(properties, name);
 
-      assertThat(actualValue, is(Base64.getDecoder().decode(encodedValue)));
+      assertThat(actualValue).isEqualTo(Base64.getDecoder().decode(encodedValue));
     }
 
     @Test
@@ -97,7 +94,7 @@ final class HmacSha512AuthenticatorTest {
 
       final byte[] value = HmacSha512Authenticator.decodeOptionalProperty(properties, "name");
 
-      assertThat(value, is(nullValue()));
+      assertThat(value).isNull();
     }
 
     @Test
@@ -109,7 +106,7 @@ final class HmacSha512AuthenticatorTest {
           assertThrows(
               AuthenticationException.class,
               () -> HmacSha512Authenticator.decodeOptionalProperty(properties, name));
-      assertThat(e.getMessage(), allOf(containsString("malformed"), containsString(name)));
+      assertThat(e.getMessage()).contains("malformed", name);
     }
   }
 
@@ -134,7 +131,7 @@ final class HmacSha512AuthenticatorTest {
               AuthenticationException.class,
               () -> HmacSha512Authenticator.authenticate(PASSWORD, challenge, response));
 
-      assertThat(e.getMessage(), containsString("authentication failed"));
+      assertThat(e.getMessage()).contains("authentication failed");
     }
 
     @Test
@@ -149,9 +146,7 @@ final class HmacSha512AuthenticatorTest {
               AuthenticationException.class,
               () -> HmacSha512Authenticator.authenticate(PASSWORD, challenge, response));
 
-      assertThat(
-          e.getMessage(),
-          allOf(containsString("missing"), containsString(ChallengePropertyNames.NONCE)));
+      assertThat(e.getMessage()).contains("missing", ChallengePropertyNames.NONCE);
     }
 
     @Test
@@ -166,9 +161,7 @@ final class HmacSha512AuthenticatorTest {
               AuthenticationException.class,
               () -> HmacSha512Authenticator.authenticate(PASSWORD, challenge, response));
 
-      assertThat(
-          e.getMessage(),
-          allOf(containsString("missing"), containsString(ChallengePropertyNames.SALT)));
+      assertThat(e.getMessage()).contains("missing", ChallengePropertyNames.SALT);
     }
 
     @Test
@@ -184,9 +177,7 @@ final class HmacSha512AuthenticatorTest {
               AuthenticationException.class,
               () -> HmacSha512Authenticator.authenticate(PASSWORD, challenge, response));
 
-      assertThat(
-          e.getMessage(),
-          allOf(containsString("missing"), containsString(ResponsePropertyNames.DIGEST)));
+      assertThat(e.getMessage()).contains("missing", ResponsePropertyNames.DIGEST);
     }
   }
 
@@ -201,7 +192,7 @@ final class HmacSha512AuthenticatorTest {
           assertThrows(
               AuthenticationException.class,
               () -> HmacSha512Authenticator.decodeRequiredProperty(properties, name));
-      assertThat(e.getMessage(), allOf(containsString("missing"), containsString(name)));
+      assertThat(e.getMessage()).contains("missing", name);
     }
   }
 }

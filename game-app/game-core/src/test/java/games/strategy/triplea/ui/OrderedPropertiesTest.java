@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.AbstractMap;
 import java.util.LinkedHashMap;
@@ -23,14 +22,13 @@ final class OrderedPropertiesTest {
       properties.put("key4", "value4");
       properties.put("key5", "value5");
 
-      assertThat(
-          properties.entrySet(),
-          contains(
+      assertThat(properties.entrySet())
+          .containsExactly(
               new AbstractMap.SimpleEntry<>("key1", "value1"),
               new AbstractMap.SimpleEntry<>("key2", "value2"),
               new AbstractMap.SimpleEntry<>("key3", "value3"),
               new AbstractMap.SimpleEntry<>("key4", "value4"),
-              new AbstractMap.SimpleEntry<>("key5", "value5")));
+              new AbstractMap.SimpleEntry<>("key5", "value5"));
     }
   }
 
@@ -45,7 +43,7 @@ final class OrderedPropertiesTest {
 
       properties.putAll(map);
 
-      assertThat(properties.keySet(), contains("key1", "key2", "key3"));
+      assertThat(properties.keySet()).containsExactly("key1", "key2", "key3");
     }
   }
 }

@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,7 @@ class MapDownloadSwingTableTest {
   void getSwingComponentWithEmptyContent() {
     final var table = new MapDownloadSwingTable(List.of()).getSwingComponent();
 
-    assertThat(table.getRowCount(), is(0));
+    assertThat(table.getRowCount()).isEqualTo(0);
   }
 
   @Test
@@ -31,6 +30,6 @@ class MapDownloadSwingTableTest {
     final var table =
         new MapDownloadSwingTable(List.of(new ManagedMap(mapDownloadItem))).getSwingComponent();
 
-    assertThat(table.getSelectedRow(), is(0));
+    assertThat(table.getSelectedRow()).isEqualTo(0);
   }
 }

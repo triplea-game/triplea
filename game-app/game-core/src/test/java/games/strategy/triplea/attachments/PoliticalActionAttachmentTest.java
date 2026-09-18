@@ -1,9 +1,6 @@
 package games.strategy.triplea.attachments;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -42,7 +39,7 @@ final class PoliticalActionAttachmentTest {
 
     @Test
     void shouldReturnEmptyListWhenZeroRelationshipChangesExist() {
-      assertThat(politicalActionAttachment.getRelationshipChanges(), is(empty()));
+      assertThat(politicalActionAttachment.getRelationshipChanges()).isEmpty();
     }
 
     @Test
@@ -50,11 +47,10 @@ final class PoliticalActionAttachmentTest {
       politicalActionAttachment.setRelationshipChange(
           join(player1.getName(), player2.getName(), relationshipType1.getName()));
 
-      assertThat(
-          politicalActionAttachment.getRelationshipChanges(),
-          contains(
+      assertThat(politicalActionAttachment.getRelationshipChanges())
+          .containsExactly(
               new PoliticalActionAttachment.RelationshipChange(
-                  player1, player2, relationshipType1)));
+                  player1, player2, relationshipType1));
     }
 
     @Test
@@ -64,12 +60,11 @@ final class PoliticalActionAttachmentTest {
       politicalActionAttachment.setRelationshipChange(
           join(player1.getName(), player3.getName(), relationshipType2.getName()));
 
-      assertThat(
-          politicalActionAttachment.getRelationshipChanges(),
-          contains(
+      assertThat(politicalActionAttachment.getRelationshipChanges())
+          .containsExactly(
               new PoliticalActionAttachment.RelationshipChange(player1, player2, relationshipType1),
               new PoliticalActionAttachment.RelationshipChange(
-                  player1, player3, relationshipType2)));
+                  player1, player3, relationshipType2));
     }
   }
 

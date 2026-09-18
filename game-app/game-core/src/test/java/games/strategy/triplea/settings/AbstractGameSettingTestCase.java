@@ -1,9 +1,6 @@
 package games.strategy.triplea.settings;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.NoSuchElementException;
@@ -36,13 +33,12 @@ public abstract class AbstractGameSettingTestCase {
   final class GetDefaultValueTest {
     @Test
     void shouldReturnDefaultValueWhenDefaultValuePresent() {
-      assertThat(
-          newGameSetting(NO_VALUE, DEFAULT_VALUE).getDefaultValue(), isPresentAndIs(DEFAULT_VALUE));
+      assertThat(newGameSetting(NO_VALUE, DEFAULT_VALUE).getDefaultValue()).contains(DEFAULT_VALUE);
     }
 
     @Test
     void shouldReturnEmptyWhenDefaultValueAbsent() {
-      assertThat(newGameSetting(NO_VALUE, NO_VALUE).getDefaultValue(), isEmpty());
+      assertThat(newGameSetting(NO_VALUE, NO_VALUE).getDefaultValue()).isEmpty();
     }
   }
 
@@ -50,22 +46,22 @@ public abstract class AbstractGameSettingTestCase {
   final class GetValueTest {
     @Test
     void shouldReturnValueWhenValuePresentAndDefaultValuePresent() {
-      assertThat(newGameSetting(VALUE, DEFAULT_VALUE).getValue(), isPresentAndIs(VALUE));
+      assertThat(newGameSetting(VALUE, DEFAULT_VALUE).getValue()).contains(VALUE);
     }
 
     @Test
     void shouldReturnValueWhenValuePresentAndDefaultValueAbsent() {
-      assertThat(newGameSetting(VALUE, NO_VALUE).getValue(), isPresentAndIs(VALUE));
+      assertThat(newGameSetting(VALUE, NO_VALUE).getValue()).contains(VALUE);
     }
 
     @Test
     void shouldReturnDefaultValueWhenValueAbsentAndDefaultValuePresent() {
-      assertThat(newGameSetting(NO_VALUE, DEFAULT_VALUE).getValue(), isPresentAndIs(DEFAULT_VALUE));
+      assertThat(newGameSetting(NO_VALUE, DEFAULT_VALUE).getValue()).contains(DEFAULT_VALUE);
     }
 
     @Test
     void shouldReturnEmptyWhenValueAbsentAndDefaultValueAbsent() {
-      assertThat(newGameSetting(NO_VALUE, NO_VALUE).getValue(), isEmpty());
+      assertThat(newGameSetting(NO_VALUE, NO_VALUE).getValue()).isEmpty();
     }
   }
 
@@ -73,17 +69,18 @@ public abstract class AbstractGameSettingTestCase {
   final class GetValueOrThrowTest {
     @Test
     void shouldReturnValueWhenValuePresentAndDefaultValuePresent() {
-      assertThat(newGameSetting(VALUE, DEFAULT_VALUE).getValueOrThrow(), is(VALUE));
+      assertThat(newGameSetting(VALUE, DEFAULT_VALUE).getValueOrThrow()).isEqualTo(VALUE);
     }
 
     @Test
     void shouldReturnValueWhenValuePresentAndDefaultValueAbsent() {
-      assertThat(newGameSetting(VALUE, NO_VALUE).getValueOrThrow(), is(VALUE));
+      assertThat(newGameSetting(VALUE, NO_VALUE).getValueOrThrow()).isEqualTo(VALUE);
     }
 
     @Test
     void shouldReturnDefaultValueWhenValueAbsentAndDefaultValuePresent() {
-      assertThat(newGameSetting(NO_VALUE, DEFAULT_VALUE).getValueOrThrow(), is(DEFAULT_VALUE));
+      assertThat(newGameSetting(NO_VALUE, DEFAULT_VALUE).getValueOrThrow())
+          .isEqualTo(DEFAULT_VALUE);
     }
 
     @Test
@@ -97,22 +94,22 @@ public abstract class AbstractGameSettingTestCase {
   final class IsSetTest {
     @Test
     void shouldReturnTrueWhenValuePresentAndDefaultValuePresent() {
-      assertThat(newGameSetting(VALUE, DEFAULT_VALUE).isSet(), is(true));
+      assertThat(newGameSetting(VALUE, DEFAULT_VALUE).isSet()).isTrue();
     }
 
     @Test
     void shouldReturnTrueWhenValuePresentAndDefaultValueAbsent() {
-      assertThat(newGameSetting(VALUE, NO_VALUE).isSet(), is(true));
+      assertThat(newGameSetting(VALUE, NO_VALUE).isSet()).isTrue();
     }
 
     @Test
     void shouldReturnTrueWhenValueAbsentAndDefaultValuePresent() {
-      assertThat(newGameSetting(NO_VALUE, DEFAULT_VALUE).isSet(), is(true));
+      assertThat(newGameSetting(NO_VALUE, DEFAULT_VALUE).isSet()).isTrue();
     }
 
     @Test
     void shouldReturnFalseWhenValueAbsentAndDefaultValueAbsent() {
-      assertThat(newGameSetting(NO_VALUE, NO_VALUE).isSet(), is(false));
+      assertThat(newGameSetting(NO_VALUE, NO_VALUE).isSet()).isFalse();
     }
   }
 
@@ -124,7 +121,7 @@ public abstract class AbstractGameSettingTestCase {
 
       gameSetting.resetValue();
 
-      assertThat(gameSetting.getValue(), isPresentAndIs(DEFAULT_VALUE));
+      assertThat(gameSetting.getValue()).contains(DEFAULT_VALUE);
     }
 
     @Test
@@ -133,7 +130,7 @@ public abstract class AbstractGameSettingTestCase {
 
       gameSetting.resetValue();
 
-      assertThat(gameSetting.getValue(), isEmpty());
+      assertThat(gameSetting.getValue()).isEmpty();
     }
   }
 
@@ -145,7 +142,7 @@ public abstract class AbstractGameSettingTestCase {
 
       gameSetting.setValue(NO_VALUE);
 
-      assertThat(gameSetting.getValue(), isPresentAndIs(DEFAULT_VALUE));
+      assertThat(gameSetting.getValue()).contains(DEFAULT_VALUE);
     }
 
     @Test
@@ -154,7 +151,7 @@ public abstract class AbstractGameSettingTestCase {
 
       gameSetting.setValue(OTHER_VALUE);
 
-      assertThat(gameSetting.getValue(), isPresentAndIs(OTHER_VALUE));
+      assertThat(gameSetting.getValue()).contains(OTHER_VALUE);
     }
   }
 }

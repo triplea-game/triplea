@@ -86,14 +86,19 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
@@ -106,6 +111,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -140,6 +146,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -388,7 +395,9 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             .build(),
         BorderLayout.SOUTH);
 
-    mapPanel.addKeyListener(getArrowKeyListener());
+    final ArrowKeyScroller arrowKeyScroller = new ArrowKeyScroller();
+    mapPanel.addKeyListener(arrowKeyScroller);
+    mapPanel.addFocusListener(arrowKeyScroller);
 
     actionButtonsPanel.setBorder(null);
     statsPanel = new StatPanel(data, uiContext);
@@ -423,10 +432,20 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
             editPanel.setActive(false);
           }
         });
+
     rightHandSidePanel.setPreferredSize(
         new Dimension(
             (int) smallView.getPreferredSize().getWidth(),
             (int) mapPanel.getPreferredSize().getHeight()));
+    // The right-hand side panel's minimum width needs to be at least as wide as the smallMap, but
+    // not smaller than 248 px or there is not enough room for the Cancel/Done/Undo All buttons
+    // (issue #14880).
+    final int minimumRightHandSidePanelWidth = 248;
+    rightHandSidePanel.setMinimumSize(
+        new Dimension(
+            Math.max(minimumRightHandSidePanelWidth, rightHandSidePanel.getMinimumSize().width),
+            rightHandSidePanel.getMinimumSize().height));
+
     gameCenterPanel =
         new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mapAndChatPanel, rightHandSidePanel);
     gameCenterPanel.setOneTouchExpandable(true);
@@ -729,8 +748,13 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     final GameData clonedGameData;
     try (GameData.Unlocker ignored = data.acquireWriteLock()) {
       // we want to use a clone of the data, so we can make changes to it as we walk up and down the
-      // history
-      final var cloneOptions = GameDataManager.Options.builder().withHistory(true).build();
+      // history, but the history itself can be the same (that might get extend to by the continued
+      // game)
+      final var cloneOptions =
+          GameDataManager.Options.builder()
+              .withHistoryCopyMode(GameDataManager.Options.HistoryCopyMode.REFERENCE)
+              .withDelegates(true)
+              .build();
       clonedGameData = GameDataUtils.cloneGameData(data, cloneOptions).orElse(null);
       if (clonedGameData == null) {
         return;
@@ -1778,43 +1802,177 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     return "";
   }
 
-  private KeyListener getArrowKeyListener() {
-    return new KeyListener() {
-      @Override
-      public void keyPressed(final KeyEvent e) {
-        isCtrlPressed = e.isControlDown();
-        // scroll map according to wasd/arrow keys
-        final int diffPixel = computeScrollSpeed();
-        final int x = mapPanel.getXOffset();
-        final int y = mapPanel.getYOffset();
-        final int keyCode = e.getKeyCode();
-
-        if (keyCode == KeyEvent.VK_RIGHT) {
-          getMapPanel().setTopLeft(x + diffPixel, y);
-        } else if (keyCode == KeyEvent.VK_LEFT) {
-          getMapPanel().setTopLeft(x - diffPixel, y);
-        } else if (keyCode == KeyEvent.VK_DOWN) {
-          getMapPanel().setTopLeft(x, y + diffPixel);
-        } else if (keyCode == KeyEvent.VK_UP) {
-          getMapPanel().setTopLeft(x, y - diffPixel);
-        }
-      }
-
-      @Override
-      public void keyTyped(final KeyEvent e) {
-        // not needed interface method
-      }
-
-      @Override
-      public void keyReleased(final KeyEvent e) {
-        isCtrlPressed = e.isControlDown();
-      }
-    };
-  }
-
   private int computeScrollSpeed() {
     return ClientSetting.arrowKeyScrollSpeed.getValueOrThrow()
         * (isCtrlPressed ? ClientSetting.fasterArrowKeyScrollMultiplier.getValueOrThrow() : 1);
+  }
+
+  /** One animation tick's integer pan and the sub-pixel remainder carried to the next tick. */
+  record ScrollStep(int stepX, int stepY, double residualX, double residualY) {}
+
+  /**
+   * Adds this frame's pan distance for each held arrow key onto the carried sub-pixel residual,
+   * then splits the total into an integer step and the leftover fraction, so fractional velocity
+   * survives integer rounding instead of being dropped each frame.
+   */
+  static ScrollStep computeScrollStep(
+      final double residualX,
+      final double residualY,
+      final double distance,
+      final Set<Integer> heldKeys) {
+    double x = residualX;
+    double y = residualY;
+    if (heldKeys.contains(KeyEvent.VK_RIGHT)) {
+      x += distance;
+    }
+    if (heldKeys.contains(KeyEvent.VK_LEFT)) {
+      x -= distance;
+    }
+    if (heldKeys.contains(KeyEvent.VK_DOWN)) {
+      y += distance;
+    }
+    if (heldKeys.contains(KeyEvent.VK_UP)) {
+      y -= distance;
+    }
+    final int stepX = (int) x;
+    final int stepY = (int) y;
+    return new ScrollStep(stepX, stepY, x - stepX, y - stepY);
+  }
+
+  /**
+   * Clamps a display refresh rate to the 8-16 ms timer-interval band (~60-125 fps), treating a
+   * non-positive (unknown) rate as ~100 fps.
+   */
+  static int clampFrameIntervalMs(final int refreshHz) {
+    final int hz = refreshHz <= 0 ? 100 : refreshHz;
+    return Math.max(8, Math.min(16, Math.round(1000f / hz)));
+  }
+
+  /**
+   * Pans the map while an arrow key is held using a fixed-rate animation timer, so motion is smooth
+   * regardless of the operating system's key-repeat rate. A {@code keyPressed}-driven pan instead
+   * follows the OS key-repeat cadence — a long initial delay then chunky, uneven repeats — which
+   * reads as jagged jumps; the fixed-rate timer decouples motion from that cadence.
+   *
+   * <p>Holding two arrow keys pans diagonally. The Ctrl multiplier from {@link
+   * #computeScrollSpeed()} still applies and takes effect live while held.
+   */
+  private final class ArrowKeyScroller implements KeyListener, FocusListener {
+    // computeScrollSpeed() is calibrated as pixels per 50ms tick by MapPanel's button-drag scroll
+    // loop; reusing that cadence here keeps the arrowKeyScrollSpeed setting feeling the same.
+    private static final double DRAG_SCROLL_TICKS_PER_SECOND = 20.0;
+
+    private final Set<Integer> heldKeys = new HashSet<>();
+    // Keys whose keyReleased is awaiting confirmation; an X11 auto-repeat fires a phantom
+    // release/press pair, and the paired press clears this before the deferred check deactivates
+    // it.
+    private final Set<Integer> pendingRelease = new HashSet<>();
+    private final Timer timer = new Timer(computeFrameIntervalMs(), e -> tick());
+    private long lastTickNanos;
+    // Sub-pixel pan carried between frames so fractional velocity is not lost to integer rounding.
+    private double residualX;
+    private double residualY;
+
+    @Override
+    public void keyPressed(final KeyEvent e) {
+      isCtrlPressed = e.isControlDown();
+      final int keyCode = e.getKeyCode();
+      if (!isArrowKey(keyCode)) {
+        return;
+      }
+      pendingRelease.remove(keyCode);
+      if (heldKeys.add(keyCode) && !timer.isRunning()) {
+        // Re-read at scroll start: by now the window is realized and on its actual monitor, so the
+        // interval tracks that monitor's refresh rate even after the window moves between displays.
+        timer.setDelay(computeFrameIntervalMs());
+        residualX = 0;
+        residualY = 0;
+        lastTickNanos = System.nanoTime();
+        timer.start();
+      }
+    }
+
+    @Override
+    public void keyReleased(final KeyEvent e) {
+      isCtrlPressed = e.isControlDown();
+      final int keyCode = e.getKeyCode();
+      if (!isArrowKey(keyCode)) {
+        return;
+      }
+      // Defer deactivation one event-loop cycle: on X11 the auto-repeat press is already queued
+      // ahead of this runnable and will clear pendingRelease, so a held key never stops mid-scroll.
+      pendingRelease.add(keyCode);
+      SwingUtilities.invokeLater(
+          () -> {
+            if (pendingRelease.remove(keyCode)) {
+              heldKeys.remove(keyCode);
+            }
+          });
+    }
+
+    @Override
+    public void keyTyped(final KeyEvent e) {}
+
+    @Override
+    public void focusGained(final FocusEvent e) {}
+
+    @Override
+    public void focusLost(final FocusEvent e) {
+      // A key released while mapPanel lacks focus never reaches keyReleased, so held state would
+      // leak and pan the map forever; dropping it on focus loss ends the scroll instead.
+      heldKeys.clear();
+      pendingRelease.clear();
+      timer.stop();
+    }
+
+    private void tick() {
+      if (heldKeys.isEmpty()) {
+        timer.stop();
+        return;
+      }
+      final long now = System.nanoTime();
+      final double dtSeconds = (now - lastTickNanos) / 1_000_000_000.0;
+      lastTickNanos = now;
+      final double distance = computeScrollSpeed() * DRAG_SCROLL_TICKS_PER_SECOND * dtSeconds;
+      final ScrollStep step = computeScrollStep(residualX, residualY, distance, heldKeys);
+      residualX = step.residualX();
+      residualY = step.residualY();
+      if (step.stepX() != 0 || step.stepY() != 0) {
+        getMapPanel()
+            .setTopLeft(mapPanel.getXOffset() + step.stepX(), mapPanel.getYOffset() + step.stepY());
+      }
+    }
+
+    private boolean isArrowKey(final int keyCode) {
+      return keyCode == KeyEvent.VK_UP
+          || keyCode == KeyEvent.VK_DOWN
+          || keyCode == KeyEvent.VK_LEFT
+          || keyCode == KeyEvent.VK_RIGHT;
+    }
+
+    /**
+     * Frame interval matched to the refresh rate of the monitor the game window is on, so a panned
+     * frame is never held on screen longer than that monitor shows it — that hold is what smears
+     * map motion on a sample-and-hold display, and running slower than the refresh only adds judder
+     * on top of it. The window's own {@link GraphicsConfiguration} gives the right monitor on a
+     * mixed-refresh multi-monitor setup; it is null until the window is realized, so this falls
+     * back to the primary screen. Clamped to an 8-16 ms interval (~60-125 fps), and falls back to
+     * ~100 fps when the driver reports an unknown rate.
+     */
+    private int computeFrameIntervalMs() {
+      int refreshHz = 0;
+      try {
+        final GraphicsConfiguration gc = getGraphicsConfiguration();
+        final GraphicsDevice device =
+            gc != null
+                ? gc.getDevice()
+                : GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        refreshHz = device.getDisplayMode().getRefreshRate();
+      } catch (final HeadlessException | NullPointerException ignored) {
+        // no display available, or the driver reports no display mode; the fallback applies
+      }
+      return clampFrameIntervalMs(refreshHz);
+    }
   }
 
   private void showEditMode() {
@@ -1890,49 +2048,17 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
                   final Optional<Path> f =
                       GameFileSelector.getSaveGameLocation(TripleAFrame.this, clonedGameData);
                   if (f.isPresent()) {
+                    GameData gameDataForSave =
+                        getGameDataForSave(clonedGameData, popupHistoryPanel.getCurrentPopupNode());
                     try (OutputStream fileOutputStream = Files.newOutputStream(f.get())) {
-                      clonedGameData
-                          .getHistory()
-                          .removeAllHistoryAfterNode(popupHistoryPanel.getCurrentPopupNode());
-                      // TODO: the saved current delegate is still the current delegate,
-                      // rather than the delegate at that history popup node
-                      // TODO: it still shows the current round number, rather than the round at
-                      // the history popup node
-                      // TODO: this could be solved easily if rounds/steps were changes,
-                      // but that could greatly increase the file size :(
-                      // TODO: this also does not undo the run count of each delegate step
-                      final Enumeration<?> enumeration =
-                          ((DefaultMutableTreeNode) clonedGameData.getHistory().getRoot())
-                              .preorderEnumeration();
-                      enumeration.nextElement();
-                      int round = 0;
-                      String stepDisplayName =
-                          clonedGameData.getSequence().getStep(0).getDisplayName();
-                      GamePlayer currentPlayer =
-                          clonedGameData.getSequence().getStep(0).getPlayerId();
-                      int roundOffset = clonedGameData.getSequence().getRoundOffset();
-                      while (enumeration.hasMoreElements()) {
-                        final HistoryNode node = (HistoryNode) enumeration.nextElement();
-                        if (node instanceof Round nodeRound) {
-                          round = Math.max(0, nodeRound.getRoundNo() - roundOffset);
-                          currentPlayer = null;
-                          stepDisplayName = nodeRound.getTitle();
-                        } else if (node instanceof Step step) {
-                          currentPlayer = step.getPlayerId().orElse(null);
-                          stepDisplayName = node.getTitle();
-                        }
-                      }
-                      clonedGameData
-                          .getSequence()
-                          .setRoundAndStep(round, stepDisplayName, currentPlayer);
-                      GameDataManager.saveGame(fileOutputStream, clonedGameData);
+                      GameDataManager.saveGame(fileOutputStream, gameDataForSave);
                       JOptionPane.showMessageDialog(
                           TripleAFrame.this,
                           "Game Saved",
                           "Game Saved",
                           JOptionPane.INFORMATION_MESSAGE);
                     } catch (final IOException e) {
-                      log.error("Failed to save game: " + f.get().toAbsolutePath(), e);
+                      log.error("Failed to save game: {}", f.get().toAbsolutePath(), e);
                     }
                   }
                   popupHistoryPanel.clearCurrentPopupNode();
@@ -1941,6 +2067,47 @@ public final class TripleAFrame extends JFrame implements QuitHandler {
     popupHistoryPanel.setPopup(popup);
     historyPanel = popupHistoryPanel;
     return historyDetailPanel;
+  }
+
+  @Nonnull
+  private static GameData getGameDataForSave(GameData clonedGameData, HistoryNode newLastNode) {
+    // the game data for saving needs to allow making changes to it to remove
+    // later history nodes
+    final var cloneOptions =
+        GameDataManager.Options.builder()
+            .withHistoryCopyMode(GameDataManager.Options.HistoryCopyMode.DEEP)
+            .withDelegates(true)
+            .build();
+    GameData gameDataForSave =
+        GameDataUtils.cloneGameData(clonedGameData, cloneOptions).orElseThrow();
+    gameDataForSave.getGameHistory().removeAllHistoryAfterNode(newLastNode);
+    // TODO: the saved current delegate is still the current delegate,
+    // rather than the delegate at that history popup node
+    // TODO: it still shows the current round number, rather than the round at
+    // the history popup node
+    // TODO: this could be solved easily if rounds/steps were changes,
+    // but that could greatly increase the file size :(
+    // TODO: this also does not undo the run count of each delegate step
+    final Enumeration<?> enumeration =
+        ((DefaultMutableTreeNode) gameDataForSave.getGameHistory().getRoot()).preorderEnumeration();
+    enumeration.nextElement();
+    int round = 0;
+    String stepDisplayName = gameDataForSave.getSequence().getStep(0).getDisplayName();
+    GamePlayer currentPlayer = gameDataForSave.getSequence().getStep(0).getPlayerId();
+    int roundOffset = gameDataForSave.getSequence().getRoundOffset();
+    while (enumeration.hasMoreElements()) {
+      final HistoryNode node = (HistoryNode) enumeration.nextElement();
+      if (node instanceof Round nodeRound) {
+        round = Math.max(0, nodeRound.getRoundNo() - roundOffset);
+        currentPlayer = null;
+        stepDisplayName = nodeRound.getTitle();
+      } else if (node instanceof Step step) {
+        currentPlayer = step.getPlayerId().orElse(null);
+        stepDisplayName = node.getTitle();
+      }
+    }
+    gameDataForSave.getSequence().setRoundAndStep(round, stepDisplayName, currentPlayer);
+    return gameDataForSave;
   }
 
   private static class HistoryPanelPopupMenuBuilder {

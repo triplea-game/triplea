@@ -7,10 +7,7 @@ import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.given
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitCanEvade;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitDestroyer;
 import static games.strategy.triplea.delegate.battle.steps.BattleStepsTest.givenUnitSeaTransport;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -72,7 +69,7 @@ public class OffensiveSubsRetreatTest extends AbstractClientSettingTestCase {
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(offensiveSubsRetreat.getAllStepDetails(), hasSize(1));
+    assertThat(offensiveSubsRetreat.getAllStepDetails()).hasSize(1);
   }
 
   @Test
@@ -86,7 +83,7 @@ public class OffensiveSubsRetreatTest extends AbstractClientSettingTestCase {
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(offensiveSubsRetreat.getAllStepDetails(), hasSize(1));
+    assertThat(offensiveSubsRetreat.getAllStepDetails()).hasSize(1);
   }
 
   @Test
@@ -101,7 +98,7 @@ public class OffensiveSubsRetreatTest extends AbstractClientSettingTestCase {
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(offensiveSubsRetreat.getAllStepDetails(), hasSize(1));
+    assertThat(offensiveSubsRetreat.getAllStepDetails()).hasSize(1);
   }
 
   @Test
@@ -115,10 +112,10 @@ public class OffensiveSubsRetreatTest extends AbstractClientSettingTestCase {
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(
-        "The destroyer could be killed during the AA phase which would allow the sub to retreat.",
-        offensiveSubsRetreat.getAllStepDetails(),
-        hasSize(1));
+    assertThat(offensiveSubsRetreat.getAllStepDetails())
+        .as(
+            "The destroyer could be killed during the AA phase which would allow the sub to retreat.")
+        .hasSize(1);
   }
 
   @Test
@@ -132,7 +129,7 @@ public class OffensiveSubsRetreatTest extends AbstractClientSettingTestCase {
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(offensiveSubsRetreat.getAllStepDetails(), is(empty()));
+    assertThat(offensiveSubsRetreat.getAllStepDetails()).isEmpty();
   }
 
   @Test
@@ -151,7 +148,7 @@ public class OffensiveSubsRetreatTest extends AbstractClientSettingTestCase {
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(offensiveSubsRetreat.getAllStepDetails(), is(empty()));
+    assertThat(offensiveSubsRetreat.getAllStepDetails()).isEmpty();
   }
 
   @Test
@@ -164,7 +161,7 @@ public class OffensiveSubsRetreatTest extends AbstractClientSettingTestCase {
     final OffensiveSubsRetreat offensiveSubsRetreat =
         new OffensiveSubsRetreat(battleState, battleActions);
 
-    assertThat(offensiveSubsRetreat.getAllStepDetails(), is(empty()));
+    assertThat(offensiveSubsRetreat.getAllStepDetails()).isEmpty();
   }
 
   static Unit givenRealUnitCanEvade(final GameData gameData, final GamePlayer player) {

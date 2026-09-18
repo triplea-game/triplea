@@ -1,8 +1,6 @@
 package games.strategy.engine.data;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.sameInstance;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -70,7 +68,7 @@ final class DefaultAttachmentTest {
       final DefaultAttachment attachment = givenAttachment(NAME, attachable);
       final DefaultAttachment otherAttachment = attachment;
 
-      assertThat(attachment.equals(otherAttachment), is(true));
+      assertThat(attachment.equals(otherAttachment)).isTrue();
     }
 
     @Test
@@ -78,7 +76,7 @@ final class DefaultAttachmentTest {
       final DefaultAttachment attachment = givenAttachment(NAME, attachable);
       final DefaultAttachment otherAttachment = null;
 
-      assertThat(attachment.equals(otherAttachment), is(false));
+      assertThat(attachment.equals(otherAttachment)).isFalse();
     }
 
     @Test
@@ -89,7 +87,7 @@ final class DefaultAttachmentTest {
             private static final long serialVersionUID = 1L;
           };
 
-      assertThat(attachment.equals(otherAttachment), is(false));
+      assertThat(attachment.equals(otherAttachment)).isFalse();
     }
 
     @Test
@@ -97,7 +95,7 @@ final class DefaultAttachmentTest {
       final DefaultAttachment attachment = givenAttachment(NAME, attachable);
       final DefaultAttachment otherAttachment = givenAttachment(NAME, null);
 
-      assertThat(attachment.equals(otherAttachment), is(false));
+      assertThat(attachment.equals(otherAttachment)).isFalse();
     }
 
     @Test
@@ -105,7 +103,7 @@ final class DefaultAttachmentTest {
       final DefaultAttachment attachment = givenAttachment(NAME, null);
       final DefaultAttachment otherAttachment = givenAttachment(NAME, otherAttachable);
 
-      assertThat(attachment.equals(otherAttachment), is(false));
+      assertThat(attachment.equals(otherAttachment)).isFalse();
     }
 
     @Test
@@ -113,7 +111,7 @@ final class DefaultAttachmentTest {
       final DefaultAttachment attachment = givenAttachment(NAME, null);
       final DefaultAttachment otherAttachment = givenAttachment(NAME, null);
 
-      assertThat(attachment.equals(otherAttachment), is(true));
+      assertThat(attachment.equals(otherAttachment)).isTrue();
     }
 
     @Test
@@ -121,7 +119,7 @@ final class DefaultAttachmentTest {
       final DefaultAttachment attachment = givenAttachment(NAME, attachable);
       final DefaultAttachment otherAttachment = givenAttachment(NAME, otherAttachable);
 
-      assertThat(attachment.equals(otherAttachment), is(false));
+      assertThat(attachment.equals(otherAttachment)).isFalse();
     }
 
     @Test
@@ -129,7 +127,7 @@ final class DefaultAttachmentTest {
       final DefaultAttachment attachment = givenAttachment(NAME, attachable);
       final DefaultAttachment otherAttachment = givenAttachment(OTHER_NAME, attachable);
 
-      assertThat(attachment.equals(otherAttachment), is(false));
+      assertThat(attachment.equals(otherAttachment)).isFalse();
     }
 
     @Test
@@ -137,7 +135,7 @@ final class DefaultAttachmentTest {
       final DefaultAttachment attachment = givenAttachment(NAME, attachable);
       final DefaultAttachment otherAttachment = givenAttachment(NAME, attachable);
 
-      assertThat(attachment.equals(otherAttachment), is(true));
+      assertThat(attachment.equals(otherAttachment)).isTrue();
     }
 
     @Test
@@ -146,7 +144,7 @@ final class DefaultAttachmentTest {
       final DefaultAttachment otherAttachment =
           givenAttachment(OTHER_NAME, attachable, "stringValue");
 
-      assertThat(attachment.equals(otherAttachment), is(true));
+      assertThat(attachment.equals(otherAttachment)).isTrue();
     }
   }
 
@@ -164,7 +162,7 @@ final class DefaultAttachmentTest {
       final FakeAttachment actual =
           DefaultAttachment.getAttachment(namedAttachable, attachmentName, FakeAttachment.class);
 
-      assertThat(actual, is(sameInstance(expected)));
+      assertThat(actual).isSameAs(expected);
     }
 
     @Test
@@ -194,15 +192,18 @@ final class DefaultAttachmentTest {
   final class SplitOnColonTest {
     @Test
     void shouldSplitValueOnColon() {
-      assertThat(DefaultAttachment.splitOnColon(""), is(new String[] {""}));
-      assertThat(DefaultAttachment.splitOnColon("a"), is(new String[] {"a"}));
-      assertThat(DefaultAttachment.splitOnColon(":"), is(new String[] {"", ""}));
-      assertThat(DefaultAttachment.splitOnColon("a:b"), is(new String[] {"a", "b"}));
-      assertThat(DefaultAttachment.splitOnColon("a::b"), is(new String[] {"a", "", "b"}));
-      assertThat(DefaultAttachment.splitOnColon("::"), is(new String[] {"", "", ""}));
-      assertThat(DefaultAttachment.splitOnColon("a:b::c"), is(new String[] {"a", "b", "", "c"}));
-      assertThat(DefaultAttachment.splitOnColon(":a:b:c"), is(new String[] {"", "a", "b", "c"}));
-      assertThat(DefaultAttachment.splitOnColon("a:b:c:"), is(new String[] {"a", "b", "c", ""}));
+      assertThat(DefaultAttachment.splitOnColon("")).isEqualTo(new String[] {""});
+      assertThat(DefaultAttachment.splitOnColon("a")).isEqualTo(new String[] {"a"});
+      assertThat(DefaultAttachment.splitOnColon(":")).isEqualTo(new String[] {"", ""});
+      assertThat(DefaultAttachment.splitOnColon("a:b")).isEqualTo(new String[] {"a", "b"});
+      assertThat(DefaultAttachment.splitOnColon("a::b")).isEqualTo(new String[] {"a", "", "b"});
+      assertThat(DefaultAttachment.splitOnColon("::")).isEqualTo(new String[] {"", "", ""});
+      assertThat(DefaultAttachment.splitOnColon("a:b::c"))
+          .isEqualTo(new String[] {"a", "b", "", "c"});
+      assertThat(DefaultAttachment.splitOnColon(":a:b:c"))
+          .isEqualTo(new String[] {"", "a", "b", "c"});
+      assertThat(DefaultAttachment.splitOnColon("a:b:c:"))
+          .isEqualTo(new String[] {"a", "b", "c", ""});
     }
   }
 }

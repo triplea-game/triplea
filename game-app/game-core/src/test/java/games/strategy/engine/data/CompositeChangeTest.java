@@ -1,8 +1,6 @@
 package games.strategy.engine.data;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,16 +26,15 @@ class CompositeChangeTest {
             new CompositeChange(ChangeFactory.addUnits(territory, List.of())));
 
     final CompositeChange flattenedChange = change.flatten();
-    assertThat(
-        "Before the flattening, there are only two composite changes in the top change object",
-        change.getChanges(),
-        hasSize(2));
-    assertThat(
-        "After the flattening, there should be four actual changes: one for the removeUnits, "
-            + "one for the addUnits, and two for the moveUnits (since it created a composite "
-            + "change with a remove and add unit)",
-        flattenedChange.getChanges(),
-        hasSize(4));
+    assertThat(change.getChanges())
+        .as("Before the flattening, there are only two composite changes in the top change object")
+        .hasSize(2);
+    assertThat(flattenedChange.getChanges())
+        .as(
+            "After the flattening, there should be four actual changes: one for the removeUnits, "
+                + "one for the addUnits, and two for the moveUnits (since it created a composite "
+                + "change with a remove and add unit)")
+        .hasSize(4);
   }
 
   @Test
@@ -53,11 +50,11 @@ class CompositeChangeTest {
             ChangeFactory.removeUnits(territory, List.of()));
 
     final CompositeChange flattenedChange = change.flatten();
-    assertThat(
-        "Composite change with no child composite changes should have the same list of "
-            + "changes after flattening",
-        flattenedChange.getChanges(),
-        is(change.getChanges()));
+    assertThat(flattenedChange.getChanges())
+        .as(
+            "Composite change with no child composite changes should have the same list of "
+                + "changes after flattening")
+        .isEqualTo(change.getChanges());
   }
 
   @Test
@@ -74,10 +71,10 @@ class CompositeChangeTest {
             new CompositeChange(new CompositeChange(new CompositeChange(nestedChange))));
 
     final CompositeChange flattenedChange = change.flatten();
-    assertThat(
-        "After flattening, the one real change at the bottom of the nested CompositeChanges "
-            + "should be the only change",
-        flattenedChange.getChanges(),
-        is(List.of(nestedChange)));
+    assertThat(flattenedChange.getChanges())
+        .as(
+            "After flattening, the one real change at the bottom of the nested CompositeChanges "
+                + "should be the only change")
+        .isEqualTo(List.of(nestedChange));
   }
 }

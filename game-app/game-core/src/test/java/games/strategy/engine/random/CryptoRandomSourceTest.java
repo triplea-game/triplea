@@ -1,7 +1,6 @@
 package games.strategy.engine.random;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
@@ -43,7 +42,7 @@ class CryptoRandomSourceTest {
 
     final int[] mixedValues = CryptoRandomSource.mix(val1, val2, max);
 
-    assertThat(mixedValues, is(new int[] {0, 1, 2, 1, 2, 0, 2, 0, 1}));
+    assertThat(mixedValues).isEqualTo(new int[] {0, 1, 2, 1, 2, 0, 2, 0, 1});
   }
 
   @Test

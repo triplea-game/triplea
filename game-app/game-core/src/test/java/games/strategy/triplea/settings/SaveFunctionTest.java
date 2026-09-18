@@ -3,10 +3,7 @@ package games.strategy.triplea.settings;
 import static games.strategy.triplea.settings.SaveFunction.toDisplayString;
 import static games.strategy.triplea.settings.SelectionComponent.SaveContext.ValueSensitivity.INSENSITIVE;
 import static games.strategy.triplea.settings.SelectionComponent.SaveContext.ValueSensitivity.SENSITIVE;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.emptyString;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
@@ -39,14 +36,10 @@ final class SaveFunctionTest {
           SaveFunction.saveSettings(
               List.of(mockSelectionComponent, mockSelectionComponent2), Runnables.doNothing());
 
-      assertThat(
-          "There will always be a message back to the user",
-          result.message,
-          is(not(emptyString())));
-      assertThat(
-          "All valid, message type should informational",
-          result.dialogType,
-          is(JOptionPane.INFORMATION_MESSAGE));
+      assertThat(result.message).as("There will always be a message back to the user").isNotEmpty();
+      assertThat(result.dialogType)
+          .as("All valid, message type should informational")
+          .isEqualTo(JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void givenValidationResults(final boolean first, final boolean second) {
@@ -92,8 +85,8 @@ final class SaveFunctionTest {
           SaveFunction.saveSettings(
               List.of(mockSelectionComponent, mockSelectionComponent2), Runnables.doNothing());
 
-      assertThat(result.message, is(not(emptyString())));
-      assertThat(result.dialogType, is(JOptionPane.WARNING_MESSAGE));
+      assertThat(result.message).isNotEmpty();
+      assertThat(result.dialogType).isEqualTo(JOptionPane.WARNING_MESSAGE);
     }
 
     @Test
@@ -104,11 +97,10 @@ final class SaveFunctionTest {
           SaveFunction.saveSettings(
               List.of(mockSelectionComponent, mockSelectionComponent2), Runnables.doNothing());
 
-      assertThat(result.message, is(not(emptyString())));
-      assertThat(
-          "At least one value was not updated, should be warning message type",
-          result.dialogType,
-          is(JOptionPane.WARNING_MESSAGE));
+      assertThat(result.message).isNotEmpty();
+      assertThat(result.dialogType)
+          .as("At least one value was not updated, should be warning message type")
+          .isEqualTo(JOptionPane.WARNING_MESSAGE);
     }
 
     @Test
@@ -141,22 +133,22 @@ final class SaveFunctionTest {
     final class WhenValueIsNull {
       @Test
       void shouldReturnDefaultValueWhenInsensitiveAndDefaultValueIsNotNull() {
-        assertThat(toDisplayString(null, "value", INSENSITIVE), is("<default> (value)"));
+        assertThat(toDisplayString(null, "value", INSENSITIVE)).isEqualTo("<default> (value)");
       }
 
       @Test
       void shouldReturnUnsetWhenInsensitiveAndDefaultValueIsNull() {
-        assertThat(toDisplayString(null, null, INSENSITIVE), is("<unset>"));
+        assertThat(toDisplayString(null, null, INSENSITIVE)).isEqualTo("<unset>");
       }
 
       @Test
       void shouldReturnMaskedDefaultValueWhenSenstiveAndDefaultValueIsNotNull() {
-        assertThat(toDisplayString(null, "value", SENSITIVE), is("<default> (*****)"));
+        assertThat(toDisplayString(null, "value", SENSITIVE)).isEqualTo("<default> (*****)");
       }
 
       @Test
       void shouldReturnUnsetWhenSensitiveAndDefaultValueIsNull() {
-        assertThat(toDisplayString(null, null, SENSITIVE), is("<unset>"));
+        assertThat(toDisplayString(null, null, SENSITIVE)).isEqualTo("<unset>");
       }
     }
 
@@ -164,12 +156,12 @@ final class SaveFunctionTest {
     final class WhenValueEqualsDefaultValue {
       @Test
       void shouldReturnDefaultValueWhenInsensitive() {
-        assertThat(toDisplayString("value", "value", INSENSITIVE), is("<default> (value)"));
+        assertThat(toDisplayString("value", "value", INSENSITIVE)).isEqualTo("<default> (value)");
       }
 
       @Test
       void shouldReturnMaskedDefaultValueWhenSenstive() {
-        assertThat(toDisplayString("value", "value", SENSITIVE), is("<default> (*****)"));
+        assertThat(toDisplayString("value", "value", SENSITIVE)).isEqualTo("<default> (*****)");
       }
     }
 
@@ -177,12 +169,12 @@ final class SaveFunctionTest {
     final class WhenValueTypeIsString {
       @Test
       void shouldReturnValueWhenInsensitive() {
-        assertThat(toDisplayString("value", null, INSENSITIVE), is("value"));
+        assertThat(toDisplayString("value", null, INSENSITIVE)).isEqualTo("value");
       }
 
       @Test
       void shouldReturnMaskedValueWhenSenstive() {
-        assertThat(toDisplayString("value", null, SENSITIVE), is("*****"));
+        assertThat(toDisplayString("value", null, SENSITIVE)).isEqualTo("*****");
       }
     }
 
@@ -190,14 +182,14 @@ final class SaveFunctionTest {
     final class WhenValueTypeIsCharArray {
       @Test
       void shouldReturnValueWhenInsensitive() {
-        assertThat(
-            toDisplayString(new char[] {'v', 'a', 'l', 'u', 'e'}, null, INSENSITIVE), is("value"));
+        assertThat(toDisplayString(new char[] {'v', 'a', 'l', 'u', 'e'}, null, INSENSITIVE))
+            .isEqualTo("value");
       }
 
       @Test
       void shouldReturnMaskedValueWhenSenstive() {
-        assertThat(
-            toDisplayString(new char[] {'v', 'a', 'l', 'u', 'e'}, null, SENSITIVE), is("*****"));
+        assertThat(toDisplayString(new char[] {'v', 'a', 'l', 'u', 'e'}, null, SENSITIVE))
+            .isEqualTo("*****");
       }
     }
 
@@ -205,12 +197,12 @@ final class SaveFunctionTest {
     final class WhenValueTypeIsOther {
       @Test
       void shouldReturnValueWhenInsensitive() {
-        assertThat(toDisplayString(42, null, INSENSITIVE), is("42"));
+        assertThat(toDisplayString(42, null, INSENSITIVE)).isEqualTo("42");
       }
 
       @Test
       void shouldReturnMaskedValueWhenSenstive() {
-        assertThat(toDisplayString(42, null, SENSITIVE), is("**"));
+        assertThat(toDisplayString(42, null, SENSITIVE)).isEqualTo("**");
       }
     }
   }

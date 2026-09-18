@@ -3,12 +3,7 @@ package games.strategy.engine.data.unit.ability;
 import static games.strategy.triplea.Constants.DEFENDING_SUBS_SNEAK_ATTACK;
 import static games.strategy.triplea.Constants.NAVAL_BOMBARD_CASUALTIES_RETURN_FIRE;
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import games.strategy.engine.data.GameData;
@@ -65,20 +60,18 @@ class UnitAbilityFactoryTest {
     UnitAbilityFactory.generate(
         playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-    assertThat(
-        "Unit has no AA abilities", getAbilities(BattlePhaseList.DEFAULT_AA_PHASE), is(empty()));
-    assertThat(
-        "Unit has no Bombard abilities",
-        getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE),
-        is(empty()));
-    assertThat(
-        "Unit has no First Strike abilities",
-        getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE),
-        is(empty()));
-    assertThat(
-        "Unit has no general fight abilities",
-        getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-        is(empty()));
+    assertThat(getAbilities(BattlePhaseList.DEFAULT_AA_PHASE))
+        .as("Unit has no AA abilities")
+        .isEmpty();
+    assertThat(getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE))
+        .as("Unit has no Bombard abilities")
+        .isEmpty();
+    assertThat(getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE))
+        .as("Unit has no First Strike abilities")
+        .isEmpty();
+    assertThat(getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE))
+        .as("Unit has no general fight abilities")
+        .isEmpty();
   }
 
   private Collection<CombatUnitAbility> getAbilities(final String phaseName) {
@@ -98,33 +91,27 @@ class UnitAbilityFactoryTest {
         UnitAbilityFactory.generate(
             playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-        assertThat(
-            "Unit has no AA abilities",
-            getAbilities(BattlePhaseList.DEFAULT_AA_PHASE),
-            is(empty()));
-        assertThat(
-            "Unit has no Bombard abilities",
-            getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE),
-            is(empty()));
-        assertThat(
-            "Unit has no First Strike abilities",
-            getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE),
-            is(empty()));
-        assertThat(
-            "Unit has attack abilities",
-            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-            hasSize(1));
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_AA_PHASE))
+            .as("Unit has no AA abilities")
+            .isEmpty();
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE))
+            .as("Unit has no Bombard abilities")
+            .isEmpty();
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE))
+            .as("Unit has no First Strike abilities")
+            .isEmpty();
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE))
+            .as("Unit has attack abilities")
+            .hasSize(1);
 
         final CombatUnitAbility unitAbility =
             getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).iterator().next();
-        assertThat(
-            "unitAbility is attached to the unit type",
-            unitAbility.getAttachedUnitTypes(),
-            is(List.of(unitType)));
-        assertThat(
-            "unitAbility is only for attacking",
-            unitAbility.getSides(),
-            is(List.of(BattleState.Side.OFFENSE)));
+        assertThat(unitAbility.getAttachedUnitTypes())
+            .as("unitAbility is attached to the unit type")
+            .isEqualTo(List.of(unitType));
+        assertThat(unitAbility.getSides())
+            .as("unitAbility is only for attacking")
+            .isEqualTo(List.of(BattleState.Side.OFFENSE));
       }
 
       @Test
@@ -134,33 +121,27 @@ class UnitAbilityFactoryTest {
         UnitAbilityFactory.generate(
             playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-        assertThat(
-            "Unit has no AA abilities",
-            getAbilities(BattlePhaseList.DEFAULT_AA_PHASE),
-            is(empty()));
-        assertThat(
-            "Unit has no Bombard abilities",
-            getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE),
-            is(empty()));
-        assertThat(
-            "Unit has no First Strike abilities",
-            getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE),
-            is(empty()));
-        assertThat(
-            "Unit has defense abilities",
-            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-            hasSize(1));
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_AA_PHASE))
+            .as("Unit has no AA abilities")
+            .isEmpty();
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE))
+            .as("Unit has no Bombard abilities")
+            .isEmpty();
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE))
+            .as("Unit has no First Strike abilities")
+            .isEmpty();
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE))
+            .as("Unit has defense abilities")
+            .hasSize(1);
 
         final CombatUnitAbility unitAbility =
             getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).iterator().next();
-        assertThat(
-            "unitAbility is attached to the unit type",
-            unitAbility.getAttachedUnitTypes(),
-            is(List.of(unitType)));
-        assertThat(
-            "unitAbility is only for defending",
-            unitAbility.getSides(),
-            is(List.of(BattleState.Side.DEFENSE)));
+        assertThat(unitAbility.getAttachedUnitTypes())
+            .as("unitAbility is attached to the unit type")
+            .isEqualTo(List.of(unitType));
+        assertThat(unitAbility.getSides())
+            .as("unitAbility is only for defending")
+            .isEqualTo(List.of(BattleState.Side.DEFENSE));
       }
 
       @Test
@@ -171,21 +152,18 @@ class UnitAbilityFactoryTest {
         UnitAbilityFactory.generate(
             playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-        assertThat(
-            "Unit has General abilities",
-            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-            hasSize(1));
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE))
+            .as("Unit has General abilities")
+            .hasSize(1);
 
         final CombatUnitAbility unitAbility =
             getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).iterator().next();
-        assertThat(
-            "isSuicideOnHit translates ONLY_ON_HIT for offense",
-            unitAbility.getSuicide(BattleState.Side.OFFENSE),
-            is(CombatUnitAbility.Suicide.AFTER_HIT));
-        assertThat(
-            "isSuicideOnHit translates ONLY_ON_HIT for defense",
-            unitAbility.getSuicide(BattleState.Side.DEFENSE),
-            is(CombatUnitAbility.Suicide.AFTER_HIT));
+        assertThat(unitAbility.getSuicide(BattleState.Side.OFFENSE))
+            .as("isSuicideOnHit translates ONLY_ON_HIT for offense")
+            .isEqualTo(CombatUnitAbility.Suicide.AFTER_HIT);
+        assertThat(unitAbility.getSuicide(BattleState.Side.DEFENSE))
+            .as("isSuicideOnHit translates ONLY_ON_HIT for defense")
+            .isEqualTo(CombatUnitAbility.Suicide.AFTER_HIT);
       }
 
       @Test
@@ -196,21 +174,18 @@ class UnitAbilityFactoryTest {
         UnitAbilityFactory.generate(
             playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-        assertThat(
-            "Unit has General abilities",
-            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-            hasSize(1));
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE))
+            .as("Unit has General abilities")
+            .hasSize(1);
 
         final CombatUnitAbility unitAbility =
             getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).iterator().next();
-        assertThat(
-            "isSuicideOnAttack translates into suicide on offense ALWAYS",
-            unitAbility.getSuicide(BattleState.Side.OFFENSE),
-            is(CombatUnitAbility.Suicide.AFTER_FIRE));
-        assertThat(
-            "isSuicideOnAttack should not cause suicide on defense to have anything",
-            unitAbility.getSuicide(BattleState.Side.DEFENSE),
-            is(CombatUnitAbility.Suicide.NONE));
+        assertThat(unitAbility.getSuicide(BattleState.Side.OFFENSE))
+            .as("isSuicideOnAttack translates into suicide on offense ALWAYS")
+            .isEqualTo(CombatUnitAbility.Suicide.AFTER_FIRE);
+        assertThat(unitAbility.getSuicide(BattleState.Side.DEFENSE))
+            .as("isSuicideOnAttack should not cause suicide on defense to have anything")
+            .isEqualTo(CombatUnitAbility.Suicide.NONE);
       }
 
       @Test
@@ -221,21 +196,18 @@ class UnitAbilityFactoryTest {
         UnitAbilityFactory.generate(
             playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-        assertThat(
-            "Unit has General abilities",
-            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-            hasSize(1));
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE))
+            .as("Unit has General abilities")
+            .hasSize(1);
 
         final CombatUnitAbility unitAbility =
             getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).iterator().next();
-        assertThat(
-            "isSuicideOnDefense translates into suicide on defense ALWAYS",
-            unitAbility.getSuicide(BattleState.Side.DEFENSE),
-            is(CombatUnitAbility.Suicide.AFTER_FIRE));
-        assertThat(
-            "isSuicideOnDefense should not cause suicide on offense to have anything",
-            unitAbility.getSuicide(BattleState.Side.OFFENSE),
-            is(CombatUnitAbility.Suicide.NONE));
+        assertThat(unitAbility.getSuicide(BattleState.Side.DEFENSE))
+            .as("isSuicideOnDefense translates into suicide on defense ALWAYS")
+            .isEqualTo(CombatUnitAbility.Suicide.AFTER_FIRE);
+        assertThat(unitAbility.getSuicide(BattleState.Side.OFFENSE))
+            .as("isSuicideOnDefense should not cause suicide on offense to have anything")
+            .isEqualTo(CombatUnitAbility.Suicide.NONE);
       }
 
       @Test
@@ -249,14 +221,12 @@ class UnitAbilityFactoryTest {
 
         final CombatUnitAbility unitAbility =
             getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).iterator().next();
-        assertThat(
-            "isSuicideOnAttack supersedes isSuicideOnHit so offense is ALWAYS",
-            unitAbility.getSuicide(BattleState.Side.OFFENSE),
-            is(CombatUnitAbility.Suicide.AFTER_FIRE));
-        assertThat(
-            "isSuicideOnHit is by itself on defense so it is ONLY_ON_HIT",
-            unitAbility.getSuicide(BattleState.Side.DEFENSE),
-            is(CombatUnitAbility.Suicide.AFTER_HIT));
+        assertThat(unitAbility.getSuicide(BattleState.Side.OFFENSE))
+            .as("isSuicideOnAttack supersedes isSuicideOnHit so offense is ALWAYS")
+            .isEqualTo(CombatUnitAbility.Suicide.AFTER_FIRE);
+        assertThat(unitAbility.getSuicide(BattleState.Side.DEFENSE))
+            .as("isSuicideOnHit is by itself on defense so it is ONLY_ON_HIT")
+            .isEqualTo(CombatUnitAbility.Suicide.AFTER_HIT);
       }
 
       @Test
@@ -273,17 +243,15 @@ class UnitAbilityFactoryTest {
         UnitAbilityFactory.generate(
             playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-        assertThat(
-            "Both unitTypes should have the same ability",
-            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-            hasSize(1));
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE))
+            .as("Both unitTypes should have the same ability")
+            .hasSize(1);
 
         final CombatUnitAbility unitAbility =
             getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).iterator().next();
-        assertThat(
-            "unitAbility is attached to both of the unit types",
-            unitAbility.getAttachedUnitTypes(),
-            is(List.of(unitType, otherUnitType)));
+        assertThat(unitAbility.getAttachedUnitTypes())
+            .as("unitAbility is attached to both of the unit types")
+            .isEqualTo(List.of(unitType, otherUnitType));
       }
 
       @Test
@@ -309,10 +277,9 @@ class UnitAbilityFactoryTest {
 
         final CombatUnitAbility unitAbility =
             getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).iterator().next();
-        assertThat(
-            "All non infrastructure unit types, including itself, are possible targets",
-            unitAbility.getTargets(),
-            is(List.of(unitType, otherUnitType)));
+        assertThat(unitAbility.getTargets())
+            .as("All non infrastructure unit types, including itself, are possible targets")
+            .isEqualTo(List.of(unitType, otherUnitType));
       }
 
       @Test
@@ -339,11 +306,11 @@ class UnitAbilityFactoryTest {
 
         final CombatUnitAbility unitAbility =
             getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).iterator().next();
-        assertThat(
-            "The canNotTargetUnitType is listed in the units canNotTarget property so it should "
-                + "not be in the target list",
-            unitAbility.getTargets(),
-            is(List.of(unitType, otherUnitType)));
+        assertThat(unitAbility.getTargets())
+            .as(
+                "The canNotTargetUnitType is listed in the units canNotTarget property so it should "
+                    + "not be in the target list")
+            .isEqualTo(List.of(unitType, otherUnitType));
       }
 
       @Test
@@ -368,17 +335,15 @@ class UnitAbilityFactoryTest {
         UnitAbilityFactory.generate(
             playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-        assertThat(
-            "Both unitTypes have the same ability",
-            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-            hasSize(1));
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE))
+            .as("Both unitTypes have the same ability")
+            .hasSize(1);
 
         final CombatUnitAbility unitAbility =
             getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).iterator().next();
-        assertThat(
-            "The ability should be attached to both unit types",
-            unitAbility.getAttachedUnitTypes(),
-            is(List.of(unitType, otherUnitType)));
+        assertThat(unitAbility.getAttachedUnitTypes())
+            .as("The ability should be attached to both unit types")
+            .isEqualTo(List.of(unitType, otherUnitType));
       }
 
       @Test
@@ -409,35 +374,35 @@ class UnitAbilityFactoryTest {
         UnitAbilityFactory.generate(
             playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-        assertThat(
-            "Both unitTypes should have their own ability",
-            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-            hasSize(2));
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE))
+            .as("Both unitTypes should have their own ability")
+            .hasSize(2);
 
         assertThat(
-            "Both unit abilities should have only 1 attached unit type",
-            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).stream()
-                .filter(combatUnitAbility -> combatUnitAbility.getAttachedUnitTypes().size() == 1)
-                .collect(Collectors.toList()),
-            hasSize(2));
+                getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).stream()
+                    .filter(
+                        combatUnitAbility -> combatUnitAbility.getAttachedUnitTypes().size() == 1)
+                    .collect(Collectors.toList()))
+            .as("Both unit abilities should have only 1 attached unit type")
+            .hasSize(2);
 
         assertThat(
-            "One unit ability should be attached to unitType",
-            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).stream()
-                .filter(
-                    combatUnitAbility ->
-                        combatUnitAbility.getAttachedUnitTypes().contains(unitType))
-                .collect(Collectors.toList()),
-            hasSize(1));
+                getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).stream()
+                    .filter(
+                        combatUnitAbility ->
+                            combatUnitAbility.getAttachedUnitTypes().contains(unitType))
+                    .collect(Collectors.toList()))
+            .as("One unit ability should be attached to unitType")
+            .hasSize(1);
 
         assertThat(
-            "One unit ability should be attached to otherUnitType",
-            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).stream()
-                .filter(
-                    combatUnitAbility ->
-                        combatUnitAbility.getAttachedUnitTypes().contains(otherUnitType))
-                .collect(Collectors.toList()),
-            hasSize(1));
+                getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).stream()
+                    .filter(
+                        combatUnitAbility ->
+                            combatUnitAbility.getAttachedUnitTypes().contains(otherUnitType))
+                    .collect(Collectors.toList()))
+            .as("One unit ability should be attached to otherUnitType")
+            .hasSize(1);
       }
 
       @Test
@@ -462,45 +427,39 @@ class UnitAbilityFactoryTest {
         UnitAbilityFactory.generate(
             playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-        assertThat(
-            "Unit has an ability without a destroyer present and another ability with the "
-                + "destroyer present to allow it to hit the canNotTargetUnitType",
-            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-            hasSize(2));
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE))
+            .as(
+                "Unit has an ability without a destroyer present and another ability with the "
+                    + "destroyer present to allow it to hit the canNotTargetUnitType")
+            .hasSize(2);
 
-        assertThat(
-            "Destroyer has convertUnitType",
-            battlePhaseList.getConvertAbilities().get(player),
-            hasSize(1));
+        assertThat(battlePhaseList.getConvertAbilities().get(player))
+            .as("Destroyer has convertUnitType")
+            .hasSize(1);
 
         final ConvertUnitAbility convertUnitAbility =
             battlePhaseList.getConvertAbilities().get(player).iterator().next();
 
-        assertThat(
-            "Both of the abilities in the convertUnitAbility should be in the general phase",
-            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-            hasItems(convertUnitAbility.getFrom(), convertUnitAbility.getTo()));
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE))
+            .as("Both of the abilities in the convertUnitAbility should be in the general phase")
+            .contains(convertUnitAbility.getFrom(), convertUnitAbility.getTo());
 
         final CombatUnitAbility initialAbility = convertUnitAbility.getFrom();
 
-        assertThat(
-            "The initial ability should be attached to the unit type",
-            initialAbility.getAttachedUnitTypes(),
-            is(List.of(unitType)));
-        assertThat(
-            "The initial ability doesn't allow targeting the canNotTargetUnitType",
-            initialAbility.getTargets(),
-            is(List.of(unitType, destroyerUnitType)));
+        assertThat(initialAbility.getAttachedUnitTypes())
+            .as("The initial ability should be attached to the unit type")
+            .isEqualTo(List.of(unitType));
+        assertThat(initialAbility.getTargets())
+            .as("The initial ability doesn't allow targeting the canNotTargetUnitType")
+            .isEqualTo(List.of(unitType, destroyerUnitType));
 
         final CombatUnitAbility finalAbility = convertUnitAbility.getTo();
-        assertThat(
-            "The final ability is not initially attached to the unit type",
-            finalAbility.getAttachedUnitTypes(),
-            is(empty()));
-        assertThat(
-            "The final ability does allow targeting the canNotTargetUnitType",
-            finalAbility.getTargets(),
-            is(List.of(unitType, canNotTargetUnitType, destroyerUnitType)));
+        assertThat(finalAbility.getAttachedUnitTypes())
+            .as("The final ability is not initially attached to the unit type")
+            .isEmpty();
+        assertThat(finalAbility.getTargets())
+            .as("The final ability does allow targeting the canNotTargetUnitType")
+            .isEqualTo(List.of(unitType, canNotTargetUnitType, destroyerUnitType));
       }
 
       @Test
@@ -531,18 +490,18 @@ class UnitAbilityFactoryTest {
 
         final CombatUnitAbility initialAbility = convertUnitAbility.getFrom();
 
-        assertThat(
-            "The initial ability doesn't allow targeting the canNotTargetUnitType and the "
-                + "destroyerUnitType",
-            initialAbility.getTargets(),
-            is(List.of(unitType)));
+        assertThat(initialAbility.getTargets())
+            .as(
+                "The initial ability doesn't allow targeting the canNotTargetUnitType and the "
+                    + "destroyerUnitType")
+            .isEqualTo(List.of(unitType));
 
         final CombatUnitAbility finalAbility = convertUnitAbility.getTo();
-        assertThat(
-            "The final ability does allow targeting the canNotTargetUnitType but the "
-                + "destroyerUnitType is still not allowed",
-            finalAbility.getTargets(),
-            is(List.of(unitType, canNotTargetUnitType)));
+        assertThat(finalAbility.getTargets())
+            .as(
+                "The final ability does allow targeting the canNotTargetUnitType but the "
+                    + "destroyerUnitType is still not allowed")
+            .isEqualTo(List.of(unitType, canNotTargetUnitType));
       }
     }
 
@@ -557,10 +516,9 @@ class UnitAbilityFactoryTest {
         UnitAbilityFactory.generate(
             playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-        assertThat(
-            "Unit has First Strike abilities",
-            getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE),
-            hasSize(1));
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE))
+            .as("Unit has First Strike abilities")
+            .hasSize(1);
       }
 
       @Test
@@ -571,21 +529,18 @@ class UnitAbilityFactoryTest {
         UnitAbilityFactory.generate(
             playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-        assertThat(
-            "isSuicide Unit has First Strike abilities",
-            getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE),
-            hasSize(1));
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE))
+            .as("isSuicide Unit has First Strike abilities")
+            .hasSize(1);
 
         final CombatUnitAbility unitAbility =
             getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE).iterator().next();
-        assertThat(
-            "isSuicideOnHit translates ALWAYS for offense",
-            unitAbility.getSuicide(BattleState.Side.OFFENSE),
-            is(CombatUnitAbility.Suicide.AFTER_FIRE));
-        assertThat(
-            "isSuicideOnHit translates ALWAYS for defense",
-            unitAbility.getSuicide(BattleState.Side.DEFENSE),
-            is(CombatUnitAbility.Suicide.AFTER_FIRE));
+        assertThat(unitAbility.getSuicide(BattleState.Side.OFFENSE))
+            .as("isSuicideOnHit translates ALWAYS for offense")
+            .isEqualTo(CombatUnitAbility.Suicide.AFTER_FIRE);
+        assertThat(unitAbility.getSuicide(BattleState.Side.DEFENSE))
+            .as("isSuicideOnHit translates ALWAYS for defense")
+            .isEqualTo(CombatUnitAbility.Suicide.AFTER_FIRE);
       }
 
       @Test
@@ -599,22 +554,18 @@ class UnitAbilityFactoryTest {
 
         UnitAbilityFactory.generate(playerList, unitTypeList, battlePhaseList, properties);
 
-        assertThat(
-            "Unit has no AA abilities",
-            getAbilities(BattlePhaseList.DEFAULT_AA_PHASE),
-            is(empty()));
-        assertThat(
-            "Unit has no Bombard abilities",
-            getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE),
-            is(empty()));
-        assertThat(
-            "Unit has First Strike abilities",
-            getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE),
-            hasSize(1));
-        assertThat(
-            "Unit has no General abilities",
-            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-            is(empty()));
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_AA_PHASE))
+            .as("Unit has no AA abilities")
+            .isEmpty();
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE))
+            .as("Unit has no Bombard abilities")
+            .isEmpty();
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE))
+            .as("Unit has First Strike abilities")
+            .hasSize(1);
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE))
+            .as("Unit has no General abilities")
+            .isEmpty();
       }
 
       @Test
@@ -628,22 +579,19 @@ class UnitAbilityFactoryTest {
 
         UnitAbilityFactory.generate(playerList, unitTypeList, battlePhaseList, properties);
 
-        assertThat(
-            "Unit has First Strike abilities",
-            getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE),
-            hasSize(1));
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE))
+            .as("Unit has First Strike abilities")
+            .hasSize(1);
 
         final CombatUnitAbility unitAbility =
             getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE).iterator().next();
-        assertThat("isSub doesn't allow return fire", unitAbility.isReturnFire(), is(false));
-        assertThat(
-            "isSub's ability is on both sides because DEFENDING_SUBS_SNEAK_ATTACK is true",
-            unitAbility.getSides(),
-            is(List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)));
-        assertThat(
-            "isSub's ability is attached to it",
-            unitAbility.getAttachedUnitTypes(),
-            is(List.of(unitType)));
+        assertThat(unitAbility.isReturnFire()).as("isSub doesn't allow return fire").isFalse();
+        assertThat(unitAbility.getSides())
+            .as("isSub's ability is on both sides because DEFENDING_SUBS_SNEAK_ATTACK is true")
+            .isEqualTo(List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE));
+        assertThat(unitAbility.getAttachedUnitTypes())
+            .as("isSub's ability is attached to it")
+            .isEqualTo(List.of(unitType));
       }
 
       @Test
@@ -657,46 +605,39 @@ class UnitAbilityFactoryTest {
 
         UnitAbilityFactory.generate(playerList, unitTypeList, battlePhaseList, properties);
 
-        assertThat(
-            "Unit has First Strike abilities on offense",
-            getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE),
-            hasSize(1));
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE))
+            .as("Unit has First Strike abilities on offense")
+            .hasSize(1);
 
-        assertThat(
-            "Unit has General abilities on defense",
-            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-            hasSize(1));
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE))
+            .as("Unit has General abilities on defense")
+            .hasSize(1);
 
         final CombatUnitAbility offenseUnitAbility =
             getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE).iterator().next();
-        assertThat(
-            "isSub's first strike ability doesn't allow return fire",
-            offenseUnitAbility.isReturnFire(),
-            is(false));
-        assertThat(
-            "isSub's first strike ability is only on offense side because "
-                + "DEFENDING_SUBS_SNEAK_ATTACK is false",
-            offenseUnitAbility.getSides(),
-            is(List.of(BattleState.Side.OFFENSE)));
-        assertThat(
-            "isSub's first strike ability is attached to it",
-            offenseUnitAbility.getAttachedUnitTypes(),
-            is(List.of(unitType)));
+        assertThat(offenseUnitAbility.isReturnFire())
+            .as("isSub's first strike ability doesn't allow return fire")
+            .isFalse();
+        assertThat(offenseUnitAbility.getSides())
+            .as(
+                "isSub's first strike ability is only on offense side because "
+                    + "DEFENDING_SUBS_SNEAK_ATTACK is false")
+            .isEqualTo(List.of(BattleState.Side.OFFENSE));
+        assertThat(offenseUnitAbility.getAttachedUnitTypes())
+            .as("isSub's first strike ability is attached to it")
+            .isEqualTo(List.of(unitType));
 
         final CombatUnitAbility defenseUnitAbility =
             getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).iterator().next();
-        assertThat(
-            "isSub's general ability does allow return fire",
-            defenseUnitAbility.isReturnFire(),
-            is(true));
-        assertThat(
-            "isSub's general ability is only on defense sides",
-            defenseUnitAbility.getSides(),
-            is(List.of(BattleState.Side.DEFENSE)));
-        assertThat(
-            "isSub's general ability is attached to it",
-            defenseUnitAbility.getAttachedUnitTypes(),
-            is(List.of(unitType)));
+        assertThat(defenseUnitAbility.isReturnFire())
+            .as("isSub's general ability does allow return fire")
+            .isTrue();
+        assertThat(defenseUnitAbility.getSides())
+            .as("isSub's general ability is only on defense sides")
+            .isEqualTo(List.of(BattleState.Side.DEFENSE));
+        assertThat(defenseUnitAbility.getAttachedUnitTypes())
+            .as("isSub's general ability is attached to it")
+            .isEqualTo(List.of(unitType));
       }
 
       @Test
@@ -710,28 +651,25 @@ class UnitAbilityFactoryTest {
 
         UnitAbilityFactory.generate(playerList, unitTypeList, battlePhaseList, properties);
 
-        assertThat(
-            "Unit has First Strike abilities",
-            getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE),
-            hasSize(1));
-        assertThat(
-            "Unit has no General abilities because isDestroyer is not present",
-            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-            is(empty()));
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE))
+            .as("Unit has First Strike abilities")
+            .hasSize(1);
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE))
+            .as("Unit has no General abilities because isDestroyer is not present")
+            .isEmpty();
 
         final CombatUnitAbility unitAbility =
             getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE).iterator().next();
-        assertThat("isSub doesn't allow return fire", unitAbility.isReturnFire(), is(false));
-        assertThat(
-            "isSub's ability is on both sides because DEFENDING_SUBS_SNEAK_ATTACK is true",
-            unitAbility.getSides(),
-            is(List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE)));
+        assertThat(unitAbility.isReturnFire()).as("isSub doesn't allow return fire").isFalse();
+        assertThat(unitAbility.getSides())
+            .as("isSub's ability is on both sides because DEFENDING_SUBS_SNEAK_ATTACK is true")
+            .isEqualTo(List.of(BattleState.Side.OFFENSE, BattleState.Side.DEFENSE));
 
-        assertThat(
-            "isSub triggers isFirstStrike which generally needs a convert ability but there "
-                + "isn't an isDestroyer unit type so the convert ability is not created.",
-            battlePhaseList.getConvertAbilities().get(player),
-            is(nullValue()));
+        assertThat(battlePhaseList.getConvertAbilities().get(player))
+            .as(
+                "isSub triggers isFirstStrike which generally needs a convert ability but there "
+                    + "isn't an isDestroyer unit type so the convert ability is not created.")
+            .isNull();
       }
 
       @Test
@@ -752,38 +690,35 @@ class UnitAbilityFactoryTest {
 
         UnitAbilityFactory.generate(playerList, unitTypeList, battlePhaseList, properties);
 
-        assertThat(
-            "Unit has First Strike abilities",
-            getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE),
-            hasSize(1));
-        assertThat(
-            "Unit has General abilities because the isDestroyer can convert its first strike "
-                + "unitAbility",
-            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-            hasSize(1));
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE))
+            .as("Unit has First Strike abilities")
+            .hasSize(1);
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE))
+            .as(
+                "Unit has General abilities because the isDestroyer can convert its first strike "
+                    + "unitAbility")
+            .hasSize(1);
 
         final CombatUnitAbility firstStrikeAbility =
             getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE).iterator().next();
         final CombatUnitAbility generalAbility =
             getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE).iterator().next();
-        assertThat(
-            "The first strike ability is attached to the isSub",
-            firstStrikeAbility.getAttachedUnitTypes(),
-            is(List.of(unitType)));
-        assertThat(
-            "The general ability is not attached to anything yet since it is attached when "
-                + "the convert ability runs during the battle.",
-            generalAbility.getAttachedUnitTypes(),
-            is(empty()));
+        assertThat(firstStrikeAbility.getAttachedUnitTypes())
+            .as("The first strike ability is attached to the isSub")
+            .isEqualTo(List.of(unitType));
+        assertThat(generalAbility.getAttachedUnitTypes())
+            .as(
+                "The general ability is not attached to anything yet since it is attached when "
+                    + "the convert ability runs during the battle.")
+            .isEmpty();
 
-        assertThat(
-            "A convert ability needs to exist to convert the first strike to general",
-            battlePhaseList.getConvertAbilities().get(player),
-            hasSize(1));
+        assertThat(battlePhaseList.getConvertAbilities().get(player))
+            .as("A convert ability needs to exist to convert the first strike to general")
+            .hasSize(1);
         final ConvertUnitAbility convertUnitAbility =
             battlePhaseList.getConvertAbilities().get(player).iterator().next();
-        assertThat(convertUnitAbility.getFrom(), is(firstStrikeAbility));
-        assertThat(convertUnitAbility.getTo(), is(generalAbility));
+        assertThat(convertUnitAbility.getFrom()).isEqualTo(firstStrikeAbility);
+        assertThat(convertUnitAbility.getTo()).isEqualTo(generalAbility);
       }
 
       @Test
@@ -811,26 +746,26 @@ class UnitAbilityFactoryTest {
 
         UnitAbilityFactory.generate(playerList, unitTypeList, battlePhaseList, properties);
 
-        assertThat(
-            "Unit has a first strike ability without a friendly destroyer present and another "
-                + "ability with a friendly destroyer present to allow it to hit the "
-                + "canNotTargetUnitType",
-            getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE),
-            hasSize(2));
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE))
+            .as(
+                "Unit has a first strike ability without a friendly destroyer present and another "
+                    + "ability with a friendly destroyer present to allow it to hit the "
+                    + "canNotTargetUnitType")
+            .hasSize(2);
 
-        assertThat(
-            "When an enemy destroyer is present, the unit has a general ability without a "
-                + "friendly destroyer present and another ability with a friendly destroyer "
-                + "present to allow it to hit the canNotTargetUnitType",
-            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-            hasSize(2));
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE))
+            .as(
+                "When an enemy destroyer is present, the unit has a general ability without a "
+                    + "friendly destroyer present and another ability with a friendly destroyer "
+                    + "present to allow it to hit the canNotTargetUnitType")
+            .hasSize(2);
 
-        assertThat(
-            "Friendly destroyer has a convert ability to allow the sub to hit the canNotTarget "
-                + "unit. Enemy destroyers have two convert abilities to negate the sub in either "
-                + "case",
-            battlePhaseList.getConvertAbilities().get(player),
-            hasSize(3));
+        assertThat(battlePhaseList.getConvertAbilities().get(player))
+            .as(
+                "Friendly destroyer has a convert ability to allow the sub to hit the canNotTarget "
+                    + "unit. Enemy destroyers have two convert abilities to negate the sub in either "
+                    + "case")
+            .hasSize(3);
 
         final ConvertUnitAbility friendlyConvertUnitAbility =
             battlePhaseList.getConvertAbilities().get(player).stream()
@@ -840,11 +775,11 @@ class UnitAbilityFactoryTest {
                 .findFirst()
                 .orElseThrow();
 
-        assertThat(
-            "Both of the abilities in the friendlyConvertUnitAbility should be in the first "
-                + "strike phase since the friendly isDestroyer doesn't negate the first strike",
-            getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE),
-            hasItems(friendlyConvertUnitAbility.getFrom(), friendlyConvertUnitAbility.getTo()));
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE))
+            .as(
+                "Both of the abilities in the friendlyConvertUnitAbility should be in the first "
+                    + "strike phase since the friendly isDestroyer doesn't negate the first strike")
+            .contains(friendlyConvertUnitAbility.getFrom(), friendlyConvertUnitAbility.getTo());
 
         final List<ConvertUnitAbility> enemyUnitAbilities =
             battlePhaseList.getConvertAbilities().get(player).stream()
@@ -868,19 +803,17 @@ class UnitAbilityFactoryTest {
                 .findFirst()
                 .orElseThrow();
 
-        assertThat(
-            "The to unitAbilities in both of the convert are in the general phase",
-            getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-            hasItems(
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE))
+            .as("The to unitAbilities in both of the convert are in the general phase")
+            .contains(
                 enemyConvertUnitAbilityWhenFriendlyDestroyerNotPresent.getTo(),
-                enemyConvertUnitAbilityWhenFriendlyDestroyerPresent.getTo()));
+                enemyConvertUnitAbilityWhenFriendlyDestroyerPresent.getTo());
 
-        assertThat(
-            "The from unitAbilities in both of the convert are in the first strike phase",
-            getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE),
-            hasItems(
+        assertThat(getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE))
+            .as("The from unitAbilities in both of the convert are in the first strike phase")
+            .contains(
                 enemyConvertUnitAbilityWhenFriendlyDestroyerNotPresent.getFrom(),
-                enemyConvertUnitAbilityWhenFriendlyDestroyerPresent.getFrom()));
+                enemyConvertUnitAbilityWhenFriendlyDestroyerPresent.getFrom());
       }
     }
   }
@@ -896,22 +829,18 @@ class UnitAbilityFactoryTest {
       UnitAbilityFactory.generate(
           playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-      assertThat(
-          "Unit has offense AA abilities",
-          getAbilities(BattlePhaseList.DEFAULT_AA_PHASE),
-          hasSize(1));
-      assertThat(
-          "Unit has no Bombard abilities",
-          getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE),
-          is(empty()));
-      assertThat(
-          "Unit has no First Strike abilities",
-          getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE),
-          is(empty()));
-      assertThat(
-          "Unit has no General abilities",
-          getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-          is(empty()));
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_AA_PHASE))
+          .as("Unit has offense AA abilities")
+          .hasSize(1);
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE))
+          .as("Unit has no Bombard abilities")
+          .isEmpty();
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE))
+          .as("Unit has no First Strike abilities")
+          .isEmpty();
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE))
+          .as("Unit has no General abilities")
+          .isEmpty();
     }
 
     @Test
@@ -922,22 +851,18 @@ class UnitAbilityFactoryTest {
       UnitAbilityFactory.generate(
           playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-      assertThat(
-          "Unit has defense AA abilities",
-          getAbilities(BattlePhaseList.DEFAULT_AA_PHASE),
-          hasSize(1));
-      assertThat(
-          "Unit has no Bombard abilities",
-          getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE),
-          is(empty()));
-      assertThat(
-          "Unit has no First Strike abilities",
-          getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE),
-          is(empty()));
-      assertThat(
-          "Unit has no General abilities",
-          getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-          is(empty()));
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_AA_PHASE))
+          .as("Unit has defense AA abilities")
+          .hasSize(1);
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE))
+          .as("Unit has no Bombard abilities")
+          .isEmpty();
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE))
+          .as("Unit has no First Strike abilities")
+          .isEmpty();
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE))
+          .as("Unit has no General abilities")
+          .isEmpty();
     }
 
     @Test
@@ -949,22 +874,18 @@ class UnitAbilityFactoryTest {
       UnitAbilityFactory.generate(
           playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-      assertThat(
-          "Unit has not for AA combat so has no AA abilities",
-          getAbilities(BattlePhaseList.DEFAULT_AA_PHASE),
-          is(empty()));
-      assertThat(
-          "Unit has no Bombard abilities",
-          getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE),
-          is(empty()));
-      assertThat(
-          "Unit has no First Strike abilities",
-          getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE),
-          is(empty()));
-      assertThat(
-          "Unit has no General abilities",
-          getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-          is(empty()));
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_AA_PHASE))
+          .as("Unit has not for AA combat so has no AA abilities")
+          .isEmpty();
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE))
+          .as("Unit has no Bombard abilities")
+          .isEmpty();
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE))
+          .as("Unit has no First Strike abilities")
+          .isEmpty();
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE))
+          .as("Unit has no General abilities")
+          .isEmpty();
     }
 
     @Test
@@ -976,22 +897,18 @@ class UnitAbilityFactoryTest {
       UnitAbilityFactory.generate(
           playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-      assertThat(
-          "Unit has no AA rolls so doesn't have an AA ability",
-          getAbilities(BattlePhaseList.DEFAULT_AA_PHASE),
-          is(empty()));
-      assertThat(
-          "Unit has no Bombard abilities",
-          getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE),
-          is(empty()));
-      assertThat(
-          "Unit has no First Strike abilities",
-          getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE),
-          is(empty()));
-      assertThat(
-          "Unit has no General abilities",
-          getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-          is(empty()));
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_AA_PHASE))
+          .as("Unit has no AA rolls so doesn't have an AA ability")
+          .isEmpty();
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE))
+          .as("Unit has no Bombard abilities")
+          .isEmpty();
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE))
+          .as("Unit has no First Strike abilities")
+          .isEmpty();
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE))
+          .as("Unit has no General abilities")
+          .isEmpty();
     }
 
     @Test
@@ -1003,22 +920,18 @@ class UnitAbilityFactoryTest {
       UnitAbilityFactory.generate(
           playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-      assertThat(
-          "Unit has no AA rolls so doesn't have an AA ability",
-          getAbilities(BattlePhaseList.DEFAULT_AA_PHASE),
-          is(empty()));
-      assertThat(
-          "Unit has no Bombard abilities",
-          getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE),
-          is(empty()));
-      assertThat(
-          "Unit has no First Strike abilities",
-          getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE),
-          is(empty()));
-      assertThat(
-          "Unit has no General abilities",
-          getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-          is(empty()));
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_AA_PHASE))
+          .as("Unit has no AA rolls so doesn't have an AA ability")
+          .isEmpty();
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE))
+          .as("Unit has no Bombard abilities")
+          .isEmpty();
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE))
+          .as("Unit has no First Strike abilities")
+          .isEmpty();
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE))
+          .as("Unit has no General abilities")
+          .isEmpty();
     }
 
     @Test
@@ -1032,7 +945,7 @@ class UnitAbilityFactoryTest {
 
       final CombatUnitAbility ability =
           getAbilities(BattlePhaseList.DEFAULT_AA_PHASE).iterator().next();
-      assertThat(ability.getRound(), is(10));
+      assertThat(ability.getRound()).isEqualTo(10);
     }
 
     @Test
@@ -1046,7 +959,7 @@ class UnitAbilityFactoryTest {
 
       final CombatUnitAbility ability =
           getAbilities(BattlePhaseList.DEFAULT_AA_PHASE).iterator().next();
-      assertThat(ability.getTargets(), is(unitAttachment.getTargetsAa(unitTypeList)));
+      assertThat(ability.getTargets()).isEqualTo(unitAttachment.getTargetsAa(unitTypeList));
     }
 
     @Test
@@ -1070,17 +983,15 @@ class UnitAbilityFactoryTest {
       UnitAbilityFactory.generate(
           playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-      assertThat(
-          "Only one ability should be created since both units have the same typeAa",
-          getAbilities(BattlePhaseList.DEFAULT_AA_PHASE),
-          hasSize(1));
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_AA_PHASE))
+          .as("Only one ability should be created since both units have the same typeAa")
+          .hasSize(1);
 
       final CombatUnitAbility ability =
           getAbilities(BattlePhaseList.DEFAULT_AA_PHASE).iterator().next();
-      assertThat(
-          "Both of the unit types in the typeAa should be on this ability",
-          ability.getAttachedUnitTypes(),
-          is(List.of(unitType, otherUnitType)));
+      assertThat(ability.getAttachedUnitTypes())
+          .as("Both of the unit types in the typeAa should be on this ability")
+          .isEqualTo(List.of(unitType, otherUnitType));
     }
 
     @Test
@@ -1106,24 +1017,23 @@ class UnitAbilityFactoryTest {
       UnitAbilityFactory.generate(
           playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-      assertThat(
-          "Even though the targetsAa are different, both units have the same typeAa. So the engine "
-              + "assumes that it was a typo and will create one ability using the targetsAa from "
-              + "only one of the units. This targetsAa is generally the first one it sees.",
-          getAbilities(BattlePhaseList.DEFAULT_AA_PHASE),
-          hasSize(1));
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_AA_PHASE))
+          .as(
+              "Even though the targetsAa are different, both units have the same typeAa. So the engine "
+                  + "assumes that it was a typo and will create one ability using the targetsAa from "
+                  + "only one of the units. This targetsAa is generally the first one it sees.")
+          .hasSize(1);
 
       final CombatUnitAbility ability =
           getAbilities(BattlePhaseList.DEFAULT_AA_PHASE).iterator().next();
-      assertThat(
-          "Both of the unit types in the typeAa should be on this ability",
-          ability.getAttachedUnitTypes(),
-          is(List.of(unitType, otherUnitType)));
-      assertThat(
-          "The unit ability should have just one of the targetsAa. In this test, that happens "
-              + "to be the first set.",
-          ability.getTargets(),
-          is(targets1));
+      assertThat(ability.getAttachedUnitTypes())
+          .as("Both of the unit types in the typeAa should be on this ability")
+          .isEqualTo(List.of(unitType, otherUnitType));
+      assertThat(ability.getTargets())
+          .as(
+              "The unit ability should have just one of the targetsAa. In this test, that happens "
+                  + "to be the first set.")
+          .isEqualTo(targets1);
     }
 
     @Test
@@ -1137,31 +1047,27 @@ class UnitAbilityFactoryTest {
       UnitAbilityFactory.generate(
           playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-      assertThat(
-          "A convert ability needs to exist so that the preventsFiringUnitType can negate the "
-              + "AA attack",
-          battlePhaseList.getConvertAbilities().get(player),
-          hasSize(1));
+      assertThat(battlePhaseList.getConvertAbilities().get(player))
+          .as(
+              "A convert ability needs to exist so that the preventsFiringUnitType can negate the "
+                  + "AA attack")
+          .hasSize(1);
       final ConvertUnitAbility convertUnitAbility =
           battlePhaseList.getConvertAbilities().get(player).iterator().next();
       final CombatUnitAbility unitAbility =
           getAbilities(BattlePhaseList.DEFAULT_AA_PHASE).iterator().next();
-      assertThat(
-          "The convert ability needs to reference the AA ability",
-          convertUnitAbility.getFrom(),
-          is(unitAbility));
-      assertThat(
-          "The convert ability is removing the AA ability so the To is EMPTY",
-          convertUnitAbility.getTo(),
-          is(CombatUnitAbility.EMPTY));
-      assertThat(
-          "The convert ability should be on the preventsFiringUnitType",
-          convertUnitAbility.getAttachedUnitTypes(),
-          is(List.of(preventsFiringUnitType)));
-      assertThat(
-          "The preventsFiringUnitType is preventing an enemy AA unit",
-          convertUnitAbility.getTeams(),
-          is(List.of(ConvertUnitAbility.Team.FOE)));
+      assertThat(convertUnitAbility.getFrom())
+          .as("The convert ability needs to reference the AA ability")
+          .isEqualTo(unitAbility);
+      assertThat(convertUnitAbility.getTo())
+          .as("The convert ability is removing the AA ability so the To is EMPTY")
+          .isEqualTo(CombatUnitAbility.EMPTY);
+      assertThat(convertUnitAbility.getAttachedUnitTypes())
+          .as("The convert ability should be on the preventsFiringUnitType")
+          .isEqualTo(List.of(preventsFiringUnitType));
+      assertThat(convertUnitAbility.getTeams())
+          .as("The preventsFiringUnitType is preventing an enemy AA unit")
+          .isEqualTo(List.of(ConvertUnitAbility.Team.FOE));
     }
 
     @Test
@@ -1190,20 +1096,19 @@ class UnitAbilityFactoryTest {
       UnitAbilityFactory.generate(
           playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-      assertThat(
-          "A convert ability needs to exist so that the preventsFiringUnitType can negate the "
-              + "AA attack. Only one is needed as both of the firing unit types have the same "
-              + "typeAa",
-          battlePhaseList.getConvertAbilities().get(player),
-          hasSize(1));
+      assertThat(battlePhaseList.getConvertAbilities().get(player))
+          .as(
+              "A convert ability needs to exist so that the preventsFiringUnitType can negate the "
+                  + "AA attack. Only one is needed as both of the firing unit types have the same "
+                  + "typeAa")
+          .hasSize(1);
       final ConvertUnitAbility convertUnitAbility =
           battlePhaseList.getConvertAbilities().get(player).iterator().next();
       final CombatUnitAbility unitAbility =
           getAbilities(BattlePhaseList.DEFAULT_AA_PHASE).iterator().next();
-      assertThat(
-          "The convert ability needs to reference the AA ability",
-          convertUnitAbility.getFrom(),
-          is(unitAbility));
+      assertThat(convertUnitAbility.getFrom())
+          .as("The convert ability needs to reference the AA ability")
+          .isEqualTo(unitAbility);
     }
 
     @Test
@@ -1231,30 +1136,32 @@ class UnitAbilityFactoryTest {
       UnitAbilityFactory.generate(
           playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-      assertThat(
-          "A convert ability needs to exist so that the preventsFiringUnitType can negate the "
-              + "AA attack. Two are needed; one for each of the typeAa",
-          battlePhaseList.getConvertAbilities().get(player),
-          hasSize(2));
+      assertThat(battlePhaseList.getConvertAbilities().get(player))
+          .as(
+              "A convert ability needs to exist so that the preventsFiringUnitType can negate the "
+                  + "AA attack. Two are needed; one for each of the typeAa")
+          .hasSize(2);
       final Collection<ConvertUnitAbility> convertUnitAbilities =
           battlePhaseList.getConvertAbilities().get(player);
       final List<CombatUnitAbility> unitAbilities =
           new ArrayList<>(getAbilities(BattlePhaseList.DEFAULT_AA_PHASE));
 
       assertThat(
-          "One of the convert abilities needs to reference the first unit ability",
-          convertUnitAbilities.stream()
-              .filter(
-                  convertUnitAbility -> convertUnitAbility.getFrom().equals(unitAbilities.get(0)))
-              .collect(Collectors.toList()),
-          hasSize(1));
+              convertUnitAbilities.stream()
+                  .filter(
+                      convertUnitAbility ->
+                          convertUnitAbility.getFrom().equals(unitAbilities.get(0)))
+                  .collect(Collectors.toList()))
+          .as("One of the convert abilities needs to reference the first unit ability")
+          .hasSize(1);
       assertThat(
-          "One of the convert abilities needs to reference the second unit ability",
-          convertUnitAbilities.stream()
-              .filter(
-                  convertUnitAbility -> convertUnitAbility.getFrom().equals(unitAbilities.get(1)))
-              .collect(Collectors.toList()),
-          hasSize(1));
+              convertUnitAbilities.stream()
+                  .filter(
+                      convertUnitAbility ->
+                          convertUnitAbility.getFrom().equals(unitAbilities.get(1)))
+                  .collect(Collectors.toList()))
+          .as("One of the convert abilities needs to reference the second unit ability")
+          .hasSize(1);
     }
   }
 
@@ -1268,22 +1175,18 @@ class UnitAbilityFactoryTest {
       UnitAbilityFactory.generate(
           playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-      assertThat(
-          "Unit has no AA rolls so doesn't have an AA ability",
-          getAbilities(BattlePhaseList.DEFAULT_AA_PHASE),
-          is(empty()));
-      assertThat(
-          "Unit has Bombard abilities",
-          getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE),
-          hasSize(1));
-      assertThat(
-          "Unit has no First Strike abilities",
-          getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE),
-          is(empty()));
-      assertThat(
-          "Unit has no General abilities",
-          getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE),
-          is(empty()));
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_AA_PHASE))
+          .as("Unit has no AA rolls so doesn't have an AA ability")
+          .isEmpty();
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE))
+          .as("Unit has Bombard abilities")
+          .hasSize(1);
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_FIRST_STRIKE_PHASE))
+          .as("Unit has no First Strike abilities")
+          .isEmpty();
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_GENERAL_PHASE))
+          .as("Unit has no General abilities")
+          .isEmpty();
     }
 
     @Test
@@ -1300,17 +1203,15 @@ class UnitAbilityFactoryTest {
       UnitAbilityFactory.generate(
           playerList, unitTypeList, battlePhaseList, new GameProperties(gameData));
 
-      assertThat(
-          "Only one Bombard ability should be created",
-          getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE),
-          hasSize(1));
+      assertThat(getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE))
+          .as("Only one Bombard ability should be created")
+          .hasSize(1);
 
       final CombatUnitAbility ability =
           getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE).iterator().next();
-      assertThat(
-          "Both unit types should be on the ability",
-          ability.getAttachedUnitTypes(),
-          is(List.of(unitType, unitType2)));
+      assertThat(ability.getAttachedUnitTypes())
+          .as("Both unit types should be on the ability")
+          .isEqualTo(List.of(unitType, unitType2));
     }
 
     @Test
@@ -1324,7 +1225,7 @@ class UnitAbilityFactoryTest {
 
       final CombatUnitAbility ability =
           getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE).iterator().next();
-      assertThat(ability.isReturnFire(), is(true));
+      assertThat(ability.isReturnFire()).isTrue();
     }
 
     @Test
@@ -1338,7 +1239,7 @@ class UnitAbilityFactoryTest {
 
       final CombatUnitAbility ability =
           getAbilities(BattlePhaseList.DEFAULT_BOMBARD_PHASE).iterator().next();
-      assertThat(ability.isReturnFire(), is(false));
+      assertThat(ability.isReturnFire()).isFalse();
     }
   }
 }

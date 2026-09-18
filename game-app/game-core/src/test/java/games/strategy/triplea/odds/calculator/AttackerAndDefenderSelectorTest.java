@@ -1,8 +1,5 @@
 package games.strategy.triplea.odds.calculator;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static games.strategy.triplea.delegate.GameDataTestUtil.americans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.british;
@@ -12,12 +9,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.italians;
 import static games.strategy.triplea.delegate.GameDataTestUtil.japanese;
 import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -79,10 +71,10 @@ public class AttackerAndDefenderSelectorTest {
       final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
           attackerAndDefenderSelector.getAttackerAndDefender();
 
-      assertThat(attAndDef.getAttacker(), isEmpty());
-      assertThat(attAndDef.getDefender(), isEmpty());
-      assertThat(attAndDef.getAttackingUnits(), is(empty()));
-      assertThat(attAndDef.getDefendingUnits(), is(empty()));
+      assertThat(attAndDef.getAttacker()).isEmpty();
+      assertThat(attAndDef.getDefender()).isEmpty();
+      assertThat(attAndDef.getAttackingUnits()).isEmpty();
+      assertThat(attAndDef.getDefendingUnits()).isEmpty();
     }
 
     @Test
@@ -101,11 +93,11 @@ public class AttackerAndDefenderSelectorTest {
 
       final Optional<GamePlayer> attacker = attAndDef.getAttacker();
       final Optional<GamePlayer> defender = attAndDef.getDefender();
-      assertThat(attacker, isPresentAndIs(russians));
-      assertThat(defender, isPresent());
-      assertThat(attacker.orElseThrow().isAtWar(defender.orElseThrow()), is(true));
-      assertThat(attAndDef.getAttackingUnits(), is(empty()));
-      assertThat(attAndDef.getDefendingUnits(), is(empty()));
+      assertThat(attacker).contains(russians);
+      assertThat(defender).isPresent();
+      assertThat(attacker.orElseThrow().isAtWar(defender.orElseThrow())).isTrue();
+      assertThat(attAndDef.getAttackingUnits()).isEmpty();
+      assertThat(attAndDef.getDefendingUnits()).isEmpty();
     }
 
     @Test
@@ -121,11 +113,11 @@ public class AttackerAndDefenderSelectorTest {
       final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
           attackerAndDefenderSelector.getAttackerAndDefender();
 
-      assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
+      assertThat(attAndDef.getAttacker()).contains(russians);
       // Fight in Germany -> Germans defend
-      assertThat(attAndDef.getDefender(), isPresentAndIs(germans));
-      assertThat(attAndDef.getAttackingUnits(), is(empty()));
-      assertThat(attAndDef.getDefendingUnits(), is(germany.getUnits()));
+      assertThat(attAndDef.getDefender()).contains(germans);
+      assertThat(attAndDef.getAttackingUnits()).isEmpty();
+      assertThat(attAndDef.getDefendingUnits()).isEqualTo(germany.getUnits());
     }
 
     @Test
@@ -142,10 +134,10 @@ public class AttackerAndDefenderSelectorTest {
       final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
           attackerAndDefenderSelector.getAttackerAndDefender();
 
-      assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
-      assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
-      assertThat(attAndDef.getAttackingUnits(), is(empty()));
-      assertThat(attAndDef.getDefendingUnits(), is(japan.getUnits()));
+      assertThat(attAndDef.getAttacker()).contains(russians);
+      assertThat(attAndDef.getDefender()).contains(japanese);
+      assertThat(attAndDef.getAttackingUnits()).isEmpty();
+      assertThat(attAndDef.getDefendingUnits()).isEqualTo(japan.getUnits());
     }
 
     @Test
@@ -166,15 +158,13 @@ public class AttackerAndDefenderSelectorTest {
 
       final Optional<GamePlayer> attacker = attAndDef.getAttacker();
       final Optional<GamePlayer> defender = attAndDef.getDefender();
-      assertThat(attacker, isPresentAndIs(russians));
-      assertThat(defender, isPresentAndIs(germans));
-      assertThat(attacker.orElseThrow().isAtWar(defender.orElseThrow()), is(true));
-      assertThat(
-          attAndDef.getAttackingUnits(),
-          containsInAnyOrder(filterTerritoryUnitsByOwner(unitedKingdom, russians)));
-      assertThat(
-          attAndDef.getDefendingUnits(),
-          containsInAnyOrder(filterTerritoryUnitsByOwner(unitedKingdom, germans)));
+      assertThat(attacker).contains(russians);
+      assertThat(defender).contains(germans);
+      assertThat(attacker.orElseThrow().isAtWar(defender.orElseThrow())).isTrue();
+      assertThat(attAndDef.getAttackingUnits())
+          .containsExactlyInAnyOrder(filterTerritoryUnitsByOwner(unitedKingdom, russians));
+      assertThat(attAndDef.getDefendingUnits())
+          .containsExactlyInAnyOrder(filterTerritoryUnitsByOwner(unitedKingdom, germans));
     }
 
     @Test
@@ -193,12 +183,11 @@ public class AttackerAndDefenderSelectorTest {
       final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
           attackerAndDefenderSelector.getAttackerAndDefender();
 
-      assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
-      assertThat(attAndDef.getDefender(), isPresentAndIs(germans));
-      assertThat(attAndDef.getAttackingUnits(), is(empty()));
-      assertThat(
-          attAndDef.getDefendingUnits(),
-          containsInAnyOrder(filterTerritoryUnitsByOwner(germany, germans, japanese)));
+      assertThat(attAndDef.getAttacker()).contains(russians);
+      assertThat(attAndDef.getDefender()).contains(germans);
+      assertThat(attAndDef.getAttackingUnits()).isEmpty();
+      assertThat(attAndDef.getDefendingUnits())
+          .containsExactlyInAnyOrder(filterTerritoryUnitsByOwner(germany, germans, japanese));
     }
 
     @Test
@@ -216,12 +205,11 @@ public class AttackerAndDefenderSelectorTest {
       final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
           attackerAndDefenderSelector.getAttackerAndDefender();
 
-      assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
-      assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
-      assertThat(attAndDef.getAttackingUnits(), is(empty()));
-      assertThat(
-          attAndDef.getDefendingUnits(),
-          containsInAnyOrder(filterTerritoryUnitsByOwner(japan, japanese, germans)));
+      assertThat(attAndDef.getAttacker()).contains(russians);
+      assertThat(attAndDef.getDefender()).contains(japanese);
+      assertThat(attAndDef.getAttackingUnits()).isEmpty();
+      assertThat(attAndDef.getDefendingUnits())
+          .containsExactlyInAnyOrder(filterTerritoryUnitsByOwner(japan, japanese, germans));
     }
 
     @Test
@@ -239,12 +227,12 @@ public class AttackerAndDefenderSelectorTest {
       final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
           attackerAndDefenderSelector.getAttackerAndDefender();
 
-      assertThat(attAndDef.getAttacker(), isPresentAndIs(germans)); // case: all units allied
-      assertThat(attAndDef.getDefender(), isPresentAndIs(british));
-      assertThat(attAndDef.getAttackingUnits(), is(empty()));
-      assertThat(
-          attAndDef.getDefendingUnits(),
-          containsInAnyOrder(filterTerritoryUnitsByOwner(unitedKingdom, british, americans)));
+      assertThat(attAndDef.getAttacker()).contains(germans); // case: all units allied
+      assertThat(attAndDef.getDefender()).contains(british);
+      assertThat(attAndDef.getAttackingUnits()).isEmpty();
+      assertThat(attAndDef.getDefendingUnits())
+          .containsExactlyInAnyOrder(
+              filterTerritoryUnitsByOwner(unitedKingdom, british, americans));
     }
 
     @Test
@@ -264,12 +252,11 @@ public class AttackerAndDefenderSelectorTest {
       final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
           attackerAndDefenderSelector.getAttackerAndDefender();
 
-      assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
-      assertThat(attAndDef.getDefender(), isPresentAndIs(germans));
-      assertThat(attAndDef.getAttackingUnits(), is(empty()));
-      assertThat(
-          attAndDef.getDefendingUnits(),
-          containsInAnyOrder(filterTerritoryUnitsByOwner(germany, germans, japanese)));
+      assertThat(attAndDef.getAttacker()).contains(russians);
+      assertThat(attAndDef.getDefender()).contains(germans);
+      assertThat(attAndDef.getAttackingUnits()).isEmpty();
+      assertThat(attAndDef.getDefendingUnits())
+          .containsExactlyInAnyOrder(filterTerritoryUnitsByOwner(germany, germans, japanese));
     }
 
     @Test
@@ -287,12 +274,11 @@ public class AttackerAndDefenderSelectorTest {
       final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
           attackerAndDefenderSelector.getAttackerAndDefender();
 
-      assertThat(attAndDef.getAttacker(), isPresentAndIs(russians));
-      assertThat(attAndDef.getDefender(), isPresentAndIs(japanese));
-      assertThat(attAndDef.getAttackingUnits(), is(empty()));
-      assertThat(
-          attAndDef.getDefendingUnits(),
-          containsInAnyOrder(filterTerritoryUnitsByOwner(japan, japanese)));
+      assertThat(attAndDef.getAttacker()).contains(russians);
+      assertThat(attAndDef.getDefender()).contains(japanese);
+      assertThat(attAndDef.getAttackingUnits()).isEmpty();
+      assertThat(attAndDef.getDefendingUnits())
+          .containsExactlyInAnyOrder(filterTerritoryUnitsByOwner(japan, japanese));
     }
 
     @Test
@@ -311,12 +297,12 @@ public class AttackerAndDefenderSelectorTest {
 
       final Optional<GamePlayer> attacker = attAndDef.getAttacker();
       final Optional<GamePlayer> defender = attAndDef.getDefender();
-      assertThat(attacker, isPresentAndIs(russians));
-      assertThat(defender, isPresent());
-      assertThat(attacker.orElseThrow().isAtWar(defender.orElseThrow()), is(true));
-      assertThat(defender.orElseThrow(), is(not(gameData.getPlayerList().getNullPlayer())));
-      assertThat(attAndDef.getAttackingUnits(), is(empty()));
-      assertThat(attAndDef.getDefendingUnits(), is(empty()));
+      assertThat(attacker).contains(russians);
+      assertThat(defender).isPresent();
+      assertThat(attacker.orElseThrow().isAtWar(defender.orElseThrow())).isTrue();
+      assertThat(defender.orElseThrow()).isNotEqualTo(gameData.getPlayerList().getNullPlayer());
+      assertThat(attAndDef.getAttackingUnits()).isEmpty();
+      assertThat(attAndDef.getDefendingUnits()).isEmpty();
     }
 
     @Test
@@ -333,11 +319,11 @@ public class AttackerAndDefenderSelectorTest {
       final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
           attackerAndDefenderSelector.getAttackerAndDefender();
 
-      assertThat(kenya.getOwner(), is(equalTo(british)));
-      assertThat(attAndDef.getAttacker(), isPresentAndIs(germans));
-      assertThat(attAndDef.getDefender(), isPresentAndIs(british));
-      assertThat(attAndDef.getAttackingUnits(), is(empty()));
-      assertThat(attAndDef.getDefendingUnits(), is(empty()));
+      assertThat(kenya.getOwner()).isEqualTo(british);
+      assertThat(attAndDef.getAttacker()).contains(germans);
+      assertThat(attAndDef.getDefender()).contains(british);
+      assertThat(attAndDef.getAttackingUnits()).isEmpty();
+      assertThat(attAndDef.getDefendingUnits()).isEmpty();
     }
 
     @Test
@@ -357,10 +343,10 @@ public class AttackerAndDefenderSelectorTest {
 
       final Optional<GamePlayer> attacker = attAndDef.getAttacker();
       final Optional<GamePlayer> defender = attAndDef.getDefender();
-      assertThat(attacker, isPresentAndIs(russians));
-      assertThat(defender, isPresent());
-      assertThat(attAndDef.getAttackingUnits(), is(empty()));
-      assertThat(attAndDef.getDefendingUnits(), is(empty()));
+      assertThat(attacker).contains(russians);
+      assertThat(defender).isPresent();
+      assertThat(attAndDef.getAttackingUnits()).isEmpty();
+      assertThat(attAndDef.getDefendingUnits()).isEmpty();
     }
 
     @Test
@@ -381,15 +367,13 @@ public class AttackerAndDefenderSelectorTest {
 
       final Optional<GamePlayer> attacker = attAndDef.getAttacker();
       final Optional<GamePlayer> defender = attAndDef.getDefender();
-      assertThat(attacker, isPresentAndIs(russians));
-      assertThat(defender, isPresentAndIs(germans));
-      assertThat(attacker.orElseThrow().isAtWar(defender.orElseThrow()), is(true));
-      assertThat(
-          attAndDef.getAttackingUnits(),
-          containsInAnyOrder(filterTerritoryUnitsByOwner(russia, russians)));
-      assertThat(
-          attAndDef.getDefendingUnits(),
-          containsInAnyOrder(filterTerritoryUnitsByOwner(russia, germans)));
+      assertThat(attacker).contains(russians);
+      assertThat(defender).contains(germans);
+      assertThat(attacker.orElseThrow().isAtWar(defender.orElseThrow())).isTrue();
+      assertThat(attAndDef.getAttackingUnits())
+          .containsExactlyInAnyOrder(filterTerritoryUnitsByOwner(russia, russians));
+      assertThat(attAndDef.getDefendingUnits())
+          .containsExactlyInAnyOrder(filterTerritoryUnitsByOwner(russia, germans));
     }
   }
 
@@ -420,13 +404,13 @@ public class AttackerAndDefenderSelectorTest {
           attackerAndDefenderSelector.getAttackerAndDefender();
 
       final Optional<GamePlayer> defender = attAndDef.getDefender();
-      assertThat(defender, isPresentAndIs(italians));
-      assertThat(attAndDef.getDefendingUnits(), equalTo(northernItaly.getUnits()));
+      assertThat(defender).contains(italians);
+      assertThat(attAndDef.getDefendingUnits()).isEqualTo(northernItaly.getUnits());
     }
 
     @Test
     void seaZoneWithAlliedUnits() {
-      assertThat(sz97.getUnits(), not(empty()));
+      assertThat(sz97.getUnits()).isNotEmpty();
       final AttackerAndDefenderSelector attackerAndDefenderSelector =
           AttackerAndDefenderSelector.builder()
               .players(gameData.getPlayerList().getPlayers())
@@ -439,8 +423,8 @@ public class AttackerAndDefenderSelectorTest {
           attackerAndDefenderSelector.getAttackerAndDefender();
 
       final Optional<GamePlayer> defender = attAndDef.getDefender();
-      assertThat(defender, isPresentAndIs(italians)); // only italy units present
-      assertThat(attAndDef.getDefendingUnits(), equalTo(sz97.getUnits()));
+      assertThat(defender).contains(italians); // only italy units present
+      assertThat(attAndDef.getDefendingUnits()).isEqualTo(sz97.getUnits());
     }
 
     @Test
@@ -457,8 +441,8 @@ public class AttackerAndDefenderSelectorTest {
           attackerAndDefenderSelector.getAttackerAndDefender();
 
       final Optional<GamePlayer> defender = attAndDef.getDefender();
-      assertThat(defender, isPresentAndIs(russians));
-      assertThat(attAndDef.getDefendingUnits(), equalTo(balticStates.getUnits()));
+      assertThat(defender).contains(russians);
+      assertThat(attAndDef.getDefendingUnits()).isEqualTo(balticStates.getUnits());
     }
 
     @Test
@@ -474,13 +458,12 @@ public class AttackerAndDefenderSelectorTest {
       final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
           attackerAndDefenderSelector.getAttackerAndDefender();
 
-      assertThat(uk.getUnits().stream().anyMatch(Matches.unitIsOwnedBy(french)), is(true));
-      assertThat(uk.getUnits().stream().anyMatch(Matches.unitIsOwnedBy(british)), is(true));
-      assertThat(attAndDef.getDefender(), isPresentAndIs(british)); // only allied units
-      assertThat(attAndDef.getDefendingUnits(), equalTo(uk.getUnits()));
-      assertThat(
-          attAndDef.getAttacker(), isPresentAndIs(germans)); // next in turn after current init step
-      assertThat(attAndDef.getAttackingUnits(), is(empty()));
+      assertThat(uk.getUnits().stream().anyMatch(Matches.unitIsOwnedBy(french))).isTrue();
+      assertThat(uk.getUnits().stream().anyMatch(Matches.unitIsOwnedBy(british))).isTrue();
+      assertThat(attAndDef.getDefender()).contains(british); // only allied units
+      assertThat(attAndDef.getDefendingUnits()).isEqualTo(uk.getUnits());
+      assertThat(attAndDef.getAttacker()).contains(germans); // next in turn after current init step
+      assertThat(attAndDef.getAttackingUnits()).isEmpty();
     }
   }
 }

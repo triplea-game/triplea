@@ -1,7 +1,6 @@
 package games.strategy.engine;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.nio.file.Path;
@@ -17,8 +16,8 @@ final class ClientFileSystemHelperTest {
       final Path result =
           ClientFileSystemHelper.getUserMapsFolder(() -> Path.of("/path/to/current"));
 
-      assertThat(
-          result, is(Path.of("/path", "to", "current", ClientFileSystemHelper.MAPS_FOLDER_NAME)));
+      assertThat(result)
+          .isEqualTo(Path.of("/path", "to", "current", ClientFileSystemHelper.MAPS_FOLDER_NAME));
     }
   }
 }

@@ -2,7 +2,7 @@ package games.strategy.triplea.ui;
 
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.ui.CasualtySelection.playerMayChooseToDistributeHitsToUnitsWithDifferentMovement;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -40,9 +40,9 @@ class CasualtySelectionTest {
     units.get(0).setAlreadyMoved(BigDecimal.ONE);
     units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
 
-    assertThat(
-        "Air units with different movement points should cause that the player can choose",
-        playerMayChooseToDistributeHitsToUnitsWithDifferentMovement(units));
+    assertThat(playerMayChooseToDistributeHitsToUnitsWithDifferentMovement(units))
+        .as("Air units with different movement points should cause that the player can choose")
+        .isTrue();
   }
 
   @Test
@@ -61,9 +61,9 @@ class CasualtySelectionTest {
     units.get(0).setAlreadyMoved(BigDecimal.ONE);
     units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
 
-    assertThat(
-        "Air units with only one hitpoint left should not cause that the player can choose",
-        !playerMayChooseToDistributeHitsToUnitsWithDifferentMovement(units));
+    assertThat(playerMayChooseToDistributeHitsToUnitsWithDifferentMovement(units))
+        .as("Air units with only one hitpoint left should not cause that the player can choose")
+        .isFalse();
   }
 
   @Test
@@ -80,9 +80,10 @@ class CasualtySelectionTest {
     units.get(1).setAlreadyMoved(BigDecimal.valueOf(2));
     units.get(2).setAlreadyMoved(BigDecimal.valueOf(2));
 
-    assertThat(
-        "Non-air units should not affect if the player chooses between units"
-            + " with different movement points",
-        !playerMayChooseToDistributeHitsToUnitsWithDifferentMovement(units));
+    assertThat(playerMayChooseToDistributeHitsToUnitsWithDifferentMovement(units))
+        .as(
+            "Non-air units should not affect if the player chooses between units"
+                + " with different movement points")
+        .isFalse();
   }
 }

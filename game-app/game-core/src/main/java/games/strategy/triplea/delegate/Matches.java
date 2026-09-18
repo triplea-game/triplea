@@ -1106,10 +1106,10 @@ public final class Matches {
       // Apply "AAP" (Pacific) Naval base bonus. Note: In "AAG40" (1940) naval bases are implemented
       // differently: via a naval base _unit_ that boosts movement rather than territory attachment.
       if (ua.isSea() && unit.getData().getSequence().getStep().isNonCombat()) {
-        // If a zone adjacent to the starting and ending sea zones are allied naval bases, increase
-        // the range.
-        // TODO Still need to be able to handle stops on the way
-        if (hasNeighboringAlliedNavalBase(route.getStart(), unit.getOwner())
+        // The bonus applies if the unit's overall journey this phase started adjacent to a friendly
+        // naval base and ends adjacent to one — even if the journey was made in multiple legs.
+        final Territory journeyStart = findPhaseStartTerritory(unit, route.getStart());
+        if (hasNeighboringAlliedNavalBase(journeyStart, unit.getOwner())
             && hasNeighboringAlliedNavalBase(route.getEnd(), unit.getOwner())) {
           left = left.add(BigDecimal.ONE);
         }
@@ -1131,8 +1131,37 @@ public final class Matches {
         .anyMatch(t2 -> hasAlliedNavalBase(t2, player));
   }
 
+  /**
+   * Whether a territory neighbors a naval base allied to {@code player} — the per-endpoint
+   * condition that grants a non-combat sea unit the +1 naval-base movement bonus. Exposed so move
+   * planning can mirror {@link #unitHasEnoughMovementForRoute}, which applies it to both the
+   * journey start and the end.
+   */
+  public static Predicate<Territory> territoryHasNeighboringAlliedNavalBase(
+      final GamePlayer player) {
+    return t -> hasNeighboringAlliedNavalBase(t, player);
+  }
+
   private static boolean hasAlliedNavalBase(Territory t, GamePlayer player) {
     return TerritoryAttachment.hasNavalBase(t) && t.getOwner().isAllied(player);
+  }
+
+  /**
+   * Returns the territory the unit started this move phase from. If the unit has already moved this
+   * phase, walks back through the move history; otherwise returns {@code currentLocation}.
+   */
+  private static Territory findPhaseStartTerritory(Unit unit, Territory currentLocation) {
+    // Absent a move delegate (e.g. AI simulation or headless contexts operating on derived game
+    // data), fall back to the current location — the move history is unavailable there anyway.
+    if (unit.getData().getDelegateOptional("move").orElse(null)
+        instanceof AbstractMoveDelegate moveDelegate) {
+      for (final UndoableMove move : moveDelegate.getMovesMade()) {
+        if (move.getUnits().contains(unit)) {
+          return move.getRoute().getStart();
+        }
+      }
+    }
+    return currentLocation;
   }
 
   public static Predicate<Unit> unitHasMovementLeft() {

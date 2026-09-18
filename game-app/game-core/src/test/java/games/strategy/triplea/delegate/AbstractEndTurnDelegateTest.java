@@ -1,9 +1,6 @@
 package games.strategy.triplea.delegate;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import games.strategy.engine.data.GameData;
@@ -43,28 +40,28 @@ final class AbstractEndTurnDelegateTest {
 
     @Test
     void shouldReturnZeroWhenBothTerritoriesAreNull() {
-      assertThat(comparator.compare(null, null), is(0));
+      assertThat(comparator.compare(null, null)).isEqualTo(0);
     }
 
     @Test
     void shouldReturnZeroWhenBothTerritoriesAreSame() {
-      assertThat(comparator.compare(territory, territory), is(0));
+      assertThat(comparator.compare(territory, territory)).isEqualTo(0);
     }
 
     @Test
     void shouldReturnZeroWhenBothTerritoriesAreEqual() {
-      assertThat(
-          comparator.compare(territory, new Territory(territory.getName(), gameData)), is(0));
+      assertThat(comparator.compare(territory, new Territory(territory.getName(), gameData)))
+          .isEqualTo(0);
     }
 
     @Test
     void shouldReturnLessThanZeroWhenFirstTerritoryIsNonNullAndSecondTerritoryIsNull() {
-      assertThat(comparator.compare(territory, null), is(lessThan(0)));
+      assertThat(comparator.compare(territory, null)).isLessThan(0);
     }
 
     @Test
     void shouldReturnGreaterThanZeroWhenFirstTerritoryIsNullAndSecondTerritoryIsNonNull() {
-      assertThat(comparator.compare(null, territory), is(greaterThan(0)));
+      assertThat(comparator.compare(null, territory)).isGreaterThan(0);
     }
   }
 
@@ -77,28 +74,28 @@ final class AbstractEndTurnDelegateTest {
 
     @Test
     void shouldReturnZeroWhenBothTerritoriesAreNull() {
-      assertThat(comparator.compare(null, null), is(0));
+      assertThat(comparator.compare(null, null)).isEqualTo(0);
     }
 
     @Test
     void shouldReturnZeroWhenBothTerritoriesAreSame() {
-      assertThat(comparator.compare(territory, territory), is(0));
+      assertThat(comparator.compare(territory, territory)).isEqualTo(0);
     }
 
     @Test
     void shouldReturnZeroWhenBothTerritoriesAreEqual() {
-      assertThat(
-          comparator.compare(territory, new Territory(territory.getName(), gameData)), is(0));
+      assertThat(comparator.compare(territory, new Territory(territory.getName(), gameData)))
+          .isEqualTo(0);
     }
 
     @Test
     void shouldReturnLessThanZeroWhenFirstTerritoryIsNonNullAndSecondTerritoryIsNull() {
-      assertThat(comparator.compare(territory, null), is(lessThan(0)));
+      assertThat(comparator.compare(territory, null)).isLessThan(0);
     }
 
     @Test
     void shouldReturnGreaterThanZeroWhenFirstTerritoryIsNullAndSecondTerritoryIsNonNull() {
-      assertThat(comparator.compare(null, territory), is(greaterThan(0)));
+      assertThat(comparator.compare(null, territory)).isGreaterThan(0);
     }
   }
 }

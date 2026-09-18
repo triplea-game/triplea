@@ -1,7 +1,6 @@
 package games.strategy.net;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
@@ -33,28 +32,24 @@ class UserNameAssignerTest {
 
   @Test
   void assignNameShouldGetAssignedNameWhenNotTaken() {
-    assertThat(
-        "no nodes to match against, we should get the desired name",
-        UserNameAssigner.assignName(NAME_1, MAC, Set.of()),
-        is(NAME_1));
+    assertThat(UserNameAssigner.assignName(NAME_1, MAC, Set.of()))
+        .as("no nodes to match against, we should get the desired name")
+        .isEqualTo(NAME_1);
 
-    assertThat(
-        "name and address do not match, should get the desired name",
-        UserNameAssigner.assignName(NAME_1, MAC, List.of(NAME_2)),
-        is(NAME_1));
+    assertThat(UserNameAssigner.assignName(NAME_1, MAC, List.of(NAME_2)))
+        .as("name and address do not match, should get the desired name")
+        .isEqualTo(NAME_1);
   }
 
   @Test
   void assignNameWithMatchingNames() {
-    assertThat(
-        "name match, should be assigned a numeral name",
-        UserNameAssigner.assignName(NAME_1, MAC, List.of(NAME_1)),
-        is(NAME_1 + " (1)"));
+    assertThat(UserNameAssigner.assignName(NAME_1, MAC, List.of(NAME_1)))
+        .as("name match, should be assigned a numeral name")
+        .isEqualTo(NAME_1 + " (1)");
 
-    assertThat(
-        "name match, matching against multiple nodes",
-        UserNameAssigner.assignName(NAME_1, MAC, List.of(NAME_2, NAME_1)),
-        is(NAME_1 + " (1)"));
+    assertThat(UserNameAssigner.assignName(NAME_1, MAC, List.of(NAME_2, NAME_1)))
+        .as("name match, matching against multiple nodes")
+        .isEqualTo(NAME_1 + " (1)");
   }
 
   /**
@@ -63,10 +58,9 @@ class UserNameAssignerTest {
    */
   @Test
   void assignNameMultipleNumerals() {
-    assertThat(
-        "name match, should get next sequential numeral appended",
-        UserNameAssigner.assignName(NAME_1, MAC, List.of(NAME_1, NAME_1 + " (1)")),
-        is(NAME_1 + " (2)"));
+    assertThat(UserNameAssigner.assignName(NAME_1, MAC, List.of(NAME_1, NAME_1 + " (1)")))
+        .as("name match, should get next sequential numeral appended")
+        .isEqualTo(NAME_1 + " (2)");
   }
 
   /**
@@ -75,24 +69,24 @@ class UserNameAssignerTest {
    */
   @Test
   void assignNameShouldFillInMissingNumerals() {
-    assertThat(
-        "name does not actually match",
-        UserNameAssigner.assignName(NAME_1, MAC, List.of(NAME_1 + " (1)")),
-        is(NAME_1));
+    assertThat(UserNameAssigner.assignName(NAME_1, MAC, List.of(NAME_1 + " (1)")))
+        .as("name does not actually match")
+        .isEqualTo(NAME_1);
+
+    assertThat(UserNameAssigner.assignName(NAME_1, MAC, List.of(NAME_1, NAME_1 + " (2)")))
+        .as("name matches and there is gap in numbering")
+        .isEqualTo(NAME_1 + " (1)");
 
     assertThat(
-        "name matches and there is gap in numbering",
-        UserNameAssigner.assignName(NAME_1, MAC, List.of(NAME_1, NAME_1 + " (2)")),
-        is(NAME_1 + " (1)"));
+            UserNameAssigner.assignName(
+                NAME_1, MAC, List.of(NAME_1 + " (3)", NAME_1 + " (1)", NAME_1)))
+        .as("name matches and there is gap in numbering, ordering should not matter")
+        .isEqualTo(NAME_1 + " (2)");
 
     assertThat(
-        "name matches and there is gap in numbering, ordering should not matter",
-        UserNameAssigner.assignName(NAME_1, MAC, List.of(NAME_1 + " (3)", NAME_1 + " (1)", NAME_1)),
-        is(NAME_1 + " (2)"));
-
-    assertThat(
-        "should get next ascending numeral",
-        UserNameAssigner.assignName(NAME_1, MAC, List.of(NAME_1 + " (2)", NAME_1 + " (1)", NAME_1)),
-        is(NAME_1 + " (3)"));
+            UserNameAssigner.assignName(
+                NAME_1, MAC, List.of(NAME_1 + " (2)", NAME_1 + " (1)", NAME_1)))
+        .as("should get next ascending numeral")
+        .isEqualTo(NAME_1 + " (3)");
   }
 }

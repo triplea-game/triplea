@@ -1,8 +1,6 @@
 package org.triplea.swing;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.text.IsEmptyString.emptyString;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -26,8 +24,8 @@ class JCheckBoxBuilderTest {
   void verifyDefaults() {
     final JCheckBox checkBox = new JCheckBoxBuilder().build();
 
-    assertThat(checkBox.isEnabled(), is(true));
-    assertThat(checkBox.isSelected(), is(true));
+    assertThat(checkBox.isEnabled()).isTrue();
+    assertThat(checkBox.isSelected()).isTrue();
   }
 
   @Nested
@@ -35,9 +33,9 @@ class JCheckBoxBuilderTest {
 
     @Test
     void selected() {
-      assertThat(new JCheckBoxBuilder().selected(false).build().isSelected(), is(false));
+      assertThat(new JCheckBoxBuilder().selected(false).build().isSelected()).isFalse();
 
-      assertThat(new JCheckBoxBuilder().selected(true).build().isSelected(), is(true));
+      assertThat(new JCheckBoxBuilder().selected(true).build().isSelected()).isTrue();
     }
 
     @Test
@@ -46,7 +44,7 @@ class JCheckBoxBuilderTest {
 
       final boolean result = checkBox.isSelected();
 
-      assertThat(result, is(false));
+      assertThat(result).isFalse();
     }
 
     private JCheckBox givenBoxBoundToSetting(final boolean settingValue) {
@@ -60,7 +58,7 @@ class JCheckBoxBuilderTest {
 
       final boolean result = checkBox.isSelected();
 
-      assertThat(result, is(true));
+      assertThat(result).isTrue();
     }
   }
 
@@ -117,7 +115,7 @@ class JCheckBoxBuilderTest {
 
       final String result = checkBox.getText();
 
-      assertThat(result, is(TITLE));
+      assertThat(result).isEqualTo(TITLE);
     }
 
     @Test
@@ -126,7 +124,7 @@ class JCheckBoxBuilderTest {
 
       final String result = checkBox.getText();
 
-      assertThat(result, emptyString());
+      assertThat(result).isEmpty();
     }
   }
 }

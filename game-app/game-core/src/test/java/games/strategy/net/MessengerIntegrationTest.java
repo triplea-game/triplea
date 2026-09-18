@@ -1,7 +1,6 @@
 package games.strategy.net;
 
 import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -42,7 +41,7 @@ class MessengerIntegrationTest {
     assertEquals(client1Messenger.getServerNode(), serverMessenger.getLocalNode());
     assertEquals(client2Messenger.getServerNode(), serverMessenger.getLocalNode());
     assertEquals(serverMessenger.getServerNode(), serverMessenger.getLocalNode());
-    await().until(serverMessenger::getNodes, hasSize(3));
+    await().until(() -> serverMessenger.getNodes().size() == 3);
   }
 
   @AfterEach
@@ -125,7 +124,7 @@ class MessengerIntegrationTest {
   void testCorrectNodeCountInRemove() {
     // when we receive the notification that a connection has been lost, the node list should
     // reflect that change
-    await().until(serverMessenger::getNodes, hasSize(3));
+    await().until(() -> serverMessenger.getNodes().size() == 3);
     final AtomicInteger serverCount = new AtomicInteger(3);
     serverMessenger.addConnectionChangeListener(
         new IConnectionChangeListener() {
@@ -140,16 +139,16 @@ class MessengerIntegrationTest {
           }
         });
     client1Messenger.shutDown();
-    await().until(serverMessenger::getNodes, hasSize(2));
+    await().until(() -> serverMessenger.getNodes().size() == 2);
     assertEquals(2, serverCount.get());
   }
 
   @Test
   void testDisconnect() {
-    await().until(serverMessenger::getNodes, hasSize(3));
+    await().until(() -> serverMessenger.getNodes().size() == 3);
     client1Messenger.shutDown();
     client2Messenger.shutDown();
-    await().until(serverMessenger::getNodes, hasSize(1));
+    await().until(() -> serverMessenger.getNodes().size() == 1);
   }
 
   @Test

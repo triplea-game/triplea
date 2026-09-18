@@ -2,9 +2,7 @@ package games.strategy.triplea;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
@@ -43,7 +41,7 @@ class UnitUtilsTest {
 
       final Change changes = UnitUtils.translateAttributesToOtherUnits(oldUnit, newUnits, seaZone);
 
-      assertThat(changes.isEmpty(), is(true));
+      assertThat(changes.isEmpty()).isTrue();
     }
 
     @Test
@@ -55,7 +53,7 @@ class UnitUtilsTest {
       final Change changes = UnitUtils.translateAttributesToOtherUnits(oldUnit, newUnits, seaZone);
       gameData.performChange(changes);
 
-      assertThat(newUnits.get(0).getHits(), is(1));
+      assertThat(newUnits.get(0).getHits()).isEqualTo(1);
     }
 
     @Test
@@ -67,8 +65,8 @@ class UnitUtilsTest {
       final Change changes = UnitUtils.translateAttributesToOtherUnits(oldUnit, newUnits, seaZone);
       gameData.performChange(changes);
 
-      assertThat(newUnits.get(0).getHits(), is(1));
-      assertThat(newUnits.get(1).getHits(), is(1));
+      assertThat(newUnits.get(0).getHits()).isEqualTo(1);
+      assertThat(newUnits.get(1).getHits()).isEqualTo(1);
     }
 
     @Test
@@ -80,11 +78,11 @@ class UnitUtilsTest {
       final Change changes = UnitUtils.translateAttributesToOtherUnits(oldUnit, newUnits, seaZone);
       gameData.performChange(changes);
 
-      assertThat(
-          "The new unit will always have at least 1 HP, even if the number of hits to transfer "
-              + "would have set it to 0 HP.",
-          newUnits.get(0).getHits(),
-          is(1));
+      assertThat(newUnits.get(0).getHits())
+          .as(
+              "The new unit will always have at least 1 HP, even if the number of hits to "
+                  + "transfer would have set it to 0 HP.")
+          .isEqualTo(1);
     }
 
     @Test
@@ -96,7 +94,7 @@ class UnitUtilsTest {
       final Change changes = UnitUtils.translateAttributesToOtherUnits(oldUnit, newUnits, landZone);
       gameData.performChange(changes);
 
-      assertThat(newUnits.get(0).getUnitDamage(), is(5));
+      assertThat(newUnits.get(0).getUnitDamage()).isEqualTo(5);
     }
 
     @Test
@@ -109,8 +107,9 @@ class UnitUtilsTest {
       final Change changes = UnitUtils.translateAttributesToOtherUnits(oldUnit, newUnits, landZone);
       gameData.performChange(changes);
 
-      assertThat(
-          "Factory can only have 20 damage in Germany", newUnits.get(0).getUnitDamage(), is(20));
+      assertThat(newUnits.get(0).getUnitDamage())
+          .as("Factory can only have 20 damage in Germany")
+          .isEqualTo(20);
     }
 
     @Test
@@ -122,11 +121,11 @@ class UnitUtilsTest {
       final Change changes = UnitUtils.translateAttributesToOtherUnits(oldUnit, newUnits, seaZone);
       gameData.performChange(changes);
 
-      assertThat(
-          "A factory in a sea zone can't produce anything so it can't be damaged. "
-              + "This is a forced situation.",
-          newUnits.get(0).getUnitDamage(),
-          is(0));
+      assertThat(newUnits.get(0).getUnitDamage())
+          .as(
+              "A factory in a sea zone can't produce anything so it can't be damaged. "
+                  + "This is a forced situation.")
+          .isEqualTo(0);
     }
 
     @Test
@@ -141,7 +140,7 @@ class UnitUtilsTest {
           UnitUtils.translateAttributesToOtherUnits(oldTransport, List.of(newTransport), seaZone);
       gameData.performChange(changes);
 
-      assertThat(newTransport.getUnloaded(), is(unloadedInfantry));
+      assertThat(newTransport.getUnloaded()).isEqualTo(unloadedInfantry);
     }
 
     @Test
@@ -158,17 +157,17 @@ class UnitUtilsTest {
               oldTransport, List.of(newTransport1, newTransport2), seaZone);
       gameData.performChange(changes);
 
-      assertThat(
-          "Units can only be unloaded by one unit at a time. So the unloaded unit "
-              + "should be transferred to one of the new units. Since the new units is a list, the "
-              + "first one will be selected and the first one is 'newTransport1'",
-          newTransport1.getUnloaded(),
-          is(unloadedInfantry));
-      assertThat(
-          "newTransport2 should have no unloaded units because all of the units were assigned to "
-              + "newTransport1",
-          newTransport2.getUnloaded(),
-          is(empty()));
+      assertThat(newTransport1.getUnloaded())
+          .as(
+              "Units can only be unloaded by one unit at a time. So the unloaded unit "
+                  + "should be transferred to one of the new units. Since the new units is a "
+                  + "list, the first one will be selected and the first one is 'newTransport1'")
+          .isEqualTo(unloadedInfantry);
+      assertThat(newTransport2.getUnloaded())
+          .as(
+              "newTransport2 should have no unloaded units because all of the units were "
+                  + "assigned to newTransport1")
+          .isEmpty();
     }
 
     @Test
@@ -183,10 +182,9 @@ class UnitUtilsTest {
           UnitUtils.translateAttributesToOtherUnits(oldTransport, List.of(newTransport), seaZone);
       gameData.performChange(changes);
 
-      assertThat(
-          "All unloaded infantry should be translated to the new transport",
-          newTransport.getUnloaded(),
-          is(unloadedInfantry));
+      assertThat(newTransport.getUnloaded())
+          .as("All unloaded infantry should be translated to the new transport")
+          .isEqualTo(unloadedInfantry);
     }
 
     @Test
@@ -203,7 +201,7 @@ class UnitUtilsTest {
           UnitUtils.translateAttributesToOtherUnits(oldTransport, List.of(newTransport), seaZone);
       gameData.performChange(changes);
 
-      assertThat(transportedUnits.get(0).getTransportedBy(), is(newTransport));
+      assertThat(transportedUnits.get(0).getTransportedBy()).isEqualTo(newTransport);
     }
 
     @Test
@@ -222,12 +220,12 @@ class UnitUtilsTest {
               oldTransport, List.of(newTransport1, newTransport2), seaZone);
       gameData.performChange(changes);
 
-      assertThat(
-          "Units can only be transported by one unit at a time. So the transported unit "
-              + "should be transferred to one of the new units. Since the new units is a list, the "
-              + "first one will be selected and the first one is 'newTransport1'",
-          transportedUnits.get(0).getTransportedBy(),
-          is(newTransport1));
+      assertThat(transportedUnits.get(0).getTransportedBy())
+          .as(
+              "Units can only be transported by one unit at a time. So the transported unit "
+                  + "should be transferred to one of the new units. Since the new units is a "
+                  + "list, the first one will be selected and the first one is 'newTransport1'")
+          .isEqualTo(newTransport1);
     }
   }
 
@@ -245,6 +243,6 @@ class UnitUtilsTest {
         UnitUtils.translateAttributesToOtherUnits(oldTransport, List.of(newTransport), seaZone);
     gameData.performChange(changes);
 
-    transportedUnits.forEach(unit -> assertThat(unit.getTransportedBy(), is(newTransport)));
+    transportedUnits.forEach(unit -> assertThat(unit.getTransportedBy()).isEqualTo(newTransport));
   }
 }

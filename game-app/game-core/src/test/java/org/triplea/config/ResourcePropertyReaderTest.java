@@ -1,8 +1,6 @@
 package org.triplea.config;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.FileNotFoundException;
@@ -18,7 +16,7 @@ final class ResourcePropertyReaderTest {
           ResourcePropertyReaderTest.class.getName().replace('.', '/') + ".properties";
       final ResourcePropertyReader propertyReader = new ResourcePropertyReader(resourceName);
 
-      assertThat(propertyReader.readProperty("key"), is("value"));
+      assertThat(propertyReader.readProperty("key")).isEqualTo("value");
     }
 
     @Test
@@ -28,8 +26,8 @@ final class ResourcePropertyReaderTest {
 
       final Exception e =
           assertThrows(IllegalStateException.class, () -> propertyReader.readProperty("key"));
-      assertThat(e.getCause(), is(instanceOf(FileNotFoundException.class)));
-      assertThat(e.getCause().getMessage(), is("Resource not found: " + resourceName));
+      assertThat(e.getCause()).isInstanceOf(FileNotFoundException.class);
+      assertThat(e.getCause().getMessage()).isEqualTo("Resource not found: " + resourceName);
     }
   }
 }

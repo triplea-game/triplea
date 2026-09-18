@@ -1,7 +1,6 @@
 package org.triplea.java;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.InetAddress;
@@ -29,7 +28,7 @@ class IpAddressParserTest {
 
       final InetAddress result = IpAddressParser.fromString(toParse);
 
-      assertThat(result, is(expected));
+      assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -61,7 +60,7 @@ class IpAddressParserTest {
           "99.99.99.99.99"
         })
     void invalid(final String invalid) {
-      assertThat(IpAddressParser.isValid(invalid), is(false));
+      assertThat(IpAddressParser.isValid(invalid)).isFalse();
     }
 
     @ParameterizedTest
@@ -73,7 +72,7 @@ class IpAddressParserTest {
           "2602:603:f00:ed0::2"
         })
     void valid(final String valid) {
-      assertThat(IpAddressParser.isValid(valid), is(true));
+      assertThat(IpAddressParser.isValid(valid)).isTrue();
     }
   }
 }

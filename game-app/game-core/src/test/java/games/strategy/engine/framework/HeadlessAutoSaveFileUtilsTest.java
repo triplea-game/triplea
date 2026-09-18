@@ -1,7 +1,6 @@
 package games.strategy.engine.framework;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.time.LocalDateTime;
@@ -21,9 +20,8 @@ final class HeadlessAutoSaveFileUtilsTest extends AbstractClientSettingTestCase 
     void shouldPrefixFileName() {
       System.setProperty(SYSTEM_PROPERTY_TRIPLEA_NAME, "hostName");
 
-      assertThat(
-          autoSaveFileUtils.getAutoSaveFileName("baseFileName"),
-          is("autosave_hostName_baseFileName"));
+      assertThat(autoSaveFileUtils.getAutoSaveFileName("baseFileName"))
+          .isEqualTo("autosave_hostName_baseFileName");
     }
 
     @AfterEach
@@ -37,11 +35,11 @@ final class HeadlessAutoSaveFileUtilsTest extends AbstractClientSettingTestCase 
     @Test
     void shouldReturnFileNameWithLocalDateTime() {
       assertThat(
-          autoSaveFileUtils
-              .getLostConnectionAutoSaveFile(LocalDateTime.of(2008, 5, 9, 22, 8))
-              .getFileName()
-              .toString(),
-          is("autosave_connection_lost_on_May_09_at_22_08.tsvg"));
+              autoSaveFileUtils
+                  .getLostConnectionAutoSaveFile(LocalDateTime.of(2008, 5, 9, 22, 8))
+                  .getFileName()
+                  .toString())
+          .isEqualTo("autosave_connection_lost_on_May_09_at_22_08.tsvg");
     }
   }
 }

@@ -1,7 +1,6 @@
 package org.triplea.lobby.common;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.net.Node;
@@ -26,7 +25,7 @@ final class GameDescriptionTest {
               .comment(GameRunner.BOT_GAME_HOST_COMMENT)
               .build();
 
-      assertThat(gameDescription.isBot(), is(true));
+      assertThat(gameDescription.isBot()).isTrue();
     }
 
     @Test
@@ -52,7 +51,7 @@ final class GameDescriptionTest {
                   .build())
           .forEach(
               shouldNotBeBot ->
-                  assertThat(shouldNotBeBot.toString(), shouldNotBeBot.isBot(), is(false)));
+                  assertThat(shouldNotBeBot.isBot()).as(shouldNotBeBot.toString()).isFalse());
     }
   }
 
@@ -63,7 +62,7 @@ final class GameDescriptionTest {
     void fromAndToLobbyGame() {
       final GameDescription description = GameDescription.fromLobbyGame(LOBBY_GAME);
       final LobbyGame result = description.toLobbyGame();
-      assertThat(result, is(LOBBY_GAME));
+      assertThat(result).isEqualTo(LOBBY_GAME);
     }
   }
 }

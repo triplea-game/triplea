@@ -20,8 +20,7 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_SUBM
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_WITHDRAW;
 import static games.strategy.triplea.delegate.battle.FakeBattleState.givenBattleStateBuilder;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
@@ -325,7 +324,7 @@ public class BattleStepsTest {
                 .defender(defender)
                 .build());
 
-    assertThat(steps, is(List.of(REMOVE_CASUALTIES)));
+    assertThat(steps).isEqualTo(List.of(REMOVE_CASUALTIES));
 
     verify(battleSite, never()).getUnits();
   }
@@ -347,7 +346,7 @@ public class BattleStepsTest {
                 .battleSite(battleSite)
                 .build());
 
-    assertThat(steps, is(basicFightStepStrings()));
+    assertThat(steps).isEqualTo(basicFightStepStrings());
     verify(battleSite, never()).getUnits();
   }
 
@@ -372,11 +371,10 @@ public class BattleStepsTest {
                 .battleRound(1)
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
-                navalBombardmentFightStepStrings(attacker, defender), basicFightStepStrings())));
+                navalBombardmentFightStepStrings(attacker, defender), basicFightStepStrings()));
     verify(battleSite, never()).getUnits();
   }
 
@@ -398,7 +396,7 @@ public class BattleStepsTest {
                 .battleSite(battleSite)
                 .build());
 
-    assertThat(steps, is(basicFightStepStrings()));
+    assertThat(steps).isEqualTo(basicFightStepStrings());
     verify(battleSite, never()).getUnits();
   }
 
@@ -421,7 +419,7 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(steps, is(basicFightStepStrings()));
+    assertThat(steps).isEqualTo(basicFightStepStrings());
 
     verify(attacker, never()).getAttachment(Constants.TECH_ATTACHMENT_NAME);
   }
@@ -451,7 +449,7 @@ public class BattleStepsTest {
                 .dependentUnits(List.of(mock(Unit.class)))
                 .build());
 
-    assertThat(steps, is(mergeSteps(List.of(LAND_PARATROOPS), basicFightStepStrings())));
+    assertThat(steps).isEqualTo(mergeSteps(List.of(LAND_PARATROOPS), basicFightStepStrings()));
     verify(battleSite, times(1)).getUnits();
   }
 
@@ -476,7 +474,7 @@ public class BattleStepsTest {
                 .battleSite(battleSite)
                 .build());
 
-    assertThat(steps, is(basicFightStepStrings()));
+    assertThat(steps).isEqualTo(basicFightStepStrings());
     verify(battleSite, never()).getUnits();
   }
 
@@ -498,7 +496,7 @@ public class BattleStepsTest {
                 .battleSite(battleSite)
                 .build());
 
-    assertThat(steps, is(basicFightStepStrings()));
+    assertThat(steps).isEqualTo(basicFightStepStrings());
     verify(attacker, never()).getAttachment(Constants.TECH_ATTACHMENT_NAME);
     verify(battleSite, never()).getUnits();
   }
@@ -527,7 +525,7 @@ public class BattleStepsTest {
                 .battleSite(battleSite)
                 .build());
 
-    assertThat(steps, is(basicFightStepStrings()));
+    assertThat(steps).isEqualTo(basicFightStepStrings());
 
     verify(battleSite, times(1)).getUnits();
   }
@@ -550,7 +548,7 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(steps, is(basicFightStepStrings()));
+    assertThat(steps).isEqualTo(basicFightStepStrings());
 
     verify(attacker, never()).getAttachment(Constants.TECH_ATTACHMENT_NAME);
   }
@@ -579,11 +577,10 @@ public class BattleStepsTest {
                 .battleSite(battleSite)
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
-                aaFightStepStrings("AntiAirGun", attacker, defender), basicFightStepStrings())));
+                aaFightStepStrings("AntiAirGun", attacker, defender), basicFightStepStrings()));
 
     verify(battleSite, never()).getUnits();
   }
@@ -612,11 +609,10 @@ public class BattleStepsTest {
                 .battleSite(battleSite)
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
-                aaFightStepStrings("AntiAirGun", defender, attacker), basicFightStepStrings())));
+                aaFightStepStrings("AntiAirGun", defender, attacker), basicFightStepStrings()));
 
     verify(battleSite, never()).getUnits();
   }
@@ -651,13 +647,12 @@ public class BattleStepsTest {
                 .battleSite(battleSite)
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 aaFightStepStrings("AntiAirGun", attacker, defender),
                 aaFightStepStrings("AntiAirGun", defender, attacker),
-                basicFightStepStrings())));
+                basicFightStepStrings()));
 
     verify(battleSite, never()).getUnits();
   }
@@ -685,9 +680,9 @@ public class BattleStepsTest {
                 .battleSite(battleSite)
                 .build());
 
-    assertThat(
-        steps,
-        is(mergeSteps(List.of(defender.getName() + SUBS_SUBMERGE), basicFightStepStrings())));
+    assertThat(steps)
+        .isEqualTo(
+            mergeSteps(List.of(defender.getName() + SUBS_SUBMERGE), basicFightStepStrings()));
   }
 
   @Test
@@ -713,9 +708,9 @@ public class BattleStepsTest {
                 .battleSite(battleSite)
                 .build());
 
-    assertThat(
-        steps,
-        is(mergeSteps(List.of(defender.getName() + SUBS_SUBMERGE), basicFightStepStrings())));
+    assertThat(steps)
+        .isEqualTo(
+            mergeSteps(List.of(defender.getName() + SUBS_SUBMERGE), basicFightStepStrings()));
   }
 
   @Test
@@ -737,7 +732,7 @@ public class BattleStepsTest {
                 .battleSite(battleSite)
                 .build());
 
-    assertThat(steps, is(basicFightStepStrings()));
+    assertThat(steps).isEqualTo(basicFightStepStrings());
   }
 
   @Test
@@ -765,15 +760,14 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 List.of(defender.getName() + SUBS_SUBMERGE),
                 firstStrikeFightStepStrings(defender, attacker),
                 List.of(REMOVE_SNEAK_ATTACK_CASUALTIES),
                 generalFightStepStrings(attacker, defender),
-                List.of(REMOVE_CASUALTIES))));
+                List.of(REMOVE_CASUALTIES)));
   }
 
   @Test
@@ -797,8 +791,8 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps, is(mergeSteps(List.of(REMOVE_UNESCORTED_TRANSPORTS), basicFightStepStrings())));
+    assertThat(steps)
+        .isEqualTo(mergeSteps(List.of(REMOVE_UNESCORTED_TRANSPORTS), basicFightStepStrings()));
   }
 
   @Test
@@ -820,7 +814,7 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(steps, is(basicFightStepStrings()));
+    assertThat(steps).isEqualTo(basicFightStepStrings());
     verify(unitAndAttachment.unitAttachment, never()).getTransportCapacity();
   }
 
@@ -845,8 +839,8 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps, is(mergeSteps(List.of(REMOVE_UNESCORTED_TRANSPORTS), basicFightStepStrings())));
+    assertThat(steps)
+        .isEqualTo(mergeSteps(List.of(REMOVE_UNESCORTED_TRANSPORTS), basicFightStepStrings()));
   }
 
   @Test
@@ -869,7 +863,7 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(steps, is(basicFightStepStrings()));
+    assertThat(steps).isEqualTo(basicFightStepStrings());
     verify(unitAndAttachment.unitAttachment, never()).getTransportCapacity();
   }
 
@@ -893,14 +887,13 @@ public class BattleStepsTest {
                 .battleSite(battleSite)
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 firstStrikeFightStepStrings(attacker, defender),
                 List.of(REMOVE_SNEAK_ATTACK_CASUALTIES),
                 generalFightStepStrings(defender, attacker),
-                List.of(REMOVE_CASUALTIES))));
+                List.of(REMOVE_CASUALTIES)));
   }
 
   @Test
@@ -921,13 +914,12 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 firstStrikeFightStepStrings(attacker, defender),
                 generalFightStepStrings(defender, attacker),
-                List.of(REMOVE_CASUALTIES))));
+                List.of(REMOVE_CASUALTIES)));
   }
 
   @Test
@@ -950,13 +942,12 @@ public class BattleStepsTest {
                 .battleSite(battleSite)
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 generalFightStepStrings(attacker, defender),
                 firstStrikeFightStepStrings(defender, attacker),
-                List.of(REMOVE_CASUALTIES))));
+                List.of(REMOVE_CASUALTIES)));
   }
 
   @Test
@@ -980,14 +971,13 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 firstStrikeFightStepStrings(defender, attacker),
                 List.of(REMOVE_SNEAK_ATTACK_CASUALTIES),
                 generalFightStepStrings(attacker, defender),
-                List.of(REMOVE_CASUALTIES))));
+                List.of(REMOVE_CASUALTIES)));
   }
 
   @Test
@@ -1011,14 +1001,13 @@ public class BattleStepsTest {
                 .battleSite(battleSite)
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 firstStrikeFightStepStrings(defender, attacker),
                 List.of(REMOVE_SNEAK_ATTACK_CASUALTIES),
                 generalFightStepStrings(attacker, defender),
-                List.of(REMOVE_CASUALTIES))));
+                List.of(REMOVE_CASUALTIES)));
   }
 
   @Test
@@ -1042,13 +1031,12 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 firstStrikeFightStepStrings(defender, attacker),
                 generalFightStepStrings(attacker, defender),
-                List.of(REMOVE_CASUALTIES))));
+                List.of(REMOVE_CASUALTIES)));
   }
 
   @Test
@@ -1071,14 +1059,13 @@ public class BattleStepsTest {
                 .battleSite(battleSite)
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 firstStrikeFightStepStrings(attacker, defender),
                 List.of(REMOVE_SNEAK_ATTACK_CASUALTIES),
                 firstStrikeFightStepStrings(defender, attacker),
-                List.of(REMOVE_CASUALTIES))));
+                List.of(REMOVE_CASUALTIES)));
   }
 
   @Test
@@ -1102,13 +1089,12 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 firstStrikeFightStepStrings(attacker, defender),
                 firstStrikeFightStepStrings(defender, attacker),
-                List.of(REMOVE_SNEAK_ATTACK_CASUALTIES, REMOVE_CASUALTIES))));
+                List.of(REMOVE_SNEAK_ATTACK_CASUALTIES, REMOVE_CASUALTIES)));
   }
 
   @Test
@@ -1132,13 +1118,12 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 firstStrikeFightStepStrings(attacker, defender),
                 firstStrikeFightStepStrings(defender, attacker),
-                List.of(REMOVE_SNEAK_ATTACK_CASUALTIES, REMOVE_CASUALTIES))));
+                List.of(REMOVE_SNEAK_ATTACK_CASUALTIES, REMOVE_CASUALTIES)));
   }
 
   @Test
@@ -1165,15 +1150,14 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 firstStrikeFightStepStrings(attacker, defender),
                 firstStrikeFightStepStrings(defender, attacker),
                 generalFightStepStrings(attacker, defender),
                 generalFightStepStrings(defender, attacker),
-                List.of(REMOVE_CASUALTIES))));
+                List.of(REMOVE_CASUALTIES)));
   }
 
   @Test
@@ -1200,15 +1184,14 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 firstStrikeFightStepStrings(defender, attacker),
                 List.of(REMOVE_SNEAK_ATTACK_CASUALTIES),
                 firstStrikeFightStepStrings(attacker, defender),
                 generalFightStepStrings(defender, attacker),
-                List.of(REMOVE_CASUALTIES))));
+                List.of(REMOVE_CASUALTIES)));
   }
 
   @Test
@@ -1233,15 +1216,14 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 firstStrikeFightStepStrings(attacker, defender),
                 firstStrikeFightStepStrings(defender, attacker),
                 List.of(REMOVE_SNEAK_ATTACK_CASUALTIES),
                 generalFightStepStrings(defender, attacker),
-                List.of(REMOVE_CASUALTIES))));
+                List.of(REMOVE_CASUALTIES)));
   }
 
   @Test
@@ -1266,15 +1248,14 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 firstStrikeFightStepStrings(attacker, defender),
                 firstStrikeFightStepStrings(defender, attacker),
                 List.of(REMOVE_SNEAK_ATTACK_CASUALTIES),
                 generalFightStepStrings(attacker, defender),
-                List.of(REMOVE_CASUALTIES))));
+                List.of(REMOVE_CASUALTIES)));
   }
 
   @Test
@@ -1298,14 +1279,13 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 List.of(SUBMERGE_SUBS_VS_AIR_ONLY),
                 firstStrikeFightStepStrings(attacker, defender),
                 List.of(REMOVE_SNEAK_ATTACK_CASUALTIES),
-                List.of(REMOVE_CASUALTIES))));
+                List.of(REMOVE_CASUALTIES)));
   }
 
   @Test
@@ -1331,16 +1311,15 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 firstStrikeFightStepStrings(attacker, defender),
                 List.of(REMOVE_SNEAK_ATTACK_CASUALTIES),
                 generalFightStepStrings(attacker, defender),
                 generalFightStepStrings(defender, attacker, "air vs non subs"),
                 generalFightStepStrings(defender, attacker),
-                List.of(REMOVE_CASUALTIES))));
+                List.of(REMOVE_CASUALTIES)));
   }
 
   @Test
@@ -1365,13 +1344,12 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 firstStrikeFightStepStrings(attacker, defender),
                 generalFightStepStrings(defender, attacker),
-                List.of(REMOVE_CASUALTIES))));
+                List.of(REMOVE_CASUALTIES)));
   }
 
   @Test
@@ -1395,14 +1373,13 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 List.of(SUBMERGE_SUBS_VS_AIR_ONLY),
                 firstStrikeFightStepStrings(defender, attacker),
                 List.of(REMOVE_SNEAK_ATTACK_CASUALTIES),
-                List.of(REMOVE_CASUALTIES, attacker.getName() + ATTACKER_WITHDRAW))));
+                List.of(REMOVE_CASUALTIES, attacker.getName() + ATTACKER_WITHDRAW)));
   }
 
   @Test
@@ -1427,13 +1404,12 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 firstStrikeFightStepStrings(defender, attacker),
                 generalFightStepStrings(attacker, defender),
-                List.of(REMOVE_CASUALTIES, attacker.getName() + ATTACKER_WITHDRAW))));
+                List.of(REMOVE_CASUALTIES, attacker.getName() + ATTACKER_WITHDRAW)));
   }
 
   @Test
@@ -1459,16 +1435,15 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 firstStrikeFightStepStrings(defender, attacker),
                 List.of(REMOVE_SNEAK_ATTACK_CASUALTIES),
                 generalFightStepStrings(attacker, defender, "air vs non subs"),
                 generalFightStepStrings(attacker, defender),
                 generalFightStepStrings(defender, attacker),
-                List.of(REMOVE_CASUALTIES, attacker.getName() + ATTACKER_WITHDRAW))));
+                List.of(REMOVE_CASUALTIES, attacker.getName() + ATTACKER_WITHDRAW)));
   }
 
   @Test
@@ -1492,14 +1467,13 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 firstStrikeFightStepStrings(attacker, defender),
                 List.of(REMOVE_SNEAK_ATTACK_CASUALTIES),
                 generalFightStepStrings(defender, attacker),
-                List.of(REMOVE_CASUALTIES, attacker.getName() + SUBS_SUBMERGE))));
+                List.of(REMOVE_CASUALTIES, attacker.getName() + SUBS_SUBMERGE)));
   }
 
   @Test
@@ -1524,14 +1498,13 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 firstStrikeFightStepStrings(defender, attacker),
                 List.of(REMOVE_SNEAK_ATTACK_CASUALTIES),
                 generalFightStepStrings(attacker, defender),
-                List.of(REMOVE_CASUALTIES, defender.getName() + SUBS_SUBMERGE))));
+                List.of(REMOVE_CASUALTIES, defender.getName() + SUBS_SUBMERGE)));
   }
 
   @Test
@@ -1556,13 +1529,12 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 generalFightStepStrings(attacker, defender),
                 firstStrikeFightStepStrings(defender, attacker),
-                List.of(REMOVE_CASUALTIES, defender.getName() + SUBS_SUBMERGE))));
+                List.of(REMOVE_CASUALTIES, defender.getName() + SUBS_SUBMERGE)));
   }
 
   @Test
@@ -1584,9 +1556,8 @@ public class BattleStepsTest {
                 .battleSite(battleSite)
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 firstStrikeFightStepStrings(attacker, defender),
                 List.of(REMOVE_SNEAK_ATTACK_CASUALTIES),
@@ -1594,7 +1565,7 @@ public class BattleStepsTest {
                 List.of(
                     REMOVE_CASUALTIES,
                     attacker.getName() + SUBS_WITHDRAW,
-                    attacker.getName() + ATTACKER_WITHDRAW))));
+                    attacker.getName() + ATTACKER_WITHDRAW)));
   }
 
   @Test
@@ -1617,14 +1588,13 @@ public class BattleStepsTest {
                 .battleSite(battleSite)
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 firstStrikeFightStepStrings(attacker, defender),
                 List.of(REMOVE_SNEAK_ATTACK_CASUALTIES),
                 generalFightStepStrings(defender, attacker),
-                List.of(REMOVE_CASUALTIES))));
+                List.of(REMOVE_CASUALTIES)));
   }
 
   @Test
@@ -1648,13 +1618,12 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 firstStrikeFightStepStrings(attacker, defender),
                 generalFightStepStrings(defender, attacker),
-                List.of(REMOVE_CASUALTIES, attacker.getName() + ATTACKER_WITHDRAW))));
+                List.of(REMOVE_CASUALTIES, attacker.getName() + ATTACKER_WITHDRAW)));
   }
 
   @Test
@@ -1679,9 +1648,8 @@ public class BattleStepsTest {
                 .attackerRetreatTerritories(List.of(battleSite))
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 firstStrikeFightStepStrings(attacker, defender),
                 List.of(REMOVE_SNEAK_ATTACK_CASUALTIES),
@@ -1689,7 +1657,7 @@ public class BattleStepsTest {
                 List.of(
                     REMOVE_CASUALTIES,
                     attacker.getName() + SUBS_WITHDRAW,
-                    attacker.getName() + ATTACKER_WITHDRAW))));
+                    attacker.getName() + ATTACKER_WITHDRAW)));
     verify(unitAndAttachment.unitAttachment, never()).getTransportCapacity();
   }
 
@@ -1718,13 +1686,12 @@ public class BattleStepsTest {
                 .battleSite(battleTerritory)
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 generalFightStepStrings(attacker, defender),
                 firstStrikeFightStepStrings(defender, attacker),
-                List.of(REMOVE_CASUALTIES, defender.getName() + SUBS_WITHDRAW))));
+                List.of(REMOVE_CASUALTIES, defender.getName() + SUBS_WITHDRAW)));
   }
 
   @Test
@@ -1747,13 +1714,12 @@ public class BattleStepsTest {
                 .battleSite(battleSite)
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 generalFightStepStrings(attacker, defender),
                 firstStrikeFightStepStrings(defender, attacker),
-                List.of(REMOVE_CASUALTIES))));
+                List.of(REMOVE_CASUALTIES)));
   }
 
   @Test
@@ -1776,13 +1742,12 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps,
-        is(
+    assertThat(steps)
+        .isEqualTo(
             mergeSteps(
                 generalFightStepStrings(attacker, defender),
                 firstStrikeFightStepStrings(defender, attacker),
-                List.of(REMOVE_CASUALTIES))));
+                List.of(REMOVE_CASUALTIES)));
   }
 
   @Test
@@ -1803,9 +1768,9 @@ public class BattleStepsTest {
                 .battleSite(givenSeaBattleSite())
                 .build());
 
-    assertThat(
-        steps,
-        is(mergeSteps(basicFightStepStrings(), List.of(attacker.getName() + ATTACKER_WITHDRAW))));
+    assertThat(steps)
+        .isEqualTo(
+            mergeSteps(basicFightStepStrings(), List.of(attacker.getName() + ATTACKER_WITHDRAW)));
   }
 
   @Test
@@ -1833,9 +1798,9 @@ public class BattleStepsTest {
                 .amphibious(true)
                 .build());
 
-    assertThat(
-        steps,
-        is(mergeSteps(basicFightStepStrings(), List.of(attacker.getName() + ATTACKER_WITHDRAW))));
+    assertThat(steps)
+        .isEqualTo(
+            mergeSteps(basicFightStepStrings(), List.of(attacker.getName() + ATTACKER_WITHDRAW)));
   }
 
   @Test
@@ -1863,7 +1828,7 @@ public class BattleStepsTest {
                 .amphibious(true)
                 .build());
 
-    assertThat(steps, is(basicFightStepStrings()));
+    assertThat(steps).isEqualTo(basicFightStepStrings());
   }
 
   @Test
@@ -1887,7 +1852,7 @@ public class BattleStepsTest {
                 .amphibious(true)
                 .build());
 
-    assertThat(steps, is(basicFightStepStrings()));
+    assertThat(steps).isEqualTo(basicFightStepStrings());
     // should never check for amphibious units
     verify(unit1, never()).getWasAmphibious();
   }
@@ -1914,9 +1879,9 @@ public class BattleStepsTest {
                 .amphibious(true)
                 .build());
 
-    assertThat(
-        steps,
-        is(mergeSteps(basicFightStepStrings(), List.of(attacker.getName() + ATTACKER_WITHDRAW))));
+    assertThat(steps)
+        .isEqualTo(
+            mergeSteps(basicFightStepStrings(), List.of(attacker.getName() + ATTACKER_WITHDRAW)));
   }
 
   @Test
@@ -1945,9 +1910,9 @@ public class BattleStepsTest {
                 .amphibious(true)
                 .build());
 
-    assertThat(
-        steps,
-        is(mergeSteps(basicFightStepStrings(), List.of(attacker.getName() + ATTACKER_WITHDRAW))));
+    assertThat(steps)
+        .isEqualTo(
+            mergeSteps(basicFightStepStrings(), List.of(attacker.getName() + ATTACKER_WITHDRAW)));
   }
 
   @Test
@@ -1972,9 +1937,9 @@ public class BattleStepsTest {
                 .amphibious(true)
                 .build());
 
-    assertThat(
-        steps,
-        is(mergeSteps(basicFightStepStrings(), List.of(attacker.getName() + ATTACKER_WITHDRAW))));
+    assertThat(steps)
+        .isEqualTo(
+            mergeSteps(basicFightStepStrings(), List.of(attacker.getName() + ATTACKER_WITHDRAW)));
   }
 
   @Test
@@ -1999,7 +1964,7 @@ public class BattleStepsTest {
                 .amphibious(false)
                 .build());
 
-    assertThat(steps, is(basicFightStepStrings()));
+    assertThat(steps).isEqualTo(basicFightStepStrings());
   }
 
   @Test
@@ -2037,7 +2002,7 @@ public class BattleStepsTest {
                 .amphibious(false)
                 .build());
 
-    assertThat(steps, is(basicFightStepStrings()));
+    assertThat(steps).isEqualTo(basicFightStepStrings());
   }
 
   @Test
@@ -2083,6 +2048,6 @@ public class BattleStepsTest {
 
     List<String> expectedSteps = basicFightStepStrings();
     expectedSteps.add(attacker.getName() + ATTACKER_WITHDRAW);
-    assertThat(steps, is(expectedSteps));
+    assertThat(steps).isEqualTo(expectedSteps);
   }
 }

@@ -3,7 +3,7 @@ package games.strategy.triplea.util;
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -116,9 +116,9 @@ class UnitSeparatorTest {
 
     final Set<UnitCategory> categories = UnitSeparator.categorize(units, separatorCategories);
 
-    assertThat(
-        "Air units with different movement points left should be in different categories",
-        categories.size() == 2);
+    assertThat(categories.size() == 2)
+        .as("Air units with different movement points left should be in different categories")
+        .isTrue();
   }
 
   @Test
@@ -139,9 +139,9 @@ class UnitSeparatorTest {
 
     final Set<UnitCategory> categories = UnitSeparator.categorize(units, separatorCategories);
 
-    assertThat(
-        "Air units with type with one hit point should be in the same category",
-        categories.size() == 1);
+    assertThat(categories.size() == 1)
+        .as("Air units with type with one hit point should be in the same category")
+        .isTrue();
   }
 
   @Test
@@ -172,9 +172,9 @@ class UnitSeparatorTest {
     final Set<UnitCategory> categoriesWithMovementFlag =
         UnitSeparator.categorize(units, separatorCategoriesIncludingMovement);
 
-    assertThat(
-        "Categorization of air units should be the same regardless of the pure movement flag",
-        categories.equals(categoriesWithMovementFlag));
+    assertThat(categories.equals(categoriesWithMovementFlag))
+        .as("Categorization of air units should be the same regardless of the pure movement flag")
+        .isTrue();
   }
 
   @Test
@@ -198,10 +198,11 @@ class UnitSeparatorTest {
 
     final Set<UnitCategory> categories = UnitSeparator.categorize(units, separatorCategories);
 
-    assertThat(
-        "Categorization of air units should take into account hit points by type "
-            + "but not hit points the unit has already taken",
-        categories.size() == 2);
+    assertThat(categories.size() == 2)
+        .as(
+            "Categorization of air units should take into account hit points by type "
+                + "but not hit points the unit has already taken")
+        .isTrue();
   }
 
   @Test
@@ -221,8 +222,9 @@ class UnitSeparatorTest {
 
     final Set<UnitCategory> categories = UnitSeparator.categorize(units, separatorCategories);
 
-    assertThat(
-        "units with different hits should be in different categories", categories.size() == 2);
+    assertThat(categories.size() == 2)
+        .as("units with different hits should be in different categories")
+        .isTrue();
   }
 
   @Test
@@ -250,8 +252,8 @@ class UnitSeparatorTest {
 
     final Set<UnitCategory> categories = UnitSeparator.categorize(units, separatorCategories);
 
-    assertThat(
-        "Non-Air units with different movement points left should be in the same category",
-        categories.size() == 2);
+    assertThat(categories.size() == 2)
+        .as("Non-Air units with different movement points left should be in the same category")
+        .isTrue();
   }
 }

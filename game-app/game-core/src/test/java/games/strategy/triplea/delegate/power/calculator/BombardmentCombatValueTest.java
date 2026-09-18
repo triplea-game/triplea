@@ -3,8 +3,7 @@ package games.strategy.triplea.delegate.power.calculator;
 import static games.strategy.triplea.Constants.TERRITORYEFFECT_ATTACHMENT_NAME;
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import games.strategy.engine.data.GameData;
@@ -80,10 +79,9 @@ class BombardmentCombatValueTest {
       final BombardmentCombatValue.BombardmentStrength strength =
           new BombardmentCombatValue.BombardmentStrength(
               6, List.of(territoryEffect), friendlySupport, enemySupport);
-      assertThat(
-          "Strength starts at 3, friendly adds 3, enemy removes 2, territory adds 1: total 5",
-          strength.getStrength(unit).getValue(),
-          is(5));
+      assertThat(strength.getStrength(unit).getValue())
+          .as("Strength starts at 3, friendly adds 3, enemy removes 2, territory adds 1: total 5")
+          .isEqualTo(5);
     }
 
     UnitSupportAttachment givenUnitOffenseSupportAttachment(

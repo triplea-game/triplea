@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
@@ -23,28 +22,27 @@ class DownloadFileTest {
             .downloadSizeInBytes(100L)
             .build();
     final DownloadFile testObj = new DownloadFile(mapDownloadItem, mock(DownloadListener.class));
-    assertThat(testObj.getDownloadState(), is(DownloadState.NOT_STARTED));
+    assertThat(testObj.getDownloadState()).isEqualTo(DownloadState.NOT_STARTED);
 
     testObj.startAsyncDownload();
-    assertThat(testObj.getDownloadState(), is(DownloadState.DOWNLOADING));
+    assertThat(testObj.getDownloadState()).isEqualTo(DownloadState.DOWNLOADING);
 
     testObj.cancelDownload();
-    assertThat(testObj.getDownloadState(), is(DownloadState.CANCELLED));
+    assertThat(testObj.getDownloadState()).isEqualTo(DownloadState.CANCELLED);
   }
 
   @Test
   void normalizeMapName() {
-    assertThat(DownloadFile.normalizeMapName("valid-name"), is("valid-name"));
-    assertThat(DownloadFile.normalizeMapName("also_valid"), is("also_valid"));
-    assertThat(
-        "Ampersand is a valid map name but scary in a file system, should be stripped",
-        DownloadFile.normalizeMapName("a&b"),
-        is("ab"));
+    assertThat(DownloadFile.normalizeMapName("valid-name")).isEqualTo("valid-name");
+    assertThat(DownloadFile.normalizeMapName("also_valid")).isEqualTo("also_valid");
+    assertThat(DownloadFile.normalizeMapName("a&b"))
+        .as("Ampersand is a valid map name but scary in a file system, should be stripped")
+        .isEqualTo("ab");
   }
 
   @ParameterizedTest
   @ValueSource(strings = {"*", ".", "\"", "/", "\\", "[", "]", ":", ";", "|", ","})
   void invalidCharactersAreStripped(final String invalidCharacter) {
-    assertThat(DownloadFile.normalizeMapName(invalidCharacter), is(""));
+    assertThat(DownloadFile.normalizeMapName(invalidCharacter)).isEqualTo("");
   }
 }

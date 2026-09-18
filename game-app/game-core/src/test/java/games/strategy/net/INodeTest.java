@@ -1,7 +1,6 @@
 package games.strategy.net;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +17,6 @@ class INodeTest {
 
     final String result = node.getIpAddress();
 
-    assertThat(result, is("123.2.1.1"));
+    assertThat(result).isEqualTo("123.2.1.1");
   }
 }

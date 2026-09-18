@@ -1,7 +1,6 @@
 package games.strategy.engine.message;
 
 import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
@@ -113,11 +112,11 @@ class ChannelMessengerTest {
   }
 
   private static void assertHasChannel(final RemoteName descriptor, final UnifiedMessengerHub hub) {
-    await().until(() -> hub.hasImplementors(descriptor.getName()), is(true));
+    await().until(() -> hub.hasImplementors(descriptor.getName()));
   }
 
   private static void assertCallCountIs(final ChannelSubscriber subscriber, final int expected) {
-    await().until(subscriber::getCallCount, is(expected));
+    await().until(() -> subscriber.getCallCount() == expected);
   }
 
   private interface IChannelBase extends IChannelSubscriber {

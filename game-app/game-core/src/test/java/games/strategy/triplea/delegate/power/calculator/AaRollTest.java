@@ -2,8 +2,7 @@ package games.strategy.triplea.delegate.power.calculator;
 
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import games.strategy.engine.data.GameData;
@@ -65,10 +64,9 @@ class AaRollTest {
                 true));
 
     final AaRoll roll = new AaRoll(friendlySupport, enemySupport);
-    assertThat(
-        "Roll starts at 3, friendly adds 2, enemy removes 1: total 4",
-        roll.getRoll(unit).getValue(),
-        is(4));
+    assertThat(roll.getRoll(unit).getValue())
+        .as("Roll starts at 3, friendly adds 2, enemy removes 1: total 4")
+        .isEqualTo(4);
   }
 
   UnitSupportAttachment givenUnitSupportAttachment(
@@ -127,14 +125,13 @@ class AaRollTest {
 
     final AaRoll roll = new AaRoll(friendlySupport, enemySupport);
     roll.getRoll(unit);
-    assertThat(
-        "Friendly gave 2 and enemy gave -1",
-        roll.getSupportGiven(),
-        is(
+    assertThat(roll.getSupportGiven())
+        .as("Friendly gave 2 and enemy gave -1")
+        .isEqualTo(
             Map.of(
                 supportUnit,
                 IntegerMap.of(Map.of(unit, 2)),
                 enemySupportUnit,
-                IntegerMap.of(Map.of(unit, -1)))));
+                IntegerMap.of(Map.of(unit, -1))));
   }
 }
