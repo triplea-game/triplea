@@ -1490,11 +1490,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
           unitMax = Math.max(Math.max(unitMax, production), (unlimitedConstructions ? 10_000 : 0));
         }
         final int existingCount = unitMapTo.getInt(constructionType);
-        // Work out how many existing units of this constructionType would actually be consumed
-        // by the units we're trying to place, so placement can (temporarily) exceed the
-        // per-type max as long as it's back within the limit once consumption happens.
-        // Each existing unit can only be consumed once, and we never credit more consumption
-        // than the held units are actually capable of performing.
+        // consumptionBonus increases the placement cap so that constructions that consume other
+        // constructions can be placed when the cap is reached (Example: factory_upgrade consumes
+        // factory_minor in Global 1940, and maxFactoriesPerTerritory is set to 1). See issue #3359.
         final int consumptionBonus =
             getConstructionConsumptionBonus(
                 constructionType,
