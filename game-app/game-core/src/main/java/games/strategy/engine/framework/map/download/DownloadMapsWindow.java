@@ -1,32 +1,21 @@
 package games.strategy.engine.framework.map.download;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
 import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
 import games.strategy.engine.framework.map.listing.MapListingFetcher;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.EngineImageLoader;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Rectangle;
-import java.io.IOException;
-import java.io.Serial;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-import java.util.regex.Pattern;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.NonNls;
+import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
+import org.triplea.java.Interruptibles;
+import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.JPanelBuilder;
+
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
@@ -45,15 +34,27 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
-import org.jetbrains.annotations.NonNls;
-import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
-import org.triplea.java.Interruptibles;
-import org.triplea.swing.JButtonBuilder;
-import org.triplea.swing.SwingComponents;
-import org.triplea.swing.jpanel.JPanelBuilder;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Rectangle;
+import java.io.IOException;
+import java.io.Serial;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.regex.Pattern;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 /// Window that allows for map downloads and removal.
 /// It shows the maps in lists separated into tabs to install/update/remove
@@ -130,17 +131,21 @@ public class DownloadMapsWindow extends JFrame {
       case ManagedMapStatus.AVAILABLE -> {
         updateTabTitleNewMaps();
         availableMapTab.setDirty();
+        availableMapTab.refreshFromStore();
       }
       case ManagedMapStatus.INSTALLED, ManagedMapStatus.REMOVING -> {
         updateTabTitleInstalled();
         if (newStatus == ManagedMapStatus.INSTALLED) {
           installedMapTab.setDirty();
+          installedMapTab.refreshFromStore();
         }
       }
       case ManagedMapStatus.DOWNLOADING -> {
         if (oldStatus == ManagedMapStatus.UPDATE_AVAILABLE) {
+          outOfDateMapTab.refreshFromStore();
           updateTabTitleUpdatesAvailable();
         } else {
+          availableMapTab.refreshFromStore();
           updateTabTitleNewMaps();
         }
       }
