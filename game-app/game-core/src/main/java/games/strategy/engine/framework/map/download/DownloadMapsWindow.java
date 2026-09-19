@@ -1,39 +1,14 @@
 package games.strategy.engine.framework.map.download;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
 import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
 import games.strategy.engine.framework.map.listing.MapListingFetcher;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.EngineImageLoader;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
-import org.jetbrains.annotations.NonNls;
-import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
-import org.triplea.java.Interruptibles;
-import org.triplea.swing.JButtonBuilder;
-import org.triplea.swing.SwingComponents;
-import org.triplea.swing.jpanel.JPanelBuilder;
-
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JEditorPane;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.RowFilter;
-import javax.swing.RowSorter;
-import javax.swing.SortOrder;
-import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -52,9 +27,33 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JEditorPane;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.RowFilter;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
+import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.NonNls;
+import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
+import org.triplea.java.Interruptibles;
+import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /// Window that allows for map downloads and removal.
 /// It shows the maps in lists separated into tabs to install/update/remove
