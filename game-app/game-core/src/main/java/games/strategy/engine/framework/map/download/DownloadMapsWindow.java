@@ -452,7 +452,10 @@ public class DownloadMapsWindow extends JFrame {
                     descriptionPane,
                     mapSizeLabel));
 
-        descriptionPane.setText(downloadMapsWindowModel.toHtmlString(unsortedMaps.getFirst()));
+        descriptionPane.setText(
+            unsortedMaps.isEmpty()
+                ? ""
+                : downloadMapsWindowModel.toHtmlString(unsortedMaps.getFirst()));
         descriptionPane.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
 
         // Create label and search field
