@@ -130,17 +130,21 @@ public class DownloadMapsWindow extends JFrame {
       case ManagedMapStatus.AVAILABLE -> {
         updateTabTitleNewMaps();
         availableMapTab.setDirty();
+        availableMapTab.refreshFromStore();
       }
       case ManagedMapStatus.INSTALLED, ManagedMapStatus.REMOVING -> {
         updateTabTitleInstalled();
         if (newStatus == ManagedMapStatus.INSTALLED) {
           installedMapTab.setDirty();
+          installedMapTab.refreshFromStore();
         }
       }
       case ManagedMapStatus.DOWNLOADING -> {
         if (oldStatus == ManagedMapStatus.UPDATE_AVAILABLE) {
+          outOfDateMapTab.refreshFromStore();
           updateTabTitleUpdatesAvailable();
         } else {
+          availableMapTab.refreshFromStore();
           updateTabTitleNewMaps();
         }
       }
