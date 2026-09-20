@@ -13,6 +13,7 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
@@ -386,7 +387,7 @@ final class MatchesTest {
    */
   @Nested
   @ExtendWith(MockitoExtension.class)
-  final class TerritoryWasFoughtOverBySeaUnitsOtherThanSubsOrTransportsTest {
+  final class TerritoryWasFoughtOverByNonBypassableSeaUnitsTest {
     private GameData gameData;
     private GamePlayer player;
 
@@ -394,7 +395,8 @@ final class MatchesTest {
     @Mock private Territory territory;
 
     private Predicate<Territory> newMatch() {
-      return Matches.territoryWasFoughtOverBySeaUnitsOtherThanSubsOrTransports(battleTracker);
+      return Matches.territoryWasFoughtOverByNonBypassableSeaUnits(
+          battleTracker, gameData.getProperties());
     }
 
     private Unit submarine() {
@@ -415,55 +417,101 @@ final class MatchesTest {
       player = GameDataTestUtil.germans(gameData);
     }
 
-    @Test
-    void doesNotMatchWhenNoBattleWasFoughtOver() {
-      when(battleTracker.wasBattleFought(territory)).thenReturn(false);
+    @Nested
+    class SubmarineDefenders {
+      @Test
+      void doesNotMatchWhenIgnoreSubInMovementIsTrue() {
+        setProperty(Constants.IGNORE_SUB_IN_MOVEMENT, true);
+        when(battleTracker.wasBattleFought(territory)).thenReturn(true);
+        when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
+            .thenReturn(List.of(submarine()));
 
-      assertThat(newMatch().test(territory)).isFalse();
+        assertThat(newMatch().test(territory)).isFalse();
+      }
+
+      @Test
+      void matchesWhenIgnoreSubInMovementIsFalse() {
+        setProperty(Constants.IGNORE_SUB_IN_MOVEMENT, false);
+        when(battleTracker.wasBattleFought(territory)).thenReturn(true);
+        when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
+            .thenReturn(List.of(submarine()));
+
+        assertThat(newMatch().test(territory)).isTrue();
+      }
     }
 
-    @Test
-    void matchesWhenFoughtOverButNoDefendersWereRecorded() {
-      when(battleTracker.wasBattleFought(territory)).thenReturn(true);
-      when(battleTracker.getDefendingUnitsAtStartOfBattle(territory)).thenReturn(List.of());
+    @Nested
+    class TransportDefenders {
+      @Test
+      void doesNotMatchWhenIgnoreTransportInMovementIsTrue() {
+        setProperty(Constants.IGNORE_TRANSPORT_IN_MOVEMENT, true);
+        when(battleTracker.wasBattleFought(territory)).thenReturn(true);
+        when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
+            .thenReturn(List.of(transport()));
 
-      assertThat(newMatch().test(territory)).isTrue();
+        assertThat(newMatch().test(territory)).isFalse();
+      }
+
+      @Test
+      void matchesWhenIgnoreTransportInMovementIsFalse() {
+        setProperty(Constants.IGNORE_TRANSPORT_IN_MOVEMENT, false);
+        when(battleTracker.wasBattleFought(territory)).thenReturn(true);
+        when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
+            .thenReturn(List.of(transport()));
+
+        assertThat(newMatch().test(territory)).isTrue();
+      }
     }
 
-    @Test
-    void doesNotMatchWhenDefendedOnlyBySubmarines() {
-      when(battleTracker.wasBattleFought(territory)).thenReturn(true);
-      when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
-          .thenReturn(List.of(submarine()));
+    @Nested
+    class SubmarineAndTransportDefenders {
+      @Test
+      void doesNotMatchWhenBothPropertiesAreTrue() {
+        setProperty(Constants.IGNORE_SUB_IN_MOVEMENT, true);
+        setProperty(Constants.IGNORE_TRANSPORT_IN_MOVEMENT, true);
+        when(battleTracker.wasBattleFought(territory)).thenReturn(true);
+        when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
+            .thenReturn(List.of(submarine(), transport()));
 
-      assertThat(newMatch().test(territory)).isFalse();
+        assertThat(newMatch().test(territory)).isFalse();
+      }
+
+      @Test
+      void matchesWhenOnlySubPropertyIsFalse() {
+        setProperty(Constants.IGNORE_SUB_IN_MOVEMENT, false);
+        setProperty(Constants.IGNORE_TRANSPORT_IN_MOVEMENT, true);
+        when(battleTracker.wasBattleFought(territory)).thenReturn(true);
+        when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
+            .thenReturn(List.of(submarine(), transport()));
+
+        assertThat(newMatch().test(territory)).isTrue();
+      }
+
+      @Test
+      void matchesWhenOnlyTransportPropertyIsFalse() {
+        setProperty(Constants.IGNORE_SUB_IN_MOVEMENT, true);
+        setProperty(Constants.IGNORE_TRANSPORT_IN_MOVEMENT, false);
+        when(battleTracker.wasBattleFought(territory)).thenReturn(true);
+        when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
+            .thenReturn(List.of(submarine(), transport()));
+
+        assertThat(newMatch().test(territory)).isTrue();
+      }
+
+      @Test
+      void matchesWhenBothPropertiesAreFalse() {
+        setProperty(Constants.IGNORE_SUB_IN_MOVEMENT, false);
+        setProperty(Constants.IGNORE_TRANSPORT_IN_MOVEMENT, false);
+        when(battleTracker.wasBattleFought(territory)).thenReturn(true);
+        when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
+            .thenReturn(List.of(submarine(), transport()));
+
+        assertThat(newMatch().test(territory)).isTrue();
+      }
     }
 
-    @Test
-    void doesNotMatchWhenDefendedOnlyByTransports() {
-      when(battleTracker.wasBattleFought(territory)).thenReturn(true);
-      when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
-          .thenReturn(List.of(transport()));
-
-      assertThat(newMatch().test(territory)).isFalse();
-    }
-
-    @Test
-    void doesNotMatchWhenDefendedOnlyBySubmarinesAndTransports() {
-      when(battleTracker.wasBattleFought(territory)).thenReturn(true);
-      when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
-          .thenReturn(List.of(submarine(), transport()));
-
-      assertThat(newMatch().test(territory)).isFalse();
-    }
-
-    @Test
-    void matchesWhenAnyDefenderIsASurfaceWarship() {
-      when(battleTracker.wasBattleFought(territory)).thenReturn(true);
-      when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
-          .thenReturn(List.of(submarine(), destroyer()));
-
-      assertThat(newMatch().test(territory)).isTrue();
+    private void setProperty(final String property, final boolean value) {
+      gameData.getProperties().set(property, value);
     }
   }
 }

@@ -1468,23 +1468,24 @@ public final class Matches {
     return t -> tracker.wasBattleFought(t) || tracker.wasBlitzed(t);
   }
 
-  public static Predicate<Territory> territoryWasFoughtOverBySeaUnitsOtherThanSubsOrTransports(
-      final BattleTracker tracker) {
+  public static Predicate<Territory> territoryWasFoughtOverByNonBypassableSeaUnits(
+      final BattleTracker tracker, final GameProperties properties) {
     return t -> {
       if (!territoryWasFoughtOver(tracker).test(t)) {
         return false;
       }
       final Collection<Unit> defenders = tracker.getDefendingUnitsAtStartOfBattle(t);
-      // No record (e.g. tracked before this data existed, or a land battle/blitz)
-      // — be conservative and treat it as blocking, matching old behavior.
       if (defenders.isEmpty()) {
         return true;
       }
       return defenders.stream()
           .anyMatch(
-              u ->
-                  !Matches.unitHasSubBattleAbilities().test(u)
-                      && !Matches.unitIsSeaTransportButNotCombatSeaTransport().test(u));
+              u -> {
+                final boolean bypassableTransport =
+                    Properties.getIgnoreTransportInMovement(properties)
+                        && Matches.unitIsSeaTransportButNotCombatSeaTransport().test(u);
+                return !Matches.unitCanBeMovedThroughByEnemies().test(u) && !bypassableTransport;
+              });
     };
   }
 

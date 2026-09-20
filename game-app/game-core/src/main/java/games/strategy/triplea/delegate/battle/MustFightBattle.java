@@ -860,8 +860,8 @@ public class MustFightBattle extends DependentBattle
             .or(
                 Matches.territoryIsWater()
                     .and(
-                        Matches.territoryWasFoughtOverBySeaUnitsOtherThanSubsOrTransports(
-                            battleTracker)));
+                        Matches.territoryWasFoughtOverByNonBypassableSeaUnits(
+                            battleTracker, gameData.getProperties())));
     possible.removeAll(CollectionUtils.getMatches(possible, conqueredOrEnemy));
 
     // the battle site is in the attacking from if sea units are fighting a submerged sub
