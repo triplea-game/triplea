@@ -21,7 +21,9 @@ RUN chown -R bot:root /home/bot/
 USER bot
 
 ADD build/libs/game-headless.jar /
-CMD java \
+# 'exec' so java replaces the shell and runs as PID 1 — otherwise /bin/sh is PID 1 and
+# swallows docker's SIGTERM, so the JVM never runs its save-on-shutdown hook before SIGKILL.
+CMD exec java \
    -Xmx$BOT_MAX_MEMORY \
    -Xss$BOT_XSS \
    -Dtriplea.name=$BOT_NAME \
