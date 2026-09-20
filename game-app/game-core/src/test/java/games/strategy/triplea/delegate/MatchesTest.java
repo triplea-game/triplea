@@ -4,7 +4,6 @@ import static games.strategy.triplea.Constants.SUPPORT_ATTACHMENT_PREFIX;
 import static games.strategy.triplea.Constants.UNIT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.steps.MockGameData.givenGameData;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -420,7 +419,7 @@ final class MatchesTest {
     void doesNotMatchWhenNoBattleWasFoughtOver() {
       when(battleTracker.wasBattleFought(territory)).thenReturn(false);
 
-      assertFalse(newMatch().test(territory));
+      assertThat(newMatch().test(territory)).isFalse();
     }
 
     @Test
@@ -428,7 +427,7 @@ final class MatchesTest {
       when(battleTracker.wasBattleFought(territory)).thenReturn(true);
       when(battleTracker.getDefendingUnitsAtStartOfBattle(territory)).thenReturn(List.of());
 
-      assertTrue(newMatch().test(territory));
+      assertThat(newMatch().test(territory)).isTrue();
     }
 
     @Test
@@ -437,7 +436,7 @@ final class MatchesTest {
       when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
           .thenReturn(List.of(submarine()));
 
-      assertFalse(newMatch().test(territory));
+      assertThat(newMatch().test(territory)).isFalse();
     }
 
     @Test
@@ -446,7 +445,7 @@ final class MatchesTest {
       when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
           .thenReturn(List.of(transport()));
 
-      assertFalse(newMatch().test(territory));
+      assertThat(newMatch().test(territory)).isFalse();
     }
 
     @Test
@@ -455,7 +454,7 @@ final class MatchesTest {
       when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
           .thenReturn(List.of(submarine(), transport()));
 
-      assertFalse(newMatch().test(territory));
+      assertThat(newMatch().test(territory)).isFalse();
     }
 
     @Test
@@ -464,7 +463,7 @@ final class MatchesTest {
       when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
           .thenReturn(List.of(submarine(), destroyer()));
 
-      assertTrue(newMatch().test(territory));
+      assertThat(newMatch().test(territory)).isTrue();
     }
   }
 }
