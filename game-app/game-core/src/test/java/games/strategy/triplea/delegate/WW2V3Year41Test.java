@@ -594,17 +594,17 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
     /**
      * Places a single defender of {@code defenderType} in {@code foughtOver}, then drives the exact
      * repro from issue #3428: the battleship passes through {@code foughtOver} into {@code
-     * battleSite} (recording {@code foughtOver} as "attacked from"), the destroyer stops and fights
-     * the lone defender there, and the test asserts the battleship's battle in {@code battleSite}
-     * is still allowed to retreat back into {@code foughtOver}.
+     * battleSite}, recording {@code foughtOver} as "attacked from". The destroyer stops and fights
+     * the lone defender in {@code foughtOver}, and the test asserts that the battleship fighting in
+     * {@code battleSite} is still allowed to retreat back into {@code foughtOver}.
      */
     private void assertCanRetreatWhenOnlyDefendedBy(
         final UnitType defenderType,
         final String ignoreInMovementProperty,
         final String unitLabel) {
-      assertTrue(
-          gameData.getProperties().get(ignoreInMovementProperty, false),
-          "this scenario requires " + ignoreInMovementProperty + " to be enabled");
+      assertThat(gameData.getProperties().get(ignoreInMovementProperty, false))
+          .as("this scenario requires " + ignoreInMovementProperty + " to be enabled")
+          .isTrue();
       addTo(foughtOver, defenderType.create(1, british));
 
       final IDelegateBridge bridge = newDelegateBridge(germans);
@@ -627,17 +627,21 @@ class WW2V3Year41Test extends AbstractClientSettingTestCase {
                   .getPendingNonBombingBattle(foughtOver);
       whenGetRandom(bridge).thenAnswer(withValues(0)).thenAnswer(withValues(0));
       foughtOverBattle.fight(bridge);
-      assertTrue(AbstractMoveDelegate.getBattleTracker(gameData).wasBattleFought(foughtOver));
+      assertThat(AbstractMoveDelegate.getBattleTracker(gameData).wasBattleFought(foughtOver))
+          .isTrue();
 
       final MustFightBattle seaBattle =
           (MustFightBattle)
               AbstractMoveDelegate.getBattleTracker(gameData)
                   .getPendingNonBombingBattle(battleSite);
-      assertTrue(
-          seaBattle.getAttackerRetreatTerritories().contains(foughtOver),
-          "retreat must be allowed into a fought-over sea zone that only "
-              + unitLabel
-              + " defended");
+      assertThat(seaBattle.getAttackerRetreatTerritories().contains(foughtOver))
+          .as(
+              "retreat must be allowed into a fought-over sea zone that only "
+                  + unitLabel
+                  + " defended, when "
+                  + ignoreInMovementProperty
+                  + " is true")
+          .isTrue();
     }
 
     @Test

@@ -39,6 +39,7 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.ATTACKER_
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_CASUALTIES;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.REMOVE_SNEAK_ATTACK_CASUALTIES;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.SUBS_SUBMERGE;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -247,6 +248,103 @@ class RevisedTest extends AbstractClientSettingTestCase {
     move(russia.getUnitCollection().getMatches(Matches.unitIsAir()), r);
     // make sure they can't land, they can't because the territory was conquered
     assertEquals(1, moveDelegate.getTerritoriesWhereAirCantLand().size());
+  }
+
+  @Nested
+  class RetreatIntoFoughtOverZoneDefendedOnlyBySubsAndTransports {
+
+    private GamePlayer germans;
+    private GamePlayer british;
+    private Territory from;
+    private Territory foughtOver;
+    private Territory battleSite;
+
+    @BeforeEach
+    void setUp() {
+      germans = germans(gameData);
+      british = british(gameData);
+      from = gameData.getMap().getTerritoryOrNull("4 Sea Zone");
+      foughtOver = gameData.getMap().getTerritoryOrNull("3 Sea Zone");
+      battleSite = gameData.getMap().getTerritoryOrNull("2 Sea Zone");
+      removeFrom(from, from.getUnits());
+      removeFrom(foughtOver, foughtOver.getUnits());
+      removeFrom(battleSite, battleSite.getUnits());
+      addTo(battleSite, destroyer(gameData).create(1, british));
+      addTo(foughtOver, battleship(gameData).create(1, germans));
+      addTo(from, destroyer(gameData).create(1, germans));
+    }
+
+    /**
+     * Places a single defender of {@code defenderType} (submarine/transport) in {@code foughtOver},
+     * then drives a repro similar to issue #3428: the battleship starts in {@code foughtOver} and
+     * moves into {@code battleSite}, recording {@code foughtOver} as "attacked from". The destroyer
+     * stops and fights the lone defender in {@code foughtOver}, and the test asserts that the
+     * battleship fighting in {@code battleSite} is not allowed to retreat back into {@code
+     * foughtOver}, as subs/transports should block retreat in Revised.
+     */
+    private void assertCannotRetreatWhenOnlyDefendedBy(
+        final UnitType defenderType,
+        final String ignoreInMovementProperty,
+        final String unitLabel) {
+      assertThat(gameData.getProperties().get(ignoreInMovementProperty, false))
+          .as("this scenario requires %s to be false", ignoreInMovementProperty)
+          .isFalse();
+      addTo(foughtOver, defenderType.create(1, british));
+
+      final IDelegateBridge bridge = newDelegateBridge(germans);
+      advanceToStep(bridge, "CombatMove");
+      moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+      moveDelegate(gameData).start();
+      move(
+          foughtOver.getUnitCollection().getMatches(Matches.unitIsOfType(battleship(gameData))),
+          new Route(foughtOver, battleSite));
+      move(
+          from.getUnitCollection().getMatches(Matches.unitIsOfType(destroyer(gameData))),
+          new Route(from, foughtOver));
+      moveDelegate(gameData).end();
+
+      // Fight the foughtOver battle first so it's recorded as fought-over before battleSite's
+      // retreat is computed.
+      final MustFightBattle foughtOverBattle =
+          (MustFightBattle)
+              AbstractMoveDelegate.getBattleTracker(gameData)
+                  .getPendingNonBombingBattle(foughtOver);
+      whenGetRandom(bridge).thenAnswer(withValues(0)).thenAnswer(withValues(0));
+      foughtOverBattle.fight(bridge);
+      assertThat(AbstractMoveDelegate.getBattleTracker(gameData).wasBattleFought(foughtOver))
+          .isTrue();
+
+      final MustFightBattle seaBattle =
+          (MustFightBattle)
+              AbstractMoveDelegate.getBattleTracker(gameData)
+                  .getPendingNonBombingBattle(battleSite);
+      assertThat(seaBattle.getAttackerRetreatTerritories())
+          .as(
+              "retreat must be forbidden into a fought-over sea zone that only "
+                  + unitLabel
+                  + " defended in, when "
+                  + ignoreInMovementProperty
+                  + " is false")
+          .doesNotContain(foughtOver);
+    }
+
+    @Test
+    void whenDefendedOnlyBySubmarines() {
+      // Regression for issue #3428. If "Ignore Sub In Movement" is disabled, a lone submarine
+      // blocks an enemy fleet from passing through its sea zone, so the fleet must not be allowed
+      // to retreat back into that zone after fighting an adjacent battle.
+      assertCannotRetreatWhenOnlyDefendedBy(
+          submarine(gameData), Constants.IGNORE_SUB_IN_MOVEMENT, "submarines");
+    }
+
+    @Test
+    void whenDefendedOnlyByTransports() {
+      // Regression for issue #3428. If "Ignore Transport In Movement" is disabled, a lone transport
+      // blocks an enemy fleet from passing through its sea zone, so the fleet must not be
+      // allowed to retreat back into that zone after fighting an adjacent battle.
+      assertCannotRetreatWhenOnlyDefendedBy(
+          transport(gameData), Constants.IGNORE_TRANSPORT_IN_MOVEMENT, "transports");
+    }
   }
 
   @Test
