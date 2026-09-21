@@ -395,7 +395,7 @@ final class MatchesTest {
     @Mock private Territory territory;
 
     private Predicate<Territory> newMatch() {
-      return Matches.territoryWasFoughtOverByNonBypassableSeaUnits(
+      return Matches.territoryWasFoughtOverByNonBypassableUnits(
           battleTracker, gameData.getProperties());
     }
 
