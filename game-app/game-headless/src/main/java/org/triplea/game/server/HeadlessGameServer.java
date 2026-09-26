@@ -13,16 +13,21 @@ import games.strategy.engine.framework.startup.ui.panels.main.game.selector.Game
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
+import org.triplea.util.ExitStatus;
 
 /** A way of hosting a game, but headless. */
 @Slf4j
 public class HeadlessGameServer {
+  private static final Duration SHUTDOWN_HOOK_TIMEOUT = Duration.ofSeconds(60);
+
   private final GameSelectorModel gameSelectorModel = new GameSelectorModel();
   @Nonnull private final HeadlessServerSetup headlessServerSetup;
   @Nullable private ServerGame game = null;
@@ -45,11 +50,30 @@ public class HeadlessGameServer {
             new Thread(
                 () -> {
                   log.info("Running ShutdownHook.");
+                  ExitStatus.markShutdownInProgress();
+                  startShutdownWatchdog();
                   Optional.ofNullable(game).ifPresent(ServerGame::stopGame);
                   headlessServerSetup.cancel();
                 }));
 
     waitForUsers();
+  }
+
+  /**
+   * Halts the JVM if the shutdown hook is still running after a timeout. A hook that never returns
+   * leaves the bot alive but delisted from the lobby, and systemd sees nothing to restart.
+   */
+  private static void startShutdownWatchdog() {
+    final Thread watchdog =
+        new Thread(
+            () -> {
+              Interruptibles.sleep(SHUTDOWN_HOOK_TIMEOUT.toMillis());
+              log.error("Shutdown hook still running after {}, halting.", SHUTDOWN_HOOK_TIMEOUT);
+              Runtime.getRuntime().halt(1);
+            },
+            "shutdown-watchdog");
+    watchdog.setDaemon(true);
+    watchdog.start();
   }
 
   public Collection<String> getAvailableGames() {
