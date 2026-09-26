@@ -77,8 +77,10 @@ class RouteFinder {
       if (routeCosts.get(currentTerritory).compareTo(minCost) >= 0) {
         continue;
       }
+
       for (final Territory neighbor :
           getNeighborsValidatingCanals(currentTerritory, condition, units, player)) {
+
         final BigDecimal routeCost =
             routeCosts.get(currentTerritory).add(territoryCostFunction.apply(neighbor));
         if (!previous.containsKey(neighbor) || routeCost.compareTo(routeCosts.get(neighbor)) < 0) {
