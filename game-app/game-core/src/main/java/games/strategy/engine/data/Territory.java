@@ -67,7 +67,7 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
   }
 
   @Override
-  public String getType() {
-    return UnitHolder.TERRITORY;
+  public UnitHolderType getType() {
+    return UnitHolderType.TERRITORY;
   }
 }
