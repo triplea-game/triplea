@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -78,7 +79,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   private void setConnection(final Territory from, final Territory to) {
     // preserves the unmodifiable nature of the entries
     final Set<Territory> current = getNeighbors(from);
-    final Set<Territory> modified = new HashSet<>(current);
+    final Set<Territory> modified = new LinkedHashSet<>(current);
     modified.add(to);
     connections.put(from, Collections.unmodifiableSet(modified));
   }
@@ -120,7 +121,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    */
   public Set<Territory> getNeighbors(
       final Territory territory, final Predicate<Territory> neighborCondition) {
-    return getNeighbors(territory).stream().filter(neighborCondition).collect(Collectors.toSet());
+    return getNeighbors(territory).stream()
+        .filter(neighborCondition)
+        .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
   private Set<Territory> getNeighbors(
