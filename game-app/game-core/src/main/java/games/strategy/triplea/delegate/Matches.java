@@ -1468,6 +1468,40 @@ public final class Matches {
     return t -> tracker.wasBattleFought(t) || tracker.wasBlitzed(t);
   }
 
+  /**
+   * Bypassable units consist of: submarines when {@code Constant.IGNORE_SUB_IN_MOVEMENT} is true,
+   * transports when {@code Constant.IGNORE_TRANSPORT_IN_MOVEMENT} is true, air units, and units
+   * with the unit attachment {@code canBeMovedThroughByEnemies}. Returns true if the embattled sea
+   * zone contains at least one defending unit that is not bypassable.
+   */
+  public static Predicate<Territory> territoryWasFoughtOverByNonBypassableUnits(
+      final BattleTracker tracker, final GameProperties properties) {
+    return t -> {
+      if (!territoryWasFoughtOver(tracker).test(t)) {
+        return false;
+      }
+      final Collection<Unit> defenders = tracker.getDefendingUnitsAtStartOfBattle(t);
+      // If defenders is empty, this may indicate that a save game was loaded before
+      // defendingUnitsAtStartOfBattle existed. In that case, assume the territory was not fought
+      // over by non-bypassable units (i.e. safe for retreating).
+      if (defenders.isEmpty()) {
+        return false;
+      }
+      return defenders.stream()
+          .anyMatch(
+              unit -> {
+                final boolean bypassableTransport =
+                    Properties.getIgnoreTransportInMovement(properties)
+                        && Matches.unitIsSeaTransportButNotCombatSeaTransport().test(unit);
+                final boolean bypassableAir = Matches.unitIsAir().test(unit);
+                final boolean canBeMovedThroughByEnemies =
+                    Matches.unitCanBeMovedThroughByEnemies().test(unit);
+
+                return !bypassableTransport && !bypassableAir && !canBeMovedThroughByEnemies;
+              });
+    };
+  }
+
   public static Predicate<Unit> unitIsSubmerged() {
     return Unit::getSubmerged;
   }
