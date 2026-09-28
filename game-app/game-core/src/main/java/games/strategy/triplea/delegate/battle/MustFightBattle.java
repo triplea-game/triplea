@@ -833,6 +833,7 @@ public class MustFightBattle extends DependentBattle
             .and(Matches.unitIsBeingTransported().negate())
             .and(Matches.unitIsSubmerged().negate())
             .and(Matches.unitCanBeMovedThroughByEnemies().negate())
+            .and(Matches.unitIsAir().negate())
             .andIf(
                 Properties.getIgnoreTransportInMovement(gameData.getProperties()),
                 Matches.unitIsNotSeaTransportButCouldBeCombatSeaTransport())
@@ -856,9 +857,17 @@ public class MustFightBattle extends DependentBattle
 
     // the air unit may have come from a conquered or enemy territory, don't allow retreating
     final Predicate<Territory> conqueredOrEnemy =
-        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(attacker)
-            .or(Matches.territoryIsWater().and(Matches.territoryWasFoughtOver(battleTracker)));
+        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(attacker);
     possible.removeAll(CollectionUtils.getMatches(possible, conqueredOrEnemy));
+
+    // Do not allow retreating into an embattled sea zone if at the start of the turn, there was at
+    // least one non-bypassable unit in the sea zone.
+    final Predicate<Territory> embattledSeaZone =
+        Matches.territoryIsWater()
+            .and(
+                Matches.territoryWasFoughtOverByNonBypassableUnits(
+                    battleTracker, gameData.getProperties()));
+    possible.removeAll(CollectionUtils.getMatches(possible, embattledSeaZone));
 
     // the battle site is in the attacking from if sea units are fighting a submerged sub
     possible.remove(battleSite);

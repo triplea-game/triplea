@@ -13,9 +13,11 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
+import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.List;
 import java.util.Set;
@@ -374,6 +376,142 @@ final class MatchesTest {
               "An infrastructure unit that is combat AA but can only fire in round 1 and "
                   + "it is round 2 can not be in battle")
           .isTrue();
+    }
+  }
+
+  /**
+   * Guards the retreat rule behind {@link
+   * games.strategy.triplea.delegate.battle.MustFightBattle#getAttackerRetreatTerritories()}: a sea
+   * zone that was fought over only blocks retreat when a surface warship defended it. Submarines
+   * and (non-combat) transports do not, since neither stops an enemy fleet from passing through.
+   */
+  @Nested
+  @ExtendWith(MockitoExtension.class)
+  final class TerritoryWasFoughtOverByNonBypassableSeaUnitsTest {
+    private GameData gameData;
+    private GamePlayer player;
+
+    @Mock private BattleTracker battleTracker;
+    @Mock private Territory territory;
+
+    private Predicate<Territory> newMatch() {
+      return Matches.territoryWasFoughtOverByNonBypassableUnits(
+          battleTracker, gameData.getProperties());
+    }
+
+    private Unit submarine() {
+      return GameDataTestUtil.submarine(gameData).create(player);
+    }
+
+    private Unit transport() {
+      return GameDataTestUtil.transport(gameData).create(player);
+    }
+
+    private Unit destroyer() {
+      return GameDataTestUtil.destroyer(gameData).create(player);
+    }
+
+    @BeforeEach
+    void setUp() {
+      gameData = TestMapGameData.REVISED.getGameData();
+      player = GameDataTestUtil.germans(gameData);
+    }
+
+    @Nested
+    class SubmarineDefenders {
+      @Test
+      void doesNotMatchWhenIgnoreSubInMovementIsTrue() {
+        setProperty(Constants.IGNORE_SUB_IN_MOVEMENT, true);
+        when(battleTracker.wasBattleFought(territory)).thenReturn(true);
+        when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
+            .thenReturn(List.of(submarine()));
+
+        assertThat(newMatch().test(territory)).isFalse();
+      }
+
+      @Test
+      void matchesWhenIgnoreSubInMovementIsFalse() {
+        setProperty(Constants.IGNORE_SUB_IN_MOVEMENT, false);
+        when(battleTracker.wasBattleFought(territory)).thenReturn(true);
+        when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
+            .thenReturn(List.of(submarine()));
+
+        assertThat(newMatch().test(territory)).isTrue();
+      }
+    }
+
+    @Nested
+    class TransportDefenders {
+      @Test
+      void doesNotMatchWhenIgnoreTransportInMovementIsTrue() {
+        setProperty(Constants.IGNORE_TRANSPORT_IN_MOVEMENT, true);
+        when(battleTracker.wasBattleFought(territory)).thenReturn(true);
+        when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
+            .thenReturn(List.of(transport()));
+
+        assertThat(newMatch().test(territory)).isFalse();
+      }
+
+      @Test
+      void matchesWhenIgnoreTransportInMovementIsFalse() {
+        setProperty(Constants.IGNORE_TRANSPORT_IN_MOVEMENT, false);
+        when(battleTracker.wasBattleFought(territory)).thenReturn(true);
+        when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
+            .thenReturn(List.of(transport()));
+
+        assertThat(newMatch().test(territory)).isTrue();
+      }
+    }
+
+    @Nested
+    class SubmarineAndTransportDefenders {
+      @Test
+      void doesNotMatchWhenBothPropertiesAreTrue() {
+        setProperty(Constants.IGNORE_SUB_IN_MOVEMENT, true);
+        setProperty(Constants.IGNORE_TRANSPORT_IN_MOVEMENT, true);
+        when(battleTracker.wasBattleFought(territory)).thenReturn(true);
+        when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
+            .thenReturn(List.of(submarine(), transport()));
+
+        assertThat(newMatch().test(territory)).isFalse();
+      }
+
+      @Test
+      void matchesWhenOnlySubPropertyIsFalse() {
+        setProperty(Constants.IGNORE_SUB_IN_MOVEMENT, false);
+        setProperty(Constants.IGNORE_TRANSPORT_IN_MOVEMENT, true);
+        when(battleTracker.wasBattleFought(territory)).thenReturn(true);
+        when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
+            .thenReturn(List.of(submarine(), transport()));
+
+        assertThat(newMatch().test(territory)).isTrue();
+      }
+
+      @Test
+      void matchesWhenOnlyTransportPropertyIsFalse() {
+        setProperty(Constants.IGNORE_SUB_IN_MOVEMENT, true);
+        setProperty(Constants.IGNORE_TRANSPORT_IN_MOVEMENT, false);
+        when(battleTracker.wasBattleFought(territory)).thenReturn(true);
+        when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
+            .thenReturn(List.of(submarine(), transport()));
+
+        assertThat(newMatch().test(territory)).isTrue();
+      }
+
+      @Test
+      void matchesWhenBothPropertiesAreFalse() {
+        setProperty(Constants.IGNORE_SUB_IN_MOVEMENT, false);
+        setProperty(Constants.IGNORE_TRANSPORT_IN_MOVEMENT, false);
+        when(battleTracker.wasBattleFought(territory)).thenReturn(true);
+        when(battleTracker.getDefendingUnitsAtStartOfBattle(territory))
+            .thenReturn(List.of(submarine(), transport()));
+
+        assertThat(newMatch().test(territory)).isTrue();
+      }
+    }
+
+    private void setProperty(final String property, final boolean value) {
+      gameData.getProperties().set(property, value);
     }
   }
 }
