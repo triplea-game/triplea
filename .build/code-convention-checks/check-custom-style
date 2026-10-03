@@ -156,10 +156,25 @@ function useJavaxNonnullInsteadOfLombokNonNull() {
 }
 export -f useJavaxNonnullInsteadOfLombokNonNull
 
+# .gitattributes stores text files with LF in git, even '*.bat' files checked out as CRLF.
+# A file committed with CRLF anyway (eg: by a bot that writes through the GitHub API) shows
+# as modified in every clone until it is renormalized.
+function storeTextFilesWithLfLineEndings() {
+  title "Store text files in git with LF line endings"
+  example "git add --renormalize gradlew.bat"
+  local found=0
+  git -C "$basePath" ls-files --eol | grep -E "^i/(crlf|mixed) +[^ ]+ +attr/text" \
+    && status=1 && found=1
+
+  displayResult "$found"
+}
+export -f storeTextFilesWithLfLineEndings
+
 
 removeUnusedLogAnnotations
 useStaticImportsInTest
 useJavaxNonnullInsteadOfLombokNonNull
+storeTextFilesWithLfLineEndings
 
 ## The below flag errors that need to be fixed before they can be enabled
 #  favorJava9CollectionsApi
