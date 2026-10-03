@@ -14,13 +14,14 @@ and IDE formatters (Eclipse). These are consumed by the root `build.gradle.kts`.
 ## code-convention-checks/
 
 The `check-custom-style` bash script runs grep-based style checks beyond what
-Checkstyle/PMD cover. It is **not wired into the Gradle build** — it must be run
-manually.
+Checkstyle/PMD cover. It is **not wired into the Gradle build** — the root
+`verify` script (and so CI) runs it after Gradle.
 
 ### Active checks (enabled in the script)
 - **Unused `@Slf4j` annotations** — flags files with `@Slf4j` but no `log.` usage
 - **Static imports in tests** — flags `Mockito.when(...)` etc. that should be statically imported
 - **`javax.annotation.Nonnull` over `lombok.NonNull`** — enforces consistent null annotation
+- **LF line endings in git** — flags text files committed with CRLF (fix with `git add --renormalize <file>`)
 
 ### Disabled checks (commented out, have existing violations)
 - Prefer `List.of()`/`Map.of()`/`Set.of()` over `Collections.*` methods
