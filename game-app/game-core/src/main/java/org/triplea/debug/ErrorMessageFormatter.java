@@ -1,6 +1,7 @@
 package org.triplea.debug;
 
 import games.strategy.triplea.UrlConstants;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import org.triplea.swing.JEditorPaneWithClickableLinks;
@@ -54,27 +55,27 @@ class ErrorMessageFormatter implements Function<LoggerRecord, String> {
 
     // If there is no log message, or if the log message matches the error message
     // of the first exception, then our error message header will be 'unexpected error'.
-    // Otherwise the error header is the (unique and non-null) log message.
-    if (logRecord.getLogMessage() == null
-        || (!logRecord.getExceptions().isEmpty()
-            && logRecord
-                .getLogMessage()
-                .equals(logRecord.getExceptions().get(0).getExceptionMessage()))) {
+    // Otherwise, the error header is the (unique and non-null) log message.
+    final String logMessage = logRecord.getLogMessage();
+    List<ExceptionDetails> exceptions = logRecord.getExceptions();
+    final String exceptionMessage =
+        exceptions.isEmpty() ? null : exceptions.getFirst().getExceptionMessage();
+    if (logMessage == null || logMessage.equals(exceptionMessage)) {
       errorMessage.append("<b>").append(UNEXPECTED_ERROR_TEXT).append("</b>");
     } else {
-      errorMessage.append("<b>").append(logRecord.getLogMessage()).append("</b>");
+      errorMessage.append("<b>").append(logMessage).append("</b>");
     }
 
     // Print nested exceptions
-    for (int i = 0; i < logRecord.getExceptions().size() && i < 3; i++) {
-      ExceptionDetails exceptionDetails = logRecord.getExceptions().get(i);
+    for (int i = 0; i < exceptions.size() && i < 3; i++) {
+      ExceptionDetails exceptionDetails = exceptions.get(i);
 
       errorMessage
           .append("\n\n")
           .append(formatExceptionClassName(exceptionDetails.getExceptionClassName()));
 
       Optional.ofNullable(exceptionDetails.getExceptionMessage())
-          .ifPresent(exceptionMessage -> errorMessage.append(": ").append(exceptionMessage));
+          .ifPresent(exceptionMsg -> errorMessage.append(": ").append(exceptionMsg));
     }
 
     return errorMessage.toString();
