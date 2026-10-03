@@ -6,6 +6,9 @@ on:
   push:
     branches:
       - main
+permissions:
+  contents: read
+  packages: write
 jobs:
   build:
     env:
@@ -18,6 +21,10 @@ jobs:
         with:
           distribution: temurin
           java-version: 25
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+      - name: Run Build Checks
+        run: ./verify --exclude-task spotlessApply
       - name: Login to GitHub Container Registry
         if: ${{ env.IS_MAIN_BUILD }}
         uses: docker/login-action@v4.6.0
@@ -32,5 +39,7 @@ jobs:
 
           docker build game-app/game-headless \
             --tag ghcr.io/triplea-game/bot:latest \
+            --tag ghcr.io/triplea-game/bot:sha-${{ github.sha }} \
             --label gitSha="$(git rev-parse --short HEAD)"
           docker push ghcr.io/triplea-game/bot:latest
+          docker push ghcr.io/triplea-game/bot:sha-${{ github.sha }}
