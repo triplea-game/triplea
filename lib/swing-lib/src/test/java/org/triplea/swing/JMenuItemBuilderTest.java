@@ -77,9 +77,9 @@ class JMenuItemBuilderTest {
 
   @Test
   void disabledDisablesMenuItemAndSetsTooltip() {
-    final String disabled_tooltip = "Test Menu Item is disabled for testing purposes";
-    JMenuItem menuItem = menuItemBuilder.disabled(disabled_tooltip).build();
-    assertEquals(disabled_tooltip, menuItem.getToolTipText());
+    final String disabledTooltip = "Test Menu Item is disabled for testing purposes";
+    JMenuItem menuItem = menuItemBuilder.disabled(disabledTooltip).build();
+    assertEquals(disabledTooltip, menuItem.getToolTipText());
     assertFalse(menuItem.isEnabled());
     menuItem.doClick();
     verify(runnable, never()).run();

@@ -21,8 +21,5 @@ All modules use the `triplea-java-library` convention plugin (from `gradle/build
 
 - Java 25 compilation
 - Google Java Format via Spotless
-
-Additionally, the root `build.gradle.kts` applies to all subprojects:
-
-- Checkstyle and PMD static analysis
+- PMD static analysis
 - JaCoCo code coverage

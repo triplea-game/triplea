@@ -133,7 +133,7 @@ public final class GameParser {
         inputStream -> {
           try {
             return new GameParser(xmlFile, xmlGameElementMapper, collectAttachmentOrderAndValues)
-                .parse(xmlFile, inputStream);
+                .parse(inputStream);
           } catch (final Exception e) {
             log.warn(
                 "Failed to load map. Be sure to use the latest TripleA. Failed parsing:"
@@ -147,8 +147,7 @@ public final class GameParser {
   }
 
   @Nonnull
-  private GameData parse(final Path xmlFile, final InputStream stream)
-      throws XmlParsingException, GameParseException {
+  private GameData parse(final InputStream stream) throws XmlParsingException, GameParseException {
     final Game game = new XmlMapper(stream).mapXmlToObject(Game.class);
 
     // For backward compatibility with maps that do not have a map.yml file,
