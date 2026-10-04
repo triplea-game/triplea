@@ -4,6 +4,9 @@ TripleA is an open-source, turn-based strategy game engine inspired by Axis & Al
 It supports community-created maps, AI opponents, and online multiplayer via a lobby server.
 The project has been active since 2002.
 
+**Coding agents:** rules, task skills, review roles and check scripts live in `.agents/`. Start
+with `.agents/README.md`; before finishing a change, run `python .agents/scripts/check_changes.py`.
+
 ## Project Structure
 
 This is a multi-module Gradle (Kotlin DSL) project. Key top-level directories:
@@ -15,6 +18,7 @@ This is a multi-module Gradle (Kotlin DSL) project. Key top-level directories:
 | `lib/`                | Shared utility libraries (Swing helpers, websockets, XML parsing) |
 | `docs/`               | Project documentation (development, map-making, infrastructure)   |
 | `.build/`             | Checkstyle, PMD configs, and code convention checks               |
+| `.agents/`            | Shared setup for AI coding agents (rules, skills, check scripts)  |
 | `gradle/build-logic/` | Custom Gradle convention plugins                                  |
 
 ### Module Dependency Overview

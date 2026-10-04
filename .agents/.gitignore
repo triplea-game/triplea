@@ -1,0 +1,5 @@
+# the root .gitignore ignores every build/ folder; this one is the build skill
+!skills/build/
+__pycache__/
+# machine notes, see README.md
+local.md
