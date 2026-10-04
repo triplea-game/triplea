@@ -37,18 +37,11 @@ each plugin's page.
     4.
    Check [IntelliJ JRE config from google-java-format]([url](https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-config))
    or do it manually as below.
-2. [OUT-DATED] *checkstyle-IDEA* [plugin](https://github.com/jshiell/checkstyle-idea)
-    1. after install finish configuration in: **Other Settings > Checkstyle**
-        1. load checkstyle file by clicking on the "plus" and navigating to the file
-           `.\triplea\config\checkstyle` (If you can't find it, you can download it from
-           [the repository](https://github.com/triplea-game/triplea/blob/main/.build/checkstyle.xml))
-        2. set checkstyle version
-        3. set to scan all sources
-3. *Lombok*
+2. *Lombok*
     1. **Settings > Annotation Processors**
     2. Turn on annotation processing.
        ![annotationprocessing2](https://user-images.githubusercontent.com/54828470/95939758-6da00a00-0da2-11eb-9c7a-823040578c4e.png)
-4. *PlantUML Integration*
+3. *PlantUML Integration*
     1. GraphViz also needs to be installed: <https://graphviz.org/download/>
 
 ## Download and import IDEA settings file
