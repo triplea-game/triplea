@@ -40,6 +40,7 @@ We welcome contributions from the community! Whether you're a developer, designe
 
 - [How to Contribute to TripleA](/docs/contribute.md)
 - [Developer Setup Guide](/docs/development/README.md)
+- [Windows Developer Setup](/docs/development/windows-dev-setup.md): step-by-step from a fresh Windows machine to running and debugging the game
 
 ## License
 

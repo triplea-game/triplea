@@ -1,5 +1,8 @@
 # Developer Setup Guide
 
+> **On Windows?** Start with the [Windows Developer Setup](windows-dev-setup.md): a complete
+> walkthrough from a fresh machine to running, logging and debugging TripleA, no WSL needed.
+
 ## Before Getting Started
 
 - Install JDK 25 (project is using this Java version)
@@ -12,6 +15,11 @@
       The existing docker files are likely written with only linux in mind
 
 ## Windows
+
+For a complete native Windows walkthrough (no WSL, works with any IDE) covering the JDK,
+running the client, logs and debugging, see [Windows Developer Setup](windows-dev-setup.md).
+
+The notes below set up WSL, which is only needed for Docker or Linux-only tooling:
 
 - Set up WSL (see [WSL installation guide](https://learn.microsoft.com/de-de/windows/wsl/install)),
   this will give you a command line that can be used to run docker, gradle and the code check scripts
