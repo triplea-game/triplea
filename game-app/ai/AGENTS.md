@@ -32,9 +32,3 @@ A minimal/passive AI that takes no strategic actions. Purchases and places units
 - **InfluenceMap**: Maps strategic value across territories using value diffusion. Values decrease exponentially with distance from key territories.
 - **InfluenceTerritory**: Tracks accumulated influence value, battle details, and distance from source for each territory.
 - **Battle odds**: Evaluates combat outcomes to decide whether to attack or avoid territories.
-
-## Dependencies
-
-- `game-app:game-core` (extends `AbstractAi`)
-- `lib:java-extras`
-- Test fixtures from `game-app:game-core`
