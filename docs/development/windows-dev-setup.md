@@ -23,7 +23,8 @@ Git for Windows comes with **Git Bash**. Use it for the repo's scripts (`./gradl
 
 ### Is Java set up right?
 
-Gradle uses whatever `JAVA_HOME` points to, so that's what you check. Open a **fresh** terminal:
+`./gradlew` starts Gradle with the Java in `JAVA_HOME`, and the build compiles and runs the game
+with JDK 25. With `JAVA_HOME` pointing at JDK 25, both are covered. Open a **fresh** terminal:
 
 ```powershell
 # PowerShell
@@ -39,13 +40,6 @@ You want to see `25.x`. If you get an error or another version, set `JAVA_HOME` 
 "Edit environment variables for your account"* to your JDK 25 folder, then reopen every
 terminal and IDE. They only read environment variables when they start.
 
-> **Other projects need a different Java?** Then skip the global setting and set it for one
-> terminal: `$env:JAVA_HOME = "C:\path\to\jdk-25"` (PowerShell) or
-> `export JAVA_HOME=/c/path/to/jdk-25` (Git Bash).
->
-> **`java -version` says 21 or "JBR"?** That's probably your IDE's own Java showing up in its
-> built-in terminal. Ignore it and check `JAVA_HOME` as shown above.
-
 ---
 
 ## 2. Grab the code
@@ -54,7 +48,7 @@ Fork [triplea-game/triplea](https://github.com/triplea-game/triplea) on GitHub, 
 your fork to a short path **without spaces**:
 
 ```bash
-cd /c/dev
+cd /c/dev                                    # or any other short path without spaces
 git clone https://github.com/<your-user>/triplea.git
 cd triplea
 
@@ -183,8 +177,9 @@ Often that's faster than clicking through a whole game to reproduce something.
 
 Open the repo folder as a **Gradle project** and you're mostly done. Three things to check:
 
-1. **The IDE uses JDK 25.** Both the project JDK and the JDK Gradle runs with. IDEs like to
-   default to their own Java 21.
+1. **The IDE knows about JDK 25.** Set the project JDK to 25 so the editor understands the
+   code, and let the IDE run Gradle with it as well (IntelliJ: *Settings → Build Tools →
+   Gradle → Gradle JVM*).
 2. **Gradle does the building.** The game images only get onto the classpath through the
    Gradle build. If your IDE compiles on its own, the game crashes right after the splash
    screen. When in doubt, run with `./gradlew :game-headed:run --debug-jvm` and attach.
@@ -230,8 +225,7 @@ Branches and PRs: [typical-git-workflow.md](typical-git-workflow.md),
 
 | You see | Do this |
 |---|---|
-| `JAVA_HOME is not set` or `Cannot find a Java installation ... languageVersion=25` | `JAVA_HOME` doesn't point at JDK 25. Fix it (section 1) and open a new terminal. |
-| `java -version` says 21 / JBR | Your IDE's Java in its terminal. Check `JAVA_HOME` instead. |
+| `JAVA_HOME is not set` or `Cannot find a Java installation ... languageVersion=25` | Gradle can't find JDK 25. Point `JAVA_HOME` at it (section 1) and open a new terminal. In an IDE, set its Gradle JVM to JDK 25 (section 6). |
 | Gradle can't run `git` | Git isn't on the PATH. Reinstall Git with the "3rd-party software" option. |
 | Game crashes right after the splash screen | Images are missing. Let Gradle do the build (section 6), or run `./gradlew :game-headed:processResources`. |
 | `$'\r': command not found` | You ran the scripts from WSL on a Windows checkout. Use Git Bash. |
