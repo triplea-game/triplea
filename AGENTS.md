@@ -17,6 +17,9 @@ This is a multi-module Gradle (Kotlin DSL) project. Key top-level directories:
 | `.build/`             | Checkstyle, PMD configs, and code convention checks               |
 | `gradle/build-logic/` | Custom Gradle convention plugins                                  |
 
+Gradle project names are flat (`:game-core`, not `:game-app:game-core`); see `settings.gradle.kts`.
+Each module's dependencies are in its `build.gradle.kts`.
+
 ### Module Dependency Overview
 
 ```
@@ -39,7 +42,7 @@ http-clients/lobby-client → domain-data, lib/feign-common, lib/java-extras, li
 
 ```bash
 # Build and run the desktop client
-./gradlew :game-app:game-headed:run
+./gradlew :game-headed:run
 
 # Run all checks (formatting + tests + static analysis + custom checks)
 ./verify
@@ -48,10 +51,10 @@ http-clients/lobby-client → domain-data, lib/feign-common, lib/java-extras, li
 ./gradlew test
 
 # Run tests for a specific module
-./gradlew :game-app:game-core:test
+./gradlew :game-core:test
 
 # Run a specific test class
-./gradlew :game-app:game-core:test --tests games.strategy.triplea.UnitUtilsTest
+./gradlew :game-core:test --tests games.strategy.triplea.UnitUtilsTest
 
 # Apply formatting
 ./gradlew spotlessApply
@@ -78,7 +81,7 @@ http-clients/lobby-client → domain-data, lib/feign-common, lib/java-extras, li
 - Mockito for mocking
 - AssertJ is the standard assertion library; some older tests still use JUnit or Hamcrest matchers, but new tests should use AssertJ
 - WireMock for HTTP stubbing
-- Test fixtures shared from `:game-app:game-core` via `testFixtures` — use `TestMapGameData` enum and
+- Test fixtures shared from `:game-core` via `testFixtures` — use `TestMapGameData` enum and
   `TestMapGameDataLoader` to load test map data
 
 ## Architecture Concepts

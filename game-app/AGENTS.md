@@ -15,16 +15,6 @@ The main application layer of TripleA, organized as several Gradle submodules.
 | `game-relay-server` | WebSocket relay server that broadcasts messages between game clients                  |
 | `smoke-testing`     | Save game compatibility tests — downloads save files and verifies they load correctly |
 
-## Dependency Flow
-
-```
-game-headed ──→ game-core, ai, domain-data, map-data, lobby-client
-game-headless ─→ game-core, ai, domain-data, lobby-client, lib:java-extras
-ai ───────────→ game-core, lib:java-extras
-game-core ────→ domain-data, map-data, game-relay-server, lobby-client
-game-relay-server → lib:websocket-client, lib:websocket-server
-```
-
 ## Shared Conventions
 
 All modules use the `triplea-java-library` convention plugin (from `gradle/build-logic`), which applies:

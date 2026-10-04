@@ -48,16 +48,10 @@ macOS-specific: opening a file or a `triplea://` URI is translated to the corres
 - **`games.strategy.triplea.ui.export`** — `ScreenshotExporter` (renders map to PNG with optional title overlay)
 - **`games.strategy.triplea.ui.panel.move`** — `MovePanel` (movement phase UI), `DoneMoveAction`
 
-## Dependencies
-
-- `game-app:game-core` (core engine), `game-app:ai` (AI players), `game-app:domain-data`, `game-app:map-data`
-- `http-clients:lobby-client` (lobby communication)
-- `lib:swing-lib` (Swing utilities), `lib:java-extras`, `lib:feign-common`, `lib:websocket-client`
-
 ## Running
 
 ```bash
-./gradlew :game-app:game-headed:run
+./gradlew :game-headed:run
 ```
 
 Game assets are downloaded to `build/downloads/assets-zip` by the `downloadAssets` task, unzipped to `build/assets`, and bundled as classpath resources.
