@@ -29,11 +29,14 @@ on the classpath (see
 
 ## Debugging a test
 
+fixOften that is faster than clicking through a whole game to reproduce something.
+
 ```bash
-./gradlew :game-core:test --tests games.strategy.triplea.UnitUtilsTest --debug-jvm
+./gradlew :game-core:test --tests games.strategy.triplea.UnitUtilsTest --rerun --debug-jvm
 ```
 
-Often that is faster than clicking through a whole game to reproduce something.
+Keep `--rerun`: without it, Gradle skips a test task that already passed with unchanged code,
+and no debug port opens.
 
 ## Where to put your first breakpoints
 
