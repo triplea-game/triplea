@@ -9,7 +9,7 @@ code.
 | Path | Audience | Contents |
 |------|----------|----------|
 | `admin/` | Maintainers | Release steps, Gradle upgrades, install4j upgrades, map maintenance |
-| `development/` | Developers | Windows dev setup, build overview, code conventions, engine design, glossary, IDE setup, how-tos |
+| `development/` | Developers | Build overview, code conventions, engine design, glossary, IDE setup, how-tos |
 | `development/code-conventions/` | Developers | Java, test, database, naming, and shell-script style guides |
 | `development/how-to/` | Developers | Debugging memory leaks, database changes, performance profiling, QA testing |
 | `development/ide-setup/` | Developers | Eclipse and IntelliJ configuration |

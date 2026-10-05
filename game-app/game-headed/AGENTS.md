@@ -57,7 +57,7 @@ macOS-specific: opening a file or a `triplea://` URI is translated to the corres
 ## Running
 
 ```bash
-./gradlew :game-headed:run
+./gradlew :game-app:game-headed:run
 ```
 
 Game assets are downloaded to `build/downloads/assets-zip` by the `downloadAssets` task, unzipped to `build/assets`, and bundled as classpath resources.
