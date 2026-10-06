@@ -35,7 +35,7 @@ each plugin's page.
     2. Check 'enable'
       <img src="https://user-images.githubusercontent.com/12397753/62746114-07cc2b80-ba03-11e9-9ac0-0b1e6e1e8788.png" alt="Screenshot" height="200">
     4.
-   Check [IntelliJ JRE config from google-java-format]([url](https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-config))
+   Check [IntelliJ JRE config from google-java-format](https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-config)
    or do it manually as below.
 2. *Lombok*
     1. **Settings > Annotation Processors**
