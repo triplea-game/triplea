@@ -4,6 +4,8 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
+import ch.qos.logback.classic.spi.ThrowableProxy;
+import games.strategy.engine.NonReportableRuntimeException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,6 +52,12 @@ class LoggerRecordAdapter {
           throwableProxy = throwableProxy.getCause();
         }
         return details;
+      }
+
+      @Override
+      public boolean allowUpload() {
+        return !(eventObject.getThrowableProxy() instanceof ThrowableProxy throwableProxy)
+            || !(throwableProxy.getThrowable() instanceof NonReportableRuntimeException);
       }
 
       private ExceptionDetails toExceptionDetails(final IThrowableProxy throwableProxy) {

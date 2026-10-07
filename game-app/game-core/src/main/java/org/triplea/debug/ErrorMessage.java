@@ -124,6 +124,13 @@ public enum ErrorMessage {
     // the user that the problem happened, how to fix it, and let them create a bug report manually.
     INSTANCE.uploadButton.setVisible(logRecord.isError());
 
+    if (!logRecord.allowUpload()) {
+      INSTANCE.uploadButton.setEnabled(false);
+      INSTANCE.uploadButton.setToolTipText(
+          "<html>This is assumed to be a self-explaining error not cause by the game engine.<br>"
+              + "If this is not the case, please report it via the browser.</html>");
+    }
+
     final ErrorReportClient errorReportClient = ErrorReportClient.newClient(lobbyUri);
 
     // replace button upload action to use the new log record object
