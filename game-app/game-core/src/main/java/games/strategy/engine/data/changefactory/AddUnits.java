@@ -6,6 +6,10 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitHolder;
+import games.strategy.engine.data.UnitHolderType;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serial;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +22,8 @@ public class AddUnits extends Change {
 
   private final String name;
   private final Collection<Unit> units;
-  private final String type;
+  @Deprecated private final String type = null;
+  private UnitHolderType unitHolderType;
 
   /**
    * The unit's owner can be modified sometime after this Change is created but before it is
@@ -31,13 +36,17 @@ public class AddUnits extends Change {
     this(collection.getHolder().getName(), collection.getHolder().getType(), units);
   }
 
-  AddUnits(String name, String type, Collection<Unit> units) {
-    this(name, type, units, AddUnits.buildUnitOwnerMap(units));
+  AddUnits(String name, UnitHolderType unitHolderType, Collection<Unit> units) {
+    this(name, unitHolderType, units, AddUnits.buildUnitOwnerMap(units));
   }
 
-  AddUnits(String name, String type, Collection<Unit> units, Map<UUID, String> unitOwnerMap) {
+  AddUnits(
+      String name,
+      UnitHolderType unitHolderType,
+      Collection<Unit> units,
+      Map<UUID, String> unitOwnerMap) {
     this.name = name;
-    this.type = type;
+    this.unitHolderType = unitHolderType;
     this.units = List.copyOf(units);
     this.unitOwnerMap = unitOwnerMap;
   }
@@ -54,18 +63,18 @@ public class AddUnits extends Change {
   }
 
   @Override
-  public Change invert() {
-    // Note: We pass in unitOwnerMap so that invert() doesn't rely on the current game state.
-    return new RemoveUnits(name, type, units, unitOwnerMap);
-  }
-
-  @Override
   protected void perform(final GameState data) {
-    final UnitHolder holder = data.getUnitHolder(name, type);
+    final UnitHolder holder = data.getUnitHolder(name, unitHolderType);
     final Collection<Unit> unitsWithCorrectOwner =
         // old saved games will have a null unitOwnerMap
         unitOwnerMap == null ? units : buildUnitsWithOwner(data);
     holder.getUnitCollection().addAll(unitsWithCorrectOwner);
+  }
+
+  @Override
+  public Change invert() {
+    // Note: We pass in unitOwnerMap so that invert() doesn't rely on the current game state.
+    return new RemoveUnits(name, unitHolderType, units, unitOwnerMap);
   }
 
   private Collection<Unit> buildUnitsWithOwner(final GameState data) {
@@ -90,5 +99,14 @@ public class AddUnits extends Change {
   @Override
   public String toString() {
     return "Add unit change.  Add to: " + name + " units: " + units;
+  }
+
+  @Serial
+  private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    in.defaultReadObject();
+
+    if (unitHolderType == null && type != null) {
+      unitHolderType = UnitHolderType.fromId(type);
+    }
   }
 }
