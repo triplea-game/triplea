@@ -7,3 +7,10 @@ set -eu
 
 "$scriptDir/gradlew" spotlessApply check $@
 "$scriptDir/.build/code-convention-checks/check-custom-style"
+
+# 'python3 --version' also rules out the Windows Store placeholder that only prints a hint
+if python3 --version > /dev/null 2>&1; then
+  python3 "$scriptDir/.build/docs-checks/check-docs.py"
+else
+  echo "python3 not found, skipping the docs check (.build/docs-checks/check-docs.py)"
+fi

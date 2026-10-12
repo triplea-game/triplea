@@ -14,7 +14,7 @@ This is a multi-module Gradle (Kotlin DSL) project. Key top-level directories:
 | `http-clients/`       | HTTP client libraries for server communication                    |
 | `lib/`                | Shared utility libraries (Swing helpers, websockets, XML parsing) |
 | `docs/`               | Project documentation (development, map-making, infrastructure)   |
-| `.build/`             | PMD config, Eclipse formatter, and code convention checks         |
+| `.build/`             | PMD config, Eclipse formatter, code convention and docs checks    |
 | `gradle/build-logic/` | Custom Gradle convention plugins                                  |
 
 Gradle project names are flat (`:game-core`, not `:game-app:game-core`); see `settings.gradle.kts`.
@@ -44,7 +44,7 @@ http-clients/lobby-client → domain-data, lib/feign-common, lib/java-extras, li
 # Build and run the desktop client
 ./gradlew :game-headed:run
 
-# Run all checks (formatting + tests + static analysis + custom checks)
+# Run all checks (formatting + tests + static analysis + custom checks + doc links and Gradle paths)
 ./verify
 
 # Run all tests

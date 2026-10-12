@@ -1,6 +1,7 @@
 # .build/ — Static Analysis & Code Style Configs
 
-This directory holds the PMD ruleset and IDE formatter settings (Eclipse).
+This directory holds the PMD ruleset, IDE formatter settings (Eclipse) and the checks that
+the root `verify` script runs after Gradle.
 
 ## Files
 
@@ -8,6 +9,14 @@ This directory holds the PMD ruleset and IDE formatter settings (Eclipse).
 |------|---------|-------------|
 | `pmd.xml` | PMD rules: naming, switches, empty blocks, unused code | `triplea-base-project` convention plugin; any violation fails the build |
 | `eclipse/` | Eclipse IDE formatter and import order settings | Manual IDE import (not build-enforced) |
+
+## docs-checks/
+
+`check-docs.py` (Python 3, no dependencies) checks every tracked Markdown file: relative links
+must point to an existing file or folder, and task paths in `gradlew` commands must name a real
+Gradle project (projects are flat, see `settings.gradle.kts`). `verify` (and so CI) runs it and
+skips it when `python3` is missing. Pass file names relative to the repo root to check only
+those: `python3 .build/docs-checks/check-docs.py docs/README.md`.
 
 ## code-convention-checks/
 
