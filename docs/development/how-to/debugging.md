@@ -22,11 +22,6 @@ probably still running; end that `java` process.
 
 While the game is stopped at a breakpoint, its window freezes. That's expected.
 
-IntelliJ users can also start the shared **HeadedGameRunner** run configuration in debug mode.
-Launch through Gradle, not the IDE's own compiler: only the Gradle build puts the game images
-on the classpath (see
-[Game crashes after splash screen displayed](../README.md#game-crashes-after-splash-screen-displayed)).
-
 ## Debugging a test
 
 Debugging a test is often faster than clicking through a whole game to reproduce something.
