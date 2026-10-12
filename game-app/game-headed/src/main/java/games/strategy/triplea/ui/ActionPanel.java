@@ -98,8 +98,8 @@ public abstract class ActionPanel extends JPanel {
       Thread.currentThread().interrupt();
       release();
     }
-    // cross a memory barrier
     synchronized (latchLock) {
+      // cross a memory barrier
     }
   }
 

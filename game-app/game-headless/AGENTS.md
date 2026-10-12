@@ -43,12 +43,6 @@ HeadlessGameRunner
     → Lobby connection (via lobby-client)
 ```
 
-## Dependencies
-
-- `game-app:game-core`, `game-app:ai`, `game-app:domain-data`
-- `http-clients:lobby-client`
-- `lib:java-extras`
-
 ## Build
 
 Uses Shadow JAR plugin to create a fat JAR. Docker image published to `ghcr.io/triplea-game/bot:latest` via CI.

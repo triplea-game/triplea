@@ -1,7 +1,7 @@
 # Java Conventions
 - Follow: [Google java style](https://google.github.io/styleguide/javaguide.html)
 - Generally follow: [Effective Java](http://thefinestartist.com/effective-java)
-- Install and use IDE checkstyle and formatting, see the IDE setup notes in wiki.
+- Install and use IDE formatting, see the [IDE setup notes](../ide-setup/).
 
 ## Avoid returning 'null', prefer returning an Optional value
 
@@ -141,7 +141,7 @@ public void publicMethod() {
 ```
 
 Note:
- - checkstyle will require method overloads to be declared next to each other
+ - Declare method overloads next to each other
 
 ## Define Variables Close to their usage
 

@@ -1,20 +1,18 @@
 # .build/ — Static Analysis & Code Style Configs
 
-This directory holds configuration files for static analysis tools (Checkstyle, PMD)
-and IDE formatters (Eclipse). These are consumed by the root `build.gradle.kts`.
+This directory holds the PMD ruleset and IDE formatter settings (Eclipse).
 
 ## Files
 
 | File | Purpose | Applied via |
 |------|---------|-------------|
-| `checkstyle.xml` | Checkstyle rules (modified Google Java Style) | `build.gradle.kts` lines 76-91; zero warnings allowed |
-| `pmd.xml` | PMD rules: unused params, locals, private fields | `build.gradle.kts` lines 101-107 |
+| `pmd.xml` | PMD rules: naming, switches, empty blocks, unused code | `triplea-base-project` convention plugin; any violation fails the build |
 | `eclipse/` | Eclipse IDE formatter and import order settings | Manual IDE import (not build-enforced) |
 
 ## code-convention-checks/
 
 The `check-custom-style` bash script runs grep-based style checks beyond what
-Checkstyle/PMD cover. It is **not wired into the Gradle build** — the root
+PMD covers. It is **not wired into the Gradle build** — the root
 `verify` script (and so CI) runs it after Gradle.
 
 ### Active checks (enabled in the script)
@@ -34,10 +32,10 @@ Checkstyle/PMD cover. It is **not wired into the Gradle build** — the root
 
 ## Key rules to follow when writing Java code
 
-- **Naming**: camelCase members/params/locals; method names `^[a-z][a-z0-9][a-zA-Z0-9_]*$`
-- **No star imports**, no finalizers, modifier order matters
-- **Empty catch blocks** must name the variable `expected`
-- **Switch statements** require a default case; fall-through is flagged
-- **No unused** parameters, local variables, or private fields (PMD)
+- **Naming**: camelCase members/params/locals; type parameters are one capital letter or end in `T` (eg: `ViewDataT`)
+- **Switch statements** must be exhaustive or have a default case; fall-through is flagged
+- **Empty catch blocks** must name the variable `expected` or `ignored`, or hold a comment
+- **No unused** parameters, local variables, or private fields
 - **Use `javax.annotation.Nonnull`**, not `lombok.NonNull`
 - **Static import** test utilities: `when(...)` not `Mockito.when(...)`
+- Star imports and modifier order are fixed by `./gradlew spotlessApply`

@@ -51,6 +51,7 @@ class DownloadMapsWindowMapsListing {
           installed.put(map.getMapDownloadItem(), map.getInstalledMap());
           outOfDate.put(map.getMapDownloadItem(), map.getInstalledMap());
         }
+        case DOWNLOADING, REMOVING, ERROR -> {}
       }
     }
   }

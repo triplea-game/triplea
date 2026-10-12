@@ -46,10 +46,3 @@ save game files before tests run:
 **Step-by-step execution** — `GameTestUtils.runStepsUntil(game, stepName)` runs game
 steps until the named step is reached, used by AI tests that need to inspect state at
 specific phases.
-
-## Key Dependencies
-
-- `game-app:game-core` — `GameData`, `GameParser`, `ServerGame`, delegates
-- `game-app:game-headless` — `HeadlessGameServer`, `HeadlessLaunchAction`
-- `game-app:domain-data` — domain model types
-- `lib:test-common` — shared test utilities
