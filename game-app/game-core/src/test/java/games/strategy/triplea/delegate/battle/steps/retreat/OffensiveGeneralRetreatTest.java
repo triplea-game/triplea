@@ -701,6 +701,28 @@ class OffensiveGeneralRetreatTest extends AbstractClientSettingTestCase {
       }
 
       @Test
+      void noIfAllRetreatTerritoriesAreBlockedForTheRetreatingUnits() {
+        // Regression test for https://github.com/triplea-game/triplea/issues/15056.
+        // The player must not be asked to retreat when no retreat site is left to choose from.
+        final Unit unit = givenAnyUnit();
+        when(battleSite.getUnitCollection()).thenReturn(battleSiteCollection);
+        final BattleState battleState =
+            givenBattleStateBuilder()
+                .battleSite(battleSite)
+                .attacker(attacker)
+                .attackingUnits(Set.of(unit))
+                .attackerRetreatTerritories(List.of(givenLandRetreatSiteBlockedFor(unit)))
+                .gameData(givenGameData().build())
+                .build();
+
+        final OffensiveGeneralRetreat offensiveGeneralRetreat =
+            new OffensiveGeneralRetreat(battleState, battleActions);
+        offensiveGeneralRetreat.execute(executionStack, delegateBridge);
+        verify(battleActions, never())
+            .queryRetreatTerritory(any(), any(), any(), anyCollection(), anyString());
+      }
+
+      @Test
       void noIfDefenselessTransportsAndRestrictedCasualties() {
         final BattleState battleState =
             givenBattleStateBuilder()
