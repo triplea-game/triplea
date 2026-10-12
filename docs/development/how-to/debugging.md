@@ -29,7 +29,7 @@ on the classpath (see
 
 ## Debugging a test
 
-fixOften that is faster than clicking through a whole game to reproduce something.
+Debugging a test is often faster than clicking through a whole game to reproduce something.
 
 ```bash
 ./gradlew :game-core:test --tests games.strategy.triplea.UnitUtilsTest --rerun --debug-jvm
