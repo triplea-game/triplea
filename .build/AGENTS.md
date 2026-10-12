@@ -21,6 +21,7 @@ PMD covers. It is **not wired into the Gradle build** — the root
 - **`javax.annotation.Nonnull` over `lombok.NonNull`** — enforces consistent null annotation
 - **LF line endings in git** — flags text files committed with CRLF (fix with `git add --renormalize <file>`)
 - **Links in the docs** — flags relative Markdown links to files or folders that do not exist (anchors are not checked)
+- **Gradle paths in the docs** — flags `gradlew` commands with nested project paths like `:game-app:game-core` (projects are flat: `:game-core`)
 
 ### Disabled checks (commented out, have existing violations)
 - Prefer `List.of()`/`Map.of()`/`Set.of()` over `Collections.*` methods
