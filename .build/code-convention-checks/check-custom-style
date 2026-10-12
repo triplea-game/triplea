@@ -170,11 +170,30 @@ function storeTextFilesWithLfLineEndings() {
 }
 export -f storeTextFilesWithLfLineEndings
 
+# Relative links in the Markdown docs, like [text](../README.md#anchor), must point to an
+# existing file or folder; '/' is the repository root. Web links and anchors are not checked.
+function linkToExistingFilesInDocs() {
+  title "Link to existing files in the docs"
+  local found=0
+  local -r root="$(git -C "$basePath" rev-parse --show-toplevel)"
+  while IFS=: read -r file line target; do
+    local path="${target%%#*}"
+    local dir="$basePath/$(dirname "$file")"
+    [[ "$path" == /* ]] && dir="$root"
+    [ -e "$dir/$path" ] || { echo "$file:$line: $target"; status=1; found=1; }
+  done < <(git -C "$basePath" grep --line-number --only-matching \
+      -E '\]\([^):#[:space:]][^):[:space:]]*\)' -- '*.md' | sed -E 's/\]\((.*)\)$/\1/')
+
+  displayResult "$found"
+}
+export -f linkToExistingFilesInDocs
+
 
 removeUnusedLogAnnotations
 useStaticImportsInTest
 useJavaxNonnullInsteadOfLombokNonNull
 storeTextFilesWithLfLineEndings
+linkToExistingFilesInDocs
 
 ## The below flag errors that need to be fixed before they can be enabled
 #  favorJava9CollectionsApi

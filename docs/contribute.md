@@ -10,7 +10,7 @@ role from below and find out what you can do to help.
 ### Overview
 
 - [:game_die: Player](#game_die-Player)
-- [:mag: Release Tester](#game_die-Release-Tester)
+- [:mag: Release Tester](#mag-Release-Tester)
 - [:moneybag: Donor](#moneybag-Donor)
 - [:golf: Map Maker](#golf-Map-Maker)
 - [:trident: Map Admin](#trident-Map-Admin)

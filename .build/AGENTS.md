@@ -1,7 +1,6 @@
 # .build/ — Static Analysis & Code Style Configs
 
-This directory holds the PMD ruleset, IDE formatter settings (Eclipse) and the checks that
-the root `verify` script runs after Gradle.
+This directory holds the PMD ruleset and IDE formatter settings (Eclipse).
 
 ## Files
 
@@ -9,14 +8,6 @@ the root `verify` script runs after Gradle.
 |------|---------|-------------|
 | `pmd.xml` | PMD rules: naming, switches, empty blocks, unused code | `triplea-base-project` convention plugin; any violation fails the build |
 | `eclipse/` | Eclipse IDE formatter and import order settings | Manual IDE import (not build-enforced) |
-
-## docs-checks/
-
-`check-docs.py` (Python 3, no dependencies) checks every tracked Markdown file: relative links
-must point to an existing file or folder, and task paths in `gradlew` commands must name a real
-Gradle project (projects are flat, see `settings.gradle.kts`). `verify` (and so CI) runs it and
-skips it when `python3` is missing. Pass file names relative to the repo root to check only
-those: `python3 .build/docs-checks/check-docs.py docs/README.md`.
 
 ## code-convention-checks/
 
@@ -29,6 +20,7 @@ PMD covers. It is **not wired into the Gradle build** — the root
 - **Static imports in tests** — flags `Mockito.when(...)` etc. that should be statically imported
 - **`javax.annotation.Nonnull` over `lombok.NonNull`** — enforces consistent null annotation
 - **LF line endings in git** — flags text files committed with CRLF (fix with `git add --renormalize <file>`)
+- **Links in the docs** — flags relative Markdown links to files or folders that do not exist (anchors are not checked)
 
 ### Disabled checks (commented out, have existing violations)
 - Prefer `List.of()`/`Map.of()`/`Set.of()` over `Collections.*` methods
