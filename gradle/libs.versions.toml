@@ -36,7 +36,7 @@ xchart = "4.0.4"
 xmlunit = "2.14.0"
 
 # Plugins
-gradle-versions = "0.65.0"
+gradle-versions = "0.66.0"
 spotless = "8.2.1"
 shadow = "9.6.1"
 install4j = "13.1.1"
