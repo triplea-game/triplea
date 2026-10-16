@@ -13,10 +13,48 @@
 
 ## Windows
 
+The game builds and runs natively on Windows. WSL is only needed for lobby, bot or Docker work
+(see [WSL](#wsl-optional-lobby-bot-and-docker) below).
+
+- Install [Git for Windows](https://git-scm.com/download/win) and keep the default
+  *"Git from the command line and also from 3rd-party software"*: the build calls `git` itself.
+  It comes with **Git Bash**; use it for `./gradlew` and `./verify`. PowerShell works for the
+  Gradle commands too (`.\gradlew ...`).
+- Install JDK 25, for example [Temurin 25](https://adoptium.net/temurin/releases/?version=25&os=windows),
+  and tick **Set JAVA_HOME variable** in the installer. `./gradlew` starts Gradle with the Java
+  in `JAVA_HOME`. Check it in a **new** terminal:
+
+  ```bash
+  "$JAVA_HOME/bin/java" -version                  # Git Bash
+  & "$env:JAVA_HOME\bin\java" -version            # PowerShell
+  ```
+
+  You want to see `25.x`. Otherwise set `JAVA_HOME` under *Start → "Edit environment variables
+  for your account"* to your JDK 25 folder, then reopen every terminal and IDE; they read
+  environment variables only when they start.
+- Turn on long paths **before** cloning, then clone to a short path without spaces, such as
+  `C:\dev\triplea` (see [Getting Started](#getting-started)):
+
+  ```bash
+  git config --global core.longpaths true
+  ```
+
+- In your IDE, run Gradle with JDK 25 as well (IntelliJ: *Settings → Build Tools → Gradle →
+  Gradle JVM*).
+
+| You see | Do this |
+|---|---|
+| `JAVA_HOME is not set` or `Cannot find a Java installation ... languageVersion=25` | Point `JAVA_HOME` at JDK 25 and open a new terminal. In an IDE, set its Gradle JVM to JDK 25. |
+| Gradle can't run `git` | Git isn't on the `PATH`. Reinstall Git with the "3rd-party software" option. |
+| `Filename too long` | `git config --global core.longpaths true`, then clone again. |
+| Builds are very slow | Windows Defender scans every file. Exclude the repo and `%USERPROFILE%\.gradle`. |
+
+### WSL (optional: lobby, bot and Docker)
+
 - Set up WSL (see [WSL installation guide](https://learn.microsoft.com/de-de/windows/wsl/install)),
-  this will give you a command line that can be used to run docker, gradle and the code check scripts
-- Open git folder, e.g., `C:\Users\<user>\git\triplea`, in WSL via explorer `Shift+Right click` and option
-  `Open Linux shell here`
+  this will give you a Linux command line that can run docker
+- Clone a separate copy **inside the WSL filesystem**, e.g. `~/projects/triplea`, not under
+  `/mnt/c`: working on the Windows checkout from WSL is slow
 - Install/upgrade [GitHub CLI](https://github.com/cli/cli#installation)
 
 Install:
@@ -44,12 +82,6 @@ gh auth login
 
 <img width="716" height="255" alt="image" src="https://github.com/user-attachments/assets/d79a9ada-930f-4eaa-993d-03344159e3d4" />
 
-- Sync changes in your IDE with WSL
-
-```bash
-git status
-```
-
 - Declare repository `triplea-game/triplea` as your default to create PR to with WSL
 
 ```bash
@@ -57,7 +89,7 @@ gh repo set-default triplea-game/triplea
 ```
 
 - (if wanted) declare start path for WSL by adjusting `.bashrc` or `.zshrc` inside WSL by adding at the end
-  `cd ~/projects/my-repo`
+  `cd ~/projects/triplea`
 
 ```bash
 nano ~/.bashrc
@@ -116,6 +148,9 @@ To run tests even if there are no changes from the previous build, use the `--re
 ```
 ./gradlew --rerun-tasks :game-core:test
 ```
+
+To attach a debugger to the game or a test, see [Debugging](how-to/debugging.md); to find and
+write log output, see [Logging](how-to/logging.md).
 
 ## Run Formatting
 
