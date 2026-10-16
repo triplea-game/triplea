@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate.battle.steps.retreat;
 
-import static games.strategy.triplea.delegate.battle.BattleState.Side.OFFENSE;
+import static games.strategy.triplea.Constants.TERRITORYEFFECT_ATTACHMENT_NAME;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.REMOVED_CASUALTY;
 
@@ -10,6 +10,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.triplea.attachments.TerritoryEffectAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.battle.BattleState;
@@ -20,7 +21,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
+import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 
 @AllArgsConstructor
@@ -28,9 +31,12 @@ class RetreaterGeneral implements Retreater {
 
   private final BattleState battleState;
 
+  private final BattleState.Side retreatingSide;
+
   @Override
   public Collection<Unit> getRetreatUnits() {
-    final Collection<Unit> retreatUnits = new HashSet<>(battleState.filterUnits(ALIVE, OFFENSE));
+    final Collection<Unit> retreatUnits =
+        new HashSet<>(battleState.filterUnits(ALIVE, retreatingSide));
     // some units might have been removed from the battle (such as infra) so grab all units at the
     // battle site
     retreatUnits.addAll(
@@ -38,9 +44,47 @@ class RetreaterGeneral implements Retreater {
             .getBattleSite()
             .getUnitCollection()
             .getMatches(
-                Matches.unitIsOwnedBy(battleState.getPlayer(OFFENSE))
+                Matches.unitIsOwnedBy(battleState.getPlayer(retreatingSide))
                     .and(Matches.unitIsSubmerged().negate())));
+
     retreatUnits.removeAll(battleState.filterUnits(REMOVED_CASUALTY));
+    if (retreatingSide == BattleState.Side.DEFENSE) {
+      // We only want units that can move, be transported, or given bonus movement (no buildings
+      // retreating)
+      final Territory battleSite = battleState.getBattleSite();
+      final Predicate<Unit> canMoveOrBeMoved =
+          PredicateBuilder.of(Matches.unitCanMove())
+              .or(
+                  u ->
+                      // Unit can be given bonus movement by another unit in this territory
+                      Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
+                                  battleSite, u.getOwner())
+                              .test(u)
+                          // Unit is already being transported
+                          // TODO: Check if transporting unit has movement left for sea transports
+                          || Matches.unitIsBeingTransported().test(u)
+                          // Unit can be loaded onto an available transport in this
+                          // territory
+                          || (Matches.unitCanBeTransported().test(u)
+                              && battleSite.anyUnitsMatch(Matches.unitCanTransport())))
+              // cannot move aa units
+              .and(Matches.unitCanMoveDuringCombatMove())
+              .build();
+      retreatUnits.removeIf(canMoveOrBeMoved.negate());
+      // Remove units that can't defensive retreat
+      retreatUnits.removeIf(Matches.unitCanDefensiveRetreat().negate());
+      // Remove units that can't defensive retreat this round
+      retreatUnits.removeIf(
+          unit ->
+              battleState.getStatus().getRound()
+                  < unit.getUnitAttachment().getDefensiveRetreatRound());
+      // Remove units that can't retreat due to territory effect
+      TerritoryEffectAttachment territoryEffect =
+          (TerritoryEffectAttachment)
+              battleState.getDefendersRetreatTo().getAttachment(TERRITORYEFFECT_ATTACHMENT_NAME);
+      if (territoryEffect != null)
+        retreatUnits.removeIf(unit -> territoryEffect.getUnitsNotAllowed().contains(unit));
+    }
     return retreatUnits;
   }
 
@@ -73,28 +117,46 @@ class RetreaterGeneral implements Retreater {
 
     change.add(computeDependentUnitChanges(retreatTo, retreatUnits));
 
-    final Collection<Unit> airRetreating =
-        CollectionUtils.getMatches(
-            retreatUnits,
-            Matches.unitIsAir().and(Matches.unitIsOwnedBy(battleState.getPlayer(OFFENSE))));
+    if (retreatingSide == BattleState.Side.OFFENSE) {
+      final Collection<Unit> airRetreating =
+          CollectionUtils.getMatches(
+              retreatUnits,
+              Matches.unitIsAir()
+                  .and(Matches.unitIsOwnedBy(battleState.getPlayer(retreatingSide))));
 
-    if (!airRetreating.isEmpty()) {
-      battleState.retreatUnits(OFFENSE, airRetreating);
-      final String transcriptText = MyFormatter.unitsToText(airRetreating) + " retreated";
-      historyChildren.add(RetreatHistoryChild.of(transcriptText, new ArrayList<>(airRetreating)));
-    }
+      if (!airRetreating.isEmpty()) {
+        battleState.retreatUnits(retreatingSide, airRetreating);
+        final String transcriptText = MyFormatter.unitsToText(airRetreating) + " retreated";
+        historyChildren.add(RetreatHistoryChild.of(transcriptText, new ArrayList<>(airRetreating)));
+      }
 
-    final Collection<Unit> nonAirRetreating = new HashSet<>(retreatUnits);
-    nonAirRetreating.removeAll(airRetreating);
-    nonAirRetreating.addAll(battleState.getDependentUnits(nonAirRetreating));
+      final Collection<Unit> nonAirRetreating = new HashSet<>(retreatUnits);
+      nonAirRetreating.removeAll(airRetreating);
+      nonAirRetreating.addAll(battleState.getDependentUnits(nonAirRetreating));
 
-    if (!nonAirRetreating.isEmpty()) {
-      battleState.retreatUnits(OFFENSE, nonAirRetreating);
-      historyChildren.add(
-          RetreatHistoryChild.of(
-              MyFormatter.unitsToText(nonAirRetreating) + " retreated to " + retreatTo.getName(),
-              new ArrayList<>(nonAirRetreating)));
-      change.add(ChangeFactory.moveUnits(battleState.getBattleSite(), retreatTo, nonAirRetreating));
+      if (!nonAirRetreating.isEmpty()) {
+        battleState.retreatUnits(retreatingSide, nonAirRetreating);
+        historyChildren.add(
+            RetreatHistoryChild.of(
+                MyFormatter.unitsToText(nonAirRetreating) + " retreated to " + retreatTo.getName(),
+                new ArrayList<>(nonAirRetreating)));
+        change.add(
+            ChangeFactory.moveUnits(battleState.getBattleSite(), retreatTo, nonAirRetreating));
+      }
+    } else {
+      final Collection<Unit> allUnitsRetreating = new HashSet<>(retreatUnits);
+      allUnitsRetreating.addAll(battleState.getDependentUnits(allUnitsRetreating));
+      if (!allUnitsRetreating.isEmpty()) {
+        battleState.retreatUnits(retreatingSide, allUnitsRetreating);
+        historyChildren.add(
+            RetreatHistoryChild.of(
+                MyFormatter.unitsToText(allUnitsRetreating)
+                    + " retreated to "
+                    + retreatTo.getName(),
+                new ArrayList<>(allUnitsRetreating)));
+        change.add(
+            ChangeFactory.moveUnits(battleState.getBattleSite(), retreatTo, allUnitsRetreating));
+      }
     }
 
     return RetreatChanges.of(change, historyChildren);
