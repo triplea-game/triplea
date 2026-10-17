@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
@@ -274,16 +275,21 @@ public class UiContext {
 
   public static UiContext changeMapSkin(GameData gameData, String skinName) {
     final Preferences prefs = getPreferencesForMap(gameData.getMapName());
-
-    if (skinName.equals(ORIGINAL_SKIN_NAME)) {
-      prefs.put(MAP_SKIN_PREF, skinName);
-    } else {
-      prefs.remove(MAP_SKIN_PREF);
-    }
+    setMapSkinPreference(prefs, skinName);
     flushPreferences(prefs);
     UiContext uiContext = new UiContext(gameData);
     uiContext.getMapData().verify(gameData);
     return uiContext;
+  }
+
+  /** Stores a map skin name, or clears it when the player selects the original art. */
+  @VisibleForTesting
+  static void setMapSkinPreference(final Preferences prefs, final String skinName) {
+    if (skinName.equals(ORIGINAL_SKIN_NAME)) {
+      prefs.remove(MAP_SKIN_PREF);
+    } else {
+      prefs.put(MAP_SKIN_PREF, skinName);
+    }
   }
 
   public void removeShutdownHook(final Runnable hook) {
