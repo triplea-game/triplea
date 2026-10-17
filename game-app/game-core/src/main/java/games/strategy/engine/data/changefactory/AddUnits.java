@@ -22,7 +22,7 @@ public class AddUnits extends Change {
 
   private final String name;
   private final Collection<Unit> units;
-  @Deprecated private final String type = null;
+  @Deprecated private final String type;
   private UnitHolderType unitHolderType;
 
   /**
@@ -45,6 +45,7 @@ public class AddUnits extends Change {
       UnitHolderType unitHolderType,
       Collection<Unit> units,
       Map<UUID, String> unitOwnerMap) {
+    this.type = null; // required for backwards-compatibility
     this.name = name;
     this.unitHolderType = unitHolderType;
     this.units = List.copyOf(units);

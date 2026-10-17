@@ -21,7 +21,7 @@ public class RemoveUnits extends Change {
   private final String name;
   private final Collection<Unit> units;
   // replaced with unitHolderType
-  @Deprecated private final String type = null;
+  @Deprecated private final String type;
   private UnitHolderType unitHolderType;
 
   /**
@@ -44,6 +44,7 @@ public class RemoveUnits extends Change {
       UnitHolderType unitHolderType,
       Collection<Unit> units,
       Map<UUID, String> unitOwnerMap) {
+    this.type = null; // required for backwards-compatibility
     this.name = name;
     this.unitHolderType = unitHolderType;
     this.units = List.copyOf(units);
