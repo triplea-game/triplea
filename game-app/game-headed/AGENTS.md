@@ -34,11 +34,11 @@ macOS-specific: opening a file or a `triplea://` URI is translated to the corres
 - **`games.strategy.engine.auto.update`** — Startup update checks: engine version (every 2 days via `EngineVersionCheck`), tutorial map presence (`TutorialMapCheck`), outdated downloaded maps (`UpdatedMapsCheck`). Orchestrated by `UpdateChecks`.
 - **`games.strategy.engine.framework`** — `GameProcess` (external process launching), `ProcessRunnerUtil`
 - **`games.strategy.engine.framework.map.download`** — `MapDownloadController` — controls tutorial map download prompting (checks preference + user map folder)
-- **`games.strategy.engine.lobby.client.login`** — Login flow (8 files, see [Login & Registration](#login--registration))
+- **`games.strategy.engine.lobby.client.login`** — Login flow (8 files, see [Login & Registration](#login--registration-lobbyclientlogin-8-files))
 - **`games.strategy.engine.lobby.client.ui`** — Lobby UI: `LobbyFrame`, `LobbyGamePanel`, `LobbyGameTableModel`
 - **`games.strategy.engine.lobby.client.ui.action`** — Player context-menu actions: `ShowPlayersAction`, moderator actions (`BanPlayerModeratorAction`, `DisconnectPlayerModeratorAction`, `MutePlayerAction`), `ActionConfirmation`/`ActionDuration`/`ActionDurationDialog` helpers
 - **`games.strategy.engine.lobby.client.ui.action.player.info`** — Player information popup with tabs: `PlayerAliasesTab`, `PlayerBansTab`, `PlayerGamesTab`, `PlayerInfoSummaryTextArea`
-- **`games.strategy.engine.lobby.moderator.toolbox`** — Moderator administration tools (see [Moderator Toolbox](#moderator-toolbox))
+- **`games.strategy.engine.lobby.moderator.toolbox`** — Moderator administration tools (see [Moderator Toolbox](#moderator-toolbox-lobbymoderatortoolbox-21-files))
 - **`games.strategy.engine.posted.game`** — PBEM/PBF turn-posting panels: `AbstractForumPosterPanel` (extends `ActionPanel`), `EndTurnPanel`, `MoveForumPosterPanel`, `ForumPosterComponent`
 - **`games.strategy.triplea`** — `TripleAPlayer` (human player controller — extends `AbstractBasePlayer`, manages all turn phases by delegating to `TripleAFrame` UI methods)
 - **`games.strategy.triplea.odds.calculator`** — `BattleCalculatorDialog` (battle outcome odds calculator, extends `JDialog`)

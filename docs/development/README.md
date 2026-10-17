@@ -124,6 +124,9 @@ git config blame.ignoreRevsFile .git-blame-ignore-revs
 # Run all build checks
 ./verify
 
+# Run only the custom style checks, including the links in the docs (quick; on Windows use Git Bash)
+.build/code-convention-checks/check-custom-style
+
 # Run formatting
 ./gradlew spotlessApply
 

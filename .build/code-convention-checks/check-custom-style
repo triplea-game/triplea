@@ -170,11 +170,49 @@ function storeTextFilesWithLfLineEndings() {
 }
 export -f storeTextFilesWithLfLineEndings
 
+# Relative links in the Markdown docs, like [text](../README.md#anchor), must point to an
+# existing file or folder; '/' is the repository root. Web links and anchors are not checked.
+function linkToExistingFilesInDocs() {
+  title "Link to existing files in the docs"
+  local found=0 root dir path
+  root="$(git -C "$basePath" rev-parse --show-toplevel)"
+  while IFS=: read -r file line target; do
+    path="${target%%#*}"
+    if [[ "$path" == /* ]]; then
+      dir="$root"
+    else
+      dir="$basePath/$(dirname "$file")"
+    fi
+    [ -e "$dir/$path" ] || { echo "$file:$line: $target"; status=1; found=1; }
+  done < <(git -C "$basePath" grep --line-number --only-matching \
+      -E '\]\([^):#[:space:]][^):[:space:]]*\)' -- '*.md' | sed -E 's/\]\((.*)\)$/\1/')
+
+  displayResult "$found"
+}
+export -f linkToExistingFilesInDocs
+
+# Gradle projects are flat (settings.gradle.kts), so a path through the folders that hold them,
+# like ':game-app:game-core', does not exist.
+function useFlatGradleProjectPathsInDocs() {
+  title "Use flat Gradle project paths in the docs"
+  example "./gradlew :game-core:test, not ./gradlew :game-app:game-core:test"
+  local found=0
+  # the path must be an argument of the same command: no end of inline code or comment between
+  git -C "$basePath" grep --line-number \
+    -E 'gradlew[^`#]*[[:space:]]:?(game-app|http-clients|lib):' -- '*.md' \
+    && status=1 && found=1
+
+  displayResult "$found"
+}
+export -f useFlatGradleProjectPathsInDocs
+
 
 removeUnusedLogAnnotations
 useStaticImportsInTest
 useJavaxNonnullInsteadOfLombokNonNull
 storeTextFilesWithLfLineEndings
+linkToExistingFilesInDocs
+useFlatGradleProjectPathsInDocs
 
 ## The below flag errors that need to be fixed before they can be enabled
 #  favorJava9CollectionsApi
