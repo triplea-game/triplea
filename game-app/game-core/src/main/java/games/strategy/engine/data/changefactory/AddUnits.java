@@ -45,7 +45,9 @@ public class AddUnits extends Change {
       UnitHolderType unitHolderType,
       Collection<Unit> units,
       Map<UUID, String> unitOwnerMap) {
-    this.type = unitHolderType.id(); // required for backwards-compatibility
+    //  unitHolderType can be null when holder are mocked
+    this.type =
+        unitHolderType == null ? null : unitHolderType.id(); // required for backwards-compatibility
     this.name = name;
     this.unitHolderType = unitHolderType;
     this.units = List.copyOf(units);
