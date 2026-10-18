@@ -261,7 +261,7 @@ public final class ProUtils {
         .allMatch(
             a ->
                 isPassiveNeutralPlayer(a)
-                    || (a.isHidden() && (a.isDefaultTypeAi() || a.isDefaultTypeDoesNothing())));
+                    || (a.isHidden() && (a.isDefaultTypeAi() || a.isDefaultTypeDoesNothing() || a.isDefaultTypeEasyAi() || a.isDefaultTypeFastAi())));
   }
 
   /** Returns true if the player is Null or doesn't have a combat move phase. */
