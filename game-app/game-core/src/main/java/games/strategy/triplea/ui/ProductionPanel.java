@@ -1,15 +1,10 @@
 package games.strategy.triplea.ui;
 
 import com.google.common.base.Preconditions;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.ProductionRule;
-import games.strategy.engine.data.Resource;
-import games.strategy.engine.data.ResourceCollection;
-import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.*;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.image.UnitImageFactory.ImageKey;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
@@ -26,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -266,6 +262,16 @@ class ProductionPanel extends JPanel {
       }
       current.setMax(max);
     }
+  }
+
+  /** How many more of this unit the player may buy before hitting its maxBuiltPerPlayer limit. */
+  static int getRemainingBuildAllowance(final UnitType type, final GamePlayer player, final GameState data) {
+    final Predicate<Unit> ownedOfType = Matches.unitIsOfType(type).and(Matches.unitIsOwnedBy(player));
+    int alreadyBuilt = player.getUnitCollection().countMatches(Matches.unitIsOfType(type));
+    for (final Territory territory : data.getMap().getTerritories()) {
+      alreadyBuilt += territory.getUnitCollection().countMatches(ownedOfType);
+    }
+    return Math.max(0, type.getUnitAttachment().getMaxBuiltPerPlayer() - alreadyBuilt);
   }
 
   protected ResourceCollection getResources() {
