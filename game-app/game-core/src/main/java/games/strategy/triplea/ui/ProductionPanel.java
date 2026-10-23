@@ -284,29 +284,20 @@ class ProductionPanel extends JPanel {
 
         for (final UnitType type : current.limitedTypes) {
           final int unitsPerPurchase = current.getProductionRule().getResults().getInt(type);
-
           final int selectedByCurrentRule = current.getQuantity() * unitsPerPurchase;
-
           final int selectedByOtherRules =
               selectedUnits.getOrDefault(type, 0) - selectedByCurrentRule;
-
-          final int allowance = getRemainingBuildAllowance(type, gamePlayer, data);
-
-          final int remainingForRule = Math.max(0, allowance - selectedByOtherRules);
-
-          max = Math.min(max, remainingForRule / unitsPerPurchase);
-
           final int owned = getOwnedUnitCount(type, gamePlayer, data);
-
           final int maxBuilt = type.getUnitAttachment().getMaxBuiltPerPlayer();
-
+          final int allowance = Math.max(0, maxBuilt - owned);
+          final int remainingForRule = Math.max(0, allowance - selectedByOtherRules);
+          max = Math.min(max, remainingForRule / unitsPerPurchase);
           final String label = "Owned: " + owned + "/" + maxBuilt;
           limitLabels.add(
               current.limitedTypes.size() == 1
                   ? label
                   : type.getName() + ": " + owned + "/" + maxBuilt + " owned");
         }
-
         current.buildLimitLabel.setText(limitLabels.toString());
       }
       current.setMax(max);
