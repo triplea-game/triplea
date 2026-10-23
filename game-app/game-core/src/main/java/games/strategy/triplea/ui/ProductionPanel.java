@@ -263,6 +263,7 @@ class ProductionPanel extends JPanel {
       if (current.limitedType != null) {
         final int allowance = getRemainingBuildAllowance(current.limitedType, gamePlayer, data);
         final int unitsPerPurchase = current.getProductionRule().getResults().getInt(current.limitedType);
+        max = Math.min(max, allowance / unitsPerPurchase);
         final int unitsLeft = allowance - current.getQuantity() * unitsPerPurchase;
         final int maxBuilt = current.limitedType.getUnitAttachment().getMaxBuiltPerPlayer();
         current.buildLimitLabel.setText(Math.max(0, unitsLeft) + " of " + maxBuilt + " left");
