@@ -260,6 +260,13 @@ class ProductionPanel extends JPanel {
                 + " and rule quantity: "
                 + current.getQuantity());
       }
+      if (current.limitedType != null) {
+        final int allowance = getRemainingBuildAllowance(current.limitedType, gamePlayer, data);
+        final int unitsPerPurchase = current.getProductionRule().getResults().getInt(current.limitedType);
+        final int unitsLeft = allowance - current.getQuantity() * unitsPerPurchase;
+        final int maxBuilt = current.limitedType.getUnitAttachment().getMaxBuiltPerPlayer();
+        current.buildLimitLabel.setText(Math.max(0, unitsLeft) + " of " + maxBuilt + " left");
+      }
       current.setMax(max);
     }
   }
@@ -299,6 +306,8 @@ class ProductionPanel extends JPanel {
     private final ProductionRule rule;
     private final GamePlayer player;
     private final Set<ScrollableTextField> textFields = new HashSet<>();
+    private final JLabel buildLimitLabel = new JLabel();
+    private final UnitType limitedType;
     private final ScrollableTextFieldListener listener =
         new ScrollableTextFieldListener() {
           @Override
@@ -319,6 +328,12 @@ class ProductionPanel extends JPanel {
       this.rule = rule;
       cost = rule.getCosts();
       this.player = player;
+      limitedType = rule.getResults().keySet().stream()
+                        .filter(UnitType.class::isInstance)
+                        .map(UnitType.class::cast)
+                        .filter(Matches.unitTypeHasMaxBuildRestrictions())
+                        .findFirst()
+                        .orElse(null);
     }
 
     protected JPanel getPanelComponent() {
@@ -410,6 +425,12 @@ class ProductionPanel extends JPanel {
                 new Insets(1, 0, 0, 0),
                 0,
                 0));
+      }
+      if (limitedType != null) {
+        final int maxBuilt = limitedType.getUnitAttachment().getMaxBuiltPerPlayer();
+        buildLimitLabel.setText(maxBuilt + " of " + maxBuilt + " left");
+        buildLimitLabel.setFont(buildLimitLabel.getFont().deriveFont(12f));
+        costPanel.add(buildLimitLabel, new GridBagConstraintsBuilder(0, count + 1).build());
       }
       final JPanel label = new JPanel();
       Optional.ofNullable(icon).ifPresent(imageIcon -> label.add(new JLabel(imageIcon)));
