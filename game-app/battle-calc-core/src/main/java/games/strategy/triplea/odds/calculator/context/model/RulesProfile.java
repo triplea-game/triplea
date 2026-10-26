@@ -11,10 +11,11 @@ public record RulesProfile(
     boolean transportCasualtiesRestricted,
     boolean submersibleSubs,
     boolean submarinesDefendingMaySubmergeOrRetreat,
-    boolean lhtrHeavyBombers) {
+    boolean lhtrHeavyBombers,
+    boolean navalBombardCasualtiesReturnFire) {
 
   /** Standard-rules default: every flag off, matching the engine Properties defaults. */
   public static RulesProfile standard() {
-    return new RulesProfile(false, false, false, false, false, false);
+    return new RulesProfile(false, false, false, false, false, false, false);
   }
 }

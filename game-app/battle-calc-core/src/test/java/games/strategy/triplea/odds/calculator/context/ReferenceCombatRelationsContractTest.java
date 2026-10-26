@@ -43,7 +43,7 @@ class ReferenceCombatRelationsContractTest {
   // Offense submerge is gated on 'submersibleSubs'; these cases isolate the enemy-composition side
   // of the rule, so they run with that property on.
   private static final RulesProfile SUBMERSIBLE_ON =
-      new RulesProfile(false, false, false, true, false, false);
+      new RulesProfile(false, false, false, true, false, false, false);
 
   private static Force forceOf(final CombatProfile profile, final int count) {
     return new Force(Map.of(new Key(profile, Lifecycle.ACTIVE), count));
@@ -210,7 +210,7 @@ class ReferenceCombatRelationsContractTest {
     final CombatProfile sub = submarine("uboat", 2, 1, 1);
     final CombatProfile enemyFighter = air("fighter", 3, 4, 1);
     final RulesProfile defendingMayRetreat =
-        new RulesProfile(false, false, false, false, true, false);
+        new RulesProfile(false, false, false, false, true, false, false);
 
     assertThat(
             relations.canSubmerge(
@@ -264,9 +264,11 @@ class ReferenceCombatRelationsContractTest {
     final Force noDestroyer = forceOf(plainEnemy, 1);
     final Force withDestroyer = forceOf(enemyDestroyer, 1);
     final RulesProfile none = RulesProfile.standard();
-    final RulesProfile ww2v2 = new RulesProfile(true, false, false, false, false, false);
-    final RulesProfile defendingSneak = new RulesProfile(false, true, false, false, false, false);
-    final RulesProfile bothSneakRules = new RulesProfile(true, true, false, false, false, false);
+    final RulesProfile ww2v2 = new RulesProfile(true, false, false, false, false, false, false);
+    final RulesProfile defendingSneak =
+        new RulesProfile(false, true, false, false, false, false, false);
+    final RulesProfile bothSneakRules =
+        new RulesProfile(true, true, false, false, false, false, false);
 
     // An enemy destroyer pins the sneak on either side, whatever the rules.
     assertThat(relations.firstStrikeNegated(Side.OFFENSE, friendly, withDestroyer, none)).isTrue();

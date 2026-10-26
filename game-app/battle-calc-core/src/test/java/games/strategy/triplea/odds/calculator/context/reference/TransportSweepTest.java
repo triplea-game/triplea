@@ -163,7 +163,7 @@ class TransportSweepTest {
   }
 
   private static RulesProfile restricted() {
-    return new RulesProfile(false, false, true, false, false, false);
+    return new RulesProfile(false, false, true, false, false, false, false);
   }
 
   private static int total(final Force force) {

@@ -173,8 +173,12 @@ public class ReferenceBattleSimulator implements BattleSimulator {
     for (final FireStep step : aa) {
       fire(step, scenario, attackers, defenders, round, stats, rng);
     }
-    if (round == 1) {
-      bombard(scenario, attackers, defenders, stats, rng);
+    // Bombard rolls in round 1 after AA. Its casualties are removed at once, unless the rules let
+    // them return fire, in which case they land only after main combat is planned, as the pinned
+    // sub phase's do.
+    final Volley bombard = round == 1 ? rollBombard(scenario, defenders, rng) : null;
+    if (bombard != null && !scenario.rules().navalBombardCasualtiesReturnFire()) {
+      applyBombard(bombard, scenario, attackers, defenders, stats);
     }
     // Engine RemoveNonCombatants runs after AA, before first strike: idle infrastructure leaves the
     // battle so no later fire can land on it.
@@ -213,6 +217,9 @@ public class ReferenceBattleSimulator implements BattleSimulator {
         false,
         EnumSet.of(Phase.GENERAL),
         main);
+    if (bombard != null && scenario.rules().navalBombardCasualtiesReturnFire()) {
+      applyBombard(bombard, scenario, attackers, defenders, stats);
+    }
     pinnedHits.forEach(
         (step, hits) ->
             applyHits(
@@ -403,21 +410,16 @@ public class ReferenceBattleSimulator implements BattleSimulator {
 
   /**
    * Round-1 shore bombardment (engine {@code NavalBombardment}): the bombarding ships roll once at
-   * their bombard strength before general combat and their casualties are removed at once, so a
-   * killed defender never fires back. The ships are not in the battle, so nothing targets them.
-   * Bombard may hit any non-infrastructure defender ({@code FiringGroupSplitterBombard}).
-   * Unmodeled, as no stock map needs them: {@code Naval Bombard Casualties Return Fire} and support
-   * received by a bombarding ship.
+   * their bombard strength before general combat, as one firing group. The ships are not in the
+   * battle, so nothing targets them. Bombard may hit any non-infrastructure defender ({@code
+   * FiringGroupSplitterBombard}). Returns null when nothing bombards or nothing can be hit.
+   * Unmodeled, as no stock map needs it: support received by a bombarding ship.
    */
-  private void bombard(
-      final BattleScenario scenario,
-      final Map<Key, Integer> attackers,
-      final Map<Key, Integer> defenders,
-      final ProfileStats stats,
-      final RandomSource rng) {
+  private Volley rollBombard(
+      final BattleScenario scenario, final Map<Key, Integer> defenders, final RandomSource rng) {
     final Map<CombatProfile, Integer> firing = activeProfileCounts(scenario.bombarding().counts());
     if (firing.isEmpty()) {
-      return;
+      return null;
     }
     final Set<CombatProfile> targets = new LinkedHashSet<>();
     for (final CombatProfile profile : activeProfileCounts(defenders).keySet()) {
@@ -426,14 +428,23 @@ public class ReferenceBattleSimulator implements BattleSimulator {
       }
     }
     if (targets.isEmpty()) {
-      return;
+      return null;
     }
     final FireContext ctx =
         new FireContext(1, Phase.BOMBARD, true, scenario.lowLuck(), scenario.diceSides());
+    return new Volley(roller.roll(firing, ctx, rng), new TargetFilter(targets));
+  }
+
+  private void applyBombard(
+      final Volley bombard,
+      final BattleScenario scenario,
+      final Map<Key, Integer> attackers,
+      final Map<Key, Integer> defenders,
+      final ProfileStats stats) {
     applyHits(
-        roller.roll(firing, ctx, rng),
+        bombard.hits(),
         true,
-        new TargetFilter(targets),
+        bombard.targets(),
         FiringMode.IMMEDIATE,
         scenario,
         attackers,
@@ -937,4 +948,7 @@ public class ReferenceBattleSimulator implements BattleSimulator {
 
   /** One planned group tagged with the side firing it and the phase it belongs to. */
   private record FireStep(RollGroup group, boolean offense, Phase phase) {}
+
+  /** Hits rolled by one volley and the units they may land on. */
+  private record Volley(int hits, TargetFilter targets) {}
 }

@@ -656,7 +656,8 @@ public class GameDataBattleAdapter {
         Properties.getTransportCasualtiesRestricted(properties),
         Properties.getSubmersibleSubs(properties),
         Properties.getSubmarinesDefendingMaySubmergeOrRetreat(properties),
-        Properties.getLhtrHeavyBombers(properties));
+        Properties.getLhtrHeavyBombers(properties),
+        Properties.getNavalBombardCasualtiesReturnFire(properties));
   }
 
   /** Per-unit-type PU cost for caller-side TUV, merged across both players' cost schedules. */
