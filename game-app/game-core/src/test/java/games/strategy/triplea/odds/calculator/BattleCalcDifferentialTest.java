@@ -46,7 +46,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -484,16 +483,13 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
     }
 
     /**
-     * The known ww2v2 waiting-to-die gap ({@code ReferenceCombatRelations#firstStrikeNegated}):
-     * under ww2v2 a destroyer-pinned first striker still fires in the sub phase and trades before
-     * dying, but the sim defers it to main. Attacker one sub, defender one sub plus a destroyer —
-     * the engine leaves the defender its destroyer alone (the defending sub traded with the
-     * attacking sub in the sub phase), while the sim spares both defenders because the attacker
-     * sub, pinned to main, is killed before it fires. Disabled until phase-2b models waiting-to-die
-     * casualties in {@code fightRound}; kept so the divergence cannot silently change.
+     * Under ww2v2 a destroyer-pinned first striker still fires in the sub phase and trades before
+     * dying. Attacker one sub, defender one sub plus a destroyer — the defending sub's sneak and
+     * the pinned attacking sub fire together, so the defender keeps only its destroyer; deferring
+     * the attacking sub to main would let the sneak kill it before it fires and spare both
+     * defenders.
      */
     @Test
-    @Disabled("phase-2b: ww2v2 waiting-to-die, see ReferenceCombatRelations")
     void ww2v2DestroyerPinnedFirstStrikeStillTradesInTheSubPhase() {
       final GameData gameData = TestMapGameData.REVISED.getGameData();
       final Territory seaZone = territory("1 Sea Zone", gameData);
@@ -1031,13 +1027,12 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
    * ReshapingMatrix}). These engagements match once the adapter stops baking a TWW combat-AA
    * submarine — a Substrike hull whose "AA" strikes enemy destroyers, not air — as an anti-air gun,
    * so the sub fires its real attack through the ordinary first-strike and main phases. TWW is not
-   * ww2v2, so none of these need the waiting-to-die work tracked by {@link
-   * ReshapingMatrix#ww2v2DestroyerPinnedFirstStrikeStillTradesInTheSubPhase}, which stays disabled.
-   * The enabled cases pin first strike and its destroyer-negation; {@code canEvade} is part of the
-   * feature cluster this gate tracks but is not yet exercised by an asserted submerge or retreat
-   * outcome. Owners and sea zones are incidental: TWW unit types are ownable by any player, and
-   * each sea zone contributes only the {@code Sea} territory effect, applied identically to the
-   * oracle and the adapter.
+   * ww2v2, so none of these need the ww2v2 pinned-sub timing pinned by {@link
+   * ReshapingMatrix#ww2v2DestroyerPinnedFirstStrikeStillTradesInTheSubPhase}. The enabled cases pin
+   * first strike and its destroyer-negation; {@code canEvade} is part of the feature cluster this
+   * gate tracks but is not yet exercised by an asserted submerge or retreat outcome. Owners and sea
+   * zones are incidental: TWW unit types are ownable by any player, and each sea zone contributes
+   * only the {@code Sea} territory effect, applied identically to the oracle and the adapter.
    */
   @Nested
   class FirstStrikeAndSubmarineEvadeCompletionGate {

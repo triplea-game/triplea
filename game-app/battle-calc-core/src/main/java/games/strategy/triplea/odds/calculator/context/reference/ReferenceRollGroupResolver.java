@@ -8,6 +8,7 @@ import games.strategy.triplea.odds.calculator.context.model.FiringMode;
 import games.strategy.triplea.odds.calculator.context.model.Force;
 import games.strategy.triplea.odds.calculator.context.model.Key;
 import games.strategy.triplea.odds.calculator.context.model.Lifecycle;
+import games.strategy.triplea.odds.calculator.context.model.Phase;
 import games.strategy.triplea.odds.calculator.context.model.RollGroup;
 import games.strategy.triplea.odds.calculator.context.model.RulesProfile;
 import games.strategy.triplea.odds.calculator.context.model.Side;
@@ -57,6 +58,7 @@ public class ReferenceRollGroupResolver implements RollGroupResolver {
 
     final Map<CombatProfile, Integer> aa = new LinkedHashMap<>();
     final Map<CombatProfile, Integer> firstStrike = new LinkedHashMap<>();
+    final Map<CombatProfile, Integer> pinnedFirstStrike = new LinkedHashMap<>();
     final Map<CombatProfile, Integer> main = new LinkedHashMap<>();
     for (final Map.Entry<CombatProfile, Integer> entry : active.entrySet()) {
       final CombatProfile profile = entry.getKey();
@@ -69,6 +71,11 @@ public class ReferenceRollGroupResolver implements RollGroupResolver {
         }
       } else if (profile.flags().contains(CombatFlag.FIRST_STRIKE) && !firstStrikeNegated) {
         firstStrike.put(profile, entry.getValue());
+      } else if (profile.flags().contains(CombatFlag.FIRST_STRIKE) && rules.ww2v2()) {
+        // WW2V2 subs always fire in the sub phase (engine
+        // OffensiveFirstStrike/DefensiveFirstStrike);
+        // an enemy destroyer only stops their victims from being cleared before they fire back.
+        pinnedFirstStrike.put(profile, entry.getValue());
       } else {
         // A negated first striker joins main combat, where it fires DEFERRED off the snapshot.
         main.put(profile, entry.getValue());
@@ -76,9 +83,29 @@ public class ReferenceRollGroupResolver implements RollGroupResolver {
     }
 
     final SequencedMap<RollGroup, Set<RollGroup>> firing = new LinkedHashMap<>();
-    addGroup(firing, side, friendly, enemy, aa, support, FiringMode.IMMEDIATE, round);
-    addGroup(firing, side, friendly, enemy, firstStrike, support, FiringMode.IMMEDIATE, round);
-    addGroup(firing, side, friendly, enemy, main, support, FiringMode.DEFERRED, round);
+    addGroup(firing, side, friendly, enemy, aa, support, FiringMode.IMMEDIATE, Phase.AA, round);
+    addGroup(
+        firing,
+        side,
+        friendly,
+        enemy,
+        firstStrike,
+        support,
+        FiringMode.IMMEDIATE,
+        Phase.FIRST_STRIKE,
+        round);
+    addGroup(
+        firing,
+        side,
+        friendly,
+        enemy,
+        pinnedFirstStrike,
+        support,
+        FiringMode.DEFERRED,
+        Phase.FIRST_STRIKE,
+        round);
+    addGroup(
+        firing, side, friendly, enemy, main, support, FiringMode.DEFERRED, Phase.GENERAL, round);
     return new BattleRound(firing);
   }
 
@@ -90,6 +117,7 @@ public class ReferenceRollGroupResolver implements RollGroupResolver {
       final Map<CombatProfile, Integer> partition,
       final List<SupportRule> support,
       final FiringMode mode,
+      final Phase phase,
       final int round) {
     if (partition.isEmpty()) {
       return;
@@ -138,7 +166,8 @@ public class ReferenceRollGroupResolver implements RollGroupResolver {
                         bucket.getValue(),
                         new TargetFilter(bucket.getKey()),
                         mode,
-                        DiceMode.NORMAL),
+                        DiceMode.NORMAL,
+                        phase),
                     Set.of()));
   }
 

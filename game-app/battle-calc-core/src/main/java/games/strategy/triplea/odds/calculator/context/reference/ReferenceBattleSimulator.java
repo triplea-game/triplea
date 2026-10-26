@@ -180,8 +180,15 @@ public class ReferenceBattleSimulator implements BattleSimulator {
     // battle so no later fire can land on it.
     removeNonCombatants(attackers, round);
     removeNonCombatants(defenders, round);
+    // A DEFERRED first strike (a WW2V2 destroyer-pinned sub) rolls now, beside the sneak attack,
+    // but its victims are not cleared before main combat: they fire back first.
+    final Map<FireStep, Integer> pinnedHits = new LinkedHashMap<>();
     for (final FireStep step : firstStrike) {
-      fire(step, scenario, attackers, defenders, round, stats, rng);
+      if (step.group().firingMode() == FiringMode.DEFERRED) {
+        pinnedHits.put(step, roll(step, scenario, attackers, defenders, round, rng));
+      } else {
+        fire(step, scenario, attackers, defenders, round, stats, rng);
+      }
     }
 
     // Submerge is a post-first-strike checkpoint (design §5): subs that took their sneak attack now
@@ -206,6 +213,18 @@ public class ReferenceBattleSimulator implements BattleSimulator {
         false,
         EnumSet.of(Phase.GENERAL),
         main);
+    pinnedHits.forEach(
+        (step, hits) ->
+            applyHits(
+                hits,
+                step.offense(),
+                step.group().target(),
+                step.group().firingMode(),
+                scenario,
+                attackers,
+                defenders,
+                round,
+                stats));
     for (final FireStep step : main) {
       fire(step, scenario, attackers, defenders, round, stats, rng);
     }
@@ -237,7 +256,7 @@ public class ReferenceBattleSimulator implements BattleSimulator {
       if (group.firing().isEmpty()) {
         continue;
       }
-      final Phase phase = phaseOf(group);
+      final Phase phase = group.phase();
       if (!wanted.contains(phase)) {
         continue;
       }
@@ -259,18 +278,6 @@ public class ReferenceBattleSimulator implements BattleSimulator {
     collectPhases(plan, offense, wanted, main, new ArrayList<>());
   }
 
-  /**
-   * The firing phase a group belongs to: an AA group targets air, an IMMEDIATE non-AA group is a
-   * first strike firing off live counts, everything else is main combat firing off the snapshot (a
-   * negated first striker lands here as DEFERRED, per the resolver).
-   */
-  private static Phase phaseOf(final RollGroup group) {
-    if (group.firing().keySet().stream().anyMatch(p -> p.flags().contains(CombatFlag.IS_AA))) {
-      return Phase.AA;
-    }
-    return group.firingMode() == FiringMode.IMMEDIATE ? Phase.FIRST_STRIKE : Phase.GENERAL;
-  }
-
   /** Rolls one group's hits and applies the casualties to the opposing working map. */
   private void fire(
       final FireStep step,
@@ -280,6 +287,26 @@ public class ReferenceBattleSimulator implements BattleSimulator {
       final int round,
       final ProfileStats stats,
       final RandomSource rng) {
+    applyHits(
+        roll(step, scenario, attackers, defenders, round, rng),
+        step.offense(),
+        step.group().target(),
+        step.group().firingMode(),
+        scenario,
+        attackers,
+        defenders,
+        round,
+        stats);
+  }
+
+  /** Rolls one group's hits against the live opposing force without applying them. */
+  private int roll(
+      final FireStep step,
+      final BattleScenario scenario,
+      final Map<Key, Integer> attackers,
+      final Map<Key, Integer> defenders,
+      final int round,
+      final RandomSource rng) {
     final Map<Key, Integer> targetForce = step.offense() ? defenders : attackers;
     // The group's evaluated vector is the phase-start snapshot: first-strike groups carry the
     // round-start counts (so paired first strikes roll simultaneously), main groups carry the
@@ -288,7 +315,7 @@ public class ReferenceBattleSimulator implements BattleSimulator {
     // casualties land per hit on the live target map.
     Map<CombatProfile, Integer> firing = step.group().firing();
     if (firing.isEmpty()) {
-      return;
+      return 0;
     }
     // AA caps its total dice at the live air-target count each round (engine
     // AaPowerStrengthAndRolls): rebuild the firing vector so each gun carries its capped share as
@@ -302,23 +329,13 @@ public class ReferenceBattleSimulator implements BattleSimulator {
           AaFireCap.cappedFiring(
               firing, airTargets, p -> step.offense() ? p.attack() : p.defense());
       if (firing.isEmpty()) {
-        return;
+        return 0;
       }
     }
     final FireContext ctx =
         new FireContext(
             round, step.phase(), step.offense(), scenario.lowLuck(), scenario.diceSides());
-    final int hits = roller.roll(firing, ctx, rng);
-    applyHits(
-        hits,
-        step.offense(),
-        step.group().target(),
-        step.group().firingMode(),
-        scenario,
-        attackers,
-        defenders,
-        round,
-        stats);
+    return roller.roll(firing, ctx, rng);
   }
 
   /**

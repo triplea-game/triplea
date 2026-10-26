@@ -378,6 +378,48 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
   }
 
   /**
+   * Big World is WW2V2: a sub whose enemy fields a destroyer still fires in the sub phase, beside
+   * the enemy's sneak attack, but its own victims are not cleared and fire back in general combat
+   * ({@code OffensiveFirstStrike}, {@code ClearFirstStrikeCasualties#getSidesToClear}).
+   */
+  @Nested
+  class Ww2v2Submarines {
+    @Test
+    void aPinnedDefendingSubStillFiresWhileTheAttackingSubsSneak() {
+      final GameData gameData = bigWorld();
+      final Collection<Unit> attacking = submarine(gameData).create(1, americans(gameData));
+      attacking.addAll(destroyer(gameData).create(1, americans(gameData)));
+
+      assertIdenticalUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          territory("SZ 17 English Channel", gameData),
+          attacking,
+          submarine(gameData).create(2, germans(gameData)));
+    }
+
+    @Test
+    void seededSubsAgainstAMixedFleetMatchTheEngine() {
+      final GameData gameData = bigWorld();
+      final Collection<Unit> attacking = submarine(gameData).create(3, germans(gameData));
+      attacking.addAll(fighter(gameData).create(1, germans(gameData)));
+      final Collection<Unit> defending = destroyer(gameData).create(1, americans(gameData));
+      defending.addAll(submarine(gameData).create(1, americans(gameData)));
+      defending.addAll(transport(gameData).create(1, americans(gameData)));
+
+      assertSeededAgreement(
+          gameData,
+          germans(gameData),
+          americans(gameData),
+          territory("SZ 17 English Channel", gameData),
+          attacking,
+          defending,
+          List.of());
+    }
+  }
+
+  /**
    * Big World as a running game sees it: the map sets "Two hit battleship", which the
    * initialization delegate (not run for a bare fixture) applies by giving battleships 2 HP.
    */
