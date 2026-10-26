@@ -222,6 +222,50 @@ class ClassicWw2BattleCalcDifferentialTest extends AbstractClientSettingTestCase
     }
   }
 
+  /**
+   * v3 restricts transport casualties per firing group ({@code SelectMainBattleCasualties}): a
+   * transport is spared only while a combatant that same group can hit is left. Air cannot hit a v3
+   * sub without a destroyer, so the sub does not shield the transports from the planes.
+   */
+  @Nested
+  class V3TransportRestriction {
+    @Test
+    void aSubAirCannotHitDoesNotShieldTransportsFromAir() {
+      final GameData gameData = TestMapGameData.WW2V3_1941.getGameData();
+      final Collection<Unit> attacking = fighter(gameData).create(2, russians(gameData));
+      attacking.addAll(unitType("cruiser", gameData).create(1, russians(gameData)));
+      final Collection<Unit> defending = submarine(gameData).create(1, germans(gameData));
+      defending.addAll(transport(gameData).create(2, germans(gameData)));
+
+      assertIdenticalUnderAlwaysHits(
+          gameData,
+          russians(gameData),
+          germans(gameData),
+          territory("5 Sea Zone", gameData),
+          attacking,
+          defending,
+          List.of());
+    }
+
+    @Test
+    void seededAirAndCruiserAgainstASubAndTransportsMatchTheEngine() {
+      final GameData gameData = TestMapGameData.WW2V3_1942.getGameData();
+      final Collection<Unit> attacking = fighter(gameData).create(2, russians(gameData));
+      attacking.addAll(unitType("cruiser", gameData).create(1, russians(gameData)));
+      final Collection<Unit> defending = submarine(gameData).create(2, germans(gameData));
+      defending.addAll(transport(gameData).create(3, germans(gameData)));
+
+      assertSeededBattleAgreement(
+          gameData,
+          russians(gameData),
+          germans(gameData),
+          territory("5 Sea Zone", gameData),
+          attacking,
+          defending,
+          List.of());
+    }
+  }
+
   private static GameData revisedLowLuck() {
     final GameData gameData = TestMapGameData.REVISED.getGameData();
     makeGameLowLuck(gameData);

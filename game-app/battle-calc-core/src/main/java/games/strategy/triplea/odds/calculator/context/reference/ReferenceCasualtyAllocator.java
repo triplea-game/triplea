@@ -47,7 +47,7 @@ public class ReferenceCasualtyAllocator implements CasualtyAllocator {
     final Set<CombatProfile> targets = targetClosure(eligible);
     for (int hit = 0; hit < hits; hit++) {
       final Set<CombatProfile> candidates = targetableProfiles(working, targets);
-      final Set<CombatProfile> allowed = selectable(candidates, working, constraints);
+      final Set<CombatProfile> allowed = selectable(candidates, working, targets, constraints);
       // No allowed target means a constraint withholds every remaining candidate — the transport
       // restriction protecting the last transports while a combatant can still soak the hit. The
       // hit lands on nothing this volley rather than spilling onto a protected transport.
@@ -122,8 +122,10 @@ public class ReferenceCasualtyAllocator implements CasualtyAllocator {
   private static Set<CombatProfile> selectable(
       final Set<CombatProfile> candidates,
       final Map<Key, Integer> working,
+      final Set<CombatProfile> targets,
       final Constraints constraints) {
-    return restrictTransports(keepOneLand(candidates, working, constraints), working, constraints);
+    return restrictTransports(
+        keepOneLand(candidates, working, constraints), working, targets, constraints);
   }
 
   /**
@@ -158,25 +160,24 @@ public class ReferenceCasualtyAllocator implements CasualtyAllocator {
 
   /**
    * Under {@code transportCasualtiesRestricted} a transport is not a legal casualty while a
-   * non-transport combatant can still take the hit; only once every combatant is dead do transports
-   * become selectable and absorb the overflow. Re-derived per hit, this reproduces the engine's
-   * saturate-combat-HP-then-spill accounting ({@code SelectMainBattleCasualties#apply}) without a
-   * pending-hit bucket. Dependent cargo is already excluded upstream, so the candidate set is only
-   * {combatants, transports}.
+   * non-transport combatant this group can hit can still take the hit; only once every such
+   * combatant is dead do transports become selectable and absorb the overflow. Re-derived per hit,
+   * this reproduces the engine's saturate-combat-HP-then-spill accounting over the firing group's
+   * own targets ({@code SelectMainBattleCasualties#apply}) without a pending-hit bucket, so a sub
+   * that air cannot target does not shield the transports from it. Dependent cargo is already
+   * excluded upstream, so the candidate set is only {combatants, transports}.
    */
   private static Set<CombatProfile> restrictTransports(
       final Set<CombatProfile> candidates,
       final Map<Key, Integer> working,
+      final Set<CombatProfile> targets,
       final Constraints constraints) {
     if (!constraints.transportCasualtiesRestricted()) {
       return candidates;
     }
-    // Whether a combatant can still soak the hit is read from the live working map, not from
-    // 'candidates': 'candidates' is the plan-time eligibility filter over undamaged profiles, so a
-    // multi-HP combatant damaged mid-volley has migrated to an onHit() successor that never entered
-    // that filter — it is still alive and must keep the transports protected until it is fully
-    // dead.
-    if (!anyActiveCombatant(working)) {
+    // Read from the live working map over the target closure, not from 'candidates', which the
+    // keep-one-land step may already have narrowed.
+    if (!anyActiveCombatant(working, targets)) {
       return candidates;
     }
     final Set<CombatProfile> withoutTransports = new LinkedHashSet<>();
@@ -188,13 +189,15 @@ public class ReferenceCasualtyAllocator implements CasualtyAllocator {
     return withoutTransports;
   }
 
-  /** An ACTIVE non-transport, non-dependent unit still on the map — one that can absorb a hit. */
-  private static boolean anyActiveCombatant(final Map<Key, Integer> working) {
+  /** An ACTIVE non-transport, non-dependent target still on the map — one that can absorb a hit. */
+  private static boolean anyActiveCombatant(
+      final Map<Key, Integer> working, final Set<CombatProfile> targets) {
     return working.entrySet().stream()
         .anyMatch(
             entry ->
                 entry.getKey().state() == Lifecycle.ACTIVE
                     && entry.getValue() > 0
+                    && targets.contains(entry.getKey().profile())
                     && !isTransport(entry.getKey().profile())
                     && !isDependent(entry.getKey().profile()));
   }
