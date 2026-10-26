@@ -47,19 +47,18 @@ class ScenarioFromLiteralsTest {
       new SupportCategory("receives:artillery");
 
   /**
-   * Under {@code alwaysHits} the attacker fields five one-hit-point firing bodies against two
-   * defenders: round 1 the attacker lands five hits (both defenders die) while the defenders land
-   * exactly two, so the battle ends in a single round with three of the five attacker bodies left.
-   * The exact survivor total (3) and round count (1) are pinned so a stub that hardcodes "attacker
-   * wins, defenders 0" cannot pass; which two attacker bodies die is left to the differential (both
-   * the engine default order and a cost-only order kill two infantry here, so the total holds
-   * either way).
+   * Under {@code alwaysHits} the attacker fields five firing bodies against two defenders: round 1
+   * the attacker lands five hits (both defenders die) while the defenders land exactly two, so the
+   * battle ends in a single round. The 2-HP tank soaks the first of those two hits (the engine
+   * damages multi-HP units before killing anything) and an infantry takes the second, leaving four
+   * of the five attacker bodies. The exact survivor total (4) and round count (1) are pinned so a
+   * stub that hardcodes "attacker wins, defenders 0" cannot pass.
    *
    * <pre>
    * (1) build attackers = infantry x3 + artillery(gives support) + a 2-HP tank, all from literals
    * (2) build defenders = infantry x2 with a baked +1 defense (no Territory ref)
    * (3) drive one alwaysHits run through the reference simulator
-   * (4) validate: attacker wins in one round, defenders annihilated, exactly 3 attacker bodies left
+   * (4) validate: attacker wins in one round, defenders annihilated, exactly 4 attacker bodies left
    * </pre>
    */
   @Test
@@ -120,7 +119,7 @@ class ScenarioFromLiteralsTest {
     assertThat(only.outcome()).isEqualTo(Outcome.ATTACKER_WINS);
     assertThat(only.roundsFought()).isEqualTo(1);
     assertThat(totalUnits(only.defenderSurvivors())).isZero();
-    assertThat(totalUnits(only.attackerSurvivors())).isEqualTo(3);
+    assertThat(totalUnits(only.attackerSurvivors())).isEqualTo(4);
   }
 
   private static int totalUnits(final Force force) {

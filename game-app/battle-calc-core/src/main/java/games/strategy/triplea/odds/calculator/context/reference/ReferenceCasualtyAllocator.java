@@ -54,10 +54,26 @@ public class ReferenceCasualtyAllocator implements CasualtyAllocator {
       if (allowed.isEmpty()) {
         continue;
       }
-      final CombatProfile target = order.next(allowed, stats, side);
+      final CombatProfile target = order.next(damageFirst(allowed), stats, side);
       applyHit(working, target, deps);
     }
     return new Force(working);
+  }
+
+  /**
+   * Narrows the pick to units with a spare hit point when any is allowed: the engine's default
+   * casualty selection spends every multi-HP unit's extra hit points before it kills anything
+   * ({@code CasualtySelector#getDefaultCasualties}), so a battleship soaks a hit that would
+   * otherwise sink an escort. The order still chooses among them.
+   */
+  private static Set<CombatProfile> damageFirst(final Set<CombatProfile> allowed) {
+    final Set<CombatProfile> damageable = new LinkedHashSet<>();
+    for (final CombatProfile profile : allowed) {
+      if (profile.onHit().isPresent()) {
+        damageable.add(profile);
+      }
+    }
+    return damageable.isEmpty() ? allowed : damageable;
   }
 
   /**

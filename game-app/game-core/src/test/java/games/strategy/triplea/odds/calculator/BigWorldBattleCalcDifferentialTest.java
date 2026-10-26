@@ -1,13 +1,17 @@
 package games.strategy.triplea.odds.calculator;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.aaGun;
+import static games.strategy.triplea.delegate.GameDataTestUtil.americans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
 import static games.strategy.triplea.delegate.GameDataTestUtil.battleship;
+import static games.strategy.triplea.delegate.GameDataTestUtil.carrier;
+import static games.strategy.triplea.delegate.GameDataTestUtil.destroyer;
 import static games.strategy.triplea.delegate.GameDataTestUtil.factory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.fighter;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
+import static games.strategy.triplea.delegate.GameDataTestUtil.submarine;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
@@ -62,7 +66,7 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
   class Infrastructure {
     @Test
     void aFactoryCannotSoakTheHitThatKillsTheLastDefender() {
-      final GameData gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
+      final GameData gameData = bigWorld();
       final Collection<Unit> defending = infantry(gameData).create(1, germans(gameData));
       defending.addAll(factory(gameData).create(1, germans(gameData)));
 
@@ -77,7 +81,7 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
 
     @Test
     void factoryAndAaGunCannotSoakHitsMeantForInfantry() {
-      final GameData gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
+      final GameData gameData = bigWorld();
       final Collection<Unit> attacking = infantry(gameData).create(2, russians(gameData));
       attacking.addAll(armour(gameData).create(1, russians(gameData)));
       final Collection<Unit> defending = infantry(gameData).create(3, germans(gameData));
@@ -95,7 +99,7 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
 
     @Test
     void anAaGunFiresAtAirThenLeavesTheBattle() {
-      final GameData gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
+      final GameData gameData = bigWorld();
       final Collection<Unit> attacking = infantry(gameData).create(2, russians(gameData));
       attacking.addAll(fighter(gameData).create(2, russians(gameData)));
       final Collection<Unit> defending = infantry(gameData).create(2, germans(gameData));
@@ -113,7 +117,7 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
 
     @Test
     void seededAttackOnADefendedFactoryTerritoryMatchesTheEngine() {
-      final GameData gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
+      final GameData gameData = bigWorld();
       final Collection<Unit> attacking = infantry(gameData).create(3, russians(gameData));
       attacking.addAll(armour(gameData).create(2, russians(gameData)));
       attacking.addAll(fighter(gameData).create(1, russians(gameData)));
@@ -141,7 +145,7 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
   class Bombard {
     @Test
     void aBombardingBattleshipKillsADefenderBeforeItCanFire() {
-      final GameData gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
+      final GameData gameData = bigWorld();
 
       assertIdenticalUnderAlwaysHits(
           gameData,
@@ -155,7 +159,7 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
 
     @Test
     void bombardFiresOnlyInTheFirstRoundAndNeverHitsInfrastructure() {
-      final GameData gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
+      final GameData gameData = bigWorld();
       final Collection<Unit> defending = infantry(gameData).create(4, germans(gameData));
       defending.addAll(factory(gameData).create(1, germans(gameData)));
       defending.addAll(aaGun(gameData).create(1, germans(gameData)));
@@ -172,7 +176,7 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
 
     @Test
     void seededAmphibiousAssaultWithBombardMatchesTheEngine() {
-      final GameData gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
+      final GameData gameData = bigWorld();
       final Collection<Unit> attacking = infantry(gameData).create(3, russians(gameData));
       attacking.addAll(armour(gameData).create(1, russians(gameData)));
       final Collection<Unit> defending = infantry(gameData).create(4, germans(gameData));
@@ -187,6 +191,75 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
           defending,
           battleship(gameData).create(2, russians(gameData)));
     }
+  }
+
+  /**
+   * The engine's default casualty pick spends every spare hit point of a multi-HP unit (a Big World
+   * battleship) before it kills anything ({@code CasualtySelector#getDefaultCasualties}), so a
+   * battleship soaks a hit that would otherwise sink an escort.
+   */
+  @Nested
+  class TwoHitBattleships {
+    @Test
+    void aBattleshipTakesDamageBeforeAnEscortDies() {
+      final GameData gameData = bigWorld();
+      final Collection<Unit> defending = battleship(gameData).create(1, germans(gameData));
+      defending.addAll(destroyer(gameData).create(2, germans(gameData)));
+
+      assertIdenticalUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          territory("SZ 17 English Channel", gameData),
+          destroyer(gameData).create(2, americans(gameData)),
+          defending);
+    }
+
+    @Test
+    void anAttackingBattleshipSoaksTheFirstHit() {
+      final GameData gameData = bigWorld();
+      final Collection<Unit> attacking = battleship(gameData).create(1, americans(gameData));
+      attacking.addAll(destroyer(gameData).create(1, americans(gameData)));
+
+      assertIdenticalUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          territory("SZ 17 English Channel", gameData),
+          attacking,
+          submarine(gameData).create(1, germans(gameData)));
+    }
+
+    @Test
+    void seededMixedFleetBattleMatchesTheEngine() {
+      final GameData gameData = bigWorld();
+      final Collection<Unit> attacking = battleship(gameData).create(1, americans(gameData));
+      attacking.addAll(destroyer(gameData).create(2, americans(gameData)));
+      attacking.addAll(fighter(gameData).create(2, americans(gameData)));
+      final Collection<Unit> defending = battleship(gameData).create(1, germans(gameData));
+      defending.addAll(carrier(gameData).create(1, germans(gameData)));
+      defending.addAll(fighter(gameData).create(2, germans(gameData)));
+      defending.addAll(submarine(gameData).create(2, germans(gameData)));
+
+      assertSeededAgreement(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          territory("SZ 17 English Channel", gameData),
+          attacking,
+          defending,
+          List.of());
+    }
+  }
+
+  /**
+   * Big World as a running game sees it: the map sets "Two hit battleship", which the
+   * initialization delegate (not run for a bare fixture) applies by giving battleships 2 HP.
+   */
+  private static GameData bigWorld() {
+    final GameData gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
+    battleship(gameData).getUnitAttachment().setHitPoints(2);
+    return gameData;
   }
 
   private static void assertIdenticalUnderAlwaysHits(
