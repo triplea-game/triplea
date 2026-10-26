@@ -100,7 +100,6 @@ Please restart all running TripleA instances.""",
     return luma < 0.5;
   }
 
-  /** Returns white text for a dark background and black text for a light one. */
   public static Color getContrastingTextColor(final Color background) {
     return isColorDark(background) ? Color.WHITE : Color.BLACK;
   }

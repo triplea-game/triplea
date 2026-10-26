@@ -5,10 +5,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-/**
- * Background colors for the relationship archetypes (war, allied, neutral) in the politics panel
- * and the status bar. Text drawn on them uses {@link LookAndFeel#getContrastingTextColor(Color)}.
- */
 @AllArgsConstructor
 @Getter(AccessLevel.PACKAGE)
 public enum RelationshipColorScheme {
