@@ -20,10 +20,15 @@ PMD covers. It is **not wired into the Gradle build** — the root
 - **Static imports in tests** — flags `Mockito.when(...)` etc. that should be statically imported
 - **`javax.annotation.Nonnull` over `lombok.NonNull`** — enforces consistent null annotation
 - **LF line endings in git** — flags text files committed with CRLF (fix with `git add --renormalize <file>`)
+- **`isEmpty()` over `size() == 0`** — flags `size()` compared with 0 or 1
 - **Links in the docs** — flags relative Markdown links to files or folders that do not exist (anchors are not checked)
 - **Gradle paths in the docs** — flags `gradlew` commands with nested project paths like `:game-app:game-core` (projects are flat: `:game-core`)
 
-### Disabled checks (commented out, have existing violations)
+### Checks on added lines only (existing code has violations)
+These look only at the lines added to `src/main/java` since `CHECK_BASE`, uncommitted changes
+included (new files once they are added to git). `CHECK_BASE` defaults to `origin/main`; set
+it if your main branch is elsewhere, eg: `CHECK_BASE=upstream/main`. CI uses `HEAD^1`, the
+target branch of the pull request.
 - Prefer `List.of()`/`Map.of()`/`Set.of()` over `Collections.*` methods
 - Assign collections to interface types (e.g. `List` not `ArrayList`)
 - Prefer `@Slf4j` over `@Log`/`java.util.logging`

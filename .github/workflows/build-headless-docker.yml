@@ -16,6 +16,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          # the parent commit too: check-custom-style checks the lines added since HEAD^1
+          fetch-depth: 2
       - name: Set up JDK 25
         uses: actions/setup-java@v6
         with:
@@ -24,6 +27,8 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
       - name: Run Build Checks
+        env:
+          CHECK_BASE: HEAD^1
         run: ./verify --exclude-task spotlessApply
       - name: Login to GitHub Container Registry
         if: ${{ env.IS_MAIN_BUILD }}
