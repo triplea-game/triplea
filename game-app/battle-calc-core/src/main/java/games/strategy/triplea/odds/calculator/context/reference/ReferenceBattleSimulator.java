@@ -679,11 +679,12 @@ public class ReferenceBattleSimulator implements BattleSimulator {
     return Outcome.DRAW;
   }
 
-  /** Surviving (ACTIVE or WITHDRAWN) units that are not infrastructure. */
+  /** Surviving (ACTIVE or WITHDRAWN) units that are neither infrastructure nor cargo. */
   private static int combatantCount(final Map<Key, Integer> working) {
     return working.entrySet().stream()
         .filter(entry -> entry.getKey().state() != Lifecycle.DEAD)
         .filter(entry -> !isInfrastructure(entry.getKey().profile()))
+        .filter(entry -> !isDependent(entry.getKey().profile()))
         .mapToInt(Map.Entry::getValue)
         .sum();
   }
@@ -827,11 +828,12 @@ public class ReferenceBattleSimulator implements BattleSimulator {
     return counts;
   }
 
-  /** ACTIVE units that keep a side in the fight; infrastructure never does. */
+  /** ACTIVE units that keep a side in the fight; infrastructure and cargo never do. */
   private static int activeCount(final Map<Key, Integer> working) {
     return working.entrySet().stream()
         .filter(entry -> entry.getKey().state() == Lifecycle.ACTIVE)
         .filter(entry -> !isInfrastructure(entry.getKey().profile()))
+        .filter(entry -> !isDependent(entry.getKey().profile()))
         .mapToInt(Map.Entry::getValue)
         .sum();
   }

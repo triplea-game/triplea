@@ -13,6 +13,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
 import static games.strategy.triplea.delegate.GameDataTestUtil.submarine;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
+import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 
@@ -249,6 +250,59 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
           attacking,
           defending,
           List.of());
+    }
+  }
+
+  /**
+   * Land cargo in a sea battle is not in the fight: it sinks with its transport and never keeps its
+   * side alive. Big World transports carry mixed loads (infantry plus armour or artillery).
+   */
+  @Nested
+  class MixedCargo {
+    @Test
+    void aSunkTransportTakesBothCargoTypesDownWithIt() {
+      final GameData gameData = bigWorld();
+      final List<Unit> transports = transport(gameData).create(1, germans(gameData));
+      final Collection<Unit> defending = new ArrayList<>(transports);
+      defending.addAll(load(transports.get(0), infantry(gameData).create(1, germans(gameData))));
+      defending.addAll(load(transports.get(0), armour(gameData).create(1, germans(gameData))));
+      defending.addAll(destroyer(gameData).create(1, germans(gameData)));
+
+      assertIdenticalUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          territory("SZ 17 English Channel", gameData),
+          destroyer(gameData).create(2, americans(gameData)),
+          defending);
+    }
+
+    @Test
+    void seededAttackOnLoadedTransportsMatchesTheEngine() {
+      final GameData gameData = bigWorld();
+      final List<Unit> transports = transport(gameData).create(2, germans(gameData));
+      final Collection<Unit> defending = new ArrayList<>(transports);
+      for (final Unit carrier : transports) {
+        defending.addAll(load(carrier, infantry(gameData).create(1, germans(gameData))));
+        defending.addAll(load(carrier, armour(gameData).create(1, germans(gameData))));
+      }
+      defending.addAll(destroyer(gameData).create(1, germans(gameData)));
+      final Collection<Unit> attacking = destroyer(gameData).create(1, americans(gameData));
+      attacking.addAll(fighter(gameData).create(1, americans(gameData)));
+
+      assertSeededAgreement(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          territory("SZ 17 English Channel", gameData),
+          attacking,
+          defending,
+          List.of());
+    }
+
+    private static Collection<Unit> load(final Unit carrier, final Collection<Unit> cargo) {
+      cargo.forEach(unit -> unit.setTransportedBy(carrier));
+      return cargo;
     }
   }
 

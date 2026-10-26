@@ -469,9 +469,9 @@ public class GameDataBattleAdapter {
    * the greedy cascade empties transport-load by transport-load — early transport losses take a
    * full load rather than one unit spread across the fleet.
    *
-   * <p>v1 scope: one cargo type per side (the first land type present), keyed to undamaged
-   * transport profiles. Mixed loads, per-unit cargo linkage, and damaged transports are unmodeled
-   * follow-ups.
+   * <p>Every land type on the side is cargo, weighted by its transport cost against the transport's
+   * capacity, so a mixed load sinks together. Rules key on undamaged transport profiles; per-unit
+   * cargo linkage and damaged transports are unmodeled.
    */
   private static Dependents dependents(
       final Collection<Unit> attacking,
@@ -499,18 +499,17 @@ public class GameDataBattleAdapter {
       final Collection<TerritoryEffect> effects,
       final SupportModel support,
       final boolean lhtrHeavyBombers) {
-    UnitType cargoType = null;
+    final Map<UnitTypeId, Integer> cargoCost = new LinkedHashMap<>();
     for (final Unit unit : units) {
-      if (domainOf(unit.getType().getUnitAttachment()) == Domain.LAND) {
-        cargoType = unit.getType();
-        break;
+      final UnitAttachment ua = unit.getType().getUnitAttachment();
+      if (domainOf(ua) == Domain.LAND) {
+        cargoCost.putIfAbsent(
+            new UnitTypeId(unit.getType().getName()), Math.max(1, ua.getTransportCost()));
       }
     }
-    if (cargoType == null) {
+    if (cargoCost.isEmpty()) {
       return;
     }
-    final int cargoCost = Math.max(1, cargoType.getUnitAttachment().getTransportCost());
-    final UnitTypeId cargoId = new UnitTypeId(cargoType.getName());
     final Set<UnitType> carrierTypes = new LinkedHashSet<>();
     for (final Unit unit : units) {
       if (unit.getType().getUnitAttachment().getTransportCapacity() > 0) {
@@ -518,11 +517,12 @@ public class GameDataBattleAdapter {
       }
     }
     for (final UnitType carrierType : carrierTypes) {
-      final int capacity =
-          Math.max(1, carrierType.getUnitAttachment().getTransportCapacity() / cargoCost);
       final CombatProfile carrier =
           profileFor(carrierType, player, side, effects, 0, support, false, lhtrHeavyBombers);
-      rules.put(carrier, new CargoRule(cargoId, capacity));
+      rules.put(
+          carrier,
+          new CargoRule(
+              Map.copyOf(cargoCost), carrierType.getUnitAttachment().getTransportCapacity()));
     }
   }
 

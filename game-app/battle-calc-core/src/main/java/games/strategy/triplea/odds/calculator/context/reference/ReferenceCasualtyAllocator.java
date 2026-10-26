@@ -225,9 +225,12 @@ public class ReferenceCasualtyAllocator implements CasualtyAllocator {
 
   /**
    * A killed carrier takes its cargo down in the same allocation. Cargo is a non-combatant that
-   * never fires, so its removal does not wait on firing-mode timing — a sunk carrier sheds its
-   * cargo at once, capped at the carrier's capacity and matched by cargo type. Package-private so
-   * the round-end transport sweep in {@link ReferenceBattleSimulator} sheds cargo the same way.
+   * never fires, so its removal does not wait on firing-mode timing. Cargo is pooled per side, not
+   * linked to one transport, so a sunk carrier sheds a full load: the costliest cargo that still
+   * fits first, so a mixed infantry-plus-armour load goes down together. Once a side has no carrier
+   * left, all its remaining cargo goes down too — the engine links every unit of it to some sunk
+   * transport. Package-private so the round-end transport sweep in {@link ReferenceBattleSimulator}
+   * sheds cargo the same way.
    */
   static void cascade(
       final Map<Key, Integer> working, final CombatProfile carrier, final Dependents deps) {
@@ -235,18 +238,52 @@ public class ReferenceCasualtyAllocator implements CasualtyAllocator {
     if (rule == null) {
       return;
     }
-    int toRemove = rule.capacity();
-    for (final Key key : new ArrayList<>(working.keySet())) {
-      if (toRemove <= 0) {
-        break;
-      }
-      if (key.state() == Lifecycle.ACTIVE && key.profile().type().equals(rule.cargoType())) {
-        final int removed = Math.min(toRemove, working.get(key));
-        remove(working, key, removed);
-        add(working, new Key(key.profile(), Lifecycle.DEAD), removed);
-        toRemove -= removed;
+    int room = rule.capacity();
+    Key next = costliestFitting(working, rule, room);
+    while (next != null) {
+      room -= rule.cargoCost().get(next.profile().type());
+      kill(working, next, 1);
+      next = costliestFitting(working, rule, room);
+    }
+    if (!anyActiveCarrier(working, deps)) {
+      for (final Key key : new ArrayList<>(working.keySet())) {
+        if (key.state() == Lifecycle.ACTIVE && isDependent(key.profile())) {
+          kill(working, key, working.get(key));
+        }
       }
     }
+  }
+
+  private static Key costliestFitting(
+      final Map<Key, Integer> working, final CargoRule rule, final int room) {
+    Key best = null;
+    int bestCost = 0;
+    for (final Map.Entry<Key, Integer> entry : working.entrySet()) {
+      final Integer cost = rule.cargoCost().get(entry.getKey().profile().type());
+      if (entry.getKey().state() == Lifecycle.ACTIVE
+          && entry.getValue() > 0
+          && cost != null
+          && cost <= room
+          && cost > bestCost) {
+        best = entry.getKey();
+        bestCost = cost;
+      }
+    }
+    return best;
+  }
+
+  private static boolean anyActiveCarrier(final Map<Key, Integer> working, final Dependents deps) {
+    return working.entrySet().stream()
+        .anyMatch(
+            entry ->
+                entry.getKey().state() == Lifecycle.ACTIVE
+                    && entry.getValue() > 0
+                    && deps.rules().containsKey(entry.getKey().profile()));
+  }
+
+  private static void kill(final Map<Key, Integer> working, final Key key, final int count) {
+    remove(working, key, count);
+    add(working, new Key(key.profile(), Lifecycle.DEAD), count);
   }
 
   private static int active(final Map<Key, Integer> working, final CombatProfile profile) {

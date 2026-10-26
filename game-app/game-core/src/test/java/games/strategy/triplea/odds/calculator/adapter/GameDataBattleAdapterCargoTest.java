@@ -24,6 +24,7 @@ import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -68,8 +69,8 @@ class GameDataBattleAdapterCargoTest {
     // Compact loading: the transport's full two-infantry load is tied to its profile.
     final CargoRule rule = scenario.dependents().rules().get(transportProfile);
     assertThat(rule).isNotNull();
-    assertThat(rule.cargoType()).isEqualTo(new UnitTypeId(infantryName));
-    assertThat(rule.capacity()).isEqualTo(2);
+    assertThat(rule.cargoCost()).isEqualTo(Map.of(new UnitTypeId(infantryName), 2));
+    assertThat(rule.capacity()).isEqualTo(5);
   }
 
   private static CombatProfile profileOf(final Force force, final String typeName) {
