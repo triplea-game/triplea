@@ -26,12 +26,12 @@ PMD covers. It is **not wired into the Gradle build** — the root
 
 ### Checks on added lines only (existing code has violations)
 These look only at the lines added to `src/main/java` since `CHECK_BASE`, uncommitted changes
-included (new files once they are added to git). `CHECK_BASE` defaults to `origin/main`; set
-it if your main branch is elsewhere, eg: `CHECK_BASE=upstream/main`. CI uses `HEAD^1`, the
-target branch of the pull request.
+and new files included. `CHECK_BASE` defaults to `origin/main`; set it if your main branch is
+elsewhere, eg: `CHECK_BASE=upstream/main`. CI uses `HEAD^1`, the target branch of the pull
+request.
 - Prefer `List.of()`/`Map.of()`/`Set.of()` over `Collections.*` methods
 - Assign collections to interface types (e.g. `List` not `ArrayList`)
-- Prefer `@Slf4j` over `@Log`/`java.util.logging`
+- Prefer `@Slf4j` over `@Log`/`java.util.logging.Logger`
 
 ### Style include files
 - `style.include/concrete-collection-types` — grep patterns for concrete collection assignments

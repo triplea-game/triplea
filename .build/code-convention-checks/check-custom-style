@@ -30,7 +30,7 @@ find "$basePath" -type f -name "*Test.java" -path "*/src/test/java/*" > "$testFi
 
 ## Some checks have existing violations in the code base, so they only look at new code: the
 ## lines added to src/main/java since CHECK_BASE (default origin/main; CI sets the target branch),
-## including uncommitted changes, as "file:line:text".
+## including uncommitted changes and new files, as "file:line:text".
 checkBase="${CHECK_BASE:-origin/main}"
 if ! mergeBase=$(git -C "$basePath" merge-base "$checkBase" HEAD 2> /dev/null); then
   echo "Error, cannot compare with '$checkBase'; set CHECK_BASE, eg: CHECK_BASE=upstream/main"
@@ -42,6 +42,8 @@ git -C "$basePath" diff -U0 --no-color --no-ext-diff --relative --src-prefix=a/ 
          /^\+\+\+ / && !inHunk { file = substr($0, 7); next }
          /^@@ / { inHunk = 1; split($3, start, ","); line = substr(start[1], 2); next }
          inHunk && /^\+/ { print file ":" line ":" substr($0, 2); line++ }' > "$addedLines"
+git -C "$basePath" ls-files --others --exclude-standard -z -- ':(glob)**/src/main/java/**/*.java' \
+  | (cd "$basePath" && xargs -0 grep -Hn '') >> "$addedLines"
 
 status=0
 
@@ -122,7 +124,7 @@ export -f removeUnusedLogAnnotations
 function preferSlf4jOverJavaLogging() {
   title "Use @Slf4j instead of @Log (added lines)"
   local found=0
-  grepAddedLines "@Log|import java\.util\.log" && status=1 && found=1
+  grepAddedLines "@Log\b|import java\.util\.logging\.Logger;" && status=1 && found=1
 
   displayResult "$found"
 }
