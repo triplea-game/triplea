@@ -95,7 +95,10 @@ public class ReferenceBattleSimulator implements BattleSimulator {
     return new SimulationResults(results);
   }
 
-  /** One Monte-Carlo battle: rounds until a side is gone, a side withdraws, or the cap is hit. */
+  /**
+   * One Monte-Carlo battle: rounds until a side is gone, a side withdraws, neither side can hurt
+   * the other, or the cap is hit.
+   */
   private BattleResult runOnce(
       final BattleScenario scenario, final ProfileStats stats, final RandomSource rng) {
     final Map<Key, Integer> attackers = new LinkedHashMap<>(scenario.attackers().counts());
@@ -112,16 +115,13 @@ public class ReferenceBattleSimulator implements BattleSimulator {
       return noBattle(attackers, defenders, Outcome.ATTACKER_WINS);
     }
     int round = 0;
-    boolean withdrew = false;
+    boolean ended = false;
     while (round < MAX_ROUNDS
         && activeCount(attackers) > 0
         && activeCount(defenders) > 0
-        && !withdrew) {
+        && !ended) {
       round++;
-      withdrew = fightRound(scenario, attackers, defenders, round, stats, rng);
-      // A side left with only unescorted transports loses them at round end under the restriction,
-      // before the DEAD reconcile so their cargo cascades into the same drop.
-      sweepUnescortedTransports(scenario, attackers, defenders);
+      ended = fightRound(scenario, attackers, defenders, round, stats, rng);
       // Reconcile: the working map is the next round's force — DEAD buckets drop, ACTIVE and
       // WITHDRAWN survive; support and stats re-evaluate next round off the reduced force.
       dropDead(attackers);
@@ -137,7 +137,8 @@ public class ReferenceBattleSimulator implements BattleSimulator {
   }
 
   /**
-   * Runs one round's firing sequence across both sides, returning whether either side withdrew.
+   * Runs one round's firing sequence across both sides, returning whether the battle ended early: a
+   * stalemate or either side withdrawing.
    *
    * <p>Each combat phase is a simultaneous exchange read off a snapshot taken at that phase's
    * start: AA and first strike fire off the round-start plan (nothing sea has died yet, so a first
@@ -184,6 +185,16 @@ public class ReferenceBattleSimulator implements BattleSimulator {
     // battle so no later fire can land on it.
     removeNonCombatants(attackers, round);
     removeNonCombatants(defenders, round);
+    // The submerge query comes before first strike (engine SUB_*_RETREAT_BEFORE_BATTLE); it only
+    // ever dives subs facing nothing but air, which have no target in first strike anyway. Where
+    // the engine asks after the round instead, the round-end stalemate check comes first and ends
+    // any battle this could dive in. Gated relationally by CombatRelations, not by the retreat
+    // preference alone; ACTIVE -> WITHDRAWN so no fire can touch them.
+    submerge(
+        Side.OFFENSE, scenario.attackerRetreat(), attackers, defenders, scenario.rules(), round);
+    submerge(
+        Side.DEFENSE, scenario.defenderRetreat(), defenders, attackers, scenario.rules(), round);
+    submergeEvadersFacingOnlyAir(attackers, defenders);
     // A DEFERRED first strike (a WW2V2 destroyer-pinned sub) rolls now, beside the sneak attack,
     // but its victims are not cleared before main combat: they fire back first.
     final Map<FireStep, Integer> pinnedHits = new LinkedHashMap<>();
@@ -194,14 +205,6 @@ public class ReferenceBattleSimulator implements BattleSimulator {
         fire(step, scenario, attackers, defenders, round, stats, rng);
       }
     }
-
-    // Submerge is a post-first-strike checkpoint (design §5): subs that took their sneak attack now
-    // dive if no enemy destroyer pins them, migrating ACTIVE -> WITHDRAWN so main combat cannot
-    // touch them. Gated relationally by CombatRelations, not by the retreat preference alone.
-    submerge(
-        Side.OFFENSE, scenario.attackerRetreat(), attackers, defenders, scenario.rules(), round);
-    submerge(
-        Side.DEFENSE, scenario.defenderRetreat(), defenders, attackers, scenario.rules(), round);
 
     // Re-plan main off the post-first-strike forces: the fresh evaluated vectors are the shared
     // exchange-start snapshot both sides' main groups roll from, now free of first-strike
@@ -236,6 +239,13 @@ public class ReferenceBattleSimulator implements BattleSimulator {
       fire(step, scenario, attackers, defenders, round, stats, rng);
     }
 
+    // A side left with only unescorted transports loses them under the restriction (engine
+    // RemoveUnprotectedUnitsGeneral), before the DEAD reconcile so their cargo cascades into the
+    // same drop, and before the end checks and retreat.
+    sweepUnescortedTransports(scenario, attackers, defenders);
+    if (stalemate(attackers, defenders)) {
+      return true;
+    }
     final BattleView view = new BattleView(new Force(attackers), new Force(defenders), round);
     final boolean attackerWithdrew = retreat(scenario.attackerRetreat(), attackers, view);
     final boolean defenderWithdrew = retreat(scenario.defenderRetreat(), defenders, view);
@@ -600,6 +610,77 @@ public class ReferenceBattleSimulator implements BattleSimulator {
   }
 
   /**
+   * When one side is nothing but air, the other side's air-immune evaders (a v3 sub) submerge at
+   * once, without asking and whatever the submerge rules (engine {@code
+   * SubmergeSubsVsOnlyAirStep}); the rest of that side fights on.
+   */
+  private static void submergeEvadersFacingOnlyAir(
+      final Map<Key, Integer> attackers, final Map<Key, Integer> defenders) {
+    if (onlyAir(attackers)) {
+      migrate(defenders, airImmuneEvaders(defenders));
+    } else if (onlyAir(defenders)) {
+      migrate(attackers, airImmuneEvaders(attackers));
+    }
+  }
+
+  private static boolean onlyAir(final Map<Key, Integer> working) {
+    final Map<CombatProfile, Integer> active = activeProfileCounts(working);
+    active.keySet().removeIf(ReferenceBattleSimulator::isDependent);
+    return !active.isEmpty()
+        && active.keySet().stream().allMatch(profile -> profile.domain() == Domain.AIR);
+  }
+
+  private static Map<CombatProfile, Integer> airImmuneEvaders(final Map<Key, Integer> working) {
+    final Map<CombatProfile, Integer> evaders = activeProfileCounts(working);
+    evaders
+        .keySet()
+        .removeIf(
+            profile ->
+                !profile.flags().contains(CombatFlag.CAN_SUBMERGE)
+                    || !profile.flags().contains(CombatFlag.CANNOT_BE_TARGETED_BY_ALL));
+    return evaders;
+  }
+
+  /**
+   * Whether neither side can hurt the other, so the battle ends in a draw (engine {@code
+   * CheckGeneralBattleEnd#isStalemate}): no unit on either side has a target, or none that has one
+   * has any firepower. Support is not counted here; no stock map lifts a zero-strength unit.
+   */
+  private boolean stalemate(final Map<Key, Integer> attackers, final Map<Key, Integer> defenders) {
+    if (activeCount(attackers) == 0 || activeCount(defenders) == 0) {
+      return false;
+    }
+    final Set<CombatProfile> attackerFirers = firers(attackers, defenders);
+    final Set<CombatProfile> defenderFirers = firers(defenders, attackers);
+    if (attackerFirers.isEmpty() && defenderFirers.isEmpty()) {
+      return true;
+    }
+    return attackerFirers.stream().noneMatch(p -> p.attack() > 0 && p.rolls() > 0)
+        && defenderFirers.stream().noneMatch(p -> p.defense() > 0 && p.rolls() > 0);
+  }
+
+  /** A side's active general-combat units that have at least one non-infrastructure target. */
+  private Set<CombatProfile> firers(
+      final Map<Key, Integer> friendly, final Map<Key, Integer> enemy) {
+    final Set<CombatProfile> firers = new LinkedHashSet<>();
+    for (final CombatProfile profile : activeProfileCounts(friendly).keySet()) {
+      if (isDependent(profile) || profile.flags().contains(CombatFlag.IS_AA)) {
+        continue;
+      }
+      final boolean hasTarget =
+          relations
+              .eligibleTargets(profile, new Force(friendly), new Force(enemy))
+              .eligibleTargets()
+              .stream()
+              .anyMatch(target -> !isInfrastructure(target));
+      if (hasTarget) {
+        firers.add(profile);
+      }
+    }
+    return firers;
+  }
+
+  /**
    * Parks a side's {@link CombatFlag#NON_COMBATANT} infrastructure as WITHDRAWN once it has no AA
    * left to fire: out of the battle (never targeted, never fires, never keeps its side alive) but
    * still in the territory. Mirrors {@code MustFightBattle#removeNonCombatants}, which judges AA
@@ -700,13 +781,11 @@ public class ReferenceBattleSimulator implements BattleSimulator {
    * fire, cascading each swept transport's cargo. Mirrors {@code RemoveUnprotectedUnits}: gated on
    * the restriction, run DEFENSE then OFFENSE.
    *
-   * <p>Three v1 fidelity gaps, all unobserved in the harness: only the transport-only case is
+   * <p>Two v1 fidelity gaps, both unobserved in the harness: only the transport-only case is
    * modeled, not the broad unprotected-units removal ({@code
-   * RemoveUnprotectedUnits#checkUnprotectedUnits}); this runs after the round's retreat/submerge
-   * whereas the engine removes transports (Order 72) before retreat (Order 75); and the OFFENSE
-   * exemption keys on air alone whereas the engine also exempts an attacker with a retreat
-   * territory. The last two are masked because the harness has no movement routes, so no retreat
-   * territory exists.
+   * RemoveUnprotectedUnits#checkUnprotectedUnits}); and the OFFENSE exemption keys on air alone
+   * whereas the engine also exempts an attacker with a retreat territory, which the harness never
+   * has since it has no movement routes.
    */
   private void sweepUnescortedTransports(
       final BattleScenario scenario,

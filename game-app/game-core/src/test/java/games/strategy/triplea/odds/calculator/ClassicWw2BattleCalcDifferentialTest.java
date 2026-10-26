@@ -5,12 +5,15 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
 import static games.strategy.triplea.delegate.GameDataTestUtil.artillery;
 import static games.strategy.triplea.delegate.GameDataTestUtil.battleship;
 import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
+import static games.strategy.triplea.delegate.GameDataTestUtil.carrier;
 import static games.strategy.triplea.delegate.GameDataTestUtil.fighter;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.makeGameLowLuck;
 import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
+import static games.strategy.triplea.delegate.GameDataTestUtil.submarine;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
+import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
 import static games.strategy.triplea.delegate.GameDataTestUtil.unitType;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
@@ -141,6 +144,79 @@ class ClassicWw2BattleCalcDifferentialTest extends AbstractClientSettingTestCase
           germans(gameData),
           territory("Western Europe", gameData),
           attacking,
+          defending,
+          List.of());
+    }
+  }
+
+  /**
+   * v3 air cannot hit a sub without a destroyer, and a sub cannot hit air. Facing only air, a sub
+   * submerges at the start of the round without being asked ({@code SubmergeSubsVsOnlyAirStep});
+   * once neither side can hurt the other, the battle ends in a draw ({@code
+   * CheckGeneralBattleEnd#isStalemate}), before the next round could submerge anything.
+   */
+  @Nested
+  class V3SubsAgainstAir {
+    @Test
+    void subsThatSinkTheCarrierStalemateItsFightersIntoADraw() {
+      final GameData gameData = TestMapGameData.WW2V3_1941.getGameData();
+      final Collection<Unit> defending = carrier(gameData).create(1, germans(gameData));
+      defending.addAll(fighter(gameData).create(2, germans(gameData)));
+
+      assertIdenticalUnderAlwaysHits(
+          gameData,
+          russians(gameData),
+          germans(gameData),
+          territory("5 Sea Zone", gameData),
+          submarine(gameData).create(2, russians(gameData)),
+          defending,
+          List.of());
+    }
+
+    @Test
+    void aSubFacingOnlyAirSubmergesAndLeavesItsTransportsToThePlanes() {
+      final GameData gameData = TestMapGameData.WW2V3_1941.getGameData();
+      final Collection<Unit> defending = submarine(gameData).create(1, germans(gameData));
+      defending.addAll(transport(gameData).create(2, germans(gameData)));
+
+      assertIdenticalUnderAlwaysHits(
+          gameData,
+          russians(gameData),
+          germans(gameData),
+          territory("5 Sea Zone", gameData),
+          fighter(gameData).create(3, russians(gameData)),
+          defending,
+          List.of());
+    }
+
+    @Test
+    void seededSubsAgainstACarrierAndItsFightersMatchTheEngine() {
+      final GameData gameData = TestMapGameData.WW2V3_1942.getGameData();
+      final Collection<Unit> defending = carrier(gameData).create(1, germans(gameData));
+      defending.addAll(fighter(gameData).create(2, germans(gameData)));
+
+      assertSeededBattleAgreement(
+          gameData,
+          russians(gameData),
+          germans(gameData),
+          territory("5 Sea Zone", gameData),
+          submarine(gameData).create(2, russians(gameData)),
+          defending,
+          List.of());
+    }
+
+    @Test
+    void seededAirAgainstASubAndTransportsMatchesTheEngine() {
+      final GameData gameData = TestMapGameData.WW2V3_1942.getGameData();
+      final Collection<Unit> defending = submarine(gameData).create(1, germans(gameData));
+      defending.addAll(transport(gameData).create(2, germans(gameData)));
+
+      assertSeededBattleAgreement(
+          gameData,
+          russians(gameData),
+          germans(gameData),
+          territory("5 Sea Zone", gameData),
+          fighter(gameData).create(3, russians(gameData)),
           defending,
           List.of());
     }
