@@ -1,11 +1,14 @@
 package games.strategy.triplea.odds.calculator;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.aaGun;
 import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
 import static games.strategy.triplea.delegate.GameDataTestUtil.artillery;
 import static games.strategy.triplea.delegate.GameDataTestUtil.battleship;
+import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
 import static games.strategy.triplea.delegate.GameDataTestUtil.fighter;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
+import static games.strategy.triplea.delegate.GameDataTestUtil.makeGameLowLuck;
 import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.unitType;
@@ -114,6 +117,39 @@ class ClassicWw2BattleCalcDifferentialTest extends AbstractClientSettingTestCase
           defending,
           battleship(gameData).create(2, russians(gameData)));
     }
+  }
+
+  /**
+   * Under low luck the engine spreads AA hits over groups of like planes before any random pick
+   * ({@code AaCasualtySelector#getLowLuckAaCasualties}): every {@code diceSides / strength} planes
+   * of one type take one guaranteed hit, and only the leftover hits fall at random on the planes
+   * outside a full group.
+   */
+  @Nested
+  class RevisedLowLuckAa {
+    @Test
+    void guaranteedAaHitsFallOnFullGroupsAndTheExtraHitOnTheRest() {
+      final GameData gameData = revisedLowLuck();
+      final Collection<Unit> attacking = bomber(gameData).create(1, russians(gameData));
+      attacking.addAll(fighter(gameData).create(12, russians(gameData)));
+      final Collection<Unit> defending = infantry(gameData).create(2, germans(gameData));
+      defending.addAll(aaGun(gameData).create(1, germans(gameData)));
+
+      assertIdenticalUnderAlwaysHits(
+          gameData,
+          russians(gameData),
+          germans(gameData),
+          territory("Western Europe", gameData),
+          attacking,
+          defending,
+          List.of());
+    }
+  }
+
+  private static GameData revisedLowLuck() {
+    final GameData gameData = TestMapGameData.REVISED.getGameData();
+    makeGameLowLuck(gameData);
+    return gameData;
   }
 
   /**

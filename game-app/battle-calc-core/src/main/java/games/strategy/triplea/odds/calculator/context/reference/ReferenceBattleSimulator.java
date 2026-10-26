@@ -314,8 +314,8 @@ public class ReferenceBattleSimulator implements BattleSimulator {
   /**
    * AA casualties are random, not by casualty order (engine {@code
    * AaCasualtySelector#findRandomTargets}): each hit takes a distinct plane drawn the way the
-   * engine draws them over the targets in force order. Low-luck AA's guaranteed-hit grouping is
-   * approximated by the same random pick.
+   * engine draws them over the targets in force order. Under low luck the engine first spreads the
+   * guaranteed hits over groups of like planes ({@link #lowLuckAaTargets}).
    */
   private void applyAaHits(
       final int hits,
@@ -340,21 +340,10 @@ public class ReferenceBattleSimulator implements BattleSimulator {
             }
           }
         });
-    final List<CombatProfile> hit = new ArrayList<>();
-    if (hits >= planes.size()) {
-      hit.addAll(planes);
-    } else {
-      final Set<Integer> chosen = new LinkedHashSet<>();
-      int index = 0;
-      for (final int draw : rng.getRandom(planes.size(), hits, "AA casualties")) {
-        index = (index + draw) % planes.size();
-        while (chosen.contains(index)) {
-          index = (index + 1) % planes.size();
-        }
-        chosen.add(index);
-      }
-      chosen.forEach(i -> hit.add(planes.get(i)));
-    }
+    final List<CombatProfile> hit =
+        scenario.lowLuck()
+            ? lowLuckAaTargets(planes, hits, step, scenario.diceSides(), rng)
+            : randomTargets(planes, hits, rng);
     for (final CombatProfile plane : hit) {
       applyHits(
           1,
@@ -367,6 +356,96 @@ public class ReferenceBattleSimulator implements BattleSimulator {
           round,
           stats);
     }
+  }
+
+  /**
+   * Low-luck AA casualties (engine {@code AaCasualtySelector#getLowLuckAaCasualties} and {@code
+   * LowLuckTargetGroups}): with every gun at one strength that divides the dice sides, each full
+   * group of {@code diceSides / strength} like planes takes one guaranteed hit, and any further hit
+   * falls at random on the planes left over. When no full group forms, every hit is random.
+   */
+  private static List<CombatProfile> lowLuckAaTargets(
+      final List<CombatProfile> planes,
+      final int hits,
+      final FireStep step,
+      final int diceSides,
+      final RandomSource rng) {
+    final int groupSize = guaranteedHitGroupSize(step, planes.size(), hits, diceSides);
+    if (groupSize == 0) {
+      return randomTargets(planes, hits, rng);
+    }
+    final Map<CombatProfile, Integer> byProfile = new LinkedHashMap<>();
+    planes.forEach(plane -> byProfile.merge(plane, 1, Integer::sum));
+    final List<CombatProfile> guaranteed = new ArrayList<>();
+    final List<CombatProfile> remainder = new ArrayList<>();
+    byProfile.forEach(
+        (plane, count) -> {
+          for (int group = 0; group < count / groupSize; group++) {
+            guaranteed.add(plane);
+          }
+          for (int left = 0; left < count % groupSize; left++) {
+            remainder.add(plane);
+          }
+        });
+    if (guaranteed.isEmpty()) {
+      return randomTargets(planes, hits, rng);
+    }
+    if (hits < guaranteed.size()) {
+      return randomTargets(guaranteed, hits, rng);
+    }
+    final List<CombatProfile> hit = new ArrayList<>(guaranteed);
+    hit.addAll(randomTargets(remainder, hits - guaranteed.size(), rng));
+    return hit;
+  }
+
+  /**
+   * How many like planes guarantee one low-luck AA hit, or 0 when no such group size exists: the
+   * guns differ in strength, their strength does not divide the dice sides, or there are more hits
+   * than one per group could explain (engine {@code
+   * LowLuckTargetGroups#calculateGuaranteeLowLuckHitGroupSize}).
+   */
+  private static int guaranteedHitGroupSize(
+      final FireStep step, final int targets, final int hits, final int diceSides) {
+    final Set<Integer> strengths = new LinkedHashSet<>();
+    for (final CombatProfile gun : step.group().firing().keySet()) {
+      strengths.add(step.offense() ? gun.attack() : gun.defense());
+    }
+    if (strengths.size() != 1) {
+      return 0;
+    }
+    final int strength = strengths.iterator().next();
+    if (strength <= 0
+        || diceSides % strength != 0
+        || hits > Math.ceil((double) strength * targets / diceSides)) {
+      return 0;
+    }
+    return diceSides / strength;
+  }
+
+  /**
+   * {@code hits} distinct targets drawn the way the engine draws them ({@code
+   * AaCasualtySelector#findRandomTargets}), or all of them when there are hits enough.
+   */
+  private static List<CombatProfile> randomTargets(
+      final List<CombatProfile> targets, final int hits, final RandomSource rng) {
+    if (hits <= 0) {
+      return List.of();
+    }
+    if (hits >= targets.size()) {
+      return targets;
+    }
+    final Set<Integer> chosen = new LinkedHashSet<>();
+    int index = 0;
+    for (final int draw : rng.getRandom(targets.size(), hits, "AA casualties")) {
+      index = (index + draw) % targets.size();
+      while (chosen.contains(index)) {
+        index = (index + 1) % targets.size();
+      }
+      chosen.add(index);
+    }
+    final List<CombatProfile> hit = new ArrayList<>();
+    chosen.forEach(i -> hit.add(targets.get(i)));
+    return hit;
   }
 
   /** Rolls one group's hits against the live opposing force without applying them. */
