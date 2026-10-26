@@ -287,8 +287,13 @@ public class ReferenceBattleSimulator implements BattleSimulator {
       final int round,
       final ProfileStats stats,
       final RandomSource rng) {
+    final int hits = roll(step, scenario, attackers, defenders, round, rng);
+    if (step.phase() == Phase.AA) {
+      applyAaHits(hits, step, scenario, attackers, defenders, round, stats, rng);
+      return;
+    }
     applyHits(
-        roll(step, scenario, attackers, defenders, round, rng),
+        hits,
         step.offense(),
         step.group().target(),
         step.group().firingMode(),
@@ -297,6 +302,64 @@ public class ReferenceBattleSimulator implements BattleSimulator {
         defenders,
         round,
         stats);
+  }
+
+  /**
+   * AA casualties are random, not by casualty order (engine {@code
+   * AaCasualtySelector#findRandomTargets}): each hit takes a distinct plane drawn the way the
+   * engine draws them over the targets in force order. Low-luck AA's guaranteed-hit grouping is
+   * approximated by the same random pick.
+   */
+  private void applyAaHits(
+      final int hits,
+      final FireStep step,
+      final BattleScenario scenario,
+      final Map<Key, Integer> attackers,
+      final Map<Key, Integer> defenders,
+      final int round,
+      final ProfileStats stats,
+      final RandomSource rng) {
+    if (hits <= 0) {
+      return;
+    }
+    final Map<Key, Integer> targetForce = step.offense() ? defenders : attackers;
+    final List<CombatProfile> planes = new ArrayList<>();
+    targetForce.forEach(
+        (key, count) -> {
+          if (key.state() == Lifecycle.ACTIVE
+              && step.group().target().eligibleTargets().contains(key.profile())) {
+            for (int i = 0; i < count; i++) {
+              planes.add(key.profile());
+            }
+          }
+        });
+    final List<CombatProfile> hit = new ArrayList<>();
+    if (hits >= planes.size()) {
+      hit.addAll(planes);
+    } else {
+      final Set<Integer> chosen = new LinkedHashSet<>();
+      int index = 0;
+      for (final int draw : rng.getRandom(planes.size(), hits, "AA casualties")) {
+        index = (index + draw) % planes.size();
+        while (chosen.contains(index)) {
+          index = (index + 1) % planes.size();
+        }
+        chosen.add(index);
+      }
+      chosen.forEach(i -> hit.add(planes.get(i)));
+    }
+    for (final CombatProfile plane : hit) {
+      applyHits(
+          1,
+          step.offense(),
+          new TargetFilter(Set.of(plane)),
+          step.group().firingMode(),
+          scenario,
+          attackers,
+          defenders,
+          round,
+          stats);
+    }
   }
 
   /** Rolls one group's hits against the live opposing force without applying them. */

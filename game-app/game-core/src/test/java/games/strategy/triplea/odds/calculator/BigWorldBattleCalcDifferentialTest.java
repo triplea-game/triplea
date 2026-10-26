@@ -4,6 +4,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.aaGun;
 import static games.strategy.triplea.delegate.GameDataTestUtil.americans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
 import static games.strategy.triplea.delegate.GameDataTestUtil.battleship;
+import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
 import static games.strategy.triplea.delegate.GameDataTestUtil.carrier;
 import static games.strategy.triplea.delegate.GameDataTestUtil.destroyer;
 import static games.strategy.triplea.delegate.GameDataTestUtil.factory;
@@ -416,6 +417,62 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
           attacking,
           defending,
           List.of());
+    }
+  }
+
+  /**
+   * The engine picks AA casualties at random among the planes ({@code
+   * AaCasualtySelector#findRandomTargets}), not by the casualty order, so a gun is as likely to
+   * drop a bomber as a fighter.
+   */
+  @Nested
+  class AaCasualties {
+    @Test
+    void seededAaFireKillsBombersAsOftenAsTheEngine() {
+      final GameData gameData = bigWorld();
+      final Collection<Unit> attacking = fighter(gameData).create(4, russians(gameData));
+      attacking.addAll(bomber(gameData).create(4, russians(gameData)));
+      final Collection<Unit> defending = infantry(gameData).create(1, germans(gameData));
+      defending.addAll(aaGun(gameData).create(1, germans(gameData)));
+      final Territory france = territory("France", gameData);
+
+      final List<BattleResults> engine =
+          engine(
+                  gameData,
+                  russians(gameData),
+                  germans(gameData),
+                  france,
+                  attacking,
+                  defending,
+                  List.of(),
+                  NO_RETREAT,
+                  new PlainRandomSource(SEED),
+                  SEEDED_RUNS)
+              .getResults();
+      final List<BattleResult> bounded =
+          bounded(
+                  russians(gameData),
+                  germans(gameData),
+                  france,
+                  attacking,
+                  defending,
+                  List.of(),
+                  NO_RETREAT,
+                  new PlainRandomSource(SEED),
+                  SEEDED_RUNS)
+              .results();
+
+      final double engineBombers =
+          engine.stream()
+              .mapToInt(r -> countByType(r.getRemainingAttackingUnits()).getOrDefault("bomber", 0))
+              .average()
+              .orElseThrow();
+      final double boundedBombers =
+          bounded.stream()
+              .mapToInt(r -> countByType(r.attackerSurvivors()).getOrDefault("bomber", 0))
+              .average()
+              .orElseThrow();
+      assertThat(boundedBombers).as("mean surviving bombers").isCloseTo(engineBombers, within(0.1));
     }
   }
 
