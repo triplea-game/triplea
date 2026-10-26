@@ -126,14 +126,9 @@ public class GameDataBattleAdapter {
             support,
             seaBattle,
             rules.lhtrHeavyBombers()),
-        toForce(
-            bombarders,
-            attacker,
-            Side.OFFENSE,
-            effects,
-            support,
-            seaBattle,
-            rules.lhtrHeavyBombers()),
+        seaBattle
+            ? new Force(Map.of())
+            : toBombardForce(bombarders, attacker, effects, support, rules.lhtrHeavyBombers()),
         dependents(
             attackers,
             attacker,
@@ -195,6 +190,53 @@ public class GameDataBattleAdapter {
               lhtrHeavyBombers);
       final Key key = new Key(profile, Lifecycle.ACTIVE);
       counts.merge(key, 1, Integer::sum);
+    }
+    return new Force(Map.copyOf(counts));
+  }
+
+  /**
+   * The shore-bombarding ships, each baked to fire at its bombard strength ({@code
+   * UnitAttachment#getBombard}, which falls back to attack) plus the territory bonus, mirroring
+   * {@code BombardmentCombatValue}. Bombard happens only in a land battle, so the caller passes an
+   * empty force for a sea battle.
+   */
+  private static Force toBombardForce(
+      final Collection<Unit> units,
+      final GamePlayer player,
+      final Collection<TerritoryEffect> effects,
+      final SupportModel support,
+      final boolean lhtrHeavyBombers) {
+    final Map<Key, Integer> counts = new LinkedHashMap<>();
+    for (final Unit unit : units) {
+      final CombatProfile base =
+          profileFor(
+              unit.getType(),
+              player,
+              Side.OFFENSE,
+              effects,
+              unit.getHits(),
+              support,
+              false,
+              lhtrHeavyBombers);
+      final int bombard =
+          unit.getType().getUnitAttachment().getBombard()
+              + TerritoryEffectHelper.getTerritoryCombatBonus(unit.getType(), effects, false);
+      final CombatProfile profile =
+          new CombatProfile(
+              base.type(),
+              bombard,
+              base.defense(),
+              base.rolls(),
+              base.maxRoundsAa(),
+              base.maxAaAttacks(),
+              base.hitPoints(),
+              base.domain(),
+              base.damage(),
+              base.gives(),
+              base.receives(),
+              base.flags(),
+              base.next());
+      counts.merge(new Key(profile, Lifecycle.ACTIVE), 1, Integer::sum);
     }
     return new Force(Map.copyOf(counts));
   }

@@ -2,6 +2,7 @@ package games.strategy.triplea.odds.calculator;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.aaGun;
 import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
+import static games.strategy.triplea.delegate.GameDataTestUtil.battleship;
 import static games.strategy.triplea.delegate.GameDataTestUtil.factory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.fighter;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
@@ -128,6 +129,63 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
           attacking,
           defending,
           List.of());
+    }
+  }
+
+  /**
+   * Bombarding battleships fire once, in round 1, before general combat ({@code NavalBombardment});
+   * with Big World's default (no bombard return fire) their casualties are cleared before they can
+   * shoot back. Bombarders are not in the battle, so they are never hit and never survivors.
+   */
+  @Nested
+  class Bombard {
+    @Test
+    void aBombardingBattleshipKillsADefenderBeforeItCanFire() {
+      final GameData gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
+
+      assertIdenticalUnderAlwaysHits(
+          gameData,
+          russians(gameData),
+          germans(gameData),
+          territory("France", gameData),
+          infantry(gameData).create(2, russians(gameData)),
+          infantry(gameData).create(2, germans(gameData)),
+          battleship(gameData).create(1, russians(gameData)));
+    }
+
+    @Test
+    void bombardFiresOnlyInTheFirstRoundAndNeverHitsInfrastructure() {
+      final GameData gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
+      final Collection<Unit> defending = infantry(gameData).create(4, germans(gameData));
+      defending.addAll(factory(gameData).create(1, germans(gameData)));
+      defending.addAll(aaGun(gameData).create(1, germans(gameData)));
+
+      assertIdenticalUnderAlwaysHits(
+          gameData,
+          russians(gameData),
+          germans(gameData),
+          territory("France", gameData),
+          infantry(gameData).create(2, russians(gameData)),
+          defending,
+          battleship(gameData).create(1, russians(gameData)));
+    }
+
+    @Test
+    void seededAmphibiousAssaultWithBombardMatchesTheEngine() {
+      final GameData gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
+      final Collection<Unit> attacking = infantry(gameData).create(3, russians(gameData));
+      attacking.addAll(armour(gameData).create(1, russians(gameData)));
+      final Collection<Unit> defending = infantry(gameData).create(4, germans(gameData));
+      defending.addAll(factory(gameData).create(1, germans(gameData)));
+
+      assertSeededAgreement(
+          gameData,
+          russians(gameData),
+          germans(gameData),
+          territory("France", gameData),
+          attacking,
+          defending,
+          battleship(gameData).create(2, russians(gameData)));
     }
   }
 

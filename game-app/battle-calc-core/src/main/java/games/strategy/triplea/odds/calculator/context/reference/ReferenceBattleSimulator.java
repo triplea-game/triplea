@@ -23,6 +23,7 @@ import games.strategy.triplea.odds.calculator.context.model.RulesProfile;
 import games.strategy.triplea.odds.calculator.context.model.Side;
 import games.strategy.triplea.odds.calculator.context.model.SimulationResults;
 import games.strategy.triplea.odds.calculator.context.model.SupportRule;
+import games.strategy.triplea.odds.calculator.context.model.TargetFilter;
 import games.strategy.triplea.odds.calculator.context.seam.BattleSimulator;
 import games.strategy.triplea.odds.calculator.context.seam.CasualtyAllocator;
 import games.strategy.triplea.odds.calculator.context.seam.CasualtyOrder;
@@ -35,6 +36,7 @@ import games.strategy.triplea.odds.calculator.context.seam.SupportResolver;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -171,6 +173,9 @@ public class ReferenceBattleSimulator implements BattleSimulator {
     for (final FireStep step : aa) {
       fire(step, scenario, attackers, defenders, round, stats, rng);
     }
+    if (round == 1) {
+      bombard(scenario, attackers, defenders, stats, rng);
+    }
     // Engine RemoveNonCombatants runs after AA, before first strike: idle infrastructure leaves the
     // battle so no later fire can land on it.
     removeNonCombatants(attackers, round);
@@ -304,12 +309,76 @@ public class ReferenceBattleSimulator implements BattleSimulator {
         new FireContext(
             round, step.phase(), step.offense(), scenario.lowLuck(), scenario.diceSides());
     final int hits = roller.roll(firing, ctx, rng);
+    applyHits(
+        hits,
+        step.offense(),
+        step.group().target(),
+        step.group().firingMode(),
+        scenario,
+        attackers,
+        defenders,
+        round,
+        stats);
+  }
+
+  /**
+   * Round-1 shore bombardment (engine {@code NavalBombardment}): the bombarding ships roll once at
+   * their bombard strength before general combat and their casualties are removed at once, so a
+   * killed defender never fires back. The ships are not in the battle, so nothing targets them.
+   * Bombard may hit any non-infrastructure defender ({@code FiringGroupSplitterBombard}).
+   * Unmodeled, as no stock map needs them: {@code Naval Bombard Casualties Return Fire} and support
+   * received by a bombarding ship.
+   */
+  private void bombard(
+      final BattleScenario scenario,
+      final Map<Key, Integer> attackers,
+      final Map<Key, Integer> defenders,
+      final ProfileStats stats,
+      final RandomSource rng) {
+    final Map<CombatProfile, Integer> firing = activeProfileCounts(scenario.bombarding().counts());
+    if (firing.isEmpty()) {
+      return;
+    }
+    final Set<CombatProfile> targets = new LinkedHashSet<>();
+    for (final CombatProfile profile : activeProfileCounts(defenders).keySet()) {
+      if (!isInfrastructure(profile) && !isDependent(profile)) {
+        targets.add(profile);
+      }
+    }
+    if (targets.isEmpty()) {
+      return;
+    }
+    final FireContext ctx =
+        new FireContext(1, Phase.BOMBARD, true, scenario.lowLuck(), scenario.diceSides());
+    applyHits(
+        roller.roll(firing, ctx, rng),
+        true,
+        new TargetFilter(targets),
+        FiringMode.IMMEDIATE,
+        scenario,
+        attackers,
+        defenders,
+        1,
+        stats);
+  }
+
+  /** Applies {@code hits} from the given side to the opposing working map. */
+  private void applyHits(
+      final int hits,
+      final boolean offense,
+      final TargetFilter target,
+      final FiringMode firingMode,
+      final BattleScenario scenario,
+      final Map<Key, Integer> attackers,
+      final Map<Key, Integer> defenders,
+      final int round,
+      final ProfileStats stats) {
     if (hits == 0) {
       return;
     }
-    final Side targetSide = step.offense() ? Side.DEFENSE : Side.OFFENSE;
-    final CasualtyOrder order =
-        step.offense() ? scenario.defenderOrder() : scenario.attackerOrder();
+    final Map<Key, Integer> targetForce = offense ? defenders : attackers;
+    final Side targetSide = offense ? Side.DEFENSE : Side.OFFENSE;
+    final CasualtyOrder order = offense ? scenario.defenderOrder() : scenario.attackerOrder();
     // keep-one-land gating (amphibious/retreat-aware) is a deferred fidelity item; a bare false
     // never withholds the last land unit, which is correct wherever no non-land alternative exists.
     final Constraints constraints =
@@ -323,7 +392,7 @@ public class ReferenceBattleSimulator implements BattleSimulator {
             stats.cost(),
             marginalPowerLoss(
                 activeProfileCounts(targetForce),
-                new Force(step.offense() ? attackers : defenders),
+                new Force(offense ? attackers : defenders),
                 targetSide,
                 scenario.support(),
                 round,
@@ -332,11 +401,11 @@ public class ReferenceBattleSimulator implements BattleSimulator {
         allocator.allocate(
             new Force(targetForce),
             hits,
-            step.group().target(),
+            target,
             scenario.dependents(),
             constraints,
             order,
-            step.group().firingMode(),
+            firingMode,
             targetSide,
             fireStats);
     targetForce.clear();
