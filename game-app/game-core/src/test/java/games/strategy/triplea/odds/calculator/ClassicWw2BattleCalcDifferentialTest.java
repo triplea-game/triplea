@@ -6,6 +6,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.artillery;
 import static games.strategy.triplea.delegate.GameDataTestUtil.battleship;
 import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
 import static games.strategy.triplea.delegate.GameDataTestUtil.carrier;
+import static games.strategy.triplea.delegate.GameDataTestUtil.destroyer;
 import static games.strategy.triplea.delegate.GameDataTestUtil.fighter;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
@@ -264,6 +265,37 @@ class ClassicWw2BattleCalcDifferentialTest extends AbstractClientSettingTestCase
           defending,
           List.of());
     }
+  }
+
+  /**
+   * A v3 bomber has a transport capacity (for paratroopers) but carries nothing in a sea battle, so
+   * losing one sinks no cargo: land units go down only with the ship they ride in.
+   */
+  @Nested
+  class V3BomberCapacity {
+    @Test
+    void aLostBomberTakesNoCargoWithIt() {
+      final GameData gameData = TestMapGameData.WW2V3_1941.getGameData();
+      final List<Unit> transports = transport(gameData).create(1, russians(gameData));
+      final Collection<Unit> attacking = battleship(gameData).create(1, russians(gameData));
+      attacking.addAll(bomber(gameData).create(1, russians(gameData)));
+      attacking.addAll(transports);
+      attacking.addAll(load(transports.get(0), infantry(gameData).create(2, russians(gameData))));
+
+      assertIdenticalUnderAlwaysHits(
+          gameData,
+          russians(gameData),
+          germans(gameData),
+          territory("5 Sea Zone", gameData),
+          attacking,
+          destroyer(gameData).create(2, germans(gameData)),
+          List.of());
+    }
+  }
+
+  private static Collection<Unit> load(final Unit carrier, final Collection<Unit> cargo) {
+    cargo.forEach(unit -> unit.setTransportedBy(carrier));
+    return cargo;
   }
 
   private static GameData revisedLowLuck() {

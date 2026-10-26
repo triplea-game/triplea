@@ -246,8 +246,15 @@ public class GameDataBattleAdapter {
   }
 
   private static boolean anyCarrier(final Collection<Unit> units) {
-    return units.stream()
-        .anyMatch(unit -> unit.getType().getUnitAttachment().getTransportCapacity() > 0);
+    return units.stream().anyMatch(unit -> isSeaCarrier(unit.getType().getUnitAttachment()));
+  }
+
+  /**
+   * A ship that carries land units. An air transport's capacity (a v3 bomber's, for paratroopers)
+   * carries nothing in a sea battle, so it never takes cargo down with it.
+   */
+  private static boolean isSeaCarrier(final UnitAttachment ua) {
+    return ua.isSea() && ua.getTransportCapacity() > 0;
   }
 
   /**
@@ -516,7 +523,7 @@ public class GameDataBattleAdapter {
     }
     final Set<UnitType> carrierTypes = new LinkedHashSet<>();
     for (final Unit unit : units) {
-      if (unit.getType().getUnitAttachment().getTransportCapacity() > 0) {
+      if (isSeaCarrier(unit.getType().getUnitAttachment())) {
         carrierTypes.add(unit.getType());
       }
     }
