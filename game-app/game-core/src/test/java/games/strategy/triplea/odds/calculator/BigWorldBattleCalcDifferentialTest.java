@@ -3,6 +3,7 @@ package games.strategy.triplea.odds.calculator;
 import static games.strategy.triplea.delegate.GameDataTestUtil.aaGun;
 import static games.strategy.triplea.delegate.GameDataTestUtil.americans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
+import static games.strategy.triplea.delegate.GameDataTestUtil.artillery;
 import static games.strategy.triplea.delegate.GameDataTestUtil.battleship;
 import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
 import static games.strategy.triplea.delegate.GameDataTestUtil.carrier;
@@ -27,6 +28,7 @@ import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.battle.BattleResults;
+import games.strategy.triplea.odds.calculator.adapter.BoundedContextAggregateResults;
 import games.strategy.triplea.odds.calculator.adapter.EngineRandomSource;
 import games.strategy.triplea.odds.calculator.adapter.GameDataBattleAdapter;
 import games.strategy.triplea.odds.calculator.context.model.BattleOptions;
@@ -303,11 +305,6 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
           defending,
           List.of());
     }
-
-    private static Collection<Unit> load(final Unit carrier, final Collection<Unit> cargo) {
-      cargo.forEach(unit -> unit.setTransportedBy(carrier));
-      return cargo;
-    }
   }
 
   /**
@@ -477,6 +474,94 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
   }
 
   /**
+   * Whole Big World battles of the size ProAI weighs: a supported land assault with air, AA, a
+   * factory and bombarding battleships, and a fleet action with two-hit battleships, carriers, subs
+   * on both sides and loaded transports. Win% and the TUV swing ProAI scores must track the engine.
+   */
+  @Nested
+  class FullBattles {
+    @Test
+    void seededAmphibiousAssaultOnAnIndustrialTerritoryMatchesTheEngine() {
+      final GameData gameData = bigWorld();
+      final Collection<Unit> attacking = infantry(gameData).create(6, russians(gameData));
+      attacking.addAll(artillery(gameData).create(3, russians(gameData)));
+      attacking.addAll(armour(gameData).create(3, russians(gameData)));
+      attacking.addAll(fighter(gameData).create(3, russians(gameData)));
+      attacking.addAll(bomber(gameData).create(1, russians(gameData)));
+      final Collection<Unit> defending = infantry(gameData).create(8, germans(gameData));
+      defending.addAll(artillery(gameData).create(2, germans(gameData)));
+      defending.addAll(armour(gameData).create(2, germans(gameData)));
+      defending.addAll(fighter(gameData).create(2, germans(gameData)));
+      defending.addAll(aaGun(gameData).create(1, germans(gameData)));
+      defending.addAll(factory(gameData).create(1, germans(gameData)));
+
+      assertSeededBattleAgreement(
+          gameData,
+          russians(gameData),
+          germans(gameData),
+          territory("France", gameData),
+          attacking,
+          defending,
+          battleship(gameData).create(2, russians(gameData)));
+    }
+
+    @Test
+    void seededFleetActionMatchesTheEngine() {
+      final GameData gameData = bigWorld();
+      final Collection<Unit> attacking = battleship(gameData).create(2, americans(gameData));
+      attacking.addAll(destroyer(gameData).create(2, americans(gameData)));
+      attacking.addAll(carrier(gameData).create(1, americans(gameData)));
+      attacking.addAll(fighter(gameData).create(2, americans(gameData)));
+      attacking.addAll(submarine(gameData).create(2, americans(gameData)));
+      attacking.addAll(bomber(gameData).create(1, americans(gameData)));
+      final List<Unit> transports = transport(gameData).create(2, germans(gameData));
+      final Collection<Unit> defending = new ArrayList<>(transports);
+      for (final Unit carrier : transports) {
+        defending.addAll(load(carrier, infantry(gameData).create(1, germans(gameData))));
+        defending.addAll(load(carrier, artillery(gameData).create(1, germans(gameData))));
+      }
+      defending.addAll(battleship(gameData).create(1, germans(gameData)));
+      defending.addAll(destroyer(gameData).create(1, germans(gameData)));
+      defending.addAll(submarine(gameData).create(4, germans(gameData)));
+      defending.addAll(carrier(gameData).create(1, germans(gameData)));
+      defending.addAll(fighter(gameData).create(2, germans(gameData)));
+
+      assertSeededBattleAgreement(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          territory("SZ 17 English Channel", gameData),
+          attacking,
+          defending,
+          List.of());
+    }
+
+    @Test
+    void seededArmourAndAirBreakthroughMatchesTheEngine() {
+      final GameData gameData = bigWorld();
+      final Collection<Unit> attacking = infantry(gameData).create(2, germans(gameData));
+      attacking.addAll(artillery(gameData).create(2, germans(gameData)));
+      attacking.addAll(armour(gameData).create(5, germans(gameData)));
+      attacking.addAll(fighter(gameData).create(2, germans(gameData)));
+      attacking.addAll(bomber(gameData).create(2, germans(gameData)));
+      final Collection<Unit> defending = infantry(gameData).create(7, russians(gameData));
+      defending.addAll(artillery(gameData).create(1, russians(gameData)));
+      defending.addAll(armour(gameData).create(2, russians(gameData)));
+      defending.addAll(fighter(gameData).create(1, russians(gameData)));
+      defending.addAll(aaGun(gameData).create(1, russians(gameData)));
+
+      assertSeededBattleAgreement(
+          gameData,
+          germans(gameData),
+          russians(gameData),
+          territory("France", gameData),
+          attacking,
+          defending,
+          List.of());
+    }
+  }
+
+  /**
    * Big World as a running game sees it: the map sets "Two hit battleship", which the
    * initialization delegate (not run for a bare fixture) applies by giving battleships 2 HP.
    */
@@ -536,6 +621,57 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
         .as("defender survivors")
         .isEqualTo(countByType(engine.getRemainingDefendingUnits()));
     assertThat(bounded.outcome()).as("outcome").isEqualTo(outcomeOf(engine));
+  }
+
+  private static Collection<Unit> load(final Unit carrier, final Collection<Unit> cargo) {
+    cargo.forEach(unit -> unit.setTransportedBy(carrier));
+    return cargo;
+  }
+
+  /**
+   * {@link #assertSeededAgreement} plus the mean TUV swing ProAI scores attacks by, within 2.5 TUV
+   * or 10% of the engine's, whichever is larger (sampling spread at 2000 runs).
+   */
+  private static void assertSeededBattleAgreement(
+      final GameData gameData,
+      final GamePlayer attacker,
+      final GamePlayer defender,
+      final Territory location,
+      final Collection<Unit> attacking,
+      final Collection<Unit> defending,
+      final Collection<Unit> bombarding) {
+    assertSeededAgreement(gameData, attacker, defender, location, attacking, defending, bombarding);
+    final double engineSwing =
+        engine(
+                gameData,
+                attacker,
+                defender,
+                location,
+                attacking,
+                defending,
+                bombarding,
+                NO_RETREAT,
+                new PlainRandomSource(SEED),
+                SEEDED_RUNS)
+            .getAverageTuvSwing(attacker, attacking, defender, defending, gameData);
+    final double boundedSwing =
+        new BoundedContextAggregateResults(
+                bounded(
+                    attacker,
+                    defender,
+                    location,
+                    attacking,
+                    defending,
+                    bombarding,
+                    NO_RETREAT,
+                    new PlainRandomSource(SEED),
+                    SEEDED_RUNS),
+                attacking,
+                defending)
+            .getAverageTuvSwing(attacker, attacking, defender, defending, gameData);
+    assertThat(boundedSwing)
+        .as("mean TUV swing")
+        .isCloseTo(engineSwing, within(Math.max(2.5, Math.abs(engineSwing) * 0.1)));
   }
 
   private static void assertSeededAgreement(
