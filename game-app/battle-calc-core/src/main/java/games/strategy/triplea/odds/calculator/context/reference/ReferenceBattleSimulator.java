@@ -129,6 +129,12 @@ public class ReferenceBattleSimulator implements BattleSimulator {
     }
     final Outcome outcome = outcome(attackers, defenders);
     captureNonCombatants(outcome, attackers, defenders);
+    attackers
+        .keySet()
+        .removeIf(
+            key ->
+                key.state() == Lifecycle.ACTIVE
+                    && key.profile().flags().contains(CombatFlag.ALLIED_ATTACKER));
     return new BattleResult(
         new Force(new LinkedHashMap<>(attackers)),
         new Force(new LinkedHashMap<>(defenders)),
@@ -664,7 +670,9 @@ public class ReferenceBattleSimulator implements BattleSimulator {
       final Map<Key, Integer> friendly, final Map<Key, Integer> enemy) {
     final Set<CombatProfile> firers = new LinkedHashSet<>();
     for (final CombatProfile profile : activeProfileCounts(friendly).keySet()) {
-      if (isDependent(profile) || profile.flags().contains(CombatFlag.IS_AA)) {
+      if (isDependent(profile)
+          || profile.flags().contains(CombatFlag.IS_AA)
+          || profile.flags().contains(CombatFlag.CANNOT_FIRE)) {
         continue;
       }
       final boolean hasTarget =

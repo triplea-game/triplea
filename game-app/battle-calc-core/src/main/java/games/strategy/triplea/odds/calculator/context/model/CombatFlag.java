@@ -40,5 +40,13 @@ public enum CombatFlag {
   // AA gun). The engine's RemoveNonCombatants takes it out of the battle once it has no AA left to
   // fire, so it is never a main-combat casualty; it stays in the territory and is captured when
   // the attacker takes it with a non-air unit.
-  NON_COMBATANT
+  NON_COMBATANT,
+  // An attacking unit the attacker does not own. The engine never reports one as a surviving
+  // attacker unless it retreated (MustFightBattle#getRemainingAttackingUnits counts the attacker's
+  // own units only), so the TUV swing books it as lost.
+  ALLIED_ATTACKER,
+  // Left out of every first-strike and general firing group while still a target that ranks as a
+  // casualty by its own strength: an allied attacker unless the map sets 'Allied Air Independent'
+  // (FiringGroupSplitterGeneral).
+  CANNOT_FIRE
 }

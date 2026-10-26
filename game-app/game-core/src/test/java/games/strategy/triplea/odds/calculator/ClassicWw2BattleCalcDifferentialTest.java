@@ -6,6 +6,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
 import static games.strategy.triplea.delegate.GameDataTestUtil.artillery;
 import static games.strategy.triplea.delegate.GameDataTestUtil.battleship;
 import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
+import static games.strategy.triplea.delegate.GameDataTestUtil.british;
 import static games.strategy.triplea.delegate.GameDataTestUtil.carrier;
 import static games.strategy.triplea.delegate.GameDataTestUtil.destroyer;
 import static games.strategy.triplea.delegate.GameDataTestUtil.factory;
@@ -293,6 +294,49 @@ class ClassicWw2BattleCalcDifferentialTest extends AbstractClientSettingTestCase
           territory("5 Sea Zone", gameData),
           attacking,
           destroyer(gameData).create(2, germans(gameData)),
+          List.of());
+    }
+  }
+
+  /**
+   * Neither map sets {@code Allied Air Independent}, so an attacking unit the attacker does not own
+   * never fires ({@code FiringGroupSplitterGeneral}), though it can still be hit.
+   */
+  @Nested
+  class AlliedAttackers {
+    @Test
+    void alliedFightersInTheAttackHoldTheirFire() {
+      final GameData gameData = revisedLowLuck();
+      final Collection<Unit> attacking = infantry(gameData).create(2, russians(gameData));
+      attacking.addAll(fighter(gameData).create(2, british(gameData)));
+
+      assertIdenticalUnderAlwaysHits(
+          gameData,
+          russians(gameData),
+          germans(gameData),
+          territory("Western Europe", gameData),
+          attacking,
+          infantry(gameData).create(3, germans(gameData)),
+          List.of());
+    }
+
+    @Test
+    void seededAttackWithAlliedAirMatchesTheEngine() {
+      final GameData gameData = TestMapGameData.WW2V3_1942.getGameData();
+      final Collection<Unit> attacking = infantry(gameData).create(4, russians(gameData));
+      attacking.addAll(armour(gameData).create(2, russians(gameData)));
+      attacking.addAll(fighter(gameData).create(2, british(gameData)));
+      attacking.addAll(bomber(gameData).create(1, americans(gameData)));
+      final Collection<Unit> defending = infantry(gameData).create(5, germans(gameData));
+      defending.addAll(aaGun(gameData).create(1, germans(gameData)));
+
+      assertSeededBattleAgreement(
+          gameData,
+          russians(gameData),
+          germans(gameData),
+          territory("France", gameData),
+          attacking,
+          defending,
           List.of());
     }
   }

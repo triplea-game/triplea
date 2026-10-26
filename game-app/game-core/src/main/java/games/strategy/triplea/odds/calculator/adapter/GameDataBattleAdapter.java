@@ -110,6 +110,7 @@ public class GameDataBattleAdapter {
     final List<Unit> bombarders = List.copyOf(bombarding);
     final SupportModel support = supportModel(data, attacker, defender);
     final boolean seaBattle = location.isWater();
+    final boolean alliedAirIndependent = Properties.getAlliedAirIndependent(data.getProperties());
     return new BattleScenario(
         toForce(
             attackers,
@@ -118,7 +119,9 @@ public class GameDataBattleAdapter {
             effects,
             support,
             seaBattle,
-            rules.lhtrHeavyBombers()),
+            rules.lhtrHeavyBombers(),
+            true,
+            alliedAirIndependent),
         toForce(
             defenders,
             defender,
@@ -126,7 +129,9 @@ public class GameDataBattleAdapter {
             effects,
             support,
             seaBattle,
-            rules.lhtrHeavyBombers()),
+            rules.lhtrHeavyBombers(),
+            false,
+            true),
         seaBattle
             ? new Force(Map.of())
             : toBombardForce(bombarders, attacker, effects, support, rules.lhtrHeavyBombers()),
@@ -168,6 +173,10 @@ public class GameDataBattleAdapter {
    * <p>Buckets are ordered by each unit type's last appearance in {@code units}, last first: the
    * casualty order breaks a full tie by taking the first bucket, matching the engine's stable sort
    * and reversal in {@code CasualtyOrderOfLosses}, which takes the last-listed unit first.
+   *
+   * <p>On the attacking side a combatant {@code player} does not own is marked {@link
+   * CombatFlag#ALLIED_ATTACKER}, and also {@link CombatFlag#CANNOT_FIRE} unless {@code
+   * alliedAirIndependent}.
    */
   private static Force toForce(
       final Collection<Unit> units,
@@ -176,13 +185,15 @@ public class GameDataBattleAdapter {
       final Collection<TerritoryEffect> effects,
       final SupportModel support,
       final boolean seaBattle,
-      final boolean lhtrHeavyBombers) {
+      final boolean lhtrHeavyBombers,
+      final boolean attacking,
+      final boolean alliedAirIndependent) {
     final boolean hasCarrier = seaBattle && anyCarrier(units);
     final Map<Key, Integer> counts = new LinkedHashMap<>();
     for (final Unit unit : List.copyOf(units).reversed()) {
       final boolean dependent =
           hasCarrier && domainOf(unit.getType().getUnitAttachment()) == Domain.LAND;
-      final CombatProfile profile =
+      final CombatProfile baked =
           profileFor(
               unit.getType(),
               player,
@@ -192,6 +203,19 @@ public class GameDataBattleAdapter {
               support,
               dependent,
               lhtrHeavyBombers);
+      final boolean allied =
+          attacking
+              && !unit.isOwnedBy(player)
+              && !baked.flags().contains(CombatFlag.IS_DEPENDENT)
+              && !baked.flags().contains(CombatFlag.IS_TRANSPORT);
+      final CombatProfile profile =
+          allied
+              ? withFlags(
+                  baked,
+                  alliedAirIndependent
+                      ? EnumSet.of(CombatFlag.ALLIED_ATTACKER)
+                      : EnumSet.of(CombatFlag.ALLIED_ATTACKER, CombatFlag.CANNOT_FIRE))
+              : baked;
       final Key key = new Key(profile, Lifecycle.ACTIVE);
       counts.merge(key, 1, Integer::sum);
     }
@@ -243,6 +267,27 @@ public class GameDataBattleAdapter {
       counts.merge(new Key(profile, Lifecycle.ACTIVE), 1, Integer::sum);
     }
     return new Force(Map.copyOf(counts));
+  }
+
+  /** The same profile, and every damaged successor, with {@code added} flags set. */
+  private static CombatProfile withFlags(
+      final CombatProfile profile, final EnumSet<CombatFlag> added) {
+    final EnumSet<CombatFlag> flags = EnumSet.copyOf(profile.flags());
+    flags.addAll(added);
+    return new CombatProfile(
+        profile.type(),
+        profile.attack(),
+        profile.defense(),
+        profile.rolls(),
+        profile.maxRoundsAa(),
+        profile.maxAaAttacks(),
+        profile.hitPoints(),
+        profile.domain(),
+        profile.damage(),
+        profile.gives(),
+        profile.receives(),
+        flags,
+        profile.next() == null ? null : withFlags(profile.next(), added));
   }
 
   private static boolean anyCarrier(final Collection<Unit> units) {

@@ -69,6 +69,8 @@ public class ReferenceRollGroupResolver implements RollGroupResolver {
         if (profile.maxRoundsAa() < 0 || round <= profile.maxRoundsAa()) {
           aa.put(profile, entry.getValue());
         }
+      } else if (profile.flags().contains(CombatFlag.CANNOT_FIRE)) {
+        continue;
       } else if (profile.flags().contains(CombatFlag.FIRST_STRIKE) && !firstStrikeNegated) {
         firstStrike.put(profile, entry.getValue());
       } else if (profile.flags().contains(CombatFlag.FIRST_STRIKE) && rules.ww2v2()) {
