@@ -1,12 +1,14 @@
 package games.strategy.triplea.odds.calculator;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.aaGun;
+import static games.strategy.triplea.delegate.GameDataTestUtil.americans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
 import static games.strategy.triplea.delegate.GameDataTestUtil.artillery;
 import static games.strategy.triplea.delegate.GameDataTestUtil.battleship;
 import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
 import static games.strategy.triplea.delegate.GameDataTestUtil.carrier;
 import static games.strategy.triplea.delegate.GameDataTestUtil.destroyer;
+import static games.strategy.triplea.delegate.GameDataTestUtil.factory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.fighter;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
@@ -60,6 +62,8 @@ class ClassicWw2BattleCalcDifferentialTest extends AbstractClientSettingTestCase
   private static final long SEED = 20261026L;
   private static final int SEEDED_RUNS = 2000;
   private static final BattleOptions NO_RETREAT = new BattleOptions(false, List.of(), List.of());
+  private static final BattleOptions RETREAT_WHEN_ONLY_AIR_LEFT =
+      new BattleOptions(true, List.of(), List.of());
 
   /**
    * v3 sets {@code Naval Bombard Casualties Return Fire}: a defender killed by bombardment is not
@@ -293,6 +297,205 @@ class ClassicWw2BattleCalcDifferentialTest extends AbstractClientSettingTestCase
     }
   }
 
+  /**
+   * Whole Revised battles under low luck, as the AI harness plays the map, at the size ProAI
+   * weighs: a supported amphibious assault on an industrial territory with air, AA and bombarding
+   * battleships; an armour-and-air breakthrough; a strafe that pulls out when only air is left; and
+   * a fleet action with two-hit battleships, carriers, subs on both sides and loaded transports.
+   */
+  @Nested
+  class RevisedLowLuckFullBattles {
+    @Test
+    void seededAmphibiousAssaultOnAnIndustrialTerritoryMatchesTheEngine() {
+      final GameData gameData = revisedLowLuck();
+      final Collection<Unit> attacking = infantry(gameData).create(6, russians(gameData));
+      attacking.addAll(artillery(gameData).create(3, russians(gameData)));
+      attacking.addAll(armour(gameData).create(3, russians(gameData)));
+      attacking.addAll(fighter(gameData).create(3, russians(gameData)));
+      attacking.addAll(bomber(gameData).create(1, russians(gameData)));
+      final Collection<Unit> defending = infantry(gameData).create(9, germans(gameData));
+      defending.addAll(artillery(gameData).create(2, germans(gameData)));
+      defending.addAll(armour(gameData).create(2, germans(gameData)));
+      defending.addAll(fighter(gameData).create(2, germans(gameData)));
+      defending.addAll(aaGun(gameData).create(1, germans(gameData)));
+      defending.addAll(factory(gameData).create(1, germans(gameData)));
+
+      assertSeededBattleAgreement(
+          gameData,
+          russians(gameData),
+          germans(gameData),
+          territory("Western Europe", gameData),
+          attacking,
+          defending,
+          battleship(gameData).create(2, russians(gameData)));
+    }
+
+    @Test
+    void seededArmourAndAirBreakthroughMatchesTheEngine() {
+      final GameData gameData = revisedLowLuck();
+      final Collection<Unit> attacking = infantry(gameData).create(2, germans(gameData));
+      attacking.addAll(artillery(gameData).create(2, germans(gameData)));
+      attacking.addAll(armour(gameData).create(5, germans(gameData)));
+      attacking.addAll(fighter(gameData).create(6, germans(gameData)));
+      attacking.addAll(bomber(gameData).create(2, germans(gameData)));
+      final Collection<Unit> defending = infantry(gameData).create(10, russians(gameData));
+      defending.addAll(artillery(gameData).create(1, russians(gameData)));
+      defending.addAll(armour(gameData).create(3, russians(gameData)));
+      defending.addAll(fighter(gameData).create(2, russians(gameData)));
+      defending.addAll(aaGun(gameData).create(1, russians(gameData)));
+
+      assertSeededBattleAgreement(
+          gameData,
+          germans(gameData),
+          russians(gameData),
+          territory("Karelia S.S.R.", gameData),
+          attacking,
+          defending,
+          List.of());
+    }
+
+    @Test
+    void seededStrafeThatRetreatsWhenOnlyAirIsLeftMatchesTheEngine() {
+      final GameData gameData = revisedLowLuck();
+      final Collection<Unit> attacking = infantry(gameData).create(4, russians(gameData));
+      attacking.addAll(armour(gameData).create(3, russians(gameData)));
+      attacking.addAll(fighter(gameData).create(4, russians(gameData)));
+      attacking.addAll(bomber(gameData).create(2, russians(gameData)));
+      final Collection<Unit> defending = infantry(gameData).create(9, germans(gameData));
+      defending.addAll(artillery(gameData).create(1, germans(gameData)));
+      defending.addAll(fighter(gameData).create(1, germans(gameData)));
+      defending.addAll(aaGun(gameData).create(1, germans(gameData)));
+
+      assertSeededBattleAgreement(
+          gameData,
+          russians(gameData),
+          germans(gameData),
+          territory("Western Europe", gameData),
+          attacking,
+          defending,
+          List.of(),
+          RETREAT_WHEN_ONLY_AIR_LEFT);
+    }
+
+    @Test
+    void seededFleetActionMatchesTheEngine() {
+      final GameData gameData = revisedLowLuck();
+      final Collection<Unit> attacking = battleship(gameData).create(2, americans(gameData));
+      attacking.addAll(destroyer(gameData).create(2, americans(gameData)));
+      attacking.addAll(carrier(gameData).create(1, americans(gameData)));
+      attacking.addAll(fighter(gameData).create(2, americans(gameData)));
+      attacking.addAll(submarine(gameData).create(2, americans(gameData)));
+      attacking.addAll(bomber(gameData).create(1, americans(gameData)));
+      final List<Unit> transports = transport(gameData).create(2, germans(gameData));
+      final Collection<Unit> defending = new ArrayList<>(transports);
+      for (final Unit carrier : transports) {
+        defending.addAll(load(carrier, infantry(gameData).create(1, germans(gameData))));
+        defending.addAll(load(carrier, artillery(gameData).create(1, germans(gameData))));
+      }
+      defending.addAll(battleship(gameData).create(1, germans(gameData)));
+      defending.addAll(destroyer(gameData).create(1, germans(gameData)));
+      defending.addAll(submarine(gameData).create(4, germans(gameData)));
+      defending.addAll(carrier(gameData).create(1, germans(gameData)));
+      defending.addAll(fighter(gameData).create(2, germans(gameData)));
+
+      assertSeededBattleAgreement(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          territory("7 Sea Zone", gameData),
+          attacking,
+          defending,
+          List.of());
+    }
+  }
+
+  /**
+   * Whole v3 battles at the size ProAI weighs, with the map's dice: an amphibious assault on an
+   * industrial territory under battleship and cruiser bombardment whose casualties return fire, and
+   * a fleet action with restricted transports, cruisers, air that cannot reach subs without a
+   * destroyer, and subs on both sides.
+   */
+  @Nested
+  class V3FullBattles {
+    @Test
+    void seededAmphibiousAssaultOnAnIndustrialTerritoryMatchesTheEngine() {
+      final GameData gameData = TestMapGameData.WW2V3_1941.getGameData();
+      final Collection<Unit> attacking = infantry(gameData).create(6, russians(gameData));
+      attacking.addAll(artillery(gameData).create(3, russians(gameData)));
+      attacking.addAll(armour(gameData).create(3, russians(gameData)));
+      attacking.addAll(fighter(gameData).create(3, russians(gameData)));
+      attacking.addAll(bomber(gameData).create(1, russians(gameData)));
+      final Collection<Unit> defending = infantry(gameData).create(9, germans(gameData));
+      defending.addAll(artillery(gameData).create(2, germans(gameData)));
+      defending.addAll(armour(gameData).create(2, germans(gameData)));
+      defending.addAll(fighter(gameData).create(2, germans(gameData)));
+      defending.addAll(aaGun(gameData).create(1, germans(gameData)));
+      defending.addAll(factory(gameData).create(1, germans(gameData)));
+      final Collection<Unit> bombarding = battleship(gameData).create(1, russians(gameData));
+      bombarding.addAll(unitType("cruiser", gameData).create(2, russians(gameData)));
+
+      assertSeededBattleAgreement(
+          gameData,
+          russians(gameData),
+          germans(gameData),
+          territory("France", gameData),
+          attacking,
+          defending,
+          bombarding);
+    }
+
+    @Test
+    void seededFleetActionMatchesTheEngine() {
+      final GameData gameData = TestMapGameData.WW2V3_1942.getGameData();
+      final Collection<Unit> attacking = battleship(gameData).create(1, americans(gameData));
+      attacking.addAll(unitType("cruiser", gameData).create(2, americans(gameData)));
+      attacking.addAll(carrier(gameData).create(1, americans(gameData)));
+      attacking.addAll(fighter(gameData).create(2, americans(gameData)));
+      attacking.addAll(bomber(gameData).create(2, americans(gameData)));
+      attacking.addAll(submarine(gameData).create(2, americans(gameData)));
+      final List<Unit> transports = transport(gameData).create(3, germans(gameData));
+      final Collection<Unit> defending = new ArrayList<>(transports);
+      for (final Unit carrier : transports) {
+        defending.addAll(load(carrier, infantry(gameData).create(1, germans(gameData))));
+        defending.addAll(load(carrier, armour(gameData).create(1, germans(gameData))));
+      }
+      defending.addAll(battleship(gameData).create(1, germans(gameData)));
+      defending.addAll(destroyer(gameData).create(1, germans(gameData)));
+      defending.addAll(submarine(gameData).create(3, germans(gameData)));
+      defending.addAll(carrier(gameData).create(1, germans(gameData)));
+      defending.addAll(fighter(gameData).create(2, germans(gameData)));
+
+      assertSeededBattleAgreement(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          territory("5 Sea Zone", gameData),
+          attacking,
+          defending,
+          List.of());
+    }
+
+    @Test
+    void seededAirAndSubsAgainstAnUnescortedSubFleetMatchesTheEngine() {
+      final GameData gameData = TestMapGameData.WW2V3_1941.getGameData();
+      final Collection<Unit> attacking = fighter(gameData).create(3, americans(gameData));
+      attacking.addAll(bomber(gameData).create(2, americans(gameData)));
+      attacking.addAll(submarine(gameData).create(2, americans(gameData)));
+      final Collection<Unit> defending = submarine(gameData).create(3, germans(gameData));
+      defending.addAll(transport(gameData).create(2, germans(gameData)));
+      defending.addAll(unitType("cruiser", gameData).create(1, germans(gameData)));
+
+      assertSeededBattleAgreement(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          territory("5 Sea Zone", gameData),
+          attacking,
+          defending,
+          List.of());
+    }
+  }
+
   private static Collection<Unit> load(final Unit carrier, final Collection<Unit> cargo) {
     cargo.forEach(unit -> unit.setTransportedBy(carrier));
     return cargo;
@@ -318,11 +521,21 @@ class ClassicWw2BattleCalcDifferentialTest extends AbstractClientSettingTestCase
       final Collection<Unit> bombarding) {
     final ScriptedRandomSource dice = ScriptedRandomSource.alwaysHits();
     final BattleResults engine =
-        engine(gameData, attacker, defender, location, attacking, defending, bombarding, dice, 1)
+        engine(
+                gameData,
+                attacker,
+                defender,
+                location,
+                attacking,
+                defending,
+                bombarding,
+                NO_RETREAT,
+                dice,
+                1)
             .getResults()
             .get(0);
     final BattleResult bounded =
-        bounded(attacker, defender, location, attacking, defending, bombarding, dice, 1)
+        bounded(attacker, defender, location, attacking, defending, bombarding, NO_RETREAT, dice, 1)
             .results()
             .get(0);
 
@@ -348,6 +561,19 @@ class ClassicWw2BattleCalcDifferentialTest extends AbstractClientSettingTestCase
       final Collection<Unit> attacking,
       final Collection<Unit> defending,
       final Collection<Unit> bombarding) {
+    assertSeededBattleAgreement(
+        gameData, attacker, defender, location, attacking, defending, bombarding, NO_RETREAT);
+  }
+
+  private static void assertSeededBattleAgreement(
+      final GameData gameData,
+      final GamePlayer attacker,
+      final GamePlayer defender,
+      final Territory location,
+      final Collection<Unit> attacking,
+      final Collection<Unit> defending,
+      final Collection<Unit> bombarding,
+      final BattleOptions options) {
     final AggregateResults engine =
         engine(
             gameData,
@@ -357,6 +583,7 @@ class ClassicWw2BattleCalcDifferentialTest extends AbstractClientSettingTestCase
             attacking,
             defending,
             bombarding,
+            options,
             new PlainRandomSource(SEED),
             SEEDED_RUNS);
     final AggregateResults bounded =
@@ -368,6 +595,7 @@ class ClassicWw2BattleCalcDifferentialTest extends AbstractClientSettingTestCase
                 attacking,
                 defending,
                 bombarding,
+                options,
                 new PlainRandomSource(SEED),
                 SEEDED_RUNS),
             attacking,
@@ -394,6 +622,7 @@ class ClassicWw2BattleCalcDifferentialTest extends AbstractClientSettingTestCase
       final Collection<Unit> attacking,
       final Collection<Unit> defending,
       final Collection<Unit> bombarding,
+      final BattleOptions options,
       final IRandomSource dice,
       final int runs) {
     final BattleCalculator oracle = new BattleCalculator(gameData);
@@ -406,7 +635,7 @@ class ClassicWw2BattleCalcDifferentialTest extends AbstractClientSettingTestCase
         defending,
         bombarding,
         TerritoryEffectHelper.getEffects(location),
-        NO_RETREAT.retreatWhenOnlyAirLeft(),
+        options.retreatWhenOnlyAirLeft(),
         runs);
   }
 
@@ -417,6 +646,7 @@ class ClassicWw2BattleCalcDifferentialTest extends AbstractClientSettingTestCase
       final Collection<Unit> attacking,
       final Collection<Unit> defending,
       final Collection<Unit> bombarding,
+      final BattleOptions options,
       final IRandomSource dice,
       final int runs) {
     final BattleScenario scenario =
@@ -429,7 +659,7 @@ class ClassicWw2BattleCalcDifferentialTest extends AbstractClientSettingTestCase
                 defending,
                 bombarding,
                 TerritoryEffectHelper.getEffects(location),
-                NO_RETREAT);
+                options);
     return new ReferenceBattleSimulator().simulate(scenario, runs, new EngineRandomSource(dice));
   }
 
