@@ -125,11 +125,13 @@ public class ReferenceBattleSimulator implements BattleSimulator {
       dropDead(attackers);
       dropDead(defenders);
     }
+    final Outcome outcome = outcome(attackers, defenders);
+    captureNonCombatants(outcome, attackers, defenders);
     return new BattleResult(
         new Force(new LinkedHashMap<>(attackers)),
         new Force(new LinkedHashMap<>(defenders)),
         round,
-        outcome(attackers, defenders));
+        outcome);
   }
 
   /**
@@ -169,6 +171,10 @@ public class ReferenceBattleSimulator implements BattleSimulator {
     for (final FireStep step : aa) {
       fire(step, scenario, attackers, defenders, round, stats, rng);
     }
+    // Engine RemoveNonCombatants runs after AA, before first strike: idle infrastructure leaves the
+    // battle so no later fire can land on it.
+    removeNonCombatants(attackers, round);
+    removeNonCombatants(defenders, round);
     for (final FireStep step : firstStrike) {
       fire(step, scenario, attackers, defenders, round, stats, rng);
     }
@@ -354,6 +360,60 @@ public class ReferenceBattleSimulator implements BattleSimulator {
     migrate(working, diving);
   }
 
+  /**
+   * Parks a side's {@link CombatFlag#NON_COMBATANT} infrastructure as WITHDRAWN once it has no AA
+   * left to fire: out of the battle (never targeted, never fires, never keeps its side alive) but
+   * still in the territory. Mirrors {@code MustFightBattle#removeNonCombatants}, which judges AA
+   * eligibility against the next round, so a stock gun (maxRoundsAa 1) leaves right after its
+   * round-1 AA shot.
+   */
+  private static void removeNonCombatants(final Map<Key, Integer> working, final int round) {
+    final Map<CombatProfile, Integer> leaving = new LinkedHashMap<>();
+    activeProfileCounts(working)
+        .forEach(
+            (profile, count) -> {
+              if (profile.flags().contains(CombatFlag.NON_COMBATANT)
+                  && !aaCanFireOnRound(profile, round + 1)) {
+                leaving.put(profile, count);
+              }
+            });
+    migrate(working, leaving);
+  }
+
+  private static boolean aaCanFireOnRound(final CombatProfile profile, final int round) {
+    return profile.flags().contains(CombatFlag.IS_AA)
+        && (profile.maxRoundsAa() < 0 || profile.maxRoundsAa() >= round);
+  }
+
+  /**
+   * End-of-battle survivor accounting for non-combatant infrastructure, mirroring {@code
+   * MustFightBattle#getRemainingDefendingUnits}/{@code getRemainingAttackingUnits}: an attacker
+   * that wins with a non-air unit captures the defender's, so it is no longer a defender survivor;
+   * a defender win likewise drops the attacker's. Otherwise it stays with its owner.
+   */
+  private static void captureNonCombatants(
+      final Outcome outcome, final Map<Key, Integer> attackers, final Map<Key, Integer> defenders) {
+    if (outcome == Outcome.ATTACKER_WINS && hasActiveNonAirCombatant(attackers)) {
+      dropNonCombatants(defenders);
+    } else if (outcome == Outcome.DEFENDER_WINS) {
+      dropNonCombatants(attackers);
+    }
+  }
+
+  private static boolean hasActiveNonAirCombatant(final Map<Key, Integer> working) {
+    return working.entrySet().stream()
+        .anyMatch(
+            entry ->
+                entry.getKey().state() == Lifecycle.ACTIVE
+                    && entry.getValue() > 0
+                    && entry.getKey().profile().domain() != Domain.AIR
+                    && !isInfrastructure(entry.getKey().profile()));
+  }
+
+  private static void dropNonCombatants(final Map<Key, Integer> working) {
+    working.keySet().removeIf(key -> key.profile().flags().contains(CombatFlag.NON_COMBATANT));
+  }
+
   /** Withdraws a side at round end per its policy; returns whether anything withdrew. */
   private static boolean retreat(
       final RetreatPolicy policy, final Map<Key, Integer> side, final BattleView view) {
@@ -532,19 +592,35 @@ public class ReferenceBattleSimulator implements BattleSimulator {
   /**
    * The battle verdict from what remains: withdrawn units are survivors, so a side is beaten only
    * when nothing of it is left; both sides surviving (cap or a stalemate withdrawal) reads as a
-   * draw.
+   * draw. Infrastructure never keeps a side alive (engine {@code
+   * CheckGeneralBattleEnd#hasSideLost}), but when both sides' combatants are gone the engine names
+   * the defender the winner, and its leftover infrastructure keeps that from reading as an
+   * empty-handed draw.
    */
   private static Outcome outcome(
       final Map<Key, Integer> attackers, final Map<Key, Integer> defenders) {
-    final int attackerLeft = totalCount(attackers);
-    final int defenderLeft = totalCount(defenders);
+    final int attackerLeft = combatantCount(attackers);
+    final int defenderLeft = combatantCount(defenders);
     if (defenderLeft == 0 && attackerLeft > 0) {
       return Outcome.ATTACKER_WINS;
     }
-    if (attackerLeft == 0 && defenderLeft > 0) {
+    if (attackerLeft == 0 && (defenderLeft > 0 || totalCount(defenders) > 0)) {
       return Outcome.DEFENDER_WINS;
     }
     return Outcome.DRAW;
+  }
+
+  /** Surviving (ACTIVE or WITHDRAWN) units that are not infrastructure. */
+  private static int combatantCount(final Map<Key, Integer> working) {
+    return working.entrySet().stream()
+        .filter(entry -> entry.getKey().state() != Lifecycle.DEAD)
+        .filter(entry -> !isInfrastructure(entry.getKey().profile()))
+        .mapToInt(Map.Entry::getValue)
+        .sum();
+  }
+
+  private static boolean isInfrastructure(final CombatProfile profile) {
+    return profile.flags().contains(CombatFlag.IS_INFRASTRUCTURE);
   }
 
   /** Both sides pass through untouched with the given verdict and no rounds fought. */
@@ -682,9 +758,11 @@ public class ReferenceBattleSimulator implements BattleSimulator {
     return counts;
   }
 
+  /** ACTIVE units that keep a side in the fight; infrastructure never does. */
   private static int activeCount(final Map<Key, Integer> working) {
     return working.entrySet().stream()
         .filter(entry -> entry.getKey().state() == Lifecycle.ACTIVE)
+        .filter(entry -> !isInfrastructure(entry.getKey().profile()))
         .mapToInt(Map.Entry::getValue)
         .sum();
   }

@@ -35,5 +35,10 @@ public enum CombatFlag {
   // other construction), baked from UnitAttachment#isInfrastructure. A side whose units are all
   // infrastructure is no battle: the engine skips straight to the other side taking the territory,
   // so the simulator short-circuits before any AA fires.
-  IS_INFRASTRUCTURE
+  IS_INFRASTRUCTURE,
+  // Infrastructure with no attack or defense on its side and no support to give (a factory, a stock
+  // AA gun). The engine's RemoveNonCombatants takes it out of the battle once it has no AA left to
+  // fire, so it is never a main-combat casualty; it stays in the territory and is captured when
+  // the attacker takes it with a non-air unit.
+  NON_COMBATANT
 }

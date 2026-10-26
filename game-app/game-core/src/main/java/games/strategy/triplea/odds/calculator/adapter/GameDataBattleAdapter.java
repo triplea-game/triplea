@@ -279,7 +279,7 @@ public class GameDataBattleAdapter {
         new DamageState(hits),
         Set.copyOf(support.gives().getOrDefault(type.getName(), Set.of())),
         Set.copyOf(support.receives().getOrDefault(type.getName(), Set.of())),
-        flagsOf(ua, aa, dependent, lhtrHeavyBombers),
+        flagsOf(ua, aa, dependent, lhtrHeavyBombers, nonCombatant(type, player, side)),
         successor(
             type, player, side, effects, hits, remaining, support, dependent, lhtrHeavyBombers));
   }
@@ -345,7 +345,8 @@ public class GameDataBattleAdapter {
       final UnitAttachment ua,
       final boolean antiAir,
       final boolean dependent,
-      final boolean lhtrHeavyBombers) {
+      final boolean lhtrHeavyBombers,
+      final boolean nonCombatant) {
     final EnumSet<CombatFlag> flags = EnumSet.noneOf(CombatFlag.class);
     if (ua.getIsFirstStrike()) {
       flags.add(CombatFlag.FIRST_STRIKE);
@@ -390,7 +391,27 @@ public class GameDataBattleAdapter {
     if (ua.isInfrastructure()) {
       flags.add(CombatFlag.IS_INFRASTRUCTURE);
     }
+    if (nonCombatant) {
+      flags.add(CombatFlag.NON_COMBATANT);
+    }
     return flags;
+  }
+
+  /**
+   * Mirrors the infrastructure half of {@code Matches.unitTypeCanBeInBattle}: infrastructure stays
+   * in the battle only while it has attack (offense) or defense (defense), gives any support, or
+   * can still fire AA. The AA clause is round-dependent, so it is left to the simulator; this bakes
+   * the static part. The engine's "can be hit by enemy AA" clause is not modeled — no stock map
+   * fields air infrastructure.
+   */
+  private static boolean nonCombatant(
+      final UnitType type, final GamePlayer player, final Side side) {
+    final UnitAttachment ua = type.getUnitAttachment();
+    if (!ua.isInfrastructure()) {
+      return false;
+    }
+    final int strength = side == Side.OFFENSE ? ua.getAttack(player) : ua.getDefense(player);
+    return strength <= 0 && UnitSupportAttachment.get(type).isEmpty();
   }
 
   private static boolean anyAmphibious(final Collection<Unit> attacking) {
