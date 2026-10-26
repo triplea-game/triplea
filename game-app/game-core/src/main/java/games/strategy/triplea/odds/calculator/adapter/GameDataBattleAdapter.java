@@ -150,10 +150,9 @@ public class GameDataBattleAdapter {
             options.retreatAfterRound(),
             options.retreatAfterXUnitsLeft(),
             options.retreatWhenOnlyAirLeft()),
-        new ReferenceRetreatPolicy(
-            options.retreatAfterRound(),
-            options.retreatAfterXUnitsLeft(),
-            options.retreatWhenOnlyAirLeft()),
+        // The engine never offers a defender a general retreat, only a sub submerge, so the
+        // caller's retreat thresholds are the attacker's alone.
+        new ReferenceRetreatPolicy(-1, -1, false),
         new OolCasualtyOrder(options.attackerOol()),
         new OolCasualtyOrder(options.defenderOol()));
   }

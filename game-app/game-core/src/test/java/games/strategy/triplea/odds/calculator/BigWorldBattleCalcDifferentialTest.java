@@ -57,6 +57,9 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
 
   private static final long SEED = 20261025L;
   private static final int SEEDED_RUNS = 2000;
+  private static final BattleOptions NO_RETREAT = new BattleOptions(false, List.of(), List.of());
+  private static final BattleOptions RETREAT_WHEN_ONLY_AIR_LEFT =
+      new BattleOptions(true, List.of(), List.of());
 
   /**
    * Infrastructure that cannot fight (a factory; an AA gun past its firing round) leaves the battle
@@ -307,6 +310,35 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
   }
 
   /**
+   * Only the attacker retreats: the engine never asks a defender ({@code DummyPlayer#retreatQuery}
+   * is reached for the attacker and for submerging subs only), and an attacker that retreats, or
+   * whose every unit evades, loses the battle ({@code OffensiveGeneralRetreat}, {@code
+   * EvaderRetreat}). ProAI's strafe check runs with {@code retreatWhenOnlyAirLeft}.
+   */
+  @Nested
+  class Retreat {
+    @Test
+    void seededStrafeWithAirRetreatMatchesTheEngine() {
+      final GameData gameData = bigWorld();
+      final Collection<Unit> attacking = infantry(gameData).create(2, russians(gameData));
+      attacking.addAll(armour(gameData).create(1, russians(gameData)));
+      attacking.addAll(fighter(gameData).create(2, russians(gameData)));
+      final Collection<Unit> defending = infantry(gameData).create(3, germans(gameData));
+      defending.addAll(fighter(gameData).create(2, germans(gameData)));
+
+      assertSeededAgreement(
+          gameData,
+          russians(gameData),
+          germans(gameData),
+          territory("France", gameData),
+          attacking,
+          defending,
+          List.of(),
+          RETREAT_WHEN_ONLY_AIR_LEFT);
+    }
+  }
+
+  /**
    * Big World as a running game sees it: the map sets "Two hit battleship", which the
    * initialization delegate (not run for a bare fixture) applies by giving battleships 2 HP.
    */
@@ -341,11 +373,21 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
       final Collection<Unit> bombarding) {
     final ScriptedRandomSource dice = ScriptedRandomSource.alwaysHits();
     final BattleResults engine =
-        engine(gameData, attacker, defender, location, attacking, defending, bombarding, dice, 1)
+        engine(
+                gameData,
+                attacker,
+                defender,
+                location,
+                attacking,
+                defending,
+                bombarding,
+                NO_RETREAT,
+                dice,
+                1)
             .getResults()
             .get(0);
     final BattleResult bounded =
-        bounded(attacker, defender, location, attacking, defending, bombarding, dice, 1)
+        bounded(attacker, defender, location, attacking, defending, bombarding, NO_RETREAT, dice, 1)
             .results()
             .get(0);
 
@@ -358,10 +400,6 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
     assertThat(bounded.outcome()).as("outcome").isEqualTo(outcomeOf(engine));
   }
 
-  /**
-   * Same-seed runs through both paths must agree on attacker win% within 4 points. A distributional
-   * guard only: the two paths consume dice in different orders, so it bounds drift, not exactness.
-   */
   private static void assertSeededAgreement(
       final GameData gameData,
       final GamePlayer attacker,
@@ -370,31 +408,54 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
       final Collection<Unit> attacking,
       final Collection<Unit> defending,
       final Collection<Unit> bombarding) {
-    final double engineWin =
-        engine(
-                gameData,
-                attacker,
-                defender,
-                location,
-                attacking,
-                defending,
-                bombarding,
-                new PlainRandomSource(SEED),
-                SEEDED_RUNS)
-            .getAttackerWinPercent();
-    final double boundedWin =
-        bounded(
-                attacker,
-                defender,
-                location,
-                attacking,
-                defending,
-                bombarding,
-                new PlainRandomSource(SEED),
-                SEEDED_RUNS)
-            .attackerWinPercent();
+    assertSeededAgreement(
+        gameData, attacker, defender, location, attacking, defending, bombarding, NO_RETREAT);
+  }
 
-    assertThat(boundedWin).as("attacker win%").isCloseTo(engineWin, within(0.04));
+  /**
+   * Same-seed runs through both paths must agree on attacker and defender win% within 4 points. A
+   * distributional guard only: the two paths consume dice in different orders, so it bounds drift,
+   * not exactness.
+   */
+  private static void assertSeededAgreement(
+      final GameData gameData,
+      final GamePlayer attacker,
+      final GamePlayer defender,
+      final Territory location,
+      final Collection<Unit> attacking,
+      final Collection<Unit> defending,
+      final Collection<Unit> bombarding,
+      final BattleOptions options) {
+    final AggregateResults engine =
+        engine(
+            gameData,
+            attacker,
+            defender,
+            location,
+            attacking,
+            defending,
+            bombarding,
+            options,
+            new PlainRandomSource(SEED),
+            SEEDED_RUNS);
+    final SimulationResults bounded =
+        bounded(
+            attacker,
+            defender,
+            location,
+            attacking,
+            defending,
+            bombarding,
+            options,
+            new PlainRandomSource(SEED),
+            SEEDED_RUNS);
+
+    assertThat(bounded.attackerWinPercent())
+        .as("attacker win%")
+        .isCloseTo(engine.getAttackerWinPercent(), within(0.04));
+    assertThat(bounded.defenderWinPercent())
+        .as("defender win%")
+        .isCloseTo(engine.getDefenderWinPercent(), within(0.04));
   }
 
   private static AggregateResults engine(
@@ -405,6 +466,7 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
       final Collection<Unit> attacking,
       final Collection<Unit> defending,
       final Collection<Unit> bombarding,
+      final BattleOptions options,
       final IRandomSource dice,
       final int runs) {
     final BattleCalculator oracle = new BattleCalculator(gameData);
@@ -417,7 +479,7 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
         defending,
         bombarding,
         TerritoryEffectHelper.getEffects(location),
-        false,
+        options.retreatWhenOnlyAirLeft(),
         runs);
   }
 
@@ -428,6 +490,7 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
       final Collection<Unit> attacking,
       final Collection<Unit> defending,
       final Collection<Unit> bombarding,
+      final BattleOptions options,
       final IRandomSource dice,
       final int runs) {
     final BattleScenario scenario =
@@ -440,7 +503,7 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
                 defending,
                 bombarding,
                 TerritoryEffectHelper.getEffects(location),
-                new BattleOptions(false, List.of(), List.of()));
+                options);
     return new ReferenceBattleSimulator().simulate(scenario, runs, new EngineRandomSource(dice));
   }
 

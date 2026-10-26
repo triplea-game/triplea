@@ -659,12 +659,13 @@ public class ReferenceBattleSimulator implements BattleSimulator {
   }
 
   /**
-   * The battle verdict from what remains: withdrawn units are survivors, so a side is beaten only
-   * when nothing of it is left; both sides surviving (cap or a stalemate withdrawal) reads as a
-   * draw. Infrastructure never keeps a side alive (engine {@code
+   * The battle verdict from what remains, mirroring the engine's end checks. A side with nothing
+   * left loses; infrastructure and cargo never keep a side alive ({@code
    * CheckGeneralBattleEnd#hasSideLost}), but when both sides' combatants are gone the engine names
    * the defender the winner, and its leftover infrastructure keeps that from reading as an
-   * empty-handed draw.
+   * empty-handed draw. A side whose combatants all withdrew (an attacker retreat, or every unit
+   * submerged) while the other still fights loses ({@code OffensiveGeneralRetreat}, {@code
+   * EvaderRetreat}); its withdrawn units still survive. Both sides still standing is a draw.
    */
   private static Outcome outcome(
       final Map<Key, Integer> attackers, final Map<Key, Integer> defenders) {
@@ -673,8 +674,16 @@ public class ReferenceBattleSimulator implements BattleSimulator {
     if (defenderLeft == 0 && attackerLeft > 0) {
       return Outcome.ATTACKER_WINS;
     }
-    if (attackerLeft == 0 && (defenderLeft > 0 || totalCount(defenders) > 0)) {
+    if (attackerLeft == 0) {
+      return defenderLeft > 0 || totalCount(defenders) > 0 ? Outcome.DEFENDER_WINS : Outcome.DRAW;
+    }
+    final int attackerFighting = activeCount(attackers);
+    final int defenderFighting = activeCount(defenders);
+    if (attackerFighting == 0 && defenderFighting > 0) {
       return Outcome.DEFENDER_WINS;
+    }
+    if (defenderFighting == 0 && attackerFighting > 0) {
+      return Outcome.ATTACKER_WINS;
     }
     return Outcome.DRAW;
   }
