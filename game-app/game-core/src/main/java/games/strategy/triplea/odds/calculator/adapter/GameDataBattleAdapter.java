@@ -33,6 +33,7 @@ import games.strategy.triplea.odds.calculator.context.reference.ReferenceRetreat
 import games.strategy.triplea.util.TuvCostsCalculator;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
@@ -163,6 +164,10 @@ public class GameDataBattleAdapter {
    * neither fire nor are targeted and leave only through the carrier cascade — but only when the
    * side actually fields a carrier to tie them to, so a stray land unit with no transport is not
    * left an un-killable dependent.
+   *
+   * <p>Buckets are ordered by each unit type's last appearance in {@code units}, last first: the
+   * casualty order breaks a full tie by taking the first bucket, matching the engine's stable sort
+   * and reversal in {@code CasualtyOrderOfLosses}, which takes the last-listed unit first.
    */
   private static Force toForce(
       final Collection<Unit> units,
@@ -174,7 +179,7 @@ public class GameDataBattleAdapter {
       final boolean lhtrHeavyBombers) {
     final boolean hasCarrier = seaBattle && anyCarrier(units);
     final Map<Key, Integer> counts = new LinkedHashMap<>();
-    for (final Unit unit : units) {
+    for (final Unit unit : List.copyOf(units).reversed()) {
       final boolean dependent =
           hasCarrier && domainOf(unit.getType().getUnitAttachment()) == Domain.LAND;
       final CombatProfile profile =
@@ -190,7 +195,7 @@ public class GameDataBattleAdapter {
       final Key key = new Key(profile, Lifecycle.ACTIVE);
       counts.merge(key, 1, Integer::sum);
     }
-    return new Force(Map.copyOf(counts));
+    return new Force(Collections.unmodifiableMap(counts));
   }
 
   /**

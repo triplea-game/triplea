@@ -39,7 +39,8 @@ public class OolCasualtyOrder implements CasualtyOrder {
    * support it receives and the support it gives others), not its raw stat. When {@link
    * ProfileStats#effectivePower()} carries no entry for a profile — no support in play, or a
    * damaged successor the exchange-start map never saw — it falls back to the profile's base
-   * side-relative stat (attack on offense, defense on defense).
+   * side-relative stat (attack on offense, defense on defense). A full tie keeps the first eligible
+   * profile in force order.
    */
   private static Comparator<CombatProfile> defaultOrder(final Side side, final ProfileStats stats) {
     return Comparator.comparingInt((final CombatProfile p) -> effectivePower(p, side, stats))

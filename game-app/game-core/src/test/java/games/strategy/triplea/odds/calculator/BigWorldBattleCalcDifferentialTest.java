@@ -339,6 +339,45 @@ class BigWorldBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
   }
 
   /**
+   * When two unit types tie on every casualty criterion (a Big World destroyer and sub: same
+   * strength, cost and both sub/destroyer), the engine's stable sort and reversal take the
+   * last-listed one first ({@code CasualtyOrderOfLosses}). The pick decides whether the subs stay
+   * pinned, so it has to follow the caller's unit order, not a hash order.
+   */
+  @Nested
+  class CasualtyTies {
+    @Test
+    void theLastListedOfTwoTiedTypesDiesFirst() {
+      final GameData gameData = bigWorld();
+      final Collection<Unit> defending = destroyer(gameData).create(1, germans(gameData));
+      defending.addAll(submarine(gameData).create(1, germans(gameData)));
+
+      assertIdenticalUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          territory("SZ 17 English Channel", gameData),
+          destroyer(gameData).create(1, americans(gameData)),
+          defending);
+    }
+
+    @Test
+    void theLastListedOfTwoTiedTypesDiesFirstInEitherOrder() {
+      final GameData gameData = bigWorld();
+      final Collection<Unit> defending = submarine(gameData).create(1, germans(gameData));
+      defending.addAll(destroyer(gameData).create(1, germans(gameData)));
+
+      assertIdenticalUnderAlwaysHits(
+          gameData,
+          americans(gameData),
+          germans(gameData),
+          territory("SZ 17 English Channel", gameData),
+          destroyer(gameData).create(1, americans(gameData)),
+          defending);
+    }
+  }
+
+  /**
    * Big World as a running game sees it: the map sets "Two hit battleship", which the
    * initialization delegate (not run for a bare fixture) applies by giving battleships 2 HP.
    */
