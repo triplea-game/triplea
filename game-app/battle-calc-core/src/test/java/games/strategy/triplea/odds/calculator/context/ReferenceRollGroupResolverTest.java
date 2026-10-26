@@ -319,8 +319,8 @@ class ReferenceRollGroupResolverTest {
 
   /**
    * A mixed air+surface main partition splits per firer by eligible-target set, mirroring {@code
-   * TargetGroup.newTargetGroups}: against an air-immune sub with no destroyer, the air firer's group
-   * excludes the sub while the surface firer's retains it, emitted fewest-targets-first.
+   * TargetGroup.newTargetGroups}: against an air-immune sub with no destroyer, the air firer's
+   * group excludes the sub while the surface firer's retains it, emitted fewest-targets-first.
    */
   @Test
   void mainPartitionSplitsIntoOneGroupPerDistinctEligibleTargetSet() {

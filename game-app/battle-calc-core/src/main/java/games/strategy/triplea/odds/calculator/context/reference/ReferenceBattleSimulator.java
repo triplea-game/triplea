@@ -435,8 +435,9 @@ public class ReferenceBattleSimulator implements BattleSimulator {
     }
     // Engine parity (RemoveUnprotectedUnits#checkUndefendedTransports counts
     // getBattleSite().getUnits()): the territory still holds escorts killed this round but not yet
-    // removed, so a transport is never swept the round its last escort dies — it outlives the escort
-    // by a round, firing once more, and is swept only the following round (or falls to fire first).
+    // removed, so a transport is never swept the round its last escort dies — it outlives the
+    // escort by a round, firing once more, and is swept only the following round (or falls to fire
+    // first).
     // This map is read before the round's dead are dropped, so those just-killed escorts are still
     // present as DEAD; defer while any non-transport combatant among them remains.
     if (nonTransportCombatantDiedThisRound(working)) {

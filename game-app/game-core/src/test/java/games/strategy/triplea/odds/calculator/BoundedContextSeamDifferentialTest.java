@@ -70,13 +70,13 @@ class BoundedContextSeamDifferentialTest extends AbstractClientSettingTestCase {
   }
 
   /**
-   * The known phase-1 {@code SurvivorMapper} transform-drop, pinned against the oracle for the first
-   * time. In TWW a {@code germanBattleship} that takes a single hit transforms via {@code
+   * The known phase-1 {@code SurvivorMapper} transform-drop, pinned against the oracle for the
+   * first time. In TWW a {@code germanBattleship} that takes a single hit transforms via {@code
    * whenHitPointsDamagedChangesInto} into a {@code germanBattleship-damaged} bucket; the mapper
    * matches survivors back to caller units by type name, and no original carries that transformed
    * type, so the survivor is silently dropped from "units remaining." One {@code americanCruiser}
-   * lands exactly one hit on the 2-HP battleship (and dies to its return fire), leaving the engine a
-   * lone damaged-battleship survivor while the seam reports none — an expected divergence that
+   * lands exactly one hit on the 2-HP battleship (and dies to its return fire), leaving the engine
+   * a lone damaged-battleship survivor while the seam reports none — an expected divergence that
    * confirms the drop is real and scoped, not worse than believed. Disabled as a characterization
    * pin of the {@code TODO(seam-phase2)} at {@code SurvivorMapper#selectOriginals}
    * (SurvivorMapper.java:107-110), whose type-name match cannot claim an original for a transformed
@@ -97,13 +97,14 @@ class BoundedContextSeamDifferentialTest extends AbstractClientSettingTestCase {
   }
 
   /**
-   * WITHDRAWN units must count as remaining identically through the seam and the engine. With {@code
-   * retreatAfterRound = 1} the attacking subs withdraw at the end of round one rather than fighting
-   * on; the defender's escorting destroyer dies but its defenceless transports survive the round, so
-   * the retreat actually fires (a live defender means the battle would otherwise continue). The
-   * withdrawn subs are non-DEAD and so are survivors — the seam counts WITHDRAWN buckets as
-   * remaining and maps them back, and the oracle keeps the retreated attackers too. Pass-or-fail is
-   * unknown: retreat plumbing through the seam has never been checked against the oracle.
+   * WITHDRAWN units must count as remaining identically through the seam and the engine. With
+   * {@code retreatAfterRound = 1} the attacking subs withdraw at the end of round one rather than
+   * fighting on; the defender's escorting destroyer dies but its defenceless transports survive the
+   * round, so the retreat actually fires (a live defender means the battle would otherwise
+   * continue). The withdrawn subs are non-DEAD and so are survivors — the seam counts WITHDRAWN
+   * buckets as remaining and maps them back, and the oracle keeps the retreated attackers too.
+   * Pass-or-fail is unknown: retreat plumbing through the seam has never been checked against the
+   * oracle.
    */
   @Test
   void seamCountsWithdrawnUnitsAsRemainingLikeTheEngine() {
@@ -124,8 +125,8 @@ class BoundedContextSeamDifferentialTest extends AbstractClientSettingTestCase {
    * "average units remaining" the exact rules-determined survivor set, so the two collections must
    * match bucket for bucket.
    *
-   * @param retreatAfterRound the round-end withdrawal threshold ({@code -1} disables it), applied to
-   *     both paths so retreat is not itself a variable
+   * @param retreatAfterRound the round-end withdrawal threshold ({@code -1} disables it), applied
+   *     to both paths so retreat is not itself a variable
    */
   private static void assertSeamSurvivorsMatchEngine(
       final GameData gameData,

@@ -27,9 +27,9 @@ public class ReferenceCombatRelations implements CombatRelations {
    * minus an evading submarine that air cannot touch unless a destroyer stands with the firing side
    * to strip its evade.
    *
-   * <p>Eligibility is computed off the one firer, mirroring the engine's per-{@code unitType} {@code
-   * TargetGroup.findTargets} — a lone air firer no longer denies a surface unit beside it its
-   * protected-sub target, nor a lone submarine deny a surface unit its air target. {@code
+   * <p>Eligibility is computed off the one firer, mirroring the engine's per-{@code unitType}
+   * {@code TargetGroup.findTargets} — a lone air firer no longer denies a surface unit beside it
+   * its protected-sub target, nor a lone submarine deny a surface unit its air target. {@code
    * hasDestroyer} stays side-wide, matching the engine's once-per-step {@code destroyerPresent}.
    */
   @Override
@@ -45,10 +45,10 @@ public class ReferenceCombatRelations implements CombatRelations {
       }
       return new TargetFilter(eligible);
     }
-    // Mutual sub/air non-targeting: a submarine cannot fire on aircraft, and aircraft cannot fire on
-    // a sub that canNotBeTargetedByAll unless a destroyer on the firing side strips the immunity.
-    // The two are asymmetric — a Revised sub still gets hit by air (it lacks the immunity flag) yet
-    // still cannot target the planes back.
+    // Mutual sub/air non-targeting: a submarine cannot fire on aircraft, and aircraft cannot fire
+    // on a sub that canNotBeTargetedByAll unless a destroyer on the firing side strips the
+    // immunity. The two are asymmetric — a Revised sub still gets hit by air (it lacks the immunity
+    // flag) yet still cannot target the planes back.
     final boolean subCannotHitAir = firer.flags().contains(CombatFlag.CAN_SUBMERGE);
     // 'hasDestroyer' is scoped over the whole friendly side, a deliberate simplification of the
     // engine's per-splitter 'destroyerPresent' (computed over only that splitter's firing units).

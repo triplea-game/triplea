@@ -108,8 +108,8 @@ class FuzzedBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
     assertThat(report.total()).isPositive();
     // Per-flag drift stays reported-not-gated (it carries known capability residuals), but the
     // vanilla bucket — no stubbed feature engaged — must match the engine exactly under alwaysHits,
-    // where every modeled rule is exact. A vanilla mismatch is a real core regression, not drift, so
-    // it is the one invariant worth failing on. Deterministic under the fixed seed, so it cannot
+    // where every modeled rule is exact. A vanilla mismatch is a real core regression, not drift,
+    // so it is the one invariant worth failing on. Deterministic under the fixed seed, so it cannot
     // flake.
     final int[] vanilla = report.tagCell("vanilla");
     assertThat(vanilla[1])
@@ -141,8 +141,8 @@ class FuzzedBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
     report.print();
 
     // Distributional pass: exact-match has no meaning under a seeded source, and the vanilla sample
-    // is too small to gate on a win% tolerance without risking flake, so drift stays diagnostic here
-    // — the alwaysHits pass owns the vanilla-exact invariant.
+    // is too small to gate on a win% tolerance without risking flake, so drift stays diagnostic
+    // here — the alwaysHits pass owns the vanilla-exact invariant.
     assertThat(report.total()).isPositive();
   }
 

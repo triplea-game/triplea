@@ -103,11 +103,12 @@ public class ReferenceRollGroupResolver implements RollGroupResolver {
 
     // Split the partition per firer by its eligible-target set, mirroring
     // TargetGroup.newTargetGroups: firers that reach the same enemy profiles share one RollGroup.
-    // The load-bearing invariant is collapse — a homogeneous partition, every firer eligible for the
-    // same targets, yields exactly ONE group identical to the pre-split plan, so dice and casualty
-    // flow are unchanged wherever no sub/air asymmetry applies; fragmentation here would perturb
-    // every scenario, not just the immunity ones. A firer whose eligible set is empty shoots nothing
-    // this round and contributes no group (the engine's 'if (targets.isEmpty()) continue').
+    // The load-bearing invariant is collapse — a homogeneous partition, every firer eligible for
+    // the same targets, yields exactly ONE group identical to the pre-split plan, so dice and
+    // casualty flow are unchanged wherever no sub/air asymmetry applies; fragmentation here would
+    // perturb every scenario, not just the immunity ones. A firer whose eligible set is empty
+    // shoots nothing this round and contributes no group (the engine's 'if (targets.isEmpty())
+    // continue').
     final Map<Set<CombatProfile>, Map<CombatProfile, Integer>> buckets = new LinkedHashMap<>();
     for (final Map.Entry<CombatProfile, Integer> entry : fired.entrySet()) {
       final Set<CombatProfile> eligible =

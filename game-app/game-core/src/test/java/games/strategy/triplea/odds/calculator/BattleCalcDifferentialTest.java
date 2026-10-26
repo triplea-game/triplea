@@ -272,16 +272,15 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
    * with chooseBestRoll on. Under low luck the best-of-rolls power is {@code min(3 + (3 - 1), 6) =
    * 5} (one guaranteed hit), against the summed {@code 3 * 3 = 9} (two hits); the two defending
    * infantry trade their one low-luck hit to sink the lone armour either way, so the surviving
-   * defender count is the discriminator — one infantry lives under best-of-rolls, none under summed.
-   * A guard that suppressed chooseBestRoll for every {@code isAaForCombatOnly} unit would sum the
-   * rolls, kill both defenders, and diverge from the engine here.
+   * defender count is the discriminator — one infantry lives under best-of-rolls, none under
+   * summed. A guard that suppressed chooseBestRoll for every {@code isAaForCombatOnly} unit would
+   * sum the rolls, kill both defenders, and diverge from the engine here.
    */
   @Test
   void alwaysHitsUnderLowLuckCombatAaWithNoAirTargetHonorsChooseBestRoll() {
     final GameData gameData = TestMapGameData.REVISED.getGameData();
     makeGameLowLuck(gameData);
-    injectCombatAaWithNoAirTargetAndBestRoll(
-        gameData, armour(gameData), artillery(gameData), 3, 3);
+    injectCombatAaWithNoAirTargetAndBestRoll(gameData, armour(gameData), artillery(gameData), 3, 3);
 
     final Territory germany = territory("Germany", gameData);
 
@@ -666,10 +665,9 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
       final Collection<Unit> cargo = infantry(gameData).create(2, germans(gameData));
       // Green is fixture-dependent: all cargo rides transportUnit[0], the transport the engine's
       // limitTransportsToSelect().limit(1) picks first, so its cargo cascades on both paths.
-      // Loading
-      // transportUnit[1] instead would diverge — the adapter pools cargo per side while the engine
-      // links it per unit (the §E.1 v1 gap), so the pooled cascade would sink the wrong transport's
-      // cargo.
+      // Loading transportUnit[1] instead would diverge — the adapter pools cargo per side while the
+      // engine links it per unit (the §E.1 v1 gap), so the pooled cascade would sink the wrong
+      // transport's cargo.
       cargo.forEach(unit -> unit.setTransportedBy(transportUnit.get(0)));
       final Collection<Unit> defenders = new ArrayList<>(transportUnit);
       defenders.addAll(cargo);
@@ -990,16 +988,17 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
    * bites: its submarines carry a type-specific restriction that the flag cannot represent, so the
    * per-type targeting matrix ({@code TargetFilter}'s deferred "canNotTarget matrices") stays
    * unmodeled, so TWW submarine fights that genuinely need it still diverge. The case below needs
-   * none of that — a lone protected sub versus pure air is fully covered by the blanket air-immunity
-   * flag — and it matches once the adapter stops baking a combat-AA sub as an anti-air gun, so the
-   * sub no longer fires back at the planes. The destroyer relationship is pinned on WW2V3 in
-   * both directions: {@link ReshapingMatrix#pureAirStillCannotHitAProtectedSubWithoutADestroyer}
-   * holds the no-destroyer case, where air still cannot reach the sub (the same direction as this
-   * gate's TWW case), and {@link ReshapingMatrix#anAttackingDestroyerLetsAirHitTheProtectedSub}
-   * the destroyer-present case, where an escorting destroyer strips the blanket immunity so air
-   * can hit it. Owner and sea-zone choices are
-   * incidental: TWW unit types are ownable by any player, and the sea zone contributes only the
-   * {@code Sea} territory effect, applied identically to the oracle and the adapter.
+   * none of that — a lone protected sub versus pure air is fully covered by the blanket
+   * air-immunity flag — and it matches once the adapter stops baking a combat-AA sub as an anti-air
+   * gun, so the sub no longer fires back at the planes. The destroyer relationship is pinned on
+   * WW2V3 in both directions: {@link
+   * ReshapingMatrix#pureAirStillCannotHitAProtectedSubWithoutADestroyer} holds the no-destroyer
+   * case, where air still cannot reach the sub (the same direction as this gate's TWW case), and
+   * {@link ReshapingMatrix#anAttackingDestroyerLetsAirHitTheProtectedSub} the destroyer-present
+   * case, where an escorting destroyer strips the blanket immunity so air can hit it. Owner and
+   * sea-zone choices are incidental: TWW unit types are ownable by any player, and the sea zone
+   * contributes only the {@code Sea} territory effect, applied identically to the oracle and the
+   * adapter.
    */
   @Nested
   class CannotBeTargetedCompletionGate {
@@ -1268,8 +1267,8 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
   }
 
   /**
-   * Turns {@code unitType} into a combat-AA unit that reaches no air: {@code isAaForCombatOnly} with
-   * its {@code targetsAa} set to a single non-air {@code nonAirTarget} and a zero {@code
+   * Turns {@code unitType} into a combat-AA unit that reaches no air: {@code isAaForCombatOnly}
+   * with its {@code targetsAa} set to a single non-air {@code nonAirTarget} and a zero {@code
    * offensiveAttackAa}, so the engine fires no AA strike and the unit fights only through the main
    * phase. It is given {@code attack}/{@code attackRolls} and chooseBestRoll on, so its multi-roll
    * main-combat power is the best-of-dice value. Mutated on the loaded data before the battle runs,

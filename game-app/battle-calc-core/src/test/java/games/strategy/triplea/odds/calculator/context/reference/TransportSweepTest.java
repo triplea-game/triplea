@@ -75,10 +75,10 @@ class TransportSweepTest {
    * A raider clears the escort in round one; the now-unescorted transport is not swept that round
    * (the escort is still waiting to die) but survives into round two, and once the raider's round-
    * two shot misses it the restriction sweeps it off while the raider can still fire — a two-round
-   * attacker win. Only the first die — the raider's opening shot, fired before any defender — lands;
-   * every later roll misses (the 0-defence escort and transport still draw dice that cannot hit), so
-   * the raider kills the escort in round one and misses the transport in round two, leaving the
-   * sweep, not fire, to remove it.
+   * attacker win. Only the first die — the raider's opening shot, fired before any defender —
+   * lands; every later roll misses (the 0-defence escort and transport still draw dice that cannot
+   * hit), so the raider kills the escort in round one and misses the transport in round two,
+   * leaving the sweep, not fire, to remove it.
    */
   @Test
   void restrictionSweepsAnUnescortedTransportTheRoundAfterItsEscortDies() {
@@ -108,10 +108,10 @@ class TransportSweepTest {
   }
 
   /**
-   * The sweep path sheds cargo exactly as the firing path does: a swept transport carrying two cargo
-   * takes them down with it, so nothing dependent is left as a phantom survivor. The raider misses
-   * its round-two shot so the transport falls to the sweep, not to fire, exercising the sweep's own
-   * cargo cascade.
+   * The sweep path sheds cargo exactly as the firing path does: a swept transport carrying two
+   * cargo takes them down with it, so nothing dependent is left as a phantom survivor. The raider
+   * misses its round-two shot so the transport falls to the sweep, not to fire, exercising the
+   * sweep's own cargo cascade.
    */
   @Test
   void sweptTransportCascadesItsCargo() {
