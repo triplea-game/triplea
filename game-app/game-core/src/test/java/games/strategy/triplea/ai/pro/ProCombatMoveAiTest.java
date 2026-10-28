@@ -1,0 +1,40 @@
+package games.strategy.triplea.ai.pro;
+
+import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import games.strategy.engine.data.GameData;
+import games.strategy.triplea.ai.pro.data.ProTerritory;
+import games.strategy.triplea.xml.TestMapGameData;
+import org.junit.jupiter.api.Test;
+
+class ProCombatMoveAiTest {
+  private final GameData gameData = TestMapGameData.LHTR.getGameData();
+
+  @Test
+  void smallLandingThatCantBeHeldIsNotWorthReadding() {
+    final ProTerritory newGuinea =
+        new ProTerritory(territory("New Guinea", gameData), new ProData());
+    newGuinea.setCanHold(false);
+
+    assertThat(ProCombatMoveAi.isWorthReadding(newGuinea)).isFalse();
+  }
+
+  @Test
+  void smallLandingThatCanBeHeldIsWorthReadding() {
+    final ProTerritory newGuinea =
+        new ProTerritory(territory("New Guinea", gameData), new ProData());
+    newGuinea.setCanHold(true);
+
+    assertThat(ProCombatMoveAi.isWorthReadding(newGuinea)).isTrue();
+  }
+
+  @Test
+  void factoryIsWorthReaddingEvenIfItCantBeHeld() {
+    final ProTerritory southernEurope =
+        new ProTerritory(territory("Southern Europe", gameData), new ProData());
+    southernEurope.setCanHold(false);
+
+    assertThat(ProCombatMoveAi.isWorthReadding(southernEurope)).isTrue();
+  }
+}
