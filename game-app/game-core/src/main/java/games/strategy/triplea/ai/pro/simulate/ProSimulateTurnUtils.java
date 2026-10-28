@@ -88,6 +88,10 @@ public final class ProSimulateTurnUtils {
         delegateBridge.addChange(attackersKilledChange);
         final Change defendersKilledChange = ChangeFactory.removeUnits(t, defendersToRemove);
         delegateBridge.addChange(defendersKilledChange);
+        if (leavesEnemyOwner(entry.getKey(), t, result, player)) {
+          battleDelegate.getBattleTracker().removeBattle(battle, data);
+          continue;
+        }
         BattleTracker.captureOrDestroyUnits(t, player, player, delegateBridge, null);
         if (!checkIfCapturedTerritoryIsAlliedCapital(t, data, player, delegateBridge)) {
           delegateBridge.addChange(ChangeFactory.changeOwner(t, player));
@@ -102,6 +106,20 @@ public final class ProSimulateTurnUtils {
                 + updatedTerritory.getUnits());
       }
     }
+  }
+
+  /**
+   * Whether a won battle still leaves enemy land {@code t} with its owner: a bombing raid, or a
+   * battle with no attacking land unit left, takes no territory.
+   */
+  private static boolean leavesEnemyOwner(
+      final BattleType battleType,
+      final Territory t,
+      final ProBattleResult result,
+      final GamePlayer player) {
+    return !t.isWater()
+        && !Matches.isTerritoryAllied(player).test(t)
+        && (battleType != BattleType.NORMAL || !result.isHasLandUnitRemaining());
   }
 
   /**
