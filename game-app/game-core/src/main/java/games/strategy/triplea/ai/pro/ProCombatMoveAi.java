@@ -1558,7 +1558,7 @@ public class ProCombatMoveAi {
     for (final Map.Entry<Unit, Set<Territory>> bomberEntry :
         territoryManager.getAttackOptions().getBomberMoveMap().entrySet()) {
       final Unit bomber = bomberEntry.getKey();
-      if (alreadyAttackedWithUnits.contains(bomber)) {
+      if (alreadyAttackedWithUnits.contains(bomber) && !proData.isBeta()) {
         continue; // already attacked bombers cannot move
       }
       Collection<Territory> bomberTargetTerritories = bomberEntry.getValue();
@@ -1570,6 +1570,10 @@ public class ProCombatMoveAi {
                 terr ->
                     !AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(
                         terr, player, data, true));
+      }
+      if (alreadyAttackedWithUnits.contains(bomber)) {
+        moveBomberFromSurplusAttackToFreeRaid(attackMap, bomberTargetTerritories, bomber);
+        continue;
       }
       determineBestBombingAttackForBomber(
           attackMap, sortedUnitAttackOptions, bomberTargetTerritories, bomber);
@@ -1726,6 +1730,105 @@ public class ProCombatMoveAi {
       }
     }
     return Optional.empty();
+  }
+
+  /**
+   * Moves {@code bomber} out of the attack it was assigned to and onto an enemy factory without AA
+   * when the attack still wins without it and loses less TUV swing than the raid's expected damage.
+   * Attacks are assigned before raids, so otherwise a bomber that adds little to a won attack never
+   * raids.
+   */
+  private void moveBomberFromSurplusAttackToFreeRaid(
+      final Map<Territory, ProTerritory> attackMap,
+      final Collection<Territory> bomberTargetTerritories,
+      final Unit bomber) {
+    final ProTerritory from =
+        attackMap.values().stream()
+            .filter(patd -> patd.getUnits().contains(bomber))
+            .findAny()
+            .orElse(null);
+    if (from == null) {
+      return;
+    }
+    final Predicate<Unit> bombingTargetMatch =
+        Matches.unitCanProduceUnitsAndCanBeDamaged()
+            .and(Matches.unitIsLegalBombingTargetBy(bomber));
+    Territory raidTerritory = null;
+    int maxDamage = 1;
+    for (final Territory t : bomberTargetTerritories) {
+      if (t.getUnits().stream().noneMatch(bombingTargetMatch)
+          || t.anyUnitsMatch(Matches.unitIsAaForBombingThisUnitOnly())
+          || !canAirSafelyLandAfterAttack(bomber, t)) {
+        continue;
+      }
+      // a raid does at most the territory's production; assume 3 per bomber already raiding it
+      final int damage =
+          Math.min(
+              3, TerritoryAttachment.getProduction(t) - 3 * attackMap.get(t).getBombers().size());
+      if (damage > maxDamage) {
+        maxDamage = damage;
+        raidTerritory = t;
+      }
+    }
+    if (raidTerritory == null) {
+      return;
+    }
+    final List<Unit> withoutBomber = new ArrayList<>(from.getUnits());
+    withoutBomber.remove(bomber);
+    final Territory t = from.getTerritory();
+    final List<Unit> defenders = from.getMaxEnemyDefenders(player);
+    final ProBattleResult with =
+        calc.estimateAttackBattleResults(
+            proData, t, from.getUnits(), defenders, from.getBombardTerritoryMap().keySet());
+    final ProBattleResult without =
+        calc.estimateAttackBattleResults(
+            proData, t, withoutBomber, defenders, from.getBombardTerritoryMap().keySet());
+    if (!canSpareBomberForRaid(with, without, proData.getWinPercentage(), maxDamage)) {
+      ProLogger.trace(
+          "Keep bomber in attack on "
+              + t
+              + ", win% "
+              + with.getWinPercentage()
+              + " -> "
+              + without.getWinPercentage()
+              + ", swing "
+              + with.getTuvSwing()
+              + " -> "
+              + without.getTuvSwing());
+      return;
+    }
+    from.getUnits().remove(bomber);
+    from.setBattleResult(null);
+    attackMap.get(raidTerritory).getBombers().add(bomber);
+    ProLogger.debug(
+        "Move bomber ("
+            + bomber
+            + ") from attack on "
+            + t
+            + " to raid "
+            + raidTerritory
+            + ", win% "
+            + with.getWinPercentage()
+            + " -> "
+            + without.getWinPercentage());
+  }
+
+  /**
+   * Whether an attack can give up a bomber for a raid: without it the attack still wins (reaches
+   * {@code minWinPercentage} or loses at most 1 point of win chance), still keeps a land unit alive
+   * to capture, and loses less TUV swing than the raid's {@code raidDamage}.
+   */
+  static boolean canSpareBomberForRaid(
+      final ProBattleResult with,
+      final ProBattleResult without,
+      final double minWinPercentage,
+      final int raidDamage) {
+    final boolean stillWins =
+        without.getWinPercentage() >= minWinPercentage
+            || without.getWinPercentage() >= with.getWinPercentage() - 1;
+    return stillWins
+        && (!with.isHasLandUnitRemaining() || without.isHasLandUnitRemaining())
+        && without.getTuvSwing() >= with.getTuvSwing() - raidDamage;
   }
 
   /**
