@@ -309,7 +309,9 @@ public final class ProTerritoryValueUtils {
       final int distance =
           data.getMap().getDistance(t, nearbyEnemyTerritory, territoryToNeighborCondition);
       if (distance > 0) {
-        double value = TerritoryAttachment.getProduction(nearbyEnemyTerritory);
+        double value =
+            TerritoryAttachment.getProduction(nearbyEnemyTerritory)
+                + ProNationalObjectiveUtils.value(proData, player, nearbyEnemyTerritory);
         if (ProUtils.isNeutralLand(nearbyEnemyTerritory)) {
           // find neutral value
           value = findTerritoryAttackValue(proData, player, nearbyEnemyTerritory) / 3;
@@ -400,7 +402,9 @@ public final class ProTerritoryValueUtils {
       if (distance > 0 && distance <= 3) {
         if (ProMatches.territoryIsEnemyOrCantBeHeld(player, territoriesThatCantBeHeld)
             .test(nearbyLandTerritory)) {
-          double value = TerritoryAttachment.getProduction(nearbyLandTerritory);
+          double value =
+              TerritoryAttachment.getProduction(nearbyLandTerritory)
+                  + ProNationalObjectiveUtils.value(proData, player, nearbyLandTerritory);
           if (ProUtils.isNeutralLand(nearbyLandTerritory)) {
             value = findTerritoryAttackValue(proData, player, nearbyLandTerritory);
           }
