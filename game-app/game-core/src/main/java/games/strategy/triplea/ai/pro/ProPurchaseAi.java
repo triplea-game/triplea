@@ -26,6 +26,7 @@ import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.ai.pro.data.ProTerritoryManager;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.ai.pro.util.ProBattleUtils;
+import games.strategy.triplea.ai.pro.util.ProClockUtils;
 import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.ai.pro.util.ProPurchaseUtils;
@@ -59,6 +60,10 @@ class ProPurchaseAi {
 
   // Land distance assumed for units that must cross the sea before they fight.
   private static final int OVERSEAS_DISTANCE = 10;
+  // Rounds the kill-strike clocks look ahead.
+  private static final int CLOCK_HORIZON = 10;
+  // A shorter enemy clock on my capital than mine on theirs forces its defence only up to this.
+  private static final int COOKED_HORIZON = 4;
 
   private final ProOddsCalculator calc;
   private final ProData proData;
@@ -310,6 +315,91 @@ class ProPurchaseAi {
     ProLogger.info("Reserved production for held units " + held + ": " + reserve);
   }
 
+  /**
+   * Buys the cheapest defence at the capital when the enemies' kill-strike clock on it reads 2 or
+   * less, or beats my own fastest clock on an enemy capital and reads at most {@link
+   * #COOKED_HORIZON}: enough that no round before my strike (between 2 and {@link #COOKED_HORIZON}
+   * rounds out) is a kill, assuming the best defensive buy there on every later turn.
+   */
+  private void purchaseCapitalDefenceIfCooked(
+      final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
+      final ProPurchaseOptionMap purchaseOptions) {
+    final Territory capital = proData.getMyCapital();
+    if (capital == null || !capital.isOwnedBy(player)) {
+      return;
+    }
+    final ProPurchaseTerritory ppt = purchaseTerritories.get(capital);
+    if (ppt == null) {
+      return;
+    }
+    final ProPlaceTerritory place =
+        ppt.getCanPlaceTerritories().stream()
+            .filter(p -> p.getTerritory().equals(capital))
+            .findFirst()
+            .orElse(null);
+    if (place == null) {
+      return;
+    }
+    final List<GamePlayer> enemies = ProUtils.getEnemyPlayers(player);
+    final int theirClock = ProClockUtils.timeToKill(data, enemies, capital, false, CLOCK_HORIZON);
+    if (theirClock > COOKED_HORIZON) {
+      return;
+    }
+    final List<GamePlayer> alliance = new ArrayList<>(ProUtils.getAlliedPlayersInTurnOrder(player));
+    if (!alliance.contains(player)) {
+      alliance.add(player);
+    }
+    int myClock = ProClockUtils.NONE;
+    for (final Territory enemyCapital : ProUtils.getLiveEnemyCapitals(data, player)) {
+      myClock =
+          Math.min(
+              myClock, ProClockUtils.timeToKill(data, alliance, enemyCapital, true, CLOCK_HORIZON));
+    }
+    if (theirClock > 2 && theirClock >= myClock) {
+      return;
+    }
+    final int rounds = Math.max(2, Math.min(myClock, COOKED_HORIZON));
+    double deficit = ProClockUtils.defenceDeficit(data, enemies, capital, rounds);
+    for (final Unit u : place.getPlaceUnits()) {
+      deficit -=
+          2.0 * u.getUnitAttachment().getHitPoints() + u.getUnitAttachment().getDefense(player);
+    }
+    if (deficit <= 0) {
+      return;
+    }
+    final Optional<ProPurchaseOption> best =
+        ProPurchaseValidationUtils.findPurchaseOptionsForTerritory(
+                proData, player, purchaseOptions.getLandOptions(), capital, isBid)
+            .stream()
+            .filter(o -> o.getCost() > 0 && o.getDefense() > 0)
+            .max(
+                Comparator.comparingDouble(
+                    o -> (2.0 * o.getHitPoints() + o.getDefense()) / o.getCost()));
+    if (best.isEmpty()) {
+      return;
+    }
+    final double strength =
+        (2.0 * best.get().getHitPoints() + best.get().getDefense()) * best.get().getQuantity();
+    int bought = 0;
+    while (deficit > 0
+        && resourceTracker.hasEnough(best.get())
+        && ppt.getRemainingUnitProduction() >= best.get().getQuantity()) {
+      resourceTracker.purchase(best.get());
+      addUnitsToPlace(place, best.get().createTempUnits());
+      bought += best.get().getQuantity();
+      deficit -= strength;
+    }
+    ProLogger.info(
+        String.format(
+            "%s capital clock %d (mine %d): bought %d %s to defend %s",
+            player.getName(),
+            theirClock,
+            myClock,
+            bought,
+            best.get().getUnitType().getName(),
+            capital.getName()));
+  }
+
   private static void reserveSlots(
       final List<ProPurchaseTerritory> factories,
       final int units,
@@ -375,6 +465,9 @@ class ProPurchaseAi {
         purchaseOptions.getLandZeroMoveOptions(),
         purchaseOptions.getAirOptions(),
         true);
+    if (proData.isBeta()) {
+      purchaseCapitalDefenceIfCooked(purchaseTerritories, purchaseOptions);
+    }
 
     // Find strategic value for each territory
     ProLogger.info("Find strategic value for place territories");
