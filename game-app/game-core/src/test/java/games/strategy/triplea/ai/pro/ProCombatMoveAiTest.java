@@ -5,9 +5,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.gameparser.GameParseException;
+import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class ProCombatMoveAiTest {
@@ -45,5 +47,43 @@ class ProCombatMoveAiTest {
     TerritoryAttachment.getOrThrow(territory("Southern Europe", gameData)).setCapital("Germans");
 
     assertThat(ProCombatMoveAi.capitalValue(territory("Germany", gameData), gameData)).isZero();
+  }
+
+  @Test
+  void bomberIsSparedWhenAttackStillWinsAndRaidOutweighsLostSwing() {
+    final ProBattleResult withBomber = battleResult(99, 10, true);
+    final ProBattleResult withoutBomber = battleResult(97, 8, true);
+
+    assertThat(ProCombatMoveAi.canSpareBomberForRaid(withBomber, withoutBomber, 95, 3)).isTrue();
+  }
+
+  @Test
+  void bomberIsKeptWhenAttackNoLongerWins() {
+    final ProBattleResult withBomber = battleResult(96, 10, true);
+    final ProBattleResult withoutBomber = battleResult(90, 9, true);
+
+    assertThat(ProCombatMoveAi.canSpareBomberForRaid(withBomber, withoutBomber, 95, 3)).isFalse();
+  }
+
+  @Test
+  void bomberIsKeptWhenNoLandUnitWouldSurviveToCapture() {
+    final ProBattleResult withBomber = battleResult(99, 10, true);
+    final ProBattleResult withoutBomber = battleResult(99, 10, false);
+
+    assertThat(ProCombatMoveAi.canSpareBomberForRaid(withBomber, withoutBomber, 95, 3)).isFalse();
+  }
+
+  @Test
+  void bomberIsKeptWhenLostSwingExceedsRaidDamage() {
+    final ProBattleResult withBomber = battleResult(99, 10, true);
+    final ProBattleResult withoutBomber = battleResult(99, 6, true);
+
+    assertThat(ProCombatMoveAi.canSpareBomberForRaid(withBomber, withoutBomber, 95, 3)).isFalse();
+  }
+
+  private static ProBattleResult battleResult(
+      final double winPercentage, final double tuvSwing, final boolean hasLandUnitRemaining) {
+    return new ProBattleResult(
+        winPercentage, tuvSwing, hasLandUnitRemaining, List.of(), List.of(), 1);
   }
 }
