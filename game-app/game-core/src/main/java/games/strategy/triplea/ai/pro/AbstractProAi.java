@@ -540,7 +540,8 @@ public abstract class AbstractProAi extends AbstractAi {
     final GamePlayer player = getGamePlayer();
     if (battleSite.isWater()
         || !player.equals(hit)
-        || storedStrafingTerritories.contains(battleSite)) {
+        || storedStrafingTerritories.contains(battleSite)
+        || storedStrafeRetreats.containsKey(battleSite.getName())) {
       return killed;
     }
     final IBattle battle =
