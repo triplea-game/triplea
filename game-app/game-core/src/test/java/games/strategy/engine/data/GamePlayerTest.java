@@ -32,7 +32,7 @@ final class GamePlayerTest {
   final class IsAiTest {
     @Test
     void shouldReturnTrueWhenTypeIsAi() {
-      List.of("AI:Hard (AI)", "ai:hard (ai)")
+      List.of("AI:Hard (AI)", "ai:hard (ai)","AI:Fast (AI)", "AI:Weak (AI)")
           .forEach(
               encodedType -> {
                 gamePlayer.setWhoAmI(encodedType);
@@ -60,6 +60,8 @@ final class GamePlayerTest {
       List.of(
               "AI:Hard (AI)",
               "ai:Hard (AI)",
+              "AI:Fast (AI)",
+              "AI:Weak (AI)",
               "Human:Patton",
               "huMAN:Patton",
               "null:Bot",
