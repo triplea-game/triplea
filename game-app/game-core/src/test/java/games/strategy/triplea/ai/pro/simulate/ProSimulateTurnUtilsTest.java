@@ -124,6 +124,40 @@ class ProSimulateTurnUtilsTest {
   }
 
   @Test
+  void undefendedLandingKeepsItsAttackers() {
+    final GamePlayer british = british(gameData);
+    final Territory seaZone12 = gameData.getMap().getTerritoryOrThrow("12 Sea Zone");
+    final Territory seaZone13 = gameData.getMap().getTerritoryOrThrow("13 Sea Zone");
+    final Territory algeria = gameData.getMap().getTerritoryOrThrow("Algeria");
+    removeFrom(algeria, List.copyOf(algeria.getUnits()));
+    addTo(seaZone12, submarine(gameData).create(1, germans(gameData)));
+    final List<Unit> destroyers = destroyer(gameData).create(1, british);
+    addTo(seaZone12, destroyers);
+    final List<Unit> infantry = infantry(gameData).create(1, british);
+    addTo(algeria, infantry);
+    final IDelegateBridge bridge = newDelegateBridge(british);
+    battleTracker.addBattle(
+        gameData.getMap().getRouteOrElseThrow(seaZone13, seaZone12, it -> true),
+        destroyers,
+        british,
+        bridge,
+        null,
+        List.of());
+    battleTracker.addBattle(
+        gameData.getMap().getRouteOrElseThrow(seaZone12, algeria, it -> true),
+        infantry,
+        british,
+        bridge,
+        null,
+        List.of());
+    when(calc.callBattleCalc(any(), any(), any(), any(), any())).thenReturn(new ProBattleResult());
+
+    ProSimulateTurnUtils.simulateBattles(new ProData(), gameData, british, bridge, calc);
+
+    assertThat(algeria.getUnits()).containsExactlyElementsOf(infantry);
+  }
+
+  @Test
   void landBattleWonWithLandUnitLeftTakesTerritory() {
     final GamePlayer russians = russians(gameData);
     final Territory karelia = gameData.getMap().getTerritoryOrThrow("Karelia S.S.R.");
