@@ -10,7 +10,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
@@ -27,7 +26,6 @@ import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.ai.pro.util.ProPurchaseUtils;
 import games.strategy.triplea.ai.pro.util.ProTransportUtils;
 import games.strategy.triplea.ai.pro.util.ProUtils;
-import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -632,23 +630,13 @@ public abstract class AbstractProAi extends AbstractAi {
       }
       ownerAllyMovesFirst |= data.getRelationshipTracker().isAllied(p, owner);
     }
-    // Mirrors BattleTracker#addChangesOnTakeOverCapitol and
-    // TerritoryAttachment#doWeHaveEnoughCapitalsToProduce, after this capture.
-    final boolean ownersCapital = ta.get().getCapital().filter(owner.getName()::equals).isPresent();
-    final int capitalsLeft =
-        TerritoryAttachment.getAllCurrentlyOwnedCapitals(owner, data.getMap()).size() - 1;
-    final PlayerAttachment pa = PlayerAttachment.get(owner);
-    final boolean takesTreasury =
-        ownersCapital && (pa == null || capitalsLeft < pa.getRetainCapitalNumber());
-    final boolean deniesOwnerIncome =
-        ownersCapital && capitalsLeft < (pa == null ? 1 : pa.getRetainCapitalProduceNumber());
     final int production = ta.get().getProduction();
     return ProCasualtyUtils.captureValue(
         production * Properties.getPuMultiplier(data.getProperties()),
         ProMatches.territoryHasInfraFactoryAndIsLand().test(site) ? production : 0,
         ta.get().getVictoryCity() > 0,
-        takesTreasury ? owner.getResources().getQuantity(Constants.PUS) : 0,
-        deniesOwnerIncome,
+        ProUtils.capturedTreasury(site, data),
+        ProUtils.captureStopsIncome(site, data.getMap()),
         ProUtils.getPlayerProduction(owner, data),
         plannedCanHold.getOrDefault(site.getName(), false),
         ownerAllyMovesFirst);
