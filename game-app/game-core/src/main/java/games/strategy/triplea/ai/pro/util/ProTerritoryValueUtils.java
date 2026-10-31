@@ -112,28 +112,30 @@ public final class ProTerritoryValueUtils {
           && !data.getMap().getNeighbors(t, Matches.territoryIsWater()).isEmpty()) {
 
         // Determine sea value based on nearby convoy production
-        double nearbySeaProductionValue = 0;
         final Set<Territory> nearbySeaTerritories =
             data.getMap().getNeighbors(t, 4, ProMatches.territoryCanMoveSeaUnits(player, true));
         final List<Territory> nearbyEnemySeaTerritories =
             CollectionUtils.getMatches(
                 nearbySeaTerritories,
                 ProMatches.territoryIsEnemyOrCantBeHeld(player, territoriesThatCantBeHeld));
-        calculateTerritoryValueToTargets(
-            t, nearbyEnemySeaTerritories, player, data, TerritoryAttachment::getProduction);
+        final double nearbySeaProductionValue =
+            calculateTerritoryValueToTargets(
+                t, nearbyEnemySeaTerritories, player, data, TerritoryAttachment::getProduction);
 
         // Determine sea value based on nearby enemy sea units
-        double nearbyEnemySeaUnitValue = 0;
         final List<Territory> nearbyEnemySeaUnitTerritories =
             CollectionUtils.getMatches(
                 nearbySeaTerritories, Matches.territoryHasEnemyUnits(player));
-        calculateTerritoryValueToTargets(
-            t,
-            nearbyEnemySeaUnitTerritories,
-            player,
-            data,
-            targetTerritory ->
-                targetTerritory.getUnitCollection().countMatches(Matches.unitIsEnemyOf(player)));
+        final double nearbyEnemySeaUnitValue =
+            calculateTerritoryValueToTargets(
+                t,
+                nearbyEnemySeaUnitTerritories,
+                player,
+                data,
+                targetTerritory ->
+                    targetTerritory
+                        .getUnitCollection()
+                        .countMatches(Matches.unitIsEnemyOf(player)));
 
         // Set final values
         final double value = 100 * nearbySeaProductionValue + nearbyEnemySeaUnitValue;
@@ -168,9 +170,6 @@ public final class ProTerritoryValueUtils {
       final int distance = optionalRoute.get().numberOfSteps();
       if (distance > 0) {
         territoryValue += toTargetValueFunction.applyAsInt(targetTerritory) / Math.pow(2, distance);
-        territoryValue +=
-            targetTerritory.getUnitCollection().countMatches(Matches.unitIsEnemyOf(player))
-                / Math.pow(2, distance);
       }
     }
     return territoryValue;
