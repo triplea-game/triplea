@@ -66,9 +66,13 @@ public class TileManager {
   private final Map<String, Set<IDrawable>> territoryDrawables = new HashMap<>();
   private final Map<String, Set<Tile>> territoryTiles = new HashMap<>();
   private final Collection<UnitsDrawer> allUnitDrawables = new ArrayList<>();
-  private final UiContext uiContext;
+  private volatile UiContext uiContext;
 
   public TileManager(final UiContext uiContext) {
+    this.uiContext = uiContext;
+  }
+
+  public void setUiContext(final UiContext uiContext) {
     this.uiContext = uiContext;
   }
 
