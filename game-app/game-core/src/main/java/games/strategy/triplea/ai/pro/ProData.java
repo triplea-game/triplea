@@ -66,6 +66,17 @@ public final class ProData {
     hiddenInitialize(proAi, data, player, true);
   }
 
+  /**
+   * Whether combat move may land behind a sea battle it fights in the same turn. Hard Beta does
+   * this only for players in an alliance named "Axis": on WW2 maps it helped the Axis, while the
+   * Allies' extra landings were retaken and cost TUV.
+   */
+  public boolean canLandBehindSeaBattle() {
+    return beta
+        && player != null
+        && data.getAllianceTracker().getAlliancesPlayerIsIn(player).contains("Axis");
+  }
+
   public Territory getUnitTerritory(final Unit unit) {
     return unitTerritoryMap.get(unit);
   }
