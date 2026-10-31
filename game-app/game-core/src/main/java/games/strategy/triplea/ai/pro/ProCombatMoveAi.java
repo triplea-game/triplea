@@ -1252,7 +1252,7 @@ public class ProCombatMoveAi {
         territoryManager.getAttackOptions().getBomberMoveMap().entrySet()) {
       final Unit bomber = bomberEntry.getKey();
       if (alreadyAttackedWithUnits.contains(bomber)) {
-        return; // already attacked bombers cannot move
+        continue; // already attacked bombers cannot move
       }
       Collection<Territory> bomberTargetTerritories = bomberEntry.getValue();
       if (raidsMayBePrecededByAirBattles) {
