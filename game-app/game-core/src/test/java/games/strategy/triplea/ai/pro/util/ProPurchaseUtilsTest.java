@@ -3,9 +3,11 @@ package games.strategy.triplea.ai.pro.util;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static games.strategy.triplea.delegate.GameDataTestUtil.britain;
 import static games.strategy.triplea.delegate.GameDataTestUtil.chinese;
+import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.japanese;
 import static games.strategy.triplea.delegate.GameDataTestUtil.unitType;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -17,8 +19,11 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.framework.GameDataManager;
+import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.player.PlayerBridge;
 import games.strategy.triplea.ai.pro.ProAi;
+import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProPlaceTerritory;
 import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
 import games.strategy.triplea.delegate.Matches;
@@ -211,5 +216,50 @@ public class ProPurchaseUtilsTest {
                       || territoryProPlace.equals(seaZone60)
                       || territoryProPlace.equals(seaZone61));
             });
+  }
+
+  /// The purchase plans on a copy of the game data but with the real player, so conquests must be
+  /// read from the copy: the engine won't place in Southern Europe this turn.
+  @Test
+  void findPurchaseTerritoriesSkipsFactoryConqueredOnlyInTheSimulationCopy() {
+    final GameData realData = TestMapGameData.REVISED.getGameData();
+    final GamePlayer realGermans = checkNotNull(germans(realData));
+    final GameData simulatedData =
+        GameDataUtils.cloneGameData(
+                realData, GameDataManager.Options.builder().withDelegates(true).build())
+            .orElseThrow();
+    final Territory simulatedSouthernEurope =
+        simulatedData.getMap().getTerritoryOrThrow("Southern Europe");
+    simulatedData
+        .getBattleDelegate()
+        .getBattleTracker()
+        .getConquered()
+        .add(simulatedSouthernEurope);
+    final ProData proData = new ProData();
+    proData.initializeSimulation(
+        new ProAi("Test Name", "Test Player Label"), simulatedData, realGermans);
+
+    final Map<Territory, ProPurchaseTerritory> purchaseTerritories =
+        ProPurchaseUtils.findPurchaseTerritories(proData, realGermans);
+
+    assertThat(purchaseTerritories.keySet())
+        .extracting(Territory::getName)
+        .containsExactly("Germany");
+  }
+
+  /// Chinese have `placementCapturedTerritory`, so the engine lets them place in Central China
+  /// even though they conquered it this turn.
+  @Test
+  void findPurchaseTerritoriesKeepsConqueredTerritoryWhenPlacementCapturedTerritoryAllowed() {
+    final GameData pos2GameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
+    final GamePlayer playerChinese = checkNotNull(chinese(pos2GameData));
+    final Territory centralChina = pos2GameData.getMap().getTerritoryOrThrow("Central China");
+    pos2GameData.getBattleDelegate().getBattleTracker().getConquered().add(centralChina);
+    final ProAi proAi = getProAiForPurchaseStepOfPlayer(playerChinese, pos2GameData);
+
+    final Map<Territory, ProPurchaseTerritory> purchaseTerritories =
+        ProPurchaseUtils.findPurchaseTerritories(proAi.getProData(), playerChinese);
+
+    assertThat(purchaseTerritories).containsKey(centralChina);
   }
 }
