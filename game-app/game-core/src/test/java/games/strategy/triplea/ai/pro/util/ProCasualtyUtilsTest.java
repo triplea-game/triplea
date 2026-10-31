@@ -92,28 +92,28 @@ class ProCasualtyUtilsTest {
 
   @Test
   void aTradedTwoPuTerritoryIsWorthLessThanAFighterOverAnInfantry() {
-    final double value = ProCasualtyUtils.captureValue(2, false, false, false, 0, 30, false, false);
+    final double value = ProCasualtyUtils.captureValue(2, 0, false, 0, false, 30, false, false);
 
     assertThat(value).isLessThan(10 - 3);
   }
 
   @Test
   void aTradedFactoryAnAllyCanRetakeIsWorthLessThanAFighterOverAnInfantry() {
-    final double value = ProCasualtyUtils.captureValue(2, true, true, false, 0, 30, false, true);
+    final double value = ProCasualtyUtils.captureValue(2, 2, true, 0, false, 30, false, true);
 
     assertThat(value).isLessThan(10 - 3);
   }
 
   @Test
   void aFactoryOnlyTheOwnerCanRetakeDeniesItsPlacement() {
-    final double value = ProCasualtyUtils.captureValue(8, true, false, false, 0, 30, false, false);
+    final double value = ProCasualtyUtils.captureValue(16, 8, false, 0, false, 60, false, false);
 
-    assertThat(value).isEqualTo(8 + 8 + 0.2 * 8);
+    assertThat(value).isEqualTo(16 + 8 + 0.2 * 16);
   }
 
   @Test
   void aCapitalIsWorthItsTreasuryEvenIfRetaken() {
-    final double value = ProCasualtyUtils.captureValue(10, false, true, true, 80, 40, false, true);
+    final double value = ProCasualtyUtils.captureValue(10, 0, true, 80, true, 40, false, true);
 
     assertThat(value).isEqualTo(10 + 80 + 0.2 * (10 + 5 + 40));
   }

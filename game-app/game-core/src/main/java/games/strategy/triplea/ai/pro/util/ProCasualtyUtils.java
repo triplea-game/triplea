@@ -25,30 +25,31 @@ public class ProCasualtyUtils {
 
   /**
    * What capturing a land territory is worth in PUs to the captor. Certain even if it's retaken:
-   * its production (collected once) and a capital's treasury (taken at once, so the owner also
-   * can't buy with it). A factory denies the owner its next placement there, worth up to its
-   * production, unless an ally of the owner moving first can retake it, so then weighted by the
-   * chance of holding it. Weighted by that chance too: a turn of the territory's income denied to
-   * the owner, a victory city, and a capital owner's whole income.
+   * its income (collected once) and any treasury taken. A factory denies the owner its next
+   * placement there, worth up to its capacity, unless an ally of the owner moving first can retake
+   * it, so then weighted by the chance of holding it. Weighted by that chance too: a turn of the
+   * territory's income denied to the owner, a victory city, and the owner's whole income if losing
+   * this capital stops it collecting.
    *
-   * @param ownerIncome the owner's total production, which caps what it buys at the factory
+   * @param factoryCapacity the units the owner could place here, 0 without a factory
+   * @param ownerIncome the owner's total income, which caps what it buys at the factory
    * @param ownerAllyMovesFirst whether an ally of the owner moves before the owner's next turn
    */
   public static double captureValue(
-      final int production,
-      final boolean factory,
+      final double income,
+      final int factoryCapacity,
       final boolean victoryCity,
-      final boolean capital,
-      final double treasury,
+      final double treasuryTaken,
+      final boolean deniesOwnerIncome,
       final double ownerIncome,
       final boolean canHold,
       final boolean ownerAllyMovesFirst) {
     final double hold = canHold ? HOLD_CHANCE_CAN_HOLD : HOLD_CHANCE_TRADE;
     final double placementDenied =
-        factory ? Math.min(production, ownerIncome) * (ownerAllyMovesFirst ? hold : 1) : 0;
+        Math.min(factoryCapacity, ownerIncome) * (ownerAllyMovesFirst ? hold : 1);
     final double held =
-        production + (victoryCity ? VICTORY_CITY_VALUE : 0) + (capital ? ownerIncome : 0);
-    return production + (capital ? treasury : 0) + placementDenied + hold * held;
+        income + (victoryCity ? VICTORY_CITY_VALUE : 0) + (deniesOwnerIncome ? ownerIncome : 0);
+    return income + treasuryTaken + placementDenied + hold * held;
   }
 
   /** Keep {@code landToKeep} alive by losing {@code airToLose} instead. */
