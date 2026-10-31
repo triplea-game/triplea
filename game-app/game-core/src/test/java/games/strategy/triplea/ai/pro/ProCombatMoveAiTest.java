@@ -92,6 +92,13 @@ class ProCombatMoveAiTest {
   }
 
   @Test
+  void tradingAnOwnerHeldCapitalIsWorthItsIncomeAndTreasury() {
+    // Germany produces 10 with a factory; the Germans make 40 a turn and hold 40 PUs.
+    assertThat(ProCombatMoveAi.tradedTerritoryWorth(territory("Germany", gameData), gameData))
+        .isEqualTo((2 + 1) * 10 + 40 + 40);
+  }
+
+  @Test
   void enemyCapitalWhoseCaptureStopsItsIncomeIsBoosted() {
     assertThat(
             ProCombatMoveAi.isCapitalWorthBoosting(

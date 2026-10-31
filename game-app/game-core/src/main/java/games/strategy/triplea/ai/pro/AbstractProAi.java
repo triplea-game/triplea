@@ -10,7 +10,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
@@ -636,9 +635,7 @@ public abstract class AbstractProAi extends AbstractAi {
         production * Properties.getPuMultiplier(data.getProperties()),
         ProMatches.territoryHasInfraFactoryAndIsLand().test(site) ? production : 0,
         ta.get().getVictoryCity() > 0,
-        ProUtils.captureTakesTreasury(site, data.getMap())
-            ? owner.getResources().getQuantity(Constants.PUS)
-            : 0,
+        ProUtils.capturedTreasury(site, data),
         ProUtils.captureStopsIncome(site, data.getMap()),
         ProUtils.getPlayerProduction(owner, data),
         plannedCanHold.getOrDefault(site.getName(), false),

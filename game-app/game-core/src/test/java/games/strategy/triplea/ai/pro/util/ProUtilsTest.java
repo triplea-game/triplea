@@ -12,8 +12,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.gameparser.GameParseException;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
@@ -95,5 +98,18 @@ class ProUtilsTest {
     TerritoryAttachment.getOrThrow(territory("Southern Europe", data)).setCapital("Germans");
 
     assertThat(ProUtils.capitalValue(territory("Germany", data), data)).isZero();
+  }
+
+  @Test
+  void takingOneOfTwoCapitalsKeepsTheTreasuryOfAnOwnerThatRetainsOne()
+      throws GameParseException, MutableProperty.InvalidValueException {
+    final GameData data = TestMapGameData.LHTR.getGameData();
+    TerritoryAttachment.getOrThrow(territory("Southern Europe", data)).setCapital("Germans");
+    final PlayerAttachment pa =
+        new PlayerAttachment(Constants.PLAYER_ATTACHMENT_NAME, germans(data), data);
+    pa.getPropertyOrThrow("retainCapitalNumber").setValue(1);
+    germans(data).addAttachment(Constants.PLAYER_ATTACHMENT_NAME, pa);
+
+    assertThat(ProUtils.capturedTreasury(territory("Germany", data), data)).isZero();
   }
 }

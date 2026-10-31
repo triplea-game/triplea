@@ -1344,7 +1344,8 @@ public class ProCombatMoveAi {
                         + isFactory
                         + isCanHold * (1 + 2.0 * isFfa + 1.5 * isFactory + 0.5 * capturableUnits))
                     * production
-                + capitalValue;
+                + capitalValue
+                + ProUtils.capturedTreasury(t, data);
         double tuvSwing = result.getTuvSwing();
         if (isFfa == 1 && tuvSwing > 0) {
           tuvSwing *= 0.5;
@@ -1554,7 +1555,9 @@ public class ProCombatMoveAi {
   /** What a land capture I can't hold is worth, as in the attack value. */
   static double tradedTerritoryWorth(final Territory t, final GameData data) {
     final int isFactory = ProMatches.territoryHasInfraFactoryAndIsLand().test(t) ? 1 : 0;
-    return (2 + isFactory) * TerritoryAttachment.getProduction(t) + ProUtils.capitalValue(t, data);
+    return (2 + isFactory) * TerritoryAttachment.getProduction(t)
+        + ProUtils.capitalValue(t, data)
+        + ProUtils.capturedTreasury(t, data);
   }
 
   private void determineTerritoriesThatCanBeBombed(

@@ -11,6 +11,7 @@ import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -166,6 +167,13 @@ public final class ProUtils {
    */
   public static double capitalValue(final Territory t, final GameState data) {
     return captureStopsIncome(t, data.getMap()) ? getPlayerProduction(t.getOwner(), data) : 0;
+  }
+
+  /** The PUs taking {@code t} takes from its owner, the moment it falls. */
+  public static int capturedTreasury(final Territory t, final GameState data) {
+    return captureTakesTreasury(t, data.getMap())
+        ? t.getOwner().getResources().getQuantity(Constants.PUS)
+        : 0;
   }
 
   /** The income of {@code player}, or the ally, whose capital taking {@code t} liberates. */
