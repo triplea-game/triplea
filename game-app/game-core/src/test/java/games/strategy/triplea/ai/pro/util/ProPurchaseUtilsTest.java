@@ -22,10 +22,12 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.player.PlayerBridge;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProPlaceTerritory;
 import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
+import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PurchaseDelegate;
 import games.strategy.triplea.xml.TestMapGameData;
@@ -261,5 +263,31 @@ public class ProPurchaseUtilsTest {
         ProPurchaseUtils.findPurchaseTerritories(proAi.getProData(), playerChinese);
 
     assertThat(purchaseTerritories).containsKey(centralChina);
+  }
+
+  /// Like Dragon War players, these Germans have `placementCapturedTerritory` without
+  /// `placementAnyTerritory`, so the engine lets them use Southern Europe's factory, and place in
+  /// its sea zone, in the turn they conquer it.
+  @Test
+  void findPurchaseTerritoriesKeepsConqueredFactoryWhenPlacementCapturedTerritoryAllowed()
+      throws Exception {
+    final GameData revisedGameData = TestMapGameData.REVISED.getGameData();
+    final GamePlayer playerGermans = checkNotNull(germans(revisedGameData));
+    final RulesAttachment rules =
+        new RulesAttachment(Constants.RULES_ATTACHMENT_NAME, playerGermans, revisedGameData);
+    rules.getPropertyOrThrow("placementCapturedTerritory").setValue(true);
+    playerGermans.addAttachment(Constants.RULES_ATTACHMENT_NAME, rules);
+    final Territory southernEurope =
+        revisedGameData.getMap().getTerritoryOrThrow("Southern Europe");
+    revisedGameData.getBattleDelegate().getBattleTracker().getConquered().add(southernEurope);
+    final ProAi proAi = getProAiForPurchaseStepOfPlayer(playerGermans, revisedGameData);
+
+    final Map<Territory, ProPurchaseTerritory> purchaseTerritories =
+        ProPurchaseUtils.findPurchaseTerritories(proAi.getProData(), playerGermans);
+
+    assertThat(purchaseTerritories).containsKey(southernEurope);
+    assertThat(purchaseTerritories.get(southernEurope).getCanPlaceTerritories())
+        .extracting(ppt -> ppt.getTerritory().getName())
+        .containsExactlyInAnyOrder("Southern Europe", "14 Sea Zone");
   }
 }

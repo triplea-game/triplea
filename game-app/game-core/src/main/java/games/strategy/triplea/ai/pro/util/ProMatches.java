@@ -296,7 +296,7 @@ public final class ProMatches {
     return territoryIsNotConqueredOwnedLand(player).and(territoryHasFactoryAndIsOwnedLand(player));
   }
 
-  private static Predicate<Territory> territoryHasFactoryAndIsOwnedLand(final GamePlayer player) {
+  public static Predicate<Territory> territoryHasFactoryAndIsOwnedLand(final GamePlayer player) {
     final Predicate<Unit> factoryMatch =
         Matches.unitIsOwnedBy(player).and(Matches.unitCanProduceUnits());
     return Matches.isTerritoryOwnedBy(player)
@@ -346,9 +346,10 @@ public final class ProMatches {
                 player.getData().getMap(), Matches.territoryIsWater()));
   }
 
-  public static Predicate<Territory> territoryHasNoInfraFactoryAndIsNotConqueredOwnedLand(
+  public static Predicate<Territory> territoryHasNoInfraFactoryAndIsOwnedLand(
       final GamePlayer player) {
-    return territoryIsNotConqueredOwnedLand(player)
+    return Matches.isTerritoryOwnedBy(player)
+        .and(Matches.territoryIsLand())
         .and(territoryHasInfraFactoryAndIsOwnedLand(player).negate());
   }
 
