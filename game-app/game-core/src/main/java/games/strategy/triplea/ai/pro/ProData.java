@@ -27,6 +27,9 @@ import org.triplea.java.collections.IntegerMap;
 /** Pro AI data. */
 @Getter
 public final class ProData {
+  /** Turns on behavior still under evaluation; only the "Hard Beta" AI sets it. */
+  private final boolean beta;
+
   // Default values
   private boolean isSimulation = false;
   private double winPercentage = 95;
@@ -45,6 +48,14 @@ public final class ProData {
   private AbstractProAi proAi;
   private GameData data;
   private GamePlayer player;
+
+  public ProData() {
+    this(false);
+  }
+
+  public ProData(final boolean beta) {
+    this.beta = beta;
+  }
 
   public void initialize(final AbstractProAi proAi) {
     hiddenInitialize(proAi, proAi.getGameData(), proAi.getGamePlayer(), false);
