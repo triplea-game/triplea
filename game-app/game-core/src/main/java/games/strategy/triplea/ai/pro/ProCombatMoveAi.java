@@ -84,7 +84,7 @@ public class ProCombatMoveAi {
     // Remove territories that aren't worth attacking and prioritize the remaining ones
     final List<ProTerritory> attackOptions =
         territoryManager.removeTerritoriesThatCantBeConquered();
-    List<Territory> clearedTerritories = new ArrayList<>();
+    final List<Territory> clearedTerritories = new ArrayList<>();
     for (final ProTerritory patd : attackOptions) {
       clearedTerritories.add(patd.getTerritory());
     }
@@ -94,27 +94,20 @@ public class ProCombatMoveAi {
     removeTerritoriesThatArentWorthAttacking(attackOptions);
 
     // Determine which territories to attack
-    determineTerritoriesToAttack(attackOptions);
+    final List<ProTerritory> removedBySelection = new ArrayList<>();
+    determineTerritoriesToAttack(attackOptions, removedBySelection);
 
     // Determine which territories can be held and remove any that aren't worth attacking
-    clearedTerritories = new ArrayList<>();
-    final Set<Territory> possibleTransportTerritories = new HashSet<>();
-    for (final ProTerritory patd : attackOptions) {
-      clearedTerritories.add(patd.getTerritory());
-      if (!patd.getAmphibAttackMap().isEmpty()) {
-        possibleTransportTerritories.addAll(
-            data.getMap().getNeighbors(patd.getTerritory(), Matches.territoryIsWater()));
-      }
-    }
-    possibleTransportTerritories.addAll(clearedTerritories);
-    territoryManager.populateEnemyAttackOptions(clearedTerritories, possibleTransportTerritories);
-    determineTerritoriesThatCanBeHeld(attackOptions, clearedTerritories);
+    refreshEnemyAttackOptions(attackOptions);
     removeTerritoriesThatArentWorthAttacking(attackOptions);
 
     // Determine how many units to attack each territory with
     final List<Unit> alreadyMovedUnits =
         moveOneDefenderToLandTerritoriesBorderingEnemy(attackOptions);
+    final List<ProTerritory> beforeWorthCheck = new ArrayList<>(attackOptions);
     determineUnitsToAttackWith(attackOptions, alreadyMovedUnits);
+    reAddRemovedAmphibAttacks(
+        attackOptions, beforeWorthCheck, removedBySelection, alreadyMovedUnits);
 
     // Get all transport final territories
     ProMoveUtils.calculateAmphibRoutes(
@@ -314,7 +307,8 @@ public class ProCombatMoveAi {
     }
   }
 
-  private void determineTerritoriesToAttack(final List<ProTerritory> prioritizedTerritories) {
+  private void determineTerritoriesToAttack(
+      final List<ProTerritory> prioritizedTerritories, final List<ProTerritory> removed) {
 
     ProLogger.info("Determine which territories to attack");
 
@@ -327,28 +321,8 @@ public class ProCombatMoveAi {
       ProLogger.debug("Current number of territories: " + numToAttack);
       tryToAttackTerritories(territoriesToTryToAttack, List.of());
 
-      // Determine if all attacks are successful
-      boolean areSuccessful = true;
-      for (final ProTerritory patd : territoriesToTryToAttack) {
-        final Territory t = patd.getTerritory();
-        if (patd.getBattleResult() == null) {
-          patd.estimateBattleResult(calc, player);
-        }
-        ProLogger.trace(patd.getResultString() + " with attackers: " + patd.getUnits());
-        final double estimate =
-            ProBattleUtils.estimateStrengthDifference(
-                t, patd.getUnits(), patd.getMaxEnemyDefenders(player));
-        final ProBattleResult result = patd.getBattleResult();
-        if (!patd.isStrafing()
-            && estimate < patd.getStrengthEstimate()
-            && (result.getWinPercentage() < proData.getMinWinPercentage()
-                || !result.isHasLandUnitRemaining())) {
-          areSuccessful = false;
-        }
-      }
-
       // Determine whether to try more territories, remove a territory, or end
-      if (areSuccessful) {
+      if (allAttacksSucceed(territoriesToTryToAttack)) {
         for (final ProTerritory patd : territoriesToTryToAttack) {
           patd.setCanAttack(true);
           final double estimate =
@@ -371,6 +345,7 @@ public class ProCombatMoveAi {
             }
           }
           prioritizedTerritories.removeAll(amphibTerritoriesToRemove);
+          removed.addAll(amphibTerritoriesToRemove);
           haveRemovedAllAmphibTerritories = true;
         }
 
@@ -383,13 +358,123 @@ public class ProCombatMoveAi {
         ProLogger.debug(
             "Removing territory: "
                 + prioritizedTerritories.get(numToAttack - 1).getTerritory().getName());
-        prioritizedTerritories.remove(numToAttack - 1);
+        removed.add(prioritizedTerritories.remove(numToAttack - 1));
         if (numToAttack > prioritizedTerritories.size()) {
           numToAttack--;
         }
       }
     }
     ProLogger.debug("Final number of territories: " + (numToAttack - 1));
+  }
+
+  /** Whether every attack in {@code territories} wins with the units currently assigned to it. */
+  private boolean allAttacksSucceed(final List<ProTerritory> territories) {
+    boolean areSuccessful = true;
+    for (final ProTerritory patd : territories) {
+      if (patd.getBattleResult() == null) {
+        patd.estimateBattleResult(calc, player);
+      }
+      ProLogger.trace(patd.getResultString() + " with attackers: " + patd.getUnits());
+      final double estimate =
+          ProBattleUtils.estimateStrengthDifference(
+              patd.getTerritory(), patd.getUnits(), patd.getMaxEnemyDefenders(player));
+      final ProBattleResult result = patd.getBattleResult();
+      if (!patd.isStrafing()
+          && estimate < patd.getStrengthEstimate()
+          && (result.getWinPercentage() < proData.getMinWinPercentage()
+              || !result.isHasLandUnitRemaining())) {
+        areSuccessful = false;
+      }
+    }
+    return areSuccessful;
+  }
+
+  /**
+   * Re-adds the amphibious attacks that {@link #determineTerritoriesToAttack} removed, once the
+   * worth-it check has dropped an attack and freed its units. Each is kept only if every planned
+   * attack, including it, still wins and is worth it. eg: a UK landing is removed because it takes
+   * the air that a higher-priority Russia attack needs; Russia is then dropped as not worth it, so
+   * the UK landing is tried again with the freed air and transport.
+   */
+  private void reAddRemovedAmphibAttacks(
+      final List<ProTerritory> attackOptions,
+      final List<ProTerritory> beforeWorthCheck,
+      final List<ProTerritory> removedBySelection,
+      final List<Unit> alreadyMovedUnits) {
+    final List<ProTerritory> dropped = new ArrayList<>(beforeWorthCheck);
+    dropped.removeAll(attackOptions);
+    if (dropped.isEmpty()) {
+      return;
+    }
+    final List<ProTerritory> candidates = new ArrayList<>();
+    for (final ProTerritory patd : removedBySelection) {
+      if (patd.isNeedAmphibUnits()
+          && isWorthReAdding(patd)
+          && !patd.getTerritory().isWater()
+          && !dropped.contains(patd)
+          && !attackOptions.contains(patd)
+          && !candidates.contains(patd)) {
+        candidates.add(patd);
+      }
+    }
+    if (candidates.isEmpty()) {
+      return;
+    }
+    candidates.sort(Comparator.comparingDouble(ProTerritory::getValue).reversed());
+    final List<ProTerritory> cleared = new ArrayList<>(beforeWorthCheck);
+    for (final ProTerritory candidate : candidates) {
+      final List<ProTerritory> trial = new ArrayList<>(attackOptions);
+      trial.add(candidate);
+      tryToAttackTerritories(trial, alreadyMovedUnits);
+      if (candidate.getAmphibAttackMap().isEmpty() || !allAttacksSucceed(trial)) {
+        continue;
+      }
+      // the enemy counter-attack options cover only the cleared territories and their unload
+      // zones, so the worth-it check needs them refreshed for the candidate
+      cleared.add(candidate);
+      refreshEnemyAttackOptions(cleared);
+      determineUnitsToAttackWith(trial, alreadyMovedUnits);
+      if (trial.size() == attackOptions.size() + 1) {
+        ProLogger.debug("Re-adding amphib territory: " + candidate.getTerritory().getName());
+        attackOptions.add(candidate);
+      } else {
+        cleared.remove(candidate);
+        refreshEnemyAttackOptions(cleared);
+      }
+    }
+    // each trial reassigns every unit, so plan the final set again
+    determineUnitsToAttackWith(attackOptions, alreadyMovedUnits);
+  }
+
+  /**
+   * Finds the enemy counter-attack options against {@code attacks} and the sea zones their
+   * transports unload from, then which of them can be held.
+   */
+  private void refreshEnemyAttackOptions(final List<ProTerritory> attacks) {
+    final List<Territory> clearedTerritories = new ArrayList<>();
+    final Set<Territory> possibleTransportTerritories = new HashSet<>();
+    for (final ProTerritory patd : attacks) {
+      clearedTerritories.add(patd.getTerritory());
+      if (!patd.getAmphibAttackMap().isEmpty()) {
+        possibleTransportTerritories.addAll(
+            data.getMap().getNeighbors(patd.getTerritory(), Matches.territoryIsWater()));
+      }
+    }
+    possibleTransportTerritories.addAll(clearedTerritories);
+    territoryManager.populateEnemyAttackOptions(clearedTerritories, possibleTransportTerritories);
+    determineTerritoriesThatCanBeHeld(attacks, clearedTerritories);
+  }
+
+  /**
+   * Whether a removed landing is worth re-adding: an enemy capital or factory, or a target the
+   * combat move expects to hold. A small landing the enemy retakes next turn costs more than it
+   * gains.
+   */
+  static boolean isWorthReAdding(final ProTerritory patd) {
+    final Territory t = patd.getTerritory();
+    return TerritoryAttachment.get(t).map(TerritoryAttachment::isCapital).orElse(false)
+        || ProMatches.territoryHasInfraFactoryAndIsLand().test(t)
+        || patd.isCanHold();
   }
 
   private void determineTerritoriesThatCanBeHeld(
