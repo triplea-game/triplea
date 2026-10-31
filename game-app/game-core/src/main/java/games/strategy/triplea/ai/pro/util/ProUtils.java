@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
@@ -165,6 +166,24 @@ public final class ProUtils {
    */
   public static double capitalValue(final Territory t, final GameState data) {
     return captureStopsIncome(t, data.getMap()) ? getPlayerProduction(t.getOwner(), data) : 0;
+  }
+
+  /** The income of {@code player}, or the ally, whose capital taking {@code t} liberates. */
+  public static double liberationValue(
+      final Territory t, final GamePlayer player, final GameState data) {
+    return liberatedCapitalOwner(t, player, data)
+        .map(capitalOwner -> getPlayerProduction(capitalOwner, data))
+        .orElse(0.0);
+  }
+
+  /** The owner of capital {@code t}, {@code player} or an ally, when someone else holds it. */
+  public static Optional<GamePlayer> liberatedCapitalOwner(
+      final Territory t, final GamePlayer player, final GameState data) {
+    return TerritoryAttachment.get(t)
+        .flatMap(TerritoryAttachment::getCapital)
+        .filter(not(t.getOwner().getName()::equals))
+        .map(data.getPlayerList()::getPlayerId)
+        .filter(capitalOwner -> data.getRelationshipTracker().isAllied(player, capitalOwner));
   }
 
   /**

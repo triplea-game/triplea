@@ -1,7 +1,6 @@
 package games.strategy.triplea.ai.pro;
 
 import static games.strategy.triplea.ai.pro.util.ProUtils.summarizeUnits;
-import static java.util.function.Predicate.not;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -225,7 +224,7 @@ public class ProCombatMoveAi {
       ProductionAndIsCapital productionAndIsCapital = getProductionAndIsCapital(t);
       productionAndIsCapital.production +=
           (int) Math.round(ProNationalObjectiveUtils.value(proData, player, t));
-      final int isCapital = isCapitalWorthBoosting(t, player, data) ? 1 : 0;
+      final int isCapital = isCapitalWorthTargeting(patd, player, data) ? 1 : 0;
 
       // Calculate attack value for prioritization
       double tuvSwing = patd.getMaxBattleResult().getTuvSwing();
@@ -1026,7 +1025,7 @@ public class ProCombatMoveAi {
         ProductionAndIsCapital initialProductionAndIsCapital = getProductionAndIsCapital(t);
         initialProductionAndIsCapital.production +=
             (int) Math.round(ProNationalObjectiveUtils.value(proData, player, t));
-        final int isCapital = isCapitalWorthBoosting(t, player, data) ? 1 : 0;
+        final int isCapital = isCapitalWorthTargeting(patd, player, data) ? 1 : 0;
         final double attackValue =
             result.getTuvSwing() + initialProductionAndIsCapital.production * (1 + 3.0 * isCapital);
         if (!patd.isStrafing() && (0.75 * enemyTuvSwing) > attackValue) {
@@ -1072,18 +1071,25 @@ public class ProCombatMoveAi {
   }
 
   /**
-   * Whether {@code t} gets the capital boost in target ranking: taking it stops its owner's income,
-   * or liberates the capital of {@code player} or an ally.
+   * Whether target {@code patd} gets the capital boost in target ranking: taking it stops its
+   * owner's income, or liberates the capital of {@code player} or an ally and can be held, since a
+   * liberated capital lost again pays its owner's income to the captor.
+   */
+  static boolean isCapitalWorthTargeting(
+      final ProTerritory patd, final GamePlayer player, final GameData data) {
+    final Territory t = patd.getTerritory();
+    return ProUtils.captureStopsIncome(t, data.getMap())
+        || (patd.isCanHold() && ProUtils.liberatedCapitalOwner(t, player, data).isPresent());
+  }
+
+  /**
+   * Whether taking {@code t} gets the capital boost: it stops its owner's income, or liberates the
+   * capital of {@code player} or an ally.
    */
   static boolean isCapitalWorthBoosting(
       final Territory t, final GamePlayer player, final GameData data) {
     return ProUtils.captureStopsIncome(t, data.getMap())
-        || TerritoryAttachment.get(t)
-            .flatMap(TerritoryAttachment::getCapital)
-            .filter(not(t.getOwner().getName()::equals))
-            .map(data.getPlayerList()::getPlayerId)
-            .filter(capitalOwner -> data.getRelationshipTracker().isAllied(player, capitalOwner))
-            .isPresent();
+        || ProUtils.liberatedCapitalOwner(t, player, data).isPresent();
   }
 
   /**

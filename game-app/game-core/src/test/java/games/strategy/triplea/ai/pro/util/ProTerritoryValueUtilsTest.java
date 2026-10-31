@@ -135,4 +135,32 @@ public class ProTerritoryValueUtilsTest {
     // Germany's factory produces 10; its land mass is itself plus 23 territories within 6 moves.
     assertThat(value).isEqualTo(Math.sqrt(10) * 32 * 24);
   }
+
+  @Test
+  void liberatedCapitalThatCanBeHeldIsValuedForItsOwnersIncome() {
+    final GameData data = TestMapGameData.LHTR.getGameData();
+    territory("Russia", data).setOwner(germans(data));
+
+    final double value =
+        ProTerritoryValueUtils.findEnemyCapitalsAndFactoriesValue(
+                british(data), 1, List.of(), List.of())
+            .get(territory("Russia", data));
+
+    // Russia's factory produces 8 and the Russians 16 without it; its land mass is itself plus 34
+    // territories within 6 moves.
+    assertThat(value).isEqualTo(Math.sqrt(8 + Math.sqrt(16)) * 32 * 35);
+  }
+
+  @Test
+  void liberatedCapitalThatCantBeHeldIsValuedAsAFactoryOnly() {
+    final GameData data = TestMapGameData.LHTR.getGameData();
+    territory("Russia", data).setOwner(germans(data));
+
+    final double value =
+        ProTerritoryValueUtils.findEnemyCapitalsAndFactoriesValue(
+                british(data), 1, List.of(territory("Russia", data)), List.of())
+            .get(territory("Russia", data));
+
+    assertThat(value).isEqualTo(Math.sqrt(8) * 32 * 35);
+  }
 }

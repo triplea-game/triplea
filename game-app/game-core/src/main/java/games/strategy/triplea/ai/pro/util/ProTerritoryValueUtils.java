@@ -236,7 +236,12 @@ public final class ProTerritoryValueUtils {
         factoryProduction = TerritoryAttachment.getProduction(t);
       }
 
-      final double playerProduction = ProUtils.capitalValue(t, data);
+      // A liberated capital lost again pays its owner's income to the captor
+      final double playerProduction =
+          ProUtils.capitalValue(t, data)
+              + (territoriesThatCantBeHeld.contains(t)
+                  ? 0
+                  : ProUtils.liberationValue(t, player, data));
 
       // Calculate value
       final int isNeutral = ProUtils.isNeutralLand(t) ? 1 : 0;

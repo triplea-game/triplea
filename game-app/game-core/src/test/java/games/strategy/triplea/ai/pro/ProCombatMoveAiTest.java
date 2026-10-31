@@ -146,4 +146,24 @@ class ProCombatMoveAiTest {
                 territory("Germany", gameData), british(gameData), gameData))
         .isTrue();
   }
+
+  @Test
+  void alliedCapitalHeldByTheEnemyThatCanBeHeldIsBoostedAsATarget() {
+    territory("Russia", gameData).setOwner(germans(gameData));
+    final ProTerritory russia = new ProTerritory(territory("Russia", gameData), new ProData());
+    russia.setCanHold(true);
+
+    assertThat(ProCombatMoveAi.isCapitalWorthTargeting(russia, british(gameData), gameData))
+        .isTrue();
+  }
+
+  @Test
+  void alliedCapitalHeldByTheEnemyThatCantBeHeldIsNotBoostedAsATarget() {
+    territory("Russia", gameData).setOwner(germans(gameData));
+    final ProTerritory russia = new ProTerritory(territory("Russia", gameData), new ProData());
+    russia.setCanHold(false);
+
+    assertThat(ProCombatMoveAi.isCapitalWorthTargeting(russia, british(gameData), gameData))
+        .isFalse();
+  }
 }
