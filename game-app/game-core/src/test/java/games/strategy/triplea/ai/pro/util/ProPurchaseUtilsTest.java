@@ -218,10 +218,10 @@ public class ProPurchaseUtilsTest {
             });
   }
 
-  /// The purchase plans on a simulated board but with the real player, so "conquered this turn"
-  /// must come from the simulated board: the engine won't place in Southern Europe this turn.
+  /// The purchase plans on a copy of the game data but with the real player, so conquests must be
+  /// read from the copy: the engine won't place in Southern Europe this turn.
   @Test
-  void findPurchaseTerritoriesSkipsFactoryConqueredOnTheSimulatedBoard() {
+  void findPurchaseTerritoriesSkipsFactoryConqueredOnlyInTheSimulationCopy() {
     final GameData realData = TestMapGameData.REVISED.getGameData();
     final GamePlayer realGermans = checkNotNull(germans(realData));
     final GameData simulatedData =
@@ -245,5 +245,21 @@ public class ProPurchaseUtilsTest {
     assertThat(purchaseTerritories.keySet())
         .extracting(Territory::getName)
         .containsExactly("Germany");
+  }
+
+  /// Chinese have `placementCapturedTerritory`, so the engine lets them place in Central China
+  /// even though they conquered it this turn.
+  @Test
+  void findPurchaseTerritoriesKeepsConqueredTerritoryWhenPlacementCapturedTerritoryAllowed() {
+    final GameData pos2GameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
+    final GamePlayer playerChinese = checkNotNull(chinese(pos2GameData));
+    final Territory centralChina = pos2GameData.getMap().getTerritoryOrThrow("Central China");
+    pos2GameData.getBattleDelegate().getBattleTracker().getConquered().add(centralChina);
+    final ProAi proAi = getProAiForPurchaseStepOfPlayer(playerChinese, pos2GameData);
+
+    final Map<Territory, ProPurchaseTerritory> purchaseTerritories =
+        ProPurchaseUtils.findPurchaseTerritories(proAi.getProData(), playerChinese);
+
+    assertThat(purchaseTerritories).containsKey(centralChina);
   }
 }

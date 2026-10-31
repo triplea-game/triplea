@@ -1239,7 +1239,7 @@ class ProPurchaseAi {
         CollectionUtils.getMatches(
             data.getMap().getTerritories(),
             ProMatches.territoryHasNoInfraFactoryAndIsNotConqueredOwnedLand(player)
-                .and(ProMatches.territoryIsNotConqueredOnItsBoard()));
+                .and(ProMatches.territoryIsNotConqueredUnlessPlacementCapturedAllowed(player)));
     possibleFactoryTerritories.removeAll(factoryPurchaseTerritories.keySet());
     final Set<Territory> purchaseFactoryTerritories = new HashSet<>();
     final List<Territory> territoriesThatCantBeHeld = new ArrayList<>();

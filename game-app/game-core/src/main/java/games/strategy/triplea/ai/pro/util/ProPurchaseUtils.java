@@ -194,7 +194,7 @@ public final class ProPurchaseUtils {
         CollectionUtils.getMatches(
             ownedAndNotConqueredFactoryTerritories,
             ProMatches.territoryCanMoveLandUnits(player, false)
-                .and(ProMatches.territoryIsNotConqueredOnItsBoard()));
+                .and(ProMatches.territoryIsNotConqueredUnlessPlacementCapturedAllowed(player)));
 
     // Create purchase territory holder for each factory territory
     return getProPurchaseTerritoryMapFromTerritories(
