@@ -88,6 +88,17 @@ public final class ProSimulateTurnUtils {
         delegateBridge.addChange(attackersKilledChange);
         final Change defendersKilledChange = ChangeFactory.removeUnits(t, defendersToRemove);
         delegateBridge.addChange(defendersKilledChange);
+        // callBattleCalc does not run a battle without defenders (eg: a landing waiting on a sea
+        // battle), so its result says nothing about which attackers survive.
+        final boolean leavesEnemyOwner =
+            !t.isWater()
+                && !Matches.isTerritoryAllied(player).test(t)
+                && (entry.getKey() != BattleType.NORMAL
+                    || (!defenders.isEmpty() && !result.isHasLandUnitRemaining()));
+        if (leavesEnemyOwner) {
+          battleDelegate.getBattleTracker().removeBattle(battle, data);
+          continue;
+        }
         BattleTracker.captureOrDestroyUnits(t, player, player, delegateBridge, null);
         if (!checkIfCapturedTerritoryIsAlliedCapital(t, data, player, delegateBridge)) {
           delegateBridge.addChange(ChangeFactory.changeOwner(t, player));
