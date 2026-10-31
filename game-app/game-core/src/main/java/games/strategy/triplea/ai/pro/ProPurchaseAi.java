@@ -1504,11 +1504,13 @@ class ProPurchaseAi {
   }
 
   /**
-   * Free carrier deck in {@code t} before this purchase places anything there, counted as the
-   * place delegate counts it: own carriers minus own carrier-landing air.
+   * Deck space the AI can fill with new fighters at {@code t}; negative when carriers there are
+   * overbooked.
    */
   private int startingUnusedCarrierCapacity(final Territory t) {
     final List<Unit> owned = t.getMatches(Matches.unitIsOwnedBy(player));
+    // Free deck on our own carriers net of our own landed air, as the place delegate counts it. The
+    // fallback below clamps to <= 0 so it only reports overbooking, never free deck.
     final int ownFree =
         AirMovementValidator.carrierCapacity(owned, t) - AirMovementValidator.carrierCost(owned);
     if (ownFree > 0) {
