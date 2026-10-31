@@ -1,7 +1,12 @@
 package games.strategy.triplea.ui;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.framework.LocalPlayers;
 import java.util.Arrays;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -69,6 +74,40 @@ final class UiContextTest {
     assertThat(prefs.get(MAP_SKIN, null))
         .as("the writer stores the menu string without rewriting its spelling")
         .isEqualTo("Nato");
+  }
+
+  @Test
+  @DisplayName("A new skin context keeps the local players for the next turn change")
+  void shouldInheritLocalPlayers() {
+    final GamePlayer remotePlayer = mock(GamePlayer.class);
+    final LocalPlayers localPlayers = mock(LocalPlayers.class);
+    when(localPlayers.playing(remotePlayer)).thenReturn(false);
+    final UiContext previous = mock(UiContext.class);
+    when(previous.getLocalPlayers()).thenReturn(localPlayers);
+    final UiContext skinned = mock(UiContext.class, CALLS_REAL_METHODS);
+
+    skinned.inheritPlayers(previous);
+
+    assertThat(skinned.getLocalPlayers()).isSameAs(localPlayers);
+    assertThat(skinned.setCurrentPlayer(remotePlayer)).isTrue();
+    assertThat(skinned.isCurrentPlayerRemote()).isTrue();
+  }
+
+  @Test
+  @DisplayName("A new skin context keeps the current player")
+  void shouldInheritCurrentPlayer() {
+    final GamePlayer localPlayer = mock(GamePlayer.class);
+    final LocalPlayers localPlayers = mock(LocalPlayers.class);
+    when(localPlayers.playing(localPlayer)).thenReturn(true);
+    final UiContext previous = mock(UiContext.class);
+    when(previous.getLocalPlayers()).thenReturn(localPlayers);
+    when(previous.getCurrentPlayer()).thenReturn(localPlayer);
+    final UiContext skinned = mock(UiContext.class, CALLS_REAL_METHODS);
+
+    skinned.inheritPlayers(previous);
+
+    assertThat(skinned.getCurrentPlayer()).isSameAs(localPlayer);
+    assertThat(skinned.isCurrentPlayerRemote()).isFalse();
   }
 
   private static void assertOriginalSkinIsNotStored(final Preferences prefs)

@@ -273,13 +273,22 @@ public class UiContext {
     return Preferences.userNodeForPackage(UiContext.class).node(mapDir);
   }
 
-  public static UiContext changeMapSkin(GameData gameData, String skinName) {
+  public static UiContext changeMapSkin(
+      final UiContext previous, GameData gameData, String skinName) {
     final Preferences prefs = getPreferencesForMap(gameData.getMapName());
     setMapSkinPreference(prefs, skinName);
     flushPreferences(prefs);
     UiContext uiContext = new UiContext(gameData);
     uiContext.getMapData().verify(gameData);
+    uiContext.inheritPlayers(previous);
     return uiContext;
+  }
+
+  /** Carries over the player state that a context built for a new skin starts without. */
+  @VisibleForTesting
+  void inheritPlayers(final UiContext previous) {
+    setLocalPlayers(previous.getLocalPlayers());
+    setCurrentPlayer(previous.getCurrentPlayer());
   }
 
   /** Stores a map skin name, or clears it when the player selects the original art. */
