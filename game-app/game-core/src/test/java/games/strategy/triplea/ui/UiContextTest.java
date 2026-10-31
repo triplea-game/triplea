@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -8,6 +9,7 @@ import static org.mockito.Mockito.when;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.framework.LocalPlayers;
 import java.util.Arrays;
+import java.util.function.Supplier;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import org.junit.jupiter.api.DisplayName;
@@ -52,6 +54,37 @@ final class UiContextTest {
     assertThat(prefs.get(MAP_SKIN, null))
         .as("selecting another skin replaces the saved name")
         .isEqualTo("Winter");
+  }
+
+  @Test
+  @DisplayName("A skin that fails to load puts the stored skin back")
+  void shouldRestoreStoredSkinWhenBuildFails() {
+    final Preferences prefs = new MemoryPreferences();
+    prefs.put(MAP_SKIN, "NATO");
+
+    assertThatThrownBy(() -> UiContext.withMapSkinPreference(prefs, "Broken", failingBuild()))
+        .isInstanceOf(IllegalStateException.class);
+
+    assertThat(prefs.get(MAP_SKIN, null))
+        .as("the skin saved before the failed change stays selected")
+        .isEqualTo("NATO");
+  }
+
+  @Test
+  @DisplayName("A skin that fails to load leaves MapSkin absent when nothing was stored")
+  void shouldClearSkinWhenBuildFailsAndNothingWasStored() {
+    final Preferences prefs = new MemoryPreferences();
+
+    assertThatThrownBy(() -> UiContext.withMapSkinPreference(prefs, "Broken", failingBuild()))
+        .isInstanceOf(IllegalStateException.class);
+
+    assertThat(prefs.get(MAP_SKIN, null)).as("the failed skin is not kept").isNull();
+  }
+
+  private static Supplier<UiContext> failingBuild() {
+    return () -> {
+      throw new IllegalStateException("skin failed verification");
+    };
   }
 
   @Test

@@ -33,6 +33,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
@@ -275,13 +276,36 @@ public class UiContext {
 
   public static UiContext changeMapSkin(
       final UiContext previous, GameData gameData, String skinName) {
-    final Preferences prefs = getPreferencesForMap(gameData.getMapName());
-    setMapSkinPreference(prefs, skinName);
-    flushPreferences(prefs);
-    UiContext uiContext = new UiContext(gameData);
-    uiContext.getMapData().verify(gameData);
+    final UiContext uiContext =
+        withMapSkinPreference(
+            getPreferencesForMap(gameData.getMapName()),
+            skinName,
+            () -> {
+              final UiContext newContext = new UiContext(gameData);
+              newContext.getMapData().verify(gameData);
+              return newContext;
+            });
     uiContext.inheritPlayers(previous);
     return uiContext;
+  }
+
+  /**
+   * Stores a map skin and builds the context that reads it. The stored skin is put back if the
+   * build fails, so a skin that fails to load does not break later launches of the map.
+   */
+  @VisibleForTesting
+  static <T> T withMapSkinPreference(
+      final Preferences prefs, final String skinName, final Supplier<T> build) {
+    final String storedSkin = prefs.get(MAP_SKIN_PREF, null);
+    setMapSkinPreference(prefs, skinName);
+    flushPreferences(prefs);
+    try {
+      return build.get();
+    } catch (final RuntimeException e) {
+      setMapSkinPreference(prefs, storedSkin == null ? ORIGINAL_SKIN_NAME : storedSkin);
+      flushPreferences(prefs);
+      throw e;
+    }
   }
 
   /** Carries over the player state that a context built for a new skin starts without. */
