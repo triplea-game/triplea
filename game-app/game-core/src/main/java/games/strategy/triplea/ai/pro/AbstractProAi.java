@@ -203,7 +203,8 @@ public abstract class AbstractProAi extends AbstractAi {
       final List<Territory> possibleFactoryTerritories =
           CollectionUtils.getMatches(
               data.getMap().getTerritories(),
-              ProMatches.territoryHasNoInfraFactoryAndIsNotConqueredOwnedLand(player));
+              ProMatches.territoryHasNoInfraFactoryAndIsOwnedLand(player)
+                  .and(ProMatches.territoryIsNotConqueredUnlessPlacementCapturedAllowed(player)));
       if (purchaseTerritories.isEmpty() && possibleFactoryTerritories.isEmpty()) {
         ProLogger.info("No possible place or factory territories owned so exiting purchase logic");
         return;

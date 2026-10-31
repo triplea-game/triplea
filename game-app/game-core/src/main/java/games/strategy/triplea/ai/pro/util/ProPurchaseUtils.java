@@ -187,8 +187,7 @@ public final class ProPurchaseUtils {
     } else {
       ownedAndNotConqueredFactoryTerritories =
           CollectionUtils.getMatches(
-              data.getMap().getTerritories(),
-              ProMatches.territoryHasFactoryAndIsNotConqueredOwnedLand(player));
+              data.getMap().getTerritories(), ProMatches.territoryHasFactoryAndIsOwnedLand(player));
     }
     ownedAndNotConqueredFactoryTerritories =
         CollectionUtils.getMatches(
