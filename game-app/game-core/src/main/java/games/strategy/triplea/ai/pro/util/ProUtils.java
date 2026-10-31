@@ -3,6 +3,7 @@ package games.strategy.triplea.ai.pro.util;
 import static java.util.function.Predicate.not;
 
 import com.google.common.collect.Streams;
+import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.GameState;
@@ -11,6 +12,7 @@ import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import org.triplea.java.collections.CollectionUtils;
@@ -111,6 +114,49 @@ public final class ProUtils {
     }
     production *= Properties.getPuMultiplier(data.getProperties());
     return production;
+  }
+
+  /**
+   * Whether taking {@code t} takes its owner's treasury: it is the owner's capital and leaves the
+   * owner fewer than {@code retainCapitalNumber} capitals, as in {@code
+   * BattleTracker#addChangesOnTakeOverCapitol}, which takes it from an owner without a player
+   * attachment.
+   */
+  public static boolean captureTakesTreasury(final Territory t, final GameMap map) {
+    return captureLeavesOwnerTooFewCapitals(
+        t, map, PlayerAttachment::getRetainCapitalNumber, Integer.MAX_VALUE);
+  }
+
+  /**
+   * Whether taking {@code t} stops its owner's income: it is the owner's capital and leaves the
+   * owner fewer than {@code retainCapitalProduceNumber} capitals, as in {@link
+   * TerritoryAttachment#doWeHaveEnoughCapitalsToProduce}, which needs one without a player
+   * attachment.
+   */
+  public static boolean captureStopsIncome(final Territory t, final GameMap map) {
+    return captureLeavesOwnerTooFewCapitals(
+        t, map, PlayerAttachment::getRetainCapitalProduceNumber, 1);
+  }
+
+  private static boolean captureLeavesOwnerTooFewCapitals(
+      final Territory t,
+      final GameMap map,
+      final ToIntFunction<PlayerAttachment> capitalsNeeded,
+      final int capitalsNeededWithoutAttachment) {
+    final GamePlayer owner = t.getOwner();
+    final boolean ownersCapital =
+        TerritoryAttachment.get(t)
+            .flatMap(TerritoryAttachment::getCapital)
+            .filter(owner.getName()::equals)
+            .isPresent();
+    if (!ownersCapital) {
+      return false;
+    }
+    final int capitalsLeft =
+        TerritoryAttachment.getAllCurrentlyOwnedCapitals(owner, map).size() - 1;
+    final PlayerAttachment pa = PlayerAttachment.get(owner);
+    return capitalsLeft
+        < (pa == null ? capitalsNeededWithoutAttachment : capitalsNeeded.applyAsInt(pa));
   }
 
   /**

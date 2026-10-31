@@ -1,6 +1,7 @@
 package games.strategy.triplea.ai.pro;
 
 import static games.strategy.triplea.ai.pro.util.ProUtils.summarizeUnits;
+import static java.util.function.Predicate.not;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
@@ -25,7 +26,6 @@ import games.strategy.triplea.ai.pro.util.ProSortMoveOptionsUtils;
 import games.strategy.triplea.ai.pro.util.ProTerritoryValueUtils;
 import games.strategy.triplea.ai.pro.util.ProTransportUtils;
 import games.strategy.triplea.ai.pro.util.ProUtils;
-import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.AirBattle;
@@ -225,6 +225,7 @@ public class ProCombatMoveAi {
       ProductionAndIsCapital productionAndIsCapital = getProductionAndIsCapital(t);
       productionAndIsCapital.production +=
           (int) Math.round(ProNationalObjectiveUtils.value(proData, player, t));
+      final int isCapital = isCapitalWorthBoosting(t, player, data) ? 1 : 0;
 
       // Calculate attack value for prioritization
       double tuvSwing = patd.getMaxBattleResult().getTuvSwing();
@@ -239,7 +240,7 @@ public class ProCombatMoveAi {
               * productionAndIsCapital.production;
       double attackValue =
           (tuvSwing + territoryValue)
-              * (1 + 4.0 * productionAndIsCapital.isCapital)
+              * (1 + 4.0 * isCapital)
               * (1 + 2.0 * isNotNeutralAdjacentToMyCapital)
               * (1 - 0.9 * isNeutral);
 
@@ -1025,10 +1026,9 @@ public class ProCombatMoveAi {
         ProductionAndIsCapital initialProductionAndIsCapital = getProductionAndIsCapital(t);
         initialProductionAndIsCapital.production +=
             (int) Math.round(ProNationalObjectiveUtils.value(proData, player, t));
+        final int isCapital = isCapitalWorthBoosting(t, player, data) ? 1 : 0;
         final double attackValue =
-            result.getTuvSwing()
-                + initialProductionAndIsCapital.production
-                    * (1 + 3.0 * initialProductionAndIsCapital.isCapital);
+            result.getTuvSwing() + initialProductionAndIsCapital.production * (1 + 3.0 * isCapital);
         if (!patd.isStrafing() && (0.75 * enemyTuvSwing) > attackValue) {
           ProLogger.debug(
               "Removing amphib territory: "
@@ -1076,18 +1076,24 @@ public class ProCombatMoveAi {
    * owner is left with fewer than {@code retainCapitalProduceNumber} capitals.
    */
   static double capitalValue(final Territory t, final GameData data) {
-    final GamePlayer owner = t.getOwner();
-    final boolean ownersCapital =
-        TerritoryAttachment.get(t)
-            .flatMap(TerritoryAttachment::getCapital)
-            .filter(owner.getName()::equals)
-            .isPresent();
-    final int capitalsLeft =
-        TerritoryAttachment.getAllCurrentlyOwnedCapitals(owner, data.getMap()).size() - 1;
-    final PlayerAttachment pa = PlayerAttachment.get(owner);
-    return ownersCapital && capitalsLeft < (pa == null ? 1 : pa.getRetainCapitalProduceNumber())
-        ? ProUtils.getPlayerProduction(owner, data)
+    return ProUtils.captureStopsIncome(t, data.getMap())
+        ? ProUtils.getPlayerProduction(t.getOwner(), data)
         : 0;
+  }
+
+  /**
+   * Whether {@code t} gets the capital boost in target ranking: taking it stops its owner's income,
+   * or liberates the capital of {@code player} or an ally.
+   */
+  static boolean isCapitalWorthBoosting(
+      final Territory t, final GamePlayer player, final GameData data) {
+    return ProUtils.captureStopsIncome(t, data.getMap())
+        || TerritoryAttachment.get(t)
+            .flatMap(TerritoryAttachment::getCapital)
+            .filter(not(t.getOwner().getName()::equals))
+            .map(data.getPlayerList()::getPlayerId)
+            .filter(capitalOwner -> data.getRelationshipTracker().isAllied(player, capitalOwner))
+            .isPresent();
   }
 
   private void determineUnitsToAttackWith(
@@ -1465,7 +1471,7 @@ public class ProCombatMoveAi {
   private Strafe bestStrafe(final ProTerritory patd, final TradeTrial take) {
     final Territory t = patd.getTerritory();
     final double takenWorth =
-        tradedTerritoryWorth(t)
+        tradedTerritoryWorth(t, data)
             - (take.counter() == null
                 ? 0
                 : TRADE_COUNTER_WEIGHT * Math.max(0, take.counter().getTuvSwing()));
@@ -1535,18 +1541,14 @@ public class ProCombatMoveAi {
     final double counterSwing =
         counter == null ? 0 : TRADE_COUNTER_WEIGHT * Math.max(0, counter.getTuvSwing());
     return result.getTuvSwing()
-        + tradedTerritoryWorth(patd.getTerritory()) * result.getWinPercentage() / 100
+        + tradedTerritoryWorth(patd.getTerritory(), data) * result.getWinPercentage() / 100
         - counterSwing;
   }
 
   /** What a land capture I can't hold is worth, as in the attack value. */
-  private double tradedTerritoryWorth(final Territory t) {
+  static double tradedTerritoryWorth(final Territory t, final GameData data) {
     final int isFactory = ProMatches.territoryHasInfraFactoryAndIsLand().test(t) ? 1 : 0;
-    final double capitalValue =
-        TerritoryAttachment.get(t).filter(TerritoryAttachment::isCapital).isPresent()
-            ? ProUtils.getPlayerProduction(t.getOwner(), data)
-            : 0;
-    return (2 + isFactory) * TerritoryAttachment.getProduction(t) + capitalValue;
+    return (2 + isFactory) * TerritoryAttachment.getProduction(t) + capitalValue(t, data);
   }
 
   private void determineTerritoriesThatCanBeBombed(

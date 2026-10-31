@@ -1,12 +1,17 @@
 package games.strategy.triplea.ai.pro;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.british;
+import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.gameparser.GameParseException;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
+import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.List;
@@ -85,5 +90,45 @@ class ProCombatMoveAiTest {
       final double winPercentage, final double tuvSwing, final boolean hasLandUnitRemaining) {
     return new ProBattleResult(
         winPercentage, tuvSwing, hasLandUnitRemaining, List.of(), List.of(), 1);
+  }
+
+  @Test
+  void tradingACapitalHeldByItsCaptorIsWorthNoCaptorIncome() {
+    territory("Russia", gameData).setOwner(germans(gameData));
+
+    assertThat(ProCombatMoveAi.tradedTerritoryWorth(territory("Russia", gameData), gameData))
+        .isEqualTo((2 + 1) * 8);
+  }
+
+  @Test
+  void enemyCapitalWhoseCaptureStopsItsIncomeIsBoosted() {
+    assertThat(
+            ProCombatMoveAi.isCapitalWorthBoosting(
+                territory("Germany", gameData), british(gameData), gameData))
+        .isTrue();
+  }
+
+  @Test
+  void enemyCapitalWhoseCaptureKeepsItsIncomeIsNotBoosted()
+      throws MutableProperty.InvalidValueException {
+    final PlayerAttachment pa =
+        new PlayerAttachment(Constants.PLAYER_ATTACHMENT_NAME, germans(gameData), gameData);
+    pa.getPropertyOrThrow("retainCapitalProduceNumber").setValue(0);
+    germans(gameData).addAttachment(Constants.PLAYER_ATTACHMENT_NAME, pa);
+
+    assertThat(
+            ProCombatMoveAi.isCapitalWorthBoosting(
+                territory("Germany", gameData), british(gameData), gameData))
+        .isFalse();
+  }
+
+  @Test
+  void alliedCapitalHeldByTheEnemyIsBoosted() {
+    territory("Russia", gameData).setOwner(germans(gameData));
+
+    assertThat(
+            ProCombatMoveAi.isCapitalWorthBoosting(
+                territory("Russia", gameData), british(gameData), gameData))
+        .isTrue();
   }
 }
