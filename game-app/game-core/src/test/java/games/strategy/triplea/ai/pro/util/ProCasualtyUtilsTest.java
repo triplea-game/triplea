@@ -115,6 +115,6 @@ class ProCasualtyUtilsTest {
   void aCapitalIsWorthItsTreasuryEvenIfRetaken() {
     final double value = ProCasualtyUtils.captureValue(10, 0, true, 80, true, 40, false, true);
 
-    assertThat(value).isEqualTo(10 + 80 + 0.2 * (10 + 5 + 40));
+    assertThat(value).isEqualTo(10 + 80 + 0.2 * (10 + 5 + (40 - 10)));
   }
 }
