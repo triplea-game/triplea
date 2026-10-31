@@ -797,6 +797,19 @@ class ProPurchaseAi {
               + ", defenders="
               + summarizeUnits(placeTerritory.getDefendingUnits()));
 
+      // Hard Beta buys no warships to defend a sea zone whose warships already match the enemy
+      // warships that can reach it: the rest of the threat is air, which more ships answer badly.
+      if (proData.isBeta() && !isLand) {
+        final List<Unit> enemyUnits = new ArrayList<>(enemyAttackOptions.getMax(t).getMaxUnits());
+        enemyUnits.addAll(enemyAttackOptions.getMax(t).getMaxAmphibUnits());
+        final List<Unit> myUnits = new ArrayList<>(placeTerritory.getDefendingUnits());
+        myUnits.addAll(ProPurchaseUtils.getPlaceUnits(t, purchaseTerritories));
+        if (warshipsMatchEnemyWarships(myUnits, enemyUnits)) {
+          ProLogger.trace(t + ", own warships match enemy warships, buying no sea defenders");
+          continue;
+        }
+      }
+
       // Find local owned units
       final List<Unit> ownedLocalUnits = t.getMatches(Matches.unitIsOwnedBy(player));
       int unusedCarrierCapacity = startingUnusedCarrierCapacity(t);
@@ -1680,6 +1693,9 @@ class ProPurchaseAi {
                 defendingUnits,
                 maxEnemyAttackTerritory.getMaxBombardUnits());
         final List<Unit> unitsToPlace = new ArrayList<>();
+        final boolean warshipsMatch =
+            proData.isBeta() && warshipsMatchEnemyWarships(defendingUnits, attackers);
+        boolean skippedWarships = false;
         for (final ProPurchaseTerritory purchaseTerritory : selectedPurchaseTerritories) {
           // Check remaining production
           int remainingUnitProduction = purchaseTerritory.getRemainingUnitProduction();
@@ -1713,6 +1729,11 @@ class ProPurchaseAi {
             if (!hasOnlyRetreatingSubs
                 && (result.getTuvSwing() < -1
                     || result.getWinPercentage() < (100.0 - proData.getWinPercentage()))) {
+              break;
+            }
+            if (warshipsMatch) {
+              ProLogger.trace(t + ", own warships match enemy warships, buying no sea defenders");
+              skippedWarships = true;
               break;
             }
 
@@ -1810,7 +1831,8 @@ class ProPurchaseAi {
                   summarizeUnits(unitsToPlace),
                   summarizeUnits(attackers),
                   summarizeUnits(defendingUnits)));
-          wantedToBuyUnitsButCouldNotDefendThem = true;
+          // Choosing not to buy warships is no reason to save up for a fleet.
+          wantedToBuyUnitsButCouldNotDefendThem |= !skippedWarships;
           continue;
         }
       }
@@ -1894,6 +1916,16 @@ class ProPurchaseAi {
               + ", needDestroyer="
               + needDestroyer);
 
+      final List<Unit> alliedUnitsInSeaTerritories = new ArrayList<>(myUnitsInSeaTerritories);
+      for (final Territory nearbySeaTerritory : nearbyAlliedSeaTerritories) {
+        alliedUnitsInSeaTerritories.addAll(
+            nearbySeaTerritory.getMatches(ProMatches.unitIsAlliedNotOwned(player)));
+      }
+      final boolean warshipsMatch =
+          proData.isBeta()
+              && warshipsMatchEnemyWarships(
+                  alliedUnitsInSeaTerritories, enemyUnitsInSeaTerritories);
+
       // Purchase naval defenders until I have local naval superiority
       final List<Unit> unitsToPlace = new ArrayList<>();
       for (final ProPurchaseTerritory purchaseTerritory : selectedPurchaseTerritories) {
@@ -1925,6 +1957,10 @@ class ProPurchaseAi {
           // If I have naval attack/defense superiority then break
           if (ProBattleUtils.territoryHasLocalNavalSuperiority(
               proData, calc, t, player, purchaseTerritories, unitsToPlace)) {
+            break;
+          }
+          if (warshipsMatch) {
+            ProLogger.trace(t + ", own warships match enemy warships, buying no more warships");
             break;
           }
 
@@ -2275,6 +2311,21 @@ class ProPurchaseAi {
       remaining -= selected.get().getQuantity();
       ProLogger.trace("Selected waiting cargo unit=" + selected.get().getUnitType().getName());
     }
+  }
+
+  /** True when own and allied warships in {@code myUnits} are worth at least the enemy's. */
+  private boolean warshipsMatchEnemyWarships(
+      final Collection<Unit> myUnits, final Collection<Unit> enemyUnits) {
+    final Predicate<Unit> warship = Matches.unitIsSea().and(Matches.unitIsNotSeaTransport());
+    final Predicate<Unit> enemyWarship = warship.and(Matches.enemyUnit(player));
+    final Predicate<Unit> friendlyWarship = warship.and(Matches.isUnitAllied(player));
+    final double friendly =
+        TuvUtils.getTuv(
+            CollectionUtils.getMatches(myUnits, friendlyWarship), proData.getUnitValueMap());
+    final double enemy =
+        TuvUtils.getTuv(
+            CollectionUtils.getMatches(enemyUnits, enemyWarship), proData.getUnitValueMap());
+    return friendly >= enemy;
   }
 
   private void purchaseUnitsWithRemainingProduction(
