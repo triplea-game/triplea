@@ -793,8 +793,20 @@ class ProPurchaseAi {
               remainingConstructions,
               t);
           final Map<ProPurchaseOption, Double> defenseEfficiencies = new HashMap<>();
+          // Hard Beta scores defenders without the attack bonus they give, so it buys infantry
+          // and armour rather than artillery for a territory it has to hold.
+          final boolean noAttackSupport =
+              proData.isBeta()
+                  && isLand
+                  && purchaseOptionsForTerritory.stream()
+                      .anyMatch(ProPurchaseOption::isAttackSupport);
           for (final ProPurchaseOption ppo : purchaseOptionsForTerritory) {
-            if (isLand) {
+            if (noAttackSupport) {
+              defenseEfficiencies.put(
+                  ppo,
+                  ppo.getDefenseEfficiencyWithoutAttackSupport(
+                      1, data, ownedLocalUnits, unitsToPlace));
+            } else if (isLand) {
               defenseEfficiencies.put(
                   ppo, ppo.getDefenseEfficiency(1, data, ownedLocalUnits, unitsToPlace));
             } else {
@@ -1103,6 +1115,12 @@ class ProPurchaseAi {
         ownedLocalUnits.addAll(neighbor.getMatches(Matches.unitIsOwnedBy(player)));
       }
 
+      final ProTerritory maxEnemyAttack = territoryManager.getEnemyAttackOptions().getMax(t);
+      final boolean enemyLandCanAttack =
+          maxEnemyAttack != null
+              && (maxEnemyAttack.getMaxUnits().stream().anyMatch(Matches.unitIsLand())
+                  || !maxEnemyAttack.getMaxAmphibUnits().isEmpty());
+
       // Check for unplaced units
       final List<Unit> unitsToPlace = new ArrayList<>();
       for (final Iterator<Unit> it = unplacedUnits.iterator();
@@ -1171,9 +1189,16 @@ class ProPurchaseAi {
               ProPurchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Land Defense");
         } else if (!selectFodderUnit && !landAttackOptions.isEmpty()) {
           final Map<ProPurchaseOption, Double> attackEfficiencies = new HashMap<>();
+          // In Hard Beta, units placed where enemy land units can attack will defend first:
+          // score them so.
+          final boolean scoreAsDefenders = proData.isBeta() && enemyLandCanAttack;
           for (final ProPurchaseOption ppo : landAttackOptions) {
             attackEfficiencies.put(
-                ppo, ppo.getAttackEfficiency(enemyDistance, data, ownedLocalUnits, unitsToPlace));
+                ppo,
+                scoreAsDefenders
+                    ? ppo.getDefenseEfficiencyWithoutAttackSupport(
+                        enemyDistance, data, ownedLocalUnits, unitsToPlace)
+                    : ppo.getAttackEfficiency(enemyDistance, data, ownedLocalUnits, unitsToPlace));
           }
           optionalSelectedOption =
               ProPurchaseUtils.randomizePurchaseOption(attackEfficiencies, "Land Attack");
@@ -2214,12 +2239,19 @@ class ProPurchaseAi {
             0,
             t);
         final Map<ProPurchaseOption, Double> defenseEfficiencies = new HashMap<>();
+        final boolean noAttackSupport =
+            proData.isBeta()
+                && purchaseOptionsForTerritory.stream()
+                    .anyMatch(ProPurchaseOption::isAttackSupport);
         for (final ProPurchaseOption ppo : purchaseOptionsForTerritory) {
           defenseEfficiencies.put(
               ppo,
               Math.pow(ppo.getCost(), 2)
-                  * ppo.getDefenseEfficiency(
-                      1, data, ownedLocalUnits, placeTerritory.getPlaceUnits()));
+                  * (noAttackSupport
+                      ? ppo.getDefenseEfficiencyWithoutAttackSupport(
+                          1, data, ownedLocalUnits, placeTerritory.getPlaceUnits())
+                      : ppo.getDefenseEfficiency(
+                          1, data, ownedLocalUnits, placeTerritory.getPlaceUnits())));
         }
         final Optional<ProPurchaseOption> optionalSelectedOption =
             ProPurchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Defense");
