@@ -3,10 +3,13 @@ package games.strategy.triplea.ai.pro.simulate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
 import static games.strategy.triplea.delegate.GameDataTestUtil.british;
+import static games.strategy.triplea.delegate.GameDataTestUtil.destroyer;
 import static games.strategy.triplea.delegate.GameDataTestUtil.fighter;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
+import static games.strategy.triplea.delegate.GameDataTestUtil.removeFrom;
 import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
+import static games.strategy.triplea.delegate.GameDataTestUtil.submarine;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -83,6 +86,41 @@ class ProSimulateTurnUtilsTest {
 
     assertThat(belorussia.getOwner()).isEqualTo(germans(gameData));
     assertThat(battleTracker.wasConquered(belorussia)).isFalse();
+  }
+
+  @Test
+  void undefendedLandingWaitingOnSeaBattleTakesTerritory() {
+    final GamePlayer british = british(gameData);
+    final Territory seaZone12 = gameData.getMap().getTerritoryOrThrow("12 Sea Zone");
+    final Territory seaZone13 = gameData.getMap().getTerritoryOrThrow("13 Sea Zone");
+    final Territory algeria = gameData.getMap().getTerritoryOrThrow("Algeria");
+    removeFrom(algeria, List.copyOf(algeria.getUnits()));
+    addTo(seaZone12, submarine(gameData).create(1, germans(gameData)));
+    final List<Unit> destroyers = destroyer(gameData).create(1, british);
+    addTo(seaZone12, destroyers);
+    final List<Unit> infantry = infantry(gameData).create(1, british);
+    addTo(algeria, infantry);
+    final IDelegateBridge bridge = newDelegateBridge(british);
+    battleTracker.addBattle(
+        gameData.getMap().getRouteOrElseThrow(seaZone13, seaZone12, it -> true),
+        destroyers,
+        british,
+        bridge,
+        null,
+        List.of());
+    battleTracker.addBattle(
+        gameData.getMap().getRouteOrElseThrow(seaZone12, algeria, it -> true),
+        infantry,
+        british,
+        bridge,
+        null,
+        List.of());
+    when(calc.callBattleCalc(any(), any(), any(), any(), any())).thenReturn(new ProBattleResult());
+
+    ProSimulateTurnUtils.simulateBattles(new ProData(), gameData, british, bridge, calc);
+
+    assertThat(algeria.getOwner()).isEqualTo(british);
+    assertThat(battleTracker.wasConquered(algeria)).isTrue();
   }
 
   @Test

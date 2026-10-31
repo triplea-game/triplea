@@ -88,7 +88,14 @@ public final class ProSimulateTurnUtils {
         delegateBridge.addChange(attackersKilledChange);
         final Change defendersKilledChange = ChangeFactory.removeUnits(t, defendersToRemove);
         delegateBridge.addChange(defendersKilledChange);
-        if (leavesEnemyOwner(entry.getKey(), t, result, player)) {
+        // callBattleCalc does not run a battle without defenders (eg: a landing waiting on a sea
+        // battle), so its result says nothing about which attackers survive.
+        final boolean leavesEnemyOwner =
+            !t.isWater()
+                && !Matches.isTerritoryAllied(player).test(t)
+                && (entry.getKey() != BattleType.NORMAL
+                    || (!defenders.isEmpty() && !result.isHasLandUnitRemaining()));
+        if (leavesEnemyOwner) {
           battleDelegate.getBattleTracker().removeBattle(battle, data);
           continue;
         }
@@ -106,20 +113,6 @@ public final class ProSimulateTurnUtils {
                 + updatedTerritory.getUnits());
       }
     }
-  }
-
-  /**
-   * Whether a won battle still leaves enemy land {@code t} with its owner: a bombing raid, or a
-   * battle with no attacking land unit left, takes no territory.
-   */
-  private static boolean leavesEnemyOwner(
-      final BattleType battleType,
-      final Territory t,
-      final ProBattleResult result,
-      final GamePlayer player) {
-    return !t.isWater()
-        && !Matches.isTerritoryAllied(player).test(t)
-        && (battleType != BattleType.NORMAL || !result.isHasLandUnitRemaining());
   }
 
   /**
