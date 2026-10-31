@@ -2,6 +2,7 @@ package games.strategy.triplea.ai.pro.data;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.pro.util.ProMatches;
@@ -53,12 +54,19 @@ public class ProPurchaseTerritory {
         && ProMatches.territoryHasFactoryAndIsOwnedLand(player)
             .and(ProMatches.territoryIsNotConqueredUnlessPlacementCapturedAllowed(player))
             .test(territory)) {
-      for (final Territory t : data.getMap().getNeighbors(territory, Matches.territoryIsWater())) {
-        if (Properties.getWW2V2(data.getProperties())
-            || Properties.getUnitPlacementInEnemySeas(data.getProperties())
-            || !t.anyUnitsMatch(Matches.enemyUnit(player))) {
-          canPlaceTerritories.add(new ProPlaceTerritory(t));
-        }
+      addAdjacentSeaZones(data, player);
+    }
+  }
+
+  /** Adds the adjacent sea zones that enemy ships don't block {@code player} from placing in. */
+  public final void addAdjacentSeaZones(final GameState data, final GamePlayer player) {
+    for (final Territory t : data.getMap().getNeighbors(territory, Matches.territoryIsWater())) {
+      final ProPlaceTerritory seaZone = new ProPlaceTerritory(t);
+      if (!canPlaceTerritories.contains(seaZone)
+          && (Properties.getWW2V2(data.getProperties())
+              || Properties.getUnitPlacementInEnemySeas(data.getProperties())
+              || !t.anyUnitsMatch(Matches.enemyUnit(player)))) {
+        canPlaceTerritories.add(seaZone);
       }
     }
   }

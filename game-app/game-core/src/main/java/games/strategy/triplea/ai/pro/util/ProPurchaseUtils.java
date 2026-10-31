@@ -205,15 +205,34 @@ public final class ProPurchaseUtils {
   }
 
   /**
+   * Like {@link #findPurchaseTerritories}, plus the sea zones next to owned land that the {@code
+   * placementAnySeaZone} rule opens. Placement only: purchase planning sticks to factory sea zones
+   * so it doesn't start buying ships for every coastal territory.
+   */
+  public static Map<Territory, ProPurchaseTerritory> findPlaceTerritories(
+      final ProData proData, final GamePlayer player) {
+    final GameData data = proData.getData();
+    final Map<Territory, ProPurchaseTerritory> placeTerritories =
+        findPurchaseTerritories(proData, player);
+    if (isPlaceInAnyTerritoryRuleOn(data, player, RulesAttachment::getPlacementAnySeaZone)) {
+      placeTerritories.values().forEach(ppt -> ppt.addAdjacentSeaZones(data, player));
+    }
+    return placeTerritories;
+  }
+
+  /**
    * Whether {@code player} may place in any owned land. As in {@code AbstractPlaceDelegate}, the
    * {@code placementAnyTerritory} rule needs the "Place in Any Territory" game property too.
    */
   public static boolean isPlacementAnyTerritoryAllowed(
       final GameState data, final GamePlayer player) {
+    return isPlaceInAnyTerritoryRuleOn(data, player, RulesAttachment::getPlacementAnyTerritory);
+  }
+
+  private static boolean isPlaceInAnyTerritoryRuleOn(
+      final GameState data, final GamePlayer player, final Predicate<RulesAttachment> rule) {
     final RulesAttachment ra = player.getRulesAttachment();
-    return Properties.getPlaceInAnyTerritory(data.getProperties())
-        && ra != null
-        && ra.getPlacementAnyTerritory();
+    return Properties.getPlaceInAnyTerritory(data.getProperties()) && ra != null && rule.test(ra);
   }
 
   /** Approximates {@code AbstractPlaceDelegate#getMaxUnitsToBePlacedFrom} for a whole turn. */
