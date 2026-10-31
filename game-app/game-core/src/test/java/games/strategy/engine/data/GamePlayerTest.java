@@ -17,7 +17,7 @@ final class GamePlayerTest {
   final class GetPlayerTypesTest {
     @Test
     void shouldReturnType() {
-      List.of(Tuple.of("AI", "Hard (AI)"), Tuple.of("Human", "Patton"), Tuple.of("null", "Bot"))
+      List.of(Tuple.of("AI", "Hard (AI)"), Tuple.of("AI", "Fast (AI)"), Tuple.of("AI", "Weak (AI)"), Tuple.of("Human", "Patton"), Tuple.of("null", "Bot"))
           .forEach(
               idAndName -> {
                 gamePlayer.setWhoAmI(idAndName.getFirst() + ":" + idAndName.getSecond());
