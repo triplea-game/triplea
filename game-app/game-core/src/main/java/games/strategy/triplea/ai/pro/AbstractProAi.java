@@ -25,9 +25,7 @@ import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.ai.pro.util.ProPurchaseUtils;
 import games.strategy.triplea.ai.pro.util.ProTransportUtils;
-import games.strategy.triplea.ai.pro.util.ProUtils;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
-import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PoliticsDelegate;
@@ -576,7 +574,12 @@ public abstract class AbstractProAi extends AbstractAi {
     if (swap.isEmpty()) {
       return killed;
     }
-    final double captureValue = captureValue(battleSite);
+    final double captureValue =
+        ProCasualtyUtils.captureValue(
+            battleSite,
+            player,
+            plannedCanHold.getOrDefault(battleSite.getName(), false),
+            getGameData());
     final double extraCost =
         ProPurchaseUtils.getCost(proData, swap.get().airToLose())
             - ProPurchaseUtils.getCost(proData, swap.get().landToKeep());
@@ -613,33 +616,6 @@ public abstract class AbstractProAi extends AbstractAi {
       return killed;
     }
     return swap.get().apply(killed);
-  }
-
-  /** What taking {@code site} is worth in PUs to this player. */
-  private double captureValue(final Territory site) {
-    final Optional<TerritoryAttachment> ta = TerritoryAttachment.get(site);
-    if (ta.isEmpty()) {
-      return 0;
-    }
-    final GameData data = getGameData();
-    final GamePlayer owner = site.getOwner();
-    boolean ownerAllyMovesFirst = false;
-    for (final GamePlayer p : ProUtils.getOtherPlayersInTurnOrder(getGamePlayer())) {
-      if (p.equals(owner)) {
-        break;
-      }
-      ownerAllyMovesFirst |= data.getRelationshipTracker().isAllied(p, owner);
-    }
-    final int production = ta.get().getProduction();
-    return ProCasualtyUtils.captureValue(
-        production * Properties.getPuMultiplier(data.getProperties()),
-        ProMatches.territoryHasInfraFactoryAndIsLand().test(site) ? production : 0,
-        ta.get().getVictoryCity() > 0,
-        ProUtils.capturedTreasury(site, data),
-        ProUtils.captureStopsIncome(site, data.getMap()),
-        ProUtils.getPlayerProduction(owner, data),
-        plannedCanHold.getOrDefault(site.getName(), false),
-        ownerAllyMovesFirst);
   }
 
   @Override
