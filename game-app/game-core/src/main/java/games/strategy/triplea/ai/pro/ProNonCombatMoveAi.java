@@ -27,6 +27,7 @@ import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.ai.pro.util.ProMoveUtils;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.ai.pro.util.ProPurchaseUtils;
+import games.strategy.triplea.ai.pro.util.ProSeaBlockerUtils;
 import games.strategy.triplea.ai.pro.util.ProSortMoveOptionsUtils;
 import games.strategy.triplea.ai.pro.util.ProTerritoryValueUtils;
 import games.strategy.triplea.ai.pro.util.ProTransportUtils;
@@ -119,6 +120,10 @@ class ProNonCombatMoveAi {
       enemyDistanceToMyCapital =
           ProUtils.getClosestEnemyLandTerritoryDistance(data, player, myCapital);
       moveUnitsToDefendTerritories(isCombatMove, prioritizedTerritories, enemyDistanceToMyCapital);
+    }
+
+    if (proData.isBeta()) {
+      moveSeaBlockers();
     }
 
     // Copy data in case capital defense needs increased
@@ -385,6 +390,81 @@ class ProNonCombatMoveAi {
 
     // Only return territories that received a defender
     return territoriesToDefendWithOneUnit;
+  }
+
+  /**
+   * Parks the cheapest free warship in a sea zone that cuts every enemy transport route to an own
+   * or allied land territory the enemy can take only with its amphibious units.
+   */
+  private void moveSeaBlockers() {
+    final Map<Territory, ProTerritory> moveMap =
+        territoryManager.getDefendOptions().getTerritoryMap();
+    final Map<Unit, Set<Territory>> unitMoveMap =
+        territoryManager.getDefendOptions().getUnitMoveMap();
+    final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
+    final Map<Unit, Territory> enemyTransports =
+        ProSeaBlockerUtils.findEnemyTransportsWithCargo(data, player);
+    if (enemyTransports.isEmpty()) {
+      return;
+    }
+    final Map<Territory, Double> targets =
+        ProSeaBlockerUtils.findAmphibOnlyTargets(
+            proData,
+            calc,
+            enemyAttackOptions,
+            moveMap.keySet(),
+            t -> moveMap.get(t).getAllDefenders());
+    ProLogger.debug("Sea blocker targets: " + targets);
+    final Set<Territory> blocks = new HashSet<>();
+    for (final Map.Entry<Territory, Double> target : targets.entrySet()) {
+      if (!ProSeaBlockerUtils.canUnloadAt(data, enemyTransports, target.getKey(), blocks)) {
+        continue; // already blocked
+      }
+      Unit bestShip = null;
+      Territory bestZone = null;
+      double bestCost = Double.MAX_VALUE;
+      for (final Map.Entry<Unit, Set<Territory>> e : unitMoveMap.entrySet()) {
+        final Unit u = e.getKey();
+        if (!u.getOwner().equals(player)
+            || !Matches.unitIsSea().test(u)
+            || Matches.unitIsSeaTransport().test(u)
+            || Matches.unitIsCarrier().test(u)) {
+          continue;
+        }
+        for (final Territory z : e.getValue()) {
+          if (!z.isWater() || enemyTransports.containsValue(z)) {
+            continue;
+          }
+          final Set<Territory> withZone = new HashSet<>(blocks);
+          withZone.add(z);
+          if (ProSeaBlockerUtils.canUnloadAt(data, enemyTransports, target.getKey(), withZone)) {
+            continue;
+          }
+          // Only a blocker the enemy can't sink: other units follow it into the zone
+          final ProTerritory enemyMaxAtZone = enemyAttackOptions.getMax(z);
+          if (enemyMaxAtZone != null
+              && ProBattleUtils.estimateStrengthDifference(
+                      z, new ArrayList<>(enemyMaxAtZone.getMaxUnits()), List.of(u))
+                  >= 50) {
+            continue;
+          }
+          final double cost = proData.getUnitValue(u.getType());
+          if (cost < bestCost) {
+            bestCost = cost;
+            bestShip = u;
+            bestZone = z;
+          }
+        }
+      }
+      if (bestShip == null) {
+        continue;
+      }
+      moveMap.get(bestZone).addUnit(bestShip);
+      unitMoveMap.remove(bestShip);
+      blocks.add(bestZone);
+      ProLogger.debug(
+          "Sea blocker: " + bestShip + " blocks " + bestZone + " to protect " + target.getKey());
+    }
   }
 
   private void determineIfMoveTerritoriesCanBeHeld() {
