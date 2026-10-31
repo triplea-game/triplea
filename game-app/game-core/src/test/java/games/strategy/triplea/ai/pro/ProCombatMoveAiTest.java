@@ -14,30 +14,30 @@ class ProCombatMoveAiTest {
   private final GameData gameData = TestMapGameData.LHTR.getGameData();
 
   @Test
-  void smallLandingThatCantBeHeldIsNotWorthReAdding() {
+  void smallLandingThatCantBeHeldIsNotValuable() {
     final ProTerritory newGuinea =
         new ProTerritory(territory("New Guinea", gameData), new ProData());
     newGuinea.setCanHold(false);
 
-    assertThat(ProCombatMoveAi.isWorthReAdding(newGuinea)).isFalse();
+    assertThat(ProCombatMoveAi.isValuableLanding(newGuinea)).isFalse();
   }
 
   @Test
-  void smallLandingThatCanBeHeldIsWorthReAdding() {
+  void smallLandingThatCanBeHeldIsValuable() {
     final ProTerritory newGuinea =
         new ProTerritory(territory("New Guinea", gameData), new ProData());
     newGuinea.setCanHold(true);
 
-    assertThat(ProCombatMoveAi.isWorthReAdding(newGuinea)).isTrue();
+    assertThat(ProCombatMoveAi.isValuableLanding(newGuinea)).isTrue();
   }
 
   @Test
-  void factoryIsWorthReAddingEvenIfItCantBeHeld() {
+  void factoryIsValuableEvenIfItCantBeHeld() {
     final ProTerritory southernEurope =
         new ProTerritory(territory("Southern Europe", gameData), new ProData());
     southernEurope.setCanHold(false);
 
-    assertThat(ProCombatMoveAi.isWorthReAdding(southernEurope)).isTrue();
+    assertThat(ProCombatMoveAi.isValuableLanding(southernEurope)).isTrue();
   }
 
   @Test
