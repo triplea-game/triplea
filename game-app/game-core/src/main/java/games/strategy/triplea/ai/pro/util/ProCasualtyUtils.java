@@ -1,6 +1,11 @@
 package games.strategy.triplea.ai.pro.util;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Properties;
+import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,6 +28,33 @@ public class ProCasualtyUtils {
   static final double HOLD_CHANCE_TRADE = 0.2;
   static final double VICTORY_CITY_VALUE = 5;
 
+  /** What taking {@code site} is worth in PUs to {@code captor}, read from the game state. */
+  public static double captureValue(
+      final Territory site, final GamePlayer captor, final boolean canHold, final GameData data) {
+    final Optional<TerritoryAttachment> ta = TerritoryAttachment.get(site);
+    if (ta.isEmpty()) {
+      return 0;
+    }
+    final GamePlayer owner = site.getOwner();
+    boolean ownerAllyMovesFirst = false;
+    for (final GamePlayer p : ProUtils.getOtherPlayersInTurnOrder(captor)) {
+      if (p.equals(owner)) {
+        break;
+      }
+      ownerAllyMovesFirst |= data.getRelationshipTracker().isAllied(p, owner);
+    }
+    final int production = ta.get().getProduction();
+    return captureValue(
+        production * Properties.getPuMultiplier(data.getProperties()),
+        ProMatches.territoryHasInfraFactoryAndIsLand().test(site) ? production : 0,
+        ta.get().getVictoryCity() > 0,
+        ProUtils.capturedTreasury(site, data),
+        ProUtils.captureStopsIncome(site, data.getMap()),
+        ProUtils.getPlayerProduction(owner, data),
+        canHold,
+        ownerAllyMovesFirst);
+  }
+
   /**
    * What capturing a land territory is worth in PUs to the captor. Certain even if it's retaken:
    * its income (collected once) and any treasury taken. A factory denies the owner its next
@@ -36,7 +68,7 @@ public class ProCasualtyUtils {
    *     at the factory
    * @param ownerAllyMovesFirst whether an ally of the owner moves before the owner's next turn
    */
-  public static double captureValue(
+  static double captureValue(
       final double income,
       final int factoryCapacity,
       final boolean victoryCity,

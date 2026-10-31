@@ -10,7 +10,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
@@ -26,10 +25,7 @@ import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.ai.pro.util.ProPurchaseUtils;
 import games.strategy.triplea.ai.pro.util.ProTransportUtils;
-import games.strategy.triplea.ai.pro.util.ProUtils;
-import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
-import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PoliticsDelegate;
@@ -578,7 +574,12 @@ public abstract class AbstractProAi extends AbstractAi {
     if (swap.isEmpty()) {
       return killed;
     }
-    final double captureValue = captureValue(battleSite);
+    final double captureValue =
+        ProCasualtyUtils.captureValue(
+            battleSite,
+            player,
+            plannedCanHold.getOrDefault(battleSite.getName(), false),
+            getGameData());
     final double extraCost =
         ProPurchaseUtils.getCost(proData, swap.get().airToLose())
             - ProPurchaseUtils.getCost(proData, swap.get().landToKeep());
@@ -615,43 +616,6 @@ public abstract class AbstractProAi extends AbstractAi {
       return killed;
     }
     return swap.get().apply(killed);
-  }
-
-  /** What taking {@code site} is worth in PUs to this player. */
-  private double captureValue(final Territory site) {
-    final Optional<TerritoryAttachment> ta = TerritoryAttachment.get(site);
-    if (ta.isEmpty()) {
-      return 0;
-    }
-    final GameData data = getGameData();
-    final GamePlayer owner = site.getOwner();
-    boolean ownerAllyMovesFirst = false;
-    for (final GamePlayer p : ProUtils.getOtherPlayersInTurnOrder(getGamePlayer())) {
-      if (p.equals(owner)) {
-        break;
-      }
-      ownerAllyMovesFirst |= data.getRelationshipTracker().isAllied(p, owner);
-    }
-    // Mirrors BattleTracker#addChangesOnTakeOverCapitol and
-    // TerritoryAttachment#doWeHaveEnoughCapitalsToProduce, after this capture.
-    final boolean ownersCapital = ta.get().getCapital().filter(owner.getName()::equals).isPresent();
-    final int capitalsLeft =
-        TerritoryAttachment.getAllCurrentlyOwnedCapitals(owner, data.getMap()).size() - 1;
-    final PlayerAttachment pa = PlayerAttachment.get(owner);
-    final boolean takesTreasury =
-        ownersCapital && (pa == null || capitalsLeft < pa.getRetainCapitalNumber());
-    final boolean deniesOwnerIncome =
-        ownersCapital && capitalsLeft < (pa == null ? 1 : pa.getRetainCapitalProduceNumber());
-    final int production = ta.get().getProduction();
-    return ProCasualtyUtils.captureValue(
-        production * Properties.getPuMultiplier(data.getProperties()),
-        ProMatches.territoryHasInfraFactoryAndIsLand().test(site) ? production : 0,
-        ta.get().getVictoryCity() > 0,
-        takesTreasury ? owner.getResources().getQuantity(Constants.PUS) : 0,
-        deniesOwnerIncome,
-        ProUtils.getPlayerProduction(owner, data),
-        plannedCanHold.getOrDefault(site.getName(), false),
-        ownerAllyMovesFirst);
   }
 
   @Override

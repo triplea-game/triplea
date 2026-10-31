@@ -202,7 +202,7 @@ public final class ProTerritoryValueUtils {
     return maxLandMassSize;
   }
 
-  private static Map<Territory, Double> findEnemyCapitalsAndFactoriesValue(
+  static Map<Territory, Double> findEnemyCapitalsAndFactoriesValue(
       final GamePlayer player,
       final int maxLandMassSize,
       final List<Territory> territoriesThatCantBeHeld,
@@ -236,11 +236,12 @@ public final class ProTerritoryValueUtils {
         factoryProduction = TerritoryAttachment.getProduction(t);
       }
 
-      // Get player production if capital
-      double playerProduction = 0;
-      if (TerritoryAttachment.get(t).map(TerritoryAttachment::isCapital).orElse(false)) {
-        playerProduction = ProUtils.getPlayerProduction(t.getOwner(), data);
-      }
+      // A liberated capital lost again pays its owner's income to the captor
+      final double playerProduction =
+          ProUtils.capitalValue(t, data)
+              + (territoriesThatCantBeHeld.contains(t)
+                  ? 0
+                  : ProUtils.liberationValue(t, player, data));
 
       // Calculate value
       final int isNeutral = ProUtils.isNeutralLand(t) ? 1 : 0;

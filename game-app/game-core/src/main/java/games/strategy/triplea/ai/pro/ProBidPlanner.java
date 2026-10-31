@@ -15,6 +15,7 @@ import games.strategy.triplea.ai.pro.data.ProTerritoryManager;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.ai.pro.simulate.ProDummyDelegateBridge;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
+import games.strategy.triplea.ai.pro.util.ProUtils;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import java.util.ArrayList;
@@ -435,9 +436,10 @@ final class ProBidPlanner {
     return sum;
   }
 
-  private static double value(final Territory t) {
+  static double value(final Territory t) {
     final ProCombatMoveAi.ProductionAndIsCapital pc = ProCombatMoveAi.getProductionAndIsCapital(t);
-    return PRODUCTION_WEIGHT * pc.production + CAPITAL_VALUE * pc.isCapital;
+    final int isCapital = ProUtils.captureStopsIncome(t, t.getData().getMap()) ? 1 : 0;
+    return PRODUCTION_WEIGHT * pc.production + CAPITAL_VALUE * isCapital;
   }
 
   private static double clampWin(final ProBattleResult r) {
