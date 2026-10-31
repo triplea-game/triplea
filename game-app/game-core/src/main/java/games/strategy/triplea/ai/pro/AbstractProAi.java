@@ -53,6 +53,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Tuple;
@@ -176,7 +177,14 @@ public abstract class AbstractProAi extends AbstractAi {
     }
     if (purchaseForBid) {
       prepareData(data);
-      storedPurchaseTerritories = purchaseAi.bid(pusToSpend, purchaseDelegate, data);
+      List<ProBidPlanner.Placement> bidPlan = List.of();
+      if (proData.isBeta()) {
+        bidPlan =
+            new ProBidPlanner(this, proData, calc, combatMoveAi).plan(data, player, pusToSpend);
+        initializeData();
+        prepareData(data);
+      }
+      storedPurchaseTerritories = purchaseAi.bid(pusToSpend, purchaseDelegate, data, bidPlan);
     } else {
       // Repair factories
       purchaseAi.repair(pusToSpend, purchaseDelegate, data, player);
@@ -274,7 +282,8 @@ public abstract class AbstractProAi extends AbstractAi {
     ProLogger.info(player.getName() + " time for purchase=" + (System.currentTimeMillis() - start));
   }
 
-  private GameData copyData(GameData data) {
+  @Nullable
+  GameData copyData(GameData data) {
     GameDataManager.Options options = GameDataManager.Options.builder().withDelegates(true).build();
     GameData dataCopy = GameDataUtils.cloneGameData(data, options).orElse(null);
     Optional.ofNullable(dataCopy).ifPresent(this::prepareData);
