@@ -160,6 +160,14 @@ public final class ProUtils {
   }
 
   /**
+   * The owner's income if taking {@code t} stops it, ie {@code t} is the owner's capital and the
+   * owner is left with fewer than {@code retainCapitalProduceNumber} capitals.
+   */
+  public static double capitalValue(final Territory t, final GameState data) {
+    return captureStopsIncome(t, data.getMap()) ? getPlayerProduction(t.getOwner(), data) : 0;
+  }
+
+  /**
    * Gets list of enemy capitals for a given player that are currently still held by those enemy
    * players.
    */

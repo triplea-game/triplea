@@ -1072,16 +1072,6 @@ public class ProCombatMoveAi {
   }
 
   /**
-   * The owner's income if taking {@code t} stops it, ie {@code t} is the owner's capital and the
-   * owner is left with fewer than {@code retainCapitalProduceNumber} capitals.
-   */
-  static double capitalValue(final Territory t, final GameData data) {
-    return ProUtils.captureStopsIncome(t, data.getMap())
-        ? ProUtils.getPlayerProduction(t.getOwner(), data)
-        : 0;
-  }
-
-  /**
    * Whether {@code t} gets the capital boost in target ranking: taking it stops its owner's income,
    * or liberates the capital of {@code player} or an ally.
    */
@@ -1094,6 +1084,16 @@ public class ProCombatMoveAi {
             .map(data.getPlayerList()::getPlayerId)
             .filter(capitalOwner -> data.getRelationshipTracker().isAllied(player, capitalOwner))
             .isPresent();
+  }
+
+  /**
+   * Whether {@code t}, held by {@code player} or an ally, gets the capital boost in defence
+   * ranking: an enemy taking it would get the {@link #isCapitalWorthBoosting} boost.
+   */
+  static boolean isCapitalWorthDefending(
+      final Territory t, final GamePlayer player, final GameData data) {
+    return ProUtils.getEnemyPlayers(player).stream()
+        .anyMatch(enemy -> isCapitalWorthBoosting(t, enemy, data));
   }
 
   private void determineUnitsToAttackWith(
@@ -1330,7 +1330,7 @@ public class ProCombatMoveAi {
         }
         final int isFfa = ProUtils.isFfa(data, player) ? 1 : 0;
         final int production = TerritoryAttachment.getProduction(t);
-        final double capitalValue = capitalValue(t, data);
+        final double capitalValue = ProUtils.capitalValue(t, data);
         final double territoryValue =
             (1
                         + isLand
@@ -1548,7 +1548,7 @@ public class ProCombatMoveAi {
   /** What a land capture I can't hold is worth, as in the attack value. */
   static double tradedTerritoryWorth(final Territory t, final GameData data) {
     final int isFactory = ProMatches.territoryHasInfraFactoryAndIsLand().test(t) ? 1 : 0;
-    return (2 + isFactory) * TerritoryAttachment.getProduction(t) + capitalValue(t, data);
+    return (2 + isFactory) * TerritoryAttachment.getProduction(t) + ProUtils.capitalValue(t, data);
   }
 
   private void determineTerritoriesThatCanBeBombed(

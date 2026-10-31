@@ -611,7 +611,7 @@ class ProNonCombatMoveAi {
         isFactory = 1;
       }
 
-      // Determine production value and if it is an enemy capital
+      // Determine production value
       ProCombatMoveAi.ProductionAndIsCapital productionAndIsEnemyOrAlliedCapital =
           ProCombatMoveAi.getProductionAndIsCapital(t);
       if (t.equals(proData.getMyCapital())) {
@@ -619,6 +619,7 @@ class ProNonCombatMoveAi {
       }
       productionAndIsEnemyOrAlliedCapital.production +=
           (int) Math.round(ProNationalObjectiveUtils.value(proData, player, t));
+      final int isCapital = ProCombatMoveAi.isCapitalWorthDefending(t, player, data) ? 1 : 0;
 
       // Determine neighbor value
       double neighborValue = 0;
@@ -657,7 +658,7 @@ class ProNonCombatMoveAi {
                   + 0.5 * cantMoveUnitValue
                   + 0.5 * neighborValue)
               * (1 + 10.0 * isMyCapital)
-              * (1 + 4.0 * productionAndIsEnemyOrAlliedCapital.isCapital);
+              * (1 + 4.0 * isCapital);
       proTerritory.setValue(territoryValue);
     }
 

@@ -88,4 +88,12 @@ class ProUtilsTest {
 
     assertThat(ProUtils.captureStopsIncome(territory("Russia", data), data.getMap())).isFalse();
   }
+
+  @Test
+  void takingOneOfTwoCapitalsIsWorthNoOwnerIncome() throws GameParseException {
+    final GameData data = TestMapGameData.LHTR.getGameData();
+    TerritoryAttachment.getOrThrow(territory("Southern Europe", data)).setCapital("Germans");
+
+    assertThat(ProUtils.capitalValue(territory("Germany", data), data)).isZero();
+  }
 }

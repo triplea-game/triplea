@@ -7,12 +7,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.attachments.PlayerAttachment;
-import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -45,13 +43,6 @@ class ProCombatMoveAiTest {
     southernEurope.setCanHold(false);
 
     assertThat(ProCombatMoveAi.isValuableLanding(southernEurope)).isTrue();
-  }
-
-  @Test
-  void takingOneOfTwoCapitalsIsWorthNoOwnerIncome() throws GameParseException {
-    TerritoryAttachment.getOrThrow(territory("Southern Europe", gameData)).setCapital("Germans");
-
-    assertThat(ProCombatMoveAi.capitalValue(territory("Germany", gameData), gameData)).isZero();
   }
 
   @Test
@@ -129,6 +120,30 @@ class ProCombatMoveAiTest {
     assertThat(
             ProCombatMoveAi.isCapitalWorthBoosting(
                 territory("Russia", gameData), british(gameData), gameData))
+        .isTrue();
+  }
+
+  @Test
+  void ownCapitalWhoseLossKeepsItsIncomeIsNotDefendedAsCapital()
+      throws MutableProperty.InvalidValueException {
+    final PlayerAttachment pa =
+        new PlayerAttachment(Constants.PLAYER_ATTACHMENT_NAME, british(gameData), gameData);
+    pa.getPropertyOrThrow("retainCapitalProduceNumber").setValue(0);
+    british(gameData).addAttachment(Constants.PLAYER_ATTACHMENT_NAME, pa);
+
+    assertThat(
+            ProCombatMoveAi.isCapitalWorthDefending(
+                territory("United Kingdom", gameData), british(gameData), gameData))
+        .isFalse();
+  }
+
+  @Test
+  void enemyCapitalHeldByUsIsDefendedAsCapital() {
+    territory("Germany", gameData).setOwner(british(gameData));
+
+    assertThat(
+            ProCombatMoveAi.isCapitalWorthDefending(
+                territory("Germany", gameData), british(gameData), gameData))
         .isTrue();
   }
 }

@@ -1,12 +1,18 @@
 package games.strategy.triplea.ai.pro.util;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.british;
+import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Territory;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
 import java.util.List;
@@ -110,5 +116,23 @@ public class ProTerritoryValueUtilsTest {
     //   5 Sea Zone, 3 away: German, production 2, 5 German units
     // Production: 2/2 + 2/8 = 1.25. Units: 1/8 + 5/8 = 0.75.
     assertThat(value).isEqualTo(100 * 1.25 + 0.75);
+  }
+
+  @Test
+  void enemyCapitalWhoseCaptureKeepsItsIncomeIsValuedAsAFactoryOnly()
+      throws MutableProperty.InvalidValueException {
+    final GameData data = TestMapGameData.LHTR.getGameData();
+    final PlayerAttachment pa =
+        new PlayerAttachment(Constants.PLAYER_ATTACHMENT_NAME, germans(data), data);
+    pa.getPropertyOrThrow("retainCapitalProduceNumber").setValue(0);
+    germans(data).addAttachment(Constants.PLAYER_ATTACHMENT_NAME, pa);
+
+    final double value =
+        ProTerritoryValueUtils.findEnemyCapitalsAndFactoriesValue(
+                british(data), 1, List.of(), List.of())
+            .get(territory("Germany", data));
+
+    // Germany's factory produces 10; its land mass is itself plus 23 territories within 6 moves.
+    assertThat(value).isEqualTo(Math.sqrt(10) * 32 * 24);
   }
 }
