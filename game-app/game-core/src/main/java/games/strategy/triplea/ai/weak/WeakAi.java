@@ -1050,7 +1050,10 @@ public class WeakAi extends AbstractAi {
       return;
     }
     final RulesAttachment ra = player.getRulesAttachment();
-    final boolean placementAnyTerritory = (ra != null && ra.getPlacementAnyTerritory());
+    final boolean placementAnyTerritory =
+        Properties.getPlaceInAnyTerritory(data.getProperties())
+            && ra != null
+            && ra.getPlacementAnyTerritory();
     final Optional<Territory> optionalCapitol =
         TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data.getMap());
     // place in capitol first, but not if it's impassable

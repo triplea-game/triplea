@@ -1,9 +1,11 @@
 package games.strategy.triplea.ai.pro.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static games.strategy.triplea.delegate.GameDataTestUtil.britain;
 import static games.strategy.triplea.delegate.GameDataTestUtil.chinese;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
+import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.japanese;
 import static games.strategy.triplea.delegate.GameDataTestUtil.unitType;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
@@ -181,6 +183,52 @@ public class ProPurchaseUtilsTest {
               .map(territoryProPlace -> territoryProPlace.equals(territory))
               .forEach(Assertions::assertTrue);
         });
+  }
+
+  /// The engine ignores `placementAnyTerritory` unless "Place in Any Territory" is on, and the
+  /// Chinese own no factory.
+  @Test
+  void findPurchaseTerritoriesIgnoresPlacementAnyTerritoryWhenPropertyIsOff() {
+    final GameData pos2GameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
+    final GamePlayer playerChinese = checkNotNull(chinese(pos2GameData));
+    pos2GameData.getProperties().set(Constants.PLACE_IN_ANY_TERRITORY, false);
+    final ProAi proAi = getProAiForPurchaseStepOfPlayer(playerChinese, pos2GameData);
+
+    final Map<Territory, ProPurchaseTerritory> purchaseTerritories =
+        ProPurchaseUtils.findPurchaseTerritories(proAi.getProData(), playerChinese);
+
+    assertThat(purchaseTerritories).isEmpty();
+  }
+
+  /// Chinese `maxPlacePerTerritory` is 2, and each territory holds fewer than their
+  /// `placementPerTerritory` of 4 owned units.
+  @Test
+  void findPurchaseTerritoriesCapsPlacementAnyTerritoryAtMaxPlacePerTerritory() {
+    final GameData pos2GameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
+    final GamePlayer playerChinese = checkNotNull(chinese(pos2GameData));
+    final ProAi proAi = getProAiForPurchaseStepOfPlayer(playerChinese, pos2GameData);
+
+    final Map<Territory, ProPurchaseTerritory> purchaseTerritories =
+        ProPurchaseUtils.findPurchaseTerritories(proAi.getProData(), playerChinese);
+
+    assertThat(purchaseTerritories.values())
+        .extracting(ProPurchaseTerritory::getUnitProduction)
+        .containsExactly(2, 2, 2);
+  }
+
+  /// China starts with 3 Chinese units; a 4th reaches their `placementPerTerritory` of 4.
+  @Test
+  void findPurchaseTerritoriesGivesNoProductionAtPlacementPerTerritory() {
+    final GameData pos2GameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
+    final GamePlayer playerChinese = checkNotNull(chinese(pos2GameData));
+    final Territory china = pos2GameData.getMap().getTerritoryOrThrow("China");
+    addTo(china, infantry(pos2GameData).create(1, playerChinese));
+    final ProAi proAi = getProAiForPurchaseStepOfPlayer(playerChinese, pos2GameData);
+
+    final Map<Territory, ProPurchaseTerritory> purchaseTerritories =
+        ProPurchaseUtils.findPurchaseTerritories(proAi.getProData(), playerChinese);
+
+    assertThat(purchaseTerritories.get(china).getUnitProduction()).isZero();
   }
 
   /// Test strategy:

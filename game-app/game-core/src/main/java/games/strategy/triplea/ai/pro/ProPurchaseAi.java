@@ -550,7 +550,7 @@ class ProPurchaseAi {
 
     // Find all place territories
     final Map<Territory, ProPurchaseTerritory> placeNonConstructionTerritories =
-        ProPurchaseUtils.findPurchaseTerritories(proData, player);
+        ProPurchaseUtils.findPlaceTerritories(proData, player);
     final Set<Territory> placeTerritories = new HashSet<>();
     for (final Territory t : placeNonConstructionTerritories.keySet()) {
       for (final ProPlaceTerritory ppt :
