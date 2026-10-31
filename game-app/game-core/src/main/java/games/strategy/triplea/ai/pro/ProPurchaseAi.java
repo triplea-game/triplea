@@ -36,6 +36,7 @@ import games.strategy.triplea.ai.pro.util.ProUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
+import games.strategy.triplea.delegate.move.validation.AirMovementValidator;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.util.TuvUtils;
@@ -727,8 +728,7 @@ class ProPurchaseAi {
 
       // Find local owned units
       final List<Unit> ownedLocalUnits = t.getMatches(Matches.unitIsOwnedBy(player));
-      int unusedCarrierCapacity =
-          Math.min(0, ProTransportUtils.getUnusedCarrierCapacity(player, t, new ArrayList<>()));
+      int unusedCarrierCapacity = startingUnusedCarrierCapacity(t);
       int unusedLocalCarrierCapacity =
           ProTransportUtils.getUnusedLocalCarrierCapacity(player, t, new ArrayList<>());
       ProLogger.trace(
@@ -1504,6 +1504,22 @@ class ProPurchaseAi {
     return sortedTerritories;
   }
 
+  /**
+   * Deck space the AI can fill with new fighters at {@code t}; negative when carriers there are
+   * overbooked.
+   */
+  private int startingUnusedCarrierCapacity(final Territory t) {
+    final List<Unit> owned = t.getMatches(Matches.unitIsOwnedBy(player));
+    // Free deck on our own carriers net of our own landed air, as the place delegate counts it. The
+    // fallback below clamps to <= 0 so it only reports overbooking, never free deck.
+    final int ownFree =
+        AirMovementValidator.carrierCapacity(owned, t) - AirMovementValidator.carrierCost(owned);
+    if (ownFree > 0) {
+      return ownFree;
+    }
+    return Math.min(0, ProTransportUtils.getUnusedCarrierCapacity(player, t, List.of()));
+  }
+
   // Returns true if we should try to save up resources for a fleet next turn.
   private boolean purchaseSeaAndAmphibUnits(
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
@@ -1535,8 +1551,7 @@ class ProPurchaseAi {
       for (final Territory neighbor : neighbors) {
         ownedLocalUnits.addAll(neighbor.getMatches(Matches.unitIsOwnedBy(player)));
       }
-      int unusedCarrierCapacity =
-          Math.min(0, ProTransportUtils.getUnusedCarrierCapacity(player, t, List.of()));
+      int unusedCarrierCapacity = startingUnusedCarrierCapacity(t);
       int unusedLocalCarrierCapacity =
           ProTransportUtils.getUnusedLocalCarrierCapacity(player, t, List.of());
       ProLogger.trace(
