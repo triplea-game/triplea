@@ -32,7 +32,8 @@ public class ProCasualtyUtils {
    * this capital stops it collecting.
    *
    * @param factoryCapacity the units the owner could place here, 0 without a factory
-   * @param ownerIncome the owner's total income, which caps what it buys at the factory
+   * @param ownerIncome the owner's total income, this territory's included, which caps what it buys
+   *     at the factory
    * @param ownerAllyMovesFirst whether an ally of the owner moves before the owner's next turn
    */
   public static double captureValue(
@@ -48,7 +49,7 @@ public class ProCasualtyUtils {
     final double placementDenied =
         Math.min(factoryCapacity, ownerIncome) * (ownerAllyMovesFirst ? hold : 1);
     final double held =
-        income + (victoryCity ? VICTORY_CITY_VALUE : 0) + (deniesOwnerIncome ? ownerIncome : 0);
+        (deniesOwnerIncome ? ownerIncome : income) + (victoryCity ? VICTORY_CITY_VALUE : 0);
     return income + treasuryTaken + placementDenied + hold * held;
   }
 
