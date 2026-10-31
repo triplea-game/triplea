@@ -19,6 +19,7 @@ import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.ai.pro.util.ProMoveUtils;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.ai.pro.util.ProPurchaseUtils;
+import games.strategy.triplea.ai.pro.util.ProSeaBlockerUtils;
 import games.strategy.triplea.ai.pro.util.ProSortMoveOptionsUtils;
 import games.strategy.triplea.ai.pro.util.ProTerritoryValueUtils;
 import games.strategy.triplea.ai.pro.util.ProTransportUtils;
@@ -124,6 +125,10 @@ public class ProCombatMoveAi {
 
     // Check if any subs in contested territory that's not being attacked
     checkContestedSeaTerritories();
+
+    if (proData.isBeta()) {
+      releaseSeaBlockersFromAttacks();
+    }
 
     // Calculate attack routes and perform moves
     doMove(territoryManager.getAttackOptions().getTerritoryMap(), moveDel, data, player);
@@ -1267,6 +1272,158 @@ public class ProCombatMoveAi {
       determineBestBombingAttackForBomber(
           attackMap, sortedUnitAttackOptions, bomberTargetTerritories, bomber);
     }
+  }
+
+  /**
+   * Takes a warship out of a sea attack that still wins without it when it is the only way to block
+   * every enemy transport route to land the enemy can take only by landing, so that non-combat move
+   * can park it in the blocking zone.
+   */
+  private void releaseSeaBlockersFromAttacks() {
+    final Map<Territory, ProTerritory> attackMap =
+        territoryManager.getAttackOptions().getTerritoryMap();
+    final Map<Unit, Territory> enemyTransports =
+        ProSeaBlockerUtils.findEnemyTransportsWithCargo(data, player);
+    if (enemyTransports.isEmpty()) {
+      return;
+    }
+    final Set<Unit> attacking = new HashSet<>();
+    for (final ProTerritory patd : attackMap.values()) {
+      attacking.addAll(patd.getUnits());
+      attacking.addAll(patd.getAmphibAttackMap().keySet());
+      patd.getAmphibAttackMap().values().forEach(attacking::addAll);
+      attacking.addAll(patd.getBombers());
+    }
+    final List<Territory> candidates =
+        CollectionUtils.getMatches(
+            data.getMap().getTerritories(),
+            Matches.isTerritoryAllied(player).and(Matches.territoryIsLand()));
+    final Map<Territory, Double> targets =
+        ProSeaBlockerUtils.findAmphibOnlyTargets(
+            proData,
+            calc,
+            territoryManager.getEnemyAttackOptions(),
+            candidates,
+            t ->
+                CollectionUtils.getMatches(
+                    t.getUnits(), Matches.isUnitAllied(player).and(u -> !attacking.contains(u))));
+    final Predicate<Unit> warship =
+        Matches.unitIsOwnedBy(player)
+            .and(Matches.unitIsSea())
+            .and(Matches.unitIsSeaTransport().negate())
+            .and(Matches.unitIsCarrier().negate());
+    final Set<Territory> blocks = new HashSet<>();
+    for (final Territory target : targets.keySet()) {
+      if (!ProSeaBlockerUtils.canUnloadAt(data, enemyTransports, target, blocks)) {
+        continue;
+      }
+      // A warship that isn't attacking can already block: non-combat move will use it
+      boolean freeBlocker = false;
+      Unit bestShip = null;
+      Territory bestZone = null;
+      ProTerritory bestFrom = null;
+      for (final Territory z : data.getMap().getTerritories()) {
+        if (!z.isWater()) {
+          continue;
+        }
+        for (final Unit u : z.getMatches(warship)) {
+          final Optional<Territory> blockZone =
+              findBlockZone(enemyTransports, target, blocks, z, u);
+          if (blockZone.isEmpty()) {
+            continue;
+          }
+          if (!attacking.contains(u)) {
+            freeBlocker = true;
+            break;
+          }
+          final ProTerritory from =
+              attackMap.values().stream()
+                  .filter(patd -> patd.getUnits().contains(u))
+                  .findAny()
+                  .orElse(null);
+          if (from == null
+              || (bestShip != null
+                  && proData.getUnitValue(u.getType())
+                      >= proData.getUnitValue(bestShip.getType()))) {
+            continue;
+          }
+          final List<Unit> without = new ArrayList<>(from.getUnits());
+          without.remove(u);
+          final List<Unit> defenders = from.getMaxEnemyDefenders(player);
+          final ProBattleResult with =
+              calc.estimateAttackBattleResults(
+                  proData,
+                  from.getTerritory(),
+                  from.getUnits(),
+                  defenders,
+                  from.getBombardTerritoryMap().keySet());
+          final ProBattleResult withoutResult =
+              calc.estimateAttackBattleResults(
+                  proData,
+                  from.getTerritory(),
+                  without,
+                  defenders,
+                  from.getBombardTerritoryMap().keySet());
+          if (withoutResult.getWinPercentage() >= proData.getWinPercentage()
+              || withoutResult.getWinPercentage() >= with.getWinPercentage() - 1) {
+            bestShip = u;
+            bestZone = blockZone.get();
+            bestFrom = from;
+          }
+        }
+        if (freeBlocker) {
+          break;
+        }
+      }
+      if (freeBlocker || bestShip == null) {
+        continue;
+      }
+      bestFrom.getUnits().remove(bestShip);
+      bestFrom.setBattleResult(null);
+      attacking.remove(bestShip);
+      blocks.add(bestZone);
+      ProLogger.debug(
+          "Sea blocker: "
+              + bestShip
+              + " leaves the attack on "
+              + bestFrom.getTerritory()
+              + " to block "
+              + bestZone
+              + " for "
+              + target);
+    }
+  }
+
+  private Set<Territory> attackedTerritories() {
+    final Set<Territory> attacked = new HashSet<>();
+    for (final ProTerritory patd : territoryManager.getAttackOptions().getTerritoryMap().values()) {
+      if (!patd.getUnits().isEmpty() || !patd.getAmphibAttackMap().isEmpty()) {
+        attacked.add(patd.getTerritory());
+      }
+    }
+    return attacked;
+  }
+
+  private Optional<Territory> findBlockZone(
+      final Map<Unit, Territory> enemyTransports,
+      final Territory target,
+      final Set<Territory> blocks,
+      final Territory from,
+      final Unit ship) {
+    for (final Territory z :
+        ProSeaBlockerUtils.seaZonesInReach(data, player, from, ship.getMovementLeft().intValue())) {
+      if (enemyTransports.containsValue(z)
+          || z.anyUnitsMatch(Matches.enemyUnit(player))
+          || ProSeaBlockerUtils.enemyCanAttack(data, player, z, attackedTerritories())) {
+        continue;
+      }
+      final Set<Territory> withZone = new HashSet<>(blocks);
+      withZone.add(z);
+      if (!ProSeaBlockerUtils.canUnloadAt(data, enemyTransports, target, withZone)) {
+        return Optional.of(z);
+      }
+    }
+    return Optional.empty();
   }
 
   /**
