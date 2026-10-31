@@ -24,6 +24,7 @@ import games.strategy.triplea.ai.pro.util.ProSortMoveOptionsUtils;
 import games.strategy.triplea.ai.pro.util.ProTerritoryValueUtils;
 import games.strategy.triplea.ai.pro.util.ProTransportUtils;
 import games.strategy.triplea.ai.pro.util.ProUtils;
+import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.AirBattle;
@@ -934,6 +935,25 @@ public class ProCombatMoveAi {
     return productionAndIsCapital;
   }
 
+  /**
+   * The owner's income if taking {@code t} stops it, ie {@code t} is the owner's capital and the
+   * owner is left with fewer than {@code retainCapitalProduceNumber} capitals.
+   */
+  static double capitalValue(final Territory t, final GameData data) {
+    final GamePlayer owner = t.getOwner();
+    final boolean ownersCapital =
+        TerritoryAttachment.get(t)
+            .flatMap(TerritoryAttachment::getCapital)
+            .filter(owner.getName()::equals)
+            .isPresent();
+    final int capitalsLeft =
+        TerritoryAttachment.getAllCurrentlyOwnedCapitals(owner, data.getMap()).size() - 1;
+    final PlayerAttachment pa = PlayerAttachment.get(owner);
+    return ownersCapital && capitalsLeft < (pa == null ? 1 : pa.getRetainCapitalProduceNumber())
+        ? ProUtils.getPlayerProduction(owner, data)
+        : 0;
+  }
+
   private void determineUnitsToAttackWith(
       final List<ProTerritory> prioritizedTerritories, final List<Unit> alreadyMovedUnits) {
 
@@ -1171,13 +1191,7 @@ public class ProCombatMoveAi {
         }
         final int isFfa = ProUtils.isFfa(data, player) ? 1 : 0;
         final int production = TerritoryAttachment.getProduction(t);
-        double capitalValue = 0;
-        final Optional<TerritoryAttachment> optionalTerritoryAttachment =
-            TerritoryAttachment.get(t);
-        if (optionalTerritoryAttachment.isPresent()
-            && optionalTerritoryAttachment.get().isCapital()) {
-          capitalValue = ProUtils.getPlayerProduction(t.getOwner(), data);
-        }
+        final double capitalValue = capitalValue(t, data);
         final double territoryValue =
             (1
                         + isLand
