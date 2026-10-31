@@ -56,6 +56,9 @@ import org.triplea.java.collections.IntegerMap;
 /** Pro purchase AI. */
 class ProPurchaseAi {
 
+  // Land distance assumed for units that must cross the sea before they fight.
+  private static final int OVERSEAS_DISTANCE = 10;
+
   private final ProOddsCalculator calc;
   private final ProData proData;
   private GameData data;
@@ -2022,6 +2025,21 @@ class ProPurchaseAi {
             }
             transportsThatNeedUnits.remove(transport);
           } else {
+            if (proData.isBeta()
+                && !transportUnitsToPlace.isEmpty()
+                && potentialUnitsToLoad.isEmpty()) {
+              // Hard Beta buys another transport only for units already waiting at the coast.
+              // With none left, the rest of the production buys land units to wait for the
+              // transports, rather than pairing every new transport with fresh cargo.
+              purchaseWaitingCargo(
+                  purchaseTerritories,
+                  amphibPurchaseOptionsForTerritory,
+                  ownedLocalAmphibUnits,
+                  amphibUnitsToPlace,
+                  remainingUnitProduction,
+                  t);
+              break;
+            }
             // Select purchase option
             ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
                 proData,
@@ -2084,6 +2102,70 @@ class ProPurchaseAi {
     return !boughtUnits
         && wantedToBuyUnitsButCouldNotDefendThem
         && shouldSaveUpForAFleet(purchaseOptions, purchaseTerritories);
+  }
+
+  /** Buys land units at a coastal factory to wait for transports. */
+  private void purchaseWaitingCargo(
+      final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
+      final List<ProPurchaseOption> amphibPurchaseOptions,
+      final List<Unit> ownedLocalAmphibUnits,
+      final List<Unit> amphibUnitsToPlace,
+      final int remainingUnitProduction,
+      final Territory seaTerritory) {
+    int remaining = remainingUnitProduction;
+    boolean pickFodder = true;
+    while (remaining > 0) {
+      ProPurchaseValidationUtils.removeInvalidPurchaseOptions(
+          proData,
+          player,
+          startOfTurnData,
+          amphibPurchaseOptions,
+          resourceTracker,
+          remaining,
+          amphibUnitsToPlace,
+          purchaseTerritories,
+          0,
+          seaTerritory);
+      // Alternate the cheapest-to-ship unit with the best overseas attacker (a transport load).
+      final int minTransportCost =
+          amphibPurchaseOptions.stream()
+              .mapToInt(ProPurchaseOption::getTransportCost)
+              .filter(c -> c > 0)
+              .min()
+              .orElse(0);
+      final Map<ProPurchaseOption, Double> amphibEfficiencies = new HashMap<>();
+      for (final ProPurchaseOption ppo : amphibPurchaseOptions) {
+        if (ppo.getTransportCost() <= 0
+            || pickFodder != (ppo.getTransportCost() == minTransportCost)) {
+          continue;
+        }
+        amphibEfficiencies.put(
+            ppo,
+            pickFodder
+                ? ppo.getFodderEfficiency(
+                    OVERSEAS_DISTANCE, data, ownedLocalAmphibUnits, amphibUnitsToPlace)
+                : ppo.getAttackEfficiency(
+                    OVERSEAS_DISTANCE, data, ownedLocalAmphibUnits, amphibUnitsToPlace));
+      }
+      if (amphibEfficiencies.isEmpty()) {
+        for (final ProPurchaseOption ppo : amphibPurchaseOptions) {
+          if (ppo.getTransportCost() > 0) {
+            amphibEfficiencies.put(
+                ppo, ppo.getAmphibEfficiency(data, ownedLocalAmphibUnits, amphibUnitsToPlace));
+          }
+        }
+      }
+      pickFodder = !pickFodder;
+      final Optional<ProPurchaseOption> selected =
+          ProPurchaseUtils.randomizePurchaseOption(amphibEfficiencies, "Waiting cargo");
+      if (selected.isEmpty()) {
+        break;
+      }
+      amphibUnitsToPlace.addAll(selected.get().createTempUnits());
+      resourceTracker.purchase(selected.get());
+      remaining -= selected.get().getQuantity();
+      ProLogger.trace("Selected waiting cargo unit=" + selected.get().getUnitType().getName());
+    }
   }
 
   private void purchaseUnitsWithRemainingProduction(
