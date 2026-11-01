@@ -252,6 +252,10 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
       playerTypes.setSelectedItem(PlayerTypes.PRO_AI.getLabel());
     } else if (player.isDefaultTypeDoesNothing()) {
       playerTypes.setSelectedItem(PlayerTypes.DOES_NOTHING_PLAYER_LABEL);
+    } else if (player.isDefaultTypeFastAi()) {
+        playerTypes.setSelectedItem(PlayerTypes.FAST_AI.getLabel());
+    } else if (player.isDefaultTypeEasyAi()) {
+        playerTypes.setSelectedItem(PlayerTypes.WEAK_AI.getLabel());
     } else {
       playerTypes.setSelectedItem(HeadedPlayerTypes.HUMAN_PLAYER.getLabel());
     }
