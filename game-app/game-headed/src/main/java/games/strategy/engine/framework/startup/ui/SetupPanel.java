@@ -8,6 +8,7 @@ import games.strategy.engine.framework.startup.mc.HeadedPlayerTypes;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
