@@ -89,7 +89,6 @@ final class ProductionPanelTest {
       player.getUnitCollection().addAll(tank.create(7, player));
 
       assertThat(ProductionPanel.getOwnedUnitCount(tank, player, gameData)).isEqualTo(7);
-      assertThat(ProductionPanel.getRemainingBuildAllowance(tank, player, gameData)).isZero();
 
       final ProductionPanel panel = givenProductionPanel();
       final ProductionPanel.Rule purchase =

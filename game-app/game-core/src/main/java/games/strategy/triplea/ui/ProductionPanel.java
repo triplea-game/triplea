@@ -282,21 +282,26 @@ class ProductionPanel extends JPanel {
       if (!current.limitedTypes.isEmpty()) {
         final StringJoiner limitLabels = new StringJoiner("<br>", "<html>", "</html>");
 
+        // Finds the maximum number of times a rule can be used to build before reaching any unit
+        // limit
         for (final UnitType type : current.limitedTypes) {
+          // Setting limit label for the unit type
+          final int owned = getOwnedUnitCount(type, gamePlayer, data);
+          final int maxBuilt = type.getUnitAttachment().getMaxBuiltPerPlayer();
+          final String label =
+              current.limitedTypes.size() == 1
+                  ? "Owned: " + owned + "/" + maxBuilt
+                  : type.getName() + ": " + owned + "/" + maxBuilt + " owned";
+          limitLabels.add(label);
+          // Finds the maximum number of times a rule can be used to build before reaching this
+          // unit's limit
+          final int allowance = Math.max(0, maxBuilt - owned);
           final int unitsPerPurchase = current.getProductionRule().getResults().getInt(type);
           final int selectedByCurrentRule = current.getQuantity() * unitsPerPurchase;
           final int selectedByOtherRules =
               selectedUnits.getOrDefault(type, 0) - selectedByCurrentRule;
-          final int owned = getOwnedUnitCount(type, gamePlayer, data);
-          final int maxBuilt = type.getUnitAttachment().getMaxBuiltPerPlayer();
-          final int allowance = Math.max(0, maxBuilt - owned);
           final int remainingForRule = Math.max(0, allowance - selectedByOtherRules);
           max = Math.min(max, remainingForRule / unitsPerPurchase);
-          final String label = "Owned: " + owned + "/" + maxBuilt;
-          limitLabels.add(
-              current.limitedTypes.size() == 1
-                  ? label
-                  : type.getName() + ": " + owned + "/" + maxBuilt + " owned");
         }
         current.buildLimitLabel.setText(limitLabels.toString());
       }
@@ -316,13 +321,6 @@ class ProductionPanel extends JPanel {
     }
 
     return owned;
-  }
-
-  /** Returns how many more units the player can build under the maxBuiltPerPlayer limit. */
-  static int getRemainingBuildAllowance(
-      final UnitType type, final GamePlayer player, final GameState data) {
-    return Math.max(
-        0, type.getUnitAttachment().getMaxBuiltPerPlayer() - getOwnedUnitCount(type, player, data));
   }
 
   protected ResourceCollection getResources() {
@@ -471,16 +469,16 @@ class ProductionPanel extends JPanel {
                 0));
       }
       if (!limitedTypes.isEmpty()) {
+        // Sets dummy text to correctly initialize the size of the buildLimitLabel
         final StringJoiner limitLabels = new StringJoiner("<br>", "<html>", "</html>");
 
         for (final UnitType type : limitedTypes) {
           final int maxBuilt = type.getUnitAttachment().getMaxBuiltPerPlayer();
-          final int owned = getOwnedUnitCount(type, player, data);
-          final String label = "Owned: " + owned + "/" + maxBuilt;
-          limitLabels.add(
+          final String label =
               limitedTypes.size() == 1
-                  ? label
-                  : type.getName() + ": " + owned + "/" + maxBuilt + " owned");
+                  ? "Owned: " + maxBuilt + "/" + maxBuilt
+                  : type.getName() + ": " + maxBuilt + "/" + maxBuilt + " owned";
+          limitLabels.add(label);
         }
         buildLimitLabel.setText(limitLabels.toString());
         buildLimitLabel.setFont(buildLimitLabel.getFont().deriveFont(12f));
