@@ -11,9 +11,9 @@ dropwizard-websockets = "1.3.14"
 equals-verifier = "4.5.2"
 feign = "13.17"
 flatlaf = "3.7.2"
-gson = "2.14.0"
+gson = "2.15.0"
 guava = "33.7.2-jre"
-jackson-datatype = "2.22.3"
+jackson-datatype = "2.22.4"
 jakarta-mail = "2.0.2"
 java-websocket = "1.6.0"
 jaxb-impl = "4.0.9"
@@ -22,10 +22,10 @@ jlayer = "1.0.1.4"
 jsr305 = "3.0.2"
 junit-jupiter = "6.1.3"
 junit-platform-launcher = "6.1.3"
-logback-classic = "1.6.5"
+logback-classic = "1.6.6"
 lombok = "1.18.48"
 mockito = "5.24.0"
-okhttp = "5.5.0"
+okhttp = "5.5.1"
 pmd = "7.28.0"
 snake-yaml = "3.2"
 sonatype-goodies-prefs = "2.3.9"
@@ -84,7 +84,7 @@ xmlunit-core = { module = "org.xmlunit:xmlunit-core", version.ref = "xmlunit" }
 xmlunit-matchers = { module = "org.xmlunit:xmlunit-matchers", version.ref = "xmlunit" }
 
 [plugins]
-gradle-versions = { id = "com.github.ben-manes.versions", version.ref = "gradle-versions" }
+gradle-versions = { id = "io.github.ben-manes.versions", version.ref = "gradle-versions" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 install4j = { id = "com.install4j.gradle", version.ref = "install4j" }

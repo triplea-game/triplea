@@ -207,6 +207,18 @@ public class ProPurchaseOption {
         0.75, 1.25, supportAttackFactor, supportDefenseFactor, distanceFactor, data);
   }
 
+  /** Like {@link #getDefenseEfficiency} but without crediting attack support this unit gives. */
+  public double getDefenseEfficiencyWithoutAttackSupport(
+      final int enemyDistance,
+      final GameData data,
+      final List<Unit> ownedLocalUnits,
+      final List<Unit> unitsToPlace) {
+    final double supportDefenseFactor =
+        calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, true);
+    final double distanceFactor = calculateLandDistanceFactor(enemyDistance);
+    return calculateEfficiency(0.75, 1.25, 0, supportDefenseFactor, distanceFactor, data);
+  }
+
   /**
    * Returns the sea defense efficiency for the specified units if this purchase option is selected.
    */

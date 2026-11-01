@@ -34,4 +34,22 @@ public class HeadedPlayerTypesTest {
         .as("Ensure we have a visible player type in the selection list")
         .contains(PlayerTypes.WEAK_AI.getLabel());
   }
+
+  @Test
+  void hardBetaAiIsHiddenWithoutBetaFeatures() {
+    ClientSetting.showBetaFeatures.setValue(false);
+
+    final PlayerTypes playerTypes = new PlayerTypes(HeadedPlayerTypes.getPlayerTypes());
+
+    assertThat(playerTypes.getAvailablePlayerLabels()).doesNotContain("Hard Beta (AI)");
+  }
+
+  @Test
+  void hardBetaAiIsSelectableWithBetaFeatures() {
+    ClientSetting.showBetaFeatures.setValue(true);
+
+    final PlayerTypes playerTypes = new PlayerTypes(HeadedPlayerTypes.getPlayerTypes());
+
+    assertThat(playerTypes.getAvailablePlayerLabels()).contains("Hard Beta (AI)");
+  }
 }

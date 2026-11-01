@@ -17,8 +17,10 @@ import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.ai.pro.util.ProBattleUtils;
 import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.ai.pro.util.ProMoveUtils;
+import games.strategy.triplea.ai.pro.util.ProNationalObjectiveUtils;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.ai.pro.util.ProPurchaseUtils;
+import games.strategy.triplea.ai.pro.util.ProSeaBlockerUtils;
 import games.strategy.triplea.ai.pro.util.ProSortMoveOptionsUtils;
 import games.strategy.triplea.ai.pro.util.ProTerritoryValueUtils;
 import games.strategy.triplea.ai.pro.util.ProTransportUtils;
@@ -33,6 +35,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -40,10 +43,20 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Pro combat move AI. */
 public class ProCombatMoveAi {
+
+  /** TUV a strafe must gain over taking the territory. */
+  private static final double STRAFE_MARGIN = 2;
+
+  /** Most rounds a strafe fights before retreating. */
+  private static final int STRAFE_MAX_ROUNDS = 2;
+
+  /** Weight of the enemy's counter-attack TUV swing in a trade's value, as in the attack value. */
+  private static final double TRADE_COUNTER_WEIGHT = 2.0 / 3;
 
   private static final int MIN_BOMBING_SCORE = 4; // Avoid bombing low production factories with AA
 
@@ -84,7 +97,7 @@ public class ProCombatMoveAi {
     // Remove territories that aren't worth attacking and prioritize the remaining ones
     final List<ProTerritory> attackOptions =
         territoryManager.removeTerritoriesThatCantBeConquered();
-    List<Territory> clearedTerritories = new ArrayList<>();
+    final List<Territory> clearedTerritories = new ArrayList<>();
     for (final ProTerritory patd : attackOptions) {
       clearedTerritories.add(patd.getTerritory());
     }
@@ -94,27 +107,20 @@ public class ProCombatMoveAi {
     removeTerritoriesThatArentWorthAttacking(attackOptions);
 
     // Determine which territories to attack
-    determineTerritoriesToAttack(attackOptions);
+    final List<ProTerritory> removedBySelection = new ArrayList<>();
+    determineTerritoriesToAttack(attackOptions, removedBySelection);
 
     // Determine which territories can be held and remove any that aren't worth attacking
-    clearedTerritories = new ArrayList<>();
-    final Set<Territory> possibleTransportTerritories = new HashSet<>();
-    for (final ProTerritory patd : attackOptions) {
-      clearedTerritories.add(patd.getTerritory());
-      if (!patd.getAmphibAttackMap().isEmpty()) {
-        possibleTransportTerritories.addAll(
-            data.getMap().getNeighbors(patd.getTerritory(), Matches.territoryIsWater()));
-      }
-    }
-    possibleTransportTerritories.addAll(clearedTerritories);
-    territoryManager.populateEnemyAttackOptions(clearedTerritories, possibleTransportTerritories);
-    determineTerritoriesThatCanBeHeld(attackOptions, clearedTerritories);
+    refreshEnemyAttackOptions(attackOptions);
     removeTerritoriesThatArentWorthAttacking(attackOptions);
 
     // Determine how many units to attack each territory with
     final List<Unit> alreadyMovedUnits =
         moveOneDefenderToLandTerritoriesBorderingEnemy(attackOptions);
+    final List<ProTerritory> beforeWorthCheck = new ArrayList<>(attackOptions);
     determineUnitsToAttackWith(attackOptions, alreadyMovedUnits);
+    reAddRemovedAmphibAttacks(
+        attackOptions, beforeWorthCheck, removedBySelection, alreadyMovedUnits);
 
     // Get all transport final territories
     ProMoveUtils.calculateAmphibRoutes(
@@ -122,6 +128,9 @@ public class ProCombatMoveAi {
 
     // Determine max enemy counter-attack units and remove territories where transports are exposed
     removeTerritoriesWhereTransportsAreExposed();
+
+    // Fight some attacks I can't hold for a round or two, then retreat
+    final Map<String, Integer> strafeRetreats = proData.isBeta() ? planStrafes() : Map.of();
 
     // Determine if capital can be held if I still own it
     if (proData.getMyCapital() != null && proData.getMyCapital().isOwnedBy(player)) {
@@ -132,11 +141,19 @@ public class ProCombatMoveAi {
     // Check if any subs in contested territory that's not being attacked
     checkContestedSeaTerritories();
 
+    if (proData.canLandBehindSeaBattle()) {
+      dropLandingsBehindUnfoughtZones();
+    }
+    if (proData.isBeta()) {
+      releaseSeaBlockersFromAttacks();
+    }
+
     // Calculate attack routes and perform moves
     doMove(territoryManager.getAttackOptions().getTerritoryMap(), moveDel, data, player);
 
     // Set strafing territories to avoid retreats
     ai.setStoredStrafingTerritories(territoryManager.getStrafingTerritories());
+    ai.setStoredStrafeRetreats(strafeRetreats);
     ProLogger.info("Strafing territories: " + territoryManager.getStrafingTerritories());
 
     // Log results
@@ -205,6 +222,9 @@ public class ProCombatMoveAi {
 
       // Determine production value and if it is an enemy capital
       ProductionAndIsCapital productionAndIsCapital = getProductionAndIsCapital(t);
+      productionAndIsCapital.production +=
+          (int) Math.round(ProNationalObjectiveUtils.value(proData, player, t));
+      final int isCapital = isCapitalWorthTargeting(patd, player, data) ? 1 : 0;
 
       // Calculate attack value for prioritization
       double tuvSwing = patd.getMaxBattleResult().getTuvSwing();
@@ -219,7 +239,7 @@ public class ProCombatMoveAi {
               * productionAndIsCapital.production;
       double attackValue =
           (tuvSwing + territoryValue)
-              * (1 + 4.0 * productionAndIsCapital.isCapital)
+              * (1 + 4.0 * isCapital)
               * (1 + 2.0 * isNotNeutralAdjacentToMyCapital)
               * (1 - 0.9 * isNeutral);
 
@@ -314,9 +334,13 @@ public class ProCombatMoveAi {
     }
   }
 
-  private void determineTerritoriesToAttack(final List<ProTerritory> prioritizedTerritories) {
+  private void determineTerritoriesToAttack(
+      final List<ProTerritory> prioritizedTerritories, final List<ProTerritory> removed) {
 
     ProLogger.info("Determine which territories to attack");
+    if (proData.canLandBehindSeaBattle()) {
+      promoteBlockedZonesBeforeLandings(prioritizedTerritories);
+    }
 
     // Assign units to territories by prioritization
     int numToAttack = Math.min(1, prioritizedTerritories.size());
@@ -327,28 +351,8 @@ public class ProCombatMoveAi {
       ProLogger.debug("Current number of territories: " + numToAttack);
       tryToAttackTerritories(territoriesToTryToAttack, List.of());
 
-      // Determine if all attacks are successful
-      boolean areSuccessful = true;
-      for (final ProTerritory patd : territoriesToTryToAttack) {
-        final Territory t = patd.getTerritory();
-        if (patd.getBattleResult() == null) {
-          patd.estimateBattleResult(calc, player);
-        }
-        ProLogger.trace(patd.getResultString() + " with attackers: " + patd.getUnits());
-        final double estimate =
-            ProBattleUtils.estimateStrengthDifference(
-                t, patd.getUnits(), patd.getMaxEnemyDefenders(player));
-        final ProBattleResult result = patd.getBattleResult();
-        if (!patd.isStrafing()
-            && estimate < patd.getStrengthEstimate()
-            && (result.getWinPercentage() < proData.getMinWinPercentage()
-                || !result.isHasLandUnitRemaining())) {
-          areSuccessful = false;
-        }
-      }
-
       // Determine whether to try more territories, remove a territory, or end
-      if (areSuccessful) {
+      if (allAttacksSucceed(territoriesToTryToAttack)) {
         for (final ProTerritory patd : territoriesToTryToAttack) {
           patd.setCanAttack(true);
           final double estimate =
@@ -371,6 +375,7 @@ public class ProCombatMoveAi {
             }
           }
           prioritizedTerritories.removeAll(amphibTerritoriesToRemove);
+          removed.addAll(amphibTerritoriesToRemove);
           haveRemovedAllAmphibTerritories = true;
         }
 
@@ -383,13 +388,236 @@ public class ProCombatMoveAi {
         ProLogger.debug(
             "Removing territory: "
                 + prioritizedTerritories.get(numToAttack - 1).getTerritory().getName());
-        prioritizedTerritories.remove(numToAttack - 1);
+        removed.add(prioritizedTerritories.remove(numToAttack - 1));
         if (numToAttack > prioritizedTerritories.size()) {
           numToAttack--;
         }
       }
     }
     ProLogger.debug("Final number of territories: " + (numToAttack - 1));
+  }
+
+  /** Whether every attack in {@code territories} wins with the units currently assigned to it. */
+  private boolean allAttacksSucceed(final List<ProTerritory> territories) {
+    boolean areSuccessful = true;
+    for (final ProTerritory patd : territories) {
+      if (patd.getBattleResult() == null) {
+        patd.estimateBattleResult(calc, player);
+      }
+      ProLogger.trace(patd.getResultString() + " with attackers: " + patd.getUnits());
+      final double estimate =
+          ProBattleUtils.estimateStrengthDifference(
+              patd.getTerritory(), patd.getUnits(), patd.getMaxEnemyDefenders(player));
+      final ProBattleResult result = patd.getBattleResult();
+      if (!patd.isStrafing()
+          && estimate < patd.getStrengthEstimate()
+          && (result.getWinPercentage() < proData.getMinWinPercentage()
+              || !result.isHasLandUnitRemaining())) {
+        areSuccessful = false;
+      }
+    }
+    return areSuccessful;
+  }
+
+  /**
+   * Re-adds the amphibious attacks that {@link #determineTerritoriesToAttack} removed, once the
+   * worth-it check has dropped an attack and freed its units. Each is kept only if every planned
+   * attack, including it, still wins and is worth it. eg: a UK landing is removed because it takes
+   * the air that a higher-priority Russia attack needs; Russia is then dropped as not worth it, so
+   * the UK landing is tried again with the freed air and transport.
+   */
+  private void reAddRemovedAmphibAttacks(
+      final List<ProTerritory> attackOptions,
+      final List<ProTerritory> beforeWorthCheck,
+      final List<ProTerritory> removedBySelection,
+      final List<Unit> alreadyMovedUnits) {
+    final List<ProTerritory> dropped = new ArrayList<>(beforeWorthCheck);
+    dropped.removeAll(attackOptions);
+    if (dropped.isEmpty()) {
+      return;
+    }
+    final List<ProTerritory> candidates = new ArrayList<>();
+    for (final ProTerritory patd : removedBySelection) {
+      if (patd.isNeedAmphibUnits()
+          && isValuableLanding(patd)
+          && !patd.getTerritory().isWater()
+          && !dropped.contains(patd)
+          && !attackOptions.contains(patd)
+          && !candidates.contains(patd)) {
+        candidates.add(patd);
+      }
+    }
+    if (candidates.isEmpty()) {
+      return;
+    }
+    candidates.sort(Comparator.comparingDouble(ProTerritory::getValue).reversed());
+    final List<ProTerritory> cleared = new ArrayList<>(beforeWorthCheck);
+    for (final ProTerritory candidate : candidates) {
+      final List<ProTerritory> trial = new ArrayList<>(attackOptions);
+      trial.add(candidate);
+      tryToAttackTerritories(trial, alreadyMovedUnits);
+      if (candidate.getAmphibAttackMap().isEmpty() || !allAttacksSucceed(trial)) {
+        continue;
+      }
+      // the enemy counter-attack options cover only the cleared territories and their unload
+      // zones, so the worth-it check needs them refreshed for the candidate
+      cleared.add(candidate);
+      refreshEnemyAttackOptions(cleared);
+      determineUnitsToAttackWith(trial, alreadyMovedUnits);
+      if (trial.size() == attackOptions.size() + 1) {
+        ProLogger.debug("Re-adding amphib territory: " + candidate.getTerritory().getName());
+        attackOptions.add(candidate);
+      } else {
+        cleared.remove(candidate);
+        refreshEnemyAttackOptions(cleared);
+      }
+    }
+    // each trial reassigns every unit, so plan the final set again
+    determineUnitsToAttackWith(attackOptions, alreadyMovedUnits);
+  }
+
+  /**
+   * Finds the enemy counter-attack options against {@code attacks} and the sea zones their
+   * transports unload from, then which of them can be held.
+   */
+  private void refreshEnemyAttackOptions(final List<ProTerritory> attacks) {
+    final List<Territory> clearedTerritories = new ArrayList<>();
+    final Set<Territory> possibleTransportTerritories = new HashSet<>();
+    for (final ProTerritory patd : attacks) {
+      clearedTerritories.add(patd.getTerritory());
+      if (!patd.getAmphibAttackMap().isEmpty()) {
+        possibleTransportTerritories.addAll(
+            data.getMap().getNeighbors(patd.getTerritory(), Matches.territoryIsWater()));
+      }
+    }
+    possibleTransportTerritories.addAll(clearedTerritories);
+    territoryManager.populateEnemyAttackOptions(clearedTerritories, possibleTransportTerritories);
+    determineTerritoriesThatCanBeHeld(attacks, clearedTerritories);
+  }
+
+  /**
+   * Whether a landing is worth re-adding after it was removed, or worth fighting a sea battle to
+   * reach: an enemy capital or factory, or a target the combat move expects to hold. A small
+   * landing the enemy retakes next turn costs more than it gains.
+   */
+  static boolean isValuableLanding(final ProTerritory patd) {
+    final Territory t = patd.getTerritory();
+    return TerritoryAttachment.get(t).map(TerritoryAttachment::isCapital).orElse(false)
+        || ProMatches.territoryHasInfraFactoryAndIsLand().test(t)
+        || patd.isCanHold();
+  }
+
+  /**
+   * Moves an enemy-held sea zone ahead of a valuable landing that transports can reach only by
+   * unloading from that zone, so the sea battle is planned before the landing that needs it.
+   */
+  private void promoteBlockedZonesBeforeLandings(final List<ProTerritory> prioritizedTerritories) {
+    final List<ProTransport> transports = territoryManager.getAttackOptions().getTransportList();
+    for (int i = 0; i < prioritizedTerritories.size(); i++) {
+      final ProTerritory patd = prioritizedTerritories.get(i);
+      final Territory t = patd.getTerritory();
+      if (t.isWater()) {
+        continue;
+      }
+      final Set<Territory> blockedZones = new LinkedHashSet<>();
+      boolean hasClearZone = false;
+      for (final ProTransport pt : transports) {
+        if (!pt.getTransportMap().containsKey(t)) {
+          continue;
+        }
+        for (final Territory z : data.getMap().getNeighbors(t, Matches.territoryIsWater())) {
+          if (!pt.getSeaTransportMap().containsKey(z)) {
+            continue;
+          }
+          if (pt.getBlockedSeaTerritories().contains(z)) {
+            blockedZones.add(z);
+          } else {
+            hasClearZone = true;
+          }
+        }
+      }
+      if (hasClearZone || blockedZones.isEmpty() || !isValuableLanding(patd)) {
+        continue;
+      }
+      for (final Territory z : blockedZones) {
+        for (int j = i + 1; j < prioritizedTerritories.size(); j++) {
+          if (prioritizedTerritories.get(j).getTerritory().equals(z)) {
+            prioritizedTerritories.add(i, prioritizedTerritories.remove(j));
+            ProLogger.debug("Attack " + z.getName() + " before landing in " + t.getName());
+            i++;
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Whether the transport can unload into the target from an enemy-free zone, or from an enemy-held
+   * zone the combat move wins (only for a valuable landing).
+   */
+  private boolean hasUsableUnloadZone(
+      final ProTransport pt,
+      final ProTerritory patd,
+      final List<ProTerritory> prioritizedTerritories) {
+    if (pt.getBlockedSeaTerritories().isEmpty()) {
+      return true;
+    }
+    for (final Territory z :
+        data.getMap().getNeighbors(patd.getTerritory(), Matches.territoryIsWater())) {
+      if (pt.getSeaTransportMap().containsKey(z)
+          && (!pt.getBlockedSeaTerritories().contains(z)
+              || (isWinningSeaBattle(z, prioritizedTerritories) && isValuableLanding(patd)))) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /** Whether the sea zone is a planned attack that wins at least winPercentage. */
+  private boolean isWinningSeaBattle(
+      final Territory z, final List<ProTerritory> prioritizedTerritories) {
+    final ProTerritory zone = territoryManager.getAttackOptions().getTerritoryMap().get(z);
+    if (zone == null || !prioritizedTerritories.contains(zone) || zone.getUnits().isEmpty()) {
+      return false;
+    }
+    if (zone.getBattleResult() == null) {
+      zone.estimateBattleResult(calc, player);
+    }
+    final ProBattleResult result = zone.getBattleResult();
+    return result.getWinPercentage() >= proData.getWinPercentage()
+        && result.isHasLandUnitRemaining();
+  }
+
+  /**
+   * Drops a landing whose transports would end in an enemy-held sea zone that the final plan no
+   * longer attacks (eg: the sea battle was removed to keep the capital safe).
+   */
+  private void dropLandingsBehindUnfoughtZones() {
+    final Map<Territory, ProTerritory> attackMap =
+        territoryManager.getAttackOptions().getTerritoryMap();
+    final Predicate<Territory> clear = ProMatches.territoryCanMoveSeaUnitsThrough(player, true);
+    for (final ProTerritory patd : attackMap.values()) {
+      if (patd.getTerritory().isWater() || patd.getAmphibAttackMap().isEmpty()) {
+        continue;
+      }
+      for (final Territory z : patd.getTransportTerritoryMap().values()) {
+        final ProTerritory zone = attackMap.get(z);
+        if (z.isWater() && !clear.test(z) && (zone == null || zone.getUnits().isEmpty())) {
+          ProLogger.debug(
+              "Dropping landing in "
+                  + patd.getTerritory().getName()
+                  + ", "
+                  + z.getName()
+                  + " is not attacked");
+          patd.getUnits().clear();
+          patd.getAmphibAttackMap().clear();
+          patd.getBombardTerritoryMap().clear();
+          patd.getTransportTerritoryMap().clear();
+          break;
+        }
+      }
+    }
   }
 
   private void determineTerritoriesThatCanBeHeld(
@@ -493,10 +721,7 @@ public class ProCombatMoveAi {
                 patd.getMaxEnemyUnits(),
                 remainingUnitsToDefendWith,
                 enemyAttackOptions.getMax(t).getMaxBombardUnits());
-        final boolean canHold =
-            (!result2.isHasLandUnitRemaining() && !t.isWater())
-                || (result2.getTuvSwing() < 0)
-                || (result2.getWinPercentage() < proData.getMinWinPercentage());
+        final boolean canHold = canHoldAgainstCounterAttack(t, result2);
         patd.setCanHold(canHold);
         ProLogger.debug(
             t
@@ -798,10 +1023,11 @@ public class ProCombatMoveAi {
                 patd.getMaxEnemyDefenders(player),
                 patd.getBombardTerritoryMap().keySet());
         ProductionAndIsCapital initialProductionAndIsCapital = getProductionAndIsCapital(t);
+        initialProductionAndIsCapital.production +=
+            (int) Math.round(ProNationalObjectiveUtils.value(proData, player, t));
+        final int isCapital = isCapitalWorthTargeting(patd, player, data) ? 1 : 0;
         final double attackValue =
-            result.getTuvSwing()
-                + initialProductionAndIsCapital.production
-                    * (1 + 3.0 * initialProductionAndIsCapital.isCapital);
+            result.getTuvSwing() + initialProductionAndIsCapital.production * (1 + 3.0 * isCapital);
         if (!patd.isStrafing() && (0.75 * enemyTuvSwing) > attackValue) {
           ProLogger.debug(
               "Removing amphib territory: "
@@ -842,6 +1068,38 @@ public class ProCombatMoveAi {
       }
     }
     return productionAndIsCapital;
+  }
+
+  /**
+   * Whether target {@code patd} gets the capital boost in target ranking: taking it stops its
+   * owner's income, or liberates the capital of {@code player} or an ally and can be held, since a
+   * liberated capital lost again pays its owner's income to the captor.
+   */
+  static boolean isCapitalWorthTargeting(
+      final ProTerritory patd, final GamePlayer player, final GameData data) {
+    final Territory t = patd.getTerritory();
+    return ProUtils.captureStopsIncome(t, data.getMap())
+        || (patd.isCanHold() && ProUtils.liberatedCapitalOwner(t, player, data).isPresent());
+  }
+
+  /**
+   * Whether taking {@code t} gets the capital boost: it stops its owner's income, or liberates the
+   * capital of {@code player} or an ally.
+   */
+  static boolean isCapitalWorthBoosting(
+      final Territory t, final GamePlayer player, final GameData data) {
+    return ProUtils.captureStopsIncome(t, data.getMap())
+        || ProUtils.liberatedCapitalOwner(t, player, data).isPresent();
+  }
+
+  /**
+   * Whether {@code t}, held by {@code player} or an ally, gets the capital boost in defence
+   * ranking: an enemy taking it would get the {@link #isCapitalWorthBoosting} boost.
+   */
+  static boolean isCapitalWorthDefending(
+      final Territory t, final GamePlayer player, final GameData data) {
+    return ProUtils.getEnemyPlayers(player).stream()
+        .anyMatch(enemy -> isCapitalWorthBoosting(t, enemy, data));
   }
 
   private void determineUnitsToAttackWith(
@@ -1043,10 +1301,7 @@ public class ProCombatMoveAi {
               remainingUnitsToDefendWith = unusedUnits;
             }
           }
-          canHold =
-              (!result2.isHasLandUnitRemaining() && !t.isWater())
-                  || (result2.getTuvSwing() < 0)
-                  || (result2.getWinPercentage() < proData.getMinWinPercentage());
+          canHold = canHoldAgainstCounterAttack(t, result2);
           if (result2.getTuvSwing() > 0) {
             enemyCounterTuvSwing = result2.getTuvSwing();
           }
@@ -1081,13 +1336,7 @@ public class ProCombatMoveAi {
         }
         final int isFfa = ProUtils.isFfa(data, player) ? 1 : 0;
         final int production = TerritoryAttachment.getProduction(t);
-        double capitalValue = 0;
-        final Optional<TerritoryAttachment> optionalTerritoryAttachment =
-            TerritoryAttachment.get(t);
-        if (optionalTerritoryAttachment.isPresent()
-            && optionalTerritoryAttachment.get().isCapital()) {
-          capitalValue = ProUtils.getPlayerProduction(t.getOwner(), data);
-        }
+        final double capitalValue = ProUtils.capitalValue(t, data);
         final double territoryValue =
             (1
                         + isLand
@@ -1095,7 +1344,8 @@ public class ProCombatMoveAi {
                         + isFactory
                         + isCanHold * (1 + 2.0 * isFfa + 1.5 * isFactory + 0.5 * capturableUnits))
                     * production
-                + capitalValue;
+                + capitalValue
+                + ProUtils.capturedTreasury(t, data);
         double tuvSwing = result.getTuvSwing();
         if (isFfa == 1 && tuvSwing > 0) {
           tuvSwing *= 0.5;
@@ -1157,6 +1407,159 @@ public class ProCombatMoveAi {
     }
   }
 
+  /** Whether a captured territory holds against the enemy's max counter-attack result. */
+  private boolean canHoldAgainstCounterAttack(
+      final Territory t, final ProBattleResult counterAttack) {
+    return (!counterAttack.isHasLandUnitRemaining() && !t.isWater())
+        || (counterAttack.getTuvSwing() < 0)
+        || (counterAttack.getWinPercentage() < proData.getMinWinPercentage());
+  }
+
+  /**
+   * For each planned land attack I can't hold, compares taking it (its value as a trade, see {@link
+   * #tradeValue}) with fighting 1 to {@link #STRAFE_MAX_ROUNDS} rounds and retreating (the TUV
+   * swing until the retreat). Returns the attacks to strafe, by territory name, with the rounds to
+   * fight, where strafing beats taking by {@link #STRAFE_MARGIN} and gains TUV.
+   *
+   * <p>Without this, an attack the counter-attack retakes is fought to the end and the survivors
+   * are lost to the counter (eg Germany into Karelia next to a large Russian stack).
+   */
+  private Map<String, Integer> planStrafes() {
+    final Map<String, Integer> strafes = new HashMap<>();
+    for (final ProTerritory patd : territoryManager.getAttackOptions().getTerritoryMap().values()) {
+      final Territory t = patd.getTerritory();
+      if (t.isWater()
+          || patd.getUnits().isEmpty()
+          || patd.isStrafing()
+          || !patd.getAmphibAttackMap().isEmpty()
+          || !patd.getBombardTerritoryMap().isEmpty()
+          || patd.getMaxEnemyUnits().isEmpty()
+          || patd.getUnits().stream().noneMatch(Matches.unitIsLand())) {
+        continue;
+      }
+      final List<Unit> defenders = patd.getMaxEnemyDefenders(player);
+      if (defenders.stream().noneMatch(Matches.unitIsNotInfrastructure())) {
+        continue;
+      }
+      final TradeTrial take = evaluateTrade(patd, patd.getUnits());
+      if (!isTrade(patd, take)) {
+        continue;
+      }
+      final Strafe strafe = bestStrafe(patd, take);
+      ProLogger.debug(
+          "Strafe check: "
+              + t.getName()
+              + " take value="
+              + take.value()
+              + ", best strafe value="
+              + strafe.value()
+              + " in "
+              + strafe.rounds()
+              + " rounds");
+      if (strafe.beats(take)) {
+        strafes.put(t.getName(), strafe.rounds());
+      }
+    }
+    return strafes;
+  }
+
+  /** The best number of rounds to fight before retreating, and its value. */
+  private record Strafe(int rounds, double value) {
+    boolean beats(final TradeTrial take) {
+      return rounds > 0 && value > Math.max(0, take.value()) + STRAFE_MARGIN;
+    }
+  }
+
+  /**
+   * The best strafe of a trade's attackers: 1 to {@link #STRAFE_MAX_ROUNDS} rounds, valued by the
+   * TUV swing until the retreat; a strafe that wins outright first also takes the territory and
+   * leaves its units to the counter-attack, as in {@code take}.
+   */
+  private Strafe bestStrafe(final ProTerritory patd, final TradeTrial take) {
+    final Territory t = patd.getTerritory();
+    final double takenWorth =
+        tradedTerritoryWorth(t, data)
+            - (take.counter() == null
+                ? 0
+                : TRADE_COUNTER_WEIGHT * Math.max(0, take.counter().getTuvSwing()));
+    int bestRounds = 0;
+    double bestValue = 0;
+    for (int rounds = 1; rounds <= STRAFE_MAX_ROUNDS; rounds++) {
+      final ProBattleResult strafe =
+          calc.callBattleCalcRetreatAfterRound(
+              proData, t, take.attackers(), patd.getMaxEnemyDefenders(player), List.of(), rounds);
+      final double value = strafe.getTuvSwing() + strafe.getWinPercentage() / 100 * takenWorth;
+      if (value > bestValue) {
+        bestValue = value;
+        bestRounds = rounds;
+      }
+    }
+    return new Strafe(bestRounds, bestValue);
+  }
+
+  /** A trial attack, its battle result, the counter-attack on it and its value as a trade. */
+  private record TradeTrial(
+      List<Unit> attackers,
+      ProBattleResult result,
+      @Nullable ProBattleResult counter,
+      double value) {}
+
+  private TradeTrial evaluateTrade(final ProTerritory patd, final List<Unit> attackers) {
+    final ProBattleResult result =
+        calc.estimateAttackBattleResults(
+            proData,
+            patd.getTerritory(),
+            attackers,
+            patd.getMaxEnemyDefenders(player),
+            patd.getBombardTerritoryMap().keySet());
+    final List<Unit> leftThere =
+        CollectionUtils.getMatches(result.getAverageAttackersRemaining(), Matches.unitIsNotAir());
+    final ProBattleResult counter =
+        leftThere.isEmpty()
+            ? null
+            : calc.calculateBattleResults(
+                proData,
+                patd.getTerritory(),
+                patd.getMaxEnemyUnits(),
+                leftThere,
+                patd.getMaxEnemyBombardUnits());
+    return new TradeTrial(
+        List.copyOf(attackers), result, counter, tradeValue(patd, result, counter));
+  }
+
+  /**
+   * Whether a trial capture is a trade: the enemy's counter-attack on the land units the attack is
+   * expected to leave there (not every unit that could attack) retakes it.
+   */
+  private boolean isTrade(final ProTerritory patd, final TradeTrial trial) {
+    return trial.counter() != null
+        && !canHoldAgainstCounterAttack(patd.getTerritory(), trial.counter());
+  }
+
+  /**
+   * A can't-hold trade's value: the battle's TUV swing plus the territory's worth times win%, minus
+   * {@link #TRADE_COUNTER_WEIGHT} times the enemy's counter-attack TUV swing against the land units
+   * left there.
+   */
+  private double tradeValue(
+      final ProTerritory patd,
+      final ProBattleResult result,
+      @Nullable final ProBattleResult counter) {
+    final double counterSwing =
+        counter == null ? 0 : TRADE_COUNTER_WEIGHT * Math.max(0, counter.getTuvSwing());
+    return result.getTuvSwing()
+        + tradedTerritoryWorth(patd.getTerritory(), data) * result.getWinPercentage() / 100
+        - counterSwing;
+  }
+
+  /** What a land capture I can't hold is worth, as in the attack value. */
+  static double tradedTerritoryWorth(final Territory t, final GameData data) {
+    final int isFactory = ProMatches.territoryHasInfraFactoryAndIsLand().test(t) ? 1 : 0;
+    return (2 + isFactory) * TerritoryAttachment.getProduction(t)
+        + ProUtils.capitalValue(t, data)
+        + ProUtils.capturedTreasury(t, data);
+  }
+
   private void determineTerritoriesThatCanBeBombed(
       final Map<Territory, ProTerritory> attackMap,
       final Map<Unit, Set<Territory>> sortedUnitAttackOptions,
@@ -1166,8 +1569,8 @@ public class ProCombatMoveAi {
     for (final Map.Entry<Unit, Set<Territory>> bomberEntry :
         territoryManager.getAttackOptions().getBomberMoveMap().entrySet()) {
       final Unit bomber = bomberEntry.getKey();
-      if (alreadyAttackedWithUnits.contains(bomber)) {
-        return; // already attacked bombers cannot move
+      if (alreadyAttackedWithUnits.contains(bomber) && !proData.isBeta()) {
+        continue; // already attacked bombers cannot move
       }
       Collection<Territory> bomberTargetTerritories = bomberEntry.getValue();
       if (raidsMayBePrecededByAirBattles) {
@@ -1179,9 +1582,264 @@ public class ProCombatMoveAi {
                     !AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(
                         terr, player, data, true));
       }
+      if (alreadyAttackedWithUnits.contains(bomber)) {
+        moveBomberFromSurplusAttackToFreeRaid(attackMap, bomberTargetTerritories, bomber);
+        continue;
+      }
       determineBestBombingAttackForBomber(
           attackMap, sortedUnitAttackOptions, bomberTargetTerritories, bomber);
     }
+  }
+
+  /**
+   * Takes a warship out of a sea attack that still wins without it when it is the only way to block
+   * every enemy transport route to land the enemy can take only by landing, so that non-combat move
+   * can park it in the blocking zone.
+   */
+  private void releaseSeaBlockersFromAttacks() {
+    final Map<Territory, ProTerritory> attackMap =
+        territoryManager.getAttackOptions().getTerritoryMap();
+    final Map<Unit, Territory> enemyTransports =
+        ProSeaBlockerUtils.findEnemyTransportsWithCargo(data, player);
+    if (enemyTransports.isEmpty()) {
+      return;
+    }
+    final Set<Unit> attacking = new HashSet<>();
+    for (final ProTerritory patd : attackMap.values()) {
+      attacking.addAll(patd.getUnits());
+      attacking.addAll(patd.getAmphibAttackMap().keySet());
+      patd.getAmphibAttackMap().values().forEach(attacking::addAll);
+      attacking.addAll(patd.getBombers());
+    }
+    final List<Territory> candidates =
+        CollectionUtils.getMatches(
+            data.getMap().getTerritories(),
+            Matches.isTerritoryAllied(player).and(Matches.territoryIsLand()));
+    final Map<Territory, Double> targets =
+        ProSeaBlockerUtils.findAmphibOnlyTargets(
+            proData,
+            calc,
+            territoryManager.getEnemyAttackOptions(),
+            candidates,
+            t ->
+                CollectionUtils.getMatches(
+                    t.getUnits(), Matches.isUnitAllied(player).and(u -> !attacking.contains(u))));
+    final Predicate<Unit> warship =
+        Matches.unitIsOwnedBy(player)
+            .and(Matches.unitIsSea())
+            .and(Matches.unitIsSeaTransport().negate())
+            .and(Matches.unitIsCarrier().negate());
+    final Set<Territory> blocks = new HashSet<>();
+    for (final Territory target : targets.keySet()) {
+      if (!ProSeaBlockerUtils.canUnloadAt(data, enemyTransports, target, blocks)) {
+        continue;
+      }
+      // A warship that isn't attacking can already block: non-combat move will use it
+      boolean freeBlocker = false;
+      Unit bestShip = null;
+      Territory bestZone = null;
+      ProTerritory bestFrom = null;
+      for (final Territory z : data.getMap().getTerritories()) {
+        if (!z.isWater()) {
+          continue;
+        }
+        for (final Unit u : z.getMatches(warship)) {
+          final Optional<Territory> blockZone =
+              findBlockZone(enemyTransports, target, blocks, z, u);
+          if (blockZone.isEmpty()) {
+            continue;
+          }
+          if (!attacking.contains(u)) {
+            freeBlocker = true;
+            break;
+          }
+          final ProTerritory from =
+              attackMap.values().stream()
+                  .filter(patd -> patd.getUnits().contains(u))
+                  .findAny()
+                  .orElse(null);
+          if (from == null
+              || (bestShip != null
+                  && proData.getUnitValue(u.getType())
+                      >= proData.getUnitValue(bestShip.getType()))) {
+            continue;
+          }
+          final List<Unit> without = new ArrayList<>(from.getUnits());
+          without.remove(u);
+          final List<Unit> defenders = from.getMaxEnemyDefenders(player);
+          final ProBattleResult with =
+              calc.estimateAttackBattleResults(
+                  proData,
+                  from.getTerritory(),
+                  from.getUnits(),
+                  defenders,
+                  from.getBombardTerritoryMap().keySet());
+          final ProBattleResult withoutResult =
+              calc.estimateAttackBattleResults(
+                  proData,
+                  from.getTerritory(),
+                  without,
+                  defenders,
+                  from.getBombardTerritoryMap().keySet());
+          if (withoutResult.getWinPercentage() >= proData.getWinPercentage()
+              || withoutResult.getWinPercentage() >= with.getWinPercentage() - 1) {
+            bestShip = u;
+            bestZone = blockZone.get();
+            bestFrom = from;
+          }
+        }
+        if (freeBlocker) {
+          break;
+        }
+      }
+      if (freeBlocker || bestShip == null) {
+        continue;
+      }
+      bestFrom.getUnits().remove(bestShip);
+      bestFrom.setBattleResult(null);
+      attacking.remove(bestShip);
+      blocks.add(bestZone);
+      ProLogger.debug(
+          "Sea blocker: "
+              + bestShip
+              + " leaves the attack on "
+              + bestFrom.getTerritory()
+              + " to block "
+              + bestZone
+              + " for "
+              + target);
+    }
+  }
+
+  private Set<Territory> attackedTerritories() {
+    final Set<Territory> attacked = new HashSet<>();
+    for (final ProTerritory patd : territoryManager.getAttackOptions().getTerritoryMap().values()) {
+      if (!patd.getUnits().isEmpty() || !patd.getAmphibAttackMap().isEmpty()) {
+        attacked.add(patd.getTerritory());
+      }
+    }
+    return attacked;
+  }
+
+  private Optional<Territory> findBlockZone(
+      final Map<Unit, Territory> enemyTransports,
+      final Territory target,
+      final Set<Territory> blocks,
+      final Territory from,
+      final Unit ship) {
+    for (final Territory z :
+        ProSeaBlockerUtils.seaZonesInReach(data, player, from, ship.getMovementLeft().intValue())) {
+      if (enemyTransports.containsValue(z)
+          || z.anyUnitsMatch(Matches.enemyUnit(player))
+          || ProSeaBlockerUtils.enemyCanAttack(data, player, z, attackedTerritories())) {
+        continue;
+      }
+      final Set<Territory> withZone = new HashSet<>(blocks);
+      withZone.add(z);
+      if (!ProSeaBlockerUtils.canUnloadAt(data, enemyTransports, target, withZone)) {
+        return Optional.of(z);
+      }
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * Moves {@code bomber} out of the attack it was assigned to and onto an enemy factory without AA
+   * when the attack still wins without it and loses less TUV swing than the raid's expected damage.
+   * Attacks are assigned before raids, so otherwise a bomber that adds little to a won attack never
+   * raids.
+   */
+  private void moveBomberFromSurplusAttackToFreeRaid(
+      final Map<Territory, ProTerritory> attackMap,
+      final Collection<Territory> bomberTargetTerritories,
+      final Unit bomber) {
+    final ProTerritory from =
+        attackMap.values().stream()
+            .filter(patd -> patd.getUnits().contains(bomber))
+            .findAny()
+            .orElse(null);
+    if (from == null) {
+      return;
+    }
+    final Predicate<Unit> bombingTargetMatch =
+        Matches.unitCanProduceUnitsAndCanBeDamaged()
+            .and(Matches.unitIsLegalBombingTargetBy(bomber));
+    Territory raidTerritory = null;
+    int maxDamage = 1;
+    for (final Territory t : bomberTargetTerritories) {
+      if (t.getUnits().stream().noneMatch(bombingTargetMatch)
+          || t.anyUnitsMatch(Matches.unitIsAaForBombingThisUnitOnly())
+          || !canAirSafelyLandAfterAttack(bomber, t)) {
+        continue;
+      }
+      // a raid does at most the territory's production; assume 3 per bomber already raiding it
+      final int damage =
+          Math.min(
+              3, TerritoryAttachment.getProduction(t) - 3 * attackMap.get(t).getBombers().size());
+      if (damage > maxDamage) {
+        maxDamage = damage;
+        raidTerritory = t;
+      }
+    }
+    if (raidTerritory == null) {
+      return;
+    }
+    final List<Unit> withoutBomber = new ArrayList<>(from.getUnits());
+    withoutBomber.remove(bomber);
+    final Territory t = from.getTerritory();
+    final List<Unit> defenders = from.getMaxEnemyDefenders(player);
+    final ProBattleResult with =
+        calc.estimateAttackBattleResults(
+            proData, t, from.getUnits(), defenders, from.getBombardTerritoryMap().keySet());
+    final ProBattleResult without =
+        calc.estimateAttackBattleResults(
+            proData, t, withoutBomber, defenders, from.getBombardTerritoryMap().keySet());
+    if (!canSpareBomberForRaid(with, without, proData.getWinPercentage(), maxDamage)) {
+      ProLogger.trace(
+          "Keep bomber in attack on "
+              + t
+              + ", win% "
+              + with.getWinPercentage()
+              + " -> "
+              + without.getWinPercentage()
+              + ", swing "
+              + with.getTuvSwing()
+              + " -> "
+              + without.getTuvSwing());
+      return;
+    }
+    from.getUnits().remove(bomber);
+    from.setBattleResult(null);
+    attackMap.get(raidTerritory).getBombers().add(bomber);
+    ProLogger.debug(
+        "Move bomber ("
+            + bomber
+            + ") from attack on "
+            + t
+            + " to raid "
+            + raidTerritory
+            + ", win% "
+            + with.getWinPercentage()
+            + " -> "
+            + without.getWinPercentage());
+  }
+
+  /**
+   * Whether an attack can give up a bomber for a raid: without it the attack still wins (reaches
+   * {@code minWinPercentage} or loses at most 1 point of win chance), still keeps a land unit alive
+   * to capture, and loses less TUV swing than the raid's {@code raidDamage}.
+   */
+  static boolean canSpareBomberForRaid(
+      final ProBattleResult with,
+      final ProBattleResult without,
+      final double minWinPercentage,
+      final int raidDamage) {
+    final boolean stillWins =
+        without.getWinPercentage() >= minWinPercentage
+            || without.getWinPercentage() >= with.getWinPercentage() - 1;
+    return stillWins
+        && (!with.isHasLandUnitRemaining() || without.isHasLandUnitRemaining())
+        && without.getTuvSwing() >= with.getTuvSwing() - raidDamage;
   }
 
   /**
@@ -1589,7 +2247,8 @@ public class ProCombatMoveAi {
       // Find number of attack options
       final Set<Territory> canAmphibAttackTerritories = new HashSet<>();
       for (final ProTerritory attackTerritoryData : prioritizedTerritories) {
-        if (proTransportData.getTransportMap().containsKey(attackTerritoryData.getTerritory())) {
+        if (proTransportData.getTransportMap().containsKey(attackTerritoryData.getTerritory())
+            && hasUsableUnloadZone(proTransportData, attackTerritoryData, prioritizedTerritories)) {
           canAmphibAttackTerritories.add(attackTerritoryData.getTerritory());
         }
       }
@@ -1643,12 +2302,23 @@ public class ProCombatMoveAi {
                 for (final Unit u : amphibUnitsToAdd) {
                   loadFromTerritories.add(proData.getUnitTerritory(u));
                 }
+                Territory blockedUnloadZone = null;
                 for (final Territory destination : territoriesToMoveTransport) {
                   if (proTransportData.getSeaTransportMap().containsKey(destination)
                       && proTransportData
                           .getSeaTransportMap()
                           .get(destination)
                           .containsAll(loadFromTerritories)) {
+                    if (proTransportData.getBlockedSeaTerritories().contains(destination)) {
+                      // only behind a planned, winning sea battle, and only when no enemy-free
+                      // zone serves
+                      if (blockedUnloadZone == null
+                          && isWinningSeaBattle(destination, prioritizedTerritories)
+                          && isValuableLanding(patd)) {
+                        blockedUnloadZone = destination;
+                      }
+                      continue;
+                    }
                     Set<Unit> attackers = Set.of();
                     if (enemyAttackOptions.getMax(destination) != null) {
                       attackers = enemyAttackOptions.getMax(destination).getMaxUnits();
@@ -1664,6 +2334,9 @@ public class ProCombatMoveAi {
                       minUnloadFromTerritory = destination;
                     }
                   }
+                }
+                if (minUnloadFromTerritory == null) {
+                  minUnloadFromTerritory = blockedUnloadZone;
                 }
                 minWinTerritory = t;
                 minWinPercentage = result.getWinPercentage();

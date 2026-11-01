@@ -1,13 +1,21 @@
 package games.strategy.triplea.ai.pro.util;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.british;
+import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
+import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Territory;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -89,5 +97,70 @@ public class ProTerritoryValueUtilsTest {
     for (final GamePlayer player : gameData.getPlayerList().getPlayers()) {
       assertThat(ProTerritoryValueUtils.findMaxLandMassSize(player)).isEqualTo(14);
     }
+  }
+
+  @Test
+  @DisplayName("sea zone value adds 100 x enemy convoy production and enemy units, by distance")
+  void testFindSeaTerritoryValues() {
+    final GameState gameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
+    final Territory seaZone4 = territory("4 Sea Zone", gameData);
+
+    final double value =
+        ProTerritoryValueUtils.findSeaTerritoryValues(
+                russians(gameData), List.of(), List.of(seaZone4))
+            .get(seaZone4);
+
+    // Within 4 moves of the Russian 4 Sea Zone, the enemy is Germany:
+    //   3 Sea Zone, 1 away: German, production 2
+    //   7 Sea Zone, 3 away: 1 German unit
+    //   5 Sea Zone, 3 away: German, production 2, 5 German units
+    // Production: 2/2 + 2/8 = 1.25. Units: 1/8 + 5/8 = 0.75.
+    assertThat(value).isEqualTo(100 * 1.25 + 0.75);
+  }
+
+  @Test
+  void enemyCapitalWhoseCaptureKeepsItsIncomeIsValuedAsAFactoryOnly()
+      throws MutableProperty.InvalidValueException {
+    final GameData data = TestMapGameData.LHTR.getGameData();
+    final PlayerAttachment pa =
+        new PlayerAttachment(Constants.PLAYER_ATTACHMENT_NAME, germans(data), data);
+    pa.getPropertyOrThrow("retainCapitalProduceNumber").setValue(0);
+    germans(data).addAttachment(Constants.PLAYER_ATTACHMENT_NAME, pa);
+
+    final double value =
+        ProTerritoryValueUtils.findEnemyCapitalsAndFactoriesValue(
+                british(data), 1, List.of(), List.of())
+            .get(territory("Germany", data));
+
+    // Germany's factory produces 10; its land mass is itself plus 23 territories within 6 moves.
+    assertThat(value).isEqualTo(Math.sqrt(10) * 32 * 24);
+  }
+
+  @Test
+  void liberatedCapitalThatCanBeHeldIsValuedForItsOwnersIncome() {
+    final GameData data = TestMapGameData.LHTR.getGameData();
+    territory("Russia", data).setOwner(germans(data));
+
+    final double value =
+        ProTerritoryValueUtils.findEnemyCapitalsAndFactoriesValue(
+                british(data), 1, List.of(), List.of())
+            .get(territory("Russia", data));
+
+    // Russia's factory produces 8 and the Russians 16 without it; its land mass is itself plus 34
+    // territories within 6 moves.
+    assertThat(value).isEqualTo(Math.sqrt(8 + Math.sqrt(16)) * 32 * 35);
+  }
+
+  @Test
+  void liberatedCapitalThatCantBeHeldIsValuedAsAFactoryOnly() {
+    final GameData data = TestMapGameData.LHTR.getGameData();
+    territory("Russia", data).setOwner(germans(data));
+
+    final double value =
+        ProTerritoryValueUtils.findEnemyCapitalsAndFactoriesValue(
+                british(data), 1, List.of(territory("Russia", data)), List.of())
+            .get(territory("Russia", data));
+
+    assertThat(value).isEqualTo(Math.sqrt(8) * 32 * 35);
   }
 }
