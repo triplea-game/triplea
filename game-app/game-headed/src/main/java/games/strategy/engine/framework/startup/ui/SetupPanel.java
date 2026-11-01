@@ -121,7 +121,12 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
             0,
             0));
     final PlayerTypes playerTypes = new PlayerTypes(HeadedPlayerTypes.getPlayerTypes());
-    final List<String> validPlayerTypes = playerTypes.getAvailablePlayerLabels().stream.filter(label -> !label.equals("FlowField (AI)")).toList();
+    final List<String> validPlayerTypes =
+        playerTypes
+            .getAvailablePlayerLabels()
+            .stream()
+            .filter(label -> !label.equals("FlowField (AI)"))
+            .toList();
     final JComboBox<String> setAllTypes = new JComboBox<>(validPlayerTypes.toArray(new String[0]));
     setAllTypes.insertItemAt(SET_ALL_DEFAULT_LABEL, 0);
     setAllTypes.setSelectedIndex(-1);
