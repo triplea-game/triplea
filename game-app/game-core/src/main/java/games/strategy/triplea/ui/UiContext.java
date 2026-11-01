@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.UnitType;
@@ -32,6 +33,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
@@ -272,18 +274,55 @@ public class UiContext {
     return Preferences.userNodeForPackage(UiContext.class).node(mapDir);
   }
 
-  public static UiContext changeMapSkin(GameData gameData, String skinName) {
-    final Preferences prefs = getPreferencesForMap(gameData.getMapName());
-
-    if (skinName.equals(ORIGINAL_SKIN_NAME)) {
-      prefs.put(MAP_SKIN_PREF, skinName);
-    } else {
-      prefs.remove(MAP_SKIN_PREF);
-    }
-    flushPreferences(prefs);
-    UiContext uiContext = new UiContext(gameData);
-    uiContext.getMapData().verify(gameData);
+  public static UiContext changeMapSkin(
+      final UiContext previous, GameData gameData, String skinName) {
+    final UiContext uiContext =
+        withMapSkinPreference(
+            getPreferencesForMap(gameData.getMapName()),
+            skinName,
+            () -> {
+              final UiContext newContext = new UiContext(gameData);
+              newContext.getMapData().verify(gameData);
+              return newContext;
+            });
+    uiContext.inheritPlayers(previous);
     return uiContext;
+  }
+
+  /**
+   * Stores a map skin and builds the context that reads it. The stored skin is put back if the
+   * build fails, so a skin that fails to load does not break later launches of the map.
+   */
+  @VisibleForTesting
+  static <T> T withMapSkinPreference(
+      final Preferences prefs, final String skinName, final Supplier<T> build) {
+    final String storedSkin = prefs.get(MAP_SKIN_PREF, null);
+    setMapSkinPreference(prefs, skinName);
+    flushPreferences(prefs);
+    try {
+      return build.get();
+    } catch (final RuntimeException e) {
+      setMapSkinPreference(prefs, storedSkin == null ? ORIGINAL_SKIN_NAME : storedSkin);
+      flushPreferences(prefs);
+      throw e;
+    }
+  }
+
+  /** Carries over the player state that a context built for a new skin starts without. */
+  @VisibleForTesting
+  void inheritPlayers(final UiContext previous) {
+    setLocalPlayers(previous.getLocalPlayers());
+    setCurrentPlayer(previous.getCurrentPlayer());
+  }
+
+  /** Stores a map skin name, or clears it when the player selects the original art. */
+  @VisibleForTesting
+  static void setMapSkinPreference(final Preferences prefs, final String skinName) {
+    if (skinName.equals(ORIGINAL_SKIN_NAME)) {
+      prefs.remove(MAP_SKIN_PREF);
+    } else {
+      prefs.put(MAP_SKIN_PREF, skinName);
+    }
   }
 
   public void removeShutdownHook(final Runnable hook) {
