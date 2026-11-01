@@ -20,6 +20,8 @@ import org.triplea.java.collections.CollectionUtils;
 
 /** Pro AI odds calculator. */
 public class ProOddsCalculator {
+  /** How close to the capture floor, in percent, a capture estimate gets re-run. */
+  private static final double BORDERLINE_CAPTURE_PERCENTAGE = 10;
 
   private final IBattleCalculator calc;
   private boolean stopped = false;
@@ -276,6 +278,26 @@ public class ProOddsCalculator {
             retreatWhenOnlyAirLeft,
             runCount);
 
+    // Hard Beta's capture floor sits inside the sampling noise of a small run, so a borderline
+    // capture gets more runs before the AI commits to or drops the attack
+    if (proData.isBeta()
+        && !t.isWater()
+        && Math.abs(capturePercentage(results) - proData.getMinWinPercentage())
+            < BORDERLINE_CAPTURE_PERCENTAGE) {
+      results.addResults(
+          calc.calculate(
+                  attacker,
+                  defender,
+                  t,
+                  attackingUnits,
+                  defendingUnits,
+                  bombardingUnits,
+                  TerritoryEffectHelper.getEffects(t),
+                  retreatWhenOnlyAirLeft,
+                  3 * runCount)
+              .getResults());
+    }
+
     // Find battle result statistics
     final double winPercentage = results.getAttackerWinPercent() * 100;
     final Collection<Unit> averageAttackersRemaining = results.getAverageAttackingUnitsRemaining();
@@ -334,6 +356,21 @@ public class ProOddsCalculator {
         hasLandUnitsRemaining,
         averageAttackersRemaining,
         averageDefendersRemaining,
-        results.getAverageBattleRoundsFought());
+        results.getAverageBattleRoundsFought(),
+        proData.isBeta() && !t.isWater()
+            ? capturePercentage(results)
+            : hasLandUnitsRemaining ? winPercentage : 0);
+  }
+
+  /** Percent of simulated battles the attacker won with a land unit left. */
+  private static double capturePercentage(final AggregateResults results) {
+    final long captures =
+        results.getResults().stream()
+            .filter(
+                r ->
+                    r.attackerWon()
+                        && r.getRemainingAttackingUnits().stream().anyMatch(Matches.unitIsLand()))
+            .count();
+    return 100.0 * captures / results.getResults().size();
   }
 }

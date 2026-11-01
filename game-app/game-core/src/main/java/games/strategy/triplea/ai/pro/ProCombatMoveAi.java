@@ -411,12 +411,64 @@ public class ProCombatMoveAi {
       final ProBattleResult result = patd.getBattleResult();
       if (!patd.isStrafing()
           && estimate < patd.getStrengthEstimate()
-          && (result.getWinPercentage() < proData.getMinWinPercentage()
-              || !result.isHasLandUnitRemaining())) {
+          && capturesTooRarely(result)) {
         areSuccessful = false;
       }
     }
     return areSuccessful;
+  }
+
+  /**
+   * Whether an attack wins too rarely to plan. Hard Beta counts only wins that keep a land unit to
+   * take the territory; the average survivors can include one when the capture is a coin flip.
+   */
+  private boolean capturesTooRarely(final ProBattleResult result) {
+    if (proData.isBeta()) {
+      return result.getCapturePercentage() < proData.getMinWinPercentage();
+    }
+    return result.getWinPercentage() < proData.getMinWinPercentage()
+        || !result.isHasLandUnitRemaining();
+  }
+
+  /**
+   * Hard Beta's attack for a plane: the most valuable of {@code attacks} still short of a sure
+   * capture, so a high-value attack gets every plane it needs before a marginal one gets any. Empty
+   * when every attack is sure, and the caller falls back to the lowest-odds attack.
+   */
+  static Optional<ProTerritory> mostValuableUnsureAttack(
+      final Collection<ProTerritory> attacks, final double sureCapturePercentage) {
+    return attacks.stream()
+        .filter(a -> a.getBattleResult().getCapturePercentage() < sureCapturePercentage)
+        .max(Comparator.comparingDouble(ProTerritory::getValue));
+  }
+
+  /** Whether a plane can tip the attack on {@code t}: it has real defenders, no AA, no rout. */
+  private boolean canAirTipAttack(final Territory t, final ProTerritory patd) {
+    final List<Unit> defenders = patd.getMaxEnemyDefenders(player);
+    return defenders.stream().anyMatch(ProMatches.unitIsEnemyAndNotInfa(player))
+        && defenders.stream().noneMatch(Matches.unitIsAaForAnything())
+        && !ProBattleUtils.checkForOverwhelmingWin(t, patd.getUnits(), defenders);
+  }
+
+  /**
+   * Where a plane goes: Hard Beta's pick among {@code unsure}, else {@code lowestOdds}, the
+   * lowest-odds attack the caller found. A strafe keeps the lowest-odds plane, since it fights only
+   * a round or two.
+   */
+  private @Nullable Territory airTarget(
+      final List<ProTerritory> unsure, final @Nullable Territory lowestOdds) {
+    if (!proData.isBeta()
+        || (lowestOdds != null
+            && territoryManager
+                .getAttackOptions()
+                .getTerritoryMap()
+                .get(lowestOdds)
+                .isStrafing())) {
+      return lowestOdds;
+    }
+    return mostValuableUnsureAttack(unsure, proData.getWinPercentage())
+        .map(ProTerritory::getTerritory)
+        .orElse(lowestOdds);
   }
 
   /**
@@ -1146,6 +1198,7 @@ public class ProCombatMoveAi {
         }
         Territory minWinTerritory = null;
         double minWinPercentage = Double.MAX_VALUE;
+        final List<ProTerritory> unsure = new ArrayList<>();
         for (final Territory t : sortedUnitAttackOptions.get(unit)) {
           final ProTerritory patd = attackMap.get(t);
 
@@ -1160,6 +1213,9 @@ public class ProCombatMoveAi {
             patd.estimateBattleResult(calc, player);
           }
           final ProBattleResult result = patd.getBattleResult();
+          if (proData.isBeta() && canAirTipAttack(t, patd)) {
+            unsure.add(patd);
+          }
           if (result.getWinPercentage() < minWinPercentage
               || (!result.isHasLandUnitRemaining() && minWinTerritory == null)) {
             final List<Unit> attackingUnits = patd.getUnits();
@@ -1173,9 +1229,10 @@ public class ProCombatMoveAi {
             }
           }
         }
-        if (minWinTerritory != null) {
-          attackMap.get(minWinTerritory).setBattleResult(null);
-          attackMap.get(minWinTerritory).addUnit(unit);
+        final Territory target = airTarget(unsure, minWinTerritory);
+        if (target != null) {
+          attackMap.get(target).setBattleResult(null);
+          attackMap.get(target).addUnit(unit);
           addedUnits.add(unit);
         }
       }
@@ -1376,8 +1433,7 @@ public class ProCombatMoveAi {
 
         // Determine whether to remove attack
         if (!patd.isStrafing()
-            && (result.getWinPercentage() < proData.getMinWinPercentage()
-                || !result.isHasLandUnitRemaining()
+            && (capturesTooRarely(result)
                 || (isNeutral && !canHold)
                 || (attackValue < 0
                     && (!isNeutral
@@ -2054,6 +2110,7 @@ public class ProCombatMoveAi {
       }
       Territory minWinTerritory = null;
       double minWinPercentage = proData.getWinPercentage();
+      final List<ProTerritory> unsure = new ArrayList<>();
       for (final Territory t : sortedUnitAttackOptions.get(unit)) {
         final ProTerritory patd = attackMap.get(t);
         if (!patd.isCurrentlyWins() && !patd.isCanHold()) {
@@ -2082,6 +2139,9 @@ public class ProCombatMoveAi {
             patd.estimateBattleResult(calc, player);
           }
           final ProBattleResult result = patd.getBattleResult();
+          if (proData.isBeta() && canAirTipAttack(t, patd)) {
+            unsure.add(patd);
+          }
           if (result.getWinPercentage() < minWinPercentage
               || (!result.isHasLandUnitRemaining() && minWinTerritory == null)) {
             final List<Unit> defendingUnits = patd.getMaxEnemyDefenders(player);
@@ -2102,9 +2162,10 @@ public class ProCombatMoveAi {
           }
         }
       }
-      if (minWinTerritory != null) {
-        attackMap.get(minWinTerritory).setBattleResult(null);
-        attackMap.get(minWinTerritory).addUnit(unit);
+      final Territory target = airTarget(unsure, minWinTerritory);
+      if (target != null) {
+        attackMap.get(target).setBattleResult(null);
+        attackMap.get(target).addUnit(unit);
         addedUnits.add(unit);
       }
     }
