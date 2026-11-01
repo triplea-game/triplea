@@ -21,3 +21,7 @@ list:
 # Rebuild the scorecard from a run folder's raw data alone
 tabulate dir:
     @{{gradlew}} -q -p ../.. :ai-benchmark:tabulate "-PrunDir={{absolute_path(dir)}}"
+
+# Open a kata's start file (map XML or save) in the TripleA client
+open name:
+    @{{gradlew}} -q -p ../.. :game-headed:run --args="{{absolute_path("kata" / name)}}/$(grep -oE '(map|save): *[^ ,}#]+' kata/{{name}}/kata.yaml | head -1 | sed -E 's/^[a-z]+: *//')"

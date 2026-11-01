@@ -58,6 +58,11 @@ props: {Low Luck: true}     # game options by XML name
 
 `name` defaults to the folder name. Unknown keys, AIs, and metrics are errors.
 
+## Open a kata in the client
+
+`just open <kata>` launches the TripleA client on the kata's start file. To change a
+save-start position, edit it in the client and save over the kata's `.tsvg`.
+
 ## Focused runs: one turn, with detail
 
 To study how an AI plays one position (a bug report, a specific turn), drop in a kata
