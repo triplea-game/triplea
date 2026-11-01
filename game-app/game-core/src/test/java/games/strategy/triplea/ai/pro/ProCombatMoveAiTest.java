@@ -77,6 +77,33 @@ class ProCombatMoveAiTest {
     assertThat(ProCombatMoveAi.canSpareBomberForRaid(withBomber, withoutBomber, 95, 3)).isFalse();
   }
 
+  @Test
+  void planeGoesToTheMostValuableAttackThatIsNotYetSure() {
+    final ProTerritory ukraine = attack("Ukraine S.S.R.", 21, 70);
+    final ProTerritory karelia = attack("Karelia S.S.R.", 10, 50);
+    final ProTerritory westRussia = attack("West Russia", 58, 97);
+
+    assertThat(ProCombatMoveAi.mostValuableUnsureAttack(List.of(karelia, westRussia, ukraine), 90))
+        .contains(ukraine);
+  }
+
+  @Test
+  void noPickWhenEveryAttackIsSure() {
+    final ProTerritory westRussia = attack("West Russia", 58, 97);
+
+    assertThat(ProCombatMoveAi.mostValuableUnsureAttack(List.of(westRussia), 90)).isEmpty();
+  }
+
+  private ProTerritory attack(
+      final String name, final double value, final double capturePercentage) {
+    final ProTerritory attack = new ProTerritory(territory(name, gameData), new ProData());
+    attack.setValue(value);
+    attack.setBattleResult(
+        new ProBattleResult(
+            capturePercentage, 1, true, List.of(), List.of(), 1, capturePercentage));
+    return attack;
+  }
+
   private static ProBattleResult battleResult(
       final double winPercentage, final double tuvSwing, final boolean hasLandUnitRemaining) {
     return new ProBattleResult(
