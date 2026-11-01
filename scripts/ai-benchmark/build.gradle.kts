@@ -14,7 +14,7 @@ val outRoot = rootProject.layout.projectDirectory.dir("build/ai-benchmark").asFi
 
 tasks.register<JavaExec>("runBenchmark") {
     group = "ai benchmark"
-    description = "Plays the matching kata and writes the raw data (-Pai=, -Pkata=, -Pheap=)."
+    description = "Plays the matching kata and writes the raw data (-Pai=, -Pkata=, -Pheap=, -Pworkers=)."
     classpath = sourceSets["main"].runtimeClasspath
     mainClass = "org.triplea.ai.benchmark.runner.BenchmarkMain"
     workingDir = rootDir
@@ -24,6 +24,7 @@ tasks.register<JavaExec>("runBenchmark") {
         "--out", outRoot,
         "--ai", providers.gradleProperty("ai").getOrElse("Hard Beta"),
         "--kata", providers.gradleProperty("kata").getOrElse("*"),
+        "--workers", providers.gradleProperty("workers").getOrElse("0"),
     )
 }
 

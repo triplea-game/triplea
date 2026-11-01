@@ -3,6 +3,8 @@ set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
 # Override on the command line, before the recipe, eg: just kata=_pipeline ai=Hard run
 ai := "Hard Beta"
 kata := "*"
+# Parallel games, one JVM each; 0 sizes the pool from cores and free memory
+workers := "0"
 gradlew := justfile_directory() / "../../gradlew"
 
 # Show this help message
@@ -11,7 +13,7 @@ help:
 
 # Benchmark {{ai}} on the kata matching {{kata}}, then print the scorecard; "*" skips "_" kata
 run:
-    @{{gradlew}} -q -p ../.. :ai-benchmark:runBenchmark "-Pai={{ai}}" "-Pkata={{kata}}"
+    @{{gradlew}} -q -p ../.. :ai-benchmark:runBenchmark "-Pai={{ai}}" "-Pkata={{kata}}" "-Pworkers={{workers}}"
     @{{gradlew}} -q -p ../.. :ai-benchmark:tabulate
 
 # List the kata found and their limits

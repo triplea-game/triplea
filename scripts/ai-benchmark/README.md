@@ -13,6 +13,7 @@ From this folder (overrides go before the recipe):
 just run                          # Hard Beta on every kata
 just ai=Hard kata='big_*' run     # another AI, a kata glob
 just kata=_pipeline run           # the pipeline check on a tiny map
+just workers=8 run                # 8 games at once (default: half the cores, capped by free memory)
 just list                         # kata found and their limits
 just tabulate <run dir>           # rebuild a scorecard from raw data alone
 ```
@@ -26,7 +27,9 @@ Each run writes `build/ai-benchmark/<timestamp>-<ai>/` at the repo root.
 For each seat (an alliance), two arms: the kata's `control_ai` plays the seat
 in the control arm and the AI under test plays it in the experimental arm;
 `reference_ai` plays everyone else in both. Games go in pairs, every seat and
-both arms per pair, so the budget cuts all of them evenly. Arms are compared
+both arms per pair, so the budget cuts all of them evenly; a started pair is
+always finished. Each game runs in its own JVM, several at once; a game whose
+worker fails keeps its log under `parts/` in the run folder. Arms are compared
 in the same seat only; maps aren't balanced, so swapping sides isn't
 comparable.
 
