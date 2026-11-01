@@ -181,20 +181,19 @@ public class ProOddsCalculator {
               defendingUnits, Matches.unitCanBeInBattle(false, !t.isWater(), 1, true));
       final double tuv = TuvUtils.getTuv(mainCombatDefenders, proData.getUnitValueMap());
       return new ProBattleResult(100, 0.1 + tuv, true, attackingUnits, List.of(), 0);
-    } else if (canSubmergeBeforeBattle(
-        proData.getData(), attackingUnits, defendingUnits, checkSubmerge)) {
+    } else if (checkSubmerge
+        && canSubmergeBeforeBattle(proData.getData(), attackingUnits, defendingUnits)) {
       return new ProBattleResult();
     }
     return null;
   }
 
-  private static boolean canSubmergeBeforeBattle(
+  /** Whether all {@code defendingUnits} can evade {@code attackingUnits} before any shots. */
+  public static boolean canSubmergeBeforeBattle(
       final GameState data,
       final Collection<Unit> attackingUnits,
-      final Collection<Unit> defendingUnits,
-      final boolean checkSubmerge) {
-    return checkSubmerge
-        && Properties.getSubRetreatBeforeBattle(data.getProperties())
+      final Collection<Unit> defendingUnits) {
+    return Properties.getSubRetreatBeforeBattle(data.getProperties())
         && defendingUnits.stream().allMatch(Matches.unitCanEvade())
         && attackingUnits.stream().noneMatch(Matches.unitIsDestroyer());
   }
@@ -334,7 +333,8 @@ public class ProOddsCalculator {
 
     // Remove TUV and add to remaining units for defenders that can submerge before battle
     if (tuvSwing > 0
-        && canSubmergeBeforeBattle(data, attackingUnits, defendingUnits, checkSubmerge)) {
+        && checkSubmerge
+        && canSubmergeBeforeBattle(data, attackingUnits, defendingUnits)) {
       final List<Unit> defendingSubsKilled =
           CollectionUtils.getMatches(defendingUnits, Matches.unitCanEvade());
       defendingSubsKilled.removeAll(averageDefendersRemaining);

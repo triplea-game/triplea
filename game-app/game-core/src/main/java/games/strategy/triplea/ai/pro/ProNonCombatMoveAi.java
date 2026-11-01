@@ -143,6 +143,8 @@ class ProNonCombatMoveAi {
     final Map<Territory, Double> seaTerritoryValueMap =
         ProTerritoryValueUtils.findSeaTerritoryValues(
             player, territoriesThatCantBeHeld, territoryManager.getDefendTerritories());
+    final Map<Territory, Double> evaderSeaValueMap =
+        proData.isBeta() ? findEvaderSeaValues(territoriesThatCantBeHeld) : Map.of();
     Map<Territory, ProTerritory> moveMap = territoryManager.getDefendOptions().getTerritoryMap();
 
     // Use loop to ensure capital is protected after moves
@@ -163,7 +165,7 @@ class ProNonCombatMoveAi {
           }
         }
 
-        moveUnitsToBestTerritories(isCombatMove);
+        moveUnitsToBestTerritories(isCombatMove, evaderSeaValueMap);
 
         // Check if capital has local land superiority
         ProLogger.info(
@@ -184,7 +186,7 @@ class ProNonCombatMoveAi {
         }
       }
     } else {
-      moveUnitsToBestTerritories(isCombatMove);
+      moveUnitsToBestTerritories(isCombatMove, evaderSeaValueMap);
     }
 
     // Determine where to move infra units
@@ -764,7 +766,12 @@ class ProNonCombatMoveAi {
           maxValue = territoryValueMap.get(neighbor);
         }
       }
-      if (maxTerritory != null && enemyAttackOptions.getMax(maxTerritory) != null) {
+      // Enemy air alone can't stay in the sea zone to block placing ships there
+      if (maxTerritory != null
+          && enemyAttackOptions.getMax(maxTerritory) != null
+          && !(proData.isBeta()
+              && moveMap.get(maxTerritory).getMaxEnemyUnits().stream()
+                  .allMatch(Matches.unitIsAir()))) {
         boolean alreadyAdded = false;
         for (final ProTerritory patd : prioritizedTerritories) {
           if (patd.getTerritory().equals(maxTerritory)) {
@@ -1290,7 +1297,39 @@ class ProNonCombatMoveAi {
     ProLogger.debug("Final number of territories: " + (numToDefend - 1));
   }
 
-  private void moveUnitsToBestTerritories(final boolean isCombatMove) {
+  /**
+   * Sea value of each water territory that can't be held, valued as if it could: a unit that
+   * submerges before the enemy fires there is safe in it.
+   */
+  private Map<Territory, Double> findEvaderSeaValues(final List<Territory> cantHoldTerritories) {
+    final Map<Territory, Double> evaderSeaValues = new HashMap<>();
+    for (final Territory t : cantHoldTerritories) {
+      if (t.isWater()) {
+        final List<Territory> othersCantHold = new ArrayList<>(cantHoldTerritories);
+        othersCantHold.remove(t);
+        evaderSeaValues.putAll(
+            ProTerritoryValueUtils.findSeaTerritoryValues(player, othersCantHold, List.of(t)));
+      }
+    }
+    return evaderSeaValues;
+  }
+
+  private boolean canEvadeEnemyAttack(final Unit u, final ProTerritory proTerritory) {
+    return ProOddsCalculator.canSubmergeBeforeBattle(
+        data, proTerritory.getMaxEnemyUnits(), List.of(u));
+  }
+
+  private int countAlliedWarships(final ProTerritory proTerritory) {
+    return CollectionUtils.countMatches(
+        proTerritory.getAllDefenders(),
+        Matches.unitIsOwnedBy(player)
+            .negate()
+            .and(Matches.unitIsSea())
+            .and(Matches.unitIsSeaTransportButNotCombatSeaTransport().negate()));
+  }
+
+  private void moveUnitsToBestTerritories(
+      final boolean isCombatMove, final Map<Territory, Double> evaderSeaValueMap) {
     final Map<Territory, ProTerritory> moveMap =
         territoryManager.getDefendOptions().getTerritoryMap();
     final Map<Unit, Set<Territory>> unitMoveMap =
@@ -1771,17 +1810,26 @@ class ProNonCombatMoveAi {
         double maxValue = 0;
         for (final Territory t : currentUnitMoveMap.get(u)) {
           final ProTerritory proTerritory = moveMap.get(t);
-          if (proTerritory.isCanHold()) {
+          final boolean isSafeForEvader =
+              !proTerritory.isCanHold()
+                  && evaderSeaValueMap.containsKey(t)
+                  && canEvadeEnemyAttack(u, proTerritory);
+          if (proTerritory.isCanHold() || isSafeForEvader) {
             final int transports =
                 CollectionUtils.countMatches(
                     proTerritory.getAllDefenders(), ProMatches.unitIsOwnedTransport(player));
+            // An evader adds defense to an allied fleet at little risk
+            final double seaValue =
+                isSafeForEvader
+                    ? (1 + countAlliedWarships(proTerritory)) * evaderSeaValueMap.get(t)
+                    : proTerritory.getSeaValue();
             final double value =
-                (1 + transports) * proTerritory.getSeaValue()
+                (1 + transports) * seaValue
                     + (1 + transports * 100.0) * proTerritory.getValue() / 10_000;
             ProLogger.trace(
                 String.format(
-                    "%s, value=%s, seaValue=%s, tValue=%s, transports=%s",
-                    t, value, proTerritory.getSeaValue(), proTerritory.getValue(), transports));
+                    "%s, value=%s, seaValue=%s, tValue=%s, transports=%s, isSafeForEvader=%s",
+                    t, value, seaValue, proTerritory.getValue(), transports, isSafeForEvader));
             if (value > maxValue) {
               maxValue = value;
               maxValueTerritory = t;
@@ -1794,7 +1842,10 @@ class ProNonCombatMoveAi {
               u + " added to best territory " + maxValueTerritory + ", value=" + maxValue);
           to.addTempUnit(u);
           to.setBattleResult(null);
-          territoriesToDefend.add(maxValueTerritory);
+          // A can't-hold territory would fail the defense re-check on every pass and never settle
+          if (to.isCanHold()) {
+            territoriesToDefend.add(maxValueTerritory);
+          }
           moveAlliedCarriedFighters(u, to);
           it.remove();
         } else {
