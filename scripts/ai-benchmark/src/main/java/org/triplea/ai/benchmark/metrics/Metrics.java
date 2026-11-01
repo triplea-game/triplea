@@ -19,7 +19,9 @@ public final class Metrics {
           new StatMetric("income", data -> new ProductionStat()),
           new StatMetric("pus", Metrics::pus),
           new UnitsMetric(),
-          new StatMetric("vc", data -> new VictoryCityStat()));
+          new StatMetric("vc", data -> new VictoryCityStat()),
+          ExposureMetric.air(),
+          ExposureMetric.land());
 
   private static final Map<String, Metric> BY_ID =
       ALL.stream().collect(Collectors.toMap(Metric::id, Function.identity()));
