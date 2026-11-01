@@ -71,7 +71,7 @@ public class AttackerAndDefenderSelector {
       return AttackerAndDefender.builder().attacker(attacker).defender(defender).build();
     }
     final List<Unit> attackingUnits = territory.getMatches(Matches.unitIsOwnedBy(attacker));
-    final List<Unit> defendingUnits = territory.getMatches(Matches.alliedUnit(defender));
+    final List<Unit> defendingUnits = territory.getMatches(Matches.enemyUnit(attacker));
     return AttackerAndDefender.builder()
         .attacker(attacker)
         .defender(defender)
