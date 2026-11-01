@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
-import org.triplea.ai.benchmark.runner.BenchmarkMain.Arm;
 
 /**
  * Plays every game of a run in parallel, one game per worker JVM; games can't share a JVM because
@@ -24,7 +23,7 @@ import org.triplea.ai.benchmark.runner.BenchmarkMain.Arm;
  * only writer of the run's raw data files, appends a part once its worker exits.
  *
  * <p>Pairs start in kata order. A kata's budget stops new pairs, but a started pair is finished, so
- * the arms stay paired.
+ * every seat gets the same number of games.
  */
 final class WorkerPool {
   /** Left free for the OS and whatever else the box runs when sizing the pool. */
@@ -117,8 +116,6 @@ final class WorkerPool {
             job.kata().name(),
             "--seat",
             job.seat(),
-            "--arm",
-            job.arm().id(),
             "--pair",
             String.valueOf(job.pair()),
             "--ai",
@@ -161,8 +158,7 @@ final class WorkerPool {
     lines(done.partDir().resolve("steps.jsonl")).forEach(writers.steps()::writeLine);
     final Map<String, Object> record;
     if (gameLines.isEmpty()) {
-      record =
-          BenchmarkMain.gameRecord(job.kata(), job.seat(), job.arm(), job.seatAi(ai), job.pair());
+      record = BenchmarkMain.gameRecord(job.kata(), job.seat(), ai, job.pair());
       BenchmarkMain.putCrash(
           record, "worker exited " + process.exitValue() + " with no result; see " + log);
       writers.games().write(record);
@@ -213,13 +209,9 @@ final class WorkerPool {
   }
 
   /** One game to play. */
-  record Job(Kata kata, String seat, Arm arm, int pair) {
-    String seatAi(final String ai) {
-      return arm == Arm.CONTROL ? kata.controlAi() : ai;
-    }
-
+  record Job(Kata kata, String seat, int pair) {
     String partName() {
-      return (kata.name() + "-" + seat + "-" + arm.id() + "-" + pair).replaceAll("[^\\w.-]", "_");
+      return (kata.name() + "-" + seat + "-" + pair).replaceAll("[^\\w.-]", "_");
     }
   }
 
@@ -247,9 +239,7 @@ final class WorkerPool {
         }
         if (System.nanoTime() <= budgetEnd) {
           for (final String seat : kata.seats()) {
-            for (final Arm arm : Arm.values()) {
-              pending.add(new Job(kata, seat, arm, nextPair));
-            }
+            pending.add(new Job(kata, seat, nextPair));
           }
           nextPair++;
         } else if (!budgetReported) {

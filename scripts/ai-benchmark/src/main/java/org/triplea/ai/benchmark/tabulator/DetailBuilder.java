@@ -4,18 +4,21 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.DoubleSummaryStatistics;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import org.triplea.ai.benchmark.tabulator.Scorecard.ArmTally;
+import java.util.TreeSet;
+import java.util.function.ToDoubleFunction;
 import org.triplea.ai.benchmark.tabulator.Scorecard.StepDetail;
+import org.triplea.ai.benchmark.tabulator.Scorecard.Tally;
 import org.triplea.ai.benchmark.tabulator.Scorecard.TerritoryRow;
 
 /**
- * Tallies {@code steps.jsonl} territory state across a seat's games, per step and arm, and keeps
- * the territories where the arms differ or where the outcome varied from game to game.
+ * Tallies {@code steps.jsonl} territory state across a seat's games, per step and run, and keeps
+ * the territories where the runs differ or where the outcome varied from game to game.
  */
 final class DetailBuilder {
   private static final double OWNED_DIFFERENCE = 0.1;
@@ -24,29 +27,25 @@ final class DetailBuilder {
   private DetailBuilder() {}
 
   /**
-   * @param control step records of the control arm's finished games
-   * @param experimental step records of the experimental arm's finished games
+   * @param recordsByRun step records of each run's finished games, in the order of the teams
    */
-  static List<StepDetail> build(
-      final List<JsonObject> control, final List<JsonObject> experimental) {
-    final Map<String, List<JsonObject>> controlBySteps = byStep(control);
-    final Map<String, List<JsonObject>> experimentalBySteps = byStep(experimental);
+  static List<StepDetail> build(final List<List<JsonObject>> recordsByRun) {
+    final List<Map<String, List<JsonObject>>> byStepByRun =
+        recordsByRun.stream().map(DetailBuilder::byStep).toList();
     final List<StepDetail> details = new ArrayList<>();
-    for (final String step : controlBySteps.keySet()) {
-      if (!experimentalBySteps.containsKey(step)) {
+    for (final String step : byStepByRun.get(0).keySet()) {
+      if (byStepByRun.stream().anyMatch(byStep -> !byStep.containsKey(step))) {
         continue;
       }
-      final List<JsonObject> controlRecords = controlBySteps.get(step);
-      final List<JsonObject> experimentalRecords = experimentalBySteps.get(step);
-      final Set<String> names = new java.util.TreeSet<>();
-      controlRecords.forEach(r -> names.addAll(territories(r).keySet()));
-      experimentalRecords.forEach(r -> names.addAll(territories(r).keySet()));
+      final List<List<JsonObject>> stepRecords =
+          byStepByRun.stream().map(byStep -> byStep.get(step)).toList();
+      final Set<String> names = new TreeSet<>();
+      stepRecords.forEach(records -> records.forEach(r -> names.addAll(territories(r).keySet())));
       final List<TerritoryRow> rows = new ArrayList<>();
       for (final String name : names) {
-        final ArmTally c = tally(controlRecords, name);
-        final ArmTally e = tally(experimentalRecords, name);
-        if (interesting(c, e)) {
-          rows.add(new TerritoryRow(name, c, e));
+        final List<Tally> tallies = stepRecords.stream().map(r -> tally(r, name)).toList();
+        if (interesting(tallies)) {
+          rows.add(new TerritoryRow(name, tallies));
         }
       }
       rows.sort(
@@ -74,7 +73,7 @@ final class DetailBuilder {
     return record.getAsJsonObject("territories");
   }
 
-  private static ArmTally tally(final List<JsonObject> records, final String territory) {
+  private static Tally tally(final List<JsonObject> records, final String territory) {
     double owned = 0;
     double seatUnits = 0;
     double enemyUnits = 0;
@@ -95,14 +94,13 @@ final class DetailBuilder {
     }
     final int n = records.size();
     byType.replaceAll((type, total) -> total / n);
-    return new ArmTally(n, owned / n, seatUnits / n, enemyUnits / n, byType);
+    return new Tally(n, owned / n, seatUnits / n, enemyUnits / n, byType);
   }
 
-  private static boolean interesting(final ArmTally c, final ArmTally e) {
-    return mixed(c.seatOwned())
-        || mixed(e.seatOwned())
-        || Math.abs(c.seatOwned() - e.seatOwned()) >= OWNED_DIFFERENCE
-        || Math.abs(c.seatUnits() - e.seatUnits()) >= UNITS_DIFFERENCE;
+  private static boolean interesting(final List<Tally> tallies) {
+    return tallies.stream().anyMatch(t -> mixed(t.seatOwned()))
+        || spread(tallies, Tally::seatOwned) >= OWNED_DIFFERENCE
+        || spread(tallies, Tally::seatUnits) >= UNITS_DIFFERENCE;
   }
 
   private static boolean mixed(final double fraction) {
@@ -110,9 +108,13 @@ final class DetailBuilder {
   }
 
   private static double score(final TerritoryRow row) {
-    final ArmTally c = row.control();
-    final ArmTally e = row.experimental();
     return Math.max(
-        Math.abs(c.seatOwned() - e.seatOwned()) * 10, Math.abs(c.seatUnits() - e.seatUnits()));
+        spread(row.tallies(), Tally::seatOwned) * 10, spread(row.tallies(), Tally::seatUnits));
+  }
+
+  /** Largest minus smallest value across the runs. */
+  private static double spread(final List<Tally> tallies, final ToDoubleFunction<Tally> value) {
+    final DoubleSummaryStatistics stats = tallies.stream().mapToDouble(value).summaryStatistics();
+    return stats.getMax() - stats.getMin();
   }
 }

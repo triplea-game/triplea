@@ -2,14 +2,13 @@ package org.triplea.ai.benchmark.tabulator;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Stream;
-import org.triplea.ai.benchmark.tabulator.Scorecard.ArmTally;
+import java.util.stream.IntStream;
 import org.triplea.ai.benchmark.tabulator.Scorecard.Box;
 import org.triplea.ai.benchmark.tabulator.Scorecard.Point;
 import org.triplea.ai.benchmark.tabulator.Scorecard.StepDetail;
+import org.triplea.ai.benchmark.tabulator.Scorecard.Tally;
 import org.triplea.ai.benchmark.tabulator.Scorecard.Team;
 import org.triplea.ai.benchmark.tabulator.Scorecard.TerritoryRow;
-import org.triplea.ai.benchmark.tabulator.Scorecard.Trajectory;
 
 /** A single self-contained HTML page: box scores plus a gap-over-turns chart per metric. */
 final class HtmlRenderer {
@@ -24,15 +23,16 @@ final class HtmlRenderer {
       """
       .viz-root { color-scheme: light; --surface-1:#fcfcfb; --surface-2:#f1f0ed;
         --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#7a7974;
-        --grid:#e4e3df; --axis:#b9b8b2; --series-1:#2a78d6; --series-2:#eb6834; }
+        --grid:#e4e3df; --axis:#b9b8b2; --series-1:#2a78d6; --series-2:#eb6834;
+        --series-3:#2a9d6f; --series-4:#8e5bd1; }
       @media (prefers-color-scheme: dark) { :root:where(:not([data-theme="light"])) .viz-root {
         color-scheme: dark; --surface-1:#1a1a19; --surface-2:#252524; --text-primary:#f0efec;
         --text-secondary:#c3c2b7; --text-muted:#929189; --grid:#33332f; --axis:#55544f;
-        --series-1:#3987e5; --series-2:#d95926; } }
+        --series-1:#3987e5; --series-2:#d95926; --series-3:#34b585; --series-4:#a57be0; } }
       :root[data-theme="dark"] .viz-root { color-scheme: dark; --surface-1:#1a1a19;
         --surface-2:#252524; --text-primary:#f0efec; --text-secondary:#c3c2b7;
         --text-muted:#929189; --grid:#33332f; --axis:#55544f; --series-1:#3987e5;
-        --series-2:#d95926; }
+        --series-2:#d95926; --series-3:#34b585; --series-4:#a57be0; }
       body { margin:0; }
       .viz-root { background:var(--surface-1); color:var(--text-primary); min-height:100vh;
         font:14px/1.45 system-ui, sans-serif; padding:24px 32px; }
@@ -53,6 +53,8 @@ final class HtmlRenderer {
       .grid { stroke:var(--grid); } .zero { stroke:var(--axis); }
       .c1 { stroke:var(--series-1); fill:var(--series-1); }
       .c2 { stroke:var(--series-2); fill:var(--series-2); }
+      .c3 { stroke:var(--series-3); fill:var(--series-3); }
+      .c4 { stroke:var(--series-4); fill:var(--series-4); }
       .line { fill:none; stroke-width:2; } .band { stroke:none; opacity:.15; }
       .dot { stroke:var(--surface-1); stroke-width:2; }
       .hit { fill:transparent; stroke:none; cursor:default; }
@@ -79,20 +81,25 @@ final class HtmlRenderer {
   static String render(final Scorecard card) {
     final StringBuilder out = new StringBuilder();
     out.append("<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\">")
-        .append("<title>AI benchmark: ")
-        .append(esc(card.ai()))
+        .append("<title>AI benchmark")
         .append("</title><style>")
         .append(STYLE)
         .append("</style></head><body><div class=\"viz-root\">");
-    out.append("<h1>AI benchmark scorecard: ").append(esc(card.ai())).append("</h1>");
-    out.append("<div class=\"muted\">")
-        .append(esc(card.gitSha()))
-        .append(" · started ")
-        .append(esc(card.startedAt()))
-        .append(
-            "<br>Each cell is the mean gap (seat minus enemy) at the end of the game, ±95% CI,"
-                + " with seat / enemy means below it. * marks a difference whose CI excludes 0."
-                + " Record is games, then wins-losses-capped.</div>");
+    out.append("<h1>AI benchmark scorecard</h1><div class=\"muted\">");
+    for (int i = 0; i < card.runs().size(); i++) {
+      final Scorecard.RunInfo run = card.runs().get(i);
+      out.append("run ")
+          .append(i + 1)
+          .append(": ")
+          .append(esc(run.label()))
+          .append(" · started ")
+          .append(esc(run.startedAt()))
+          .append("<br>");
+    }
+    out.append(
+        "Each cell is the mean gap (seat minus enemy) at the end of the game, ±95% CI, with"
+            + " seat / enemy means below it. Diff rows are against run 1; * marks a difference"
+            + " whose CI excludes 0. Record is games, then wins-losses-capped.</div>");
     card.series().forEach(box -> out.append(box(box)));
     out.append("<div id=\"tip\"></div><script>")
         .append(SCRIPT)
@@ -118,64 +125,57 @@ final class HtmlRenderer {
                     .append(m.equals(box.primaryMetric()) ? " (primary)" : "")
                     .append("</th>"));
     out.append("</tr></thead><tbody>");
-    teamRow(out, "series-1", "control", box.control(), box);
-    teamRow(out, "series-2", "experimental", box.experimental(), box);
-    out.append("<tr class=\"diff\"><td>diff (exp − control)</td><td></td>");
-    box.metrics()
-        .forEach(
-            m ->
-                out.append("<td>")
-                    .append(esc(TerminalRenderer.difference(box.difference().get(m))))
-                    .append("</td>"));
-    out.append("</tr></tbody></table>");
-    out.append("<div class=\"legend\">")
-        .append(legendItem("series-1", "control (" + box.control().ai() + ")"))
-        .append(legendItem("series-2", "experimental (" + box.experimental().ai() + ")"))
-        .append("<span>mean gap by turn, band = 95% CI</span></div><div class=\"charts\">");
-    box.metrics().forEach(m -> out.append(chart(m, box.trajectories().get(m))));
+    IntStream.range(0, box.teams().size())
+        .forEach(i -> teamRow(out, color(i), box.teams().get(i), box));
+    box.teams().stream().skip(1).forEach(team -> differenceRow(out, team, box));
+    out.append("</tbody></table>");
+    out.append("<div class=\"legend\">");
+    IntStream.range(0, box.teams().size())
+        .forEach(i -> out.append(legendItem(color(i), box.teams().get(i).label())));
+    out.append("<span>mean gap by turn, band = 95% CI</span></div><div class=\"charts\">");
+    box.metrics().forEach(m -> out.append(chart(m, box.teams())));
     out.append("</div>");
-    box.details().forEach(detail -> out.append(detail(detail)));
+    box.details().forEach(detail -> out.append(detail(detail, box)));
     return out.toString();
   }
 
-  private static String detail(final StepDetail detail) {
+  /** Four series colors, reused beyond that. */
+  private static String color(final int team) {
+    return "series-" + (team % 4 + 1);
+  }
+
+  private static String detail(final StepDetail detail, final Box box) {
     final StringBuilder out = new StringBuilder();
     out.append("<h3>")
         .append(esc(detail.step()))
-        .append("</h3><table><thead><tr><th>territory</th><th>control</th>")
-        .append("<th>experimental</th></tr></thead><tbody>");
+        .append("</h3><table><thead><tr><th>territory</th>");
+    box.teams().forEach(team -> out.append("<th>").append(esc(team.label())).append("</th>"));
+    out.append("</tr></thead><tbody>");
     detail.territories().forEach(row -> out.append(detailRow(row)));
     out.append("</tbody></table>");
     return out.toString();
   }
 
   private static String detailRow(final TerritoryRow row) {
-    return "<tr><td>"
-        + esc(row.territory())
-        + "</td>"
-        + detailCell(row.control())
-        + detailCell(row.experimental())
-        + "</tr>";
+    final StringBuilder out = new StringBuilder("<tr><td>" + esc(row.territory()) + "</td>");
+    row.tallies().forEach(tally -> out.append(detailCell(tally)));
+    return out.append("</tr>").toString();
   }
 
-  private static String detailCell(final ArmTally tally) {
+  private static String detailCell(final Tally tally) {
     final String types =
         tally.seatUnitsByType().entrySet().stream()
             .map(e -> String.format(Locale.ROOT, "%s %.1f", e.getKey(), e.getValue()))
             .collect(java.util.stream.Collectors.joining(", "));
-    return "<td>" + esc(TerminalRenderer.arm(tally)) + "<small>" + esc(types) + "</small></td>";
+    return "<td>" + esc(TerminalRenderer.tally(tally)) + "<small>" + esc(types) + "</small></td>";
   }
 
   private static void teamRow(
-      final StringBuilder out,
-      final String color,
-      final String arm,
-      final Team team,
-      final Box box) {
+      final StringBuilder out, final String color, final Team team, final Box box) {
     out.append("<tr><td><span class=\"swatch\" style=\"background:var(--")
         .append(color)
         .append(")\"></span>")
-        .append(esc(arm + " (" + team.ai() + ")"))
+        .append(esc(team.label()))
         .append("</td><td>")
         .append(esc(TerminalRenderer.record(team)))
         .append("</td>");
@@ -194,6 +194,17 @@ final class HtmlRenderer {
     out.append("</tr>");
   }
 
+  private static void differenceRow(final StringBuilder out, final Team team, final Box box) {
+    out.append("<tr class=\"diff\"><td>diff ").append(esc(team.label())).append("</td><td></td>");
+    box.metrics()
+        .forEach(
+            m ->
+                out.append("<td>")
+                    .append(esc(TerminalRenderer.difference(team.difference().get(m))))
+                    .append("</td>"));
+    out.append("</tr>");
+  }
+
   private static String legendItem(final String color, final String label) {
     return "<span><span class=\"swatch\" style=\"background:var(--"
         + color
@@ -202,9 +213,9 @@ final class HtmlRenderer {
         + "</span>";
   }
 
-  private static String chart(final String metric, final Trajectory trajectory) {
+  private static String chart(final String metric, final List<Team> teams) {
     final List<Point> all =
-        Stream.concat(trajectory.control().stream(), trajectory.experimental().stream()).toList();
+        teams.stream().flatMap(team -> team.trajectories().get(metric).stream()).toList();
     if (all.isEmpty()) {
       return "<figure><figcaption>" + esc(metric) + "</figcaption>no turn data</figure>";
     }
@@ -268,9 +279,15 @@ final class HtmlRenderer {
             "<text x=\"%d\" y=\"%d\" text-anchor=\"middle\">turn</text>",
             LEFT + (WIDTH - LEFT - RIGHT) / 2,
             HEIGHT - 2));
-    series(svg, "c1", "control", trajectory.control(), scale);
-    series(svg, "c2", "experimental", trajectory.experimental(), scale);
-    svg.append("</svg>").append(table(trajectory)).append("</figure>");
+    for (int i = 0; i < teams.size(); i++) {
+      series(
+          svg,
+          "c" + (i % 4 + 1),
+          teams.get(i).label(),
+          teams.get(i).trajectories().get(metric),
+          scale);
+    }
+    svg.append("</svg>").append(table(metric, teams)).append("</figure>");
     return svg.toString();
   }
 
@@ -329,20 +346,22 @@ final class HtmlRenderer {
     }
   }
 
-  private static String table(final Trajectory trajectory) {
+  private static String table(final String metric, final List<Team> teams) {
     final StringBuilder out =
-        new StringBuilder(
-            "<details><summary>table</summary><table><thead><tr><th>turn</th>"
-                + "<th>control</th><th>n</th><th>experimental</th><th>n</th></tr></thead><tbody>");
+        new StringBuilder("<details><summary>table</summary><table><thead><tr><th>turn</th>");
+    teams.forEach(team -> out.append("<th>").append(esc(team.label())).append("</th><th>n</th>"));
+    out.append("</tr></thead><tbody>");
     final int maxTurn =
-        Stream.concat(trajectory.control().stream(), trajectory.experimental().stream())
+        teams.stream()
+            .flatMap(team -> team.trajectories().get(metric).stream())
             .mapToInt(Point::turn)
             .max()
             .orElse(-1);
     for (int t = 0; t <= maxTurn; t++) {
       out.append("<tr><td>").append(t).append("</td>");
-      cell(out, trajectory.control(), t);
-      cell(out, trajectory.experimental(), t);
+      for (final Team team : teams) {
+        cell(out, team.trajectories().get(metric), t);
+      }
       out.append("</tr>");
     }
     return out.append("</tbody></table></details>").toString();

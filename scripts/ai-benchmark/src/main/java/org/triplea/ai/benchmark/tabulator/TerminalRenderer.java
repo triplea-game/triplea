@@ -1,17 +1,17 @@
 package org.triplea.ai.benchmark.tabulator;
 
 import javax.annotation.Nullable;
-import org.triplea.ai.benchmark.tabulator.Scorecard.ArmTally;
 import org.triplea.ai.benchmark.tabulator.Scorecard.Box;
 import org.triplea.ai.benchmark.tabulator.Scorecard.Cell;
 import org.triplea.ai.benchmark.tabulator.Scorecard.StepDetail;
+import org.triplea.ai.benchmark.tabulator.Scorecard.Tally;
 import org.triplea.ai.benchmark.tabulator.Scorecard.Team;
 import org.triplea.ai.benchmark.tabulator.Stats.Difference;
 import org.triplea.ai.benchmark.tabulator.Stats.Summary;
 
 /** Plain-text box scores, one per kata seat. */
 final class TerminalRenderer {
-  private static final int LABEL = 26;
+  private static final int LABEL = 30;
   private static final int RECORD = 17;
   private static final int CELL = 18;
   private static final int DETAIL_ROWS = 15;
@@ -20,11 +20,12 @@ final class TerminalRenderer {
 
   static String render(final Scorecard card) {
     final StringBuilder out = new StringBuilder();
-    out.append("Scorecard: ")
-        .append(card.ai())
-        .append(" @ ")
-        .append(card.gitSha(), 0, Math.min(10, card.gitSha().length()))
-        .append("  (cells: mean final gap ±95% CI; * CI excludes 0)\n");
+    out.append("Scorecard (cells: mean final gap ±95% CI; diff rows are against run 1;")
+        .append(" * CI excludes 0)\n");
+    for (int i = 0; i < card.runs().size(); i++) {
+      final Scorecard.RunInfo run = card.runs().get(i);
+      out.append(String.format("  run %d: %s, started %s%n", i + 1, run.label(), run.startedAt()));
+    }
     for (final Box box : card.series()) {
       out.append('\n').append(box(box));
     }
@@ -43,54 +44,52 @@ final class TerminalRenderer {
     box.metrics()
         .forEach(m -> out.append(pad(m.equals(box.primaryMetric()) ? m + " (primary)" : m, CELL)));
     out.append('\n');
-    teamRow(out, "control", box.control(), box);
-    teamRow(out, "experimental", box.experimental(), box);
-    out.append(pad("diff (exp - control)", LABEL)).append(pad("", RECORD));
-    box.metrics().forEach(m -> out.append(pad(difference(box.difference().get(m)), CELL)));
-    out.append('\n');
+    box.teams().forEach(team -> teamRow(out, team, box));
+    box.teams().stream().skip(1).forEach(team -> differenceRow(out, team, box));
     out.append(pad("  seat / enemy", LABEL)).append('\n');
-    absoluteRow(out, "control", box.control(), box);
-    absoluteRow(out, "experimental", box.experimental(), box);
-    box.details().forEach(detail -> detail(out, detail));
+    box.teams().forEach(team -> absoluteRow(out, team, box));
+    box.details().forEach(detail -> detail(out, detail, box));
     return out.toString();
   }
 
-  private static void detail(final StringBuilder out, final StepDetail detail) {
+  private static void detail(final StringBuilder out, final StepDetail detail, final Box box) {
     out.append("\n  ")
         .append(detail.step())
         .append(" (seat-owned %, mean seat units; top ")
         .append(DETAIL_ROWS)
         .append(" by difference, full list in scorecard.json)\n");
-    out.append("    ")
-        .append(pad("territory", LABEL))
-        .append(pad("control", 34))
-        .append("experimental\n");
+    out.append("    ").append(pad("territory", LABEL));
+    box.teams().forEach(team -> out.append(pad(team.label(), 34)));
+    out.append('\n');
     detail.territories().stream()
         .limit(DETAIL_ROWS)
         .forEach(
-            row ->
-                out.append("    ")
-                    .append(pad(row.territory(), LABEL))
-                    .append(pad(arm(row.control()), 34))
-                    .append(arm(row.experimental()))
-                    .append('\n'));
+            row -> {
+              out.append("    ").append(pad(row.territory(), LABEL));
+              row.tallies().forEach(tally -> out.append(pad(tally(tally), 34)));
+              out.append('\n');
+            });
   }
 
-  static String arm(final ArmTally tally) {
+  static String tally(final Tally tally) {
     return String.format(
         "%3.0f%% %5.1f  n=%d", tally.seatOwned() * 100, tally.seatUnits(), tally.n());
   }
 
-  private static void teamRow(
-      final StringBuilder out, final String arm, final Team team, final Box box) {
-    out.append(pad(arm + " (" + team.ai() + ")", LABEL)).append(pad(record(team), RECORD));
+  private static void teamRow(final StringBuilder out, final Team team, final Box box) {
+    out.append(pad(team.label(), LABEL)).append(pad(record(team), RECORD));
     box.metrics().forEach(m -> out.append(pad(summary(team.cells().get(m).gap()), CELL)));
     out.append('\n');
   }
 
-  private static void absoluteRow(
-      final StringBuilder out, final String arm, final Team team, final Box box) {
-    out.append(pad("  " + arm, LABEL)).append(pad("", RECORD));
+  private static void differenceRow(final StringBuilder out, final Team team, final Box box) {
+    out.append(pad("diff " + team.label(), LABEL)).append(pad("", RECORD));
+    box.metrics().forEach(m -> out.append(pad(difference(team.difference().get(m)), CELL)));
+    out.append('\n');
+  }
+
+  private static void absoluteRow(final StringBuilder out, final Team team, final Box box) {
+    out.append(pad("  " + team.label(), LABEL)).append(pad("", RECORD));
     box.metrics()
         .forEach(
             m -> {

@@ -1,9 +1,11 @@
 # AI benchmark
 
-Benchmarks a TripleA AI against a control AI over a set of scenarios ("kata"),
-seat by seat, and reports how game state compares at the end of every player
-turn. The result is a scorecard: each kata seat is a box score, each metric an
-inning, control and experimental the two teams.
+Plays a TripleA AI over a set of scenarios ("kata"), seat by seat, and
+records game state at the end of every player turn. Comparing runs is the
+tabulator's job: the scorecard sets any number of run folders side by side,
+each kata seat a box score, each metric an inning, each run a team. To measure
+a change, keep a run of the stock AI (eg `just ai=Hard run`) and compare it
+with later runs; it does not need replaying.
 
 ## Run
 
@@ -15,7 +17,7 @@ just ai=Hard kata='big_*' run     # another AI, a kata glob
 just kata=_pipeline run           # the pipeline check on a tiny map
 just workers=8 run                # 8 games at once (default: half the cores, capped by free memory)
 just list                         # kata found and their limits
-just tabulate <run dir>           # rebuild a scorecard from raw data alone
+just tabulate <run dir>...        # compare runs from raw data; others are diffs from the first
 ```
 
 AIs: `Hard`, `Hard Beta`, `Fast`, `Easy` (see `AiRegistry`). Kata whose folder
@@ -24,14 +26,12 @@ Each run writes `build/ai-benchmark/<timestamp>-<ai>/` at the repo root.
 
 ## How a kata is played
 
-For each seat (an alliance), two arms: the kata's `control_ai` plays the seat
-in the control arm and the AI under test plays it in the experimental arm;
-`reference_ai` plays everyone else in both. Games go in pairs, every seat and
-both arms per pair, so the budget cuts all of them evenly; a started pair is
-always finished. Each game runs in its own JVM, several at once; a game whose
-worker fails keeps its log under `parts/` in the run folder. Arms are compared
-in the same seat only; maps aren't balanced, so swapping sides isn't
-comparable.
+For each seat (an alliance), the AI under test plays the seat and
+`reference_ai` plays everyone else. Games go in pairs, one per seat, so the
+budget cuts all seats evenly; a started pair is always finished. Each game runs
+in its own JVM, several at once; a game whose worker fails keeps its log under
+`parts/` in the run folder. Runs are compared in the same seat only; maps
+aren't balanced, so swapping sides isn't comparable.
 
 At each player-turn end the runner records every metric for the seat, for the
 enemy (every player outside the seat's alliance), and the gap between them.
@@ -47,10 +47,9 @@ start:
   map: game.xml             # or  save: position.tsvg
 seats: [Axis, Allies]       # alliances; each is benchmarked separately
 reference_ai: Hard          # default Hard
-control_ai: Hard            # default Hard
 limits:
   rounds: 10                # round cap per game (required)
-  min_games: 2              # default 2; per seat per arm
+  min_games: 2              # default 2; per seat
   max_games: 20             # default 20
   budget_minutes: 20        # default 20; no new pair starts after this
   game_timeout_minutes: 30  # default 30
@@ -83,10 +82,10 @@ A kata with `stop_after` records detail (override with `detail: true|false`):
 
 - `steps.jsonl`: after each non-bid step of the seat's players, every land territory's owner and
   every unit-holding territory's units by type, split into the seat's side (`u`) and the rest
-  (`e`). The tabulator tallies it per arm: seat-owned % and mean seat units per territory per
-  step, keeping the territories where the arms differ or the outcome varies (all of them in
+  (`e`). The tabulator tallies it per run: seat-owned % and mean seat units per territory per
+  step, keeping the territories where the runs differ or the outcome varies (all of them in
   `scorecard.json`, the top 15 per step in the terminal).
-- `logs/<kata>/<seat>/<arm>/<pair>.log`: the Pro AI's own log for each game (what its log window
+- `logs/<kata>/<seat>/<pair>.log`: the Pro AI's own log for each game (what its log window
   shows; `=== round N <step>` lines mark where each step starts). Grep these for why.
 
 ```yaml
@@ -114,17 +113,16 @@ The runner never analyses; the tabulator reads only these files.
 
 - `run.json`: `schema`, `ai`, `git_sha`, `git_dirty`, `workers`, `java`,
   `cpus`, `started_at`, `ended_at`, and `kata`: each descriptor as resolved.
-- `games.jsonl`, one per game: `kata`, `seat`, `arm` (`control` or
-  `experimental`), `pair`, `game` (id), `ai`, `reference_ai`, `seed` (null for
+- `games.jsonl`, one per game: `kata`, `seat`, `pair`, `game` (id), `ai`, `reference_ai`, `seed` (null for
   now), `status` (`ok`, `timeout`, `crash`), `winner` (alliances joined by
   `+`, or null), `winners` (players), `rounds`, `capped`, `stopped` (ended by `stop_after`),
   `end` (`won`, `decisive`, `stop`, `cap`, `timeout`; null on a crash), `error`, `wall_seconds`,
   `cpu_seconds`.
-- `steps.jsonl` (detail kata only), one per recorded step: `kata`, `seat`, `arm`, `pair`, `game`,
+- `steps.jsonl` (detail kata only), one per recorded step: `kata`, `seat`, `pair`, `game`,
   `round`, `player`, `step`, and `territories`: `{<name>: {o: owner, s: owner is in the seat, u:
   {<unit type>: n} seat's units, e: {<unit type>: n} everyone else's}}`.
 - `snapshots.jsonl`, one per player-turn end plus one with `last: true` for
-  the final state: `kata`, `seat`, `arm`, `pair`, `game`, `round`, `player`
+  the final state: `kata`, `seat`, `pair`, `game`, `round`, `player`
   (whose turn ended; null on the last record), `turn_index`, `last`, and
   `metrics`: `{<id>: {seat, enemy, gap}}`.
 
@@ -132,7 +130,13 @@ The runner never analyses; the tabulator reads only these files.
 
 `scorecard.json`, `scorecard.html` (self-contained), and the terminal box
 scores. Cells are the mean gap at each game's final snapshot with a 95%
-Student-t CI; the diff row is experimental minus control with a Welch CI.
+Student-t CI; each run after the first gets a diff row, that run minus the
+first, with a Welch CI. One run is written into its own folder; several into a
+new `compare-<timestamp>` folder beside the first.
 Only `ok` games count; crashes and timeouts show in the record column.
 Trajectory charts plot the mean gap per turn index with n per point, since
 games that end early drop out of later turns.
+
+Runs written when the runner still played a control AI also hold `arm`
+(`control` or `experimental`) on each record; the tabulator uses only the
+`experimental` games, so those folders still compare.

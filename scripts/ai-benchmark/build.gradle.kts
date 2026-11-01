@@ -30,10 +30,10 @@ tasks.register<JavaExec>("runBenchmark") {
 
 tasks.register<JavaExec>("tabulate") {
     group = "ai benchmark"
-    description = "Builds the scorecard from a run folder's raw data (-PrunDir=, default: latest run)."
+    description = "Compares run folders' raw data (-PrunDirs=a,b,..., default: latest run)."
     classpath = sourceSets["main"].runtimeClasspath
     mainClass = "org.triplea.ai.benchmark.tabulator.TabulatorMain"
-    args(providers.gradleProperty("runDir").getOrElse("$outRoot/LATEST"))
+    args(providers.gradleProperty("runDirs").getOrElse("$outRoot/LATEST").split(","))
 }
 
 tasks.register<JavaExec>("listKata") {

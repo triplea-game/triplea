@@ -11,7 +11,7 @@ gradlew := justfile_directory() / "../../gradlew"
 help:
     @just --list
 
-# Benchmark {{ai}} on the kata matching {{kata}}, then print the scorecard; "*" skips "_" kata
+# Play {{ai}} on the kata matching {{kata}}, then print the scorecard; "*" skips "_" kata
 run:
     @{{gradlew}} -q -p ../.. :ai-benchmark:runBenchmark "-Pai={{ai}}" "-Pkata={{kata}}" "-Pworkers={{workers}}"
     @{{gradlew}} -q -p ../.. :ai-benchmark:tabulate
@@ -20,9 +20,9 @@ run:
 list:
     @{{gradlew}} -q -p ../.. :ai-benchmark:listKata
 
-# Rebuild the scorecard from a run folder's raw data alone
-tabulate dir:
-    @{{gradlew}} -q -p ../.. :ai-benchmark:tabulate "-PrunDir={{absolute_path(dir)}}"
+# Compare run folders' raw data; each run after the first is shown as a difference from it
+tabulate +dirs:
+    @{{gradlew}} -q -p ../.. :ai-benchmark:tabulate "-PrunDirs=$(realpath {{dirs}} | paste -sd,)"
 
 # Open a kata's start file (map XML or save) in the TripleA client
 open name:

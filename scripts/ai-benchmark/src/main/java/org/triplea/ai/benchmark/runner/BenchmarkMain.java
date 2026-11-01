@@ -19,15 +19,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import org.triplea.ai.benchmark.metrics.Metric;
 import org.triplea.ai.benchmark.metrics.Metrics;
 
 /**
- * Benchmarks one AI against each kata's control AI, seat by seat, and writes the raw data to a new
- * run folder. It never analyses the data; the tabulator does.
+ * Plays one AI on each kata, seat by seat, and writes the raw data to a new run folder. It never
+ * analyses the data, or compares runs; the tabulator does.
  *
  * <p>Args: {@code --kata-dir <dir> (--list | --out <dir> --ai <name> --kata <glob> [--workers
  * <n>])}. {@link WorkerPool} starts this same class with {@code --play} for each game.
@@ -104,8 +103,6 @@ public final class BenchmarkMain {
             .filter(k -> k.name().equals(name))
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("No kata named " + name));
-    final Arm arm = Arm.valueOf(require(opts, "arm").toUpperCase(Locale.ROOT));
-    final String seatAi = arm == Arm.CONTROL ? kata.controlAi() : require(opts, "ai");
     final Path partDir = Path.of(require(opts, "part-dir"));
     HeadlessEngine.bootstrap();
     try (JsonlWriter snapshots = new JsonlWriter(partDir.resolve("snapshots.jsonl"));
@@ -113,19 +110,18 @@ public final class BenchmarkMain {
         JsonlWriter games = new JsonlWriter(partDir.resolve("games.jsonl"))) {
       final var sinks = new Sinks(Path.of(require(opts, "run-dir")), snapshots, steps, games);
       final int pair = Integer.parseInt(require(opts, "pair"));
-      games.write(playOne(kata, require(opts, "seat"), arm, seatAi, pair, sinks));
+      games.write(playOne(kata, require(opts, "seat"), require(opts, "ai"), pair, sinks));
     }
   }
 
   /** The fields that identify a game in {@code games.jsonl}. */
   static Map<String, Object> gameRecord(
-      final Kata kata, final String seat, final Arm arm, final String seatAi, final int pair) {
+      final Kata kata, final String seat, final String seatAi, final int pair) {
     final Map<String, Object> record = new LinkedHashMap<>();
     record.put("kata", kata.name());
     record.put("seat", seat);
-    record.put("arm", arm.id());
     record.put("pair", pair);
-    record.put("game", gameId(kata, seat, arm, pair));
+    record.put("game", gameId(kata, seat, pair));
     record.put("ai", seatAi);
     record.put("reference_ai", kata.referenceAi());
     record.put("seed", null);
@@ -154,20 +150,15 @@ public final class BenchmarkMain {
         record.get("capped"));
   }
 
-  private static String gameId(final Kata kata, final String seat, final Arm arm, final int pair) {
-    return kata.name() + "/" + seat + "/" + arm.id() + "/" + pair;
+  private static String gameId(final Kata kata, final String seat, final int pair) {
+    return kata.name() + "/" + seat + "/" + pair;
   }
 
   /** Plays one game, writing its snapshots, and returns its {@code games.jsonl} record. */
   private static Map<String, Object> playOne(
-      final Kata kata,
-      final String seat,
-      final Arm arm,
-      final String seatAi,
-      final int pair,
-      final Sinks sinks) {
-    final String gameId = gameId(kata, seat, arm, pair);
-    final Map<String, Object> record = gameRecord(kata, seat, arm, seatAi, pair);
+      final Kata kata, final String seat, final String seatAi, final int pair, final Sinks sinks) {
+    final String gameId = gameId(kata, seat, pair);
+    final Map<String, Object> record = gameRecord(kata, seat, seatAi, pair);
     final long wallStart = System.nanoTime();
     final long cpuStart = processCpuNanos();
     ServerGame game = null;
@@ -194,7 +185,6 @@ public final class BenchmarkMain {
                   final Map<String, Object> record = new LinkedHashMap<>();
                   record.put("kata", kata.name());
                   record.put("seat", seat);
-                  record.put("arm", arm.id());
                   record.put("pair", pair);
                   record.put("game", gameId);
                   record.put("round", round);
@@ -214,7 +204,6 @@ public final class BenchmarkMain {
                   final Map<String, Object> snapshot = new LinkedHashMap<>();
                   snapshot.put("kata", kata.name());
                   snapshot.put("seat", seat);
-                  snapshot.put("arm", arm.id());
                   snapshot.put("pair", pair);
                   snapshot.put("game", gameId);
                   snapshot.put("round", round);
@@ -273,10 +262,9 @@ public final class BenchmarkMain {
   private static String describe(final Kata kata) {
     final Kata.Limits l = kata.limits();
     return String.format(
-        "%-20s seats=%s control=%s reference=%s rounds=%d games=%d-%d budget=%dm  %s",
+        "%-20s seats=%s reference=%s rounds=%d games=%d-%d budget=%dm  %s",
         kata.name(),
         kata.seats(),
-        kata.controlAi(),
         kata.referenceAi(),
         l.rounds(),
         l.minGames(),
@@ -352,16 +340,6 @@ public final class BenchmarkMain {
 
   /** Where one run's raw data goes. */
   private record Sinks(Path runDir, JsonlWriter snapshots, JsonlWriter steps, JsonlWriter games) {}
-
-  /** The two treatments compared within a seat. */
-  enum Arm {
-    CONTROL,
-    EXPERIMENTAL;
-
-    String id() {
-      return name().toLowerCase();
-    }
-  }
 
   /** The seat's players and everyone else, who count as the enemy. */
   record Sides(List<GamePlayer> seat, List<GamePlayer> enemy) {

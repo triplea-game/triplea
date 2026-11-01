@@ -27,7 +27,6 @@ class KataParserTest {
     assertThat(kata.start())
         .isEqualTo(new Kata.Start(Kata.StartKind.MAP, KATA_DIR.resolve("game.xml")));
     assertThat(kata.referenceAi()).isEqualTo("Hard");
-    assertThat(kata.controlAi()).isEqualTo("Hard");
     assertThat(kata.limits()).isEqualTo(new Kata.Limits(3, 2, 20, 20, 30, null));
     assertThat(kata.detail()).isFalse();
     assertThat(kata.metrics()).containsExactly("tuv", "pus");
@@ -46,7 +45,6 @@ class KataParserTest {
             start: {save: position.tsvg}
             seats: [Axis, Allies]
             reference_ai: Fast
-            control_ai: Fast
             limits: {rounds: 5, min_games: 4, max_games: 8, budget_minutes: 10, game_timeout_minutes: 2}
             primary_metric: pus
             metrics: [pus]
@@ -101,10 +99,10 @@ class KataParserTest {
                     """
                     start: {map: game.xml}
                     seats: [Axis]
-                    control_ai: Hardest
+                    reference_ai: Hardest
                     limits: {rounds: 3}
                     """))
-        .hasMessageContaining("control_ai: unknown 'Hardest'");
+        .hasMessageContaining("reference_ai: unknown 'Hardest'");
   }
 
   @Test

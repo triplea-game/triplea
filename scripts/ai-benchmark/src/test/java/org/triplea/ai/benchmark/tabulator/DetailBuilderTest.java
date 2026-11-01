@@ -10,26 +10,26 @@ import org.triplea.ai.benchmark.tabulator.Scorecard.StepDetail;
 
 class DetailBuilderTest {
   @Test
-  void talliesOwnershipAndUnitsPerArmAndKeepsOnlyTerritoriesThatDiffer() {
-    final List<JsonObject> control =
+  void talliesOwnershipAndUnitsPerRunAndKeepsOnlyTerritoriesThatDiffer() {
+    final List<JsonObject> reference =
         List.of(
             step("Ukraine", true, 3, "Poland", false, 0),
             step("Ukraine", false, 0, "Poland", false, 0));
-    final List<JsonObject> experimental =
+    final List<JsonObject> changed =
         List.of(
             step("Ukraine", true, 3, "Poland", false, 0),
             step("Ukraine", true, 5, "Poland", false, 0));
 
-    final List<StepDetail> details = DetailBuilder.build(control, experimental);
+    final List<StepDetail> details = DetailBuilder.build(List.of(reference, changed));
 
     assertThat(details).hasSize(1);
     assertThat(details.get(0).step()).isEqualTo("round 1 russiansCombatMove");
     final var rows = details.get(0).territories();
     assertThat(rows).extracting(Scorecard.TerritoryRow::territory).containsExactly("Ukraine");
-    assertThat(rows.get(0).control().seatOwned()).isEqualTo(0.5);
-    assertThat(rows.get(0).control().seatUnits()).isEqualTo(1.5);
-    assertThat(rows.get(0).experimental().seatOwned()).isEqualTo(1.0);
-    assertThat(rows.get(0).experimental().seatUnitsByType()).containsEntry("infantry", 4.0);
+    assertThat(rows.get(0).tallies().get(0).seatOwned()).isEqualTo(0.5);
+    assertThat(rows.get(0).tallies().get(0).seatUnits()).isEqualTo(1.5);
+    assertThat(rows.get(0).tallies().get(1).seatOwned()).isEqualTo(1.0);
+    assertThat(rows.get(0).tallies().get(1).seatUnitsByType()).containsEntry("infantry", 4.0);
   }
 
   private static JsonObject step(

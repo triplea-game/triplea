@@ -3,7 +3,6 @@ start:
   map: Test1.xml
 seats: [Axis, Allies]
 reference_ai: Hard
-control_ai: Hard
 limits:
   rounds: 2
   min_games: 2

@@ -14,7 +14,6 @@ public record Kata(
     Start start,
     List<String> seats,
     String referenceAi,
-    String controlAi,
     Limits limits,
     String primaryMetric,
     List<String> metrics,
@@ -31,8 +30,8 @@ public record Kata(
   }
 
   /**
-   * Run limits; game counts are per seat per arm. {@code stopAfter} names a player: the game ends
-   * when that player's first turn ends.
+   * Run limits; game counts are per seat. {@code stopAfter} names a player: the game ends when that
+   * player's first turn ends.
    */
   public record Limits(
       int rounds,
@@ -52,7 +51,6 @@ public record Kata(
         Map.of(start.kind().name().toLowerCase(), dir.relativize(start.file()).toString()));
     json.put("seats", seats);
     json.put("reference_ai", referenceAi);
-    json.put("control_ai", controlAi);
     final Map<String, Object> limitsJson = new LinkedHashMap<>();
     limitsJson.put("rounds", limits.rounds());
     limitsJson.put("min_games", limits.minGames());
