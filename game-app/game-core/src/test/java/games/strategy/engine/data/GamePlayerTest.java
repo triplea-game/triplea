@@ -17,7 +17,12 @@ final class GamePlayerTest {
   final class GetPlayerTypesTest {
     @Test
     void shouldReturnType() {
-      List.of(Tuple.of("AI", "Hard (AI)"), Tuple.of("AI", "Fast (AI)"), Tuple.of("AI", "Weak (AI)"), Tuple.of("Human", "Patton"), Tuple.of("null", "Bot"))
+      List.of(
+              Tuple.of("AI", "Hard (AI)"),
+              Tuple.of("AI", "Fast (AI)"),
+              Tuple.of("AI", "Weak (AI)"),
+              Tuple.of("Human", "Patton"),
+              Tuple.of("null", "Bot"))
           .forEach(
               idAndName -> {
                 gamePlayer.setWhoAmI(idAndName.getFirst() + ":" + idAndName.getSecond());
@@ -32,7 +37,7 @@ final class GamePlayerTest {
   final class IsAiTest {
     @Test
     void shouldReturnTrueWhenTypeIsAi() {
-      List.of("AI:Hard (AI)", "ai:hard (ai)","AI:Fast (AI)", "AI:Weak (AI)")
+      List.of("AI:Hard (AI)", "ai:hard (ai)", "AI:Fast (AI)", "AI:Weak (AI)")
           .forEach(
               encodedType -> {
                 gamePlayer.setWhoAmI(encodedType);
