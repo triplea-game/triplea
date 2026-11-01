@@ -1,0 +1,12 @@
+description: Pipeline check on a tiny two-player map; proves the runner and tabulator work
+start:
+  map: Test1.xml
+seats: [Axis, Allies]
+reference_ai: Hard
+control_ai: Hard
+limits:
+  rounds: 2
+  min_games: 2
+  max_games: 2
+  budget_minutes: 3
+  game_timeout_minutes: 5

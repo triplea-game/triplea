@@ -45,6 +45,9 @@ project(":map-data").projectDir = file("game-app/map-data")
 include(":smoke-testing")
 project(":smoke-testing").projectDir = file("game-app/smoke-testing")
 
+include(":ai-benchmark")
+project(":ai-benchmark").projectDir = file("scripts/ai-benchmark")
+
 include(":lobby-client")
 project(":lobby-client").projectDir = file("http-clients/lobby-client")
 include(":lobby-client-data")

@@ -1,0 +1,383 @@
+<?xml version="1.0" ?>
+<!DOCTYPE game SYSTEM "game.dtd">
+<!--
+   This map is used for AI testing. It is intentionally a bit lopsided towards Russia
+   to help ensure that Russia can win relatively quickly. The map is kept simple to
+   help avoid a lot of AI calculations.
+ -->
+<game>
+        <info name="Test1" version="1.0.0"/>
+        <loader javaClass="games.strategy.triplea.TripleA"/>
+        <map>
+                <!-- Territory Definitions -->
+                <territory name="Berlin"/>
+                <territory name="Center"/>
+                <territory name="Moscow"/>
+
+                <!-- Territory Connections -->
+                <connection t1="Berlin" t2="Center"/>
+                <connection t1="Moscow" t2="Center"/>
+        </map>
+        <resourceList>
+                <resource name="PUs"/>
+                <resource name="techTokens"/>
+        </resourceList>
+        <playerList>
+                <!-- In turn order -->
+                <player name="Russians" optional="false"/>
+                <player name="Germans" optional="false"/>
+
+                <alliance player="Russians" alliance="Allies"/>
+                <alliance player="Germans" alliance="Axis"/>
+        </playerList>
+        <unitList>
+                <unit name="infantry"/>
+                <unit name="artillery"/>
+                <unit name="armour"/>
+                <unit name="fighter"/>
+                <unit name="bomber"/>
+                <unit name="factory"/>
+                <unit name="aaGun"/>
+        </unitList>
+        <gamePlay>
+                <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
+                <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
+                <delegate name="placeBid" javaClass="games.strategy.triplea.delegate.BidPlaceDelegate" display="Bid Placement"/>
+                <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
+                <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
+                <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
+                <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
+                <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
+                <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
+                <sequence>
+                        <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
+						
+                        <step name="russiansBid" delegate="bid" player="Russians" maxRunCount="1"/>
+                        <step name="russiansBidPlace" delegate="placeBid" player="Russians" maxRunCount="1"/>
+                        <step name="germansBid" delegate="bid" player="Germans" maxRunCount="1"/>
+                        <step name="germansBidPlace" delegate="placeBid" player="Germans" maxRunCount="1"/>
+						
+                        <step name="russiansPurchase" delegate="purchase" player="Russians"/>
+                        <step name="russiansCombatMove" delegate="move" player="Russians"/>
+                        <step name="russiansBattle" delegate="battle" player="Russians"/>
+                        <step name="russiansNonCombatMove" delegate="move" player="Russians" display="Non Combat Move"/>
+                        <step name="russiansPlace" delegate="place" player="Russians"/>
+                        <step name="russiansEndTurn" delegate="endTurn" player="Russians"/>
+						
+                        <step name="germansPurchase" delegate="purchase" player="Germans"/>
+                        <step name="germansCombatMove" delegate="move" player="Germans"/>
+                        <step name="germansBattle" delegate="battle" player="Germans"/>
+                        <step name="germansNonCombatMove" delegate="move" player="Germans" display="Non Combat Move"/>
+                        <step name="germansPlace" delegate="place" player="Germans"/>
+                        <step name="germansEndTurn" delegate="endTurn" player="Germans"/>
+						
+                        <step name="endRoundStep" delegate="endRound"/>
+                </sequence>
+        </gamePlay>
+        <production>
+                <!-- Unit Production Cost -->
+                <productionRule name="buyinfantry">
+                        <cost resource="PUs" quantity="3"/>
+                        <result resourceOrUnit="infantry" quantity="1"/>
+                </productionRule>
+                <productionRule name="buyartillery">
+                        <cost resource="PUs" quantity="4"/>
+                        <result resourceOrUnit="artillery" quantity="1"/>
+                </productionRule>
+                <productionRule name="buyarmour">
+                        <cost resource="PUs" quantity="5"/>
+                        <result resourceOrUnit="armour" quantity="1"/>
+                </productionRule>
+                <productionRule name="buyfighter">
+                        <cost resource="PUs" quantity="10"/>
+                        <result resourceOrUnit="fighter" quantity="1"/>
+                </productionRule>
+                <productionRule name="buybomber">
+                        <cost resource="PUs" quantity="12"/>
+                        <result resourceOrUnit="bomber" quantity="1"/>
+                </productionRule>
+                <productionRule name="buyfactory">
+                        <cost resource="PUs" quantity="15"/>
+                        <result resourceOrUnit="factory" quantity="1"/>
+                </productionRule>
+                <productionRule name="buyaaGun">
+                        <cost resource="PUs" quantity="6"/>
+                        <result resourceOrUnit="aaGun" quantity="1"/>
+                </productionRule>
+				
+                <productionFrontier name="RussiansFrontier">
+                        <frontierRules name="buyinfantry"/>
+                        <frontierRules name="buyartillery"/>
+                        <frontierRules name="buyarmour"/>
+                        <frontierRules name="buyfighter"/>
+                        <frontierRules name="buybomber"/>
+                        <frontierRules name="buyfactory"/>
+                        <frontierRules name="buyaaGun"/>
+                </productionFrontier>
+                <productionFrontier name="GermansFrontier">
+                        <frontierRules name="buyinfantry"/>
+                        <frontierRules name="buyartillery"/>
+                        <frontierRules name="buyarmour"/>
+                        <frontierRules name="buyfighter"/>
+                        <frontierRules name="buybomber"/>
+                        <frontierRules name="buyfactory"/>
+                        <frontierRules name="buyaaGun"/>
+                </productionFrontier>
+
+                <playerProduction player="Russians" frontier="RussiansFrontier"/>
+                <playerProduction player="Germans" frontier="GermansFrontier"/>
+
+        </production>
+        <attachmentList>
+                    <attachment name="unitAttachment" attachTo="infantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+                         <option name="movement" value="1"/>
+                         <option name="attack" value="1"/>
+                         <option name="defense" value="2"/>
+                         <option name="transportCost" value="2"/>
+                         <option name="artillerySupportable" value="true"/>
+                         <option name="isInfantry" value="true"/>
+                    </attachment>
+                    <attachment name="unitAttachment" attachTo="artillery" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+                         <option name="movement" value="1"/>
+                         <option name="attack" value="2"/>
+                         <option name="defense" value="2"/>
+                         <option name="transportCost" value="3"/>
+                         <option name="artillery" value="true"/>
+                    </attachment>
+                    <attachment name="unitAttachment" attachTo="armour" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+                         <option name="movement" value="2"/>
+                         <option name="attack" value="3"/>
+                         <option name="defense" value="3"/>
+                         <option name="transportCost" value="3"/>
+                         <option name="canBlitz" value="true"/>
+                    </attachment>
+                    <attachment name="unitAttachment" attachTo="fighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+                         <option name="movement" value="4"/>
+                         <option name="attack" value="3"/>
+                         <option name="defense" value="4"/>
+                         <option name="carrierCost" value="1"/>
+                         <option name="isAir" value="true"/>
+                    </attachment>
+                    <attachment name="unitAttachment" attachTo="bomber" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+                         <option name="movement" value="6"/>
+                         <option name="attack" value="4"/>
+                         <option name="defense" value="1"/>
+                         <option name="isStrategicBomber" value="true"/>
+                         <option name="isAir" value="true"/>
+                         <option name="transportCapacity" value="2"/>
+                    </attachment>
+                    <attachment name="unitAttachment" attachTo="factory" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+                         <option name="isFactory" value="true"/>
+                    </attachment>
+                    <attachment name="unitAttachment" attachTo="aaGun" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+                         <option name="isAA" value="true"/>
+                         <option name="transportCost" value="3"/>
+                         <option name="movement" value="1"/>
+                    </attachment>
+					
+                    <attachment name="territoryAttachment" attachTo="Moscow" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+                        <option name="production" value="5"/>
+                        <option name="capital" value="Russians"/>
+                        <option name="victoryCity" value="1"/>
+                   </attachment>
+                    <attachment name="territoryAttachment" attachTo="Berlin" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+                        <option name="production" value="5"/>
+                        <option name="capital" value="Germans"/>
+                        <option name="victoryCity" value="1"/>
+                   </attachment>
+                    <attachment name="territoryAttachment" attachTo="Center" javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
+                        <option name="production" value="4"/>
+                        <option name="victoryCity" value="1"/>
+                   </attachment>
+        </attachmentList>
+        <initialize>
+                <ownerInitialize>
+                        <territoryOwner territory="Moscow" owner="Russians"/>
+                        <territoryOwner territory="Berlin" owner="Germans"/>
+                        <territoryOwner territory="Center" owner="Germans"/>
+                </ownerInitialize>
+                <unitInitialize>
+                        <unitPlacement unitType="infantry" territory="Moscow" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="bomber" territory="Moscow" quantity="2" owner="Russians"/>
+                        <unitPlacement unitType="armour" territory="Moscow" quantity="1" owner="Russians"/>
+                        <unitPlacement unitType="factory" territory="Moscow" quantity="1" owner="Russians"/>
+                        <unitPlacement unitType="aaGun" territory="Moscow" quantity="1" owner="Russians"/>
+                        <unitPlacement unitType="infantry" territory="Berlin" quantity="2" owner="Germans"/>
+                        <unitPlacement unitType="factory" territory="Berlin" quantity="1" owner="Germans"/>
+                        <unitPlacement unitType="aaGun" territory="Berlin" quantity="1" owner="Germans"/>
+                </unitInitialize>
+                <resourceInitialize>
+                        <resourceGiven player="Russians" resource="PUs" quantity="5"/>
+                        <resourceGiven player="Germans" resource="PUs" quantity="6"/>
+                </resourceInitialize>
+        </initialize>
+        <propertyList>
+                <property name="Honorable Surrender" value="true" editable="true">
+                        <boolean/>
+                </property>
+                <property name="Low Luck" value="false" editable="true">
+                        <boolean/>
+                </property>
+                <property name="Tech Development" value="false" editable="true">
+                        <boolean/>
+                </property>
+                <property name="LHTR Heavy Bombers" value="false" editable="true">
+                        <boolean/>
+                </property>
+                <property name="Heavy Bomber Dice Rolls" value="2" editable="true">
+                        <number min="2" max="3"/>
+                </property>
+                <property name="Always on AA" value="false" editable="true">
+                        <boolean/>
+                </property>
+                <property name="Kamikaze Airplanes" value="false" editable="true">
+                        <boolean/>
+                </property>
+                <property name="Units Repair Hits End Turn" value="true" editable="true">
+                        <boolean/>
+                </property>
+                <property name="Display Sea Names" value="true" editable="true">
+                        <boolean/>
+                </property>
+				
+                <property name="WW2V3" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="WW2V3 Tech Model" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Use Shipyards" value="false" editable="false">
+                        <boolean/>
+                </property>
+                <property name="All Rockets Attack" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Rockets Can Fly Over Impassables" value="false" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Blitz Through Factories And AA Restricted" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Roll AA Individually" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Choose AA Casualties" value="false" editable="false">
+                        <boolean/>
+                </property>
+                <property name="AA Territory Restricted" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Multiple AA Per Territory" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Partial Amphibious Retreat" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Shore Bombard Per Ground Unit Restricted" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Naval Bombard Casualties Return Fire" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Hari-Kari Units" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Allied Air Dependents" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Surviving Air Move To Land" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Air Attack Sub Restricted" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Ignore Transport In Movement" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Transport Casualties Restricted" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Unescorted Transport Dies" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Ignore Sub In Movement" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Defending Subs Sneak Attack" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Sub Retreat Before Battle" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Submersible Subs" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Sub Control Sea Zone Restricted" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Previous Units Fight" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Two hit battleship" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Produce fighters on carriers" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Produce new fighters on old carriers" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Move existing fighters to new carriers" value="false" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Land existing fighters on new carriers" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Unit Placement In Enemy Seas" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Territory Turn Limit" value="false" editable="false">
+                        <boolean/>
+                </property>
+                <property name="maxFactoriesPerTerritory" value="1" editable="false"/>
+                <property name="Placement Restricted By Factory" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="SBR Affects Unit Production" value="false" editable="false">
+                        <boolean/>
+                </property>
+                <property name="neutralCharge" value="9999999" editable="false"/>
+                <property name="Neutrals Are Impassable" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Neutrals Are Blitzable" value="false" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Russians bid" value="0" editable="true">
+                        <number min="0" max="1000"/>
+                </property>
+                <property name="Germans bid" value="0" editable="true">
+                        <number min="0" max="1000"/>
+                </property>
+                <property name="Total Victory" value="true" editable="false">
+                        <boolean/>
+                </property>
+                <property name="Axis Total Victory VCs" value="3" editable="true">
+                        <number min="2" max="3"/>
+                </property>
+                <property name="Allies Total Victory VCs" value="3" editable="true">
+                        <number min="2" max="3"/>
+                </property>
+                <property name="mapName" value="map_making_tutorial" editable="false"/>
+                <property name="notes">
+                        <value>
+                        <![CDATA[
+						
+							Map_Making_Tutorial_Map
+						<br>by Veqryn.
+						
+						]]>
+                        </value>
+                </property>
+        </propertyList>
+</game>

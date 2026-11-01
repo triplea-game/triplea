@@ -1,0 +1,18 @@
+set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
+
+# Override on the command line, eg: just kata=_pipeline ai=Hard run
+ai := "Hard Beta"
+kata := "*"
+gradlew := justfile_directory() / "../../gradlew"
+
+# Show this help message
+help:
+    @just --list
+
+# Benchmark {{ai}} on the kata matching {{kata}}; "*" skips internal "_" kata
+run:
+    @{{gradlew}} -q -p ../.. :ai-benchmark:runBenchmark "-Pai={{ai}}" "-Pkata={{kata}}"
+
+# List the kata found and their limits
+list:
+    @{{gradlew}} -q -p ../.. :ai-benchmark:listKata
