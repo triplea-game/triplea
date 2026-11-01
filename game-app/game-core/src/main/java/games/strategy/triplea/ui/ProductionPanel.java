@@ -3,13 +3,17 @@ package games.strategy.triplea.ui;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.image.UnitImageFactory.ImageKey;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
@@ -21,11 +25,14 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.font.TextAttribute;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.StringJoiner;
+import java.util.function.Predicate;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -246,10 +253,18 @@ class ProductionPanel extends JPanel {
   // This method can be overridden by subclasses
   protected void calculateLimits() {
     final ResourceCollection spent = new ResourceCollection(data);
+    final Map<UnitType, Integer> selectedUnits = new HashMap<>();
     int totalUnits = 0;
     for (final Rule current : rules) {
       spent.add(current.getCost(), current.getQuantity());
       totalUnits += current.getQuantity() * current.getProductionRule().getResults().totalValues();
+      for (final NamedAttachable result : current.getProductionRule().getResults().keySet()) {
+        if (result instanceof UnitType type) {
+          final int quantity =
+              current.getQuantity() * current.getProductionRule().getResults().getInt(type);
+          selectedUnits.merge(type, quantity, Integer::sum);
+        }
+      }
     }
     final ResourceCollection resources = getResources();
     final ResourceCollection leftToSpend = resources.difference(spent);
@@ -264,8 +279,48 @@ class ProductionPanel extends JPanel {
                 + " and rule quantity: "
                 + current.getQuantity());
       }
+      if (!current.limitedTypes.isEmpty()) {
+        final StringJoiner limitLabels = new StringJoiner("<br>", "<html>", "</html>");
+
+        // Finds the maximum number of times a rule can be used to build before reaching any unit
+        // limit
+        for (final UnitType type : current.limitedTypes) {
+          // Setting limit label for the unit type
+          final int owned = getOwnedUnitCount(type, gamePlayer, data);
+          final int maxBuilt = type.getUnitAttachment().getMaxBuiltPerPlayer();
+          final String label =
+              current.limitedTypes.size() == 1
+                  ? "Owned: " + owned + "/" + maxBuilt
+                  : type.getName() + ": " + owned + "/" + maxBuilt + " owned";
+          limitLabels.add(label);
+          // Finds the maximum number of times a rule can be used to build before reaching this
+          // unit's limit
+          final int allowance = Math.max(0, maxBuilt - owned);
+          final int unitsPerPurchase = current.getProductionRule().getResults().getInt(type);
+          final int selectedByCurrentRule = current.getQuantity() * unitsPerPurchase;
+          final int selectedByOtherRules =
+              selectedUnits.getOrDefault(type, 0) - selectedByCurrentRule;
+          final int remainingForRule = Math.max(0, allowance - selectedByOtherRules);
+          max = Math.min(max, remainingForRule / unitsPerPurchase);
+        }
+        current.buildLimitLabel.setText(limitLabels.toString());
+      }
       current.setMax(max);
     }
+  }
+
+  /** Counts units of the given type currently owned by the player, including unplaced units. */
+  static int getOwnedUnitCount(final UnitType type, final GamePlayer player, final GameState data) {
+    final Predicate<Unit> ownedOfType =
+        Matches.unitIsOfType(type).and(Matches.unitIsOwnedBy(player));
+
+    int owned = player.getUnitCollection().countMatches(Matches.unitIsOfType(type));
+
+    for (final Territory territory : data.getMap().getTerritories()) {
+      owned += territory.getUnitCollection().countMatches(ownedOfType);
+    }
+
+    return owned;
   }
 
   protected ResourceCollection getResources() {
@@ -293,6 +348,8 @@ class ProductionPanel extends JPanel {
     private final ProductionRule rule;
     private final GamePlayer player;
     private final Set<ScrollableTextField> textFields = new HashSet<>();
+    private final JLabel buildLimitLabel = new JLabel();
+    private final List<UnitType> limitedTypes;
     private final ScrollableTextFieldListener listener =
         new ScrollableTextFieldListener() {
           @Override
@@ -313,6 +370,12 @@ class ProductionPanel extends JPanel {
       this.rule = rule;
       cost = rule.getCosts();
       this.player = player;
+      limitedTypes =
+          rule.getResults().keySet().stream()
+              .filter(UnitType.class::isInstance)
+              .map(UnitType.class::cast)
+              .filter(Matches.unitTypeHasMaxBuildRestrictions())
+              .toList();
     }
 
     protected JPanel getPanelComponent() {
@@ -404,6 +467,22 @@ class ProductionPanel extends JPanel {
                 new Insets(1, 0, 0, 0),
                 0,
                 0));
+      }
+      if (!limitedTypes.isEmpty()) {
+        // Sets dummy text to correctly initialize the size of the buildLimitLabel
+        final StringJoiner limitLabels = new StringJoiner("<br>", "<html>", "</html>");
+
+        for (final UnitType type : limitedTypes) {
+          final int maxBuilt = type.getUnitAttachment().getMaxBuiltPerPlayer();
+          final String label =
+              limitedTypes.size() == 1
+                  ? "Owned: " + maxBuilt + "/" + maxBuilt
+                  : type.getName() + ": " + maxBuilt + "/" + maxBuilt + " owned";
+          limitLabels.add(label);
+        }
+        buildLimitLabel.setText(limitLabels.toString());
+        buildLimitLabel.setFont(buildLimitLabel.getFont().deriveFont(12f));
+        costPanel.add(buildLimitLabel, new GridBagConstraintsBuilder(0, count + 1).build());
       }
       final JPanel label = new JPanel();
       Optional.ofNullable(icon).ifPresent(imageIcon -> label.add(new JLabel(imageIcon)));
