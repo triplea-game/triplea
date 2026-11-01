@@ -197,6 +197,25 @@ public class ProOddsCalculator {
         && attackingUnits.stream().noneMatch(Matches.unitIsDestroyer());
   }
 
+  /**
+   * Simulates the specified battle with the attacker retreating once {@code rounds} rounds have
+   * been fought (a strafe). The TUV swing then counts only the losses before the retreat.
+   */
+  public ProBattleResult callBattleCalcRetreatAfterRound(
+      final ProData proData,
+      final Territory t,
+      final Collection<Unit> attackingUnits,
+      final Collection<Unit> defendingUnits,
+      final Collection<Unit> bombardingUnits,
+      final int rounds) {
+    calc.setRetreatAfterRound(rounds);
+    try {
+      return callBattleCalc(proData, t, attackingUnits, defendingUnits, bombardingUnits, true);
+    } finally {
+      calc.setRetreatAfterRound(-1);
+    }
+  }
+
   public ProBattleResult callBattleCalcWithRetreatAir(
       final ProData proData,
       final Territory t,

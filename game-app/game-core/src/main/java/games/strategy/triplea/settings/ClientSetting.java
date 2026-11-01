@@ -6,6 +6,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
+import games.strategy.engine.framework.lookandfeel.RelationshipColorScheme;
 import games.strategy.engine.framework.startup.ui.posted.game.DiceServerEditor;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
@@ -143,6 +144,11 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new LongClientSetting("TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES_EPOCH_MILLI", 0);
   public static final ClientSetting<Boolean> promptToDownloadTutorialMap =
       new BooleanClientSetting("TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP", true);
+  public static final ClientSetting<RelationshipColorScheme> relationshipColorScheme =
+      new EnumClientSetting<>(
+          RelationshipColorScheme.class,
+          "RELATIONSHIP_COLOR_SCHEME",
+          RelationshipColorScheme.STANDARD);
   public static final ClientSetting<UnitsDrawer.UnitFlagDrawMode> unitFlagDrawMode =
       new EnumClientSetting<>(
           UnitsDrawer.UnitFlagDrawMode.class,

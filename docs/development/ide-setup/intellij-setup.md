@@ -11,7 +11,7 @@ Approximate time to complete: 10 - 30 minutes
 ### Open Project
 
 - In IDEA, `File > Open...`  and select the build.gradle file that is located at
-  the top level of the project (example `\\wsl.localhost\Ubuntu\home\<your user>\triplea`) and run it. (**Tip** by
+  the top level of the project (Windows example `\\wsl.localhost\Ubuntu\home\<your user>\triplea`) and run it. (**Tip** by
   selecting Gradle file, IDEA will
   preconfigure the project as a Gradle project)
 - Ensure to have the right project settings for the Java SDK (`File > Project Structure...` and
@@ -84,4 +84,19 @@ Button: `Configure Annotations ...`
 <img width="656" height="197" alt="image" src="https://github.com/user-attachments/assets/5227f499-39c4-444c-8d0f-24c5ea02bde1" />
 
 
+### Further  Windows + WSL setup steps
+For a Windows + WSL setup the following additional settings seem to be requiered to avoid audio exceptions:
+1. Install alsa-utils and libasound2-plugins via command in WSL `sudo apt install alsa-utils, libasound2-plugins`
+2. Configure ALSA to use PulseAudio as its default device via command in WSL `nano ~/.asoundrc` and enter
+```bash
+pcm.!default {
+    type pulse
+}
+
+ctl.!default {
+    type pulse
+}
+```
+3. Add to gradle task `:game-headed:run` the environment variables `DISPLAY=:0;PULSE_SERVER=unix:/mnt/wslg/PulseServer;WAYLAND_DISPLAY=wayland-0;HOME=/home/<your user>` (by right click on the task and select `Modify Run Configuration...`
+<img width="630" height="348" alt="image" src="https://github.com/user-attachments/assets/d1007d35-cade-4d20-a6cf-c4557f94fcc0" />
 
