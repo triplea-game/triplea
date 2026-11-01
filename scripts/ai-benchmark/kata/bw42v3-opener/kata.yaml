@@ -1,0 +1,4 @@
+description: Big World 1942 v3 opener, compared at the end of round 2
+start: {map: Big_World_1942_v3rules.xml}
+seats: [Axis, Allies]
+limits: {rounds: 2, min_games: 10, max_games: 40, budget_minutes: 10}
