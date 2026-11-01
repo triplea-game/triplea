@@ -63,6 +63,14 @@ props: {Low Luck: true}     # game options by XML name
 `just open <kata>` launches the TripleA client on the kata's start file. To change a
 save-start position, edit it in the client and save over the kata's `.tsvg`.
 
+## Decisive end
+
+A full game ends early, as a win, once one alliance has led at two round ends in a row: more
+than 10% more unit value and more income than everyone outside it, all its own capitals held, and
+at least one enemy capital held. The round cap still applies. The thresholds are constants in
+`runner/Decisive.java`, shared by every kata; a `stop_after` kata never uses the rule. The scorecard
+counts a decisive game as a win for the leader; `end` in `games.jsonl` tells them apart.
+
 ## Focused runs: one turn, with detail
 
 To study how an AI plays one position (a bug report, a specific turn), drop in a kata
@@ -106,8 +114,9 @@ The runner never analyses; the tabulator reads only these files.
 - `games.jsonl`, one per game: `kata`, `seat`, `arm` (`control` or
   `experimental`), `pair`, `game` (id), `ai`, `reference_ai`, `seed` (null for
   now), `status` (`ok`, `timeout`, `crash`), `winner` (alliances joined by
-  `+`, or null), `winners` (players), `rounds`, `capped`, `stopped` (ended by `stop_after`), `error`,
-  `wall_seconds`, `cpu_seconds`.
+  `+`, or null), `winners` (players), `rounds`, `capped`, `stopped` (ended by `stop_after`),
+  `end` (`won`, `decisive`, `stop`, `cap`, `timeout`; null on a crash), `error`, `wall_seconds`,
+  `cpu_seconds`.
 - `steps.jsonl` (detail kata only), one per recorded step: `kata`, `seat`, `arm`, `pair`, `game`,
   `round`, `player`, `step`, and `territories`: `{<name>: {o: owner, s: owner is in the seat, u:
   {<unit type>: n} seat's units, e: {<unit type>: n} everyone else's}}`.

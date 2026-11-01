@@ -13,8 +13,9 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 /**
- * Steps one game to its end, the round cap, the stop-after player's first turn end, or the timeout,
- * calling back after every step, at the end of every player turn, and once more on the final state.
+ * Steps one game to its end, a decisive lead, the round cap, the stop-after player's first turn
+ * end, or the timeout, calling back after every step, at the end of every player turn, and once
+ * more on the final state.
  */
 final class GameDriver {
   /** Receives game state at a turn end ({@code player} set) or at the end of the game. */
@@ -26,14 +27,33 @@ final class GameDriver {
     void onStep(GameData data, int round, GameStep step);
   }
 
-  /** How a game ended. {@code winner} is the winning alliance names joined by "+", or null. */
+  /**
+   * How a game ended. {@code winner} is the winning alliance names joined by "+", or null; a
+   * decisive game's winner is the alliance that led.
+   */
   record Outcome(
       Status status,
       @Nullable String winner,
       List<String> winners,
       int rounds,
       boolean capped,
-      boolean stopped) {}
+      boolean stopped,
+      boolean decisive) {
+
+    /** Why the game ended: won, decisive, stop, cap, or timeout. */
+    String end() {
+      if (status == Status.TIMEOUT) {
+        return "timeout";
+      }
+      if (decisive) {
+        return "decisive";
+      }
+      if (stopped) {
+        return "stop";
+      }
+      return capped ? "cap" : "won";
+    }
+  }
 
   enum Status {
     OK,
@@ -53,6 +73,9 @@ final class GameDriver {
     int turnIndex = 0;
     Status status = Status.OK;
     boolean stopped = false;
+    String decisiveAlliance = null;
+    int decidedRound = 0;
+    final Decisive decisive = new Decisive();
     try {
       while (!isOver(game) && data.getSequence().getRound() <= roundCap) {
         if (System.nanoTime() > deadline) {
@@ -70,13 +93,26 @@ final class GameDriver {
             break;
           }
         }
+        if (stopAfter == null && !isOver(game) && data.getSequence().getRound() > round) {
+          decisiveAlliance = decisive.observe(Decisive.leader(data));
+          if (decisiveAlliance != null) {
+            decidedRound = round;
+            break;
+          }
+        }
       }
     } catch (final GameOverException e) {
       // The engine signals some game ends by throwing; isOver() below reads the result.
     }
     final boolean over = isOver(game);
-    final Collection<GamePlayer> winners = over ? winners(data) : List.of();
-    final int rounds = Math.min(data.getSequence().getRound(), roundCap);
+    final Collection<GamePlayer> winners =
+        over
+            ? winners(data)
+            : decisiveAlliance == null
+                ? List.<GamePlayer>of()
+                : data.getAllianceTracker().getPlayersInAlliance(decisiveAlliance);
+    final int rounds =
+        decisiveAlliance == null ? Math.min(data.getSequence().getRound(), roundCap) : decidedRound;
     listener.onSnapshot(data, rounds, null, turnIndex, true);
     if (!game.isGameOver()) {
       // Also resets ProAi's static battle calculator so the next game in this JVM starts clean.
@@ -84,11 +120,14 @@ final class GameDriver {
     }
     return new Outcome(
         status,
-        winners.isEmpty() ? null : winnerAlliances(winners),
+        decisiveAlliance != null
+            ? decisiveAlliance
+            : winners.isEmpty() ? null : winnerAlliances(winners),
         winners.stream().map(GamePlayer::getName).sorted().toList(),
         rounds,
-        status == Status.OK && !over && !stopped,
-        stopped);
+        status == Status.OK && !over && !stopped && decisiveAlliance == null,
+        stopped,
+        decisiveAlliance != null);
   }
 
   private static boolean isOver(final ServerGame game) {

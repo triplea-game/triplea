@@ -182,6 +182,7 @@ public final class BenchmarkMain {
       record.put("rounds", outcome.rounds());
       record.put("capped", outcome.capped());
       record.put("stopped", outcome.stopped());
+      record.put("end", outcome.end());
       record.put("error", null);
     } catch (final RuntimeException e) {
       e.printStackTrace();
@@ -194,6 +195,7 @@ public final class BenchmarkMain {
       record.put("rounds", null);
       record.put("capped", null);
       record.put("stopped", null);
+      record.put("end", null);
       record.put("error", e.toString());
     }
     record.put("wall_seconds", seconds(System.nanoTime() - wallStart));
