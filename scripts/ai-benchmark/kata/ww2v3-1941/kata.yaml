@@ -1,0 +1,5 @@
+description: WW2v3 1941 full game, co-equal with LHTR in the Pro AI tuning runs
+start: {map: WW2v3-1941.xml}
+seats: [Axis, Allies]
+limits: {rounds: 30, min_games: 4, max_games: 20, budget_minutes: 20}
+props: {Projection of Power: false, Honorable Surrender: true}

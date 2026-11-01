@@ -1,0 +1,4 @@
+description: LHTR full game, the main map of the Pro AI tuning runs
+start: {map: lhtr.xml}
+seats: [Axis, Allies]
+limits: {rounds: 30, min_games: 4, max_games: 20, budget_minutes: 20}
