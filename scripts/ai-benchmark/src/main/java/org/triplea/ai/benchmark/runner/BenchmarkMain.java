@@ -42,8 +42,7 @@ public final class BenchmarkMain {
     AiRegistry.type(ai);
     final List<Kata> katas = catalog.matching(require(opts, "kata"));
     if (katas.isEmpty()) {
-      System.err.println("No kata match '" + opts.get("kata") + "'; see: just list");
-      System.exit(1);
+      System.out.println("No kata match '" + opts.get("kata") + "'; the scorecard will be empty");
     }
     // Fail on a bad start file or seat name before any game runs.
     katas.forEach(kata -> kata.seats().forEach(seat -> Sides.of(HeadlessEngine.load(kata), seat)));
