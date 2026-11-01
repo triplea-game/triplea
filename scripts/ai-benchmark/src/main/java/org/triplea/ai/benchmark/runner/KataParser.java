@@ -82,7 +82,7 @@ public final class KataParser {
         string(root.getOrDefault("primary_metric", "tuv"), "primary_metric");
     requireOneOf(primaryMetric, metrics, "primary_metric");
     final List<String> seats = stringList(require(root, "seats"), "seats");
-    if (seats.isEmpty() || new TreeSet<>(seats).size() != seats.size()) {
+    if (seats.isEmpty() || Set.copyOf(seats).size() != seats.size()) {
       throw new IllegalArgumentException("seats must be a non-empty list without repeats");
     }
     return new Kata(

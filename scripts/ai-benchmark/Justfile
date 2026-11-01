@@ -1,6 +1,6 @@
 set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
 
-# Override on the command line, eg: just kata=_pipeline ai=Hard run
+# Override on the command line, before the recipe, eg: just kata=_pipeline ai=Hard run
 ai := "Hard Beta"
 kata := "*"
 gradlew := justfile_directory() / "../../gradlew"
@@ -9,10 +9,15 @@ gradlew := justfile_directory() / "../../gradlew"
 help:
     @just --list
 
-# Benchmark {{ai}} on the kata matching {{kata}}; "*" skips internal "_" kata
+# Benchmark {{ai}} on the kata matching {{kata}}, then print the scorecard; "*" skips "_" kata
 run:
     @{{gradlew}} -q -p ../.. :ai-benchmark:runBenchmark "-Pai={{ai}}" "-Pkata={{kata}}"
+    @{{gradlew}} -q -p ../.. :ai-benchmark:tabulate
 
 # List the kata found and their limits
 list:
     @{{gradlew}} -q -p ../.. :ai-benchmark:listKata
+
+# Rebuild the scorecard from a run folder's raw data alone
+tabulate dir:
+    @{{gradlew}} -q -p ../.. :ai-benchmark:tabulate "-PrunDir={{absolute_path(dir)}}"
