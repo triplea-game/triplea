@@ -3,7 +3,11 @@ package org.triplea.ai.benchmark.runner;
 import com.google.gson.GsonBuilder;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.GameStep;
 import games.strategy.engine.framework.ServerGame;
+import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
+import games.strategy.triplea.delegate.BidPlaceDelegate;
+import games.strategy.triplea.delegate.BidPurchaseDelegate;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
@@ -61,9 +65,10 @@ public final class BenchmarkMain {
     writeRunJson(runDir, run);
     HeadlessEngine.bootstrap();
     try (JsonlWriter snapshots = new JsonlWriter(runDir.resolve("snapshots.jsonl"));
+        JsonlWriter steps = new JsonlWriter(runDir.resolve("steps.jsonl"));
         JsonlWriter games = new JsonlWriter(runDir.resolve("games.jsonl"))) {
       for (final Kata kata : katas) {
-        runKata(kata, ai, snapshots, games);
+        runKata(kata, ai, new Sinks(runDir, snapshots, steps, games));
       }
     }
     run.put("ended_at", Instant.now().toString());
@@ -77,8 +82,7 @@ public final class BenchmarkMain {
    * Plays pair after pair, every seat and both arms per pair, so the budget cuts all of them
    * evenly; a pair started before the budget runs out is finished.
    */
-  private static void runKata(
-      final Kata kata, final String ai, final JsonlWriter snapshots, final JsonlWriter games) {
+  private static void runKata(final Kata kata, final String ai, final Sinks sinks) {
     final long budgetEnd =
         System.nanoTime() + Duration.ofMinutes(kata.limits().budgetMinutes()).toNanos();
     for (int pair = 0; pair < kata.limits().maxGames(); pair++) {
@@ -91,7 +95,7 @@ public final class BenchmarkMain {
       for (final String seat : kata.seats()) {
         for (final Arm arm : Arm.values()) {
           final String seatAi = arm == Arm.CONTROL ? kata.controlAi() : ai;
-          games.write(playOne(kata, seat, arm, seatAi, pair, snapshots));
+          sinks.games().write(playOne(kata, seat, arm, seatAi, pair, sinks));
         }
       }
     }
@@ -104,7 +108,7 @@ public final class BenchmarkMain {
       final Arm arm,
       final String seatAi,
       final int pair,
-      final JsonlWriter snapshots) {
+      final Sinks sinks) {
     final String gameId = kata.name() + "/" + seat + "/" + arm.id() + "/" + pair;
     final Map<String, Object> record = new LinkedHashMap<>();
     record.put("kata", kata.name());
@@ -118,7 +122,7 @@ public final class BenchmarkMain {
     final long wallStart = System.nanoTime();
     final long cpuStart = processCpuNanos();
     ServerGame game = null;
-    try {
+    try (GameLog log = GameLog.open(kata.detail(), sinks.runDir(), gameId)) {
       final GameData data = HeadlessEngine.load(kata);
       final Sides sides = Sides.of(data, seat);
       game =
@@ -130,25 +134,54 @@ public final class BenchmarkMain {
               game,
               kata.limits().rounds(),
               Duration.ofMinutes(kata.limits().gameTimeoutMinutes()),
-              (state, round, player, turnIndex, last) -> {
-                final Map<String, Object> snapshot = new LinkedHashMap<>();
-                snapshot.put("kata", kata.name());
-                snapshot.put("seat", seat);
-                snapshot.put("arm", arm.id());
-                snapshot.put("pair", pair);
-                snapshot.put("game", gameId);
-                snapshot.put("round", round);
-                snapshot.put("player", player == null ? null : player.getName());
-                snapshot.put("turn_index", turnIndex);
-                snapshot.put("last", last);
-                snapshot.put("metrics", measure(state, sides, metrics));
-                snapshots.write(snapshot);
+              kata.limits().stopAfter(),
+              new GameDriver.TurnListener() {
+                @Override
+                public void onStep(final GameData state, final int round, final GameStep step) {
+                  if (!kata.detail() || !isSeatDetailStep(step, sides)) {
+                    return;
+                  }
+                  log.header(round, step.getName());
+                  final Map<String, Object> record = new LinkedHashMap<>();
+                  record.put("kata", kata.name());
+                  record.put("seat", seat);
+                  record.put("arm", arm.id());
+                  record.put("pair", pair);
+                  record.put("game", gameId);
+                  record.put("round", round);
+                  record.put("player", step.getPlayerId().getName());
+                  record.put("step", step.getName());
+                  record.put("territories", TerritoryState.capture(state, sides.seat()));
+                  sinks.steps().write(record);
+                }
+
+                @Override
+                public void onSnapshot(
+                    final GameData state,
+                    final int round,
+                    final GamePlayer player,
+                    final int turnIndex,
+                    final boolean last) {
+                  final Map<String, Object> snapshot = new LinkedHashMap<>();
+                  snapshot.put("kata", kata.name());
+                  snapshot.put("seat", seat);
+                  snapshot.put("arm", arm.id());
+                  snapshot.put("pair", pair);
+                  snapshot.put("game", gameId);
+                  snapshot.put("round", round);
+                  snapshot.put("player", player == null ? null : player.getName());
+                  snapshot.put("turn_index", turnIndex);
+                  snapshot.put("last", last);
+                  snapshot.put("metrics", measure(state, sides, metrics));
+                  sinks.snapshots().write(snapshot);
+                }
               });
       record.put("status", outcome.status().name().toLowerCase());
       record.put("winner", outcome.winner());
       record.put("winners", outcome.winners());
       record.put("rounds", outcome.rounds());
       record.put("capped", outcome.capped());
+      record.put("stopped", outcome.stopped());
       record.put("error", null);
     } catch (final RuntimeException e) {
       e.printStackTrace();
@@ -160,6 +193,7 @@ public final class BenchmarkMain {
       record.put("winners", List.of());
       record.put("rounds", null);
       record.put("capped", null);
+      record.put("stopped", null);
       record.put("error", e.toString());
     }
     record.put("wall_seconds", seconds(System.nanoTime() - wallStart));
@@ -173,6 +207,16 @@ public final class BenchmarkMain {
         record.get("rounds"),
         record.get("capped"));
     return record;
+  }
+
+  /** Seat players' moves and battles, and what they place; bids and turn ends are skipped. */
+  private static boolean isSeatDetailStep(final GameStep step, final Sides sides) {
+    final GamePlayer player = step.getPlayerId();
+    return player != null
+        && sides.seat().contains(player)
+        && !(step.getDelegate() instanceof BidPurchaseDelegate)
+        && !(step.getDelegate() instanceof BidPlaceDelegate)
+        && !(step.getDelegate() instanceof AbstractEndTurnDelegate);
   }
 
   private static Map<String, Object> measure(
@@ -269,6 +313,9 @@ public final class BenchmarkMain {
     }
     return opts;
   }
+
+  /** Where one run's raw data goes. */
+  private record Sinks(Path runDir, JsonlWriter snapshots, JsonlWriter steps, JsonlWriter games) {}
 
   /** The two treatments compared within a seat. */
   enum Arm {

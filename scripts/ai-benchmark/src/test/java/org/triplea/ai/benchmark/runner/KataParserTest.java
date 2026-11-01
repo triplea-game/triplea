@@ -28,7 +28,8 @@ class KataParserTest {
         .isEqualTo(new Kata.Start(Kata.StartKind.MAP, KATA_DIR.resolve("game.xml")));
     assertThat(kata.referenceAi()).isEqualTo("Hard");
     assertThat(kata.controlAi()).isEqualTo("Hard");
-    assertThat(kata.limits()).isEqualTo(new Kata.Limits(3, 2, 20, 20, 30));
+    assertThat(kata.limits()).isEqualTo(new Kata.Limits(3, 2, 20, 20, 30, null));
+    assertThat(kata.detail()).isFalse();
     assertThat(kata.metrics()).containsExactly("tuv", "pus");
     assertThat(kata.primaryMetric()).isEqualTo("tuv");
     assertThat(kata.props()).isEmpty();
@@ -55,9 +56,26 @@ class KataParserTest {
     assertThat(kata.name()).isEqualTo("renamed");
     assertThat(kata.start().kind()).isEqualTo(Kata.StartKind.SAVE);
     assertThat(kata.seats()).containsExactly("Axis", "Allies");
-    assertThat(kata.limits()).isEqualTo(new Kata.Limits(5, 4, 8, 10, 2));
+    assertThat(kata.limits()).isEqualTo(new Kata.Limits(5, 4, 8, 10, 2, null));
     assertThat(kata.metrics()).containsExactly("pus");
     assertThat(kata.props()).isEqualTo(Map.of("Low Luck", "true", "Bid", "9"));
+  }
+
+  @Test
+  void stopAfterTurnsDetailOnUnlessSwitchedOff() {
+    final String yaml =
+        """
+        start: {map: game.xml}
+        seats: [Axis]
+        limits: {rounds: 1, stop_after: Germans}
+        """;
+
+    final Kata focused = parser.parse(KATA_DIR, yaml);
+    final Kata quiet = parser.parse(KATA_DIR, yaml + "detail: false\n");
+
+    assertThat(focused.limits().stopAfter()).isEqualTo("Germans");
+    assertThat(focused.detail()).isTrue();
+    assertThat(quiet.detail()).isFalse();
   }
 
   @Test

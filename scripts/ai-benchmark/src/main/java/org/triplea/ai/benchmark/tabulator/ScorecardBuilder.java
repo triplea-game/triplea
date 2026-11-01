@@ -30,12 +30,22 @@ final class ScorecardBuilder {
   private final JsonObject run;
   private final List<JsonObject> games;
   private final List<JsonObject> snapshots;
+  private final List<JsonObject> steps;
 
   ScorecardBuilder(
       final JsonObject run, final List<JsonObject> games, final List<JsonObject> snapshots) {
+    this(run, games, snapshots, List.of());
+  }
+
+  ScorecardBuilder(
+      final JsonObject run,
+      final List<JsonObject> games,
+      final List<JsonObject> snapshots,
+      final List<JsonObject> steps) {
     this.run = run;
     this.games = games;
     this.snapshots = snapshots;
+    this.steps = steps;
   }
 
   static ScorecardBuilder fromRunDir(final Path dir) throws IOException {
@@ -45,8 +55,12 @@ final class ScorecardBuilder {
       throw new IllegalArgumentException(
           "run.json schema " + run.get("schema") + " is not " + SCHEMA + ": " + dir);
     }
+    final Path stepsFile = dir.resolve("steps.jsonl");
     return new ScorecardBuilder(
-        run, readJsonl(dir.resolve("games.jsonl")), readJsonl(dir.resolve("snapshots.jsonl")));
+        run,
+        readJsonl(dir.resolve("games.jsonl")),
+        readJsonl(dir.resolve("snapshots.jsonl")),
+        Files.exists(stepsFile) ? readJsonl(stepsFile) : List.of());
   }
 
   Scorecard build() {
@@ -93,7 +107,8 @@ final class ScorecardBuilder {
         team(kata.get("control_ai").getAsString(), seat, controlGames, controlFinals, metrics),
         team(run.get("ai").getAsString(), seat, experimentalGames, experimentalFinals, metrics),
         difference,
-        trajectories);
+        trajectories,
+        DetailBuilder.build(stepRecords(controlGames), stepRecords(experimentalGames)));
   }
 
   private Team team(
@@ -148,6 +163,12 @@ final class ScorecardBuilder {
     return byTurn.entrySet().stream()
         .map(e -> new Point(e.getKey(), Stats.summarize(e.getValue())))
         .toList();
+  }
+
+  /** Step records of the arm's finished games. */
+  private List<JsonObject> stepRecords(final List<JsonObject> armGames) {
+    final Set<String> ids = finishedIds(armGames);
+    return steps.stream().filter(s -> ids.contains(s.get("game").getAsString())).toList();
   }
 
   private List<JsonObject> games(final String kata, final String seat, final String arm) {

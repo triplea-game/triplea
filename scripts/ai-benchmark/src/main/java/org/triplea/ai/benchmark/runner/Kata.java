@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 /** One benchmark scenario, as resolved from its folder's {@code kata.yaml}. */
 public record Kata(
@@ -17,7 +18,8 @@ public record Kata(
     Limits limits,
     String primaryMetric,
     List<String> metrics,
-    Map<String, String> props) {
+    Map<String, String> props,
+    boolean detail) {
 
   /** Where a game begins: exactly one of a game XML or a save, as a path inside the kata folder. */
   public record Start(StartKind kind, Path file) {}
@@ -28,9 +30,17 @@ public record Kata(
     SAVE
   }
 
-  /** Run limits; game counts are per seat per arm. */
+  /**
+   * Run limits; game counts are per seat per arm. {@code stopAfter} names a player: the game ends
+   * when that player's first turn ends.
+   */
   public record Limits(
-      int rounds, int minGames, int maxGames, int budgetMinutes, int gameTimeoutMinutes) {}
+      int rounds,
+      int minGames,
+      int maxGames,
+      int budgetMinutes,
+      int gameTimeoutMinutes,
+      @Nullable String stopAfter) {}
 
   /** The descriptor as written to {@code run.json}, with paths relative to the kata folder. */
   public Map<String, Object> toJson() {
@@ -43,17 +53,18 @@ public record Kata(
     json.put("seats", seats);
     json.put("reference_ai", referenceAi);
     json.put("control_ai", controlAi);
-    json.put(
-        "limits",
-        Map.of(
-            "rounds", limits.rounds(),
-            "min_games", limits.minGames(),
-            "max_games", limits.maxGames(),
-            "budget_minutes", limits.budgetMinutes(),
-            "game_timeout_minutes", limits.gameTimeoutMinutes()));
+    final Map<String, Object> limitsJson = new LinkedHashMap<>();
+    limitsJson.put("rounds", limits.rounds());
+    limitsJson.put("min_games", limits.minGames());
+    limitsJson.put("max_games", limits.maxGames());
+    limitsJson.put("budget_minutes", limits.budgetMinutes());
+    limitsJson.put("game_timeout_minutes", limits.gameTimeoutMinutes());
+    limitsJson.put("stop_after", limits.stopAfter());
+    json.put("limits", limitsJson);
     json.put("primary_metric", primaryMetric);
     json.put("metrics", metrics);
     json.put("props", props);
+    json.put("detail", detail);
     return json;
   }
 }

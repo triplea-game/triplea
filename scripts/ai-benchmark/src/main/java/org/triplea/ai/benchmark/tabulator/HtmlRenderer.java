@@ -3,9 +3,12 @@ package org.triplea.ai.benchmark.tabulator;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Stream;
+import org.triplea.ai.benchmark.tabulator.Scorecard.ArmTally;
 import org.triplea.ai.benchmark.tabulator.Scorecard.Box;
 import org.triplea.ai.benchmark.tabulator.Scorecard.Point;
+import org.triplea.ai.benchmark.tabulator.Scorecard.StepDetail;
 import org.triplea.ai.benchmark.tabulator.Scorecard.Team;
+import org.triplea.ai.benchmark.tabulator.Scorecard.TerritoryRow;
 import org.triplea.ai.benchmark.tabulator.Scorecard.Trajectory;
 
 /** A single self-contained HTML page: box scores plus a gap-over-turns chart per metric. */
@@ -33,7 +36,7 @@ final class HtmlRenderer {
       body { margin:0; }
       .viz-root { background:var(--surface-1); color:var(--text-primary); min-height:100vh;
         font:14px/1.45 system-ui, sans-serif; padding:24px 32px; }
-      h1 { font-size:20px; margin:0 0 4px; } h2 { font-size:16px; margin:32px 0 8px; }
+      h1 { font-size:20px; margin:0 0 4px; } h3 { font-size:14px; margin:20px 0 6px; } h2 { font-size:16px; margin:32px 0 8px; }
       .muted { color:var(--text-secondary); }
       table { border-collapse:collapse; font-variant-numeric:tabular-nums; }
       th, td { padding:4px 12px; text-align:right; border-bottom:1px solid var(--grid); }
@@ -131,7 +134,36 @@ final class HtmlRenderer {
         .append("<span>mean gap by turn, band = 95% CI</span></div><div class=\"charts\">");
     box.metrics().forEach(m -> out.append(chart(m, box.trajectories().get(m))));
     out.append("</div>");
+    box.details().forEach(detail -> out.append(detail(detail)));
     return out.toString();
+  }
+
+  private static String detail(final StepDetail detail) {
+    final StringBuilder out = new StringBuilder();
+    out.append("<h3>")
+        .append(esc(detail.step()))
+        .append("</h3><table><thead><tr><th>territory</th><th>control</th>")
+        .append("<th>experimental</th></tr></thead><tbody>");
+    detail.territories().forEach(row -> out.append(detailRow(row)));
+    out.append("</tbody></table>");
+    return out.toString();
+  }
+
+  private static String detailRow(final TerritoryRow row) {
+    return "<tr><td>"
+        + esc(row.territory())
+        + "</td>"
+        + detailCell(row.control())
+        + detailCell(row.experimental())
+        + "</tr>";
+  }
+
+  private static String detailCell(final ArmTally tally) {
+    final String types =
+        tally.seatUnitsByType().entrySet().stream()
+            .map(e -> String.format(Locale.ROOT, "%s %.1f", e.getKey(), e.getValue()))
+            .collect(java.util.stream.Collectors.joining(", "));
+    return "<td>" + esc(TerminalRenderer.arm(tally)) + "<small>" + esc(types) + "</small></td>";
   }
 
   private static void teamRow(

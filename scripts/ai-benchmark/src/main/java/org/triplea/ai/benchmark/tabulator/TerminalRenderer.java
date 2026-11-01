@@ -1,8 +1,10 @@
 package org.triplea.ai.benchmark.tabulator;
 
 import javax.annotation.Nullable;
+import org.triplea.ai.benchmark.tabulator.Scorecard.ArmTally;
 import org.triplea.ai.benchmark.tabulator.Scorecard.Box;
 import org.triplea.ai.benchmark.tabulator.Scorecard.Cell;
+import org.triplea.ai.benchmark.tabulator.Scorecard.StepDetail;
 import org.triplea.ai.benchmark.tabulator.Scorecard.Team;
 import org.triplea.ai.benchmark.tabulator.Stats.Difference;
 import org.triplea.ai.benchmark.tabulator.Stats.Summary;
@@ -12,6 +14,7 @@ final class TerminalRenderer {
   private static final int LABEL = 26;
   private static final int RECORD = 17;
   private static final int CELL = 18;
+  private static final int DETAIL_ROWS = 15;
 
   private TerminalRenderer() {}
 
@@ -48,7 +51,34 @@ final class TerminalRenderer {
     out.append(pad("  seat / enemy", LABEL)).append('\n');
     absoluteRow(out, "control", box.control(), box);
     absoluteRow(out, "experimental", box.experimental(), box);
+    box.details().forEach(detail -> detail(out, detail));
     return out.toString();
+  }
+
+  private static void detail(final StringBuilder out, final StepDetail detail) {
+    out.append("\n  ")
+        .append(detail.step())
+        .append(" (seat-owned %, mean seat units; top ")
+        .append(DETAIL_ROWS)
+        .append(" by difference, full list in scorecard.json)\n");
+    out.append("    ")
+        .append(pad("territory", LABEL))
+        .append(pad("control", 34))
+        .append("experimental\n");
+    detail.territories().stream()
+        .limit(DETAIL_ROWS)
+        .forEach(
+            row ->
+                out.append("    ")
+                    .append(pad(row.territory(), LABEL))
+                    .append(pad(arm(row.control()), 34))
+                    .append(arm(row.experimental()))
+                    .append('\n'));
+  }
+
+  static String arm(final ArmTally tally) {
+    return String.format(
+        "%3.0f%% %5.1f  n=%d", tally.seatOwned() * 100, tally.seatUnits(), tally.n());
   }
 
   private static void teamRow(

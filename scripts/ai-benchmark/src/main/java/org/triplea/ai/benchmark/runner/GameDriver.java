@@ -13,19 +13,27 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 /**
- * Steps one game to its end, the round cap, or the timeout, calling back at the end of every player
- * turn and once more on the final state.
+ * Steps one game to its end, the round cap, the stop-after player's first turn end, or the timeout,
+ * calling back after every step, at the end of every player turn, and once more on the final state.
  */
 final class GameDriver {
   /** Receives game state at a turn end ({@code player} set) or at the end of the game. */
   interface TurnListener {
     void onSnapshot(
         GameData data, int round, @Nullable GamePlayer player, int turnIndex, boolean last);
+
+    /** Called after every step has run, with the step that just ran. */
+    void onStep(GameData data, int round, GameStep step);
   }
 
   /** How a game ended. {@code winner} is the winning alliance names joined by "+", or null. */
   record Outcome(
-      Status status, @Nullable String winner, List<String> winners, int rounds, boolean capped) {}
+      Status status,
+      @Nullable String winner,
+      List<String> winners,
+      int rounds,
+      boolean capped,
+      boolean stopped) {}
 
   enum Status {
     OK,
@@ -38,11 +46,13 @@ final class GameDriver {
       final ServerGame game,
       final int roundCap,
       final Duration timeout,
+      @Nullable final String stopAfter,
       final TurnListener listener) {
     final GameData data = game.getData();
     final long deadline = System.nanoTime() + timeout.toNanos();
     int turnIndex = 0;
     Status status = Status.OK;
+    boolean stopped = false;
     try {
       while (!isOver(game) && data.getSequence().getRound() <= roundCap) {
         if (System.nanoTime() > deadline) {
@@ -52,8 +62,13 @@ final class GameDriver {
         final GameStep step = data.getSequence().getStep();
         final int round = data.getSequence().getRound();
         game.runNextStep();
+        listener.onStep(data, round, step);
         if (step.getDelegate() instanceof AbstractEndTurnDelegate && step.getPlayerId() != null) {
           listener.onSnapshot(data, round, step.getPlayerId(), turnIndex++, false);
+          if (step.getPlayerId().getName().equals(stopAfter)) {
+            stopped = true;
+            break;
+          }
         }
       }
     } catch (final GameOverException e) {
@@ -72,7 +87,8 @@ final class GameDriver {
         winners.isEmpty() ? null : winnerAlliances(winners),
         winners.stream().map(GamePlayer::getName).sorted().toList(),
         rounds,
-        status == Status.OK && !over);
+        status == Status.OK && !over && !stopped,
+        stopped);
   }
 
   private static boolean isOver(final ServerGame game) {

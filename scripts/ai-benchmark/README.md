@@ -58,6 +58,31 @@ props: {Low Luck: true}     # game options by XML name
 
 `name` defaults to the folder name. Unknown keys, AIs, and metrics are errors.
 
+## Focused runs: one turn, with detail
+
+To study how an AI plays one position (a bug report, a specific turn), drop in a kata
+for it and run only that. `limits.stop_after` ends each game when the named *player's* first
+turn ends, so `rounds: 1, stop_after: Russians` plays Russia's turn and nothing after it.
+A kata with `stop_after` records detail (override with `detail: true|false`):
+
+- `steps.jsonl`: after each non-bid step of the seat's players, every land territory's owner and
+  every unit-holding territory's units by type, split into the seat's side (`u`) and the rest
+  (`e`). The tabulator tallies it per arm: seat-owned % and mean seat units per territory per
+  step, keeping the territories where the arms differ or the outcome varies (all of them in
+  `scorecard.json`, the top 15 per step in the terminal).
+- `logs/<kata>/<seat>/<arm>/<pair>.log`: the Pro AI's own log for each game (what its log window
+  shows; `=== round N <step>` lines mark where each step starts). Grep these for why.
+
+```yaml
+description: Russia round 1 on WW2v5 (forum 81063), one turn
+start: {map: game.xml}          # copy the map's game XML next to this file
+seats: [Allies]
+limits: {rounds: 1, stop_after: Russians, min_games: 10, max_games: 10}
+```
+
+Games run one at a time in one JVM: a kata of 10 pairs takes minutes, and the default 2g heap
+(`-Pheap=`) is plenty.
+
 ## Add a metric
 
 Implement `metrics.Metric` (a value summed over a group of players) and add it
@@ -76,8 +101,11 @@ The runner never analyses; the tabulator reads only these files.
 - `games.jsonl`, one per game: `kata`, `seat`, `arm` (`control` or
   `experimental`), `pair`, `game` (id), `ai`, `reference_ai`, `seed` (null for
   now), `status` (`ok`, `timeout`, `crash`), `winner` (alliances joined by
-  `+`, or null), `winners` (players), `rounds`, `capped`, `error`,
+  `+`, or null), `winners` (players), `rounds`, `capped`, `stopped` (ended by `stop_after`), `error`,
   `wall_seconds`, `cpu_seconds`.
+- `steps.jsonl` (detail kata only), one per recorded step: `kata`, `seat`, `arm`, `pair`, `game`,
+  `round`, `player`, `step`, and `territories`: `{<name>: {o: owner, s: owner is in the seat, u:
+  {<unit type>: n} seat's units, e: {<unit type>: n} everyone else's}}`.
 - `snapshots.jsonl`, one per player-turn end plus one with `last: true` for
   the final state: `kata`, `seat`, `arm`, `pair`, `game`, `round`, `player`
   (whose turn ended; null on the last record), `turn_index`, `last`, and

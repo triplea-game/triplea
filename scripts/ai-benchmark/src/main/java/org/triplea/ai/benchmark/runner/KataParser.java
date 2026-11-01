@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import javax.annotation.Nullable;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 
@@ -33,10 +34,17 @@ public final class KataParser {
           "limits",
           "primary_metric",
           "metrics",
-          "props");
+          "props",
+          "detail");
   private static final Set<String> START_KEYS = Set.of("map", "save");
   private static final Set<String> LIMIT_KEYS =
-      Set.of("rounds", "min_games", "max_games", "budget_minutes", "game_timeout_minutes");
+      Set.of(
+          "rounds",
+          "min_games",
+          "max_games",
+          "budget_minutes",
+          "game_timeout_minutes",
+          "stop_after");
 
   private final Collection<String> knownAis;
   private final List<String> knownMetrics;
@@ -71,7 +79,10 @@ public final class KataParser {
             positiveInt(limits.getOrDefault("max_games", 20), "limits.max_games"),
             positiveInt(limits.getOrDefault("budget_minutes", 20), "limits.budget_minutes"),
             positiveInt(
-                limits.getOrDefault("game_timeout_minutes", 30), "limits.game_timeout_minutes"));
+                limits.getOrDefault("game_timeout_minutes", 30), "limits.game_timeout_minutes"),
+            limits.containsKey("stop_after")
+                ? string(limits.get("stop_after"), "limits.stop_after")
+                : null);
     if (parsedLimits.minGames() > parsedLimits.maxGames()) {
       throw new IllegalArgumentException("limits.min_games is above limits.max_games");
     }
@@ -96,7 +107,8 @@ public final class KataParser {
         parsedLimits,
         primaryMetric,
         metrics,
-        props(root.getOrDefault("props", Map.of())));
+        props(root.getOrDefault("props", Map.of())),
+        detail(root.get("detail"), parsedLimits.stopAfter() != null));
   }
 
   private static Kata.Start start(final Path kataDir, final Map<String, Object> start) {
@@ -116,6 +128,17 @@ public final class KataParser {
     final String name = string(value, key);
     requireOneOf(name, knownAis, key);
     return name;
+  }
+
+  /** Detail (per-step territory state and AI logs) defaults on for focused, stop_after runs. */
+  private static boolean detail(@Nullable final Object value, final boolean defaultValue) {
+    if (value == null) {
+      return defaultValue;
+    }
+    if (!(value instanceof Boolean b)) {
+      throw new IllegalArgumentException("detail must be true or false");
+    }
+    return b;
   }
 
   private static Map<String, String> props(final Object value) {

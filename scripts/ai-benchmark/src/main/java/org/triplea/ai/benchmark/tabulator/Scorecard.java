@@ -21,7 +21,8 @@ record Scorecard(int schema, String ai, String gitSha, String startedAt, List<Bo
       Team control,
       Team experimental,
       Map<String, Difference> difference,
-      Map<String, Trajectory> trajectories) {}
+      Map<String, Trajectory> trajectories,
+      List<StepDetail> details) {}
 
   /** One arm. {@code games} counts only games that finished without a crash or timeout. */
   record Team(
@@ -40,4 +41,23 @@ record Scorecard(int schema, String ai, String gitSha, String startedAt, List<Bo
   record Trajectory(List<Point> control, List<Point> experimental) {}
 
   record Point(int turn, Summary gap) {}
+
+  /**
+   * What the seat's players did in one step, across games: the territories where the arms differ or
+   * the outcome varied. Only present for kata that record detail.
+   */
+  record StepDetail(String step, List<TerritoryRow> territories) {}
+
+  record TerritoryRow(String territory, ArmTally control, ArmTally experimental) {}
+
+  /**
+   * One arm's games at a territory after a step: the share ending seat-owned, and mean units on the
+   * seat's side (total and by type) and on the enemy side.
+   */
+  record ArmTally(
+      int n,
+      double seatOwned,
+      double seatUnits,
+      double enemyUnits,
+      Map<String, Double> seatUnitsByType) {}
 }
