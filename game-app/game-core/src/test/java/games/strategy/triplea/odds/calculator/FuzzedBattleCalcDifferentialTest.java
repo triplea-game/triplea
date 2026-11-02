@@ -310,8 +310,7 @@ class FuzzedBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
       final RuleFlagSample flags = RuleFlagSample.sample(rng);
       flags.applyTo(gameData);
       final BattleCalculator oracle = new BattleCalculator(gameData);
-      runScenario(
-          map, gameData, oracle, flags, attacker, defender, location, attacking, defending, report);
+      runScenario(map, oracle, flags, attacker, defender, location, attacking, defending, report);
     }
   }
 
@@ -323,7 +322,6 @@ class FuzzedBattleCalcDifferentialTest extends AbstractClientSettingTestCase {
    */
   private void runScenario(
       final TestMapGameData map,
-      final GameData gameData,
       final BattleCalculator oracle,
       final RuleFlagSample flags,
       final GamePlayer attacker,

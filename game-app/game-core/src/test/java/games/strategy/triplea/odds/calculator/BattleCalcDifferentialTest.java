@@ -279,7 +279,7 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
   void alwaysHitsUnderLowLuckCombatAaWithNoAirTargetHonorsChooseBestRoll() {
     final GameData gameData = TestMapGameData.REVISED.getGameData();
     makeGameLowLuck(gameData);
-    injectCombatAaWithNoAirTargetAndBestRoll(gameData, armour(gameData), artillery(gameData), 3, 3);
+    injectCombatAaWithNoAirTargetAndBestRoll(armour(gameData), artillery(gameData), 3, 3);
 
     final Territory germany = territory("Germany", gameData);
 
@@ -1270,7 +1270,6 @@ class BattleCalcDifferentialTest extends AbstractClientSettingTestCase {
    * the way the support helpers synthesize rules no bundled map declares.
    */
   private static void injectCombatAaWithNoAirTargetAndBestRoll(
-      final GameData gameData,
       final UnitType unitType,
       final UnitType nonAirTarget,
       final int attack,

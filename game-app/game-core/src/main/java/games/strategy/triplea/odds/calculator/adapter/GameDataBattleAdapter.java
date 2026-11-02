@@ -33,7 +33,6 @@ import games.strategy.triplea.odds.calculator.context.reference.ReferenceRetreat
 import games.strategy.triplea.util.TuvCostsCalculator;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
@@ -146,7 +145,7 @@ public class GameDataBattleAdapter {
             rules.lhtrHeavyBombers()),
         rules,
         support.rules(),
-        costs(data, attacker, defender),
+        costs(attacker, defender),
         anyAmphibious(attackers) || options.amphibious(),
         diceSides,
         lowLuck,
@@ -219,7 +218,7 @@ public class GameDataBattleAdapter {
       final Key key = new Key(profile, Lifecycle.ACTIVE);
       counts.merge(key, 1, Integer::sum);
     }
-    return new Force(Collections.unmodifiableMap(counts));
+    return new Force(counts);
   }
 
   /**
@@ -272,7 +271,7 @@ public class GameDataBattleAdapter {
   /** The same profile, and every damaged successor, with {@code added} flags set. */
   private static CombatProfile withFlags(
       final CombatProfile profile, final EnumSet<CombatFlag> added) {
-    final EnumSet<CombatFlag> flags = EnumSet.copyOf(profile.flags());
+    final var flags = EnumSet.copyOf(profile.flags());
     flags.addAll(added);
     return new CombatProfile(
         profile.type(),
@@ -445,7 +444,7 @@ public class GameDataBattleAdapter {
       final boolean dependent,
       final boolean lhtrHeavyBombers,
       final boolean nonCombatant) {
-    final EnumSet<CombatFlag> flags = EnumSet.noneOf(CombatFlag.class);
+    final var flags = EnumSet.noneOf(CombatFlag.class);
     if (ua.getIsFirstStrike()) {
       flags.add(CombatFlag.FIRST_STRIKE);
     }
@@ -714,7 +713,7 @@ public class GameDataBattleAdapter {
 
   /** Per-unit-type PU cost for caller-side TUV, merged across both players' cost schedules. */
   private static Map<UnitTypeId, Integer> costs(
-      final GameData data, final GamePlayer attacker, final GamePlayer defender) {
+      final GamePlayer attacker, final GamePlayer defender) {
     final TuvCostsCalculator calculator = new TuvCostsCalculator();
     final Map<UnitTypeId, Integer> cost = new LinkedHashMap<>();
     addCosts(cost, calculator.getCostsForTuv(attacker));
