@@ -168,14 +168,16 @@ public class BattleDisplay extends JPanel {
     if (!killedUnits.isEmpty()
         || !attackingWaitingToDie.isEmpty()
         || !defendingWaitingToDie.isEmpty()) {
-      final Collection<Unit> attackerUnitsKilled =
-          CollectionUtils.getMatches(killedUnits, Matches.unitIsOwnedBy(attacker));
+      List<List<Unit>> unitPartitionsByOwner =
+          CollectionUtils.partitionBy(
+              killedUnits,
+              List.of(Matches.unitIsOwnedBy(attacker), Matches.unitIsOwnedBy(defender)));
+      final Collection<Unit> attackerUnitsKilled = unitPartitionsByOwner.getFirst();
       attackerUnitsKilled.addAll(attackingWaitingToDie);
       if (!attackerUnitsKilled.isEmpty()) {
         updateKilledUnits(attackerUnitsKilled, attacker);
       }
-      final Collection<Unit> defenderUnitsKilled =
-          CollectionUtils.getMatches(killedUnits, Matches.unitIsOwnedBy(defender));
+      final Collection<Unit> defenderUnitsKilled = unitPartitionsByOwner.getLast();
       defenderUnitsKilled.addAll(defendingWaitingToDie);
       if (!defenderUnitsKilled.isEmpty()) {
         updateKilledUnits(defenderUnitsKilled, defender);

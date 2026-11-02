@@ -148,6 +148,7 @@ public class DownloadMapsWindow extends JFrame {
           updateTabTitleNewMaps();
         }
       }
+      case ManagedMapStatus.UPDATE_AVAILABLE, ManagedMapStatus.ERROR -> {}
     }
   }
 

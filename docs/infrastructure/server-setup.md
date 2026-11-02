@@ -50,7 +50,7 @@ This is needed for lobby server or any server that will be serving https traffic
 
 ## Update inventory file
 
-- Add the server to [inventory configuration](/infrastructure/ansible/inventory)
+- Add the server to [inventory configuration](https://github.com/triplea-game/infrastructure/tree/main/ansible/inventory)
 - Commit the changes and submit for a PR. After the PR is merged, travis will run a deployment
   automatically deploying all needed configurations to the server.
 

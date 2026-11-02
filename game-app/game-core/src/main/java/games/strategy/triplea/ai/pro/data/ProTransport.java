@@ -14,6 +14,9 @@ public class ProTransport {
   private final Unit transport;
   private final Map<Territory, Set<Territory>> transportMap = new HashMap<>();
   private final Map<Territory, Set<Territory>> seaTransportMap = new HashMap<>();
+  // Sea zones in seaTransportMap that hold enemy units: the transport may end there only behind a
+  // sea battle the combat move wins.
+  private final Set<Territory> blockedSeaTerritories = new HashSet<>();
 
   ProTransport(final Unit transport) {
     this.transport = transport;
@@ -29,5 +32,14 @@ public class ProTransport {
     for (Territory t : attackTerritories) {
       seaTransportMap.computeIfAbsent(t, key -> new HashSet<>()).addAll(loadFromTerritories);
     }
+  }
+
+  void addBlockedSeaTerritory(
+      final Territory seaTerritory,
+      final Set<Territory> unloadTerritories,
+      final Set<Territory> loadFromTerritories) {
+    blockedSeaTerritories.add(seaTerritory);
+    addTerritories(unloadTerritories, loadFromTerritories);
+    addSeaTerritories(Set.of(seaTerritory), loadFromTerritories);
   }
 }

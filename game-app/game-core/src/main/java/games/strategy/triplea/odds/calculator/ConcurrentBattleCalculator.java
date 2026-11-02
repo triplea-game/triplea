@@ -239,6 +239,7 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     }
   }
 
+  @Override
   public void setRetreatAfterRound(final int value) {
     waitForGameDataReady();
     synchronized (mutexCalcIsRunning) {

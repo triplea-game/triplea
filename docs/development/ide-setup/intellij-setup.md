@@ -11,7 +11,7 @@ Approximate time to complete: 10 - 30 minutes
 ### Open Project
 
 - In IDEA, `File > Open...`  and select the build.gradle file that is located at
-  the top level of the project (example `\\wsl.localhost\Ubuntu\home\<your user>\triplea`) and run it. (**Tip** by
+  the top level of the project (Windows example `\\wsl.localhost\Ubuntu\home\<your user>\triplea`) and run it. (**Tip** by
   selecting Gradle file, IDEA will
   preconfigure the project as a Gradle project)
 - Ensure to have the right project settings for the Java SDK (`File > Project Structure...` and
@@ -35,20 +35,13 @@ each plugin's page.
     2. Check 'enable'
       <img src="https://user-images.githubusercontent.com/12397753/62746114-07cc2b80-ba03-11e9-9ac0-0b1e6e1e8788.png" alt="Screenshot" height="200">
     4.
-   Check [IntelliJ JRE config from google-java-format]([url](https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-config))
+   Check [IntelliJ JRE config from google-java-format](https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-config)
    or do it manually as below.
-2. [OUT-DATED] *checkstyle-IDEA* [plugin](https://github.com/jshiell/checkstyle-idea)
-    1. after install finish configuration in: **Other Settings > Checkstyle**
-        1. load checkstyle file by clicking on the "plus" and navigating to the file
-           `.\triplea\config\checkstyle` (If you can't find it, you can download it from
-           [the repository](https://github.com/triplea-game/triplea/blob/main/.build/checkstyle.xml))
-        2. set checkstyle version
-        3. set to scan all sources
-3. *Lombok*
+2. *Lombok*
     1. **Settings > Annotation Processors**
     2. Turn on annotation processing.
        ![annotationprocessing2](https://user-images.githubusercontent.com/54828470/95939758-6da00a00-0da2-11eb-9c7a-823040578c4e.png)
-4. *PlantUML Integration*
+3. *PlantUML Integration*
     1. GraphViz also needs to be installed: <https://graphviz.org/download/>
 
 ## Download and import IDEA settings file
@@ -91,4 +84,19 @@ Button: `Configure Annotations ...`
 <img width="656" height="197" alt="image" src="https://github.com/user-attachments/assets/5227f499-39c4-444c-8d0f-24c5ea02bde1" />
 
 
+### Further  Windows + WSL setup steps
+For a Windows + WSL setup the following additional settings seem to be requiered to avoid audio exceptions:
+1. Install alsa-utils and libasound2-plugins via command in WSL `sudo apt install alsa-utils, libasound2-plugins`
+2. Configure ALSA to use PulseAudio as its default device via command in WSL `nano ~/.asoundrc` and enter
+```bash
+pcm.!default {
+    type pulse
+}
+
+ctl.!default {
+    type pulse
+}
+```
+3. Add to gradle task `:game-headed:run` the environment variables `DISPLAY=:0;PULSE_SERVER=unix:/mnt/wslg/PulseServer;WAYLAND_DISPLAY=wayland-0;HOME=/home/<your user>` (by right click on the task and select `Modify Run Configuration...`
+<img width="630" height="348" alt="image" src="https://github.com/user-attachments/assets/d1007d35-cade-4d20-a6cf-c4557f94fcc0" />
 

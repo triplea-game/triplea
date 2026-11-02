@@ -1,6 +1,5 @@
 Contributions are really welcome. See the [dev-setup](/docs/development/README.md)
-for more information on how to get started, guidelines, conventions, and
-[areas of need](/docs/development/areas-of-need.md)
+for more information on how to get started, guidelines and conventions.
 
 # Contribution Guidelines
 

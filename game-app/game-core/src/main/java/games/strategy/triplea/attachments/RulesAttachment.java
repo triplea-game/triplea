@@ -3,6 +3,7 @@ package games.strategy.triplea.attachments;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
+import com.google.common.primitives.Ints;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.BattleRecordsList;
 import games.strategy.engine.data.GameData;
@@ -607,6 +608,65 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private void resetTechs() {
     techs = null;
   }
+
+  /**
+   * The territory-ownership part of this condition, for AI valuation: the listed territories whose
+   * allied (or, with {@code direct}, direct) ownership by {@code players} counts, and how many are
+   * needed. {@code ownershipOnly} is false when anything else is tested too. Empty without an
+   * ownership list, with both lists, when inverted, or with a group keyword (original, controlled,
+   * ...) or "each".
+   */
+  public Optional<OwnershipTest> getOwnershipTest() {
+    final String[] allied = getAlliedOwnershipTerritories();
+    final String[] direct = getDirectOwnershipTerritories();
+    if ((allied == null) == (direct == null) || invert) {
+      return Optional.empty();
+    }
+    final String[] terrs = allied != null ? allied : direct;
+    final Set<String> keywords =
+        Set.of(
+            "controlled",
+            "controlledNoWater",
+            "original",
+            "originalNoWater",
+            "all",
+            "map",
+            "enemy",
+            "each");
+    if (Arrays.stream(terrs).anyMatch(keywords::contains)) {
+      return Optional.empty();
+    }
+    final Set<Territory> territories = getListedTerritories(terrs, true, false);
+    final Integer listedCount = terrs.length > 0 ? Ints.tryParse(terrs[0]) : null;
+    final int needed = listedCount != null ? listedCount : territories.size();
+    final boolean ownershipOnly =
+        getConditions().isEmpty()
+            && turns == null
+            && gameProperty == null
+            && getIsAI() == null
+            && (atWarPlayers == null || atWarPlayers.isEmpty())
+            && (techs == null || techs.isEmpty())
+            && (relationship == null || relationship.isEmpty())
+            && destroyedTuv == null
+            && (battle == null || battle.isEmpty())
+            && alliedExclusionTerritories == null
+            && directExclusionTerritories == null
+            && enemyExclusionTerritories == null
+            && enemySurfaceExclusionTerritories == null
+            && directPresenceTerritories == null
+            && alliedPresenceTerritories == null
+            && enemyPresenceTerritories == null;
+    return Optional.of(
+        new OwnershipTest(territories, needed, direct != null, getPlayers(), ownershipOnly));
+  }
+
+  /** See {@link #getOwnershipTest()}. */
+  public record OwnershipTest(
+      Set<Territory> territories,
+      int needed,
+      boolean direct,
+      List<GamePlayer> players,
+      boolean ownershipOnly) {}
 
   @Override
   public boolean isSatisfied(final Map<ICondition, Boolean> testedConditions) {

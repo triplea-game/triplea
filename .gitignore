@@ -5,7 +5,6 @@
 .project
 .remote-libs/
 .settings
-.checkstyle
 .DS_Store
 
 .docs/

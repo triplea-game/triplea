@@ -104,4 +104,4 @@ factory, `Retriable` accepts a sleep consumer to avoid real delays in tests).
 ## Build
 
 Published as a Maven artifact via `maven-publish` plugin. Version is set from
-the `JAR_VERSION` environment variable. Test dependency on `:lib:test-common`.
+the `JAR_VERSION` environment variable.

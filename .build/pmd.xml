@@ -6,9 +6,55 @@
 
     <description>TripleA custom rules.</description>
 
+    <rule ref="category/java/bestpractices.xml/NonExhaustiveSwitch"/>
+    <rule ref="category/java/bestpractices.xml/OneDeclarationPerLine"/>
     <rule ref="category/java/bestpractices.xml/UnusedFormalParameter"/>
     <rule ref="category/java/bestpractices.xml/UnusedLocalVariable"/>
     <rule ref="category/java/bestpractices.xml/UnusedPrivateField"/>
     <!-- UnusedPrivateMethdod is an excellent check, though on migration to Java21 has a bunch of false positives. -->
 <!--    <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod"/>-->
+
+    <rule ref="category/java/codestyle.xml/ClassNamingConventions">
+        <properties>
+            <property name="testClassPattern" value="[A-Z][a-zA-Z0-9]*"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/codestyle.xml/CStyleArrayDeclaration"/>
+    <rule ref="category/java/codestyle.xml/EmptyControlStatement">
+        <properties>
+            <property name="allowCommentedBlocks" value="true"/>
+        </properties>
+    </rule>
+    <!-- Constant names are not enforced: many existing static finals are camelCase. -->
+    <rule ref="category/java/codestyle.xml/FieldNamingConventions">
+        <properties>
+            <property name="publicConstantPattern" value=".*"/>
+            <property name="constantPattern" value=".*"/>
+            <property name="enumConstantPattern" value=".*"/>
+            <!-- m_* fields are kept for the benefit of games.strategy.util.Version. -->
+            <property name="finalFieldPattern" value="[a-z][a-zA-Z0-9]*|m_major|m_minor|m_point|m_micro"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/codestyle.xml/FormalParameterNamingConventions"/>
+    <rule ref="category/java/codestyle.xml/LocalVariableNamingConventions"/>
+    <rule ref="category/java/codestyle.xml/MethodNamingConventions">
+        <properties>
+            <property name="junit4TestPattern" value="[a-z][a-zA-Z0-9_]*"/>
+            <property name="junitJupiterTestPattern" value="[a-z][a-zA-Z0-9_]*"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/codestyle.xml/PackageCase"/>
+    <rule ref="category/java/codestyle.xml/TypeParameterNamingConventions">
+        <properties>
+            <property name="typeParameterNamePattern" value="[A-Z][0-9]?|[A-Z][a-zA-Z0-9]*T"/>
+        </properties>
+    </rule>
+
+    <rule ref="category/java/errorprone.xml/EmptyCatchBlock">
+        <properties>
+            <property name="allowCommentedBlocks" value="true"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/errorprone.xml/ImplicitSwitchFallThrough"/>
+    <rule ref="category/java/errorprone.xml/LongLiteralEndingWithLowercaseL"/>
 </ruleset>

@@ -27,6 +27,9 @@ import org.triplea.java.collections.IntegerMap;
 /** Pro AI data. */
 @Getter
 public final class ProData {
+  /** Turns on behavior still under evaluation; only the "Hard Beta" AI sets it. */
+  private final boolean beta;
+
   // Default values
   private boolean isSimulation = false;
   private double winPercentage = 95;
@@ -46,6 +49,14 @@ public final class ProData {
   private GameData data;
   private GamePlayer player;
 
+  public ProData() {
+    this(false);
+  }
+
+  public ProData(final boolean beta) {
+    this.beta = beta;
+  }
+
   public void initialize(final AbstractProAi proAi) {
     hiddenInitialize(proAi, proAi.getGameData(), proAi.getGamePlayer(), false);
   }
@@ -53,6 +64,17 @@ public final class ProData {
   public void initializeSimulation(
       final AbstractProAi proAi, final GameData data, final GamePlayer player) {
     hiddenInitialize(proAi, data, player, true);
+  }
+
+  /**
+   * Whether combat move may land behind a sea battle it fights in the same turn. Hard Beta does
+   * this only for players in an alliance named "Axis": on WW2 maps it helped the Axis, while the
+   * Allies' extra landings were retaken and cost TUV.
+   */
+  public boolean canLandBehindSeaBattle() {
+    return beta
+        && player != null
+        && data.getAllianceTracker().getAlliancesPlayerIsIn(player).contains("Axis");
   }
 
   public Territory getUnitTerritory(final Unit unit) {

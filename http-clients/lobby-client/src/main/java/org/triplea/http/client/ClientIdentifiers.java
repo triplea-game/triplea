@@ -16,7 +16,7 @@ public class ClientIdentifiers {
   public static final String CLIENT_VERSION = "2.7";
 
   /** The name of the HTTP header that we use to send CLIENT_VERSION */
-  public static String VERSION_HEADER = "Triplea-Version";
+  public static final String VERSION_HEADER = "Triplea-Version";
 
   /** The name of the HTTP header used to send 'systemId' */
   public static final String SYSTEM_ID_HEADER = "System-Id-Header";

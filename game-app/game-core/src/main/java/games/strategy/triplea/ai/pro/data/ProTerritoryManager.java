@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.triplea.java.collections.CollectionUtils;
@@ -1134,6 +1135,51 @@ public class ProTerritoryManager {
             // Add to transport map
             proTransportData.addTerritories(unloadTerritories, loadFromTerritories);
             proTransportData.addSeaTerritories(seaMoveTerritories, loadFromTerritories);
+
+            // A zone with enemy units, one step past an enemy-free route, can be the unload zone
+            // if the combat move also attacks it (checked when planning). Only capitals and
+            // factories: a blocked zone's options change the attack estimates (max attackers,
+            // amphib priority) even when no landing uses it.
+            if (isCombatMove
+                && !isCheckingEnemyAttacks
+                && !isIgnoringRelationships
+                && movesLeft > 0
+                && proData.canLandBehindSeaBattle()) {
+              final Predicate<Territory> canEnterForBattle =
+                  canMoveSea.and(canMoveSeaThrough.negate());
+              for (final Territory to : seaMoveTerritories) {
+                final int stepsToZone =
+                    to.equals(from)
+                        ? 0
+                        : map.getRouteForUnit(from, to, canMoveSeaThrough, transport, player)
+                            .map(Route::numberOfSteps)
+                            .orElse(Integer.MAX_VALUE);
+                if (stepsToZone >= movesLeft) {
+                  continue;
+                }
+                for (final Territory blocked : map.getNeighbors(to, canEnterForBattle)) {
+                  if (!blocked.isWater()
+                      || moveValidator.validateCanal(
+                              new Route(to, blocked), List.of(transport), player)
+                          != null) {
+                    continue;
+                  }
+                  final Set<Territory> blockedUnloads =
+                      map.getNeighbors(blocked, unloadAmphibTerritoryMatch).stream()
+                          .filter(
+                              t ->
+                                  TerritoryAttachment.get(t)
+                                          .map(TerritoryAttachment::isCapital)
+                                          .orElse(false)
+                                      || ProMatches.territoryHasInfraFactoryAndIsLand().test(t))
+                          .collect(Collectors.toSet());
+                  if (!blockedUnloads.isEmpty()) {
+                    proTransportData.addBlockedSeaTerritory(
+                        blocked, blockedUnloads, loadFromTerritories);
+                  }
+                }
+              }
+            }
           }
           currentTerritories.clear();
           currentTerritories.addAll(nextTerritories);

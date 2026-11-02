@@ -93,5 +93,4 @@ JUnit 5 with AssertJ assertions. Tests cover:
 ## Build
 
 Published as a Maven artifact via `maven-publish`. Version from `JAR_VERSION`
-env var. Dependencies: `:game-app:domain-data`, `:lib:java-extras`. Test
-dependency: `:lib:test-common`.
+env var.

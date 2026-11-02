@@ -34,7 +34,7 @@ public class PlayerAttachment extends DefaultAttachment {
   // number of capitals needed before we lose all our money
   @Getter private int retainCapitalNumber = 1;
   // number of capitals needed before we lose ability to gain money and produce units
-  private int retainCapitalProduceNumber = 1;
+  @Getter private int retainCapitalProduceNumber = 1;
   private @Nullable List<GamePlayer> giveUnitControl = null;
   private boolean giveUnitControlInAllTerritories = false;
   private @Nullable List<GamePlayer> captureUnitOnEnteringBy = null;
@@ -242,10 +242,6 @@ public class PlayerAttachment extends DefaultAttachment {
 
   private void setRetainCapitalProduceNumber(final Integer value) {
     retainCapitalProduceNumber = value;
-  }
-
-  int getRetainCapitalProduceNumber() {
-    return retainCapitalProduceNumber;
   }
 
   private void resetRetainCapitalProduceNumber() {

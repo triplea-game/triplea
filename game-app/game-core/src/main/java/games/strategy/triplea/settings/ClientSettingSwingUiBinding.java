@@ -8,9 +8,13 @@ import static games.strategy.triplea.settings.SelectionComponentFactory.proxySet
 import static games.strategy.triplea.settings.SelectionComponentFactory.selectionBox;
 
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
+import games.strategy.engine.framework.lookandfeel.RelationshipColorScheme;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.lobby.LobbySelectionViewFactory;
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 import javax.swing.JComponent;
 import javax.swing.UIManager;
 import lombok.AllArgsConstructor;
@@ -166,6 +170,24 @@ WARNING: restart all running TripleA instances after changing this setting to av
                   .findAny(),
           UIManager.LookAndFeelInfo::getClassName,
           UIManager.LookAndFeelInfo::getName);
+    }
+  },
+
+  RELATIONSHIP_COLOR_SCHEME_BINDING(
+      "Relationship Colors",
+      SettingType.LOOK_AND_FEEL,
+"""
+War/allied/neutral colors in the politics panel and status bar.
+Color blind friendly uses orange/blue instead of red/green.""") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return selectionBox(
+          ClientSetting.relationshipColorScheme,
+          RelationshipColorScheme.class,
+          List.of(RelationshipColorScheme.values()),
+          Optional::of,
+          Function.identity(),
+          RelationshipColorScheme::getDisplayName);
     }
   },
 

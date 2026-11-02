@@ -100,6 +100,10 @@ Please restart all running TripleA instances.""",
     return luma < 0.5;
   }
 
+  public static Color getContrastingTextColor(final Color background) {
+    return isColorDark(background) ? Color.WHITE : Color.BLACK;
+  }
+
   private static void setupLookAndFeel(final String lookAndFeelName) {
     checkState(SwingUtilities.isEventDispatchThread());
 
@@ -156,14 +160,15 @@ Please restart all running TripleA instances.""",
    */
   public static Color getRelationshipTypeAttachmentColor(
       final RelationshipTypeAttachment relTypeAttach) {
+    final RelationshipColorScheme colors = ClientSetting.relationshipColorScheme.getValueOrThrow();
     final String archeType = relTypeAttach.getArcheType();
     switch (archeType) {
       case Constants.RELATIONSHIP_ARCHETYPE_ALLIED:
-        return Color.green;
+        return colors.getAllied();
       case Constants.RELATIONSHIP_ARCHETYPE_NEUTRAL:
-        return Color.lightGray;
+        return colors.getNeutral();
       case Constants.RELATIONSHIP_ARCHETYPE_WAR:
-        return Color.red;
+        return colors.getWar();
       default:
         throw new IllegalStateException(
             "Arche Type for RelationshipTypeAttachment: "

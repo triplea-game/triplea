@@ -175,12 +175,6 @@ Each concrete attachment provides a static `get()` method:
 - `TriggerAttachment.getTriggers(GamePlayer, Predicate)` — filtered collection
 - `RulesAttachment.getNationalObjectives(GamePlayer)` — prefix-filtered ("objectiveAttachment")
 
-## Dependencies
-
-- `game-app:domain-data`, `game-app:map-data`, `game-app:game-relay-server`
-- `http-clients:lobby-client`
-- `lib:java-extras`, `lib:swing-lib`, `lib:websocket-client`, `lib:xml-reader`
-
 ## Test Fixtures
 
 This module exposes **test fixtures** used by other modules (notably `ai` and `smoke-testing`). Key test support:

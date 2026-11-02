@@ -15,6 +15,7 @@ Pre-compiled script plugin (`triplea-java-library.gradle.kts`) applied by nearly
 - **Spotless** formatting: Google Java Format, unused import removal, trailing whitespace cleanup, leading tabs →
   spaces, newline at EOF
 - Sets `group = "triplea"`
+- Via `triplea-base-project`: PMD (`.build/pmd.xml`) and the test conventions (JUnit platform, JaCoCo)
 
 When adding a new Java subproject, apply this plugin instead of configuring `java-library` and Spotless manually.
 

@@ -20,6 +20,8 @@ import org.triplea.java.collections.CollectionUtils;
 
 /** Pro AI odds calculator. */
 public class ProOddsCalculator {
+  /** How close to the capture floor, in percent, a capture estimate gets re-run. */
+  private static final double BORDERLINE_CAPTURE_PERCENTAGE = 10;
 
   private final IBattleCalculator calc;
   private boolean stopped = false;
@@ -179,22 +181,40 @@ public class ProOddsCalculator {
               defendingUnits, Matches.unitCanBeInBattle(false, !t.isWater(), 1, true));
       final double tuv = TuvUtils.getTuv(mainCombatDefenders, proData.getUnitValueMap());
       return new ProBattleResult(100, 0.1 + tuv, true, attackingUnits, List.of(), 0);
-    } else if (canSubmergeBeforeBattle(
-        proData.getData(), attackingUnits, defendingUnits, checkSubmerge)) {
+    } else if (checkSubmerge
+        && canSubmergeBeforeBattle(proData.getData(), attackingUnits, defendingUnits)) {
       return new ProBattleResult();
     }
     return null;
   }
 
-  private static boolean canSubmergeBeforeBattle(
+  /** Whether all {@code defendingUnits} can evade {@code attackingUnits} before any shots. */
+  public static boolean canSubmergeBeforeBattle(
       final GameState data,
       final Collection<Unit> attackingUnits,
-      final Collection<Unit> defendingUnits,
-      final boolean checkSubmerge) {
-    return checkSubmerge
-        && Properties.getSubRetreatBeforeBattle(data.getProperties())
+      final Collection<Unit> defendingUnits) {
+    return Properties.getSubRetreatBeforeBattle(data.getProperties())
         && defendingUnits.stream().allMatch(Matches.unitCanEvade())
         && attackingUnits.stream().noneMatch(Matches.unitIsDestroyer());
+  }
+
+  /**
+   * Simulates the specified battle with the attacker retreating once {@code rounds} rounds have
+   * been fought (a strafe). The TUV swing then counts only the losses before the retreat.
+   */
+  public ProBattleResult callBattleCalcRetreatAfterRound(
+      final ProData proData,
+      final Territory t,
+      final Collection<Unit> attackingUnits,
+      final Collection<Unit> defendingUnits,
+      final Collection<Unit> bombardingUnits,
+      final int rounds) {
+    calc.setRetreatAfterRound(rounds);
+    try {
+      return callBattleCalc(proData, t, attackingUnits, defendingUnits, bombardingUnits, true);
+    } finally {
+      calc.setRetreatAfterRound(-1);
+    }
   }
 
   public ProBattleResult callBattleCalcWithRetreatAir(
@@ -257,6 +277,26 @@ public class ProOddsCalculator {
             retreatWhenOnlyAirLeft,
             runCount);
 
+    // Hard Beta's capture floor sits inside the sampling noise of a small run, so a borderline
+    // capture gets more runs before the AI commits to or drops the attack
+    if (proData.isBeta()
+        && !t.isWater()
+        && Math.abs(capturePercentage(results) - proData.getMinWinPercentage())
+            < BORDERLINE_CAPTURE_PERCENTAGE) {
+      results.addResults(
+          calc.calculate(
+                  attacker,
+                  defender,
+                  t,
+                  attackingUnits,
+                  defendingUnits,
+                  bombardingUnits,
+                  TerritoryEffectHelper.getEffects(t),
+                  retreatWhenOnlyAirLeft,
+                  3 * runCount)
+              .getResults());
+    }
+
     // Find battle result statistics
     final double winPercentage = results.getAttackerWinPercent() * 100;
     final Collection<Unit> averageAttackersRemaining = results.getAverageAttackingUnitsRemaining();
@@ -293,7 +333,8 @@ public class ProOddsCalculator {
 
     // Remove TUV and add to remaining units for defenders that can submerge before battle
     if (tuvSwing > 0
-        && canSubmergeBeforeBattle(data, attackingUnits, defendingUnits, checkSubmerge)) {
+        && checkSubmerge
+        && canSubmergeBeforeBattle(data, attackingUnits, defendingUnits)) {
       final List<Unit> defendingSubsKilled =
           CollectionUtils.getMatches(defendingUnits, Matches.unitCanEvade());
       defendingSubsKilled.removeAll(averageDefendersRemaining);
@@ -315,6 +356,21 @@ public class ProOddsCalculator {
         hasLandUnitsRemaining,
         averageAttackersRemaining,
         averageDefendersRemaining,
-        results.getAverageBattleRoundsFought());
+        results.getAverageBattleRoundsFought(),
+        proData.isBeta() && !t.isWater()
+            ? capturePercentage(results)
+            : hasLandUnitsRemaining ? winPercentage : 0);
+  }
+
+  /** Percent of simulated battles the attacker won with a land unit left. */
+  private static double capturePercentage(final AggregateResults results) {
+    final long captures =
+        results.getResults().stream()
+            .filter(
+                r ->
+                    r.attackerWon()
+                        && r.getRemainingAttackingUnits().stream().anyMatch(Matches.unitIsLand()))
+            .count();
+    return 100.0 * captures / results.getResults().size();
   }
 }

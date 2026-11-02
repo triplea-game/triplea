@@ -21,4 +21,9 @@ public interface IBattleCalculator {
       Collection<TerritoryEffect> territoryEffects,
       boolean retreatWhenOnlyAirLeft,
       int runCount);
+
+  /**
+   * Makes the attacker retreat once this many rounds are fought; -1 fights until the battle ends.
+   */
+  void setRetreatAfterRound(int value);
 }

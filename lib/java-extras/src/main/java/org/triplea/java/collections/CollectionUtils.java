@@ -54,6 +54,32 @@ public class CollectionUtils {
   }
 
   /**
+   * Partitions all elements in the specified collection according to the specified
+   * partitionPredicates. They are expected to be mutually exclusive!
+   *
+   * <p>Returns list of mutable sublists from `collection` (with distinct storage).
+   */
+  public static <T> List<List<T>> partitionBy(
+      final Collection<T> collection, final List<Predicate<T>> partitionPredicates) {
+    if (collection == null) throw new NullPointerException();
+    if (partitionPredicates == null) throw new NullPointerException();
+
+    final List<List<T>> result =
+        partitionPredicates.stream().map(p -> (List<T>) new ArrayList<T>()).toList();
+
+    for (final T item : collection) {
+      for (int i = 0; i < partitionPredicates.size(); i++) {
+        if (partitionPredicates.get(i).test(item)) {
+          result.get(i).add(item);
+          break;
+        }
+      }
+    }
+
+    return result;
+  }
+
+  /**
    * Returns the elements in the specified collection, up to the specified limit, that match the
    * specified predicate.
    *

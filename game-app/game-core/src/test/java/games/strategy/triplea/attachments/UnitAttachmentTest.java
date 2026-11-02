@@ -351,4 +351,29 @@ class UnitAttachmentTest {
       assertEquals(Set.of("A"), Set.of(unitPlacementOnlyAllowedIn.getValue()));
     }
   }
+
+  @Nested
+  class StackingLimits {
+
+    private final UnitAttachment unitAttachment =
+        new UnitAttachment("Test attachment", mock(UnitType.class), gameData);
+
+    @Test
+    void settingMovementLimitLeavesPlacementLimitUnset()
+        throws MutableProperty.InvalidValueException {
+      unitAttachment.getPropertyOrThrow("movementLimit").setValue("3:allied");
+
+      assertThat(unitAttachment.getMovementLimit()).hasValue(Tuple.of(3, "allied"));
+      assertThat(unitAttachment.getPlacementLimit()).isEmpty();
+    }
+
+    @Test
+    void placementLimitPropertyReadsPlacementLimit() throws MutableProperty.InvalidValueException {
+      unitAttachment.getPropertyOrThrow("movementLimit").setValue("3:allied");
+      unitAttachment.getPropertyOrThrow("placementLimit").setValue("5:owned");
+
+      assertEquals(
+          Tuple.of(5, "owned"), unitAttachment.getPropertyOrThrow("placementLimit").getValue());
+    }
+  }
 }
