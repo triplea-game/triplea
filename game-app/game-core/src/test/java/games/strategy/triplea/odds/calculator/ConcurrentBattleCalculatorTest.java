@@ -14,6 +14,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -69,5 +70,44 @@ class ConcurrentBattleCalculatorTest extends AbstractClientSettingTestCase {
                     10));
 
     assertThat(results.getResults()).isEmpty();
+  }
+
+  /**
+   * With the flag ON, {@link BattleCalculatorFactory} hands the AI the engine-free bounded-context
+   * calculator, so this pins that the factory-selected path runs end to end over many parallel
+   * runs.
+   *
+   * <p>The bounded calc fans runs across workers on a {@code PlainRandomSource} with no injection
+   * seam, so this cannot pin an exact {@code alwaysHits} outcome the way {@code
+   * BattleCalculatorTest} does; it asserts coherence and direction instead. A lopsided 10-vs-2
+   * infantry attack is attacker-favored regardless of luck, so a near-certain attacker win over
+   * many runs shows the flag-on path ran end to end and its odds read sanely.
+   */
+  @Test
+  void flagOnRoutesFactoryToBoundedContextCalc() {
+    ClientSetting.useBoundedContextBattleCalc.setValue(true);
+    final IBattleCalculator calc = BattleCalculatorFactory.newBattleCalculator();
+    final GameData gameData = TestMapGameData.REVISED.getGameData();
+    assertTrue(calc.setGameData(gameData).join());
+
+    final Territory germany = gameData.getMap().getTerritoryOrNull("Germany");
+    final GamePlayer russians = russians(gameData);
+    final GamePlayer germans = germans(gameData);
+
+    final AggregateResults results =
+        calc.calculate(
+            russians,
+            germans,
+            germany,
+            infantry(gameData).create(10, russians),
+            infantry(gameData).create(2, germans),
+            List.of(),
+            TerritoryEffectHelper.getEffects(germany),
+            false,
+            50);
+
+    assertThat(results.getRollCount()).isEqualTo(50);
+    assertThat(results.getAttackerWinPercent()).isGreaterThan(0.9);
+    assertThat(results.getDefenderWinPercent()).isLessThan(0.1);
   }
 }
