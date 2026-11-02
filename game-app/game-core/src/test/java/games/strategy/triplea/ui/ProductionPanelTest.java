@@ -19,6 +19,7 @@ import games.strategy.triplea.image.ResourceImageFactory;
 import games.strategy.ui.ScrollableTextField;
 import java.lang.reflect.Field;
 import java.util.Set;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -65,6 +66,13 @@ final class ProductionPanelTest {
     final Field field = rule.getClass().getDeclaredField("textFields");
     field.setAccessible(true);
     return (Set<ScrollableTextField>) field.get(rule);
+  }
+
+  private static String getBuildLimitLabelText(final ProductionPanel.Rule rule)
+      throws ReflectiveOperationException {
+    final Field field = rule.getClass().getDeclaredField("buildLimitLabel");
+    field.setAccessible(true);
+    return ((JLabel) field.get(rule)).getText();
   }
 
   private static int calculateMax(final ProductionPanel panel, final ProductionPanel.Rule target)
@@ -147,6 +155,22 @@ final class ProductionPanelTest {
       panel.rules.add(purchase);
 
       assertThat(calculateMax(panel, purchase)).isEqualTo(1);
+    }
+
+    @Test
+    void shouldDisplayOwnedUnitCountAndBuildLimit() throws ReflectiveOperationException {
+      final ProductionPanel panel = givenProductionPanel();
+      final UnitType tank = givenLimitedUnitType("tank", 5);
+
+      player.getUnitCollection().addAll(tank.create(1, player));
+
+      final ProductionPanel.Rule purchase =
+          panel.new Rule(givenProductionRule("buyTank", tank, 1), player);
+      panel.rules.add(purchase);
+
+      panel.calculateLimits();
+
+      assertThat(getBuildLimitLabelText(purchase)).isEqualTo("<html>Owned: 1/5</html>");
     }
   }
 }
