@@ -623,28 +623,10 @@ public abstract class AbstractProAi extends AbstractAi {
       final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
     initializeData();
-
-    // Get battle data
-    final GameData data = getGameData();
-    final GamePlayer player = this.getGamePlayer();
-    final BattleDelegate delegate = data.getBattleDelegate();
-    final IBattle battle =
-        delegate.getBattleTracker().getPendingBattle(scrambleTo, BattleType.NORMAL);
-
-    // If battle is null then don't scramble
-    if (battle == null) {
-      return null;
-    }
-    final Collection<Unit> attackers = battle.getAttackingUnits();
-    final Collection<Unit> defenders = battle.getDefendingUnits();
     ProLogger.info(
-        player.getName()
+        getGamePlayer().getName()
             + " checking scramble to "
             + scrambleTo
-            + ", attackers="
-            + attackers.size()
-            + ", defenders="
-            + defenders.size()
             + ", possibleScramblers="
             + possibleScramblers);
     prepareData(getGameData());

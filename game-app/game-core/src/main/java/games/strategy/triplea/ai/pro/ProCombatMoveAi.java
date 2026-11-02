@@ -28,6 +28,7 @@ import games.strategy.triplea.ai.pro.util.ProUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.AirBattle;
+import games.strategy.triplea.delegate.battle.ScrambleLogic;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -1023,6 +1024,25 @@ public class ProCombatMoveAi {
           }
         }
 
+        if (proData.isBeta()) {
+          final Optional<Territory> scrambledZone =
+              territoryTransportAndBombardMap.entrySet().stream()
+                  .filter(e -> isLostToScramble(t, e.getKey(), e.getValue()))
+                  .map(Map.Entry::getKey)
+                  .findAny();
+          if (scrambledZone.isPresent()) {
+            ProLogger.debug(
+                "Removing amphib territory: "
+                    + t
+                    + ", scrambled air sinks its transports in "
+                    + scrambledZone.get());
+            patd.getUnits().clear();
+            patd.getAmphibAttackMap().clear();
+            patd.getBombardTerritoryMap().clear();
+            continue;
+          }
+        }
+
         // Determine counter-attack results for each transport territory
         double enemyTuvSwing = 0.0;
         for (final Territory unloadTerritory : territoryTransportAndBombardMap.keySet()) {
@@ -1102,6 +1122,51 @@ public class ProCombatMoveAi {
         }
       }
     }
+  }
+
+  /**
+   * Whether enemy air can scramble into {@code unloadZone} and beat the units there. The engine
+   * reloads the cargo before that sea battle, so a lost battle sinks the transports with their
+   * cargo and the landing in {@code target} never happens.
+   */
+  private boolean isLostToScramble(
+      final Territory target, final Territory unloadZone, final Collection<Unit> unloadingUnits) {
+    final ProTerritory zoneAttack =
+        territoryManager.getAttackOptions().getTerritoryMap().get(unloadZone);
+    if (!unloadZone.isWater()
+        || !Properties.getScrambleRulesInEffect(data.getProperties())
+        || (zoneAttack != null && !zoneAttack.getUnits().isEmpty())) {
+      return false;
+    }
+    // without "Scramble To Any Amphibious Assault" only the landing's target scrambles to the zone
+    final boolean fromAnywhere = Properties.getScrambleToAnyAmphibiousAssault(data.getProperties());
+    final List<Unit> scramblers = new ArrayList<>();
+    new ScrambleLogic(data, player, Set.of(unloadZone))
+        .getUnitsThatCanScrambleByDestination()
+        .getOrDefault(unloadZone, Map.of())
+        .forEach(
+            (from, airbasesAndScramblers) -> {
+              if (fromAnywhere || from.equals(target)) {
+                scramblers.addAll(
+                    ProTerritoryManager.maxScramblers(unloadZone, airbasesAndScramblers));
+              }
+            });
+    if (scramblers.isEmpty()) {
+      return false;
+    }
+    final Set<Unit> attackers = new HashSet<>(unloadingUnits);
+    attackers.addAll(unloadZone.getMatches(Matches.unitIsOwnedBy(player)));
+    final ProBattleResult result =
+        calc.calculateBattleResults(proData, unloadZone, attackers, scramblers, List.of());
+    ProLogger.debug(
+        unloadZone
+            + " scramble check for "
+            + target
+            + ", scramblers="
+            + scramblers.size()
+            + ", win%="
+            + result.getWinPercentage());
+    return result.getWinPercentage() < proData.getWinPercentage();
   }
 
   public static class ProductionAndIsCapital {

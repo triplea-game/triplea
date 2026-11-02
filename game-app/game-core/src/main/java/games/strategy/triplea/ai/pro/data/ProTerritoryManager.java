@@ -363,25 +363,21 @@ public class ProTerritoryManager {
       final Territory to = territoryToScramblersEntry.getKey();
       for (final Tuple<Collection<Unit>, Collection<Unit>> airbasesAndScramblers :
           territoryToScramblersEntry.getValue().values()) {
-        final Collection<Unit> airbases = airbasesAndScramblers.getFirst();
-        final Collection<Unit> scramblers = airbasesAndScramblers.getSecond();
-        final int maxCanScramble = ScrambleLogic.getMaxScrambleCount(airbases);
-
-        final List<Unit> addTo = moveMap.get(to).getMaxScrambleUnits();
-        if (scramblers.size() <= maxCanScramble) {
-          addTo.addAll(scramblers);
-        } else {
-          scramblers.stream()
-              .sorted(
-                  Comparator.<Unit>comparingDouble(
-                          unit ->
-                              ProBattleUtils.estimateStrength(to, List.of(unit), List.of(), false))
-                      .reversed())
-              .limit(maxCanScramble)
-              .forEachOrdered(addTo::add);
-        }
+        moveMap.get(to).getMaxScrambleUnits().addAll(maxScramblers(to, airbasesAndScramblers));
       }
     }
+  }
+
+  /** The strongest scramblers to {@code to} that their airbases let take off. */
+  public static List<Unit> maxScramblers(
+      final Territory to, final Tuple<Collection<Unit>, Collection<Unit>> airbasesAndScramblers) {
+    return airbasesAndScramblers.getSecond().stream()
+        .sorted(
+            Comparator.<Unit>comparingDouble(
+                    unit -> ProBattleUtils.estimateStrength(to, List.of(unit), List.of(), false))
+                .reversed())
+        .limit(ScrambleLogic.getMaxScrambleCount(airbasesAndScramblers.getFirst()))
+        .toList();
   }
 
   private static void findAttackOptions(

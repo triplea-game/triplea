@@ -10,6 +10,7 @@ import games.strategy.triplea.ai.pro.util.ProBattleUtils;
 import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.ai.pro.util.ProSortMoveOptionsUtils;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
@@ -45,11 +46,26 @@ class ProScrambleAi {
     final BattleDelegate delegate = data.getBattleDelegate();
     final IBattle battle =
         delegate.getBattleTracker().getPendingBattle(scrambleTo, BattleType.NORMAL);
+    final Collection<Unit> attackers;
+    final Collection<Unit> battleDefenders;
+    final Collection<Unit> bombardingUnits;
+    if (battle != null) {
+      attackers = battle.getAttackingUnits();
+      battleDefenders = battle.getDefendingUnits();
+      bombardingUnits = battle.getBombardingUnits();
+    } else if (scrambleTo.isWater()) {
+      // A sea zone that transports unload from has no battle yet; scrambling creates one against
+      // the attacker's units there (see BattleDelegate), and its transports have no defence.
+      final GamePlayer attacker = data.getSequence().getStep().getPlayerId();
+      attackers = scrambleTo.getMatches(Matches.unitIsOwnedBy(attacker));
+      battleDefenders = List.of();
+      bombardingUnits = List.of();
+    } else {
+      return null;
+    }
 
     // Check if defense already wins
-    final Collection<Unit> attackers = battle.getAttackingUnits();
-    final Collection<Unit> defenders = new ArrayList<>(battle.getDefendingUnits());
-    final Collection<Unit> bombardingUnits = battle.getBombardingUnits();
+    final Collection<Unit> defenders = new ArrayList<>(battleDefenders);
     final ProBattleResult minResult =
         calc.calculateBattleResults(proData, scrambleTo, attackers, defenders, bombardingUnits);
     ProLogger.debug(
@@ -121,7 +137,7 @@ class ProScrambleAi {
     ProBattleResult result = minResult;
     for (final Unit u : sortedUnitDefendOptions.keySet()) {
       unitsToScramble.add(u);
-      final Collection<Unit> currentDefenders = new ArrayList<>(battle.getDefendingUnits());
+      final Collection<Unit> currentDefenders = new ArrayList<>(battleDefenders);
       currentDefenders.addAll(unitsToScramble);
       result =
           calc.calculateBattleResults(
