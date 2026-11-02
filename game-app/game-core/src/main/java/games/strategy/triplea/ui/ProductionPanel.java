@@ -285,28 +285,48 @@ class ProductionPanel extends JPanel {
         // Finds the maximum number of times a rule can be used to build before reaching any unit
         // limit
         for (final UnitType type : current.limitedTypes) {
-          // Setting limit label for the unit type
           final int owned = getOwnedUnitCount(type, gamePlayer, data);
           final int maxBuilt = type.getUnitAttachment().getMaxBuiltPerPlayer();
           final String label =
-              current.limitedTypes.size() == 1
-                  ? "Owned: " + owned + "/" + maxBuilt
-                  : type.getName() + ": " + owned + "/" + maxBuilt + " owned";
+              getBuildLimitLabel(type, owned, maxBuilt, current.limitedTypes.size() > 1);
           limitLabels.add(label);
-          // Finds the maximum number of times a rule can be used to build before reaching this
-          // unit's limit
-          final int allowance = Math.max(0, maxBuilt - owned);
-          final int unitsPerPurchase = current.getProductionRule().getResults().getInt(type);
-          final int selectedByCurrentRule = current.getQuantity() * unitsPerPurchase;
-          final int selectedByOtherRules =
-              selectedUnits.getOrDefault(type, 0) - selectedByCurrentRule;
-          final int remainingForRule = Math.max(0, allowance - selectedByOtherRules);
-          max = Math.min(max, remainingForRule / unitsPerPurchase);
+          // Updates the current rule's maximum to respect this unit type's build limit.
+          max =
+              Math.min(max, calculateRuleBuildLimit(current, type, selectedUnits, owned, maxBuilt));
         }
         current.buildLimitLabel.setText(limitLabels.toString());
       }
       current.setMax(max);
     }
+  }
+
+  private static String getBuildLimitLabel(
+      final UnitType type, final int owned, final int maxBuilt, final boolean multipleTypes) {
+    return multipleTypes
+        ? type.getName() + ": " + owned + "/" + maxBuilt + " owned"
+        : "Owned: " + owned + "/" + maxBuilt;
+  }
+
+  /**
+   * Calculates the maximum number of times a rule can be used before reaching a unit type's build
+   * limit.
+   */
+  private static int calculateRuleBuildLimit(
+      final Rule rule,
+      final UnitType type,
+      final Map<UnitType, Integer> selectedUnits,
+      final int owned,
+      final int maxBuilt) {
+
+    final int unitsPerPurchase = rule.getProductionRule().getResults().getInt(type);
+
+    final int selectedByCurrentRule = rule.getQuantity() * unitsPerPurchase;
+    final int selectedByOtherRules = selectedUnits.getOrDefault(type, 0) - selectedByCurrentRule;
+
+    final int allowance = Math.max(0, maxBuilt - owned);
+    final int remainingForRule = Math.max(0, allowance - selectedByOtherRules);
+
+    return remainingForRule / unitsPerPurchase;
   }
 
   /** Counts units of the given type currently owned by the player, including unplaced units. */
@@ -475,9 +495,7 @@ class ProductionPanel extends JPanel {
         for (final UnitType type : limitedTypes) {
           final int maxBuilt = type.getUnitAttachment().getMaxBuiltPerPlayer();
           final String label =
-              limitedTypes.size() == 1
-                  ? "Owned: " + maxBuilt + "/" + maxBuilt
-                  : type.getName() + ": " + maxBuilt + "/" + maxBuilt + " owned";
+              getBuildLimitLabel(type, maxBuilt, maxBuilt, limitedTypes.size() > 1);
           limitLabels.add(label);
         }
         buildLimitLabel.setText(limitLabels.toString());
