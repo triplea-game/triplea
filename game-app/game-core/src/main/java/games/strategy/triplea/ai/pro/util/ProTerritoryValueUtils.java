@@ -5,7 +5,9 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.util.BreadthFirstSearch;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -37,6 +39,7 @@ public final class ProTerritoryValueUtils {
     final int isEnemyFactory =
         ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player).test(t) ? 1 : 0;
     double value = 3.0 * TerritoryAttachment.getProduction(t) * (isEnemyFactory + 1);
+    value += 3.0 * victoryCityValue(proData, t);
     if (ProUtils.isNeutralLand(t)) {
       final double strength =
           ProBattleUtils.estimateStrength(
@@ -48,6 +51,24 @@ public final class ProTerritoryValueUtils {
     }
 
     return value;
+  }
+
+  /**
+   * What a victory city is worth in PUs when a victory-city win condition is on, so holding or
+   * taking one counts toward ending the game; 0 outside Hard Beta or with no such condition.
+   */
+  static double victoryCityValue(final ProData proData, final Territory t) {
+    if (!proData.isBeta()) {
+      return 0;
+    }
+    final GameProperties props = t.getData().getProperties();
+    if (!Properties.getTotalVictory(props)
+        && !Properties.getHonorableSurrender(props)
+        && !Properties.getProjectionOfPower(props)) {
+      return 0;
+    }
+    return TerritoryAttachment.get(t).map(TerritoryAttachment::getVictoryCity).orElse(0)
+        * ProCasualtyUtils.VICTORY_CITY_VALUE;
   }
 
   /** Returns the value of each territory in {@code territoriesToCheck}. */
@@ -312,6 +333,7 @@ public final class ProTerritoryValueUtils {
       if (distance > 0) {
         double value =
             TerritoryAttachment.getProduction(nearbyEnemyTerritory)
+                + victoryCityValue(proData, nearbyEnemyTerritory)
                 + ProNationalObjectiveUtils.value(proData, player, nearbyEnemyTerritory);
         if (ProUtils.isNeutralLand(nearbyEnemyTerritory)) {
           // find neutral value
@@ -405,6 +427,7 @@ public final class ProTerritoryValueUtils {
             .test(nearbyLandTerritory)) {
           double value =
               TerritoryAttachment.getProduction(nearbyLandTerritory)
+                  + victoryCityValue(proData, nearbyLandTerritory)
                   + ProNationalObjectiveUtils.value(proData, player, nearbyLandTerritory);
           if (ProUtils.isNeutralLand(nearbyLandTerritory)) {
             value = findTerritoryAttackValue(proData, player, nearbyLandTerritory);
