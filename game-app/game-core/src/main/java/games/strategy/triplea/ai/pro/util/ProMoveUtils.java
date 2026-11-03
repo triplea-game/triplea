@@ -517,7 +517,7 @@ public final class ProMoveUtils {
    */
   private static MoveDescription withoutUnitsOverStackingLimit(
       final ProData proData, final MoveDescription move) {
-    if (!move.getUnitsToSeaTransports().isEmpty()) {
+    if (!move.getUnitsToSeaTransports().isEmpty() || !move.getAirTransportsDependents().isEmpty()) {
       return move;
     }
     final Collection<Unit> overLimit =
