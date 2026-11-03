@@ -47,6 +47,7 @@ public class DefensiveGeneral implements BattleStep {
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+
     final List<BattleStep> steps = getSteps();
 
     // steps go in reverse order on the stack
