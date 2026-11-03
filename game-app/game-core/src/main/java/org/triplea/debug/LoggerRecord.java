@@ -22,7 +22,9 @@ public interface LoggerRecord {
 
   /**
    * Return the stack trace of each exception, each successive element should be the next 'caused
-   * by' exception'.
+   * by' exception.
    */
   List<ExceptionDetails> getExceptions();
+
+  boolean allowUpload();
 }

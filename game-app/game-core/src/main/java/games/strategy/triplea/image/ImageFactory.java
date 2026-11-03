@@ -3,6 +3,7 @@ package games.strategy.triplea.image;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import games.strategy.engine.NonReportableRuntimeException;
 import games.strategy.triplea.ResourceLoader;
 import java.awt.Image;
 import java.io.IOException;
@@ -45,11 +46,11 @@ public class ImageFactory {
   /**
    * Returns an image provide an 'image key'. Additional keys can be provided as fallback values.
    *
-   * @throws IllegalStateException thrown if none of the image keys can be found
+   * @throws NonReportableRuntimeException thrown if none of the image keys can be found
    */
   protected Image getImageOrThrow(final String... keys) {
     return getImage(keys)
-        .orElseThrow(() -> new IllegalStateException("Image Not Found: " + keys[0]));
+        .orElseThrow(() -> new NonReportableRuntimeException("Image not found: " + keys[0]));
   }
 
   /**
