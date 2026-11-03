@@ -3,11 +3,14 @@ package games.strategy.triplea.ai.pro.util;
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
 import static games.strategy.triplea.delegate.GameDataTestUtil.british;
+import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
+import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -97,5 +100,40 @@ class ProMatchesTest {
 
     battleship.setUnitDamage(3);
     assertThat(ProMatches.unitCanBeMovedAndIsOwned(british).test(battleship)).isFalse();
+  }
+
+  private final GameData transportData = TestMapGameData.WW2V3_1941.getGameData();
+  private final Unit transport = transport(transportData).create(germans(transportData));
+
+  private void startStep(final String step) {
+    transportData.getSequence().setRoundAndStep(1, step, germans(transportData));
+  }
+
+  private void markFoughtInCombat() throws MutableProperty.InvalidValueException {
+    transport.getProperty(Unit.PropertyName.WAS_IN_COMBAT).orElseThrow().setValue(true);
+  }
+
+  @Test
+  void transportThatFoughtCannotLoadInNonCombat() throws MutableProperty.InvalidValueException {
+    startStep("Non Combat Move");
+    markFoughtInCombat();
+
+    assertThat(ProMatches.transportCanLoad().test(transport)).isFalse();
+  }
+
+  @Test
+  void transportThatDidNotFightCanLoadInNonCombat() {
+    startStep("Non Combat Move");
+
+    assertThat(ProMatches.transportCanLoad().test(transport)).isTrue();
+  }
+
+  @Test
+  void transportCanLoadInCombatMoveEvenIfFlaggedAsFought()
+      throws MutableProperty.InvalidValueException {
+    startStep("germansCombatMove");
+    markFoughtInCombat();
+
+    assertThat(ProMatches.transportCanLoad().test(transport)).isTrue();
   }
 }
