@@ -86,9 +86,15 @@ public class ProPurchaseOption {
     if (isInfra) {
       hitPoints = 0;
     }
-    attack = (double) unitAttachment.getAttack(player) * quantity;
+    attack =
+        (double) unitAttachment.getAttack(player)
+            * unitAttachment.getAttackRolls(player)
+            * quantity;
     amphibAttack = attack + 0.5 * unitAttachment.getIsMarine() * quantity;
-    defense = (double) unitAttachment.getDefense(player) * quantity;
+    defense =
+        (double) unitAttachment.getDefense(player)
+            * unitAttachment.getDefenseRolls(player)
+            * quantity;
     transportCost = unitAttachment.getTransportCost() * quantity;
     carrierCost = unitAttachment.getCarrierCost() * quantity;
     isAir = unitAttachment.isAir();
