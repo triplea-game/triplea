@@ -27,6 +27,12 @@ import org.triplea.util.Tuple;
  * contains}) keep working. This replaces the old bridge's rehydration into fresh-UUID units, which
  * silently broke those identity checks.
  *
+ * <p>Known seam limit: a survivor is always the caller's original instance, so a unit that the run
+ * transformed (or damaged) via {@code whenHitPointsDamagedChangesInto} comes back with its original
+ * type and hits, not the state the run ended in. Carrying that state would mean returning clones
+ * (breaking the identity contract above) or mutating the caller's units, so it is deliberately not
+ * done; consumers that weigh survivors by value see the pre-battle unit.
+ *
  * <p>The representative run and the mapping are computed lazily on first access and cached: the AI
  * calls {@code calculate} far more often than it reads survivors, so no work happens unless a
  * caller actually asks for remaining units.
