@@ -1,5 +1,6 @@
 package games.strategy.triplea.ai.pro;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
@@ -326,7 +327,8 @@ final class ProTechAi {
    * @param attacking - are the units on attack or defense
    * @param sea - calculate the strength of the units in a sea or land battle?
    */
-  private static float strength(
+  @VisibleForTesting
+  static float strength(
       final Collection<Unit> units,
       final boolean attacking,
       final boolean sea,
@@ -341,7 +343,7 @@ final class ProTechAi {
     }
     for (final Unit u : units) {
       final UnitAttachment unitAttachment = u.getUnitAttachment();
-      if (unitAttachment.isInfrastructure()) {
+      if (!unitAttachment.isInfrastructure()) {
         if (unitAttachment.isSea() == sea) {
           final int unitAttack = unitAttachment.getAttack(u.getOwner());
           // BB = 6.0; AC=2.0/4.0; SUB=3.0; DS=4.0; TR=0.50/2.0; F=4.0/5.0; B=5.0/2.0;
