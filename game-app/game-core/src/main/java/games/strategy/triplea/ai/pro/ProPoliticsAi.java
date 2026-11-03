@@ -3,6 +3,8 @@ package games.strategy.triplea.ai.pro;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.RelationshipType;
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.triplea.ai.AiPoliticalUtils;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.ai.pro.data.ProTerritoryManager;
@@ -15,10 +17,11 @@ import games.strategy.triplea.delegate.PoliticsDelegate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
 
 /** Pro politics AI. */
 class ProPoliticsAi {
@@ -141,7 +144,7 @@ class ProPoliticsAi {
       ProLogger.debug("warChance=" + warChance + ", random=" + random);
       if (random <= warChance) {
         results.add(options.get(0));
-        ProLogger.debug("Declared war on " + enemyMap.get(options.get(0)));
+        ProLogger.debug("Declared war on " + neutralMap.get(options.get(0)));
       }
     }
 
@@ -152,33 +155,51 @@ class ProPoliticsAi {
               player, politicsDelegate.getTestedConditions(), data);
       if (!actionChoicesOther.isEmpty()) {
         Collections.shuffle(actionChoicesOther);
-        int i = 0;
         final double random = Math.random();
         final int maxOtherActionsPerTurn =
             (random < .3
                 ? 0
                 : (random < .6 ? 1 : (random < .9 ? 2 : (random < .99 ? 3 : (int) numPlayers))));
-        final Iterator<PoliticalActionAttachment> actionOtherIter = actionChoicesOther.iterator();
-        while (actionOtherIter.hasNext() && maxOtherActionsPerTurn > 0) {
-          final PoliticalActionAttachment action = actionOtherIter.next();
-          if (!Matches.abstractUserActionAttachmentCanBeAttempted(
-                  politicsDelegate.getTestedConditions())
-              .test(action)) {
-            continue;
-          }
-          if (!player.getResources().has(action.getCostResources())) {
-            continue;
-          }
-          i++;
-          if (i > maxOtherActionsPerTurn) {
-            break;
-          }
-          results.add(action);
-        }
+        results.addAll(
+            chooseAffordableActions(
+                actionChoicesOther,
+                Matches.abstractUserActionAttachmentCanBeAttempted(
+                    politicsDelegate.getTestedConditions()),
+                player.getResources(),
+                maxOtherActionsPerTurn));
       }
     }
     doActions(results);
     return results;
+  }
+
+  /**
+   * Picks up to {@code maxActions} attemptable actions whose combined cost fits in {@code
+   * available}; each chosen action's cost is deducted before the next is checked.
+   */
+  static List<PoliticalActionAttachment> chooseAffordableActions(
+      final List<PoliticalActionAttachment> candidates,
+      final Predicate<PoliticalActionAttachment> canBeAttempted,
+      final ResourceCollection available,
+      final int maxActions) {
+    final ResourceCollection remaining = new ResourceCollection(available);
+    final List<PoliticalActionAttachment> chosen = new ArrayList<>();
+    for (final PoliticalActionAttachment action : candidates) {
+      if (chosen.size() >= maxActions) {
+        break;
+      }
+      if (!canBeAttempted.test(action)) {
+        continue;
+      }
+      final IntegerMap<Resource> cost = action.getCostResources();
+      if (!remaining.has(cost)) {
+        continue;
+      }
+      cost.keySet()
+          .forEach(resource -> remaining.removeResourceUpTo(resource, cost.getInt(resource)));
+      chosen.add(action);
+    }
+    return chosen;
   }
 
   void doActions(final List<PoliticalActionAttachment> actions) {
