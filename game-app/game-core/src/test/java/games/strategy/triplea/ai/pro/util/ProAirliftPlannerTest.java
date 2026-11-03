@@ -15,6 +15,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
+import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.HashMap;
@@ -146,6 +147,18 @@ class ProAirliftPlannerTest {
 
     assertThat(attackMap).containsOnlyKeys(eastPoland);
     assertThat(attackMap.get(eastPoland).getUnits()).containsExactly(bomber);
+  }
+
+  @Test
+  void idleBomberIsSentToUndefendedEnemyCapitalWithNoProduction() throws Exception {
+    attackMap.clear();
+    final var attachment = TerritoryAttachment.getOrThrow(eastPoland);
+    attachment.setCapital("Russians");
+    attachment.getPropertyOrEmpty("production").orElseThrow().setValue(0);
+
+    planDrops((t, paratroopers) -> true);
+
+    assertThat(attackMap).containsOnlyKeys(eastPoland);
   }
 
   @Test

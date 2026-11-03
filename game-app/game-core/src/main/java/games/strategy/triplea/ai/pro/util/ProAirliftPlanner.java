@@ -143,7 +143,7 @@ public class ProAirliftPlanner {
     final Predicate<Territory> canFly =
         ProMatches.territoryCanMoveAirUnitsAndNoAa(data, player, true);
     Territory best = null;
-    int bestProduction = 0;
+    int bestProduction = -1;
     for (final Territory target : data.getMap().getNeighborsByMovementCost(start, range, canFly)) {
       final int production = TerritoryAttachment.getProduction(target);
       final boolean isCapital =
