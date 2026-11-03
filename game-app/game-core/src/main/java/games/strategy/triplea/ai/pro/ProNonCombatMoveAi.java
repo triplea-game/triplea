@@ -28,6 +28,7 @@ import games.strategy.triplea.ai.pro.util.ProMoveUtils;
 import games.strategy.triplea.ai.pro.util.ProNationalObjectiveUtils;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.ai.pro.util.ProPurchaseUtils;
+import games.strategy.triplea.ai.pro.util.ProRepairUtils;
 import games.strategy.triplea.ai.pro.util.ProSeaBlockerUtils;
 import games.strategy.triplea.ai.pro.util.ProSortMoveOptionsUtils;
 import games.strategy.triplea.ai.pro.util.ProTerritoryValueUtils;
@@ -1808,7 +1809,15 @@ class ProNonCombatMoveAi {
         }
         Territory maxValueTerritory = null;
         double maxValue = 0;
+        // A damaged ship only heals at a facility, so go there if it is safe to
+        final Set<Territory> repairTerritories =
+            ProRepairUtils.findRepairTerritories(player, u, currentUnitMoveMap.get(u)).stream()
+                .filter(t -> moveMap.get(t).isCanHold())
+                .collect(Collectors.toSet());
         for (final Territory t : currentUnitMoveMap.get(u)) {
+          if (!repairTerritories.isEmpty() && !repairTerritories.contains(t)) {
+            continue;
+          }
           final ProTerritory proTerritory = moveMap.get(t);
           final boolean isSafeForEvader =
               !proTerritory.isCanHold()
