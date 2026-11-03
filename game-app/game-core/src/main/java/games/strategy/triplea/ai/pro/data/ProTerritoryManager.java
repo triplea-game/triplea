@@ -1,5 +1,6 @@
 package games.strategy.triplea.ai.pro.data;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
@@ -42,6 +43,13 @@ import org.triplea.util.Tuple;
 
 /** Manages info about territories. */
 public class ProTerritoryManager {
+
+  /**
+   * Strength difference above which an attack is expected to win. Matches the cutoff in {@link
+   * ProOddsCalculator} at which the defender is deemed to have no chance, and the lower of the 55
+   * and 60 AbstractProAi requires when picking attacks.
+   */
+  private static final double LIKELY_WIN_STRENGTH_DIFFERENCE = 55;
 
   private final ProOddsCalculator calc;
   private final ProData proData;
@@ -593,7 +601,8 @@ public class ProTerritoryManager {
   }
 
   /** Returns the land territories that border a canal, which decide who may pass through it. */
-  private static Set<Territory> getCanalLandTerritories(final GameMap map) {
+  @VisibleForTesting
+  static Set<Territory> getCanalLandTerritories(final GameMap map) {
     final Set<Territory> result = new HashSet<>();
     for (final Territory t : map.getTerritories()) {
       for (final CanalAttachment canal : CanalAttachment.get(t)) {
@@ -618,7 +627,8 @@ public class ProTerritoryManager {
     }
     final List<Unit> defenders =
         clearedTerritories.contains(t) ? List.of() : t.getMatches(Matches.enemyUnit(attacker));
-    return ProBattleUtils.estimateStrengthDifference(t, attackers, defenders) > 55;
+    return ProBattleUtils.estimateStrengthDifference(t, attackers, defenders)
+        > LIKELY_WIN_STRENGTH_DIFFERENCE;
   }
 
   private static void findPotentialAttackOptions(
