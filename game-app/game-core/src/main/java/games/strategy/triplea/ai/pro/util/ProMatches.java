@@ -484,7 +484,9 @@ public final class ProMatches {
   }
 
   public static Predicate<Unit> unitCanBeMovedAndIsOwned(final GamePlayer player) {
-    return Matches.unitIsOwnedBy(player).and(Matches.unitHasMovementLeft());
+    return Matches.unitIsOwnedBy(player)
+        .and(Matches.unitHasMovementLeft())
+        .and(Matches.unitIsNotDisabled());
   }
 
   public static Predicate<Unit> unitCanBeMovedAndIsOwnedAir(

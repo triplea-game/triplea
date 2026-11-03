@@ -11,6 +11,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.TestMapGameData;
 import org.junit.jupiter.api.Test;
@@ -76,5 +77,25 @@ class ProMatchesTest {
     final Unit train = GameDataTestUtil.germanTrain(tww).create(1, germans).get(0);
 
     assertThat(ProMatches.routeHasRequiredUnitsToMove(new Route(berlin), train)).isTrue();
+  }
+
+  @Test
+  void unitDamagedPastItsOperationalLimitCannotBeMoved() throws Exception {
+    final GameData ww2v3 = TestMapGameData.WW2V3_1941.getGameData();
+    ww2v3
+        .getProperties()
+        .set(Constants.DAMAGE_FROM_BOMBING_DONE_TO_UNITS_INSTEAD_OF_TERRITORIES, true);
+    final var attachment = GameDataTestUtil.battleship(ww2v3).getUnitAttachment();
+    attachment.getPropertyOrThrow("canBeDamaged").setValue(true);
+    attachment.getPropertyOrThrow("maxDamage").setValue(4);
+    attachment.getPropertyOrThrow("maxOperationalDamage").setValue(2);
+    final GamePlayer british = GameDataTestUtil.british(ww2v3);
+    final Unit battleship = GameDataTestUtil.battleship(ww2v3).create(1, british).get(0);
+
+    battleship.setUnitDamage(2);
+    assertThat(ProMatches.unitCanBeMovedAndIsOwned(british).test(battleship)).isTrue();
+
+    battleship.setUnitDamage(3);
+    assertThat(ProMatches.unitCanBeMovedAndIsOwned(british).test(battleship)).isFalse();
   }
 }
