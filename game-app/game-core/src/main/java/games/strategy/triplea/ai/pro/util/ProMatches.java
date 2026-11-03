@@ -34,6 +34,30 @@ public final class ProMatches {
     };
   }
 
+  /**
+   * Whether a land unit may begin {@code route} in a combat move. Unless the map allows attacking
+   * from contested territories, a unit leaving a territory with enemy units (or one captured this
+   * turn without blitzing) for further enemy land must be able to blitz, mirroring {@link
+   * MoveValidator}.
+   */
+  public static boolean landUnitCanLeaveContestedTerritory(
+      final GamePlayer player, final Unit unit, final Route route) {
+    if (Properties.getAllUnitsCanAttackFromContestedTerritories(player.getData().getProperties())) {
+      return true;
+    }
+    final Territory start = route.getStart();
+    final boolean passesThroughEnemyTerritory =
+        route.anyMatch(Matches.isTerritoryEnemy(player))
+            && !route.allMatchMiddleSteps(Matches.isTerritoryEnemy(player).negate());
+    if (start.isWater() || !passesThroughEnemyTerritory) {
+      return true;
+    }
+    if (!Matches.territoryIsBlitzable(player).test(start)) {
+      return false;
+    }
+    return !Matches.isAtWar(start.getOwner()).test(player) || Matches.unitCanBlitz().test(unit);
+  }
+
   public static Predicate<Territory> territoryCanLandAirUnits(
       final GamePlayer player,
       final boolean isCombatMove,

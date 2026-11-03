@@ -930,7 +930,15 @@ public class ProTerritoryManager {
         for (final Territory t : potentialTerritories) {
           // Find route over land checking whether unit can blitz
           final Optional<Route> landRoute =
-              getLandMoveRoute(isCombatMove, player, u, myUnitTerritory, t, range, canMove);
+              getLandMoveRoute(
+                  isCombatMove,
+                  isCheckingEnemyAttacks,
+                  player,
+                  u,
+                  myUnitTerritory,
+                  t,
+                  range,
+                  canMove);
           if (landRoute.isEmpty()
               || (!isCheckingEnemyAttacks
                   && !ProMatches.routeHasRequiredUnitsToMove(landRoute.get(), u))) {
@@ -956,6 +964,7 @@ public class ProTerritoryManager {
 
   private static Optional<Route> getLandMoveRoute(
       final boolean isCombatMove,
+      final boolean isCheckingEnemyAttacks,
       final GamePlayer player,
       final Unit u,
       final Territory from,
@@ -977,6 +986,11 @@ public class ProTerritoryManager {
       return Optional.empty();
     }
     if (route.getMovementCost(u).compareTo(range) > 0) {
+      return Optional.empty();
+    }
+    if (isCombatMove
+        && !isCheckingEnemyAttacks
+        && !ProMatches.landUnitCanLeaveContestedTerritory(player, u, route)) {
       return Optional.empty();
     }
 
