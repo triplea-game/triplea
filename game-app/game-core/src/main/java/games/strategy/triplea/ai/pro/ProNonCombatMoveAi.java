@@ -143,7 +143,7 @@ class ProNonCombatMoveAi {
             new HashSet<>(territoryManager.getDefendTerritories()));
     final Map<Territory, Double> seaTerritoryValueMap =
         ProTerritoryValueUtils.findSeaTerritoryValues(
-            player, territoriesThatCantBeHeld, territoryManager.getDefendTerritories());
+            proData, player, territoriesThatCantBeHeld, territoryManager.getDefendTerritories());
     final Map<Territory, Double> evaderSeaValueMap =
         proData.isBeta() ? findEvaderSeaValues(territoriesThatCantBeHeld) : Map.of();
     Map<Territory, ProTerritory> moveMap = territoryManager.getDefendOptions().getTerritoryMap();
@@ -1309,7 +1309,8 @@ class ProNonCombatMoveAi {
         final List<Territory> othersCantHold = new ArrayList<>(cantHoldTerritories);
         othersCantHold.remove(t);
         evaderSeaValues.putAll(
-            ProTerritoryValueUtils.findSeaTerritoryValues(player, othersCantHold, List.of(t)));
+            ProTerritoryValueUtils.findSeaTerritoryValues(
+                proData, player, othersCantHold, List.of(t)));
       }
     }
     return evaderSeaValues;
