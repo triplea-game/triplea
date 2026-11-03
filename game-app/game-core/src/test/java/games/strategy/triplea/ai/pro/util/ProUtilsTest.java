@@ -13,15 +13,19 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.triplea.java.collections.IntegerMap;
 
 class ProUtilsTest {
 
@@ -111,5 +115,28 @@ class ProUtilsTest {
     germans(data).addAttachment(Constants.PLAYER_ATTACHMENT_NAME, pa);
 
     assertThat(ProUtils.capturedTreasury(territory("Germany", data), data)).isZero();
+  }
+
+  @Test
+  void unitsThatCreatePusCountTowardsTheOwnersProduction()
+      throws MutableProperty.InvalidValueException {
+    final GameData data = TestMapGameData.LHTR.getGameData();
+    final double before = ProUtils.getPlayerProduction(germans(data), data);
+    final long germanInfantry =
+        data.getMap().getTerritories().stream()
+            .flatMap(t -> t.getUnits().stream())
+            .filter(u -> u.isOwnedBy(germans(data)) && u.getType().equals(infantry(data)))
+            .count();
+    final Resource pus = data.getResourceList().getResourceOrThrow(Constants.PUS);
+    final IntegerMap<Resource> created = new IntegerMap<>();
+    created.put(pus, 3);
+    infantry(data).getUnitAttachment().getPropertyOrThrow("createsResourcesList").setValue(created);
+    final Territory germany = territory("Germany", data);
+    germany.getUnitCollection().addAll(infantry(data).create(2, germans(data)));
+    germany.getUnitCollection().addAll(infantry(data).create(1, japanese(data)));
+
+    assertThat(ProUtils.getPlayerProduction(germans(data), data))
+        .isEqualTo(
+            before + (germanInfantry + 2) * 3 * Properties.getPuMultiplier(data.getProperties()));
   }
 }

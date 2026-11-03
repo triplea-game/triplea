@@ -9,6 +9,7 @@ import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.RelationshipTracker;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
@@ -114,8 +115,26 @@ public final class ProUtils {
         production += TerritoryAttachment.getProduction(place);
       }
     }
+    production += puCreatedByUnits(player, data);
     production *= Properties.getPuMultiplier(data.getProperties());
     return production;
+  }
+
+  /** PUs {@code player}'s units create each turn, as in {@code findUnitCreatedResources}. */
+  private static int puCreatedByUnits(final GamePlayer player, final GameState data) {
+    final Optional<Resource> pus = data.getResourceList().getResourceOptional(Constants.PUS);
+    if (pus.isEmpty()) {
+      return 0;
+    }
+    int created = 0;
+    for (final Territory place : data.getMap().getTerritories()) {
+      for (final Unit unit : place.getUnits()) {
+        if (unit.isOwnedBy(player)) {
+          created += unit.getUnitAttachment().getCreatesResourcesList().getInt(pus.get());
+        }
+      }
+    }
+    return created;
   }
 
   /**
