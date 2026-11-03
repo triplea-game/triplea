@@ -1205,6 +1205,10 @@ public class ProTerritoryManager {
             for (final Territory to : seaMoveTerritories) {
               unloadTerritories.addAll(map.getNeighbors(to, unloadAmphibTerritoryMatch));
             }
+            // A transport that already unloaded this turn is barred from some territories.
+            if (!isCheckingEnemyAttacks) {
+              unloadTerritories.removeIf(t -> Matches.transportCannotUnload(t).test(transport));
+            }
 
             // Add to transport map
             proTransportData.addTerritories(unloadTerritories, loadFromTerritories);
