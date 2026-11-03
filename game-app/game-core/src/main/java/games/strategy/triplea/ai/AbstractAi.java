@@ -271,30 +271,6 @@ public abstract class AbstractAi extends AbstractBasePlayer {
     if (Matches.isAllied(this.getGamePlayer()).test(playerSendingProposal)) {
       return true;
     }
-    // would we normally be allies?
-    final List<String> allies =
-        List.of(
-            Constants.PLAYER_NAME_AMERICANS,
-            Constants.PLAYER_NAME_AUSTRALIANS,
-            Constants.PLAYER_NAME_BRITISH,
-            Constants.PLAYER_NAME_CANADIANS,
-            Constants.PLAYER_NAME_CHINESE,
-            Constants.PLAYER_NAME_FRENCH,
-            Constants.PLAYER_NAME_RUSSIANS);
-    if (allies.contains(this.getGamePlayer().getName())
-        && allies.contains(playerSendingProposal.getName())) {
-      return true;
-    }
-    final List<String> axis =
-        List.of(
-            Constants.PLAYER_NAME_GERMANS,
-            Constants.PLAYER_NAME_ITALIANS,
-            Constants.PLAYER_NAME_JAPANESE,
-            Constants.PLAYER_NAME_PUPPET_STATES);
-    if (axis.contains(this.getGamePlayer().getName())
-        && axis.contains(playerSendingProposal.getName())) {
-      return true;
-    }
     final Collection<String> myAlliances =
         new HashSet<>(
             getGameData().getAllianceTracker().getAlliancesPlayerIsIn(this.getGamePlayer()));
