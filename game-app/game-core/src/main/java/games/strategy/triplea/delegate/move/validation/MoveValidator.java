@@ -51,14 +51,12 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import lombok.AllArgsConstructor;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Triple;
 
 /** Responsible for validating unit movement. */
-@AllArgsConstructor
 public class MoveValidator {
 
   public static final String TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE =
@@ -93,6 +91,25 @@ public class MoveValidator {
 
   private final GameData data;
   private final boolean isNonCombat;
+
+  /**
+   * Canal border territories that are treated as already controlled by the moving player's side
+   * when checking canals, used to look ahead at territories an ally is about to capture.
+   */
+  private final Set<Territory> assumedControlledCanalTerritories;
+
+  public MoveValidator(final GameData data, final boolean isNonCombat) {
+    this(data, isNonCombat, Set.of());
+  }
+
+  public MoveValidator(
+      final GameData data,
+      final boolean isNonCombat,
+      final Set<Territory> assumedControlledCanalTerritories) {
+    this.data = data;
+    this.isNonCombat = isNonCombat;
+    this.assumedControlledCanalTerritories = assumedControlledCanalTerritories;
+  }
 
   public MoveValidationResult validateMove(final MoveDescription move, final GamePlayer player) {
     return validateMove(move, player, List.of());
@@ -1522,6 +1539,9 @@ public class MoveValidator {
           "Can only move through " + canalAttachment.getCanalName() + " during non-combat move");
     }
     for (final Territory borderTerritory : canalAttachment.getLandTerritories()) {
+      if (assumedControlledCanalTerritories.contains(borderTerritory)) {
+        continue;
+      }
       if (!data.getRelationshipTracker().canMoveThroughCanals(player, borderTerritory.getOwner())) {
         return Optional.of("Must control " + canalAttachment.getCanalName() + " to move through");
       }
