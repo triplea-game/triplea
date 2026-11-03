@@ -10,6 +10,7 @@ import games.strategy.engine.data.UnitTypeList;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
+import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.odds.calculator.context.model.BattleOptions;
 import games.strategy.triplea.odds.calculator.context.model.BattleScenario;
@@ -330,7 +331,8 @@ public class GameDataBattleAdapter {
     // getters already fold the tech bonus and clamp to the AA die-sides, and no AA territory-combat
     // bonus exists, so the normal territory bonus is omitted. Standard AA leaves *AaMaxDieSides at
     // the game diceSides the single-scalar roller divides by, so strength/diceSides matches the
-    // engine's probability; a map-set non-standard denominator is an unrepresentable, deferred gap.
+    // engine's probability; a map-set denominator that divides diceSides is rescaled to it, and one
+    // that does not stays an unrepresentable, deferred gap.
     // A unit is modeled as an anti-air gun only when its combat AA can reach an air unit, since the
     // AA phase fires exclusively at air. A combat-AA unit whose targetsAa names no air type keeps
     // its ordinary combat profile and fires through the normal first-strike and main phases — a TWW
@@ -341,12 +343,16 @@ public class GameDataBattleAdapter {
     final boolean aa = isAntiAirGun(ua, type.getData().getUnitTypeList());
     final int attack =
         aa
-            ? ua.getOffensiveAttackAa(player)
+            ? scaleToGameDice(
+                ua.getOffensiveAttackAa(player),
+                ua.getOffensiveAttackAaMaxDieSides(),
+                type.getData().getDiceSides())
             : ua.getAttack(player)
                 + TerritoryEffectHelper.getTerritoryCombatBonus(type, effects, false);
     final int defense =
         aa
-            ? ua.getAttackAa(player)
+            ? scaleToGameDice(
+                ua.getAttackAa(player), ua.getAttackAaMaxDieSides(), type.getData().getDiceSides())
             : ua.getDefense(player)
                 + TerritoryEffectHelper.getTerritoryCombatBonus(type, effects, true);
     // 'maxAaAttacks' defaults to -1 (infinite), not a representable static die count, so both -1
@@ -379,6 +385,18 @@ public class GameDataBattleAdapter {
         flagsOf(ua, aa, dependent, lhtrHeavyBombers, nonCombatant(type, player, side)),
         successor(
             type, player, side, effects, hits, remaining, support, dependent, lhtrHeavyBombers));
+  }
+
+  /**
+   * Re-expresses an AA strength rolled on a {@code aaSides}-sided die as the equal-probability
+   * strength on the game's {@code gameSides}-sided die the single-scalar roller divides by (a 1 on
+   * a d6 is a 2 on a d12). Only an exact rescale is applied; a non-dividing denominator is left
+   * as-is.
+   */
+  private static int scaleToGameDice(final int strength, final int aaSides, final int gameSides) {
+    return aaSides > 0 && aaSides < gameSides && gameSides % aaSides == 0
+        ? strength * (gameSides / aaSides)
+        : strength;
   }
 
   private static CombatProfile successor(
@@ -594,8 +612,8 @@ public class GameDataBattleAdapter {
    * bonusType}/{@code count} so the resolver caps a recipient's stacked support the way the engine
    * does. A single attachment that is both a strength and a roll support emits one rule for each,
    * mirroring the engine filtering its one {@code SupportCalculator} into independent strength and
-   * roll pools. Deliberately unmodeled: Improved-Artillery tech doubling, allied support beyond the
-   * two calc players, and AA support.
+   * roll pools. Deliberately unmodeled: allied support beyond the two calc players (including their
+   * Improved-Artillery tech), and AA support.
    */
   private static SupportModel supportModel(
       final GameData data, final GamePlayer attacker, final GamePlayer defender) {
@@ -609,11 +627,11 @@ public class GameDataBattleAdapter {
           new SupportCategory("support:" + giver.getName() + "/" + attachment.getName());
       if (attachment.getAllied()) {
         if (attachment.getOffence() && attachment.getPlayers().contains(attacker)) {
-          addRules(rules, attachment, category, Side.OFFENSE, false);
+          addRules(rules, attachment, category, Side.OFFENSE, false, attacker);
           register(gives, receives, giver, attachment, category);
         }
         if (attachment.getDefence() && attachment.getPlayers().contains(defender)) {
-          addRules(rules, attachment, category, Side.DEFENSE, false);
+          addRules(rules, attachment, category, Side.DEFENSE, false, defender);
           register(gives, receives, giver, attachment, category);
         }
       }
@@ -621,11 +639,11 @@ public class GameDataBattleAdapter {
         // An attacking giver debuffs the defender, so the rule fires when the defender is the
         // evaluated side (and vice versa) — the engine's side.getOpposite() for the enemy pool.
         if (attachment.getOffence() && attachment.getPlayers().contains(attacker)) {
-          addRules(rules, attachment, category, Side.DEFENSE, true);
+          addRules(rules, attachment, category, Side.DEFENSE, true, attacker);
           register(gives, receives, giver, attachment, category);
         }
         if (attachment.getDefence() && attachment.getPlayers().contains(defender)) {
-          addRules(rules, attachment, category, Side.OFFENSE, true);
+          addRules(rules, attachment, category, Side.OFFENSE, true, defender);
           register(gives, receives, giver, attachment, category);
         }
       }
@@ -645,12 +663,13 @@ public class GameDataBattleAdapter {
       final UnitSupportAttachment attachment,
       final SupportCategory category,
       final Side side,
-      final boolean fromEnemy) {
+      final boolean fromEnemy,
+      final GamePlayer giverOwner) {
     if (attachment.getStrength()) {
-      rules.add(supportRule(attachment, category, true, side, fromEnemy));
+      rules.add(supportRule(attachment, category, true, side, fromEnemy, giverOwner));
     }
     if (attachment.getRoll()) {
-      rules.add(supportRule(attachment, category, false, side, fromEnemy));
+      rules.add(supportRule(attachment, category, false, side, fromEnemy, giverOwner));
     }
   }
 
@@ -659,7 +678,15 @@ public class GameDataBattleAdapter {
       final SupportCategory category,
       final boolean appliesToStrength,
       final Side side,
-      final boolean fromEnemy) {
+      final boolean fromEnemy,
+      final GamePlayer giverOwner) {
+    // Improved Artillery Support doubles how many recipients each giver supports, as the engine's
+    // SupportCalculator does per giver owner. Only the two calc players' tech is read.
+    final int usesPerGiver =
+        attachment.getNumber()
+            * (attachment.getImpArtTech() && TechTracker.hasImprovedArtillerySupport(giverOwner)
+                ? 2
+                : 1);
     final UnitSupportAttachment.BonusType bonusType = attachment.getBonusType();
     // firstRoundOnly is always false: the engine's support model has no first-round-only flag. A
     // missing bonusType (the engine would reject it) is treated as its own uncappable-but-single
@@ -669,7 +696,7 @@ public class GameDataBattleAdapter {
         category,
         attachment.getBonus(),
         appliesToStrength,
-        attachment.getNumber(),
+        usesPerGiver,
         side,
         false,
         new BonusTypeId(bonusType != null ? bonusType.getName() : category.name()),
