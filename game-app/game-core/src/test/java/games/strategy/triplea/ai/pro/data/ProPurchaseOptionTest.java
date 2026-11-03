@@ -52,4 +52,44 @@ class ProPurchaseOptionTest {
     assertThat(manyRolls.getAttack()).isCloseTo(oneRoll.getAttack() * 2, within(1e-9));
     assertThat(manyRolls.getDefense()).isCloseTo(oneRoll.getDefense() * 3, within(1e-9));
   }
+
+  @Test
+  void suicideOnAttackUnitIsSingleUseAndRanksBelowReusableTwin() {
+    final ProPurchaseOption before = option("buyInfantry", infantry(data));
+    infantry(data).getUnitAttachment().setIsSuicideOnAttack(true);
+
+    final ProPurchaseOption after = option("buyInfantry", infantry(data));
+
+    assertThat(before.isSingleUse()).isFalse();
+    assertThat(after.isSingleUse()).isTrue();
+    assertThat(after.getAttackEfficiency(1, data, localInfantry, List.of()))
+        .isLessThan(before.getAttackEfficiency(1, data, localInfantry, List.of()));
+  }
+
+  @Test
+  void hardBetaOffersSuicideUnitInTheNormalLandCategories() {
+    infantry(data).getUnitAttachment().setIsSuicideOnAttack(true);
+    infantry(data).getUnitAttachment().setIsSuicideOnDefense(true);
+
+    final var options = new ProPurchaseOptionMap(russia, data, true);
+
+    assertThat(options.getLandOptions())
+        .extracting(ProPurchaseOption::getUnitType)
+        .contains(infantry(data));
+  }
+
+  @Test
+  void hardKeepsSuicideUnitOutOfEveryBuyCategory() {
+    infantry(data).getUnitAttachment().setIsSuicideOnAttack(true);
+    infantry(data).getUnitAttachment().setIsSuicideOnDefense(true);
+
+    final var options = new ProPurchaseOptionMap(russia, data, false);
+
+    assertThat(options.getLandOptions())
+        .extracting(ProPurchaseOption::getUnitType)
+        .doesNotContain(infantry(data));
+    assertThat(options.getAllOptions())
+        .extracting(ProPurchaseOption::getUnitType)
+        .contains(infantry(data));
+  }
 }

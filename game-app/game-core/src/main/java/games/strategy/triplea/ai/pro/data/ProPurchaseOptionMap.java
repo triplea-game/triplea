@@ -34,6 +34,15 @@ public class ProPurchaseOptionMap {
   private final List<ProPurchaseOption> specialOptions;
 
   public ProPurchaseOptionMap(final GamePlayer player, final GameData data) {
+    this(player, data, false);
+  }
+
+  /**
+   * @param buySuicideUnits when true, single-use (suicide) units go through the normal land, air
+   *     and sea categories; otherwise they are parked in a special list that is never bought from.
+   */
+  public ProPurchaseOptionMap(
+      final GamePlayer player, final GameData data, final boolean buySuicideUnits) {
 
     ProLogger.info("Purchase Options");
 
@@ -65,7 +74,9 @@ public class ProPurchaseOptionMap {
       }
 
       // Add rule to appropriate purchase option list
-      if (unitType.getUnitAttachment().isSuicideOnHit() || canUnitTypeSuicide(unitType, player)) {
+      if (!buySuicideUnits
+          && (unitType.getUnitAttachment().isSuicideOnHit()
+              || canUnitTypeSuicide(unitType, player))) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         specialOptions.add(ppo);
         ProLogger.debug("Special: " + ppo);

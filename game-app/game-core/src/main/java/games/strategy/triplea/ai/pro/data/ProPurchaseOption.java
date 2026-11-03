@@ -28,6 +28,10 @@ import org.triplea.java.collections.IntegerMap;
 /** The result of an AI purchase analysis for a single production rule and unit type. */
 public class ProPurchaseOption {
 
+  // Raised to the 30th power with the rest of the efficiency, so a unit that is lost after one
+  // use needs roughly 20% more strength per PU than a reusable one to rank alongside it.
+  private static final double SINGLE_USE_FACTOR = 0.85;
+
   @Getter private final ProductionRule productionRule;
   @Getter private final UnitType unitType;
   private final GamePlayer player;
@@ -62,6 +66,7 @@ public class ProPurchaseOption {
   @Getter private boolean isAttackSupport;
   @Getter private boolean isDefenseSupport;
   @Getter private final boolean consumesUnits;
+  @Getter private final boolean isSingleUse;
 
   ProPurchaseOption(
       final ProductionRule productionRule,
@@ -142,6 +147,10 @@ public class ProPurchaseOption {
       }
     }
     consumesUnits = !unitAttachment.getConsumesUnits().isEmpty();
+    isSingleUse =
+        unitAttachment.isSuicideOnHit()
+            || (unitAttachment.getIsSuicideOnAttack() && movement > 0)
+            || unitAttachment.getIsSuicideOnDefense();
   }
 
   @Override
@@ -404,6 +413,7 @@ public class ProPurchaseOption {
       final double seaFactor,
       final GameData data) {
     final double hitPointPerUnitFactor = (3 + (double) hitPoints / quantity);
+    final double reuseFactor = isSingleUse ? SINGLE_USE_FACTOR : 1;
     final double attackValue =
         attackFactor * (attack + supportAttackFactor * quantity) * 6 / data.getDiceSides();
     final double defenseValue =
@@ -413,6 +423,7 @@ public class ProPurchaseOption {
                 * hitPointPerUnitFactor
                 * distanceFactor
                 * seaFactor
+                * reuseFactor
                 / cost,
             30)
         / quantity;
