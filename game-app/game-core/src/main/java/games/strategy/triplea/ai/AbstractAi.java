@@ -15,6 +15,7 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PoliticsDelegate;
+import games.strategy.triplea.delegate.RocketsFireHelper;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.data.BattleListing;
@@ -32,6 +33,7 @@ import games.strategy.triplea.settings.ClientSetting;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -107,7 +109,42 @@ public abstract class AbstractAi extends AbstractBasePlayer {
   @Override
   public Territory whereShouldRocketsAttack(
       final Collection<Territory> candidates, final Territory from) {
-    return CollectionUtils.getAny(candidates);
+    final Territory planned = plannedRocketTarget(from);
+    if (planned != null && candidates.contains(planned)) {
+      return planned;
+    }
+    // Rocket damage is capped by the target's production, so hit the richest territory.
+    return candidates.stream()
+        .min(
+            Comparator.<Territory>comparingInt(TerritoryAttachment::getProduction)
+                .reversed()
+                .thenComparing(Territory::getName))
+        .orElse(null);
+  }
+
+  /**
+   * The engine asks launcher by launcher, so each call re-plans every launcher and returns the
+   * target planned for {@code from}; the plan is deterministic, so the answers fit together.
+   */
+  private @Nullable Territory plannedRocketTarget(final @Nullable Territory from) {
+    if (from == null || getGamePlayer() == null) {
+      return null;
+    }
+    final GameData data = from.getData();
+    final GamePlayer player = getGamePlayer();
+    final Map<Territory, Set<Territory>> reach = new HashMap<>();
+    for (final Territory launcher : RocketsFireHelper.getTerritoriesWithRockets(data, player)) {
+      final Set<Territory> targets =
+          RocketsFireHelper.getTargetsWithinRange(launcher, data, player);
+      if (!targets.isEmpty()) {
+        reach.put(launcher, targets);
+      }
+    }
+    return RocketTargetPlanner.plan(
+            reach,
+            data.getTechTracker().getRocketNumberPerTerritory(player),
+            TerritoryAttachment::getProduction)
+        .get(from);
   }
 
   @Override
