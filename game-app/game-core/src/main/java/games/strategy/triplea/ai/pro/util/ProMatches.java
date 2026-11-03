@@ -112,6 +112,18 @@ public final class ProMatches {
     return route.getSteps().stream().allMatch(Matches.territoryEffectsAllowUnits(List.of(unit)));
   }
 
+  /**
+   * Whether every territory on {@code route}, start included, holds the units that {@code unit}'s
+   * {@code requiresUnitsToMove} asks for (a unit that stays put moves nowhere, so it passes). Like
+   * the engine's check it reads the current board, so use it for my own moves, not for what an
+   * enemy could bring.
+   */
+  public static boolean routeHasRequiredUnitsToMove(final Route route, final Unit unit) {
+    return route.numberOfSteps() == 0
+        || route.getAllTerritories().stream()
+            .allMatch(Matches.territoryHasRequiredUnitsToMove(List.of(unit)));
+  }
+
   public static Predicate<Territory> territoryCanMoveLandUnits(
       final GamePlayer player, final boolean isCombatMove) {
     return Matches.territoryDoesNotCostMoneyToEnter(player.getData().getProperties())
