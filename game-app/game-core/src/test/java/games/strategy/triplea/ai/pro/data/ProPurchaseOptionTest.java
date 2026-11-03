@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.within;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.xml.TestMapGameData;
@@ -91,5 +92,19 @@ class ProPurchaseOptionTest {
     assertThat(options.getAllOptions())
         .extracting(ProPurchaseOption::getUnitType)
         .contains(infantry(data));
+  }
+
+  @Test
+  void ruleWithoutPuCostHasFiniteEfficiencies() {
+    final var freeRule = new ProductionRule("buyFreeInfantry", data);
+    freeRule.addResult(infantry(data), 1);
+    final var free = new ProPurchaseOption(freeRule, infantry(data), russia, data);
+
+    assertThat(free.getAttackEfficiency(1, data, localInfantry, List.of())).isFinite();
+    assertThat(free.getDefenseEfficiency(1, data, localInfantry, List.of())).isFinite();
+    assertThat(free.getFodderEfficiency(1, data, localInfantry, List.of())).isFinite();
+    assertThat(free.getAmphibEfficiency(data, localInfantry, List.of())).isFinite();
+    assertThat(free.getAttackEfficiency()).isFinite();
+    assertThat(free.getTransportEfficiency()).isFinite();
   }
 }

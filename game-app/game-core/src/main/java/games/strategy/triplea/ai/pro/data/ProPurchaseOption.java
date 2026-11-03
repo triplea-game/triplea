@@ -37,6 +37,7 @@ public class ProPurchaseOption {
   private final GamePlayer player;
   @Getter private final int cost;
   @Getter private final IntegerMap<Resource> costs;
+  private final double efficiencyCost;
   @Getter private final boolean isConstruction;
   @Getter private final String constructionType;
   @Getter private final int constructionTypePerTurn;
@@ -80,6 +81,9 @@ public class ProPurchaseOption {
     final Resource pus = data.getResourceList().getResourceOrThrow(Constants.PUS);
     cost = productionRule.getCosts().getInt(pus);
     costs = productionRule.getCosts();
+    // A rule with no PU cost (eg: a map paid in other resources) would divide the efficiencies by
+    // zero; fall back to the total of all its costs, and to 1 for a free rule.
+    efficiencyCost = Math.max(1, cost > 0 ? cost : costs.totalValues());
     isConstruction = unitAttachment.isConstruction();
     constructionType = unitAttachment.getConstructionType();
     constructionTypePerTurn = unitAttachment.getConstructionsPerTerrPerTypePerTurn();
@@ -109,7 +113,7 @@ public class ProPurchaseOption {
     isLandTransport = unitAttachment.isLandTransport();
     isCarrier = unitAttachment.getCarrierCapacity() > 0;
     carrierCapacity = unitAttachment.getCarrierCapacity() * quantity;
-    transportEfficiency = (double) unitAttachment.getTransportCapacity() / cost;
+    transportEfficiency = (double) unitAttachment.getTransportCapacity() / efficiencyCost;
     if (hitPoints == 0) {
       costPerHitPoint = Double.POSITIVE_INFINITY;
     } else {
@@ -119,19 +123,19 @@ public class ProPurchaseOption {
         (hitPoints
                 + 0.2 * attack * 6 / data.getDiceSides()
                 + 0.2 * defense * 6 / data.getDiceSides())
-            / cost;
+            / efficiencyCost;
     attackEfficiency =
         (1 + hitPoints)
             * (hitPoints
                 + attack * 6 / data.getDiceSides()
                 + 0.5 * defense * 6 / data.getDiceSides())
-            / cost;
+            / efficiencyCost;
     defenseEfficiency =
         (1 + hitPoints)
             * (hitPoints
                 + 0.5 * attack * 6 / data.getDiceSides()
                 + defense * 6 / data.getDiceSides())
-            / cost;
+            / efficiencyCost;
     maxBuiltPerPlayer = unitAttachment.getMaxBuiltPerPlayer();
 
     // Support fields
@@ -282,7 +286,7 @@ public class ProPurchaseOption {
             ((2 * hitPoints) + attackValue + defenseValue)
                 * hitPointPerUnitFactor
                 * transportCostFactor
-                / cost,
+                / efficiencyCost,
             30)
         / quantity;
   }
@@ -424,7 +428,7 @@ public class ProPurchaseOption {
                 * distanceFactor
                 * seaFactor
                 * reuseFactor
-                / cost,
+                / efficiencyCost,
             30)
         / quantity;
   }
