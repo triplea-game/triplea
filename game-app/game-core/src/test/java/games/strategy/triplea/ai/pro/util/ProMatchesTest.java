@@ -131,7 +131,7 @@ class ProMatchesTest {
   @Test
   void transportCanLoadInCombatMoveEvenIfFlaggedAsFought()
       throws MutableProperty.InvalidValueException {
-    startStep("germansCombatMove");
+    startStep("germanCombatMove");
     markFoughtInCombat();
 
     assertThat(ProMatches.transportCanLoad().test(transport)).isTrue();

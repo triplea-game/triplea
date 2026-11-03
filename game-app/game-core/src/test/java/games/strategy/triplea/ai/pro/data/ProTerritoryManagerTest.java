@@ -3,10 +3,15 @@ package games.strategy.triplea.ai.pro.data;
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static games.strategy.triplea.delegate.GameDataTestUtil.british;
 import static games.strategy.triplea.delegate.GameDataTestUtil.fighter;
+import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
+import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
+import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
+import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.pro.ProData;
@@ -91,5 +96,37 @@ class ProTerritoryManagerTest {
     final ProTerritoryManager manager = new ProTerritoryManager(null, proData);
     manager.populateDefenseOptions(List.of());
     return manager;
+  }
+
+  private final GameData transportData = TestMapGameData.WW2V3_1941.getGameData();
+  private final Territory baltic = territory("5 Sea Zone", transportData);
+  private final Unit transport = transport(transportData).create(germans(transportData));
+
+  private ProTerritoryManager nonCombatDefendOptions() {
+    transportData.getSequence().setRoundAndStep(1, "Non Combat Move", germans(transportData));
+    addTo(baltic, List.of(transport));
+    addTo(
+        territory("Germany", transportData),
+        infantry(transportData).create(1, germans(transportData)));
+    return planDefense(transportData, germans(transportData));
+  }
+
+  private boolean plansToLoad(final ProTerritoryManager manager) {
+    return manager.getDefendOptions().getTransportList().stream()
+        .filter(t -> t.getTransport().equals(transport))
+        .anyMatch(t -> !t.getSeaTransportMap().isEmpty());
+  }
+
+  @Test
+  void transportPlansToLoadAfterCombatWhenNotBarred() {
+    assertThat(plansToLoad(nonCombatDefendOptions())).isTrue();
+  }
+
+  @Test
+  void transportThatFoughtDoesNotPlanToLoadInNonCombat()
+      throws MutableProperty.InvalidValueException {
+    transport.getProperty(Unit.PropertyName.WAS_IN_COMBAT).orElseThrow().setValue(true);
+
+    assertThat(plansToLoad(nonCombatDefendOptions())).isFalse();
   }
 }
