@@ -265,7 +265,7 @@ public class ProOddsCalculator {
     final int runCount = Math.max(16, 100 - minArmySize);
     final GamePlayer attacker = CollectionUtils.getAny(attackingUnits).getOwner();
     final GamePlayer defender = CollectionUtils.getAny(defendingUnits).getOwner();
-    final AggregateResults results =
+    AggregateResults results =
         calc.calculate(
             attacker,
             defender,
@@ -283,18 +283,18 @@ public class ProOddsCalculator {
         && !t.isWater()
         && Math.abs(capturePercentage(results) - proData.getMinWinPercentage())
             < BORDERLINE_CAPTURE_PERCENTAGE) {
-      results.addResults(
+      // Results can't be merged across calculators, so rerun at the full 4x sample size
+      results =
           calc.calculate(
-                  attacker,
-                  defender,
-                  t,
-                  attackingUnits,
-                  defendingUnits,
-                  bombardingUnits,
-                  TerritoryEffectHelper.getEffects(t),
-                  retreatWhenOnlyAirLeft,
-                  3 * runCount)
-              .getResults());
+              attacker,
+              defender,
+              t,
+              attackingUnits,
+              defendingUnits,
+              bombardingUnits,
+              TerritoryEffectHelper.getEffects(t),
+              retreatWhenOnlyAirLeft,
+              4 * runCount);
     }
 
     // Find battle result statistics

@@ -30,6 +30,8 @@ rootProject.name = "triplea"
 
 include(":ai")
 project(":ai").projectDir = file("game-app/ai")
+include(":battle-calc-core")
+project(":battle-calc-core").projectDir = file("game-app/battle-calc-core")
 include(":domain-data")
 project(":domain-data").projectDir = file("game-app/domain-data")
 include(":game-core")
