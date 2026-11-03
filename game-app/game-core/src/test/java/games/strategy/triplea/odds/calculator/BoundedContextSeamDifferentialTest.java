@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -70,30 +69,31 @@ class BoundedContextSeamDifferentialTest extends AbstractClientSettingTestCase {
   }
 
   /**
-   * The known phase-1 {@code SurvivorMapper} transform-drop, pinned against the oracle for the
-   * first time. In TWW a {@code germanBattleship} that takes a single hit transforms via {@code
-   * whenHitPointsDamagedChangesInto} into a {@code germanBattleship-damaged} bucket; the mapper
-   * matches survivors back to caller units by type name, and no original carries that transformed
-   * type, so the survivor is silently dropped from "units remaining." One {@code americanCruiser}
-   * lands exactly one hit on the 2-HP battleship (and dies to its return fire), leaving the engine
-   * a lone damaged-battleship survivor while the seam reports none — an expected divergence that
-   * confirms the drop is real and scoped, not worse than believed. Disabled as a characterization
-   * pin of the {@code TODO(seam-phase2)} at {@code SurvivorMapper#selectOriginals}
-   * (SurvivorMapper.java:107-110), whose type-name match cannot claim an original for a transformed
-   * survivor; kept so the drop cannot silently worsen, mirroring the two direct-simulator pins.
+   * A type-transformed survivor must reach the caller. In TWW a {@code germanBattleship} that takes
+   * a single hit transforms via {@code whenHitPointsDamagedChangesInto} into a {@code
+   * germanBattleship-damaged} bucket; no original carries that type, so the mapper must fall back
+   * to the original whose transform chain reaches it. One {@code americanCruiser} lands exactly one
+   * hit on the 2-HP battleship (and dies to its return fire), leaving the engine a lone damaged
+   * battleship survivor. The oracle reports it as the transformed type; the seam hands back the
+   * caller's own (untransformed) battleship instance, since it never mutates live units.
    */
   @Test
-  @Disabled(
-      "phase-1 residual: SurvivorMapper type-name drop of a whenHitPointsDamagedChangesInto"
-          + " survivor, see SurvivorMapper#selectOriginals")
-  void seamDropsATypeTransformedSurvivorTheEngineKeeps() {
+  void seamKeepsATypeTransformedSurvivorLikeTheEngine() {
     final GameData gameData = TestMapGameData.TWW.getGameData();
     final Territory seaZone = territory("33 Sea Zone", gameData);
     final Collection<Unit> attacking = americanCruiser(gameData).create(1, usa(gameData));
     final Collection<Unit> defending = germanBattleship(gameData).create(1, germany(gameData));
 
-    assertSeamSurvivorsMatchEngine(
-        gameData, usa(gameData), germany(gameData), seaZone, attacking, defending, -1);
+    final AggregateResults seam =
+        seamResults(gameData, usa(gameData), germany(gameData), seaZone, attacking, defending, -1);
+    final AggregateResults oracle =
+        oracleResults(
+            gameData, usa(gameData), germany(gameData), seaZone, attacking, defending, -1);
+
+    assertThat(countByType(oracle.getAverageDefendingUnitsRemaining()))
+        .isEqualTo(Map.of("germanBattleship-damaged", 1));
+    assertThat(seam.getAverageDefendingUnitsRemaining()).containsExactlyElementsOf(defending);
+    assertThat(seam.getAverageAttackingUnitsRemaining()).isEmpty();
   }
 
   /**

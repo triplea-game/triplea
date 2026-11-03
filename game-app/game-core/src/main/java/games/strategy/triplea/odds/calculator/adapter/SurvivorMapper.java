@@ -1,6 +1,7 @@
 package games.strategy.triplea.odds.calculator.adapter;
 
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.odds.calculator.context.model.BattleResult;
 import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
 import games.strategy.triplea.odds.calculator.context.model.Force;
@@ -11,11 +12,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import org.triplea.util.Tuple;
 
 /**
  * Maps the representative run's survivor counts back onto the caller's <em>original</em> {@link
@@ -104,15 +108,16 @@ class SurvivorMapper {
    * preferring instances whose current hits match the profile's damage level when a type survives
    * at several levels, else any unused instance of that type. A unit is claimed at most once.
    *
-   * <p>TODO(seam-phase2): a survivor whose profile transformed to a different {@code UnitType} via
-   * {@code whenHitPointsDamagedChangesInto} cannot be matched to an original by type name, so it is
-   * dropped from the returned units. The identity-dependent AI consumers deal in single-HP units,
-   * so this is a known phase-2 gap rather than a live bug.
+   * <p>A survivor whose profile transformed to a different {@code UnitType} via {@code
+   * whenHitPointsDamagedChangesInto} has no original of its own type name. Once every same-type
+   * bucket has claimed its units, it takes a still-unclaimed original whose transform chain reaches
+   * its type, so the unit is not dropped from the returned survivors.
    */
   private static Collection<Unit> selectOriginals(
       final Force survivors, final List<Unit> originals) {
     final List<Unit> selected = new ArrayList<>();
     final Set<Unit> claimed = Collections.newSetFromMap(new IdentityHashMap<>());
+    final Map<Key, Integer> unmatched = new LinkedHashMap<>();
     for (final Map.Entry<Key, Integer> entry : survivors.counts().entrySet()) {
       if (entry.getKey().state() == Lifecycle.DEAD) {
         continue;
@@ -123,9 +128,53 @@ class SurvivorMapper {
       int remaining = entry.getValue();
       // Exact damage-level matches first, then any unclaimed instance of the type.
       remaining = claim(selected, claimed, originals, typeName, remaining, wantedHits, true);
-      claim(selected, claimed, originals, typeName, remaining, wantedHits, false);
+      remaining = claim(selected, claimed, originals, typeName, remaining, wantedHits, false);
+      if (remaining > 0) {
+        unmatched.put(entry.getKey(), remaining);
+      }
+    }
+    for (final Map.Entry<Key, Integer> entry : unmatched.entrySet()) {
+      claimTransformed(
+          selected, claimed, originals, entry.getKey().profile().type().name(), entry.getValue());
     }
     return selected;
+  }
+
+  /**
+   * Claims unclaimed originals whose {@code whenHitPointsDamagedChangesInto} chain reaches a type.
+   */
+  private static void claimTransformed(
+      final List<Unit> selected,
+      final Set<Unit> claimed,
+      final List<Unit> originals,
+      final String typeName,
+      final int wanted) {
+    int remaining = wanted;
+    for (final Unit unit : originals) {
+      if (remaining <= 0) {
+        break;
+      }
+      if (!claimed.contains(unit) && transformsInto(unit.getType(), typeName, new HashSet<>())) {
+        claimed.add(unit);
+        selected.add(unit);
+        remaining--;
+      }
+    }
+  }
+
+  private static boolean transformsInto(
+      final UnitType type, final String typeName, final Set<UnitType> visited) {
+    if (!visited.add(type)) {
+      return false;
+    }
+    for (final Tuple<Boolean, UnitType> change :
+        type.getUnitAttachment().getWhenHitPointsDamagedChangesInto().values()) {
+      final UnitType next = change.getSecond();
+      if (next.getName().equals(typeName) || transformsInto(next, typeName, visited)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private static int claim(
