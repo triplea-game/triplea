@@ -283,8 +283,7 @@ public class ProOddsCalculator {
       return airBattleWipedOutAttackers(proData, t, attackingUnits, defendingUnits, airBattle);
     }
     if (mainBattleDefenders.stream().noneMatch(Matches.unitIsNotInfrastructure())) {
-      return airBattleClearedDefenders(
-          proData, t, attackingUnits, mainBattleAttackers, defendingUnits, airBattle);
+      return airBattleClearedDefenders(proData, t, mainBattleAttackers, defendingUnits, airBattle);
     }
 
     final int minArmySize = Math.min(mainBattleAttackers.size(), mainBattleDefenders.size());
@@ -410,7 +409,6 @@ public class ProOddsCalculator {
   private static ProBattleResult airBattleClearedDefenders(
       final ProData proData,
       final Territory t,
-      final Collection<Unit> attackingUnits,
       final Collection<Unit> survivingAttackers,
       final Collection<Unit> defendingUnits,
       final ProAirBattleEstimator.Outcome airBattle) {
