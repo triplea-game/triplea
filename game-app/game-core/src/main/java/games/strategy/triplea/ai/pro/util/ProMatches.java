@@ -109,7 +109,9 @@ public final class ProMatches {
    * for every unit type, so a sea or air unit can be shut out of a zone too.
    */
   public static boolean routeAllowsUnit(final Route route, final Unit unit) {
-    return route.getSteps().stream().allMatch(Matches.territoryEffectsAllowUnits(List.of(unit)));
+    return !Matches.unitIsOfTypes(
+            TerritoryEffectHelper.getUnitTypesForUnitsNotAllowedIntoTerritory(route.getSteps()))
+        .test(unit);
   }
 
   /**
@@ -120,6 +122,7 @@ public final class ProMatches {
    */
   public static boolean routeHasRequiredUnitsToMove(final Route route, final Unit unit) {
     return route.numberOfSteps() == 0
+        || unit.getUnitAttachment().getRequiresUnitsToMove().isEmpty()
         || route.getAllTerritories().stream()
             .allMatch(Matches.territoryHasRequiredUnitsToMove(List.of(unit)));
   }
