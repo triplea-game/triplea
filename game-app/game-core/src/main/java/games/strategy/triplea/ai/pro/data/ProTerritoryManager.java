@@ -16,6 +16,7 @@ import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.ai.pro.util.ProTransportUtils;
 import games.strategy.triplea.ai.pro.util.ProUtils;
+import games.strategy.triplea.attachments.CanalAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -443,7 +444,8 @@ public class ProTerritoryManager {
         ProMatches.territoryIsEnemyOrCantBeHeld(player, territoriesThatCantBeHeld),
         true,
         isCheckingEnemyAttacks,
-        isIgnoringRelationships);
+        isIgnoringRelationships,
+        Set.of());
     findBombardOptions(
         proData,
         player,
@@ -514,6 +516,9 @@ public class ProTerritoryManager {
     final Set<Territory> alliedTerritories = new HashSet<>();
     final List<Territory> enemyTerritories = new ArrayList<>(clearedTerritories);
 
+    final Set<Territory> canalLandTerritories = getCanalLandTerritories(data.getMap());
+    final Map<GamePlayer, Set<Territory>> likelyCapturedCanalTerritories = new HashMap<>();
+
     // Loop through each enemy to determine the maximum number of enemy units that can attack each
     // territory
     for (final GamePlayer enemyPlayer : enemyPlayers) {
@@ -541,11 +546,79 @@ public class ProTerritoryManager {
           territoriesToCheck,
           true,
           true);
+      // An earlier ally may capture a canal's border territory and open the canal for this enemy
+      final Set<Territory> canalsOpenedByAllies = new HashSet<>();
+      likelyCapturedCanalTerritories.forEach(
+          (earlierEnemy, captured) -> {
+            if (enemyPlayer.isAllied(earlierEnemy)) {
+              canalsOpenedByAllies.addAll(captured);
+            }
+          });
+      if (!canalsOpenedByAllies.isEmpty()) {
+        final List<Territory> territoriesThatCantBeHeld = new ArrayList<>(enemyTerritories);
+        territoriesThatCantBeHeld.addAll(territoriesToCheck);
+        findAmphibMoveOptions(
+            proData,
+            enemyPlayer,
+            enemyUnitTerritories,
+            attackMap,
+            new ArrayList<>(),
+            new HashMap<>(),
+            ProMatches.territoryIsEnemyOrCantBeHeld(enemyPlayer, territoriesThatCantBeHeld)
+                .and(ProTerritoryManager::isCapitalOrFactory),
+            true,
+            true,
+            true,
+            canalsOpenedByAllies);
+      }
+      for (final Territory canalTerritory : canalLandTerritories) {
+        if (!enemyPlayer.isAllied(canalTerritory.getOwner())
+            && isLikelyToBeCaptured(
+                enemyPlayer, canalTerritory, attackMap.get(canalTerritory), clearedTerritories)) {
+          likelyCapturedCanalTerritories
+              .computeIfAbsent(enemyPlayer, k -> new HashSet<>())
+              .add(canalTerritory);
+        }
+      }
       alliedTerritories.addAll(
           CollectionUtils.getMatches(attackMap.keySet(), Matches.territoryIsLand()));
       enemyTerritories.removeAll(alliedTerritories);
     }
     return new ProOtherMoveOptions(enemyAttackMaps, player, true);
+  }
+
+  private static boolean isCapitalOrFactory(final Territory t) {
+    return TerritoryAttachment.get(t).map(TerritoryAttachment::isCapital).orElse(false)
+        || ProMatches.territoryHasInfraFactoryAndIsLand().test(t);
+  }
+
+  /** Returns the land territories that border a canal, which decide who may pass through it. */
+  private static Set<Territory> getCanalLandTerritories(final GameMap map) {
+    final Set<Territory> result = new HashSet<>();
+    for (final Territory t : map.getTerritories()) {
+      for (final CanalAttachment canal : CanalAttachment.get(t)) {
+        result.addAll(canal.getLandTerritories());
+      }
+    }
+    return result;
+  }
+
+  private static boolean isLikelyToBeCaptured(
+      final GamePlayer attacker,
+      final Territory t,
+      final ProTerritory attackOptions,
+      final Collection<Territory> clearedTerritories) {
+    if (attackOptions == null) {
+      return false;
+    }
+    final List<Unit> attackers = new ArrayList<>(attackOptions.getMaxUnits());
+    attackers.addAll(attackOptions.getMaxAmphibUnits());
+    if (attackers.isEmpty()) {
+      return false;
+    }
+    final List<Unit> defenders =
+        clearedTerritories.contains(t) ? List.of() : t.getMatches(Matches.enemyUnit(attacker));
+    return ProBattleUtils.estimateStrengthDifference(t, attackers, defenders) > 55;
   }
 
   private static void findPotentialAttackOptions(
@@ -605,7 +678,8 @@ public class ProTerritoryManager {
         ProMatches.territoryIsPotentialEnemy(player, otherPlayers),
         true,
         false,
-        true);
+        true,
+        Set.of());
     findBombardOptions(
         proData, player, myUnitTerritories, moveMap, bombardMap, transportMapList, false);
   }
@@ -667,7 +741,8 @@ public class ProTerritoryManager {
         Matches.isTerritoryAllied(player),
         false,
         isCheckingEnemyAttacks,
-        false);
+        false,
+        Set.of());
   }
 
   private static ProOtherMoveOptions findEnemyDefendOptions(
@@ -1039,7 +1114,8 @@ public class ProTerritoryManager {
       final Predicate<Territory> moveAmphibToTerritoryMatch,
       final boolean isCombatMove,
       final boolean isCheckingEnemyAttacks,
-      final boolean isIgnoringRelationships) {
+      final boolean isIgnoringRelationships,
+      final Set<Territory> assumedControlledCanalTerritories) {
     final GameData data = proData.getData();
     final GameMap map = data.getMap();
     final Predicate<Unit> isTransport =
@@ -1075,7 +1151,8 @@ public class ProTerritoryManager {
         // Get remaining moves
         int movesLeft =
             getUnitRange(transport, transportTerritory, player, isCheckingEnemyAttacks).intValue();
-        MoveValidator moveValidator = new MoveValidator(data, !isCombatMove);
+        final MoveValidator moveValidator =
+            new MoveValidator(data, !isCombatMove, assumedControlledCanalTerritories);
         while (movesLeft >= 0) {
           final Set<Territory> nextTerritories = new HashSet<>();
           for (final Territory from : currentTerritories) {
@@ -1116,7 +1193,8 @@ public class ProTerritoryManager {
               final Predicate<Territory> canMove =
                   isCheckingEnemyAttacks ? canMoveSea : canMoveSeaThrough;
               for (final Territory to : map.getNeighbors(from, movesLeft, canMove)) {
-                if (map.getRouteForUnit(from, to, canMoveSeaThrough, transport, player)
+                if (map.getRouteForUnit(
+                        from, to, canMoveSeaThrough, transport, player, moveValidator)
                     .isPresent()) {
                   seaMoveTerritories.add(to);
                 }
@@ -1162,12 +1240,7 @@ public class ProTerritoryManager {
                   }
                   final Set<Territory> blockedUnloads =
                       map.getNeighbors(blocked, unloadAmphibTerritoryMatch).stream()
-                          .filter(
-                              t ->
-                                  TerritoryAttachment.get(t)
-                                          .map(TerritoryAttachment::isCapital)
-                                          .orElse(false)
-                                      || ProMatches.territoryHasInfraFactoryAndIsLand().test(t))
+                          .filter(ProTerritoryManager::isCapitalOrFactory)
                           .collect(Collectors.toSet());
                   if (!blockedUnloads.isEmpty()) {
                     proTransportData.addBlockedSeaTerritory(

@@ -44,6 +44,11 @@ public class CanalAttachment extends DefaultAttachment {
     return !get(t, canalAttachment -> canalAttachment.getCanalName().equals(canalName)).isEmpty();
   }
 
+  /** Returns every canal that the given territory is a sea-side border of. */
+  public static List<CanalAttachment> get(final Territory t) {
+    return get(t, attachment -> true);
+  }
+
   public static List<CanalAttachment> get(final Territory t, final Route onRoute) {
     return get(t, attachment -> isCanalOnRoute(attachment.getCanalName(), onRoute));
   }

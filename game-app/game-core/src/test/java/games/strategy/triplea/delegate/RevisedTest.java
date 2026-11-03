@@ -1566,6 +1566,21 @@ class RevisedTest extends AbstractClientSettingTestCase {
   }
 
   @Test
+  void testCanalPassesWhenBorderTerritoriesAreAssumedControlled() {
+    final Territory sz14 = territory("14 Sea Zone", gameData);
+    final Territory sz15 = territory("15 Sea Zone", gameData);
+    final Territory sz34 = territory("34 Sea Zone", gameData);
+    final Route route = new Route(sz14, sz15, sz34);
+    final Set<Territory> suezBorderTerritories =
+        Set.of(territory("Anglo Egypt", gameData), territory("Trans-Jordan", gameData));
+    final MoveValidator withoutAssumption = new MoveValidator(gameData, false);
+    final MoveValidator withAssumption = new MoveValidator(gameData, false, suezBorderTerritories);
+
+    assertNotNull(withoutAssumption.validateCanal(route, sz14.getUnits(), germans(gameData)));
+    assertNull(withAssumption.validateCanal(route, sz14.getUnits(), germans(gameData)));
+  }
+
+  @Test
   void testTransportIsTransport() {
     assertTrue(Matches.unitIsSeaTransport().test(transport(gameData).create(british(gameData))));
     assertFalse(Matches.unitIsSeaTransport().test(infantry(gameData).create(british(gameData))));
