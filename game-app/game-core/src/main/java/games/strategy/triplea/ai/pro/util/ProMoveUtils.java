@@ -450,7 +450,11 @@ public final class ProMoveUtils {
     mergeSameRouteMoves(moves);
 
     // Move units
-    for (final MoveDescription move : moves) {
+    for (final MoveDescription proposedMove : moves) {
+      final MoveDescription move = withoutUnitsOverStackingLimit(proData, proposedMove);
+      if (move.getUnits().isEmpty()) {
+        continue;
+      }
       moveDel
           .performMove(move)
           .ifPresent(
@@ -505,5 +509,26 @@ public final class ProMoveUtils {
     all.addAll(b.getUnits());
     return !(all.stream().anyMatch(Matches.unitIsAirTransport())
         && all.stream().anyMatch(Matches.unitIsAirTransportable()));
+  }
+
+  /**
+   * Drops units that the stacking limits would reject. The validator refuses the whole move when
+   * any unit in it is over a limit, which would strand every other unit in the same merged move.
+   */
+  private static MoveDescription withoutUnitsOverStackingLimit(
+      final ProData proData, final MoveDescription move) {
+    if (!move.getUnitsToSeaTransports().isEmpty()) {
+      return move;
+    }
+    final Collection<Unit> overLimit =
+        MoveValidator.getUnitsOverStackingLimit(
+            move.getUnits(), move.getRoute(), proData.getPlayer());
+    if (overLimit.isEmpty()) {
+      return move;
+    }
+    ProLogger.info("Not moving " + overLimit + " over " + move.getRoute() + ": stacking limit");
+    final List<Unit> allowed = new ArrayList<>(move.getUnits());
+    allowed.removeAll(overLimit);
+    return new MoveDescription(allowed, move.getRoute());
   }
 }

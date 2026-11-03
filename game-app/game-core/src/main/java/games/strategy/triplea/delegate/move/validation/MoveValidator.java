@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -834,6 +835,32 @@ public class MoveValidator {
     }
 
     // test for stack limits per unit
+    for (final Unit unit : getUnitsOverStackingLimit(units, route, player)) {
+      result.addDisallowedUnit(
+          "Unit type " + unit.getType().getName() + " has reached stacking limit", unit);
+    }
+
+    // Don't allow move through impassable territories
+    if (!isEditMode && route.anyMatch(Matches.territoryIsImpassable())) {
+      return result.setErrorReturnResult(CANT_MOVE_THROUGH_IMPASSABLE);
+    }
+    if (canPayToCrossNeutralTerritory(route, player, result).hasError()) {
+      return result;
+    }
+    if (Properties.getNeutralsImpassable(data.getProperties())
+        && isNotNeutralsBlitzable(data.getProperties())
+        && !route.getMatches(Matches.territoryIsNeutralButNotWater()).isEmpty()) {
+      return result.setErrorReturnResult(CANNOT_VIOLATE_NEUTRALITY);
+    }
+    return result;
+  }
+
+  /**
+   * Returns the units that would be rejected by the movement or attacking stacking limits when
+   * moved along the given route.
+   */
+  public static Collection<Unit> getUnitsOverStackingLimit(
+      final Collection<Unit> units, final Route route, final GamePlayer player) {
     final PlayerAttachment pa = PlayerAttachment.get(player);
     final Set<Triple<Integer, String, Set<UnitType>>> playerMovementLimit =
         (pa != null ? pa.getMovementLimit() : Set.of());
@@ -859,6 +886,7 @@ public class MoveValidator {
         };
     final Collection<Unit> unitsWithStackingLimits =
         CollectionUtils.getMatches(units, hasMovementOrAttackingLimit);
+    final Set<Unit> overLimit = new LinkedHashSet<>();
     for (final Territory t : route.getSteps()) {
       final String limitType;
       if (Matches.isTerritoryEnemyAndNotUnownedWater(player).test(t)
@@ -869,25 +897,9 @@ public class MoveValidator {
       }
       final Collection<Unit> allowedUnits =
           UnitStackingLimitFilter.filterUnits(unitsWithStackingLimits, limitType, player, t);
-      for (Unit unit : CollectionUtils.difference(unitsWithStackingLimits, allowedUnits)) {
-        result.addDisallowedUnit(
-            "Unit type " + unit.getType().getName() + " has reached stacking limit", unit);
-      }
+      overLimit.addAll(CollectionUtils.difference(unitsWithStackingLimits, allowedUnits));
     }
-
-    // Don't allow move through impassable territories
-    if (!isEditMode && route.anyMatch(Matches.territoryIsImpassable())) {
-      return result.setErrorReturnResult(CANT_MOVE_THROUGH_IMPASSABLE);
-    }
-    if (canPayToCrossNeutralTerritory(route, player, result).hasError()) {
-      return result;
-    }
-    if (Properties.getNeutralsImpassable(data.getProperties())
-        && isNotNeutralsBlitzable(data.getProperties())
-        && !route.getMatches(Matches.territoryIsNeutralButNotWater()).isEmpty()) {
-      return result.setErrorReturnResult(CANNOT_VIOLATE_NEUTRALITY);
-    }
-    return result;
+    return overLimit;
   }
 
   private static Collection<Unit> findNonDependentUnits(
