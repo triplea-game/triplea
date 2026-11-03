@@ -282,7 +282,8 @@ public class ProOddsCalculator {
     if (mainBattleAttackers.isEmpty()) {
       return airBattleWipedOutAttackers(proData, t, attackingUnits, defendingUnits, airBattle);
     }
-    if (mainBattleDefenders.stream().noneMatch(Matches.unitIsNotInfrastructure())) {
+    if (!airBattle.isEmpty()
+        && mainBattleDefenders.stream().noneMatch(Matches.unitIsNotInfrastructure())) {
       return airBattleClearedDefenders(proData, t, mainBattleAttackers, defendingUnits, airBattle);
     }
 

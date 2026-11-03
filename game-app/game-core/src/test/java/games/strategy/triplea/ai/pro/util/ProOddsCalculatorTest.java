@@ -1,5 +1,6 @@
 package games.strategy.triplea.ai.pro.util;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.aaGun;
 import static games.strategy.triplea.delegate.GameDataTestUtil.fighter;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
@@ -105,6 +106,20 @@ class ProOddsCalculatorTest {
         .calculate(
             any(), any(), any(), any(), defending.capture(), any(), any(), anyBoolean(), anyInt());
     assertThat(defending.getValue()).containsExactlyElementsOf(defenders);
+  }
+
+  @Test
+  void infrastructureOnlyDefendersStillGoToTheCalculatorWhenThereIsNoAirBattle() {
+    final IBattleCalculator battleCalculator = mockCalculator();
+    final Territory karelia = territory("Karelia S.S.R.", gameData);
+    final List<Unit> attackers = infantry(gameData).create(2, germans(gameData));
+    final List<Unit> defenders = aaGun(gameData).create(1, russians(gameData));
+
+    new ProOddsCalculator(battleCalculator)
+        .callBattleCalc(new ProData(), karelia, attackers, defenders, List.of());
+
+    verify(battleCalculator)
+        .calculate(any(), any(), any(), any(), any(), any(), any(), anyBoolean(), anyInt());
   }
 
   @Test
