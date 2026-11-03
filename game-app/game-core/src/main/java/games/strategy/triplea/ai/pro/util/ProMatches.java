@@ -104,6 +104,14 @@ public final class ProMatches {
     };
   }
 
+  /**
+   * Whether no territory effect on {@code route} bars {@code unit}'s type. The engine enforces this
+   * for every unit type, so a sea or air unit can be shut out of a zone too.
+   */
+  public static boolean routeAllowsUnit(final Route route, final Unit unit) {
+    return route.getSteps().stream().allMatch(Matches.territoryEffectsAllowUnits(List.of(unit)));
+  }
+
   public static Predicate<Territory> territoryCanMoveLandUnits(
       final GamePlayer player, final boolean isCombatMove) {
     return Matches.territoryDoesNotCostMoneyToEnter(player.getData().getProperties())

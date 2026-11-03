@@ -847,7 +847,8 @@ public class ProTerritoryManager {
           final Optional<Route> optionalRoute =
               gameMap.getRouteForUnit(
                   myUnitTerritory, potentialTerritory, canMove, mySeaUnit, player);
-          if (optionalRoute.isEmpty()) {
+          if (optionalRoute.isEmpty()
+              || !ProMatches.routeAllowsUnit(optionalRoute.get(), mySeaUnit)) {
             continue;
           }
           final BigDecimal myRouteLength = optionalRoute.get().getMovementCost(mySeaUnit);
@@ -1063,7 +1064,8 @@ public class ProTerritoryManager {
           final Optional<Route> optionalRoute =
               gameMap.getRouteForUnit(
                   myUnitTerritory, potentialTerritory, canFlyOverMatch, myAirUnit, player);
-          if (optionalRoute.isEmpty()) {
+          if (optionalRoute.isEmpty()
+              || !ProMatches.routeAllowsUnit(optionalRoute.get(), myAirUnit)) {
             continue;
           }
           final BigDecimal myRouteLength = optionalRoute.get().getMovementCost(myAirUnit);
@@ -1195,6 +1197,7 @@ public class ProTerritoryManager {
               for (final Territory to : map.getNeighbors(from, movesLeft, canMove)) {
                 if (map.getRouteForUnit(
                         from, to, canMoveSeaThrough, transport, player, moveValidator)
+                    .filter(route -> ProMatches.routeAllowsUnit(route, transport))
                     .isPresent()) {
                   seaMoveTerritories.add(to);
                 }
@@ -1346,7 +1349,8 @@ public class ProTerritoryManager {
           final Optional<Route> optionalRoute =
               gameMap.getRouteForUnit(
                   myUnitTerritory, bombardFromTerritory, canMove, mySeaUnit, player);
-          if (optionalRoute.isEmpty()) {
+          if (optionalRoute.isEmpty()
+              || !ProMatches.routeAllowsUnit(optionalRoute.get(), mySeaUnit)) {
             continue;
           }
           final BigDecimal myRouteLength = optionalRoute.get().getMovementCost(mySeaUnit);
