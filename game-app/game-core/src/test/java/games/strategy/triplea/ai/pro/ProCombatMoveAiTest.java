@@ -4,6 +4,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static games.strategy.triplea.delegate.GameDataTestUtil.british;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.removeFrom;
+import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.unitType;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,8 +19,11 @@ import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 class ProCombatMoveAiTest {
@@ -129,6 +133,104 @@ class ProCombatMoveAiTest {
     final ProTerritory westRussia = attack("West Russia", 58, 97);
 
     assertThat(ProCombatMoveAi.mostValuableUnsureAttack(List.of(westRussia), 90)).isEmpty();
+  }
+
+  @Test
+  void capitalDefenseDropsTheAttackDrawingTheMostUnitsFromAroundIt() {
+    final Territory russia = territory("Russia", gameData);
+    final Territory karelia = territory("Karelia S.S.R.", gameData);
+    final Territory westRussia = territory("West Russia", gameData);
+    final Map<Territory, ProTerritory> attackMap =
+        Map.of(
+            karelia, attackWithUnits(karelia, 2, 10, russia),
+            westRussia, attackWithUnits(westRussia, 4, 10, russia));
+
+    assertThat(findAttackNearCapital(russia, attackMap, null)).contains(westRussia);
+  }
+
+  @Test
+  void capitalDefenseSparesTheRetakeOfTheCapitalItself() {
+    final Territory russia = territory("Russia", gameData);
+    final Territory karelia = territory("Karelia S.S.R.", gameData);
+    final Map<Territory, ProTerritory> attackMap =
+        Map.of(
+            russia, attackWithUnits(russia, 6, 10, russia),
+            karelia, attackWithUnits(karelia, 1, 10, russia));
+
+    assertThat(findAttackNearCapital(russia, attackMap, russia)).contains(karelia);
+  }
+
+  @Test
+  void capitalDefenseDropsNothingWhenNoAttackUsesUnitsFromAroundIt() {
+    final Territory russia = territory("Russia", gameData);
+    final Territory germany = territory("Germany", gameData);
+    final Territory karelia = territory("Karelia S.S.R.", gameData);
+    final Map<Territory, ProTerritory> attackMap =
+        Map.of(karelia, attackWithUnits(karelia, 3, 10, germany));
+
+    assertThat(findAttackNearCapital(russia, attackMap, null)).isEmpty();
+  }
+
+  @Test
+  void retakenCapitalDropsAttacksDrawingFromAroundItUntilItHolds() {
+    final Territory russia = territory("Russia", gameData);
+    final Territory karelia = territory("Karelia S.S.R.", gameData);
+    final Territory westRussia = territory("West Russia", gameData);
+    final ProTerritory retake = attackWithUnits(russia, 6, 10, russia);
+    final ProTerritory kareliaAttack = attackWithUnits(karelia, 2, 10, russia);
+    final ProTerritory westRussiaAttack = attackWithUnits(westRussia, 4, 10, russia);
+    final List<ProTerritory> prioritized =
+        new ArrayList<>(List.of(retake, kareliaAttack, westRussiaAttack));
+
+    ProCombatMoveAi.dropAttacksUntilCapitalHolds(
+        russia,
+        Map.of(russia, retake, karelia, kareliaAttack, westRussia, westRussiaAttack),
+        prioritized,
+        unitOrigins::get,
+        attacks -> !attacks.contains(westRussiaAttack));
+
+    assertThat(prioritized).containsExactly(retake, kareliaAttack);
+    assertThat(westRussiaAttack.getUnits()).isEmpty();
+  }
+
+  @Test
+  void retakenCapitalKeepsTheRetakeWhenItNeverHolds() {
+    final Territory russia = territory("Russia", gameData);
+    final Territory karelia = territory("Karelia S.S.R.", gameData);
+    final ProTerritory retake = attackWithUnits(russia, 6, 10, russia);
+    final ProTerritory kareliaAttack = attackWithUnits(karelia, 2, 10, russia);
+    final List<ProTerritory> prioritized = new ArrayList<>(List.of(retake, kareliaAttack));
+
+    ProCombatMoveAi.dropAttacksUntilCapitalHolds(
+        russia,
+        Map.of(russia, retake, karelia, kareliaAttack),
+        prioritized,
+        unitOrigins::get,
+        attacks -> false);
+
+    assertThat(prioritized).containsExactly(retake);
+    assertThat(retake.getUnits()).hasSize(6);
+  }
+
+  private Optional<Territory> findAttackNearCapital(
+      final Territory capital,
+      final Map<Territory, ProTerritory> attackMap,
+      final Territory spared) {
+    return ProCombatMoveAi.findAttackDrawingMostUnitsNear(
+        capital, attackMap, unitOrigins::get, spared);
+  }
+
+  private final Map<Unit, Territory> unitOrigins = new HashMap<>();
+
+  private ProTerritory attackWithUnits(
+      final Territory target, final int units, final double value, final Territory from) {
+    final ProTerritory attack = new ProTerritory(target, new ProData());
+    attack.setValue(value);
+    for (final Unit u : unitType("infantry", gameData).create(units, russians(gameData))) {
+      attack.addUnit(u);
+      unitOrigins.put(u, from);
+    }
+    return attack;
   }
 
   private ProTerritory attack(
