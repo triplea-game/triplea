@@ -30,6 +30,7 @@ import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PoliticsDelegate;
+import games.strategy.triplea.delegate.battle.AirBattle;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
@@ -54,6 +55,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
@@ -488,6 +490,23 @@ public abstract class AbstractProAi extends AbstractAi {
         .min(safest)
         .or(() -> assessments.keySet().stream().min(safest))
         .orElse(null);
+  }
+
+  @Override
+  public Collection<Unit> selectUnitsQuery(
+      final Territory current, final Collection<Unit> possible, final String message) {
+    if (!proData.isBeta()) {
+      return super.selectUnitsQuery(current, possible, message);
+    }
+    // Only asked which defending air units launch to intercept; null launches none and, when
+    // defenders may withdraw, also keeps them out of the battle that follows.
+    final int maxInterceptors = AirBattle.getMaxInterceptionCount(current, possible);
+    return possible.stream()
+        .sorted(
+            Comparator.comparingInt((Unit u) -> u.getUnitAttachment().getAirDefense(u.getOwner()))
+                .reversed())
+        .limit(maxInterceptors)
+        .collect(Collectors.toList());
   }
 
   // TODO: Consider supporting this functionality
