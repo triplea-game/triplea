@@ -14,6 +14,7 @@ import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.ai.pro.data.ProTerritoryManager;
 import games.strategy.triplea.ai.pro.data.ProTransport;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
+import games.strategy.triplea.ai.pro.util.ProAirliftPlanner;
 import games.strategy.triplea.ai.pro.util.ProBattleUtils;
 import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.ai.pro.util.ProMoveUtils;
@@ -175,6 +176,11 @@ public class ProCombatMoveAi {
     this.data = data;
     this.player = player;
 
+    // Airlifts go first: an air transport that has already moved can't carry paratroopers.
+    ProMoveUtils.doMove(
+        proData,
+        ProAirliftPlanner.planAirlifts(data, player, attackMap, proData::getUnitTerritory),
+        moveDel);
     ProMoveUtils.doMove(
         proData, ProMoveUtils.calculateMoveRoutes(proData, player, attackMap, true), moveDel);
     ProMoveUtils.doMove(
