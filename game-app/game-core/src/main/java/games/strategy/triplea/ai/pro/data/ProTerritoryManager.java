@@ -847,7 +847,10 @@ public class ProTerritoryManager {
           final Optional<Route> optionalRoute =
               gameMap.getRouteForUnit(
                   myUnitTerritory, potentialTerritory, canMove, mySeaUnit, player);
-          if (optionalRoute.isEmpty()) {
+          if (optionalRoute.isEmpty()
+              || !ProMatches.routeAllowsUnit(optionalRoute.get(), mySeaUnit)
+              || (!isCheckingEnemyAttacks
+                  && !ProMatches.routeHasRequiredUnitsToMove(optionalRoute.get(), mySeaUnit))) {
             continue;
           }
           final BigDecimal myRouteLength = optionalRoute.get().getMovementCost(mySeaUnit);
@@ -926,7 +929,11 @@ public class ProTerritoryManager {
                     player, u, startTerritory, isCombatMove, enemyTerritories);
         for (final Territory t : potentialTerritories) {
           // Find route over land checking whether unit can blitz
-          if (!isLandMoveOption(isCombatMove, player, u, myUnitTerritory, t, range, canMove)) {
+          final Optional<Route> landRoute =
+              getLandMoveRoute(isCombatMove, player, u, myUnitTerritory, t, range, canMove);
+          if (landRoute.isEmpty()
+              || (!isCheckingEnemyAttacks
+                  && !ProMatches.routeHasRequiredUnitsToMove(landRoute.get(), u))) {
             continue;
           }
 
@@ -947,7 +954,7 @@ public class ProTerritoryManager {
     }
   }
 
-  private static boolean isLandMoveOption(
+  private static Optional<Route> getLandMoveRoute(
       final boolean isCombatMove,
       final GamePlayer player,
       final Unit u,
@@ -958,7 +965,7 @@ public class ProTerritoryManager {
     final Optional<Route> optionalRoute =
         player.getData().getMap().getRouteForUnit(from, to, canMove, u, player);
     if (optionalRoute.isEmpty()) {
-      return false;
+      return Optional.empty();
     }
     final Route route = optionalRoute.get();
     if (route.hasMoreThanOneStep()
@@ -967,19 +974,21 @@ public class ProTerritoryManager {
                 TerritoryEffectHelper.getUnitTypesThatLostBlitz(route.getAllTerritories()))
             .test(u)) {
       // If blitzing then make sure none of the territories cause blitz ability to be lost
-      return false;
+      return Optional.empty();
     }
     if (route.getMovementCost(u).compareTo(range) > 0) {
-      return false;
+      return Optional.empty();
     }
 
     // Skip units that can't participate in combat during combat moves except for land transports.
     if (isCombatMove && !Matches.unitIsLandTransport().test(u)) {
       Collection<Unit> enemyUnits =
           CollectionUtils.getMatches(to.getUnits(), Matches.unitIsEnemyOf(player));
-      return Matches.unitCanParticipateInCombat(true, player, to, 1, enemyUnits).test(u);
+      return Matches.unitCanParticipateInCombat(true, player, to, 1, enemyUnits).test(u)
+          ? optionalRoute
+          : Optional.empty();
     }
-    return true;
+    return optionalRoute;
   }
 
   private static void findAirMoveOptions(
@@ -1063,7 +1072,10 @@ public class ProTerritoryManager {
           final Optional<Route> optionalRoute =
               gameMap.getRouteForUnit(
                   myUnitTerritory, potentialTerritory, canFlyOverMatch, myAirUnit, player);
-          if (optionalRoute.isEmpty()) {
+          if (optionalRoute.isEmpty()
+              || !ProMatches.routeAllowsUnit(optionalRoute.get(), myAirUnit)
+              || (!isCheckingEnemyAttacks
+                  && !ProMatches.routeHasRequiredUnitsToMove(optionalRoute.get(), myAirUnit))) {
             continue;
           }
           final BigDecimal myRouteLength = optionalRoute.get().getMovementCost(myAirUnit);
@@ -1195,6 +1207,7 @@ public class ProTerritoryManager {
               for (final Territory to : map.getNeighbors(from, movesLeft, canMove)) {
                 if (map.getRouteForUnit(
                         from, to, canMoveSeaThrough, transport, player, moveValidator)
+                    .filter(route -> ProMatches.routeAllowsUnit(route, transport))
                     .isPresent()) {
                   seaMoveTerritories.add(to);
                 }
@@ -1346,7 +1359,8 @@ public class ProTerritoryManager {
           final Optional<Route> optionalRoute =
               gameMap.getRouteForUnit(
                   myUnitTerritory, bombardFromTerritory, canMove, mySeaUnit, player);
-          if (optionalRoute.isEmpty()) {
+          if (optionalRoute.isEmpty()
+              || !ProMatches.routeAllowsUnit(optionalRoute.get(), mySeaUnit)) {
             continue;
           }
           final BigDecimal myRouteLength = optionalRoute.get().getMovementCost(mySeaUnit);

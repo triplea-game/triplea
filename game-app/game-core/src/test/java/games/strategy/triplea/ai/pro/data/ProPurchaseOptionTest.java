@@ -40,4 +40,16 @@ class ProPurchaseOptionTest {
     assertThat(infantry.getDefenseEfficiencyWithoutAttackSupport(1, data, localInfantry, List.of()))
         .isCloseTo(infantry.getDefenseEfficiency(1, data, localInfantry, List.of()), within(1e-9));
   }
+
+  @Test
+  void attackAndDefenseCountEveryRoll() {
+    final UnitType infantry = infantry(data);
+    final ProPurchaseOption oneRoll = option("buyInfantry", infantry);
+    infantry.getUnitAttachment().setAttackRolls(2);
+    infantry.getUnitAttachment().setDefenseRolls(3);
+    final ProPurchaseOption manyRolls = option("buyInfantry", infantry);
+
+    assertThat(manyRolls.getAttack()).isCloseTo(oneRoll.getAttack() * 2, within(1e-9));
+    assertThat(manyRolls.getDefense()).isCloseTo(oneRoll.getDefense() * 3, within(1e-9));
+  }
 }
