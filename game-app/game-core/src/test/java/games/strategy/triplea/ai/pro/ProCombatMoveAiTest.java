@@ -24,7 +24,7 @@ class ProCombatMoveAiTest {
         new ProTerritory(territory("New Guinea", gameData), new ProData());
     newGuinea.setCanHold(false);
 
-    assertThat(ProCombatMoveAi.isValuableLanding(newGuinea)).isFalse();
+    assertThat(ProCombatMoveAi.isValuableLanding(newGuinea, true)).isFalse();
   }
 
   @Test
@@ -33,16 +33,46 @@ class ProCombatMoveAiTest {
         new ProTerritory(territory("New Guinea", gameData), new ProData());
     newGuinea.setCanHold(true);
 
-    assertThat(ProCombatMoveAi.isValuableLanding(newGuinea)).isTrue();
+    assertThat(ProCombatMoveAi.isValuableLanding(newGuinea, true)).isTrue();
   }
 
   @Test
-  void factoryIsValuableEvenIfItCantBeHeld() {
+  void factoryThatCantBeHeldAndLosesTuvIsValuableOnHard() {
     final ProTerritory southernEurope =
         new ProTerritory(territory("Southern Europe", gameData), new ProData());
     southernEurope.setCanHold(false);
+    southernEurope.setBattleResult(battleResult(99, -5, true));
 
-    assertThat(ProCombatMoveAi.isValuableLanding(southernEurope)).isTrue();
+    assertThat(ProCombatMoveAi.isValuableLanding(southernEurope, false)).isTrue();
+  }
+
+  @Test
+  void factoryThatCantBeHeldAndLosesTuvIsNotValuableOnBeta() {
+    final ProTerritory southernEurope =
+        new ProTerritory(territory("Southern Europe", gameData), new ProData());
+    southernEurope.setCanHold(false);
+    southernEurope.setBattleResult(battleResult(99, -5, true));
+
+    assertThat(ProCombatMoveAi.isValuableLanding(southernEurope, true)).isFalse();
+  }
+
+  @Test
+  void factoryThatCantBeHeldButGainsTuvIsValuable() {
+    final ProTerritory southernEurope =
+        new ProTerritory(territory("Southern Europe", gameData), new ProData());
+    southernEurope.setCanHold(false);
+    southernEurope.setBattleResult(battleResult(99, 5, true));
+
+    assertThat(ProCombatMoveAi.isValuableLanding(southernEurope, true)).isTrue();
+  }
+
+  @Test
+  void factoryThatCanBeHeldIsValuable() {
+    final ProTerritory southernEurope =
+        new ProTerritory(territory("Southern Europe", gameData), new ProData());
+    southernEurope.setCanHold(true);
+
+    assertThat(ProCombatMoveAi.isValuableLanding(southernEurope, true)).isTrue();
   }
 
   @Test
