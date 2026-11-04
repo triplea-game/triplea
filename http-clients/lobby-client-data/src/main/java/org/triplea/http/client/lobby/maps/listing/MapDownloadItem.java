@@ -2,6 +2,7 @@ package org.triplea.http.client.lobby.maps.listing;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,16 +38,15 @@ public class MapDownloadItem {
   @Nonnull private final Long downloadSizeInBytes;
 
   /**
-   * Finds a tag by name and returns its corresponding value. If the tag is not found or has a null
-   * value, an empty string is returned instead.
+   * Returns the values of all tags with this name, comma separated, as a map can have several
+   * values per tag (eg two genres). If the tag is not found, an empty string is returned instead.
    */
   @Nonnull
   public String getTagValue(final String tagName) {
-    return mapTags.stream()
+    return getMapTags().stream()
         .filter(tag -> tag.getName().equalsIgnoreCase(tagName))
-        .findAny()
         .map(MapTag::getValue)
-        .orElse("");
+        .collect(Collectors.joining(", "));
   }
 
   public List<MapTag> getMapTags() {
