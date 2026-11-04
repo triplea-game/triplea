@@ -492,7 +492,7 @@ public class ProCombatMoveAi {
     final List<ProTerritory> candidates = new ArrayList<>();
     for (final ProTerritory patd : removedBySelection) {
       if (patd.isNeedAmphibUnits()
-          && isValuableLanding(patd)
+          && isValuableLanding(patd, proData.isBeta())
           && !patd.getTerritory().isWater()
           && !dropped.contains(patd)
           && !attackOptions.contains(patd)
@@ -550,14 +550,22 @@ public class ProCombatMoveAi {
 
   /**
    * Whether a landing is worth re-adding after it was removed, or worth fighting a sea battle to
-   * reach: an enemy capital or factory, or a target the combat move expects to hold. A small
-   * landing the enemy retakes next turn costs more than it gains.
+   * reach: a target the combat move expects to hold, or an enemy capital or factory. A small
+   * landing the enemy retakes next turn costs more than it gains. Hard Beta also requires a capital
+   * or factory to pay off in TUV even if retaken.
    */
-  static boolean isValuableLanding(final ProTerritory patd) {
-    final Territory t = patd.getTerritory();
+  static boolean isValuableLanding(final ProTerritory patd, final boolean beta) {
+    return patd.isCanHold()
+        || (isCapitalOrFactory(patd.getTerritory()) && (!beta || paysOffInTuv(patd)));
+  }
+
+  private static boolean isCapitalOrFactory(final Territory t) {
     return TerritoryAttachment.get(t).map(TerritoryAttachment::isCapital).orElse(false)
-        || ProMatches.territoryHasInfraFactoryAndIsLand().test(t)
-        || patd.isCanHold();
+        || ProMatches.territoryHasInfraFactoryAndIsLand().test(t);
+  }
+
+  private static boolean paysOffInTuv(final ProTerritory patd) {
+    return patd.getBattleResult() != null && patd.getBattleResult().getTuvSwing() > 0;
   }
 
   /**
@@ -589,7 +597,7 @@ public class ProCombatMoveAi {
           }
         }
       }
-      if (hasClearZone || blockedZones.isEmpty() || !isValuableLanding(patd)) {
+      if (hasClearZone || blockedZones.isEmpty() || !isValuableLanding(patd, proData.isBeta())) {
         continue;
       }
       for (final Territory z : blockedZones) {
@@ -620,7 +628,8 @@ public class ProCombatMoveAi {
         data.getMap().getNeighbors(patd.getTerritory(), Matches.territoryIsWater())) {
       if (pt.getSeaTransportMap().containsKey(z)
           && (!pt.getBlockedSeaTerritories().contains(z)
-              || (isWinningSeaBattle(z, prioritizedTerritories) && isValuableLanding(patd)))) {
+              || (isWinningSeaBattle(z, prioritizedTerritories)
+                  && isValuableLanding(patd, proData.isBeta())))) {
         return true;
       }
     }
@@ -2440,7 +2449,7 @@ public class ProCombatMoveAi {
                       // zone serves
                       if (blockedUnloadZone == null
                           && isWinningSeaBattle(destination, prioritizedTerritories)
-                          && isValuableLanding(patd)) {
+                          && isValuableLanding(patd, proData.isBeta())) {
                         blockedUnloadZone = destination;
                       }
                       continue;
