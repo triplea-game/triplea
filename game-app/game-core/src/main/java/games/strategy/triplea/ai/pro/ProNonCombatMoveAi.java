@@ -28,6 +28,7 @@ import games.strategy.triplea.ai.pro.util.ProMoveUtils;
 import games.strategy.triplea.ai.pro.util.ProNationalObjectiveUtils;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.ai.pro.util.ProPurchaseUtils;
+import games.strategy.triplea.ai.pro.util.ProRepairUtils;
 import games.strategy.triplea.ai.pro.util.ProSeaBlockerUtils;
 import games.strategy.triplea.ai.pro.util.ProSortMoveOptionsUtils;
 import games.strategy.triplea.ai.pro.util.ProTerritoryValueUtils;
@@ -1808,32 +1809,50 @@ class ProNonCombatMoveAi {
         }
         Territory maxValueTerritory = null;
         double maxValue = 0;
-        for (final Territory t : currentUnitMoveMap.get(u)) {
-          final ProTerritory proTerritory = moveMap.get(t);
-          final boolean isSafeForEvader =
-              !proTerritory.isCanHold()
-                  && evaderSeaValueMap.containsKey(t)
-                  && canEvadeEnemyAttack(u, proTerritory);
-          if (proTerritory.isCanHold() || isSafeForEvader) {
-            final int transports =
-                CollectionUtils.countMatches(
-                    proTerritory.getAllDefenders(), ProMatches.unitIsOwnedTransport(player));
-            // An evader adds defense to an allied fleet at little risk
-            final double seaValue =
-                isSafeForEvader
-                    ? (1 + countAlliedWarships(proTerritory)) * evaderSeaValueMap.get(t)
-                    : proTerritory.getSeaValue();
-            final double value =
-                (1 + transports) * seaValue
-                    + (1 + transports * 100.0) * proTerritory.getValue() / 10_000;
-            ProLogger.trace(
-                String.format(
-                    "%s, value=%s, seaValue=%s, tValue=%s, transports=%s, isSafeForEvader=%s",
-                    t, value, seaValue, proTerritory.getValue(), transports, isSafeForEvader));
-            if (value > maxValue) {
-              maxValue = value;
-              maxValueTerritory = t;
+        // A damaged ship only heals at a facility, so prefer a safe one; fall back to any zone if
+        // none has positive value
+        final Set<Territory> repairTerritories =
+            proData.isBeta()
+                ? ProRepairUtils.findRepairTerritories(player, u, currentUnitMoveMap.get(u))
+                    .stream()
+                    .filter(t -> moveMap.get(t).isCanHold())
+                    .collect(Collectors.toSet())
+                : Set.of();
+        final List<Collection<Territory>> candidatePasses =
+            repairTerritories.isEmpty()
+                ? List.of(currentUnitMoveMap.get(u))
+                : List.of(repairTerritories, currentUnitMoveMap.get(u));
+        for (final Collection<Territory> candidates : candidatePasses) {
+          for (final Territory t : candidates) {
+            final ProTerritory proTerritory = moveMap.get(t);
+            final boolean isSafeForEvader =
+                !proTerritory.isCanHold()
+                    && evaderSeaValueMap.containsKey(t)
+                    && canEvadeEnemyAttack(u, proTerritory);
+            if (proTerritory.isCanHold() || isSafeForEvader) {
+              final int transports =
+                  CollectionUtils.countMatches(
+                      proTerritory.getAllDefenders(), ProMatches.unitIsOwnedTransport(player));
+              // An evader adds defense to an allied fleet at little risk
+              final double seaValue =
+                  isSafeForEvader
+                      ? (1 + countAlliedWarships(proTerritory)) * evaderSeaValueMap.get(t)
+                      : proTerritory.getSeaValue();
+              final double value =
+                  (1 + transports) * seaValue
+                      + (1 + transports * 100.0) * proTerritory.getValue() / 10_000;
+              ProLogger.trace(
+                  String.format(
+                      "%s, value=%s, seaValue=%s, tValue=%s, transports=%s, isSafeForEvader=%s",
+                      t, value, seaValue, proTerritory.getValue(), transports, isSafeForEvader));
+              if (value > maxValue) {
+                maxValue = value;
+                maxValueTerritory = t;
+              }
             }
+          }
+          if (maxValueTerritory != null) {
+            break;
           }
         }
         if (maxValueTerritory != null) {
