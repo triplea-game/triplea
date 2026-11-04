@@ -2,6 +2,7 @@ package games.strategy.triplea.ai.pro;
 
 import static games.strategy.triplea.ai.pro.util.ProUtils.summarizeUnits;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
@@ -146,6 +147,7 @@ public class ProCombatMoveAi {
     if (proData.canLandBehindSeaBattle()) {
       dropLandingsBehindUnfoughtZones();
     }
+    dropLandingsBlockedByEnemySubs();
     if (proData.isBeta()) {
       releaseSeaBlockersFromAttacks();
     }
@@ -721,6 +723,75 @@ public class ProCombatMoveAi {
         }
       }
     }
+  }
+
+  /**
+   * Drops a landing whose transports would unload from a sea zone holding enemy subs and none of
+   * our warships: under "Submarines Prevent Unescorted Amphibious Assaults" the move delegate
+   * refuses the unload and the cargo is stranded at sea.
+   */
+  private void dropLandingsBlockedByEnemySubs() {
+    final Map<Territory, ProTerritory> attackMap =
+        territoryManager.getAttackOptions().getTerritoryMap();
+    for (final ProTerritory landing : findLandingsBlockedByEnemySubs(player, attackMap)) {
+      ProLogger.debug(
+          "Dropping landing in "
+              + landing.getTerritory().getName()
+              + ", enemy subs would block the unload");
+      landing.getUnits().clear();
+      landing.getAmphibAttackMap().clear();
+      landing.getBombardTerritoryMap().clear();
+      landing.getTransportTerritoryMap().clear();
+    }
+  }
+
+  /** Returns the planned landings in {@code attackMap} that a sub-blocked unload would strand. */
+  @VisibleForTesting
+  static List<ProTerritory> findLandingsBlockedByEnemySubs(
+      final GamePlayer player, final Map<Territory, ProTerritory> attackMap) {
+    return attackMap.values().stream()
+        .filter(patd -> !patd.getTerritory().isWater() && !patd.getAmphibAttackMap().isEmpty())
+        .filter(
+            patd ->
+                patd.getTransportTerritoryMap().values().stream()
+                    .anyMatch(
+                        z -> {
+                          final ProTerritory zone = attackMap.get(z);
+                          return isUnloadBlockedByEnemySubs(
+                              player,
+                              patd.getTerritory(),
+                              z,
+                              zone == null ? List.of() : zone.getUnits());
+                        }))
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * Mirrors the sub check of {@code MoveValidator} for unloading transports in {@code zone} onto
+   * {@code landing} during combat move. Warships of {@code player} that move into the zone first
+   * count as escorts.
+   */
+  static boolean isUnloadBlockedByEnemySubs(
+      final GamePlayer player,
+      final Territory landing,
+      final Territory zone,
+      final Collection<Unit> unitsMovingToZone) {
+    if (!Properties.getSubmarinesPreventUnescortedAmphibiousAssaults(
+        player.getData().getProperties())) {
+      return false;
+    }
+    final boolean isAssault =
+        Matches.territoryHasEnemyUnits(player).test(landing)
+            || Matches.isTerritoryEnemyAndNotUnownedWater(player).test(landing);
+    final Predicate<Unit> escort =
+        Matches.unitIsOwnedBy(player)
+            .and(Matches.unitIsSea())
+            .and(Matches.unitIsNotSeaTransportButCouldBeCombatSeaTransport());
+    return isAssault
+        && zone.anyUnitsMatch(
+            Matches.unitIsEnemyOf(player).and(Matches.unitCanBeMovedThroughByEnemies()))
+        && !zone.anyUnitsMatch(escort)
+        && unitsMovingToZone.stream().noneMatch(escort);
   }
 
   private void determineTerritoriesThatCanBeHeld(
