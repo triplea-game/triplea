@@ -4,12 +4,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.formdev.flatlaf.FlatDarkLaf;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.util.List;
+import javax.swing.JButton;
+import javax.swing.UIManager;
+import javax.swing.plaf.UIResource;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,6 +31,54 @@ final class LookAndFeelTest extends AbstractClientSettingTestCase {
     assertThat(LookAndFeel.isColorDark(Color.DARK_GRAY)).isTrue();
     assertThat(LookAndFeel.isColorDark(Color.WHITE)).isFalse();
     assertThat(LookAndFeel.isColorDark(Color.YELLOW)).isFalse();
+  }
+
+  @DisplayName("Theme colors are UI resources, so a theme change replaces them on components")
+  @Test
+  void themeColorsAreUiResources() {
+    assertThat(LookAndFeel.getSecondaryTextColor())
+        .as("updateComponentTreeUI only replaces colors that are UIResources")
+        .isInstanceOf(UIResource.class);
+    assertThat(LookAndFeel.getSeparatorColor()).isInstanceOf(UIResource.class);
+  }
+
+  @DisplayName("A borderless link takes no focus on a click, but Tab still reaches it")
+  @Test
+  void borderlessButtonTakesNoFocusOnClick() {
+    final JButton link = new JButton("Open the map creator");
+
+    LookAndFeel.setBorderlessButtonStyle(link);
+
+    assertThat(List.of(link.isRequestFocusEnabled(), link.isFocusable()))
+        .as("no focus ring after a click or on its own, keyboard players still reach it")
+        .containsExactly(false, true);
+  }
+
+  @DisplayName("A primary button is filled like the FlatLaf theme's default button")
+  @Test
+  void primaryButtonHasDefaultButtonBackground() throws Exception {
+    final String previousLookAndFeel = UIManager.getLookAndFeel().getClass().getName();
+    UIManager.setLookAndFeel(new FlatDarkLaf());
+    try {
+      final JButton button = new JButton();
+
+      LookAndFeel.setPrimaryButtonStyle(button);
+
+      assertThat(centerColorOf(button))
+          .as("the theme's accent fill, not the gray of the other buttons")
+          .isEqualTo(UIManager.getColor("Button.default.background"));
+    } finally {
+      UIManager.setLookAndFeel(previousLookAndFeel);
+    }
+  }
+
+  private static Color centerColorOf(final JButton button) {
+    button.setSize(80, 30);
+    final BufferedImage image = new BufferedImage(80, 30, BufferedImage.TYPE_INT_RGB);
+    final Graphics2D graphics = image.createGraphics();
+    button.paint(graphics);
+    graphics.dispose();
+    return new Color(image.getRGB(40, 15));
   }
 
   @ParameterizedTest

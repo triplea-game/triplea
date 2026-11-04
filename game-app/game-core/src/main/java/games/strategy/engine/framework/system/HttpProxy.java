@@ -88,4 +88,18 @@ public final class HttpProxy {
               .build());
     }
   }
+
+  /**
+   * Returns the proxy of {@link #addProxy} for a {@link java.net.URLConnection}: the set proxy host
+   * and port, otherwise none.
+   */
+  public static Proxy getProxy() {
+    return ClientSetting.proxyHost.isSet() && ClientSetting.proxyPort.isSet()
+        ? new Proxy(
+            Proxy.Type.HTTP,
+            InetSocketAddress.createUnresolved(
+                ClientSetting.proxyHost.getValueOrThrow(),
+                ClientSetting.proxyPort.getValueOrThrow()))
+        : Proxy.NO_PROXY;
+  }
 }

@@ -7,6 +7,7 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.lookandfeel.RelationshipColorScheme;
+import games.strategy.engine.framework.map.download.MapBrowserView;
 import games.strategy.engine.framework.startup.ui.posted.game.DiceServerEditor;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
@@ -111,6 +112,10 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new IntegerClientSetting("MAP_ZOOM_FACTOR", 10);
   public static final ClientSetting<Path> mapFolderOverride =
       new PathClientSetting("MAP_FOLDER_OVERRIDE");
+  // how the maps window shows its maps; the switch above its lists changes it
+  public static final ClientSetting<MapBrowserView> mapBrowserView =
+      new EnumClientSetting<>(
+          MapBrowserView.class, "MAP_BROWSER_VIEW", MapBrowserView.LIST_WITH_PICTURES);
   public static final ClientSetting<Boolean> notifyAllUnitsMoved =
       new BooleanClientSetting("NOTIFY_ALL_UNITS_MOVED", true);
   public static final ClientSetting<HttpProxy.ProxyChoice> proxyChoice =

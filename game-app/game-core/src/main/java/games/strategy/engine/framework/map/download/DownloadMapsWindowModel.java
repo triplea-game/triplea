@@ -1,14 +1,15 @@
 package games.strategy.engine.framework.map.download;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NonNls;
 import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 import org.triplea.io.FileUtils;
 import org.triplea.java.Interruptibles;
@@ -19,24 +20,57 @@ import org.triplea.java.Interruptibles;
 class DownloadMapsWindowModel {
   @Getter private final InstalledMapsListing installedMapsListing;
   @Getter private final ManagedMapStore mapStore;
+  private final Supplier<InstalledMapsListing> installedMapsReader;
 
   DownloadMapsWindowModel(List<MapDownloadItem> availableDownloads) {
-    installedMapsListing = InstalledMapsListing.parseMapFiles();
+    this(availableDownloads, InstalledMapsListing::parseMapFiles);
+  }
+
+  @VisibleForTesting
+  DownloadMapsWindowModel(
+      List<MapDownloadItem> availableDownloads,
+      Supplier<InstalledMapsListing> installedMapsReader) {
+    this.installedMapsReader = installedMapsReader;
+    installedMapsListing = installedMapsReader.get();
     mapStore = new ManagedMapStore();
     new DownloadMapsWindowMapsListing(availableDownloads, installedMapsListing, mapStore);
   }
 
-  public boolean isInstalled(final ManagedMap mapDownloadItem) {
-    return getInstallLocation(mapDownloadItem).isPresent();
+  /// Whether the map belongs to the Installed tab of the window.
+  boolean isInstalled(final ManagedMap map) {
+    return switch (map.getMapStatus()) {
+      case INSTALLED, UPDATE_AVAILABLE, REMOVING -> true;
+      // an update replaces a map that is installed; a new map is not installed until it is done
+      case DOWNLOADING -> getInstallLocation(map).isPresent();
+      case AVAILABLE, ERROR -> false;
+      default -> throw new IllegalStateException("Unknown map status: " + map.getMapStatus());
+    };
   }
 
   /// File reference for where to install the file, empty if not installed.
-  Optional<Path> getInstallLocation(final ManagedMap mapDownloadItem) {
+  private Optional<Path> getInstallLocation(final ManagedMap mapDownloadItem) {
     return installedMapsListing.findMapFolderByName(mapDownloadItem.getMapName());
   }
 
+  /// The status of the map once its download is cancelled: again to get, or installed in its old
+  /// version.
+  ManagedMapStatus statusWithoutDownload(final ManagedMap map) {
+    if (getInstallLocation(map).isEmpty()) {
+      return ManagedMapStatus.AVAILABLE;
+    }
+    return Optional.ofNullable(map.getInstalledMap())
+            .filter(installed -> installed.isOutOfDate(map.getMapDownloadItem()))
+            .isPresent()
+        ? ManagedMapStatus.UPDATE_AVAILABLE
+        : ManagedMapStatus.INSTALLED;
+  }
+
   boolean delete(final ManagedMap mapDownloadItem) {
-    final Path installLocation = getInstallLocation(mapDownloadItem).orElse(null);
+    // a map installed since the window opened is not in the listing read then
+    final Path installLocation =
+        getInstallLocation(mapDownloadItem)
+            .or(() -> installedMapsReader.get().findMapFolderByName(mapDownloadItem.getMapName()))
+            .orElse(null);
     if (installLocation == null) {
       return true;
     }
@@ -64,15 +98,5 @@ class DownloadMapsWindowModel {
       mapStore.updateStatus(List.of(mapDownloadItem), ManagedMapStatus.AVAILABLE);
       return true;
     }
-  }
-
-  String toHtmlString(final ManagedMap managedMap) {
-    @NonNls String text = "<h1>" + managedMap.getMapName() + "</h1>\n";
-    MapDownloadItem mapDownloadItem = managedMap.getMapDownloadItem();
-    if (!mapDownloadItem.getPreviewImageUrl().isEmpty()) {
-      text += "<img src='" + mapDownloadItem.getPreviewImageUrl() + "' />\n";
-    }
-    text += mapDownloadItem.getDescription();
-    return text;
   }
 }

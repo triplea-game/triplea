@@ -2,6 +2,7 @@ package games.strategy.engine.framework.lookandfeel;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import com.formdev.flatlaf.FlatClientProperties;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.Constants;
@@ -14,10 +15,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.Border;
+import javax.swing.plaf.ColorUIResource;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.game.client.ui.swing.laf.SubstanceLookAndFeelManager;
@@ -136,6 +142,64 @@ Please restart all running TripleA instances.""",
       // Disabling the painted shadow on Linux falls back to standard lightweight Swing popups.
       UIManager.put("Popup.dropShadowPainted", Boolean.FALSE);
     }
+  }
+
+  /**
+   * Marks the button as the main action of its screen, eg "Update": FlatLaf themes paint it in the
+   * colors of their default button; other look and feels ignore it.
+   */
+  public static void setPrimaryButtonStyle(final AbstractButton button) {
+    button.putClientProperty(
+        FlatClientProperties.STYLE,
+        "background: $Button.default.background;"
+            + " foreground: $Button.default.foreground;"
+            + " borderColor: $Button.default.borderColor");
+  }
+
+  /**
+   * Shows the button without a frame until the mouse is over it, for secondary actions like links
+   * to tools; FlatLaf themes only. A click does not move the focus to it, so it shows no focus ring
+   * unless the player reaches it with the keyboard (Tab still does).
+   */
+  public static void setBorderlessButtonStyle(final AbstractButton button) {
+    button.putClientProperty(
+        FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_BORDERLESS);
+    button.setRequestFocusEnabled(false);
+  }
+
+  /** Shows the component in the smaller font of the theme, eg for compact buttons; FlatLaf only. */
+  public static void setSmallStyle(final JComponent component) {
+    component.putClientProperty(FlatClientProperties.STYLE_CLASS, "small");
+  }
+
+  /**
+   * Returns the theme's color for secondary text, eg a hint below a title. It is a {@link
+   * ColorUIResource}: after a theme change the text takes the new theme's normal text color instead
+   * of keeping the old theme's gray, until the restart a theme change asks for.
+   */
+  public static Color getSecondaryTextColor() {
+    return getThemeColor("Label.disabledForeground");
+  }
+
+  /** Returns the theme's accent color, eg of focus rings and selections. */
+  public static Color getAccentColor() {
+    return getThemeColor("Component.accentColor");
+  }
+
+  /** Returns the theme's color for thin lines that separate areas of a window. */
+  public static Color getSeparatorColor() {
+    return getThemeColor("Separator.foreground");
+  }
+
+  /** Creates the border of a window's footer: a separator line on top, room around its buttons. */
+  public static Border newFooterBorder() {
+    return BorderFactory.createCompoundBorder(
+        BorderFactory.createMatteBorder(1, 0, 0, 0, getSeparatorColor()),
+        BorderFactory.createEmptyBorder(10, 12, 10, 12));
+  }
+
+  private static Color getThemeColor(final @NonNls String key) {
+    return new ColorUIResource(Optional.ofNullable(UIManager.getColor(key)).orElse(Color.GRAY));
   }
 
   public static @NonNls String convertColorToHex(Color color) {

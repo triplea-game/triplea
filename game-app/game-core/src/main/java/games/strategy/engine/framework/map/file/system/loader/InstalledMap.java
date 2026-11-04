@@ -95,19 +95,24 @@ public class InstalledMap {
     if (lastCommitMilli <= 0L) {
       return false;
     }
+    final Instant lastCommitDate = Instant.ofEpochMilli(lastCommitMilli);
+    return getLastModifiedDate()
+        .map(lastModified -> lastModified.isBefore(lastCommitDate))
+        .orElse(false);
+  }
 
+  /**
+   * Returns when the files of the map installation folder were last changed, which dates the
+   * installed version of the map. Empty if the folder cannot be found.
+   */
+  public Optional<Instant> getLastModifiedDate() {
     // we cache lastModifiedDate for two reasons:
     // 1. *primarily* test can inject a value
     // 2. avoid file system access
     if (lastModifiedDate == null) {
       lastModifiedDate = findContentRoot().flatMap(FileUtils::getLastModified).orElse(null);
-      if (lastModifiedDate == null) {
-        return false;
-      }
     }
-
-    final Instant lastCommitDate = Instant.ofEpochMilli(lastCommitMilli);
-    return lastModifiedDate.isBefore(lastCommitDate);
+    return Optional.ofNullable(lastModifiedDate);
   }
 
   public Optional<Path> findMapSkin(String skinName) {
