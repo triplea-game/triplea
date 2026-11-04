@@ -29,7 +29,6 @@ import javax.swing.UIManager;
 import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 import org.triplea.swing.JEditorPaneWithClickableLinks;
 import org.triplea.swing.JLabelBuilder;
-import org.triplea.swing.ScrollableJPanel;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
 import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
@@ -79,7 +78,7 @@ final class MapDetails extends JPanel {
     body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
     body.setOpaque(false);
     // the body keeps its height at the top of a taller viewport instead of stretching its fields
-    final JPanel view = new ScrollableJPanel();
+    final JPanel view = new MapScrollPanel();
     view.setLayout(new BorderLayout());
     view.setOpaque(false);
     view.add(body, BorderLayout.NORTH);

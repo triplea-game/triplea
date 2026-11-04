@@ -35,7 +35,6 @@ import javax.swing.JSplitPane;
 import lombok.Getter;
 import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 import org.triplea.swing.JButtonBuilder;
-import org.triplea.swing.ScrollableJPanel;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.WrapLayout;
 
@@ -57,7 +56,7 @@ final class MapList {
   private final Supplier<List<ManagedMap>> maps;
   private final Caches previews;
   private final Actions actions;
-  private final JPanel rows = new ScrollableJPanel();
+  private final JPanel rows = new MapScrollPanel();
   private final JLabel emptyText = new JLabel();
   private final MapDetails details;
   private final JLabel selectionText = new JLabel();
