@@ -2,6 +2,7 @@ package games.strategy.triplea.ai.pro;
 
 import static games.strategy.triplea.ai.pro.util.ProUtils.summarizeUnits;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
@@ -682,28 +683,37 @@ public class ProCombatMoveAi {
   private void dropLandingsBlockedByEnemySubs() {
     final Map<Territory, ProTerritory> attackMap =
         territoryManager.getAttackOptions().getTerritoryMap();
-    for (final ProTerritory patd : attackMap.values()) {
-      if (patd.getTerritory().isWater() || patd.getAmphibAttackMap().isEmpty()) {
-        continue;
-      }
-      for (final Territory z : patd.getTransportTerritoryMap().values()) {
-        final ProTerritory zone = attackMap.get(z);
-        final Collection<Unit> unitsMovingToZone = zone == null ? List.of() : zone.getUnits();
-        if (isUnloadBlockedByEnemySubs(player, patd.getTerritory(), z, unitsMovingToZone)) {
-          ProLogger.debug(
-              "Dropping landing in "
-                  + patd.getTerritory().getName()
-                  + ", enemy subs in "
-                  + z.getName()
-                  + " would block the unload");
-          patd.getUnits().clear();
-          patd.getAmphibAttackMap().clear();
-          patd.getBombardTerritoryMap().clear();
-          patd.getTransportTerritoryMap().clear();
-          break;
-        }
-      }
+    for (final ProTerritory landing : findLandingsBlockedByEnemySubs(player, attackMap)) {
+      ProLogger.debug(
+          "Dropping landing in "
+              + landing.getTerritory().getName()
+              + ", enemy subs would block the unload");
+      landing.getUnits().clear();
+      landing.getAmphibAttackMap().clear();
+      landing.getBombardTerritoryMap().clear();
+      landing.getTransportTerritoryMap().clear();
     }
+  }
+
+  /** Returns the planned landings in {@code attackMap} that a sub-blocked unload would strand. */
+  @VisibleForTesting
+  static List<ProTerritory> findLandingsBlockedByEnemySubs(
+      final GamePlayer player, final Map<Territory, ProTerritory> attackMap) {
+    return attackMap.values().stream()
+        .filter(patd -> !patd.getTerritory().isWater() && !patd.getAmphibAttackMap().isEmpty())
+        .filter(
+            patd ->
+                patd.getTransportTerritoryMap().values().stream()
+                    .anyMatch(
+                        z -> {
+                          final ProTerritory zone = attackMap.get(z);
+                          return isUnloadBlockedByEnemySubs(
+                              player,
+                              patd.getTerritory(),
+                              z,
+                              zone == null ? List.of() : zone.getUnits());
+                        }))
+        .collect(Collectors.toList());
   }
 
   /**

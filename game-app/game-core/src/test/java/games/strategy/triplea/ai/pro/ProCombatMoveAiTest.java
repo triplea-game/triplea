@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
@@ -18,6 +19,7 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class ProCombatMoveAiTest {
@@ -248,6 +250,26 @@ class ProCombatMoveAiTest {
     final Territory ownLand = territory("United Kingdom", g40);
     assertThat(ProCombatMoveAi.isUnloadBlockedByEnemySubs(british(g40), ownLand, zone, List.of()))
         .isFalse();
+  }
+
+  @Test
+  void findsOnlyTheLandingsWhoseUnloadZoneHoldsUnescortedEnemySubs() {
+    final GameData g40 = TestMapGameData.GLOBAL1940.getGameData();
+    final Territory germany = territory("Germany", g40);
+    final Territory zone = seaZoneNextTo(germany, g40);
+    removeFrom(zone, zone.getUnits());
+    addTo(zone, unitType("submarine", g40).create(1, germans(g40)));
+    final Unit transport = unitType("transport", g40).create(1, british(g40)).iterator().next();
+    final Unit infantry = unitType("infantry", g40).create(1, british(g40)).iterator().next();
+    final ProTerritory blocked = new ProTerritory(germany, new ProData());
+    blocked.getAmphibAttackMap().put(transport, List.of(infantry));
+    blocked.getTransportTerritoryMap().put(transport, zone);
+    final ProTerritory noAmphib = new ProTerritory(territory("France", g40), new ProData());
+
+    final var attackMap = Map.of(germany, blocked, territory("France", g40), noAmphib);
+
+    assertThat(ProCombatMoveAi.findLandingsBlockedByEnemySubs(british(g40), attackMap))
+        .containsExactly(blocked);
   }
 
   private static Territory seaZoneNextTo(final Territory land, final GameData data) {
