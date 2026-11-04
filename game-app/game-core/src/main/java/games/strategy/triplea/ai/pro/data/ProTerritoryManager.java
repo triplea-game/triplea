@@ -1196,7 +1196,8 @@ public class ProTerritoryManager {
             final Set<Territory> loadFromTerritories = new HashSet<>();
             if (!transport.getTransporting(transportTerritory).isEmpty()) {
               haveUnitsToTransport = true;
-            } else if (Matches.territoryHasEnemySeaUnits(player).negate().test(from)) {
+            } else if (Matches.territoryHasEnemySeaUnits(player).negate().test(from)
+                && (isCheckingEnemyAttacks || ProMatches.transportCanLoad().test(transport))) {
               int capacity = transport.getUnitAttachment().getTransportCapacity();
               Predicate<Unit> canFitOnTransport =
                   canBeTransported.and(u -> u.getUnitAttachment().getTransportCost() <= capacity);

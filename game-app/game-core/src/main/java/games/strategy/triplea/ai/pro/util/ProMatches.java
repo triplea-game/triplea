@@ -15,6 +15,7 @@ import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -665,6 +666,14 @@ public final class ProMatches {
                 .and(Matches.unitHasMovementLeft())
                 .and(Matches.unitIsBeingTransported().negate())
                 .test(u);
+  }
+
+  /**
+   * Whether {@code transport} may take on units now. WW2V3 and LHTR bar a transport that fought
+   * this turn from loading in non-combat move.
+   */
+  public static Predicate<Unit> transportCanLoad() {
+    return not(TransportTracker::isTransportLoadRestrictedAfterCombat);
   }
 
   public static Predicate<Unit> unitHasLessMovementThan(final Unit unit) {
