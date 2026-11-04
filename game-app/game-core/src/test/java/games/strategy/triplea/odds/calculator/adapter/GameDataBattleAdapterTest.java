@@ -8,6 +8,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.gameparser.GameParseException;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
@@ -16,6 +17,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.GameDataTestUtil;
+import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.odds.calculator.context.model.BattleOptions;
 import games.strategy.triplea.odds.calculator.context.model.BattleScenario;
 import games.strategy.triplea.odds.calculator.context.model.CombatFlag;
@@ -234,6 +236,98 @@ class GameDataBattleAdapterTest {
     assertThat(rule.bonus()).isEqualTo(1);
     assertThat(rule.usesPerGiver()).as("one artillery supports one infantry").isEqualTo(1);
     assertThat(rule.firstRoundOnly()).isFalse();
+  }
+
+  /**
+   * Improved Artillery Support doubles how many recipients each giver supports (the engine's
+   * SupportCalculator, keyed on the giver owner's tech). Revised's artillery rule carries {@code
+   * impArtTech}, so only the owner holding the tech gets two uses per artillery.
+   */
+  @Test
+  void improvedArtilleryTechDoublesUsesPerGiverForTheTechOwnerOnly() {
+    final GameData revised = TestMapGameData.REVISED.getGameData();
+    final GamePlayer russians = GameDataTestUtil.russians(revised);
+    final GamePlayer germans = GameDataTestUtil.germans(revised);
+    final Territory germany = GameDataTestUtil.territory("Germany", revised);
+    final Collection<Unit> attacking = GameDataTestUtil.artillery(revised).create(1, russians);
+    attacking.addAll(GameDataTestUtil.infantry(revised).create(2, russians));
+    final Collection<Unit> defending = GameDataTestUtil.infantry(revised).create(1, germans);
+    final BattleOptions options = new BattleOptions(false, List.of(), List.of());
+
+    final int withoutTech =
+        artilleryRule(
+                adapter.toScenario(
+                    russians, germans, germany, attacking, defending, List.of(), List.of(),
+                    options))
+            .usesPerGiver();
+    setImprovedArtilleryTech(revised, russians, true);
+    final int withTech =
+        artilleryRule(
+                adapter.toScenario(
+                    russians, germans, germany, attacking, defending, List.of(), List.of(),
+                    options))
+            .usesPerGiver();
+    setImprovedArtilleryTech(revised, germans, true);
+    setImprovedArtilleryTech(revised, russians, false);
+    final int onlyEnemyHasTech =
+        artilleryRule(
+                adapter.toScenario(
+                    russians, germans, germany, attacking, defending, List.of(), List.of(),
+                    options))
+            .usesPerGiver();
+
+    assertThat(withoutTech).isEqualTo(1);
+    assertThat(withTech).as("attacker owns the tech").isEqualTo(2);
+    assertThat(onlyEnemyHasTech).as("the other player's tech does not help").isEqualTo(1);
+  }
+
+  /**
+   * An AA gun rolling a d6 in a d12 game hits on a 1 with probability 1/6, which the roller (it
+   * divides by the game's dice sides) only reproduces as strength 2 of 12. A die-sides value that
+   * does not divide the game's cannot be rescaled exactly and stays as-is.
+   */
+  @Test
+  void aaStrengthIsRescaledToTheGameDiceWhenTheAaDieDividesIt() {
+    final GameData revised = TestMapGameData.REVISED.getGameData();
+    revised.setDiceSides(12);
+    final GamePlayer russians = GameDataTestUtil.russians(revised);
+    final GamePlayer germans = GameDataTestUtil.germans(revised);
+    final Territory germany = GameDataTestUtil.territory("Germany", revised);
+    final UnitType aaGun = GameDataTestUtil.aaGun(revised);
+    final UnitAttachment aa = aaGun.getUnitAttachment();
+    aa.setAttackAa(1);
+    aa.setAttackAaMaxDieSides(6);
+    final Collection<Unit> defending = aaGun.create(1, germans);
+    final Collection<Unit> attacking = GameDataTestUtil.infantry(revised).create(1, russians);
+    final BattleOptions options = new BattleOptions(false, List.of(), List.of());
+
+    final BattleScenario dividing =
+        adapter.toScenario(
+            russians, germans, germany, attacking, defending, List.of(), List.of(), options);
+    aa.setAttackAaMaxDieSides(5);
+    final BattleScenario nonDividing =
+        adapter.toScenario(
+            russians, germans, germany, attacking, defending, List.of(), List.of(), options);
+
+    assertThat(profileOf(dividing.defenders(), "aaGun").defense()).isEqualTo(2);
+    assertThat(profileOf(nonDividing.defenders(), "aaGun").defense()).isEqualTo(1);
+  }
+
+  private static void setImprovedArtilleryTech(
+      final GameData data, final GamePlayer player, final boolean value) {
+    data.performChange(
+        ChangeFactory.attachmentPropertyChange(
+            player.getTechAttachment(),
+            value,
+            TechAdvance.TECH_PROPERTY_IMPROVED_ARTILLERY_SUPPORT));
+  }
+
+  private static SupportRule artilleryRule(final BattleScenario scenario) {
+    final CombatProfile artillery = profileOf(scenario.attackers(), "artillery");
+    return scenario.support().stream()
+        .filter(r -> artillery.gives().contains(r.from()))
+        .findFirst()
+        .orElseThrow();
   }
 
   /**
