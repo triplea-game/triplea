@@ -27,6 +27,9 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
 
   @NonNls private static final String DEFAULT_TYPE_AI = "AI";
   @NonNls private static final String DEFAULT_TYPE_DOES_NOTHING = "DoesNothing";
+  @NonNls private static final String DEFAULT_TYPE_HARD_AI = "HardAI";
+  @NonNls private static final String DEFAULT_TYPE_FAST_AI = "FastAI";
+  @NonNls private static final String DEFAULT_TYPE_EASY_AI = "EasyAI";
 
   @RemoveOnNextMajorRelease @Deprecated
   private static final GamePlayer NULL_GAME_PLAYER =
@@ -208,11 +211,19 @@ public class GamePlayer extends NamedAttachable implements NamedUnitHolder {
   }
 
   public boolean isDefaultTypeAi() {
-    return DEFAULT_TYPE_AI.equals(defaultType);
+    return DEFAULT_TYPE_AI.equals(defaultType) || DEFAULT_TYPE_HARD_AI.equals(defaultType);
   }
 
   public boolean isDefaultTypeDoesNothing() {
     return DEFAULT_TYPE_DOES_NOTHING.equals(defaultType);
+  }
+
+  public boolean isDefaultTypeEasyAi() {
+    return DEFAULT_TYPE_EASY_AI.equals(defaultType);
+  }
+
+  public boolean isDefaultTypeFastAi() {
+    return DEFAULT_TYPE_FAST_AI.equals(defaultType);
   }
 
   public RulesAttachment getRulesAttachment() {
