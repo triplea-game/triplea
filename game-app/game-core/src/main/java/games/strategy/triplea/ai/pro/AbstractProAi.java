@@ -411,6 +411,33 @@ public abstract class AbstractProAi extends AbstractAi {
     return combatMoveAi.isBombing();
   }
 
+  @Override
+  public Territory selectTerritoryForAirToLand(
+      final Collection<Territory> candidates,
+      final Territory currentTerritory,
+      final String unitMessage) {
+    return strongestAlliedGround(candidates, getGamePlayer());
+  }
+
+  /**
+   * Picks the candidate holding the most allied non-air strength, as the safest place to land. Ties
+   * go to the first candidate in iteration order.
+   */
+  static Territory strongestAlliedGround(
+      final Collection<Territory> candidates, final GamePlayer player) {
+    return candidates.stream()
+        .max(
+            Comparator.comparingDouble(
+                (Territory t) ->
+                    ProBattleUtils.estimateStrength(
+                        t,
+                        t.getMatches(
+                            Matches.isUnitAllied(player).and(Matches.unitIsAir().negate())),
+                        new ArrayList<>(),
+                        false)))
+        .orElse(null);
+  }
+
   // TODO: Consider supporting this functionality
   @Override
   public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(
