@@ -150,6 +150,8 @@ public class ProCombatMoveAi {
       releaseSeaBlockersFromAttacks();
     }
 
+    planParadrops();
+
     // Calculate attack routes and perform moves
     doMove(territoryManager.getAttackOptions().getTerritoryMap(), moveDel, data, player);
 
@@ -166,6 +168,39 @@ public class ProCombatMoveAi {
         territoryManager.getAttackOptions().getTerritoryMap();
     territoryManager = null;
     return result;
+  }
+
+  /** Sends idle air transports to drop paratroopers on undefended enemy land I can hold. */
+  private void planParadrops() {
+    final Map<Territory, ProTerritory> attackMap =
+        territoryManager.getAttackOptions().getTerritoryMap();
+    ProAirliftPlanner.planDrops(
+        data,
+        player,
+        proData,
+        proData.getMyUnitTerritories(),
+        attackMap,
+        proData::getUnitTerritory,
+        (target, paratroopers) -> canHoldParadrop(attackMap, target, paratroopers));
+  }
+
+  private boolean canHoldParadrop(
+      final Map<Territory, ProTerritory> attackMap,
+      final Territory target,
+      final List<Unit> paratroopers) {
+    final List<Territory> cleared = new ArrayList<>(attackMap.keySet());
+    cleared.add(target);
+    territoryManager.populateEnemyAttackOptions(cleared, List.of(target));
+    final ProTerritory enemyAttack = territoryManager.getEnemyAttackOptions().getMax(target);
+    if (enemyAttack == null) {
+      return true;
+    }
+    final Set<Unit> enemyUnits = new HashSet<>(enemyAttack.getMaxUnits());
+    enemyUnits.addAll(enemyAttack.getMaxAmphibUnits());
+    final ProBattleResult counterAttack =
+        calc.calculateBattleResults(
+            proData, target, enemyUnits, paratroopers, enemyAttack.getMaxBombardUnits());
+    return canHoldAgainstCounterAttack(target, counterAttack);
   }
 
   void doMove(

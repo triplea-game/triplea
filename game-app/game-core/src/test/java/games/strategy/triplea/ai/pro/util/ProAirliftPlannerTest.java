@@ -15,11 +15,13 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
+import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiPredicate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -130,5 +132,82 @@ class ProAirliftPlannerTest {
         moves.stream().flatMap(m -> m.getAirTransportsDependents().values().stream()).toList();
     assertThat(carried).allSatisfy(c -> assertThat(c).hasSize(1));
     assertThat(carried.stream().flatMap(c -> c.stream()).distinct()).hasSize(2);
+  }
+
+  private void planDrops(final BiPredicate<Territory, List<Unit>> canHold) {
+    ProAirliftPlanner.planDrops(
+        data, germans, new ProData(), List.of(germany), attackMap, u -> germany, canHold);
+  }
+
+  @Test
+  void idleBomberIsSentToUndefendedEnemyLand() {
+    attackMap.clear();
+
+    planDrops((t, paratroopers) -> true);
+
+    assertThat(attackMap).containsOnlyKeys(eastPoland);
+    assertThat(attackMap.get(eastPoland).getUnits()).containsExactly(bomber);
+  }
+
+  @Test
+  void idleBomberIsSentToUndefendedEnemyCapitalWithNoProduction() throws Exception {
+    attackMap.clear();
+    final var attachment = TerritoryAttachment.getOrThrow(eastPoland);
+    attachment.setCapital("Russians");
+    attachment.getPropertyOrEmpty("production").orElseThrow().setValue(0);
+
+    planDrops((t, paratroopers) -> true);
+
+    assertThat(attackMap).containsOnlyKeys(eastPoland);
+  }
+
+  @Test
+  void noParadropWhenParatroopersCannotHoldTheTerritory() {
+    attackMap.clear();
+
+    planDrops((t, paratroopers) -> false);
+
+    assertThat(attackMap).isEmpty();
+  }
+
+  @Test
+  void noParadropOnDefendedTerritory() {
+    attackMap.clear();
+    addTo(eastPoland, List.of(infantry(data).create(data.getPlayerList().getPlayerId("Russians"))));
+
+    planDrops((t, paratroopers) -> true);
+
+    assertThat(attackMap).isEmpty();
+  }
+
+  @Test
+  void noParadropWithoutParatroopersTech() {
+    germans.getTechAttachment().setParatroopers("false");
+    attackMap.clear();
+
+    planDrops((t, paratroopers) -> true);
+
+    assertThat(attackMap).isEmpty();
+  }
+
+  @Test
+  void plannedParadropRunsThroughAirliftPlanner() {
+    attackMap.clear();
+    planDrops((t, paratroopers) -> true);
+
+    final var moves = plan();
+
+    assertThat(moves).hasSize(1);
+    assertThat(moves.get(0).getRoute().getEnd()).isEqualTo(eastPoland);
+    assertThat(moves.get(0).getAirTransportsDependents().get(bomber)).hasSize(1);
+  }
+
+  @Test
+  void lonelyBomberIsNotLeftToFlyIntoUndefendedLand() {
+    attackMap.get(eastPoland).addUnit(bomber);
+    infantryInGermany.forEach(u -> u.setAlreadyMoved(java.math.BigDecimal.ONE));
+
+    assertThat(plan()).isEmpty();
+    assertThat(attackMap.get(eastPoland).getUnits()).doesNotContain(bomber);
   }
 }
