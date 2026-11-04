@@ -20,11 +20,11 @@ class ProDataTest {
   }
 
   @Test
-  void hardBetaAlliedPlayerDoesNotLandBehindSeaBattles() {
+  void hardBetaAlliedPlayerLandsBehindSeaBattles() {
     final ProData proData = new ProData(true);
     proData.initializeSimulation(null, gameData, british(gameData));
 
-    assertThat(proData.canLandBehindSeaBattle()).isFalse();
+    assertThat(proData.canLandBehindSeaBattle()).isTrue();
   }
 
   @Test
