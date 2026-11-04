@@ -11,7 +11,9 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
@@ -162,5 +164,36 @@ public class ProTerritoryValueUtilsTest {
             .get(territory("Russia", data));
 
     assertThat(value).isEqualTo(Math.sqrt(8) * 32 * 35);
+  }
+
+  @Test
+  @DisplayName("a victory city is worth PUs only in Hard Beta with a victory-city win condition on")
+  void victoryCityValueNeedsBetaAndAVictoryCondition() {
+    final GameData data = TestMapGameData.VICTORY_TEST.getGameData();
+    final Territory germany = territory("Germany", data);
+    final Territory eastBalkans = territory("East Balkans", data);
+
+    setEditable(data, Constants.PROJECTION_OF_POWER, false);
+
+    assertThat(ProTerritoryValueUtils.victoryCityValue(new ProData(true), germany))
+        .as("no victory condition on")
+        .isZero();
+
+    setEditable(data, Constants.TOTAL_VICTORY, true);
+
+    assertThat(ProTerritoryValueUtils.victoryCityValue(new ProData(true), germany))
+        .isEqualTo(ProCasualtyUtils.VICTORY_CITY_VALUE);
+    assertThat(ProTerritoryValueUtils.victoryCityValue(new ProData(false), germany))
+        .as("stock Hard")
+        .isZero();
+    assertThat(ProTerritoryValueUtils.victoryCityValue(new ProData(true), eastBalkans))
+        .as("not a victory city")
+        .isZero();
+  }
+
+  @SuppressWarnings("unchecked")
+  private static void setEditable(final GameData data, final String key, final boolean value) {
+    ((IEditableProperty<Object>) data.getProperties().getEditablePropertiesByName().get(key))
+        .setValue(value);
   }
 }
