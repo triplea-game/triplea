@@ -15,6 +15,7 @@ import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
+import games.strategy.triplea.ai.pro.data.ProTerritoryManager;
 import games.strategy.triplea.ai.pro.logging.ProLogUi;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.ai.pro.simulate.ProDummyDelegateBridge;
@@ -46,10 +47,13 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
@@ -57,6 +61,9 @@ import org.triplea.util.Tuple;
 
 /** Pro AI. */
 public abstract class AbstractProAi extends AbstractAi {
+
+  /** Enemy win percentage at or above which a landing territory counts as lost. */
+  private static final double AIR_DECIDES_THRESHOLD = 50;
 
   @Getter private final ProOddsCalculator calc;
   @Getter private final ProData proData;
@@ -416,25 +423,65 @@ public abstract class AbstractProAi extends AbstractAi {
       final Collection<Territory> candidates,
       final Territory currentTerritory,
       final String unitMessage) {
-    return strongestAlliedGround(candidates, getGamePlayer());
+    initializeData();
+    prepareData(getGameData());
+    final GamePlayer player = getGamePlayer();
+    final ProTerritoryManager territoryManager = new ProTerritoryManager(calc, proData);
+    territoryManager.populateEnemyAttackOptions(List.of(), candidates);
+    // The query does not name the landing units, so the air in the current territory stands in.
+    final Collection<Unit> landingAir =
+        currentTerritory.getMatches(Matches.unitIsOwnedBy(player).and(Matches.unitIsAir()));
+    return chooseAirLanding(
+        candidates,
+        t -> assessLanding(t, landingAir, territoryManager.getEnemyAttackOptions().getMax(t)));
+  }
+
+  /** What an air landing at one candidate faces; loss chances are the enemy's win percentage. */
+  record LandingAssessment(
+      double lossChanceWithout, double lossChanceWith, double groundStrength) {}
+
+  private LandingAssessment assessLanding(
+      final Territory t, final Collection<Unit> landingAir, @Nullable final ProTerritory enemy) {
+    final GamePlayer player = getGamePlayer();
+    final Collection<Unit> defenders = t.getMatches(Matches.isUnitAllied(player));
+    final double groundStrength =
+        ProBattleUtils.estimateStrength(
+            t,
+            CollectionUtils.getMatches(defenders, Matches.unitIsAir().negate()),
+            new ArrayList<>(),
+            false);
+    if (enemy == null || enemy.getMaxUnits().isEmpty()) {
+      return new LandingAssessment(0, 0, groundStrength);
+    }
+    final List<Unit> attackers = new ArrayList<>(enemy.getMaxUnits());
+    // The landing air may already be in the candidate (eg: the current territory).
+    final Set<Unit> defendersWithAir = new HashSet<>(defenders);
+    defendersWithAir.addAll(landingAir);
+    return new LandingAssessment(
+        calc.calculateBattleResults(proData, t, attackers, defenders, new HashSet<>())
+            .getWinPercentage(),
+        calc.calculateBattleResults(proData, t, attackers, defendersWithAir, new HashSet<>())
+            .getWinPercentage(),
+        groundStrength);
   }
 
   /**
-   * Picks the candidate holding the most allied non-air strength, as the safest place to land. Ties
-   * go to the first candidate in iteration order.
+   * Picks where air should land: a territory the air is the deciding factor in holding, otherwise
+   * the one least likely to be lost to an attack next turn, then the one with the most allied
+   * ground. Remaining ties go to the first candidate in iteration order.
    */
-  static Territory strongestAlliedGround(
-      final Collection<Territory> candidates, final GamePlayer player) {
-    return candidates.stream()
-        .max(
-            Comparator.comparingDouble(
-                (Territory t) ->
-                    ProBattleUtils.estimateStrength(
-                        t,
-                        t.getMatches(
-                            Matches.isUnitAllied(player).and(Matches.unitIsAir().negate())),
-                        new ArrayList<>(),
-                        false)))
+  static Territory chooseAirLanding(
+      final Collection<Territory> candidates, final Function<Territory, LandingAssessment> assess) {
+    final Map<Territory, LandingAssessment> assessments = new LinkedHashMap<>();
+    candidates.forEach(t -> assessments.put(t, assess.apply(t)));
+    final Comparator<Territory> safest =
+        Comparator.comparingDouble((Territory t) -> assessments.get(t).lossChanceWith())
+            .thenComparing(t -> -assessments.get(t).groundStrength());
+    return assessments.keySet().stream()
+        .filter(t -> assessments.get(t).lossChanceWithout() >= AIR_DECIDES_THRESHOLD)
+        .filter(t -> assessments.get(t).lossChanceWith() < AIR_DECIDES_THRESHOLD)
+        .min(safest)
+        .or(() -> assessments.keySet().stream().min(safest))
         .orElse(null);
   }
 
