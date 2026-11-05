@@ -6,4 +6,6 @@ interface DownloadListener {
   void downloadUpdated(MapDownloadItem download, long bytesReceived);
 
   void downloadComplete(MapDownloadItem download);
+
+  void downloadFailed(MapDownloadItem download);
 }

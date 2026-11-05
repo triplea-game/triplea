@@ -148,7 +148,12 @@ public class DownloadMapsWindow extends JFrame {
           updateTabTitleNewMaps();
         }
       }
-      case ManagedMapStatus.UPDATE_AVAILABLE, ManagedMapStatus.ERROR -> {}
+      case ManagedMapStatus.UPDATE_AVAILABLE -> {
+        // a failed update download reverts an out-of-date map to this status
+        outOfDateMapTab.refreshFromStore();
+        updateTabTitleUpdatesAvailable();
+      }
+      case ManagedMapStatus.ERROR -> {}
     }
   }
 

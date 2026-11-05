@@ -113,7 +113,17 @@ public final class DownloadCoordinator {
     @Override
     public void downloadComplete(final MapDownloadItem download) {
       downloadListeners.forEach(it -> it.downloadComplete(download));
+      releaseDownloadSlot();
+    }
 
+    @Override
+    public void downloadFailed(final MapDownloadItem download) {
+      downloadListeners.forEach(it -> it.downloadFailed(download));
+      releaseDownloadSlot();
+    }
+
+    /// Frees the slot of the finished download and starts the next pending one.
+    private void releaseDownloadSlot() {
       synchronized (lock) {
         final Iterator<DownloadFile> iterator = activeDownloads.iterator();
         while (iterator.hasNext()) {

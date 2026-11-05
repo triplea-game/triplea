@@ -44,4 +44,9 @@ final class MapDownloadProgressListener {
   void downloadCompleted() {
     updateProgressBarWithPercentComplete(String.format("Installed %s", download.getMapName()), 100);
   }
+
+  void downloadFailed() {
+    updateProgressBarWithPercentComplete(
+        String.format("Failed to install %s", download.getMapName()), 0);
+  }
 }
