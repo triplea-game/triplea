@@ -159,6 +159,15 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
           RelationshipColorScheme.class,
           "RELATIONSHIP_COLOR_SCHEME",
           RelationshipColorScheme.STANDARD);
+  public static final ClientSetting<Integer> customWarColor =
+      new IntegerClientSetting(
+          "CUSTOM_WAR_COLOR", RelationshipColorScheme.STANDARD.getWar().getRGB());
+  public static final ClientSetting<Integer> customAlliedColor =
+      new IntegerClientSetting(
+          "CUSTOM_ALLIED_COLOR", RelationshipColorScheme.STANDARD.getAllied().getRGB());
+  public static final ClientSetting<Integer> customNeutralColor =
+      new IntegerClientSetting(
+          "CUSTOM_NEUTRAL_COLOR", RelationshipColorScheme.STANDARD.getNeutral().getRGB());
   public static final ClientSetting<UnitsDrawer.UnitFlagDrawMode> unitFlagDrawMode =
       new EnumClientSetting<>(
           UnitsDrawer.UnitFlagDrawMode.class,

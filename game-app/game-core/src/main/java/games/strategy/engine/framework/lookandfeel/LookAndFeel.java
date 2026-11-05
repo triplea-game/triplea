@@ -29,6 +29,8 @@ public final class LookAndFeel {
   private LookAndFeel() {}
 
   private static final @NonNls String DARKER_RED = "#8B0000";
+  // above this relative luminance black text has the higher WCAG contrast ratio than white
+  private static final double BLACK_TEXT_MIN_LUMINANCE = Math.sqrt(1.05 * 0.05) - 0.05;
 
   /**
    * Initializes the Swing Look-And-Feel subsystem.
@@ -100,8 +102,21 @@ Please restart all running TripleA instances.""",
     return luma < 0.5;
   }
 
+  /** Black or white, whichever has the higher WCAG contrast ratio on the background. */
   public static Color getContrastingTextColor(final Color background) {
-    return isColorDark(background) ? Color.WHITE : Color.BLACK;
+    return relativeLuminance(background) > BLACK_TEXT_MIN_LUMINANCE ? Color.BLACK : Color.WHITE;
+  }
+
+  // https://www.w3.org/TR/WCAG21/#dfn-relative-luminance
+  private static double relativeLuminance(final Color color) {
+    return 0.2126 * linear(color.getRed())
+        + 0.7152 * linear(color.getGreen())
+        + 0.0722 * linear(color.getBlue());
+  }
+
+  private static double linear(final int channel) {
+    final double value = channel / 255.0;
+    return value <= 0.040_45 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4);
   }
 
   private static void setupLookAndFeel(final String lookAndFeelName) {
@@ -140,6 +155,14 @@ Please restart all running TripleA instances.""",
 
   public static @NonNls String convertColorToHex(Color color) {
     return "#" + Integer.toHexString(color.getRGB()).substring(2);
+  }
+
+  /** Reads {@code #rrggbb} (the {@code #} is optional), as {@link #convertColorToHex} writes it. */
+  public static Optional<Color> parseHexColor(final String text) {
+    final String digits = text.strip().replaceFirst("^#", "");
+    return digits.matches("\\p{XDigit}{6}")
+        ? Optional.of(new Color(Integer.parseInt(digits, 16)))
+        : Optional.empty();
   }
 
   /**

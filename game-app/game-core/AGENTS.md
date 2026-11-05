@@ -394,7 +394,7 @@ Remote actions for host game management:
 - **`save/game/GameDataWriter`** — Writes game data to file.
 - **`message/PlayerListing`** — Serializable snapshot of player status: player-to-node mappings, enabled/disabled states, type assignments, game name, round number, alliance order.
 - **`system/HttpProxy`** — HTTP proxy configuration.
-- **`lookandfeel/`** (2 files) — `LookAndFeel`, `LookAndFeelSwingFrameListener` — UI theme management.
+- **`lookandfeel/`** — `LookAndFeel`, `LookAndFeelSwingFrameListener` — UI theme management; `RelationshipColorScheme` — war/allied/neutral colors (standard, color blind friendly, or the player's custom colors).
 
 ### Game Startup Flows
 
