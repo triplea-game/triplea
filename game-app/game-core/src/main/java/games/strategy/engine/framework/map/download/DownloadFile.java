@@ -8,10 +8,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Optional;
+import java.util.function.Function;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 import org.triplea.io.FileUtils;
+import org.triplea.io.ZipExtractor;
 import org.triplea.java.ThreadRunner;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.map.description.file.MapDescriptionYaml;
@@ -27,16 +30,34 @@ final class DownloadFile {
     NOT_STARTED,
     DOWNLOADING,
     CANCELLED,
-    DONE
+    DONE,
+    FAILED
   }
 
   private final MapDownloadItem download;
   private final DownloadListener downloadListener;
+  private final ContentReader contentReader;
+  private final Function<Path, Optional<Path>> unzipMap;
   private volatile DownloadState state = DownloadState.NOT_STARTED;
 
   DownloadFile(final MapDownloadItem download, final DownloadListener downloadListener) {
+    this(
+        download,
+        downloadListener,
+        DownloadConfiguration.contentReader(),
+        ZippedMapsExtractor::unzipMap);
+  }
+
+  @VisibleForTesting
+  DownloadFile(
+      final MapDownloadItem download,
+      final DownloadListener downloadListener,
+      final ContentReader contentReader,
+      final Function<Path, Optional<Path>> unzipMap) {
     this.download = download;
     this.downloadListener = downloadListener;
+    this.contentReader = contentReader;
+    this.unzipMap = unzipMap;
   }
 
   MapDownloadItem getDownload() {
@@ -67,10 +88,10 @@ final class DownloadFile {
                   bytesReceived -> downloadListener.downloadUpdated(download, bytesReceived));
 
           try {
-            DownloadConfiguration.contentReader()
-                .downloadToFile(download.getDownloadUrl(), targetTempFileToDownloadTo);
+            contentReader.downloadToFile(download.getDownloadUrl(), targetTempFileToDownloadTo);
           } catch (final IOException e) {
             log.error("Failed to download: {}", download.getDownloadUrl(), e);
+            notifyDownloadFailed();
             return;
           } finally {
             watcher.stop();
@@ -80,21 +101,39 @@ final class DownloadFile {
             return;
           }
 
-          state = DownloadState.DONE;
-
           // extract map, if successful and does not have a 'map.yml' file, generate one.
-          ZippedMapsExtractor.unzipMap(targetTempFileToDownloadTo)
-              .ifPresent(
-                  installedMap -> {
-                    if (moveUpSubfolderFilesHasErrors(installedMap)) return;
-                    // create a map description YAML file for the map if it does not contain one
-                    if (MapDescriptionYaml.fromMap(installedMap).isEmpty()) {
-                      MapDescriptionYaml.generateForMap(installedMap);
-                    }
-                  });
+          final Optional<Path> installedMap;
+          try {
+            installedMap = unzipMap.apply(targetTempFileToDownloadTo);
+          } catch (final ZipExtractor.ZipReadException
+              | ZipExtractor.FileSystemException
+              | ZipExtractor.ZipSecurityException e) {
+            log.error("Failed to extract map: {}", targetTempFileToDownloadTo, e);
+            notifyDownloadFailed();
+            return;
+          }
+          if (installedMap.isEmpty() || moveUpSubfolderFilesHasErrors(installedMap.get())) {
+            notifyDownloadFailed();
+            return;
+          }
 
+          if (MapDescriptionYaml.fromMap(installedMap.get()).isEmpty()) {
+            MapDescriptionYaml.generateForMap(installedMap.get());
+          }
+
+          state = DownloadState.DONE;
           downloadListener.downloadComplete(download);
         });
+  }
+
+  /// Reports the failure unless the download was cancelled in the meantime; a cancelled download is
+  /// not an error and must not free the slot of another download.
+  private void notifyDownloadFailed() {
+    if (state == DownloadState.CANCELLED) {
+      return;
+    }
+    state = DownloadState.FAILED;
+    downloadListener.downloadFailed(download);
   }
 
   /**
@@ -159,6 +198,8 @@ final class DownloadFile {
   }
 
   boolean isDone() {
-    return state == DownloadState.CANCELLED || state == DownloadState.DONE;
+    return state == DownloadState.CANCELLED
+        || state == DownloadState.DONE
+        || state == DownloadState.FAILED;
   }
 }

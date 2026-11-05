@@ -146,12 +146,31 @@ final class ManagedMapStore implements DownloadListener {
 
   @Override
   public void downloadComplete(MapDownloadItem download) {
+    final ManagedMap managedMap = getManagedMap(download);
+    SwingUtilities.invokeLater(() -> updateStatus(List.of(managedMap), ManagedMapStatus.INSTALLED));
+  }
+
+  @Override
+  public void downloadFailed(MapDownloadItem download) {
+    final ManagedMap managedMap = getManagedMap(download);
+    // A failed download or unpack must offer the map for installation again: revert to the status
+    // it had before the attempt, based on whether an installed copy already exists.
+    final ManagedMapStatus previousStatus =
+        managedMap.getInstalledMap() == null
+            ? ManagedMapStatus.AVAILABLE
+            : managedMap.getInstalledMap().isOutOfDate(download)
+                ? ManagedMapStatus.UPDATE_AVAILABLE
+                : ManagedMapStatus.INSTALLED;
+    SwingUtilities.invokeLater(() -> updateStatus(List.of(managedMap), previousStatus));
+  }
+
+  private ManagedMap getManagedMap(final MapDownloadItem download) {
     final ManagedMap managedMap = getMapByMapDownloadItem(download);
     if (managedMap == null) {
       throw new IllegalStateException(
           MessageFormat.format("No MapDownloadItem: {0} in map store {1}", download, this));
     }
-    SwingUtilities.invokeLater(() -> updateStatus(List.of(managedMap), ManagedMapStatus.INSTALLED));
+    return managedMap;
   }
 
   @Override

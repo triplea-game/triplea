@@ -64,6 +64,11 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
         () -> getMapDownloadProgressListenerFor(download).downloadCompleted());
   }
 
+  @Override
+  public void downloadFailed(final MapDownloadItem download) {
+    SwingUtilities.invokeLater(() -> getMapDownloadProgressListenerFor(download).downloadFailed());
+  }
+
   private MapDownloadProgressListener getMapDownloadProgressListenerFor(
       final MapDownloadItem download) {
     assert SwingUtilities.isEventDispatchThread();
