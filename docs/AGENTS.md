@@ -30,6 +30,11 @@ code.
 | `development/build-overview-and-development.md` | Build system overview — convention plugins, test fixtures, and future improvement plans. |
 | `development/error-handling-and-logging.md` | Logging strategy — severe = crash dialog, warning = user-facing dialog, info = hidden console. |
 | `development/lobby-authentication-logic.md` | Lobby auth flow details. |
+| `development/map-loading-design.md` | How game XML is parsed into Java objects. Read before changing `xml-reader` or `map-data`. |
+| `development/game-rule-sets.md` | Rule variants (v1, v2, ...) with example games and rule books. |
+| `development/ai-overview-and-backlog.md` | Overview of how the AI (`game-app/ai`) plays, plus its feature backlog. |
+| `map-making/reference/map-features-change-log.md` | Map file changes per release, i.e. which XML features maps can rely on since when. |
+| `map-making/reference/map-yml-file.md` | The `map.yml` format used by the engine and the maps server. |
 
 ## Staleness Notes
 
