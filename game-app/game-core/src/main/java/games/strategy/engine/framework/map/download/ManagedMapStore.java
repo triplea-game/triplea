@@ -2,12 +2,10 @@ package games.strategy.engine.framework.map.download;
 
 import games.strategy.engine.framework.map.file.system.loader.InstalledMap;
 import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -104,14 +102,6 @@ final class ManagedMapStore implements DownloadListener {
                     mapStatusListener.mapStatusChanged(oldMapStatus, newMapStatus)));
   }
 
-  List<ManagedMap> getByStatus(final ManagedMapStatus... mapStatuses) {
-    List<ManagedMapStatus> list = Arrays.stream(mapStatuses).toList();
-    return mapsByName.values().stream()
-        .filter(map -> list.contains(map.getMapStatus()))
-        .sorted(Comparator.comparing(ManagedMap::getMapName))
-        .toList();
-  }
-
   boolean hasAnyMap(final ManagedMapStatus... mapStatuses) {
     for (ManagedMapStatus mapStatus : mapStatuses) {
       if (!groupsByStatus.get(mapStatus).isEmpty()) {
@@ -144,14 +134,27 @@ final class ManagedMapStore implements DownloadListener {
     // currently nothing to do, but needed due to interface
   }
 
+  /**
+   * Marks the map installed; a map this store does not hold, eg one whose download started while
+   * the listing of an earlier maps window could not be read, is none of its business.
+   */
   @Override
   public void downloadComplete(MapDownloadItem download) {
-    final ManagedMap managedMap = getMapByMapDownloadItem(download);
-    if (managedMap == null) {
-      throw new IllegalStateException(
-          MessageFormat.format("No MapDownloadItem: {0} in map store {1}", download, this));
-    }
-    SwingUtilities.invokeLater(() -> updateStatus(List.of(managedMap), ManagedMapStatus.INSTALLED));
+    Optional.ofNullable(getMapByMapDownloadItem(download))
+        .ifPresent(
+            managedMap ->
+                SwingUtilities.invokeLater(
+                    () -> updateStatus(List.of(managedMap), ManagedMapStatus.INSTALLED)));
+  }
+
+  /** Marks the map failed, which offers to install it again. */
+  @Override
+  public void downloadFailed(final MapDownloadItem download) {
+    Optional.ofNullable(getMapByMapDownloadItem(download))
+        .ifPresent(
+            managedMap ->
+                SwingUtilities.invokeLater(
+                    () -> updateStatus(List.of(managedMap), ManagedMapStatus.ERROR)));
   }
 
   @Override

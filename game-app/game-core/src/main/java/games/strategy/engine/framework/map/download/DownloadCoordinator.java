@@ -8,22 +8,31 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
+import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 
 /// Class that accepts and queues download requests. Download requests are started in background
 /// thread, this class ensures N are in progress until all are done.
+@Slf4j
 public final class DownloadCoordinator {
-  public static final DownloadCoordinator instance = new DownloadCoordinator();
+  public static final DownloadCoordinator instance =
+      new DownloadCoordinator(DownloadConfiguration.contentReader());
 
   private static final int MAX_CONCURRENT_DOWNLOADS = 3;
 
   private final Object lock = new Object();
+  private final ContentReader contentReader;
 
   private final Queue<DownloadFile> pendingDownloads = new ArrayDeque<>();
   private final Set<DownloadFile> activeDownloads = new HashSet<>();
   private final Set<DownloadFile> terminatedDownloads = new HashSet<>();
 
   private final List<DownloadListener> downloadListeners = new CopyOnWriteArrayList<>();
+
+  DownloadCoordinator(final ContentReader contentReader) {
+    this.contentReader = contentReader;
+  }
 
   void addDownloadListener(final DownloadListener downloadListener) {
     downloadListeners.add(downloadListener);
@@ -36,7 +45,7 @@ public final class DownloadCoordinator {
   void accept(final MapDownloadItem download) {
     synchronized (lock) {
       if (isNewDownload(download)) {
-        pendingDownloads.add(new DownloadFile(download, new Listener()));
+        pendingDownloads.add(new DownloadFile(download, new Listener(), contentReader));
         updateQueue();
       }
     }
@@ -51,7 +60,17 @@ public final class DownloadCoordinator {
 
   private static boolean containsDownload(
       final Collection<DownloadFile> downloadFiles, final MapDownloadItem download) {
-    return downloadFiles.stream().map(DownloadFile::getDownload).anyMatch(download::equals);
+    return downloadFiles.stream()
+        .map(DownloadFile::getDownload)
+        .anyMatch(queued -> isSameMap(queued, download));
+  }
+
+  /**
+   * By the map's name: a maps window opened again reads the listing again, which has its own items
+   * of the maps, whose details may have changed since; one map is downloaded once, into one folder.
+   */
+  private static boolean isSameMap(final MapDownloadItem one, final MapDownloadItem other) {
+    return one.getMapName().equals(other.getMapName());
   }
 
   /// Starts any downloads that can be started.
@@ -65,19 +84,29 @@ public final class DownloadCoordinator {
     }
   }
 
-  void cancelDownloads() {
+  /// Cancels the download of the map, whether it waits or runs; the next waiting one may start. A
+  /// download done and unpacking its map is not cancelled: its map would be half there.
+  void cancel(final MapDownloadItem download) {
     synchronized (lock) {
-      for (final DownloadFile download : pendingDownloads) {
-        download.cancelDownload(); // CAUTION: calling out to external code while holding lock
-        terminatedDownloads.add(download);
-      }
-      pendingDownloads.clear();
+      cancelIn(pendingDownloads, download);
+      cancelIn(activeDownloads, download);
+      updateQueue();
+    }
+  }
 
-      for (final DownloadFile download : activeDownloads) {
-        download.cancelDownload(); // CAUTION: calling out to external code while holding lock
-        terminatedDownloads.add(download);
+  /** Cancels the map's downloads that wait or run. */
+  private void cancelIn(
+      final Collection<DownloadFile> downloadFiles, final MapDownloadItem download) {
+    assert Thread.holdsLock(lock);
+
+    final Iterator<DownloadFile> iterator = downloadFiles.iterator();
+    while (iterator.hasNext()) {
+      final DownloadFile downloadFile = iterator.next();
+      if (isSameMap(downloadFile.getDownload(), download) && !downloadFile.isDone()) {
+        iterator.remove();
+        downloadFile.cancelDownload();
+        terminatedDownloads.add(downloadFile);
       }
-      activeDownloads.clear();
     }
   }
 
@@ -104,21 +133,49 @@ public final class DownloadCoordinator {
     }
   }
 
+  /**
+   * Tells every listener, also when one fails: else the listeners after it never heard of the end,
+   * and the next download never started.
+   */
+  private void tellEach(final Consumer<DownloadListener> news) {
+    for (final DownloadListener listener : downloadListeners) {
+      try {
+        news.accept(listener);
+      } catch (final RuntimeException e) {
+        // not as an error, which shows a dialog: progress is told every few milliseconds
+        log.info("A listener of the map downloads failed", e);
+      }
+    }
+  }
+
   private final class Listener implements DownloadListener {
     @Override
     public void downloadUpdated(final MapDownloadItem download, final long bytesReceived) {
-      downloadListeners.forEach(it -> it.downloadUpdated(download, bytesReceived));
+      tellEach(it -> it.downloadUpdated(download, bytesReceived));
     }
 
     @Override
     public void downloadComplete(final MapDownloadItem download) {
-      downloadListeners.forEach(it -> it.downloadComplete(download));
+      tellEach(it -> it.downloadComplete(download));
+      startNextDownload(download);
+    }
 
+    @Override
+    public void downloadFailed(final MapDownloadItem download) {
+      tellEach(it -> it.downloadFailed(download));
+      startNextDownload(download);
+    }
+
+    /**
+     * Moves the finished download out of the running ones, which makes room for the next one: this
+     * one, not any done, as another may still unpack its map.
+     */
+    private void startNextDownload(final MapDownloadItem finished) {
       synchronized (lock) {
         final Iterator<DownloadFile> iterator = activeDownloads.iterator();
         while (iterator.hasNext()) {
           final DownloadFile downloadFile = iterator.next();
-          if (downloadFile.isDone()) {
+          if (downloadFile.isDone() && isSameMap(downloadFile.getDownload(), finished)) {
             iterator.remove();
             terminatedDownloads.add(downloadFile);
             break;

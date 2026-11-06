@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
@@ -27,16 +28,22 @@ final class DownloadFile {
     NOT_STARTED,
     DOWNLOADING,
     CANCELLED,
+    FAILED,
     DONE
   }
 
   private final MapDownloadItem download;
   private final DownloadListener downloadListener;
+  private final ContentReader contentReader;
   private volatile DownloadState state = DownloadState.NOT_STARTED;
 
-  DownloadFile(final MapDownloadItem download, final DownloadListener downloadListener) {
+  DownloadFile(
+      final MapDownloadItem download,
+      final DownloadListener downloadListener,
+      final ContentReader contentReader) {
     this.download = download;
     this.downloadListener = downloadListener;
+    this.contentReader = contentReader;
   }
 
   MapDownloadItem getDownload() {
@@ -55,46 +62,79 @@ final class DownloadFile {
           if (state == DownloadState.CANCELLED) {
             return;
           }
-
-          @NonNls final String fileNameToWrite = normalizeMapName(download.getMapName()) + ".zip";
-
-          final Path targetTempFileToDownloadTo =
-              FileUtils.newTempFolder().resolve(fileNameToWrite);
-
-          final FileSizeWatcher watcher =
-              new FileSizeWatcher(
-                  targetTempFileToDownloadTo,
-                  bytesReceived -> downloadListener.downloadUpdated(download, bytesReceived));
-
+          final boolean installed;
           try {
-            DownloadConfiguration.contentReader()
-                .downloadToFile(download.getDownloadUrl(), targetTempFileToDownloadTo);
-          } catch (final IOException e) {
-            log.error("Failed to download: {}", download.getDownloadUrl(), e);
+            installed = downloadAndInstall();
+          } catch (final RuntimeException e) {
+            // eg a full disk or a zip that would write outside its folder: else no listener heard
+            // of the end and the map showed as downloading for ever. A cancelled download ended
+            // already: a failure now would reach a new download of the map
+            if (state != DownloadState.CANCELLED) {
+              state = DownloadState.FAILED;
+              log.error("Failed to download or install: {}", download.getMapName(), e);
+              downloadListener.downloadFailed(download);
+            }
             return;
-          } finally {
-            watcher.stop();
           }
-
-          if (state == DownloadState.CANCELLED) {
-            return;
+          if (installed) {
+            downloadListener.downloadComplete(download);
           }
-
-          state = DownloadState.DONE;
-
-          // extract map, if successful and does not have a 'map.yml' file, generate one.
-          ZippedMapsExtractor.unzipMap(targetTempFileToDownloadTo)
-              .ifPresent(
-                  installedMap -> {
-                    if (moveUpSubfolderFilesHasErrors(installedMap)) return;
-                    // create a map description YAML file for the map if it does not contain one
-                    if (MapDescriptionYaml.fromMap(installedMap).isEmpty()) {
-                      MapDescriptionYaml.generateForMap(installedMap);
-                    }
-                  });
-
-          downloadListener.downloadComplete(download);
         });
+  }
+
+  /**
+   * Downloads and unpacks the map; false when it was cancelled (whoever cancelled it updated the
+   * map) or failed (which this tells).
+   */
+  private boolean downloadAndInstall() {
+    @NonNls final String fileNameToWrite = normalizeMapName(download.getMapName()) + ".zip";
+
+    final Path targetTempFileToDownloadTo = FileUtils.newTempFolder().resolve(fileNameToWrite);
+
+    final FileSizeWatcher watcher =
+        new FileSizeWatcher(
+            targetTempFileToDownloadTo,
+            bytesReceived -> {
+              // a cancelled download may still be receiving; its map shows no progress
+              if (state == DownloadState.DOWNLOADING) {
+                downloadListener.downloadUpdated(download, bytesReceived);
+              }
+            });
+
+    try {
+      contentReader.downloadToFile(download.getDownloadUrl(), targetTempFileToDownloadTo);
+    } catch (final IOException e) {
+      if (state != DownloadState.CANCELLED) {
+        state = DownloadState.FAILED;
+        log.error("Failed to download: {}", download.getDownloadUrl(), e);
+        downloadListener.downloadFailed(download);
+      }
+      return false;
+    } finally {
+      watcher.stop();
+    }
+
+    if (state == DownloadState.CANCELLED) {
+      return false;
+    }
+
+    state = DownloadState.DONE;
+
+    // extract map, if successful and does not have a 'map.yml' file, generate one.
+    final Optional<Path> installedMap = ZippedMapsExtractor.unzipMap(targetTempFileToDownloadTo);
+    if (installedMap.isEmpty() || moveUpSubfolderFilesHasErrors(installedMap.get())) {
+      // eg the old map folder could not be deleted: the map is not installed
+      state = DownloadState.FAILED;
+      // the cause is logged where it happened; a second dialog would only repeat it
+      log.info("Failed to unpack: {}", download.getMapName());
+      downloadListener.downloadFailed(download);
+      return false;
+    }
+    // create a map description YAML file for the map if it does not contain one
+    if (MapDescriptionYaml.fromMap(installedMap.get()).isEmpty()) {
+      MapDescriptionYaml.generateForMap(installedMap.get());
+    }
+    return true;
   }
 
   /**
@@ -159,6 +199,13 @@ final class DownloadFile {
   }
 
   boolean isDone() {
-    return state == DownloadState.CANCELLED || state == DownloadState.DONE;
+    return state == DownloadState.CANCELLED
+        || state == DownloadState.FAILED
+        || state == DownloadState.DONE;
+  }
+
+  /** Whether the download waits to start or is running. */
+  boolean isRunning() {
+    return state == DownloadState.NOT_STARTED || state == DownloadState.DOWNLOADING;
   }
 }

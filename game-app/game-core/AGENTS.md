@@ -366,17 +366,20 @@ The `map/` package handles map installation, discovery, and downloading.
 - **`listing/MapListingFetcher`** — Retrieves available maps from the server.
 - **`ZippedMapsExtractor`** — Extracts downloaded map ZIP files, auto-generates `map.yml` if missing.
 
-#### Map Download System (`map/download/`, 15 files)
+#### Map Download System (`map/download/`)
 
-- **`DownloadCoordinator`** — Singleton managing concurrent downloads. Queue supports max 3 concurrent downloads. Methods: `accept(MapDownloadItem)`, `cancelDownloads()`, `pollTerminatedDownloads()`.
-- **`DownloadFile`** — Single download state machine (NOT_STARTED → DOWNLOADING → DONE/CANCELLED). Downloads to temp, extracts, validates, generates `map.yml` if missing, flattens nested folder structure.
-- **`DownloadMapsWindow`** — Swing window with tabs for available/installed/out-of-date maps. Supports search, multi-select, progress display, and remove/update.
-- **`DownloadMapsWindowModel`** / **`DownloadMapsWindowMapsListing`** — Window logic and display data.
+- **`DownloadCoordinator`** — Singleton managing concurrent downloads, max 3 at a time, one per map name. Methods: `accept(MapDownloadItem)`, `cancel(MapDownloadItem)`, `getDownloads()`. Tells every `DownloadListener` of progress, completion and failure; a listener that throws does not stop the others.
+- **`DownloadFile`** — Single download state machine (NOT_STARTED → DOWNLOADING → DONE/CANCELLED/FAILED). Downloads to temp, extracts, validates, generates `map.yml` if missing, flattens nested folder structure; a failed download or unpack is reported as `downloadFailed`.
+- **`DownloadMapsWindow`** — Swing window with the tabs "Get more maps" and "Installed" (with an `UpdatesBadge` counting maps that have updates). A map stays in the tab it had when the window opened (`TabMembership`). Downloads go on after the window closes.
+- **`MapList`** — The maps of one tab, sorted by name, in the view chosen with `MapViewSwitch` (`MapBrowserView`: list, list with pictures, tiles; kept in `ClientSetting.mapBrowserView`): search (name or tag), tag filter, ctrl/shift multi-select (`MapSelection`) with a bar that installs or updates the selected maps, and the selected map's `MapDetails` on the right.
+- **`MapRow`** / **`MapDetails`** — One map: preview with download progress, name, creator, status, tag chips and the buttons Install, Update, Uninstall or Cancel; the details add versions, size, tags and the description, with the preview in a `PreviewSlider` that a click on its lower border slides away.
+- **`MapTagFilter`** — The tag menu. A map can have several values of one tag name; the filter is OR within a tag name and AND across names.
+- **`MapPreviews`** / **`MapPreviewBox`** — Preview pictures loaded in the background (http and https only) and cached per size.
+- **`DownloadMapsWindowModel`** / **`DownloadMapsWindowMapsListing`** / **`ManagedMapStore`** — Window logic and the status of each map.
 - **`ContentReader`** — HTTP file fetcher.
 - **`DownloadFileParser`** / **`DownloadFileDescription`** — Download metadata parsing and container.
-- **`MapDownloadProgressPanel`** / **`MapDownloadProgressListener`** / **`FileSizeWatcher`** — Progress monitoring UI.
-- **`MapDownloadSwingTable`** — Table renderer for map list.
-- **`DownloadConfiguration`** / **`DownloadListener`** / **`FileSystemAccessStrategy`** — Configuration, callbacks, and I/O abstraction.
+- **`FileSizeWatcher`** — Reports the bytes a running download has received.
+- **`DownloadConfiguration`** / **`DownloadListener`** / **`FileSystemAccessStrategy`** — Configuration, callbacks, and uninstalling maps.
 
 ### Network UI Actions (`network/ui/`, 6 files)
 

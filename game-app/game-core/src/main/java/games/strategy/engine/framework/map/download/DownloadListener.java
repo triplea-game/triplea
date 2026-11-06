@@ -6,4 +6,7 @@ interface DownloadListener {
   void downloadUpdated(MapDownloadItem download, long bytesReceived);
 
   void downloadComplete(MapDownloadItem download);
+
+  /** The download could not be completed, eg the server could not be reached. */
+  void downloadFailed(MapDownloadItem download);
 }

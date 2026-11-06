@@ -17,8 +17,8 @@ class FileSystemAccessStrategy {
       final List<ManagedMap> toRemove,
       final Consumer<List<ManagedMap>> removeAction) {
     SwingComponents.promptUser(
-        "Remove Maps?",
-        "<html>Will remove "
+        "Uninstall Maps?",
+        "<html>Will uninstall "
             + toRemove.size()
             + " maps, are you sure? <br/>"
             + formatMapList(toRemove, ManagedMap::getMapName)
@@ -43,7 +43,7 @@ class FileSystemAccessStrategy {
 
       if (!deletes.isEmpty()) {
         removeActionListeners.accept(deletes);
-        final String message = newDialogMessage("Successfully removed.", deletes);
+        final String message = newDialogMessage("Successfully uninstalled.", deletes);
         showDialog(parentFrame, message, deletes, ManagedMap::getMapName);
       }
     };
