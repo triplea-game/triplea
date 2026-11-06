@@ -33,7 +33,8 @@ http-clients/lobby-client → domain-data, lib/feign-common, lib/java-extras, li
 
 ## Build & Development
 
-- **Java version**: JDK 25
+- **Java version**: JDK 25. The Gradle toolchain does not download it: a JDK 25 must be installed;
+  point `JAVA_HOME` at it.
 - **Build tool**: Gradle with Kotlin DSL, configuration cache enabled
 - **Formatting**: Google Java Format via Spotless (`./gradlew spotlessApply`)
 - **Static analysis**: PMD (`.build/pmd.xml`)
@@ -59,6 +60,16 @@ http-clients/lobby-client → domain-data, lib/feign-common, lib/java-extras, li
 # Apply formatting
 ./gradlew spotlessApply
 ```
+
+### Before Finishing a Change
+
+- Run `./gradlew spotlessApply` and the tests of every changed module (`./gradlew :<module>:test`);
+  `./verify` runs everything CI runs.
+- Add or update tests for changed behaviour.
+- If the change makes a statement in an `AGENTS.md` file or under `docs/` wrong, fix it in the
+  same change.
+- Keep a change to one purpose; see `.github/CONTRIBUTING.md` and `docs/project/pull-requests.md`
+  for the PR guidelines.
 
 ## Code Conventions
 
@@ -104,6 +115,8 @@ The engine is built around these core abstractions (see `docs/development/engine
   NOT change their packages. Game saves use Java serialization.
 - **Network compatibility**: Methods annotated `@RemoteActionCode` (in remote delegate interfaces like
   `IBattleDelegate`, `IMoveDelegate`, etc.) are invoked over the network. Their API signatures must not change.
+- **Map XML compatibility**: Maps are community content. Changes to XML parsing or attachments must keep existing map
+  XMLs loading and behaving the same (see "Compatibility Breakers" in `.github/CONTRIBUTING.md`).
 
 ## Key Domain Terms
 
