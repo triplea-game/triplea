@@ -6,6 +6,9 @@ import games.strategy.triplea.EngineImageLoader;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
+import java.awt.Rectangle;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -107,7 +110,6 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
   private void createComponents() {
     listModel = new DefaultListModel<>();
     players = new JList<>(listModel);
-    players.setFocusable(false);
     players.setCellRenderer(
         (list, node, index, isSelected, cellHasFocus) -> {
           if (setCellRenderer == null) {
@@ -153,6 +155,18 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
           @Override
           public void mouseReleased(final MouseEvent e) {
             mouseOnPlayersList(e);
+          }
+        });
+    // Keyboard equivalent of the right-click menu so keyboard-only users can reach the player
+    // actions (Slap/Ignore, and the moderator actions).
+    players.addKeyListener(
+        new KeyAdapter() {
+          @Override
+          public void keyPressed(final KeyEvent e) {
+            if (e.getKeyCode() == KeyEvent.VK_CONTEXT_MENU
+                || (e.isShiftDown() && e.getKeyCode() == KeyEvent.VK_F10)) {
+              showActionMenuForSelection();
+            }
           }
         });
     final JPanel panelReference = this;
@@ -237,6 +251,19 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
     if (index == -1) {
       return;
     }
+    showActionMenu(index, e.getX(), e.getY());
+  }
+
+  private void showActionMenuForSelection() {
+    final int index = players.getSelectedIndex();
+    if (index == -1) {
+      return;
+    }
+    final Rectangle cell = players.getCellBounds(index, index);
+    showActionMenu(index, cell == null ? 0 : cell.x, cell == null ? 0 : cell.y + cell.height);
+  }
+
+  private void showActionMenu(final int index, final int x, final int y) {
     final ChatParticipant player = listModel.get(index);
     final JPopupMenu menu = new JPopupMenu();
     boolean hasActions = false;
@@ -253,7 +280,7 @@ public class ChatPlayerPanel extends JPanel implements ChatPlayerListener {
       }
     }
     if (hasActions) {
-      menu.show(players, e.getX(), e.getY());
+      menu.show(players, x, y);
     }
   }
 
