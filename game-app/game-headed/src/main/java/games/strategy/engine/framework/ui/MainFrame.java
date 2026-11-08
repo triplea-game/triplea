@@ -8,12 +8,20 @@ import games.strategy.engine.framework.startup.ui.panels.main.MainPanelBuilder;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.EngineImageLoader;
+import games.strategy.triplea.settings.ClientSetting;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowEvent;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import javax.swing.JFrame;
@@ -54,8 +62,37 @@ public class MainFrame {
         new MainPanelBuilder(quitAction).buildMainPanel(headedServerSetupModel, gameSelectorModel);
     mainJFrame.add(mainPanel);
     mainJFrame.pack();
+    final Rectangle screen =
+        GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+    final Dimension minimum = mainJFrame.getSize();
+    final Dimension defaultSize = LaunchWindowSize.compute(Optional.empty(), screen, minimum);
+    mainJFrame.setSize(LaunchWindowSize.compute(savedWindowSize(), screen, minimum));
+    mainJFrame.addComponentListener(
+        new ComponentAdapter() {
+          @Override
+          public void componentResized(final ComponentEvent e) {
+            if ((mainJFrame.getExtendedState() & Frame.MAXIMIZED_BOTH) != 0) {
+              return;
+            }
+            // Only a size the user picked is remembered, so an untouched window keeps adapting
+            // to whatever screen it next opens on.
+            final boolean isDefault = mainJFrame.getSize().equals(defaultSize);
+            ClientSetting.launchWindowWidth.setValue(isDefault ? null : mainJFrame.getWidth());
+            ClientSetting.launchWindowHeight.setValue(isDefault ? null : mainJFrame.getHeight());
+          }
+        });
 
     headedServerSetupModel.setUi(mainJFrame);
+  }
+
+  private static Optional<Dimension> savedWindowSize() {
+    return ClientSetting.launchWindowWidth
+        .getValue()
+        .flatMap(
+            width ->
+                ClientSetting.launchWindowHeight
+                    .getValue()
+                    .map(height -> new Dimension(width, height)));
   }
 
   public static void buildMainFrame(
