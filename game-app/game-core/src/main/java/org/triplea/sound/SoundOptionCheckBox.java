@@ -3,7 +3,7 @@ package org.triplea.sound;
 import games.strategy.engine.data.properties.BooleanProperty;
 
 /** Checkbox wrapper for a sound option. */
-class SoundOptionCheckBox extends BooleanProperty {
+public class SoundOptionCheckBox extends BooleanProperty {
   private static final long serialVersionUID = 5774074488487286103L;
   private final String clipName;
 
@@ -21,7 +21,7 @@ class SoundOptionCheckBox extends BooleanProperty {
     this.clipName = clipName;
   }
 
-  String getClipName() {
+  public String getClipName() {
     return clipName;
   }
 }
