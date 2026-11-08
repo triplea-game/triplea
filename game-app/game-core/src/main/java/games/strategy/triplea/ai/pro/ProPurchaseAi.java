@@ -261,7 +261,8 @@ class ProPurchaseAi {
       // Try to use any remaining PUs on high value units
       purchaseUnitsWithRemainingProduction(
           purchaseTerritories, purchaseOptions.getLandOptions(), purchaseOptions.getAirOptions());
-      upgradeUnitsWithRemainingPUs(purchaseTerritories, purchaseOptions);
+      upgradeUnitsWithRemainingPUs(
+          purchaseTerritories, purchaseOptions, purchaseOptions.getAirOptions());
 
       // Check if no remaining PUs or no unit built this iteration
       final int numUnits =
@@ -379,6 +380,14 @@ class ProPurchaseAi {
     }
     final double strength =
         (2.0 * best.get().getHitPoints() + best.get().getDefense()) * best.get().getQuantity();
+    final int affordable =
+        Math.min(
+            ppt.getRemainingUnitProduction() / best.get().getQuantity(),
+            resourceTracker.getRemainingPUs(data) / best.get().getCost());
+    if (deficit > strength * affordable) {
+      buyFightersToEscapeLostCapital(place, ppt, purchaseOptions, capital);
+      return;
+    }
     int bought = 0;
     while (deficit > 0
         && resourceTracker.hasEnough(best.get())
@@ -464,6 +473,38 @@ class ProPurchaseAi {
     }
   }
 
+  /**
+   * When no defensive buy can hold the capital, spends on fighters up to the production limit:
+   * unlike ground units they can leave before the fall and keep their value.
+   */
+  private void buyFightersToEscapeLostCapital(
+      final ProPlaceTerritory place,
+      final ProPurchaseTerritory ppt,
+      final ProPurchaseOptionMap purchaseOptions,
+      final Territory capital) {
+    final Optional<ProPurchaseOption> fighter =
+        ProPurchaseValidationUtils.findPurchaseOptionsForTerritory(
+                proData,
+                player,
+                withoutBomberLikeAir(purchaseOptions.getAirOptions()),
+                capital,
+                isBid)
+            .stream()
+            .filter(o -> o.getCost() > 0)
+            .max(Comparator.comparingDouble(o -> o.getDefenseEfficiency() * o.getMovement()));
+    int bought = 0;
+    while (fighter.isPresent()
+        && resourceTracker.hasEnough(fighter.get())
+        && ppt.getRemainingUnitProduction() >= fighter.get().getQuantity()) {
+      resourceTracker.purchase(fighter.get());
+      addUnitsToPlace(place, fighter.get().createTempUnits());
+      bought += fighter.get().getQuantity();
+    }
+    ProLogger.info(
+        String.format(
+            "%s cannot hold %s: bought %d fighters to escape", player.getName(), capital, bought));
+  }
+
   private static void reserveSlots(
       final List<ProPurchaseTerritory> factories,
       final int units,
@@ -520,6 +561,12 @@ class ProPurchaseAi {
     territoryManager.populateEnemyAttackOptions(List.of(), placeTerritories);
     findDefendersInPlaceTerritories(purchaseTerritories);
 
+    // A cooked capital buys first, so other defenders can't spend the PUs its defence or its
+    // escaping fighters need.
+    if (proData.isBeta()) {
+      purchaseCapitalDefenceIfCooked(purchaseTerritories, purchaseOptions);
+    }
+
     // Prioritize land territories that need defended and purchase additional defenders
     final List<ProPlaceTerritory> needToDefendLandTerritories =
         prioritizeTerritoriesToDefend(purchaseTerritories, true);
@@ -532,7 +579,6 @@ class ProPurchaseAi {
         true);
     if (proData.isBeta()) {
       purchaseDefenceAgainstCombinedAttacks(purchaseTerritories, purchaseOptions);
-      purchaseCapitalDefenceIfCooked(purchaseTerritories, purchaseOptions);
     }
 
     // Find strategic value for each territory
@@ -588,11 +634,16 @@ class ProPurchaseAi {
         purchaseSeaAndAmphibUnits(purchaseTerritories, prioritizedSeaTerritories, purchaseOptions);
 
     // Try to use any remaining PUs on high value units, except if we need to save up for a fleet.
-    if (!shouldSaveUpForAFleet) {
+    // Beta never banks PUs: unspent production goes to fighters instead.
+    if (!shouldSaveUpForAFleet || proData.isBeta()) {
+      final List<ProPurchaseOption> leftoverAirOptions =
+          proData.isBeta()
+              ? withoutBomberLikeAir(purchaseOptions.getAirOptions())
+              : purchaseOptions.getAirOptions();
       purchaseUnitsWithRemainingProduction(
-          purchaseTerritories, purchaseOptions.getLandOptions(), purchaseOptions.getAirOptions());
+          purchaseTerritories, purchaseOptions.getLandOptions(), leftoverAirOptions);
 
-      upgradeUnitsWithRemainingPUs(purchaseTerritories, purchaseOptions);
+      upgradeUnitsWithRemainingPUs(purchaseTerritories, purchaseOptions, leftoverAirOptions);
 
       // Try to purchase land/sea factory with extra PUs
       purchaseFactory(
@@ -618,6 +669,11 @@ class ProPurchaseAi {
 
     territoryManager = null;
     return purchaseTerritories;
+  }
+
+  /** Air options that defend at least as well as they attack (fighters), dropping bombers. */
+  static List<ProPurchaseOption> withoutBomberLikeAir(final List<ProPurchaseOption> airOptions) {
+    return airOptions.stream().filter(ppo -> ppo.getDefense() >= ppo.getAttack()).toList();
   }
 
   private boolean shouldSaveUpForAFleet(
@@ -1866,6 +1922,7 @@ class ProPurchaseAi {
                 t, needDestroyer, attackers));
         List<Unit> defendingUnits = new ArrayList<>(placeTerritory.getDefendingUnits());
         defendingUnits.addAll(ProPurchaseUtils.getPlaceUnits(t, purchaseTerritories));
+        defendingUnits.addAll(waitingFighters(t, unusedCarrierCapacity));
         ProBattleResult result =
             calc.calculateBattleResults(
                 proData,
@@ -1939,7 +1996,9 @@ class ProPurchaseAi {
                       ownedLocalUnits,
                       unitsToPlace,
                       needDestroyer,
-                      unusedCarrierCapacity,
+                      Math.max(
+                          0,
+                          unusedCarrierCapacity - waitingFighters(t, unusedCarrierCapacity).size()),
                       unusedLocalCarrierCapacity));
             }
             final Optional<ProPurchaseOption> optionalSelectedOption =
@@ -1979,6 +2038,7 @@ class ProPurchaseAi {
             defendingUnits = new ArrayList<>(placeTerritory.getDefendingUnits());
             defendingUnits.addAll(ProPurchaseUtils.getPlaceUnits(t, purchaseTerritories));
             defendingUnits.addAll(unitsToPlace);
+            defendingUnits.addAll(waitingFighters(t, unusedCarrierCapacity));
             result =
                 calc.estimateDefendBattleResults(
                     proData,
@@ -2494,6 +2554,30 @@ class ProPurchaseAi {
     }
   }
 
+  /** Beta only; see {@link #findWaitingFighters}. */
+  private List<Unit> waitingFighters(final Territory sea, final int freeDeck) {
+    return proData.isBeta() ? findWaitingFighters(data, player, sea, freeDeck) : List.of();
+  }
+
+  /**
+   * Own fighters on land within two steps of {@code sea} that fit on the free carrier deck there:
+   * they join a fleet that has the deck for them, so waiting air counts toward a safe fleet.
+   */
+  static List<Unit> findWaitingFighters(
+      final GameData data, final GamePlayer player, final Territory sea, final int freeDeck) {
+    if (freeDeck <= 0) {
+      return List.of();
+    }
+    final List<Unit> waiting = new ArrayList<>();
+    for (final Territory neighbor : data.getMap().getNeighbors(sea, 2)) {
+      if (!neighbor.isWater()) {
+        waiting.addAll(
+            neighbor.getMatches(Matches.unitIsOwnedBy(player).and(Matches.unitCanLandOnCarrier())));
+      }
+    }
+    return waiting.subList(0, Math.min(freeDeck, waiting.size()));
+  }
+
   /** True when own and allied warships in {@code myUnits} are worth at least the enemy's. */
   private boolean warshipsMatchEnemyWarships(
       final Collection<Unit> myUnits, final Collection<Unit> enemyUnits) {
@@ -2674,7 +2758,8 @@ class ProPurchaseAi {
 
   private void upgradeUnitsWithRemainingPUs(
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
-      final ProPurchaseOptionMap purchaseOptions) {
+      final ProPurchaseOptionMap purchaseOptions,
+      final List<ProPurchaseOption> airOptions) {
 
     if (resourceTracker.isEmpty()) {
       return;
@@ -2704,8 +2789,7 @@ class ProPurchaseAi {
       ProLogger.debug("Checking territory: " + t);
 
       // Determine units that can be produced in this territory
-      final List<ProPurchaseOption> airAndLandPurchaseOptions =
-          new ArrayList<>(purchaseOptions.getAirOptions());
+      final List<ProPurchaseOption> airAndLandPurchaseOptions = new ArrayList<>(airOptions);
       airAndLandPurchaseOptions.addAll(purchaseOptions.getLandOptions());
       final List<ProPurchaseOption> purchaseOptionsForTerritory =
           ProPurchaseValidationUtils.findPurchaseOptionsForTerritory(
