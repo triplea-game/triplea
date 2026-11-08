@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -136,10 +137,12 @@ public class ProCombatMoveAi {
     // Fight some attacks I can't hold for a round or two, then retreat
     final Map<String, Integer> strafeRetreats = proData.isBeta() ? planStrafes() : Map.of();
 
-    // Determine if capital can be held if I still own it
+    // Determine if capital can be held if I still own it, or if I'm about to retake it
     if (proData.getMyCapital() != null && proData.getMyCapital().isOwnedBy(player)) {
       removeAttacksUntilCapitalCanBeHeld(
           attackOptions, proData.getPurchaseOptions().getLandOptions());
+    } else if (proData.getMyCapital() != null && proData.isBeta()) {
+      removeAttacksUntilRecapturedCapitalCanBeHeld(attackOptions);
     }
 
     // Check if any subs in contested territory that's not being attacked
@@ -2763,27 +2766,9 @@ public class ProCombatMoveAi {
 
       // Determine attack that uses the most units per value from capital and remove it
       if (result.isHasLandUnitRemaining() || fallsToCombinedAttack) {
-        double maxUnitsNearCapitalPerValue = 0.0;
-        Territory maxTerritory = null;
-        final Set<Territory> territoriesNearCapital =
-            data.getMap().getNeighbors(myCapital, Matches.territoryIsLand());
-        territoriesNearCapital.add(myCapital);
-        for (final Map.Entry<Territory, ProTerritory> attackEntry : attackMap.entrySet()) {
-          final Territory t = attackEntry.getKey();
-          int unitsNearCapital = 0;
-          for (final Unit u : attackEntry.getValue().getUnits()) {
-            if (territoriesNearCapital.contains(proData.getUnitTerritory(u))) {
-              unitsNearCapital++;
-            }
-          }
-          final double unitsNearCapitalPerValue = unitsNearCapital / attackMap.get(t).getValue();
-          ProLogger.trace(
-              t.getName() + " has unit near capital per value: " + unitsNearCapitalPerValue);
-          if (unitsNearCapitalPerValue > maxUnitsNearCapitalPerValue) {
-            maxUnitsNearCapitalPerValue = unitsNearCapitalPerValue;
-            maxTerritory = t;
-          }
-        }
+        final Territory maxTerritory =
+            findAttackDrawingMostUnitsNear(myCapital, attackMap, proData::getUnitTerritory, null)
+                .orElse(null);
         if (maxTerritory != null) {
           final ProTerritory patdMax = attackMap.get(maxTerritory);
           prioritizedTerritories.remove(patdMax);
@@ -2799,6 +2784,144 @@ public class ProCombatMoveAi {
         break;
       }
     }
+  }
+
+  /**
+   * The territory whose attack draws the most units per value from {@code capital} and the land
+   * around it, or empty if no attack uses any. The recapture of {@code spared} is never picked.
+   */
+  static Optional<Territory> findAttackDrawingMostUnitsNear(
+      final Territory capital,
+      final Map<Territory, ProTerritory> attackMap,
+      final Function<Unit, Territory> unitTerritory,
+      final Territory spared) {
+    final Set<Territory> territoriesNearCapital =
+        new HashSet<>(capital.getData().getMap().getNeighbors(capital, Matches.territoryIsLand()));
+    territoriesNearCapital.add(capital);
+    double maxUnitsNearCapitalPerValue = 0.0;
+    Territory maxTerritory = null;
+    for (final Map.Entry<Territory, ProTerritory> attackEntry : attackMap.entrySet()) {
+      final Territory t = attackEntry.getKey();
+      if (t.equals(spared)) {
+        continue;
+      }
+      int unitsNearCapital = 0;
+      for (final Unit u : attackEntry.getValue().getUnits()) {
+        if (territoriesNearCapital.contains(unitTerritory.apply(u))) {
+          unitsNearCapital++;
+        }
+      }
+      final double unitsNearCapitalPerValue = unitsNearCapital / attackEntry.getValue().getValue();
+      ProLogger.trace(
+          t.getName() + " has unit near capital per value: " + unitsNearCapitalPerValue);
+      if (unitsNearCapitalPerValue > maxUnitsNearCapitalPerValue) {
+        maxUnitsNearCapitalPerValue = unitsNearCapitalPerValue;
+        maxTerritory = t;
+      }
+    }
+    return Optional.ofNullable(maxTerritory);
+  }
+
+  /**
+   * When retaking my capital, drops the other attacks that most draw units from around it until the
+   * units that survive the retake plus the idle ones nearby hold it against the enemy's
+   * counter-attack. The retake itself is kept even if that never succeeds: it still kills the
+   * occupiers and restores income for a turn.
+   *
+   * <p>Without this the retake is an ordinary attack, and the units next to the capital leave on
+   * other attacks, so the enemy retakes the capital and its treasury the next turn.
+   */
+  private void removeAttacksUntilRecapturedCapitalCanBeHeld(
+      final List<ProTerritory> prioritizedTerritories) {
+
+    final Territory myCapital = proData.getMyCapital();
+    final Map<Territory, ProTerritory> attackMap =
+        territoryManager.getAttackOptions().getTerritoryMap();
+    final ProTerritory retake = attackMap.get(myCapital);
+    if (retake == null || retake.getUnits().isEmpty() || !prioritizedTerritories.contains(retake)) {
+      return;
+    }
+    ProLogger.info("Check retaken capital defenses after attack moves");
+
+    final List<Unit> retakers = new ArrayList<>(retake.getUnits());
+    retake.getAmphibAttackMap().values().forEach(retakers::addAll);
+    final List<Unit> survivors =
+        CollectionUtils.getMatches(
+            calc.estimateAttackBattleResults(
+                    proData,
+                    myCapital,
+                    retakers,
+                    retake.getMaxEnemyDefenders(player),
+                    retake.getBombardTerritoryMap().keySet())
+                .getAverageAttackersRemaining(),
+            Matches.unitIsAir().negate());
+
+    dropAttacksUntilCapitalHolds(
+        myCapital,
+        attackMap,
+        prioritizedTerritories,
+        proData::getUnitTerritory,
+        attacks -> canHoldRetakenCapital(myCapital, attackMap, attacks, survivors));
+  }
+
+  private boolean canHoldRetakenCapital(
+      final Territory myCapital,
+      final Map<Territory, ProTerritory> attackMap,
+      final List<ProTerritory> prioritizedTerritories,
+      final List<Unit> survivors) {
+    final List<Territory> territoriesToAttack = new ArrayList<>();
+    for (final ProTerritory t : prioritizedTerritories) {
+      territoriesToAttack.add(t.getTerritory());
+    }
+    territoryManager.populateEnemyAttackOptions(territoriesToAttack, List.of(myCapital));
+    final ProTerritory enemyAttack = territoryManager.getEnemyAttackOptions().getMax(myCapital);
+    if (enemyAttack == null) {
+      return true;
+    }
+
+    final List<Unit> defenders = new ArrayList<>();
+    for (final Territory t : data.getMap().getNeighbors(myCapital, Matches.territoryIsLand())) {
+      defenders.addAll(t.getMatches(ProMatches.unitCanBeMovedAndIsOwnedLand(player, false)));
+    }
+    for (final ProTerritory t : attackMap.values()) {
+      defenders.removeAll(t.getUnits());
+    }
+    defenders.addAll(survivors);
+
+    final Set<Unit> enemyAttackingUnits = new HashSet<>(enemyAttack.getMaxUnits());
+    enemyAttackingUnits.addAll(enemyAttack.getMaxAmphibUnits());
+    final ProBattleResult counterAttack =
+        calc.calculateBattleResults(
+            proData, myCapital, enemyAttackingUnits, defenders, enemyAttack.getMaxBombardUnits());
+    return canHoldAgainstCounterAttack(myCapital, counterAttack);
+  }
+
+  /**
+   * Drops the attacks that draw the most units from around {@code capital}, never its own retake,
+   * until {@code capitalHolds} accepts the attacks left or no attack draws from around it.
+   */
+  static void dropAttacksUntilCapitalHolds(
+      final Territory capital,
+      final Map<Territory, ProTerritory> attackMap,
+      final List<ProTerritory> prioritizedTerritories,
+      final Function<Unit, Territory> unitTerritory,
+      final Predicate<List<ProTerritory>> capitalHolds) {
+    while (!capitalHolds.test(prioritizedTerritories)) {
+      final Optional<Territory> toRemoveOptional =
+          findAttackDrawingMostUnitsNear(capital, attackMap, unitTerritory, capital);
+      if (toRemoveOptional.isEmpty()) {
+        ProLogger.debug("Can't hold retaken capital: " + capital.getName());
+        return;
+      }
+      final Territory toRemove = toRemoveOptional.get();
+      final ProTerritory patdRemove = attackMap.get(toRemove);
+      prioritizedTerritories.remove(patdRemove);
+      patdRemove.getUnits().clear();
+      patdRemove.getAmphibAttackMap().clear();
+      patdRemove.setBattleResult(null);
+      ProLogger.debug("Removing territory to try to hold retaken capital: " + toRemove.getName());
+    }
+    ProLogger.debug("Can hold retaken capital: " + capital.getName());
   }
 
   private void checkContestedSeaTerritories() {
