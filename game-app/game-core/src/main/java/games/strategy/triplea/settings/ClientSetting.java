@@ -11,7 +11,6 @@ import games.strategy.engine.framework.startup.ui.posted.game.DiceServerEditor;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.UrlConstants;
-import games.strategy.triplea.ui.screen.UnitsDrawer;
 import java.awt.Frame;
 import java.net.URI;
 import java.nio.file.Path;
@@ -175,11 +174,11 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
           RelationshipColorScheme.class,
           "RELATIONSHIP_COLOR_SCHEME",
           RelationshipColorScheme.STANDARD);
-  public static final ClientSetting<UnitsDrawer.UnitFlagDrawMode> unitFlagDrawMode =
+  public static final ClientSetting<UnitFlagDrawMode> unitFlagDrawMode =
       new EnumClientSetting<>(
-          UnitsDrawer.UnitFlagDrawMode.class,
+          UnitFlagDrawMode.class,
           "UNIT_FLAG_DRAW_MODE",
-          UnitsDrawer.UnitFlagDrawMode.NONE);
+          UnitFlagDrawMode.NONE);
   public static final ClientSetting<Integer> wheelScrollAmount =
       new IntegerClientSetting("WHEEL_SCROLL_AMOUNT", 60);
   public static final ClientSetting<String> playerName =

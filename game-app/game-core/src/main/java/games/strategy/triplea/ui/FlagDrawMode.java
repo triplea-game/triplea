@@ -1,8 +1,8 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.settings.UnitFlagDrawMode;
 import games.strategy.triplea.ui.panels.map.MapPanel;
-import games.strategy.triplea.ui.screen.UnitsDrawer;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -20,7 +20,7 @@ public class FlagDrawMode {
    * rendered on map.
    */
   public static void toggleDrawMode(
-      final UnitsDrawer.UnitFlagDrawMode drawMode, final MapPanel mapPanel) {
+      final UnitFlagDrawMode drawMode, final MapPanel mapPanel) {
     ClientSetting.unitFlagDrawMode.setValueAndFlush(drawMode);
     mapPanel.resetMap();
   }

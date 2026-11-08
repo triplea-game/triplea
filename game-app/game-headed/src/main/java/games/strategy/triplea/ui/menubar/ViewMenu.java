@@ -7,12 +7,12 @@ import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.settings.UnitFlagDrawMode;
 import games.strategy.triplea.ui.FindTerritoryAction;
 import games.strategy.triplea.ui.FlagDrawMode;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.triplea.ui.screen.UnitsDrawer;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -396,7 +396,7 @@ final class ViewMenu {
             .actionListener(
                 () ->
                     FlagDrawMode.toggleDrawMode(
-                        UnitsDrawer.UnitFlagDrawMode.NONE, frame.getMapPanel()))
+                        UnitFlagDrawMode.NONE, frame.getMapPanel()))
             .buildRadio(flagsDisplayGroup);
 
     final JRadioButtonMenuItem smallFlags =
@@ -404,7 +404,7 @@ final class ViewMenu {
             .actionListener(
                 () ->
                     FlagDrawMode.toggleDrawMode(
-                        UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG, frame.getMapPanel()))
+                        UnitFlagDrawMode.SMALL_FLAG, frame.getMapPanel()))
             .buildRadio(flagsDisplayGroup);
 
     final JRadioButtonMenuItem largeFlags =
@@ -412,7 +412,7 @@ final class ViewMenu {
             .actionListener(
                 () ->
                     FlagDrawMode.toggleDrawMode(
-                        UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG, frame.getMapPanel()))
+                        UnitFlagDrawMode.LARGE_FLAG, frame.getMapPanel()))
             .buildRadio(flagsDisplayGroup);
 
     flagDisplayMenu.add(noFlags);
@@ -426,9 +426,9 @@ final class ViewMenu {
           @Override
           public void menuSelected(final MenuEvent e) {
             final var drawModel = ClientSetting.unitFlagDrawMode.getValueOrThrow();
-            noFlags.setSelected(drawModel == UnitsDrawer.UnitFlagDrawMode.NONE);
-            smallFlags.setSelected(drawModel == UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG);
-            largeFlags.setSelected(drawModel == UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG);
+            noFlags.setSelected(drawModel == UnitFlagDrawMode.NONE);
+            smallFlags.setSelected(drawModel == UnitFlagDrawMode.SMALL_FLAG);
+            largeFlags.setSelected(drawModel == UnitFlagDrawMode.LARGE_FLAG);
           }
 
           @Override
