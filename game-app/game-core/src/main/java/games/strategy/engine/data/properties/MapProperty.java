@@ -6,7 +6,6 @@ import static java.util.function.Predicate.not;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -86,7 +85,7 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
 
   /** Returns one property per map entry; editing them edits the map. */
   public List<IEditableProperty<?>> getProperties() {
-    return Collections.unmodifiableList(properties);
+    return List.copyOf(properties);
   }
 
   @Override
