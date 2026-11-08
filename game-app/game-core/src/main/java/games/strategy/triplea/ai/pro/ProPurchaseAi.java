@@ -1429,8 +1429,16 @@ class ProPurchaseAi {
 
     final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
 
+    // Hard Beta buys a factory for the extra slots when the PUs outrun the slots it has.
+    final boolean slotConstrained =
+        proData.isBeta() && isSlotConstrained(purchaseTerritories, purchaseOptions);
+    if (slotConstrained) {
+      ProLogger.debug("Production slots can't absorb the PUs: " + resourceTracker);
+    }
+
     // Only try to purchase a factory if all production was used in prioritized land territories
-    for (final ProPlaceTerritory placeTerritory : prioritizedLandTerritories) {
+    for (final ProPlaceTerritory placeTerritory :
+        slotConstrained ? List.<ProPlaceTerritory>of() : prioritizedLandTerritories) {
       for (final Territory t : purchaseTerritories.keySet()) {
         if (placeTerritory.getTerritory().equals(t)
             && purchaseTerritories.get(t).getRemainingUnitProduction() > 0) {
@@ -1455,7 +1463,7 @@ class ProPurchaseAi {
       // PUs
       final int production =
           TerritoryAttachment.get(t).map(TerritoryAttachment::getProduction).orElse(0);
-      if ((production < 3 && !hasExtraPUs) || production < 2) {
+      if ((production < 3 && !hasExtraPUs && !slotConstrained) || production < 2) {
         continue;
       }
 
@@ -1511,7 +1519,7 @@ class ProPurchaseAi {
     ProLogger.debug("Possible factory territories: " + purchaseFactoryTerritories);
 
     // Remove any territories that don't have local land superiority
-    if (!hasExtraPUs) {
+    if (!hasExtraPUs || slotConstrained) {
       purchaseFactoryTerritories.removeIf(
           t ->
               !ProBattleUtils.territoryHasLocalLandSuperiority(
@@ -1546,7 +1554,8 @@ class ProPurchaseAi {
               + numNearbyEnemyTerritories);
       if (value > maxValue
           && ((numNearbyEnemyTerritories >= 4 && territoryValueMap.get(t) >= 1)
-              || (isAdjacentToSea && hasExtraPUs))) {
+              || (isAdjacentToSea && hasExtraPUs)
+              || slotConstrained)) {
         maxValue = value;
         maxTerritory = t;
       }
@@ -1628,6 +1637,32 @@ class ProPurchaseAi {
         }
       }
     }
+  }
+
+  private boolean isSlotConstrained(
+      final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
+      final ProPurchaseOptionMap purchaseOptions) {
+    final long freeSlots =
+        purchaseTerritories.values().stream()
+            .mapToLong(ppt -> Math.max(0, ppt.getRemainingUnitProduction()))
+            .sum();
+    final int typicalCost =
+        (int)
+            Math.round(
+                purchaseOptions.getLandOptions().stream()
+                    .filter(o -> !o.isConstruction() && o.getQuantity() == 1 && o.getCost() > 0)
+                    .mapToInt(ProPurchaseOption::getCost)
+                    .average()
+                    .orElse(0));
+    return isSlotConstrained(resourceTracker.getRemainingPUs(data), freeSlots, typicalCost);
+  }
+
+  /**
+   * True when the PUs can't all be spent in the free slots at the typical unit cost. Maps without a
+   * production limit report Integer.MAX_VALUE slots per factory, hence the long.
+   */
+  static boolean isSlotConstrained(final int pus, final long freeSlots, final int typicalUnitCost) {
+    return typicalUnitCost > 0 && pus >= typicalUnitCost && pus > freeSlots * typicalUnitCost;
   }
 
   private List<ProPlaceTerritory> prioritizeSeaTerritories(

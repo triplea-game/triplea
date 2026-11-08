@@ -51,6 +51,31 @@ public class ProPurchaseAiTest {
         () -> proAi.purchase(false, 20, purchaseDelegate, gameData, gamePlayer));
   }
 
+  @Test
+  void slotsAreConstrainedWhenPusOutrunThem() {
+    assertThat(ProPurchaseAi.isSlotConstrained(80, 10, 5)).isTrue();
+  }
+
+  @Test
+  void slotsAreNotConstrainedWhenTheyCanSpendThePus() {
+    assertThat(ProPurchaseAi.isSlotConstrained(39, 10, 5)).isFalse();
+  }
+
+  @Test
+  void noFreeSlotsConstrainsAnyAffordableSpend() {
+    assertThat(ProPurchaseAi.isSlotConstrained(6, 0, 5)).isTrue();
+  }
+
+  @Test
+  void fewerPusThanOneUnitIsNotConstrained() {
+    assertThat(ProPurchaseAi.isSlotConstrained(2, 0, 5)).isFalse();
+  }
+
+  @Test
+  void unlimitedSlotsAreNeverConstrained() {
+    assertThat(ProPurchaseAi.isSlotConstrained(500, 3L * Integer.MAX_VALUE, 5)).isFalse();
+  }
+
   /// Pact of Steel 2 Chinese gain `placementAnySeaZone` once an ally holds Japan, letting them
   /// place ships next to any land they own; Kwangtung has no factory.
   @Test
