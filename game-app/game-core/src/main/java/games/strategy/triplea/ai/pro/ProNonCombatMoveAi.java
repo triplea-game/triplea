@@ -23,6 +23,7 @@ import games.strategy.triplea.ai.pro.data.ProTerritoryManager;
 import games.strategy.triplea.ai.pro.data.ProTransport;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.ai.pro.util.ProBattleUtils;
+import games.strategy.triplea.ai.pro.util.ProCaptureChainUtils;
 import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.ai.pro.util.ProMoveUtils;
 import games.strategy.triplea.ai.pro.util.ProNationalObjectiveUtils;
@@ -70,6 +71,7 @@ class ProNonCombatMoveAi {
   private GamePlayer player;
   private Map<Unit, Territory> unitTerritoryMap;
   private ProTerritoryManager territoryManager;
+  private final ProCaptureChainUtils.Cache chains = new ProCaptureChainUtils.Cache();
 
   ProNonCombatMoveAi(final AbstractProAi ai) {
     calc = ai.getCalc();
@@ -85,6 +87,7 @@ class ProNonCombatMoveAi {
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
       final IMoveDelegate moveDel) {
     ProLogger.info("Starting non-combat move phase");
+    chains.clear();
 
     // Current data at the start of non-combat move
     data = proData.getData();
@@ -594,6 +597,34 @@ class ProNonCombatMoveAi {
     }
   }
 
+  private static List<Unit> minDefendingUnits(final ProTerritory patd) {
+    return CollectionUtils.getMatches(
+        patd.getCantMoveUnits(), Matches.unitIsAaForAnything().negate());
+  }
+
+  /**
+   * Whether, in Hard Beta, {@code defenders} leave my capital to a combined attack of several enemy
+   * armies that are each too weak alone, though every unit that can reach it would hold it. A
+   * capital that falls whatever I send is lost either way, so claiming units for it would only hold
+   * back the other moves. Factories are not claimed here: a factory's value is small beside the
+   * territories whose defence it would block, and in replays it blocked eight or more per turn.
+   */
+  private boolean fallsToCombinedAttack(final ProTerritory patd, final Collection<Unit> defenders) {
+    final Territory t = patd.getTerritory();
+    return proData.isBeta()
+        && !t.isWater()
+        && t.equals(proData.getMyCapital())
+        && needsDefenceAgainstChain(t, defenders)
+        && !needsDefenceAgainstChain(t, patd.getMaxDefenders());
+  }
+
+  private boolean needsDefenceAgainstChain(final Territory t, final Collection<Unit> defenders) {
+    return ProCaptureChainUtils.needsDefence(
+        proData,
+        t,
+        chains.runAndLog(proData, calc, territoryManager.getEnemyAttackOptions(), t, defenders));
+  }
+
   private List<ProTerritory> prioritizeDefendOptions(
       final Map<Territory, ProTerritory> factoryMoveMap) {
 
@@ -698,11 +729,17 @@ class ProNonCombatMoveAi {
               && !hasFactory
               && patd.getMaxUnits().stream().noneMatch(Matches.unitIsLand())
               && cantMoveUnitValue < 5;
+      // The single strongest army doesn't take it, but Hard Beta also counts the armies that follow
+      // each other
+      final boolean heldOnlyAgainstOneArmy =
+          patd.isCanHold()
+              && (isNotFactoryAndShouldHold || canAlreadyBeHeld)
+              && fallsToCombinedAttack(patd, minDefendingUnits(patd));
       if (!patd.isCanHold()
           || patd.getValue() <= 0
           || isLandAndCanOnlyBeAttackedByAir
-          || isNotFactoryAndShouldHold
-          || canAlreadyBeHeld
+          || (isNotFactoryAndShouldHold && !heldOnlyAgainstOneArmy)
+          || (canAlreadyBeHeld && !heldOnlyAgainstOneArmy)
           || isNotFactoryAndHasNoEnemyNeighbors
           || isNotFactoryAndOnlyAmphib) {
         final double tuvSwing = minResult.getTuvSwing();
@@ -1208,6 +1245,21 @@ class ProNonCombatMoveAi {
       }
 
       final Territory currentTerritory = prioritizedTerritories.get(numToDefend - 1).getTerritory();
+      if (areSuccessful) {
+        // Check that the defenders sent here don't leave my capital to combined attacks
+        final Collection<Unit> sentDefenders = moveMap.get(currentTerritory).getAllDefenders();
+        for (final ProTerritory patd : territoriesToTryToDefend) {
+          if (!patd.getTerritory().equals(currentTerritory)
+              && !Collections.disjoint(sentDefenders, patd.getMaxDefenders())
+              && fallsToCombinedAttack(patd, patd.getEligibleDefenders(player))) {
+            areSuccessful = false;
+            ProLogger.debug(
+                patd.getTerritory() + " isn't safe from combined attacks after defense moves");
+            break;
+          }
+        }
+      }
+
       final Territory myCapital = proData.getMyCapital();
       if (myCapital != null) {
         // Check capital defense
