@@ -333,6 +333,12 @@ public class DownloadMapsWindow extends JFrame {
     return downloadMapsWindowModel.getMapStore();
   }
 
+  @Override
+  public void dispose() {
+    getMapStore().dispose();
+    super.dispose();
+  }
+
   private void updateTabTitles() {
     updateTabTitleNewMaps();
     updateTabTitleUpdatesAvailable();

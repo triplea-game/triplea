@@ -51,6 +51,12 @@ final class ManagedMapStore implements DownloadListener {
     DownloadCoordinator.instance.addDownloadListener(this);
   }
 
+  /// Stops this store receiving {@link DownloadCoordinator} broadcasts; the coordinator is a
+  /// singleton that outlives the download window owning this store.
+  void dispose() {
+    DownloadCoordinator.instance.removeDownloadListener(this);
+  }
+
   public void initialize(
       Collection<MapDownloadItem> downloads, InstalledMapsListing installedMapsListing) {
     storeState = StoreState.INITIALIZING;
