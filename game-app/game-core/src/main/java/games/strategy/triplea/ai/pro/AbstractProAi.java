@@ -135,6 +135,20 @@ public abstract class AbstractProAi extends AbstractAi {
   }
 
   /**
+   * Drops the move plans {@link #purchase} stores for this turn's moves, for a subclass that makes
+   * moves of its own: a stale plan would otherwise be replayed on a board it no longer fits.
+   */
+  protected void discardStoredMovePlans() {
+    storedCombatMoveMap = null;
+    storedFactoryMoveMap = null;
+  }
+
+  /** Drops the placement plan {@link #purchase} stores for {@link #place}, likewise. */
+  protected void discardStoredPurchasePlan() {
+    storedPurchaseTerritories = null;
+  }
+
+  /**
    * Some implementations of {@link IBattleCalculator} do require setting a GameData instance before
    * actually being able to run properly. This method should take care of that.
    */

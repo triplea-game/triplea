@@ -69,6 +69,15 @@ public class ProPurchaseOption {
   @Getter private final boolean consumesUnits;
   @Getter private final boolean isSingleUse;
 
+  /**
+   * Stays identity-equal, since a rule can have several options, but hashes alike from run to run:
+   * a purchase's random draw walks hash maps of these, so their order decides what gets bought.
+   */
+  @Override
+  public int hashCode() {
+    return productionRule.hashCode();
+  }
+
   ProPurchaseOption(
       final ProductionRule productionRule,
       final UnitType unitType,

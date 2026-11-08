@@ -13,6 +13,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
+import games.strategy.triplea.ai.AiRandom;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProPlaceTerritory;
 import games.strategy.triplea.ai.pro.data.ProPurchaseOption;
@@ -68,7 +69,7 @@ public final class ProPurchaseUtils {
       ProLogger.trace(
           ppo.getUnitType().getName() + ", probability=" + chance + ", upperBound=" + upperBound);
     }
-    final double randomNumber = Math.random() * 100;
+    final double randomNumber = AiRandom.get().nextDouble() * 100;
     ProLogger.trace("Random number: " + randomNumber);
     for (final ProPurchaseOption ppo : purchasePercentages.keySet()) {
       if (randomNumber <= purchasePercentages.get(ppo)) {
