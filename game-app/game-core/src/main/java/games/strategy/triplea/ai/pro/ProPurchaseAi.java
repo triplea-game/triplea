@@ -818,17 +818,7 @@ class ProPurchaseAi {
     for (final ProPlaceTerritory placeTerritory : needToDefendTerritories) {
       final Territory t = placeTerritory.getTerritory();
 
-      // Determine if it is my capital or adjacent to my capital
-      int isMyCapital = 0;
-      if (t.equals(proData.getMyCapital())) {
-        isMyCapital = 1;
-      }
-
-      // Determine if it has a factory
-      int isFactory = 0;
-      if (ProMatches.territoryHasInfraFactoryAndIsOwnedLand(player).test(t)) {
-        isFactory = 1;
-      }
+      final boolean isFactory = ProMatches.territoryHasInfraFactoryAndIsOwnedLand(player).test(t);
 
       // Determine production value and if it is an enemy capital
       int production = TerritoryAttachment.get(t).map(TerritoryAttachment::getProduction).orElse(0);
@@ -843,9 +833,8 @@ class ProPurchaseAi {
 
       // Calculate defense value for prioritization
       final double territoryValue =
-          (2.0 * production + 4.0 * isFactory + 0.5 * defendingUnitValue)
-              * (1 + isFactory)
-              * (1 + 10.0 * isMyCapital);
+          ProScoring.landDefensePriority(
+              production, isFactory, defendingUnitValue, t.equals(proData.getMyCapital()));
       placeTerritory.setDefenseValue(territoryValue);
     }
 
@@ -1045,12 +1034,8 @@ class ProPurchaseAi {
                   enemyAttackOptions.getMax(t).getMaxBombardUnits());
 
           // Break if it can be held
-          if ((!t.equals(proData.getMyCapital())
-                  && !finalResult.isHasLandUnitRemaining()
-                  && finalResult.getTuvSwing() <= 0)
-              || (t.equals(proData.getMyCapital())
-                  && finalResult.getWinPercentage() < (100 - proData.getWinPercentage())
-                  && finalResult.getTuvSwing() <= 0)) {
+          if (ProScoring.isHeld(
+              finalResult, t.equals(proData.getMyCapital()), proData.getWinPercentage())) {
             break;
           }
         }
@@ -1677,9 +1662,11 @@ class ProPurchaseAi {
 
       // Calculate sea value for prioritization
       final double territoryValue =
-          placeTerritory.getStrategicValue()
-              * (1 + numMyTransports + 0.1 * numSeaDefenders)
-              / (1 + 3.0 * needDefenders);
+          ProScoring.seaPurchasePriority(
+              placeTerritory.getStrategicValue(),
+              numMyTransports,
+              numSeaDefenders,
+              needDefenders == 1);
       ProLogger.debug(
           t
               + ", value="
@@ -2819,12 +2806,8 @@ class ProPurchaseAi {
                 enemyAttackOptions.getMax(t).getMaxBombardUnits());
 
         // Break if it can be held
-        if ((!t.equals(proData.getMyCapital())
-                && !finalResult.isHasLandUnitRemaining()
-                && finalResult.getTuvSwing() <= 0)
-            || (t.equals(proData.getMyCapital())
-                && finalResult.getWinPercentage() < (100 - proData.getWinPercentage())
-                && finalResult.getTuvSwing() <= 0)) {
+        if (ProScoring.isHeld(
+            finalResult, t.equals(proData.getMyCapital()), proData.getWinPercentage())) {
           break;
         }
       }
