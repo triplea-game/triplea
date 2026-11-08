@@ -26,6 +26,7 @@ macOS-specific: opening a file or a `triplea://` URI is translated to the corres
 - **`org.triplea.game.client.ui.swing.laf`** — Swing L&F setup (`DefaultSubstanceLookAndFeelManager`)
 - **`org.triplea.sound`** — Audio playback (`DefaultSoundChannel` — routes server-side sound events to local `ClipPlayer` based on which players are local; `SoundOptions` menu items)
 - **`org.triplea.lobby.common`** — `LobbyGameUpdateListener` interface (notifies of game additions/removals via WebSocket)
+- **`games.strategy.engine.data.properties`** — Swing editors for game properties: `PropertyEditorFactory` (one editor per core property type), `PropertiesUi` (panel of labelled editors)
 - **`games.strategy.engine.framework.ui`** — `MainFrame` — main game frame and window management
 - **`games.strategy.engine.framework.startup.ui`** — Game setup panels (local, server, client, meta-setup, player selector)
 - **`games.strategy.engine.framework.startup.ui.panels.main`** — `MainPanel`/`MainPanelBuilder`, `HeadedServerSetupModel`

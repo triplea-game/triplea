@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.data.properties.PropertyEditorFactory;
 import games.strategy.engine.framework.I18nEngineFramework;
 import games.strategy.engine.framework.startup.launcher.local.PlayerCountrySelection;
 import games.strategy.engine.framework.startup.mc.HeadedPlayerTypes;
@@ -102,12 +103,14 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
     }
 
     incomePercentage =
-        gameProperties
-            .getPlayerPropertyOrThrow(Constants.getPropertyNameIncomePercentageFor(player))
-            .getEditorComponent();
+        PropertyEditorFactory.newEditorComponent(
+            gameProperties.getPlayerPropertyOrThrow(
+                Constants.getPropertyNameIncomePercentageFor(player)));
     incomePercentageLabel = new JLabel("%");
 
-    puIncomeBonus = gameProperties.ensurePropertyPuIncomeBonusFor(player).getEditorComponent();
+    puIncomeBonus =
+        PropertyEditorFactory.newEditorComponent(
+            gameProperties.ensurePropertyPuIncomeBonusFor(player));
     puIncomeBonusLabel = new JLabel("PUs");
 
     setWidgetActivation();
