@@ -17,6 +17,7 @@ import games.strategy.triplea.ai.pro.data.ProTransport;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.ai.pro.util.ProAirliftPlanner;
 import games.strategy.triplea.ai.pro.util.ProBattleUtils;
+import games.strategy.triplea.ai.pro.util.ProCaptureChainUtils;
 import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.ai.pro.util.ProMoveUtils;
 import games.strategy.triplea.ai.pro.util.ProNationalObjectiveUtils;
@@ -2749,8 +2750,19 @@ public class ProCombatMoveAi {
               + ", attackers="
               + enemyAttackingUnits.size());
 
+      // Hard Beta also counts the enemy armies that follow each other: the first can lose and still
+      // leave too few defenders
+      final boolean fallsToCombinedAttack =
+          proData.isBeta()
+              && !result.isHasLandUnitRemaining()
+              && ProCaptureChainUtils.needsDefence(
+                  proData,
+                  myCapital,
+                  ProCaptureChainUtils.runAndLog(
+                      proData, calc, enemyAttackOptions, myCapital, defenders));
+
       // Determine attack that uses the most units per value from capital and remove it
-      if (result.isHasLandUnitRemaining()) {
+      if (result.isHasLandUnitRemaining() || fallsToCombinedAttack) {
         double maxUnitsNearCapitalPerValue = 0.0;
         Territory maxTerritory = null;
         final Set<Territory> territoriesNearCapital =

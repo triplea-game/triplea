@@ -28,6 +28,7 @@ import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.ai.pro.data.ProTerritoryManager;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.ai.pro.util.ProBattleUtils;
+import games.strategy.triplea.ai.pro.util.ProCaptureChainUtils;
 import games.strategy.triplea.ai.pro.util.ProClockUtils;
 import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
@@ -76,6 +77,7 @@ class ProPurchaseAi {
   private GamePlayer player;
   private ProResourceTracker resourceTracker;
   private ProTerritoryManager territoryManager;
+  private final ProCaptureChainUtils.Cache chains = new ProCaptureChainUtils.Cache();
   private boolean isBid = false;
 
   ProPurchaseAi(final AbstractProAi ai) {
@@ -371,14 +373,7 @@ class ProPurchaseAi {
     if (deficit <= 0) {
       return;
     }
-    final Optional<ProPurchaseOption> best =
-        ProPurchaseValidationUtils.findPurchaseOptionsForTerritory(
-                proData, player, purchaseOptions.getLandOptions(), capital, isBid)
-            .stream()
-            .filter(o -> o.getCost() > 0 && o.getDefense() > 0)
-            .max(
-                Comparator.comparingDouble(
-                    o -> (2.0 * o.getHitPoints() + o.getDefense()) / o.getCost()));
+    final Optional<ProPurchaseOption> best = findCheapestDefence(capital, purchaseOptions);
     if (best.isEmpty()) {
       return;
     }
@@ -402,6 +397,71 @@ class ProPurchaseAi {
             bought,
             best.get().getUnitType().getName(),
             capital.getName()));
+  }
+
+  private Optional<ProPurchaseOption> findCheapestDefence(
+      final Territory t, final ProPurchaseOptionMap purchaseOptions) {
+    return ProPurchaseValidationUtils.findPurchaseOptionsForTerritory(
+            proData, player, purchaseOptions.getLandOptions(), t, isBid)
+        .stream()
+        .filter(o -> o.getCost() > 0 && o.getDefense() > 0)
+        .max(
+            Comparator.comparingDouble(
+                o -> (2.0 * o.getHitPoints() + o.getDefense()) / o.getCost()));
+  }
+
+  /**
+   * Buys the cheapest defence at my capital and factories that fall to several enemy armies
+   * attacking in turn, capital first, until the chain no longer needs defence or the slots or PUs
+   * run out. An army alone doesn't take them, or the ordinary defender purchase has bought for it.
+   */
+  private void purchaseDefenceAgainstCombinedAttacks(
+      final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
+      final ProPurchaseOptionMap purchaseOptions) {
+    final List<ProPlaceTerritory> places = new ArrayList<>();
+    for (final ProPurchaseTerritory ppt : purchaseTerritories.values()) {
+      for (final ProPlaceTerritory place : ppt.getCanPlaceTerritories()) {
+        if (place.getTerritory().equals(ppt.getTerritory())
+            && !place.getTerritory().isWater()
+            && (place.getTerritory().equals(proData.getMyCapital())
+                || ProMatches.territoryHasInfraFactoryAndIsOwnedLand(player)
+                    .test(place.getTerritory()))) {
+          places.add(place);
+        }
+      }
+    }
+    places.sort(
+        Comparator.comparing(
+                (ProPlaceTerritory p) -> p.getTerritory().equals(proData.getMyCapital()))
+            .reversed());
+    for (final ProPlaceTerritory place : places) {
+      final Territory t = place.getTerritory();
+      final ProPurchaseTerritory ppt = purchaseTerritories.get(t);
+      final Optional<ProPurchaseOption> best = findCheapestDefence(t, purchaseOptions);
+      int bought = 0;
+      while (best.isPresent()
+          && resourceTracker.hasEnough(best.get())
+          && ppt.getRemainingUnitProduction() >= best.get().getQuantity()) {
+        final List<Unit> defenders = new ArrayList<>(place.getDefendingUnits());
+        defenders.addAll(place.getPlaceUnits());
+        if (!ProCaptureChainUtils.needsDefence(
+            proData,
+            t,
+            chains.runAndLog(
+                proData, calc, territoryManager.getEnemyAttackOptions(), t, defenders))) {
+          break;
+        }
+        resourceTracker.purchase(best.get());
+        addUnitsToPlace(place, best.get().createTempUnits());
+        bought += best.get().getQuantity();
+      }
+      if (bought > 0) {
+        ProLogger.info(
+            String.format(
+                "%s: bought %d %s to defend %s against combined attacks",
+                player.getName(), bought, best.get().getUnitType().getName(), t.getName()));
+      }
+    }
   }
 
   private static void reserveSlots(
@@ -431,6 +491,7 @@ class ProPurchaseAi {
     this.startOfTurnData = startOfTurnData;
     resourceTracker = new ProResourceTracker(player);
     territoryManager = new ProTerritoryManager(calc, proData);
+    chains.clear();
     isBid = false;
     final ProPurchaseOptionMap purchaseOptions = proData.getPurchaseOptions();
 
@@ -470,6 +531,7 @@ class ProPurchaseAi {
         purchaseOptions.getAirOptions(),
         true);
     if (proData.isBeta()) {
+      purchaseDefenceAgainstCombinedAttacks(purchaseTerritories, purchaseOptions);
       purchaseCapitalDefenceIfCooked(purchaseTerritories, purchaseOptions);
     }
 
