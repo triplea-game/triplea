@@ -29,6 +29,7 @@ import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
+import org.triplea.lobby.common.GameDescription;
 import org.triplea.swing.MouseListenerBuilder;
 import org.triplea.swing.SwingAction;
 
@@ -74,6 +75,28 @@ class LobbyGamePanel extends JPanel {
                       : UIManager.getColor("Table.alternateRowColor"));
             }
             return component;
+          }
+
+          @Override
+          // The Host, Name and Comments columns truncate with an ellipsis; show the full text on
+          // hover so two similarly-named games remain distinguishable.
+          public String getToolTipText(final MouseEvent event) {
+            final int viewRow = rowAtPoint(event.getPoint());
+            final int viewColumn = columnAtPoint(event.getPoint());
+            if (viewRow < 0 || viewColumn < 0) {
+              return null;
+            }
+            final int modelColumn = convertColumnIndexToModel(viewColumn);
+            if (modelColumn == lobbyGameTableModel.getColumnIndex(LobbyGameTableModel.Column.Host)
+                || modelColumn
+                    == lobbyGameTableModel.getColumnIndex(LobbyGameTableModel.Column.Name)
+                || modelColumn
+                    == lobbyGameTableModel.getColumnIndex(LobbyGameTableModel.Column.Comments)) {
+              final Object value = getValueAt(viewRow, viewColumn);
+              final String text = value == null ? "" : value.toString();
+              return text.isEmpty() ? null : text;
+            }
+            return null;
           }
         };
     gameTable.setRowHeight(28);
@@ -246,6 +269,16 @@ class LobbyGamePanel extends JPanel {
     }
     // we sort the table, so get the correct index
     final var description = gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
+    if (description.getStatus() == GameDescription.GameStatus.LAUNCHING) {
+      // GameProcess.joinGame silently no-ops on a launching game; tell the user why so they
+      // don't re-click into a dead action believing the click missed.
+      JOptionPane.showMessageDialog(
+          JOptionPane.getFrameForComponent(this),
+          "This game is still starting up. Try joining again in a moment.",
+          "Game Starting",
+          JOptionPane.INFORMATION_MESSAGE);
+      return;
+    }
     GameProcess.joinGame(description, loginResult.getUsername());
   }
 
@@ -275,7 +308,8 @@ class LobbyGamePanel extends JPanel {
     final int result =
         JOptionPane.showConfirmDialog(
             null,
-            "Are you sure you want to disconnect the selected game?",
+            "Remove the selected game's listing? The game keeps running, and its host re-lists it"
+                + " within seconds if still online.",
             "Remove Game From Lobby",
             JOptionPane.OK_CANCEL_OPTION);
     if (result != JOptionPane.OK_OPTION) {
@@ -285,8 +319,7 @@ class LobbyGamePanel extends JPanel {
     final String gameId =
         gameTableModel.getGameIdForRow(gameTable.convertRowIndexToModel(selectedIndex));
     gameListingModel.bootGame(gameId);
-    JOptionPane.showMessageDialog(
-        null, "The game you selected has been disconnected from the lobby.");
+    JOptionPane.showMessageDialog(null, "The selected game's listing has been removed.");
   }
 
   private void shutdownGame() {
@@ -297,8 +330,8 @@ class LobbyGamePanel extends JPanel {
     final int result =
         JOptionPane.showConfirmDialog(
             null,
-            "Are you sure you want to shutdown the selected game?",
-            "Send Shutdown Signal?",
+            "Shut down the selected game? It will close for all players in it.",
+            "Shut Down Game",
             JOptionPane.OK_CANCEL_OPTION);
     if (result != JOptionPane.OK_OPTION) {
       return;
@@ -307,6 +340,6 @@ class LobbyGamePanel extends JPanel {
     final String gameId =
         gameTableModel.getGameIdForRow(gameTable.convertRowIndexToModel(selectedIndex));
     gameListingModel.sendShutdownRequest(gameId);
-    JOptionPane.showMessageDialog(parent, "The game you selected was sent a shutdown signal");
+    JOptionPane.showMessageDialog(parent, "The selected game will shut down shortly.");
   }
 }
