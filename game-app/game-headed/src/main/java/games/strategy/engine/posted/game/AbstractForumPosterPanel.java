@@ -5,7 +5,7 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.player.PlayerBridge;
-import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
+import games.strategy.engine.posted.game.pbem.HeadedPbemMessagePoster;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.ui.ActionPanel;
@@ -17,7 +17,7 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
   private static final long serialVersionUID = -5084680807785728744L;
 
   PlayerBridge playerBridge;
-  PbemMessagePoster pbemMessagePoster;
+  HeadedPbemMessagePoster pbemMessagePoster;
   final ForumPosterComponent forumPosterComponent;
   private TripleAFrame tripleAFrame;
 
@@ -54,7 +54,7 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
     playerBridge = bridge;
     // Nothing to do if there are no PBEM messengers
     pbemMessagePoster =
-        new PbemMessagePoster(getData(), getCurrentPlayer(), getRound(), getTitle());
+        new HeadedPbemMessagePoster(getData(), getCurrentPlayer(), getRound(), getTitle());
     if (!pbemMessagePoster.hasMessengers()) {
       return;
     }
