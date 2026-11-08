@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.HashSet;
@@ -31,6 +32,11 @@ public final class DownloadCoordinator {
 
   void removeDownloadListener(final DownloadListener downloadListener) {
     downloadListeners.remove(downloadListener);
+  }
+
+  @VisibleForTesting
+  boolean hasDownloadListener(final DownloadListener downloadListener) {
+    return downloadListeners.contains(downloadListener);
   }
 
   void accept(final MapDownloadItem download) {
