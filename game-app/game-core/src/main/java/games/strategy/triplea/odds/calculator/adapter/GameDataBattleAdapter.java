@@ -613,7 +613,10 @@ public class GameDataBattleAdapter {
    * does. A single attachment that is both a strength and a roll support emits one rule for each,
    * mirroring the engine filtering its one {@code SupportCalculator} into independent strength and
    * roll pools. Deliberately unmodeled: allied support beyond the two calc players (including their
-   * Improved-Artillery tech), and AA support.
+   * Improved-Artillery tech), and AA support ({@code aaStrength}/{@code aaRoll}): an attachment
+   * flagged only for AA emits no rule here, so AA guns fire at their unsupported strength. Only a
+   * few maps use it (eg warcraft_war_heroes, 1888a); modeling it needs an AA-phase support
+   * partition in the core.
    */
   private static SupportModel supportModel(
       final GameData data, final GamePlayer attacker, final GamePlayer defender) {
