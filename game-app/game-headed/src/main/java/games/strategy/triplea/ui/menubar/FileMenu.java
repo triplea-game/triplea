@@ -6,7 +6,7 @@ import games.strategy.engine.data.GameStep;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameFileSelector;
 import games.strategy.engine.framework.system.SystemProperties;
-import games.strategy.engine.posted.game.pbem.HeadedPbemMessagePoster;
+import games.strategy.engine.posted.game.pbem.HeadedTurnPoster;
 import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.ui.MacOsIntegration;
@@ -104,9 +104,10 @@ final class FileMenu {
                 final HistoryLog historyLog = new HistoryLog(frame);
                 historyLog.printFullTurn(
                     gameData, true, GameStepPropertiesHelper.getTurnSummaryPlayers(gameData));
-                final HeadedPbemMessagePoster poster =
-                    new HeadedPbemMessagePoster(gameData, currentPlayer, round, title);
-                poster.postTurn(title, historyLog, true, null, frame, frame.getGame(), null);
+                final PbemMessagePoster poster =
+                    new PbemMessagePoster(gameData, currentPlayer, round, title);
+                HeadedTurnPoster.postTurn(
+                    poster, title, historyLog, true, null, frame, frame.getGame(), null);
               }
             })
         .build();

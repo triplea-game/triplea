@@ -2,7 +2,8 @@ package games.strategy.engine.posted.game;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.engine.posted.game.pbem.HeadedPbemMessagePoster;
+import games.strategy.engine.posted.game.pbem.HeadedTurnPoster;
+import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
@@ -23,7 +24,7 @@ public final class ForumPosterComponent extends JPanel {
   private static final long serialVersionUID = 4754052934098190357L;
 
   private final GameData data;
-  private HeadedPbemMessagePoster poster;
+  private PbemMessagePoster poster;
   private TripleAFrame frame;
   private HistoryLog historyLog;
   private final JButton postButton;
@@ -70,7 +71,8 @@ public final class ForumPosterComponent extends JPanel {
   private void post() {
     postButton.setEnabled(false);
     updateHistoryLog();
-    poster.postTurn(
+    HeadedTurnPoster.postTurn(
+        poster,
         title,
         historyLog,
         includeSavegameCheckBox.isSelected(),
@@ -88,7 +90,7 @@ public final class ForumPosterComponent extends JPanel {
    * @return A reference to this panel; must be added to the parent container's layout.
    */
   public ForumPosterComponent layoutComponents(
-      final HeadedPbemMessagePoster poster,
+      final PbemMessagePoster poster,
       final IAbstractForumPosterDelegate forumPosterDelegate,
       final TripleAFrame frame,
       final boolean hasPosted,

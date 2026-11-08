@@ -1,7 +1,5 @@
 package games.strategy.engine.posted.game.pbem;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.IGame;
@@ -20,21 +18,15 @@ import org.triplea.java.ThreadRunner;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.ProgressWindow;
 
-/** A {@link PbemMessagePoster} that interacts with the user through Swing dialogs. */
+/**
+ * The Swing side of PBEM/PBF posting: user prompts and progress around {@link PbemMessagePoster}.
+ */
 @Slf4j
-public class HeadedPbemMessagePoster extends PbemMessagePoster {
-  private static final long serialVersionUID = -1L;
+public final class HeadedTurnPoster {
+  private HeadedTurnPoster() {}
 
-  public HeadedPbemMessagePoster(
-      final GameData gameData,
-      final GamePlayer currentPlayer,
-      final int roundNumber,
-      final String title) {
-    super(gameData, currentPlayer, roundNumber, title);
-  }
-
-  @Override
-  protected void onForumPostError(final Throwable error) {
+  /** Shows a failed forum post to the user; registered with {@link ForumPostErrorHandler}. */
+  public static void showForumPostError(final Throwable error) {
     DialogBuilder.builder()
         .parent(null)
         .title("Error Posting to Forum")
@@ -47,7 +39,8 @@ public class HeadedPbemMessagePoster extends PbemMessagePoster {
    * service (if provided) and forum (if provided). The user is first prompted to confirm they wish
    * to perform the action before the turn is posted.
    */
-  public void postTurn(
+  public static void postTurn(
+      final PbemMessagePoster poster,
       final String title,
       final HistoryLog historyLog,
       final boolean includeSaveGame,
@@ -55,7 +48,7 @@ public class HeadedPbemMessagePoster extends PbemMessagePoster {
       final JFrame frame,
       final IGame game,
       final JComponent postButton) {
-    final GameProperties gameProperties = getGameProperties();
+    final GameProperties gameProperties = poster.getGameProperties();
     String message = "";
     final String displayName = gameProperties.get(IForumPoster.NAME, "");
     final StringBuilder sb = new StringBuilder();
@@ -96,20 +89,20 @@ public class HeadedPbemMessagePoster extends PbemMessagePoster {
             try {
               saveGameFile = Files.createTempFile("triplea", GameDataFileUtils.getExtension());
               game.saveGame(saveGameFile);
-              setSaveGame(saveGameFile);
+              poster.setSaveGame(saveGameFile);
             } catch (final Exception e) {
               postOk = false;
               log.error("Failed to create save game", e);
             }
-            setTurnSummary(historyLog.toString());
+            poster.setTurnSummary(historyLog.toString());
             try {
               // forward the poster to the delegate which invokes post() on the poster
               if (postingDelegate != null) {
-                if (!postingDelegate.postTurnSummary(this, title)) {
+                if (!postingDelegate.postTurnSummary(poster, title)) {
                   postOk = false;
                 }
               } else {
-                if (!post(null, title)) {
+                if (!poster.post(null, title)) {
                   postOk = false;
                 }
               }
@@ -121,11 +114,12 @@ public class HeadedPbemMessagePoster extends PbemMessagePoster {
               postingDelegate.setHasPostedTurnSummary(postOk);
             }
             final StringBuilder sb1 = new StringBuilder();
-            if (gameProperties.get(IForumPoster.NAME) != null && getTurnSummaryRef() != null) {
-              sb1.append("\nSummary Text: ").append(getTurnSummaryRef());
+            if (gameProperties.get(IForumPoster.NAME) != null
+                && poster.getTurnSummaryRef() != null) {
+              sb1.append("\nSummary Text: ").append(poster.getTurnSummaryRef());
             }
             if (gameProperties.get(IEmailSender.SUBJECT) != null) {
-              sb1.append("\nEmails: ").append(getEmailSendStatus());
+              sb1.append("\nEmails: ").append(poster.getEmailSendStatus());
             }
             historyLog.append(sb1.toString());
             historyLog.append("\n");

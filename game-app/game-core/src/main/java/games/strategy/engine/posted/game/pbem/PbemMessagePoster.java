@@ -99,7 +99,7 @@ public class PbemMessagePoster implements Serializable {
             forumSuccess
                 .exceptionally(
                     e -> {
-                      onForumPostError(e);
+                      ForumPostErrorHandler.handle(e);
                       return null;
                     })
                 .whenComplete((v1, v2) -> success.set(true))
@@ -188,27 +188,19 @@ public class PbemMessagePoster implements Serializable {
         IForumPoster.POST_AFTER_COMBAT, gameProperties.get(IEmailSender.POST_AFTER_COMBAT, false));
   }
 
-  /**
-   * Called from {@link #post} when the forum post fails; the post continues with email. Logs by
-   * default; a UI subclass may show the error to the user.
-   */
-  protected void onForumPostError(final Throwable error) {
-    log.error("Error Posting to Forum", error);
-  }
-
-  protected GameProperties getGameProperties() {
+  public GameProperties getGameProperties() {
     return gameProperties;
   }
 
-  protected void setTurnSummary(final String turnSummary) {
+  public void setTurnSummary(final String turnSummary) {
     this.turnSummary = turnSummary;
   }
 
-  protected String getTurnSummaryRef() {
+  public String getTurnSummaryRef() {
     return turnSummaryRef;
   }
 
-  protected String getEmailSendStatus() {
+  public String getEmailSendStatus() {
     return emailSendStatus;
   }
 

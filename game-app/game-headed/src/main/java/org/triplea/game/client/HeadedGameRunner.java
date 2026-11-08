@@ -31,6 +31,8 @@ import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
+import games.strategy.engine.posted.game.pbem.ForumPostErrorHandler;
+import games.strategy.engine.posted.game.pbem.HeadedTurnPoster;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MacOsIntegration;
 import java.awt.Component;
@@ -151,6 +153,7 @@ public final class HeadedGameRunner {
 
     initializeDesktopIntegrations(args);
     SwingUtilities.invokeLater(ErrorMessage::initialize);
+    ForumPostErrorHandler.setHandler(HeadedTurnPoster::showForumPostError);
 
     ZippedMapsExtractor.builder()
         .downloadedMapsFolder(ClientFileSystemHelper.getUserMapsFolder())
