@@ -12,4 +12,10 @@ import java.util.Map;
 public interface IConnectionLogin {
   /** Get the properties to log in given the challenge Properties. */
   Map<String, String> getProperties(Map<String, String> challengeProperties);
+
+  /**
+   * Called when the server assigns a name that does not start with the requested name, meaning this
+   * machine is already logged in under {@code assignedName}.
+   */
+  void onAssignedDifferentName(String assignedName);
 }
