@@ -1,16 +1,21 @@
 package games.strategy.engine.framework.startup.ui;
 
+import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.awt.KeyboardFocusManager;
+import java.awt.Toolkit;
 import java.awt.event.ContainerAdapter;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
@@ -29,6 +34,9 @@ public class LaunchScreenStyle {
 
   private static final String STYLED = "LaunchScreenStyle.styled";
   private static final String KEYBOARD_FOCUS = "LaunchScreenStyle.keyboardFocus";
+  // read and written on the event dispatch thread only
+  private static boolean keyboardNavigationTracked;
+  private static boolean keyboardNavigation;
   private static final ContainerListener STYLE_ADDED_CHILDREN =
       new ContainerAdapter() {
         @Override
@@ -43,6 +51,7 @@ public class LaunchScreenStyle {
    * look.
    */
   public static void install(final Component component) {
+    trackKeyboardNavigation();
     if (component.getClass() == JButton.class) {
       styleAsText((JButton) component);
     }
@@ -75,13 +84,11 @@ public class LaunchScreenStyle {
     button.setRolloverEnabled(true);
     button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     button.addChangeListener(e -> updateHighlight(button));
-    // Focus reached with Tab gets the hover look so keyboard users can see the selected entry;
-    // focus a window hands out on its own does not, or it would compete with the mouse hover.
     button.addFocusListener(
         new FocusAdapter() {
           @Override
           public void focusGained(final FocusEvent e) {
-            button.putClientProperty(KEYBOARD_FOCUS, isKeyboardTraversal(e.getCause()));
+            button.putClientProperty(KEYBOARD_FOCUS, keyboardNavigation);
             updateHighlight(button);
           }
 
@@ -93,9 +100,35 @@ public class LaunchScreenStyle {
         });
   }
 
-  private static boolean isKeyboardTraversal(final FocusEvent.Cause cause) {
-    return cause == FocusEvent.Cause.TRAVERSAL_FORWARD
-        || cause == FocusEvent.Cause.TRAVERSAL_BACKWARD;
+  /**
+   * Tracks whether the user is navigating with Tab. Focus then gets the hover look so they can see
+   * the selected entry. Focus Swing moves on its own, eg to the first button of a new screen after
+   * a click, does not, or a button would light up for no visible reason.
+   */
+  private static void trackKeyboardNavigation() {
+    if (keyboardNavigationTracked) {
+      return;
+    }
+    keyboardNavigationTracked = true;
+    Toolkit.getDefaultToolkit()
+        .addAWTEventListener(
+            event -> {
+              if (event instanceof KeyEvent key
+                  && key.getID() == KeyEvent.KEY_PRESSED
+                  && key.getKeyCode() == KeyEvent.VK_TAB) {
+                keyboardNavigation = true;
+              } else if (event.getID() == MouseEvent.MOUSE_PRESSED) {
+                keyboardNavigation = false;
+                // a click that leaves focus where it is must still drop the focus highlight
+                if (KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner()
+                        instanceof AbstractButton focused
+                    && Boolean.TRUE.equals(focused.getClientProperty(KEYBOARD_FOCUS))) {
+                  focused.putClientProperty(KEYBOARD_FOCUS, false);
+                  updateHighlight(focused);
+                }
+              }
+            },
+            AWTEvent.KEY_EVENT_MASK | AWTEvent.MOUSE_EVENT_MASK);
   }
 
   private static void updateHighlight(final AbstractButton button) {
