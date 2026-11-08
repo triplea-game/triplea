@@ -47,6 +47,7 @@ macOS-specific: opening a file or a `triplea://` URI is translated to the corres
 - **`games.strategy.triplea.ui.display`** — `TripleADisplay` (implements `IDisplay`, routes engine display events to `TripleAFrame` methods)
 - **`games.strategy.triplea.ui.export`** — `ScreenshotExporter` (renders map to PNG with optional title overlay)
 - **`games.strategy.triplea.ui.panel.move`** — `MovePanel` (movement phase UI), `DoneMoveAction`
+- **`tools.map.making.ui`**, **`tools.util`** — Map-making tools (`MapCreator`, launched from `MetaSetupPanel`) and their file/property helpers
 
 ## Running
 

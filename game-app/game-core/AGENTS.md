@@ -40,8 +40,8 @@ The core game engine module. Contains the generic turn-based strategy engine fra
 - **`sound/`** — Sound/audio management
 - **`debug/`** — Debug and error reporting
 
-### `tools.map` — Map Utilities
-- Map processing and creation tools
+### `tools.util` — Map Utilities
+- `ToolsUtil` — territory-name helpers shared with `MapData`; the map-making tools themselves live in `game-headed`
 
 ## Key Abstractions
 

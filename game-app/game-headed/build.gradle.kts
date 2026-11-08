@@ -32,6 +32,7 @@ dependencies {
     implementation(project(":swing-lib"))
     implementation(project(":websocket-client"))
     testImplementation(project(":test-common"))
+    testImplementation(testFixtures(project(":game-core")))
 }
 
 tasks.named<Jar>("jar") {
