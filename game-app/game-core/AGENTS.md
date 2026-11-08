@@ -38,7 +38,7 @@ The core game engine module. Contains the generic turn-based strategy engine fra
 ### `org.triplea` — Modern TripleA Modules
 - **`game/`** — Client startup, chat integration
 - **`sound/`** — Sound/audio management
-- **`debug/`** — Debug and error reporting
+- **`debug/`** — Debug and error reporting; the error dialog, its logback appender, and the report Swing views live in game-headed
 
 ### `tools.util` — Map Utilities
 - `ToolsUtil` — territory-name helpers shared with `MapData`; the map-making tools themselves live in `game-headed`
@@ -551,7 +551,7 @@ Navigation widget that helps players "scroll through" units that haven't moved y
 
 **Help submenu** (`menubar/help/`, 6 files): `HelpMenu` (builder), `MoveHelpMenu`, `UnitHelpMenu`, `GameNotesMenu`, `UnitStatsTable`, `InformationDialog`.
 
-**Debug submenu** (`menubar/debug/`, 2 files): `AiPlayerDebugAction`, `AiPlayerDebugOption`.
+**Debug submenu** (`menubar/debug/`, 2 files): `AiPlayerDebugAction` (interface; the `MapPanel`-backed implementation is in game-headed), `AiPlayerDebugOption`.
 
 Note: The main menu bar (`TripleAMenuBar`) and most menu implementations (`FileMenu`, `ViewMenu`, `GameMenu`, etc.) live in **game-headed**, not game-core. Game-core only provides the help and debug menu content.
 
