@@ -58,6 +58,9 @@ public final class ProLogger {
    * in mind while adding new logging code.
    */
   public static void log(final Level level, final String message, final @Nullable Throwable t) {
+    if (!ProLogUi.hasReceiver()) {
+      return;
+    }
     final ProLogSettings settings = ProLogSettings.loadSettings();
     if (!settings.isLogEnabled()) {
       return; // Skip displaying to settings window if settings window option is turned off

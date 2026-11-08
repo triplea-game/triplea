@@ -2,7 +2,7 @@ package games.strategy.triplea.ui.menubar;
 
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.ai.pro.AbstractProAi;
-import games.strategy.triplea.ai.pro.logging.ProLogUi;
+import games.strategy.triplea.ai.pro.logging.ProLogDebugMenu;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugOption;
 import games.strategy.triplea.ui.menubar.debug.MapPanelAiPlayerDebugAction;
@@ -72,7 +72,7 @@ public final class DebugMenu {
         subMenus.add(subMenuBuilder.build());
       } else if (!addedProAiOption && player instanceof AbstractProAi) {
         JMenuBuilder menuBuilder = new JMenuBuilder("Hard AI", Mnemonic.AI_HARD.getMnemonicCode());
-        renderDebugOption(frame, ProLogUi.buildDebugOptions(frame))
+        renderDebugOption(frame, ProLogDebugMenu.buildDebugOptions(frame))
             .forEach(menuBuilder::addMenuItem);
         subMenus.add(menuBuilder.build());
         addedProAiOption = true;
