@@ -25,13 +25,9 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
-import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
-import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
-import org.triplea.swing.jpanel.GridBagConstraintsFill;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
@@ -77,7 +73,6 @@ public class MainPanel extends JPanel {
     playButton.addActionListener(e -> launchAction.accept(this));
     backButton.addActionListener(e -> backAction.get().ifPresent(Runnable::run));
 
-    gameSelectorPanel.setBorder(new EtchedBorder());
     final JScrollPane gameSetupPanelScroll = new JScrollPane(gameSetupPanelHolder);
     gameSetupPanelScroll.setBorder(BorderFactory.createEmptyBorder());
     chatSplit = new JSplitPane();
@@ -86,22 +81,13 @@ public class MainPanel extends JPanel {
     chatSplit.setOneTouchExpandable(false);
     chatSplit.setDividerSize(5);
 
-    mainPanel = new JPanelBuilder().border(0).gridBagLayout().build();
-    mainPanel.add(
-        gameSelectorPanel,
-        new GridBagConstraintsBuilder(0, 0)
-            .anchor(GridBagConstraintsAnchor.WEST)
-            .fill(GridBagConstraintsFill.VERTICAL)
-            .build());
-
-    mainPanel.add(
-        gameSetupPanelScroll,
-        new GridBagConstraintsBuilder(1, 0)
-            .anchor(GridBagConstraintsAnchor.CENTER)
-            .fill(GridBagConstraintsFill.BOTH)
-            .weightX(1.0)
-            .weightY(1.0)
-            .build());
+    mainPanel =
+        new JPanelBuilder()
+            .border(0)
+            .borderLayout()
+            .addNorth(gameSelectorPanel)
+            .addCenter(gameSetupPanelScroll)
+            .build();
     setLayout(new BorderLayout());
 
     if (chatModel instanceof ChatPanel) {

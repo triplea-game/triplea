@@ -11,37 +11,36 @@ import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListi
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.ui.FileBackedGamePropertiesCache;
 import games.strategy.engine.framework.startup.ui.IGamePropertiesCache;
-import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.GameChooser;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.framework.ui.background.TaskRunner;
-import games.strategy.triplea.EngineImageLoader;
 import games.strategy.triplea.UrlConstants;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
-import javax.swing.ImageIcon;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import org.triplea.config.product.ProductVersionReader;
+import javax.swing.UIManager;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
-import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
 
 /**
- * Left hand side panel of the launcher screen that has various info, like selected game and engine
- * version.
+ * Top of the game staging screens: a toolbar to pick the game, and a header naming the selected
+ * game.
  */
 public final class GameSelectorPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -4598107601238030020L;
@@ -49,6 +48,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
   private final GameSelectorModel model;
   private final IGamePropertiesCache gamePropertiesCache = new FileBackedGamePropertiesCache();
   private final Map<String, Object> originalPropertiesMap = new HashMap<>();
+  private final JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 4));
   private final JLabel nameText = new JLabel();
   private final JLabel saveGameText = new JLabel();
   private final JLabel roundText = new JLabel();
@@ -81,80 +81,31 @@ public final class GameSelectorPanel extends JPanel implements Observer {
       gamePropertiesCache.loadCachedGamePropertiesInto(data);
     }
 
-    setLayout(new GridBagLayout());
-
-    final JLabel logoLabel =
-        new JLabel(
-            new ImageIcon(EngineImageLoader.loadImage("launch_screens", "triplea-logo.png")));
-
-    int row = 0;
-    add(
-        logoLabel,
-        new GridBagConstraintsBuilder(0, row)
-            .gridWidth(2)
-            .insets(new Insets(10, 10, 3, 5))
-            .build());
-    row++;
-
-    add(new JLabel("Java Version:"), buildGridCell(0, row, new Insets(10, 10, 3, 5)));
-    add(
-        new JLabel(SystemProperties.getJavaVersion()),
-        buildGridCell(1, row, new Insets(10, 0, 3, 0)));
-    row++;
-
-    add(new JLabel("Engine Version:"), buildGridCell(0, row, new Insets(0, 10, 3, 5)));
-    add(
-        new JLabel(ProductVersionReader.getCurrentVersion().toString()),
-        buildGridCell(1, row, new Insets(0, 0, 3, 0)));
-    row++;
-
-    add(new JLabel("Game Name:"), buildGridCell(0, row, new Insets(0, 10, 3, 5)));
-    add(nameText, buildGridCell(1, row, new Insets(0, 0, 3, 0)));
-    row++;
-
-    add(new JLabel("Game Round:"), buildGridCell(0, row, new Insets(0, 10, 3, 5)));
-    add(roundText, buildGridCell(1, row, new Insets(0, 0, 3, 0)));
-    row++;
-
-    add(new JLabel("Loaded Savegame:"), buildGridCell(0, row, new Insets(20, 10, 3, 5)));
-    row++;
-
-    add(saveGameText, buildGridRow(0, row, new Insets(0, 10, 3, 5)));
-    row++;
-
-    add(loadNewGame, buildGridRow(0, row, new Insets(25, 10, 10, 10)));
-    row++;
-
-    add(loadSavedGame, buildGridRow(0, row, new Insets(0, 10, 10, 10)));
-    row++;
-
     final JButton downloadMapButton =
         new JButtonBuilder()
             .title("Download Maps")
             .toolTip("Click this button to install additional maps")
             .actionListener(DownloadMapsWindow::showDownloadMapsWindow)
             .build();
-    add(downloadMapButton, buildGridRow(0, row, new Insets(0, 10, 10, 10)));
-    row++;
+    toolbar.add(loadNewGame);
+    toolbar.add(loadSavedGame);
+    toolbar.add(downloadMapButton);
+    toolbar.add(mapOptions);
 
-    add(mapOptions, buildGridRow(0, row, new Insets(25, 10, 10, 10)));
-    row++;
+    nameText.setFont(nameText.getFont().deriveFont(Font.BOLD, nameText.getFont().getSize2D() + 10));
+    final JPanel header = new JPanel();
+    header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
+    header.setBorder(BorderFactory.createEmptyBorder(4, 10, 8, 10));
+    header.add(nameText);
+    header.add(Box.createVerticalStrut(4));
+    header.add(roundText);
+    header.add(saveGameText);
 
-    // spacer
-    add(
-        new JPanel(),
-        new GridBagConstraints(
-            0,
-            row,
-            2,
-            1,
-            1,
-            1,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.BOTH,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
+    setLayout(new BorderLayout());
+    setBorder(
+        BorderFactory.createMatteBorder(0, 0, 1, 0, UIManager.getColor("Separator.foreground")));
+    add(toolbar, BorderLayout.NORTH);
+    add(header, BorderLayout.CENTER);
 
     loadNewGame.addActionListener(
         e -> {
@@ -194,28 +145,6 @@ public final class GameSelectorPanel extends JPanel implements Observer {
         });
 
     updateGameData();
-  }
-
-  private static GridBagConstraints buildGridCell(final int x, final int y, final Insets insets) {
-    return buildGrid(x, y, insets, 1);
-  }
-
-  private static GridBagConstraints buildGridRow(final int x, final int y, final Insets insets) {
-    return buildGrid(x, y, insets, 2);
-  }
-
-  private static GridBagConstraints buildGrid(
-      final int x, final int y, final Insets insets, final int width) {
-    final int gridHeight = 1;
-    final double weightX = 0;
-    final double weightY = 0;
-    final int anchor = GridBagConstraints.WEST;
-    final int fill = GridBagConstraints.NONE;
-    final int ipadx = 0;
-    final int ipady = 0;
-
-    return new GridBagConstraints(
-        x, y, width, gridHeight, weightX, weightY, anchor, fill, insets, ipadx, ipady);
   }
 
   private void setOriginalPropertiesMap(final GameData data) {
@@ -271,14 +200,17 @@ public final class GameSelectorPanel extends JPanel implements Observer {
   private void updateGameData() {
     SwingAction.invokeNowOrLater(
         () -> {
-          nameText.setText(model.getGameName());
-          roundText.setText(model.getGameRound());
-          saveGameText.setText(model.getFileName());
+          final String gameName = model.getGameName();
+          nameText.setText(isUnset(gameName) ? "No game selected" : gameName);
+          roundText.setText("Round " + model.getGameRound());
+          roundText.setVisible(!isUnset(model.getGameRound()));
+          saveGameText.setText("Saved game: " + model.getFileName());
+          saveGameText.setVisible(!isUnset(model.getFileName()));
 
           final boolean canSelectGameData = canSelectLocalGameData();
           final boolean canChangeHostBotGameData = canChangeHostBotGameData();
-          loadSavedGame.setEnabled(canSelectGameData || canChangeHostBotGameData);
-          loadNewGame.setEnabled(canSelectGameData || canChangeHostBotGameData);
+          // network clients can't change the game, so they don't get the controls for it
+          toolbar.setVisible(canSelectGameData || canChangeHostBotGameData);
           // Disable game options if there are none.
           mapOptions.setEnabled(
               canChangeHostBotGameData
@@ -286,6 +218,11 @@ public final class GameSelectorPanel extends JPanel implements Observer {
                       && model.getGameData() != null
                       && !model.getGameData().getProperties().getEditableProperties().isEmpty()));
         });
+  }
+
+  /** {@link GameSelectorModel} reports a missing name, round or file as "-". */
+  private static boolean isUnset(final String value) {
+    return "-".equals(value);
   }
 
   private boolean canSelectLocalGameData() {

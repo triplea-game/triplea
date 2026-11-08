@@ -1,6 +1,7 @@
 package games.strategy.triplea.settings;
 
 import com.google.common.base.Preconditions;
+import games.strategy.engine.framework.system.SystemProperties;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -13,15 +14,19 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
+import org.triplea.config.product.ProductVersionReader;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.JScrollPaneBuilder;
@@ -95,8 +100,25 @@ public enum SettingsWindow {
         .border(10)
         .borderLayout()
         .addCenter(tabbedPane)
-        .addSouth(buildButtonPanel())
+        .addSouth(
+            new JPanelBuilder()
+                .borderLayout()
+                .addCenter(buildButtonPanel())
+                .addSouth(buildVersionLabel())
+                .build())
         .build();
+  }
+
+  private static JComponent buildVersionLabel() {
+    final JLabel label =
+        new JLabel(
+            String.format(
+                "Engine version %s, Java %s",
+                ProductVersionReader.getCurrentVersion(), SystemProperties.getJavaVersion()),
+            SwingConstants.CENTER);
+    label.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+    label.setForeground(UIManager.getColor("Label.disabledForeground"));
+    return label;
   }
 
   private static List<ClientSettingSwingUiBinding> getSettingsByType(final SettingType type) {
