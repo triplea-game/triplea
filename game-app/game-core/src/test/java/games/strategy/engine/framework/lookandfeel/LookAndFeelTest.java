@@ -4,12 +4,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.formdev.flatlaf.FlatLightLaf;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.Color;
 import java.util.List;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,6 +22,32 @@ import org.junit.jupiter.params.provider.EnumSource;
 final class LookAndFeelTest extends AbstractClientSettingTestCase {
   // WCAG 2 level AA minimum for normal text
   private static final double MIN_CONTRAST_RATIO = 4.5;
+
+  @AfterEach
+  void restoreLookAndFeel() throws Exception {
+    UIManager.put("defaultFont", null);
+    UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+  }
+
+  @Test
+  @DisplayName("Changing the UI scale scales from the base font size, not the previous scale")
+  void uiScaleDoesNotCompound() throws Exception {
+    final int baseSize = labelFontSizeAtScale(100);
+
+    final int firstSize = labelFontSizeAtScale(150);
+    final int reappliedSize = labelFontSizeAtScale(150);
+    final int resetSize = labelFontSizeAtScale(100);
+
+    assertThat(firstSize).isGreaterThan(baseSize);
+    assertThat(reappliedSize).isEqualTo(firstSize);
+    assertThat(resetSize).isEqualTo(baseSize);
+  }
+
+  private static int labelFontSizeAtScale(final int scalePercent) throws Exception {
+    ClientSetting.uiScalePercent.setValue(scalePercent);
+    SwingUtilities.invokeAndWait(() -> LookAndFeel.setupLookAndFeel(FlatLightLaf.class.getName()));
+    return UIManager.getFont("Label.font").getSize();
+  }
 
   @Test
   void testIsColorDark() {
