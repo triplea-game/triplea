@@ -2,9 +2,12 @@ package games.strategy.triplea.ai.pro.data;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static games.strategy.triplea.delegate.GameDataTestUtil.british;
+import static games.strategy.triplea.delegate.GameDataTestUtil.factory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.fighter;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
+import static games.strategy.triplea.delegate.GameDataTestUtil.japanese;
+import static games.strategy.triplea.delegate.GameDataTestUtil.removeFrom;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -128,5 +131,63 @@ class ProTerritoryManagerTest {
     transport.getProperty(Unit.PropertyName.WAS_IN_COMBAT).orElseThrow().setValue(true);
 
     assertThat(plansToLoad(nonCombatDefendOptions())).isFalse();
+  }
+
+  /**
+   * The Japanese (moving after the Germans) have a loaded transport next to the Suez Canal, and the
+   * canal's far side borders a target (a factory in Persia). The canal is only open to them if the
+   * Germans take Anglo Egypt first.
+   */
+  private static void setUpJapaneseTransportAtSuez(final GameData data) {
+    removeFrom(territory("15 Sea Zone", data), territory("15 Sea Zone", data).getUnits());
+    removeFrom(territory("34 Sea Zone", data), territory("34 Sea Zone", data).getUnits());
+    addTo(territory("15 Sea Zone", data), transport(data).create(1, japanese(data)));
+    addTo(territory("Turkey", data), infantry(data).create(2, japanese(data)));
+    addTo(territory("Persia", data), factory(data).create(1, british(data)));
+  }
+
+  private static boolean japaneseCanLandAmphibiouslyAtPersia(final GameData data) {
+    final Territory persia = territory("Persia", data);
+    final ProData proData = new ProData();
+    proData.initializeSimulation(null, data, british(data));
+    final ProTerritoryManager manager = new ProTerritoryManager(null, proData);
+    manager.populateEnemyAttackOptions(List.of(), List.of(persia));
+    return manager.getEnemyAttackOptions().getAll(persia).stream()
+        .flatMap(options -> options.getMaxAmphibUnits().stream())
+        .anyMatch(unit -> unit.isOwnedBy(japanese(data)));
+  }
+
+  @Test
+  void enemyAmphibiousThreatThroughCanalIsMissedWhenNoAllyCanOpenIt() {
+    final GameData revised = TestMapGameData.REVISED.getGameData();
+    setUpJapaneseTransportAtSuez(revised);
+    for (final String borderTerritory : List.of("Anglo Egypt", "Trans-Jordan")) {
+      addTo(territory(borderTerritory, revised), infantry(revised).create(40, british(revised)));
+    }
+
+    assertThat(japaneseCanLandAmphibiouslyAtPersia(revised)).isFalse();
+  }
+
+  @Test
+  void enemyAmphibiousThreatCountsCanalAnEarlierAllyCanOpen() {
+    final GameData revised = TestMapGameData.REVISED.getGameData();
+    setUpJapaneseTransportAtSuez(revised);
+
+    assertThat(japaneseCanLandAmphibiouslyAtPersia(revised)).isTrue();
+  }
+
+  @Test
+  void mapWithoutCanalsHasNoCanalLandTerritories() {
+    final GameData noCanals = TestMapGameData.DELEGATE_TEST.getGameData();
+
+    assertThat(ProTerritoryManager.getCanalLandTerritories(noCanals.getMap())).isEmpty();
+  }
+
+  @Test
+  void suezBorderTerritoriesAreCanalLandTerritories() {
+    final GameData revised = TestMapGameData.REVISED.getGameData();
+
+    assertThat(ProTerritoryManager.getCanalLandTerritories(revised.getMap()))
+        .contains(territory("Anglo Egypt", revised), territory("Trans-Jordan", revised));
   }
 }
