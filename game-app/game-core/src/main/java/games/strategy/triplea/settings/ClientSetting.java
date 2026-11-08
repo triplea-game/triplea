@@ -7,7 +7,6 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.lookandfeel.RelationshipColorScheme;
-import games.strategy.engine.framework.startup.ui.posted.game.DiceServerEditor;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.UrlConstants;
@@ -79,7 +78,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<String> defaultGameUri =
       new StringClientSetting("DEFAULT_GAME_URI_PREF");
   public static final ClientSetting<URI> diceRollerUri =
-      new UriClientSetting("DICE_ROLLER_URI", DiceServerEditor.PRODUCTION_URI);
+      new UriClientSetting("DICE_ROLLER_URI", URI.create(UrlConstants.PROD_DICE_SERVER));
   public static final ClientSetting<Integer> fasterArrowKeyScrollMultiplier =
       new IntegerClientSetting("FASTER_ARROW_KEY_SCROLL_MULTIPLIER", 2);
   public static final ClientSetting<Boolean> spaceBarConfirmsCasualties =
@@ -175,10 +174,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
           "RELATIONSHIP_COLOR_SCHEME",
           RelationshipColorScheme.STANDARD);
   public static final ClientSetting<UnitFlagDrawMode> unitFlagDrawMode =
-      new EnumClientSetting<>(
-          UnitFlagDrawMode.class,
-          "UNIT_FLAG_DRAW_MODE",
-          UnitFlagDrawMode.NONE);
+      new EnumClientSetting<>(UnitFlagDrawMode.class, "UNIT_FLAG_DRAW_MODE", UnitFlagDrawMode.NONE);
   public static final ClientSetting<Integer> wheelScrollAmount =
       new IntegerClientSetting("WHEEL_SCROLL_AMOUNT", 60);
   public static final ClientSetting<String> playerName =

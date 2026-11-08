@@ -19,8 +19,7 @@ public class FlagDrawMode {
    * Updates the current flag draw mode and refreshes the map so that the current flag draw mode is
    * rendered on map.
    */
-  public static void toggleDrawMode(
-      final UnitFlagDrawMode drawMode, final MapPanel mapPanel) {
+  public static void toggleDrawMode(final UnitFlagDrawMode drawMode, final MapPanel mapPanel) {
     ClientSetting.unitFlagDrawMode.setValueAndFlush(drawMode);
     mapPanel.resetMap();
   }

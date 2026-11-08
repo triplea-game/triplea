@@ -4,12 +4,12 @@ import static org.triplea.util.Arrays.withSensitiveArray;
 import static org.triplea.util.Arrays.withSensitiveArrayAndReturn;
 
 import com.google.common.base.Strings;
-import games.strategy.engine.framework.startup.ui.posted.game.DiceServerEditor;
 import games.strategy.engine.framework.startup.ui.posted.game.pbem.EmailProviderPreset;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.posted.game.pbf.NodeBbTokenGenerator;
 import games.strategy.engine.posted.game.pbf.NodeBbTokenGenerator.TokenInfo;
+import games.strategy.triplea.UrlConstants;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.net.URI;
@@ -49,6 +49,8 @@ import org.triplea.swing.jpanel.JPanelBuilder;
  * of the UI code to ensure we render the proper swing component with validation.
  */
 final class SelectionComponentFactory {
+  private static final URI PRODUCTION_DICE_SERVER_URI = URI.create(UrlConstants.PROD_DICE_SERVER);
+
   private SelectionComponentFactory() {}
 
   static SelectionComponent<JComponent> proxySettings(
@@ -439,7 +441,7 @@ final class SelectionComponentFactory {
 
     // set radio button selections
     production.setSelected(
-        ClientSetting.diceRollerUri.getValueOrThrow().equals(DiceServerEditor.PRODUCTION_URI));
+        ClientSetting.diceRollerUri.getValueOrThrow().equals(PRODUCTION_DICE_SERVER_URI));
     custom.setSelected(!production.isSelected());
 
     uriField.setEnabled(custom.isSelected());
@@ -478,7 +480,7 @@ final class SelectionComponentFactory {
             showInvalidUriError(e.getMessage(), uriField.getText());
           }
         } else {
-          context.setValue(ClientSetting.diceRollerUri, DiceServerEditor.PRODUCTION_URI);
+          context.setValue(ClientSetting.diceRollerUri, PRODUCTION_DICE_SERVER_URI);
         }
       }
 
@@ -497,7 +499,7 @@ final class SelectionComponentFactory {
       @Override
       public void reset() {
         production.setSelected(
-            ClientSetting.diceRollerUri.getValueOrThrow().equals(DiceServerEditor.PRODUCTION_URI));
+            ClientSetting.diceRollerUri.getValueOrThrow().equals(PRODUCTION_DICE_SERVER_URI));
         custom.setSelected(!production.isSelected());
       }
     };
