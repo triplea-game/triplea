@@ -3,8 +3,8 @@ package games.strategy.engine.history;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import java.awt.EventQueue;
 import java.io.Serializable;
-import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 
 /** Used to write to a history object. Delegates should use a DelegateHistoryWriter. */
@@ -21,7 +21,7 @@ public class HistoryWriter implements Serializable {
 
   private void assertCorrectThread() {
     if (history.getGameData().areChangesOnlyInSwingEventThread()
-        && !SwingUtilities.isEventDispatchThread()) {
+        && !EventQueue.isDispatchThread()) {
       throw new IllegalStateException("Wrong thread");
     }
   }
