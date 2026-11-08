@@ -90,6 +90,13 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<Boolean> showPotentialScrambleWarning =
       new BooleanClientSetting("SHOW_POTENTIAL_SCRAMBLE_WARNING", true);
 
+  /** Last size of the launch window, reused the next time it opens. */
+  public static final ClientSetting<Integer> launchWindowWidth =
+      new IntegerClientSetting("LAUNCH_WINDOW_WIDTH");
+
+  public static final ClientSetting<Integer> launchWindowHeight =
+      new IntegerClientSetting("LAUNCH_WINDOW_HEIGHT");
+
   /** URI of the lobby, can be toggled in settings to switch to a different lobby. */
   public static final ClientSetting<URI> lobbyUri =
       new UriClientSetting("LOBBY_URI", URI.create(UrlConstants.PROD_LOBBY));

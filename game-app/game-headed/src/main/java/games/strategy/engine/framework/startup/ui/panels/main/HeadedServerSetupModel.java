@@ -23,7 +23,6 @@ import games.strategy.engine.lobby.client.login.LoginMode;
 import games.strategy.engine.lobby.client.login.LoginResult;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.engine.lobby.client.ui.LobbyModel;
-import java.awt.Dimension;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
@@ -93,17 +92,9 @@ public class HeadedServerSetupModel {
                 .build());
 
     SwingUtilities.invokeLater(
-        () -> {
-          setGameTypePanel(
-              new ServerSetupPanel(serverModel, gameSelectorModel), this::showMultiplayer);
-
-          // for whatever reason, the server window is showing very, very small, causing the nation
-          // info to be cut and requiring scroll bars
-          final int x = Math.max(ui.getPreferredSize().width, 800);
-          final int y = Math.max(ui.getPreferredSize().height, 660);
-          ui.setPreferredSize(new Dimension(x, y));
-          ui.setSize(new Dimension(x, y));
-        });
+        () ->
+            setGameTypePanel(
+                new ServerSetupPanel(serverModel, gameSelectorModel), this::showMultiplayer));
   }
 
   /**
