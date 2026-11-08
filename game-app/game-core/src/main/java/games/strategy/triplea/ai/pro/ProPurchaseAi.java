@@ -2,6 +2,7 @@ package games.strategy.triplea.ai.pro;
 
 import static games.strategy.triplea.ai.pro.util.ProUtils.summarizeUnits;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
@@ -11,6 +12,7 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
@@ -64,6 +66,8 @@ class ProPurchaseAi {
   private static final int CLOCK_HORIZON = 10;
   // A shorter enemy clock on my capital than mine on theirs forces its defence only up to this.
   private static final int COOKED_HORIZON = 4;
+  // Hard Beta's leftover PUs stop going to air once air is this share of the force's value.
+  static final double MAX_AIR_VALUE_SHARE = 0.5;
 
   private final ProOddsCalculator calc;
   private final ProData proData;
@@ -2432,6 +2436,7 @@ class ProPurchaseAi {
     ProLogger.info(
         "Purchase units in territories with remaining production with resources: "
             + resourceTracker);
+    final AirShare airShare = newAirShare(purchaseTerritories);
 
     // Get all safe/unsafe land place territories with remaining production
     final List<ProPlaceTerritory> prioritizedLandTerritories = new ArrayList<>();
@@ -2482,6 +2487,9 @@ class ProPurchaseAi {
             purchaseTerritories,
             0,
             t);
+        if (airShare.isAtCap()) {
+          purchaseOptionsForTerritory.removeIf(ProPurchaseOption::isAir);
+        }
         if (purchaseOptionsForTerritory.isEmpty()) {
           break;
         }
@@ -2507,7 +2515,9 @@ class ProPurchaseAi {
         // Purchase unit
         resourceTracker.purchase(bestAttackOption);
         remainingUnitProduction -= bestAttackOption.getQuantity();
-        addUnitsToPlace(placeTerritory, bestAttackOption.createTempUnits());
+        final List<Unit> bought = bestAttackOption.createTempUnits();
+        airShare.add(bought);
+        addUnitsToPlace(placeTerritory, bought);
       }
     }
 
@@ -2586,6 +2596,7 @@ class ProPurchaseAi {
       return;
     }
     ProLogger.info("Upgrade units with resources: " + resourceTracker);
+    final AirShare airShare = newAirShare(purchaseTerritories);
 
     // Get all safe land place territories
     final List<ProPlaceTerritory> prioritizedLandTerritories = new ArrayList<>();
@@ -2657,11 +2668,13 @@ class ProPurchaseAi {
 
         // Determine best upgrade option (prefer air units)
         // TODO: ensure map has carriers or air unit has range to reach enemy land mass
+        final boolean airAtCap = airShare.isAtCap();
         ProPurchaseOption bestUpgradeOption = null;
         double maxEfficiency =
             findUpgradeUnitEfficiency(minPurchaseOption, placeTerritory.getStrategicValue());
         for (final ProPurchaseOption ppo : purchaseOptionsForTerritory) {
           if (!ppo.isConsumesUnits()
+              && !(ppo.isAir() && airAtCap)
               && ppo.getCost() > minPurchaseOption.getCost()
               && (ppo.isAir()
                   || placeTerritory.getStrategicValue() >= 0.25
@@ -2709,15 +2722,79 @@ class ProPurchaseAi {
         resourceTracker.removePurchase(minPurchaseOption);
         remainingUpgradeUnits -= minPurchaseOption.getQuantity();
         placeTerritory.getPlaceUnits().removeAll(unitsToRemove);
+        airShare.remove(unitsToRemove);
         ProLogger.trace(t + ", removedUnits=" + unitsToRemove);
         for (int i = 0; i < unitsToRemove.size(); i++) {
           if (resourceTracker.hasEnough(bestUpgradeOption)) {
             resourceTracker.purchase(bestUpgradeOption);
-            addUnitsToPlace(placeTerritory, bestUpgradeOption.createTempUnits());
+            final List<Unit> bought = bestUpgradeOption.createTempUnits();
+            airShare.add(bought);
+            addUnitsToPlace(placeTerritory, bought);
           }
         }
       }
     }
+  }
+
+  /**
+   * Hard Beta's air cap for the leftover passes, seeded with my owned units and those bought so far
+   * this turn. Stock Hard gets a share that is never at the cap.
+   */
+  private AirShare newAirShare(final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
+    final AirShare airShare = new AirShare(proData.isBeta(), proData.getUnitValueMap());
+    if (proData.isBeta()) {
+      final Set<Unit> units = new HashSet<>();
+      for (final Territory t : data.getMap().getTerritories()) {
+        units.addAll(t.getMatches(Matches.unitIsOwnedBy(player)));
+      }
+      for (final ProPurchaseTerritory ppt : purchaseTerritories.values()) {
+        for (final ProPlaceTerritory placeTerritory : ppt.getCanPlaceTerritories()) {
+          units.addAll(placeTerritory.getPlaceUnits());
+        }
+      }
+      airShare.add(units);
+    }
+    return airShare;
+  }
+
+  /** Running value of my air and of my whole force, kept up to date as the passes buy. */
+  private static final class AirShare {
+    private final boolean capped;
+    private final IntegerMap<UnitType> unitValues;
+    private int airValue;
+    private int totalValue;
+
+    AirShare(final boolean capped, final IntegerMap<UnitType> unitValues) {
+      this.capped = capped;
+      this.unitValues = unitValues;
+    }
+
+    boolean isAtCap() {
+      return capped && isAirAtCap(airValue, totalValue);
+    }
+
+    void add(final Collection<Unit> units) {
+      change(units, 1);
+    }
+
+    void remove(final Collection<Unit> units) {
+      change(units, -1);
+    }
+
+    private void change(final Collection<Unit> units, final int sign) {
+      if (capped) {
+        airValue +=
+            sign
+                * TuvUtils.getTuv(
+                    CollectionUtils.getMatches(units, Matches.unitIsAir()), unitValues);
+        totalValue += sign * TuvUtils.getTuv(units, unitValues);
+      }
+    }
+  }
+
+  @VisibleForTesting
+  static boolean isAirAtCap(final double airValue, final double totalValue) {
+    return airValue > 0 && airValue >= MAX_AIR_VALUE_SHARE * totalValue;
   }
 
   /**

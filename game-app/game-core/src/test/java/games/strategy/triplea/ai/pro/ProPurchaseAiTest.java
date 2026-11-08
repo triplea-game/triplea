@@ -17,6 +17,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.player.PlayerBridge;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PlaceDelegate;
 import games.strategy.triplea.delegate.PurchaseDelegate;
 import games.strategy.triplea.settings.ClientSetting;
@@ -80,8 +81,56 @@ public class ProPurchaseAiTest {
     assertThat(territory("59 Sea Zone", pos2GameData).getUnits()).containsAll(transports);
   }
 
+  @Test
+  void airIsNotAtCapWhenThereIsNoAir() {
+    assertThat(ProPurchaseAi.isAirAtCap(0, 100)).isFalse();
+  }
+
+  @Test
+  void airIsNotAtCapWhenThereIsNoForceAtAll() {
+    assertThat(ProPurchaseAi.isAirAtCap(0, 0)).isFalse();
+  }
+
+  @Test
+  void airIsNotAtCapBelowHalfOfForceValue() {
+    assertThat(ProPurchaseAi.isAirAtCap(49, 100)).isFalse();
+  }
+
+  @Test
+  void airIsAtCapAtExactlyHalfOfForceValue() {
+    assertThat(ProPurchaseAi.isAirAtCap(50, 100)).isTrue();
+  }
+
+  @Test
+  void airIsAtCapAboveHalfOfForceValue() {
+    assertThat(ProPurchaseAi.isAirAtCap(60, 100)).isTrue();
+  }
+
+  /// Italy owns far more air than the rest of its force is worth, so Hard Beta's leftover PUs must
+  /// go to something else. Without the cap the fallbacks prefer air 10 times over any other unit.
+  @Test
+  void betaDoesNotSpendLeftoverPusOnAirWhenAirIsAlreadyHalfTheForce() {
+    setupShouldSaveUpForAFleetTest(new ProAi("Test Name", "Test Player Label", true));
+    final Territory italy = territory("Italy", gameData);
+    final List<Unit> fighters =
+        gameData.getUnitTypeList().getUnitTypeOrThrow("fighter").create(20, gamePlayer);
+    gameData.performChange(ChangeFactory.addUnits(italy, fighters));
+
+    try {
+      proAi.purchase(false, 16, purchaseDelegate, gameData, gamePlayer);
+    } finally {
+      proAi.stopGame();
+    }
+
+    assertThat(gamePlayer.getUnits()).isNotEmpty().noneMatch(Matches.unitIsAir());
+  }
+
   private void setupShouldSaveUpForAFleetTest() {
-    proAi = new ProAi("Test Name", "Test Player Label");
+    setupShouldSaveUpForAFleetTest(new ProAi("Test Name", "Test Player Label"));
+  }
+
+  private void setupShouldSaveUpForAFleetTest(final ProAi ai) {
+    proAi = ai;
     gameData = TestMapGameData.VICTORY_TEST_SHOULD_SAVE_UP_FOR_A_FLEET.getGameData();
     gamePlayer = gameData.getPlayerList().getPlayerId("Italians");
     final IDelegateBridge testBridge = newDelegateBridge(gamePlayer);
