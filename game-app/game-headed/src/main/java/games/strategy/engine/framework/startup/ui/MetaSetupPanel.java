@@ -21,25 +21,28 @@ public class MetaSetupPanel extends MenuPanel {
   private static final long serialVersionUID = 3926503672972937677L;
 
   public MetaSetupPanel(final HeadedServerSetupModel model) {
-    super(buildButtons(model));
+    super(buildPrimaryButtons(model), buildSecondaryButtons());
   }
 
-  private static List<JButton> buildButtons(final HeadedServerSetupModel model) {
+  private static List<JButton> buildPrimaryButtons(final HeadedServerSetupModel model) {
     final I18nResourceBundle bundle = I18nEngineFramework.get();
     return List.of(
         new JButtonBuilder(bundle.getText("startup.SetupPanelModel.btn.StartLocalGame.Lbl"))
-            .biggerFont()
             .toolTipText(
                 HtmlUtils.getHtml(
                     bundle.getText("startup.SetupPanelModel.btn.StartLocalGame.Tltp")))
             .actionListener(model::showLocal)
             .build(),
         new JButtonBuilder(bundle.getText("startup.SetupPanelModel.btn.Multiplayer.Lbl"))
-            .biggerFont()
             .toolTipText(
                 HtmlUtils.getHtml(bundle.getText("startup.SetupPanelModel.btn.Multiplayer.Tltp")))
             .actionListener(model::showMultiplayer)
-            .build(),
+            .build());
+  }
+
+  private static List<JButton> buildSecondaryButtons() {
+    final I18nResourceBundle bundle = I18nEngineFramework.get();
+    return List.of(
         new JButtonBuilder(bundle.getText("startup.SetupPanelModel.btn.DownloadMaps.Lbl"))
             .actionListener(DownloadMapsWindow::showDownloadMapsWindow)
             .build(),

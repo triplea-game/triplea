@@ -3,9 +3,11 @@ package games.strategy.engine.framework.startup.ui;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.triplea.EngineImageLoader;
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -23,26 +25,40 @@ import org.triplea.swing.jpanel.GridBagConstraintsFill;
 public abstract class MenuPanel extends SetupPanel {
   private static final long serialVersionUID = -2349834562085738722L;
 
-  protected MenuPanel(final List<JButton> buttons) {
+  private static final int PRIMARY_FONT_INCREASE = 10;
+  private static final int SECONDARY_FONT_INCREASE = 3;
+
+  /**
+   * Lays out the logo, then {@code primary} entries as large capitalized text, then a gap and the
+   * smaller {@code secondary} entries.
+   */
+  protected MenuPanel(final List<JButton> primary, final List<JButton> secondary) {
     setLayout(new BorderLayout());
     final JPanel buttonColumn = new JPanel(new GridBagLayout());
+    int row = 0;
     buttonColumn.add(
         new JLabel(
             new ImageIcon(EngineImageLoader.loadImage("launch_screens", "triplea-logo.png"))),
-        new GridBagConstraintsBuilder(0, 0)
-            .anchor(GridBagConstraintsAnchor.CENTER)
-            .insets(new Insets(0, 0, 20, 0))
-            .build());
-    for (int row = 0; row < buttons.size(); row++) {
-      buttonColumn.add(
-          buttons.get(row),
-          new GridBagConstraintsBuilder(0, row + 1)
-              .anchor(GridBagConstraintsAnchor.CENTER)
-              .fill(GridBagConstraintsFill.NONE)
-              .insets(new Insets(10, 0, 0, 0))
-              .build());
+        centered(row++, 20));
+    for (final JButton button : primary) {
+      button.setText(button.getText().toUpperCase(Locale.ROOT));
+      LaunchScreenStyle.styleAsMenuItem(button, PRIMARY_FONT_INCREASE);
+      buttonColumn.add(button, centered(row++, 4));
+    }
+    for (int i = 0; i < secondary.size(); i++) {
+      final JButton button = secondary.get(i);
+      LaunchScreenStyle.styleAsMenuItem(button, SECONDARY_FONT_INCREASE);
+      buttonColumn.add(button, centered(row++, i == 0 ? 24 : 2));
     }
     add(buttonColumn);
+  }
+
+  private static GridBagConstraints centered(final int row, final int spaceAbove) {
+    return new GridBagConstraintsBuilder(0, row)
+        .anchor(GridBagConstraintsAnchor.CENTER)
+        .fill(GridBagConstraintsFill.NONE)
+        .insets(new Insets(spaceAbove, 0, 0, 0))
+        .build();
   }
 
   @Override

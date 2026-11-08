@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.ui.panels.main;
 
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.framework.I18nEngineFramework;
+import games.strategy.engine.framework.startup.ui.LaunchScreenStyle;
 import games.strategy.engine.framework.startup.ui.MenuPanel;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorPanel;
@@ -11,6 +12,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -40,6 +42,7 @@ import org.triplea.swing.jpanel.JPanelBuilder;
 public class MainPanel extends JPanel {
   private static final long serialVersionUID = -5548760379892913464L;
   private static final Dimension initialSize = new Dimension(900, 780);
+  private static final float NAVIGATION_FONT_INCREASE = 4;
 
   private final JButton playButton =
       new JButtonBuilder()
@@ -113,11 +116,16 @@ public class MainPanel extends JPanel {
             .toolTip(I18nEngineFramework.get().getText("startup.MainPanel.btn.Quit.Tltp"))
             .actionListener(quitAction)
             .build();
+    for (final JButton button : List.of(playButton, backButton, quitButton)) {
+      button.setText(button.getText().toUpperCase(Locale.ROOT));
+      LaunchScreenStyle.styleAsMenuItem(button, NAVIGATION_FONT_INCREASE);
+    }
     final JPanel buttonsPanel =
         new JPanelBuilder().borderEtched().add(playButton).add(backButton).add(quitButton).build();
     add(buttonsPanel, BorderLayout.SOUTH);
     setPreferredSize(initialSize);
     updatePlayButtonState();
+    LaunchScreenStyle.install(this);
   }
 
   public void loadSaveFile(final Path file) {

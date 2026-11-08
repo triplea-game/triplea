@@ -13,18 +13,22 @@ public class MultiplayerMenuPanel extends MenuPanel {
   private static final long serialVersionUID = 6197521473418529376L;
 
   public MultiplayerMenuPanel(final HeadedServerSetupModel model) {
-    super(buildButtons(model));
+    super(
+        List.of(
+            new JButtonBuilder(
+                    I18nEngineFramework.get().getText("startup.SetupPanelModel.btn.PlayOnline.Lbl"))
+                .toolTipText(
+                    HtmlUtils.getHtml(
+                        I18nEngineFramework.get()
+                            .getText("startup.SetupPanelModel.btn.PlayOnline.Tltp")))
+                .actionListener(model::login)
+                .build()),
+        buildSecondaryButtons(model));
   }
 
-  private static List<JButton> buildButtons(final HeadedServerSetupModel model) {
+  private static List<JButton> buildSecondaryButtons(final HeadedServerSetupModel model) {
     final I18nResourceBundle bundle = I18nEngineFramework.get();
     return List.of(
-        new JButtonBuilder(bundle.getText("startup.SetupPanelModel.btn.PlayOnline.Lbl"))
-            .biggerFont()
-            .toolTipText(
-                HtmlUtils.getHtml(bundle.getText("startup.SetupPanelModel.btn.PlayOnline.Tltp")))
-            .actionListener(model::login)
-            .build(),
         new JButtonBuilder(bundle.getText("startup.SetupPanelModel.btn.PlayByForum.Lbl"))
             .toolTipText(
                 HtmlUtils.getHtml(bundle.getText("startup.SetupPanelModel.btn.PlayByForum.Tltp")))
