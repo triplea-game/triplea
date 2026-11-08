@@ -11,6 +11,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.ai.AiRandom;
 import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -29,8 +30,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import org.triplea.java.PredicateBuilder;
@@ -58,7 +59,7 @@ final class ProTechAi {
     // If the token was not used, set the token num -1
     final int techTokensQuantity =
         techTokensOptional.map(resource -> player.getResources().getQuantity(resource)).orElse(-1);
-    final ThreadLocalRandom localRandom = ThreadLocalRandom.current();
+    final Random localRandom = AiRandom.get();
     int tokensToBuy = 0;
     if (!capDanger && techTokensQuantity < 3 && pusRemaining > localRandom.nextInt(160)) {
       tokensToBuy = 1;

@@ -55,21 +55,21 @@ public final class AiPoliticalUtils {
       if (warActions.contains(nextAction)) {
         continue;
       }
-      if (goesTowardsWar(nextAction, gamePlayer, data) && Math.random() < .5) {
+      if (goesTowardsWar(nextAction, gamePlayer, data) && AiRandom.get().nextDouble() < .5) {
         continue;
       }
-      if (awayFromAlly(nextAction, gamePlayer, data) && Math.random() < .9) {
+      if (awayFromAlly(nextAction, gamePlayer, data) && AiRandom.get().nextDouble() < .9) {
         continue;
       }
       if (isFree(nextAction)) {
         acceptableActions.add(nextAction);
       } else if (CollectionUtils.countMatches(validActions, politicalActionHasNoResourceCost())
           > 1) {
-        if (Math.random() < .9 && isAcceptableCost(nextAction, gamePlayer, data)) {
+        if (AiRandom.get().nextDouble() < .9 && isAcceptableCost(nextAction, gamePlayer, data)) {
           acceptableActions.add(nextAction);
         }
       } else {
-        if (Math.random() < .4 && isAcceptableCost(nextAction, gamePlayer, data)) {
+        if (AiRandom.get().nextDouble() < .4 && isAcceptableCost(nextAction, gamePlayer, data)) {
           acceptableActions.add(nextAction);
         }
       }

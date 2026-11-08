@@ -283,7 +283,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
       final Collection<Unit> fightersThatCanBeMoved, final Territory from) {
     final List<Unit> fighters = new ArrayList<>();
     for (final Unit fighter : fightersThatCanBeMoved) {
-      if (Math.random() < 0.8) {
+      if (AiRandom.get().nextDouble() < 0.8) {
         fighters.add(fighter);
       }
     }
@@ -354,7 +354,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
             getGameData().getAllianceTracker().getAlliancesPlayerIsIn(this.getGamePlayer()));
     myAlliances.retainAll(
         getGameData().getAllianceTracker().getAlliancesPlayerIsIn(playerSendingProposal));
-    return !myAlliances.isEmpty() || Math.random() < .5;
+    return !myAlliances.isEmpty() || AiRandom.get().nextDouble() < .5;
   }
 
   @Override
@@ -390,7 +390,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
       }
       final Territory t = entry.getKey();
       final List<Unit> targets = new ArrayList<>(entry.getValue());
-      Collections.shuffle(targets);
+      Collections.shuffle(targets, AiRandom.get());
       for (final Unit u : targets) {
         if (attackTokens.isEmpty()) {
           continue;
@@ -401,7 +401,9 @@ public abstract class AbstractAi extends AbstractBasePlayer {
             Math.min(
                 attackTokens.getInt(resource),
                 (u.getUnitAttachment().getHitPoints()
-                    * (Math.random() < .3 ? 1 : (Math.random() < .5 ? 2 : 3))));
+                    * (AiRandom.get().nextDouble() < .3
+                        ? 1
+                        : (AiRandom.get().nextDouble() < .5 ? 2 : 3))));
         resourceMap.put(resource, num);
         kamikazeSuicideAttacks.computeIfAbsent(t, key -> new HashMap<>()).put(u, resourceMap);
         attackTokens.add(resource, -num);
@@ -426,7 +428,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
     } else if (territoryChoices.size() == 1) {
       picked = territoryChoices.get(0);
     } else {
-      Collections.shuffle(territoryChoices);
+      Collections.shuffle(territoryChoices, AiRandom.get());
       final List<Territory> notOwned =
           CollectionUtils.getMatches(territoryChoices, Matches.isTerritoryOwnedBy(me).negate());
       if (notOwned.isEmpty()) {
@@ -484,7 +486,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
                 test.add(choice);
               }
             }
-            Collections.shuffle(test);
+            Collections.shuffle(test, AiRandom.get());
             picked = test.get(0);
           } else {
             if (capitals.isEmpty()) {
@@ -509,7 +511,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
                 distanceMap.removeKey(choice);
                 choices.add(choice);
               }
-              Collections.shuffle(choices);
+              Collections.shuffle(choices, AiRandom.get());
               picked = choices.get(0);
             }
           }
@@ -542,7 +544,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
     }
     final Set<Unit> unitsToPlace = new HashSet<>();
     if (!unitChoices.isEmpty() && unitsPerPick > 0) {
-      Collections.shuffle(unitChoices);
+      Collections.shuffle(unitChoices, AiRandom.get());
       final List<Unit> nonFactory =
           CollectionUtils.getMatches(unitChoices, Matches.unitCanProduceUnits().negate());
       if (nonFactory.isEmpty()) {
@@ -578,7 +580,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
       final int numRolls, final int hitAt, final String message, final int diceSides) {
     final int[] dice = new int[numRolls];
     for (int i = 0; i < numRolls; i++) {
-      dice[i] = (int) Math.ceil(Math.random() * diceSides);
+      dice[i] = (int) Math.ceil(AiRandom.get().nextDouble() * diceSides);
     }
     return dice;
   }
@@ -718,15 +720,15 @@ public abstract class AbstractAi extends AbstractBasePlayer {
     final float numPlayers = data.getPlayerList().getPlayers().size();
     final PoliticsDelegate politicsDelegate = data.getPoliticsDelegate();
     // We want to test the conditions each time to make sure they are still valid
-    if (Math.random() < .5) {
+    if (AiRandom.get().nextDouble() < .5) {
       final List<PoliticalActionAttachment> actionChoicesTowardsWar =
           AiPoliticalUtils.getPoliticalActionsTowardsWar(
               gamePlayer, politicsDelegate.getTestedConditions(), data);
       if (!actionChoicesTowardsWar.isEmpty()) {
-        Collections.shuffle(actionChoicesTowardsWar);
+        Collections.shuffle(actionChoicesTowardsWar, AiRandom.get());
         int i = 0;
         // should we use bridge's random source here?
-        final double random = Math.random();
+        final double random = AiRandom.get().nextDouble();
         int maxWarActionsPerTurn =
             (random < .5 ? 0 : (random < .9 ? 1 : (random < .99 ? 2 : (int) numPlayers / 2)));
         if ((maxWarActionsPerTurn > 0)
@@ -735,7 +737,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
                         Matches.relationshipIsAtWar())
                     / numPlayers
                 < 0.4) {
-          if (Math.random() < .9) {
+          if (AiRandom.get().nextDouble() < .9) {
             maxWarActionsPerTurn = 0;
           } else {
             maxWarActionsPerTurn = 1;
@@ -762,10 +764,10 @@ public abstract class AbstractAi extends AbstractBasePlayer {
           AiPoliticalUtils.getPoliticalActionsOther(
               gamePlayer, politicsDelegate.getTestedConditions(), data);
       if (!actionChoicesOther.isEmpty()) {
-        Collections.shuffle(actionChoicesOther);
+        Collections.shuffle(actionChoicesOther, AiRandom.get());
         int i = 0;
         // should we use bridge's random source here?
-        final double random = Math.random();
+        final double random = AiRandom.get().nextDouble();
         final int maxOtherActionsPerTurn =
             (random < .3
                 ? 0
