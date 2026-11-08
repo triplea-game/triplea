@@ -4,12 +4,13 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.util.Optional;
 import lombok.experimental.UtilityClass;
+import org.triplea.swing.ScreenShareSize;
 
 /** Picks the size the launch window opens at. */
 @UtilityClass
 class LaunchWindowSize {
   /** Share of the usable screen a first-time launch window covers. */
-  private static final double SCREEN_FRACTION = 0.85;
+  private static final double SCREEN_SHARE = 0.85;
 
   /**
    * Returns the size last saved by the user if there is one, otherwise a large share of the screen
@@ -17,13 +18,9 @@ class LaunchWindowSize {
    */
   static Dimension compute(
       final Optional<Dimension> saved, final Rectangle usableScreen, final Dimension minimum) {
-    final Dimension wanted =
-        saved.orElseGet(
-            () ->
-                new Dimension(
-                    Math.max(minimum.width, (int) (usableScreen.width * SCREEN_FRACTION)),
-                    Math.max(minimum.height, (int) (usableScreen.height * SCREEN_FRACTION))));
-    return new Dimension(
-        Math.min(wanted.width, usableScreen.width), Math.min(wanted.height, usableScreen.height));
+    return saved
+        .map(size -> ScreenShareSize.fitToScreen(size, usableScreen))
+        .orElseGet(
+            () -> ScreenShareSize.compute(minimum, usableScreen, SCREEN_SHARE, SCREEN_SHARE));
   }
 }

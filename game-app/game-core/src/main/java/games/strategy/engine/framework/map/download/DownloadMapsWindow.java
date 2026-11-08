@@ -14,6 +14,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Rectangle;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.io.IOException;
 import java.io.Serial;
 import java.nio.file.Files;
@@ -52,6 +54,7 @@ import org.jetbrains.annotations.NonNls;
 import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.ScreenShareSize;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
@@ -66,9 +69,10 @@ public class DownloadMapsWindow extends JFrame {
   private MapTab installedMapTab;
 
   @Serial private static final long serialVersionUID = -1542210716764178580L;
-  private static final int WINDOW_WIDTH = 1200;
-  private static final int WINDOW_HEIGHT = 700;
-  private static final int DIVIDER_POSITION = WINDOW_HEIGHT - 150;
+  private static final int MIN_WIDTH = 1200;
+  private static final int MIN_HEIGHT = 700;
+  private static final double SCREEN_SHARE = 0.7;
+  private static final int PROGRESS_AREA_HEIGHT = 150;
   private static final String MULTIPLE_SELECT_MSG =
       "You can select multiple maps by holding control or shift while clicking map names.";
   private static final SingletonManager SINGLETON_MANAGER = new SingletonManager();
@@ -85,8 +89,7 @@ public class DownloadMapsWindow extends JFrame {
     getMapStore().addMapStatusListener(this::handleMapStatusChange);
 
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-    setLocationRelativeTo(null);
+    setSize(MIN_WIDTH, MIN_HEIGHT);
     setMinimumSize(new Dimension(200, 200));
 
     setIconImage(EngineImageLoader.loadFrameIcon());
@@ -121,8 +124,19 @@ public class DownloadMapsWindow extends JFrame {
     final JSplitPane splitPane =
         new JSplitPane(
             JSplitPane.VERTICAL_SPLIT, tabbedPane, SwingComponents.newJScrollPane(progressPanel));
-    splitPane.setDividerLocation(DIVIDER_POSITION);
+    // the map list takes any extra height; the download progress area keeps a fixed height
+    splitPane.setResizeWeight(1.0);
     add(splitPane);
+    ScreenShareSize.apply(this, SCREEN_SHARE, SCREEN_SHARE);
+    // the split pane's height is only known once the window is laid out on screen
+    addComponentListener(
+        new ComponentAdapter() {
+          @Override
+          public void componentShown(final ComponentEvent e) {
+            splitPane.setDividerLocation(splitPane.getHeight() - PROGRESS_AREA_HEIGHT);
+            removeComponentListener(this);
+          }
+        });
   }
 
   private void handleMapStatusChange(ManagedMapStatus oldStatus, ManagedMapStatus newStatus) {
