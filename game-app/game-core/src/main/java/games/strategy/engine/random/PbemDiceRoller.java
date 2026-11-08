@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 import org.triplea.swing.SwingAction;
+import org.triplea.thread.EventThreadChecks;
 import org.triplea.util.ExitStatus;
 
 /**
@@ -189,7 +190,7 @@ public class PbemDiceRoller implements IRandomSource {
     }
 
     private void rollInternal() {
-      Util.ensureOnEventDispatchThread();
+      EventThreadChecks.ensureOnEventDispatchThread();
       reRollButton.setEnabled(false);
       exitButton.setEnabled(false);
       ThreadRunner.runInNewThread(this::rollInSeparateThread);

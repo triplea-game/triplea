@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui;
 
-import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +12,7 @@ import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
+import org.triplea.thread.EventThreadChecks;
 
 /**
  * A panel for showing the battle steps in a display. Contains code for walking from the current
@@ -53,7 +53,7 @@ class BattleStepsPanel extends JPanel {
 
   /** Set the steps given, setting the selected step to the first step. */
   void listBattle(final List<String> steps) {
-    Util.ensureOnEventDispatchThread();
+    EventThreadChecks.ensureOnEventDispatchThread();
     synchronized (mutex) {
       listModel.removeAllElements();
       steps.forEach(listModel::addElement);
@@ -98,7 +98,7 @@ class BattleStepsPanel extends JPanel {
 
   /** Walks through and pause at each list item until we find our target. */
   private void walkStep() {
-    Util.ensureOnEventDispatchThread();
+    EventThreadChecks.ensureOnEventDispatchThread();
     if (doneWalkingSteps()) {
       wakeAll();
       return;
@@ -159,7 +159,7 @@ class BattleStepsPanel extends JPanel {
   }
 
   private void goToTarget() {
-    Util.ensureOnEventDispatchThread();
+    EventThreadChecks.ensureOnEventDispatchThread();
     waitThenWalk();
   }
 
