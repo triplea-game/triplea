@@ -457,10 +457,10 @@ class BattleCalculatorPanel extends JPanel {
                   "Create Order Of Losses for each side",
                   JOptionPane.OK_CANCEL_OPTION,
                   JOptionPane.PLAIN_MESSAGE)) {
-            if (OrderOfLossesInputPanel.isValidOrderOfLoss(oolPanel.getAttackerOrder(), data)) {
+            if (OrderOfLoss.isValidOrderOfLoss(oolPanel.getAttackerOrder(), data)) {
               attackerOrderOfLosses = oolPanel.getAttackerOrder();
             }
-            if (OrderOfLossesInputPanel.isValidOrderOfLoss(oolPanel.getDefenderOrder(), data)) {
+            if (OrderOfLoss.isValidOrderOfLoss(oolPanel.getDefenderOrder(), data)) {
               defenderOrderOfLosses = oolPanel.getDefenderOrder();
             }
           }
