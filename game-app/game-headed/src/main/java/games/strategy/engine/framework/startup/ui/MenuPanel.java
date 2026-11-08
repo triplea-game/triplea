@@ -5,6 +5,7 @@ import games.strategy.triplea.EngineImageLoader;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.util.List;
 import java.util.Locale;
@@ -28,6 +29,9 @@ public abstract class MenuPanel extends SetupPanel {
   private static final int PRIMARY_FONT_INCREASE = 10;
   private static final int SECONDARY_FONT_INCREASE = 3;
 
+  /** The logo asset is small; the menus show it larger, at the cost of some softness. */
+  private static final float LOGO_SCALE = 1.5f;
+
   /**
    * Lays out the logo, then {@code primary} entries as large capitalized text, then a gap and the
    * smaller {@code secondary} entries.
@@ -36,10 +40,7 @@ public abstract class MenuPanel extends SetupPanel {
     setLayout(new BorderLayout());
     final JPanel buttonColumn = new JPanel(new GridBagLayout());
     int row = 0;
-    buttonColumn.add(
-        new JLabel(
-            new ImageIcon(EngineImageLoader.loadImage("launch_screens", "triplea-logo.png"))),
-        centered(row++, 20));
+    buttonColumn.add(new JLabel(new ImageIcon(loadLogo())), centered(row++, 20));
     for (final JButton button : primary) {
       button.setText(button.getText().toUpperCase(Locale.ROOT));
       LaunchScreenStyle.styleAsMenuItem(button, PRIMARY_FONT_INCREASE);
@@ -51,6 +52,14 @@ public abstract class MenuPanel extends SetupPanel {
       buttonColumn.add(button, centered(row++, i == 0 ? 24 : 2));
     }
     add(buttonColumn);
+  }
+
+  private static Image loadLogo() {
+    final Image logo = EngineImageLoader.loadImage("launch_screens", "triplea-logo.png");
+    return logo.getScaledInstance(
+        Math.round(logo.getWidth(null) * LOGO_SCALE),
+        Math.round(logo.getHeight(null) * LOGO_SCALE),
+        Image.SCALE_SMOOTH);
   }
 
   private static GridBagConstraints centered(final int row, final int spaceAbove) {
