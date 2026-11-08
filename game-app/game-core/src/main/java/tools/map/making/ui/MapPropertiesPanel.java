@@ -1,7 +1,7 @@
 package tools.map.making.ui;
 
 import games.strategy.triplea.UrlConstants;
-import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.triplea.ui.mapdata.MapData;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.FocusEvent;
@@ -110,13 +110,13 @@ public class MapPropertiesPanel {
         panel,
         "Unit width: ",
         "Set width of the unit image",
-        Integer.toString(UnitImageFactory.DEFAULT_UNIT_ICON_SIZE),
+        Integer.toString(MapData.DEFAULT_UNIT_ICON_SIZE),
         ToolArguments.UNIT_WIDTH);
     addInputFieldToPanel(
         panel,
         "Unit height: ",
         "Set height of the unit image",
-        Integer.toString(UnitImageFactory.DEFAULT_UNIT_ICON_SIZE),
+        Integer.toString(MapData.DEFAULT_UNIT_ICON_SIZE),
         ToolArguments.UNIT_HEIGHT);
     return panel;
   }
