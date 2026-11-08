@@ -4,8 +4,8 @@ import games.strategy.engine.player.Player;
 import games.strategy.triplea.ai.pro.AbstractProAi;
 import games.strategy.triplea.ai.pro.logging.ProLogUi;
 import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugAction;
 import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugOption;
+import games.strategy.triplea.ui.menubar.debug.MapPanelAiPlayerDebugAction;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -89,7 +89,7 @@ public final class DebugMenu {
   }
 
   private static JMenuItem renderItemDebugOption(
-      final AiPlayerDebugOption option, final AiPlayerDebugAction action) {
+      final AiPlayerDebugOption option, final MapPanelAiPlayerDebugAction action) {
     final Action swingAction =
         SwingAction.of(option.getTitle(), evt -> option.getActionListener().accept(action));
     switch (option.getOptionType()) {
@@ -107,7 +107,7 @@ public final class DebugMenu {
       final TripleAFrame frame, Collection<AiPlayerDebugOption> options) {
     // keep track of all the radio button menu items and their actions so that when one of the
     // radio buttons is selected, the other radio buttons can be deselected
-    final Map<String, Map<JMenuItem, AiPlayerDebugAction>> radioButtonDeselectGroups =
+    final Map<String, Map<JMenuItem, MapPanelAiPlayerDebugAction>> radioButtonDeselectGroups =
         new HashMap<>();
     // each group of radio buttons needs a ButtonGroup so selecting one will deselect the others
     final Map<String, ButtonGroup> radioButtonGroups = new HashMap<>();
@@ -126,8 +126,8 @@ public final class DebugMenu {
               if (!option.getSubOptions().isEmpty()) {
                 return renderSubMenuDebugOption(frame, option);
               } else {
-                final AiPlayerDebugAction debugAction =
-                    new AiPlayerDebugAction(
+                final MapPanelAiPlayerDebugAction debugAction =
+                    new MapPanelAiPlayerDebugAction(
                         frame.getMapPanel(), frame.getAdditionalTerritoryDetails());
                 final JMenuItem menuItem = renderItemDebugOption(option, debugAction);
 
