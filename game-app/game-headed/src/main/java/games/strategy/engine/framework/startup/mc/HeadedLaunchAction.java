@@ -8,6 +8,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
+import games.strategy.engine.framework.startup.HeadedWatcherThreadMessaging;
 import games.strategy.engine.framework.startup.WatcherThreadMessaging;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
@@ -123,7 +124,7 @@ public class HeadedLaunchAction implements LaunchAction {
 
   @Override
   public WatcherThreadMessaging createThreadMessaging() {
-    return new WatcherThreadMessaging.HeadedWatcherThreadMessaging(ui);
+    return new HeadedWatcherThreadMessaging(ui);
   }
 
   @Override
