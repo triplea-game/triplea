@@ -1,8 +1,8 @@
 package games.strategy.engine.framework.startup.ui.panels.main;
 
 import games.strategy.engine.chat.ChatPanel;
-import games.strategy.engine.framework.HtmlUtils;
 import games.strategy.engine.framework.I18nEngineFramework;
+import games.strategy.engine.framework.startup.ui.MenuPanel;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorPanel;
 import java.awt.BorderLayout;
@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -43,22 +44,13 @@ public class MainPanel extends JPanel {
   private final JButton playButton =
       new JButtonBuilder()
           .title(I18nEngineFramework.get().getText("startup.MainPanel.btn.Play.Lbl"))
-          .toolTip(
-              HtmlUtils.getHtml()
-                  .addText(
-                      I18nEngineFramework.get().getText("startup.MainPanel.btn.Play.Tltp.line1"))
-                  .lineBreak()
-                  .addText(
-                      I18nEngineFramework.get().getText("startup.MainPanel.btn.Play.Tltp.line2"))
-                  .lineBreak()
-                  .addText(
-                      I18nEngineFramework.get().getText("startup.MainPanel.btn.Play.Tltp.line3"))
-                  .toString())
+          .toolTip(I18nEngineFramework.get().getText("startup.MainPanel.btn.Play.Tltp"))
           .build();
-  private final JButton cancelButton =
+  private final JButton backButton =
       new JButtonBuilder()
-          .title(I18nEngineFramework.get().getText("startup.MainPanel.btn.Cancel.Lbl"))
+          .title(I18nEngineFramework.get().getText("startup.MainPanel.btn.Back.Lbl"))
           .build();
+  private final Supplier<Optional<Runnable>> backAction;
 
   private final JPanel gameSetupPanelHolder = new JPanelBuilder().borderLayout().build();
   private final JPanel mainPanel;
@@ -76,10 +68,11 @@ public class MainPanel extends JPanel {
       final GameSelectorPanel gameSelectorPanel,
       final Consumer<MainPanel> launchAction,
       @Nullable final ChatModel chatModel,
-      final Runnable cancelAction) {
+      final Supplier<Optional<Runnable>> backAction) {
     this.gameSelectorPanel = gameSelectorPanel;
+    this.backAction = backAction;
     playButton.addActionListener(e -> launchAction.accept(this));
-    cancelButton.addActionListener(e -> cancelAction.run());
+    backButton.addActionListener(e -> backAction.get().ifPresent(Runnable::run));
 
     gameSelectorPanel.setBorder(new EtchedBorder());
     final JScrollPane gameSetupPanelScroll = new JScrollPane(gameSetupPanelHolder);
@@ -121,7 +114,7 @@ public class MainPanel extends JPanel {
             .actionListener(quitAction)
             .build();
     final JPanel buttonsPanel =
-        new JPanelBuilder().borderEtched().add(playButton).add(quitButton).build();
+        new JPanelBuilder().borderEtched().add(playButton).add(backButton).add(quitButton).build();
     add(buttonsPanel, BorderLayout.SOUTH);
     setPreferredSize(initialSize);
     updatePlayButtonState();
@@ -153,19 +146,20 @@ public class MainPanel extends JPanel {
     panel.setPanelChangedListener(setupPanel -> updatePlayButtonState());
     updatePlayButtonState();
 
+    final boolean isMenu = panel instanceof MenuPanel;
+    gameSelectorPanel.setVisible(!isMenu);
+    playButton.setVisible(!isMenu);
+    backButton.setVisible(backAction.get().isPresent());
+
     gameSetupPanelHolder.removeAll();
     gameSetupPanelHolder.add(panel, BorderLayout.CENTER);
-    // add the cancel button if we are not choosing the type.
-    if (panel.isCancelButtonVisible()) {
-      final JPanel cancelPanel = new JPanel();
-      cancelPanel.setBorder(new EmptyBorder(10, 0, 10, 10));
-      cancelPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-      final List<Action> actions = gameSetupPanel.getUserActions();
-      if (!actions.isEmpty()) {
-        createUserActionMenu(cancelPanel, actions);
-      }
-      cancelPanel.add(cancelButton);
-      gameSetupPanelHolder.add(cancelPanel, BorderLayout.SOUTH);
+    final List<Action> actions = gameSetupPanel.getUserActions();
+    if (!actions.isEmpty()) {
+      final JPanel actionsPanel = new JPanel();
+      actionsPanel.setBorder(new EmptyBorder(10, 0, 10, 10));
+      actionsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+      createUserActionMenu(actionsPanel, actions);
+      gameSetupPanelHolder.add(actionsPanel, BorderLayout.SOUTH);
     }
 
     Optional.ofNullable(panel.getChatModel())
@@ -181,7 +175,7 @@ public class MainPanel extends JPanel {
     revalidate();
   }
 
-  private static void createUserActionMenu(final JPanel cancelPanel, final List<Action> actions) {
+  private static void createUserActionMenu(final JPanel actionsPanel, final List<Action> actions) {
     // if we need this for something other than network, add a way to set it
     final JButton button =
         new JButton(I18nEngineFramework.get().getText("startup.MainPanel.btn.Network.Lbl"));
@@ -193,7 +187,7 @@ public class MainPanel extends JPanel {
           }
           menu.show(button, 0, button.getHeight());
         });
-    cancelPanel.add(button);
+    actionsPanel.add(button);
   }
 
   public void updatePlayButtonState() {

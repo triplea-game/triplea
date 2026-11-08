@@ -162,11 +162,6 @@ public class PbfSetupPanel extends SetupPanel implements Observer {
     return List.of();
   }
 
-  @Override
-  public boolean isCancelButtonVisible() {
-    return true;
-  }
-
   private void setupListeners() {
     // register, so we get notified when the game model (GameData) changes
     // (e.g if the user load a save game or selects another game)
