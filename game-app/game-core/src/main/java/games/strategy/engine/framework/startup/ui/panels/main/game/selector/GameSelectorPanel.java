@@ -38,6 +38,7 @@ import org.triplea.swing.SwingComponents;
  */
 public final class GameSelectorPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -4598107601238030020L;
+  private static final int TITLE_GAP = 4;
 
   private final GameSelectorModel model;
   private final IGamePropertiesCache gamePropertiesCache = new FileBackedGamePropertiesCache();
@@ -46,6 +47,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
   private final JLabel nameText = new JLabel();
   private final JLabel saveGameText = new JLabel();
   private final JLabel roundText = new JLabel();
+  private final MapThumbnail mapThumbnail;
 
   private final JButton loadNewGame =
       new JButtonBuilder()
@@ -89,13 +91,22 @@ public final class GameSelectorPanel extends JPanel implements Observer {
     toolbar.setBorder(SectionHeader.ruleBelow());
 
     nameText.setFont(nameText.getFont().deriveFont(Font.BOLD, nameText.getFont().getSize2D() + 10));
-    final JPanel header = new JPanel();
-    header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
+    final JPanel titleBlock = new JPanel();
+    titleBlock.setLayout(new BoxLayout(titleBlock, BoxLayout.Y_AXIS));
+    titleBlock.add(nameText);
+    titleBlock.add(Box.createVerticalStrut(TITLE_GAP));
+    titleBlock.add(roundText);
+    titleBlock.add(saveGameText);
+
+    mapThumbnail =
+        new MapThumbnail(
+            nameText.getFontMetrics(nameText.getFont()).getHeight()
+                + TITLE_GAP
+                + roundText.getFontMetrics(roundText.getFont()).getHeight());
+    final JPanel header = new JPanel(new BorderLayout());
     header.setBorder(BorderFactory.createEmptyBorder(8, 10, 10, 10));
-    header.add(nameText);
-    header.add(Box.createVerticalStrut(4));
-    header.add(roundText);
-    header.add(saveGameText);
+    header.add(mapThumbnail.getComponent(), BorderLayout.WEST);
+    header.add(titleBlock, BorderLayout.CENTER);
 
     setLayout(new BorderLayout());
     setBorder(SectionHeader.ruleBelow());
@@ -151,6 +162,12 @@ public final class GameSelectorPanel extends JPanel implements Observer {
           roundText.setVisible(!isUnset(model.getGameRound()));
           saveGameText.setText("Saved game: " + model.getFileName());
           saveGameText.setVisible(!isUnset(model.getFileName()));
+          final GameData gameData = model.getGameData();
+          if (gameData == null) {
+            mapThumbnail.clear();
+          } else {
+            mapThumbnail.showMap(gameData.getMapName());
+          }
 
           final boolean canChangeHostBotGameData = canChangeHostBotGameData();
           // network clients can't change the game, so they don't get the controls for it

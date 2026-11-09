@@ -2,12 +2,15 @@ package games.strategy.engine.framework.map.file.system.loader;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
@@ -124,5 +127,44 @@ class InstalledMapsListingTest {
 
     assertThat(results.values()).extracting(InstalledMap::getMapName).doesNotContain("map-name0");
     assertThat(results.values()).extracting(InstalledMap::getMapName).contains("map-name1");
+  }
+
+  @Test
+  void findPreviewImageForMapName_FindsPreviewBesideMapYaml(@TempDir final Path mapFolder)
+      throws IOException {
+    final Path preview = Files.createFile(mapFolder.resolve("preview.png"));
+
+    assertThat(listingWithMapIn(mapFolder).findPreviewImageForMapName("MAP NAME"))
+        .contains(preview);
+  }
+
+  @Test
+  void findPreviewImageForMapName_EmptyWhenMapHasNoPreview(@TempDir final Path mapFolder) {
+    assertThat(listingWithMapIn(mapFolder).findPreviewImageForMapName("map name")).isEmpty();
+  }
+
+  @Test
+  void findPreviewImageForMapName_EmptyWhenMapIsNotInstalled(@TempDir final Path mapFolder)
+      throws IOException {
+    Files.createFile(mapFolder.resolve("preview.png"));
+
+    assertThat(listingWithMapIn(mapFolder).findPreviewImageForMapName("other map")).isEmpty();
+  }
+
+  private static InstalledMapsListing listingWithMapIn(final Path mapFolder) {
+    return new InstalledMapsListing(
+        List.of(
+            InstalledMap.builder()
+                .mapDescriptionYaml(
+                    MapDescriptionYaml.builder()
+                        .yamlFileLocation(mapFolder.resolve("map.yml"))
+                        .mapName("map_name")
+                        .game(
+                            MapDescriptionYaml.MapGame.builder()
+                                .gameName("game")
+                                .xmlFileName("game.xml")
+                                .build())
+                        .build())
+                .build()));
   }
 }

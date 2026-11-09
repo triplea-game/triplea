@@ -87,6 +87,10 @@ public class InstalledMapsListing {
         .findAny();
   }
 
+  public Optional<Path> findPreviewImageForMapName(final String mapName) {
+    return findInstalledMapByName(mapName).flatMap(InstalledMap::findPreviewImage);
+  }
+
   /**
    * Returns the path to the file associated with the specified game. Returns empty if there is no
    * game matching the given name.

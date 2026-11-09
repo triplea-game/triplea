@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.map.file.system.loader;
 
 import games.strategy.triplea.ui.mapdata.MapData;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Collection;
@@ -25,6 +26,9 @@ import org.triplea.util.LocalizeHtml;
 @RequiredArgsConstructor
 @ToString
 public class InstalledMap {
+  /** Sits beside 'map.yml' in each map repo; the map index links it as the map's preview. */
+  private static final String PREVIEW_IMAGE_FILE_NAME = "preview.png";
+
   @Nonnull private final MapDescriptionYaml mapDescriptionYaml;
   @Nullable private Instant lastModifiedDate;
   @Nullable private Path contentRoot;
@@ -83,6 +87,13 @@ public class InstalledMap {
           LocalizeHtml.localizeImgLinksInHtml(
               GameNotes.loadGameNotes(xmlPath.get()), mapContentRoot.get()));
     }
+  }
+
+  /** Returns the map's preview image, the one Download Maps shows, if the map has one. */
+  public Optional<Path> findPreviewImage() {
+    return Optional.of(
+            mapDescriptionYaml.getYamlFileLocation().resolveSibling(PREVIEW_IMAGE_FILE_NAME))
+        .filter(Files::isRegularFile);
   }
 
   /**
