@@ -418,6 +418,8 @@ All game state mutations flow through `Change` objects:
 
 The Swing UI (map panel, drawables, image factories, gameplay panels, history and statistics views, help menus) lives in game-headed; see its `AGENTS.md`. The `ui/` package here keeps only Swing-free pieces that engine code or game-headless also use.
 
+game-core does not depend on `swing-lib`, and `./verify` (`.build/code-convention-checks`) fails on any `javax.swing` import in its main code except `javax.swing.tree`, which `History` and `StatisticsAggregator` build on.
+
 ### Map Data (`mapdata/`, 3 files)
 
 - **`MapData`** — Central repository for territory geometry and rendering properties (polygons, colors, placement coordinates, scroll wrapping, island detection).
