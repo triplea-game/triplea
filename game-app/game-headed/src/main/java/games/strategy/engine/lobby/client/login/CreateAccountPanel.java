@@ -1,5 +1,6 @@
 package games.strategy.engine.lobby.client.login;
 
+import games.strategy.triplea.settings.BooleanClientSettingPersistence;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
@@ -190,7 +191,9 @@ public final class CreateAccountPanel extends JPanel {
             0,
             0));
     final JCheckBox rememberPasswordCheckbox =
-        new JCheckBoxBuilder("Remember Password").bind(ClientSetting.rememberLoginPassword).build();
+        new JCheckBoxBuilder("Remember Password")
+            .bind(new BooleanClientSettingPersistence(ClientSetting.rememberLoginPassword))
+            .build();
     main.add(
         rememberPasswordCheckbox,
         new GridBagConstraints(

@@ -12,6 +12,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.settings.UnitFlagDrawMode;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.AbstractDrawable;
@@ -41,13 +42,6 @@ public class UnitsDrawer extends AbstractDrawable {
   private final UiContext uiContext;
   private final UnitCategory unitCategory;
   @Getter @Nullable private final Territory territory;
-
-  /** Identifies the location where a nation flag is drawn relative to a unit. */
-  public enum UnitFlagDrawMode {
-    NONE,
-    SMALL_FLAG,
-    LARGE_FLAG,
-  }
 
   public UnitsDrawer(
       final UnitCategory unitCategory,

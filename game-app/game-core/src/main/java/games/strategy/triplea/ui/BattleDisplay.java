@@ -78,6 +78,7 @@ import org.triplea.swing.ScrollableJPanel;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.key.binding.KeyCode;
 import org.triplea.swing.key.binding.SwingKeyBinding;
+import org.triplea.thread.EventThreadChecks;
 
 /** Displays a running battle. */
 @Slf4j
@@ -311,7 +312,7 @@ public class BattleDisplay extends JPanel {
   }
 
   void waitForConfirmation(final String message) {
-    Util.ensureNotOnEventDispatchThread();
+    EventThreadChecks.ensureNotOnEventDispatchThread();
 
     final CountDownLatch continueLatch = new CountDownLatch(1);
     final Action buttonAction = SwingAction.of(message, e -> continueLatch.countDown());
@@ -346,7 +347,7 @@ public class BattleDisplay extends JPanel {
 
   Optional<Territory> getRetreat(
       final String message, final Collection<Territory> possible, final boolean submerge) {
-    Util.ensureNotOnEventDispatchThread();
+    EventThreadChecks.ensureNotOnEventDispatchThread();
     final String title;
     final Supplier<RetreatResult> supplier;
     if (!submerge || possible.size() > 1) {
@@ -473,7 +474,7 @@ public class BattleDisplay extends JPanel {
       final GamePlayer hit,
       final CasualtyList defaultCasualties,
       final boolean allowMultipleHitsPerUnit) {
-    Util.ensureNotOnEventDispatchThread();
+    EventThreadChecks.ensureNotOnEventDispatchThread();
     final AtomicReference<CasualtyDetails> casualtyDetails =
         new AtomicReference<>(new CasualtyDetails());
     final CountDownLatch continueLatch = new CountDownLatch(1);

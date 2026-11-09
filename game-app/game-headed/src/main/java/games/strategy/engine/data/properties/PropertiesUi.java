@@ -34,13 +34,13 @@ public class PropertiesUi extends JPanel {
       if (editable) {
         addItem(
             property.getName(),
-            property.getEditorComponent(),
+            PropertyEditorFactory.newEditorComponent(property),
             property.getDescription(),
             property.getRowsNeeded());
       } else {
         addItem(
             property.getName(),
-            property.getViewComponent(),
+            PropertyEditorFactory.newViewComponent(property),
             property.getDescription(),
             property.getRowsNeeded());
       }

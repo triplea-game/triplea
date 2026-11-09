@@ -3,16 +3,21 @@ package games.strategy.triplea.settings.lobby;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.triplea.ui.events.queue.test.support.EventQueueAssertions.controllerEventIs;
 
-import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.lobby.LobbySelectionViewData.LobbyChoice;
 import java.net.URI;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.sonatype.goodies.prefs.memory.MemoryPreferences;
 import org.triplea.ui.events.queue.test.support.EventQueueTestSupport;
 
-class LobbySelectionViewControllerTest extends AbstractClientSettingTestCase {
+@Execution(ExecutionMode.SAME_THREAD)
+class LobbySelectionViewControllerTest {
   final EventQueueTestSupport<
           LobbySelectionSwingEventQueue,
           LobbySelectionViewController.Events,
@@ -21,6 +26,16 @@ class LobbySelectionViewControllerTest extends AbstractClientSettingTestCase {
 
   final LobbySelectionViewController lobbySelectionViewController =
       new LobbySelectionViewController(eventQueueTestSupport.getEventQueue());
+
+  @BeforeEach
+  void initializeClientSettingPreferences() {
+    ClientSetting.setPreferences(new MemoryPreferences());
+  }
+
+  @AfterEach
+  void uninitializeClientSettingPreferences() {
+    ClientSetting.resetPreferences();
+  }
 
   /** Ensure we handle all possible events. */
   @ParameterizedTest

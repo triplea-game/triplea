@@ -6,7 +6,7 @@ import games.strategy.engine.framework.I18nResourceBundle;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.ui.panels.main.HeadedServerSetupModel;
 import games.strategy.triplea.UrlConstants;
-import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.settings.SettingsWindow;
 import java.awt.Component;
 import java.awt.Frame;
 import java.util.List;
@@ -48,7 +48,7 @@ public class MetaSetupPanel extends MenuPanel {
             .build(),
         new JButtonBuilder(bundle.getText("startup.SetupPanelModel.btn.EnginePreferences.Lbl"))
             .toolTipText(bundle.getText("startup.SetupPanelModel.btn.EnginePreferences.Tltp"))
-            .actionListener(c -> ClientSetting.showSettingsWindow(frameOf(c)))
+            .actionListener(c -> SettingsWindow.INSTANCE.open(frameOf(c)))
             .build(),
         new JButtonBuilder(bundle.getText("startup.SetupPanelModel.btn.MapCreatorTools.Lbl"))
             .actionListener(MapCreator::openMapCreatorWindow)

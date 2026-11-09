@@ -9,7 +9,6 @@ import games.strategy.triplea.settings.ClientSetting;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.net.URI;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -26,8 +25,6 @@ import org.triplea.swing.SwingComponents;
 
 /** A class to configure a Dice Server for the game. */
 public class DiceServerEditor extends JPanel {
-  public static final URI PRODUCTION_URI = URI.create("https://dice.triplea-game.org");
-
   private static final long serialVersionUID = -451810815037661114L;
   public static final int ADDRESS_FIELD_MAX_LENGTH = 512;
   private final JButton registerButton =

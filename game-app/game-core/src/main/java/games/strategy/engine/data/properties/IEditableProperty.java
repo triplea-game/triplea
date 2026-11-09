@@ -1,7 +1,6 @@
 package games.strategy.engine.data.properties;
 
 import java.io.Serializable;
-import javax.swing.JComponent;
 
 /**
  * An editable property.
@@ -32,12 +31,6 @@ public interface IEditableProperty<T> extends Serializable {
    * @param value the new value
    */
   void setValue(T value);
-
-  /** Returns the component used to edit this property. */
-  JComponent getEditorComponent();
-
-  /** Get the view (read only) component for this property. */
-  JComponent getViewComponent();
 
   /** Description of what this property is, can be used for tooltip. */
   String getDescription();

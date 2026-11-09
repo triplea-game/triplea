@@ -8,8 +8,10 @@ import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.engine.random.RandomStatsDetails;
+import games.strategy.engine.random.RandomStatsPanel;
 import games.strategy.triplea.odds.calculator.BattleCalculatorDialog;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.settings.SettingsWindow;
 import games.strategy.triplea.ui.PoliticalStateOverview;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
@@ -79,7 +81,7 @@ final class GameMenu {
         .addSeparator()
         .addMenuItem(
             new JMenuItemBuilder("Engine Settings", Mnemonic.ENGINE_SETTINGS.getMnemonicCode())
-                .actionListener(() -> ClientSetting.showSettingsWindow(frame)))
+                .actionListener(() -> SettingsWindow.INSTANCE.open(frame)))
         .addMenuItem(SoundOptions.buildGlobalSoundSwitchMenuItem())
         .addMenuItem(SoundOptions.buildSoundOptionsMenuItem())
         .addSeparator()
@@ -240,7 +242,7 @@ final class GameMenu {
                   randomStats.getRandomStats(game.getData().getDiceSides());
               JOptionPane.showMessageDialog(
                   frame,
-                  new JScrollPane(stats.getAllStats()),
+                  new JScrollPane(RandomStatsPanel.newPanel(stats)),
                   "Random Stats",
                   JOptionPane.INFORMATION_MESSAGE);
             })

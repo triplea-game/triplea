@@ -6,7 +6,6 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Step;
 import games.strategy.triplea.ui.UiContext;
-import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
@@ -40,6 +39,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import lombok.Getter;
+import org.triplea.thread.EventThreadChecks;
 
 /** Shows the history as a tree. */
 public class HistoryPanel extends JPanel {
@@ -251,14 +251,14 @@ public class HistoryPanel extends JPanel {
   }
 
   private void treeSelectionChanged(final TreeSelectionEvent e) {
-    Util.ensureOnEventDispatchThread();
+    EventThreadChecks.ensureOnEventDispatchThread();
     // move the game to the state of the selected node
     final HistoryNode node = (HistoryNode) e.getPath().getLastPathComponent();
     gotoNode(node);
   }
 
   private void gotoNode(final HistoryNode node) {
-    Util.ensureOnEventDispatchThread();
+    EventThreadChecks.ensureOnEventDispatchThread();
     // If this is not a leaf node, set the game state to the last leaf node before it. This way,
     // selecting something like "Round 3" shows the state at the start of the round, which ensures
     // chronological order when moving up/down the nodes using arrow keys even if some are expanded.

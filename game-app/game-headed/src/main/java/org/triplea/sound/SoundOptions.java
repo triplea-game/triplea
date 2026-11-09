@@ -1,6 +1,7 @@
 package org.triplea.sound;
 
 import games.strategy.engine.data.properties.PropertiesUi;
+import games.strategy.triplea.settings.BooleanClientSettingPersistence;
 import games.strategy.triplea.settings.ClientSetting;
 import java.util.List;
 import javax.swing.JFrame;
@@ -71,7 +72,7 @@ public final class SoundOptions {
   public static JMenuItem buildGlobalSoundSwitchMenuItem() {
     final JMenuItem enableSoundMenuItem =
         new JMenuItemCheckBoxBuilder("Enable Sound", KeyCode.N)
-            .bindSetting(ClientSetting.soundEnabled)
+            .bindSetting(new BooleanClientSettingPersistence(ClientSetting.soundEnabled))
             .build();
 
     if (!ClipPlayer.hasAudio()) {
