@@ -241,23 +241,23 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     layout.setConstraints(filler, fillerConstraints);
     players.add(filler);
     if (playersAllowedToBeDisabled) {
-      final JLabel enableLabel = new JLabel(bundle.getText("startup.SetupPanel.enable.Lbl"));
+      final JLabel enableLabel = columnHeading(bundle.getText("startup.SetupPanel.enable.Lbl"));
       layout.setConstraints(enableLabel, enabledPlayerConstraints);
       players.add(enableLabel);
     }
-    final JLabel nameLabel = new JLabel(bundle.getText("startup.SetupPanel.name.Lbl"));
+    final JLabel nameLabel = columnHeading(bundle.getText("startup.SetupPanel.name.Lbl"));
     layout.setConstraints(nameLabel, nameConstraints);
     players.add(nameLabel);
-    final JLabel playedByLabel = new JLabel(bundle.getText("startup.SetupPanel.player.Lbl"));
+    final JLabel playedByLabel = columnHeading(bundle.getText("startup.SetupPanel.player.Lbl"));
     layout.setConstraints(playedByLabel, playerConstraints);
     players.add(playedByLabel);
-    final JLabel localLabel = new JLabel(bundle.getText("startup.SetupPanel.local.Lbl"));
+    final JLabel localLabel = columnHeading(bundle.getText("startup.SetupPanel.local.Lbl"));
     layout.setConstraints(localLabel, localConstraints);
     players.add(localLabel);
-    final JLabel typeLabel = new JLabel(bundle.getText("startup.SetupPanel.type.Lbl"));
+    final JLabel typeLabel = columnHeading(bundle.getText("startup.SetupPanel.type.Lbl"));
     layout.setConstraints(typeLabel, typeConstraints);
     players.add(typeLabel);
-    final JLabel allianceLabel = new JLabel(bundle.getText("startup.SetupPanel.alliance.Lbl"));
+    final JLabel allianceLabel = columnHeading(bundle.getText("startup.SetupPanel.alliance.Lbl"));
     layout.setConstraints(allianceLabel, allianceConstraints);
     players.add(allianceLabel);
     if (playerRows.isEmpty()) {

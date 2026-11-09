@@ -5,6 +5,7 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.framework.I18nEngineFramework;
 import games.strategy.engine.framework.I18nResourceBundle;
 import games.strategy.engine.framework.startup.mc.HeadedPlayerTypes;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -19,6 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
 import org.triplea.swing.SectionHeader;
@@ -62,6 +64,14 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
   }
 
   public abstract List<Action> getUserActions();
+
+  /** Sets a player table's column heading apart from the rows below it. */
+  static JLabel columnHeading(final String text) {
+    final JLabel label = new JLabel(text);
+    label.setFont(label.getFont().deriveFont(Font.BOLD));
+    label.setForeground(UIManager.getColor("Label.disabledForeground"));
+    return label;
+  }
 
   public void layoutPlayerComponents(
       final JPanel panel, final List<PlayerSelectorRow> playerRows, final GameState data) {
@@ -115,7 +125,7 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
     int gridY = 2;
     if (!playersThatMayBeDisabled.isEmpty()
         || playersEnablementListing.containsValue(Boolean.FALSE)) {
-      final JLabel enableLabel = new JLabel(bundle.getText("startup.SetupPanel.enable.Lbl"));
+      final JLabel enableLabel = columnHeading(bundle.getText("startup.SetupPanel.enable.Lbl"));
       panel.add(
           enableLabel,
           new GridBagConstraints(
@@ -146,7 +156,7 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
             new Insets(5, 5, 15, 0),
             0,
             0));
-    final JLabel nameLabel = new JLabel(bundle.getText("startup.SetupPanel.name.Lbl"));
+    final JLabel nameLabel = columnHeading(bundle.getText("startup.SetupPanel.name.Lbl"));
     panel.add(
         nameLabel,
         new GridBagConstraints(
@@ -179,7 +189,7 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
             new Insets(5, 5, 15, 0),
             0,
             0));
-    final JLabel typeLabel = new JLabel(bundle.getText("startup.SetupPanel.type.Lbl"));
+    final JLabel typeLabel = columnHeading(bundle.getText("startup.SetupPanel.type.Lbl"));
     panel.add(
         typeLabel,
         new GridBagConstraints(
@@ -194,7 +204,7 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
             new Insets(0, 5, 5, 0),
             0,
             0));
-    final JLabel allianceLabel = new JLabel(bundle.getText("startup.SetupPanel.alliance.Lbl"));
+    final JLabel allianceLabel = columnHeading(bundle.getText("startup.SetupPanel.alliance.Lbl"));
     panel.add(
         allianceLabel,
         new GridBagConstraints(
@@ -224,7 +234,7 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
             new Insets(5, 5, 15, 0),
             0,
             0));
-    final JLabel incomeLabel = new JLabel(bundle.getText("startup.SetupPanel.income.Lbl"));
+    final JLabel incomeLabel = columnHeading(bundle.getText("startup.SetupPanel.income.Lbl"));
     panel.add(
         incomeLabel,
         new GridBagConstraints(
@@ -242,7 +252,7 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
     incomeLabel.setVisible(false);
     gridX++;
     final JLabel puIncomeBonusLabel =
-        new JLabel(bundle.getText("startup.SetupPanel.bonusIncome.Lbl"));
+        columnHeading(bundle.getText("startup.SetupPanel.bonusIncome.Lbl"));
     panel.add(
         puIncomeBonusLabel,
         new GridBagConstraints(

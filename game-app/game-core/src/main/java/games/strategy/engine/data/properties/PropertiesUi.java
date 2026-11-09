@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 public class PropertiesUi extends JPanel {
   private static final long serialVersionUID = 3870459799384582310L;
   private static final int ROWS_PER_COLUMN = 15;
+  private final boolean singleColumn;
   private int nextRow;
   private int labelColumn;
 
@@ -31,7 +32,8 @@ public class PropertiesUi extends JPanel {
       final List<? extends IEditableProperty<?>> properties,
       final boolean editable,
       final int rowsPerColumn) {
-    init();
+    singleColumn = rowsPerColumn == Integer.MAX_VALUE;
+    setLayout(new GridBagLayout());
     for (final IEditableProperty<?> property : properties) {
       if (nextRow >= rowsPerColumn) {
         labelColumn += 2;
@@ -51,6 +53,7 @@ public class PropertiesUi extends JPanel {
             property.getRowsNeeded());
       }
     }
+    addVerticalFill();
   }
 
   /** Lays out every property in one column, for a narrow, scrolling side panel. */
@@ -59,15 +62,15 @@ public class PropertiesUi extends JPanel {
     return new PropertiesUi(gameProperties.getEditableProperties(), editable, Integer.MAX_VALUE);
   }
 
-  private void init() {
-    setLayout(new GridBagLayout());
-    // Create a blank label to use as a vertical fill so that the label/item pairs are aligned to
-    // the top of the panel
-    // and are not grouped in the center if the parent component is taller than the preferred size
-    // of the panel.
+  /**
+   * Adds a blank label as vertical fill, so that the label/item pairs are aligned to the top of the
+   * panel and are not grouped in the center if the parent component is taller than the panel.
+   */
+  private void addVerticalFill() {
     final GridBagConstraints constraints = new GridBagConstraints();
     constraints.gridx = 0;
-    constraints.gridy = 99;
+    // below every row; with several columns, the first column's rows end at ROWS_PER_COLUMN
+    constraints.gridy = singleColumn ? nextRow : 99;
     constraints.insets = new Insets(10, 0, 0, 0);
     constraints.weighty = 1.0;
     constraints.fill = GridBagConstraints.VERTICAL;
@@ -83,8 +86,14 @@ public class PropertiesUi extends JPanel {
     labelConstraints.gridx = labelColumn;
     labelConstraints.gridy = nextRow;
     labelConstraints.gridheight = rowsNeeded;
-    labelConstraints.insets = new Insets(10, 10, 0, 0);
-    labelConstraints.anchor = GridBagConstraints.NORTHEAST;
+    if (singleColumn) {
+      // one left edge for the labels and one for the editors, so the list scans top to bottom
+      labelConstraints.insets = new Insets(6, 10, 0, 12);
+      labelConstraints.anchor = GridBagConstraints.BASELINE_LEADING;
+    } else {
+      labelConstraints.insets = new Insets(10, 10, 0, 0);
+      labelConstraints.anchor = GridBagConstraints.NORTHEAST;
+    }
     labelConstraints.fill = GridBagConstraints.NONE;
     add(label, labelConstraints);
     // Add the component with its constraints
@@ -92,11 +101,13 @@ public class PropertiesUi extends JPanel {
     itemConstraints.gridx = labelColumn + 1;
     itemConstraints.gridy = nextRow;
     itemConstraints.gridheight = rowsNeeded;
-    itemConstraints.insets = new Insets(10, 10, 0, 10);
+    itemConstraints.insets = singleColumn ? new Insets(6, 0, 0, 10) : new Insets(10, 10, 0, 10);
     itemConstraints.weightx = 1.0;
-    itemConstraints.anchor = GridBagConstraints.WEST;
+    itemConstraints.anchor =
+        singleColumn ? GridBagConstraints.BASELINE_LEADING : GridBagConstraints.WEST;
     itemConstraints.fill = GridBagConstraints.NONE;
     add(item, itemConstraints);
+    label.setLabelFor(item);
     if (tooltip != null && tooltip.length() > 0) {
       label.setToolTipText(tooltip);
       item.setToolTipText(tooltip);
