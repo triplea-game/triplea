@@ -3,7 +3,6 @@ package games.strategy.engine.framework.startup.ui.panels.main.game.selector;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
-import games.strategy.engine.framework.startup.ui.IGamePropertiesCache;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -25,13 +24,14 @@ import org.triplea.swing.SwingAction;
 
 /**
  * Side panel of the game staging screens listing the selected game's options. They are edited in
- * place while the game can be changed, and shown read-only otherwise.
+ * place while the game can be changed, and shown read-only otherwise. Its preferred width fits
+ * every label and editor; the staging screen lets the user resize it.
  */
 public final class GameOptionsPanel extends JPanel {
   private static final long serialVersionUID = 4185472381096462011L;
 
-  /** Long option names would otherwise let the panel crowd out the player list. */
-  private static final int MAX_WIDTH = 480;
+  /** Narrower than this, the heading and most option names no longer fit. */
+  public static final int MIN_WIDTH = 200;
 
   private static final int CONFIRMATION_MILLIS = 2000;
 
@@ -40,34 +40,19 @@ public final class GameOptionsPanel extends JPanel {
   private final JScrollPane scroll = new JScrollPane();
   private final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
   private final JLabel readOnlyNote = new JLabel("Set by the host");
+  private final JButton reset =
+      new JButtonBuilder().title("Reset").actionListener(this::resetOptions).build();
 
   @Nullable private GameData originalValuesOf;
   @Nullable private GameData shownData;
   private boolean shownEditable;
 
-  GameOptionsPanel(final GameSelectorModel model, final IGamePropertiesCache gamePropertiesCache) {
+  GameOptionsPanel(final GameSelectorModel model) {
     this.model = model;
 
-    final JButton reset =
-        new JButtonBuilder()
-            .title("Reset")
-            .toolTip("Restore the options this game started with")
-            .actionListener(this::resetOptions)
-            .build();
     reset.addActionListener(e -> confirm(reset, "Restored"));
-    final JButton makeDefault =
-        new JButtonBuilder()
-            .title("Make Default")
-            .toolTip("Start this game with these options from now on")
-            .build();
-    makeDefault.addActionListener(
-        e -> {
-          gamePropertiesCache.cacheGameProperties(model.getGameData());
-          confirm(makeDefault, "Saved");
-        });
     buttons.setOpaque(false);
     buttons.add(reset);
-    buttons.add(makeDefault);
     readOnlyNote.setForeground(UIManager.getColor("Label.disabledForeground"));
 
     final JComponent heading = SectionHeader.create("Game Options", readOnlyNote, buttons);
@@ -96,19 +81,18 @@ public final class GameOptionsPanel extends JPanel {
 
   /**
    * Shows the selected game's options, rebuilding the editors only when the game changed. Call it
-   * as soon as a game is loaded: it records the values {@code Reset} restores, so a game's cached
-   * default options must be applied only after it.
+   * as soon as a game is loaded: it records the values {@code Reset} restores, so the options
+   * remembered from the last time the game was played must be applied only after it.
    */
   void update() {
     final GameData data = model.getGameData();
     synchronized (originalValues) {
-      if (data != originalValuesOf) {
+      // a network client drops its game while connected and gets it back on leaving
+      if (data != null && data != originalValuesOf) {
         originalValuesOf = data;
         originalValues.clear();
-        if (data != null) {
-          for (final IEditableProperty<?> property : data.getProperties().getEditableProperties()) {
-            originalValues.put(property.getName(), property.getValue());
-          }
+        for (final IEditableProperty<?> property : data.getProperties().getEditableProperties()) {
+          originalValues.put(property.getName(), property.getValue());
         }
       }
     }
@@ -133,19 +117,25 @@ public final class GameOptionsPanel extends JPanel {
     setVisible(!properties.isEmpty());
     buttons.setVisible(shownEditable);
     readOnlyNote.setVisible(!shownEditable);
+    reset.setToolTipText(
+        shownData != null && shownData.getSaveGameFileName().isPresent()
+            ? "Restore the options stored in the saved game"
+            : "Restore the map's own options. The options you last played this game with load"
+                + " automatically.");
     final JComponent view =
         properties.isEmpty()
             ? null
             : PropertiesUi.singleColumn(shownData.getProperties(), shownEditable);
     scroll.setViewportView(view);
     if (view != null) {
+      // the list is usually taller than the screen, so leave room for the vertical scroll bar
       final int contentWidth =
           view.getPreferredSize().width
               + scroll.getVerticalScrollBar().getPreferredSize().width
               + getInsets().left
               + getInsets().right;
       final int headingWidth = getComponent(0).getPreferredSize().width;
-      setPreferredSize(new Dimension(Math.min(Math.max(contentWidth, headingWidth), MAX_WIDTH), 0));
+      setPreferredSize(new Dimension(Math.max(contentWidth, headingWidth), 0));
     }
     revalidate();
     repaint();

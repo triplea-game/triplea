@@ -19,6 +19,7 @@ import java.awt.Font;
 import java.nio.file.Path;
 import java.util.Observable;
 import java.util.Observer;
+import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -43,6 +44,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
   private final GameSelectorModel model;
   private final IGamePropertiesCache gamePropertiesCache = new FileBackedGamePropertiesCache();
   private final GameOptionsPanel gameOptionsPanel;
+  @Nullable private GameData lastUsedOptionsLoadedInto;
   private final JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 4));
   private final JLabel nameText = new JLabel();
   private final JLabel saveGameText = new JLabel();
@@ -70,13 +72,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
 
   public GameSelectorPanel(final GameSelectorModel model) {
     this.model = model;
-    gameOptionsPanel = new GameOptionsPanel(model, gamePropertiesCache);
-    final GameData data = model.getGameData();
-    gameOptionsPanel.update();
-    if (data != null) {
-      gamePropertiesCache.loadCachedGamePropertiesInto(data);
-      gameOptionsPanel.refresh();
-    }
+    gameOptionsPanel = new GameOptionsPanel(model);
 
     final JButton downloadMapButton =
         new JButtonBuilder()
@@ -175,6 +171,35 @@ public final class GameSelectorPanel extends JPanel implements Observer {
           hostBotGameOptions.setVisible(canChangeHostBotGameData);
         });
     gameOptionsPanel.update();
+    loadLastUsedOptions();
+  }
+
+  /** Gives a newly loaded game the options it was last played with. */
+  private synchronized void loadLastUsedOptions() {
+    final GameData data = model.getGameData();
+    if (data == null || data == lastUsedOptionsLoadedInto || !canStartNewGame(data)) {
+      return;
+    }
+    lastUsedOptionsLoadedInto = data;
+    gamePropertiesCache.loadCachedGamePropertiesInto(data);
+    // the editors may have been built before the remembered values were set
+    gameOptionsPanel.refresh();
+  }
+
+  /**
+   * Remembers the options of the game about to start, so the game opens with them next time. Call
+   * it when the game starts; it does nothing for saved games or games set up by a host.
+   */
+  public void rememberGameOptions() {
+    final GameData data = model.getGameData();
+    if (data != null && canStartNewGame(data)) {
+      gamePropertiesCache.cacheGameProperties(data);
+    }
+  }
+
+  /** A saved game keeps its own options, and a network client's options belong to the host. */
+  private boolean canStartNewGame(final GameData data) {
+    return model.isCanSelect() && data.getSaveGameFileName().isEmpty();
   }
 
   /** {@link GameSelectorModel} reports a missing name, round or file as "-". */
@@ -248,16 +273,6 @@ public final class GameSelectorPanel extends JPanel implements Observer {
   }
 
   public void gameSelected(final Path gameFile) {
-    BackgroundTaskRunner.runInBackground(
-        "Loading map...",
-        () -> {
-          if (model.loadMap(gameFile)) {
-            // only for new games, not saved games, we set the default options, and set them only
-            // once (the first time it is loaded)
-            gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
-            // the editors may have been built before the cached values were set
-            gameOptionsPanel.refresh();
-          }
-        });
+    BackgroundTaskRunner.runInBackground("Loading map...", () -> model.loadMap(gameFile));
   }
 }

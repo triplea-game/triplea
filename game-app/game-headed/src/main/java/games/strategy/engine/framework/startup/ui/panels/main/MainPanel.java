@@ -5,12 +5,18 @@ import games.strategy.engine.framework.I18nEngineFramework;
 import games.strategy.engine.framework.startup.ui.LaunchScreenStyle;
 import games.strategy.engine.framework.startup.ui.MenuPanel;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
+import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameOptionsPanel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorPanel;
+import games.strategy.triplea.settings.ClientSetting;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
@@ -29,6 +35,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
+import lombok.Getter;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SectionHeader;
@@ -46,6 +54,8 @@ public class MainPanel extends JPanel {
   private static final long serialVersionUID = -5548760379892913464L;
   private static final Dimension initialSize = new Dimension(900, 780);
   private static final float NAVIGATION_FONT_INCREASE = 4;
+  private static final int PLAYERS_MIN_WIDTH = 360;
+  private static final int DIVIDER_SIZE = 5;
 
   private final JButton playButton =
       new JButtonBuilder()
@@ -63,11 +73,14 @@ public class MainPanel extends JPanel {
 
   private final JPanel gameSetupPanelHolder = new JPanelBuilder().borderLayout().build();
   private final JPanel gameOptionsHolder = new JPanelBuilder().borderLayout().build();
+  private final JSplitPane gameOptionsSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+  private final GameOptionsPanel gameOptionsPanel;
+  private boolean isMenu;
   private final JPanel mainPanel;
   private final JSplitPane chatSplit;
   private final JPanel chatPanelHolder = new JPanelBuilder().height(62).borderLayout().build();
   private SetupPanel gameSetupPanel;
-  private final GameSelectorPanel gameSelectorPanel;
+  @Getter private final GameSelectorPanel gameSelectorPanel;
 
   /**
    * MainPanel is the full contents of the 'mainFrame'. This panel represents the welcome screen and
@@ -93,15 +106,59 @@ public class MainPanel extends JPanel {
     chatSplit.setOneTouchExpandable(false);
     chatSplit.setDividerSize(5);
 
+    gameOptionsPanel = gameSelectorPanel.getGameOptionsPanel();
+    gameOptionsHolder.add(gameOptionsPanel, BorderLayout.CENTER);
+    gameOptionsHolder.setMinimumSize(new Dimension(GameOptionsPanel.MIN_WIDTH, 0));
+    gameSetupPanelScroll.setMinimumSize(new Dimension(PLAYERS_MIN_WIDTH, 0));
+    gameOptionsSplit.setLeftComponent(gameOptionsHolder);
+    gameOptionsSplit.setRightComponent(gameSetupPanelScroll);
+    gameOptionsSplit.setBorder(BorderFactory.createEmptyBorder());
+    gameOptionsSplit.setResizeWeight(0);
+    gameOptionsSplit.setContinuousLayout(true);
+    if (gameOptionsSplit.getUI() instanceof BasicSplitPaneUI splitPaneUi) {
+      // only a width the user picked is remembered, so an untouched panel keeps fitting each game
+      splitPaneUi
+          .getDivider()
+          .addMouseListener(
+              new MouseAdapter() {
+                private int pressedAt;
+
+                @Override
+                public void mousePressed(final MouseEvent e) {
+                  pressedAt = gameOptionsSplit.getDividerLocation();
+                }
+
+                @Override
+                public void mouseReleased(final MouseEvent e) {
+                  if (gameOptionsSplit.getDividerLocation() != pressedAt) {
+                    ClientSetting.gameOptionsPanelWidth.setValue(
+                        gameOptionsSplit.getDividerLocation());
+                  }
+                }
+              });
+    }
+    gameOptionsPanel.addPropertyChangeListener("preferredSize", e -> fitGameOptions());
+    gameOptionsPanel.addComponentListener(
+        new ComponentAdapter() {
+          @Override
+          public void componentShown(final ComponentEvent e) {
+            showGameOptions();
+          }
+
+          @Override
+          public void componentHidden(final ComponentEvent e) {
+            showGameOptions();
+          }
+        });
+    showGameOptions();
+
     mainPanel =
         new JPanelBuilder()
             .border(0)
             .borderLayout()
             .addNorth(gameSelectorPanel)
-            .addWest(gameOptionsHolder)
-            .addCenter(gameSetupPanelScroll)
+            .addCenter(gameOptionsSplit)
             .build();
-    gameOptionsHolder.add(gameSelectorPanel.getGameOptionsPanel(), BorderLayout.CENTER);
     setLayout(new BorderLayout());
 
     if (chatModel instanceof ChatPanel) {
@@ -149,6 +206,28 @@ public class MainPanel extends JPanel {
     gameSelectorPanel.loadSaveFile(file);
   }
 
+  /** Shows the game options on staging screens whose game has any, without an idle divider. */
+  private void showGameOptions() {
+    final boolean shown = !isMenu && gameOptionsPanel.isVisible();
+    gameOptionsHolder.setVisible(shown);
+    gameOptionsSplit.setDividerSize(shown ? DIVIDER_SIZE : 0);
+    if (shown) {
+      // the split pane collapses a hidden side, so it has to be sized again
+      fitGameOptions();
+    }
+  }
+
+  /** Sizes the game options to the width the user picked, or else to fit the selected game's. */
+  private void fitGameOptions() {
+    final int width =
+        ClientSetting.gameOptionsPanelWidth
+            .getValue()
+            .orElseGet(() -> gameOptionsHolder.getPreferredSize().width);
+    final int available = gameOptionsSplit.getWidth() - DIVIDER_SIZE - PLAYERS_MIN_WIDTH;
+    gameOptionsSplit.setDividerLocation(
+        Math.max(available > 0 ? Math.min(width, available) : width, GameOptionsPanel.MIN_WIDTH));
+  }
+
   private void addChat(final Component chatComponent) {
     remove(mainPanel);
     remove(chatSplit);
@@ -172,9 +251,9 @@ public class MainPanel extends JPanel {
     panel.setPanelChangedListener(setupPanel -> updatePlayButtonState());
     updatePlayButtonState();
 
-    final boolean isMenu = panel instanceof MenuPanel;
+    isMenu = panel instanceof MenuPanel;
     gameSelectorPanel.setVisible(!isMenu);
-    gameOptionsHolder.setVisible(!isMenu);
+    showGameOptions();
     playButton.setVisible(!isMenu);
     backButton.setVisible(backAction.get().isPresent());
 

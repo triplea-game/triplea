@@ -97,6 +97,10 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<Integer> launchWindowHeight =
       new IntegerClientSetting("LAUNCH_WINDOW_HEIGHT");
 
+  /** Width the user dragged the game options side panel of the staging screens to. */
+  public static final ClientSetting<Integer> gameOptionsPanelWidth =
+      new IntegerClientSetting("GAME_OPTIONS_PANEL_WIDTH");
+
   /** URI of the lobby, can be toggled in settings to switch to a different lobby. */
   public static final ClientSetting<URI> lobbyUri =
       new UriClientSetting("LOBBY_URI", URI.create(UrlConstants.PROD_LOBBY));

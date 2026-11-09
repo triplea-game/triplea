@@ -47,7 +47,13 @@ public class MainPanelBuilder {
       HeadedServerSetupModel headedServerSetupModel) {
     return uiPanel -> {
       final var setupPanel = headedServerSetupModel.getPanel();
-      setupPanel.getLauncher().ifPresent(launcher -> launch(uiPanel, launcher));
+      setupPanel
+          .getLauncher()
+          .ifPresent(
+              launcher -> {
+                uiPanel.getGameSelectorPanel().rememberGameOptions();
+                launch(uiPanel, launcher);
+              });
       setupPanel.postStartGame();
     };
   }
