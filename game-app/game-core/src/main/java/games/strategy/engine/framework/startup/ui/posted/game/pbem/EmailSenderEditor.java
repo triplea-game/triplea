@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.ui.posted.game.pbem;
 
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.startup.ui.posted.game.HelpTexts;
+import games.strategy.triplea.settings.BooleanClientSettingPersistence;
 import games.strategy.triplea.settings.ClientSetting;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -149,7 +150,7 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
   private final JCheckBox rememberPassword =
       new JCheckBoxBuilder("Remember Password")
           .actionListener(viewModel::setRememberPassword)
-          .bind(ClientSetting.rememberEmailPassword)
+          .bind(new BooleanClientSettingPersistence(ClientSetting.rememberEmailPassword))
           .build();
   private final JButton rememberPasswordHelpButton =
       new JButtonBuilder("Help")

@@ -6,6 +6,7 @@ import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
+import games.strategy.triplea.settings.BooleanClientSettingPersistence;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.UnitFlagDrawMode;
 import games.strategy.triplea.ui.FindTerritoryAction;
@@ -381,7 +382,7 @@ final class ViewMenu {
   private static JCheckBoxMenuItem getLockMap() {
     return new JMenuItemCheckBoxBuilder("Lock Map", Mnemonic.LOCK_MAP.getMnemonicCode())
         .accelerator(KeyCode.L)
-        .bindSetting(ClientSetting.lockMap)
+        .bindSetting(new BooleanClientSettingPersistence(ClientSetting.lockMap))
         .build();
   }
 
@@ -394,25 +395,19 @@ final class ViewMenu {
     final JRadioButtonMenuItem noFlags =
         new JMenuItemBuilder("Off", Mnemonic.FLAGS_OFF.getMnemonicCode())
             .actionListener(
-                () ->
-                    FlagDrawMode.toggleDrawMode(
-                        UnitFlagDrawMode.NONE, frame.getMapPanel()))
+                () -> FlagDrawMode.toggleDrawMode(UnitFlagDrawMode.NONE, frame.getMapPanel()))
             .buildRadio(flagsDisplayGroup);
 
     final JRadioButtonMenuItem smallFlags =
         new JMenuItemBuilder("Small", Mnemonic.FLAGS_SMALL.getMnemonicCode())
             .actionListener(
-                () ->
-                    FlagDrawMode.toggleDrawMode(
-                        UnitFlagDrawMode.SMALL_FLAG, frame.getMapPanel()))
+                () -> FlagDrawMode.toggleDrawMode(UnitFlagDrawMode.SMALL_FLAG, frame.getMapPanel()))
             .buildRadio(flagsDisplayGroup);
 
     final JRadioButtonMenuItem largeFlags =
         new JMenuItemBuilder("Large", Mnemonic.FLAGS_LARGE.getMnemonicCode())
             .actionListener(
-                () ->
-                    FlagDrawMode.toggleDrawMode(
-                        UnitFlagDrawMode.LARGE_FLAG, frame.getMapPanel()))
+                () -> FlagDrawMode.toggleDrawMode(UnitFlagDrawMode.LARGE_FLAG, frame.getMapPanel()))
             .buildRadio(flagsDisplayGroup);
 
     flagDisplayMenu.add(noFlags);
@@ -447,7 +442,7 @@ final class ViewMenu {
   private static JCheckBoxMenuItem getShowCommentLog(final TripleAFrame frame) {
     return new JMenuItemCheckBoxBuilder(
             "Show Comment Log", Mnemonic.SHOW_COMMENT_LOG.getMnemonicCode())
-        .bindSetting(ClientSetting.showCommentLog)
+        .bindSetting(new BooleanClientSettingPersistence(ClientSetting.showCommentLog))
         .actionListener(
             value -> {
               if (Boolean.TRUE.equals(value)) {
@@ -519,7 +514,7 @@ final class ViewMenu {
   private static JCheckBoxMenuItem getChatTimeMenu() {
     return new JMenuItemCheckBoxBuilder(
             "Show Chat Times", Mnemonic.SHOW_CHAT_TIME.getMnemonicCode())
-        .bindSetting(ClientSetting.showChatTimeSettings)
+        .bindSetting(new BooleanClientSettingPersistence(ClientSetting.showChatTimeSettings))
         .build();
   }
 
