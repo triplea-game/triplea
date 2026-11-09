@@ -67,6 +67,13 @@ class ProPurchaseAi {
   // A shorter enemy clock on my capital than mine on theirs forces its defence only up to this.
   private static final int COOKED_HORIZON = 4;
 
+  /** Which turn's slots a factory purchase checks the PUs against. */
+  private enum SlotHorizon {
+    THIS_TURN,
+    // Only buys when next turn's slots can't absorb the PUs.
+    NEXT_TURN
+  }
+
   private final ProOddsCalculator calc;
   private final ProData proData;
   private GameData data;
@@ -623,7 +630,7 @@ class ProPurchaseAi {
         prioritizedLandTerritories,
         purchaseOptions,
         false,
-        false);
+        SlotHorizon.THIS_TURN);
 
     // Prioritize sea place options and purchase units
     final List<ProPlaceTerritory> prioritizedSeaTerritories =
@@ -649,7 +656,7 @@ class ProPurchaseAi {
             prioritizedLandTerritories,
             purchaseOptions,
             true,
-            true);
+            SlotHorizon.NEXT_TURN);
       }
 
       upgradeUnitsWithRemainingPUs(purchaseTerritories, purchaseOptions, leftoverAirOptions);
@@ -661,7 +668,7 @@ class ProPurchaseAi {
           prioritizedLandTerritories,
           purchaseOptions,
           true,
-          false);
+          SlotHorizon.THIS_TURN);
     }
 
     // Add factory purchase territory to list
@@ -1533,7 +1540,7 @@ class ProPurchaseAi {
       final List<ProPlaceTerritory> prioritizedLandTerritories,
       final ProPurchaseOptionMap purchaseOptions,
       final boolean hasExtraPUs,
-      final boolean forNextTurn) {
+      final SlotHorizon slotHorizon) {
 
     if (resourceTracker.isEmpty()) {
       return;
@@ -1543,21 +1550,20 @@ class ProPurchaseAi {
             + resourceTracker
             + ", hasExtraPUs="
             + hasExtraPUs
-            + ", forNextTurn="
-            + forNextTurn);
+            + ", slotHorizon="
+            + slotHorizon);
 
     final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
 
-    // Hard Beta buys a factory for the extra slots when the PUs outrun the slots it has, this turn
-    // or, with forNextTurn, next turn.
+    // Hard Beta buys a factory for the extra slots when the PUs outrun the slots it has.
     final boolean slotConstrained =
         proData.isBeta()
-            && (forNextTurn
+            && (slotHorizon == SlotHorizon.NEXT_TURN
                 ? isNextTurnSlotConstrained(purchaseTerritories, purchaseOptions)
                 : isSlotConstrained(purchaseTerritories, purchaseOptions));
     if (slotConstrained) {
       ProLogger.debug("Production slots can't absorb the PUs: " + resourceTracker);
-    } else if (forNextTurn) {
+    } else if (slotHorizon == SlotHorizon.NEXT_TURN) {
       return;
     }
 
