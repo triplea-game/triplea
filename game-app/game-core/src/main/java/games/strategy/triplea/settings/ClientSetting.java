@@ -5,12 +5,10 @@ import static java.util.function.Predicate.not;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.lookandfeel.RelationshipColorScheme;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.UrlConstants;
-import java.awt.Frame;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -18,6 +16,7 @@ import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -106,12 +105,20 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final BooleanClientSetting lockMap = new BooleanClientSetting("LOCK_MAP");
   public static final BooleanClientSetting loginAnonymously =
       new BooleanClientSetting("LOGIN_ANONYMOUSLY", true);
+
+  private static final AtomicReference<String> lookAndFeelDefault = new AtomicReference<>();
+
+  /**
+   * Class name of the Swing look-and-feel. It has no default until the UI registers one through
+   * {@link #setLookAndFeelDefault(String)}, because the default depends on the installed Swing
+   * look-and-feels.
+   */
   public static final ClientSetting<String> lookAndFeel =
-      new StringClientSetting("LOOK_AND_FEEL_PREF", LookAndFeel.getDefaultLookAndFeelClassName());
+      new StringClientSetting("LOOK_AND_FEEL_PREF", lookAndFeelDefault::get);
 
   /**
    * Global UI scale as a percentage of the look-and-feel's default size; 100 leaves the UI
-   * untouched. {@link LookAndFeel} translates this into a scaled {@code defaultFont}, from which
+   * untouched. {@code LookAndFeel} translates this into a scaled {@code defaultFont}, from which
    * FlatLaf derives the scale for both fonts and component sizes.
    */
   public static final ClientSetting<Integer> uiScalePercent =
@@ -224,12 +231,12 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   private final Class<T> type;
 
   private final String name;
-  private final @Nullable T defaultValue;
+  private final Supplier<T> defaultValue;
   private final Collection<Consumer<GameSetting<T>>> listeners = new CopyOnWriteArrayList<>();
 
   /** Initializes a new instance of {@code ClientSetting} with no default value. */
   protected ClientSetting(final Class<T> type, final String name) {
-    this(type, name, null);
+    this(type, name, () -> null);
   }
 
   /**
@@ -238,8 +245,19 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
    * @param defaultValue The default value or {@code null} if no default value.
    */
   protected ClientSetting(final Class<T> type, final String name, final @Nullable T defaultValue) {
+    this(type, name, () -> defaultValue);
+  }
+
+  /**
+   * Initializes a new instance of {@code ClientSetting} whose default value is looked up on each
+   * use.
+   *
+   * @param defaultValue Supplies the default value, or {@code null} if there is no default value.
+   */
+  protected ClientSetting(final Class<T> type, final String name, final Supplier<T> defaultValue) {
     Preconditions.checkNotNull(type);
     Preconditions.checkNotNull(name);
+    Preconditions.checkNotNull(defaultValue);
 
     this.type = type;
     this.name = name;
@@ -273,8 +291,9 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
     listeners.remove(listener);
   }
 
-  public static void showSettingsWindow(final Frame owner) {
-    SettingsWindow.INSTANCE.open(owner);
+  /** Sets the default of {@link #lookAndFeel}; called by the UI before it reads the setting. */
+  public static void setLookAndFeelDefault(final String lookAndFeelClassName) {
+    lookAndFeelDefault.set(Preconditions.checkNotNull(lookAndFeelClassName));
   }
 
   /** Persists all pending client setting changes to the backing store. */
@@ -338,7 +357,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   }
 
   private boolean isDefaultValue(final T value) {
-    return value.equals(defaultValue);
+    return value.equals(defaultValue.get());
   }
 
   private @Nullable String encodeValueOrElseCurrent(final T value) {
@@ -375,7 +394,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
 
   @Override
   public final Optional<T> getDefaultValue() {
-    return Optional.ofNullable(defaultValue);
+    return Optional.ofNullable(defaultValue.get());
   }
 
   @Override

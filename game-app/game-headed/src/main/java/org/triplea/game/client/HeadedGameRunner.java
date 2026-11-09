@@ -34,6 +34,7 @@ import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.posted.game.pbem.ForumPostErrorHandler;
 import games.strategy.engine.posted.game.pbem.HeadedTurnPoster;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.settings.SettingsWindow;
 import games.strategy.triplea.ui.MacOsIntegration;
 import java.awt.Component;
 import java.awt.EventQueue;
@@ -83,7 +84,10 @@ public final class HeadedGameRunner {
   }
 
   public static void initializeLookAndFeel() {
-    Interruptibles.await(() -> SwingAction.invokeAndWait(LookAndFeel::initialize));
+    Interruptibles.await(
+        () ->
+            SwingAction.invokeAndWait(
+                () -> LookAndFeel.initialize(SettingsWindow::updateLookAndFeel)));
   }
 
   public static void initializeDesktopIntegrations(final String[] args) {

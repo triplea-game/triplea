@@ -9,7 +9,6 @@ import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.triplea.settings.SettingsWindow;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
@@ -43,14 +42,17 @@ public final class LookAndFeel {
    * <p>This method must be called before creating the first UI component but after initializing the
    * client settings framework.
    *
+   * @param onLookAndFeelChanged Runs after the user switches look-and-feel and it is installed, to
+   *     refresh open windows.
    * @throws IllegalStateException If this method is not called from the EDT.
    */
-  public static void initialize() {
+  public static void initialize(final Runnable onLookAndFeelChanged) {
+    ClientSetting.setLookAndFeelDefault(getDefaultLookAndFeelClassName());
     getSubstanceLookAndFeelManager().ifPresent(SubstanceLookAndFeelManager::initialize);
     ClientSetting.lookAndFeel.addListener(
         gameSetting -> {
           setupLookAndFeel(gameSetting.getValueOrThrow());
-          SettingsWindow.updateLookAndFeel();
+          onLookAndFeelChanged.run();
           JOptionPane.showMessageDialog(
               null,
 """

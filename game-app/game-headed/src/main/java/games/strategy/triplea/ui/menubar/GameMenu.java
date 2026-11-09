@@ -11,6 +11,7 @@ import games.strategy.engine.random.RandomStatsDetails;
 import games.strategy.engine.random.RandomStatsPanel;
 import games.strategy.triplea.odds.calculator.BattleCalculatorDialog;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.settings.SettingsWindow;
 import games.strategy.triplea.ui.PoliticalStateOverview;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
@@ -80,7 +81,7 @@ final class GameMenu {
         .addSeparator()
         .addMenuItem(
             new JMenuItemBuilder("Engine Settings", Mnemonic.ENGINE_SETTINGS.getMnemonicCode())
-                .actionListener(() -> ClientSetting.showSettingsWindow(frame)))
+                .actionListener(() -> SettingsWindow.INSTANCE.open(frame)))
         .addMenuItem(SoundOptions.buildGlobalSoundSwitchMenuItem())
         .addMenuItem(SoundOptions.buildSoundOptionsMenuItem())
         .addSeparator()
