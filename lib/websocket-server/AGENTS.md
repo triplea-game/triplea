@@ -62,7 +62,8 @@ The core message routing hub. Provides:
 provides two factory methods:
 
 - `fromWebSocket(WebSocket)` — for `org.java_websocket` (standalone server).
-  Generates a random UUID as the session ID.
+  Generates a random UUID as the session ID. The session is cached as the
+  connection's attachment, so open/message/close events share one instance.
 - `fromSession(Session)` — for `javax.websocket` (JSR 356 / container-managed).
   Uses `InetExtractor` to parse the IP from session user properties.
 
