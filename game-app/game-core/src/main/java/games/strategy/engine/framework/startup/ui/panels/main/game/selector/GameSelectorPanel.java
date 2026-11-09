@@ -4,8 +4,6 @@ import static org.triplea.swing.SwingComponents.DialogWithLinksParams;
 import static org.triplea.swing.SwingComponents.DialogWithLinksTypes;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.properties.IEditableProperty;
-import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
 import games.strategy.engine.framework.startup.mc.ClientModel;
@@ -19,20 +17,15 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.UIManager;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
@@ -40,14 +33,14 @@ import org.triplea.swing.SwingComponents;
 
 /**
  * Top of the game staging screens: a toolbar to pick the game, and a header naming the selected
- * game.
+ * game. Also owns the {@link GameOptionsPanel} shown beside the setup panel.
  */
 public final class GameSelectorPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -4598107601238030020L;
 
   private final GameSelectorModel model;
   private final IGamePropertiesCache gamePropertiesCache = new FileBackedGamePropertiesCache();
-  private final Map<String, Object> originalPropertiesMap = new HashMap<>();
+  private final GameOptionsPanel gameOptionsPanel;
   private final JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 4));
   private final JLabel nameText = new JLabel();
   private final JLabel saveGameText = new JLabel();
@@ -65,20 +58,21 @@ public final class GameSelectorPanel extends JPanel implements Observer {
           .toolTip("Open a game saved on your computer.")
           .build();
 
-  private final JButton mapOptions =
+  /** Options of a game hosted on a bot live on the bot, so they open in a dialog instead. */
+  private final JButton hostBotGameOptions =
       new JButtonBuilder()
           .title("Game Options")
-          .toolTip(
-              "<html>Set options for the currently selected game, <br>such as enabling/disabling "
-                  + "Low Luck, or Technology</html>")
+          .toolTip("Set options for the game on the bot, such as Low Luck or Technology")
           .build();
 
   public GameSelectorPanel(final GameSelectorModel model) {
     this.model = model;
+    gameOptionsPanel = new GameOptionsPanel(model, gamePropertiesCache);
     final GameData data = model.getGameData();
+    gameOptionsPanel.update();
     if (data != null) {
-      setOriginalPropertiesMap(data);
       gamePropertiesCache.loadCachedGamePropertiesInto(data);
+      gameOptionsPanel.refresh();
     }
 
     final JButton downloadMapButton =
@@ -90,20 +84,21 @@ public final class GameSelectorPanel extends JPanel implements Observer {
     toolbar.add(loadNewGame);
     toolbar.add(loadSavedGame);
     toolbar.add(downloadMapButton);
-    toolbar.add(mapOptions);
+    toolbar.add(hostBotGameOptions);
+    toolbar.setBorder(
+        BorderFactory.createMatteBorder(0, 0, 1, 0, GameOptionsPanel.separatorColor()));
 
     nameText.setFont(nameText.getFont().deriveFont(Font.BOLD, nameText.getFont().getSize2D() + 10));
     final JPanel header = new JPanel();
     header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
-    header.setBorder(BorderFactory.createEmptyBorder(4, 10, 8, 10));
+    header.setBorder(BorderFactory.createEmptyBorder(8, 10, 10, 10));
     header.add(nameText);
     header.add(Box.createVerticalStrut(4));
     header.add(roundText);
     header.add(saveGameText);
 
     setLayout(new BorderLayout());
-    setBorder(
-        BorderFactory.createMatteBorder(0, 0, 1, 0, UIManager.getColor("Separator.foreground")));
+    setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, GameOptionsPanel.separatorColor()));
     add(toolbar, BorderLayout.NORTH);
     add(header, BorderLayout.CENTER);
 
@@ -132,69 +127,19 @@ public final class GameSelectorPanel extends JPanel implements Observer {
           }
         });
 
-    mapOptions.addActionListener(
+    hostBotGameOptions.addActionListener(
         e -> {
-          if (canSelectLocalGameData()) {
-            selectGameOptions();
-          } else if (canChangeHostBotGameData()) {
-            final ClientModel clientModelForHostBots = model.getClientModelForHostBots();
-            if (clientModelForHostBots != null) {
-              clientModelForHostBots.changeGameOptions(this);
-            }
+          final ClientModel clientModelForHostBots = model.getClientModelForHostBots();
+          if (clientModelForHostBots != null) {
+            clientModelForHostBots.changeGameOptions(this);
           }
         });
 
     updateGameData();
   }
 
-  private void setOriginalPropertiesMap(final GameData data) {
-    originalPropertiesMap.clear();
-    if (data != null) {
-      for (final IEditableProperty<?> property : data.getProperties().getEditableProperties()) {
-        originalPropertiesMap.put(property.getName(), property.getValue());
-      }
-    }
-  }
-
-  private void selectGameOptions() {
-    // backup current game properties before showing dialog
-    final Map<String, Object> currentPropertiesMap = new HashMap<>();
-    for (final IEditableProperty<?> property :
-        model.getGameData().getProperties().getEditableProperties()) {
-      currentPropertiesMap.put(property.getName(), property.getValue());
-    }
-    final PropertiesUi panel = new PropertiesUi(model.getGameData().getProperties(), true);
-    final JScrollPane scroll = new JScrollPane(panel);
-    scroll.setBorder(null);
-    scroll.getViewport().setBorder(null);
-    final JOptionPane pane = new JOptionPane(scroll, JOptionPane.PLAIN_MESSAGE);
-    final String ok = "OK";
-    final String cancel = "Cancel";
-    final String makeDefault = "Make Default";
-    final String reset = "Reset";
-    pane.setOptions(new Object[] {ok, makeDefault, reset, cancel});
-    final JDialog window =
-        pane.createDialog(JOptionPane.getFrameForComponent(this), "Game Options");
-    window.setVisible(true);
-    final Object buttonPressed = pane.getValue();
-    if (buttonPressed == null || buttonPressed.equals(cancel)) {
-      // restore properties, if cancel was pressed, or window was closed
-      for (final IEditableProperty<?> property :
-          model.getGameData().getProperties().getEditableProperties()) {
-        property.validateAndSet(currentPropertiesMap.get(property.getName()));
-      }
-    } else if (buttonPressed.equals(reset)) {
-      if (!originalPropertiesMap.isEmpty()) {
-        // restore properties, if cancel was pressed, or window was closed
-        for (final IEditableProperty<?> property :
-            model.getGameData().getProperties().getEditableProperties()) {
-          property.validateAndSet(originalPropertiesMap.get(property.getName()));
-        }
-        selectGameOptions();
-      }
-    } else if (buttonPressed.equals(makeDefault)) {
-      gamePropertiesCache.cacheGameProperties(model.getGameData());
-    }
+  public GameOptionsPanel getGameOptionsPanel() {
+    return gameOptionsPanel;
   }
 
   private void updateGameData() {
@@ -207,17 +152,12 @@ public final class GameSelectorPanel extends JPanel implements Observer {
           saveGameText.setText("Saved game: " + model.getFileName());
           saveGameText.setVisible(!isUnset(model.getFileName()));
 
-          final boolean canSelectGameData = canSelectLocalGameData();
           final boolean canChangeHostBotGameData = canChangeHostBotGameData();
           // network clients can't change the game, so they don't get the controls for it
-          toolbar.setVisible(canSelectGameData || canChangeHostBotGameData);
-          // Disable game options if there are none.
-          mapOptions.setEnabled(
-              canChangeHostBotGameData
-                  || (canSelectGameData
-                      && model.getGameData() != null
-                      && !model.getGameData().getProperties().getEditableProperties().isEmpty()));
+          toolbar.setVisible(canSelectLocalGameData() || canChangeHostBotGameData);
+          hostBotGameOptions.setVisible(canChangeHostBotGameData);
         });
+    gameOptionsPanel.update();
   }
 
   /** {@link GameSelectorModel} reports a missing name, round or file as "-". */
@@ -271,12 +211,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
                                 e.getMessage(), UrlConstants.GITHUB_ISSUES))
                         .build()))
         .build()
-        .run(
-            () -> {
-              if (model.loadSave(file)) {
-                setOriginalPropertiesMap(model.getGameData());
-              }
-            });
+        .run(() -> model.loadSave(file));
   }
 
   private void selectGameFile() {
@@ -300,10 +235,11 @@ public final class GameSelectorPanel extends JPanel implements Observer {
         "Loading map...",
         () -> {
           if (model.loadMap(gameFile)) {
-            setOriginalPropertiesMap(model.getGameData());
             // only for new games, not saved games, we set the default options, and set them only
             // once (the first time it is loaded)
             gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
+            // the editors may have been built before the cached values were set
+            gameOptionsPanel.refresh();
           }
         });
   }

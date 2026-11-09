@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.swing.JButtonBuilder;
@@ -52,6 +53,7 @@ public class MainPanel extends JPanel {
   private final Supplier<Optional<Runnable>> backAction;
 
   private final JPanel gameSetupPanelHolder = new JPanelBuilder().borderLayout().build();
+  private final JPanel gameOptionsHolder = new JPanelBuilder().borderLayout().build();
   private final JPanel mainPanel;
   private final JSplitPane chatSplit;
   private final JPanel chatPanelHolder = new JPanelBuilder().height(62).borderLayout().build();
@@ -86,8 +88,10 @@ public class MainPanel extends JPanel {
             .border(0)
             .borderLayout()
             .addNorth(gameSelectorPanel)
+            .addWest(gameOptionsHolder)
             .addCenter(gameSetupPanelScroll)
             .build();
+    gameOptionsHolder.add(gameSelectorPanel.getGameOptionsPanel(), BorderLayout.CENTER);
     setLayout(new BorderLayout());
 
     if (chatModel instanceof ChatPanel) {
@@ -107,7 +111,9 @@ public class MainPanel extends JPanel {
       LaunchScreenStyle.styleAsMenuItem(button, NAVIGATION_FONT_INCREASE);
     }
     final JPanel buttonsPanel =
-        new JPanelBuilder().borderEtched().add(playButton).add(backButton).add(quitButton).build();
+        new JPanelBuilder().add(playButton).add(backButton).add(quitButton).build();
+    buttonsPanel.setBorder(
+        BorderFactory.createMatteBorder(1, 0, 0, 0, UIManager.getColor("Separator.foreground")));
     add(buttonsPanel, BorderLayout.SOUTH);
     setPreferredSize(initialSize);
     updatePlayButtonState();
@@ -142,6 +148,7 @@ public class MainPanel extends JPanel {
 
     final boolean isMenu = panel instanceof MenuPanel;
     gameSelectorPanel.setVisible(!isMenu);
+    gameOptionsHolder.setVisible(!isMenu);
     playButton.setVisible(!isMenu);
     backButton.setVisible(backAction.get().isPresent());
 

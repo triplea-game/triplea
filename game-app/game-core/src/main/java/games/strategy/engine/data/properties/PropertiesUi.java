@@ -14,6 +14,7 @@ import javax.swing.JPanel;
  */
 public class PropertiesUi extends JPanel {
   private static final long serialVersionUID = 3870459799384582310L;
+  private static final int ROWS_PER_COLUMN = 15;
   private int nextRow;
   private int labelColumn;
 
@@ -23,11 +24,16 @@ public class PropertiesUi extends JPanel {
 
   public PropertiesUi(
       final List<? extends IEditableProperty<?>> properties, final boolean editable) {
+    this(properties, editable, ROWS_PER_COLUMN);
+  }
+
+  private PropertiesUi(
+      final List<? extends IEditableProperty<?>> properties,
+      final boolean editable,
+      final int rowsPerColumn) {
     init();
     for (final IEditableProperty<?> property : properties) {
-      // Limit it to 14 rows then start a new column
-      // Don't know if this is the most elegant solution, but it works.
-      if (nextRow >= 15) {
+      if (nextRow >= rowsPerColumn) {
         labelColumn += 2;
         nextRow = 0;
       }
@@ -45,6 +51,12 @@ public class PropertiesUi extends JPanel {
             property.getRowsNeeded());
       }
     }
+  }
+
+  /** Lays out every property in one column, for a narrow, scrolling side panel. */
+  public static PropertiesUi singleColumn(
+      final GameProperties gameProperties, final boolean editable) {
+    return new PropertiesUi(gameProperties.getEditableProperties(), editable, Integer.MAX_VALUE);
   }
 
   private void init() {
