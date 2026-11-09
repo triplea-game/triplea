@@ -5,7 +5,6 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
-import games.strategy.triplea.ui.history.HistoryPanel;
 import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -36,7 +35,7 @@ public class History extends DefaultTreeModel {
   private final HistoryWriter writer = new HistoryWriter(this);
   private final List<Change> changes = new ArrayList<>();
   private final GameData gameData;
-  private HistoryPanel panel;
+  private HistoryView panel;
   // Index which will come next in history from where we are. Only valid if seekingEnabled is true.
   private int nextChangeIndex;
   private boolean seekingEnabled = false;
@@ -78,7 +77,7 @@ public class History extends DefaultTreeModel {
     return writer;
   }
 
-  public HistoryNode enableSeeking(final HistoryPanel panel) {
+  public HistoryNode enableSeeking(final HistoryView panel) {
     Preconditions.checkState(!seekingEnabled);
     this.panel = panel;
     nextChangeIndex = changes.size();

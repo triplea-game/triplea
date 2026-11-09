@@ -5,6 +5,7 @@ import games.strategy.engine.data.export.GameDataExporter;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.history.History;
 import games.strategy.engine.history.HistoryNode;
+import games.strategy.engine.history.HistoryView;
 import games.strategy.triplea.EngineImageLoader;
 import games.strategy.triplea.printgenerator.SetupFrame;
 import games.strategy.triplea.printgenerator.StatsInfo;
@@ -149,7 +150,7 @@ final class ExportMenu {
    * copying task.
    *
    * @return {@link GameData} clone as {@link CompletableFuture} incl. {@link History} which has
-   *     already {@link History#enableSeeking(HistoryPanel)} called. Fails with {@link
+   *     already {@link History#enableSeeking(HistoryView)} called. Fails with {@link
    *     IllegalStateException} in case the cloning fails.
    */
   private CompletableFuture<GameData> getGameDataCloneWithHistory(final GameData gameData) {

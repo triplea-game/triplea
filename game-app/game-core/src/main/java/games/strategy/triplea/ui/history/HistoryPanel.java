@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.history.HistoryNode;
+import games.strategy.engine.history.HistoryView;
 import games.strategy.engine.history.Step;
 import games.strategy.triplea.ui.UiContext;
 import java.awt.BorderLayout;
@@ -42,7 +43,7 @@ import lombok.Getter;
 import org.triplea.thread.EventThreadChecks;
 
 /** Shows the history as a tree. */
-public class HistoryPanel extends JPanel {
+public class HistoryPanel extends JPanel implements HistoryView {
   private static final long serialVersionUID = -8353246449552215276L;
   private final GameData data;
   private final JTree tree;
@@ -338,6 +339,7 @@ public class HistoryPanel extends JPanel {
   }
 
   /** Selects the most recent history node, expanding the tree if necessary. */
+  @Override
   public void goToEnd() {
     final HistoryNode last;
     try (GameData.Unlocker ignored = data.acquireWriteLock()) {
