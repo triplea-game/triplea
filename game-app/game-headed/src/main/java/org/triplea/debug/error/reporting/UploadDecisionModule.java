@@ -43,9 +43,7 @@ public class UploadDecisionModule {
    * information around the circumstances of an error.
    */
   private static void showStackTraceReportWindow(
-      final JFrame parentWindow,
-      final ErrorReportClient uploader,
-      final LoggerRecord logRecord) {
+      final JFrame parentWindow, final ErrorReportClient uploader, final LoggerRecord logRecord) {
 
     final StackTraceReportView window = new StackTraceReportSwingView(parentWindow);
 
