@@ -1,10 +1,10 @@
 package games.strategy.engine.message;
 
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
+import java.awt.EventQueue;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Optional;
-import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -49,7 +49,7 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler {
       return null;
     }
 
-    if (SwingUtilities.isEventDispatchThread()) {
+    if (EventQueue.isDispatchThread()) {
       log.info("Blocking network operation performed from EDT", new Exception());
     }
 

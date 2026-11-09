@@ -90,10 +90,10 @@ class BattleCalculator {
       final ListBackedAggregateResults aggregateResults = new ListBackedAggregateResults(runCount);
       final BattleTracker battleTracker = new BattleTracker();
       final List<Unit> attackerOrderOfLosses =
-          OrderOfLossesInputPanel.getUnitListByOrderOfLoss(
+          OrderOfLoss.getUnitListByOrderOfLoss(
               this.attackerOrderOfLosses, attackingUnits, gameData);
       final List<Unit> defenderOrderOfLosses =
-          OrderOfLossesInputPanel.getUnitListByOrderOfLoss(
+          OrderOfLoss.getUnitListByOrderOfLoss(
               this.defenderOrderOfLosses, defendingUnits, gameData);
       for (int i = 0; i < runCount && !cancelled; i++) {
         final CompositeChange allChanges = new CompositeChange();

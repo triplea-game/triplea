@@ -1,19 +1,12 @@
 package games.strategy.engine.random;
 
 import games.strategy.engine.data.GamePlayer;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeSet;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import lombok.Getter;
 import org.triplea.java.collections.IntegerMap;
 
@@ -22,9 +15,9 @@ public class RandomStatsDetails implements Serializable {
   private static final long serialVersionUID = 69602197220912520L;
 
   @Getter private final Map<GamePlayer, IntegerMap<Integer>> data;
-  private final IntegerMap<Integer> totalMap;
-  private final DiceStatistic totalStats;
-  private final Map<GamePlayer, DiceStatistic> playerStats = new HashMap<>();
+  @Getter private final IntegerMap<Integer> totalMap;
+  @Getter private final DiceStatistic totalStats;
+  @Getter private final Map<GamePlayer, DiceStatistic> playerStats = new HashMap<>();
 
   RandomStatsDetails(final Map<GamePlayer, IntegerMap<Integer>> randomStats, final int diceSides) {
     data = randomStats;
@@ -166,90 +159,5 @@ public class RandomStatsDetails implements Serializable {
               (entry.getKey() == null ? "Null / Other" : entry.getKey().getName() + " Combat")));
     }
     return sb.toString();
-  }
-
-  private static JPanel getStatsDisplay(
-      final IntegerMap<Integer> diceRolls, final DiceStatistic diceStats, final String title) {
-    final JPanel panel = new JPanel();
-    panel.setBorder(BorderFactory.createEtchedBorder());
-    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-    panel.add(new JLabel("<html><b>" + title + "</b></html>"));
-    for (final int key : new TreeSet<>(diceRolls.keySet())) {
-      final int value = diceRolls.getInt(key);
-      final JLabel label = new JLabel(key + " was rolled " + value + " times");
-      panel.add(label);
-    }
-    panel.add(new JLabel("  "));
-    final DecimalFormat format = new DecimalFormat("#0.000");
-    panel.add(new JLabel("Average roll : " + format.format(diceStats.getAverage())));
-    panel.add(new JLabel("Median : " + format.format(diceStats.getMedian())));
-    panel.add(new JLabel("Variance : " + format.format(diceStats.getVariance())));
-    panel.add(new JLabel("Standard Deviation : " + format.format(diceStats.getStdDeviation())));
-    panel.add(new JLabel("Total rolls : " + diceStats.getTotal()));
-    return panel;
-  }
-
-  /** Returns a JPanel displaying information about all Statistics. */
-  public JPanel getAllStats() {
-    final Insets insets = new Insets(2, 2, 2, 2);
-    final JPanel panel = new JPanel();
-    panel.setLayout(new GridBagLayout());
-    panel.setBorder(BorderFactory.createEmptyBorder());
-    panel.add(
-        getStatsDisplay(totalMap, totalStats, "Total"),
-        new GridBagConstraints(
-            0,
-            0,
-            1,
-            1,
-            1,
-            1,
-            GridBagConstraints.FIRST_LINE_START,
-            GridBagConstraints.NONE,
-            insets,
-            0,
-            0));
-    if (getData().containsKey(null)) {
-      panel.add(
-          getStatsDisplay(getData().get(null), playerStats.get(null), "Null / Other"),
-          new GridBagConstraints(
-              1,
-              0,
-              1,
-              1,
-              1,
-              1,
-              GridBagConstraints.FIRST_LINE_START,
-              GridBagConstraints.NONE,
-              insets,
-              0,
-              0));
-    }
-    final int rows = Math.max(2, getData().size() / 6);
-    int x = 0;
-    for (final Entry<GamePlayer, IntegerMap<Integer>> entry : getData().entrySet()) {
-      if (entry.getKey() == null) {
-        continue;
-      }
-      panel.add(
-          getStatsDisplay(
-              entry.getValue(),
-              playerStats.get(entry.getKey()),
-              (entry.getKey() == null ? "Null / Other" : entry.getKey().getName() + " Combat")),
-          new GridBagConstraints(
-              (x / rows),
-              1 + (x % rows),
-              1,
-              1,
-              1,
-              1,
-              GridBagConstraints.FIRST_LINE_START,
-              GridBagConstraints.NONE,
-              insets,
-              0,
-              0));
-      x++;
-    }
-    return panel;
   }
 }
