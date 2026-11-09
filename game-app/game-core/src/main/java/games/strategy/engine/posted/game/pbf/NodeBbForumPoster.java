@@ -24,7 +24,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.jetbrains.annotations.NonNls;
-import org.triplea.awt.OpenFileUtility;
 import org.triplea.yaml.YamlReader;
 
 /**
@@ -217,8 +216,8 @@ Forums response was: """
     }
   }
 
-  /** Opens a browser and go to the forum post, identified by the forumId. */
-  public void viewPosted() {
-    OpenFileUtility.openUrl(null, forumUrl + "/topic/" + topicId);
+  /** The web page of the forum topic that turns are posted to. */
+  public String getTopicUrl() {
+    return forumUrl + "/topic/" + topicId;
   }
 }

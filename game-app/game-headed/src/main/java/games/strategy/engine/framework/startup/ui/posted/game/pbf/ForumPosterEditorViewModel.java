@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.Setter;
+import org.triplea.awt.OpenFileUtility;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.Postconditions;
 import org.triplea.java.StringUtils;
@@ -41,7 +42,9 @@ class ForumPosterEditorViewModel {
 
   @Setter(onMethod_ = @VisibleForTesting)
   private BiConsumer<String, Integer> viewForumPostAction =
-      (forumName, topicId) -> NodeBbForumPoster.newInstanceByName(forumName, topicId).viewPosted();
+      (forumName, topicId) ->
+          OpenFileUtility.openUrl(
+              null, NodeBbForumPoster.newInstanceByName(forumName, topicId).getTopicUrl());
 
   private String forumSelection;
   @Getter private String topicId = "";
