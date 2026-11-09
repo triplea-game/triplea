@@ -24,11 +24,14 @@ macOS-specific: opening a file or a `triplea://` URI is translated to the corres
 
 - **`org.triplea.game.client`** — Client bootstrap: `HeadedGameRunner` (entry point), `HeadedApplicationContext` (provides main class reference for `ApplicationContext`)
 - **`org.triplea.game.client.ui.swing.laf`** — Swing L&F setup (`DefaultSubstanceLookAndFeelManager`)
-- **`org.triplea.sound`** — Audio playback (`DefaultSoundChannel` — routes server-side sound events to local `ClipPlayer` based on which players are local)
+- **`org.triplea.sound`** — Audio playback (`DefaultSoundChannel` — routes server-side sound events to local `ClipPlayer` based on which players are local; `SoundOptions` menu items)
 - **`org.triplea.lobby.common`** — `LobbyGameUpdateListener` interface (notifies of game additions/removals via WebSocket)
+- **`games.strategy.engine.data.properties`** — Swing editors for game properties: `PropertyEditorFactory` (one editor per core property type), `PropertiesUi` (panel of labelled editors)
 - **`games.strategy.engine.framework.ui`** — `MainFrame` — main game frame and window management
 - **`games.strategy.engine.framework.startup.ui`** — Game setup panels (local, server, client, meta-setup, player selector)
 - **`games.strategy.engine.framework.startup.ui.panels.main`** — `MainPanel`/`MainPanelBuilder`, `HeadedServerSetupModel`
+- **`games.strategy.engine.framework.startup.ui.panels.main.game.selector`** — `GameSelectorPanel` (game/save selection and game options dialog)
+- **`games.strategy.engine.framework.network.ui`** — `ChangeGameOptionsClientAction` (edit a host bot's game options)
 - **`games.strategy.engine.framework.startup.ui.posted.game`** — PBEM/PBF setup panels (`PbemSetupPanel`, `PbfSetupPanel`)
 - **`games.strategy.engine.framework.startup.mc`** — `HeadedLaunchAction` (creates `TripleAFrame` and `TripleADisplay` at game start), `HeadedPlayerTypes` (maps player type enums to implementations — human, client, DoesNothing, FlowFieldAi), `HeadedServerStartupRemote`
 - **`games.strategy.engine.auto.update`** — Startup update checks: engine version (every 2 days via `EngineVersionCheck`), tutorial map presence (`TutorialMapCheck`), outdated downloaded maps (`UpdatedMapsCheck`). Orchestrated by `UpdateChecks`.
@@ -47,6 +50,7 @@ macOS-specific: opening a file or a `triplea://` URI is translated to the corres
 - **`games.strategy.triplea.ui.display`** — `TripleADisplay` (implements `IDisplay`, routes engine display events to `TripleAFrame` methods)
 - **`games.strategy.triplea.ui.export`** — `ScreenshotExporter` (renders map to PNG with optional title overlay)
 - **`games.strategy.triplea.ui.panel.move`** — `MovePanel` (movement phase UI), `DoneMoveAction`
+- **`tools.map.making.ui`**, **`tools.util`** — Map-making tools (`MapCreator`, launched from `MetaSetupPanel`) and their file/property helpers
 
 ## Running
 

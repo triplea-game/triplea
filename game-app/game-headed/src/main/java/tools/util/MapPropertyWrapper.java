@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import javax.swing.JComponent;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.util.Tuple;
 
@@ -84,11 +83,6 @@ public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
     property.setValue(value);
   }
 
-  @Override
-  public JComponent getEditorComponent() {
-    return property.getEditorComponent();
-  }
-
   private void setToObject(final Object object) {
     final Object value = getValue();
     final Object[] args = {value};
@@ -143,7 +137,9 @@ public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
   static Tuple<PropertiesUi, List<MapPropertyWrapper<?>>> newPropertiesUi(
       final Object object, final boolean editable) {
     final List<MapPropertyWrapper<?>> properties = newProperties(object);
-    final PropertiesUi ui = new PropertiesUi(properties, editable);
+    final List<IEditableProperty<?>> wrappedProperties =
+        properties.stream().<IEditableProperty<?>>map(wrapper -> wrapper.property).toList();
+    final PropertiesUi ui = new PropertiesUi(wrappedProperties, editable);
     return Tuple.of(ui, properties);
   }
 

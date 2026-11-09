@@ -3,7 +3,6 @@ package games.strategy.triplea.ai.pro.logging;
 import games.strategy.engine.framework.GameShutdownRegistry;
 import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugAction;
 import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugOption;
-import games.strategy.ui.Util;
 import java.awt.Frame;
 import java.util.List;
 import java.util.function.Consumer;
@@ -11,6 +10,7 @@ import javax.annotation.Nullable;
 import javax.swing.SwingUtilities;
 import lombok.experimental.UtilityClass;
 import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.thread.EventThreadChecks;
 
 /** Class to manage log window display. */
 @UtilityClass
@@ -26,7 +26,7 @@ public final class ProLogUi {
   }
 
   public static List<AiPlayerDebugOption> buildDebugOptions(final Frame frame) {
-    Util.ensureOnEventDispatchThread();
+    EventThreadChecks.ensureOnEventDispatchThread();
     if (settingsWindow == null) {
       settingsWindow = new ProLogWindow(frame);
       GameShutdownRegistry.registerShutdownAction(ProLogUi::clearCachedInstances);

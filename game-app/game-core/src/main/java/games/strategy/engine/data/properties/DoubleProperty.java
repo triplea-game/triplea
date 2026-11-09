@@ -4,16 +4,14 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import javax.swing.JComponent;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
+import lombok.Getter;
 
 /** Implementation of {@link IEditableProperty} for a double-precision floating-point value. */
 public class DoubleProperty extends AbstractEditableProperty<Double> {
   private static final long serialVersionUID = 5521967819500867581L;
 
-  private final double max;
-  private final double min;
+  @Getter private final double max;
+  @Getter private final double min;
   private double value;
   private final int places;
 
@@ -53,22 +51,6 @@ public class DoubleProperty extends AbstractEditableProperty<Double> {
   @Override
   public void setValue(final Double value) {
     this.value = roundToPlace(value, places);
-  }
-
-  @Override
-  public JComponent getEditorComponent() {
-    final JSpinner field = new JSpinner(new SpinnerNumberModel(value, min, max, 1.0));
-
-    // NB: Workaround for JSpinner default sizing algorithm when min/max values have very large
-    // magnitudes
-    // (see: https://implementsblog.com/2012/11/26/java-gotcha-jspinner-preferred-size/)
-    final JComponent fieldEditor = field.getEditor();
-    if (fieldEditor instanceof JSpinner.DefaultEditor) {
-      ((JSpinner.DefaultEditor) fieldEditor).getTextField().setColumns(10);
-    }
-
-    field.addChangeListener(e -> value = (double) field.getValue());
-    return field;
   }
 
   @Override
