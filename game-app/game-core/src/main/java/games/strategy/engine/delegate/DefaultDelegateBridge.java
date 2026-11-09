@@ -14,11 +14,9 @@ import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.RandomStats;
-import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.ResourceLoader;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.sound.ISound;
 
 /** Default implementation of DelegateBridge. */
@@ -29,7 +27,6 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   private final IDelegateHistoryWriter historyWriter;
   private final RandomStats randomStats;
   private final DelegateExecutionManager delegateExecutionManager;
-  private final ClientNetworkBridge clientNetworkBridge;
   private final IRandomSource randomSource;
 
   @Override
@@ -136,11 +133,6 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   @Override
   public void stopGameSequence(String status, String title) {
     game.stopGameSequence(status, title);
-  }
-
-  @Override
-  public void sendMessage(final WebSocketMessage webSocketMessage) {
-    clientNetworkBridge.sendMessage(webSocketMessage);
   }
 
   @Override

@@ -10,7 +10,6 @@ import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.player.Player;
 import games.strategy.net.LocalNoOpMessenger;
 import games.strategy.net.Messengers;
-import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.IOException;
@@ -65,13 +64,7 @@ public class GameTestUtils {
     HeadlessLaunchAction launchAction = new HeadlessLaunchAction(mock(HeadlessGameServer.class));
     Messengers messengers = new Messengers(new LocalNoOpMessenger());
     ServerGame game =
-        new ServerGame(
-            gameData,
-            gamePlayers,
-            new HashMap<>(),
-            messengers,
-            ClientNetworkBridge.NO_OP_SENDER,
-            launchAction);
+        new ServerGame(gameData, gamePlayers, new HashMap<>(), messengers, launchAction);
     game.setDelegateAutosavesEnabled(false);
     // Note: This doesn't actually start the AI players' turns. For that, call game.startGame().
     gameData.getGameLoader().startGame(game, gamePlayers, launchAction, null);

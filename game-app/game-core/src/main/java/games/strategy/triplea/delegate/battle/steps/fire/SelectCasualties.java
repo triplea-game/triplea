@@ -6,14 +6,12 @@ import static games.strategy.triplea.delegate.battle.BattleStepStrings.SELECT_PR
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.UNITS;
 
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
-import games.strategy.triplea.settings.ClientSetting;
 import java.util.List;
 import java.util.function.BiFunction;
 import lombok.Getter;
@@ -61,12 +59,7 @@ public class SelectCasualties implements BattleStep {
     final String stepName =
         MarkCasualties.getPossibleOldNameForNotifyingBattleDisplay(
             battleState, firingGroup, side, getName(), bridge);
-    if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
-      bridge.sendMessage(
-          new IDisplay.NotifyDiceMessage(diceRoll, stepName, diceRoll.getPlayerName()));
-    } else {
-      bridge.getDisplayChannelBroadcaster().notifyDice(diceRoll, stepName);
-    }
+    bridge.getDisplayChannelBroadcaster().notifyDice(diceRoll, stepName);
 
     final CasualtyDetails details = selectCasualties.apply(bridge, this);
     fireRoundState.setCasualties(details);

@@ -312,7 +312,7 @@ The `startup/` package manages everything from game selection through network se
 
 - **`ILauncher`** — Single-method interface: `launch()`.
 - **`LocalLauncher`** — Single-computer game. Creates `ServerGame` with `LocalNoOpMessenger`, sets up local players, uses `PlainRandomSource`, runs game in a background thread.
-- **`ServerLauncher`** — Network host. Establishes a `GameRelayServer` on port 6000 for P2P relay, uses `CryptoRandomSource`, tracks remote client connections, optionally integrates with the in-game lobby watcher.
+- **`ServerLauncher`** — Network host. Uses `CryptoRandomSource`, tracks remote client connections, optionally integrates with the in-game lobby watcher.
 - **`LaunchAction`** — Enum of launch modes.
 - **`MapNotFoundException`** — Thrown when map files are unavailable.
 
@@ -410,7 +410,6 @@ LocalLauncher.launch()
 **Network server:**
 ```
 ServerModel → ServerLauncher created
-  → GameRelayServer started on port 6000
   → ServerMessenger listens for clients
   → ServerGame created when all clients ready
   → IGameStepAdvancer registered for remote step control
