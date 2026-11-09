@@ -1,6 +1,8 @@
 package games.strategy.triplea.ai.pro.data;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
 import static games.strategy.triplea.delegate.GameDataTestUtil.artillery;
+import static games.strategy.triplea.delegate.GameDataTestUtil.battleship;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -11,8 +13,12 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.gameparser.GameParseException;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 class ProPurchaseOptionTest {
@@ -106,5 +112,51 @@ class ProPurchaseOptionTest {
     assertThat(free.getAmphibEfficiency(data, localInfantry, List.of())).isFinite();
     assertThat(free.getAttackEfficiency()).isFinite();
     assertThat(free.getTransportEfficiency()).isFinite();
+  }
+
+  /** Russian infantry takes 1 off the strength of each enemy {@code target} attacking it. */
+  private void givenRussianInfantryWeakensAttacking(final UnitType target)
+      throws GameParseException {
+    final var weakenEnemy =
+        new UnitSupportAttachment(
+                Constants.SUPPORT_ATTACHMENT_PREFIX + "AntiTank", infantry(data), data)
+            .setSide("defence")
+            .setFaction("enemy")
+            .setPlayers(List.of(russia))
+            .setUnitType(Set.of(target))
+            .setBonusType("AntiTank")
+            .setBonus(-1)
+            .setDice("strength")
+            .setNumber(1);
+    infantry(data).addAttachment(weakenEnemy.getName(), weakenEnemy);
+  }
+
+  private ProPurchaseOption infantryOption(final boolean hardBeta) {
+    return new ProPurchaseOption(
+        data.getProductionRuleList().getProductionRule("buyInfantry"),
+        infantry(data),
+        russia,
+        data,
+        hardBeta);
+  }
+
+  @Test
+  void hardBetaValuesWeakeningAttackingEnemyArmourAsDefense() throws GameParseException {
+    givenRussianInfantryWeakensAttacking(armour(data));
+
+    assertThat(infantryOption(true).getDefenseEfficiency(1, data, localInfantry, List.of()))
+        .isGreaterThan(
+            infantryOption(false).getDefenseEfficiency(1, data, localInfantry, List.of()));
+  }
+
+  @Test
+  void hardBetaGivesNoCreditForWeakeningUnitsOutsideTheBuyersDomain() throws GameParseException {
+    // Battleships are outside a land unit's domain, so the rule finds no target.
+    givenRussianInfantryWeakensAttacking(battleship(data));
+
+    assertThat(infantryOption(true).getDefenseEfficiency(1, data, localInfantry, List.of()))
+        .isCloseTo(
+            infantryOption(false).getDefenseEfficiency(1, data, localInfantry, List.of()),
+            within(1e-9));
   }
 }
