@@ -33,7 +33,6 @@ import games.strategy.engine.framework.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MacOsIntegration;
-import games.strategy.ui.Util;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Frame;
@@ -52,6 +51,7 @@ import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
 import org.triplea.map.description.file.MapDescriptionYamlGeneratorRunner;
 import org.triplea.swing.SwingAction;
+import org.triplea.thread.EventThreadChecks;
 import org.triplea.util.ExitStatus;
 
 /** Runs a headed game client. */
@@ -286,7 +286,7 @@ public final class HeadedGameRunner {
 
   /** After the game has been left, call this. */
   public static void clientLeftGame() {
-    Util.ensureNotOnEventDispatchThread();
+    EventThreadChecks.ensureNotOnEventDispatchThread();
     Interruptibles.await(() -> SwingAction.invokeAndWait(headedServerSetupModel::showSelectType));
     showMainFrame();
   }
