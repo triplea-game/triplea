@@ -23,20 +23,23 @@ macOS-specific: opening a file or a `triplea://` URI is translated to the corres
 ## Package Structure
 
 - **`org.triplea.game.client`** — Client bootstrap: `HeadedGameRunner` (entry point), `HeadedApplicationContext` (provides main class reference for `ApplicationContext`)
-- **`org.triplea.game.client.ui.swing.laf`** — Swing L&F setup (`DefaultSubstanceLookAndFeelManager`)
+- **`org.triplea.game.client.ui.swing.laf`** — Swing L&F setup (`SubstanceLookAndFeelManager`, `DefaultSubstanceLookAndFeelManager`)
 - **`org.triplea.sound`** — Audio playback (`DefaultSoundChannel` — routes server-side sound events to local `ClipPlayer` based on which players are local; `SoundOptions` menu items)
 - **`org.triplea.lobby.common`** — `LobbyGameUpdateListener` interface (notifies of game additions/removals via WebSocket)
 - **`games.strategy.engine.data.properties`** — Swing editors for game properties: `PropertyEditorFactory` (one editor per core property type), `PropertiesUi` (panel of labelled editors)
-- **`games.strategy.engine.framework.ui`** — `MainFrame` — main game frame and window management
+- **`games.strategy.engine.chat`** — Chat Swing UI: `ChatPanel`, `ChatMessagePanel`, `ChatPlayerPanel`, `PlayerChatRenderer`
+- **`games.strategy.engine.framework.ui`** — `MainFrame` — main game frame and window management; `GameChooser`, `GameNotesView`; `background/` wait dialogs and `BackgroundTaskRunner` for long operations off the EDT
+- **`games.strategy.engine.framework.lookandfeel`** — `LookAndFeel`, `LookAndFeelSwingFrameListener` — UI theme management
+- **`games.strategy.engine.framework.startup.launcher`** — `LocalLauncher` (single-computer game launch)
 - **`games.strategy.engine.framework.startup.ui`** — Game setup panels (local, server, client, meta-setup, player selector)
 - **`games.strategy.engine.framework.startup.ui.panels.main`** — `MainPanel`/`MainPanelBuilder`, `HeadedServerSetupModel`
 - **`games.strategy.engine.framework.startup.ui.panels.main.game.selector`** — `GameSelectorPanel` (game/save selection and game options dialog)
-- **`games.strategy.engine.framework.network.ui`** — `ChangeGameOptionsClientAction` (edit a host bot's game options)
-- **`games.strategy.engine.framework.startup.ui.posted.game`** — PBEM/PBF setup panels (`PbemSetupPanel`, `PbfSetupPanel`)
+- **`games.strategy.engine.framework.network.ui`** — Host management actions: `ChangeGameOptionsClientAction` (edit a host bot's game options), `SetMapClientAction`, `SetPasswordAction`, `ChangeGameToSaveGameClientAction`, `BanPlayerAction`/`BootPlayerAction`
+- **`games.strategy.engine.framework.startup.ui.posted.game`** — PBEM/PBF setup panels (`PbemSetupPanel`, `PbfSetupPanel`) and editors (`DiceServerEditor`, `EmailSenderEditor`, `ForumPosterEditor` with their view models)
 - **`games.strategy.engine.framework.startup.mc`** — `HeadedLaunchAction` (creates `TripleAFrame` and `TripleADisplay` at game start), `HeadedPlayerTypes` (maps player type enums to implementations — human, client, DoesNothing, FlowFieldAi), `HeadedServerStartupRemote`
 - **`games.strategy.engine.auto.update`** — Startup update checks: engine version (every 2 days via `EngineVersionCheck`), tutorial map presence (`TutorialMapCheck`), outdated downloaded maps (`UpdatedMapsCheck`). Orchestrated by `UpdateChecks`.
-- **`games.strategy.engine.framework`** — `GameProcess` (external process launching), `ProcessRunnerUtil`
-- **`games.strategy.engine.framework.map.download`** — `MapDownloadController` — controls tutorial map download prompting (checks preference + user map folder)
+- **`games.strategy.engine.framework`** — `GameProcess` (external process launching), `ProcessRunnerUtil`, `HistorySynchronizer` (keeps a history-browsable `GameData` copy for the history panel)
+- **`games.strategy.engine.framework.map.download`** — `DownloadMapsWindow` (tabs for available/installed/out-of-date maps) with its model, table and progress panel; `MapDownloadController` — controls tutorial map download prompting (checks preference + user map folder). The download engine (`DownloadCoordinator`, `DownloadFile`) is in game-core
 - **`games.strategy.engine.lobby.client.login`** — Login flow (8 files, see [Login & Registration](#login--registration-lobbyclientlogin-8-files))
 - **`games.strategy.engine.lobby.client.ui`** — Lobby UI: `LobbyFrame`, `LobbyGamePanel`, `LobbyGameTableModel`
 - **`games.strategy.engine.lobby.client.ui.action`** — Player context-menu actions: `ShowPlayersAction`, moderator actions (`BanPlayerModeratorAction`, `DisconnectPlayerModeratorAction`, `MutePlayerAction`), `ActionConfirmation`/`ActionDuration`/`ActionDurationDialog` helpers
@@ -44,7 +47,10 @@ macOS-specific: opening a file or a `triplea://` URI is translated to the corres
 - **`games.strategy.engine.lobby.moderator.toolbox`** — Moderator administration tools (see [Moderator Toolbox](#moderator-toolbox-lobbymoderatortoolbox-21-files))
 - **`games.strategy.engine.posted.game`** — PBEM/PBF turn-posting panels: `AbstractForumPosterPanel` (extends `ActionPanel`), `EndTurnPanel`, `MoveForumPosterPanel`, `ForumPosterComponent`
 - **`games.strategy.triplea`** — `TripleAPlayer` (human player controller — extends `AbstractBasePlayer`, manages all turn phases by delegating to `TripleAFrame` UI methods)
-- **`games.strategy.triplea.odds.calculator`** — `BattleCalculatorDialog` (battle outcome odds calculator, extends `JDialog`)
+- **`games.strategy.triplea.odds.calculator`** — `BattleCalculatorDialog` (battle outcome odds calculator, extends `JDialog`) and its panels
+- **`games.strategy.triplea.image`** — Image factories for units, flags, dice, resources, PUs, territory effects and map tiles
+- **`games.strategy.triplea.printgenerator`** — `SetupFrame` (export setup charts) with `PuChart`, `StatsInfo`
+- **`games.strategy.ui`** — Image scroller views (`ImageScrollerLargeView`, `ImageScrollerSmallView`), `ScrollableTextField`
 - **`games.strategy.triplea.ui`** — Gameplay UI components (see [Gameplay UI](#gameplay-ui))
 - **`games.strategy.triplea.ui.menubar`** — Main menu bar (File, View, Game, Export, Network, Lobby, Debug menus — 8 files)
 - **`games.strategy.triplea.ui.display`** — `TripleADisplay` (implements `IDisplay`, routes engine display events to `TripleAFrame` methods)
@@ -68,7 +74,7 @@ The headed module provides ~20 gameplay UI files in `games.strategy.triplea.ui` 
 
 `TripleAFrame` (extends `JFrame`, implements `QuitHandler`) is the main game window. Layout:
 
-- **Map area**: `MapPanel` (interactive game map from game-core) + `ImageScrollerSmallView` (minimap in NORTH position)
+- **Map area**: `MapPanel` (interactive game map) + `ImageScrollerSmallView` (minimap in NORTH position)
 - **Tabbed pane** (`JTabbedPane`) with keyboard shortcuts:
   - "Actions" (Ctrl+C) — `ActionButtonsPanel` (phase-specific action panels)
   - "Players" (Ctrl+P) — `StatPanel` (player statistics)
@@ -129,11 +135,132 @@ Manages the set of `ActionPanel` instances using `CardLayout`, showing the appro
 - **`LobbyMenu`** — Lobby connection options.
 - **`DebugMenu`** — Developer debug options.
 
-Note: Help menu content (`HelpMenu`, `MoveHelpMenu`, `UnitHelpMenu`, etc.) lives in **game-core** `ui/menubar/help/`.
+Help menu content (`HelpMenu`, `MoveHelpMenu`, `UnitHelpMenu`, etc.) is in `ui/menubar/help/`; see [Help Menu](#help-menu-menubarhelp).
 
 ### Display Channel (`ui/display/`)
 
 - **`TripleADisplay`** — Implements `IDisplay` interface. Routes engine display events (battle notifications, casualty selection, step changes) to `TripleAFrame` methods on the Swing EDT.
+
+## UI Components
+
+The Swing components behind the gameplay UI, in `games.strategy.triplea.ui` and its subpackages. Game-headless has no UI; it uses core's `HeadlessDisplay` instead.
+
+### UiContext — Central UI State
+
+`UiContext` is the master UI context object, created once per game session. It holds:
+- Image factories (units, resources, dice, flags, territory effects, map images)
+- `MapData` (territory geometry, rendering properties)
+- Scale factor and display preferences
+- Current player state
+- Resource loader for the active map skin
+- Window lifecycle management (`isShutDown()`)
+
+Most UI components receive `UiContext` as a constructor parameter.
+
+### Map Rendering System (`screen/`, `screen/drawable/`)
+
+The map is rendered using a **tile-based, layered architecture**.
+
+**Tile System** (5 files in `screen/`):
+- **`TileManager`** — Orchestrates tile rendering. Determines which tiles need redrawing, collects `IDrawable` objects for each tile, and composites them in layer order.
+- **`Tile`** — Individual 256×256 pixel map tile with bounds and cached image.
+- **`UnitsDrawer`** — Renders unit stacks on tiles (flag icons, unit counts, damage markers).
+- **`SmallMapImageManager`** — Generates and caches the minimap image.
+- **`TerritoryOverLayDrawable`** — Territory highlighting overlays (selection, mouseover).
+
+**Layer System** (17 files in `screen/drawable/`):
+All drawables implement `IDrawable`, which defines a `DrawLevel` enum controlling render order (ascending ordinal):
+
+```
+DrawLevel (render order, bottom to top):
+  BASE_MAP_LEVEL          — BaseMapDrawable (map background image)
+  POLYGONS_LEVEL          — LandTerritoryDrawable, SeaZoneOutlineDrawable (territory fills, sea borders)
+  RELIEF_LEVEL            — ReliefMapDrawable (3D relief shading)
+  TERRITORY_EFFECT_LEVEL  — TerritoryEffectDrawable (special territory effects)
+  CAPITOL_MARKER_LEVEL    — CapitolMarkerDrawable, BlockadeZoneDrawable, ConvoyZoneDrawable, KamikazeZoneDrawable
+  VC_MARKER_LEVEL         — VcDrawable (victory condition markers)
+  DECORATOR_LEVEL         — DecoratorDrawable (composite wrapper)
+  TERRITORY_TEXT_LEVEL    — TerritoryNameDrawable (territory names and PU values)
+  BATTLE_HIGHLIGHT_LEVEL  — BattleDrawable (battle location highlights)
+  UNITS_LEVEL             — (unit stacks, rendered by UnitsDrawer)
+  TERRITORY_OVERLAY_LEVEL — (selection/hover highlights)
+```
+
+Other drawables: `AbstractDrawable` (base impl), `TerritoryDrawable` (base territory rendering), `MapTileDrawable` (individual tile rendering).
+
+### Map Panel (`panels/map/`, 6 files)
+
+- **`MapPanel`** — The main interactive map display (extends `ImageScrollerLargeView`). Manages `TileManager`, handles pan/zoom, unit selection, territory highlighting, and route drawing.
+- **`MapSelectionListener`** — Territory click/hover events.
+- **`UnitSelectionListener`** — Unit click events.
+- **`MouseOverUnitListener`** — Unit hover detection.
+- **`MapRouteDrawer`** — Draws movement routes on the map.
+- **`RouteDescription`** — Route path data.
+
+### Root UI Components (`ui/`)
+
+Key classes by functional area:
+
+**Production & Resources:**
+- `ProductionPanel`, `EditProductionPanel`, `TabbedProductionPanel` — Unit purchase UI
+- `ProductionRepairPanel` — Unit repair
+- `ProductionTabsProperties` — Tab configuration
+- `ResourceBar`, `ResourceChooser` — Resource display and selection
+
+**Battle & Combat Display:**
+- `BattleDisplay`, `BattleModel`, `BattleStepsPanel` — Battle visualization
+- `CasualtySelection` — Casualty selection UI
+- `DicePanel`, `DiceChooser` — Dice display and selection
+
+**Player & Territory Info:**
+- `StatPanel`, `ExtendedStats` — Player statistics tables
+- `EconomyPanel`, `TechnologyPanel` — Economic and tech displays
+- `PlayersPanel` — Player list
+- `ObjectivePanel`, `ObjectiveProperties` — Victory objectives
+- `TerritoryDetailPanel` — Territory information
+- `PoliticalStateOverview` — Alliance/war status
+- `SelectTerritoryComponent` — Territory picker
+
+**Unit Display:**
+- `SimpleUnitPanel`, `IndividualUnitPanel`, `IndividualUnitPanelGrouped` — Unit rendering panels
+- `UnitChooser`, `PlayerChooser` — Selection dialogs
+- `PlacementUnitsCollapsiblePanel` — Placement support
+- `MapUnitTooltipManager`, `TooltipProperties`, `UnitIconProperties` — Tooltip and icon configuration
+
+**Utility:**
+- `UiContext` — Master UI context (see above)
+- `MacOsIntegration`, `QuitHandler` — Platform integration
+- `MouseDetails` — Mouse event info
+- `BottomBar` — Status bar
+- `FlagDrawMode` — Flag rendering mode
+- `VerifiedRandomNumbersDialog` — Verified dice display
+
+### Unit Scroller (`unit/scroller/`, 5 files)
+
+Navigation widget that helps players "scroll through" units that haven't moved yet:
+- **`UnitScroller`** — Previous/Next buttons, territory icon, skip/sleep functionality
+- **`UnitScrollerModel`** — Tracks unmoved units across combat and non-combat phases
+- **`UnitScrollerIcon`**, **`AvatarPanelFactory`**, **`AvatarCoordinateCalculator`** — Icon rendering
+
+### History (`history/`, 3 files)
+
+- **`HistoryPanel`** — JTree-based UI showing game history (moves, battles, events). Supports expand/collapse, right-click context menu, and integration with `HistoryDetailsPanel`.
+- **`HistoryLog`** — Detailed text view dialog for history nodes. Formats moves, battles, dice rolls, and resource changes. Supports verbose logging toggle.
+- **`HistoryDetailsPanel`** — Displays details for the selected history node.
+
+### Statistics (`statistics/`, 1 file)
+
+- **`StatisticsDialog`** — Uses XChart library to display player statistics over time in tabbed graphs.
+
+### Logic (`logic/`, 2 files)
+
+- `MapScrollUtil`, `RouteCalculator` — Map scrolling and wrapped-map route geometry.
+
+### Help Menu (`menubar/help/`)
+
+`HelpMenu` (builder), `MoveHelpMenu`, `UnitHelpMenu`, `GameNotesMenu`, `UnitStatsTable`, `InformationDialog`.
+
+The AI debug menu's `AiPlayerDebugAction` interface and `AiPlayerDebugOption` stay in game-core `ui/menubar/debug/`, so the AI can contribute menu entries.
 
 ## Lobby UI
 
