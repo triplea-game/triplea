@@ -15,7 +15,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.SystemId;
-import org.triplea.swing.DialogBuilder;
 
 class MessengerIntegrationTest {
   private IServerMessenger serverMessenger;
@@ -27,7 +26,6 @@ class MessengerIntegrationTest {
 
   @BeforeEach
   void setUp() throws Exception {
-    DialogBuilder.disableUi();
     serverMessenger = new TestServerMessenger();
     serverMessenger.setAcceptNewConnections(true);
     serverMessenger.addMessageListener(serverMessageListener);

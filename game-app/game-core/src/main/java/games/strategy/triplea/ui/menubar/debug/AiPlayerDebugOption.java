@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui.menubar.debug;
 
-import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
@@ -50,5 +49,6 @@ public class AiPlayerDebugOption {
    */
   @Builder.Default Consumer<AiPlayerDebugAction> actionListener = aiPlayerDebugAction -> {};
 
-  @Builder.Default int mnemonic = KeyEvent.VK_UNDEFINED;
+  /** The menu item's key code mnemonic; 0 (KeyEvent.VK_UNDEFINED) means none. */
+  @Builder.Default int mnemonic = 0;
 }

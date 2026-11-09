@@ -5,6 +5,7 @@ import static games.strategy.engine.framework.CliProperties.SERVER_PASSWORD;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.mc.ClientModel;
+import games.strategy.engine.framework.startup.mc.HeadedClientModelUi;
 import games.strategy.engine.framework.startup.mc.HeadedLaunchAction;
 import games.strategy.engine.framework.startup.mc.HeadedPlayerTypes;
 import games.strategy.engine.framework.startup.mc.ServerModel;
@@ -106,12 +107,12 @@ public class HeadedServerSetupModel {
     final ClientModel model =
         new ClientModel(
             gameSelectorModel,
-            this::showSelectType,
+            new HeadedClientModelUi(ui, this::showSelectType),
             new HeadedLaunchAction(ui),
             HeadedGameRunner::showMainFrame,
             HeadedGameRunner::clientLeftGame,
             HeadedPlayerTypes.CLIENT_PLAYER);
-    if (model.createClientMessenger(ui)) {
+    if (model.createClientMessenger()) {
       SwingUtilities.invokeLater(
           () -> setGameTypePanel(new ClientSetupPanel(model), this::showMultiplayer));
     } else {

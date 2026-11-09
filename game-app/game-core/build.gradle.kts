@@ -11,11 +11,9 @@ dependencies {
     implementation(project(":lobby-client"))
     implementation(project(":lobby-client-data"))
     implementation(project(":java-extras"))
-    implementation(project(":swing-lib"))
     implementation(project(":websocket-client"))
     implementation(project(":xml-reader"))
     implementation(libs.gson)
-    testImplementation(project(":swing-lib-test-support"))
     testImplementation(project(":test-common"))
     testImplementation(libs.archunit.junit5)
     // Configures mockito to use the legacy "subclass mock maker"
@@ -28,6 +26,7 @@ dependencies {
         because("This provides javax.annotations.Nullable directly, instead of relying on pulling it as a transitive dep of websockets")
     }
     testFixturesImplementation(libs.guava)
+    testFixturesImplementation(libs.sonatype.goodies.prefs)
     testFixturesImplementation(libs.jetbrains.annotations)
 
     testFixturesCompileOnly(libs.lombok)

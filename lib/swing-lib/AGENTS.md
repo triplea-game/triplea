@@ -5,7 +5,7 @@ constructing Swing interfaces, layout helpers, thread-safe dialog utilities, and
 a presentation-model event queue. No external Swing dependencies — uses only JDK
 (`javax.swing`, `java.awt`) plus `lib/java-extras`.
 
-Consumed by `game-core` and `game-headed`.
+Consumed by `game-headed`. `game-core` must not depend on it (it is shared with the headless bot).
 
 ## Package Layout
 

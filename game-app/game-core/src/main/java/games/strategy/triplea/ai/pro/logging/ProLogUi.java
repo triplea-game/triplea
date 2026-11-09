@@ -1,58 +1,29 @@
 package games.strategy.triplea.ai.pro.logging;
 
-import games.strategy.engine.framework.GameShutdownRegistry;
-import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugAction;
-import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugOption;
-import games.strategy.ui.Util;
-import java.awt.Frame;
-import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
-import javax.swing.SwingUtilities;
 import lombok.experimental.UtilityClass;
-import org.triplea.swing.key.binding.KeyCode;
 
-/** Class to manage log window display. */
+/** Routes Pro AI log output to a log sink or to the attached {@link ProLogDisplay}, if any. */
 @UtilityClass
 public final class ProLogUi {
-  private static ProLogWindow settingsWindow = null;
   private static String currentName = "";
   private static int currentRound = 0;
   private static volatile Consumer<String> logSink = null;
+  private static volatile ProLogDisplay logDisplay = null;
 
-  /** Sends AI log messages to {@code sink} instead of the log window; null restores the window. */
+  /** Sends AI log messages to {@code sink} instead of the display; null restores the display. */
   public static void setLogSink(final @Nullable Consumer<String> sink) {
     logSink = sink;
   }
 
-  public static List<AiPlayerDebugOption> buildDebugOptions(final Frame frame) {
-    Util.ensureOnEventDispatchThread();
-    if (settingsWindow == null) {
-      settingsWindow = new ProLogWindow(frame);
-      GameShutdownRegistry.registerShutdownAction(ProLogUi::clearCachedInstances);
-    }
-    ProLogger.info("Initialized Hard AI");
-    return List.of(
-        AiPlayerDebugOption.builder()
-            .title("Show Logs")
-            .actionListener(ProLogUi::showSettingsWindow)
-            .mnemonic(KeyCode.X.getInputEventCode())
-            .build());
+  /** Attaches the display that shows AI log output; null detaches it. */
+  public static void setLogDisplay(final @Nullable ProLogDisplay display) {
+    logDisplay = display;
   }
 
-  public static void clearCachedInstances() {
-    if (settingsWindow != null) {
-      settingsWindow.dispose();
-    }
-    settingsWindow = null;
-  }
-
-  public static void showSettingsWindow(AiPlayerDebugAction aiPlayerDebugAction) {
-    if (settingsWindow == null) {
-      return;
-    }
-    ProLogger.info("Showing Hard AI settings window");
-    settingsWindow.setVisible(true);
+  static boolean hasReceiver() {
+    return logSink != null || logDisplay != null;
   }
 
   static void notifyAiLogMessage(final String message) {
@@ -61,22 +32,21 @@ public final class ProLogUi {
       sink.accept(message);
       return;
     }
-    SwingUtilities.invokeLater(
-        () -> {
-          if (settingsWindow != null) {
-            settingsWindow.addMessage(message);
-          }
-        });
+    final ProLogDisplay display = logDisplay;
+    if (display != null) {
+      display.addMessage(message);
+    }
   }
 
   public static void notifyStartOfRound(final int round, final String name) {
-    if (settingsWindow == null) {
+    final ProLogDisplay display = logDisplay;
+    if (display == null) {
       return;
     }
     if (round != currentRound || !name.equals(currentName)) {
       currentRound = round;
       currentName = name;
-      settingsWindow.notifyNewRound(round, name);
+      display.notifyNewRound(round, name);
     }
   }
 }

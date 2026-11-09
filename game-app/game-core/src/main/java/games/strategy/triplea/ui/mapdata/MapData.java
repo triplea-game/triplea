@@ -4,7 +4,6 @@ import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.image.UnitImageFactory;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -41,6 +40,8 @@ import org.triplea.util.Tuple;
 /** contains data about the territories useful for drawing. */
 @Slf4j
 public class MapData {
+  public static final int DEFAULT_UNIT_ICON_SIZE = 48;
+
   @NonNls public static final String PROPERTY_UNITS_SCALE = "units.scale";
   @NonNls public static final String PROPERTY_UNITS_WIDTH = "units.width";
   @NonNls public static final String PROPERTY_UNITS_HEIGHT = "units.height";
@@ -306,12 +307,12 @@ public class MapData {
 
   /** Does not take account of any scaling. */
   public int getDefaultUnitWidth() {
-    return getIntegerProperty(PROPERTY_UNITS_WIDTH, () -> UnitImageFactory.DEFAULT_UNIT_ICON_SIZE);
+    return getIntegerProperty(PROPERTY_UNITS_WIDTH, () -> DEFAULT_UNIT_ICON_SIZE);
   }
 
   /** Does not take account of any scaling. */
   public int getDefaultUnitHeight() {
-    return getIntegerProperty(PROPERTY_UNITS_HEIGHT, () -> UnitImageFactory.DEFAULT_UNIT_ICON_SIZE);
+    return getIntegerProperty(PROPERTY_UNITS_HEIGHT, () -> DEFAULT_UNIT_ICON_SIZE);
   }
 
   /** Does not take account of any scaling. */

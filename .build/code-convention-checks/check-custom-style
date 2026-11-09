@@ -228,6 +228,24 @@ function useFlatGradleProjectPathsInDocs() {
 }
 export -f useFlatGradleProjectPathsInDocs
 
+# Swing UI lives in game-headed; game-core is shared with the headless bot. 'javax.swing.tree' is
+# allowed: History extends DefaultTreeModel, and its nodes and StatisticsAggregator build on it.
+function keepSwingOutOfGameCore() {
+  title "Keep Swing out of game-core main code"
+  example "move the Swing class to game-headed (same package), or cut a seam: core interface, headed impl"
+  local found=0
+  local -r coreMain="$basePath/game-app/game-core/src/main/java"
+  if [ -d "$coreMain" ]; then
+    grep --color=auto -rEn "javax\.swing\.[A-Za-z]" "$coreMain" --include=*.java \
+      | grep -vE "javax\.swing\.tree\." \
+      | grep -vE "^[^:]+:[0-9]+:[[:space:]]*(//|/?\*)" \
+      && status=1 && found=1
+  fi
+
+  displayResult "$found"
+}
+export -f keepSwingOutOfGameCore
+
 
 removeUnusedLogAnnotations
 useStaticImportsInTest
@@ -236,6 +254,7 @@ storeTextFilesWithLfLineEndings
 useEmptyOverSizeEqualsZero
 linkToExistingFilesInDocs
 useFlatGradleProjectPathsInDocs
+keepSwingOutOfGameCore
 
 ## These have existing violations in the code base, so they check the added lines only
 favorJava9CollectionsApi

@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.startup.ui;
 
-import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.framework.I18nEngineFramework;
 import games.strategy.engine.framework.I18nResourceBundle;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
@@ -27,6 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
 import org.triplea.domain.data.UserName;
+import org.triplea.game.chat.ChatModel;
 import org.triplea.swing.SwingAction;
 
 /** Network client game staging panel, can be used to select sides and chat. */
@@ -197,8 +197,8 @@ public class ClientSetupPanel extends SetupPanel {
   }
 
   @Override
-  public ChatPanel getChatModel() {
-    return clientModel.getChatPanel();
+  public ChatModel getChatModel() {
+    return clientModel.getChatModel();
   }
 
   @Override
