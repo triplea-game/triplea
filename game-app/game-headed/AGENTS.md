@@ -68,7 +68,7 @@ Game assets are downloaded to `build/downloads/assets-zip` by the `downloadAsset
 
 ## Gameplay UI
 
-The headed module provides ~20 gameplay UI files in `games.strategy.triplea.ui` plus subpackages for menus, display, export, and movement.
+The headed module provides the gameplay UI in `games.strategy.triplea.ui` plus subpackages for menus, display, export, and movement.
 
 ### TripleAFrame — Main Game Window
 
@@ -205,7 +205,7 @@ Key classes by functional area:
 - `ProductionPanel`, `EditProductionPanel`, `TabbedProductionPanel` — Unit purchase UI
 - `ProductionRepairPanel` — Unit repair
 - `ProductionTabsProperties` — Tab configuration
-- `ResourceBar`, `ResourceChooser` — Resource display and selection
+- `ResourceBar` — Resource display
 
 **Battle & Combat Display:**
 - `BattleDisplay`, `BattleModel`, `BattleStepsPanel` — Battle visualization
@@ -223,7 +223,7 @@ Key classes by functional area:
 
 **Unit Display:**
 - `SimpleUnitPanel`, `IndividualUnitPanel`, `IndividualUnitPanelGrouped` — Unit rendering panels
-- `UnitChooser`, `PlayerChooser` — Selection dialogs
+- `UnitChooser` — Unit selection dialog
 - `PlacementUnitsCollapsiblePanel` — Placement support
 - `MapUnitTooltipManager`, `TooltipProperties`, `UnitIconProperties` — Tooltip and icon configuration
 

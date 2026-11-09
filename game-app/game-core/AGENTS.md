@@ -378,7 +378,7 @@ The `map/` package handles map installation, discovery, and downloading.
 
 **Local game:**
 ```
-LocalLauncher.launch()
+LocalLauncher.launch()   (game-headed)
   → GameDataManager loads game data
   → ServerGame created with LocalNoOpMessenger
   → IGameLoader.startGame() begins delegate execution
@@ -412,7 +412,7 @@ All game state mutations flow through `Change` objects:
 2. `ServerGame` applies change to local `GameData`
 3. `IGameModifiedChannel` broadcasts `gameDataChanged(change)` to all clients
 4. Each `ClientGame` applies the change to its local `GameData` copy
-5. `HistorySynchronizer` maintains a separate history-browsable copy
+5. `HistorySynchronizer` (game-headed) maintains a separate history-browsable copy
 
 ## UI Layer
 
