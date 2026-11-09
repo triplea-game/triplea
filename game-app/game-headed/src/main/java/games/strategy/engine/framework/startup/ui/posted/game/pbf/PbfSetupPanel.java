@@ -34,7 +34,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
+import org.triplea.swing.SectionHeader;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
 import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
@@ -112,7 +112,6 @@ public class PbfSetupPanel extends SetupPanel implements Observer {
     removeAll();
     setLayout(new GridBagLayout());
     // Empty border works as margin
-    setBorder(new EmptyBorder(10, 10, 10, 10));
     int row = 0;
     add(
         diceServerEditor,
@@ -123,7 +122,7 @@ public class PbfSetupPanel extends SetupPanel implements Observer {
             .weightY(0.0)
             .anchor(GridBagConstraintsAnchor.NORTHWEST)
             .fill(GridBagConstraintsFill.HORIZONTAL)
-            .insets(10, 0, 20, 0)
+            .insets(0, 0, 16, 0)
             .build());
 
     final JTabbedPane tabbedPane = new JTabbedPane();
@@ -136,23 +135,28 @@ public class PbfSetupPanel extends SetupPanel implements Observer {
             .weightY(0.0)
             .anchor(GridBagConstraintsAnchor.NORTHWEST)
             .fill(GridBagConstraintsFill.HORIZONTAL)
-            .insets(10, 0, 20, 0)
+            .insets(0, 0, 16, 0)
             .build());
     tabbedPane.addTab(
         I18nEngineFramework.get().getText("startup.PbfSetupPanel.tab.ForumPosterEditor.Lbl"),
         forumPosterEditor);
 
-    // add selection of local players
     add(
-        localPlayerSelection,
-        new GridBagConstraintsBuilder(0, row)
-            .gridWidth(1)
-            .gridHeight(1)
+        SectionHeader.create(
+            I18nEngineFramework.get().getText("startup.SetupPanel.players.Lbl"),
+            localPlayerSelection),
+        new GridBagConstraintsBuilder(0, row++)
             .weightX(1.0)
-            .weightY(0.0)
-            .anchor(GridBagConstraintsAnchor.NORTHEAST)
-            .fill(GridBagConstraintsFill.NONE)
-            .insets(10, 0, 10, 0)
+            .anchor(GridBagConstraintsAnchor.NORTHWEST)
+            .fill(GridBagConstraintsFill.HORIZONTAL)
+            .insets(0, 0, 0, 0)
+            .build());
+    // pushes the sections to the top
+    add(
+        new JPanel(),
+        new GridBagConstraintsBuilder(0, row)
+            .weightY(1.0)
+            .fill(GridBagConstraintsFill.BOTH)
             .build());
     layoutPlayerComponents(localPlayerPanel, playerTypes, gameSelectorModel.getGameData());
   }
@@ -192,6 +196,23 @@ public class PbfSetupPanel extends SetupPanel implements Observer {
     final boolean ready = diceServerValid && forumValid && gameSelectorModel.getGameData() != null;
     // make sure at least 1 player is enabled
     return ready && playerTypes.stream().anyMatch(PlayerSelectorRow::isPlayerEnabled);
+  }
+
+  @Override
+  public Optional<String> getStartBlockedReason() {
+    if (gameSelectorModel.getGameData() == null) {
+      return Optional.of("Select a game to play");
+    }
+    if (!diceServerEditor.areFieldsValid()) {
+      return Optional.of("Enter valid To and Cc email addresses for the dice server");
+    }
+    if (!forumPosterEditorViewModel.areFieldsValid()) {
+      return Optional.of("Complete the forum settings");
+    }
+    if (playerTypes.stream().noneMatch(PlayerSelectorRow::isPlayerEnabled)) {
+      return Optional.of("Enable at least one player");
+    }
+    return Optional.empty();
   }
 
   @Override

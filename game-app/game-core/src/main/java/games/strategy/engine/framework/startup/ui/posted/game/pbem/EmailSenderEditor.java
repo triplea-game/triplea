@@ -3,6 +3,7 @@ package games.strategy.engine.framework.startup.ui.posted.game.pbem;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.startup.ui.posted.game.HelpTexts;
 import games.strategy.triplea.settings.ClientSetting;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -12,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.border.TitledBorder;
 import org.triplea.http.client.lobby.LobbyConstants;
 import org.triplea.java.ViewModelListener;
 import org.triplea.swing.DocumentListenerBuilder;
@@ -48,7 +48,7 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
 
   private final JPanel contents =
       new JPanelBuilder()
-          .border(new TitledBorder("Automatically Send Emails"))
+          .border(BorderFactory.createEmptyBorder(8, 0, 0, 0))
           .gridBagLayout()
           .build();
 
@@ -194,7 +194,9 @@ public class EmailSenderEditor implements ViewModelListener<EmailSenderEditorVie
     int row = 0;
 
     row++;
-    contents.add(new JLabel("Email Provider"), new GridBagConstraintsBuilder(0, row).build());
+    contents.add(
+        new JLabel("Email Provider"),
+        new GridBagConstraintsBuilder(0, row).insets(0, 0, 0, 8).build());
     contents.add(emailProviderSelectionBox, new GridBagConstraintsBuilder(1, row).build());
     contents.add(helpButton, new GridBagConstraintsBuilder(2, row).build());
 

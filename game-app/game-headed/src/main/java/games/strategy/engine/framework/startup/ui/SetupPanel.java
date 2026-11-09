@@ -11,6 +11,7 @@ import java.awt.Insets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import javax.swing.Action;
@@ -20,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
+import org.triplea.swing.SectionHeader;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 
@@ -29,6 +31,7 @@ import org.triplea.swing.SwingComponents;
  */
 public abstract class SetupPanel extends JPanel implements SetupModel {
   private static final long serialVersionUID = 4001323470187210773L;
+  private static final int FILLER_COLUMN = 20;
   private static final String SET_ALL_DEFAULT_LABEL =
       I18nEngineFramework.get().getText("startup.SetupPanel.SET_ALL_DEFAULT_LABEL");
 
@@ -48,6 +51,14 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
   @Override
   public ChatModel getChatModel() {
     return null;
+  }
+
+  /**
+   * Says why the game can't start yet, for display beside the disabled Play button. Empty while the
+   * game can start, or when there is nothing the user can do about it.
+   */
+  public Optional<String> getStartBlockedReason() {
+    return Optional.empty();
   }
 
   public abstract List<Action> getUserActions();
@@ -70,8 +81,38 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
     final Map<String, String> reloadSelections = GamePlayer.currentPlayers(data);
     final List<GamePlayer> players = data.getPlayerList().getPlayers();
 
+    panel.add(
+        SectionHeader.create(bundle.getText("startup.SetupPanel.players.Lbl")),
+        new GridBagConstraints(
+            0,
+            0,
+            GridBagConstraints.REMAINDER,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(0, 0, 4, 0),
+            0,
+            0));
+    // an empty last column takes the spare width, keeping the player rows at the left edge
+    panel.add(
+        new JPanel(),
+        new GridBagConstraints(
+            FILLER_COLUMN,
+            1,
+            1,
+            1,
+            1,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 0, 0),
+            0,
+            0));
+
     int gridX = 0;
-    int gridY = 1;
+    int gridY = 2;
     if (!playersThatMayBeDisabled.isEmpty()
         || playersEnablementListing.containsValue(Boolean.FALSE)) {
       final JLabel enableLabel = new JLabel(bundle.getText("startup.SetupPanel.enable.Lbl"));

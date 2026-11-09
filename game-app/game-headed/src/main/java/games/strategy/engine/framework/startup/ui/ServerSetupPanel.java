@@ -18,10 +18,11 @@ import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.net.IServerMessenger;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -32,6 +33,7 @@ import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -42,6 +44,8 @@ import lombok.Getter;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
 import org.triplea.java.collections.CollectionUtils;
+import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.SectionHeader;
 import org.triplea.swing.SwingComponents;
 
 /**
@@ -70,24 +74,20 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 
   private void createComponents() {
     final IServerMessenger messenger = model.getMessenger();
-    final Color backGround = new JTextField().getBackground();
-    portField = new JTextField("" + messenger.getLocalNode().getPort());
-    portField.setEnabled(true);
-    portField.setEditable(false);
-    portField.setBackground(backGround);
-    portField.setColumns(6);
-    addressField = new JTextField(messenger.getLocalNode().getAddress().getHostAddress());
-    addressField.setEnabled(true);
-    addressField.setEditable(false);
-    addressField.setBackground(backGround);
-    addressField.setColumns(20);
-    nameField = new JTextField(messenger.getLocalNode().getName());
-    nameField.setEnabled(true);
-    nameField.setEditable(false);
-    nameField.setBackground(backGround);
-    nameField.setColumns(20);
+    portField = newReadOnlyValue("" + messenger.getLocalNode().getPort());
+    addressField = newReadOnlyValue(messenger.getLocalNode().getAddress().getHostAddress());
+    nameField = newReadOnlyValue(messenger.getLocalNode().getName());
     infoPanel = new JPanel();
     networkPanel = new JPanel();
+  }
+
+  /** A value the user can select and copy but not edit, so it is drawn as text, not as a field. */
+  private static JTextField newReadOnlyValue(final String text) {
+    final JTextField field = new JTextField(text);
+    field.setEditable(false);
+    field.setBorder(null);
+    field.setOpaque(false);
+    return field;
   }
 
   private void layoutComponents() {
@@ -95,98 +95,98 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     setLayout(new BorderLayout());
     infoPanel.setLayout(new GridBagLayout());
     infoPanel.add(
-        new JLabel(bundle.getText("startup.ServerSetupPanel.infoPanel.Name.Lbl")),
+        SectionHeader.create(bundle.getText("startup.ServerSetupPanel.connection.Lbl")),
         new GridBagConstraints(
             0,
             0,
+            GridBagConstraints.REMAINDER,
             1,
-            1,
-            0,
-            0.0,
-            GridBagConstraints.EAST,
-            GridBagConstraints.NONE,
-            new Insets(5, 10, 0, 5),
-            0,
-            0));
-    infoPanel.add(
-        new JLabel(bundle.getText("startup.ServerSetupPanel.infoPanel.Address.Lbl")),
-        new GridBagConstraints(
-            0,
-            1,
-            1,
-            1,
-            0,
-            0.0,
-            GridBagConstraints.EAST,
-            GridBagConstraints.NONE,
-            new Insets(5, 10, 0, 5),
-            0,
-            0));
-    infoPanel.add(
-        new JLabel(bundle.getText("startup.ServerSetupPanel.infoPanel.Port.Lbl")),
-        new GridBagConstraints(
-            0,
-            2,
-            1,
-            1,
-            0,
-            0.0,
-            GridBagConstraints.EAST,
-            GridBagConstraints.NONE,
-            new Insets(5, 10, 0, 5),
-            0,
-            0));
-    infoPanel.add(
-        nameField,
-        new GridBagConstraints(
-            1,
-            0,
-            1,
-            1,
-            0.5,
             1.0,
+            0,
             GridBagConstraints.WEST,
-            GridBagConstraints.BOTH,
-            new Insets(5, 0, 0, 5),
+            GridBagConstraints.HORIZONTAL,
+            new Insets(0, 0, 4, 0),
             0,
             0));
-    infoPanel.add(
+    final JButton copyAddress =
+        new JButtonBuilder()
+            .title("Copy")
+            .toolTip("Copy the address and port, to send to the other players")
+            .actionListener(
+                () ->
+                    Toolkit.getDefaultToolkit()
+                        .getSystemClipboard()
+                        .setContents(
+                            new StringSelection(addressField.getText() + ":" + portField.getText()),
+                            null))
+            .build();
+    addInfoRow(1, bundle.getText("startup.ServerSetupPanel.infoPanel.Name.Lbl"), nameField, null);
+    addInfoRow(
+        2,
+        bundle.getText("startup.ServerSetupPanel.infoPanel.Address.Lbl"),
         addressField,
+        copyAddress);
+    addInfoRow(3, bundle.getText("startup.ServerSetupPanel.infoPanel.Port.Lbl"), portField, null);
+    add(infoPanel, BorderLayout.NORTH);
+  }
+
+  private void addInfoRow(
+      final int row,
+      final String label,
+      final JTextField value,
+      @Nullable final JComponent action) {
+    infoPanel.add(
+        new JLabel(label),
         new GridBagConstraints(
+            0,
+            row,
             1,
             1,
-            1,
-            1,
-            0.5,
-            1.0,
+            0,
+            0,
             GridBagConstraints.WEST,
-            GridBagConstraints.BOTH,
-            new Insets(5, 0, 0, 5),
+            GridBagConstraints.NONE,
+            new Insets(4, 0, 0, 12),
             0,
             0));
     infoPanel.add(
-        portField,
+        value,
         new GridBagConstraints(
             1,
-            2,
+            row,
             1,
             1,
-            0.5,
-            1.0,
+            0,
+            0,
             GridBagConstraints.WEST,
-            GridBagConstraints.BOTH,
-            new Insets(5, 0, 0, 5),
+            GridBagConstraints.NONE,
+            new Insets(4, 0, 0, 8),
             0,
             0));
-    add(infoPanel, BorderLayout.NORTH);
+    if (action != null) {
+      infoPanel.add(
+          action,
+          new GridBagConstraints(
+              2,
+              row,
+              1,
+              1,
+              0,
+              0,
+              GridBagConstraints.WEST,
+              GridBagConstraints.NONE,
+              new Insets(4, 0, 0, 0),
+              0,
+              0));
+    }
   }
 
   private void layoutPlayers() {
     final JPanel players = new JPanel();
     final GridBagLayout layout = new GridBagLayout();
     players.setLayout(layout);
-    final Insets spacing = new Insets(3, 16, 0, 0);
-    final Insets lastSpacing = new Insets(3, 16, 0, 16);
+    final Insets spacing = new Insets(3, 0, 0, 16);
+    final Insets lastSpacing = new Insets(3, 0, 0, 16);
     int gridx = 0;
     final boolean playersAllowedToBeDisabled =
         !model.getPlayersAllowedToBeDisabled().isEmpty()
@@ -195,7 +195,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     if (playersAllowedToBeDisabled) {
       enabledPlayerConstraints.anchor = GridBagConstraints.WEST;
       enabledPlayerConstraints.gridx = gridx++;
-      enabledPlayerConstraints.insets = new Insets(3, 20, 0, -10);
+      enabledPlayerConstraints.insets = new Insets(3, 0, 0, 8);
     }
     final GridBagConstraints nameConstraints = new GridBagConstraints();
     nameConstraints.anchor = GridBagConstraints.WEST;
@@ -218,30 +218,46 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     allianceConstraints.gridx = gridx;
     allianceConstraints.insets = lastSpacing;
     I18nResourceBundle bundle = I18nEngineFramework.get();
+    players.add(
+        SectionHeader.create(bundle.getText("startup.SetupPanel.players.Lbl")),
+        new GridBagConstraints(
+            0,
+            0,
+            GridBagConstraints.REMAINDER,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(16, 0, 4, 0),
+            0,
+            0));
+    // an empty last column takes the spare width, keeping the player rows at the left edge
+    final JPanel filler = new JPanel();
+    final GridBagConstraints fillerConstraints = new GridBagConstraints();
+    fillerConstraints.gridx = gridx + 1;
+    fillerConstraints.gridy = 1;
+    fillerConstraints.weightx = 1;
+    layout.setConstraints(filler, fillerConstraints);
+    players.add(filler);
     if (playersAllowedToBeDisabled) {
       final JLabel enableLabel = new JLabel(bundle.getText("startup.SetupPanel.enable.Lbl"));
-      enableLabel.setForeground(Color.black);
       layout.setConstraints(enableLabel, enabledPlayerConstraints);
       players.add(enableLabel);
     }
     final JLabel nameLabel = new JLabel(bundle.getText("startup.SetupPanel.name.Lbl"));
-    nameLabel.setForeground(Color.black);
     layout.setConstraints(nameLabel, nameConstraints);
     players.add(nameLabel);
     final JLabel playedByLabel = new JLabel(bundle.getText("startup.SetupPanel.player.Lbl"));
-    playedByLabel.setForeground(Color.black);
     layout.setConstraints(playedByLabel, playerConstraints);
     players.add(playedByLabel);
     final JLabel localLabel = new JLabel(bundle.getText("startup.SetupPanel.local.Lbl"));
-    localLabel.setForeground(Color.black);
     layout.setConstraints(localLabel, localConstraints);
     players.add(localLabel);
     final JLabel typeLabel = new JLabel(bundle.getText("startup.SetupPanel.type.Lbl"));
-    typeLabel.setForeground(Color.black);
     layout.setConstraints(typeLabel, typeConstraints);
     players.add(typeLabel);
     final JLabel allianceLabel = new JLabel(bundle.getText("startup.SetupPanel.alliance.Lbl"));
-    allianceLabel.setForeground(Color.black);
     layout.setConstraints(allianceLabel, allianceConstraints);
     players.add(allianceLabel);
     if (playerRows.isEmpty()) {
@@ -310,6 +326,21 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   @Override
   public boolean canGameStart() {
     return SetupModel.staticCanGameStart(gameSelectorModel, model);
+  }
+
+  @Override
+  public Optional<String> getStartBlockedReason() {
+    if (gameSelectorModel.getGameData() == null) {
+      return Optional.of("Select a game to play");
+    }
+    final Map<String, String> playersToNodes = model.getPlayersToNodeListing();
+    if (playersToNodes.isEmpty() || playersToNodes.containsValue(null)) {
+      return Optional.of("Every player needs someone to play it: tick Local, or wait for players");
+    }
+    if (!model.getPlayersEnabledListing().containsValue(Boolean.TRUE)) {
+      return Optional.of("Enable at least one player");
+    }
+    return Optional.empty();
   }
 
   @Override

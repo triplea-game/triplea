@@ -10,6 +10,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
@@ -19,7 +20,9 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -28,7 +31,10 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.SectionHeader;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
+import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
@@ -51,6 +57,9 @@ public class MainPanel extends JPanel {
           .title(I18nEngineFramework.get().getText("startup.MainPanel.btn.Back.Lbl"))
           .build();
   private final Supplier<Optional<Runnable>> backAction;
+  private final JLabel startBlockedReason = new JLabel();
+  private final Component startBlockedReasonBalance = Box.createRigidArea(new Dimension(0, 0));
+  private final String playButtonToolTip;
 
   private final JPanel gameSetupPanelHolder = new JPanelBuilder().borderLayout().build();
   private final JPanel gameOptionsHolder = new JPanelBuilder().borderLayout().build();
@@ -73,6 +82,7 @@ public class MainPanel extends JPanel {
     this.gameSelectorPanel = gameSelectorPanel;
     this.backAction = backAction;
     playButton.addActionListener(e -> launchAction.accept(this));
+    playButtonToolTip = playButton.getToolTipText();
     backButton.addActionListener(e -> backAction.get().ifPresent(Runnable::run));
 
     final JScrollPane gameSetupPanelScroll = new JScrollPane(gameSetupPanelHolder);
@@ -108,12 +118,27 @@ public class MainPanel extends JPanel {
             .build();
     for (final JButton button : List.of(playButton, backButton, quitButton)) {
       button.setText(button.getText().toUpperCase(Locale.ROOT));
-      LaunchScreenStyle.styleAsMenuItem(button, NAVIGATION_FONT_INCREASE);
     }
-    final JPanel buttonsPanel =
+    LaunchScreenStyle.styleAsPrimary(playButton, NAVIGATION_FONT_INCREASE);
+    LaunchScreenStyle.styleAsMenuItem(backButton, NAVIGATION_FONT_INCREASE);
+    LaunchScreenStyle.styleAsMenuItem(quitButton, NAVIGATION_FONT_INCREASE);
+    startBlockedReason.setForeground(UIManager.getColor("Label.disabledForeground"));
+    final JPanel navigation =
         new JPanelBuilder().add(playButton).add(backButton).add(quitButton).build();
+    // the reason sits left of Play; an equally wide strut on the right keeps the buttons centred
+    final JPanel buttonsPanel = new JPanel(new GridBagLayout());
+    buttonsPanel.add(
+        startBlockedReason,
+        new GridBagConstraintsBuilder(0, 0)
+            .weightX(1)
+            .anchor(GridBagConstraintsAnchor.EAST)
+            .build());
+    buttonsPanel.add(navigation, new GridBagConstraintsBuilder(1, 0).build());
+    buttonsPanel.add(
+        startBlockedReasonBalance, new GridBagConstraintsBuilder(2, 0).weightX(1).build());
     buttonsPanel.setBorder(
-        BorderFactory.createMatteBorder(1, 0, 0, 0, UIManager.getColor("Separator.foreground")));
+        BorderFactory.createCompoundBorder(
+            SectionHeader.ruleAbove(), BorderFactory.createEmptyBorder(6, 0, 6, 0)));
     add(buttonsPanel, BorderLayout.SOUTH);
     setPreferredSize(initialSize);
     updatePlayButtonState();
@@ -129,6 +154,7 @@ public class MainPanel extends JPanel {
     remove(chatSplit);
     chatPanelHolder.removeAll();
 
+    chatPanelHolder.setBorder(SectionHeader.ruleAbove());
     chatPanelHolder.add(chatComponent, BorderLayout.CENTER);
     chatSplit.setTopComponent(mainPanel);
     chatSplit.setBottomComponent(chatPanelHolder);
@@ -153,14 +179,22 @@ public class MainPanel extends JPanel {
     backButton.setVisible(backAction.get().isPresent());
 
     gameSetupPanelHolder.removeAll();
-    gameSetupPanelHolder.add(panel, BorderLayout.CENTER);
-    final List<Action> actions = gameSetupPanel.getUserActions();
-    if (!actions.isEmpty()) {
-      final JPanel actionsPanel = new JPanel();
-      actionsPanel.setBorder(new EmptyBorder(10, 0, 10, 10));
-      actionsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-      createUserActionMenu(actionsPanel, actions);
-      gameSetupPanelHolder.add(actionsPanel, BorderLayout.SOUTH);
+    if (isMenu) {
+      gameSetupPanelHolder.setBorder(null);
+      gameSetupPanelHolder.add(panel, BorderLayout.CENTER);
+    } else {
+      // staging screens read top-down from the left edge, like the game options beside them
+      gameSetupPanelHolder.setBorder(new EmptyBorder(4, 16, 12, 16));
+      final JPanel stack = new JPanel(new BorderLayout());
+      stack.add(panel, BorderLayout.CENTER);
+      final List<Action> actions = gameSetupPanel.getUserActions();
+      if (!actions.isEmpty()) {
+        final JPanel actionsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        actionsPanel.setBorder(new EmptyBorder(12, 0, 0, 0));
+        createUserActionMenu(actionsPanel, actions);
+        stack.add(actionsPanel, BorderLayout.SOUTH);
+      }
+      gameSetupPanelHolder.add(stack, BorderLayout.NORTH);
     }
 
     Optional.ofNullable(panel.getChatModel())
@@ -177,6 +211,10 @@ public class MainPanel extends JPanel {
   }
 
   private static void createUserActionMenu(final JPanel actionsPanel, final List<Action> actions) {
+    if (actions.size() == 1) {
+      actionsPanel.add(new JButton(actions.get(0)));
+      return;
+    }
     // if we need this for something other than network, add a way to set it
     final JButton button =
         new JButton(I18nEngineFramework.get().getText("startup.MainPanel.btn.Network.Lbl"));
@@ -193,6 +231,20 @@ public class MainPanel extends JPanel {
 
   public void updatePlayButtonState() {
     SwingAction.invokeNowOrLater(
-        () -> playButton.setEnabled(gameSetupPanel != null && gameSetupPanel.canGameStart()));
+        () -> {
+          final boolean canStart = gameSetupPanel != null && gameSetupPanel.canGameStart();
+          playButton.setEnabled(canStart);
+          final String reason =
+              canStart || gameSetupPanel == null || gameSetupPanel instanceof MenuPanel
+                  ? ""
+                  : gameSetupPanel.getStartBlockedReason().orElse("");
+          startBlockedReason.setText(reason);
+          final Dimension balance =
+              new Dimension(reason.isEmpty() ? 0 : startBlockedReason.getPreferredSize().width, 0);
+          startBlockedReasonBalance.setPreferredSize(balance);
+          startBlockedReasonBalance.setMinimumSize(balance);
+          startBlockedReasonBalance.getParent().revalidate();
+          playButton.setToolTipText(reason.isEmpty() ? playButtonToolTip : reason);
+        });
   }
 }

@@ -15,6 +15,7 @@ import games.strategy.engine.framework.startup.ui.panels.main.game.selector.Game
 import games.strategy.engine.framework.startup.ui.posted.game.DiceServerEditor;
 import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.triplea.settings.ClientSetting;
+import java.awt.BorderLayout;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
@@ -32,7 +33,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
+import org.triplea.swing.SectionHeader;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
 import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
@@ -97,7 +98,6 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     removeAll();
     setLayout(new GridBagLayout());
     // Empty border works as margin
-    setBorder(new EmptyBorder(10, 10, 10, 10));
     int row = 0;
     add(
         diceServerEditor,
@@ -108,11 +108,14 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
             .weightY(0.0)
             .anchor(GridBagConstraintsAnchor.NORTHWEST)
             .fill(GridBagConstraintsFill.HORIZONTAL)
-            .insets(10, 0, 20, 0)
+            .insets(0, 0, 16, 0)
             .build());
 
+    final JPanel emailSection = new JPanel(new BorderLayout());
+    emailSection.add(SectionHeader.create("Email"), BorderLayout.NORTH);
+    emailSection.add(emailSenderEditor.build(), BorderLayout.WEST);
     add(
-        emailSenderEditor.build(),
+        emailSection,
         new GridBagConstraintsBuilder(0, row++)
             .gridWidth(1)
             .gridHeight(1)
@@ -120,20 +123,25 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
             .weightY(0.0)
             .anchor(GridBagConstraintsAnchor.NORTHWEST)
             .fill(GridBagConstraintsFill.HORIZONTAL)
-            .insets(10, 0, 20, 0)
+            .insets(0, 0, 16, 0)
             .build());
 
-    // add selection of local players
     add(
-        localPlayerSelection,
-        new GridBagConstraintsBuilder(0, row)
-            .gridWidth(1)
-            .gridHeight(1)
+        SectionHeader.create(
+            I18nEngineFramework.get().getText("startup.SetupPanel.players.Lbl"),
+            localPlayerSelection),
+        new GridBagConstraintsBuilder(0, row++)
             .weightX(1.0)
-            .weightY(0.0)
-            .anchor(GridBagConstraintsAnchor.NORTHEAST)
-            .fill(GridBagConstraintsFill.NONE)
-            .insets(10, 0, 10, 0)
+            .anchor(GridBagConstraintsAnchor.NORTHWEST)
+            .fill(GridBagConstraintsFill.HORIZONTAL)
+            .insets(0, 0, 0, 0)
+            .build());
+    // pushes the sections to the top
+    add(
+        new JPanel(),
+        new GridBagConstraintsBuilder(0, row)
+            .weightY(1.0)
+            .fill(GridBagConstraintsFill.BOTH)
             .build());
     layoutPlayerComponents(localPlayerPanel, playerTypes, gameSelectorModel.getGameData());
   }
@@ -174,6 +182,23 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     final boolean atLeastOnePlayerIsEnabled =
         playerTypes.stream().anyMatch(PlayerSelectorRow::isPlayerEnabled);
     return diceServerValid && emailFieldsValid && gameSelected && atLeastOnePlayerIsEnabled;
+  }
+
+  @Override
+  public Optional<String> getStartBlockedReason() {
+    if (gameSelectorModel.getGameData() == null) {
+      return Optional.of("Select a game to play");
+    }
+    if (!diceServerEditor.areFieldsValid()) {
+      return Optional.of("Enter valid To and Cc email addresses for the dice server");
+    }
+    if (!emailSenderEditor.areFieldsValid()) {
+      return Optional.of("Complete the email settings");
+    }
+    if (playerTypes.stream().noneMatch(PlayerSelectorRow::isPlayerEnabled)) {
+      return Optional.of("Enable at least one player");
+    }
+    return Optional.empty();
   }
 
   @Override

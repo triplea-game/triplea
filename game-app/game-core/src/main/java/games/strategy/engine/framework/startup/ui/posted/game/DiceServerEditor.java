@@ -6,22 +6,24 @@ import games.strategy.engine.random.MartiDiceRoller;
 import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
+import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.net.URI;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.border.TitledBorder;
 import org.triplea.awt.OpenFileUtility;
 import org.triplea.domain.data.PlayerEmailValidation;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JTextFieldBuilder;
+import org.triplea.swing.SectionHeader;
 import org.triplea.swing.SwingComponents;
 
 /** A class to configure a Dice Server for the game. */
@@ -65,13 +67,15 @@ public class DiceServerEditor extends JPanel {
 
   public DiceServerEditor(final Runnable readyCallback) {
     this.readyCallback = readyCallback;
-    final int bottomSpace = 1;
-    final int labelSpace = 2;
+    final int bottomSpace = 4;
+    final int labelSpace = 8;
 
     final JPanel diceRollerOptions = new JPanel();
     diceRollerOptions.setLayout(new GridBagLayout());
-    diceRollerOptions.setBorder(new TitledBorder("Dice Server Options"));
-    add(diceRollerOptions);
+    diceRollerOptions.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
+    setLayout(new BorderLayout());
+    add(SectionHeader.create("Dice Server"), BorderLayout.NORTH);
+    add(diceRollerOptions, BorderLayout.WEST);
 
     int row = 0;
     // Show the dice server URI only if it is set to a non-default value.

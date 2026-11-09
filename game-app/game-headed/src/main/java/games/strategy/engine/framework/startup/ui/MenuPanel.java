@@ -3,6 +3,7 @@ package games.strategy.engine.framework.startup.ui;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.triplea.EngineImageLoader;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -13,8 +14,10 @@ import java.util.Optional;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import org.triplea.swing.SectionHeader;
 import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
 import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
 import org.triplea.swing.jpanel.GridBagConstraintsFill;
@@ -28,6 +31,7 @@ public abstract class MenuPanel extends SetupPanel {
 
   private static final int PRIMARY_FONT_INCREASE = 10;
   private static final int SECONDARY_FONT_INCREASE = 3;
+  private static final int SHORT_RULE_WIDTH = 180;
 
   /** The logo asset is small; the menus show it larger, at the cost of some softness. */
   private static final float LOGO_SCALE = 1.5f;
@@ -46,12 +50,23 @@ public abstract class MenuPanel extends SetupPanel {
       LaunchScreenStyle.styleAsMenuItem(button, PRIMARY_FONT_INCREASE);
       buttonColumn.add(button, centered(row++, 4));
     }
+    if (!secondary.isEmpty()) {
+      buttonColumn.add(newShortRule(), centered(row++, 20));
+    }
     for (int i = 0; i < secondary.size(); i++) {
       final JButton button = secondary.get(i);
       LaunchScreenStyle.styleAsMenuItem(button, SECONDARY_FONT_INCREASE);
-      buttonColumn.add(button, centered(row++, i == 0 ? 24 : 2));
+      buttonColumn.add(button, centered(row++, i == 0 ? 16 : 2));
     }
     add(buttonColumn);
+  }
+
+  /** A short rule that splits the primary entries from the secondary ones. */
+  private static JComponent newShortRule() {
+    final JPanel rule = new JPanel();
+    rule.setBackground(SectionHeader.ruleColor());
+    rule.setPreferredSize(new Dimension(SHORT_RULE_WIDTH, 1));
+    return rule;
   }
 
   private static Image loadLogo() {

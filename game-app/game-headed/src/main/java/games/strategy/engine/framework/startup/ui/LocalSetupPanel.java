@@ -44,6 +44,17 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
   }
 
   @Override
+  public Optional<String> getStartBlockedReason() {
+    if (gameSelectorModel.getGameData() == null) {
+      return Optional.of("Select a game to play");
+    }
+    if (playerTypes.stream().noneMatch(PlayerSelectorRow::isPlayerEnabled)) {
+      return Optional.of("Enable at least one player");
+    }
+    return Optional.empty();
+  }
+
+  @Override
   public void postStartGame() {
     SetupModel.clearPbfPbemInformation(gameSelectorModel.getGameData().getProperties());
   }

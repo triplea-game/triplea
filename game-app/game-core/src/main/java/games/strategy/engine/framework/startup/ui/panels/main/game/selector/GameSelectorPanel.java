@@ -28,6 +28,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.SectionHeader;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 
@@ -85,8 +86,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
     toolbar.add(loadSavedGame);
     toolbar.add(downloadMapButton);
     toolbar.add(hostBotGameOptions);
-    toolbar.setBorder(
-        BorderFactory.createMatteBorder(0, 0, 1, 0, GameOptionsPanel.separatorColor()));
+    toolbar.setBorder(SectionHeader.ruleBelow());
 
     nameText.setFont(nameText.getFont().deriveFont(Font.BOLD, nameText.getFont().getSize2D() + 10));
     final JPanel header = new JPanel();
@@ -98,7 +98,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
     header.add(saveGameText);
 
     setLayout(new BorderLayout());
-    setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, GameOptionsPanel.separatorColor()));
+    setBorder(SectionHeader.ruleBelow());
     add(toolbar, BorderLayout.NORTH);
     add(header, BorderLayout.CENTER);
 

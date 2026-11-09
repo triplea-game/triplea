@@ -5,10 +5,8 @@ import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.framework.startup.ui.IGamePropertiesCache;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,8 +17,10 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.SectionHeader;
 import org.triplea.swing.SwingAction;
 
 /**
@@ -33,10 +33,13 @@ public final class GameOptionsPanel extends JPanel {
   /** Long option names would otherwise let the panel crowd out the player list. */
   private static final int MAX_WIDTH = 480;
 
+  private static final int CONFIRMATION_MILLIS = 2000;
+
   private final GameSelectorModel model;
   private final Map<String, Object> originalValues = new HashMap<>();
   private final JScrollPane scroll = new JScrollPane();
   private final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
+  private final JLabel readOnlyNote = new JLabel("Set by the host");
 
   @Nullable private GameData originalValuesOf;
   @Nullable private GameData shownData;
@@ -45,43 +48,50 @@ public final class GameOptionsPanel extends JPanel {
   GameOptionsPanel(final GameSelectorModel model, final IGamePropertiesCache gamePropertiesCache) {
     this.model = model;
 
-    final JLabel title = new JLabel("Game Options");
-    title.setFont(title.getFont().deriveFont(Font.BOLD, title.getFont().getSize2D() + 2));
     final JButton reset =
         new JButtonBuilder()
             .title("Reset")
             .toolTip("Restore the options this game started with")
             .actionListener(this::resetOptions)
             .build();
+    reset.addActionListener(e -> confirm(reset, "Restored"));
     final JButton makeDefault =
         new JButtonBuilder()
             .title("Make Default")
             .toolTip("Start this game with these options from now on")
-            .actionListener(() -> gamePropertiesCache.cacheGameProperties(model.getGameData()))
             .build();
+    makeDefault.addActionListener(
+        e -> {
+          gamePropertiesCache.cacheGameProperties(model.getGameData());
+          confirm(makeDefault, "Saved");
+        });
+    buttons.setOpaque(false);
     buttons.add(reset);
     buttons.add(makeDefault);
+    readOnlyNote.setForeground(UIManager.getColor("Label.disabledForeground"));
 
-    final JPanel heading = new JPanel(new BorderLayout());
-    heading.setBorder(
-        BorderFactory.createCompoundBorder(
-            BorderFactory.createMatteBorder(0, 0, 1, 0, separatorColor()),
-            BorderFactory.createEmptyBorder(8, 10, 8, 4)));
-    heading.add(title, BorderLayout.WEST);
-    heading.add(buttons, BorderLayout.EAST);
+    final JComponent heading = SectionHeader.create("Game Options", readOnlyNote, buttons);
+    final JPanel headingHolder = new JPanel(new BorderLayout());
+    headingHolder.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 6));
+    headingHolder.add(heading);
 
     scroll.setBorder(BorderFactory.createEmptyBorder());
     scroll.getVerticalScrollBar().setUnitIncrement(16);
 
     setLayout(new BorderLayout());
-    setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, separatorColor()));
-    add(heading, BorderLayout.NORTH);
+    setBorder(SectionHeader.ruleRight());
+    add(headingHolder, BorderLayout.NORTH);
     add(scroll, BorderLayout.CENTER);
     setVisible(false);
   }
 
-  static Color separatorColor() {
-    return UIManager.getColor("Separator.foreground");
+  /** Shows {@code text} on {@code button} for a moment, then restores its label. */
+  private static void confirm(final JButton button, final String text) {
+    final String label = button.getText();
+    button.setText(text);
+    final Timer restore = new Timer(CONFIRMATION_MILLIS, e -> button.setText(label));
+    restore.setRepeats(false);
+    restore.start();
   }
 
   /**
@@ -122,6 +132,7 @@ public final class GameOptionsPanel extends JPanel {
         shownData == null ? List.of() : shownData.getProperties().getEditableProperties();
     setVisible(!properties.isEmpty());
     buttons.setVisible(shownEditable);
+    readOnlyNote.setVisible(!shownEditable);
     final JComponent view =
         properties.isEmpty()
             ? null

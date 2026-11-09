@@ -192,6 +192,11 @@ public class ClientSetupPanel extends SetupPanel {
   }
 
   @Override
+  public Optional<String> getStartBlockedReason() {
+    return Optional.of("The host starts the game");
+  }
+
+  @Override
   public void postStartGame() {
     // nothing to do
   }

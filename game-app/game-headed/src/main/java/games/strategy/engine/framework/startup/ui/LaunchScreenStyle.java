@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.KeyboardFocusManager;
@@ -16,7 +17,9 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.font.TextAttribute;
 import java.util.Arrays;
+import java.util.Map;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -31,6 +34,8 @@ import lombok.experimental.UtilityClass;
 public class LaunchScreenStyle {
   /** The red of the TripleA logo, brightened to read well on dark and light themes. */
   static final Color HIGHLIGHT = new Color(0xE5, 0x39, 0x35);
+
+  private static final Color HIGHLIGHT_HOVER = new Color(0xEF, 0x53, 0x50);
 
   private static final String STYLED = "LaunchScreenStyle.styled";
   private static final String KEYBOARD_FOCUS = "LaunchScreenStyle.keyboardFocus";
@@ -70,6 +75,24 @@ public class LaunchScreenStyle {
     styleAsText(button);
     button.setFont(button.getFont().deriveFont(button.getFont().getSize2D() + fontIncrease));
     button.setBorder(new HighlightMarkerBorder());
+  }
+
+  /**
+   * Styles the one action a screen exists for, eg: Play, as a filled button in the logo red so it
+   * stands out from the text buttons around it.
+   */
+  public static void styleAsPrimary(final JButton button, final float fontIncrease) {
+    button.putClientProperty(STYLED, true);
+    button.putClientProperty("JButton.buttonType", "roundRect");
+    button.setFont(
+        button.getFont().deriveFont(Font.BOLD, button.getFont().getSize2D() + fontIncrease));
+    button.setBackground(HIGHLIGHT);
+    button.setForeground(Color.WHITE);
+    button.setMargin(new Insets(4, 28, 4, 28));
+    button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    button.setRolloverEnabled(true);
+    button.addChangeListener(
+        e -> button.setBackground(button.getModel().isRollover() ? HIGHLIGHT_HOVER : HIGHLIGHT));
   }
 
   private static void styleAsText(final JButton button) {
@@ -134,6 +157,13 @@ public class LaunchScreenStyle {
   private static void updateHighlight(final AbstractButton button) {
     // null falls back to the look and feel's text color
     button.setForeground(isHighlighted(button) ? HIGHLIGHT : null);
+    // red text alone is too faint a focus cue on dark themes, so keyboard focus also underlines
+    final boolean keyboardFocus = Boolean.TRUE.equals(button.getClientProperty(KEYBOARD_FOCUS));
+    button.setFont(
+        button
+            .getFont()
+            .deriveFont(
+                Map.of(TextAttribute.UNDERLINE, keyboardFocus ? TextAttribute.UNDERLINE_ON : -1)));
   }
 
   private static boolean isHighlighted(final AbstractButton button) {
