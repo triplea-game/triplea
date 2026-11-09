@@ -83,7 +83,7 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
     resetProperties(map, properties, getDescription());
   }
 
-  /** Returns one property per map entry; editing them edits the map. */
+  /** Returns one property per map entry. Edits to them are not written back to the map. */
   public List<IEditableProperty<?>> getProperties() {
     return List.copyOf(properties);
   }
