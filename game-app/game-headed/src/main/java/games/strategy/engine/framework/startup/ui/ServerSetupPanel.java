@@ -16,7 +16,6 @@ import games.strategy.engine.framework.startup.ui.panels.main.game.selector.Game
 import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.net.IServerMessenger;
-import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -43,6 +42,7 @@ import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.SwingComponents;
+import org.triplea.thread.EventThreadChecks;
 
 /**
  * Setup panel displayed for hosting a non-lobby network game (using host option from main panel).
@@ -323,7 +323,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   }
 
   private void internalPlayersTakenChanged() {
-    Util.ensureOnEventDispatchThread();
+    EventThreadChecks.ensureOnEventDispatchThread();
     final Map<String, String> playersToNode = model.getPlayersToNodeListing();
     final Map<String, Boolean> playersEnabled = model.getPlayersEnabledListing();
     for (final PlayerRow row : playerRows) {
@@ -333,7 +333,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   }
 
   private void internalPlayerListChanged() {
-    Util.ensureOnEventDispatchThread();
+    EventThreadChecks.ensureOnEventDispatchThread();
     playerRows = new ArrayList<>();
     final Map<String, String> players = model.getPlayersToNodeListing();
     final Map<String, Boolean> playersEnabled = model.getPlayersEnabledListing();

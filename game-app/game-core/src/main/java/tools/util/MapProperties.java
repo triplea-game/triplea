@@ -2,7 +2,6 @@ package tools.util;
 
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.mapdata.PlayerColors;
 import java.awt.Color;
@@ -17,10 +16,10 @@ import org.triplea.util.Tuple;
 public class MapProperties {
   @Getter public Map<String, Color> colorMap = new TreeMap<>();
   @Getter public double unitsScale = 0.75;
-  @Getter public int unitsWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  @Getter public int unitsHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  @Getter public int unitsCounterOffsetWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE / 4;
-  @Getter public int unitsCounterOffsetHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+  @Getter public int unitsWidth = MapData.DEFAULT_UNIT_ICON_SIZE;
+  @Getter public int unitsHeight = MapData.DEFAULT_UNIT_ICON_SIZE;
+  @Getter public int unitsCounterOffsetWidth = MapData.DEFAULT_UNIT_ICON_SIZE / 4;
+  @Getter public int unitsCounterOffsetHeight = MapData.DEFAULT_UNIT_ICON_SIZE;
   @Getter public int unitsStackSize = 0;
   @Getter public int mapWidth = 256;
   @Getter public int mapHeight = 256;

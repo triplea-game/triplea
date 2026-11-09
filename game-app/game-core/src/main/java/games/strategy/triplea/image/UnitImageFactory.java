@@ -43,7 +43,6 @@ import org.jetbrains.annotations.NonNls;
 /** A factory with a thread-safe image cache for creating unit images. */
 @Slf4j
 public class UnitImageFactory {
-  public static final int DEFAULT_UNIT_ICON_SIZE = 48;
   private static final String FILE_NAME_BASE = "units";
 
   /**

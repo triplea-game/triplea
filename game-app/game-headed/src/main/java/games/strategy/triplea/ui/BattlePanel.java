@@ -39,6 +39,7 @@ import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.WindowAdapterFactory;
 import org.triplea.swing.jpanel.JPanelBuilder;
+import org.triplea.thread.EventThreadChecks;
 
 /** UI for fighting battles. */
 @Slf4j
@@ -217,7 +218,7 @@ public final class BattlePanel extends ActionPanel {
   }
 
   private boolean ensureBattleIsDisplayed(final UUID battleId) {
-    Util.ensureNotOnEventDispatchThread();
+    EventThreadChecks.ensureNotOnEventDispatchThread();
     final long deadline = System.currentTimeMillis() + ENSURE_BATTLE_DISPLAYED_TIMEOUT_MS;
     synchronized (battleDisplayedLock) {
       while (!battleId.equals(currentBattleDisplayed)) {
