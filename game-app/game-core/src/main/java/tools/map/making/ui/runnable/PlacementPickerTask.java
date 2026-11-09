@@ -1,6 +1,5 @@
 package tools.map.making.ui.runnable;
 
-import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -53,12 +52,12 @@ import tools.util.ToolsUtil;
  */
 @Slf4j
 public final class PlacementPickerTask extends MapEditorRunnableTask {
-  private int placeWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  private int placeHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+  private int placeWidth = MapData.DEFAULT_UNIT_ICON_SIZE;
+  private int placeHeight = MapData.DEFAULT_UNIT_ICON_SIZE;
   private boolean placeDimensionsSet = false;
   private double unitZoomPercent = 1;
-  private int unitWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  private int unitHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+  private int unitWidth = MapData.DEFAULT_UNIT_ICON_SIZE;
+  private int unitHeight = MapData.DEFAULT_UNIT_ICON_SIZE;
 
   PlacementPickerTask() {}
 

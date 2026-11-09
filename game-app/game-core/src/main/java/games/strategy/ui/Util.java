@@ -16,7 +16,6 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
-import javax.swing.SwingUtilities;
 import lombok.experimental.UtilityClass;
 
 /** A collection of methods useful for rendering the UI. */
@@ -125,17 +124,5 @@ public final class Util {
         new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
     translatedPolygon.translate(deltaX, deltaY);
     return translatedPolygon;
-  }
-
-  public static void ensureOnEventDispatchThread() {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("Wrong thread (not Event Dispatch Thread)");
-    }
-  }
-
-  public static void ensureNotOnEventDispatchThread() {
-    if (SwingUtilities.isEventDispatchThread()) {
-      throw new IllegalStateException("This method should not called from Event Dispatch Thread");
-    }
   }
 }

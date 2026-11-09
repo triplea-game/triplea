@@ -3,12 +3,17 @@ package games.strategy.engine.framework.startup.ui.panels.main.game.selector;
 import static org.triplea.swing.SwingComponents.DialogWithLinksParams;
 import static org.triplea.swing.SwingComponents.DialogWithLinksTypes;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
+import games.strategy.engine.framework.network.ui.ChangeGameOptionsClientAction;
+import games.strategy.engine.framework.network.ui.ChangeGameToSaveGameClientAction;
+import games.strategy.engine.framework.network.ui.SetMapClientAction;
 import games.strategy.engine.framework.startup.mc.ClientModel;
+import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import games.strategy.engine.framework.startup.ui.FileBackedGamePropertiesCache;
 import games.strategy.engine.framework.startup.ui.IGamePropertiesCache;
 import games.strategy.engine.framework.system.SystemProperties;
@@ -32,7 +37,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import org.triplea.config.product.ProductVersionReader;
+import org.triplea.java.ThreadRunner;
 import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
@@ -163,7 +170,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
           } else if (canChangeHostBotGameData()) {
             final ClientModel clientModelForHostBots = model.getClientModelForHostBots();
             if (clientModelForHostBots != null) {
-              clientModelForHostBots.setMap(this);
+              setHostBotMap(clientModelForHostBots);
             }
           }
         });
@@ -175,7 +182,8 @@ public final class GameSelectorPanel extends JPanel implements Observer {
           } else if (canChangeHostBotGameData()) {
             final ClientModel clientModelForHostBots = model.getClientModelForHostBots();
             if (clientModelForHostBots != null) {
-              clientModelForHostBots.executeChangeGameToSaveGameClientAction(
+              ChangeGameToSaveGameClientAction.execute(
+                  clientModelForHostBots.getServerStartup(),
                   JOptionPane.getFrameForComponent(this));
             }
           }
@@ -188,12 +196,32 @@ public final class GameSelectorPanel extends JPanel implements Observer {
           } else if (canChangeHostBotGameData()) {
             final ClientModel clientModelForHostBots = model.getClientModelForHostBots();
             if (clientModelForHostBots != null) {
-              clientModelForHostBots.changeGameOptions(this);
+              changeHostBotGameOptions(clientModelForHostBots);
             }
           }
         });
 
     updateGameData();
+  }
+
+  private void setHostBotMap(final ClientModel clientModel) {
+    Preconditions.checkState(SwingUtilities.isEventDispatchThread(), "Should be run on EDT!");
+    ThreadRunner.runInNewThread(
+        () -> {
+          final var action = new SetMapClientAction(this, clientModel.getServerStartup());
+          SwingUtilities.invokeLater(action::run);
+        });
+  }
+
+  private void changeHostBotGameOptions(final ClientModel clientModel) {
+    Preconditions.checkState(SwingUtilities.isEventDispatchThread(), "Should be run on EDT!");
+    ThreadRunner.runInNewThread(
+        () -> {
+          final IServerStartupRemote startupRemote = clientModel.getServerStartup();
+          final byte[] oldBytes = startupRemote.getGameOptions();
+          SwingUtilities.invokeLater(
+              () -> ChangeGameOptionsClientAction.run(this, oldBytes, startupRemote));
+        });
   }
 
   private static GridBagConstraints buildGridCell(final int x, final int y, final Insets insets) {

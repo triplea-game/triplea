@@ -154,7 +154,7 @@ class BoundedContextBattleCalculator implements IBattleCalculator {
    */
   private static List<UnitTypeId> orderOfLossTypes(
       final String ool, final Collection<Unit> units, final GameData data) {
-    final List<Unit> ordered = OrderOfLossesInputPanel.getUnitListByOrderOfLoss(ool, units, data);
+    final List<Unit> ordered = OrderOfLoss.getUnitListByOrderOfLoss(ool, units, data);
     if (ordered == null) {
       return List.of();
     }

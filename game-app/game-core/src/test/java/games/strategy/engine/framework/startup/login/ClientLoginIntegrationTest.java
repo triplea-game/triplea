@@ -50,23 +50,17 @@ final class ClientLoginIntegrationTest {
     serverMessenger.shutDown();
   }
 
-  private static class TestConnectionLogin extends ClientLogin {
-    private final String password;
+  private static ClientLogin newClientLogin(final String password) {
+    return new ClientLogin(
+        new ClientLoginUi() {
+          @Override
+          public String promptForPassword() {
+            return password;
+          }
 
-    TestConnectionLogin() {
-      this(PASSWORD);
-    }
-
-    TestConnectionLogin(final String password) {
-      super(null);
-
-      this.password = password;
-    }
-
-    @Override
-    protected String promptForPassword() {
-      return password;
-    }
+          @Override
+          public void showAlreadyLoggedIn(final String assignedName) {}
+        });
   }
 
   private IClientMessenger newClientMessenger(final IConnectionLogin connectionLogin)
@@ -84,14 +78,14 @@ final class ClientLoginIntegrationTest {
   final class LoginTest {
     @Test
     void shouldSucceedWhenPasswordMatches() {
-      final IConnectionLogin connectionLogin = new TestConnectionLogin();
+      final IConnectionLogin connectionLogin = newClientLogin(PASSWORD);
 
       assertDoesNotThrow(() -> newClientMessenger(connectionLogin).shutDown());
     }
 
     @Test
     void shouldFailWhenPasswordDoesNotMatch() {
-      final IConnectionLogin connectionLogin = new TestConnectionLogin(OTHER_PASSWORD);
+      final IConnectionLogin connectionLogin = newClientLogin(OTHER_PASSWORD);
 
       assertThrows(
           CouldNotLogInException.class, () -> newClientMessenger(connectionLogin).shutDown());
