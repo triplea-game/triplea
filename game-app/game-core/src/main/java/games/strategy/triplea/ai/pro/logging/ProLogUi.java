@@ -12,7 +12,7 @@ public final class ProLogUi {
   private static volatile Consumer<String> logSink = null;
   private static volatile ProLogDisplay logDisplay = null;
 
-  /** Sends AI log messages to {@code sink} instead of the log display; null restores the display. */
+  /** Sends AI log messages to {@code sink} instead of the display; null restores the display. */
   public static void setLogSink(final @Nullable Consumer<String> sink) {
     logSink = sink;
   }

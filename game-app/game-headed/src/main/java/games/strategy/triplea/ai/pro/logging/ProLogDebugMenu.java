@@ -1,7 +1,6 @@
 package games.strategy.triplea.ai.pro.logging;
 
 import games.strategy.engine.framework.GameShutdownRegistry;
-import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugAction;
 import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugOption;
 import games.strategy.ui.Util;
 import java.awt.Frame;
@@ -47,7 +46,7 @@ public final class ProLogDebugMenu {
     return List.of(
         AiPlayerDebugOption.builder()
             .title("Show Logs")
-            .actionListener(ProLogDebugMenu::showSettingsWindow)
+            .actionListener(action -> showSettingsWindow())
             .mnemonic(KeyCode.X.getInputEventCode())
             .build());
   }
@@ -60,7 +59,7 @@ public final class ProLogDebugMenu {
     settingsWindow = null;
   }
 
-  private static void showSettingsWindow(final AiPlayerDebugAction aiPlayerDebugAction) {
+  private static void showSettingsWindow() {
     if (settingsWindow == null) {
       return;
     }
