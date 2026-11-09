@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.startup.ui.posted.game.pbf;
 
 import games.strategy.engine.framework.startup.ui.posted.game.HelpTexts;
+import games.strategy.triplea.settings.BooleanClientSettingPersistence;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -49,7 +50,9 @@ class ForumPosterEditor extends JPanel implements ViewModelListener<ForumPosterE
   private final JCheckBox alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
   private final JComboBox<String> forums = new JComboBox<>();
   private final JCheckBox rememberPassword =
-      new JCheckBoxBuilder("Remember Password").bind(ClientSetting.rememberForumPassword).build();
+      new JCheckBoxBuilder("Remember Password")
+          .bind(new BooleanClientSettingPersistence(ClientSetting.rememberForumPassword))
+          .build();
   private final JButton rememberPasswordHelpButton =
       new JButtonBuilder("Help")
           .actionListener(

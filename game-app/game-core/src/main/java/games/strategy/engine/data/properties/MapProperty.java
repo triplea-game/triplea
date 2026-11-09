@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import javax.swing.JComponent;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
@@ -84,14 +83,9 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
     resetProperties(map, properties, getDescription());
   }
 
-  @Override
-  public JComponent getEditorComponent() {
-    return new PropertiesUi(properties, true);
-  }
-
-  @Override
-  public JComponent getViewComponent() {
-    return new PropertiesUi(properties, false);
+  /** Returns one property per map entry. Edits to them are not written back to the map. */
+  public List<IEditableProperty<?>> getProperties() {
+    return List.copyOf(properties);
   }
 
   @Override

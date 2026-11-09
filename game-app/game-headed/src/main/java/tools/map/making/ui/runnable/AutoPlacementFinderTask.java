@@ -2,7 +2,6 @@ package tools.map.making.ui.runnable;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import java.awt.Point;
 import java.awt.Polygon;
@@ -39,12 +38,12 @@ import tools.util.ToolArguments;
  */
 @Slf4j
 public final class AutoPlacementFinderTask extends ToolRunnableTask {
-  private int placeWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  private int placeHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+  private int placeWidth = MapData.DEFAULT_UNIT_ICON_SIZE;
+  private int placeHeight = MapData.DEFAULT_UNIT_ICON_SIZE;
   private boolean placeDimensionsSet = false;
   private double unitZoomPercent = 1;
-  private int unitWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  private int unitHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+  private int unitWidth = MapData.DEFAULT_UNIT_ICON_SIZE;
+  private int unitHeight = MapData.DEFAULT_UNIT_ICON_SIZE;
   private Path mapFolderLocation = null;
   private final JTextAreaOptionPane textOptionPane =
       new JTextAreaOptionPane(

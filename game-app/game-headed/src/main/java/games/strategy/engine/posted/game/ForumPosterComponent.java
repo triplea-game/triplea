@@ -2,6 +2,7 @@ package games.strategy.engine.posted.game;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
+import games.strategy.engine.posted.game.pbem.HeadedTurnPoster;
 import games.strategy.engine.posted.game.pbem.PbemMessagePoster;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
@@ -70,7 +71,8 @@ public final class ForumPosterComponent extends JPanel {
   private void post() {
     postButton.setEnabled(false);
     updateHistoryLog();
-    poster.postTurn(
+    HeadedTurnPoster.postTurn(
+        poster,
         title,
         historyLog,
         includeSavegameCheckBox.isSelected(),

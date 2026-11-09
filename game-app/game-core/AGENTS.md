@@ -38,10 +38,10 @@ The core game engine module. Contains the generic turn-based strategy engine fra
 ### `org.triplea` — Modern TripleA Modules
 - **`game/`** — Client startup, chat integration
 - **`sound/`** — Sound/audio management
-- **`debug/`** — Debug and error reporting
+- **`debug/`** — Debug and error reporting; the error dialog, its logback appender, and the report Swing views live in game-headed
 
-### `tools.map` — Map Utilities
-- Map processing and creation tools
+### `tools.util` — Map Utilities
+- `ToolsUtil` — territory-name helpers shared with `MapData`; the map-making tools themselves live in `game-headed`
 
 ## Key Abstractions
 
@@ -340,7 +340,7 @@ The `startup/` package manages everything from game selection through network se
 - **`PlayerTypes`** — Enum of player types (Human, various AIs).
 - **`ClientOptions`** / **`ServerOptions`** — Game options dialogs for client/server.
 - **`InGameLobbyWatcher`** / **`InGameLobbyWatcherWrapper`** — Posts game status to the lobby while a game is running.
-- **`panels/main/game/selector/`** — Game file selection UI: `GameSelectorPanel`, `GameSelectorModel`, `GameFileSelector`.
+- **`panels/main/game/selector/`** — Game file selection: `GameSelectorModel`, `GameFileSelector` (the `GameSelectorPanel` UI lives in `game-headed`).
 - **`FileBackedGamePropertiesCache`** / **`IGamePropertiesCache`** — Persists game property selections.
 
 #### PBEM/PBF UI (`startup/ui/posted/`)
@@ -378,13 +378,12 @@ The `map/` package handles map installation, discovery, and downloading.
 - **`MapDownloadSwingTable`** — Table renderer for map list.
 - **`DownloadConfiguration`** / **`DownloadListener`** / **`FileSystemAccessStrategy`** — Configuration, callbacks, and I/O abstraction.
 
-### Network UI Actions (`network/ui/`, 6 files)
+### Network UI Actions (`network/ui/`, 5 files)
 
 Remote actions for host game management:
 - **`SetMapClientAction`** — Change the current map.
 - **`SetPasswordAction`** — Change game password.
 - **`ChangeGameToSaveGameClientAction`** — Load a saved game.
-- **`ChangeGameOptionsClientAction`** — Modify game settings.
 - **`BanPlayerAction`** / **`BootPlayerAction`** — Moderator actions.
 
 ### Other Subsystems
@@ -552,7 +551,7 @@ Navigation widget that helps players "scroll through" units that haven't moved y
 
 **Help submenu** (`menubar/help/`, 6 files): `HelpMenu` (builder), `MoveHelpMenu`, `UnitHelpMenu`, `GameNotesMenu`, `UnitStatsTable`, `InformationDialog`.
 
-**Debug submenu** (`menubar/debug/`, 2 files): `AiPlayerDebugAction`, `AiPlayerDebugOption`.
+**Debug submenu** (`menubar/debug/`, 2 files): `AiPlayerDebugAction` (interface; the `MapPanel`-backed implementation is in game-headed), `AiPlayerDebugOption`.
 
 Note: The main menu bar (`TripleAMenuBar`) and most menu implementations (`FileMenu`, `ViewMenu`, `GameMenu`, etc.) live in **game-headed**, not game-core. Game-core only provides the help and debug menu content.
 

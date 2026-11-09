@@ -1,5 +1,6 @@
 package games.strategy.engine.lobby.client.login;
 
+import games.strategy.triplea.settings.BooleanClientSettingPersistence;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
@@ -45,7 +46,9 @@ public final class ChangePasswordPanel extends JPanel {
   private final JPasswordField passwordConfirmField = new JPasswordField();
   private final JButton okButton = new JButton("OK");
   private final JCheckBox rememberPassword =
-      new JCheckBoxBuilder("Remember Password").bind(ClientSetting.rememberLoginPassword).build();
+      new JCheckBoxBuilder("Remember Password")
+          .bind(new BooleanClientSettingPersistence(ClientSetting.rememberLoginPassword))
+          .build();
   private final JLabel validationLabel = new JLabelBuilder().foregroundColor(Color.RED).build();
 
   public enum AllowCancelMode {

@@ -172,7 +172,7 @@ public class ClipPlayer {
     return false;
   }
 
-  static void setSoundClipMute(final String clipName, final boolean value) {
+  public static void setSoundClipMute(final String clipName, final boolean value) {
     // we want to avoid unnecessary calls to preferences
     final boolean isCurrentCorrect = mutedClips.contains(clipName) == value;
     if (isCurrentCorrect) {
@@ -191,7 +191,7 @@ public class ClipPlayer {
    * Flushes sounds preferences to persisted data store. This method is *slow* and resource
    * expensive.
    */
-  static void saveSoundPreferences() {
+  public static void saveSoundPreferences() {
     final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
     try {
       prefs.flush();

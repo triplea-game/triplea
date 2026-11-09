@@ -7,6 +7,7 @@ import games.strategy.engine.lobby.client.login.LoginResult;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.engine.lobby.moderator.toolbox.ToolBoxWindow;
 import games.strategy.triplea.UrlConstants;
+import games.strategy.triplea.settings.BooleanClientSettingPersistence;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MacOsIntegration;
 import javax.swing.JMenuBar;
@@ -86,7 +87,8 @@ public final class LobbyMenu extends JMenuBar {
             .addMenuItem(SoundOptions.buildSoundOptionsMenuItem())
             .addMenuItem(
                 new JMenuItemCheckBoxBuilder("Show Chat Times", KeyCode.C)
-                    .bindSetting(ClientSetting.showChatTimeSettings)
+                    .bindSetting(
+                        new BooleanClientSettingPersistence(ClientSetting.showChatTimeSettings))
                     .build())
             .build());
 

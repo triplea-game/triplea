@@ -1,5 +1,6 @@
 package games.strategy.engine.lobby.client.login;
 
+import games.strategy.triplea.settings.BooleanClientSettingPersistence;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
@@ -43,10 +44,12 @@ final class LoginPanel extends JPanel {
   private final JPasswordField password = new JPasswordField();
   private final JTextField username = new JTextField();
   private final JCheckBox rememberPassword =
-      new JCheckBoxBuilder("Remember Password").bind(ClientSetting.rememberLoginPassword).build();
+      new JCheckBoxBuilder("Remember Password")
+          .bind(new BooleanClientSettingPersistence(ClientSetting.rememberLoginPassword))
+          .build();
   private final JCheckBox anonymousLogin =
       new JCheckBoxBuilder("Login Without An Account")
-          .bind(ClientSetting.loginAnonymously)
+          .bind(new BooleanClientSettingPersistence(ClientSetting.loginAnonymously))
           .actionListener(selected -> updateComponents())
           .build();
   private final JButton createAccount = new JButton("Create Account");

@@ -22,7 +22,6 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvCostsCalculator;
 import games.strategy.triplea.util.TuvUtils;
-import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -65,6 +64,7 @@ import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
 import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
 import org.triplea.swing.jpanel.GridBagConstraintsFill;
+import org.triplea.thread.EventThreadChecks;
 
 @Slf4j
 class BattleCalculatorPanel extends JPanel {
@@ -457,10 +457,10 @@ class BattleCalculatorPanel extends JPanel {
                   "Create Order Of Losses for each side",
                   JOptionPane.OK_CANCEL_OPTION,
                   JOptionPane.PLAIN_MESSAGE)) {
-            if (OrderOfLossesInputPanel.isValidOrderOfLoss(oolPanel.getAttackerOrder(), data)) {
+            if (OrderOfLoss.isValidOrderOfLoss(oolPanel.getAttackerOrder(), data)) {
               attackerOrderOfLosses = oolPanel.getAttackerOrder();
             }
-            if (OrderOfLossesInputPanel.isValidOrderOfLoss(oolPanel.getDefenderOrder(), data)) {
+            if (OrderOfLoss.isValidOrderOfLoss(oolPanel.getDefenderOrder(), data)) {
               defenderOrderOfLosses = oolPanel.getDefenderOrder();
             }
           }
@@ -556,7 +556,7 @@ class BattleCalculatorPanel extends JPanel {
   }
 
   private void updateStats() {
-    Util.ensureOnEventDispatchThread();
+    EventThreadChecks.ensureOnEventDispatchThread();
     final AtomicReference<AggregateResults> resultsRef = new AtomicReference<>();
     final WaitDialog dialog =
         new WaitDialog(this, "Calculating Odds... (this may take a while)", calculator::cancel);
