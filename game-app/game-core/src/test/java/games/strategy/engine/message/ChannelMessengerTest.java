@@ -14,7 +14,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.domain.data.SystemId;
-import org.triplea.swing.DialogBuilder;
 
 class ChannelMessengerTest {
   private IServerMessenger serverMessenger;
@@ -26,7 +25,6 @@ class ChannelMessengerTest {
 
   @BeforeEach
   void setUp() throws IOException {
-    DialogBuilder.disableUi();
     serverMessenger = new TestServerMessenger();
     serverMessenger.setAcceptNewConnections(true);
     serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();

@@ -11,11 +11,9 @@ dependencies {
     implementation(project(":lobby-client"))
     implementation(project(":lobby-client-data"))
     implementation(project(":java-extras"))
-    implementation(project(":swing-lib"))
     implementation(project(":websocket-client"))
     implementation(project(":xml-reader"))
     implementation(libs.gson)
-    testImplementation(project(":swing-lib-test-support"))
     testImplementation(project(":test-common"))
     testImplementation(libs.archunit.junit5)
     // Configures mockito to use the legacy "subclass mock maker"

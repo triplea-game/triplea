@@ -11,7 +11,7 @@ Shared configuration for building Feign HTTP clients. Provides base client facto
 General-purpose Java utility classes. Includes helpers for collections, concurrency, file I/O, and other common operations. Published as a Maven artifact.
 
 ### swing-lib
-Swing UI utilities and reusable components. Provides helper classes for building Swing interfaces — dialog builders, layout helpers, and common UI patterns. Used by `game-core` and `game-headed`.
+Swing UI utilities and reusable components. Provides helper classes for building Swing interfaces — dialog builders, layout helpers, and common UI patterns. Used by `game-headed`; not by `game-core`, which is shared with the headless bot.
 
 ### swing-lib-test-support
 Test utilities for Swing components. Helpers for testing UI code.

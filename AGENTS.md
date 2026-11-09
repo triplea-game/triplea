@@ -26,7 +26,7 @@ Each module's dependencies are in its `build.gradle.kts`.
 game-app/game-headed ──→ game-core, ai, domain-data, map-data, lobby-client, lib/feign-common, lib/java-extras, lib/swing-lib, lib/websocket-client
 game-app/game-headless ─→ game-core, ai, domain-data, lobby-client, lib/java-extras
 game-app/ai ───────────→ game-core, lib/java-extras
-game-app/game-core ────→ domain-data, map-data, game-relay-server, lobby-client, lib/java-extras, lib/swing-lib, lib/websocket-client, lib/xml-reader
+game-app/game-core ────→ domain-data, map-data, game-relay-server, lobby-client, lib/java-extras, lib/websocket-client, lib/xml-reader
 game-app/game-relay-server → lib/websocket-client, lib/websocket-server
 http-clients/lobby-client → domain-data, lib/feign-common, lib/java-extras, lib/websocket-client
 ```
