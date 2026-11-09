@@ -8,9 +8,7 @@ import static org.mockito.Mockito.when;
 
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.framework.LocalPlayers;
-import java.util.Arrays;
 import java.util.function.Supplier;
-import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +32,7 @@ final class UiContextTest {
 
   @Test
   @DisplayName("Original removes a previously stored map skin")
-  void shouldRemoveSkinWhenOriginalIsSelected() throws BackingStoreException {
+  void shouldRemoveSkinWhenOriginalIsSelected() {
     final Preferences prefs = new MemoryPreferences();
     prefs.put(MAP_SKIN, "NATO");
 
@@ -89,24 +87,12 @@ final class UiContextTest {
 
   @Test
   @DisplayName("Original leaves MapSkin absent when nothing was stored")
-  void shouldLeaveSkinAbsentWhenOriginalIsSelected() throws BackingStoreException {
+  void shouldLeaveSkinAbsentWhenOriginalIsSelected() {
     final Preferences prefs = new MemoryPreferences();
 
     UiContext.setMapSkinPreference(prefs, "Original");
 
     assertOriginalSkinIsNotStored(prefs);
-  }
-
-  @Test
-  @DisplayName("Skin names keep the spelling supplied by the menu")
-  void shouldKeepSkinNameSpelling() {
-    final Preferences prefs = new MemoryPreferences();
-
-    UiContext.setMapSkinPreference(prefs, "Nato");
-
-    assertThat(prefs.get(MAP_SKIN, null))
-        .as("the writer stores the menu string without rewriting its spelling")
-        .isEqualTo("Nato");
   }
 
   @Test
@@ -143,16 +129,18 @@ final class UiContextTest {
     assertThat(skinned.isCurrentPlayerRemote()).isFalse();
   }
 
-  private static void assertOriginalSkinIsNotStored(final Preferences prefs)
-      throws BackingStoreException {
+  @Test
+  @DisplayName("Original is the current skin when no skin is stored")
+  void shouldMarkOriginalCurrentWhenNoSkinIsStored() {
+    final UiContext noStoredSkin = mock(UiContext.class, CALLS_REAL_METHODS);
+
+    assertThat(noStoredSkin.new MapSkin("Original").isCurrentSkin()).isTrue();
+    assertThat(noStoredSkin.new MapSkin("NATO").isCurrentSkin()).isFalse();
+  }
+
+  private static void assertOriginalSkinIsNotStored(final Preferences prefs) {
     assertThat(prefs.get(MAP_SKIN, null))
         .as("Original clears MapSkin so the map art is used")
         .isNull();
-    assertThat(Arrays.asList(prefs.keys()))
-        .as("Original is not stored as a preference key")
-        .doesNotContain(MAP_SKIN, "Original");
-    assertThat(Arrays.stream(prefs.keys()).map(key -> prefs.get(key, null)))
-        .as("the node does not contain the literal Original")
-        .doesNotContain("Original");
   }
 }

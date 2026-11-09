@@ -282,10 +282,18 @@ public class UiContext {
             skinName,
             () -> {
               final UiContext newContext = new UiContext(gameData);
-              newContext.getMapData().verify(gameData);
+              try {
+                newContext.getMapData().verify(gameData);
+              } catch (final RuntimeException e) {
+                newContext.shutDown();
+                throw e;
+              }
               return newContext;
             });
     uiContext.inheritPlayers(previous);
+    // Panels built on the previous context register their shutdown hooks there, so it has to be
+    // shut down along with the context that replaces it when the game ends.
+    uiContext.addShutdownHook(previous::shutDown);
     return uiContext;
   }
 
@@ -428,7 +436,8 @@ public class UiContext {
 
     public MapSkin(String skinName) {
       this.skinName = skinName;
-      currentSkin = skinName.equals(UiContext.this.skinName);
+      currentSkin =
+          skinName.equals(Optional.ofNullable(UiContext.this.skinName).orElse(ORIGINAL_SKIN_NAME));
     }
   }
 
