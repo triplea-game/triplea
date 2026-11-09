@@ -131,7 +131,7 @@ public final class SoundPath {
     return soundOptions;
   }
 
-  static List<SoundOptionCheckBox> getSoundOptions() {
+  public static List<SoundOptionCheckBox> getSoundOptions() {
     return getAllSoundOptionsWithDescription().entrySet().stream()
         .map(e -> new SoundOptionCheckBox(e.getKey(), e.getValue()))
         .collect(Collectors.toList());

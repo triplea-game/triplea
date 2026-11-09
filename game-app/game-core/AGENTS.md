@@ -1,6 +1,6 @@
 # game-core
 
-The core game engine module. Contains the generic turn-based strategy engine framework, the TripleA-specific game implementation, and shared UI components.
+The core game engine module. Contains the generic turn-based strategy engine framework, the TripleA-specific game implementation, and the Swing-free UI support (map geometry, display text, headless display) shared by the headed and headless clients. Swing UI lives in `game-headed`.
 
 ## Package Structure
 
@@ -32,16 +32,16 @@ The core game engine module. Contains the generic turn-based strategy engine fra
 - **`odds/calculator/`** — Battle odds simulation
 - **`Properties.java`** — Game property constants (single file, not a package)
 - **`settings/`** — Client settings management
-- **`ui/`** — Swing UI components for gameplay (see [UI Layer](#ui-layer) below for details)
+- **`ui/`** — Swing-free UI support shared with game-headless (see [UI Layer](#ui-layer) below); the Swing gameplay UI lives in game-headed
 - **`util/`** — Various utility classes
 
 ### `org.triplea` — Modern TripleA Modules
 - **`game/`** — Client startup, chat integration
 - **`sound/`** — Sound/audio management
-- **`debug/`** — Debug and error reporting
+- **`debug/`** — Debug and error reporting; the error dialog, its logback appender, and the report Swing views live in game-headed
 
-### `tools.map` — Map Utilities
-- Map processing and creation tools
+### `tools.util` — Map Utilities
+- `ToolsUtil` — territory-name helpers shared with `MapData`; the map-making tools themselves live in `game-headed`
 
 ## Key Abstractions
 
@@ -293,7 +293,6 @@ IGame (interface)
 - **`GameDataManager`** — Serializes/deserializes game data to GZIP-compressed save files. Handles delegate state, with options for partial serialization (skip history, attachments).
 - **`IGameLoader`** — Interface for game-specific initialization: `newPlayers()` creates player instances, `startGame()` begins gameplay.
 - **`IGameModifiedChannel`** — Broadcast channel for all state changes: `gameDataChanged(Change)`, `stepChanged(...)`, history events.
-- **`HistorySynchronizer`** — Maintains a parallel `GameData` copy synced with game history, allowing the UI to browse history independently of the live game.
 - **`GameDataUtils`** — Serialization utilities: deep clone, byte array conversion, object translation between `GameData` instances.
 - **`GameRunner`** — Static constants: `PORT` (3300), `TRIPLEA_HEADLESS` property, `BOT_GAME_HOST_COMMENT`.
 - **`LocalPlayers`** — Tracks which `Player` instances are local to the current node (human or AI).
@@ -311,7 +310,6 @@ The `startup/` package manages everything from game selection through network se
 #### Launchers (`startup/launcher/`)
 
 - **`ILauncher`** — Single-method interface: `launch()`.
-- **`LocalLauncher`** — Single-computer game. Creates `ServerGame` with `LocalNoOpMessenger`, sets up local players, uses `PlainRandomSource`, runs game in a background thread.
 - **`ServerLauncher`** — Network host. Establishes a `GameRelayServer` on port 6000 for P2P relay, uses `CryptoRandomSource`, tracks remote client connections, optionally integrates with the in-game lobby watcher.
 - **`LaunchAction`** — Enum of launch modes.
 - **`MapNotFoundException`** — Thrown when map files are unavailable.
@@ -338,16 +336,9 @@ The `startup/` package manages everything from game selection through network se
 #### Startup UI (`startup/ui/`)
 
 - **`PlayerTypes`** — Enum of player types (Human, various AIs).
-- **`ClientOptions`** / **`ServerOptions`** — Game options dialogs for client/server.
 - **`InGameLobbyWatcher`** / **`InGameLobbyWatcherWrapper`** — Posts game status to the lobby while a game is running.
-- **`panels/main/game/selector/`** — Game file selection UI: `GameSelectorPanel`, `GameSelectorModel`, `GameFileSelector`.
+- **`panels/main/game/selector/`** — Game file selection: `GameSelectorModel` (the `GameFileSelector` and `GameSelectorPanel` UI live in `game-headed`).
 - **`FileBackedGamePropertiesCache`** / **`IGamePropertiesCache`** — Persists game property selections.
-
-#### PBEM/PBF UI (`startup/ui/posted/`)
-
-- **`DiceServerEditor`** — Dice server configuration panel.
-- **`pbem/`** — Play-by-email: `EmailSenderEditor` + view model, `EmailProviderPreset` (pre-configured providers like Gmail), `SendTestEmailAction`.
-- **`pbf/`** — Play-by-forum: `ForumPosterEditor` + view model, `test/post/TestPostAction` + progress display.
 
 #### Startup Utilities
 
@@ -366,41 +357,28 @@ The `map/` package handles map installation, discovery, and downloading.
 - **`listing/MapListingFetcher`** — Retrieves available maps from the server.
 - **`ZippedMapsExtractor`** — Extracts downloaded map ZIP files, auto-generates `map.yml` if missing.
 
-#### Map Download System (`map/download/`, 15 files)
+#### Map Download System (`map/download/`, 9 files; the download window is in game-headed)
 
 - **`DownloadCoordinator`** — Singleton managing concurrent downloads. Queue supports max 3 concurrent downloads. Methods: `accept(MapDownloadItem)`, `cancelDownloads()`, `pollTerminatedDownloads()`.
 - **`DownloadFile`** — Single download state machine (NOT_STARTED → DOWNLOADING → DONE/CANCELLED). Downloads to temp, extracts, validates, generates `map.yml` if missing, flattens nested folder structure.
-- **`DownloadMapsWindow`** — Swing window with tabs for available/installed/out-of-date maps. Supports search, multi-select, progress display, and remove/update.
-- **`DownloadMapsWindowModel`** / **`DownloadMapsWindowMapsListing`** — Window logic and display data.
 - **`ContentReader`** — HTTP file fetcher.
 - **`DownloadFileParser`** / **`DownloadFileDescription`** — Download metadata parsing and container.
-- **`MapDownloadProgressPanel`** / **`MapDownloadProgressListener`** / **`FileSizeWatcher`** — Progress monitoring UI.
-- **`MapDownloadSwingTable`** — Table renderer for map list.
-- **`DownloadConfiguration`** / **`DownloadListener`** / **`FileSystemAccessStrategy`** — Configuration, callbacks, and I/O abstraction.
-
-### Network UI Actions (`network/ui/`, 6 files)
-
-Remote actions for host game management:
-- **`SetMapClientAction`** — Change the current map.
-- **`SetPasswordAction`** — Change game password.
-- **`ChangeGameToSaveGameClientAction`** — Load a saved game.
-- **`ChangeGameOptionsClientAction`** — Modify game settings.
-- **`BanPlayerAction`** / **`BootPlayerAction`** — Moderator actions.
+- **`FileSizeWatcher`** — Reports download progress by polling the file size.
+- **`DownloadConfiguration`** / **`DownloadListener`** / **`ManagedMap`** — Configuration, callbacks, and the installed/available map pairing.
 
 ### Other Subsystems
 
-- **`ui/background/`** (5 files) — Background task utilities: `BackgroundTaskRunner`, `TaskRunner`, `WaitDialog`, `WaitPanel`, `WaitWindow` — modal progress dialogs for long operations off the EDT.
-- **`ui/`** (3 files) — `GameChooser` (game selection dialog), `GameNotesView` (game instructions display), `DefaultGameChooserEntry` (game list entry).
+- **`ui/DefaultGameChooserEntry`** — Game list entry (the `GameChooser` dialog is in game-headed).
 - **`save/game/GameDataWriter`** — Writes game data to file.
 - **`message/PlayerListing`** — Serializable snapshot of player status: player-to-node mappings, enabled/disabled states, type assignments, game name, round number, alliance order.
 - **`system/HttpProxy`** — HTTP proxy configuration.
-- **`lookandfeel/`** (2 files) — `LookAndFeel`, `LookAndFeelSwingFrameListener` — UI theme management.
+- **`lookandfeel/RelationshipColorScheme`** — Relationship colors (the look-and-feel setup is in game-headed).
 
 ### Game Startup Flows
 
 **Local game:**
 ```
-LocalLauncher.launch()
+LocalLauncher.launch()   (game-headed)
   → GameDataManager loads game data
   → ServerGame created with LocalNoOpMessenger
   → IGameLoader.startGame() begins delegate execution
@@ -434,127 +412,11 @@ All game state mutations flow through `Change` objects:
 2. `ServerGame` applies change to local `GameData`
 3. `IGameModifiedChannel` broadcasts `gameDataChanged(change)` to all clients
 4. Each `ClientGame` applies the change to its local `GameData` copy
-5. `HistorySynchronizer` maintains a separate history-browsable copy
+5. `HistorySynchronizer` (game-headed) maintains a separate history-browsable copy
 
 ## UI Layer
 
-The `ui/` package (~99 files) provides shared Swing UI components for gameplay. Game-headed extends these with full desktop UI; game-headless stubs them via `HeadlessDisplay`. The UI is organized into several subpackages.
-
-### UiContext — Central UI State
-
-`UiContext` is the master UI context object, created once per game session. It holds:
-- Image factories (units, resources, dice, flags, territory effects, map images)
-- `MapData` (territory geometry, rendering properties)
-- Scale factor and display preferences
-- Current player state
-- Resource loader for the active map skin
-- Window lifecycle management (`isShutDown()`)
-
-Most UI components receive `UiContext` as a constructor parameter.
-
-### Map Rendering System (`screen/`, `screen/drawable/`)
-
-The map is rendered using a **tile-based, layered architecture**.
-
-**Tile System** (5 files in `screen/`):
-- **`TileManager`** — Orchestrates tile rendering. Determines which tiles need redrawing, collects `IDrawable` objects for each tile, and composites them in layer order.
-- **`Tile`** — Individual 256×256 pixel map tile with bounds and cached image.
-- **`UnitsDrawer`** — Renders unit stacks on tiles (flag icons, unit counts, damage markers).
-- **`SmallMapImageManager`** — Generates and caches the minimap image.
-- **`TerritoryOverLayDrawable`** — Territory highlighting overlays (selection, mouseover).
-
-**Layer System** (17 files in `screen/drawable/`):
-All drawables implement `IDrawable`, which defines a `DrawLevel` enum controlling render order (ascending ordinal):
-
-```
-DrawLevel (render order, bottom to top):
-  BASE_MAP_LEVEL          — BaseMapDrawable (map background image)
-  POLYGONS_LEVEL          — LandTerritoryDrawable, SeaZoneOutlineDrawable (territory fills, sea borders)
-  RELIEF_LEVEL            — ReliefMapDrawable (3D relief shading)
-  TERRITORY_EFFECT_LEVEL  — TerritoryEffectDrawable (special territory effects)
-  CAPITOL_MARKER_LEVEL    — CapitolMarkerDrawable, BlockadeZoneDrawable, ConvoyZoneDrawable, KamikazeZoneDrawable
-  VC_MARKER_LEVEL         — VcDrawable (victory condition markers)
-  DECORATOR_LEVEL         — DecoratorDrawable (composite wrapper)
-  TERRITORY_TEXT_LEVEL    — TerritoryNameDrawable (territory names and PU values)
-  BATTLE_HIGHLIGHT_LEVEL  — BattleDrawable (battle location highlights)
-  UNITS_LEVEL             — (unit stacks, rendered by UnitsDrawer)
-  TERRITORY_OVERLAY_LEVEL — (selection/hover highlights)
-```
-
-Other drawables: `AbstractDrawable` (base impl), `TerritoryDrawable` (base territory rendering), `MapTileDrawable` (individual tile rendering).
-
-### Map Panel (`panels/map/`, 6 files)
-
-- **`MapPanel`** — The main interactive map display (extends `ImageScrollerLargeView`). Manages `TileManager`, handles pan/zoom, unit selection, territory highlighting, and route drawing.
-- **`MapSelectionListener`** — Territory click/hover events.
-- **`UnitSelectionListener`** — Unit click events.
-- **`MouseOverUnitListener`** — Unit hover detection.
-- **`MapRouteDrawer`** — Draws movement routes on the map.
-- **`RouteDescription`** — Route path data.
-
-### Root UI Components (47 files in `ui/`)
-
-Key classes by functional area:
-
-**Production & Resources:**
-- `ProductionPanel`, `EditProductionPanel`, `TabbedProductionPanel` — Unit purchase UI
-- `ProductionRepairPanel` — Unit repair
-- `ProductionTabsProperties` — Tab configuration
-- `ResourceBar`, `ResourceChooser` — Resource display and selection
-
-**Battle & Combat Display:**
-- `BattleDisplay`, `BattleModel`, `BattleStepsPanel` — Battle visualization
-- `CasualtySelection` — Casualty selection UI
-- `DicePanel`, `DiceChooser` — Dice display and selection
-
-**Player & Territory Info:**
-- `StatPanel`, `ExtendedStats` — Player statistics tables
-- `EconomyPanel`, `TechnologyPanel` — Economic and tech displays
-- `PlayersPanel` — Player list
-- `ObjectivePanel`, `ObjectiveProperties`, `ObjectiveDummyDelegateBridge` — Victory objectives
-- `TerritoryDetailPanel` (game-headed), `AdditionalTerritoryDetails` — Territory information
-- `PoliticalStateOverview` — Alliance/war status
-- `SelectTerritoryComponent` — Territory picker
-
-**Unit Display:**
-- `SimpleUnitPanel`, `IndividualUnitPanel`, `IndividualUnitPanelGrouped` — Unit rendering panels
-- `UnitChooser`, `PlayerChooser` — Selection dialogs
-- `PlaceData`, `PlacementUnitsCollapsiblePanel` — Placement support
-- `MapUnitTooltipManager`, `TooltipProperties`, `UnitIconProperties` — Tooltip and icon configuration
-
-**Utility:**
-- `UiContext` — Master UI context (see above)
-- `MacOsIntegration`, `QuitHandler` — Platform integration
-- `MouseDetails` — Mouse event info
-- `NotificationMessages`, `PoliticsText`, `UserActionText` — Localized text
-- `BottomBar` — Status bar
-- `FlagDrawMode` — Flag rendering mode
-- `VerifiedRandomNumbersDialog` — Verified dice display
-
-### Unit Scroller (`unit/scroller/`, 5 files)
-
-Navigation widget that helps players "scroll through" units that haven't moved yet:
-- **`UnitScroller`** — Previous/Next buttons, territory icon, skip/sleep functionality
-- **`UnitScrollerModel`** — Tracks unmoved units across combat and non-combat phases
-- **`UnitScrollerIcon`**, **`AvatarPanelFactory`**, **`AvatarCoordinateCalculator`** — Icon rendering
-
-### History (`history/`, 3 files)
-
-- **`HistoryPanel`** — JTree-based UI showing game history (moves, battles, events). Supports expand/collapse, right-click context menu, and integration with `HistoryDetailsPanel`.
-- **`HistoryLog`** — Detailed text view dialog for history nodes. Formats moves, battles, dice rolls, and resource changes. Supports verbose logging toggle.
-- **`HistoryDetailsPanel`** — Displays details for the selected history node.
-
-### Statistics (`statistics/`, 1 file)
-
-- **`StatisticsDialog`** — Uses XChart library to display player statistics over time in tabbed graphs.
-
-### Menu Bar (`menubar/`, 8 files + `help/` and `debug/` subdirs)
-
-**Help submenu** (`menubar/help/`, 6 files): `HelpMenu` (builder), `MoveHelpMenu`, `UnitHelpMenu`, `GameNotesMenu`, `UnitStatsTable`, `InformationDialog`.
-
-**Debug submenu** (`menubar/debug/`, 2 files): `AiPlayerDebugAction`, `AiPlayerDebugOption`.
-
-Note: The main menu bar (`TripleAMenuBar`) and most menu implementations (`FileMenu`, `ViewMenu`, `GameMenu`, etc.) live in **game-headed**, not game-core. Game-core only provides the help and debug menu content.
+The Swing UI (map panel, drawables, image factories, gameplay panels, history and statistics views, help menus) lives in game-headed; see its `AGENTS.md`. The `ui/` package here keeps only Swing-free pieces that engine code or game-headless also use.
 
 ### Map Data (`mapdata/`, 3 files)
 
@@ -565,5 +427,6 @@ Note: The main menu bar (`TripleAMenuBar`) and most menu implementations (`FileM
 ### Other Subpackages
 
 - **`display/`** (1 file) — `HeadlessDisplay`: stub `IDisplay` implementation for headless/bot mode.
-- **`logic/`** (2 files) — Utility logic for scrolling and route calculation.
-- **`panel/move/`** (1 file) — Move panel filter support (shared with game-headed's `MovePanel`).
+- **`menubar/debug/`** (2 files) — `AiPlayerDebugAction` (interface; the `MapPanel`-backed implementation is in game-headed), `AiPlayerDebugOption`.
+- **`panel/move/`** (1 file) — `MovableUnitsFilter` (shared with game-headed's `MovePanel`).
+- **Root `ui/`** — `AdditionalTerritoryDetails`, `ObjectiveDummyDelegateBridge`, `PlaceData`, `OrderedProperties`; localized text in `NotificationMessages`, `PoliticsText`, `UserActionText`.

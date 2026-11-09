@@ -18,7 +18,6 @@ import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.TechnologyDelegate;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
-import games.strategy.ui.Util;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -47,6 +46,7 @@ import org.triplea.java.ObjectUtils;
 import org.triplea.java.RemoveOnNextMajorRelease;
 import org.triplea.map.description.file.MapDescriptionYaml;
 import org.triplea.map.game.notes.GameNotes;
+import org.triplea.thread.EventThreadChecks;
 import org.triplea.util.Tuple;
 import org.triplea.util.Version;
 
@@ -571,7 +571,7 @@ public class GameData implements Serializable, GameState {
   /** Executes a change and notifies listeners. */
   public void performChange(final Change change) {
     if (areChangesOnlyInSwingEventThread()) {
-      Util.ensureOnEventDispatchThread();
+      EventThreadChecks.ensureOnEventDispatchThread();
     }
     try (Unlocker ignored = acquireWriteLock()) {
       change.perform(this);

@@ -1,16 +1,10 @@
 package games.strategy.engine.framework.startup.login;
 
-import com.google.common.annotations.VisibleForTesting;
 import games.strategy.net.IConnectionLogin;
-import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NonNls;
-import org.triplea.java.Interruptibles;
-import org.triplea.swing.SwingAction;
 
 /**
  * The client side of the peer-to-peer network game authentication protocol.
@@ -23,7 +17,7 @@ import org.triplea.swing.SwingAction;
 public class ClientLogin implements IConnectionLogin {
   @NonNls static final String ENGINE_VERSION_PROPERTY = "Engine.Version";
 
-  private final Component parentComponent;
+  private final ClientLoginUi ui;
 
   @Override
   public Map<String, String> getProperties(final Map<String, String> challenge) {
@@ -32,7 +26,7 @@ public class ClientLogin implements IConnectionLogin {
     if (Boolean.TRUE
         .toString()
         .equals(challenge.get(ClientLoginValidator.PASSWORD_REQUIRED_PROPERTY))) {
-      addAuthenticationResponseProperties(promptForPassword(), challenge, response);
+      addAuthenticationResponseProperties(ui.promptForPassword(), challenge, response);
     }
 
     return response;
@@ -49,33 +43,8 @@ public class ClientLogin implements IConnectionLogin {
     }
   }
 
-  @VisibleForTesting
-  protected String promptForPassword() {
-    return Interruptibles.awaitResult(
-            () ->
-                SwingAction.invokeAndWaitResult(
-                    () -> {
-                      final JPasswordField passwordField = new JPasswordField();
-                      passwordField.setColumns(15);
-                      final JOptionPane optionPane =
-                          new JOptionPane(
-                              passwordField,
-                              JOptionPane.QUESTION_MESSAGE,
-                              JOptionPane.DEFAULT_OPTION) {
-                            private static final long serialVersionUID = -6461902648509091914L;
-
-                            @Override
-                            public void selectInitialValue() {
-                              super.selectInitialValue();
-                              passwordField.requestFocusInWindow();
-                            }
-                          };
-                      optionPane
-                          .createDialog(parentComponent, "Enter a password to join the game")
-                          .setVisible(true);
-                      return new String(passwordField.getPassword());
-                    }))
-        .result
-        .orElse("");
+  @Override
+  public void onAssignedDifferentName(final String assignedName) {
+    ui.showAlreadyLoggedIn(assignedName);
   }
 }

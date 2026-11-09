@@ -28,6 +28,7 @@ dependencies {
         because("This provides javax.annotations.Nullable directly, instead of relying on pulling it as a transitive dep of websockets")
     }
     testFixturesImplementation(libs.guava)
+    testFixturesImplementation(libs.sonatype.goodies.prefs)
     testFixturesImplementation(libs.jetbrains.annotations)
 
     testFixturesCompileOnly(libs.lombok)

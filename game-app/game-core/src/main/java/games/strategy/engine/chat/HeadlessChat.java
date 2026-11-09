@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.UserName;
 import org.triplea.game.chat.ChatModel;
 
-/** Headless version of ChatPanel. */
+/** Chat model for headless games: logs messages instead of displaying them. */
 @Slf4j
 public class HeadlessChat implements ChatMessageListener, ChatModel {
   @Getter(onMethod_ = @Override)

@@ -1,0 +1,217 @@
+package games.strategy.engine.framework.lookandfeel;
+
+import static com.google.common.base.Preconditions.checkState;
+
+import com.formdev.flatlaf.FlatLaf;
+import com.google.common.annotations.VisibleForTesting;
+import games.strategy.engine.data.RelationshipType;
+import games.strategy.engine.framework.system.SystemProperties;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.attachments.RelationshipTypeAttachment;
+import games.strategy.triplea.settings.ClientSetting;
+import java.awt.Color;
+import java.awt.Font;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import javax.annotation.Nonnull;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.FontUIResource;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NonNls;
+import org.triplea.game.client.ui.swing.laf.SubstanceLookAndFeelManager;
+import org.triplea.util.Services;
+
+/** Provides methods for working with the Swing Look-And-Feel. */
+@Slf4j
+public final class LookAndFeel {
+  private LookAndFeel() {}
+
+  private static final @NonNls String DARKER_RED = "#8B0000";
+
+  /**
+   * Initializes the Swing Look-And-Feel subsystem.
+   *
+   * <p>Sets the user's preferred Look-And-Feel. If not available, the system Look-And-Feel will be
+   * used.
+   *
+   * <p>This method must be called before creating the first UI component but after initializing the
+   * client settings framework.
+   *
+   * @param onLookAndFeelChanged Runs after the user switches look-and-feel and it is installed, to
+   *     refresh open windows.
+   * @throws IllegalStateException If this method is not called from the EDT.
+   */
+  public static void initialize(final Runnable onLookAndFeelChanged) {
+    ClientSetting.setLookAndFeelDefault(getDefaultLookAndFeelClassName());
+    getSubstanceLookAndFeelManager().ifPresent(SubstanceLookAndFeelManager::initialize);
+    ClientSetting.lookAndFeel.addListener(
+        gameSetting -> {
+          setupLookAndFeel(gameSetting.getValueOrThrow());
+          onLookAndFeelChanged.run();
+          JOptionPane.showMessageDialog(
+              null,
+"""
+Look and feel changes can cause instability.
+Please restart all running TripleA instances.""",
+              "Close TripleA and Restart",
+              JOptionPane.WARNING_MESSAGE);
+        });
+    // Unlike a theme change, a scale change applies live: re-install, then repaint open windows.
+    ClientSetting.uiScalePercent.addListener(
+        gameSetting -> {
+          setupLookAndFeel(ClientSetting.lookAndFeel.getValueOrThrow());
+          FlatLaf.updateUI();
+        });
+    setupLookAndFeel(ClientSetting.lookAndFeel.getValueOrThrow());
+  }
+
+  private static Optional<SubstanceLookAndFeelManager> getSubstanceLookAndFeelManager() {
+    return Services.tryLoadAny(SubstanceLookAndFeelManager.class);
+  }
+
+  public static Collection<UIManager.LookAndFeelInfo> getAvailableLookAndFeels() {
+    final Collection<UIManager.LookAndFeelInfo> lookAndFeels = new ArrayList<>();
+    lookAndFeels.addAll(List.of(UIManager.getInstalledLookAndFeels()));
+    lookAndFeels.addAll(getSubstanceLookAndFeels());
+    return lookAndFeels;
+  }
+
+  private static Collection<UIManager.LookAndFeelInfo> getSubstanceLookAndFeels() {
+    return getSubstanceLookAndFeelManager()
+        .map(SubstanceLookAndFeelManager::getInstalledLookAndFeels)
+        .orElseGet(List::of);
+  }
+
+  public static String getDefaultLookAndFeelClassName() {
+    return SystemProperties.isMac()
+        ? UIManager.getSystemLookAndFeelClassName()
+        : getSubstanceLookAndFeelManager()
+            .map(SubstanceLookAndFeelManager::getDefaultLookAndFeelClassName)
+            .orElseGet(UIManager::getSystemLookAndFeelClassName);
+  }
+
+  public static @Nonnull @NonNls String getLookAndFeelColorRed() {
+    // On a dark theme, use red. Use a darker red with a light theme.
+    return LookAndFeel.isCurrentLookAndFeelDark() ? "red" : DARKER_RED;
+  }
+
+  public static boolean isCurrentLookAndFeelDark() {
+    final Color background = UIManager.getColor("Panel.background");
+    return background != null && isColorDark(background);
+  }
+
+  public static boolean isColorDark(final Color color) {
+    // From the Wikipedia definition: https://en.wikipedia.org/wiki/Luma_%28video%29
+    final double luma =
+        (0.299 * color.getRed() + 0.587 * color.getGreen() + 0.114 * color.getBlue()) / 255;
+    return luma < 0.5;
+  }
+
+  public static Color getContrastingTextColor(final Color background) {
+    return isColorDark(background) ? Color.WHITE : Color.BLACK;
+  }
+
+  @VisibleForTesting
+  static void setupLookAndFeel(final String lookAndFeelName) {
+    checkState(SwingUtilities.isEventDispatchThread());
+
+    // On Mac, have the menu bar appear at the top of the screen to match how Mac apps are expected
+    // to behave.
+    if (SystemProperties.isMac()) {
+      System.setProperty("apple.laf.useScreenMenuBar", "true");
+    }
+
+    try {
+      UIManager.setLookAndFeel(lookAndFeelName);
+    } catch (RuntimeException
+        | ClassNotFoundException
+        | InstantiationException
+        | IllegalAccessException
+        | UnsupportedLookAndFeelException runtimeException) {
+      if (!SystemProperties.isMac()) {
+        try {
+          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (final Exception e) {
+          log.error("Failed to set system look and feel", e);
+        }
+      }
+    }
+
+    if (!SystemProperties.isMac() && !SystemProperties.isWindows()) {
+      // FlatLaf paints popup drop shadows by wrapping popups in heavyweight translucent windows.
+      // Under X11/Wayland those windows are unreliable, leaving combo box and menu popups
+      // invisible.
+      // Disabling the painted shadow on Linux falls back to standard lightweight Swing popups.
+      UIManager.put("Popup.dropShadowPainted", Boolean.FALSE);
+    }
+
+    applyUiFontScale();
+  }
+
+  /**
+   * Scales the global UI by overriding FlatLaf's {@code defaultFont}, from which FlatLaf derives
+   * the scale factor for both fonts and component sizes.
+   *
+   * <p>A no-op on look-and-feels that ignore {@code defaultFont} (eg: the system look-and-feel used
+   * on macOS).
+   */
+  private static void applyUiFontScale() {
+    // UIManager.put overrides survive setLookAndFeel, and FlatLaf derives Label.font from
+    // defaultFont, so the previous scale must be cleared to read the unscaled base size.
+    UIManager.put("defaultFont", null);
+    final int scalePercent = ClientSetting.uiScalePercent.getValueOrThrow();
+    if (scalePercent == 100) {
+      return;
+    }
+    final Font baseFont = UIManager.getFont("Label.font");
+    if (baseFont == null) {
+      return;
+    }
+    final float scaledSize = baseFont.getSize() * (scalePercent / 100f);
+    UIManager.put("defaultFont", new FontUIResource(baseFont.deriveFont(scaledSize)));
+  }
+
+  public static @NonNls String convertColorToHex(Color color) {
+    return "#" + Integer.toHexString(color.getRGB()).substring(2);
+  }
+
+  /**
+   * Returns a color to represent the relationship.
+   *
+   * @param relType which relationship to get the color for
+   * @return the color to represent this relationship
+   */
+  public static Color getRelationshipTypeColor(final RelationshipType relType) {
+    return getRelationshipTypeAttachmentColor(relType.getRelationshipTypeAttachment());
+  }
+
+  /**
+   * Returns a color to represent the relationship.
+   *
+   * @param relTypeAttach which relationship attachment to get the color for
+   * @return the color to represent this relationship
+   */
+  public static Color getRelationshipTypeAttachmentColor(
+      final RelationshipTypeAttachment relTypeAttach) {
+    final RelationshipColorScheme colors = ClientSetting.relationshipColorScheme.getValueOrThrow();
+    final String archeType = relTypeAttach.getArcheType();
+    switch (archeType) {
+      case Constants.RELATIONSHIP_ARCHETYPE_ALLIED:
+        return colors.getAllied();
+      case Constants.RELATIONSHIP_ARCHETYPE_NEUTRAL:
+        return colors.getNeutral();
+      case Constants.RELATIONSHIP_ARCHETYPE_WAR:
+        return colors.getWar();
+      default:
+        throw new IllegalStateException(
+            "Arche Type for RelationshipTypeAttachment: "
+                + relTypeAttach.getName()
+                + " can only be of archeType Allied, Neutral or War");
+    }
+  }
+}

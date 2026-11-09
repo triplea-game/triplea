@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.triplea.domain.data.SystemId;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
-import org.triplea.swing.DialogBuilder;
 
 /** Client-side implementation of {@link QuarantineConversation}. */
 @Slf4j
@@ -113,18 +112,8 @@ public class ClientQuarantineConversation extends QuarantineConversation {
           // it means we are already connected and have been given our existing logged in name.
           // We warn the user here to let them know explicitly so it does not look like
           // a silent error.
-          if (!assignedName.startsWith(localName)) {
-            ThreadRunner.runInNewThread(
-                () ->
-                    DialogBuilder.builder()
-                        .parent(null)
-                        .title("Already Logged In")
-                        .infoMessage(
-                            "<html>Already logged in with another name, "
-                                + "cannot use a different name.<br/>"
-                                + "Logging in as: "
-                                + assignedName)
-                        .showDialog());
+          if (login != null && !assignedName.startsWith(localName)) {
+            ThreadRunner.runInNewThread(() -> login.onAssignedDifferentName(assignedName));
           }
           localName = strings[0];
           serverName = strings[1];

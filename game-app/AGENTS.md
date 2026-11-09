@@ -6,8 +6,8 @@ The main application layer of TripleA, organized as several Gradle submodules.
 
 | Module              | Purpose                                                                               |
 |---------------------|---------------------------------------------------------------------------------------|
-| `game-core`         | Core game engine: data model, delegates, networking, UI components                    |
-| `game-headed`       | Desktop GUI client (Swing) — the main user-facing application                         |
+| `game-core`         | Core game engine: data model, delegates, networking; no Swing UI                      |
+| `game-headed`       | Desktop GUI client — all Swing UI; the main user-facing application                   |
 | `game-headless`     | Headless server ("bot") for hosting multiplayer games without a GUI                   |
 | `ai`                | AI player implementations (FlowField algorithm, DoesNothing fallback)                 |
 | `domain-data`       | Shared domain value objects used across client and server (UserName, ApiKey, etc.)    |

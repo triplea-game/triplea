@@ -3,9 +3,7 @@ package games.strategy.engine.data.properties;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import java.io.Serial;
-import javax.swing.JComponent;
 import lombok.Getter;
-import org.triplea.swing.IntTextField;
 
 /** Implementation of {@link IEditableProperty} for an integer value. */
 public class NumberProperty extends AbstractEditableProperty<Integer> {
@@ -42,14 +40,6 @@ public class NumberProperty extends AbstractEditableProperty<Integer> {
   @Override
   public void setValue(final Integer value) {
     this.value = value;
-  }
-
-  @Override
-  public JComponent getEditorComponent() {
-    final IntTextField intTextField = new IntTextField(min, max);
-    intTextField.setValue(value);
-    intTextField.addChangeListener(field -> value = field.getValue());
-    return intTextField;
   }
 
   @Override
