@@ -4,6 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
@@ -18,9 +19,12 @@ import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.power.calculator.SupportCalculator;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -68,6 +72,8 @@ public class ProPurchaseOption {
   @Getter private boolean isDefenseSupport;
   @Getter private final boolean consumesUnits;
   @Getter private final boolean isSingleUse;
+  private final boolean valueEnemyDebuffs;
+  private final Map<UnitSupportAttachment, Double> enemyTargetShares = new HashMap<>();
 
   /**
    * Stays identity-equal, since a rule can have several options, but hashes alike from run to run:
@@ -83,6 +89,20 @@ public class ProPurchaseOption {
       final UnitType unitType,
       final GamePlayer player,
       final GameData data) {
+    this(productionRule, unitType, player, data, false);
+  }
+
+  /**
+   * @param valueEnemyDebuffs when true, support rules that weaken enemy units count toward this
+   *     unit's value (Hard Beta)
+   */
+  ProPurchaseOption(
+      final ProductionRule productionRule,
+      final UnitType unitType,
+      final GamePlayer player,
+      final GameData data,
+      final boolean valueEnemyDebuffs) {
+    this.valueEnemyDebuffs = valueEnemyDebuffs;
     this.productionRule = productionRule;
     this.unitType = unitType;
     this.player = player;
@@ -312,7 +332,6 @@ public class ProPurchaseOption {
     return Math.pow(moveFactor, distance / 5);
   }
 
-  // TODO: doesn't consider enemy support
   private double calculateSupportFactor(
       final List<Unit> ownedLocalUnits,
       final List<Unit> unitsToPlace,
@@ -395,9 +414,78 @@ public class ProPurchaseOption {
                 + bonus);
       }
     }
+    totalSupportFactor += calculateEnemyDebuffFactor(data, defense);
     ProLogger.debug(
         unitType.getName() + ", defense=" + defense + ", totalSupportFactor=" + totalSupportFactor);
     return totalSupportFactor;
+  }
+
+  /**
+   * Values a rule that weakens enemy units (faction "enemy", negative bonus) like an equal bonus to
+   * this side. The friendly-support calculator above never sees these rules, so without this a unit
+   * like an anti-tank gun is worth no more than its own attack and defense.
+   */
+  private double calculateEnemyDebuffFactor(final GameData data, final boolean defense) {
+    if (!valueEnemyDebuffs) {
+      return 0;
+    }
+    double totalDebuffFactor = 0;
+    for (final UnitSupportAttachment usa : unitSupportAttachments) {
+      if (!usa.getEnemy()
+          || usa.getBonus() >= 0
+          || !(defense ? usa.getDefence() : usa.getOffence())
+          || usa.getUnitType() == null
+          || usa.getUnitType().isEmpty()
+          || !usa.getPlayers().contains(player)) {
+        continue;
+      }
+      int numTargets = usa.getNumber();
+      if (usa.getImpArtTech() && TechTracker.hasImprovedArtillerySupport(player)) {
+        numTargets *= 2;
+      }
+      double penalty = 0;
+      if (usa.getStrength()) {
+        penalty -= usa.getBonus();
+      }
+      if (usa.getRoll()) {
+        penalty -= usa.getBonus() * data.getDiceSides() * 0.75;
+      }
+      // Full value once half the enemy force in this domain is a target.
+      final double ratio = Math.min(1, 2 * enemyTargetShare(data, usa));
+      final double debuffFactor = Math.pow(numTargets * 0.9, 0.9) * penalty * ratio;
+      totalDebuffFactor += debuffFactor;
+      ProLogger.trace(
+          unitType.getName()
+              + ", bonusType="
+              + usa.getBonusType()
+              + ", debuffFactor="
+              + debuffFactor
+              + ", ratio="
+              + ratio);
+    }
+    return totalDebuffFactor;
+  }
+
+  /** The share of enemy combat units, in this unit's domain (sea or not), the rule weakens. */
+  private double enemyTargetShare(final GameData data, final UnitSupportAttachment usa) {
+    return enemyTargetShares.computeIfAbsent(
+        usa,
+        rule -> {
+          final boolean sea = Matches.unitTypeIsSea().test(unitType);
+          final Predicate<Unit> enemyInDomain =
+              Matches.enemyUnit(player)
+                  .and(Matches.unitIsNotInfrastructure())
+                  .and(u -> Matches.unitIsSea().test(u) == sea);
+          int enemies = 0;
+          int targets = 0;
+          for (final Territory t : data.getMap().getTerritories()) {
+            final List<Unit> units = t.getMatches(enemyInDomain);
+            enemies += units.size();
+            targets +=
+                CollectionUtils.countMatches(units, Matches.unitIsOfTypes(rule.getUnitType()));
+          }
+          return enemies == 0 ? 0.0 : (double) targets / enemies;
+        });
   }
 
   private double calculateEfficiency(
