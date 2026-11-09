@@ -11,7 +11,6 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.util.TuvCostsCalculator;
 import java.util.Optional;
-import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.sound.ISound;
 
@@ -90,8 +89,6 @@ public interface IDelegateBridge {
   void enterDelegateExecution();
 
   GameData getData();
-
-  void sendMessage(WebSocketMessage webSocketMessage);
 
   /**
    * Allow delegate code to access a {@link ResourceLoader}. Implementations may choose to return an

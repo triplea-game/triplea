@@ -13,7 +13,6 @@ import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.player.Player;
 import games.strategy.net.Messengers;
-import games.strategy.net.websocket.ClientNetworkBridge;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
@@ -42,8 +41,7 @@ public interface LaunchAction {
 
   AutoSaveFileUtils getAutoSaveFileUtils();
 
-  ChatModel createChatModel(
-      String chatName, Messengers messengers, ClientNetworkBridge clientNetworkBridge);
+  ChatModel createChatModel(String chatName, Messengers messengers);
 
   /**
    * Controls if the AI should be avoided when preparing a game. Headless systems may choose to

@@ -300,16 +300,6 @@ All players in the same game must have it set to the same value. Restart to full
     }
   },
 
-  USE_WEBSOCKET_NETWORK(
-      "Use Websocket Network (Beta)",
-      SettingType.TESTING,
-      "Toggles whether to use in-development websocket network") {
-    @Override
-    public SelectionComponent<JComponent> newSelectionComponent() {
-      return booleanRadioButtons(ClientSetting.useWebsocketNetwork);
-    }
-  },
-
   USE_BOUNDED_CONTEXT_BATTLE_CALC(
       "Use bounded-context battle calculator (Beta)",
       SettingType.TESTING,

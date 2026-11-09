@@ -30,7 +30,6 @@ import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.dice.RollDiceFactory;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -481,11 +480,7 @@ public class AirBattle extends AbstractBattle {
       return;
     }
     final String step = defender ? DEFENDERS_WITHDRAW : ATTACKERS_WITHDRAW;
-    if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
-      bridge.sendMessage(new IDisplay.GoToBattleStepMessage(battleId.toString(), step));
-    } else {
-      bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleId, step);
-    }
+    bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleId, step);
 
     final GamePlayer retreatingPlayer = defender ? this.defender : attacker;
     final String text = retreatingPlayer.getName() + " retreat?";
@@ -509,19 +504,9 @@ public class AirBattle extends AbstractBattle {
     final String messageShort = retreatingPlayer.getName() + " retreats";
     final String messageLong =
         retreatingPlayer.getName() + " retreats all units to " + retreatTo.getName();
-    if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
-      bridge.sendMessage(
-          IDisplay.NotifyRetreatMessage.builder()
-              .shortMessage(messageShort)
-              .message(messageLong)
-              .step(step)
-              .retreatingPlayerName(retreatingPlayer.getName())
-              .build());
-    } else {
-      bridge
-          .getDisplayChannelBroadcaster()
-          .notifyRetreat(messageShort, messageLong, step, retreatingPlayer);
-    }
+    bridge
+        .getDisplayChannelBroadcaster()
+        .notifyRetreat(messageShort, messageLong, step, retreatingPlayer);
   }
 
   private void retreat(

@@ -12,7 +12,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.change.HistoryChangeFactory;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
@@ -37,7 +36,6 @@ import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.dice.RollDiceFactory;
 import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.util.TuvUtils;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -937,14 +935,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           }
           final int totalDamage = current.getUnitDamage() + currentUnitCost;
           // display the results
-          if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
-            bridge.sendMessage(
-                new IDisplay.BombingResultsMessage(battleId, bombingDice, currentUnitCost));
-          } else {
-            bridge
-                .getDisplayChannelBroadcaster()
-                .bombingResults(battleId, bombingDice, currentUnitCost);
-          }
+          bridge
+              .getDisplayChannelBroadcaster()
+              .bombingResults(battleId, bombingDice, currentUnitCost);
 
           if (currentUnitCost > 0) {
             bridge
@@ -982,11 +975,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         // Record PUs lost
         gameData.getMoveDelegate().pusLost(battleSite, cost);
         cost *= Properties.getPuMultiplier(gameData.getProperties());
-        if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
-          bridge.sendMessage(new IDisplay.BombingResultsMessage(battleId, bombingDice, cost));
-        } else {
-          bridge.getDisplayChannelBroadcaster().bombingResults(battleId, bombingDice, cost);
-        }
+        bridge.getDisplayChannelBroadcaster().bombingResults(battleId, bombingDice, cost);
         if (cost > 0) {
           bridge
               .getSoundChannelBroadcaster()

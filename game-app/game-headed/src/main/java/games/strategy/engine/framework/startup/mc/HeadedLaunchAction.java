@@ -15,7 +15,6 @@ import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import games.strategy.engine.player.Player;
 import games.strategy.net.Messengers;
-import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.TripleAFrame;
@@ -110,10 +109,8 @@ public class HeadedLaunchAction implements LaunchAction {
   }
 
   @Override
-  public ChatModel createChatModel(
-      String chatName, Messengers messengers, ClientNetworkBridge clientNetworkBridge) {
-    return ChatPanel.newChatPanel(
-        messengers, chatName, ChatMessagePanel.ChatSoundProfile.GAME, clientNetworkBridge);
+  public ChatModel createChatModel(String chatName, Messengers messengers) {
+    return ChatPanel.newChatPanel(messengers, chatName, ChatMessagePanel.ChatSoundProfile.GAME);
   }
 
   @Override

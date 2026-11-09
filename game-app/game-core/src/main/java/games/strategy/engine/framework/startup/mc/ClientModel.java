@@ -21,7 +21,6 @@ import games.strategy.engine.framework.network.ui.ChangeGameToSaveGameClientActi
 import games.strategy.engine.framework.network.ui.SetMapClientAction;
 import games.strategy.engine.framework.startup.launcher.IServerReady;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
-import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 import games.strategy.engine.framework.startup.login.ClientLogin;
 import games.strategy.engine.framework.startup.ui.ClientOptions;
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
@@ -35,14 +34,11 @@ import games.strategy.net.IClientMessenger;
 import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
-import games.strategy.net.websocket.ClientNetworkBridge;
-import games.strategy.net.websocket.WebsocketNetworkBridge;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.Component;
 import java.awt.Frame;
 import java.io.ByteArrayInputStream;
-import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -81,7 +77,6 @@ public class ClientModel implements IMessengerErrorListener {
   private IRemoteModelListener listener = IRemoteModelListener.NULL_LISTENER;
   private Messengers messengers;
   private IClientMessenger messenger;
-  private ClientNetworkBridge clientNetworkBridge;
   private Component ui;
   @Getter private ChatPanel chatPanel;
   private ClientGame game;
@@ -227,14 +222,6 @@ public class ClientModel implements IMessengerErrorListener {
       messenger =
           ClientMessengerFactory.newClientMessenger(
               props, objectStreamFactory, new ClientLogin(this.ui));
-
-      if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
-        final URI serverURI =
-            URI.create("ws://" + props.getHost() + ":" + ServerLauncher.RELAY_SERVER_PORT);
-        clientNetworkBridge = new WebsocketNetworkBridge(serverURI);
-      } else {
-        clientNetworkBridge = ClientNetworkBridge.NO_OP_SENDER;
-      }
     } catch (final CouldNotLogInException e) {
       EventThreadJOptionPane.showMessageDialog(this.ui, e.getMessage());
       return false;
@@ -266,9 +253,7 @@ Check:
     this.messengers = new Messengers(messenger);
     messengers.registerChannelSubscriber(channelListener, IClientChannel.CHANNEL_NAME);
 
-    chatPanel =
-        ChatPanel.newChatPanel(
-            messengers, ServerModel.CHAT_NAME, ChatSoundProfile.GAME, clientNetworkBridge);
+    chatPanel = ChatPanel.newChatPanel(messengers, ServerModel.CHAT_NAME, ChatSoundProfile.GAME);
     if (getIsServerHeadlessTest()) {
       gameSelectorModel.setClientModelForHostBots(this);
       chatPanel
@@ -346,7 +331,7 @@ Check:
             .filter(e -> e.getValue().equals(messenger.getLocalNode().getName()))
             .collect(Collectors.toMap(Map.Entry::getKey, e -> clientType));
     final Set<Player> playerSet = data.getGameLoader().newPlayers(playerMapping);
-    game = new ClientGame(data, playerSet, players, messengers, clientNetworkBridge);
+    game = new ClientGame(data, playerSet, players, messengers);
     SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(ui).setVisible(false));
     ThreadRunner.runInNewThread(
         () -> {

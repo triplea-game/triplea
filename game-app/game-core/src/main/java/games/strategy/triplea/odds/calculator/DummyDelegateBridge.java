@@ -21,7 +21,6 @@ import games.strategy.triplea.util.TuvCostsCalculator;
 import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
-import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.sound.HeadlessSoundChannel;
 import org.triplea.sound.ISound;
@@ -83,9 +82,6 @@ public class DummyDelegateBridge implements IDelegateBridge {
   public GameData getData() {
     return gameData;
   }
-
-  @Override
-  public void sendMessage(final WebSocketMessage webSocketMessage) {}
 
   @Override
   public Optional<ResourceLoader> getResourceLoader() {
