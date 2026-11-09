@@ -2,7 +2,6 @@ package games.strategy.triplea.ai.pro;
 
 import static games.strategy.triplea.ai.pro.util.ProUtils.summarizeUnits;
 
-import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
@@ -12,7 +11,6 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
@@ -38,6 +36,7 @@ import games.strategy.triplea.ai.pro.util.ProTerritoryValueUtils;
 import games.strategy.triplea.ai.pro.util.ProTransportUtils;
 import games.strategy.triplea.ai.pro.util.ProUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.move.validation.AirMovementValidator;
@@ -67,8 +66,13 @@ class ProPurchaseAi {
   private static final int CLOCK_HORIZON = 10;
   // A shorter enemy clock on my capital than mine on theirs forces its defence only up to this.
   private static final int COOKED_HORIZON = 4;
-  // Hard Beta's leftover PUs stop going to air once air is this share of the force's value.
-  static final double MAX_AIR_VALUE_SHARE = 0.5;
+
+  /** Which turn's slots a factory purchase checks the PUs against. */
+  private enum SlotHorizon {
+    THIS_TURN,
+    // Only buys when next turn's slots can't absorb the PUs.
+    NEXT_TURN
+  }
 
   private final ProOddsCalculator calc;
   private final ProData proData;
@@ -625,7 +629,8 @@ class ProPurchaseAi {
         purchaseTerritories,
         prioritizedLandTerritories,
         purchaseOptions,
-        false);
+        false,
+        SlotHorizon.THIS_TURN);
 
     // Prioritize sea place options and purchase units
     final List<ProPlaceTerritory> prioritizedSeaTerritories =
@@ -643,6 +648,17 @@ class ProPurchaseAi {
       purchaseUnitsWithRemainingProduction(
           purchaseTerritories, purchaseOptions.getLandOptions(), leftoverAirOptions);
 
+      // Beta puts next turn's slots ahead of this turn's firepower upgrades.
+      if (proData.isBeta()) {
+        purchaseFactory(
+            factoryPurchaseTerritories,
+            purchaseTerritories,
+            prioritizedLandTerritories,
+            purchaseOptions,
+            true,
+            SlotHorizon.NEXT_TURN);
+      }
+
       upgradeUnitsWithRemainingPUs(purchaseTerritories, purchaseOptions, leftoverAirOptions);
 
       // Try to purchase land/sea factory with extra PUs
@@ -651,7 +667,8 @@ class ProPurchaseAi {
           purchaseTerritories,
           prioritizedLandTerritories,
           purchaseOptions,
-          true);
+          true,
+          SlotHorizon.THIS_TURN);
     }
 
     // Add factory purchase territory to list
@@ -1522,21 +1539,32 @@ class ProPurchaseAi {
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
       final List<ProPlaceTerritory> prioritizedLandTerritories,
       final ProPurchaseOptionMap purchaseOptions,
-      final boolean hasExtraPUs) {
+      final boolean hasExtraPUs,
+      final SlotHorizon slotHorizon) {
 
     if (resourceTracker.isEmpty()) {
       return;
     }
     ProLogger.info(
-        "Purchase factory with resources: " + resourceTracker + ", hasExtraPUs=" + hasExtraPUs);
+        "Purchase factory with resources: "
+            + resourceTracker
+            + ", hasExtraPUs="
+            + hasExtraPUs
+            + ", slotHorizon="
+            + slotHorizon);
 
     final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
 
     // Hard Beta buys a factory for the extra slots when the PUs outrun the slots it has.
     final boolean slotConstrained =
-        proData.isBeta() && isSlotConstrained(purchaseTerritories, purchaseOptions);
+        proData.isBeta()
+            && (slotHorizon == SlotHorizon.NEXT_TURN
+                ? isNextTurnSlotConstrained(purchaseTerritories, purchaseOptions)
+                : isSlotConstrained(purchaseTerritories, purchaseOptions));
     if (slotConstrained) {
       ProLogger.debug("Production slots can't absorb the PUs: " + resourceTracker);
+    } else if (slotHorizon == SlotHorizon.NEXT_TURN) {
+      return;
     }
 
     // Only try to purchase a factory if all production was used in prioritized land territories
@@ -1749,15 +1777,37 @@ class ProPurchaseAi {
         purchaseTerritories.values().stream()
             .mapToLong(ppt -> Math.max(0, ppt.getRemainingUnitProduction()))
             .sum();
-    final int typicalCost =
-        (int)
-            Math.round(
-                purchaseOptions.getLandOptions().stream()
-                    .filter(o -> !o.isConstruction() && o.getQuantity() == 1 && o.getCost() > 0)
-                    .mapToInt(ProPurchaseOption::getCost)
-                    .average()
-                    .orElse(0));
-    return isSlotConstrained(resourceTracker.getRemainingPUs(data), freeSlots, typicalCost);
+    return isSlotConstrained(
+        resourceTracker.getRemainingPUs(data), freeSlots, typicalLandUnitCost(purchaseOptions));
+  }
+
+  /**
+   * Whether next turn's slots can't absorb the PUs left now plus next turn's income. The purchase
+   * runs on the simulated end-of-turn board, so the territories I own there forecast that income.
+   */
+  private boolean isNextTurnSlotConstrained(
+      final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
+      final ProPurchaseOptionMap purchaseOptions) {
+    final long nextTurnSlots =
+        purchaseTerritories.values().stream()
+            .mapToLong(ppt -> Math.max(0, ppt.getUnitProduction()))
+            .sum();
+    final int income =
+        AbstractEndTurnDelegate.getProduction(data.getMap().getTerritoriesOwnedBy(player), data);
+    return isSlotConstrained(
+        resourceTracker.getRemainingPUs(data) + income,
+        nextTurnSlots,
+        typicalLandUnitCost(purchaseOptions));
+  }
+
+  private static int typicalLandUnitCost(final ProPurchaseOptionMap purchaseOptions) {
+    return (int)
+        Math.round(
+            purchaseOptions.getLandOptions().stream()
+                .filter(o -> !o.isConstruction() && o.getQuantity() == 1 && o.getCost() > 0)
+                .mapToInt(ProPurchaseOption::getCost)
+                .average()
+                .orElse(0));
   }
 
   /**
@@ -2604,7 +2654,6 @@ class ProPurchaseAi {
     ProLogger.info(
         "Purchase units in territories with remaining production with resources: "
             + resourceTracker);
-    final AirShare airShare = newAirShare(purchaseTerritories);
 
     // Get all safe/unsafe land place territories with remaining production
     final List<ProPlaceTerritory> prioritizedLandTerritories = new ArrayList<>();
@@ -2655,27 +2704,15 @@ class ProPurchaseAi {
             purchaseTerritories,
             0,
             t);
-        if (airShare.isAtCap()) {
-          purchaseOptionsForTerritory.removeIf(ProPurchaseOption::isAir);
-        }
         if (purchaseOptionsForTerritory.isEmpty()) {
           break;
         }
 
-        // Determine best long range attack option (prefer air units)
-        ProPurchaseOption bestAttackOption = null;
-        double maxAttackEfficiency = 0;
-        for (final ProPurchaseOption ppo : purchaseOptionsForTerritory) {
-          double attackEfficiency =
-              ppo.getAttackEfficiency() * ppo.getMovement() / ppo.getQuantity();
-          if (ppo.isAir()) {
-            attackEfficiency *= 10;
-          }
-          if (attackEfficiency > maxAttackEfficiency) {
-            bestAttackOption = ppo;
-            maxAttackEfficiency = attackEfficiency;
-          }
-        }
+        // Beta fills the slots with hit points, leaving the PUs left for the upgrade pass.
+        final ProPurchaseOption bestAttackOption =
+            proData.isBeta()
+                ? mostHitPointsPerPu(purchaseOptionsForTerritory).orElse(null)
+                : bestLongRangeAttackOption(purchaseOptionsForTerritory);
         if (bestAttackOption == null) {
           break;
         }
@@ -2683,9 +2720,7 @@ class ProPurchaseAi {
         // Purchase unit
         resourceTracker.purchase(bestAttackOption);
         remainingUnitProduction -= bestAttackOption.getQuantity();
-        final List<Unit> bought = bestAttackOption.createTempUnits();
-        airShare.add(bought);
-        addUnitsToPlace(placeTerritory, bought);
+        addUnitsToPlace(placeTerritory, bestAttackOption.createTempUnits());
       }
     }
 
@@ -2756,6 +2791,52 @@ class ProPurchaseAi {
     }
   }
 
+  /** Stock Hard's leftover pick: long range attack, preferring air ten times over. */
+  private static ProPurchaseOption bestLongRangeAttackOption(
+      final List<ProPurchaseOption> options) {
+    ProPurchaseOption bestAttackOption = null;
+    double maxAttackEfficiency = 0;
+    for (final ProPurchaseOption ppo : options) {
+      double attackEfficiency = ppo.getAttackEfficiency() * ppo.getMovement() / ppo.getQuantity();
+      if (ppo.isAir()) {
+        attackEfficiency *= 10;
+      }
+      if (attackEfficiency > maxAttackEfficiency) {
+        bestAttackOption = ppo;
+        maxAttackEfficiency = attackEfficiency;
+      }
+    }
+    return bestAttackOption;
+  }
+
+  /** The option with the most hit points per PU, ties going to the most firepower per PU. */
+  static Optional<ProPurchaseOption> mostHitPointsPerPu(final List<ProPurchaseOption> options) {
+    return options.stream()
+        .filter(o -> o.getCost() > 0 && o.getHitPoints() > 0)
+        .max(
+            Comparator.comparingDouble(
+                    (ProPurchaseOption o) -> (double) o.getHitPoints() / o.getCost())
+                .thenComparingDouble(o -> (o.getAttack() + o.getDefense()) / o.getCost()));
+  }
+
+  /**
+   * Firepower (attack plus defense) gained per extra PU by replacing a {@code current} unit with an
+   * {@code upgrade}, or 0 when the upgrade loses hit points or gains no firepower.
+   */
+  static double firepowerGainPerPu(
+      final ProPurchaseOption upgrade, final ProPurchaseOption current) {
+    final double hitPointsLost =
+        (double) current.getHitPoints() / current.getQuantity()
+            - (double) upgrade.getHitPoints() / upgrade.getQuantity();
+    final double gain =
+        (upgrade.getAttack() + upgrade.getDefense()) / upgrade.getQuantity()
+            - (current.getAttack() + current.getDefense()) / current.getQuantity();
+    final double extraCost =
+        (double) upgrade.getCost() / upgrade.getQuantity()
+            - (double) current.getCost() / current.getQuantity();
+    return hitPointsLost > 0 || gain <= 0 || extraCost <= 0 ? 0 : gain / extraCost;
+  }
+
   private void upgradeUnitsWithRemainingPUs(
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
       final ProPurchaseOptionMap purchaseOptions,
@@ -2765,7 +2846,6 @@ class ProPurchaseAi {
       return;
     }
     ProLogger.info("Upgrade units with resources: " + resourceTracker);
-    final AirShare airShare = newAirShare(purchaseTerritories);
 
     // Get all safe land place territories
     final List<ProPlaceTerritory> prioritizedLandTerritories = new ArrayList<>();
@@ -2795,8 +2875,9 @@ class ProPurchaseAi {
           ProPurchaseValidationUtils.findPurchaseOptionsForTerritory(
               proData, player, airAndLandPurchaseOptions, t, isBid);
 
-      // Purchase long range attack units for any remaining production
-      int remainingUpgradeUnits = purchaseTerritories.get(t).getUnitProduction() / 3;
+      // Purchase long range attack units for any remaining production; Beta may upgrade them all
+      final int unitProduction = purchaseTerritories.get(t).getUnitProduction();
+      int remainingUpgradeUnits = proData.isBeta() ? unitProduction : unitProduction / 3;
       while (true) {
         if (remainingUpgradeUnits <= 0) {
           break;
@@ -2834,22 +2915,28 @@ class ProPurchaseAi {
           break;
         }
 
-        // Determine best upgrade option (prefer air units)
+        // Determine best upgrade option: stock Hard prefers air units, Beta the most firepower per
+        // extra PU without losing hit points
         // TODO: ensure map has carriers or air unit has range to reach enemy land mass
-        final boolean airAtCap = airShare.isAtCap();
         ProPurchaseOption bestUpgradeOption = null;
         double maxEfficiency =
-            findUpgradeUnitEfficiency(minPurchaseOption, placeTerritory.getStrategicValue());
+            proData.isBeta()
+                ? 0
+                : findUpgradeUnitEfficiency(minPurchaseOption, placeTerritory.getStrategicValue());
         for (final ProPurchaseOption ppo : purchaseOptionsForTerritory) {
           if (!ppo.isConsumesUnits()
-              && !(ppo.isAir() && airAtCap)
               && ppo.getCost() > minPurchaseOption.getCost()
               && (ppo.isAir()
                   || placeTerritory.getStrategicValue() >= 0.25
                   || ppo.getTransportCost() <= minPurchaseOption.getTransportCost())) {
-            double efficiency = findUpgradeUnitEfficiency(ppo, placeTerritory.getStrategicValue());
-            if (ppo.isAir()) {
-              efficiency *= 10;
+            double efficiency;
+            if (proData.isBeta()) {
+              efficiency = firepowerGainPerPu(ppo, minPurchaseOption);
+            } else {
+              efficiency = findUpgradeUnitEfficiency(ppo, placeTerritory.getStrategicValue());
+              if (ppo.isAir()) {
+                efficiency *= 10;
+              }
             }
             if (ppo.getCarrierCost() > 0) {
               final int unusedLocalCarrierCapacity =
@@ -2890,79 +2977,15 @@ class ProPurchaseAi {
         resourceTracker.removePurchase(minPurchaseOption);
         remainingUpgradeUnits -= minPurchaseOption.getQuantity();
         placeTerritory.getPlaceUnits().removeAll(unitsToRemove);
-        airShare.remove(unitsToRemove);
         ProLogger.trace(t + ", removedUnits=" + unitsToRemove);
         for (int i = 0; i < unitsToRemove.size(); i++) {
           if (resourceTracker.hasEnough(bestUpgradeOption)) {
             resourceTracker.purchase(bestUpgradeOption);
-            final List<Unit> bought = bestUpgradeOption.createTempUnits();
-            airShare.add(bought);
-            addUnitsToPlace(placeTerritory, bought);
+            addUnitsToPlace(placeTerritory, bestUpgradeOption.createTempUnits());
           }
         }
       }
     }
-  }
-
-  /**
-   * Hard Beta's air cap for the leftover passes, seeded with my owned units and those bought so far
-   * this turn. Stock Hard gets a share that is never at the cap.
-   */
-  private AirShare newAirShare(final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
-    final AirShare airShare = new AirShare(proData.isBeta(), proData.getUnitValueMap());
-    if (proData.isBeta()) {
-      final Set<Unit> units = new HashSet<>();
-      for (final Territory t : data.getMap().getTerritories()) {
-        units.addAll(t.getMatches(Matches.unitIsOwnedBy(player)));
-      }
-      for (final ProPurchaseTerritory ppt : purchaseTerritories.values()) {
-        for (final ProPlaceTerritory placeTerritory : ppt.getCanPlaceTerritories()) {
-          units.addAll(placeTerritory.getPlaceUnits());
-        }
-      }
-      airShare.add(units);
-    }
-    return airShare;
-  }
-
-  /** Running value of my air and of my whole force, kept up to date as the passes buy. */
-  private static final class AirShare {
-    private final boolean capped;
-    private final IntegerMap<UnitType> unitValues;
-    private int airValue;
-    private int totalValue;
-
-    AirShare(final boolean capped, final IntegerMap<UnitType> unitValues) {
-      this.capped = capped;
-      this.unitValues = unitValues;
-    }
-
-    boolean isAtCap() {
-      return capped && isAirAtCap(airValue, totalValue);
-    }
-
-    void add(final Collection<Unit> units) {
-      change(units, 1);
-    }
-
-    void remove(final Collection<Unit> units) {
-      change(units, -1);
-    }
-
-    private void change(final Collection<Unit> units, final int sign) {
-      if (capped) {
-        airValue +=
-            sign
-                * TuvUtils.getTuv(
-                    CollectionUtils.getMatches(units, Matches.unitIsAir()), unitValues);
-        totalValue += sign * TuvUtils.getTuv(units, unitValues);
-      }
-    }
-  }
-
-  @VisibleForTesting
-  static boolean isAirAtCap(final double airValue, final double totalValue) {
-    return airValue > 0 && airValue >= MAX_AIR_VALUE_SHARE * totalValue;
   }
 
   /**

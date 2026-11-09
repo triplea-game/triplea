@@ -32,6 +32,7 @@ import games.strategy.triplea.delegate.PlaceDelegate;
 import games.strategy.triplea.delegate.PurchaseDelegate;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -117,34 +118,43 @@ public class ProPurchaseAiTest {
   }
 
   @Test
-  void airIsNotAtCapWhenThereIsNoAir() {
-    assertThat(ProPurchaseAi.isAirAtCap(0, 100)).isFalse();
+  void mostHitPointsPerPuPicksInfantryOverArmourAndFighters() {
+    final List<ProPurchaseOption> options = germanLandAndAirOptions();
+
+    assertThat(ProPurchaseAi.mostHitPointsPerPu(options))
+        .hasValueSatisfying(o -> assertThat(o.getUnitType().getName()).isEqualTo("infantry"));
+  }
+
+  /// Infantry is 1/2 for 3 PUs: artillery adds 1 firepower for 1 PU, armour 3 for 2 and a fighter
+  /// 4 for 7, so armour is the best upgrade per PU.
+  @Test
+  void firepowerGainPerPuRanksArmourAboveArtilleryAndFighterForInfantry() {
+    final List<ProPurchaseOption> options = germanLandAndAirOptions();
+    final ProPurchaseOption infantry = option(options, "infantry");
+
+    final double armour = ProPurchaseAi.firepowerGainPerPu(option(options, "armour"), infantry);
+    final double artillery =
+        ProPurchaseAi.firepowerGainPerPu(option(options, "artillery"), infantry);
+    final double fighter = ProPurchaseAi.firepowerGainPerPu(option(options, "fighter"), infantry);
+
+    assertThat(armour).isEqualTo(1.5);
+    assertThat(artillery).isEqualTo(1.0);
+    assertThat(fighter).isEqualTo(4.0 / 7);
   }
 
   @Test
-  void airIsNotAtCapWhenThereIsNoForceAtAll() {
-    assertThat(ProPurchaseAi.isAirAtCap(0, 0)).isFalse();
+  void firepowerGainPerPuIsZeroForADowngrade() {
+    final List<ProPurchaseOption> options = germanLandAndAirOptions();
+
+    assertThat(
+            ProPurchaseAi.firepowerGainPerPu(
+                option(options, "infantry"), option(options, "armour")))
+        .isZero();
   }
 
+  /// Italy already has 20 fighters; with no air preference Beta's leftover PUs buy land units.
   @Test
-  void airIsNotAtCapBelowHalfOfForceValue() {
-    assertThat(ProPurchaseAi.isAirAtCap(49, 100)).isFalse();
-  }
-
-  @Test
-  void airIsAtCapAtExactlyHalfOfForceValue() {
-    assertThat(ProPurchaseAi.isAirAtCap(50, 100)).isTrue();
-  }
-
-  @Test
-  void airIsAtCapAboveHalfOfForceValue() {
-    assertThat(ProPurchaseAi.isAirAtCap(60, 100)).isTrue();
-  }
-
-  /// Italy owns far more air than the rest of its force is worth, so Hard Beta's leftover PUs must
-  /// go to something else. Without the cap the fallbacks prefer air 10 times over any other unit.
-  @Test
-  void betaDoesNotSpendLeftoverPusOnAirWhenAirIsAlreadyHalfTheForce() {
+  void betaDoesNotSpendLeftoverPusOnAir() {
     setupShouldSaveUpForAFleetTest(new ProAi("Test Name", "Test Player Label", true));
     final Territory italy = territory("Italy", gameData);
     final List<Unit> fighters =
@@ -158,6 +168,22 @@ public class ProPurchaseAiTest {
     }
 
     assertThat(gamePlayer.getUnits()).isNotEmpty().noneMatch(Matches.unitIsAir());
+  }
+
+  private static List<ProPurchaseOption> germanLandAndAirOptions() {
+    final GameData ww2v3 = TestMapGameData.WW2V3_1941.getGameData();
+    final ProPurchaseOptionMap optionMap = new ProPurchaseOptionMap(germans(ww2v3), ww2v3);
+    final List<ProPurchaseOption> options = new ArrayList<>(optionMap.getLandOptions());
+    options.addAll(optionMap.getAirOptions());
+    return options;
+  }
+
+  private static ProPurchaseOption option(
+      final List<ProPurchaseOption> options, final String unitType) {
+    return options.stream()
+        .filter(o -> o.getUnitType().getName().equals(unitType))
+        .findFirst()
+        .orElseThrow();
   }
 
   @Test
