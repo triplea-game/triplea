@@ -2,12 +2,12 @@ package games.strategy.triplea.ai.pro.logging;
 
 import games.strategy.engine.framework.GameShutdownRegistry;
 import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugOption;
-import games.strategy.ui.Util;
 import java.awt.Frame;
 import java.util.List;
 import javax.swing.SwingUtilities;
 import lombok.experimental.UtilityClass;
 import org.triplea.swing.key.binding.KeyCode;
+import org.triplea.thread.EventThreadChecks;
 
 /** Builds the Hard AI debug menu and manages the AI log window it shows. */
 @UtilityClass
@@ -36,7 +36,7 @@ public final class ProLogDebugMenu {
       };
 
   public static List<AiPlayerDebugOption> buildDebugOptions(final Frame frame) {
-    Util.ensureOnEventDispatchThread();
+    EventThreadChecks.ensureOnEventDispatchThread();
     if (settingsWindow == null) {
       settingsWindow = new ProLogWindow(frame);
       ProLogUi.setLogDisplay(windowDisplay);
