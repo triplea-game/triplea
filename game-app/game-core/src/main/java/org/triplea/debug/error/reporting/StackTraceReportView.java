@@ -14,5 +14,4 @@ public interface StackTraceReportView {
 
   /** Sets window to visible. */
   void show();
-
 }
