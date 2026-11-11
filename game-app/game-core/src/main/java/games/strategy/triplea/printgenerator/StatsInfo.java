@@ -199,8 +199,9 @@ public class StatsInfo extends InfoForFile {
 
   private void writeWinners(Writer writer) throws IOException {
     writer.append("Winners:").append(DELIMITER);
-    final EndRoundDelegate delegateEndRound = (EndRoundDelegate) gameData.getDelegate("endRound");
-    if (delegateEndRound != null && !delegateEndRound.isGameOver()) {
+    final EndRoundDelegate delegateEndRound =
+        (EndRoundDelegate) gameData.getDelegateOptional("endRound").orElse(null);
+    if (delegateEndRound != null && delegateEndRound.isGameOver()) {
       Collection<GamePlayer> winners = delegateEndRound.getWinners();
       for (final GamePlayer p : winners) {
         writer.append(p.getName()).append(DELIMITER);
