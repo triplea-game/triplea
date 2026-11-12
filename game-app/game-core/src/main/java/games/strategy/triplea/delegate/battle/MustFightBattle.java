@@ -62,6 +62,8 @@ import games.strategy.triplea.delegate.move.validation.AirMovementValidator;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -119,6 +121,10 @@ public class MustFightBattle extends DependentBattle
   // and resume while in the middle of a battle.
   private final ExecutionStack stack = new ExecutionStack();
 
+  // Holds the Same Luck shared remainder die for the current round; reset when the round advances.
+  // Not final: readObject backfills it for saves made before it existed.
+  private SameLuckDiePool sameLuckDiePool = new SameLuckDiePool();
+
   @Getter private List<String> stepStrings;
   // Stores the firing units corresponding to the casualty steps in stepStrings. This is to fix a
   // "step name not found" error due to stepStrings being generated at the start of combat, but
@@ -160,6 +166,13 @@ public class MustFightBattle extends DependentBattle
         battleSite.isWater()
             ? Properties.getSeaBattleRounds(data.getProperties())
             : Properties.getLandBattleRounds(data.getProperties());
+  }
+
+  private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+    in.defaultReadObject();
+    if (sameLuckDiePool == null) {
+      sameLuckDiePool = new SameLuckDiePool();
+    }
   }
 
   void resetDefendingUnits(final GamePlayer attacker) {
@@ -280,6 +293,11 @@ public class MustFightBattle extends DependentBattle
   @Override
   public BattleStatus getStatus() {
     return BattleStatus.of(round, maxRounds, isOver, isAmphibious, headless);
+  }
+
+  @Override
+  public SameLuckDiePool getSameLuckDiePool() {
+    return sameLuckDiePool;
   }
 
   @Override
@@ -1300,6 +1318,8 @@ public class MustFightBattle extends DependentBattle
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
             if (!isOver) {
               round++;
+              // A new round rolls a fresh shared Same Luck die.
+              sameLuckDiePool.reset();
               if (round > MAX_ROUNDS) {
                 // the battle appears to be in an infinite loop
                 throw new IllegalStateException(

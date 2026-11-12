@@ -1,8 +1,11 @@
 package games.strategy.triplea.ai.pro.util;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static games.strategy.triplea.delegate.GameDataTestUtil.british;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
+import static games.strategy.triplea.delegate.GameDataTestUtil.removeFrom;
 import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
+import static games.strategy.triplea.delegate.GameDataTestUtil.submarine;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,6 +18,8 @@ import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.attachments.PlayerAttachment;
+import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.Collection;
 import java.util.List;
@@ -109,7 +114,7 @@ public class ProTerritoryValueUtilsTest {
 
     final double value =
         ProTerritoryValueUtils.findSeaTerritoryValues(
-                russians(gameData), List.of(), List.of(seaZone4))
+                new ProData(false), russians(gameData), List.of(), List.of(seaZone4))
             .get(seaZone4);
 
     // Within 4 moves of the Russian 4 Sea Zone, the enemy is Germany:
@@ -189,6 +194,72 @@ public class ProTerritoryValueUtilsTest {
     assertThat(ProTerritoryValueUtils.victoryCityValue(new ProData(true), eastBalkans))
         .as("not a victory city")
         .isZero();
+  }
+
+  @Test
+  @DisplayName("without dice a blockade costs its points, capped at the production there")
+  void blockadeLossWithoutDice() {
+    assertThat(ProTerritoryValueUtils.expectedBlockadeLoss(2, 5, false)).isEqualTo(2);
+    assertThat(ProTerritoryValueUtils.expectedBlockadeLoss(9, 5, false)).isEqualTo(5);
+    assertThat(ProTerritoryValueUtils.expectedBlockadeLoss(0, 5, false)).isZero();
+    assertThat(ProTerritoryValueUtils.expectedBlockadeLoss(3, 0, false)).isZero();
+  }
+
+  @Test
+  @DisplayName("a rolled blockade point is worth 1 PU on average, less once the cap bites")
+  void blockadeLossWithDice() {
+    assertThat(ProTerritoryValueUtils.expectedBlockadeLoss(1, 10, true)).isEqualTo(1.0);
+    assertThat(ProTerritoryValueUtils.expectedBlockadeLoss(4, 100, true))
+        .isCloseTo(4.0, org.assertj.core.data.Offset.offset(1e-9));
+    // (1+2+3)/6 on one die, but only 1 PU is at stake: 1/6 * 1 + 1/6 * 1 + 1/6 * 1
+    assertThat(ProTerritoryValueUtils.expectedBlockadeLoss(1, 1, true))
+        .isCloseTo(0.5, org.assertj.core.data.Offset.offset(1e-9));
+  }
+
+  @Test
+  @DisplayName("a blockade zone is worth the production an enemy blockader there would cut")
+  void blockadeValueDefendsAdjacentIncome() throws Exception {
+    final GameData data = TestMapGameData.BIG_WORLD_1942.getGameData();
+    final GamePlayer british = british(data);
+    final Territory zone =
+        data.getMap().getNeighbors(territory("England", data)).stream()
+            .filter(Territory::isWater)
+            .findFirst()
+            .orElseThrow();
+    final var attachment = new TerritoryAttachment("blockade", zone, data);
+    zone.addAttachment(Constants.TERRITORY_ATTACHMENT_NAME, attachment);
+    attachment.getPropertyOrThrow("blockadeZone").setValue(true);
+    submarine(data).getUnitAttachment().getPropertyOrThrow("blockade").setValue(2);
+    for (final Territory t : data.getMap().getTerritories()) {
+      removeFrom(t, t.getUnitCollection().getMatches(Matches.unitIsOwnedBy(british)));
+    }
+    addTo(zone, submarine(data).create(1, germans(data)));
+
+    final ProData beta = new ProData(true);
+    final int ourBlockade = ProTerritoryValueUtils.ourBlockadePoints(beta, british);
+
+    assertThat(ProTerritoryValueUtils.blockadeValue(beta, british, zone, ourBlockade))
+        .isEqualTo(2.0);
+    assertThat(ProTerritoryValueUtils.blockadeValue(new ProData(false), british, zone, ourBlockade))
+        .as("stock Hard")
+        .isZero();
+  }
+
+  @Test
+  @DisplayName("each enemy bordering a blockade zone can lose up to our full blockade")
+  void blockadeValueCapsTheLossPerEnemy() throws Exception {
+    final GameData data = TestMapGameData.BIG_WORLD_1942.getGameData();
+    final Territory channel = territory("SZ 17 English Channel", data);
+    final Territory france = territory("France", data);
+    final var attachment = new TerritoryAttachment("blockade", channel, data);
+    channel.addAttachment(Constants.TERRITORY_ATTACHMENT_NAME, attachment);
+    attachment.getPropertyOrThrow("blockadeZone").setValue(true);
+    removeFrom(france, france.getUnits());
+    france.setOwner(russians(data));
+
+    // England (British, 4 PUs) and France (Russian, 3 PUs) border the channel
+    assertThat(ProTerritoryValueUtils.blockadeValue(new ProData(true), germans(data), channel, 3))
+        .isEqualTo(3.0 + 3.0);
   }
 
   @SuppressWarnings("unchecked")

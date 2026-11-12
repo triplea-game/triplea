@@ -63,6 +63,11 @@ public class ProResourceTracker {
     return !remaining.isEmpty() && remaining.allValuesEqual(0);
   }
 
+  public int getRemainingPUs(final GameState data) {
+    final Resource pus = data.getResourceList().getResourceOrThrow(Constants.PUS);
+    return getRemaining().getInt(pus);
+  }
+
   public int getTempPUs(final GameState data) {
     final Resource pus = data.getResourceList().getResourceOrThrow(Constants.PUS);
     return tempPurchases.getInt(pus);

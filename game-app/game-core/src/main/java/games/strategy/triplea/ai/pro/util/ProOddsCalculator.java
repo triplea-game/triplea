@@ -6,6 +6,7 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.ai.AiRandom;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
@@ -17,7 +18,6 @@ import games.strategy.triplea.util.TuvUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Pro AI odds calculator. */
@@ -274,7 +274,7 @@ public class ProOddsCalculator {
             attackingUnits,
             defendingUnits,
             u -> proData.getUnitValueMap().getInt(u.getType()),
-            ThreadLocalRandom.current());
+            AiRandom.get());
     final Collection<Unit> mainBattleAttackers =
         airBattle.isEmpty() ? attackingUnits : minus(attackingUnits, airBattle.attackersLost());
     final Collection<Unit> mainBattleDefenders =

@@ -90,6 +90,13 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<Boolean> showPotentialScrambleWarning =
       new BooleanClientSetting("SHOW_POTENTIAL_SCRAMBLE_WARNING", true);
 
+  /** Last size of the launch window, reused the next time it opens. */
+  public static final ClientSetting<Integer> launchWindowWidth =
+      new IntegerClientSetting("LAUNCH_WINDOW_WIDTH");
+
+  public static final ClientSetting<Integer> launchWindowHeight =
+      new IntegerClientSetting("LAUNCH_WINDOW_HEIGHT");
+
   /** URI of the lobby, can be toggled in settings to switch to a different lobby. */
   public static final ClientSetting<URI> lobbyUri =
       new UriClientSetting("LOBBY_URI", URI.create(UrlConstants.PROD_LOBBY));
@@ -103,6 +110,15 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new BooleanClientSetting("LOGIN_ANONYMOUSLY", true);
   public static final ClientSetting<String> lookAndFeel =
       new StringClientSetting("LOOK_AND_FEEL_PREF", LookAndFeel.getDefaultLookAndFeelClassName());
+
+  /**
+   * Global UI scale as a percentage of the look-and-feel's default size; 100 leaves the UI
+   * untouched. {@link LookAndFeel} translates this into a scaled {@code defaultFont}, from which
+   * FlatLaf derives the scale for both fonts and component sizes.
+   */
+  public static final ClientSetting<Integer> uiScalePercent =
+      new IntegerClientSetting("UI_SCALE_PERCENT", 100);
+
   public static final ClientSetting<Integer> mapEdgeScrollSpeed =
       new IntegerClientSetting("MAP_EDGE_SCROLL_SPEED", 30);
   public static final ClientSetting<Integer> mapEdgeScrollZoneSize =

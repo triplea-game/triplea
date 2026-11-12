@@ -61,13 +61,10 @@ public class PlayerBridge {
     try {
       try (GameData.Unlocker ignored = game.getData().acquireReadLock()) {
         final GameStep step = game.getData().getSequence().getStep();
-        final String stepName = step == null ? null : step.getName();
-        final String currentDelegate =
-            (step == null || step.getDelegate() == null) ? null : step.getDelegate().getName();
+        final String stepName = step.getName();
+        final String currentDelegate = step.getDelegate().getName();
         final Optional<IDelegate> optionalDelegate =
-            currentDelegate == null
-                ? Optional.empty()
-                : game.getData().getDelegateOptional(currentDelegate);
+            game.getData().getDelegateOptional(currentDelegate);
         // TODO: before converting this Preconditions check to checkNotNull, make sure we do not
         // depend on the illegal state exception type in a catch block.
         Preconditions.checkState(

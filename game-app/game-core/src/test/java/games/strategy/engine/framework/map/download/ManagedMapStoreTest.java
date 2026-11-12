@@ -33,4 +33,14 @@ class ManagedMapStoreTest extends AbstractClientSettingTestCase {
     assertThat(managedMap.getMapStatus()).isEqualTo(ManagedMapStatus.AVAILABLE);
     assertThat(store.getByStatus(ManagedMapStatus.AVAILABLE)).containsExactly(managedMap);
   }
+
+  @Test
+  void disposedStoreNoLongerListensToDownloadCoordinator() {
+    final ManagedMapStore store = new ManagedMapStore();
+    assertThat(DownloadCoordinator.instance.hasDownloadListener(store)).isTrue();
+
+    store.dispose();
+
+    assertThat(DownloadCoordinator.instance.hasDownloadListener(store)).isFalse();
+  }
 }

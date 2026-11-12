@@ -120,6 +120,7 @@ public interface Constants {
   String SUBMERSIBLE_SUBS = "Submersible Subs";
   String USE_DESTROYERS_AND_ARTILLERY = "Use Destroyers and Artillery";
   String LOW_LUCK = "Low Luck";
+  String SAME_LUCK = "Same Luck";
   String PU_CAP = "Territory Turn Limit";
   String KAMIKAZE = "Kamikaze Airplanes";
   String LHTR_HEAVY_BOMBERS = "LHTR Heavy Bombers";

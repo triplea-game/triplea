@@ -6,6 +6,7 @@ import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.triplea.ai.AiPoliticalUtils;
+import games.strategy.triplea.ai.AiRandom;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.ai.pro.data.ProTerritoryManager;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
@@ -121,12 +122,12 @@ class ProPoliticsAi {
 
       // Decide whether to declare war on an enemy
       final List<PoliticalActionAttachment> options = new ArrayList<>(attackPercentageMap.keySet());
-      Collections.shuffle(options);
+      Collections.shuffle(options, AiRandom.get());
       for (final PoliticalActionAttachment action : options) {
         final double roundFactor = (round - 1) * .05; // 0, .05, .1, .15, etc
         final double warChance =
             roundFactor + attackPercentageMap.get(action) * (1 + 10 * roundFactor);
-        final double random = Math.random();
+        final double random = AiRandom.get().nextDouble();
         ProLogger.trace(enemyMap.get(action) + ", warChance=" + warChance + ", random=" + random);
         if (random <= warChance) {
           results.add(action);
@@ -138,8 +139,8 @@ class ProPoliticsAi {
 
       // Decide whether to declare war on a neutral
       final List<PoliticalActionAttachment> options = new ArrayList<>(neutralMap.keySet());
-      Collections.shuffle(options);
-      final double random = Math.random();
+      Collections.shuffle(options, AiRandom.get());
+      final double random = AiRandom.get().nextDouble();
       final double warChance = .01;
       ProLogger.debug("warChance=" + warChance + ", random=" + random);
       if (random <= warChance) {
@@ -149,13 +150,13 @@ class ProPoliticsAi {
     }
 
     // Old code used for non-war actions
-    if (Math.random() < .5) {
+    if (AiRandom.get().nextDouble() < .5) {
       final List<PoliticalActionAttachment> actionChoicesOther =
           AiPoliticalUtils.getPoliticalActionsOther(
               player, politicsDelegate.getTestedConditions(), data);
       if (!actionChoicesOther.isEmpty()) {
-        Collections.shuffle(actionChoicesOther);
-        final double random = Math.random();
+        Collections.shuffle(actionChoicesOther, AiRandom.get());
+        final double random = AiRandom.get().nextDouble();
         final int maxOtherActionsPerTurn =
             (random < .3
                 ? 0

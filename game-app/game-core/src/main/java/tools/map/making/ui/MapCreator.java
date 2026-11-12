@@ -13,6 +13,7 @@ import javax.swing.JScrollPane;
 import lombok.experimental.UtilityClass;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JFrameBuilder;
+import org.triplea.swing.ScreenShareSize;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 import tools.map.making.ui.runnable.AutoPlacementFinderTask;
@@ -51,8 +52,6 @@ public class MapCreator {
         new JFrameBuilder()
             .title("TripleA Map Creator Tools")
             .iconImage(EngineImageLoader.loadFrameIcon())
-            .size(800, 600)
-            .locateRelativeTo(null)
             .disposeOnClose()
             .layout(new BorderLayout())
             .build();
@@ -61,6 +60,8 @@ public class MapCreator {
     contentPane.add(new JScrollPane(sidePanel), BorderLayout.WEST);
     contentPane.add(new JScrollPane(mainPanel), BorderLayout.CENTER);
 
+    frame.pack();
+    ScreenShareSize.apply(frame, 0.6, 0.7);
     frame.setVisible(true);
   }
 
@@ -94,10 +95,8 @@ public class MapCreator {
         new JButtonBuilder(labelText)
             .actionListener(() -> swapContainerContents(mainPanel, panel))
             .build();
-    Dimension buttonDimension = new Dimension(175, 20);
-    button.setPreferredSize(buttonDimension);
-    button.setMinimumSize(buttonDimension);
-    button.setMaximumSize(buttonDimension);
+    // buttons stretch to the widest one, so every label shows in full and the column lines up
+    button.setMaximumSize(new Dimension(Integer.MAX_VALUE, button.getPreferredSize().height));
     sidePanel.add(button);
     sidePanel.add(Box.createVerticalGlue());
   }
