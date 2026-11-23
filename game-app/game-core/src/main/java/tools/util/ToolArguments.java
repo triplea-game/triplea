@@ -116,41 +116,60 @@ public enum ToolArguments {
     return prop;
   }
 
-  /** Generic setter that enforces correct type */
-  public void setSystemProperty(Object newValue) {
+  /**
+   * Sets the system property from a textual value, normalized to this argument's declared type.
+   *
+   * <p>A {@code null} value clears the property. Malformed numeric values are logged and the
+   * existing property is left untouched.
+   */
+  public void setSystemProperty(final @Nullable String newValue) {
     if (newValue == null) {
       System.clearProperty(value);
       return;
     }
 
-    if (!type.isInstance(newValue)) {
-      throw new IllegalArgumentException(
-          "Invalid type for " + value + ": expected " + type.getSimpleName());
-    }
-
-    String systemPropertyValue;
-    if (Number.class.isAssignableFrom(type)) {
-      try {
-        double typedValue = Double.parseDouble((String) newValue);
-        double rangeSaveValue = Math.min(maxValue, Math.max(minValue, typedValue));
-        if (typedValue != rangeSaveValue) {
-          log.info(
-              "New value {} for {} not in range [{},{}]. {} used",
-              newValue,
-              value,
-              minValue,
-              maxValue,
-              rangeSaveValue);
-        }
-        systemPropertyValue = type.cast(rangeSaveValue).toString();
-      } catch (NumberFormatException e) {
-        log.error("New value {} malformed. System property {} not set.", newValue, value);
-        return; // no new valid value, so leave existing value untouched
-      }
+    if (type == Integer.class) {
+      setIntegerSystemProperty(newValue);
+    } else if (type == Double.class) {
+      setDoubleSystemProperty(newValue);
     } else {
-      systemPropertyValue = newValue.toString();
+      System.setProperty(value, newValue);
     }
+  }
 
-    System.setProperty(value, systemPropertyValue);
+  private void setIntegerSystemProperty(final String newValue) {
+    final int typedValue;
+    try {
+      typedValue = Integer.parseInt(newValue.trim());
+    } catch (NumberFormatException e) {
+      log.error("New value {} malformed. System property {} not set.", newValue, value);
+      return;
+    }
+    System.setProperty(value, Integer.toString((int) clampToRange(typedValue)));
+  }
+
+  private void setDoubleSystemProperty(final String newValue) {
+    final double typedValue;
+    try {
+      typedValue = Double.parseDouble(newValue.trim());
+    } catch (NumberFormatException e) {
+      log.error("New value {} malformed. System property {} not set.", newValue, value);
+      return;
+    }
+    System.setProperty(value, Double.toString(clampToRange(typedValue)));
+  }
+
+  private double clampToRange(final double typedValue) {
+    final double rangeSafeValue = Math.min(maxValue, Math.max(minValue, typedValue));
+    if (typedValue != rangeSafeValue) {
+      log.info(
+          "New value {} for {} not in range [{},{}]. {} used",
+          typedValue,
+          value,
+          minValue,
+          maxValue,
+          rangeSafeValue);
+    }
+    return rangeSafeValue;
   }
 }
