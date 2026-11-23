@@ -106,12 +106,12 @@ public class MapPanel extends ImageScrollerLargeView {
   private @Nullable BufferedImage mouseShadowImage = null;
   private String movementLeftForCurrentUnits = "";
   private ResourceCollection movementFuelCost;
-  @Getter private final UiContext uiContext;
+  @Getter private volatile UiContext uiContext;
   private final ExecutorService executor =
       Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
   @Getter private Collection<Collection<Unit>> highlightedUnits = List.of();
   private @Nullable Cursor hiddenCursor = null;
-  private final MapRouteDrawer routeDrawer;
+  private volatile MapRouteDrawer routeDrawer;
   private Set<Territory> countriesToUpdate = new HashSet<>();
   private final Object countriesToUpdateLock = new Object();
 
@@ -360,6 +360,16 @@ public class MapPanel extends ImageScrollerLargeView {
       isEditMode = EditDelegate.getEditMode(gameData.getProperties());
     }
     return isEditMode;
+  }
+
+  /**
+   * Switches to the context of a new map skin. Callers follow this with {@link #changeImage} and
+   * {@link #resetMap} so tiles are redrawn from it.
+   */
+  public void setUiContext(final UiContext uiContext) {
+    this.uiContext = uiContext;
+    tileManager.setUiContext(uiContext);
+    routeDrawer = new MapRouteDrawer(this, uiContext.getMapData());
   }
 
   // Beagle Code used to change map skin
