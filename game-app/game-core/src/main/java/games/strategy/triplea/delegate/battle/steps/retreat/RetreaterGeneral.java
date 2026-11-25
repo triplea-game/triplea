@@ -83,7 +83,8 @@ class RetreaterGeneral implements Retreater {
           (TerritoryEffectAttachment)
               battleState.getDefendersRetreatTo().getAttachment(TERRITORYEFFECT_ATTACHMENT_NAME);
       if (territoryEffect != null)
-        retreatUnits.removeIf(unit -> territoryEffect.getUnitsNotAllowed().contains(unit));
+        retreatUnits.removeIf(
+            unit -> territoryEffect.getUnitsNotAllowed().contains(unit.getType()));
     }
     return retreatUnits;
   }
