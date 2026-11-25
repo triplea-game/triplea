@@ -63,6 +63,13 @@ class LobbyGameTableModel extends AbstractTableModel {
   }
 
   @Override
+  public Class<?> getColumnClass(final int columnIndex) {
+    // The Started column carries a Comparable sort key so header-click sorting is chronological
+    // rather than a lexicographic compare of the formatted time strings.
+    return Column.values()[columnIndex] == Column.Started ? StartTime.class : Object.class;
+  }
+
+  @Override
   public int getColumnCount() {
     final int adminHiddenColumns = admin ? 0 : -1;
     // -1 so we don't display the UUID
@@ -89,12 +96,15 @@ class LobbyGameTableModel extends AbstractTableModel {
       case Players -> lobbyGame.getPlayerCount();
       case P -> (lobbyGame.getPassworded() ? "*" : "");
       case Status ->
-          // Note, we update status client side to avoid a headless game from reporting
-          // a new status when players leave or join. We expect a player count of 0 in
-          // headless games if there are no players connected.
-          lobbyGame.getPlayerCount() == 0 ? "Available" : lobbyGame.getStatus();
+          // We derive status client side so a headless game doesn't report a new status as
+          // players leave or join; a connected-player count of 0 is normal for headless games.
+          // Only override to "Available" before the game has started (round 0) so a bot game
+          // already in progress keeps its real status instead of looking joinable-and-empty.
+          (lobbyGame.getPlayerCount() == 0 && lobbyGame.getGameRound() == 0)
+              ? "Available"
+              : lobbyGame.getStatus();
       case Comments -> lobbyGame.getComments();
-      case Started -> formatBotStartTime(lobbyGame.getEpochMilliTimeStarted());
+      case Started -> new StartTime(lobbyGame.getEpochMilliTimeStarted());
       case UUID -> listingModel.getGameIdForRow(rowIndex);
       default -> throw new IllegalStateException("Unknown column: " + column);
     };
@@ -107,5 +117,18 @@ class LobbyGameTableModel extends AbstractTableModel {
         .appendLocalized(null, FormatStyle.SHORT)
         .toFormatter()
         .format(LocalDateTime.ofInstant(instant, ZoneOffset.systemDefault()));
+  }
+
+  /** Started-column value that renders as a localized time but sorts chronologically. */
+  record StartTime(long epochMilli) implements Comparable<StartTime> {
+    @Override
+    public int compareTo(final StartTime other) {
+      return Long.compare(epochMilli, other.epochMilli);
+    }
+
+    @Override
+    public String toString() {
+      return formatBotStartTime(epochMilli);
+    }
   }
 }

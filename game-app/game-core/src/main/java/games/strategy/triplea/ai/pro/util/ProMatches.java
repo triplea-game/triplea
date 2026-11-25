@@ -11,9 +11,11 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -31,6 +33,30 @@ public final class ProMatches {
       final Route r = new Route(startTerritory, endTerritory);
       return new MoveValidator(player.getData(), false).validateCanal(r, null, player) == null;
     };
+  }
+
+  /**
+   * Whether a land unit may begin {@code route} in a combat move. Unless the map allows attacking
+   * from contested territories, a unit leaving a territory with enemy units (or one captured this
+   * turn without blitzing) for further enemy land must be able to blitz, mirroring {@link
+   * MoveValidator}.
+   */
+  public static boolean landUnitCanLeaveContestedTerritory(
+      final GamePlayer player, final Unit unit, final Route route) {
+    if (Properties.getAllUnitsCanAttackFromContestedTerritories(player.getData().getProperties())) {
+      return true;
+    }
+    final Territory start = route.getStart();
+    final boolean passesThroughEnemyTerritory =
+        route.anyMatch(Matches.isTerritoryEnemy(player))
+            && !route.allMatchMiddleSteps(Matches.isTerritoryEnemy(player).negate());
+    if (start.isWater() || !passesThroughEnemyTerritory) {
+      return true;
+    }
+    if (!Matches.territoryIsBlitzable(player).test(start)) {
+      return false;
+    }
+    return !Matches.isAtWar(start.getOwner()).test(player) || Matches.unitCanBlitz().test(unit);
   }
 
   public static Predicate<Territory> territoryCanLandAirUnits(
@@ -101,6 +127,29 @@ public final class ProMatches {
               .negate();
       return territoryMatch.test(t) && unitMatch.test(u);
     };
+  }
+
+  /**
+   * Whether no territory effect on {@code route} bars {@code unit}'s type. The engine enforces this
+   * for every unit type, so a sea or air unit can be shut out of a zone too.
+   */
+  public static boolean routeAllowsUnit(final Route route, final Unit unit) {
+    return !Matches.unitIsOfTypes(
+            TerritoryEffectHelper.getUnitTypesForUnitsNotAllowedIntoTerritory(route.getSteps()))
+        .test(unit);
+  }
+
+  /**
+   * Whether every territory on {@code route}, start included, holds the units that {@code unit}'s
+   * {@code requiresUnitsToMove} asks for (a unit that stays put moves nowhere, so it passes). Like
+   * the engine's check it reads the current board, so use it for my own moves, not for what an
+   * enemy could bring.
+   */
+  public static boolean routeHasRequiredUnitsToMove(final Route route, final Unit unit) {
+    return route.numberOfSteps() == 0
+        || unit.getUnitAttachment().getRequiresUnitsToMove().isEmpty()
+        || route.getAllTerritories().stream()
+            .allMatch(Matches.territoryHasRequiredUnitsToMove(List.of(unit)));
   }
 
   public static Predicate<Territory> territoryCanMoveLandUnits(
@@ -295,7 +344,7 @@ public final class ProMatches {
     return territoryIsNotConqueredOwnedLand(player).and(territoryHasFactoryAndIsOwnedLand(player));
   }
 
-  private static Predicate<Territory> territoryHasFactoryAndIsOwnedLand(final GamePlayer player) {
+  public static Predicate<Territory> territoryHasFactoryAndIsOwnedLand(final GamePlayer player) {
     final Predicate<Unit> factoryMatch =
         Matches.unitIsOwnedBy(player).and(Matches.unitCanProduceUnits());
     return Matches.isTerritoryOwnedBy(player)
@@ -345,9 +394,10 @@ public final class ProMatches {
                 player.getData().getMap(), Matches.territoryIsWater()));
   }
 
-  public static Predicate<Territory> territoryHasNoInfraFactoryAndIsNotConqueredOwnedLand(
+  public static Predicate<Territory> territoryHasNoInfraFactoryAndIsOwnedLand(
       final GamePlayer player) {
-    return territoryIsNotConqueredOwnedLand(player)
+    return Matches.isTerritoryOwnedBy(player)
+        .and(Matches.territoryIsLand())
         .and(territoryHasInfraFactoryAndIsOwnedLand(player).negate());
   }
 
@@ -440,6 +490,19 @@ public final class ProMatches {
             && Matches.isTerritoryOwnedBy(player).and(Matches.territoryIsLand()).test(t);
   }
 
+  /**
+   * Reads conquests from the territory's own {@code GameData}, not {@code player.getData()}, so it
+   * also sees those in the copy the purchase simulates on.
+   */
+  public static Predicate<Territory> territoryIsNotConqueredUnlessPlacementCapturedAllowed(
+      final GamePlayer player) {
+    final RulesAttachment ra = player.getRulesAttachment();
+    if (ra != null && ra.getPlacementCapturedTerritory()) {
+      return t -> true;
+    }
+    return t -> !AbstractMoveDelegate.getBattleTracker(t.getData()).wasConquered(t);
+  }
+
   public static Predicate<Territory> territoryIsWaterAndAdjacentToOwnedFactory(
       final GamePlayer player) {
     final Predicate<Territory> hasOwnedFactoryNeighbor =
@@ -449,7 +512,9 @@ public final class ProMatches {
   }
 
   public static Predicate<Unit> unitCanBeMovedAndIsOwned(final GamePlayer player) {
-    return Matches.unitIsOwnedBy(player).and(Matches.unitHasMovementLeft());
+    return Matches.unitIsOwnedBy(player)
+        .and(Matches.unitHasMovementLeft())
+        .and(Matches.unitIsNotDisabled());
   }
 
   public static Predicate<Unit> unitCanBeMovedAndIsOwnedAir(
@@ -601,6 +666,14 @@ public final class ProMatches {
                 .and(Matches.unitHasMovementLeft())
                 .and(Matches.unitIsBeingTransported().negate())
                 .test(u);
+  }
+
+  /**
+   * Whether {@code transport} may take on units now. WW2V3 and LHTR bar a transport that fought
+   * this turn from loading in non-combat move.
+   */
+  public static Predicate<Unit> transportCanLoad() {
+    return not(TransportTracker::isTransportLoadRestrictedAfterCombat);
   }
 
   public static Predicate<Unit> unitHasLessMovementThan(final Unit unit) {

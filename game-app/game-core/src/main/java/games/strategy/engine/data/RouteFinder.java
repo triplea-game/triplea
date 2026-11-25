@@ -44,6 +44,15 @@ class RouteFinder {
     this(new MoveValidator(map.getData(), false), map, condition, units, player);
   }
 
+  RouteFinder(
+      final GameMap map,
+      final Predicate<Territory> condition,
+      final Collection<Unit> units,
+      final GamePlayer player,
+      final MoveValidator moveValidator) {
+    this(moveValidator, map, condition, units, player);
+  }
+
   Optional<Route> findRouteByDistance(
       final @Nonnull Territory start, final @Nonnull Territory end) {
     return findRouteByCost(start, end, t -> BigDecimal.ONE);

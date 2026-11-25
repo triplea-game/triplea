@@ -16,7 +16,8 @@ import games.strategy.triplea.delegate.power.calculator.CombatValueBuilder;
 import games.strategy.triplea.delegate.power.calculator.PowerStrengthAndRolls;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.odds.calculator.AggregateResults;
-import games.strategy.triplea.odds.calculator.ConcurrentBattleCalculator;
+import games.strategy.triplea.odds.calculator.BattleCalculatorFactory;
+import games.strategy.triplea.odds.calculator.IBattleCalculator;
 import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugAction;
 import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugOption;
 import java.util.ArrayList;
@@ -122,7 +123,7 @@ public class LanchesterDebugAction implements Consumer<AiPlayerDebugAction> {
     log.info("Attack Units: {}", MyFormatter.unitsToText(attackingUnits));
     log.info("Defending Units: {}", MyFormatter.unitsToText(defendingUnits));
 
-    final ConcurrentBattleCalculator hardAiCalculator = new ConcurrentBattleCalculator();
+    final IBattleCalculator hardAiCalculator = BattleCalculatorFactory.newBattleCalculator();
     hardAiCalculator.setGameData(ai.getGameData());
     final AggregateResults hardAiResults =
         hardAiCalculator.calculate(

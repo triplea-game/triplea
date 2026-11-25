@@ -2,6 +2,7 @@ package games.strategy.engine.lobby.client.ui;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.Mockito.mock;
 
 import com.google.common.util.concurrent.Runnables;
 import games.strategy.net.Node;
@@ -128,6 +129,41 @@ final class LobbyGameTableModelTest {
       waitForSwingThreads();
       assertThat(testObj.getRowCount()).isEqualTo(1);
     }
+
+    @Test
+    void statusShowsRealStatusForStartedZeroPlayerGame() throws UnknownHostException {
+      updateGame(zeroPlayerGameAtRound(1));
+
+      final int statusColumnIndex = testObj.getColumnIndex(LobbyGameTableModel.Column.Status);
+      assertThat(testObj.getValueAt(0, statusColumnIndex))
+          .isEqualTo(GameDescription.GameStatus.IN_PROGRESS.toString());
+    }
+
+    @Test
+    void statusShowsAvailableForRoundZeroZeroPlayerGame() throws UnknownHostException {
+      updateGame(zeroPlayerGameAtRound(0));
+
+      final int statusColumnIndex = testObj.getColumnIndex(LobbyGameTableModel.Column.Status);
+      assertThat(testObj.getValueAt(0, statusColumnIndex)).isEqualTo("Available");
+    }
+
+    private GameDescription zeroPlayerGameAtRound(final int round) throws UnknownHostException {
+      return GameDescription.builder()
+          .hostedBy(new Node("bot node", InetAddress.getLocalHost(), 10))
+          .startDateTime(Instant.now())
+          .status(GameDescription.GameStatus.IN_PROGRESS)
+          .playerCount(0)
+          .round(round)
+          .build();
+    }
+
+    private void updateGame(final GameDescription game) {
+      listingModel
+          .getLobbyGameBroadcaster()
+          .gameUpdated(
+              LobbyGameListing.builder().gameId(id0).lobbyGame(game.toLobbyGame()).build());
+      waitForSwingThreads();
+    }
   }
 
   @Nested
@@ -136,6 +172,31 @@ final class LobbyGameTableModelTest {
     void shouldNotThrowException() {
       assertDoesNotThrow(
           () -> LobbyGameTableModel.formatBotStartTime(Instant.now().toEpochMilli()));
+    }
+  }
+
+  @Nested
+  final class StartTimeTest {
+    @Test
+    void sortsByEpochMillisNotFormattedText() {
+      final var earlier = new LobbyGameTableModel.StartTime(1_000L);
+      final var later = new LobbyGameTableModel.StartTime(2_000L);
+
+      assertThat(earlier).isLessThan(later);
+      assertThat(later).isGreaterThan(earlier);
+      assertThat(earlier).isEqualByComparingTo(new LobbyGameTableModel.StartTime(1_000L));
+    }
+
+    @Test
+    void startedColumnUsesStartTimeSoTheSorterComparesChronologically() {
+      final var testObj =
+          new LobbyGameTableModel(
+              true, new LobbyGameListingModel(mock(PlayerToLobbyConnection.class)));
+
+      final int startedColumnIndex = testObj.getColumnIndex(LobbyGameTableModel.Column.Started);
+
+      assertThat(testObj.getColumnClass(startedColumnIndex))
+          .isEqualTo(LobbyGameTableModel.StartTime.class);
     }
   }
 }

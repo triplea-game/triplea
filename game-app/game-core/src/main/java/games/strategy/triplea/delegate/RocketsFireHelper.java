@@ -193,7 +193,8 @@ public class RocketsFireHelper implements Serializable {
     }
   }
 
-  static Set<Territory> getTerritoriesWithRockets(final GameData data, final GamePlayer player) {
+  public static Set<Territory> getTerritoriesWithRockets(
+      final GameData data, final GamePlayer player) {
     final Set<Territory> territories = new HashSet<>();
     final Predicate<Unit> ownedRockets = rocketMatch(player);
     final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(data);
@@ -217,7 +218,7 @@ public class RocketsFireHelper implements Serializable {
         .and(Matches.unitHasNotMoved());
   }
 
-  private static Set<Territory> getTargetsWithinRange(
+  public static Set<Territory> getTargetsWithinRange(
       final Territory territory, final GameState data, final GamePlayer player) {
     final int maxDistance = data.getTechTracker().getRocketDistance(player);
     final Set<Territory> hasFactory = new HashSet<>();

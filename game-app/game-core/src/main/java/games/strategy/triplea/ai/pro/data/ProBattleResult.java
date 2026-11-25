@@ -20,7 +20,32 @@ public class ProBattleResult {
   private final Collection<Unit> averageDefendersRemaining;
   private final double battleRounds;
 
+  /**
+   * Chance in percent that the attacker wins with a land unit left to take the territory. Only Hard
+   * Beta simulates it, for land; elsewhere it is the win chance when {@link #hasLandUnitRemaining},
+   * which only says whether the average survivors include a land unit.
+   */
+  private final double capturePercentage;
+
   public ProBattleResult() {
     this(0, -1, false, List.of(), List.of(), 0);
+  }
+
+  /** A result whose capture chance is its win chance when a land unit survives on average. */
+  public ProBattleResult(
+      final double winPercentage,
+      final double tuvSwing,
+      final boolean hasLandUnitRemaining,
+      final Collection<Unit> averageAttackersRemaining,
+      final Collection<Unit> averageDefendersRemaining,
+      final double battleRounds) {
+    this(
+        winPercentage,
+        tuvSwing,
+        hasLandUnitRemaining,
+        averageAttackersRemaining,
+        averageDefendersRemaining,
+        battleRounds,
+        hasLandUnitRemaining ? winPercentage : 0);
   }
 }

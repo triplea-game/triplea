@@ -14,14 +14,26 @@ public enum ExitStatus {
   FAILURE(1);
 
   private static final Collection<Runnable> exitActions = new HashSet<>();
+  private static volatile boolean shutdownInProgress = false;
   private final int status;
 
   public static void addExitAction(final Runnable runnable) {
     exitActions.add(runnable);
   }
 
-  /** Exits the host process with this status. */
+  /**
+   * Call first thing in a shutdown hook. From then on {@link #exit()} is a no-op: System.exit
+   * called during JVM shutdown blocks forever, so a hook reaching it would hang the process.
+   */
+  public static void markShutdownInProgress() {
+    shutdownInProgress = true;
+  }
+
+  /** Exits the host process with this status, unless JVM shutdown is already under way. */
   public void exit() {
+    if (shutdownInProgress) {
+      return;
+    }
     exitActions.forEach(Runnable::run);
     System.exit(status);
   }

@@ -8,6 +8,8 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
+import games.strategy.triplea.UnitUtils;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -15,7 +17,9 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PoliticsDelegate;
+import games.strategy.triplea.delegate.RocketsFireHelper;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
+import games.strategy.triplea.delegate.battle.BattleTracker;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
 import games.strategy.triplea.delegate.data.BattleListing;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
@@ -32,6 +36,7 @@ import games.strategy.triplea.settings.ClientSetting;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -42,6 +47,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.java.Interruptibles;
@@ -70,13 +76,49 @@ public abstract class AbstractAi extends AbstractBasePlayer {
     super(name, playerLabel);
   }
 
+  /**
+   * Whether bomber, bombard and rocket targets are picked by value. Off by default, where the first
+   * option wins and rockets are scored by raw production.
+   */
+  protected boolean choosesBombingTargetsByValue() {
+    return false;
+  }
+
   @Override
   public Territory selectBombardingTerritory(
       final Unit unit,
       final Territory unitTerritory,
       final Collection<Territory> territories,
       final boolean noneAvailable) {
-    return CollectionUtils.getAny(territories);
+    if (!choosesBombingTargetsByValue()) {
+      return CollectionUtils.getAny(territories);
+    }
+    final GamePlayer bombarder = unit.getOwner();
+    final BattleTracker battleTracker = unit.getData().getBattleDelegate().getBattleTracker();
+    return chooseBombardTerritory(territories, t -> unhitDefenders(t, bombarder, battleTracker));
+  }
+
+  /**
+   * Picks the territory where shore bombardment is least likely to be wasted: the one with the most
+   * defenders that the other bombarding ships have not already been sent against, then by name.
+   */
+  static Territory chooseBombardTerritory(
+      final Collection<Territory> territories, final ToIntFunction<Territory> unhitDefenders) {
+    return territories.stream()
+        .min(
+            Comparator.<Territory>comparingInt(t -> -unhitDefenders.applyAsInt(t))
+                .thenComparing(Territory::getName))
+        .orElse(null);
+  }
+
+  private static int unhitDefenders(
+      final Territory territory, final GamePlayer bombarder, final BattleTracker battleTracker) {
+    final int defenders = territory.getUnitCollection().countMatches(Matches.enemyUnit(bombarder));
+    final int alreadyBombarding =
+        Optional.ofNullable(battleTracker.getPendingBattle(territory, BattleType.NORMAL))
+            .map(battle -> battle.getBombardingUnits().size())
+            .orElse(0);
+    return defenders - alreadyBombarding;
   }
 
   @Override
@@ -107,7 +149,71 @@ public abstract class AbstractAi extends AbstractBasePlayer {
   @Override
   public Territory whereShouldRocketsAttack(
       final Collection<Territory> candidates, final Territory from) {
-    return CollectionUtils.getAny(candidates);
+    final Territory planned = plannedRocketTarget(from);
+    if (planned != null && candidates.contains(planned)) {
+      return planned;
+    }
+    final GamePlayer rocketOwner = getGamePlayer();
+    final ToIntFunction<Territory> worth =
+        rocketOwner == null || !choosesBombingTargetsByValue()
+            ? TerritoryAttachment::getProduction
+            : t -> rocketDamagePotential(t, rocketOwner);
+    return candidates.stream()
+        .min(
+            Comparator.<Territory>comparingInt(t -> -worth.applyAsInt(t))
+                .thenComparing(Territory::getName))
+        .orElse(null);
+  }
+
+  /**
+   * How much damage one more rocket can still do to {@code target}, which is what hitting it is
+   * worth. Damage is capped by what the maps' rules let a territory lose, not by its production
+   * alone.
+   */
+  static int rocketDamagePotential(final Territory target, final GamePlayer rocketOwner) {
+    final GameData data = target.getData();
+    if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data.getProperties())) {
+      return target.getUnitCollection().getMatches(Matches.enemyUnit(rocketOwner)).stream()
+          .mapToInt(u -> u.getHowMuchMoreDamageCanThisUnitTake(target))
+          .max()
+          .orElse(0);
+    }
+    final int production = TerritoryAttachment.getProduction(target);
+    if (Properties.getWW2V2(data.getProperties())
+        || Properties.getLimitRocketAndSbrDamageToProduction(data.getProperties())) {
+      if (Properties.getPuCap(data.getProperties())
+          || Properties.getLimitRocketDamagePerTurn(data.getProperties())) {
+        return Math.max(0, production - data.getMoveDelegate().pusAlreadyLost(target));
+      }
+    }
+    return production;
+  }
+
+  /**
+   * The engine asks launcher by launcher, so each call re-plans every launcher and returns the
+   * target planned for {@code from}; the plan is deterministic, so the answers fit together.
+   */
+  private @Nullable Territory plannedRocketTarget(final @Nullable Territory from) {
+    if (from == null || getGamePlayer() == null) {
+      return null;
+    }
+    final GameData data = from.getData();
+    final GamePlayer player = getGamePlayer();
+    final Map<Territory, Set<Territory>> reach = new HashMap<>();
+    for (final Territory launcher : RocketsFireHelper.getTerritoriesWithRockets(data, player)) {
+      final Set<Territory> targets =
+          RocketsFireHelper.getTargetsWithinRange(launcher, data, player);
+      if (!targets.isEmpty()) {
+        reach.put(launcher, targets);
+      }
+    }
+    return RocketTargetPlanner.plan(
+            reach,
+            data.getTechTracker().getRocketNumberPerTerritory(player),
+            choosesBombingTargetsByValue()
+                ? t -> rocketDamagePotential(t, player)
+                : TerritoryAttachment::getProduction)
+        .get(from);
   }
 
   @Override
@@ -160,7 +266,16 @@ public abstract class AbstractAi extends AbstractBasePlayer {
     if (factories.isEmpty()) {
       return CollectionUtils.getAny(potentialTargets);
     }
-    return CollectionUtils.getAny(factories);
+    if (!choosesBombingTargetsByValue()) {
+      return CollectionUtils.getAny(factories);
+    }
+    // Each point of damage costs the owner a unit of production, until the factory has none left.
+    return factories.stream()
+        .min(
+            Comparator.<Unit>comparingInt(
+                    f -> -UnitUtils.getHowMuchCanUnitProduce(f, territory, true, true))
+                .thenComparing(f -> f.getId().toString()))
+        .orElseThrow();
   }
 
   @Override
@@ -168,7 +283,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
       final Collection<Unit> fightersThatCanBeMoved, final Territory from) {
     final List<Unit> fighters = new ArrayList<>();
     for (final Unit fighter : fightersThatCanBeMoved) {
-      if (Math.random() < 0.8) {
+      if (AiRandom.get().nextDouble() < 0.8) {
         fighters.add(fighter);
       }
     }
@@ -234,36 +349,12 @@ public abstract class AbstractAi extends AbstractBasePlayer {
     if (Matches.isAllied(this.getGamePlayer()).test(playerSendingProposal)) {
       return true;
     }
-    // would we normally be allies?
-    final List<String> allies =
-        List.of(
-            Constants.PLAYER_NAME_AMERICANS,
-            Constants.PLAYER_NAME_AUSTRALIANS,
-            Constants.PLAYER_NAME_BRITISH,
-            Constants.PLAYER_NAME_CANADIANS,
-            Constants.PLAYER_NAME_CHINESE,
-            Constants.PLAYER_NAME_FRENCH,
-            Constants.PLAYER_NAME_RUSSIANS);
-    if (allies.contains(this.getGamePlayer().getName())
-        && allies.contains(playerSendingProposal.getName())) {
-      return true;
-    }
-    final List<String> axis =
-        List.of(
-            Constants.PLAYER_NAME_GERMANS,
-            Constants.PLAYER_NAME_ITALIANS,
-            Constants.PLAYER_NAME_JAPANESE,
-            Constants.PLAYER_NAME_PUPPET_STATES);
-    if (axis.contains(this.getGamePlayer().getName())
-        && axis.contains(playerSendingProposal.getName())) {
-      return true;
-    }
     final Collection<String> myAlliances =
         new HashSet<>(
             getGameData().getAllianceTracker().getAlliancesPlayerIsIn(this.getGamePlayer()));
     myAlliances.retainAll(
         getGameData().getAllianceTracker().getAlliancesPlayerIsIn(playerSendingProposal));
-    return !myAlliances.isEmpty() || Math.random() < .5;
+    return !myAlliances.isEmpty() || AiRandom.get().nextDouble() < .5;
   }
 
   @Override
@@ -299,7 +390,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
       }
       final Territory t = entry.getKey();
       final List<Unit> targets = new ArrayList<>(entry.getValue());
-      Collections.shuffle(targets);
+      Collections.shuffle(targets, AiRandom.get());
       for (final Unit u : targets) {
         if (attackTokens.isEmpty()) {
           continue;
@@ -310,7 +401,9 @@ public abstract class AbstractAi extends AbstractBasePlayer {
             Math.min(
                 attackTokens.getInt(resource),
                 (u.getUnitAttachment().getHitPoints()
-                    * (Math.random() < .3 ? 1 : (Math.random() < .5 ? 2 : 3))));
+                    * (AiRandom.get().nextDouble() < .3
+                        ? 1
+                        : (AiRandom.get().nextDouble() < .5 ? 2 : 3))));
         resourceMap.put(resource, num);
         kamikazeSuicideAttacks.computeIfAbsent(t, key -> new HashMap<>()).put(u, resourceMap);
         attackTokens.add(resource, -num);
@@ -335,7 +428,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
     } else if (territoryChoices.size() == 1) {
       picked = territoryChoices.get(0);
     } else {
-      Collections.shuffle(territoryChoices);
+      Collections.shuffle(territoryChoices, AiRandom.get());
       final List<Territory> notOwned =
           CollectionUtils.getMatches(territoryChoices, Matches.isTerritoryOwnedBy(me).negate());
       if (notOwned.isEmpty()) {
@@ -393,7 +486,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
                 test.add(choice);
               }
             }
-            Collections.shuffle(test);
+            Collections.shuffle(test, AiRandom.get());
             picked = test.get(0);
           } else {
             if (capitals.isEmpty()) {
@@ -418,7 +511,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
                 distanceMap.removeKey(choice);
                 choices.add(choice);
               }
-              Collections.shuffle(choices);
+              Collections.shuffle(choices, AiRandom.get());
               picked = choices.get(0);
             }
           }
@@ -451,7 +544,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
     }
     final Set<Unit> unitsToPlace = new HashSet<>();
     if (!unitChoices.isEmpty() && unitsPerPick > 0) {
-      Collections.shuffle(unitChoices);
+      Collections.shuffle(unitChoices, AiRandom.get());
       final List<Unit> nonFactory =
           CollectionUtils.getMatches(unitChoices, Matches.unitCanProduceUnits().negate());
       if (nonFactory.isEmpty()) {
@@ -487,7 +580,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
       final int numRolls, final int hitAt, final String message, final int diceSides) {
     final int[] dice = new int[numRolls];
     for (int i = 0; i < numRolls; i++) {
-      dice[i] = (int) Math.ceil(Math.random() * diceSides);
+      dice[i] = (int) Math.ceil(AiRandom.get().nextDouble() * diceSides);
     }
     return dice;
   }
@@ -627,15 +720,15 @@ public abstract class AbstractAi extends AbstractBasePlayer {
     final float numPlayers = data.getPlayerList().getPlayers().size();
     final PoliticsDelegate politicsDelegate = data.getPoliticsDelegate();
     // We want to test the conditions each time to make sure they are still valid
-    if (Math.random() < .5) {
+    if (AiRandom.get().nextDouble() < .5) {
       final List<PoliticalActionAttachment> actionChoicesTowardsWar =
           AiPoliticalUtils.getPoliticalActionsTowardsWar(
               gamePlayer, politicsDelegate.getTestedConditions(), data);
       if (!actionChoicesTowardsWar.isEmpty()) {
-        Collections.shuffle(actionChoicesTowardsWar);
+        Collections.shuffle(actionChoicesTowardsWar, AiRandom.get());
         int i = 0;
         // should we use bridge's random source here?
-        final double random = Math.random();
+        final double random = AiRandom.get().nextDouble();
         int maxWarActionsPerTurn =
             (random < .5 ? 0 : (random < .9 ? 1 : (random < .99 ? 2 : (int) numPlayers / 2)));
         if ((maxWarActionsPerTurn > 0)
@@ -644,7 +737,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
                         Matches.relationshipIsAtWar())
                     / numPlayers
                 < 0.4) {
-          if (Math.random() < .9) {
+          if (AiRandom.get().nextDouble() < .9) {
             maxWarActionsPerTurn = 0;
           } else {
             maxWarActionsPerTurn = 1;
@@ -671,10 +764,10 @@ public abstract class AbstractAi extends AbstractBasePlayer {
           AiPoliticalUtils.getPoliticalActionsOther(
               gamePlayer, politicsDelegate.getTestedConditions(), data);
       if (!actionChoicesOther.isEmpty()) {
-        Collections.shuffle(actionChoicesOther);
+        Collections.shuffle(actionChoicesOther, AiRandom.get());
         int i = 0;
         // should we use bridge's random source here?
-        final double random = Math.random();
+        final double random = AiRandom.get().nextDouble();
         final int maxOtherActionsPerTurn =
             (random < .3
                 ? 0

@@ -1,0 +1,160 @@
+package games.strategy.triplea.odds.calculator.context.reference;
+
+import games.strategy.triplea.odds.calculator.context.model.CombatFlag;
+import games.strategy.triplea.odds.calculator.context.model.CombatProfile;
+import games.strategy.triplea.odds.calculator.context.model.Domain;
+import games.strategy.triplea.odds.calculator.context.model.Force;
+import games.strategy.triplea.odds.calculator.context.model.Key;
+import games.strategy.triplea.odds.calculator.context.model.Lifecycle;
+import games.strategy.triplea.odds.calculator.context.model.RulesProfile;
+import games.strategy.triplea.odds.calculator.context.model.Side;
+import games.strategy.triplea.odds.calculator.context.model.TargetFilter;
+import games.strategy.triplea.odds.calculator.context.seam.CombatRelations;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * Reference relational rules — targeting and destroyer/sub interactions that read the OPPOSING
+ * force, not a profile scalar. All three rules key off intrinsic {@link CombatFlag}s baked by the
+ * adapter, never off unit names.
+ */
+public class ReferenceCombatRelations implements CombatRelations {
+
+  /**
+   * The raw enemy profiles a single {@code firer}'s hits may kill: an AA gun reaches only air; a
+   * submarine reaches only non-air (it cannot target planes); otherwise every active enemy profile,
+   * minus an evading submarine that air cannot touch unless a destroyer stands with the firing side
+   * to strip its evade.
+   *
+   * <p>Eligibility is computed off the one firer, mirroring the engine's per-{@code unitType}
+   * {@code TargetGroup.findTargets} — a lone air firer no longer denies a surface unit beside it
+   * its protected-sub target, nor a lone submarine deny a surface unit its air target. {@code
+   * hasDestroyer} stays side-wide, matching the engine's once-per-step {@code destroyerPresent}.
+   */
+  @Override
+  public TargetFilter eligibleTargets(
+      final CombatProfile firer, final Force friendly, final Force enemy) {
+    final Set<CombatProfile> enemyProfiles = activeProfiles(enemy);
+    final Set<CombatProfile> eligible = new LinkedHashSet<>();
+    if (firer.flags().contains(CombatFlag.IS_AA)) {
+      for (final CombatProfile candidate : enemyProfiles) {
+        if (candidate.domain() == Domain.AIR) {
+          eligible.add(candidate);
+        }
+      }
+      return new TargetFilter(eligible);
+    }
+    // Mutual sub/air non-targeting: a submarine cannot fire on aircraft, and aircraft cannot fire
+    // on a sub that canNotBeTargetedByAll unless a destroyer on the firing side strips the
+    // immunity. The two are asymmetric — a Revised sub still gets hit by air (it lacks the immunity
+    // flag) yet still cannot target the planes back.
+    final boolean subCannotHitAir = firer.flags().contains(CombatFlag.CAN_SUBMERGE);
+    // 'hasDestroyer' is scoped over the whole friendly side, a deliberate simplification of the
+    // engine's per-splitter 'destroyerPresent' (computed over only that splitter's firing units).
+    // They diverge only in the exotic air-first-striker-vs-immune-sub case, where a non-first-
+    // striking destroyer would not strip immunity inside the first-strike splitter — a known
+    // simplification.
+    final boolean airCannotHitProtectedSubs =
+        firer.domain() == Domain.AIR && !hasDestroyer(friendly);
+    for (final CombatProfile candidate : enemyProfiles) {
+      if (subCannotHitAir && candidate.domain() == Domain.AIR) {
+        continue;
+      }
+      if (airCannotHitProtectedSubs
+          && candidate.flags().contains(CombatFlag.CANNOT_BE_TARGETED_BY_ALL)) {
+        continue;
+      }
+      eligible.add(candidate);
+    }
+    return new TargetFilter(eligible);
+  }
+
+  /**
+   * Whether a first striker is pushed out of its sneak into main combat. An enemy destroyer pins
+   * the sneak; a defending first striker additionally needs {@code ww2v2} or {@code
+   * defendingSubsSneakAttack} to sneak at all, mirroring {@code
+   * DefensiveFirstStrike#calculateState} (offense sneaks on the bare no-destroyer check, {@code
+   * OffensiveFirstStrike#calculateState}).
+   *
+   * <p>Under {@code ww2v2} a negated first striker still fires in the sub phase, only without the
+   * sneak benefit ({@code ClearFirstStrikeCasualties#getSidesToClear}); the resolver handles that
+   * by planning it as a DEFERRED first strike rather than moving it to main.
+   */
+  @Override
+  public boolean firstStrikeNegated(
+      final Side side, final Force friendly, final Force enemy, final RulesProfile rules) {
+    if (hasDestroyer(enemy)) {
+      return true;
+    }
+    return side == Side.DEFENSE && !(rules.ww2v2() || rules.defendingSubsSneakAttack());
+  }
+
+  /**
+   * Submerge-vs-only-air: the cohort dives only when the rules grant its side a submerge, every
+   * unit is air-untargetable, and the enemy is nothing but aircraft — mirroring {@code
+   * DummyPlayer#retreatQuery}'s submerge branch. The rules gate follows the engine retreat steps:
+   * offense submerges on {@code submersibleSubs} ({@code OffensiveSubsRetreat}), while defense also
+   * submerges on {@code submarinesDefendingMaySubmergeOrRetreat} ({@code DefensiveSubsRetreat}). A
+   * Revised sub (canEvade but targetable by air) fails the immunity test and stays to fight rather
+   * than diving on a bare no-destroyer check.
+   */
+  @Override
+  public boolean canSubmerge(
+      final Side side,
+      final Map<CombatProfile, Integer> cohort,
+      final Force enemy,
+      final RulesProfile rules) {
+    if (cohort.isEmpty()) {
+      return false;
+    }
+    final boolean rulesAllowSubmerge =
+        side == Side.OFFENSE
+            ? rules.submersibleSubs()
+            : rules.submersibleSubs() || rules.submarinesDefendingMaySubmergeOrRetreat();
+    if (!rulesAllowSubmerge) {
+      return false;
+    }
+    final boolean cohortAirImmune =
+        cohort.keySet().stream()
+            .allMatch(p -> p.flags().contains(CombatFlag.CANNOT_BE_TARGETED_BY_ALL));
+    return cohortAirImmune && enemyIsOnlyAir(enemy);
+  }
+
+  /**
+   * True when the enemy fields at least one unit and every one of them is a non-destroyer plane.
+   */
+  private static boolean enemyIsOnlyAir(final Force enemy) {
+    final Set<CombatProfile> profiles = activeProfiles(enemy);
+    return !profiles.isEmpty()
+        && profiles.stream()
+            .allMatch(
+                p -> p.domain() == Domain.AIR && !p.flags().contains(CombatFlag.IS_DESTROYER));
+  }
+
+  private static boolean hasDestroyer(final Force force) {
+    return force.counts().entrySet().stream()
+        .anyMatch(
+            e ->
+                e.getKey().state() == Lifecycle.ACTIVE
+                    && e.getValue() > 0
+                    && e.getKey().profile().flags().contains(CombatFlag.IS_DESTROYER));
+  }
+
+  /**
+   * The active combat profiles of a force. Dependent cargo is a non-combatant and is dropped here,
+   * so it is never a target, never counts toward the only-air submerge test, and never pins an
+   * enemy first strike.
+   */
+  private static Set<CombatProfile> activeProfiles(final Force force) {
+    final Set<CombatProfile> profiles = new LinkedHashSet<>();
+    for (final Map.Entry<Key, Integer> entry : force.counts().entrySet()) {
+      if (entry.getKey().state() == Lifecycle.ACTIVE
+          && entry.getValue() > 0
+          && !entry.getKey().profile().flags().contains(CombatFlag.IS_DEPENDENT)) {
+        profiles.add(entry.getKey().profile());
+      }
+    }
+    return profiles;
+  }
+}

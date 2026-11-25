@@ -37,7 +37,7 @@ public class ProOtherMoveOptions {
     return maxMoveMap.get(t);
   }
 
-  List<ProTerritory> getAll(final Territory t) {
+  public List<ProTerritory> getAll(final Territory t) {
     final List<ProTerritory> result = moveMaps.get(t);
     if (result != null) {
       return result;

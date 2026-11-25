@@ -43,7 +43,7 @@ tasks.named<Jar>("jar") {
 
 val assetsZipFileName = "game_headed_assets.zip"
 val downloadAssets = tasks.register<Download>("downloadAssets") {
-    src("https://github.com/triplea-game/assets/releases/download/47/$assetsZipFileName")
+    src("https://github.com/triplea-game/assets/releases/download/53/$assetsZipFileName")
     dest(project.layout.buildDirectory.dir("downloads/assets-zip"))
     overwrite(false)
     onlyIfModified(true)

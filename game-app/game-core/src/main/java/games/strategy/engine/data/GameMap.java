@@ -6,6 +6,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.util.BreadthFirstSearch;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -337,6 +338,24 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       final GamePlayer player) {
     return getRouteForUnits(start, end, cond, List.of(unit), player)
         .orElseThrow(() -> new IllegalStateException("Route expected to be returned"));
+  }
+
+  /**
+   * Like {@link #getRouteForUnit(Territory, Territory, Predicate, Unit, GamePlayer)} but checks
+   * canals with the given validator, eg one that assumes some canal territories are captured.
+   */
+  public Optional<Route> getRouteForUnit(
+      @Nonnull final Territory start,
+      @Nonnull final Territory end,
+      final Predicate<Territory> cond,
+      final Unit unit,
+      final GamePlayer player,
+      final MoveValidator canalValidator) {
+    checkNotNull(start);
+    checkNotNull(end);
+    return new RouteFinder(
+            this, Matches.territoryIs(end).or(cond), List.of(unit), player, canalValidator)
+        .findRouteByCost(start, end);
   }
 
   /** See {@link #getRouteForUnits(Territory, Territory, Predicate, Collection, GamePlayer)}. */

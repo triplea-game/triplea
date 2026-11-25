@@ -1,31 +1,39 @@
 package org.triplea.game.server;
 
 import com.google.common.base.Preconditions;
+import games.strategy.engine.chat.Chat;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.AutoSaveFileUtils;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.HeadlessAutoSaveFileUtils;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorModel;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.java.Interruptibles;
 import org.triplea.java.ThreadRunner;
+import org.triplea.util.ExitStatus;
 
 /** A way of hosting a game, but headless. */
 @Slf4j
 public class HeadlessGameServer {
+  private static final Duration SHUTDOWN_HOOK_TIMEOUT = Duration.ofSeconds(60);
+
   private final GameSelectorModel gameSelectorModel = new GameSelectorModel();
   @Nonnull private final HeadlessServerSetup headlessServerSetup;
   @Nullable private ServerGame game = null;
+  @Nullable private Chat chat = null;
 
   private HeadlessGameServer() {
     headlessServerSetup =
@@ -45,11 +53,58 @@ public class HeadlessGameServer {
             new Thread(
                 () -> {
                   log.info("Running ShutdownHook.");
-                  Optional.ofNullable(game).ifPresent(ServerGame::stopGame);
+                  ExitStatus.markShutdownInProgress();
+                  startShutdownWatchdog();
+                  Optional.ofNullable(game)
+                      .ifPresent(
+                          serverGame -> {
+                            saveOnShutdown(serverGame, chat);
+                            serverGame.stopGame();
+                          });
                   headlessServerSetup.cancel();
                 }));
 
     waitForUsers();
+  }
+
+  /**
+   * Saves the in-progress game to the headless auto-save slot so a restarted bot re-loads it (see
+   * {@link GameSelectorModel#loadDefaultGameSameThread()}). Only the graceful SIGTERM shutdown path
+   * reaches this; a hard kill (SIGKILL, cgroup OOM) does not.
+   */
+  private static void saveOnShutdown(final ServerGame serverGame, @Nullable final Chat chat) {
+    final Path autoSaveFile = new HeadlessAutoSaveFileUtils().getHeadlessAutoSaveFile();
+    if (chat != null) {
+      chat.sendMessage("Bot is restarting. Saving game to: " + autoSaveFile.getFileName());
+    }
+
+    try {
+      serverGame.saveGame(autoSaveFile);
+      log.info("Saved in-progress game on shutdown to {}", autoSaveFile);
+    } catch (final RuntimeException e) {
+      log.error("Failed to save in-progress game on shutdown to {}", autoSaveFile, e);
+    }
+  }
+
+  public void setChat(final Chat chat) {
+    this.chat = chat;
+  }
+
+  /**
+   * Halts the JVM if the shutdown hook is still running after a timeout. A hook that never returns
+   * leaves the bot alive but delisted from the lobby, and systemd sees nothing to restart.
+   */
+  private static void startShutdownWatchdog() {
+    final Thread watchdog =
+        new Thread(
+            () -> {
+              Interruptibles.sleep(SHUTDOWN_HOOK_TIMEOUT.toMillis());
+              log.error("Shutdown hook still running after {}, halting.", SHUTDOWN_HOOK_TIMEOUT);
+              Runtime.getRuntime().halt(1);
+            },
+            "shutdown-watchdog");
+    watchdog.setDaemon(true);
+    watchdog.start();
   }
 
   public Collection<String> getAvailableGames() {

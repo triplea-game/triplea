@@ -248,21 +248,24 @@ public final class ProBattleUtils {
       enemyUnits.addAll(nearbyTerritory.getMatches(ProMatches.unitIsEnemyNotNeutral(player)));
     }
 
-    // Find allied strength
-    final Set<Territory> nearbyTerritoriesForAllied =
-        data.getMap()
-            .getNeighbors(t, distance - 1, ProMatches.territoryCanMoveLandUnits(player, false));
-    nearbyTerritoriesForAllied.add(t);
+    // Find allied strength. Only units that end up in t count: units in neighboring territories
+    // can't defend t against the enemy's attack.
     final Set<Unit> alliedUnits = new HashSet<>();
-    for (final Territory nearbyTerritory : nearbyTerritoriesForAllied) {
-      if (moveMap.get(nearbyTerritory) != null) {
-        alliedUnits.addAll(moveMap.get(nearbyTerritory).getMaxDefenders());
+    final ProTerritory proTerritory = moveMap.get(t);
+    if (proTerritory != null) {
+      final Collection<Unit> assignedToT = proTerritory.getAllDefenders();
+      final Set<Unit> assignedElsewhere = new HashSet<>();
+      for (final Entry<Territory, ProTerritory> entry : moveMap.entrySet()) {
+        if (!entry.getKey().equals(t)) {
+          assignedElsewhere.addAll(entry.getValue().getUnits());
+          assignedElsewhere.addAll(entry.getValue().getTempUnits());
+        }
       }
-    }
-    for (final Entry<Territory, ProTerritory> entry : moveMap.entrySet()) {
-      if (!nearbyTerritoriesForAllied.contains(entry.getKey())) {
-        alliedUnits.removeAll(entry.getValue().getUnits());
-        alliedUnits.removeAll(entry.getValue().getTempUnits());
+      for (final Unit unit : proTerritory.getMaxDefenders()) {
+        if (assignedToT.contains(unit)
+            || (t.getUnitCollection().contains(unit) && !assignedElsewhere.contains(unit))) {
+          alliedUnits.add(unit);
+        }
       }
     }
 

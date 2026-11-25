@@ -33,7 +33,7 @@ public class StatisticsAggregator {
   private final MapData mapData;
 
   public StatisticsAggregator(GameData gameData, MapData map) {
-    this.game = GameDataUtils.cloneGameDataWithHistory(gameData, true);
+    this.game = GameDataUtils.cloneGameDataKeepSameHistory(gameData, true);
     this.mapData = map;
   }
 

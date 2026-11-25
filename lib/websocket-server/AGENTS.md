@@ -86,19 +86,9 @@ with Gson and calling `session.sendText()`. Each send runs on a **new thread**
 Utility to parse an `InetAddress` from a JSR 356 session's user properties map.
 Handles the `/127.0.0.1:port` format the websocket library produces.
 
-## Dependencies
-
-- `lib:websocket-client` — `MessageEnvelope`, `MessageType`, `WebSocketMessage`
-  (the shared message protocol)
-- `lib:feign-common` — direct dependency
-- `lib:java-extras` — `StringUtils`, `Interruptibles`
-- `org.java_websocket` — standalone WebSocket server implementation
-- `com.google.gson` — JSON serialization
-- `com.github.benmanes.caffeine` — TTL cache for bad-message tracking
-
 ## Editing Guidelines
 
-- Messages use the envelope system from `lib:websocket-client`. See that
+- Messages use the envelope system in `lib/websocket-client`. See that
   module's AGENTS.md for `MessageEnvelope` / `MessageType` details.
 - `MessageSender` spawns a new thread per send. Keep this in mind for
   high-throughput scenarios.

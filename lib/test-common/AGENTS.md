@@ -64,8 +64,10 @@ dependency by most modules in the project.
 
 - **Lombok `@UtilityClass`** on all stateless helper classes (`JsonUtil`,
   `StringToInputStream`, `TestSecurityUtils`, `CollectionMatchers`).
-- **Hamcrest over AssertJ** — all custom matchers extend
-  `TypeSafeMatcher<T>` and integrate with `assertThat()`.
+- **Hamcrest matchers (legacy)** — the custom matchers here extend
+  `TypeSafeMatcher<T>` and integrate with Hamcrest's `assertThat()`. AssertJ
+  is the project-wide standard for new test assertions; these matchers remain
+  for tests that still depend on them.
 - **Published as `main` source** — despite being test utilities, sources
   live under `src/main/java` so consuming modules can declare this as a
   `testImplementation` dependency.
