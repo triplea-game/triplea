@@ -77,11 +77,6 @@ public class RetreatChecks {
     return !getDefenderRetreatTerritories.get().isEmpty();
   }
 
-  public static boolean getDefenderRetreatBeforeBattle(
-      final @Nonnull Supplier<Integer> getDefenderRetreatRound) {
-    return getDefenderRetreatRound.get() == 0;
-  }
-
   public static boolean onlyDefenselessTransportsLeft(
       final @Nonnull Collection<Unit> units, final @Nonnull GameState gameData) {
     return Properties.getTransportCasualtiesRestricted(gameData.getProperties())
