@@ -4,6 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -131,10 +132,11 @@ public class PoliticalStateOverview extends JPanel {
       return new JPanelBuilder().add(new JLabel(PoliticalStateOverview.LABEL_SELF)).build();
     }
     final RelationshipType relType = computeRelationship(player1, player2);
+    final Color color = LookAndFeel.getRelationshipTypeColor(relType);
     final JPanel panel =
-        new JPanelBuilder().add(getRelationshipComponent(player1, player2, relType)).build();
+        new JPanelBuilder().add(getRelationshipComponent(player1, player2, relType, color)).build();
     panel.setOpaque(true);
-    panel.setBackground(LookAndFeel.getRelationshipTypeColor(relType));
+    panel.setBackground(color);
     return panel;
   }
 
@@ -156,9 +158,14 @@ public class PoliticalStateOverview extends JPanel {
   }
 
   private JComponent getRelationshipComponent(
-      final GamePlayer player1, final GamePlayer player2, final RelationshipType relType) {
+      final GamePlayer player1,
+      final GamePlayer player2,
+      final RelationshipType relType,
+      final Color cellColor) {
     if (!editable) {
-      return new JLabel(relType.getName());
+      final JLabel label = new JLabel(relType.getName());
+      label.setForeground(LookAndFeel.getContrastingTextColor(cellColor));
+      return label;
     }
 
     final JButton button = new JButton(relType.getName());
@@ -205,7 +212,8 @@ public class PoliticalStateOverview extends JPanel {
             redrawPolitics();
           }
         });
-    button.setBackground(LookAndFeel.getRelationshipTypeColor(relType));
+    // keep the look and feel's own button colors, some ignore setBackground (e.g. Aqua); the cell
+    // color shows around the button
     return button;
   }
 

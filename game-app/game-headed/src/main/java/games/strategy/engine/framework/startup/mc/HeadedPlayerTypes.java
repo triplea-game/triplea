@@ -5,9 +5,11 @@ import static games.strategy.engine.framework.startup.ui.PlayerTypes.PLAYER_TYPE
 import games.strategy.engine.framework.startup.ui.PlayerTypes;
 import games.strategy.engine.player.Player;
 import games.strategy.triplea.TripleAPlayer;
+import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.settings.ClientSetting;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.triplea.ai.does.nothing.DoesNothingAi;
@@ -16,6 +18,9 @@ import org.triplea.ai.flowfield.FlowFieldAi;
 public class HeadedPlayerTypes {
 
   private static final String PLAYER_TYPE_FLOW_FIELD_LABEL = "FlowField (AI)";
+  private static final String PLAYER_TYPE_PRO_AI_BETA_LABEL = "Hard Beta (AI)";
+  private static final Set<String> BETA_PLAYER_TYPE_LABELS =
+      Set.of(PLAYER_TYPE_FLOW_FIELD_LABEL, PLAYER_TYPE_PRO_AI_BETA_LABEL);
 
   public static final PlayerTypes.Type HUMAN_PLAYER =
       new PlayerTypes.Type(PLAYER_TYPE_HUMAN_LABEL) {
@@ -43,7 +48,7 @@ public class HeadedPlayerTypes {
       };
 
   private static boolean filterBetaPlayerType(final PlayerTypes.Type playerType) {
-    if (playerType.getLabel().equals(PLAYER_TYPE_FLOW_FIELD_LABEL)) {
+    if (BETA_PLAYER_TYPE_LABELS.contains(playerType.getLabel())) {
       return ClientSetting.showBetaFeatures.getValue().orElse(false);
     }
     return true;
@@ -58,12 +63,21 @@ public class HeadedPlayerTypes {
     };
   }
 
+  private static PlayerTypes.Type getProAiBetaType() {
+    return new PlayerTypes.Type(PLAYER_TYPE_PRO_AI_BETA_LABEL) {
+      @Override
+      public Player newPlayerWithName(String name) {
+        return new ProAi(name, getLabel(), true);
+      }
+    };
+  }
+
   public static Collection<PlayerTypes.Type> getPlayerTypes() {
     return Stream.of(
             // The first item in this list will be the default when hosting
             List.of(HUMAN_PLAYER),
             PlayerTypes.getBuiltInPlayerTypes(),
-            List.of(CLIENT_PLAYER, DOES_NOTHING_PLAYER, getFlowFieldType()))
+            List.of(getProAiBetaType(), CLIENT_PLAYER, DOES_NOTHING_PLAYER, getFlowFieldType()))
         .flatMap(Collection::stream)
         .filter(HeadedPlayerTypes::filterBetaPlayerType)
         .collect(Collectors.toList());

@@ -4,17 +4,28 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.japanese;
+import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
+import games.strategy.engine.data.MutableProperty;
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.gameparser.GameParseException;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
+import games.strategy.triplea.attachments.PlayerAttachment;
+import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.triplea.java.collections.IntegerMap;
 
 class ProUtilsTest {
 
@@ -51,5 +62,81 @@ class ProUtilsTest {
         .isEqualTo(
             "[armour owned by Germans, 5 infantry owned by Germans, 2 infantry owned by"
                 + " Japanese]");
+  }
+
+  @Test
+  void takingTheOwnersOnlyCapitalStopsItsIncome() {
+    final GameData data = TestMapGameData.LHTR.getGameData();
+
+    assertThat(ProUtils.captureStopsIncome(territory("Germany", data), data.getMap())).isTrue();
+  }
+
+  @Test
+  void takingOneOfTwoCapitalsKeepsTheOwnersIncome() throws GameParseException {
+    final GameData data = TestMapGameData.LHTR.getGameData();
+    TerritoryAttachment.getOrThrow(territory("Southern Europe", data)).setCapital("Germans");
+
+    assertThat(ProUtils.captureStopsIncome(territory("Germany", data), data.getMap())).isFalse();
+  }
+
+  @Test
+  void takingOneOfTwoCapitalsTakesTheTreasuryOfAnOwnerWithoutPlayerAttachment()
+      throws GameParseException {
+    final GameData data = TestMapGameData.LHTR.getGameData();
+    TerritoryAttachment.getOrThrow(territory("Southern Europe", data)).setCapital("Germans");
+
+    assertThat(ProUtils.captureTakesTreasury(territory("Germany", data), data.getMap())).isTrue();
+  }
+
+  @Test
+  void takingACapitalFromItsCaptorStopsNoIncome() {
+    final GameData data = TestMapGameData.LHTR.getGameData();
+    territory("Russia", data).setOwner(germans(data));
+
+    assertThat(ProUtils.captureStopsIncome(territory("Russia", data), data.getMap())).isFalse();
+  }
+
+  @Test
+  void takingOneOfTwoCapitalsIsWorthNoOwnerIncome() throws GameParseException {
+    final GameData data = TestMapGameData.LHTR.getGameData();
+    TerritoryAttachment.getOrThrow(territory("Southern Europe", data)).setCapital("Germans");
+
+    assertThat(ProUtils.capitalValue(territory("Germany", data), data)).isZero();
+  }
+
+  @Test
+  void takingOneOfTwoCapitalsKeepsTheTreasuryOfAnOwnerThatRetainsOne()
+      throws GameParseException, MutableProperty.InvalidValueException {
+    final GameData data = TestMapGameData.LHTR.getGameData();
+    TerritoryAttachment.getOrThrow(territory("Southern Europe", data)).setCapital("Germans");
+    final PlayerAttachment pa =
+        new PlayerAttachment(Constants.PLAYER_ATTACHMENT_NAME, germans(data), data);
+    pa.getPropertyOrThrow("retainCapitalNumber").setValue(1);
+    germans(data).addAttachment(Constants.PLAYER_ATTACHMENT_NAME, pa);
+
+    assertThat(ProUtils.capturedTreasury(territory("Germany", data), data)).isZero();
+  }
+
+  @Test
+  void unitsThatCreatePusCountTowardsTheOwnersProduction()
+      throws MutableProperty.InvalidValueException {
+    final GameData data = TestMapGameData.LHTR.getGameData();
+    final double before = ProUtils.getPlayerProduction(germans(data), data);
+    final long germanInfantry =
+        data.getMap().getTerritories().stream()
+            .flatMap(t -> t.getUnits().stream())
+            .filter(u -> u.isOwnedBy(germans(data)) && u.getType().equals(infantry(data)))
+            .count();
+    final Resource pus = data.getResourceList().getResourceOrThrow(Constants.PUS);
+    final IntegerMap<Resource> created = new IntegerMap<>();
+    created.put(pus, 3);
+    infantry(data).getUnitAttachment().getPropertyOrThrow("createsResourcesList").setValue(created);
+    final Territory germany = territory("Germany", data);
+    germany.getUnitCollection().addAll(infantry(data).create(2, germans(data)));
+    germany.getUnitCollection().addAll(infantry(data).create(1, japanese(data)));
+
+    assertThat(ProUtils.getPlayerProduction(germans(data), data))
+        .isEqualTo(
+            before + (germanInfantry + 2) * 3 * Properties.getPuMultiplier(data.getProperties()));
   }
 }

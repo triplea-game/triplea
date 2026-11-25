@@ -26,6 +26,7 @@ import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.JScrollPaneBuilder;
 import org.triplea.swing.JTextAreaBuilder;
+import org.triplea.swing.ScreenShareSize;
 import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
 import org.triplea.swing.key.binding.KeyCode;
@@ -71,7 +72,8 @@ public enum SettingsWindow {
       dialog.setContentPane(newContentPane());
       dialog.setMinimumSize(new Dimension(400, 50));
       dialog.pack();
-      dialog.setLocationRelativeTo(dialog.getOwner());
+      // tall enough that the longest settings tab fits without scrolling on common screens
+      ScreenShareSize.apply(dialog, 0.5, 0.65);
       dialog.setVisible(true);
       SwingComponents.addWindowClosingListener(dialog, this::close);
       SwingKeyBinding.addKeyBinding(dialog, KeyCode.ESCAPE, this::close);

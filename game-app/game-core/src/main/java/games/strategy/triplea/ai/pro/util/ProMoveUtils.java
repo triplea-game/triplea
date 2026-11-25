@@ -1,5 +1,6 @@
 package games.strategy.triplea.ai.pro.util;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GamePlayer;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.triplea.util.Tuple;
@@ -219,6 +221,35 @@ public final class ProMoveUtils {
           if (t.isWater()) {
             distanceFromEnd++;
           }
+          final Predicate<Territory> canMoveSeaThrough =
+              ProMatches.territoryCanMoveSeaUnitsThrough(player, isCombatMove);
+          if (isCombatMove
+              && movesLeft > 0
+              && remainingUnitsToLoad.isEmpty()
+              && unloadTerritory != null
+              && !unloadTerritory.equals(transportTerritory)
+              && unloadTerritory.isWater()
+              && !canMoveSeaThrough.test(unloadTerritory)
+              && proData.canLandBehindSeaBattle()) {
+            // Sail into the enemy-held unload zone that the combat move attacks.
+            final Optional<Route> route =
+                map.getRouteForUnit(
+                    transportTerritory,
+                    unloadTerritory,
+                    canMoveSeaThrough.or(unloadTerritory::equals),
+                    transport,
+                    player);
+            if (route.isPresent() && route.get().numberOfSteps() <= movesLeft) {
+              final Territory next = route.get().getSteps().get(0);
+              final var unitsToMove = new ArrayList<Unit>();
+              unitsToMove.add(transport);
+              unitsToMove.addAll(loadedUnits);
+              moves.addMove(unitsToMove, new Route(transportTerritory, next));
+              transportTerritory = next;
+              movesLeft--;
+              continue;
+            }
+          }
           if (movesLeft > 0
               && (distanceFromEnd > 1
                   || !remainingUnitsToLoad.isEmpty()
@@ -416,28 +447,14 @@ public final class ProMoveUtils {
 
     // Group non-amphib units of the same type moving on the same route
     // TODO: #5499 Use MoveBatcher here - or ideally at the time the moves are being generated.
-    final boolean noTransportLoads =
-        moves.stream().allMatch(move -> move.getUnitsToSeaTransports().isEmpty());
-    if (noTransportLoads) {
-      for (int i = 0; i < moves.size(); i++) {
-        final Route r = moves.get(i).getRoute();
-        for (int j = i + 1; j < moves.size(); j++) {
-          final Route r2 = moves.get(j).getRoute();
-          if (r.equals(r2)) {
-            final var mergedUnits = new ArrayList<Unit>();
-            mergedUnits.addAll(moves.get(j).getUnits());
-            mergedUnits.addAll(moves.get(i).getUnits());
-            moves.set(j, new MoveDescription(mergedUnits, r));
-            moves.remove(i);
-            i--;
-            break;
-          }
-        }
-      }
-    }
+    mergeSameRouteMoves(moves);
 
     // Move units
-    for (final MoveDescription move : moves) {
+    for (final MoveDescription proposedMove : moves) {
+      final MoveDescription move = withoutUnitsOverStackingLimit(proData, proposedMove);
+      if (move.getUnits().isEmpty()) {
+        continue;
+      }
       moveDel
           .performMove(move)
           .ifPresent(
@@ -456,5 +473,62 @@ public final class ProMoveUtils {
         AbstractAi.movePause();
       }
     }
+  }
+
+  /**
+   * Merges non-amphib moves along the same route into one move. Air transports are never merged
+   * with air-transportable units, since the move performer would pair them up as paratroopers.
+   */
+  @VisibleForTesting
+  static void mergeSameRouteMoves(final List<MoveDescription> moves) {
+    if (moves.stream().anyMatch(move -> !move.getUnitsToSeaTransports().isEmpty())) {
+      return;
+    }
+    for (int i = 0; i < moves.size(); i++) {
+      final Route r = moves.get(i).getRoute();
+      for (int j = i + 1; j < moves.size(); j++) {
+        final Route r2 = moves.get(j).getRoute();
+        if (r.equals(r2) && canMerge(moves.get(i), moves.get(j))) {
+          final var mergedUnits = new ArrayList<Unit>();
+          mergedUnits.addAll(moves.get(j).getUnits());
+          mergedUnits.addAll(moves.get(i).getUnits());
+          moves.set(j, new MoveDescription(mergedUnits, r));
+          moves.remove(i);
+          i--;
+          break;
+        }
+      }
+    }
+  }
+
+  private static boolean canMerge(final MoveDescription a, final MoveDescription b) {
+    if (!a.getAirTransportsDependents().isEmpty() || !b.getAirTransportsDependents().isEmpty()) {
+      return false;
+    }
+    final Collection<Unit> all = new ArrayList<>(a.getUnits());
+    all.addAll(b.getUnits());
+    return !(all.stream().anyMatch(Matches.unitIsAirTransport())
+        && all.stream().anyMatch(Matches.unitIsAirTransportable()));
+  }
+
+  /**
+   * Drops units that the stacking limits would reject. The validator refuses the whole move when
+   * any unit in it is over a limit, which would strand every other unit in the same merged move.
+   */
+  private static MoveDescription withoutUnitsOverStackingLimit(
+      final ProData proData, final MoveDescription move) {
+    if (!move.getUnitsToSeaTransports().isEmpty() || !move.getAirTransportsDependents().isEmpty()) {
+      return move;
+    }
+    final Collection<Unit> overLimit =
+        MoveValidator.getUnitsOverStackingLimit(
+            move.getUnits(), move.getRoute(), proData.getPlayer());
+    if (overLimit.isEmpty()) {
+      return move;
+    }
+    ProLogger.info("Not moving " + overLimit + " over " + move.getRoute() + ": stacking limit");
+    final List<Unit> allowed = new ArrayList<>(move.getUnits());
+    allowed.removeAll(overLimit);
+    return new MoveDescription(allowed, move.getRoute());
   }
 }

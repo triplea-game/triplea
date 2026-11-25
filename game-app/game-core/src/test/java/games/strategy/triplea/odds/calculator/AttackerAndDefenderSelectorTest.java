@@ -3,6 +3,7 @@ package games.strategy.triplea.odds.calculator;
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static games.strategy.triplea.delegate.GameDataTestUtil.americans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.british;
+import static games.strategy.triplea.delegate.GameDataTestUtil.chinese;
 import static games.strategy.triplea.delegate.GameDataTestUtil.french;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
@@ -382,13 +383,15 @@ public class AttackerAndDefenderSelectorTest {
     private final GameData gameData = TestMapGameData.GLOBAL1940.getGameData();
     private final GamePlayer germans = germans(gameData);
     private final GamePlayer italians = italians(gameData);
+    private final GamePlayer chinese = chinese(gameData);
     private final GamePlayer russians = russians(gameData);
     private final GamePlayer british = british(gameData);
     private final GamePlayer french = french(gameData);
-    private final Territory northernItaly = gameData.getMap().getTerritoryOrNull("Northern Italy");
-    private final Territory balticStates = gameData.getMap().getTerritoryOrNull("Baltic States");
-    private final Territory sz97 = gameData.getMap().getTerritoryOrNull("97 Sea Zone");
-    private final Territory uk = gameData.getMap().getTerritoryOrNull("United Kingdom");
+    private final Territory northernItaly = gameData.getMap().getTerritoryOrThrow("Northern Italy");
+    private final Territory hunan = gameData.getMap().getTerritoryOrThrow("Hunan");
+    private final Territory balticStates = gameData.getMap().getTerritoryOrThrow("Baltic States");
+    private final Territory sz97 = gameData.getMap().getTerritoryOrThrow("97 Sea Zone");
+    private final Territory uk = gameData.getMap().getTerritoryOrThrow("United Kingdom");
 
     @Test
     void alliedTerritory() {
@@ -406,6 +409,25 @@ public class AttackerAndDefenderSelectorTest {
       final Optional<GamePlayer> defender = attAndDef.getDefender();
       assertThat(defender).contains(italians);
       assertThat(attAndDef.getDefendingUnits()).isEqualTo(northernItaly.getUnits());
+    }
+
+    @Test
+    void alliedFriendlyTerritoryWithAllies() {
+      addTo(hunan, infantry(gameData).create(1, british));
+      final AttackerAndDefenderSelector attackerAndDefenderSelector =
+          AttackerAndDefenderSelector.builder()
+              .players(gameData.getPlayerList().getPlayers())
+              .currentPlayer(germans)
+              .relationshipTracker(gameData.getRelationshipTracker())
+              .territory(hunan)
+              .build();
+
+      final AttackerAndDefenderSelector.AttackerAndDefender attAndDef =
+          attackerAndDefenderSelector.getAttackerAndDefender();
+
+      final Optional<GamePlayer> defender = attAndDef.getDefender();
+      assertThat(defender).contains(chinese);
+      assertThat(attAndDef.getDefendingUnits()).isEqualTo(hunan.getUnits());
     }
 
     @Test

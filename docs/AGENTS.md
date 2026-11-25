@@ -26,10 +26,15 @@ code.
 | `development/engine-code-overview.md` | **Legacy** design doc — describes Delegates, GameData, GamePlayer, Changes, and Bridges. Referenced from root `AGENTS.md`. Useful for architectural concepts but details may be outdated. |
 | `development/glossary.md` | Canonical definitions of domain terms (Node, PlayerId, Battle Round, First Strike, AA, etc.). Use this to resolve ambiguous terminology. |
 | `development/code-conventions/java-code-conventions.md` | Full Java style guide — Google Java Style plus project-specific rules (Optional returns, no boolean params, step-down ordering, var usage, etc.). The root `AGENTS.md` summarizes these. |
-| `development/code-conventions/java-test-code-conventions.md` | Test conventions — Hamcrest `assertThat` preferred, `@DisplayName` on tests, given/when/then structure. |
+| `development/code-conventions/java-test-code-conventions.md` | Test conventions — AssertJ `assertThat` preferred, `@DisplayName` on tests, given/when/then structure. |
 | `development/build-overview-and-development.md` | Build system overview — convention plugins, test fixtures, and future improvement plans. |
 | `development/error-handling-and-logging.md` | Logging strategy — severe = crash dialog, warning = user-facing dialog, info = hidden console. |
 | `development/lobby-authentication-logic.md` | Lobby auth flow details. |
+| `development/map-loading-design.md` | How game XML is parsed into Java objects. Read before changing `xml-reader` or `map-data`. |
+| `development/game-rule-sets.md` | Rule variants (v1, v2, ...) with example games and rule books. |
+| `development/ai-overview-and-backlog.md` | Overview of how the AI (`game-app/ai`) plays, plus its feature backlog. |
+| `map-making/reference/map-features-change-log.md` | Map file changes per release, i.e. which XML features maps can rely on since when. |
+| `map-making/reference/map-yml-file.md` | The `map.yml` format used by the engine and the maps server. |
 
 ## Staleness Notes
 

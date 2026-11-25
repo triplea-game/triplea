@@ -4,14 +4,14 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.odds.calculator.AggregateResults;
+import games.strategy.triplea.odds.calculator.ListBackedAggregateResults;
 import games.strategy.triplea.util.TuvCostsCalculator;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.Collection;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
 
-class AggregateEstimate extends AggregateResults {
+class AggregateEstimate extends ListBackedAggregateResults {
   private final int battleRoundsFought;
   private final double winPercentage;
   private final Collection<Unit> remainingAttackingUnits;

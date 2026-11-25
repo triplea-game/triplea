@@ -1,5 +1,6 @@
 package games.strategy.triplea.ai.pro;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
@@ -10,6 +11,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.ai.AiRandom;
 import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -28,8 +30,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import org.triplea.java.PredicateBuilder;
@@ -57,7 +59,7 @@ final class ProTechAi {
     // If the token was not used, set the token num -1
     final int techTokensQuantity =
         techTokensOptional.map(resource -> player.getResources().getQuantity(resource)).orElse(-1);
-    final ThreadLocalRandom localRandom = ThreadLocalRandom.current();
+    final Random localRandom = AiRandom.get();
     int tokensToBuy = 0;
     if (!capDanger && techTokensQuantity < 3 && pusRemaining > localRandom.nextInt(160)) {
       tokensToBuy = 1;
@@ -326,7 +328,8 @@ final class ProTechAi {
    * @param attacking - are the units on attack or defense
    * @param sea - calculate the strength of the units in a sea or land battle?
    */
-  private static float strength(
+  @VisibleForTesting
+  static float strength(
       final Collection<Unit> units,
       final boolean attacking,
       final boolean sea,
@@ -341,7 +344,7 @@ final class ProTechAi {
     }
     for (final Unit u : units) {
       final UnitAttachment unitAttachment = u.getUnitAttachment();
-      if (unitAttachment.isInfrastructure()) {
+      if (!unitAttachment.isInfrastructure()) {
         if (unitAttachment.isSea() == sea) {
           final int unitAttack = unitAttachment.getAttack(u.getOwner());
           // BB = 6.0; AC=2.0/4.0; SUB=3.0; DS=4.0; TR=0.50/2.0; F=4.0/5.0; B=5.0/2.0;

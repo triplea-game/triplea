@@ -9,26 +9,27 @@ import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.ui.Util;
 import java.io.Serial;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
 
-/**
- * A history of the game. Stored as a tree, the data is organized as Root - Round - Step - Event -
- * Child
- *
- * <dl>
- *   <dt>Round
- *   <dd>the current round in the game, eg 1, 2, 3
- *   <dt>Step
- *   <dd>the current step, e.g. Britain Combat Move
- *   <dt>Event
- *   <dd>an event that happened in the game, e.gj Russia buys 8 inf
- * </dl>
- */
+/// A history of the game.
+///
+/// The history is stored as a tree with the following structure:
+///
+/// Root → Round → Step → Event → Child
+///
+/// - **Round**: The current round in the game, for example, 1, 2, or 3.
+/// - **Step**: The current game step, for example, "Britain Combat Move".
+/// - **Event**: An event that occurred during the game, for example, "Russia buys 8 infantry".
 public class History extends DefaultTreeModel {
   @Serial private static final long serialVersionUID = -1769876896869L;
 
@@ -36,13 +37,35 @@ public class History extends DefaultTreeModel {
   private final List<Change> changes = new ArrayList<>();
   private final GameData gameData;
   private HistoryPanel panel;
-  // Index at which point we are in history. Only valid if seekingEnabled is true.
+  // Index which will come next in history from where we are. Only valid if seekingEnabled is true.
   private int nextChangeIndex;
   private boolean seekingEnabled = false;
 
   public History(final GameData data) {
     super(new RootHistoryNode("Game History"));
     gameData = data;
+  }
+
+  private static HistoryNode copyNode(final HistoryNode source) {
+    final HistoryNode copy = (HistoryNode) source.clone();
+
+    for (int i = 0; i < source.getChildCount(); i++) {
+      copy.add(copyNode((HistoryNode) source.getChildAt(i)));
+    }
+
+    return copy;
+  }
+
+  public void cloneNodesFromHistory(History baseHistory) {
+    HistoryNode root = (HistoryNode) getRoot();
+    root.removeAllChildren();
+    ((HistoryNode) baseHistory.getRoot())
+        .children()
+        .asIterator()
+        .forEachRemaining(originalNode -> root.add(copyNode((HistoryNode) originalNode)));
+    changes.clear();
+    changes.addAll(baseHistory.changes);
+    nextChangeIndex = baseHistory.nextChangeIndex;
   }
 
   private void assertCorrectThread() {
@@ -83,93 +106,125 @@ public class History extends DefaultTreeModel {
     return getLastChildInternal((HistoryNode) node.getLastChild());
   }
 
-  private int getNextChange(final HistoryNode node) {
-    int lastChangeIndex;
+  private int getNextChangeIndexAfter(final HistoryNode node) {
+    int changeEndIndex;
     if (node == getRoot()) {
-      lastChangeIndex = 0;
+      changeEndIndex = 0;
     } else if (node instanceof Event event) {
-      lastChangeIndex = event.getChangeEndIndex();
+      changeEndIndex = event.getNextChangeIndexAfter();
     } else if (node instanceof EventChild eventChild) {
-      lastChangeIndex = ((Event) eventChild.getParent()).getChangeEndIndex();
+      changeEndIndex = ((Event) eventChild.getParent()).getNextChangeIndexAfter();
     } else if (node instanceof IndexedHistoryNode indexedHistoryNode) {
-      lastChangeIndex = indexedHistoryNode.getChangeEndIndex();
+      changeEndIndex = indexedHistoryNode.getNextChangeIndexAfter();
       // If this node is still current, or comes from an old save game where we didn't set it, get
       // the last change index from its last child node.
-      if (lastChangeIndex == -1 && indexedHistoryNode.getChildCount() > 0) {
-        lastChangeIndex = getNextChange((HistoryNode) indexedHistoryNode.getLastChild());
+      if (changeEndIndex == -1 && indexedHistoryNode.getChildCount() > 0) {
+        changeEndIndex = getNextChangeIndexAfter((HistoryNode) indexedHistoryNode.getLastChild());
       }
     } else {
-      lastChangeIndex = 0;
+      changeEndIndex = 0;
     }
-    if (lastChangeIndex == -1) {
+    if (changeEndIndex == -1) {
       return changes.size();
     }
-    return lastChangeIndex;
+    return changeEndIndex;
   }
 
-  private Change getDeltaTo(int changeIndex) {
-    final List<Change> deltaChanges =
-        changes.subList(
-            Math.min(nextChangeIndex, changeIndex), Math.max(nextChangeIndex, changeIndex));
+  private Change getDeltaTo(int newNextChangeIndex) {
+    int fromIndexIncluding = Math.min(nextChangeIndex, newNextChangeIndex);
+    int toIndexExcluding = Math.max(nextChangeIndex, newNextChangeIndex);
+    final List<Change> deltaChanges = changes.subList(fromIndexIncluding, toIndexExcluding);
     final Change compositeChange = new CompositeChange(deltaChanges);
-    return (changeIndex >= nextChangeIndex) ? compositeChange : compositeChange.invert();
+    return (newNextChangeIndex >= nextChangeIndex) ? compositeChange : compositeChange.invert();
   }
 
-  /** Changes the game state to reflect the historical state at {@code node}. */
+  /// Changes the game state to reflect the historical state at {@code node}.
   public synchronized void gotoNode(final HistoryNode node) {
     assertCorrectThread();
     Preconditions.checkNotNull(node);
     Preconditions.checkState(seekingEnabled);
     try (GameData.Unlocker ignored = gameData.acquireWriteLock()) {
-      final int nodeChangeIndex = getNextChange(node);
-      if (nodeChangeIndex != nextChangeIndex) {
-        gameData.performChange(getDeltaTo(nodeChangeIndex));
-        nextChangeIndex = nodeChangeIndex;
+      final int nodeNextChangeIndex = getNextChangeIndexAfter(node);
+      if (nodeNextChangeIndex != nextChangeIndex) {
+        gameData.performChange(getDeltaTo(nodeNextChangeIndex));
+        nextChangeIndex = nodeNextChangeIndex;
       }
     }
   }
 
-  /**
-   * Changes the game state to reflect the historical state at {@code removeAfterNode}, and then
-   * removes all changes that occurred after this node.
-   */
+  /// Changes the game state to reflect the historical state at {@code removeAfterNode}, and then
+  /// removes all changes that occurred after this node.
   public synchronized void removeAllHistoryAfterNode(final HistoryNode removeAfterNode) {
     assertCorrectThread();
     if (!seekingEnabled) {
-      nextChangeIndex = changes.size();
       seekingEnabled = true;
     }
-    gotoNode(getNearestLeafAtOrBefore(removeAfterNode).orElse((HistoryNode) getRoot()));
+    HistoryNode targetNode =
+        getNearestLeafAtOrBefore(removeAfterNode).orElse((HistoryNode) getRoot());
+    gotoNode(targetNode);
     try (GameData.Unlocker ignored = gameData.acquireWriteLock()) {
       if (changes.size() > nextChangeIndex) {
         changes.subList(nextChangeIndex, changes.size()).clear();
       }
-      final Enumeration<?> enumeration =
-          ((DefaultMutableTreeNode) this.getRoot()).preorderEnumeration();
-      enumeration.nextElement();
-      boolean startRemoving = false;
-      final List<HistoryNode> nodesToRemove = new ArrayList<>();
-      while (enumeration.hasMoreElements()) {
-        final HistoryNode node = (HistoryNode) enumeration.nextElement();
-        if (node instanceof IndexedHistoryNode indexedHistoryNode) {
-          if (indexedHistoryNode.getChangeStartIndex() >= nextChangeIndex) {
-            startRemoving = true;
-          }
-          if (startRemoving) {
-            nodesToRemove.add(node);
-          }
-        }
-      }
-      for (HistoryNode node : nodesToRemove) {
-        removeNodeFromParent(node);
-      }
+      final List<HistoryNode> nodesToRemove =
+          collectNodesFromChange((HistoryNode) getRoot(), nextChangeIndex);
+      removeNodesFromTheirParents(nodesToRemove);
     }
   }
 
-  /**
-   * Returns the current player, accounting for the fact that we may be looking at a previous node
-   * in history, unlike data.getSequence().getStep().getPlayerId().
-   */
+  private List<HistoryNode> collectNodesFromChange(
+      HistoryNode startNode, int startChangeIndexToCollect) {
+    final List<HistoryNode> nodesAfter = new ArrayList<>();
+
+    Iterator<TreeNode> subNodeIterator = startNode.children().asIterator();
+    while (subNodeIterator.hasNext()) {
+      if (subNodeIterator.next() instanceof IndexedHistoryNode subIndexNode) {
+        if (subIndexNode.getChangeStartIndex() >= startChangeIndexToCollect) {
+          nodesAfter.add(subIndexNode);
+          continue;
+        }
+        int changeEndIndex = subIndexNode.getNextChangeIndexAfter();
+        if (changeEndIndex < 0 || startChangeIndexToCollect < changeEndIndex) {
+          nodesAfter.addAll(collectNodesFromChange(subIndexNode, startChangeIndexToCollect));
+        }
+      }
+    }
+
+    return nodesAfter;
+  }
+
+  /// Mass remove nodes similar to {@link DefaultTreeModel#removeNodeFromParent(MutableTreeNode)}.
+  ///
+  /// @param nodesToRemove List of nodes to be removed (without any of their subnodes)
+  private void removeNodesFromTheirParents(List<HistoryNode> nodesToRemove) {
+
+    final Map<MutableTreeNode, List<HistoryNode>> nodesByParent =
+        nodesToRemove.stream()
+            .collect(
+                Collectors.groupingBy(
+                    node -> (MutableTreeNode) node.getParent(),
+                    LinkedHashMap::new,
+                    Collectors.toList()));
+
+    nodesByParent.forEach(
+        (parent, childNodes) -> {
+          final int countChildNodes = childNodes.size();
+          int[] childIndices = new int[countChildNodes];
+          Object[] removedArray = new Object[countChildNodes];
+          for (int currentIndex = 0; currentIndex < countChildNodes; ++currentIndex) {
+            HistoryNode historyNode = childNodes.get(currentIndex);
+            childIndices[currentIndex] = parent.getIndex(historyNode);
+            removedArray[currentIndex] = historyNode;
+          }
+          for (int i = childIndices.length - 1; i >= 0; i--) {
+            parent.remove(childIndices[i]);
+          }
+          nodesWereRemoved(parent, childIndices, removedArray);
+        });
+  }
+
+  /// Returns the current player, accounting for the fact that we may be looking at a previous node
+  /// in history, unlike {@code data.getSequence().getStep().getPlayerId()}.
   public Optional<GamePlayer> getCurrentPlayer() {
     Optional<GamePlayer> optionalCurrentPlayer = Optional.empty();
     final Enumeration<?> enumeration = ((DefaultMutableTreeNode) getRoot()).preorderEnumeration();
@@ -179,10 +234,10 @@ public class History extends DefaultTreeModel {
         optionalCurrentPlayer = step.getPlayerId();
       }
       if (node.isLeaf()) {
-        // Don't do this logic on non-leaf nodes as getNextChange() will return
+        // Don't do this logic on non-leaf nodes as getNextChangeIndexAfter() will return
         // the next change after this non-leaf, skipping all the child nodes.
-        int nodeChangeIndex = getNextChange(node);
-        if (seekingEnabled && nodeChangeIndex > nextChangeIndex) {
+        int nodeNextChangeIndex = getNextChangeIndexAfter(node);
+        if (seekingEnabled && nodeNextChangeIndex > nextChangeIndex) {
           break;
         }
       }
@@ -209,8 +264,8 @@ public class History extends DefaultTreeModel {
     return new SerializedHistory(this, gameData, changes);
   }
 
-  List<Change> getChanges() {
-    return Collections.unmodifiableList(changes);
+  int getNextNewChangeIndex() {
+    return changes.size();
   }
 
   GameData getGameData() {

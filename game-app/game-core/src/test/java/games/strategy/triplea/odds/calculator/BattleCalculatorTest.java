@@ -17,6 +17,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.xml.TestMapGameData;
@@ -50,6 +51,40 @@ class BattleCalculatorTest extends AbstractClientSettingTestCase {
     assertTrue(results.getAttackerWinPercent() > 0.99);
     assertTrue(results.getDefenderWinPercent() < 0.1);
     assertTrue(results.getDrawPercent() < 0.1);
+  }
+
+  /**
+   * The engine-free {@link BoundedContextBattleCalculator} must return a coherent {@link
+   * AggregateResults} without touching {@code MustFightBattle}. An alwaysHits 3-vs-2 infantry brawl
+   * is deterministic: both sides trade every hit in round one, so the attacker wins outright with a
+   * single infantry left standing. Asserting that exact outcome pins that the new path ran end to
+   * end (adapter to simulator to count-backed results) and its accessors read sanely.
+   */
+  @Test
+  void boundedContextCalcReturnsSaneResults() {
+    final GameData gameData = TestMapGameData.REVISED.getGameData();
+    final Territory germany = territory("Germany", gameData);
+    final GamePlayer russians = russians(gameData);
+    final GamePlayer germans = germans(gameData);
+    final BoundedContextBattleCalculator calculator = new BoundedContextBattleCalculator();
+    calculator.setGameData(gameData);
+    calculator.setRandomSource(ScriptedRandomSource.alwaysHits());
+
+    final AggregateResults results =
+        calculator.calculate(
+            russians,
+            germans,
+            germany,
+            infantry(gameData).create(3, russians),
+            infantry(gameData).create(2, germans),
+            List.of(),
+            TerritoryEffectHelper.getEffects(germany),
+            false,
+            1);
+
+    assertEquals(1.0, results.getAttackerWinPercent());
+    assertEquals(0.0, results.getDefenderWinPercent());
+    assertEquals(1.0, results.getAverageAttackingUnitsLeft());
   }
 
   @Test

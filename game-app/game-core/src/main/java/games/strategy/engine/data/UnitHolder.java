@@ -26,4 +26,8 @@ public interface UnitHolder {
   default List<Unit> getMatches(final Predicate<Unit> matcher) {
     return getUnitCollection().getMatches(matcher);
   }
+
+  default List<List<Unit>> partitionUnitsBy(final List<Predicate<Unit>> partitionMatchers) {
+    return getUnitCollection().partitionBy(partitionMatchers);
+  }
 }

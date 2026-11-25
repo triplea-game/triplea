@@ -4,6 +4,9 @@ import games.strategy.engine.data.GameData;
 
 /** The available maps for use during testing. */
 public enum TestMapGameData {
+  /** Minimap with fighters that can air battle and air battles before normal battles. */
+  AIR_BATTLE("air_battle_test.xml"),
+
   BIG_WORLD_1942("big_world_1942_test.xml"),
 
   BIG_WORLD_1942_V3("Big_World_1942_v3rules.xml"),

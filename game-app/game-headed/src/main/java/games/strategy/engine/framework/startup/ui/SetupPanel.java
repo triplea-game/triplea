@@ -261,6 +261,4 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
         });
     SwingComponents.redraw(panel);
   }
-
-  public abstract boolean isCancelButtonVisible();
 }

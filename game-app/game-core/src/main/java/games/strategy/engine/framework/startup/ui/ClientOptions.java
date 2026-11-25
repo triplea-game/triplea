@@ -2,10 +2,10 @@ package games.strategy.engine.framework.startup.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -56,15 +56,16 @@ public class ClientOptions extends JDialog {
   }
 
   private void initComponents() {
-    nameField = new JTextField(10);
-    addressField = new JTextField(10);
+    nameField = new JTextField(20);
+    addressField = new JTextField(20);
     portField = new IntTextField(0, Integer.MAX_VALUE);
     portField.setColumns(7);
   }
 
   private void layoutComponents() {
-    final Container content = getContentPane();
-    content.setLayout(new BorderLayout());
+    final JPanel content = new JPanel(new BorderLayout());
+    content.setBorder(BorderFactory.createEmptyBorder(12, 16, 12, 16));
+    setContentPane(content);
     final JPanel title = new JPanel();
     title.add(new JLabel("Select client options"));
     content.add(title, BorderLayout.NORTH);

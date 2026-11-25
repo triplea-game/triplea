@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -51,14 +52,12 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import lombok.AllArgsConstructor;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Triple;
 
 /** Responsible for validating unit movement. */
-@AllArgsConstructor
 public class MoveValidator {
 
   public static final String TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE =
@@ -93,6 +92,25 @@ public class MoveValidator {
 
   private final GameData data;
   private final boolean isNonCombat;
+
+  /**
+   * Canal border territories that are treated as already controlled by the moving player's side
+   * when checking canals, used to look ahead at territories an ally is about to capture.
+   */
+  private final Set<Territory> assumedControlledCanalTerritories;
+
+  public MoveValidator(final GameData data, final boolean isNonCombat) {
+    this(data, isNonCombat, Set.of());
+  }
+
+  public MoveValidator(
+      final GameData data,
+      final boolean isNonCombat,
+      final Set<Territory> assumedControlledCanalTerritories) {
+    this.data = data;
+    this.isNonCombat = isNonCombat;
+    this.assumedControlledCanalTerritories = assumedControlledCanalTerritories;
+  }
 
   public MoveValidationResult validateMove(final MoveDescription move, final GamePlayer player) {
     return validateMove(move, player, List.of());
@@ -817,6 +835,32 @@ public class MoveValidator {
     }
 
     // test for stack limits per unit
+    for (final Unit unit : getUnitsOverStackingLimit(units, route, player)) {
+      result.addDisallowedUnit(
+          "Unit type " + unit.getType().getName() + " has reached stacking limit", unit);
+    }
+
+    // Don't allow move through impassable territories
+    if (!isEditMode && route.anyMatch(Matches.territoryIsImpassable())) {
+      return result.setErrorReturnResult(CANT_MOVE_THROUGH_IMPASSABLE);
+    }
+    if (canPayToCrossNeutralTerritory(route, player, result).hasError()) {
+      return result;
+    }
+    if (Properties.getNeutralsImpassable(data.getProperties())
+        && isNotNeutralsBlitzable(data.getProperties())
+        && !route.getMatches(Matches.territoryIsNeutralButNotWater()).isEmpty()) {
+      return result.setErrorReturnResult(CANNOT_VIOLATE_NEUTRALITY);
+    }
+    return result;
+  }
+
+  /**
+   * Returns the units that would be rejected by the movement or attacking stacking limits when
+   * moved along the given route.
+   */
+  public static Collection<Unit> getUnitsOverStackingLimit(
+      final Collection<Unit> units, final Route route, final GamePlayer player) {
     final PlayerAttachment pa = PlayerAttachment.get(player);
     final Set<Triple<Integer, String, Set<UnitType>>> playerMovementLimit =
         (pa != null ? pa.getMovementLimit() : Set.of());
@@ -842,6 +886,7 @@ public class MoveValidator {
         };
     final Collection<Unit> unitsWithStackingLimits =
         CollectionUtils.getMatches(units, hasMovementOrAttackingLimit);
+    final Set<Unit> overLimit = new LinkedHashSet<>();
     for (final Territory t : route.getSteps()) {
       final String limitType;
       if (Matches.isTerritoryEnemyAndNotUnownedWater(player).test(t)
@@ -852,25 +897,9 @@ public class MoveValidator {
       }
       final Collection<Unit> allowedUnits =
           UnitStackingLimitFilter.filterUnits(unitsWithStackingLimits, limitType, player, t);
-      for (Unit unit : CollectionUtils.difference(unitsWithStackingLimits, allowedUnits)) {
-        result.addDisallowedUnit(
-            "Unit type " + unit.getType().getName() + " has reached stacking limit", unit);
-      }
+      overLimit.addAll(CollectionUtils.difference(unitsWithStackingLimits, allowedUnits));
     }
-
-    // Don't allow move through impassable territories
-    if (!isEditMode && route.anyMatch(Matches.territoryIsImpassable())) {
-      return result.setErrorReturnResult(CANT_MOVE_THROUGH_IMPASSABLE);
-    }
-    if (canPayToCrossNeutralTerritory(route, player, result).hasError()) {
-      return result;
-    }
-    if (Properties.getNeutralsImpassable(data.getProperties())
-        && isNotNeutralsBlitzable(data.getProperties())
-        && !route.getMatches(Matches.territoryIsNeutralButNotWater()).isEmpty()) {
-      return result.setErrorReturnResult(CANNOT_VIOLATE_NEUTRALITY);
-    }
-    return result;
+    return overLimit;
   }
 
   private static Collection<Unit> findNonDependentUnits(
@@ -1522,6 +1551,9 @@ public class MoveValidator {
           "Can only move through " + canalAttachment.getCanalName() + " during non-combat move");
     }
     for (final Territory borderTerritory : canalAttachment.getLandTerritories()) {
+      if (assumedControlledCanalTerritories.contains(borderTerritory)) {
+        continue;
+      }
       if (!data.getRelationshipTracker().canMoveThroughCanals(player, borderTerritory.getOwner())) {
         return Optional.of("Must control " + canalAttachment.getCanalName() + " to move through");
       }

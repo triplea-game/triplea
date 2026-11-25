@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -73,6 +74,8 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
 
   private static final long serialVersionUID = -79061939642779999L;
 
+  private static volatile Supplier<UUID> idSource = UUID::randomUUID;
+
   private GamePlayer owner;
   private final UUID id;
   @Setter private int hits = 0;
@@ -115,11 +118,19 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   // was charged flat fuel cost already this turn
   private boolean chargedFlatFuelCost = false;
 
+  /**
+   * Replaces where new units get their ids; null restores random ids. Ids decide the iteration
+   * order of unit sets and maps, so a tool replaying a game reproducibly needs ids that repeat.
+   */
+  public static void setIdSource(final @Nullable Supplier<UUID> newIdSource) {
+    idSource = newIdSource == null ? UUID::randomUUID : newIdSource;
+  }
+
   /** Creates new Unit. Owner can be null. */
   public Unit(final UnitType type, @Nullable final GamePlayer owner, final GameData data) {
     super(data);
     this.type = checkNotNull(type);
-    this.id = UUID.randomUUID();
+    this.id = idSource.get();
 
     setOwner(owner);
   }

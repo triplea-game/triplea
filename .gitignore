@@ -5,7 +5,6 @@
 .project
 .remote-libs/
 .settings
-.checkstyle
 .DS_Store
 
 .docs/
@@ -25,6 +24,7 @@ gradle/build-logic/.kotlin/errors/**
 bin/
 build/
 out/
+.serena/
 
 CLAUDE.local.md
 

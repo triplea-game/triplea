@@ -1,11 +1,15 @@
 package games.strategy.triplea.ai.pro.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static games.strategy.triplea.delegate.GameDataTestUtil.britain;
 import static games.strategy.triplea.delegate.GameDataTestUtil.chinese;
+import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
+import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.japanese;
 import static games.strategy.triplea.delegate.GameDataTestUtil.unitType;
 import static games.strategy.triplea.delegate.MockDelegateBridge.newDelegateBridge;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -17,10 +21,15 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.framework.GameDataManager;
+import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.player.PlayerBridge;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.ai.pro.ProAi;
+import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProPlaceTerritory;
 import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
+import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PurchaseDelegate;
 import games.strategy.triplea.xml.TestMapGameData;
@@ -176,6 +185,52 @@ public class ProPurchaseUtilsTest {
         });
   }
 
+  /// The engine ignores `placementAnyTerritory` unless "Place in Any Territory" is on, and the
+  /// Chinese own no factory.
+  @Test
+  void findPurchaseTerritoriesIgnoresPlacementAnyTerritoryWhenPropertyIsOff() {
+    final GameData pos2GameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
+    final GamePlayer playerChinese = checkNotNull(chinese(pos2GameData));
+    pos2GameData.getProperties().set(Constants.PLACE_IN_ANY_TERRITORY, false);
+    final ProAi proAi = getProAiForPurchaseStepOfPlayer(playerChinese, pos2GameData);
+
+    final Map<Territory, ProPurchaseTerritory> purchaseTerritories =
+        ProPurchaseUtils.findPurchaseTerritories(proAi.getProData(), playerChinese);
+
+    assertThat(purchaseTerritories).isEmpty();
+  }
+
+  /// Chinese `maxPlacePerTerritory` is 2, and each territory holds fewer than their
+  /// `placementPerTerritory` of 4 owned units.
+  @Test
+  void findPurchaseTerritoriesCapsPlacementAnyTerritoryAtMaxPlacePerTerritory() {
+    final GameData pos2GameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
+    final GamePlayer playerChinese = checkNotNull(chinese(pos2GameData));
+    final ProAi proAi = getProAiForPurchaseStepOfPlayer(playerChinese, pos2GameData);
+
+    final Map<Territory, ProPurchaseTerritory> purchaseTerritories =
+        ProPurchaseUtils.findPurchaseTerritories(proAi.getProData(), playerChinese);
+
+    assertThat(purchaseTerritories.values())
+        .extracting(ProPurchaseTerritory::getUnitProduction)
+        .containsExactly(2, 2, 2);
+  }
+
+  /// China starts with 3 Chinese units; a 4th reaches their `placementPerTerritory` of 4.
+  @Test
+  void findPurchaseTerritoriesGivesNoProductionAtPlacementPerTerritory() {
+    final GameData pos2GameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
+    final GamePlayer playerChinese = checkNotNull(chinese(pos2GameData));
+    final Territory china = pos2GameData.getMap().getTerritoryOrThrow("China");
+    addTo(china, infantry(pos2GameData).create(1, playerChinese));
+    final ProAi proAi = getProAiForPurchaseStepOfPlayer(playerChinese, pos2GameData);
+
+    final Map<Territory, ProPurchaseTerritory> purchaseTerritories =
+        ProPurchaseUtils.findPurchaseTerritories(proAi.getProData(), playerChinese);
+
+    assertThat(purchaseTerritories.get(china).getUnitProduction()).isZero();
+  }
+
   /// Test strategy:
   /// The map has for Japanese has only Japan with a factory allowing unit production.
   /// Therefore, the result should:
@@ -211,5 +266,76 @@ public class ProPurchaseUtilsTest {
                       || territoryProPlace.equals(seaZone60)
                       || territoryProPlace.equals(seaZone61));
             });
+  }
+
+  /// The purchase plans on a copy of the game data but with the real player, so conquests must be
+  /// read from the copy: the engine won't place in Southern Europe this turn.
+  @Test
+  void findPurchaseTerritoriesSkipsFactoryConqueredOnlyInTheSimulationCopy() {
+    final GameData realData = TestMapGameData.REVISED.getGameData();
+    final GamePlayer realGermans = checkNotNull(germans(realData));
+    final GameData simulatedData =
+        GameDataUtils.cloneGameData(
+                realData, GameDataManager.Options.builder().withDelegates(true).build())
+            .orElseThrow();
+    final Territory simulatedSouthernEurope =
+        simulatedData.getMap().getTerritoryOrThrow("Southern Europe");
+    simulatedData
+        .getBattleDelegate()
+        .getBattleTracker()
+        .getConquered()
+        .add(simulatedSouthernEurope);
+    final ProData proData = new ProData();
+    proData.initializeSimulation(
+        new ProAi("Test Name", "Test Player Label"), simulatedData, realGermans);
+
+    final Map<Territory, ProPurchaseTerritory> purchaseTerritories =
+        ProPurchaseUtils.findPurchaseTerritories(proData, realGermans);
+
+    assertThat(purchaseTerritories.keySet())
+        .extracting(Territory::getName)
+        .containsExactly("Germany");
+  }
+
+  /// Chinese have `placementCapturedTerritory`, so the engine lets them place in Central China
+  /// even though they conquered it this turn.
+  @Test
+  void findPurchaseTerritoriesKeepsConqueredTerritoryWhenPlacementCapturedTerritoryAllowed() {
+    final GameData pos2GameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
+    final GamePlayer playerChinese = checkNotNull(chinese(pos2GameData));
+    final Territory centralChina = pos2GameData.getMap().getTerritoryOrThrow("Central China");
+    pos2GameData.getBattleDelegate().getBattleTracker().getConquered().add(centralChina);
+    final ProAi proAi = getProAiForPurchaseStepOfPlayer(playerChinese, pos2GameData);
+
+    final Map<Territory, ProPurchaseTerritory> purchaseTerritories =
+        ProPurchaseUtils.findPurchaseTerritories(proAi.getProData(), playerChinese);
+
+    assertThat(purchaseTerritories).containsKey(centralChina);
+  }
+
+  /// Like Dragon War players, these Germans have `placementCapturedTerritory` without
+  /// `placementAnyTerritory`, so the engine lets them use Southern Europe's factory, and place in
+  /// its sea zone, in the turn they conquer it.
+  @Test
+  void findPurchaseTerritoriesKeepsConqueredFactoryWhenPlacementCapturedTerritoryAllowed()
+      throws Exception {
+    final GameData revisedGameData = TestMapGameData.REVISED.getGameData();
+    final GamePlayer playerGermans = checkNotNull(germans(revisedGameData));
+    final RulesAttachment rules =
+        new RulesAttachment(Constants.RULES_ATTACHMENT_NAME, playerGermans, revisedGameData);
+    rules.getPropertyOrThrow("placementCapturedTerritory").setValue(true);
+    playerGermans.addAttachment(Constants.RULES_ATTACHMENT_NAME, rules);
+    final Territory southernEurope =
+        revisedGameData.getMap().getTerritoryOrThrow("Southern Europe");
+    revisedGameData.getBattleDelegate().getBattleTracker().getConquered().add(southernEurope);
+    final ProAi proAi = getProAiForPurchaseStepOfPlayer(playerGermans, revisedGameData);
+
+    final Map<Territory, ProPurchaseTerritory> purchaseTerritories =
+        ProPurchaseUtils.findPurchaseTerritories(proAi.getProData(), playerGermans);
+
+    assertThat(purchaseTerritories).containsKey(southernEurope);
+    assertThat(purchaseTerritories.get(southernEurope).getCanPlaceTerritories())
+        .extracting(ppt -> ppt.getTerritory().getName())
+        .containsExactlyInAnyOrder("Southern Europe", "14 Sea Zone");
   }
 }
