@@ -2521,7 +2521,7 @@ public class UnitAttachment extends DefaultAttachment {
       throw new GameParseException(
           "defensiveRetreatRound must be greater than or equal to 1" + thisErrorMsg());
     }
-    defensiveRetreatRound = getInt(s);
+    defensiveRetreatRound = value;
   }
 
   private void setDefensiveRetreatRound(final Integer s) {
