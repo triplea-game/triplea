@@ -23,19 +23,7 @@ public final class PlainRandomSource implements IRandomSource {
   /// the lock when not under contention is close to free.
   ///
   @GuardedBy("lock")
-  private final SplittableRandom random;
-
-  public PlainRandomSource() {
-    random = new SplittableRandom();
-  }
-
-  /**
-   * Creates a source seeded for reproducible sequences. Same seed yields the same rolls, which lets
-   * callers (e.g. battle simulations) produce deterministic, comparable results across runs.
-   */
-  public PlainRandomSource(final long seed) {
-    random = new SplittableRandom(seed);
-  }
+  private final SplittableRandom random = new SplittableRandom();
 
   @Override
   public int[] getRandom(final int max, final int count, final String annotation) {

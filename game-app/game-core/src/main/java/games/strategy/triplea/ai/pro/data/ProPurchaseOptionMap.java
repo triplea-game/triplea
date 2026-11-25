@@ -34,15 +34,6 @@ public class ProPurchaseOptionMap {
   private final List<ProPurchaseOption> specialOptions;
 
   public ProPurchaseOptionMap(final GamePlayer player, final GameData data) {
-    this(player, data, false);
-  }
-
-  /**
-   * @param beta Hard Beta: single-use (suicide) units go through the normal land, air and sea
-   *     categories instead of a special list that is never bought from, and support rules that
-   *     weaken enemy units count toward a unit's value.
-   */
-  public ProPurchaseOptionMap(final GamePlayer player, final GameData data, final boolean beta) {
 
     ProLogger.info("Purchase Options");
 
@@ -74,24 +65,22 @@ public class ProPurchaseOptionMap {
       }
 
       // Add rule to appropriate purchase option list
-      if (!beta
-          && (unitType.getUnitAttachment().isSuicideOnHit()
-              || canUnitTypeSuicide(unitType, player))) {
-        final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data, beta);
+      if (unitType.getUnitAttachment().isSuicideOnHit() || canUnitTypeSuicide(unitType, player)) {
+        final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         specialOptions.add(ppo);
         ProLogger.debug("Special: " + ppo);
       } else if (Matches.unitTypeCanProduceUnits().test(unitType)
           && Matches.unitTypeIsInfrastructure().test(unitType)) {
-        final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data, beta);
+        final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         factoryOptions.add(ppo);
         ProLogger.debug("Factory: " + ppo);
       } else if (unitType.getUnitAttachment().getMovement(player) <= 0
           && Matches.unitTypeIsLand().test(unitType)) {
-        final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data, beta);
+        final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         landZeroMoveOptions.add(ppo);
         ProLogger.debug("Zero Move Land: " + ppo);
       } else if (Matches.unitTypeIsLand().test(unitType)) {
-        final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data, beta);
+        final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         if (!Matches.unitTypeIsInfrastructure().test(unitType)) {
           landFodderOptions.add(ppo);
         }
@@ -108,11 +97,11 @@ public class ProPurchaseOptionMap {
         }
         ProLogger.debug("Land: " + ppo);
       } else if (Matches.unitTypeIsAir().test(unitType)) {
-        final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data, beta);
+        final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         airOptions.add(ppo);
         ProLogger.debug("Air: " + ppo);
       } else if (Matches.unitTypeIsSea().test(unitType)) {
-        final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data, beta);
+        final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         if (!ppo.isSub()) {
           seaDefenseOptions.add(ppo);
         }

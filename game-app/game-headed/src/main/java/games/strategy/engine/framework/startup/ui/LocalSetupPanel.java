@@ -35,6 +35,11 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
   }
 
   @Override
+  public boolean isCancelButtonVisible() {
+    return true;
+  }
+
+  @Override
   public boolean canGameStart() {
     if (gameSelectorModel.getGameData() == null) {
       return false;

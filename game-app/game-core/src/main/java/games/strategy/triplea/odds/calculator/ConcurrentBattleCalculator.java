@@ -191,11 +191,11 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
       if (!isDataSet || workers.isEmpty()) {
         // we could have attempted to set a new game data, while the old one was still being set,
         // causing it to abort with null data
-        return new ListBackedAggregateResults(0);
+        return new AggregateResults(0);
       }
       final var runCountDistributor = new RunCountDistributor(runCount, workers.size());
-      final ListBackedAggregateResults results =
-          new ListBackedAggregateResults(
+      final AggregateResults results =
+          new AggregateResults(
               workers.parallelStream()
                   .map(
                       worker ->
@@ -239,7 +239,6 @@ public class ConcurrentBattleCalculator implements IBattleCalculator {
     }
   }
 
-  @Override
   public void setRetreatAfterRound(final int value) {
     waitForGameDataReady();
     synchronized (mutexCalcIsRunning) {

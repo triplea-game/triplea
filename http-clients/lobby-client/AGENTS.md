@@ -152,16 +152,26 @@ Facade combining `HttpLobbyClient` + `LobbyWatcherClient` + WebSocket on `Websoc
 
 ## Tests
 
-Tests use JUnit 5 with AssertJ assertions. Key test classes:
+Tests use JUnit 5 with Hamcrest matchers. Key test classes:
 - `BanDurationFormatterTest` — parameterized tests for duration formatting
 - `ErrorReportRequestTest` — version string parsing regex validation
 - `ChatReceivedMessageTest` — message truncation at 240-char boundary
 
+## Dependencies
+
+| Dependency | Purpose |
+|---|---|
+| `game-app:domain-data` | Value objects: `ApiKey`, `UserName`, `PlayerChatId`, `LobbyGame` |
+| `lib:feign-common` | `HttpClient.newClient()` factory for Feign proxies |
+| `lib:java-extras` | `IpAddressParser`, `StringUtils`, `AsyncRunner` |
+| `lib:websocket-client` | `GenericWebSocketClient`, message envelope infrastructure |
+| `lib:test-common` | Test utilities (test-only) |
+
 ## Build
 
 ```shell
-./gradlew :lobby-client:build
-./gradlew :lobby-client:test
+./gradlew :http-clients:lobby-client:build
+./gradlew :http-clients:lobby-client:test
 ```
 
 Published artifact version is controlled by `JAR_VERSION` environment variable.

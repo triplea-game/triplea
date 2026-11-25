@@ -132,7 +132,6 @@ public class HeadlessLaunchAction implements LaunchAction {
       String chatName, Messengers messengers, ClientNetworkBridge clientNetworkBridge) {
     Chat chat = new Chat(new MessengersChatTransmitter(chatName, messengers, clientNetworkBridge));
     ChatAppender.attach(chat);
-    headlessGameServer.setChat(chat);
     return new HeadlessChat(chat);
   }
 

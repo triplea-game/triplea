@@ -17,11 +17,11 @@ public abstract class IndexedHistoryNode extends HistoryNode {
     return changeStartIndex;
   }
 
-  int getNextChangeIndexAfter() {
+  int getChangeEndIndex() {
     return changeStopIndex;
   }
 
-  void setNextChangeIndexAfter(final int nextChangeIndexAfter) {
-    changeStopIndex = nextChangeIndexAfter;
+  void setChangeEndIndex(final int index) {
+    changeStopIndex = index;
   }
 }

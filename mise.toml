@@ -1,3 +1,0 @@
-# Local dev JDK for mise users; matches the Gradle toolchain (JavaLanguageVersion 25).
-[tools]
-java = "temurin-25"

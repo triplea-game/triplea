@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui;
 
-import com.formdev.flatlaf.util.UIScale;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.ui.ScrollableTextFieldListener;
@@ -133,7 +132,7 @@ public class IndividualUnitPanelGrouped extends JPanel {
       panelChooser.setBorder(BorderFactory.createLineBorder(getBackground()));
       final JLabel chooserTitle = new JLabel("Choose Per Unit");
       chooserTitle.setHorizontalAlignment(SwingConstants.LEFT);
-      chooserTitle.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, UIScale.scale(12)));
+      chooserTitle.setFont(new Font(MapImage.FONT_FAMILY_DEFAULT, Font.BOLD, 12));
       panelChooser.add(chooserTitle);
       panelChooser.add(new JLabel(" "));
       final IndividualUnitPanel chooser =

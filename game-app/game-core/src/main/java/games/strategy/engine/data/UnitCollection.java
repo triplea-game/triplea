@@ -189,10 +189,6 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
     return CollectionUtils.getMatches(units, predicate);
   }
 
-  public List<List<Unit>> partitionBy(final List<Predicate<Unit>> partitionPredicate) {
-    return CollectionUtils.partitionBy(units, partitionPredicate);
-  }
-
   @Override
   public String toString() {
     final StringBuilder buf = new StringBuilder();

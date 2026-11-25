@@ -2,7 +2,6 @@ package games.strategy.engine.framework.map.download;
 
 import games.strategy.engine.framework.map.file.system.loader.InstalledMap;
 import games.strategy.engine.framework.map.file.system.loader.InstalledMapsListing;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,7 +16,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
 import org.triplea.http.client.lobby.maps.listing.MapDownloadItem;
@@ -49,12 +47,6 @@ final class ManagedMapStore implements DownloadListener {
   ManagedMapStore() {
     storeState = StoreState.UNINITIALIZED;
     DownloadCoordinator.instance.addDownloadListener(this);
-  }
-
-  /// Stops this store receiving {@link DownloadCoordinator} broadcasts; the coordinator is a
-  /// singleton that outlives the download window owning this store.
-  void dispose() {
-    DownloadCoordinator.instance.removeDownloadListener(this);
   }
 
   public void initialize(
@@ -154,17 +146,9 @@ final class ManagedMapStore implements DownloadListener {
   public void downloadComplete(MapDownloadItem download) {
     final ManagedMap managedMap = getMapByMapDownloadItem(download);
     if (managedMap == null) {
-      throw new IllegalStateException(
-          MessageFormat.format("No MapDownloadItem: {0} in map store {1}", download, this));
+      throw new IllegalStateException("No managed map found for MapDownloadItem: " + download);
     }
     SwingUtilities.invokeLater(() -> updateStatus(List.of(managedMap), ManagedMapStatus.INSTALLED));
-  }
-
-  @Override
-  public String toString() {
-    return groupsByStatus.entrySet().stream()
-        .map(groupEntry -> groupEntry.getKey() + ": " + groupEntry.getValue().size())
-        .collect(Collectors.joining(", "));
   }
 
   ManagedMap getMapByMapDownloadItem(MapDownloadItem mapDownloadItem) {

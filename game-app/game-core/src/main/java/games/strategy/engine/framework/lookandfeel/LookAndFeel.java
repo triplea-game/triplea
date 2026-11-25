@@ -2,8 +2,6 @@ package games.strategy.engine.framework.lookandfeel;
 
 import static com.google.common.base.Preconditions.checkState;
 
-import com.formdev.flatlaf.FlatLaf;
-import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.Constants;
@@ -11,7 +9,6 @@ import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.SettingsWindow;
 import java.awt.Color;
-import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -21,7 +18,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.plaf.FontUIResource;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonNls;
 import org.triplea.game.client.ui.swing.laf.SubstanceLookAndFeelManager;
@@ -58,12 +54,6 @@ Look and feel changes can cause instability.
 Please restart all running TripleA instances.""",
               "Close TripleA and Restart",
               JOptionPane.WARNING_MESSAGE);
-        });
-    // Unlike a theme change, a scale change applies live: re-install, then repaint open windows.
-    ClientSetting.uiScalePercent.addListener(
-        gameSetting -> {
-          setupLookAndFeel(ClientSetting.lookAndFeel.getValueOrThrow());
-          FlatLaf.updateUI();
         });
     setupLookAndFeel(ClientSetting.lookAndFeel.getValueOrThrow());
   }
@@ -110,12 +100,7 @@ Please restart all running TripleA instances.""",
     return luma < 0.5;
   }
 
-  public static Color getContrastingTextColor(final Color background) {
-    return isColorDark(background) ? Color.WHITE : Color.BLACK;
-  }
-
-  @VisibleForTesting
-  static void setupLookAndFeel(final String lookAndFeelName) {
+  private static void setupLookAndFeel(final String lookAndFeelName) {
     checkState(SwingUtilities.isEventDispatchThread());
 
     // On Mac, have the menu bar appear at the top of the screen to match how Mac apps are expected
@@ -147,31 +132,6 @@ Please restart all running TripleA instances.""",
       // Disabling the painted shadow on Linux falls back to standard lightweight Swing popups.
       UIManager.put("Popup.dropShadowPainted", Boolean.FALSE);
     }
-
-    applyUiFontScale();
-  }
-
-  /**
-   * Scales the global UI by overriding FlatLaf's {@code defaultFont}, from which FlatLaf derives
-   * the scale factor for both fonts and component sizes.
-   *
-   * <p>A no-op on look-and-feels that ignore {@code defaultFont} (eg: the system look-and-feel used
-   * on macOS).
-   */
-  private static void applyUiFontScale() {
-    // UIManager.put overrides survive setLookAndFeel, and FlatLaf derives Label.font from
-    // defaultFont, so the previous scale must be cleared to read the unscaled base size.
-    UIManager.put("defaultFont", null);
-    final int scalePercent = ClientSetting.uiScalePercent.getValueOrThrow();
-    if (scalePercent == 100) {
-      return;
-    }
-    final Font baseFont = UIManager.getFont("Label.font");
-    if (baseFont == null) {
-      return;
-    }
-    final float scaledSize = baseFont.getSize() * (scalePercent / 100f);
-    UIManager.put("defaultFont", new FontUIResource(baseFont.deriveFont(scaledSize)));
   }
 
   public static @NonNls String convertColorToHex(Color color) {
@@ -196,15 +156,14 @@ Please restart all running TripleA instances.""",
    */
   public static Color getRelationshipTypeAttachmentColor(
       final RelationshipTypeAttachment relTypeAttach) {
-    final RelationshipColorScheme colors = ClientSetting.relationshipColorScheme.getValueOrThrow();
     final String archeType = relTypeAttach.getArcheType();
     switch (archeType) {
       case Constants.RELATIONSHIP_ARCHETYPE_ALLIED:
-        return colors.getAllied();
+        return Color.green;
       case Constants.RELATIONSHIP_ARCHETYPE_NEUTRAL:
-        return colors.getNeutral();
+        return Color.lightGray;
       case Constants.RELATIONSHIP_ARCHETYPE_WAR:
-        return colors.getWar();
+        return Color.red;
       default:
         throw new IllegalStateException(
             "Arche Type for RelationshipTypeAttachment: "

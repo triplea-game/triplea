@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui;
 
-import com.formdev.flatlaf.util.UIScale;
 import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.Unit;
@@ -96,9 +95,7 @@ public class CasualtySelection {
   public Optional<CasualtyDetails> showModalDialog() {
     final JScrollPane chooserScrollPane = (JScrollPane) optionPane.getMessage();
     chooserScrollPane.setFont(
-        BattleDisplay.getPlayerComponent(player)
-            .getFont()
-            .deriveFont(Font.BOLD, UIScale.scale(14f)));
+        BattleDisplay.getPlayerComponent(player).getFont().deriveFont(Font.BOLD, 14));
     final Dimension size = chooserScrollPane.getPreferredSize();
     final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
     final int availHeight = screenResolution.height - 130;

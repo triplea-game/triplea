@@ -110,8 +110,7 @@ public class MarkCasualties implements BattleStep {
         .getDisplayChannelBroadcaster()
         .casualtyNotification(
             battleState.getBattleId(),
-            getPossibleOldNameForNotifyingBattleDisplay(
-                battleState, firingGroup, side, getName(), bridge),
+            getPossibleOldNameForNotifyingBattleDisplay(battleState, firingGroup, side, getName()),
             fireRoundState.getDice(),
             battleState.getPlayer(side.getOpposite()),
             new ArrayList<>(fireRoundState.getCasualties().getKilled()),
@@ -150,33 +149,22 @@ public class MarkCasualties implements BattleStep {
   }
 
   /**
-   * Return a step name that is present in the UI's current step list. If the engine-generated name
-   * is missing — typically because firing groups changed since the UI's step list was produced —
-   * recompute the step list and rebroadcast it so the UI shows the steps that will actually run.
-   *
-   * <p>The legacy fallbacks below remain only for save games loaded from older versions where a
-   * step name in the UI may differ from the current one; they should not be reachable for new
-   * battles.
+   * If the game is loaded from an earlier version, a different step name is shown in the UI. This
+   * needs to return that older name so that the UI updates correctly.
    */
   @RemoveOnNextMajorRelease
   static String getPossibleOldNameForNotifyingBattleDisplay(
       final BattleState battleState,
       final FiringGroup firingGroup,
       final BattleState.Side side,
-      final String name,
-      final IDelegateBridge bridge) {
+      final String name) {
     if (battleState.getStepStrings().contains(name)) {
       return name;
     }
-    // Firing groups have changed since the UI's step list was generated. Refresh and rebroadcast
-    // so the UI's step list matches what will actually execute.
-    battleState.refreshStepStringsAndNotifyDisplay(bridge);
-    if (battleState.getStepStrings().contains(name)) {
-      return name;
-    }
-
-    // Legacy save-game fallback: try to find the original step name for these firing units at the
-    // time the step names shown in the UI were produced.
+    // Try to find the original step name for these firing units at the time the step names shown in
+    // the UI were produced. It can happen that such a step no longer exists in the stack due to the
+    // units having changed due to previous steps, however the UI still has the original strings and
+    // we need to map to one of the ones shown. Match based on firing units.
     Optional<String> stepName =
         battleState.findStepNameForFiringUnits(firingGroup.getFiringUnits());
     if (stepName.isPresent()) {

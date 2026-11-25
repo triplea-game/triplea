@@ -1,10 +1,6 @@
 package games.strategy.triplea.ai.pro.logging;
 
-import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.pro.AbstractProAi;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
 
@@ -26,16 +22,6 @@ public final class ProLogger {
 
   public static void trace(final String message) {
     log(Level.FINEST, message);
-  }
-
-  /** Traces a heading, then how many units of each kind {@code units} holds. */
-  public static void traceUnitCounts(final String heading, final Collection<Unit> units) {
-    trace(heading);
-    final Map<String, Integer> counts = new HashMap<>();
-    for (final Unit unit : units) {
-      counts.merge(unit.toStringNoOwner(), 1, Integer::sum);
-    }
-    counts.forEach((kind, count) -> trace("    " + count + " " + kind));
   }
 
   private static void log(final Level level, final String message) {

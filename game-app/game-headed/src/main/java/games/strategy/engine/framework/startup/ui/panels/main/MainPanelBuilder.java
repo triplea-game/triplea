@@ -37,7 +37,7 @@ public class MainPanelBuilder {
             Optional.ofNullable(headedServerSetupModel.getPanel())
                 .map(SetupModel::getChatModel)
                 .orElse(null),
-            headedServerSetupModel::getBackAction);
+            headedServerSetupModel::showSelectType);
     headedServerSetupModel.setPanelChangeListener(mainPanel::setSetupPanel);
     gameSelectorModel.addObserver((observable, arg) -> mainPanel.updatePlayButtonState());
     return mainPanel;

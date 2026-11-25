@@ -52,7 +52,7 @@ public class HistoryWriter implements Serializable {
               + current);
     }
     final Step currentStep =
-        new Step(stepName, delegateName, player, history.getNextNewChangeIndex(), stepDisplayName);
+        new Step(stepName, delegateName, player, history.getChanges().size(), stepDisplayName);
     addToAndSetCurrent(currentStep);
   }
 
@@ -71,19 +71,9 @@ public class HistoryWriter implements Serializable {
     if (isCurrentRound()) {
       closeCurrent();
     }
-    final Round currentRound = new Round(round, history.getNextNewChangeIndex());
+    final Round currentRound = new Round(round, history.getChanges().size());
     current = (HistoryNode) history.getRoot();
     addToAndSetCurrent(currentRound);
-  }
-
-  /** Fires a new event with the given event name. */
-  public void startEvent(final String eventName) {
-    assertCorrectThread();
-    if (isCurrentEvent()) {
-      closeCurrent();
-    }
-    final Event event = new Event(eventName, history.getNextNewChangeIndex());
-    addToAndSetCurrent(event);
   }
 
   private void closeCurrent() {
@@ -98,12 +88,12 @@ public class HistoryWriter implements Serializable {
           parent.remove(current);
           history.nodesWereRemoved(parent, new int[] {index}, new Object[] {current});
         }
-        ((Step) current).setNextChangeIndexAfter(history.getNextNewChangeIndex());
+        ((Step) current).setChangeEndIndex(history.getChanges().size());
         current = parent;
         return;
       }
       current = (HistoryNode) current.getParent();
-      ((IndexedHistoryNode) old).setNextChangeIndexAfter(history.getNextNewChangeIndex());
+      ((IndexedHistoryNode) old).setChangeEndIndex(history.getChanges().size());
     }
   }
 
@@ -117,6 +107,16 @@ public class HistoryWriter implements Serializable {
       history.insertNodeInto(newNode, current, current.getChildCount());
     }
     history.goToEnd();
+  }
+
+  /** Fires a new event with the given event name. */
+  public void startEvent(final String eventName) {
+    assertCorrectThread();
+    if (isCurrentEvent()) {
+      closeCurrent();
+    }
+    final Event event = new Event(eventName, history.getChanges().size());
+    addToAndSetCurrent(event);
   }
 
   private boolean isCurrentEvent() {

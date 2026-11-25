@@ -6,8 +6,6 @@ import games.strategy.triplea.ui.menubar.debug.AiPlayerDebugOption;
 import games.strategy.ui.Util;
 import java.awt.Frame;
 import java.util.List;
-import java.util.function.Consumer;
-import javax.annotation.Nullable;
 import javax.swing.SwingUtilities;
 import lombok.experimental.UtilityClass;
 import org.triplea.swing.key.binding.KeyCode;
@@ -18,12 +16,6 @@ public final class ProLogUi {
   private static ProLogWindow settingsWindow = null;
   private static String currentName = "";
   private static int currentRound = 0;
-  private static volatile Consumer<String> logSink = null;
-
-  /** Sends AI log messages to {@code sink} instead of the log window; null restores the window. */
-  public static void setLogSink(final @Nullable Consumer<String> sink) {
-    logSink = sink;
-  }
 
   public static List<AiPlayerDebugOption> buildDebugOptions(final Frame frame) {
     Util.ensureOnEventDispatchThread();
@@ -56,11 +48,6 @@ public final class ProLogUi {
   }
 
   static void notifyAiLogMessage(final String message) {
-    final Consumer<String> sink = logSink;
-    if (sink != null) {
-      sink.accept(message);
-      return;
-    }
     SwingUtilities.invokeLater(
         () -> {
           if (settingsWindow != null) {
