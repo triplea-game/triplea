@@ -49,6 +49,10 @@ public class RetreaterGeneral implements Retreater {
 
     retreatUnits.removeAll(battleState.filterUnits(REMOVED_CASUALTY));
     if (retreatingSide == BattleState.Side.DEFENSE) {
+      // If there is no defender retreat destination, the retreat is not valid
+      // So no retreating units.
+      if (battleState.getDefendersRetreatTo() == null) return List.of();
+
       // We only want units that can move, be transported, or given bonus movement (no buildings
       // retreating)
       final Territory battleSite = battleState.getBattleSite();
