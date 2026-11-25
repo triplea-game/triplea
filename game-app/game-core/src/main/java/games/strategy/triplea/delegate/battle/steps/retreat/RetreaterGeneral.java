@@ -27,7 +27,7 @@ import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 
 @AllArgsConstructor
-class RetreaterGeneral implements Retreater {
+public class RetreaterGeneral implements Retreater {
 
   private final BattleState battleState;
 
