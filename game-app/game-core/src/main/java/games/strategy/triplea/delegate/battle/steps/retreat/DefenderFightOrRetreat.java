@@ -70,6 +70,9 @@ public class DefenderFightOrRetreat implements BattleStep {
       return;
     }
 
+    // Reset retreatTo territory (if we retreated different units previously in the same battle)
+    battleState.setDefendersRetreatTo(null);
+
     final String stepName = getName();
     // Only send the gotoBattleStep message if the step exists in the UI. It will not exist in the
     // case where normally retreat is not possible but only becomes possible when there are only

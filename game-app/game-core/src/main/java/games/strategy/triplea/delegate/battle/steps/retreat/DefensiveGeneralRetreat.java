@@ -137,9 +137,6 @@ public class DefensiveGeneralRetreat implements BattleStep {
           .getDisplayChannelBroadcaster()
           .notifyRetreat(shortMessage, longMessage, getName(), battleState.getPlayer(DEFENSE));
     }
-
-    // Reset retreatTo territory
-    battleState.setDefendersRetreatTo(null);
   }
 
   private String getShortBroadcastSuffix(final MustFightBattle.RetreatType retreatType) {
