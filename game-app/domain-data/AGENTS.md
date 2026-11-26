@@ -18,6 +18,10 @@ All classes are in `org.triplea.domain.data`:
 | `SystemIdLoader` | Loads/generates `SystemId` from Java Preferences |
 | `PlayerEmailValidation` | RFC-compliant email validation |
 
+## Dependencies
+
+No internal module dependencies — this is a leaf module. Uses only Lombok and standard library.
+
 ## Publishing
 
 Published to GitHub Packages as a Maven artifact (version from `JAR_VERSION` env var).

@@ -79,3 +79,7 @@ org.triplea.generic.xml.reader.annotations  @Tag, @Attribute, @TagList, @BodyTex
 org.triplea.generic.xml.reader.exceptions   All 4 exception types
 org.triplea.generic.xml.scanner             XmlScanner, AttributeScanner
 ```
+
+## Dependencies
+
+Only `lib:java-extras` and the Java standard library (`javax.xml.stream` StAX).

@@ -1,14 +1,18 @@
 package games.strategy.triplea.delegate.battle.steps.fire;
 
+import static games.strategy.triplea.delegate.battle.BattleState.Side.DEFENSE;
 import static games.strategy.triplea.delegate.battle.BattleState.UnitBattleFilter.ALIVE;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.FIRE_SUFFIX;
 import static games.strategy.triplea.delegate.battle.BattleStepStrings.UNITS;
 
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.battle.BattleState;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
+import games.strategy.triplea.delegate.battle.steps.retreat.RetreaterGeneral;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
 import lombok.Getter;
@@ -53,6 +57,12 @@ public class RollDiceStep implements BattleStep {
 
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+    // retreating units don't fire
+    Collection<Unit> firingUnits = firingGroup.getFiringUnits();
+    if ((side == DEFENSE) && (battleState.getDefendersRetreatTo() != null)) {
+      RetreaterGeneral retreater = new RetreaterGeneral(battleState, DEFENSE);
+      firingUnits.removeIf(unit -> retreater.getRetreatUnits().contains(unit));
+    }
 
     // retain the targets that are still alive since the targets might have been shot
     // in an earlier firing round

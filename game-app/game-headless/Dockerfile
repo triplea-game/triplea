@@ -21,5 +21,11 @@ RUN chown -R bot:root /home/bot/
 USER bot
 
 ADD build/libs/game-headless.jar /
-COPY --chmod=755 entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+CMD java \
+   -Xmx$BOT_MAX_MEMORY \
+   -Xss$BOT_XSS \
+   -Dtriplea.name=$BOT_NAME \
+   -Dtriplea.port=$BOT_PORT_NUMBER \
+   -Dtriplea.lobby.uri=$LOBBY_URI \
+   -Dtriplea.exit.on.game.end=$EXIT_ON_GAME_END \
+   -jar game-headless.jar

@@ -88,4 +88,5 @@ client versions.
 ## Build
 
 Published as a Maven artifact via `maven-publish`. Version from `JAR_VERSION`
-env var. Uses OkHttp for the WebSocket transport.
+env var. Local dependency: `:lib:java-extras` (provides `Interruptibles`).
+External dependency: OkHttp (`libs.okhttp`) for the WebSocket transport.

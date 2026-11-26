@@ -207,6 +207,11 @@ public class ClientSetupPanel extends SetupPanel {
   }
 
   @Override
+  public boolean isCancelButtonVisible() {
+    return true;
+  }
+
+  @Override
   public Optional<ILauncher> getLauncher() {
     throw new UnsupportedOperationException();
   }

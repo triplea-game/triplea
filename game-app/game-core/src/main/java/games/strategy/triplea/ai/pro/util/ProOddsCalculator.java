@@ -6,7 +6,6 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.ai.AiRandom;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
@@ -15,15 +14,12 @@ import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.odds.calculator.AggregateResults;
 import games.strategy.triplea.odds.calculator.IBattleCalculator;
 import games.strategy.triplea.util.TuvUtils;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.triplea.java.collections.CollectionUtils;
 
 /** Pro AI odds calculator. */
 public class ProOddsCalculator {
-  /** How close to the capture floor, in percent, a capture estimate gets re-run. */
-  private static final double BORDERLINE_CAPTURE_PERCENTAGE = 10;
 
   private final IBattleCalculator calc;
   private boolean stopped = false;
@@ -183,40 +179,22 @@ public class ProOddsCalculator {
               defendingUnits, Matches.unitCanBeInBattle(false, !t.isWater(), 1, true));
       final double tuv = TuvUtils.getTuv(mainCombatDefenders, proData.getUnitValueMap());
       return new ProBattleResult(100, 0.1 + tuv, true, attackingUnits, List.of(), 0);
-    } else if (checkSubmerge
-        && canSubmergeBeforeBattle(proData.getData(), attackingUnits, defendingUnits)) {
+    } else if (canSubmergeBeforeBattle(
+        proData.getData(), attackingUnits, defendingUnits, checkSubmerge)) {
       return new ProBattleResult();
     }
     return null;
   }
 
-  /** Whether all {@code defendingUnits} can evade {@code attackingUnits} before any shots. */
-  public static boolean canSubmergeBeforeBattle(
+  private static boolean canSubmergeBeforeBattle(
       final GameState data,
       final Collection<Unit> attackingUnits,
-      final Collection<Unit> defendingUnits) {
-    return Properties.getSubRetreatBeforeBattle(data.getProperties())
+      final Collection<Unit> defendingUnits,
+      final boolean checkSubmerge) {
+    return checkSubmerge
+        && Properties.getSubRetreatBeforeBattle(data.getProperties())
         && defendingUnits.stream().allMatch(Matches.unitCanEvade())
         && attackingUnits.stream().noneMatch(Matches.unitIsDestroyer());
-  }
-
-  /**
-   * Simulates the specified battle with the attacker retreating once {@code rounds} rounds have
-   * been fought (a strafe). The TUV swing then counts only the losses before the retreat.
-   */
-  public ProBattleResult callBattleCalcRetreatAfterRound(
-      final ProData proData,
-      final Territory t,
-      final Collection<Unit> attackingUnits,
-      final Collection<Unit> defendingUnits,
-      final Collection<Unit> bombardingUnits,
-      final int rounds) {
-    calc.setRetreatAfterRound(rounds);
-    try {
-      return callBattleCalc(proData, t, attackingUnits, defendingUnits, bombardingUnits, true);
-    } finally {
-      calc.setRetreatAfterRound(-1);
-    }
   }
 
   public ProBattleResult callBattleCalcWithRetreatAir(
@@ -263,63 +241,21 @@ public class ProOddsCalculator {
       return new ProBattleResult();
     }
 
+    final int minArmySize = Math.min(attackingUnits.size(), defendingUnits.size());
+    final int runCount = Math.max(16, 100 - minArmySize);
     final GamePlayer attacker = CollectionUtils.getAny(attackingUnits).getOwner();
     final GamePlayer defender = CollectionUtils.getAny(defendingUnits).getOwner();
-
-    // Escorts and interceptors killed in a preceding air battle never reach the main battle, but
-    // still count toward the TUV swing below, which starts from the original units
-    final ProAirBattleEstimator.Outcome airBattle =
-        ProAirBattleEstimator.estimate(
-            data,
-            attackingUnits,
-            defendingUnits,
-            u -> proData.getUnitValueMap().getInt(u.getType()),
-            AiRandom.get());
-    final Collection<Unit> mainBattleAttackers =
-        airBattle.isEmpty() ? attackingUnits : minus(attackingUnits, airBattle.attackersLost());
-    final Collection<Unit> mainBattleDefenders =
-        airBattle.isEmpty() ? defendingUnits : minus(defendingUnits, airBattle.defendersLost());
-    if (mainBattleAttackers.isEmpty()) {
-      return airBattleWipedOutAttackers(proData, t, attackingUnits, defendingUnits, airBattle);
-    }
-    if (!airBattle.isEmpty()
-        && mainBattleDefenders.stream().noneMatch(Matches.unitIsNotInfrastructure())) {
-      return airBattleClearedDefenders(proData, t, mainBattleAttackers, defendingUnits, airBattle);
-    }
-
-    final int minArmySize = Math.min(mainBattleAttackers.size(), mainBattleDefenders.size());
-    final int runCount = Math.max(16, 100 - minArmySize);
-    AggregateResults results =
+    final AggregateResults results =
         calc.calculate(
             attacker,
             defender,
             t,
-            mainBattleAttackers,
-            mainBattleDefenders,
+            attackingUnits,
+            defendingUnits,
             bombardingUnits,
             TerritoryEffectHelper.getEffects(t),
             retreatWhenOnlyAirLeft,
             runCount);
-
-    // Hard Beta's capture floor sits inside the sampling noise of a small run, so a borderline
-    // capture gets more runs before the AI commits to or drops the attack
-    if (proData.isBeta()
-        && !t.isWater()
-        && Math.abs(capturePercentage(results) - proData.getMinWinPercentage())
-            < BORDERLINE_CAPTURE_PERCENTAGE) {
-      // Results can't be merged across calculators, so rerun at the full 4x sample size
-      results =
-          calc.calculate(
-              attacker,
-              defender,
-              t,
-              mainBattleAttackers,
-              mainBattleDefenders,
-              bombardingUnits,
-              TerritoryEffectHelper.getEffects(t),
-              retreatWhenOnlyAirLeft,
-              4 * runCount);
-    }
 
     // Find battle result statistics
     final double winPercentage = results.getAttackerWinPercent() * 100;
@@ -357,8 +293,7 @@ public class ProOddsCalculator {
 
     // Remove TUV and add to remaining units for defenders that can submerge before battle
     if (tuvSwing > 0
-        && checkSubmerge
-        && canSubmergeBeforeBattle(data, attackingUnits, defendingUnits)) {
+        && canSubmergeBeforeBattle(data, attackingUnits, defendingUnits, checkSubmerge)) {
       final List<Unit> defendingSubsKilled =
           CollectionUtils.getMatches(defendingUnits, Matches.unitCanEvade());
       defendingSubsKilled.removeAll(averageDefendersRemaining);
@@ -380,64 +315,6 @@ public class ProOddsCalculator {
         hasLandUnitsRemaining,
         averageAttackersRemaining,
         averageDefendersRemaining,
-        results.getAverageBattleRoundsFought(),
-        proData.isBeta() && !t.isWater()
-            ? capturePercentage(results)
-            : hasLandUnitsRemaining ? winPercentage : 0);
-  }
-
-  private static List<Unit> minus(final Collection<Unit> units, final Collection<Unit> removed) {
-    final List<Unit> result = new ArrayList<>(units);
-    result.removeAll(removed);
-    return result;
-  }
-
-  /** Every attacker died in the air battle, so the main battle is never fought. */
-  private static ProBattleResult airBattleWipedOutAttackers(
-      final ProData proData,
-      final Territory t,
-      final Collection<Unit> attackingUnits,
-      final Collection<Unit> defendingUnits,
-      final ProAirBattleEstimator.Outcome airBattle) {
-    final double tuvSwing =
-        TuvUtils.getTuv(airBattle.defendersLost(), proData.getUnitValueMap())
-            - TuvUtils.getTuv(mainCombat(attackingUnits, true, t), proData.getUnitValueMap());
-    return new ProBattleResult(
-        0, tuvSwing, false, List.of(), minus(defendingUnits, airBattle.defendersLost()), 1);
-  }
-
-  /** Every defender was an interceptor that died in the air battle. */
-  private static ProBattleResult airBattleClearedDefenders(
-      final ProData proData,
-      final Territory t,
-      final Collection<Unit> survivingAttackers,
-      final Collection<Unit> defendingUnits,
-      final ProAirBattleEstimator.Outcome airBattle) {
-    if (!t.isWater() && survivingAttackers.stream().allMatch(Matches.unitIsAir())) {
-      return new ProBattleResult();
-    }
-    final double tuvSwing =
-        0.1
-            + TuvUtils.getTuv(mainCombat(defendingUnits, false, t), proData.getUnitValueMap())
-            - TuvUtils.getTuv(airBattle.attackersLost(), proData.getUnitValueMap());
-    return new ProBattleResult(100, tuvSwing, true, survivingAttackers, List.of(), 1);
-  }
-
-  private static List<Unit> mainCombat(
-      final Collection<Unit> units, final boolean attacking, final Territory t) {
-    return CollectionUtils.getMatches(
-        units, Matches.unitCanBeInBattle(attacking, !t.isWater(), 1, true));
-  }
-
-  /** Percent of simulated battles the attacker won with a land unit left. */
-  private static double capturePercentage(final AggregateResults results) {
-    final long captures =
-        results.getResults().stream()
-            .filter(
-                r ->
-                    r.attackerWon()
-                        && r.getRemainingAttackingUnits().stream().anyMatch(Matches.unitIsLand()))
-            .count();
-    return 100.0 * captures / results.getResults().size();
+        results.getAverageBattleRoundsFought());
   }
 }

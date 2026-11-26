@@ -43,8 +43,7 @@ Also configures Jacoco XML and HTML coverage reports.
 ### `triplea-base-project`
 
 The base convention applied by all TripleA projects.
-Applies `triplea-test-conventions` and [PMD](https://pmd.github.io/) static analysis with the rules in
-`.build/pmd.xml`.
+Currently applies `triplea-test-conventions`.
 
 ### `triplea-java-library`
 

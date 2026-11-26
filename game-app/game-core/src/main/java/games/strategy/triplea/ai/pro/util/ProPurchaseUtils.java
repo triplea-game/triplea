@@ -11,9 +11,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.Properties;
 import games.strategy.triplea.UnitUtils;
-import games.strategy.triplea.ai.AiRandom;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProPlaceTerritory;
 import games.strategy.triplea.ai.pro.data.ProPurchaseOption;
@@ -69,7 +67,7 @@ public final class ProPurchaseUtils {
       ProLogger.trace(
           ppo.getUnitType().getName() + ", probability=" + chance + ", upperBound=" + upperBound);
     }
-    final double randomNumber = AiRandom.get().nextDouble() * 100;
+    final double randomNumber = Math.random() * 100;
     ProLogger.trace("Random number: " + randomNumber);
     for (final ProPurchaseOption ppo : purchasePercentages.keySet()) {
       if (randomNumber <= purchasePercentages.get(ppo)) {
@@ -111,7 +109,7 @@ public final class ProPurchaseUtils {
     final List<Unit> placeUnits = new ArrayList<>();
     if (bestDefenseOption != null) {
       ProLogger.debug("Best defense option: " + bestDefenseOption.getUnitType().getName());
-      int remainingUnitProduction = getUnitProduction(data, t, player);
+      int remainingUnitProduction = getUnitProduction(t, player);
       int pusSpent = 0;
       while (bestDefenseOption.getCost() <= (pusRemaining - pusSpent)
           && remainingUnitProduction >= bestDefenseOption.getQuantity()) {
@@ -182,63 +180,31 @@ public final class ProPurchaseUtils {
     final GameData data = proData.getData();
 
     // Find all territories that I can place units on
+    final RulesAttachment ra = player.getRulesAttachment();
     List<Territory> ownedAndNotConqueredFactoryTerritories;
-    if (isPlacementAnyTerritoryAllowed(data, player)) {
+    if (ra != null && ra.getPlacementAnyTerritory()) {
       ownedAndNotConqueredFactoryTerritories = data.getMap().getTerritoriesOwnedBy(player);
     } else {
       ownedAndNotConqueredFactoryTerritories =
           CollectionUtils.getMatches(
-              data.getMap().getTerritories(), ProMatches.territoryHasFactoryAndIsOwnedLand(player));
+              data.getMap().getTerritories(),
+              ProMatches.territoryHasFactoryAndIsNotConqueredOwnedLand(player));
     }
     ownedAndNotConqueredFactoryTerritories =
         CollectionUtils.getMatches(
             ownedAndNotConqueredFactoryTerritories,
-            ProMatches.territoryCanMoveLandUnits(player, false)
-                .and(ProMatches.territoryIsNotConqueredUnlessPlacementCapturedAllowed(player)));
+            ProMatches.territoryCanMoveLandUnits(player, false));
 
     // Create purchase territory holder for each factory territory
     return getProPurchaseTerritoryMapFromTerritories(
         ownedAndNotConqueredFactoryTerritories,
         t -> {
-          final int unitProduction = getUnitProduction(data, t, player);
+          final int unitProduction = getUnitProduction(t, player);
           return new ProPurchaseTerritory(t, data, player, unitProduction);
         });
   }
 
-  /**
-   * Like {@link #findPurchaseTerritories}, plus the sea zones next to owned land that the {@code
-   * placementAnySeaZone} rule opens. Placement only: purchase planning sticks to factory sea zones
-   * so it doesn't start buying ships for every coastal territory.
-   */
-  public static Map<Territory, ProPurchaseTerritory> findPlaceTerritories(
-      final ProData proData, final GamePlayer player) {
-    final GameData data = proData.getData();
-    final Map<Territory, ProPurchaseTerritory> placeTerritories =
-        findPurchaseTerritories(proData, player);
-    if (isPlaceInAnyTerritoryRuleOn(data, player, RulesAttachment::getPlacementAnySeaZone)) {
-      placeTerritories.values().forEach(ppt -> ppt.addAdjacentSeaZones(data, player));
-    }
-    return placeTerritories;
-  }
-
-  /**
-   * Whether {@code player} may place in any owned land. As in {@code AbstractPlaceDelegate}, the
-   * {@code placementAnyTerritory} rule needs the "Place in Any Territory" game property too.
-   */
-  public static boolean isPlacementAnyTerritoryAllowed(
-      final GameState data, final GamePlayer player) {
-    return isPlaceInAnyTerritoryRuleOn(data, player, RulesAttachment::getPlacementAnyTerritory);
-  }
-
-  private static boolean isPlaceInAnyTerritoryRuleOn(
-      final GameState data, final GamePlayer player, final Predicate<RulesAttachment> rule) {
-    final RulesAttachment ra = player.getRulesAttachment();
-    return Properties.getPlaceInAnyTerritory(data.getProperties()) && ra != null && rule.test(ra);
-  }
-
-  /** Approximates {@code AbstractPlaceDelegate#getMaxUnitsToBePlacedFrom} for a whole turn. */
-  private static int getUnitProduction(
-      final GameState data, final Territory territory, final GamePlayer player) {
+  private static int getUnitProduction(final Territory territory, final GamePlayer player) {
     final Predicate<Unit> factoryMatch =
         Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
             .and(Matches.unitIsBeingTransported().negate())
@@ -257,18 +223,8 @@ public final class ProPurchaseUtils {
       }
       return Integer.MAX_VALUE;
     }
-    if (Properties.getUnitPlacementPerTerritoryRestricted(data.getProperties())
-        && ra != null
-        && ra.getPlacementPerTerritory() > 0) {
-      final int ownedUnits =
-          CollectionUtils.countMatches(territory.getUnits(), Matches.unitIsOwnedBy(player));
-      if (ownedUnits >= ra.getPlacementPerTerritory()) {
-        return 0;
-      }
-      if (ra.getMaxPlacePerTerritory() == -1) {
-        return Integer.MAX_VALUE;
-      }
-      return Math.max(0, ra.getMaxPlacePerTerritory());
+    if (ra != null && ra.getPlacementAnyTerritory()) {
+      return Integer.MAX_VALUE;
     }
     return UnitUtils.getProductionPotentialOfTerritory(
         territory.getUnits(), territory, player, true, true);

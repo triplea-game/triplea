@@ -14,11 +14,8 @@ This is a multi-module Gradle (Kotlin DSL) project. Key top-level directories:
 | `http-clients/`       | HTTP client libraries for server communication                    |
 | `lib/`                | Shared utility libraries (Swing helpers, websockets, XML parsing) |
 | `docs/`               | Project documentation (development, map-making, infrastructure)   |
-| `.build/`             | PMD config, Eclipse formatter, and code convention checks         |
+| `.build/`             | Checkstyle, PMD configs, and code convention checks               |
 | `gradle/build-logic/` | Custom Gradle convention plugins                                  |
-
-Gradle project names are flat (`:game-core`, not `:game-app:game-core`); see `settings.gradle.kts`.
-Each module's dependencies are in its `build.gradle.kts`.
 
 ### Module Dependency Overview
 
@@ -33,17 +30,16 @@ http-clients/lobby-client → domain-data, lib/feign-common, lib/java-extras, li
 
 ## Build & Development
 
-- **Java version**: JDK 25. The Gradle toolchain does not download it: a JDK 25 must be installed;
-  point `JAVA_HOME` at it.
+- **Java version**: JDK 25
 - **Build tool**: Gradle with Kotlin DSL, configuration cache enabled
 - **Formatting**: Google Java Format via Spotless (`./gradlew spotlessApply`)
-- **Static analysis**: PMD (`.build/pmd.xml`)
+- **Static analysis**: Checkstyle (`.build/checkstyle.xml`) + PMD (`.build/pmd.xml`)
 
 ### Common Commands
 
 ```bash
 # Build and run the desktop client
-./gradlew :game-headed:run
+./gradlew :game-app:game-headed:run
 
 # Run all checks (formatting + tests + static analysis + custom checks)
 ./verify
@@ -52,24 +48,14 @@ http-clients/lobby-client → domain-data, lib/feign-common, lib/java-extras, li
 ./gradlew test
 
 # Run tests for a specific module
-./gradlew :game-core:test
+./gradlew :game-app:game-core:test
 
 # Run a specific test class
-./gradlew :game-core:test --tests games.strategy.triplea.UnitUtilsTest
+./gradlew :game-app:game-core:test --tests games.strategy.triplea.UnitUtilsTest
 
 # Apply formatting
 ./gradlew spotlessApply
 ```
-
-### Before Finishing a Change
-
-- Run `./gradlew spotlessApply` and the tests of every changed module (`./gradlew :<module>:test`);
-  `./verify` runs everything CI runs.
-- Add or update tests for changed behaviour.
-- If the change makes a statement in an `AGENTS.md` file or under `docs/` wrong, fix it in the
-  same change.
-- Keep a change to one purpose; see `.github/CONTRIBUTING.md` and `docs/project/pull-requests.md`
-  for the PR guidelines.
 
 ## Code Conventions
 
@@ -88,11 +74,11 @@ http-clients/lobby-client → domain-data, lib/feign-common, lib/java-extras, li
 
 ## Testing
 
-- JUnit 5 with AssertJ `assertThat` assertions (the standard for all tests)
+- JUnit 5 with Hamcrest `assertThat` assertions (preferred for new tests)
 - Mockito for mocking
-- AssertJ is the standard assertion library; some older tests still use JUnit or Hamcrest matchers, but new tests should use AssertJ
+- JUnit assertions and Hamcrest matchers are the primary assertion styles; AssertJ is available but rarely used
 - WireMock for HTTP stubbing
-- Test fixtures shared from `:game-core` via `testFixtures` — use `TestMapGameData` enum and
+- Test fixtures shared from `:game-app:game-core` via `testFixtures` — use `TestMapGameData` enum and
   `TestMapGameDataLoader` to load test map data
 
 ## Architecture Concepts
@@ -115,8 +101,6 @@ The engine is built around these core abstractions (see `docs/development/engine
   NOT change their packages. Game saves use Java serialization.
 - **Network compatibility**: Methods annotated `@RemoteActionCode` (in remote delegate interfaces like
   `IBattleDelegate`, `IMoveDelegate`, etc.) are invoked over the network. Their API signatures must not change.
-- **Map XML compatibility**: Maps are community content. Changes to XML parsing or attachments must keep existing map
-  XMLs loading and behaving the same (see "Compatibility Breakers" in `.github/CONTRIBUTING.md`).
 
 ## Key Domain Terms
 

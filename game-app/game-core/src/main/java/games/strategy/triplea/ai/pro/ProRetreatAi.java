@@ -68,13 +68,23 @@ class ProRetreatAi {
         calc.calculateBattleResultsNoSubmerge(
             proData, battleTerritory, attackers, defenders, new HashSet<>());
 
+    // Determine if it has a factory
+    int isFactory = (ProMatches.territoryHasInfraFactoryAndIsLand().test(battleTerritory) ? 1 : 0);
+
+    // Determine production value and if it is a capital
+    ProCombatMoveAi.ProductionAndIsCapital productionAndIsCapital =
+        ProCombatMoveAi.getProductionAndIsCapital(battleTerritory);
+
     // Calculate current attack value
     double territoryValue = 0;
     if (result.isHasLandUnitRemaining() || attackers.stream().noneMatch(Matches.unitIsAir())) {
       territoryValue =
           result.getWinPercentage()
               / 100
-              * captureValue(battleTerritory, battle.getAttacker(), data);
+              * (2.0
+                  * productionAndIsCapital.production
+                  * (1 + isFactory)
+                  * (1 + productionAndIsCapital.isCapital));
     }
     double battleValue = result.getTuvSwing() + territoryValue;
     if (!isAttacker) {
@@ -127,12 +137,5 @@ class ProRetreatAi {
             + result.getTuvSwing());
 
     return Optional.empty();
-  }
-
-  /** What taking {@code t} is worth to {@code attacker}, before the odds of winning. */
-  static double captureValue(final Territory t, final GamePlayer attacker, final GameData data) {
-    final int isFactory = ProMatches.territoryHasInfraFactoryAndIsLand().test(t) ? 1 : 0;
-    final int isCapital = ProCombatMoveAi.isCapitalWorthBoosting(t, attacker, data) ? 1 : 0;
-    return 2.0 * TerritoryAttachment.getProduction(t) * (1 + isFactory) * (1 + isCapital);
   }
 }

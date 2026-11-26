@@ -53,6 +53,8 @@ import games.strategy.triplea.delegate.battle.steps.fire.firststrike.DefensiveFi
 import games.strategy.triplea.delegate.battle.steps.fire.firststrike.OffensiveFirstStrike;
 import games.strategy.triplea.delegate.battle.steps.fire.general.DefensiveGeneral;
 import games.strategy.triplea.delegate.battle.steps.fire.general.OffensiveGeneral;
+import games.strategy.triplea.delegate.battle.steps.retreat.DefenderFightOrRetreat;
+import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveGeneralRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.DefensiveSubsRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveGeneralRetreat;
 import games.strategy.triplea.delegate.battle.steps.retreat.OffensiveSubsRetreat;
@@ -62,8 +64,6 @@ import games.strategy.triplea.delegate.move.validation.AirMovementValidator;
 import games.strategy.triplea.delegate.move.validation.MoveValidator;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -121,10 +121,6 @@ public class MustFightBattle extends DependentBattle
   // and resume while in the middle of a battle.
   private final ExecutionStack stack = new ExecutionStack();
 
-  // Holds the Same Luck shared remainder die for the current round; reset when the round advances.
-  // Not final: readObject backfills it for saves made before it existed.
-  private SameLuckDiePool sameLuckDiePool = new SameLuckDiePool();
-
   @Getter private List<String> stepStrings;
   // Stores the firing units corresponding to the casualty steps in stepStrings. This is to fix a
   // "step name not found" error due to stepStrings being generated at the start of combat, but
@@ -155,6 +151,8 @@ public class MustFightBattle extends DependentBattle
   // -1 would mean forever until one side is eliminated (the default is infinite)
   private final int maxRounds;
 
+  private Territory defendersRetreatTo;
+
   public MustFightBattle(
       final Territory battleSite,
       final GamePlayer attacker,
@@ -166,13 +164,7 @@ public class MustFightBattle extends DependentBattle
         battleSite.isWater()
             ? Properties.getSeaBattleRounds(data.getProperties())
             : Properties.getLandBattleRounds(data.getProperties());
-  }
-
-  private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-    in.defaultReadObject();
-    if (sameLuckDiePool == null) {
-      sameLuckDiePool = new SameLuckDiePool();
-    }
+    defendersRetreatTo = null;
   }
 
   void resetDefendingUnits(final GamePlayer attacker) {
@@ -293,11 +285,6 @@ public class MustFightBattle extends DependentBattle
   @Override
   public BattleStatus getStatus() {
     return BattleStatus.of(round, maxRounds, isOver, isAmphibious, headless);
-  }
-
-  @Override
-  public SameLuckDiePool getSameLuckDiePool() {
-    return sameLuckDiePool;
   }
 
   @Override
@@ -824,12 +811,6 @@ public class MustFightBattle extends DependentBattle
   }
 
   @Override
-  public void refreshStepStringsAndNotifyDisplay(final IDelegateBridge bridge) {
-    determineStepStrings();
-    bridge.getDisplayChannelBroadcaster().listBattleSteps(battleId, stepStrings);
-  }
-
-  @Override
   public Collection<Territory> getAttackerRetreatTerritories() {
     // TODO: when attacking with paratroopers (air + carried land), there are several bugs in
     // retreating.
@@ -885,6 +866,68 @@ public class MustFightBattle extends DependentBattle
     }
     if (attackingUnits.stream().anyMatch(Matches.unitIsSea())) {
       possible = CollectionUtils.getMatches(possible, Matches.territoryIsWater());
+    }
+    return possible;
+  }
+
+  @Override
+  public Collection<Territory> getDefenderRetreatTerritories() {
+
+    // If retreating units remain in place, just return collection of current territory
+    if (headless || Properties.getRetreatingUnitsRemainInPlace(gameData.getProperties())) {
+      return Set.of(battleSite);
+    }
+    // If we are moving into a territory containing enemy units, we cannot
+    // retreat back there, but air units do not block retreat
+    final Predicate<Unit> enemyUnitsThatPreventRetreat =
+        PredicateBuilder.of(Matches.enemyUnit(defender))
+            .and(Matches.unitIsNotInfrastructure())
+            .and(Matches.unitIsBeingTransported().negate())
+            .and(Matches.unitIsSubmerged().negate())
+            .and(Matches.unitCanBeMovedThroughByEnemies().negate())
+            .and(Matches.unitIsAir().negate())
+            .andIf(
+                Properties.getIgnoreTransportInMovement(gameData.getProperties()),
+                Matches.unitIsNotSeaTransportButCouldBeCombatSeaTransport())
+            .build();
+
+    Collection<Territory> possible =
+        CollectionUtils.getMatches(
+            getGameData().getMap().getNeighbors(getBattleSite()),
+            Matches.territoryHasUnitsThatMatch(enemyUnitsThatPreventRetreat).negate());
+
+    // Remove territories we can't retreat to due to territory effects
+    final Predicate<Territory> unitsNotAllowed =
+        Matches.territoryEffectsAllowUnits(defendingUnits).negate();
+    possible.removeAll(CollectionUtils.getMatches(possible, unitsNotAllowed));
+
+    // Cannot retreat into enemy territory, or into another battle with non-air units
+    final Predicate<Territory> conqueredOrEnemy =
+        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(defender);
+    possible.removeAll(CollectionUtils.getMatches(possible, conqueredOrEnemy));
+
+    // Cannot retreat into territories where relationship with owner prevents it
+    final Predicate<Territory> relationshipPreventsEntry =
+        Matches.territoryAllowsCanMoveLandUnitsOverOwnedLand(defender).negate();
+    possible.removeAll(CollectionUtils.getMatches(possible, relationshipPreventsEntry));
+
+    if (defendingUnits.stream().anyMatch(Matches.unitIsLand()) && !battleSite.isWater()) {
+      possible = CollectionUtils.getMatches(possible, Matches.territoryIsLand());
+    }
+    if (defendingUnits.stream().anyMatch(Matches.unitIsSea())) {
+      // make sure we can move through any canals
+      final Predicate<Territory> canalMatch =
+          t -> {
+            final Route r = new Route(getBattleSite(), t);
+            return new MoveValidator(getGameData(), false)
+                    .validateCanal(r, defendingUnits, getPlayer(DEFENSE))
+                == null;
+          };
+      final Predicate<Territory> match =
+          Matches.territoryIsWater()
+              .and(Matches.territoryHasNoEnemyUnits(getPlayer(DEFENSE)))
+              .and(canalMatch);
+      possible = CollectionUtils.getMatches(possible, match);
     }
     return possible;
   }
@@ -1216,9 +1259,8 @@ public class MustFightBattle extends DependentBattle
       @Override
       @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        // Intentionally left blank
-        // Old saves will fall through to the IExecutable that instantiates
-        // OffensiveGeneralRetreat which does the work that previously was here
+        new DefenderFightOrRetreat(MustFightBattle.this, MustFightBattle.this)
+            .execute(stack, bridge);
       }
     };
     new IExecutable() {
@@ -1227,9 +1269,8 @@ public class MustFightBattle extends DependentBattle
       @Override
       @RemoveOnNextMajorRelease
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        // Intentionally left blank
-        // Old saves will fall through to the IExecutable that instantiates
-        // OffensiveGeneralRetreat which does the work that previously was here
+        new DefensiveGeneralRetreat(MustFightBattle.this, MustFightBattle.this)
+            .execute(stack, bridge);
       }
     };
     new IExecutable() {
@@ -1318,8 +1359,6 @@ public class MustFightBattle extends DependentBattle
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
             if (!isOver) {
               round++;
-              // A new round rolls a fresh shared Same Luck die.
-              sameLuckDiePool.reset();
               if (round > MAX_ROUNDS) {
                 // the battle appears to be in an infinite loop
                 throw new IllegalStateException(
@@ -1559,5 +1598,15 @@ Round 10,000 reached in a battle. Something must be wrong. Please report this to
         + attackingFromMap.keySet()
         + " attacking with: "
         + attackingUnits;
+  }
+
+  @Override
+  public Territory getDefendersRetreatTo() {
+    return defendersRetreatTo;
+  }
+
+  @Override
+  public void setDefendersRetreatTo(final Territory retreatTo) {
+    defendersRetreatTo = retreatTo;
   }
 }

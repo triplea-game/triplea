@@ -23,3 +23,7 @@ Handles `map.yml` metadata files:
 
 ### `org.triplea.map.game.notes`
 Manages HTML game notes companion files (`.notes.html`) for game XMLs.
+
+## Dependencies
+
+- `lib:java-extras`, `lib:xml-reader`

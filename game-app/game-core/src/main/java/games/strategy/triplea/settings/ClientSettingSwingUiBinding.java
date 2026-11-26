@@ -8,13 +8,9 @@ import static games.strategy.triplea.settings.SelectionComponentFactory.proxySet
 import static games.strategy.triplea.settings.SelectionComponentFactory.selectionBox;
 
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
-import games.strategy.engine.framework.lookandfeel.RelationshipColorScheme;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.lobby.LobbySelectionViewFactory;
 import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
 import javax.swing.JComponent;
 import javax.swing.UIManager;
 import lombok.AllArgsConstructor;
@@ -173,35 +169,6 @@ WARNING: restart all running TripleA instances after changing this setting to av
     }
   },
 
-  RELATIONSHIP_COLOR_SCHEME_BINDING(
-      "Relationship Colors",
-      SettingType.LOOK_AND_FEEL,
-"""
-War/allied/neutral colors in the politics panel and status bar.
-Color blind friendly uses orange/blue instead of red/green.""") {
-    @Override
-    public SelectionComponent<JComponent> newSelectionComponent() {
-      return selectionBox(
-          ClientSetting.relationshipColorScheme,
-          RelationshipColorScheme.class,
-          List.of(RelationshipColorScheme.values()),
-          Optional::of,
-          Function.identity(),
-          RelationshipColorScheme::getDisplayName);
-    }
-  },
-
-  UI_SCALE_PERCENT_BINDING(
-      "UI Font & Size Scale (%)",
-      SettingType.LOOK_AND_FEEL,
-      "Scales the whole UI - fonts and component sizes - by this percentage. "
-          + "100 is the default size; increase it for larger, more readable text.") {
-    @Override
-    public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.uiScalePercent, 75, 250);
-    }
-  },
-
   MAP_EDGE_SCROLL_SPEED_BINDING(
       "Map Scroll Speed",
       SettingType.MAP_SCROLLING,
@@ -307,17 +274,6 @@ All players in the same game must have it set to the same value. Restart to full
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return booleanRadioButtons(ClientSetting.useWebsocketNetwork);
-    }
-  },
-
-  USE_BOUNDED_CONTEXT_BATTLE_CALC(
-      "Use bounded-context battle calculator (Beta)",
-      SettingType.TESTING,
-      "Toggles the in-development engine-free battle odds calculator. Off by default; still under "
-          + "development. Takes effect the next time the battle calculator is opened.") {
-    @Override
-    public SelectionComponent<JComponent> newSelectionComponent() {
-      return booleanRadioButtons(ClientSetting.useBoundedContextBattleCalc);
     }
   },
 

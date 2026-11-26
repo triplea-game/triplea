@@ -26,3 +26,8 @@ GameRelayServer
 - Broadcasts incoming messages to all other connected clients
 - Validates remote IP addresses for ban checking
 - Tracks and rate-limits bad messages via Caffeine cache
+
+## Dependencies
+
+- `lib:websocket-client`, `lib:websocket-server`
+- Uses Java WebSocket library (`org.java_websocket`)

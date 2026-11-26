@@ -104,7 +104,7 @@ public class OffensiveGeneralRetreat implements BattleStep {
     if (battleState.getStatus().isAmphibious()) {
       retreater = getAmphibiousRetreater();
     } else if (canAttackerRetreat()) {
-      retreater = new RetreaterGeneral(battleState);
+      retreater = new RetreaterGeneral(battleState, OFFENSE);
     } else {
       retreater = null;
     }
@@ -126,11 +126,6 @@ public class OffensiveGeneralRetreat implements BattleStep {
       final Collection<Unit> retreatUnits = retreater.getRetreatUnits();
       final Collection<Territory> possibleRetreatSites =
           retreater.getPossibleRetreatSites(retreatUnits);
-      // The retreat territories of the battle can all be unusable for the units that would
-      // retreat (e.g. land territories for sea units, or blocked by a territory effect).
-      if (possibleRetreatSites.isEmpty()) {
-        return;
-      }
       battleActions
           .queryRetreatTerritory(
               battleState,

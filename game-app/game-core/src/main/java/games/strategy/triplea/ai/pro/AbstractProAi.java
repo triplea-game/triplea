@@ -15,13 +15,11 @@ import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.data.ProPurchaseTerritory;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
-import games.strategy.triplea.ai.pro.data.ProTerritoryManager;
 import games.strategy.triplea.ai.pro.logging.ProLogUi;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.ai.pro.simulate.ProDummyDelegateBridge;
 import games.strategy.triplea.ai.pro.simulate.ProSimulateTurnUtils;
 import games.strategy.triplea.ai.pro.util.ProBattleUtils;
-import games.strategy.triplea.ai.pro.util.ProCasualtyUtils;
 import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.ai.pro.util.ProPurchaseUtils;
@@ -30,7 +28,6 @@ import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PoliticsDelegate;
-import games.strategy.triplea.delegate.battle.AirBattle;
 import games.strategy.triplea.delegate.battle.BattleDelegate;
 import games.strategy.triplea.delegate.battle.IBattle;
 import games.strategy.triplea.delegate.battle.IBattle.BattleType;
@@ -45,27 +42,17 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 import lombok.Getter;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Tuple;
 
 /** Pro AI. */
 public abstract class AbstractProAi extends AbstractAi {
-
-  /** Enemy win percentage at or above which a landing territory counts as lost. */
-  private static final double AIR_DECIDES_THRESHOLD = 50;
 
   @Getter private final ProOddsCalculator calc;
   @Getter private final ProData proData;
@@ -84,10 +71,6 @@ public abstract class AbstractProAi extends AbstractAi {
   private Map<Territory, ProPurchaseTerritory> storedPurchaseTerritories;
   private List<PoliticalActionAttachment> storedPoliticalActions;
   private List<Territory> storedStrafingTerritories;
-  // The combat move plan's can-hold verdict per attacked territory name.
-  private Map<String, Boolean> plannedCanHold = Map.of();
-  // Planned strafes: attacked territory name -> rounds to fight before retreating.
-  private Map<String, Integer> storedStrafeRetreats = Map.of();
 
   public AbstractProAi(
       final String name,
@@ -111,11 +94,6 @@ public abstract class AbstractProAi extends AbstractAi {
   }
 
   @Override
-  protected boolean choosesBombingTargetsByValue() {
-    return proData.isBeta();
-  }
-
-  @Override
   public void stopGame() {
     super.stopGame(); // absolutely MUST call super.stopGame() first
     calc.stop();
@@ -127,25 +105,6 @@ public abstract class AbstractProAi extends AbstractAi {
 
   public void setStoredStrafingTerritories(final List<Territory> strafingTerritories) {
     storedStrafingTerritories = strafingTerritories;
-  }
-
-  /** Attacks to retreat from once that many rounds are fought, by territory name. */
-  public void setStoredStrafeRetreats(final Map<String, Integer> strafeRetreats) {
-    storedStrafeRetreats = Map.copyOf(strafeRetreats);
-  }
-
-  /**
-   * Drops the move plans {@link #purchase} stores for this turn's moves, for a subclass that makes
-   * moves of its own: a stale plan would otherwise be replayed on a board it no longer fits.
-   */
-  protected void discardStoredMovePlans() {
-    storedCombatMoveMap = null;
-    storedFactoryMoveMap = null;
-  }
-
-  /** Drops the placement plan {@link #purchase} stores for {@link #place}, likewise. */
-  protected void discardStoredPurchasePlan() {
-    storedPurchaseTerritories = null;
   }
 
   /**
@@ -172,7 +131,7 @@ public abstract class AbstractProAi extends AbstractAi {
       didNonCombatMove = true;
     } else {
       if (storedCombatMoveMap == null) {
-        rememberCanHold(combatMoveAi.doCombatMove(moveDel));
+        combatMoveAi.doCombatMove(moveDel);
       } else {
         combatMoveAi.doMove(storedCombatMoveMap, moveDel, data, player);
         storedCombatMoveMap = null;
@@ -209,14 +168,7 @@ public abstract class AbstractProAi extends AbstractAi {
     }
     if (purchaseForBid) {
       prepareData(data);
-      List<ProBidPlanner.Placement> bidPlan = List.of();
-      if (proData.isBeta()) {
-        bidPlan =
-            new ProBidPlanner(this, proData, calc, combatMoveAi).plan(data, player, pusToSpend);
-        initializeData();
-        prepareData(data);
-      }
-      storedPurchaseTerritories = purchaseAi.bid(pusToSpend, purchaseDelegate, data, bidPlan);
+      storedPurchaseTerritories = purchaseAi.bid(pusToSpend, purchaseDelegate, data);
     } else {
       // Repair factories
       purchaseAi.repair(pusToSpend, purchaseDelegate, data, player);
@@ -227,8 +179,7 @@ public abstract class AbstractProAi extends AbstractAi {
       final List<Territory> possibleFactoryTerritories =
           CollectionUtils.getMatches(
               data.getMap().getTerritories(),
-              ProMatches.territoryHasNoInfraFactoryAndIsOwnedLand(player)
-                  .and(ProMatches.territoryIsNotConqueredUnlessPlacementCapturedAllowed(player)));
+              ProMatches.territoryHasNoInfraFactoryAndIsNotConqueredOwnedLand(player));
       if (purchaseTerritories.isEmpty() && possibleFactoryTerritories.isEmpty()) {
         ProLogger.info("No possible place or factory territories owned so exiting purchase logic");
         return;
@@ -267,8 +218,6 @@ public abstract class AbstractProAi extends AbstractAi {
           proData.initializeSimulation(this, dataCopy, playerCopy);
           final Map<Territory, ProTerritory> moveMap = combatMoveAi.doCombatMove(moveDel);
           if (storedCombatMoveMap == null) {
-            // transferMoveMap drops canHold, so keep the plan's verdicts by territory name.
-            rememberCanHold(moveMap);
             storedCombatMoveMap =
                 ProSimulateTurnUtils.transferMoveMap(proData, moveMap, data, player);
           }
@@ -315,8 +264,7 @@ public abstract class AbstractProAi extends AbstractAi {
     ProLogger.info(player.getName() + " time for purchase=" + (System.currentTimeMillis() - start));
   }
 
-  @Nullable
-  GameData copyData(GameData data) {
+  private GameData copyData(GameData data) {
     GameDataManager.Options options = GameDataManager.Options.builder().withDelegates(true).build();
     GameData dataCopy = GameDataUtils.cloneGameData(data, options).orElse(null);
     Optional.ofNullable(dataCopy).ifPresent(this::prepareData);
@@ -387,31 +335,6 @@ public abstract class AbstractProAi extends AbstractAi {
     final double strengthDifference =
         ProBattleUtils.estimateStrengthDifference(battleTerritory, attackers, defenders);
     final boolean isStrafing = isAttacker && storedStrafingTerritories.contains(battleTerritory);
-    final Integer strafeRounds = storedStrafeRetreats.get(battleTerritory.getName());
-    if (isAttacker
-        && !submerge
-        && strafeRounds != null
-        && battle.getBattleRound() >= strafeRounds
-        && !possibleTerritories.isEmpty()
-        && proData.isBeta()) {
-      // Retreat to the territory holding the most of my units
-      final Territory to =
-          possibleTerritories.stream()
-              .max(
-                  Comparator.comparingInt(
-                      (Territory r) ->
-                          r.getUnitCollection().countMatches(Matches.unitIsOwnedBy(player))))
-              .orElseThrow();
-      ProLogger.info(
-          player.getName()
-              + " strafing: retreating from "
-              + battleTerritory
-              + " after round "
-              + battle.getBattleRound()
-              + " to "
-              + to);
-      return Optional.of(to);
-    }
     ProLogger.info(
         player.getName()
             + " checking retreat from territory "
@@ -437,90 +360,6 @@ public abstract class AbstractProAi extends AbstractAi {
   @Override
   public boolean shouldBomberBomb(final Territory territory) {
     return combatMoveAi.isBombing();
-  }
-
-  @Override
-  public Territory selectTerritoryForAirToLand(
-      final Collection<Territory> candidates,
-      final Territory currentTerritory,
-      final String unitMessage) {
-    initializeData();
-    prepareData(getGameData());
-    final GamePlayer player = getGamePlayer();
-    final ProTerritoryManager territoryManager = new ProTerritoryManager(calc, proData);
-    territoryManager.populateEnemyAttackOptions(List.of(), candidates);
-    // The query does not name the landing units, so the air in the current territory stands in.
-    final Collection<Unit> landingAir =
-        currentTerritory.getMatches(Matches.unitIsOwnedBy(player).and(Matches.unitIsAir()));
-    return chooseAirLanding(
-        candidates,
-        t -> assessLanding(t, landingAir, territoryManager.getEnemyAttackOptions().getMax(t)));
-  }
-
-  /** What an air landing at one candidate faces; loss chances are the enemy's win percentage. */
-  record LandingAssessment(
-      double lossChanceWithout, double lossChanceWith, double groundStrength) {}
-
-  private LandingAssessment assessLanding(
-      final Territory t, final Collection<Unit> landingAir, @Nullable final ProTerritory enemy) {
-    final GamePlayer player = getGamePlayer();
-    final Collection<Unit> defenders = t.getMatches(Matches.isUnitAllied(player));
-    final double groundStrength =
-        ProBattleUtils.estimateStrength(
-            t,
-            CollectionUtils.getMatches(defenders, Matches.unitIsAir().negate()),
-            new ArrayList<>(),
-            false);
-    if (enemy == null || enemy.getMaxUnits().isEmpty()) {
-      return new LandingAssessment(0, 0, groundStrength);
-    }
-    final List<Unit> attackers = new ArrayList<>(enemy.getMaxUnits());
-    // The landing air may already be in the candidate (eg: the current territory).
-    final Set<Unit> defendersWithAir = new HashSet<>(defenders);
-    defendersWithAir.addAll(landingAir);
-    return new LandingAssessment(
-        calc.calculateBattleResults(proData, t, attackers, defenders, new HashSet<>())
-            .getWinPercentage(),
-        calc.calculateBattleResults(proData, t, attackers, defendersWithAir, new HashSet<>())
-            .getWinPercentage(),
-        groundStrength);
-  }
-
-  /**
-   * Picks where air should land: a territory the air is the deciding factor in holding, otherwise
-   * the one least likely to be lost to an attack next turn, then the one with the most allied
-   * ground. Remaining ties go to the first candidate in iteration order.
-   */
-  static Territory chooseAirLanding(
-      final Collection<Territory> candidates, final Function<Territory, LandingAssessment> assess) {
-    final Map<Territory, LandingAssessment> assessments = new LinkedHashMap<>();
-    candidates.forEach(t -> assessments.put(t, assess.apply(t)));
-    final Comparator<Territory> safest =
-        Comparator.comparingDouble((Territory t) -> assessments.get(t).lossChanceWith())
-            .thenComparing(t -> -assessments.get(t).groundStrength());
-    return assessments.keySet().stream()
-        .filter(t -> assessments.get(t).lossChanceWithout() >= AIR_DECIDES_THRESHOLD)
-        .filter(t -> assessments.get(t).lossChanceWith() < AIR_DECIDES_THRESHOLD)
-        .min(safest)
-        .or(() -> assessments.keySet().stream().min(safest))
-        .orElse(null);
-  }
-
-  @Override
-  public Collection<Unit> selectUnitsQuery(
-      final Territory current, final Collection<Unit> possible, final String message) {
-    if (!proData.isBeta()) {
-      return super.selectUnitsQuery(current, possible, message);
-    }
-    // Only asked which defending air units launch to intercept; null launches none and, when
-    // defenders may withdraw, also keeps them out of the battle that follows.
-    final int maxInterceptors = AirBattle.getMaxInterceptionCount(current, possible);
-    return possible.stream()
-        .sorted(
-            Comparator.comparingInt((Unit u) -> u.getUnitAttachment().getAirDefense(u.getOwner()))
-                .reversed())
-        .limit(maxInterceptors)
-        .collect(Collectors.toList());
   }
 
   // TODO: Consider supporting this functionality
@@ -617,117 +456,13 @@ public abstract class AbstractProAi extends AbstractAi {
     // Interleave carriers and planes
     final List<Unit> interleavedTargetList =
         new ArrayList<>(ProTransportUtils.interleaveUnitsCarriersAndPlanes(selectFromSorted, 0));
-    final List<Unit> killed =
-        keepLandToCapture(
-            new ArrayList<>(interleavedTargetList.subList(0, defaultCasualties.getKilled().size())),
-            selectFrom,
-            defaultCasualties.getDamaged(),
-            hit,
-            friendlyUnits,
-            enemyUnits,
-            battleId,
-            battleSite);
-    killed.forEach(myCasualties::addToKilled);
+    for (int i = 0; i < defaultCasualties.getKilled().size(); ++i) {
+      myCasualties.addToKilled(interleavedTargetList.get(i));
+    }
     if (count != myCasualties.size()) {
       throw new IllegalStateException("AI chose wrong number of casualties");
     }
     return myCasualties;
-  }
-
-  private void rememberCanHold(final Map<Territory, ProTerritory> plan) {
-    final Map<String, Boolean> canHold = new HashMap<>();
-    plan.forEach((t, patd) -> canHold.put(t.getName(), patd.isCanHold()));
-    plannedCanHold = canHold;
-  }
-
-  /**
-   * When attacking land (not strafing) and {@code killed} would take the last land unit while air
-   * survives, loses the cheapest surviving air unit instead, since only land units capture. Skips
-   * the swap when the capture is worth less than the extra casualty cost, or when the attack with
-   * the land unit kept wins under 50%.
-   */
-  private List<Unit> keepLandToCapture(
-      final List<Unit> killed,
-      final Collection<Unit> selectFrom,
-      final Collection<Unit> damaged,
-      final GamePlayer hit,
-      final Collection<Unit> friendlyUnits,
-      final Collection<Unit> enemyUnits,
-      final UUID battleId,
-      final Territory battleSite) {
-    final GamePlayer player = getGamePlayer();
-    if (battleSite.isWater()
-        || !player.equals(hit)
-        || storedStrafingTerritories.contains(battleSite)
-        || storedStrafeRetreats.containsKey(battleSite.getName())) {
-      return killed;
-    }
-    final IBattle battle =
-        getGameData().getBattleDelegate().getBattleTracker().getPendingBattle(battleId);
-    final Collection<Unit> attackersAlive;
-    final Collection<Unit> defendersLeft;
-    if (battle != null) {
-      if (!player.equals(battle.getAttacker())) {
-        return killed;
-      }
-      attackersAlive = battle.getAttackingUnits();
-      defendersLeft = battle.getDefendingUnits();
-    } else {
-      // No pending battle (AA fire in a move, or a direct call): attacking if the land is enemy.
-      if (!Matches.isTerritoryEnemy(player).test(battleSite)) {
-        return killed;
-      }
-      attackersAlive = friendlyUnits;
-      defendersLeft = enemyUnits;
-    }
-    final Optional<ProCasualtyUtils.KeepLandSwap> swap =
-        ProCasualtyUtils.findKeepLandSwap(
-            killed, attackersAlive, selectFrom, damaged, u -> ProPurchaseUtils.getCost(proData, u));
-    if (swap.isEmpty()) {
-      return killed;
-    }
-    final double captureValue =
-        ProCasualtyUtils.captureValue(
-            battleSite,
-            player,
-            plannedCanHold.getOrDefault(battleSite.getName(), false),
-            getGameData());
-    final double extraCost =
-        ProPurchaseUtils.getCost(proData, swap.get().airToLose())
-            - ProPurchaseUtils.getCost(proData, swap.get().landToKeep());
-    if (captureValue <= extraCost) {
-      return killed;
-    }
-    final List<Unit> withLand = new ArrayList<>(attackersAlive);
-    withLand.removeAll(swap.get().apply(killed));
-    final Collection<Unit> defenders =
-        CollectionUtils.getMatches(defendersLeft, Matches.unitIsNotInfrastructure());
-    prepareData(getGameData());
-    final double keepLandWin =
-        defenders.isEmpty()
-            ? 100
-            : calc.calculateBattleResultsNoSubmerge(
-                    proData, battleSite, withLand, defenders, new HashSet<>())
-                .getWinPercentage();
-    ProLogger.debug(
-        player.getName()
-            + " keep-land check at "
-            + battleSite.getName()
-            + ": keep "
-            + swap.get().landToKeep().getType().getName()
-            + ", lose "
-            + swap.get().airToLose().getType().getName()
-            + ", capture value="
-            + captureValue
-            + ", extra cost="
-            + extraCost
-            + ", win% with land kept="
-            + keepLandWin);
-    // NaN if the calculator has no data.
-    if (Double.isNaN(keepLandWin) || keepLandWin < 50) {
-      return killed;
-    }
-    return swap.get().apply(killed);
   }
 
   @Override
@@ -735,10 +470,28 @@ public abstract class AbstractProAi extends AbstractAi {
       final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
     initializeData();
+
+    // Get battle data
+    final GameData data = getGameData();
+    final GamePlayer player = this.getGamePlayer();
+    final BattleDelegate delegate = data.getBattleDelegate();
+    final IBattle battle =
+        delegate.getBattleTracker().getPendingBattle(scrambleTo, BattleType.NORMAL);
+
+    // If battle is null then don't scramble
+    if (battle == null) {
+      return null;
+    }
+    final Collection<Unit> attackers = battle.getAttackingUnits();
+    final Collection<Unit> defenders = battle.getDefendingUnits();
     ProLogger.info(
-        getGamePlayer().getName()
+        player.getName()
             + " checking scramble to "
             + scrambleTo
+            + ", attackers="
+            + attackers.size()
+            + ", defenders="
+            + defenders.size()
             + ", possibleScramblers="
             + possibleScramblers);
     prepareData(getGameData());

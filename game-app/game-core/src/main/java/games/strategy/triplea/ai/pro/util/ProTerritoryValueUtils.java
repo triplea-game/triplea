@@ -5,12 +5,8 @@ import games.strategy.engine.data.GamePlayer;
 import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.util.BreadthFirstSearch;
-import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.pro.ProData;
-import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import java.util.ArrayList;
@@ -41,7 +37,6 @@ public final class ProTerritoryValueUtils {
     final int isEnemyFactory =
         ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player).test(t) ? 1 : 0;
     double value = 3.0 * TerritoryAttachment.getProduction(t) * (isEnemyFactory + 1);
-    value += 3.0 * victoryCityValue(proData, t);
     if (ProUtils.isNeutralLand(t)) {
       final double strength =
           ProBattleUtils.estimateStrength(
@@ -55,124 +50,6 @@ public final class ProTerritoryValueUtils {
     return value;
   }
 
-  /**
-   * What a victory city is worth in PUs when a victory-city win condition is on, so holding or
-   * taking one counts toward ending the game; 0 outside Hard Beta or with no such condition.
-   */
-  static double victoryCityValue(final ProData proData, final Territory t) {
-    if (!proData.isBeta()) {
-      return 0;
-    }
-    final GameProperties props = t.getData().getProperties();
-    if (!Properties.getTotalVictory(props)
-        && !Properties.getHonorableSurrender(props)
-        && !Properties.getProjectionOfPower(props)) {
-      return 0;
-    }
-    return TerritoryAttachment.get(t).map(TerritoryAttachment::getVictoryCity).orElse(0)
-        * ProCasualtyUtils.VICTORY_CITY_VALUE;
-  }
-
-  /**
-   * What holding a blockade zone is worth in PUs per turn; 0 outside Hard Beta or for a sea zone
-   * that isn't a blockade zone. Sums the income we would cut from adjacent enemy territories and
-   * the income we would stop losing from adjacent territories of our own.
-   *
-   * <p>Attack side: {@code ourBlockade}, from {@link #ourBlockadePoints}, is the force we could
-   * bring, capped per enemy by that enemy's adjacent production as the engine caps each player's
-   * loss. Defense side: only enemy blockaders already in the zone count, since those are the ones
-   * we can fight.
-   */
-  static double blockadeValue(
-      final ProData proData, final GamePlayer player, final Territory t, final int ourBlockade) {
-    if (!proData.isBeta()
-        || !t.isWater()
-        || !TerritoryAttachment.get(t).map(TerritoryAttachment::getBlockadeZone).orElse(false)) {
-      return 0;
-    }
-    final boolean rollDice =
-        Properties.getConvoyBlockadesRollDiceForCost(t.getData().getProperties());
-    double value = 0;
-    if (!isImmuneToBlockade(player)) {
-      final int enemyBlockade = blockadePoints(t.getUnits(), Matches.enemyUnit(player));
-      value += expectedBlockadeLoss(enemyBlockade, ownedProduction(t, player), rollDice);
-    }
-    if (ourBlockade > 0) {
-      for (final GamePlayer enemy : t.getData().getPlayerList().getPlayers()) {
-        if (Matches.isAtWar(player).test(enemy) && !isImmuneToBlockade(enemy)) {
-          value += expectedBlockadeLoss(ourBlockade, ownedProduction(t, enemy), rollDice);
-        }
-      }
-    }
-    return value;
-  }
-
-  /** Blockade points of all our units at sea; 0 outside Hard Beta, which ignores blockades. */
-  static int ourBlockadePoints(final ProData proData, final GamePlayer player) {
-    if (!proData.isBeta()) {
-      return 0;
-    }
-    int points = 0;
-    for (final Territory t : player.getData().getMap().getTerritories()) {
-      if (t.isWater()) {
-        points += blockadePoints(t.getUnits(), Matches.unitIsOwnedBy(player));
-      }
-    }
-    return points;
-  }
-
-  private static boolean isImmuneToBlockade(final GamePlayer player) {
-    final PlayerAttachment attachment = PlayerAttachment.get(player);
-    return attachment != null && attachment.getImmuneToBlockade();
-  }
-
-  /** Production the engine would let {@code owner} lose to a blockade of {@code zone}. */
-  private static int ownedProduction(final Territory zone, final GamePlayer owner) {
-    return CollectionUtils.getMatches(
-            zone.getData().getMap().getNeighbors(zone),
-            Matches.isTerritoryOwnedBy(owner).and(Matches.territoryCanCollectIncomeFrom(owner)))
-        .stream()
-        .mapToInt(TerritoryAttachment::getProduction)
-        .sum();
-  }
-
-  private static int blockadePoints(final Collection<Unit> units, final Predicate<Unit> match) {
-    return units.stream().filter(match).mapToInt(u -> u.getUnitAttachment().getBlockade()).sum();
-  }
-
-  /**
-   * Expected production lost to a blockade, mirroring the end-of-turn rules: without dice the loss
-   * is {@code blockadePoints}; with dice each point is one d6 that costs its face value on 1-3 and
-   * nothing on 4-6. Either way the loss is capped at {@code maxLoss}.
-   */
-  static double expectedBlockadeLoss(
-      final int blockadePoints, final int maxLoss, final boolean rollDice) {
-    if (blockadePoints <= 0 || maxLoss <= 0) {
-      return 0;
-    }
-    if (!rollDice) {
-      return Math.min(blockadePoints, maxLoss);
-    }
-    // chance[i] is the probability of losing i, with maxLoss meaning "maxLoss or more"
-    double[] chance = new double[maxLoss + 1];
-    chance[0] = 1;
-    for (int die = 0; die < blockadePoints; die++) {
-      final double[] next = new double[maxLoss + 1];
-      for (int lost = 0; lost <= maxLoss; lost++) {
-        next[lost] += chance[lost] * 0.5;
-        for (int face = 1; face <= 3; face++) {
-          next[Math.min(maxLoss, lost + face)] += chance[lost] / 6;
-        }
-      }
-      chance = next;
-    }
-    double expected = 0;
-    for (int lost = 1; lost <= maxLoss; lost++) {
-      expected += lost * chance[lost];
-    }
-    return expected;
-  }
-
   /** Returns the value of each territory in {@code territoriesToCheck}. */
   public static Map<Territory, Double> findTerritoryValues(
       final ProData proData,
@@ -184,7 +61,6 @@ public final class ProTerritoryValueUtils {
     final Map<Territory, Double> enemyCapitalsAndFactoriesMap =
         findEnemyCapitalsAndFactoriesValue(
             player, maxLandMassSize, territoriesThatCantBeHeld, territoriesToAttack);
-    final int ourBlockade = ourBlockadePoints(proData, player);
 
     final Map<Territory, Double> territoryValueMap = new HashMap<>();
     for (final Territory t : territoriesToCheck) {
@@ -213,8 +89,7 @@ public final class ProTerritoryValueUtils {
                 enemyCapitalsAndFactoriesMap,
                 territoriesThatCantBeHeld,
                 territoriesToAttack,
-                territoryValueMap,
-                ourBlockade);
+                territoryValueMap);
         territoryValueMap.put(t, value);
       }
     }
@@ -224,7 +99,6 @@ public final class ProTerritoryValueUtils {
 
   /** Returns the value of each sea territory in {@link ProData#getData()}. */
   public static Map<Territory, Double> findSeaTerritoryValues(
-      final ProData proData,
       final GamePlayer player,
       final List<Territory> territoriesThatCantBeHeld,
       final List<Territory> territoriesToCheck) {
@@ -232,42 +106,37 @@ public final class ProTerritoryValueUtils {
     // Determine value for water territories
     final Map<Territory, Double> territoryValueMap = new HashMap<>();
     final GameData data = player.getData();
-    final int ourBlockade = ourBlockadePoints(proData, player);
     for (final Territory t : territoriesToCheck) {
       if (!territoriesThatCantBeHeld.contains(t)
           && t.isWater()
           && !data.getMap().getNeighbors(t, Matches.territoryIsWater()).isEmpty()) {
 
         // Determine sea value based on nearby convoy production
+        double nearbySeaProductionValue = 0;
         final Set<Territory> nearbySeaTerritories =
             data.getMap().getNeighbors(t, 4, ProMatches.territoryCanMoveSeaUnits(player, true));
         final List<Territory> nearbyEnemySeaTerritories =
             CollectionUtils.getMatches(
                 nearbySeaTerritories,
                 ProMatches.territoryIsEnemyOrCantBeHeld(player, territoriesThatCantBeHeld));
-        final double nearbySeaProductionValue =
-            calculateTerritoryValueToTargets(
-                t, nearbyEnemySeaTerritories, player, data, TerritoryAttachment::getProduction);
+        calculateTerritoryValueToTargets(
+            t, nearbyEnemySeaTerritories, player, data, TerritoryAttachment::getProduction);
 
         // Determine sea value based on nearby enemy sea units
+        double nearbyEnemySeaUnitValue = 0;
         final List<Territory> nearbyEnemySeaUnitTerritories =
             CollectionUtils.getMatches(
                 nearbySeaTerritories, Matches.territoryHasEnemyUnits(player));
-        final double nearbyEnemySeaUnitValue =
-            calculateTerritoryValueToTargets(
-                t,
-                nearbyEnemySeaUnitTerritories,
-                player,
-                data,
-                targetTerritory ->
-                    targetTerritory
-                        .getUnitCollection()
-                        .countMatches(Matches.unitIsEnemyOf(player)));
+        calculateTerritoryValueToTargets(
+            t,
+            nearbyEnemySeaUnitTerritories,
+            player,
+            data,
+            targetTerritory ->
+                targetTerritory.getUnitCollection().countMatches(Matches.unitIsEnemyOf(player)));
 
         // Set final values
-        final double value =
-            100 * (nearbySeaProductionValue + blockadeValue(proData, player, t, ourBlockade))
-                + nearbyEnemySeaUnitValue;
+        final double value = 100 * nearbySeaProductionValue + nearbyEnemySeaUnitValue;
         territoryValueMap.put(t, value);
       } else if (t.isWater()) {
         territoryValueMap.put(t, 0.0);
@@ -299,6 +168,9 @@ public final class ProTerritoryValueUtils {
       final int distance = optionalRoute.get().numberOfSteps();
       if (distance > 0) {
         territoryValue += toTargetValueFunction.applyAsInt(targetTerritory) / Math.pow(2, distance);
+        territoryValue +=
+            targetTerritory.getUnitCollection().countMatches(Matches.unitIsEnemyOf(player))
+                / Math.pow(2, distance);
       }
     }
     return territoryValue;
@@ -331,7 +203,7 @@ public final class ProTerritoryValueUtils {
     return maxLandMassSize;
   }
 
-  static Map<Territory, Double> findEnemyCapitalsAndFactoriesValue(
+  private static Map<Territory, Double> findEnemyCapitalsAndFactoriesValue(
       final GamePlayer player,
       final int maxLandMassSize,
       final List<Territory> territoriesThatCantBeHeld,
@@ -365,12 +237,11 @@ public final class ProTerritoryValueUtils {
         factoryProduction = TerritoryAttachment.getProduction(t);
       }
 
-      // A liberated capital lost again pays its owner's income to the captor
-      final double playerProduction =
-          ProUtils.capitalValue(t, data)
-              + (territoriesThatCantBeHeld.contains(t)
-                  ? 0
-                  : ProUtils.liberationValue(t, player, data));
+      // Get player production if capital
+      double playerProduction = 0;
+      if (TerritoryAttachment.get(t).map(TerritoryAttachment::isCapital).orElse(false)) {
+        playerProduction = ProUtils.getPlayerProduction(t.getOwner(), data);
+      }
 
       // Calculate value
       final int isNeutral = ProUtils.isNeutralLand(t) ? 1 : 0;
@@ -439,10 +310,7 @@ public final class ProTerritoryValueUtils {
       final int distance =
           data.getMap().getDistance(t, nearbyEnemyTerritory, territoryToNeighborCondition);
       if (distance > 0) {
-        double value =
-            TerritoryAttachment.getProduction(nearbyEnemyTerritory)
-                + victoryCityValue(proData, nearbyEnemyTerritory)
-                + ProNationalObjectiveUtils.value(proData, player, nearbyEnemyTerritory);
+        double value = TerritoryAttachment.getProduction(nearbyEnemyTerritory);
         if (ProUtils.isNeutralLand(nearbyEnemyTerritory)) {
           // find neutral value
           value = findTerritoryAttackValue(proData, player, nearbyEnemyTerritory) / 3;
@@ -473,8 +341,7 @@ public final class ProTerritoryValueUtils {
       final Map<Territory, Double> enemyCapitalsAndFactoriesMap,
       final List<Territory> territoriesThatCantBeHeld,
       final List<Territory> territoriesToAttack,
-      final Map<Territory, Double> territoryValueMap,
-      final int ourBlockade) {
+      final Map<Territory, Double> territoryValueMap) {
     final GameState data = proData.getData();
     if (territoriesThatCantBeHeld.contains(t)
         || data.getMap().getNeighbors(t, Matches.territoryIsWater()).isEmpty()) {
@@ -534,10 +401,7 @@ public final class ProTerritoryValueUtils {
       if (distance > 0 && distance <= 3) {
         if (ProMatches.territoryIsEnemyOrCantBeHeld(player, territoriesThatCantBeHeld)
             .test(nearbyLandTerritory)) {
-          double value =
-              TerritoryAttachment.getProduction(nearbyLandTerritory)
-                  + victoryCityValue(proData, nearbyLandTerritory)
-                  + ProNationalObjectiveUtils.value(proData, player, nearbyLandTerritory);
+          double value = TerritoryAttachment.getProduction(nearbyLandTerritory);
           if (ProUtils.isNeutralLand(nearbyLandTerritory)) {
             value = findTerritoryAttackValue(proData, player, nearbyLandTerritory);
           }
@@ -559,9 +423,7 @@ public final class ProTerritoryValueUtils {
       }
     }
 
-    return capitalOrFactoryValue / 100
-        + nearbyLandValue / 10
-        + blockadeValue(proData, player, t, ourBlockade);
+    return capitalOrFactoryValue / 100 + nearbyLandValue / 10;
   }
 
   /**

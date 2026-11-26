@@ -9,7 +9,6 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
-import org.gradle.api.provider.Provider;
 import org.gradle.api.services.ServiceReference;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.api.tasks.testing.TestDescriptor;
@@ -32,18 +31,16 @@ public abstract class FailureSummaryPlugin implements Plugin<Settings> {
 
   @Override
   public void apply(Settings settings) {
-    Provider<FailedTestsService> failedTestsService =
-        settings.getGradle().getSharedServices().registerIfAbsent("failuresService", FailedTestsService.class, spec -> {});
+    settings.getGradle().getSharedServices().registerIfAbsent("failuresService", FailedTestsService.class, spec -> {});
 
     settings.getGradle().allprojects(project -> {
       TestFailureLoggingListener failureListener = project.getObjects().newInstance(TestFailureLoggingListener.class, project.getName());
-      failureListener.getFailedTestsService().set(failedTestsService);
       project.getTasks().withType(Test.class,  test -> {
         test.addTestListener(failureListener);
       });
     });
 
-    getFlowScope().always(FailureReporter.class, spec -> spec.getParameters().getFailedTestsService().set(failedTestsService));
+    getFlowScope().always(FailureReporter.class, spec -> {});
   }
 
   /**

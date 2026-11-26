@@ -1,11 +1,7 @@
 # Infrastructure Project
 
-> The infrastructure code moved to its own repository,
-> [triplea-game/infrastructure](https://github.com/triplea-game/infrastructure). The Vagrant
-> and `run_ansible` parts of this page describe the setup from before the move.
-
-[triplea-game/infrastructure](https://github.com/triplea-game/infrastructure) hosts the code
-and configuration that controls deployments. To modify what is run on the servers, we modify
+[/infrastructure](/infrastructure) Hosts the code and configuration that
+controls deployments. To modify what is run on the servers, we modify
 the checked-in configuration. After merging in configuration changes,
 automation will pick up and deploy these changes to the production servers.
 
@@ -35,10 +31,13 @@ sudo update-ca-certificates
 ## Working With Ansible
 
 You can use 'ansible' to run deployments against a local virtual machine.
-Ansible files are in: [ansible/](https://github.com/triplea-game/infrastructure/tree/main/ansible)
+Ansible files are in: [/infrastructure/ansible](/infrastructure/ansible)
 
 Once you have a local virtual machine launched using 'vagrant', you can
 run ansible deployments with a simple wrapper script: 'run_ansible'
+
+For how to set up and work with vagrant, see:
+[/infrastructure/vagrant/README.md](/infrastructure/vagrant/README.md)
 
 ### --diff flag
 

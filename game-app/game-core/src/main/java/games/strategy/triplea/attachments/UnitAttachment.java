@@ -297,22 +297,9 @@ public class UnitAttachment extends DefaultAttachment {
   // this unit to move into a territory. (units must be owned by player, not be disabled)
   private @Nullable List<String[]> requiresUnitsToMove = null;
   // a colon delimited list of territories where this unit may not be placed
+  // also an allowed setter is "setUnitPlacementOnlyAllowedIn",
+  // which just creates unitPlacementRestrictions with an inverted list of territories
   @Getter private @Nullable String[] unitPlacementRestrictions = null;
-
-  // a colon delimited list of territories where this unit may only be placed. Essentially the
-  // inverse of unitPlacementRestrictions
-  private String[] getUnitPlacementOnlyAllowedIn() {
-    final Set<String> restrictedTerritories =
-        unitPlacementRestrictions == null
-            ? Set.of()
-            : new HashSet<>(Arrays.asList(unitPlacementRestrictions));
-
-    return getData().getMap().getTerritories().stream()
-        .map(Territory::getName)
-        .filter(name -> !restrictedTerritories.contains(name))
-        .toArray(String[]::new);
-  }
-
   // -1 if infinite (infinite is default)
   @Getter private int maxBuiltPerPlayer = -1;
   private @Nullable Tuple<Integer, String> placementLimit = null;
@@ -363,6 +350,10 @@ public class UnitAttachment extends DefaultAttachment {
   // combo properties
   private boolean isSub = false;
   private boolean isSuicide = false;
+
+  // defensive retreat properties
+  private boolean canDefensiveRetreat = false;
+  @Getter private int defensiveRetreatRound = 1;
 
   public UnitAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -983,33 +974,15 @@ public class UnitAttachment extends DefaultAttachment {
     unitPlacementRestrictions = null;
   }
 
+  // no field for this, since it is the inverse of unitPlacementRestrictions
+  // we might as well just use unitPlacementRestrictions
   private void setUnitPlacementOnlyAllowedIn(final String value) throws GameParseException {
-    setUnitPlacementOnlyAllowedIn(
-        getListedTerritories(splitOnColon(value)).stream()
-            .map(Territory::getName)
-            .toArray(String[]::new));
-  }
-
-  private void setUnitPlacementOnlyAllowedIn(final String[] value) throws GameParseException {
-    final Collection<Territory> allowedTerritories = getListedTerritories(value);
-    Collection<Territory> restrictedTerritories =
+    final Collection<Territory> allowedTerritories = getListedTerritories(splitOnColon(value));
+    final Collection<Territory> restrictedTerritories =
         new HashSet<>(getData().getMap().getTerritories());
     restrictedTerritories.removeAll(allowedTerritories);
-
-    // When empty [], the collection is set to null to preserve the original unset state of
-    // unitPlacementRestrictions - see PR #14870
-    if (restrictedTerritories.isEmpty()) {
-      restrictedTerritories = null;
-    }
-
     unitPlacementRestrictions =
-        restrictedTerritories == null
-            ? null
-            : restrictedTerritories.stream().map(Territory::getName).toArray(String[]::new);
-  }
-
-  private void resetUnitPlacementOnlyAllowedIn() {
-    unitPlacementRestrictions = null;
+        restrictedTerritories.stream().map(Territory::getName).toArray(String[]::new);
   }
 
   private void setRepairsUnits(final String value) throws GameParseException {
@@ -2384,7 +2357,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setMovementLimit(final String value) throws GameParseException {
-    movementLimit = parseStackingLimit("movementLimit", value);
+    placementLimit = parseStackingLimit("movementLimit", value);
   }
 
   private void setMovementLimit(final Tuple<Integer, String> value) {
@@ -2454,7 +2427,7 @@ public class UnitAttachment extends DefaultAttachment {
    * @return Returns {@link #placementLimit}.
    */
   private @Nullable Tuple<Integer, String> getPlacementLimitOrNull() {
-    return placementLimit;
+    return movementLimit;
   }
 
   private void resetPlacementLimit() {
@@ -2522,6 +2495,41 @@ public class UnitAttachment extends DefaultAttachment {
 
   public void resetCanRetreatOnStalemate() {
     canRetreatOnStalemate = null;
+  }
+
+  private void setCanDefensiveRetreat(final String s) {
+    canDefensiveRetreat = getBool(s);
+  }
+
+  @VisibleForTesting
+  public UnitAttachment setCanDefensiveRetreat(final Boolean value) {
+    canDefensiveRetreat = value;
+    return this;
+  }
+
+  public boolean getCanDefensiveRetreat() {
+    return canDefensiveRetreat;
+  }
+
+  private void resetCanDefensiveRetreat() {
+    canDefensiveRetreat = false;
+  }
+
+  private void setDefensiveRetreatRound(final String s) throws GameParseException {
+    final int value = getInt(s);
+    if (value < 1) {
+      throw new GameParseException(
+          "defensiveRetreatRound must be greater than or equal to 1" + thisErrorMsg());
+    }
+    defensiveRetreatRound = value;
+  }
+
+  private void setDefensiveRetreatRound(final Integer s) {
+    defensiveRetreatRound = s;
+  }
+
+  private void resetDefensiveRetreatRound() {
+    defensiveRetreatRound = 1;
   }
 
   @Override
@@ -2984,7 +2992,11 @@ public class UnitAttachment extends DefaultAttachment {
         + "  placementLimit:"
         + (placementLimit != null ? placementLimit.toString() : "null")
         + "  tuv:"
-        + tuv;
+        + tuv
+        + "  canDefensiveRetreat:"
+        + canDefensiveRetreat
+        + "  defensiveRetreatRound:"
+        + defensiveRetreatRound;
   }
 
   /**
@@ -4027,14 +4039,6 @@ public class UnitAttachment extends DefaultAttachment {
                   this::setUnitPlacementRestrictions,
                   this::getUnitPlacementRestrictions,
                   this::resetUnitPlacementRestrictions));
-      case "unitPlacementOnlyAllowedIn" ->
-          Optional.of(
-              MutableProperty.of(
-                  this::setUnitPlacementOnlyAllowedIn,
-                  this::setUnitPlacementOnlyAllowedIn,
-                  this::getUnitPlacementOnlyAllowedIn,
-                  this::resetUnitPlacementOnlyAllowedIn));
-
       case "maxBuiltPerPlayer" ->
           Optional.of(
               MutableProperty.of(
@@ -4174,6 +4178,8 @@ public class UnitAttachment extends DefaultAttachment {
           Optional.of(MutableProperty.<Boolean>ofWriteOnly(this::setIsAa, this::setIsAa));
       case "destroyedWhenCapturedFrom" ->
           Optional.of(MutableProperty.ofWriteOnlyString(this::setDestroyedWhenCapturedFrom));
+      case "unitPlacementOnlyAllowedIn" ->
+          Optional.of(MutableProperty.ofWriteOnlyString(this::setUnitPlacementOnlyAllowedIn));
       case "isAAmovement" ->
           Optional.of(
               MutableProperty.<Boolean>ofWriteOnly(this::setIsAaMovement, this::setIsAaMovement));
@@ -4184,6 +4190,16 @@ public class UnitAttachment extends DefaultAttachment {
               MutableProperty.of(
                   this::setCanRetreatOnStalemate, this::setCanRetreatOnStalemate,
                   this::getCanRetreatOnStalemateOrNull, this::resetCanRetreatOnStalemate));
+      case "canDefensiveRetreat" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setCanDefensiveRetreat, this::setCanDefensiveRetreat,
+                  this::getCanDefensiveRetreat, this::resetCanDefensiveRetreat));
+      case "defensiveRetreatRound" ->
+          Optional.of(
+              MutableProperty.of(
+                  this::setDefensiveRetreatRound, this::setDefensiveRetreatRound,
+                  this::getDefensiveRetreatRound, this::resetDefensiveRetreatRound));
       default -> Optional.empty();
     };
   }
