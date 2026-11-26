@@ -5,16 +5,13 @@ import static games.strategy.triplea.settings.SelectionComponentFactory.diceRoll
 import static games.strategy.triplea.settings.SelectionComponentFactory.folderPath;
 import static games.strategy.triplea.settings.SelectionComponentFactory.intValueRange;
 import static games.strategy.triplea.settings.SelectionComponentFactory.proxySettings;
+import static games.strategy.triplea.settings.SelectionComponentFactory.relationshipColors;
 import static games.strategy.triplea.settings.SelectionComponentFactory.selectionBox;
 
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
-import games.strategy.engine.framework.lookandfeel.RelationshipColorScheme;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.lobby.LobbySelectionViewFactory;
 import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
 import javax.swing.JComponent;
 import javax.swing.UIManager;
 import lombok.AllArgsConstructor;
@@ -178,16 +175,14 @@ WARNING: restart all running TripleA instances after changing this setting to av
       SettingType.LOOK_AND_FEEL,
 """
 War/allied/neutral colors in the politics panel and status bar.
-Color blind friendly uses orange/blue instead of red/green.""") {
+Color blind friendly uses orange/blue; Custom shows a button per color to pick it.""") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return selectionBox(
+      return relationshipColors(
           ClientSetting.relationshipColorScheme,
-          RelationshipColorScheme.class,
-          List.of(RelationshipColorScheme.values()),
-          Optional::of,
-          Function.identity(),
-          RelationshipColorScheme::getDisplayName);
+          ClientSetting.customWarColor,
+          ClientSetting.customAlliedColor,
+          ClientSetting.customNeutralColor);
     }
   },
 

@@ -4,12 +4,15 @@ import static org.triplea.util.Arrays.withSensitiveArray;
 import static org.triplea.util.Arrays.withSensitiveArrayAndReturn;
 
 import com.google.common.base.Strings;
+import games.strategy.engine.framework.lookandfeel.LookAndFeel;
+import games.strategy.engine.framework.lookandfeel.RelationshipColorScheme;
 import games.strategy.engine.framework.startup.ui.posted.game.DiceServerEditor;
 import games.strategy.engine.framework.startup.ui.posted.game.pbem.EmailProviderPreset;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.posted.game.pbf.NodeBbTokenGenerator;
 import games.strategy.engine.posted.game.pbf.NodeBbTokenGenerator.TokenInfo;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.net.URI;
@@ -18,6 +21,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -26,8 +30,10 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -37,6 +43,9 @@ import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
+import javax.swing.colorchooser.AbstractColorChooserPanel;
+import javax.swing.colorchooser.ColorChooserComponentFactory;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JComboBoxBuilder;
 import org.triplea.swing.JTextFieldBuilder;
@@ -358,12 +367,36 @@ final class SelectionComponentFactory {
       final Function<T, Optional<E>> convertSettingValueToComboBoxItem,
       final Function<E, T> convertComboBoxItemToSettingValue,
       final Function<E, ?> convertComboBoxItemToDisplayValue) {
+    return selectionBox(
+        clientSetting,
+        comboBoxItemType,
+        comboBoxItems,
+        convertSettingValueToComboBoxItem,
+        convertComboBoxItemToSettingValue,
+        convertComboBoxItemToDisplayValue,
+        item -> {});
+  }
+
+  /**
+   * {@code onSelect} gets the initial item and every later one, including resets; the item can be
+   * null.
+   */
+  static <T, E> SelectionComponent<JComponent> selectionBox(
+      final ClientSetting<T> clientSetting,
+      final Class<E> comboBoxItemType,
+      final Collection<E> comboBoxItems,
+      final Function<T, Optional<E>> convertSettingValueToComboBoxItem,
+      final Function<E, T> convertComboBoxItemToSettingValue,
+      final Function<E, ?> convertComboBoxItemToDisplayValue,
+      final Consumer<E> onSelect) {
     return new SelectionComponent<>() {
       private final JComboBox<E> comboBox = newComboBox();
 
       private JComboBox<E> newComboBox() {
         final JComboBox<E> comboBox = new JComboBox<>();
         comboBoxItems.forEach(comboBox::addItem);
+        comboBox.addActionListener(
+            e -> onSelect.accept(comboBoxItemType.cast(comboBox.getSelectedItem())));
         setComboBoxSelectedItem(comboBox, clientSetting::getValue);
         comboBox.setRenderer(
             new DefaultListCellRenderer() {
@@ -421,6 +454,150 @@ final class SelectionComponentFactory {
         setComboBoxSelectedItem(comboBox, clientSetting::getValue);
       }
     };
+  }
+
+  /**
+   * Color scheme box; while it shows the custom scheme, one button per relationship below it shows
+   * that color and opens a color chooser when clicked.
+   */
+  static SelectionComponent<JComponent> relationshipColors(
+      final ClientSetting<RelationshipColorScheme> schemeSetting,
+      final ClientSetting<Integer> warColor,
+      final ClientSetting<Integer> alliedColor,
+      final ClientSetting<Integer> neutralColor) {
+    final SelectionComponent<JComponent> war = colorButton("War", warColor);
+    final SelectionComponent<JComponent> allied = colorButton("Allied", alliedColor);
+    final SelectionComponent<JComponent> neutral = colorButton("Neutral", neutralColor);
+    final JPanel buttonPanel =
+        new JPanelBuilder()
+            .add(war.getUiComponent())
+            .add(allied.getUiComponent())
+            .add(neutral.getUiComponent())
+            .build();
+    final SelectionComponent<JComponent> schemeBox =
+        selectionBox(
+            schemeSetting,
+            RelationshipColorScheme.class,
+            List.of(RelationshipColorScheme.values()),
+            Optional::of,
+            Function.identity(),
+            RelationshipColorScheme::getDisplayName,
+            scheme -> buttonPanel.setVisible(scheme == RelationshipColorScheme.CUSTOM));
+    final List<SelectionComponent<JComponent>> parts = List.of(schemeBox, war, allied, neutral);
+    final JPanel panel =
+        new JPanelBuilder()
+            .boxLayoutVertical()
+            .addLeftJustified(schemeBox.getUiComponent())
+            .addLeftJustified(buttonPanel)
+            .build();
+    return new SelectionComponent<>() {
+      @Override
+      public JComponent getUiComponent() {
+        return panel;
+      }
+
+      @Override
+      public void save(final SaveContext context) {
+        parts.forEach(part -> part.save(context));
+      }
+
+      @Override
+      public void resetToDefault() {
+        parts.forEach(SelectionComponent::resetToDefault);
+      }
+
+      @Override
+      public void reset() {
+        parts.forEach(SelectionComponent::reset);
+      }
+    };
+  }
+
+  private static SelectionComponent<JComponent> colorButton(
+      final String title, final ClientSetting<Integer> colorSetting) {
+    return new SelectionComponent<>() {
+      private Color color = new Color(colorSetting.getValueOrThrow());
+      private final JButton button =
+          new JButtonBuilder().title(badge(title, color)).actionListener(this::chooseColor).build();
+
+      private void chooseColor() {
+        final JColorChooser chooser = new JColorChooser(color);
+        // index 0 is the swatches, 1 the HSV square; HSL, RGB and CMYK only add tabs
+        final AbstractColorChooserPanel[] panels =
+            ColorChooserComponentFactory.getDefaultChooserPanels();
+        // the game draws custom colors opaque
+        panels[1].setColorTransparencySelectionEnabled(false);
+        chooser.setChooserPanels(new AbstractColorChooserPanel[] {panels[0], panels[1]});
+        chooser.setPreviewPanel(newColorPreview(title, chooser));
+        final JDialog dialog =
+            JColorChooser.createDialog(
+                button, title + " color", true, chooser, e -> showColor(chooser.getColor()), null);
+        dialog.setVisible(true);
+        dialog.dispose();
+      }
+
+      private void showColor(final Color newColor) {
+        color = newColor;
+        button.setText(badge(title, newColor));
+      }
+
+      @Override
+      public JComponent getUiComponent() {
+        return button;
+      }
+
+      @Override
+      public void save(final SaveContext context) {
+        context.setValue(colorSetting, color.getRGB());
+      }
+
+      @Override
+      public void resetToDefault() {
+        colorSetting.getDefaultValue().map(Color::new).ifPresent(this::showColor);
+      }
+
+      @Override
+      public void reset() {
+        showColor(new Color(colorSetting.getValueOrThrow()));
+      }
+    };
+  }
+
+  /** The badge on the chosen color, and a hex field that also takes a typed color. */
+  private static JComponent newColorPreview(final String title, final JColorChooser chooser) {
+    final JLabel preview = new JLabel(badge(title, chooser.getColor()));
+    final JTextField hexField =
+        new JTextFieldBuilder()
+            .columns(7)
+            .maxLength(7)
+            .text(LookAndFeel.convertColorToHex(chooser.getColor()))
+            // the text listener runs on a timer thread, the chooser belongs to the EDT
+            .textListener(
+                text ->
+                    SwingUtilities.invokeLater(
+                        () -> LookAndFeel.parseHexColor(text).ifPresent(chooser::setColor)))
+            .build();
+    chooser
+        .getSelectionModel()
+        .addChangeListener(
+            e -> {
+              preview.setText(badge(title, chooser.getColor()));
+              // keep what the player is typing if it already is this color
+              if (!LookAndFeel.parseHexColor(hexField.getText())
+                  .equals(Optional.of(chooser.getColor()))) {
+                hexField.setText(LookAndFeel.convertColorToHex(chooser.getColor()));
+              }
+            });
+    return new JPanelBuilder().add(preview).addLabel("Hex:").add(hexField).build();
+  }
+
+  // the same badge the status bar draws, so the button previews the in-game look
+  private static String badge(final String title, final Color color) {
+    return String.format(
+        "<html><span style='background-color:%s;color:%s'>&nbsp;%s&nbsp;</span></html>",
+        LookAndFeel.convertColorToHex(color),
+        LookAndFeel.convertColorToHex(LookAndFeel.getContrastingTextColor(color)),
+        title);
   }
 
   static SelectionComponent<JComponent> diceRollerOverrideSelection() {
