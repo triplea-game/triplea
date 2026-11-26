@@ -12,7 +12,6 @@ import games.strategy.engine.random.IRemoteRandom;
 import games.strategy.engine.random.RemoteRandom;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
-import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.delegate.battle.casualty.CasualtySelector;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -31,9 +30,8 @@ public class ClientGame extends AbstractGame {
       final GameData data,
       final Set<Player> gamePlayers,
       final Map<String, INode> remotePlayerMapping,
-      final Messengers messengers,
-      final ClientNetworkBridge clientNetworkBridge) {
-    super(data, gamePlayers, remotePlayerMapping, messengers, clientNetworkBridge);
+      final Messengers messengers) {
+    super(data, gamePlayers, remotePlayerMapping, messengers);
     gameModifiedChannel =
         new IGameModifiedChannel() {
           @Override

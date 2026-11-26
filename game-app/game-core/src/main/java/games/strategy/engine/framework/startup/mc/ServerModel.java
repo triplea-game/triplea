@@ -31,7 +31,6 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.ServerMessenger;
-import games.strategy.net.websocket.ClientNetworkBridge;
 import java.io.IOException;
 import java.net.BindException;
 import java.net.URI;
@@ -277,9 +276,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
 
       chatController = new ChatController(CHAT_NAME, messengers, serverMessenger);
 
-      // TODO: Project#4 Change no-op network sender to a real network bridge
-      chatModel =
-          launchAction.createChatModel(CHAT_NAME, messengers, ClientNetworkBridge.NO_OP_SENDER);
+      chatModel = launchAction.createChatModel(CHAT_NAME, messengers);
 
       serverMessenger.setAcceptNewConnections(true);
       gameDataChanged();

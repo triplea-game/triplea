@@ -11,7 +11,6 @@ import games.strategy.net.IMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.ServerMessenger;
 import games.strategy.net.TestServerMessenger;
-import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.time.Duration;
 import java.util.Collection;
@@ -133,8 +132,7 @@ final class ChatIntegrationTest extends AbstractClientSettingTestCase {
   }
 
   private static Chat newChat(final Messengers messengers) {
-    return new Chat(
-        new MessengersChatTransmitter(CHAT_NAME, messengers, ClientNetworkBridge.NO_OP_SENDER));
+    return new Chat(new MessengersChatTransmitter(CHAT_NAME, messengers));
   }
 
   private static void waitFor(final Runnable assertion) throws InterruptedException {

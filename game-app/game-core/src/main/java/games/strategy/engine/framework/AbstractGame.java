@@ -12,19 +12,13 @@ import games.strategy.engine.player.PlayerBridge;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
-import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.ResourceLoader;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import org.jetbrains.annotations.NonNls;
-import org.triplea.http.client.web.socket.messages.MessageType;
-import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.sound.ISound;
 
 /**
@@ -50,9 +44,7 @@ public abstract class AbstractGame implements IGame {
   final Map<GamePlayer, Player> gamePlayers = new HashMap<>();
   final PlayerManager playerManager;
 
-  private final ClientNetworkBridge clientNetworkBridge;
   @Nullable private IDisplay display;
-  private final List<Runnable> displayListenerRemovals = new ArrayList<>();
   @Nullable private ISound sound;
 
   @Nullable private ResourceLoader resourceLoader;
@@ -61,12 +53,10 @@ public abstract class AbstractGame implements IGame {
       final GameData data,
       final Set<Player> gamePlayers,
       final Map<String, INode> remotePlayerMapping,
-      final Messengers messengers,
-      final ClientNetworkBridge clientNetworkBridge) {
+      final Messengers messengers) {
     gameData = data;
     GameData.setCurrent(data);
     this.messengers = messengers;
-    this.clientNetworkBridge = clientNetworkBridge;
     vault = new Vault(messengers);
     final Map<String, INode> allPlayers = new HashMap<>(remotePlayerMapping);
     for (final Player player : gamePlayers) {
@@ -137,35 +127,12 @@ public abstract class AbstractGame implements IGame {
 
     if (this.display != null) {
       messengers.unregisterChannelSubscriber(this.display, getDisplayChannel());
-      displayListenerRemovals.forEach(Runnable::run);
-      displayListenerRemovals.clear();
       this.display.shutDown();
     }
     if (display != null) {
       messengers.registerChannelSubscriber(display, getDisplayChannel());
-
-      addTrackedDisplayListener(
-          IDisplay.BombingResultsMessage.TYPE, message -> message.accept(display));
-      addTrackedDisplayListener(
-          IDisplay.NotifyRetreatMessage.TYPE,
-          message -> message.accept(display, gameData.getPlayerList()));
-      addTrackedDisplayListener(
-          IDisplay.NotifyUnitsRetreatingMessage.TYPE,
-          message -> message.accept(display, gameData.getUnits()));
-      addTrackedDisplayListener(
-          IDisplay.NotifyDiceMessage.TYPE, message -> message.accept(display));
-      addTrackedDisplayListener(
-          IDisplay.DisplayShutdownMessage.TYPE, message -> message.accept(display));
-      addTrackedDisplayListener(
-          IDisplay.GoToBattleStepMessage.TYPE, message -> message.accept(display));
     }
     this.display = display;
-  }
-
-  private <T extends WebSocketMessage> void addTrackedDisplayListener(
-      final MessageType<T> messageType, final Consumer<T> listener) {
-    clientNetworkBridge.addListener(messageType, listener);
-    displayListenerRemovals.add(() -> clientNetworkBridge.removeListener(messageType, listener));
   }
 
   public static RemoteName getSoundChannel() {

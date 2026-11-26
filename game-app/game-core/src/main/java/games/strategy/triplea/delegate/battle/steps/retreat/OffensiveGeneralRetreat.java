@@ -9,7 +9,6 @@ import games.strategy.engine.data.GameState;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.ExecutionStack;
 import games.strategy.triplea.delegate.Matches;
@@ -20,7 +19,6 @@ import games.strategy.triplea.delegate.battle.MustFightBattle;
 import games.strategy.triplea.delegate.battle.SoundUtils;
 import games.strategy.triplea.delegate.battle.steps.BattleStep;
 import games.strategy.triplea.delegate.battle.steps.RetreatChecks;
-import games.strategy.triplea.settings.ClientSetting;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -116,11 +114,7 @@ public class OffensiveGeneralRetreat implements BattleStep {
       // planes left.
       if (Optional.ofNullable(battleState.getStepStrings()).orElse(List.of()).contains(stepName)) {
         final var battleId = battleState.getBattleId();
-        if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
-          bridge.sendMessage(new IDisplay.GoToBattleStepMessage(battleId.toString(), stepName));
-        } else {
-          bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleId, stepName);
-        }
+        bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleId, stepName);
       }
 
       final Collection<Unit> retreatUnits = retreater.getRetreatUnits();
@@ -184,14 +178,7 @@ public class OffensiveGeneralRetreat implements BattleStep {
     if (battleState.filterUnits(ALIVE, OFFENSE).isEmpty()) {
       battleActions.endBattle(IBattle.WhoWon.DEFENDER, bridge);
     } else {
-      if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
-        bridge.sendMessage(
-            new IDisplay.NotifyUnitsRetreatingMessage(battleState.getBattleId(), retreatUnits));
-      } else {
-        bridge
-            .getDisplayChannelBroadcaster()
-            .notifyRetreat(battleState.getBattleId(), retreatUnits);
-      }
+      bridge.getDisplayChannelBroadcaster().notifyRetreat(battleState.getBattleId(), retreatUnits);
     }
 
     final String shortMessage =
@@ -202,19 +189,9 @@ public class OffensiveGeneralRetreat implements BattleStep {
         battleState.getPlayer(OFFENSE).getName()
             + getLongBroadcastSuffix(retreater.getRetreatType(), retreatTo);
 
-    if (ClientSetting.useWebsocketNetwork.getValue().orElse(false)) {
-      bridge.sendMessage(
-          IDisplay.NotifyRetreatMessage.builder()
-              .shortMessage(shortMessage)
-              .message(longMessage)
-              .step(getName())
-              .retreatingPlayerName(battleState.getPlayer(OFFENSE).getName())
-              .build());
-    } else {
-      bridge
-          .getDisplayChannelBroadcaster()
-          .notifyRetreat(shortMessage, longMessage, getName(), battleState.getPlayer(OFFENSE));
-    }
+    bridge
+        .getDisplayChannelBroadcaster()
+        .notifyRetreat(shortMessage, longMessage, getName(), battleState.getPlayer(OFFENSE));
   }
 
   private String getShortBroadcastSuffix(final MustFightBattle.RetreatType retreatType) {

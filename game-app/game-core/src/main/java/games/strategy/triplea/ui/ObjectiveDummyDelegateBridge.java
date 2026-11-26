@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import org.triplea.http.client.web.socket.messages.WebSocketMessage;
 import org.triplea.sound.HeadlessSoundChannel;
 import org.triplea.sound.ISound;
 import org.triplea.util.Tuple;
@@ -48,9 +47,6 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
   public GameData getData() {
     return gameData;
   }
-
-  @Override
-  public void sendMessage(final WebSocketMessage webSocketMessage) {}
 
   @Override
   public Optional<ResourceLoader> getResourceLoader() {

@@ -39,7 +39,6 @@ import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.engine.random.RandomStats;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
-import games.strategy.net.websocket.ClientNetworkBridge;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.settings.ClientSetting;
@@ -79,7 +78,6 @@ public class ServerGame extends AbstractGame {
   @Nullable @Getter private final InGameLobbyWatcherWrapper inGameLobbyWatcher;
   private boolean needToInitialize = true;
   private final LaunchAction launchAction;
-  private final ClientNetworkBridge clientNetworkBridge;
   @Setter private boolean delegateAutosavesEnabled = true;
 
   /**
@@ -99,16 +97,8 @@ public class ServerGame extends AbstractGame {
       final Set<Player> localPlayers,
       final Map<String, INode> remotePlayerMapping,
       final Messengers messengers,
-      final ClientNetworkBridge clientNetworkBridge,
       final LaunchAction launchAction) {
-    this(
-        data,
-        localPlayers,
-        remotePlayerMapping,
-        messengers,
-        clientNetworkBridge,
-        launchAction,
-        null);
+    this(data, localPlayers, remotePlayerMapping, messengers, launchAction, null);
   }
 
   public ServerGame(
@@ -116,11 +106,9 @@ public class ServerGame extends AbstractGame {
       final Set<Player> localPlayers,
       final Map<String, INode> remotePlayerMapping,
       final Messengers messengers,
-      final ClientNetworkBridge clientNetworkBridge,
       final LaunchAction launchAction,
       @Nullable final InGameLobbyWatcherWrapper inGameLobbyWatcher) {
-    super(data, localPlayers, remotePlayerMapping, messengers, clientNetworkBridge);
-    this.clientNetworkBridge = clientNetworkBridge;
+    super(data, localPlayers, remotePlayerMapping, messengers);
     this.launchAction = launchAction;
     this.inGameLobbyWatcher = inGameLobbyWatcher;
     // Keep a ref to the history writer. This not only makes the calls below more concise, but also
@@ -555,11 +543,10 @@ public class ServerGame extends AbstractGame {
               new DelegateHistoryWriter(messengers, gameData),
               randomStats,
               delegateExecutionManager,
-              clientNetworkBridge,
               delegateRandomSource);
       delegateExecutionManager.enterDelegateExecution();
       try {
-        delegate.setDelegateBridgeAndPlayer(bridge, clientNetworkBridge);
+        delegate.setDelegateBridgeAndPlayer(bridge);
         delegate.start();
       } finally {
         delegateExecutionManager.leaveDelegateExecution();
@@ -582,7 +569,6 @@ public class ServerGame extends AbstractGame {
             new DelegateHistoryWriter(messengers, gameData),
             randomStats,
             delegateExecutionManager,
-            clientNetworkBridge,
             delegateRandomSource);
     // do any initialization of game data for all players here (not based on a delegate, and should
     // not be)
@@ -595,7 +581,7 @@ public class ServerGame extends AbstractGame {
     delegateExecutionManager.enterDelegateExecution();
     try {
       final IDelegate delegate = getCurrentStep().getDelegate();
-      delegate.setDelegateBridgeAndPlayer(bridge, clientNetworkBridge);
+      delegate.setDelegateBridgeAndPlayer(bridge);
       delegate.start();
     } finally {
       delegateExecutionManager.leaveDelegateExecution();

@@ -12,7 +12,6 @@ import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.net.LocalNoOpMessenger;
 import games.strategy.net.Messengers;
-import games.strategy.net.websocket.ClientNetworkBridge;
 import java.awt.Component;
 import java.util.Collection;
 import java.util.HashMap;
@@ -66,13 +65,7 @@ public class LocalLauncher implements ILauncher {
       final Set<Player> gamePlayers =
           gameData.getGameLoader().newPlayers(playerListing.getLocalPlayerTypeMap(playerTypes));
       final ServerGame game =
-          new ServerGame(
-              gameData,
-              gamePlayers,
-              new HashMap<>(),
-              messengers,
-              ClientNetworkBridge.NO_OP_SENDER,
-              launchAction);
+          new ServerGame(gameData, gamePlayers, new HashMap<>(), messengers, launchAction);
       game.setRandomSource(randomSource);
       gameData.getGameLoader().startGame(game, gamePlayers, launchAction, null);
       return Optional.of(game);
