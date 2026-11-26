@@ -55,7 +55,21 @@ public class WebSocketSessionAdapter {
     };
   }
 
-  static WebSocketSession fromWebSocket(final WebSocket webSocket) {
+  /**
+   * Returns the same session for every call with the same connection, so that a session added to a
+   * {@code SessionSet} on open can be removed again on close.
+   */
+  static synchronized WebSocketSession fromWebSocket(final WebSocket webSocket) {
+    final WebSocketSession existing = webSocket.getAttachment();
+    if (existing != null) {
+      return existing;
+    }
+    final WebSocketSession session = newSession(webSocket);
+    webSocket.setAttachment(session);
+    return session;
+  }
+
+  private static WebSocketSession newSession(final WebSocket webSocket) {
     return new WebSocketSession() {
       private final String id = UUID.randomUUID().toString();
 
